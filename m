@@ -1,171 +1,149 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5991C1747
-	for <linux-mips@vger.kernel.org>; Thu, 12 Sep 2024 21:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC1E1369BB
+	for <linux-mips@vger.kernel.org>; Fri, 13 Sep 2024 02:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726175767; cv=none; b=uSV5oC2eoVdoXHX9sHO4iZ9Ngarfx+JRRXKuai2JTtnZ0pJDaE/gsx7GBrZ8U+nJo+xmWe7TG3Td6jepgjD7VAfqDXye4fI2ONasHIqMncn8fKG896p6mkiO+DnGH65OVX/4PgzvGQJJCqaQOc54vDjb0sUjYoQeFQsXtky/Vpo=
+	t=1726195803; cv=none; b=JyxO1CGa/8FczUTfgpuiWhFr6pPAiqdmuUDNEXC9U40AVcmzgCKdGSDhjIdWRhKCeoPh7cZexBDT8az+O+LfTOCZxYa0mOHtv7EMMm01u/J8SsXb+ndyHyrIv+DxDGngzpZHAKyQgeJsW/BXrF6gIHZwK6eYFw3cCV+JY4I80Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726175767; c=relaxed/simple;
-	bh=uwUB51q/k9MKoVysVsXfFJYRoIhfFeIxpLFv0mHnq0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LVFls/00SKtm4MDG5X+oG76SCktduEKO3zpkG3eVUrYvp6b+Lp1SQUdR4L28IMhGXsZYjZJKr6jspJj85iSlMjEnrbQwAZ9wTOsCj66hRip6/lb521Jz495d9MRyGnBo2maz870xXOrBVTX17B1swxoi26ichM/zAbBwEMVFtFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=PYfzeJNk; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+	s=arc-20240116; t=1726195803; c=relaxed/simple;
+	bh=MAxk5/rNjtB0efMRVv2nC/zD7O6Ba9bj9xINGPkBhWE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eXYupsXYy1DSyaXSE0PWfh2qbd7UsyiNZGPRejrlfsNIPpd83WMUL4KahT9ruwMupFavnnq+vtmDzUEzkDPeJcgj82fQX6BPrNkuAKRTkRh1rYC5FSOHfgoDRZeMh5NVwlxYbXmbJlvDnXYO4VZliLplbqDHN4b5YvXPN/kIvPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=2ZF7RX+J; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="PYfzeJNk"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-206b9455460so12026165ad.0
-        for <linux-mips@vger.kernel.org>; Thu, 12 Sep 2024 14:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1726175765; x=1726780565; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GAySjmj1C8RnCc99v/BjFAJ8TYbwKWl+6IomlsR+BoI=;
-        b=PYfzeJNkeYlagfTcD9k+8Dg1WLO+flkY3zQSaW+8PGOlzq/wp2a9it2QCIq2aqKzVs
-         w3vqRJ0ajqaVp2ZNbJp9l5rPY1pq8906LOkUWIGMqk5t+R/VSUAw5UdtxRCPmKmSR+qL
-         loW/2SYBtC040oB0A+FZAlR8KlagCM9FMTogwVcqi5kwWMOAY56LWKMgZdK0jvy07aIJ
-         BU4pzvCv+gp4Mj45Av2KxiJX5V6gvDGPrJqNMV2L7xqgRwfnDhDkDtEU7BbSLmjS5Kir
-         hHS89hng8L0DZmLgw1EITQUXJFGFrhk8eHWuuCNgiy9yeBDUUGtgg6tHc77RSVgkjMxk
-         A/4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726175765; x=1726780565;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GAySjmj1C8RnCc99v/BjFAJ8TYbwKWl+6IomlsR+BoI=;
-        b=oJFIrwtU3FqtePpV78Emspa4K0bnpIqo3MCV8yAVafiRHBxhSn5cMgu6bvlFQHIOwP
-         0EMwuXNQgNqx1ShrhzNIWW4gyhJFVqo57M0QMc5H8ZlWak7jD9GoJLkcVSRnnvlpSAUf
-         CoRIiHHsuYDviKMjD2LELemE5agmW9RHaAAEkEhHcrUQLHN6hrlad+x1bjwLMiE2aNl8
-         uaBfyYvouA++28yf2h7RgCu0sX5SJpp3RkegWdD7+O8B7yk73J8amTMxP4I84qgng+zj
-         CaBQRslgNaS4HSn7JQZy/9tCHyQlnrxmVznP+P60pNDNaaFVa4T7ljQwgqOucQOj3//8
-         k+sA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvwk6nwKBoTgdhqReVVByq+Lk8v3vQTurYN0YUpq5ZjTfIyGMw+6CNkhRtbmMuQtWLr9hYu3QDdJCw@vger.kernel.org
-X-Gm-Message-State: AOJu0YzlWJ+4nbonMC7wZKnpTIrg8+olHcc0wSEZ97pg3CPhZJqAKS/Q
-	7M1+bFQ0fm6FXaUgoV16gDKvXyixu6/15/dzoiRSklDatgYGawAn3GzjwXiFH7s=
-X-Google-Smtp-Source: AGHT+IHUzjdPrj87uHlM3yWrW/J5uo4qx0FxZorL/y/ZhI47SL1dDJtb3OuvF/ucYmZPS3S517PhSQ==
-X-Received: by 2002:a17:903:41c9:b0:1fd:6033:f94e with SMTP id d9443c01a7336-2076e61ddabmr75358475ad.27.1726175764569;
-        Thu, 12 Sep 2024 14:16:04 -0700 (PDT)
-Received: from ghost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076af47662sm18233275ad.93.2024.09.12.14.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2024 14:16:03 -0700 (PDT)
-Date: Thu, 12 Sep 2024 14:15:59 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Arnd Bergmann <arnd@arndb.de>, guoren <guoren@kernel.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	shuah <shuah@kernel.org>, Christoph Hellwig <hch@infradead.org>,
-	Michal Hocko <mhocko@suse.com>,
-	"Kirill A. Shutemov" <kirill@shutemov.name>,
-	Chris Torek <chris.torek@gmail.com>,
-	Linux-Arch <linux-arch@vger.kernel.org>,
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-abi-devel@lists.sourceforge.net
-Subject: Re: [PATCH RFC v3 1/2] mm: Add personality flag to limit address to
- 47 bits
-Message-ID: <ZuNaD+zAXiAulc0n@ghost>
-References: <20240905-patches-below_hint_mmap-v3-1-3cd5564efbbb@rivosinc.com>
- <9fc4746b-8e9d-4a75-b966-e0906187e6b7@app.fastmail.com>
- <CAJF2gTTVX9CFM3oRZZP3hGExwVwA_=n1Lrq_0DQKWA+-ZbOekg@mail.gmail.com>
- <f23b18c6-1856-4b59-9ba3-59809b425c81@app.fastmail.com>
- <Ztrq8PBLJ3QuFJz7@arm.com>
- <oshwto46wbbgneiayj63umllyozm3c4267rvpszqzaopwnt2l7@6mxl5vydtons>
- <ZuDoExckq21fePoe@ghost>
- <ZuHfp0_tAQhaymdy@arm.com>
- <ZuKHpFB+uWuJe2xm@ghost>
- <ZuLIPZId9aHcAY2j@arm.com>
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="2ZF7RX+J"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B55F22C00C1;
+	Fri, 13 Sep 2024 14:49:51 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1726195791;
+	bh=IyjS3TH4E3uhWYtLj484J7j57LwV+XVgHbxsmgxta6g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=2ZF7RX+JJTZhkySdzb/QV5IvXswewHGhhH3fyJcBn0znkpb5Aj18WZxws3xrD9USo
+	 KCHy4cO/8AXXjv/jebc9JMBa3GWgECxMLDpUHLn/n+RAgdI1WtdfWuYxza6fPBFnqz
+	 Z258kSHYjITAop8H13ow/7PP7+ukHdXUJvxLfk2I4sU693/vfjqqvoHWMQv9o+WWhC
+	 Y6IE+SnqKB7Rqh1BDlOo1HzqsniYEqUJe/VoV6M/YT9Fdq2TZ4gTsOLuDNk3jn/6JI
+	 759sFQCn66Uj02sOyNFHIyNABkUps0x8x2rQr9BWLditY06zQZavggxI97jgWt1a/8
+	 SZtZAP0/H66Eg==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B66e3a84f0001>; Fri, 13 Sep 2024 14:49:51 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 9260313EE4F;
+	Fri, 13 Sep 2024 14:49:51 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 9029528005C; Fri, 13 Sep 2024 14:49:51 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: lee@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 1/2] dt-bindings: mfd: Add Realtek switch
+Date: Fri, 13 Sep 2024 14:49:47 +1200
+Message-ID: <20240913024948.1317786-2-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240913024948.1317786-1-chris.packham@alliedtelesis.co.nz>
+References: <20240913024948.1317786-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZuLIPZId9aHcAY2j@arm.com>
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=Id0kWnqa c=1 sm=1 tr=0 ts=66e3a84f a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=EaEq8P2WXUwA:10 a=gEfo2CItAAAA:8 a=RqFMS8Kk0ItR_bseB4sA:9 a=3ZKOabzyN94A:10 a=lodiqALd0UDFbPdo5Gsx:22 a=sptkURWiP4Gy88Gu7hUp:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On Thu, Sep 12, 2024 at 11:53:49AM +0100, Catalin Marinas wrote:
-> On Wed, Sep 11, 2024 at 11:18:12PM -0700, Charlie Jenkins wrote:
-> > Opting-in to the higher address space is reasonable. However, it is not
-> > my preference, because the purpose of this flag is to ensure that
-> > allocations do not exceed 47-bits, so it is a clearer ABI to have the
-> > applications that want this guarantee to be the ones setting the flag,
-> > rather than the applications that want the higher bits setting the flag.
-> 
-> Yes, this would be ideal. Unfortunately those applications don't know
-> they need to set a flag in order to work.
+Add device tree schema for the Realtek switch. Currently the only
+supported feature is the syscon-reboot which is needed to be able to
+reboot the board.
 
-It's not a regression, the applications never worked (on platforms that
-do not have this default). The 47-bit default would allow applications
-that didn't work to start working at the cost of a non-ideal ABI. That
-doesn't seem like a reasonable tradeoff to me.  If applications want to
-run on new hardware that has different requirements, shouldn't they be
-required to update rather than expect the kernel will solve their
-problems for them?
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-> 
-> A slightly better option is to leave the default 47-bit at the kernel
-> ABI level and have the libc/dynamic loader issue the prctl(). You can
-> control the default with environment variables if needed.
+Notes:
+    Changes in v2:
+    - use filename that matches the compatible
+    - put maintainers after title
+    - remove unnecessary label in example
+    - Rework description to focus on what is implemented rather than what
+      may be implemented in the future.
 
-Having glibc set the 47-bit requirement could make it slightly easier
-for applications since they would only have to set the environment
-variable. After the kernel interface is approved I can look into
-supporting that.
+ .../bindings/mfd/realtek,rtl9302c-switch.yaml | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/realtek,rtl9302=
+c-switch.yaml
 
-- Charlie
+diff --git a/Documentation/devicetree/bindings/mfd/realtek,rtl9302c-switc=
+h.yaml b/Documentation/devicetree/bindings/mfd/realtek,rtl9302c-switch.ya=
+ml
+new file mode 100644
+index 000000000000..902750d33bea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/realtek,rtl9302c-switch.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/realtek,switch.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Realtek Switch with Internal CPU
++
++maintainers:
++  - Chris Packham <chris.packham@alliedtelesis.co.nz>
++
++description:
++  The RTL9302 is an Ethernet switch with an integrated CPU. A number of
++  different peripherals are accessed through a common register block,
++  represented here as a syscon node.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - realtek,rtl9302c-switch
++      - const: syscon
++      - const: simple-mfd
++
++  reg:
++    maxItems: 1
++
++  reboot:
++    $ref: /schemas/power/reset/syscon-reboot.yaml#
++
++required:
++  - compatible
++  - reg
++  - reboot
++
++additionalProperties: false
++
++examples:
++  - |
++    ethernet-switch@1b000000 {
++      compatible =3D "realtek,rtl9302c-switch", "syscon", "simple-mfd";
++      reg =3D <0x1b000000 0x10000>;
++
++      reboot {
++        compatible =3D "syscon-reboot";
++        offset =3D <0x0c>;
++        value =3D <0x01>;
++      };
++    };
++
+--=20
+2.46.0
 
-> 
-> We do something similar in glibc for arm64 MTE. When MTE is enabled, the
-> top byte of an allocated pointer contains the tag that must not be
-> corrupted. We left the decision to the C library via the
-> glibc.mem.tagging tunable (Android has something similar via the app
-> manifest). An app can change the default if it wants but if you run with
-> old glibc or no environment variable to say otherwise, the default would
-> be safe. Distros can set the environment to be the maximum range by
-> default if they know the apps included have been upgraded and tested.
-> 
-> -- 
-> Catalin

@@ -1,44 +1,44 @@
 Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB171922DA
-	for <linux-mips@vger.kernel.org>; Tue, 17 Sep 2024 23:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25CC192D6E
+	for <linux-mips@vger.kernel.org>; Tue, 17 Sep 2024 23:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726615788; cv=none; b=MI0NFnUeHvMHpcOc+PH17WvrXkL7DjCZl/IPIAgmAfe497oJwA2DcSVmV1QCl/giq+WpCDJw7qEbphskW73ZkASFpW3El9RgvX16V+51WHCW3emvvHYK5B7/CbR5PKjqi1YStKHiZdjPyPzIUtxvieqYp5T0Jq1ueD2yZFkDDtk=
+	t=1726615790; cv=none; b=NkZpbvIRQvce2jkdF6rakX5e0Y69LC1MVDLMz3rbIggHeaNdsgmwUv6SZhMBOxkyMwEipNCOE62FKGIsRFI4K8svjov52GhbLO5W3TwNUo6TVJqPTGOPr3ZJ3OR6Nl2iGKYHaetdF3/CjqsJUfqC1p3YzPl1I6uGn0pe0ZSC4YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726615788; c=relaxed/simple;
-	bh=PS96jAihdDtRMarEQelGNHWbItvYn10nrN4v+Fj67fY=;
+	s=arc-20240116; t=1726615790; c=relaxed/simple;
+	bh=R8vgpwFocTgr2VLRkYvO2Feee8qPVPsrOMT6Jy/NsVU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UaXZpR0R7SB8KCv17ZEpvGUEvGHG/ivyNW4MmHgdP8GGX59Q67JbpUZLZGHGXxu5JoeLty8sBn82J5I57jzhaL0/78whkXZwsZfHDSz7upO+fw0Zmncs0XHUtCJK5XvGOBMhY6PFZqDFF1HQcUmbDK/K61ZEQegFqCS/D3qhSdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=mzCm8bZd; arc=none smtp.client-ip=202.36.163.20
+	 MIME-Version; b=NjBq2hyfDTtQpd4pzsg3z4E4E2+BOCY833w1NUy+LeqICxVefLRPUB0xPKv2hss/gn3THYE+ia079xJhbKKIlTu7KzPAwS0qvOhuuWXe71oACftKqyllmOI6KN/slsb0CuuxwSQd1RDdBG08AapNH4EGGn539y2TbyArqjUFla0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=nEgGxKan; arc=none smtp.client-ip=202.36.163.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="mzCm8bZd"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="nEgGxKan"
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id DE7A12C046D;
-	Wed, 18 Sep 2024 11:29:36 +1200 (NZST)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 606AA2C0654;
+	Wed, 18 Sep 2024 11:29:37 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1726615776;
-	bh=f9JeA8d+mZ1OVpc38H0KjkqDCAD8U+9ZGkj1oHxs4Ts=;
+	s=mail181024; t=1726615777;
+	bh=hciNQ7JyuCrV8+IFGAGI+LOFvSKN/EA4AgHDtQZ7WFQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mzCm8bZd9ZDiB6LlUtGulzxj+j1RqDujVyj9ferde4kdK2VOkdOwadXYnQnCW6yeO
-	 aVSXDBX481HfaH1M/Cku61/F1xJeuqUvx9eIeSH0igYS6u8YvSx/ldZko2fVBBJyAt
-	 A25A8EGkOoe+FJNYnVSIbEQ30Oy3TOLM/gBgxyfHyoDcrfg+9gGaZUnYM0Z+wP6kl8
-	 uHL8TtKeRfEAxrYYHhExBi5f6gXJxOvyzxNOa+V2mC6n7AlxVsqrR2vIpRDsf1eWXe
-	 4CdIS5BRv2j35rAkkRFNYxPoiRRsjZgqvMpn205EvxFhcj+yOFayQu/wsOu1nymbeW
-	 yT3Mj+3N6Y10Q==
+	b=nEgGxKanHgWXfz0jDzo+IC6/A7RGtMKLRrONGyQRt2vT/Juiin4NJU46Dnq24YWnu
+	 w3Hpr8Fyu/7eX+CYLCAmtBYSE21sRHzvfRUR0BOY2TWrZ3u2DXdzqQPGe0kN9z1es5
+	 fAxSd9rO2bPU5rAUu2MVMHMsojVr0cKL+KpAbl7F3U5EWCn7l6wLULWBYsW3cw8pOz
+	 BCxZXLrVBCtRmiLSQwTMAeWkVLMpG+nKzeXbBz5U6DV2zuPriRX1MZzWXJ3rBsSImA
+	 9hcsCWVtUM1gK+/oChZxghEss8e3k5HpGyjPFH6WEN05yJ/6cDPOJwNlwlDli151d8
+	 WhjEdQohCty5w==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B66ea10e00001>; Wed, 18 Sep 2024 11:29:36 +1200
+	id <B66ea10e00005>; Wed, 18 Sep 2024 11:29:36 +1200
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 7B0AD13EE6D;
+	by pat.atlnz.lc (Postfix) with ESMTP id 8B18613EE87;
 	Wed, 18 Sep 2024 11:29:36 +1200 (NZST)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 76D27280347; Wed, 18 Sep 2024 11:29:36 +1200 (NZST)
+	id 88203280347; Wed, 18 Sep 2024 11:29:36 +1200 (NZST)
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: andi.shyti@kernel.org,
 	robh@kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-i2c@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 1/5] dt-bindings: i2c: Add RTL9300 I2C controller
-Date: Wed, 18 Sep 2024 11:29:28 +1200
-Message-ID: <20240917232932.3641992-2-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 5/5] i2c: rtl9300: Add multiplexing support
+Date: Wed, 18 Sep 2024 11:29:32 +1200
+Message-ID: <20240917232932.3641992-6-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20240917232932.3641992-1-chris.packham@alliedtelesis.co.nz>
 References: <20240917232932.3641992-1-chris.packham@alliedtelesis.co.nz>
@@ -63,155 +63,217 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=Id0kWnqa c=1 sm=1 tr=0 ts=66ea10e0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=EaEq8P2WXUwA:10 a=gEfo2CItAAAA:8 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=UgJECxHJAAAA:8 a=lp7SEntL7-OLZ8pvscEA:9 a=3ZKOabzyN94A:10 a=sptkURWiP4Gy88Gu7hUp:22 a=-El7cUbtino8hM1DCn8D:22
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=Id0kWnqa c=1 sm=1 tr=0 ts=66ea10e0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=EaEq8P2WXUwA:10 a=v7xNKfeFtFACfAgD-bQA:9 a=3ZKOabzyN94A:10
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 
-Add dtschema for the I2C controller on the RTL9300 SoC. The I2C
-controllers on this SoC are part of the "switch" block which is
-represented here as a syscon node. The SCL pins are dependent on the I2C
-controller (GPIO8 for the first controller, GPIO 17 for the second). The
-SDA pins can be assigned to either one of the I2C controllers (but not
-both).
+The RTL9300 I2C controller can support multiplexing by choosing the SDA
+pin to be used dynamically. Add mutliplexing support to the rtl9300
+driver.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
+ drivers/i2c/busses/i2c-rtl9300.c | 168 ++++++++++++++++++++++++++++++-
+ 1 file changed, 167 insertions(+), 1 deletion(-)
 
-Notes:
-    This does hit generate the following dt_binding_check warning
-   =20
-    realtek,rtl9300-i2c.example.dts:22.19-30.13: Warning (unit_address_vs=
-_reg): /example-0/switch@1b000000/i2c@36c: node has a unit name, but no r=
-eg or ranges property
-   =20
-    Which is totally correct. I haven't given this thing a reg property
-    because I'm using an offset from the parent syscon node. I'm also not
-    calling the first offset "offset" but I don't think that'd help.
-   =20
-    I looked at a couple of other examples of devices that are children o=
-f
-    syscon nodes (e.g. armada-ap806-thermal, ap806-cpu-clock) these do ha=
-ve
-    a reg property in the dts but as far as I can see from the code it's =
-not
-    actually used, instead the register offsets are in the code looked up
-    from the driver data (in at least one-case the reg offset is for a
-    legacy usage).
-   =20
-    So I'm a little unsure what to do here. I can add a reg property and
-    update the driver to use that to get the offset for the first set of
-    registers (or just not use it). Or I could drop the @36c from the nod=
-e
-    names but then I coudn't distinguish the two controllers without fail=
-ing
-    the $nodename: requirement from i2c-controller.yaml.
-
- .../bindings/i2c/realtek,rtl9300-i2c.yaml     | 73 +++++++++++++++++++
- MAINTAINERS                                   |  6 ++
- 2 files changed, 79 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/i2c/realtek,rtl9300=
--i2c.yaml
-
-diff --git a/Documentation/devicetree/bindings/i2c/realtek,rtl9300-i2c.ya=
-ml b/Documentation/devicetree/bindings/i2c/realtek,rtl9300-i2c.yaml
-new file mode 100644
-index 000000000000..5b74a1986720
---- /dev/null
-+++ b/Documentation/devicetree/bindings/i2c/realtek,rtl9300-i2c.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/i2c/realtek,rtl9300-i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek RTL I2C Controller
-+
-+maintainers:
-+  - Chris Packham <chris.packham@alliedtelesis.co.nz>
-+
-+description: |
-+  The RTL9300 SoC has two I2C controllers. Each of these has an SCL line=
- (which
-+  if not-used for SCL can be a GPIO). There are 8 common SDA lines that =
-can be
-+  assigned to either I2C controller.
-+
-+properties:
-+  compatible:
-+    const: realtek,rtl9300-i2c
-+
-+  realtek,control-offset:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Offset of the registers for this I2C controller
-+
-+  realtek,global-control-offset:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Offset of the I2C global control register (common betwe=
-en
-+      controllers).
-+
-+  clock-frequency:
-+    enum: [ 100000, 400000 ]
-+
-+  realtek,sda-pin:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0
-+    maximum: 7
-+    description:
-+      SDA pin associated with this I2C controller.
-+
-+allOf:
-+  - $ref: /schemas/i2c/i2c-controller.yaml#
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - realtek,control-offset
-+  - realtek,global-control-offset
-+
-+examples:
-+  - |
-+    switch@1b000000 {
-+      compatible =3D "realtek,rtl9302c-switch", "syscon", "simple-mfd";
-+      reg =3D <0x1b000000 0x10000>;
-+
-+      i2c@36c {
-+        compatible =3D "realtek,rtl9300-i2c";
-+        realtek,control-offset =3D <0x36c>;
-+        realtek,global-control-offset =3D <0x384>;
-+        clock-frequency =3D <100000>;
-+        realtek,sda-pin =3D <2>;
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+      };
-+
-+      i2c@388 {
-+        compatible =3D "realtek,rtl9300-i2c";
-+        realtek,control-offset =3D <0x388>;
-+        realtek,global-control-offset =3D <0x384>;
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+      };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f328373463b0..ccb1125444f4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19887,6 +19887,12 @@ S:	Maintained
- T:	git https://github.com/pkshih/rtw.git
- F:	drivers/net/wireless/realtek/rtl8xxxu/
+diff --git a/drivers/i2c/busses/i2c-rtl9300.c b/drivers/i2c/busses/i2c-rt=
+l9300.c
+index f16e9b6343bf..a934a2526c92 100644
+--- a/drivers/i2c/busses/i2c-rtl9300.c
++++ b/drivers/i2c/busses/i2c-rtl9300.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
 =20
-+RTL9300 I2C DRIVER (rtl9300-i2c)
-+M:	Chris Packham <chris.packham@alliedtelesis.co.nz>
-+L:	linux-i2c@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/i2c/realtek,rtl9300-i2c.yaml
+ #include <linux/i2c.h>
++#include <linux/i2c-mux.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/mutex.h>
+@@ -44,6 +45,14 @@ struct rtl9300_i2c {
+ #define RTL9300_I2C_STD_FREQ		0
+ #define RTL9300_I2C_FAST_FREQ		1
+=20
++struct rtl9300_i2c_chan {
++	int parent;
++	const unsigned int *chans;
++	int n_chan;
++};
 +
- RTRS TRANSPORT DRIVERS
- M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
- M:	Jack Wang <jinpu.wang@ionos.com>
++#define RTL9300_I2C_MUX_NCHAN	8
++
+ DEFINE_MUTEX(i2c_lock);
+=20
+ static int rtl9300_i2c_reg_addr_set(struct rtl9300_i2c *i2c, u32 reg, u1=
+6 len)
+@@ -370,7 +379,164 @@ static struct platform_driver rtl9300_i2c_driver =3D=
+ {
+ 	},
+ };
+=20
+-module_platform_driver(rtl9300_i2c_driver);
++static int rtl9300_i2c_select_chan(struct i2c_mux_core *muxc, u32 chan)
++{
++	struct i2c_adapter *adap =3D muxc->parent;
++	struct rtl9300_i2c *i2c =3D i2c_get_adapdata(adap);
++	int ret;
++
++	ret =3D rtl9300_i2c_config_io(i2c, chan);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int rtl9300_i2c_deselect_mux(struct i2c_mux_core *muxc, u32 chan)
++{
++	struct i2c_adapter *adap =3D muxc->parent;
++	struct rtl9300_i2c *i2c =3D i2c_get_adapdata(adap);
++	int ret;
++
++	ret =3D rtl9300_i2c_config_io(i2c, i2c->sda_pin);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int rtl9300_i2c_mux_probe_fw(struct rtl9300_i2c_chan *mux, struct=
+ platform_device *pdev)
++{
++	struct device *dev =3D &pdev->dev;
++	struct fwnode_handle *fwnode =3D dev_fwnode(dev);
++	struct device_node *np =3D dev->of_node;
++	struct device_node *adap_np;
++	struct i2c_adapter *adap =3D NULL;
++	struct fwnode_handle *child;
++	unsigned int *chans;
++	int i =3D 0;
++
++	if (!is_of_node(fwnode))
++		return -EOPNOTSUPP;
++
++	if (!np)
++		return -ENODEV;
++
++	adap_np =3D of_parse_phandle(np, "i2c-parent", 0);
++	if (!adap_np) {
++		dev_err(&pdev->dev, "Cannot parse i2c-parent\n");
++		return -ENODEV;
++	}
++	adap =3D of_find_i2c_adapter_by_node(adap_np);
++	of_node_put(adap_np);
++
++	if (!adap)
++		return -EPROBE_DEFER;
++
++	mux->parent =3D i2c_adapter_id(adap);
++	put_device(&adap->dev);
++
++	mux->n_chan =3D device_get_child_node_count(dev);
++	if (mux->n_chan >=3D RTL9300_I2C_MUX_NCHAN)
++		return -EINVAL;
++
++	chans =3D devm_kcalloc(dev, mux->n_chan, sizeof(*mux->chans), GFP_KERNE=
+L);
++	if (!chans)
++		return -ENOMEM;
++
++	device_for_each_child_node(dev, child) {
++		fwnode_property_read_u32(child, "reg", chans + i);
++		i++;
++	}
++	mux->chans =3D chans;
++
++	return 0;
++}
++
++static int rtl9300_i2c_mux_probe(struct platform_device *pdev)
++{
++	struct i2c_mux_core *muxc;
++	struct i2c_adapter *adap;
++	struct rtl9300_i2c_chan *mux;
++	int ret, i;
++
++	mux =3D devm_kzalloc(&pdev->dev, sizeof(*mux), GFP_KERNEL);
++	if (!mux)
++		return -ENOMEM;
++
++	ret =3D rtl9300_i2c_mux_probe_fw(mux, pdev);
++	if (ret)
++		return ret;
++
++	adap =3D i2c_get_adapter(mux->parent);
++	if (!adap)
++		return -EPROBE_DEFER;
++
++	muxc =3D i2c_mux_alloc(adap, &pdev->dev, mux->n_chan, 0, 0,
++			     rtl9300_i2c_select_chan, rtl9300_i2c_deselect_mux);
++	if (!muxc) {
++		ret =3D -ENOMEM;
++		goto err_alloc;
++	}
++	muxc->priv =3D mux;
++
++	platform_set_drvdata(pdev, muxc);
++
++	for (i =3D 0; i < mux->n_chan; i++) {
++		ret =3D i2c_mux_add_adapter(muxc, 0, mux->chans[i]);
++		if (ret)
++			goto err_del_adapters;
++	}
++
++	return 0;
++
++err_del_adapters:
++	i2c_mux_del_adapters(muxc);
++err_alloc:
++	i2c_put_adapter(adap);
++
++	return ret;
++}
++
++static void rtl9300_i2c_mux_remove(struct platform_device *pdev)
++{
++	struct i2c_mux_core *muxc =3D platform_get_drvdata(pdev);
++
++	i2c_mux_del_adapters(muxc);
++	i2c_put_adapter(muxc->parent);
++}
++
++static const struct of_device_id i2c_rtl9300_mux_dt_ids[] =3D {
++	{ .compatible =3D "realtek,rtl9300-i2c-mux" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, i2c_rtl9300_mux_dt_ids);
++
++static struct platform_driver rtl9300_i2c_mux_driver =3D {
++	.probe =3D rtl9300_i2c_mux_probe,
++	.remove =3D rtl9300_i2c_mux_remove,
++	.driver =3D {
++		.name =3D "i2c-mux-rtl9300",
++		.of_match_table =3D i2c_rtl9300_mux_dt_ids,
++	},
++};
++
++static struct platform_driver * const drivers[] =3D {
++	&rtl9300_i2c_driver,
++	&rtl9300_i2c_mux_driver,
++};
++
++static int __init rtl9300_i2c_init(void)
++{
++	return platform_register_drivers(drivers, ARRAY_SIZE(drivers));
++}
++module_init(rtl9300_i2c_init);
++
++static void __exit rtl9300_i2c_exit(void)
++{
++	platform_unregister_drivers(drivers, ARRAY_SIZE(drivers));
++}
++module_exit(rtl9300_i2c_exit);
+=20
+ MODULE_DESCRIPTION("RTL9300 I2C controller driver");
+ MODULE_LICENSE("GPL");
 --=20
 2.46.1
 

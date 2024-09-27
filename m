@@ -1,30 +1,30 @@
 Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF4618C901
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEB218C355
 	for <linux-mips@vger.kernel.org>; Fri, 27 Sep 2024 12:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727440987; cv=none; b=PgW4pOrlF92jlCTrsHo3UU7vVFCg+kTyv5YkIB6dsikAM+d9H87+slnIQXOi2hG5kWSlySalkwZCExcFRQOVlRAzeazdvP7pX03UsTz3z0g8SwxnzT2YLCB1LEPLNqb/oL7/1OkPsv7Dc+W+18MeMJIYuS77RkLO3KpTmHNpwZE=
+	t=1727440987; cv=none; b=LYsE4EBpS1qVTrOt7RO3ksTN0jfhG++G+/v2Nc/Y3qgrqDAAJwh+JrsIa6rE8bN2PR5dbqP4XX0vdqcqiKsYHspTxt5amwKZ0kyJhyL+QZ8Ehz7qhhv5x6cdvTFQ9VBYNlIjR0WY4FNhayV9YAk28uM7WRuz9QJ6Cis5bKD/vRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727440987; c=relaxed/simple;
-	bh=CIM20nnnU7Jhf6dFh8JPiIIE/fCG4cgWx70W9ajo49Y=;
+	bh=Kkd9tSqRHa9vtAL1isGx0C8vpTPnoQQejNAyURUlpbY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M1LZLX3tU4kIju1y6Je0EW/2gpLUUDgYDdBvPsiE4g+h4UFgRN9DPJSrpIZabqfCpGdb1w6tvst6ky3iawwzItE+hSJ9RUKhez3I8mwmL2lB2JW8qcOPrgDc7c5I1uJ8ZTMz4XObfg3ELBdZk79t6zEHVF1ScIxczwSYYPyTTRE=
+	 MIME-Version; b=rWpen0CPcm9o+dnQCFPC9EOZ03c+G08dfXjKamTGHEPut2UDEv7/AEsnZ3GaRgaDW3zTzw4PvaXO8zIU2subOlUsi5vVUue/lBXcTJw+d9q1rKcQX+UbA6aWTjklrfNGjzslYSOQUuHkvG4gxI+apZcCTPYNeJY5lYnwUHw5cyA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:b47d:fd74:3975:15b7])
 	by xavier.telenet-ops.be with cmsmtp
-	id HQic2D0093BfLyr01QicD3; Fri, 27 Sep 2024 14:43:02 +0200
+	id HQic2D0083BfLyr01QicD2; Fri, 27 Sep 2024 14:43:02 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIj-000fPw-HG;
+	id 1suAIj-000fQ0-IM;
 	Fri, 27 Sep 2024 14:42:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIp-008IDv-2h;
+	id 1suAIp-008IE1-4R;
 	Fri, 27 Sep 2024 14:42:31 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Liam Girdwood <lgirdwood@gmail.com>,
@@ -62,9 +62,9 @@ Cc: linux-sound@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH treewide 07/11] arm64: dts: rockchip: Switch to hp-det-gpios
-Date: Fri, 27 Sep 2024 14:42:22 +0200
-Message-Id: <717e7c9527139c3a3e5246dd367a3ad98c5c81b6.1727438777.git.geert+renesas@glider.be>
+Subject: [PATCH treewide 09/11] mips: dts: ingenic: Switch to simple-audio-card,hp-det-gpios
+Date: Fri, 27 Sep 2024 14:42:24 +0200
+Message-Id: <0466c746d6276842d6993fae41efb315188e1f3f.1727438777.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1727438777.git.geert+renesas@glider.be>
 References: <cover.1727438777.git.geert+renesas@glider.be>
@@ -76,137 +76,41 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace the deprecated "hp-det-gpio" property by "hp-det-gpios" in Audio
-Graph Card and Realtek RT5651 Audio Codec device nodes.
+Replace the deprecated "simple-audio-card,hp-det-gpio" property by
+"simple-audio-card,hp-det-gpios" in Simple Audio Card device nodes.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/arm64/boot/dts/rockchip/rk3368-lba3368.dts            | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts          | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts    | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts    | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts         | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts | 2 +-
- arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts       | 2 +-
- arch/arm64/boot/dts/rockchip/rk3588-rock-5-itx.dts         | 2 +-
- arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts            | 2 +-
- 9 files changed, 9 insertions(+), 9 deletions(-)
+ arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+ arch/mips/boot/dts/ingenic/rs90.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368-lba3368.dts b/arch/arm64/boot/dts/rockchip/rk3368-lba3368.dts
-index e0cc4da7f392daf9..c08687df326ddc21 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368-lba3368.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3368-lba3368.dts
-@@ -47,7 +47,7 @@ button-recovery {
- 	analog-sound {
- 		compatible = "audio-graph-card";
- 		dais = <&i2s_8ch_p0>;
--		hp-det-gpio = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
- 		label = "alc5640";
- 		routing = "Mic Jack", "MICBIAS1",
- 			  "IN1P", "Mic Jack",
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts b/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts
-index 4feb78797982baa5..8c46bee077f3cfc2 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-eaidk-610.dts
-@@ -545,7 +545,7 @@ rt5651: audio-codec@1a {
- 		reg = <0x1a>;
- 		clocks = <&cru SCLK_I2S_8CH_OUT>;
- 		clock-names = "mclk";
--		hp-det-gpio = <&gpio4 RK_PD4 GPIO_ACTIVE_LOW>;
-+		hp-det-gpios = <&gpio4 RK_PD4 GPIO_ACTIVE_LOW>;
- 		spk-con-gpio = <&gpio0 RK_PB3 GPIO_ACTIVE_HIGH>;
- 		#sound-dai-cells = <0>;
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
-index 725ac3c1f6f6501d..4fc9c13dbec12390 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
-@@ -21,5 +21,5 @@ &es8316 {
- };
+diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts b/arch/mips/boot/dts/ingenic/gcw0.dts
+index 5d33f26fd28c8bd8..8455778928b71cee 100644
+--- a/arch/mips/boot/dts/ingenic/gcw0.dts
++++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+@@ -91,7 +91,7 @@ sound {
+ 			"MIC1N", "Built-in Mic";
+ 		simple-audio-card,pin-switches = "Speaker", "Headphones";
  
- &sound {
--	hp-det-gpio = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
-+	hp-det-gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
- };
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-index 682e8b7297c180b6..9c741d1a3047e758 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
-@@ -39,7 +39,7 @@ brcmf: wifi@1 {
- };
+-		simple-audio-card,hp-det-gpio = <&gpf 21 GPIO_ACTIVE_LOW>;
++		simple-audio-card,hp-det-gpios = <&gpf 21 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&speaker_amp>, <&headphones_amp>;
  
- &sound {
--	hp-det-gpio = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
-+	hp-det-gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
- };
+ 		simple-audio-card,bitclock-master = <&dai_codec>;
+diff --git a/arch/mips/boot/dts/ingenic/rs90.dts b/arch/mips/boot/dts/ingenic/rs90.dts
+index e8df70dd42bf8e4c..6d2c8aea5f499d34 100644
+--- a/arch/mips/boot/dts/ingenic/rs90.dts
++++ b/arch/mips/boot/dts/ingenic/rs90.dts
+@@ -148,7 +148,7 @@ sound {
+ 			"Speaker", "OUTR";
+ 		simple-audio-card,pin-switches = "Speaker";
  
- &uart0 {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-index 82ad2ca6b5c2fc92..5dc5505b58e2ee10 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -40,7 +40,7 @@ brcmf: wifi@1 {
- };
+-		simple-audio-card,hp-det-gpio = <&gpd 16 GPIO_ACTIVE_LOW>;
++		simple-audio-card,hp-det-gpios = <&gpd 16 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&amp>;
  
- &sound {
--	hp-det-gpio = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
-+	hp-det-gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
- };
- 
- &spi1 {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts b/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-index 31ea3d0182c062ef..fdaa8472b7a72075 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-@@ -167,7 +167,7 @@ rt5651: rt5651@1a {
- 		reg = <0x1a>;
- 		clocks = <&cru SCLK_I2S_8CH_OUT>;
- 		clock-names = "mclk";
--		hp-det-gpio = <&gpio4 RK_PC4 GPIO_ACTIVE_LOW>;
-+		hp-det-gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_LOW>;
- 		spk-con-gpio = <&gpio0 RK_PB3 GPIO_ACTIVE_HIGH>;
- 		#sound-dai-cells = <0>;
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts b/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
-index c667704ba985e463..aefa0d376dd8af20 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
-@@ -23,7 +23,7 @@ analog-sound {
- 		compatible = "audio-graph-card";
- 		dais = <&i2s0_8ch_p0>;
- 		label = "rk3588-es8316";
--		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&hp_detect>;
- 		routing = "MIC2", "Mic Jack",
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5-itx.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5-itx.dts
-index d0b922b8d67e85a0..e4e6c23c66845066 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5-itx.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5-itx.dts
-@@ -46,7 +46,7 @@ analog-sound {
- 		compatible = "audio-graph-card";
- 		label = "rk3588-es8316";
- 		dais = <&i2s0_8ch_p0>;
--		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&hp_detect>;
- 		routing = "MIC2", "Mic Jack",
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index 966bbc582d89b89c..8d3bbfd996560289 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -32,7 +32,7 @@ analog-sound {
- 			  "Headphones", "HPOR";
- 
- 		dais = <&i2s0_8ch_p0>;
--		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&hp_detect>;
- 	};
+ 		simple-audio-card,bitclock-master = <&dai_codec>;
 -- 
 2.34.1
 

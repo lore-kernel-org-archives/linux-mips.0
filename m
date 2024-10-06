@@ -1,122 +1,112 @@
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEFA189F33;
-	Sun,  6 Oct 2024 18:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3453B18B486
+	for <linux-mips@vger.kernel.org>; Sun,  6 Oct 2024 23:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728238435; cv=none; b=lU9pEQcUWF4AQUYtbSDV9Hk4+6froL5Yup3g3Gzj2ADPPN2F0aC4zSKjrBuEzdkTlyicm1NFiqX4ilDrP2/7uarsz6P7hD71u7kpHzdiFNG3YMygTls5/WP4t920hTMHabkA+Xera+9Tc49ZmAr5H14gPoXN+/ZDs5rT6h7tfUk=
+	t=1728257637; cv=none; b=LDG+ALAECp8Wn1znAS3YKNrqZI4u9b503UJfelKhhR/B//8iivz3Txeqib/ScECXzi83foGjbXDEdBjkLHoMZESGy5qNSi+cOkORFv+YasCVE0a0PenhgY74VSyttrCxIGSbq3kGgevK8DNjfUFEa/s7adtoErU5nB6yOzY1Cfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728238435; c=relaxed/simple;
-	bh=2vinHMjIVsbvXvk/POIE6BcHLC5+k4nm8160D4G4mLc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LJD5w7wtV7wCwwxtyVdTYuMpOx8CE+QNSU4MLl7ucttDiqYtFkO+IvcEHcv1kglN5wPFAOIoS9lZnMEDmBrvfbhV8cMKCJSJgfK91jDZMkUJGHgWZ7yH9c0ON8TX4n+WaD+BN7DIejd8BaoUF/e8N27+MwnhzNbDJrWJyw6I5ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUSd2YaI; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1728257637; c=relaxed/simple;
+	bh=suy/TciQ5F4yGeGmpv38NTqyGqkAx+AXpwzelfsiJs4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gR6YvUQMV6wrpjlTG0h6IRcPwQBjwOjqZpeQbB4Y7T313YBfVcR81heU8OwRdU4uhWCs3OiJwhSd6/AL4CkcbGhxHZkaV4/y+LmWWLZciGLTa6XRWL0PpC65PcVjMPNJz1FdgBhd0stoGj8OPybZJfRX2V0unFgKgCgtOZKpM28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=p7hqd6dt; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUSd2YaI"
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2facf48166bso42063011fa.0;
-        Sun, 06 Oct 2024 11:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728238431; x=1728843231; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QEQVGFiC/tUnd5t9LVKOtGNBDLBebGm5Cn79MCVhRTY=;
-        b=LUSd2YaIyBRygtmoXJB4YlmHtaYOdPNsPjCNC5NA/ztJEE+rPyCbcUDAXFIrXWLVt1
-         6dyI/BTkfbvbpnnbSxQ3FvjTl1VEfcjf4uPxtLeslgzva0nlqZkwGCpeSDLRzhudHjcZ
-         cEx9ECPNsJTyg3S8plPwAiDLuiyxtCNgIwuE1DkaLXqX51++m4YyUMpZq9FYsA0STRet
-         RPns2ilLy2DGtwsyEMSIDecvNOhcTzJXAijcKtamz/DbOzyn2YBObjS+7vVzWHNh6dFX
-         QhCYF+iMfAbpstZU6dgT/iDPpJ5q0/b9+25Jmn06tLk/kzQbiYXIyPpxjWbB8BWhMTRJ
-         VvaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728238431; x=1728843231;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QEQVGFiC/tUnd5t9LVKOtGNBDLBebGm5Cn79MCVhRTY=;
-        b=ANc5VuAj1x35hhUDwhYasAb3Zv73XDeo/8O+bMdqx964AGtuxuGtyiYH9ceF1NauTZ
-         vRbm+vkhf/3dS6Ha1qTdnWMcfDE1UweAtSUmIJjxGT0bRsvZvkoen/iTsrIRDCRNn3OO
-         xcUGB4WqMFwADDxgTSYePs4f1oUeaMWoSny2q0H0WHTY7iavpamQHq1FpvcCHPOLI11m
-         Mydi7R6139pkxGGUjw83aZPuiSX4CsngUI9LEOhSgbM1jCimHVxKonir43+y14UjP++2
-         TM3vFcNVk0qFAq9seTB3yUVWH/k+p3KjLsW1QewEhWmvbnCKapMpAE4Ye+GvTGZSAOcl
-         jqaw==
-X-Forwarded-Encrypted: i=1; AJvYcCW7kI7201XdfzMweNBGT6Izp2Soft4L1BaYALZlpLCLawC+SKqp30sQ23ATKh/Q+aNZKPxGVJDhrxV2yw==@vger.kernel.org, AJvYcCWDWQh5tQal/RX2R1SILslBlZSixfG9887E8VUIzd2SGUiky6elv9BVYN3M+FPeBIvXNWVNOUYePL4GZ1Uy@vger.kernel.org, AJvYcCXVDmpWotsEKtaAYfYgbLCfvSOZUv8AzR7KGBXogQsJy89UtAdN2oSRANVluJ1Uv2k2+UYrYWoM6G9N@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2b/s6msCo2WjQKGezrxGzbeMZMaQazvP3B177NBXarsTX+aOd
-	BoiYbUZujzD9DFoczG/PYMg0m2t52b+sjRzVFVZHxa272j5FoK5prMzoetul
-X-Google-Smtp-Source: AGHT+IGU3f+3dQWU6E0+4c/4FD7P0D7h0sWOR8HA0OR4JE6sNH0tU1BM3gwhHRG9fy/C1j7n8PLhLQ==
-X-Received: by 2002:a05:651c:a0b:b0:2fa:c6b3:bf1c with SMTP id 38308e7fff4ca-2faf3c01f43mr41983451fa.8.1728238431374;
-        Sun, 06 Oct 2024 11:13:51 -0700 (PDT)
-Received: from KILLINGMACHINE.itotolink.net ([46.188.27.115])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-539afec8276sm590372e87.86.2024.10.06.11.13.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Oct 2024 11:13:51 -0700 (PDT)
-From: Sergey Matsievskiy <matsievskiysv@gmail.com>
-To: linus.walleij@linaro.org
-Cc: alexandre.belloni@bootlin.com,
-	quentin.schulz@bootlin.com,
-	lars.povlsen@microchip.com,
-	horatiu.vultur@microchip.com,
-	andriy.shevchenko@linux.intel.com,
-	linux-gpio@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="p7hqd6dt"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 081F42C06BE;
+	Mon,  7 Oct 2024 12:33:52 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1728257632;
+	bh=NLl4vFdgyWu/Kevg/F09IZgtqafcPxFw/5wOVDaZduk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=p7hqd6dtMxR3rIBW054w6W+kkAUSeJmcNw4LedE77IA9w+UWwwYB7pht27OMdQsnZ
+	 3uNwjuZ6QZN3ZYolRvr+jkSZYb3IaoN9Dwmt8lj+3lPtYlkh+pkofFCDHkNTTR8HvE
+	 U3Mp7sXzjPK/a0JGHi4g81JbMrBWslAHiQwXAvkl+jmRw4k65ZUr0FNnrxm5mUdEzd
+	 QHOP99huYy72rTWi0lsw9/9YrnRRltgVmY1RQG//gVJ62xDg9EgrxWExr7CSbTaEIX
+	 NWu5nJ5wdgx5agjDW1CTV7au84DGCHY1PYCXGpSE3S9fdbzDTh2yKcNprA8xGVww4u
+	 MbBs5ZTfpuzmw==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B67031e5f0002>; Mon, 07 Oct 2024 12:33:51 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id B727813EE9B;
+	Mon,  7 Oct 2024 12:33:51 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id B9C16280442; Mon,  7 Oct 2024 12:33:51 +1300 (NZDT)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: broonie@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de
+Cc: linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	Sergey Matsievskiy <matsievskiysv@gmail.com>
-Subject: [PATCH 1/1] pinctrl: ocelot: fix system hang on level based interrupts
-Date: Sun,  6 Oct 2024 21:13:10 +0300
-Message-Id: <20241006181310.181309-2-matsievskiysv@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241006181310.181309-1-matsievskiysv@gmail.com>
-References: <20241006181310.181309-1-matsievskiysv@gmail.com>
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 2/3] mips: dts: realtek: Add SPI NAND controller
+Date: Mon,  7 Oct 2024 12:33:46 +1300
+Message-ID: <20241006233347.333586-3-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.46.2
+In-Reply-To: <20241006233347.333586-1-chris.packham@alliedtelesis.co.nz>
+References: <20241006233347.333586-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=Id0kWnqa c=1 sm=1 tr=0 ts=67031e5f a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=DAUX931o1VcA:10 a=8sy3EPFDi6gx0CG-VEIA:9 a=3ZKOabzyN94A:10
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-Fix interrupt handle loops, produced by spurious and short level based
-interrupts by unconditionally clearing the parent interrupt, even when
-no GPIO interrupts are pending.
+Add the SPI-NAND controller on the RTL9300 family of devices. This
+supports serial/dual/quad data width and DMA for read/program
+operations.
 
-Signed-off-by: Sergey Matsievskiy <matsievskiysv@gmail.com>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
- drivers/pinctrl/pinctrl-ocelot.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/boot/dts/realtek/rtl930x.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
-index be9b8c010167..d1ab8450ea93 100644
---- a/drivers/pinctrl/pinctrl-ocelot.c
-+++ b/drivers/pinctrl/pinctrl-ocelot.c
-@@ -1955,21 +1955,21 @@ static void ocelot_irq_handler(struct irq_desc *desc)
- 	unsigned int reg = 0, irq, i;
- 	unsigned long irqs;
- 
-+	chained_irq_enter(parent_chip, desc);
+diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts=
+/realtek/rtl930x.dtsi
+index f271940f82be..aab1823139e1 100644
+--- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
++++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+@@ -32,6 +32,8 @@ lx_clk: clock-175mhz {
+ };
+=20
+ &soc {
++	ranges =3D <0x0 0x18000000 0x20000>;
 +
- 	for (i = 0; i < info->stride; i++) {
- 		regmap_read(info->map, id_reg + 4 * i, &reg);
- 		if (!reg)
- 			continue;
- 
--		chained_irq_enter(parent_chip, desc);
--
- 		irqs = reg;
- 
- 		for_each_set_bit(irq, &irqs,
- 				 min(32U, info->desc->npins - 32 * i))
- 			generic_handle_domain_irq(chip->irq.domain, irq + 32 * i);
--
--		chained_irq_exit(parent_chip, desc);
- 	}
+ 	intc: interrupt-controller@3000 {
+ 		compatible =3D "realtek,rtl9300-intc", "realtek,rtl-intc";
+ 		reg =3D <0x3000 0x18>, <0x3018 0x18>;
+@@ -59,6 +61,16 @@ timer0: timer@3200 {
+ 		interrupts =3D <7>, <8>, <9>, <10>, <11>;
+ 		clocks =3D <&lx_clk>;
+ 	};
 +
-+	chained_irq_exit(parent_chip, desc);
- }
- 
- static int ocelot_gpiochip_register(struct platform_device *pdev,
--- 
-2.39.5
++	snand: spi@1a400 {
++		compatible =3D "realtek,rtl9302c-snand", "realtek,rtl9300-snand";
++		reg =3D <0x1a400 0x44>;
++		interrupt-parent =3D <&intc>;
++		interrupts =3D <19>;
++		#address-cells =3D <1>;
++		#size-cells =3D <0>;
++		status =3D "disabled";
++	};
+ };
+=20
+ &uart0 {
+--=20
+2.46.2
 

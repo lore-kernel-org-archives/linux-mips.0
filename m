@@ -1,31 +1,86 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F9E158853;
-	Mon, 14 Oct 2024 12:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101C81A76C4;
+	Mon, 14 Oct 2024 13:11:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728907481; cv=none; b=DTbGw4tIwCooXNU7YLykb3986JPPeE9QqnDhaqFlIU6nT9hPagnVfRsZScVNk5BXRhzjPYcCD6Afg+c1ZCAPnBARVjm12Thq5KHRseiq1FcOhJyT2DWsjZEnuFrK0yM/95TzY34/iLJLgiOVvEa1uykejRooEr7xsSCnWup7Wg4=
+	t=1728911493; cv=none; b=eeSDxrQk8+xnUIpvuq8HzU3azwQnUMgTfDrdPo3SYqPXwfqlqDT81IzPVd/o7BVdsx4JHuKXwhrJaVot0Gqs+ZstH+NxABCTTSrgYa7FnLfD2HK6PVY9Yd/ESKetxgglUMTbXoOOgN6zsM+MzOe0/m2XiGbNh8KQIuc9/14YR+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728907481; c=relaxed/simple;
-	bh=fg3fTJ5VYz/p+QTt7x8s+mXKsYLH63g3EFVGYZqcGlE=;
+	s=arc-20240116; t=1728911493; c=relaxed/simple;
+	bh=Rj0DDOED5iD2FdGYxYV+4r4tEXYq4n6Xi/0d9QAVLUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E3q10rUXETgqY5GREnulYqZwsMLdURqZ6yIgoSyo5SiOEl8De0bRS22KKqIR0ilXsuMIteNckX/RPUyjZVz8y42EF08oOIrzSb7SrIUfaC8M/78pAtCE71ri4iQt5j+Tlk5GWug6qBNO6SkyAAMgiC+PMEE1ajmX1fKlG2FZ7/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1t0GMH-0005eb-00; Mon, 14 Oct 2024 10:23:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 4F922C0161; Mon, 14 Oct 2024 10:23:09 +0200 (CEST)
-Date: Mon, 14 Oct 2024 10:23:09 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-	linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] MAINTAINERS: Retire Ralf Baechle
-Message-ID: <ZwzU7c9qlxxKckGI@alpha.franken.de>
-References: <alpine.DEB.2.21.2410131952550.40463@angie.orcam.me.uk>
- <alpine.DEB.2.21.2410132006220.40463@angie.orcam.me.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jv2BjvjRfhADX1K/7e1XCYeM8/kImi6/9tkXEXk90RWuefHEx1UKDuIKqtLoLMJtswZNCFzyyX9AWJ5xlJK6FwhmVYwpsev9aq9ezQwygKULDJGSLuKtF+T1pLtgxNgi25DatM6G0qfaITvVGe7t+ga4lYgeJ6HObxENxVjug6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMvBZJVO; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMvBZJVO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D95C4CEC3;
+	Mon, 14 Oct 2024 13:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728911492;
+	bh=Rj0DDOED5iD2FdGYxYV+4r4tEXYq4n6Xi/0d9QAVLUc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vMvBZJVOinxsLsrPPXzSxPojzLbDfnzNQ55w0X0QwTjcMMxar0CDAK08E2JThkQpb
+	 4cpioov/cqx2XJwdmLwC1BTnXl3vfXvrgA1ETi3RHPPFn/KFa3uZAW+joXD5HEZg+c
+	 4U5ok631tPzwPd7hoGyNRL5ynGDynUSOamB6K2RiHfHSi/erCk9kHqPS+1U5lBuMVB
+	 r0jU8Sa0yR3rOlG2WDCJ68+YmRHtYreB6qz66TSlQdG0YMQVcdBysszRX2pWrQ1lN4
+	 ziJbkceFmXn8rCIwx79sxsDKS6SGBNY9GisCIBFcBwGbEy+4gMh7VJcsFjn3AG+8KF
+	 uacBBUphpSFpQ==
+Date: Mon, 14 Oct 2024 16:07:40 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <Zw0XnDHbpHDwFDHy@kernel.org>
+References: <20241009180816.83591-1-rppt@kernel.org>
+ <20241009180816.83591-8-rppt@kernel.org>
+ <Zwd7GRyBtCwiAv1v@infradead.org>
+ <ZwfPPZrxHzQgYfx7@kernel.org>
+ <ZwjXz0dz-RldVNx0@infradead.org>
+ <ZwuIPZkjX0CfzhjS@kernel.org>
+ <ZwyyTetoLX7aXhGg@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,80 +89,21 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2410132006220.40463@angie.orcam.me.uk>
+In-Reply-To: <ZwyyTetoLX7aXhGg@infradead.org>
 
-On Sun, Oct 13, 2024 at 08:34:44PM +0100, Maciej W. Rozycki wrote:
-> Ralf Baechle has been inactive for years now and the linux-mips.org site 
-> has gone down.  No replacement contact information is available.  Thomas 
-> has been kind enough to step up as a maintainer for EDAC-CAVIUM OCTEON 
-> and IOC3 ETHERNET DRIVER.
+On Sun, Oct 13, 2024 at 10:55:25PM -0700, Christoph Hellwig wrote:
+> On Sun, Oct 13, 2024 at 11:43:41AM +0300, Mike Rapoport wrote:
+> > > But why?  That's pretty different from our normal style of arch hooks,
+> > > and introduces an indirect call in a security sensitive area.
+> > 
+> > Will change to __weak hook. 
 > 
-> Update MAINTAINERS, CREDITS, and .get_maintainer.ignore accordingly.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> ---
->  .get_maintainer.ignore |    1 +
->  CREDITS                |    5 +++++
->  MAINTAINERS            |   13 +++++--------
->  3 files changed, 11 insertions(+), 8 deletions(-)
-> 
-> linux-maintainers-ralf.diff
-> Index: linux-macro/.get_maintainer.ignore
-> ===================================================================
-> --- linux-macro.orig/.get_maintainer.ignore
-> +++ linux-macro/.get_maintainer.ignore
-> @@ -3,3 +3,4 @@ Alan Cox <root@hraefn.swansea.linux.org.
->  Christoph Hellwig <hch@lst.de>
->  Jeff Kirsher <jeffrey.t.kirsher@intel.com>
->  Marc Gonzalez <marc.w.gonzalez@free.fr>
-> +Ralf Baechle <ralf@linux-mips.org>
-> Index: linux-macro/CREDITS
-> ===================================================================
-> --- linux-macro.orig/CREDITS
-> +++ linux-macro/CREDITS
-> @@ -185,6 +185,11 @@ P: 1024/AF7B30C1 CF 97 C2 CC 6D AE A7 FE
->  D: Linux/MIPS port
->  D: Linux/68k hacker
->  D: AX25 maintainer
-> +D: EDAC-CAVIUM OCTEON maintainer
-> +D: IOC3 ETHERNET DRIVER maintainer
-> +D: NETROM NETWORK LAYER maintainer
-> +D: ROSE NETWORK LAYER maintainer
-> +D: TURBOCHANNEL SUBSYSTEM maintainer
->  S: Hauptstrasse 19
->  S: 79837 St. Blasien
->  S: Germany
-> Index: linux-macro/MAINTAINERS
-> ===================================================================
-> --- linux-macro.orig/MAINTAINERS
-> +++ linux-macro/MAINTAINERS
-> @@ -8081,10 +8081,10 @@ S:	Maintained
->  F:	drivers/edac/highbank*
->  
->  EDAC-CAVIUM OCTEON
-> -M:	Ralf Baechle <ralf@linux-mips.org>
-> +M:	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->  L:	linux-edac@vger.kernel.org
->  L:	linux-mips@vger.kernel.org
-> -S:	Supported
-> +S:	Maintained
->  F:	drivers/edac/octeon_edac*
->  
->  EDAC-CAVIUM THUNDERX
-> @@ -11902,7 +11902,7 @@ F:	Documentation/devicetree/bindings/iio
->  F:	drivers/iio/gyro/mpu3050*
->  
->  IOC3 ETHERNET DRIVER
-> -M:	Ralf Baechle <ralf@linux-mips.org>
-> +M:	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->  L:	linux-mips@vger.kernel.org
->  S:	Maintained
->  F:	drivers/net/ethernet/sgi/ioc3-eth.c
-> @@ -16043,9 +16043,8 @@ F:	net/netfilter/
->  F:	tools/testing/selftests/net/netfilter/
+> Isn't the callback required when using the large ROX page?  I.e.
+> shouldn't it be an unconditional callback and not a weak override?
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+I'll add a Kconfig option to ensure that an architecture that wants to use
+large ROX pages has explicit callback for that.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Sincerely yours,
+Mike.

@@ -1,125 +1,115 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB08161326;
-	Wed, 16 Oct 2024 23:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8792AD5E
+	for <linux-mips@vger.kernel.org>; Thu, 17 Oct 2024 00:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729123099; cv=none; b=hvWB13YpvSDMupLs2xW+03HRgDOwga50spkpqLx52kc6tTV4f+inKHLvfO5ZofLkSRRdNqmPVnbQ1QxNzAmBNNmRpqXtJb03Wo6OIlBZGSqDELrN31ud2oKaqYErCMtmZSb96fY3xsVX/1Qv1/VynQCi7s2ikNOVEp25xFzqR7w=
+	t=1729124227; cv=none; b=nmeMoIVOi9DZCR1hdZR/d2NKfSz2IevOyBJ9UjEivcNsOI5oHlHM/KvNsbf/0H4Rj+1IE9Yc4qHhODklskzXqylB65sOLwS/WMuktS/Hxisz068XZiBTXlHJqJfzzWM8nDP/3d7n8wMzpU8vQE8El2FFyUv5MiRf/EaqaPs1GRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729123099; c=relaxed/simple;
-	bh=dl4ZMMi6UkY66eeJUj39rk75iod/Rq4ydDN6GkT6Ce0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H6ltQe0Uez5ux6YgMw2Obb/cHsFqXjgU3ORgKYV7BmZRvo6MKTwAYZ5pMnOAbsSpLxNJClr6ShxUa4D729VDBcpVyaRP8hDtCGfRchUMslOCCVEUUFWodp2Rnq1f3mYbBuFl4US+RE9/BphEEWDpGKO354pyHivz/xKbx23r/r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aUyJRTRo; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1729124227; c=relaxed/simple;
+	bh=XYzBfEWpst40L2TEXGLVcUXnplVE+Zg9hphaGBs7TWM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ol07njSo7Z9vGQnfZdsy30xr0kSShpttFRbGIy0Gmzok2KAMyS219I7hrMANMKGGMaf/i+RBPiz87SQwXlawmqcC1SZQtBhXs5cPO+2Z98PUQ9gQwfmFsNYwBIAwd1SsWtqR5q9mVrRMAxqx+OOREETwvT6+Q2wcE9utmevL/kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=zYv8P9gw; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aUyJRTRo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0128CC4CEC5;
-	Wed, 16 Oct 2024 23:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729123098;
-	bh=dl4ZMMi6UkY66eeJUj39rk75iod/Rq4ydDN6GkT6Ce0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aUyJRTRo0x2+3z/2y/FQ+aEK3XYUoN8mcz2N9MbvfVeg7WtoOgXSHf9qFPMa9WqK4
-	 I4Eb7NqiTNyvOxrYQ0Ck1crWzLXaJyBVvU1iHXhrLqptfZmWv1nwU+oeXM6onwo7B1
-	 Bjome/eLzoTdbg0LAyDRkQaPt6vpNKaP3Fks19G43RKkcc3xWsk/OAukW5yOL9KK4T
-	 DRNRLea/INzHDvb30jc2JX11dyzgwAjaplu5U/zrOnXLPkT+ALdxPNd3g3qhlwF7Nb
-	 IhixQCW/u2nVSk7r2vmTsqvA+1zxrdLaddel3zcxJ5QIG57g91CYpQvbUsqReiBH8k
-	 JX5BKTdKfsQpQ==
-Date: Wed, 16 Oct 2024 16:58:15 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org, kdevops@lists.linux.dev
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <ZxBTFyyzZhByMjmo@bombadil.infradead.org>
-References: <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
- <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
- <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
- <Zw4DlTTbz4QwhOvU@kernel.org>
- <Zw7MirnsHnhRveBB@bombadil.infradead.org>
- <Zw-YN4JIltntY52Y@kernel.org>
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="zYv8P9gw"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 8ED812C0436;
+	Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1729124217;
+	bh=LwZNNLRSYlK1w8PCDUfxP7T5rkcGnA5kwvHTuTbGR0I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=zYv8P9gwntDddshynwX8idRgNNfrKo2DaugkCvveNQ3/mEOAxW5ebMCCik4I/JCWx
+	 1lqktNuAM6tHtfcL31JJMmxZzr1z2p8KgE6x+SlkMBgp+gP/odui37hoI+n3wfKl0M
+	 muLbyDFjpLG3rBRoTC4c+6uzXR6vGfF0bDUrYXG92b1fqCe1N7hhTbOQKqR3v1GBmE
+	 98PSkbuhYqRJeu4KgGiK7qbyiU31UrloRVsvKEezxIW27MhfjshLDGc87CUnr7DOcE
+	 gavVkGdGUsCo0C44gdGMopCi0z+3+dOlVBWcHSIbLNSUvQRdx6pQV6kRuv4OeOePwa
+	 tClx1F8o84A5g==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B671057790002>; Thu, 17 Oct 2024 13:16:57 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 31E7F13EE9B;
+	Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 2DA2828080C; Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: andi.shyti@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	lee@kernel.org,
+	sre@kernel.org,
+	tsbogend@alpha.franken.de,
+	markus.stockhausen@gmx.de
+Cc: linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v7 2/6] power: reset: syscon-reboot: Accept reg property
+Date: Thu, 17 Oct 2024 13:16:49 +1300
+Message-ID: <20241017001653.178399-3-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241017001653.178399-1-chris.packham@alliedtelesis.co.nz>
+References: <20241017001653.178399-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zw-YN4JIltntY52Y@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=ca1xrWDM c=1 sm=1 tr=0 ts=67105779 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=DAUX931o1VcA:10 a=KKAkSRfTAAAA:8 a=GF1LeCK7rlvhbTvQy6cA:9 a=3ZKOabzyN94A:10 a=cvBusfyB2V15izCimMoJ:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On Wed, Oct 16, 2024 at 01:40:55PM +0300, Mike Rapoport wrote:
-> On Tue, Oct 15, 2024 at 01:11:54PM -0700, Luis Chamberlain wrote:
-> > On Tue, Oct 15, 2024 at 08:54:29AM +0300, Mike Rapoport wrote:
-> > > On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
-> > > > Mike, please run this with kmemleak enabled and running, and also try to get
-> > > > tools/testing/selftests/kmod/kmod.sh to pass.
-> > > 
-> > > There was an issue with kmemleak, I fixed it here:
-> > > 
-> > > https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
-> > 
-> > Ah, so this was a side fix, not part of this series, thanks.
-> > 
-> > > > I run into silly boot issues with just a guest.
-> > > 
-> > > Was it kmemleak or something else?
-> > 
-> > Both kmemleak and the kmod selftest failed, here is a run of the test
-> > with this patch series:
-> > 
-> > https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11352286624/job/31574722735
-> 
-> Is there a kernel log to look at? Could not find it in the run report
+For historical reasons syscon-reboot has used an 'offset' property. As a
+child on a MMIO bus having a 'reg' property is more appropriate. Accept
+'reg' as an alternative to 'offset'.
 
-No, I forgot to include the guestfs console on artifacts, I'll do that
-in the next run.
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
 
-  Luis
+Notes:
+    Changes in v7:
+    - None. This has been applied to by Sebastian, I've just kept it in t=
+he
+      series so that others can see the complete picture
+    Changes in v6:
+    - Add r-by from Krzysztof
+    Changes in v5:
+    - New, making the driver accept the updated binding
+
+ drivers/power/reset/syscon-reboot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/power/reset/syscon-reboot.c b/drivers/power/reset/sy=
+scon-reboot.c
+index 4d622c19bc48..d623d77e657e 100644
+--- a/drivers/power/reset/syscon-reboot.c
++++ b/drivers/power/reset/syscon-reboot.c
+@@ -61,7 +61,8 @@ static int syscon_reboot_probe(struct platform_device *=
+pdev)
+ 		priority =3D 192;
+=20
+ 	if (of_property_read_u32(pdev->dev.of_node, "offset", &ctx->offset))
+-		return -EINVAL;
++		if (of_property_read_u32(pdev->dev.of_node, "reg", &ctx->offset))
++			return -EINVAL;
+=20
+ 	value_err =3D of_property_read_u32(pdev->dev.of_node, "value", &ctx->va=
+lue);
+ 	mask_err =3D of_property_read_u32(pdev->dev.of_node, "mask", &ctx->mask=
+);
+--=20
+2.47.0
+

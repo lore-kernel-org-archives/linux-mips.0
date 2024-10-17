@@ -1,44 +1,44 @@
 Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D13175A5
-	for <linux-mips@vger.kernel.org>; Thu, 17 Oct 2024 00:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9895C139
+	for <linux-mips@vger.kernel.org>; Thu, 17 Oct 2024 00:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729124230; cv=none; b=VLR+YUfD61QyXA28pNtfPpYqPvAsyDbXqltmZrFmr8ApQpxuJx13Zx/qxkHqPH7IMz/O7EfnngAfeHXbMwScbUGOuaFJO5/Ir80aBoYhVB101JmJDtErvDSbygIyCONAjYZyBojuLO5VyboaxEKnUrgFAtBrWiiuyW/hdm+VSD8=
+	t=1729124230; cv=none; b=T1apCUQOS9+IXKz22+traOOdLqm8nf7lauYOuF1kIrl2cRxLOod0CWLoTQR6YUYwlypHZxovDmLvsQbIJVyC7Mcy3MIsYh0ZQ/j0V0ma+Xugg8K00zW64y0SEHyygpa1BTotO+UwaR4Jfsi7WVqXBHZgh51EzWFAGczXHE3crrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729124230; c=relaxed/simple;
-	bh=2p4SvagUJjaIC6BqlFtNcv0B+9ZoFZD04gn4aOjZGlY=;
+	bh=zA53EbyCaV87/9DN858W1pZUYkQPxez+t3fOUBfXgUw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ms5uaYap2ObGc71JjNRwCXJQkFS2SBWBAmLvTLie0HryiO3gzD0yArpnHpO/uTOXs7ObgcQFaH9p8qO5rtBds12Vgs5fc0HGFFAfZ9pIEs0xVuUzK35wHcYrO2qGAjVz+Twc7Hqg84xiMD6fUZHj/4HX/UWdw8IFyCFuJVJYqpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=QOUAymL/; arc=none smtp.client-ip=202.36.163.20
+	 MIME-Version; b=ttNJx1e2TaQylTvCzk0eXVjlTpw/viJAdW4BPTyv5wQmdVn2yxFW9hyVSG3L9C/Kpni0k4vjLvFDETLPYVFNAdGksb+hRKhk/NQN3HEjpSj51TPh9x/deZ+H6arLFBpT5iNxzHlkf2/RzT4IC1vQTnIq6b/QgejZ2e2Lscy2k2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=d7wkuwBv; arc=none smtp.client-ip=202.36.163.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="QOUAymL/"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="d7wkuwBv"
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D04702C06BA;
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id BD53C2C0692;
 	Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
 	s=mail181024; t=1729124217;
-	bh=iHBgkodCxPnlX1/1dbU10RYNK2XUDjjwkvMMkLnVzCY=;
+	bh=QYqEGL/RJ/YRcYUJ2diph+d3ohRbz8L6XTRRO9eHTCQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QOUAymL/hZIfOVUEklWumCoXBfLVdBsLoHUq2vVAX04nCBYcRMbSdqF5atibgzgD0
-	 FYkcDonEpqdF5Q/eOkL1aPXsLjdWe1tf0EGW8bRA+Hy+s3LtqhgrjpEVPpSM0gSg8N
-	 oBlGQzW57jZbo4bHe9MpJnZm+sSuHy40K2pEaEqXh513jOjVqWzCTsJ1p17ebaz9LM
-	 BQsXfkuN2ZI6GavO97LvhBlGih/hBxFB3HfDaulY/Xd/LzpQ5kAkR1LlYhcl7BXr4k
-	 560+d3FeEjl6fEe60nYYC5/kHi9fHPDbb2wCrOJ552JnezziYa9Ekro3M1cY8x+BzJ
-	 sdc3X1e+Ol4KQ==
+	b=d7wkuwBvgoBQYhe9yZR22xp8Y0PQHjeYsK/hgZQ+QP3LguEp1WYNPYHPPBIeF3xLL
+	 dBEj9dFxTcsV/w9RPrpaMHz7K4xAS24C+m5qzeU5oG0wiIdcmd9sGawMobCPSWlTvi
+	 jws7/dIKLuJq8S3WYp7ySISawxZRo07FEihGq0dQpHFFxv0KJl/Yfl8g6KXAZ3AAol
+	 UNfFPzdh7/Sq55A/SOts3gBiBGP6Sf7pWDcYGIT86eQANoQ1WASU01U0TWCH51vjWI
+	 D5gbtVRG7i3nNjugMlfqlNP9uFQwdQSZe+stmim/PEIiiHat6ceEBgLPCUwIGOnB0N
+	 0fKuU7+IFFzbg==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B671057790004>; Thu, 17 Oct 2024 13:16:57 +1300
+	id <B671057790005>; Thu, 17 Oct 2024 13:16:57 +1300
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 3D65813EE32;
+	by pat.atlnz.lc (Postfix) with ESMTP id 3A00513EEA1;
 	Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 3C35A2807F7; Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
+	id 37CF528080C; Thu, 17 Oct 2024 13:16:57 +1300 (NZDT)
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: andi.shyti@kernel.org,
 	robh@kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-i2c@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v7 5/6] mips: dts: realtek: Add I2C controllers
-Date: Thu, 17 Oct 2024 13:16:52 +1300
-Message-ID: <20241017001653.178399-6-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v7 4/6] mips: dts: realtek: Add syscon-reboot node
+Date: Thu, 17 Oct 2024 13:16:51 +1300
+Message-ID: <20241017001653.178399-5-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241017001653.178399-1-chris.packham@alliedtelesis.co.nz>
 References: <20241017001653.178399-1-chris.packham@alliedtelesis.co.nz>
@@ -67,11 +67,12 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=ca1xrWDM c=1 sm=1 tr=0 ts=67105779 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=DAUX931o1VcA:10 a=PxnkKiIr6rJD_3uwCWUA:9 a=3ZKOabzyN94A:10
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=ca1xrWDM c=1 sm=1 tr=0 ts=67105779 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=DAUX931o1VcA:10 a=wvvtYBgb9FI6sUgW-XsA:9 a=3ZKOabzyN94A:10
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 
-Add the I2C controllers that are part of the RTL9300 SoC.
+The board level reset on systems using the RTL9302 can be driven via the
+switch. Use a syscon-reboot node to represent this.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
@@ -81,65 +82,82 @@ Notes:
     - None
     Changes in v6:
     - Drop wildcard compatible
-    - Put status =3D "disabled" at the end
     Changes in v5:
-    - Update compatibles
+    - Krzysztof did technically give a r-by on v4 but given the changes t=
+o
+      the rest of the series I haven't included it.
+    - Use reg instead of offset
+    - Add a rtl9302c.dtsi for the specific chip which pulls in the generi=
+c
+      rtl930x.dtsi and updates a few of the compatibles on the way throug=
+h.
+    - Update Cameo board to use rtl9302c.dtsi
     Changes in v4:
-    - Skipped due to combining patch series
+    - None
     Changes in v3:
     - None
     Changes in v2:
-    - Use reg property
+    - drop redundant status =3D "okay"
 
- arch/mips/boot/dts/realtek/rtl9302c.dtsi |  8 ++++++++
- arch/mips/boot/dts/realtek/rtl930x.dtsi  | 16 ++++++++++++++++
- 2 files changed, 24 insertions(+)
+ .../dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dts  |  2 +-
+ arch/mips/boot/dts/realtek/rtl9302c.dtsi            |  7 +++++++
+ arch/mips/boot/dts/realtek/rtl930x.dtsi             | 13 +++++++++++++
+ 3 files changed, 21 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/boot/dts/realtek/rtl9302c.dtsi
 
+diff --git a/arch/mips/boot/dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dt=
+s b/arch/mips/boot/dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dts
+index 77d2566545f2..6789bf374044 100644
+--- a/arch/mips/boot/dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dts
++++ b/arch/mips/boot/dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dts
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /dts-v1/;
+=20
+-#include "rtl930x.dtsi"
++#include "rtl9302c.dtsi"
+=20
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/gpio/gpio.h>
 diff --git a/arch/mips/boot/dts/realtek/rtl9302c.dtsi b/arch/mips/boot/dt=
 s/realtek/rtl9302c.dtsi
-index ca4d347af8d3..8690433af498 100644
---- a/arch/mips/boot/dts/realtek/rtl9302c.dtsi
+new file mode 100644
+index 000000000000..ca4d347af8d3
+--- /dev/null
 +++ b/arch/mips/boot/dts/realtek/rtl9302c.dtsi
-@@ -5,3 +5,11 @@
- &switch0 {
- 	compatible =3D "realtek,rtl9302c-switch", "syscon", "simple-mfd";
- };
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
 +
-+&i2c0 {
-+	compatible =3D "realtek,rtl9302c-i2c", "realtek,rtl9301-i2c";
-+};
++#include "rtl930x.dtsi"
 +
-+&i2c1 {
-+	compatible =3D "realtek,rtl9302c-i2c", "realtek,rtl9301-i2c";
++&switch0 {
++	compatible =3D "realtek,rtl9302c-switch", "syscon", "simple-mfd";
 +};
 diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts=
 /realtek/rtl930x.dtsi
-index 7477fae34987..6a6f3f3fe389 100644
+index f271940f82be..7477fae34987 100644
 --- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
 +++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
-@@ -41,6 +41,22 @@ reboot@c {
- 			reg =3D <0x0c 0x4>;
- 			value =3D <0x01>;
- 		};
-+
-+		i2c0: i2c@36c {
-+			compatible =3D "realtek,rtl9301-i2c";
-+			reg =3D <0x36c 0x14>;
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+			status =3D "disabled";
-+		};
-+
-+		i2c1: i2c@388 {
-+			compatible =3D "realtek,rtl9301-i2c";
-+			reg =3D <0x388 0x14>;
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+			status =3D "disabled";
-+		};
+@@ -29,6 +29,19 @@ lx_clk: clock-175mhz {
+ 		#clock-cells =3D <0>;
+ 		clock-frequency  =3D <175000000>;
  	};
++
++	switch0: switch@1b000000 {
++		compatible =3D "realtek,rtl9301-switch", "syscon", "simple-mfd";
++		reg =3D <0x1b000000 0x10000>;
++		#address-cells =3D <1>;
++		#size-cells =3D <1>;
++
++		reboot@c {
++			compatible =3D "syscon-reboot";
++			reg =3D <0x0c 0x4>;
++			value =3D <0x01>;
++		};
++	};
  };
 =20
+ &soc {
 --=20
 2.47.0
 

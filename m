@@ -1,112 +1,114 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DD91D5178;
-	Mon, 28 Oct 2024 13:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202AF63C;
+	Mon, 28 Oct 2024 14:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730122749; cv=none; b=iNducZNfxm322ZCdcoNWbGy0RDUzK2keK/oyNqovrLKDaOe0r16BXR2zHpFkqbEzE3GYQogJeMkw5EacMUVPZFh1DpcfV0vf6BNg0N2t4KRVnn3F/uc5Qb8wxOVk5tq86wyfYmXvEkoDeKwsnZbqPDBHLis3OL3/ctrOoiwc6VM=
+	t=1730124862; cv=none; b=pZzbRcxJQjMZQ/1fYGflyGNKkg49IkX3OFfDQ3/OidSrm4grF5O3lnxrd9+hiyc1bNioeR7Kg6vyk6tb4ZZQbUS9ptEgDwGsntSEsGxU+OCIX21Z7pk1QHpOdEVcSksq7MWNCcptXtDQJdgNkjlm0+dFNxTGXwH15baJr0EQqUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730122749; c=relaxed/simple;
-	bh=J6TygS9PS/UbaVj4c/knKhqWU5qE1QtSevjNgC5vI7E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GGYQYkyTo0wFqB4QF00qfazqUQQ2pynysXMJVYnFqRVfMpio64e9e6Zr6iBwB3ge3VDPbWB+6fuJsdoYliHGeNuMCSOlWPP9D4E1p0/QFnFcM8n08DOfWYIKtoHvsrGYALf662kikUt+uRvsk36GAZ5Ep2q+vxaM52/ILdVFUnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hGOAgT/i; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1730124862; c=relaxed/simple;
+	bh=GQX5Pb+IETNUOivIhCGCaePu+zRAB58rqRlXvBf8agI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SMENnu4J1jAcqmDspxXZDikUlwNnbiFYhRZKqk0bsxLsqXGX3hsVDDqcneAHTbKcPcSPM0JavXzT/j5FBaueE3fduKLOUKX1YM+wgdigF/yluSXDB2cVBzMtHk7opLEeVzGPuQv6BjirFAo1kcXc+seT2NZYGvVsyuLzM0ATd8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SKKPzqIh; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hGOAgT/i"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DE5F324000D;
-	Mon, 28 Oct 2024 13:39:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1730122745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J6TygS9PS/UbaVj4c/knKhqWU5qE1QtSevjNgC5vI7E=;
-	b=hGOAgT/iQxsWL1uStdCNwfhUTRbMQXtpmTXqUoeJLFB26KR/yQ5OmibLA+MliAaZATzpOE
-	K109JGcBrWxYgELGMSgrz5+J90iLjVeB8TYARbMMrOgzOSZqu+bLLmGRraCVWhgBkxLgE6
-	D51igWNDdIzO0OFMgDiXVB2Cqchl+keSf6kwuIP1/Zosh5vzsJhhPWr2bQl/bFYvnl625A
-	ccwEZCb2wGEnuPC/9WtXshEfHKmXWUFwC7BGU/KBa0uQAAdV5uxPzPPmukv5GYO1afyNWS
-	jaw5yuWtmcXJxit/7n6aDm45i5UN0HsZf1bldWIpBbL7SY9Wixbxa8ESQymfpw==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Aleksandar Rikalo <arikalo@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Chao-ying Fu
- <cfu@wavecomp.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@kernel.org>, Hauke
- Mehrtens <hauke@hauke-m.de>, Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Marc Zyngier <maz@kernel.org>, Paul Burton
- <paulburton@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Serge
- Semin <fancer.lancer@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v7 00/12] MIPS: Support I6500 multi-cluster configuration
-In-Reply-To: <CAGQJe6pywUi8dnhxFopkMfP2U1PceHjTPX-CysT0bajSk_AKKg@mail.gmail.com>
-References: <20241019071037.145314-1-arikalo@gmail.com>
- <87plnob4qq.fsf@BLaptop.bootlin.com>
- <CAGQJe6pywUi8dnhxFopkMfP2U1PceHjTPX-CysT0bajSk_AKKg@mail.gmail.com>
-Date: Mon, 28 Oct 2024 14:39:01 +0100
-Message-ID: <87cyjkbb4a.fsf@BLaptop.bootlin.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKKPzqIh"
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5ebc349204cso2222000eaf.3;
+        Mon, 28 Oct 2024 07:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730124858; x=1730729658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sQvmx8XCaZ5BumSb5F5FIZndVO4LQIIYW3NW5YxKSVU=;
+        b=SKKPzqIhveO1DmrOAE2K5vDX8nR3djNphV16f5/VY44cJ3NeBR2mJ+I96mzaFOCoJf
+         wAcvjcwGjea2s/fCHbekl18HQEpIjGmgu0VILR0RaS4g4lGisSPixjadIAGzWERhnUlx
+         Tx/U/qxSfyYaZjsiZGZvDpal+QXgN5PqFTGHxQmxKAvBjLrCGmg9OzM5KTT0XrbQ6YCK
+         ZGgZThRdS+c7WkVXXOMKzLuyjpTZnqGympPWY3ZzOx21S/637mv1RqAzO0CLvwcBfVYD
+         8TOuuIlxcpHlq0UGg4dL/j32gUVbB6rJ2wmQPP7K+o51qcy9p84CthgzZ4cPEyZGIunn
+         p+fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730124858; x=1730729658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sQvmx8XCaZ5BumSb5F5FIZndVO4LQIIYW3NW5YxKSVU=;
+        b=H9Uph2B1EgtOzXpd4WyL+UV1WkLYEZj7Mauoas7PEmtR+yUqt5Omp5WGp2yXEquGxe
+         rPuPlYDFn/xvYjUJ/BU2+ztJomzYZsPT2R2XNmu3D54vKuCVfD/IbWWa/2L16scxqrlO
+         8GSLKAuiSNQTMkpFMbkCVMMcK2gMZJInwqyitvBvPnJhppOwkgqAraW9yTpGQbXraM7o
+         16hn5ThUf8v/cqX4ohyfW7nH+xckkv1LsS0mWmUtz9UArCKRXUMEw6Fl3MeqfyGKvgCs
+         qDFO/vqmJecHoA3mKHhXX+WNaQ/3We4J8H+gwprvxM/i0xT/vGamYfnooD1o0NvIGVF2
+         DKZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCg7Q1d05KieMi55pf/2gEUCEO5Lxvw/jkLBYpiAxMeF3oTL8qYhlXrvAnwGquH7m4dk+wL5/eXvPznXA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYtbcKOhdcBAR/EHb2TtiHY+BVBktTaQS/cMu7vVISJ6XnOyl7
+	7hkbUtNGpDtP7ox+jrqHkaZliFUCLRse1gWoWeK+WmdI8G9Z1SHFp8A8CIg/2xLIqQVPnqYl50c
+	H9VprsMjckmb/8sOsMUK6dk0FmdWNFQ==
+X-Google-Smtp-Source: AGHT+IHE30IXMwXuui4C/52gos9SY0fbJFI9FvqkR1z7gTNCRNEvJAkL2T+Ut8UfhfOTDqHwHG9kNbtGfEiUQhAHrCw=
+X-Received: by 2002:a05:6820:1e02:b0:5e1:ea03:928f with SMTP id
+ 006d021491bc7-5ec23a6e68fmr4772280eaf.7.1730124857707; Mon, 28 Oct 2024
+ 07:14:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240920075306.704665-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <20240920075306.704665-1-sergio.paracuellos@gmail.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Mon, 28 Oct 2024 15:14:06 +0100
+Message-ID: <CAMhs-H-ChXQSZ_6EBiTKtD7ve2j2QsVvgVm0B5O1O7BfGwKFmQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] clocksource: move System Tick Counter from 'arch/mips/ralink'
+To: linux-mips@vger.kernel.org
+Cc: daniel.lezcano@linaro.org, tglx@linutronix.de, tsbogend@alpha.franken.de, 
+	john@phrozen.org, linux-kernel@vger.kernel.org, yangshiji66@outlook.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: gregory.clement@bootlin.com
 
-Hello Aleksandar,
-
-> Hello Gregory,
+On Fri, Sep 20, 2024 at 9:53=E2=80=AFAM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
 >
-> Thank you!
-> Just to be clear, which patches can I put your "tested-by" on?
-
-Good question ! :)
-
-I've tested the entire series of patches together, rather than applying
-each individual patch separately. Although I'm not entirely certain, my
-best guess would be that you can safely put my 'tested-by' tag on each
-one.
-
+> Hi Daniel,
 >
-> I'm preparing series v8.
+> System Tick Counter is present in RT3352 and MT7620 Ralink SoCs. This dri=
+ver has
+> been in 'arch/mips/ralink' from the beggining and can be easily moved int=
+o a more
+> accurate place in 'drivers/clocksource' folder. This makes easier to enab=
+le it
+> for compile test targets as well as reduce LOC in architecture specific f=
+olders.
+> Bindings are already mainlined and can be located here [0].
+>
+> Thanks in advance for your time.
+>
+> Best regards,
+>    Sergio Paracuellos
+>
+> [0]: https://elixir.bootlin.com/linux/latest/source/Documentation/devicet=
+ree/bindings/timer/ralink,cevt-systick.yaml
+>
+> Sergio Paracuellos (2):
+>   clocksource: Add Ralink System Tick Counter driver
+>   MIPS: ralink: remove System Tick Counter driver
+>
+>  arch/mips/ralink/Kconfig                              |  7 -------
+>  arch/mips/ralink/Makefile                             |  2 --
+>  drivers/clocksource/Kconfig                           | 10 ++++++++++
+>  drivers/clocksource/Makefile                          |  1 +
+>  .../clocksource/timer-ralink.c                        | 11 ++++-------
+>  5 files changed, 15 insertions(+), 16 deletions(-)
+>  rename arch/mips/ralink/cevt-rt3352.c =3D> drivers/clocksource/timer-ral=
+ink.c (91%)
 
-You could also include the other patches I sent on Friday in this
-series, as suggested by Thomas.
+Gentle ping on this patch series :-)
 
-Thanks,
-
-Gregory
-
+Best regards,
+    Sergio Paracuellos
 >
 > --
-> Aleksandar
+> 2.25.1
 >
-> On Fri, Oct 25, 2024 at 5:07=E2=80=AFPM Gregory CLEMENT <gregory.clement@=
-bootlin.com>
-> wrote:
->
->> Hello Aleksandar,
->>
->>
->> I successfully tested it on an EyeQ6H SoC. On top of v6.12-rc4 I also
->> added only one patch needed for EyeQ6H:
->>
->> https://lore.kernel.org/lkml/20241011-eyeq6h-smp-v2-1-8381edf8a5c6@bootl=
-in.com/#t
->>
->> So for EyeQ6H, you can then add my
->> Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
->>
->> Then I also tested it on an EyeQ5, where the VP topology is
->> {2,2,2,2},{}. In this case there is no CPU core in the second
->> cluster. While some part of your series seems to support this case, it
->> was not complete. I am about to send a new patch for it
->>
->> Thanks,
->> Gregory
->>

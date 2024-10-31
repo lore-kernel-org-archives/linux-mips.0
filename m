@@ -1,102 +1,122 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED3F1BC9F3;
-	Thu, 31 Oct 2024 15:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E09A16BE1C;
+	Thu, 31 Oct 2024 15:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730389738; cv=none; b=bkrrD43Hf9W2Yh19pzxvtbE4NyuAYDWx84YeJ1OZLFCLOvnpz72hsr0D01UItYrWk30IYQGh1L6HG3TOIvDiZSaNmlUxtujEftV6ZOwX7buRPeJ7sGoybvj9i7auHj4CavCPpQIxO7jMT0zmWJTLf0Rx9ZJksZyolGHkLnbZPXc=
+	t=1730389986; cv=none; b=E6n1ml74cE/FAGQO3WQcl/HTMVeSgNH5p+vuZP0LzAWpYDr7JLmfkV4zbt8SG1NMdsk2gBb5e/O5Ak/6Cs84WiUOzJiVR38X8T2E2f0IHUdPyS3RbAvG8F5+ZZ5QZhImJRBYrOWhuPSBCGsNVyTguIVDT6zt0tt9DniX7hkyNvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730389738; c=relaxed/simple;
-	bh=ARsdt7q0eVUNvr7pYU7BYuIsTkSNZkoxY5yzKP07DrA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n55jtHOJL+A7klZRoyonUHthIBCK0j79PE4YMCkThVkwy4RBjJN41eq5uq5t06cNJ2lq/MEyaO+5+jCP+6drM1VuzLJ/Sr/PIpandfKDxI0Tp6MelSZ29kRQtRcHza9Ahl+J0jIKijw/HIkdLgYyMwwR16uitqKuHKQb5BqFC5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AvQWtG5U; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1730389986; c=relaxed/simple;
+	bh=UQOZleKN0I47pFewlLdn4eNH5eyQYywz80j7YTDBrs4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=okn39Kp4MAwHzrgSXlQLjwx/a6ibIvD/3alGZnIbP9Ku0gVsiBnGl1M1gtbhkDBQyHFXijFBA/HQQ/+2Rq7bfQdQDAv+gJhdaBhhNQsbB1+JEBRzpmHCozfRGhqc9FxGPTOWQsLx3YIyBGJYM4XMUj26SWSSoXRsALAm8Sq4Um8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LRc8xeRq; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvQWtG5U"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4477FC4CEEA;
-	Thu, 31 Oct 2024 15:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730389737;
-	bh=ARsdt7q0eVUNvr7pYU7BYuIsTkSNZkoxY5yzKP07DrA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AvQWtG5UkTOa5+HJMdxSSq4RUi208Z6bN2KLb8dXitDmTYs9efECVvdhUx/phKCto
-	 br4TfCUy86h5Crrc1uLNV2o6CHBobVB7ldPN6isVGpRWtsi7qmdXs72fMi7vpX4Noa
-	 liVwQj7bA+PYAxYVsTdVTCW3ELkF9hC4HfE/EUMgxm5OnBWH73Ys5mh2sLyi7vTRbi
-	 US6+yJaTpVnYj8aQaV5eXz5ifk9vmgXQLqbvu9TKJ4YJFp2K+1vJwNPMM9KnIA5uWb
-	 ZObXfhdm/Maz3hAB/Ka0xs6SQKVG32ys8+fq8w9f5jqnzP6CsGPKNuBhYC9BvAxYG0
-	 ajfzphlDCcrUQ==
-Date: Thu, 31 Oct 2024 15:48:52 +0000
-From: Lee Jones <lee@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: andi.shyti@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, sre@kernel.org, tsbogend@alpha.franken.de,
-	markus.stockhausen@gmx.de, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH v7 3/6] dt-bindings: mfd: Add Realtek RTL9300 switch
- peripherals
-Message-ID: <20241031154852.GI10824@google.com>
-References: <20241017001653.178399-1-chris.packham@alliedtelesis.co.nz>
- <20241017001653.178399-4-chris.packham@alliedtelesis.co.nz>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LRc8xeRq"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0B7891C0002;
+	Thu, 31 Oct 2024 15:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1730389976;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w3qxyX3xIUtfm2MBeQ9m7antb8YArMnqEhCwuO3QGyQ=;
+	b=LRc8xeRqGEg4/VRLFYNNMBGnGUO12SjJXBqznuAmBTJ1t5N0eIZawgubIXOBVGgnleOmHs
+	gzYnhs0GJIDhhuUXEXOIOy0cg/SHPbBgiMk9W/oNlWwzvx21vPwB1Nm8kzpQ88Qs3ZiSHW
+	kt57tM3as3Sw7gaQLVLZCYNjjm3A8HSUECweQnL3il96x5kABOeU1iEqiZU8/e1c6FB0+8
+	z7QbjD7VoAKhDrWSh9494Nk07QLKLnKLjV1MfL8E5veLtAcERfkoXwunU4jRw1P39e+T4h
+	M4l5FUozOvkcXkGQEUWdhmkW95BhErGUZJRyyD+EcnqFS2tjJlgp97tGlcucKg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Thu, 31 Oct 2024 16:52:51 +0100
+Subject: [PATCH 01/13] dt-bindings: soc: mobileye: set `#clock-cells = <1>`
+ for all compatibles
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241017001653.178399-4-chris.packham@alliedtelesis.co.nz>
+Message-Id: <20241031-mbly-clk-v1-1-89d8b28e3006@bootlin.com>
+References: <20241031-mbly-clk-v1-0-89d8b28e3006@bootlin.com>
+In-Reply-To: <20241031-mbly-clk-v1-0-89d8b28e3006@bootlin.com>
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Thu, 17 Oct 2024, Chris Packham wrote:
+Some compatibles expose a single clock. For those, we used to let them
+using `#clock-cells = <0>` (ie <&olb> reference rather than <&olb 0>).
 
-> Add device tree schema for the Realtek RTL9300 switches. The RTL9300
-> family is made up of the RTL9301, RTL9302B, RTL9302C and RTL9303. These
-> have the same SoC differ in the Ethernet switch/SERDES arrangement.
-> 
-> Currently the only supported features are the syscon-reboot and i2c
-> controllers. The syscon-reboot is needed to be able to reboot the board.
-> The I2C controllers are slightly unusual because they each own an SCL
-> pin (GPIO8 for the first controller, GPIO 17 for the second) but have 8
-> common SDA pins which can be assigned to either controller (but not
-> both).
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> 
-> Notes:
->     Changes in v7:
->     - Set additionalProperties: false
->     - Remove extraneous examples from i2c binding
->     Changes in v6:
->     - Drop wildcard compatible
->     - Add specific compatibles for the 4 known SoC variants
->     - For the i2c part of the binding accept realtek,rtl9301 as a fallback
->       for the other compatibles
->     - The overall switches will eventually differ because these will have
->       different SERDES/port arrangements so they aren't getting the same
->       fallback treatment
->     Changes in v5:
->       I've combined the two series I had in flight so this is the
->       combination of adding the switch syscon, the reboot and i2c. It makes
->       the changelog a bit meaningless so I've dropped the earlier
->       commentary.
->     
->       As requested I've put a more complete example in the main
->       rtl9300-switch.yaml.
->     
->       I've kept rtl9300-i2c.yaml separate for now but link to it with a $ref
->       from rtl9300-switch.yaml to reduce clutter. The example in
->       rtl9300-i2c.yaml is technically duplicating part of the example from
->       rtl9300-switch.yaml but I feel it's nice to be able to see the example
->       next to where the properties are defined.
-> 
->  .../bindings/i2c/realtek,rtl9301-i2c.yaml     |  69 +++++++++++
->  .../bindings/mfd/realtek,rtl9301-switch.yaml  | 114 ++++++++++++++++++
+Switch away from that: enforce a cell for all compatibles. This is more
+straight forward, and avoids devicetree changes whenever a compatible
+goes from exposing a single clock to multiple ones.
 
-Can you separate these out so I can apply the MFD part please?
+Side benefit: dt-bindings is simpler.
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 24 +---------------------
+ 1 file changed, 1 insertion(+), 23 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+index f7e606d45ebcfc46ffe076e23a2ed514bfff9b8f..6d11472ba5a704d5d20f43776e5867f507a39242 100644
+--- a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
++++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+@@ -41,9 +41,7 @@ properties:
+     enum: [ 1, 2 ]
+ 
+   '#clock-cells':
+-    description:
+-      Cell is clock index. Optional if compatible has a single clock.
+-    enum: [ 0, 1 ]
++    const: 1
+ 
+   clocks:
+     maxItems: 1
+@@ -312,26 +310,6 @@ allOf:
+       properties:
+         '#reset-cells': false
+ 
+-    # Compatibles exposing a single clock.
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            enum:
+-              - mobileye,eyeq6h-central-olb
+-              - mobileye,eyeq6h-east-olb
+-              - mobileye,eyeq6h-west-olb
+-              - mobileye,eyeq6h-ddr0-olb
+-              - mobileye,eyeq6h-ddr1-olb
+-    then:
+-      properties:
+-        '#clock-cells':
+-          const: 0
+-    else:
+-      properties:
+-        '#clock-cells':
+-          const: 1
+-
+     # Only EyeQ5 has pinctrl in OLB.
+   - if:
+       not:
 
 -- 
-Lee Jones [李琼斯]
+2.47.0
+

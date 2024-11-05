@@ -1,107 +1,108 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528111CDA3E;
-	Tue,  5 Nov 2024 09:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F4E1D63E9;
+	Tue,  5 Nov 2024 13:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730800607; cv=none; b=ZG9ODsI66cgDosozifeBD/ko39Fna9Ar9xnW+7OCyzf3InBGjiAtnpNIHyqM16Bn/BQLca7qKIJvh1VClaKXvy/XiNFubot5uxrqvQ4cGQAjQEgqF1tpNUfbchk82O+7IEG/0MEKD2txfFhBqtXAQh4IGW5y5QlDvoQJiSfot0o=
+	t=1730813605; cv=none; b=aGKflPTnQL56e2tLzltg0b8Z51r3tWNshSGJrEG00HwOUDIHe9iDPw5AvKbWsDTvQtbEshKGFJZUBKKcXKuc3KM7FnR/nNvEVMccARQgjZ2yNuyob/nG2v/mQnQnV3l0wCuCL905+y5duB2ffcSopa9U2/LfMLzBqNUxi3Z8vE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730800607; c=relaxed/simple;
-	bh=R7fYE1ho6RL0rqvfjF3EYrY/xOTC+OyPnNaWsD9XQcY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KaFpLlaPJaiMvdEp6ODpUs1nM2CUIMJnCwyh9ZAjJh+MUIpdQYTRLiPT5gbA3O3+4OnDyTcHIVlDtVRfHSWTUgoyeJdmUVHpLdqvnRBEeqTB6Ej8jGPHniIztMRIDrKFN6ZAEl+dEv0gSBnrwOoCoc1UZoVhQqBMOWOyPRhwvSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4XjNyz319Qz9sPd;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id CpEO93zW8bQ7; Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4XjNyz27jdz9rvV;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 346688B770;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id BXNslob-hZDZ; Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from [192.168.232.44] (unknown [192.168.232.44])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E0918B763;
-	Tue,  5 Nov 2024 10:56:42 +0100 (CET)
-Message-ID: <9ee9c21b-179f-49aa-8c65-304c8ef2c9a7@csgroup.eu>
-Date: Tue, 5 Nov 2024 10:56:42 +0100
+	s=arc-20240116; t=1730813605; c=relaxed/simple;
+	bh=KT5zF8H18NGC/TLWrYKsVRBqgBnqV8X9qCR3wlC7Y0M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d2foJr+t2w9EmWyMPi8lmfCeDRCShzYRx9OGpD3yHfmdYxafP0F7518/NGCCqqAzGCuwaYbR43WGfck8IgU6Q0VxuXsjbpwrVzmaNtKQIbVPPVNn5XkwFQ/4DYEG1Xb/pfx4mKGFzuEFySXyQ3hwa+U3eY7aL4sIYuqm+vX/AfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1tv1TyE; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1tv1TyE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A906FC4CED0;
+	Tue,  5 Nov 2024 13:33:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730813605;
+	bh=KT5zF8H18NGC/TLWrYKsVRBqgBnqV8X9qCR3wlC7Y0M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u1tv1TyEwKjibGh1x0gjsbRD/lt8MpK0gB2VmVMfRZLB5Dg/ynIzXBqgNeH+cc4qJ
+	 uNAv3tGFmIsAOBk4ApEq+f03TEU34E81SpatHnnxAAHCPn3ftPKsMaHLY6FVrrs1Qd
+	 9b8QSn86aAgOqtzLWst37UrPAvQQ/JFRSnI+644HCn8Qs30J+3bj/ZJiiFwV7J9RZo
+	 GNyfwSQfZtrXkyjh3ndm+AbxUaT6A1fZjM3wT5HZqS9PGM8CqewldJoJO07g9AqJle
+	 eCTEW2MADNVoORRCYkBPxUAT+fSVHmOaPjPwwd3AOsW7GUMziavXcnw1eEXg+kOwnE
+	 rEMJYfoqyAoPg==
+Date: Tue, 5 Nov 2024 07:33:23 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	=?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH 01/13] dt-bindings: soc: mobileye: set `#clock-cells =
+ <1>` for all compatibles
+Message-ID: <20241105133323.GA3064907-robh@kernel.org>
+References: <20241031-mbly-clk-v1-0-89d8b28e3006@bootlin.com>
+ <20241031-mbly-clk-v1-1-89d8b28e3006@bootlin.com>
+ <20241104153727.GA192461-robh@kernel.org>
+ <D5DJOUV9NPY4.22MIOBKLAYGA3@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] asm-generic: add an optional pfn_valid check to
- page_to_phys
-To: Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org
-References: <20241023053644.311692-1-hch@lst.de>
- <20241023053644.311692-3-hch@lst.de>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20241023053644.311692-3-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <D5DJOUV9NPY4.22MIOBKLAYGA3@bootlin.com>
 
-
-
-Le 23/10/2024 Ã  07:36, Christoph Hellwig a Ã©critÂ :
-> page_to_pfn is usually implemented by pointer arithmetics on the memory
-> map, which means that bogus input can lead to even more bogus output.
+On Mon, Nov 04, 2024 at 05:46:10PM +0100, Théo Lebrun wrote:
+> On Mon Nov 4, 2024 at 4:37 PM CET, Rob Herring wrote:
+> > On Thu, Oct 31, 2024 at 04:52:51PM +0100, Théo Lebrun wrote:
+> > > Some compatibles expose a single clock. For those, we used to let them
+> > > using `#clock-cells = <0>` (ie <&olb> reference rather than <&olb 0>).
+> > > 
+> > > Switch away from that: enforce a cell for all compatibles. This is more
+> > > straight forward, and avoids devicetree changes whenever a compatible
+> > > goes from exposing a single clock to multiple ones.
+> >
+> > Your reasoning is flawed. Changing #clock-cells is an ABI break. So you 
+> > should only be changing this if it was just wrong. And if it's not wrong 
+> > in some cases, you shouldn't be changing those. The h/w either has 1 
+> > clock or multiple and #clocks-cells should match.
 > 
-> Powerpc had a pfn_valid check on the intermediate pfn in the page_to_phys
-> implementation when CONFIG_DEBUG_VIRTUAL is defined, which seems
-> generally useful, so add that to the generic version.
+> I see your reasoning, and I agree that changing #clock-cells is an ABI
+> break. However, there are two things to take into account:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/asm-generic/memory_model.h | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+>  - We do not (yet?) have an omniscient view of the hardware. We do not
+>    know what every single register in those memory regions do.
 > 
-> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-> index a73a140cbecd..6d1fb6162ac1 100644
-> --- a/include/asm-generic/memory_model.h
-> +++ b/include/asm-generic/memory_model.h
-> @@ -64,7 +64,17 @@ static inline int pfn_valid(unsigned long pfn)
->   #define page_to_pfn __page_to_pfn
->   #define pfn_to_page __pfn_to_page
->   
-> +#ifdef CONFIG_DEBUG_VIRTUAL
-> +#define page_to_phys(page)						\
-> +({									\
-> +	unsigned long __pfn = page_to_pfn(page);			\
-> +									\
-> +	WARN_ON_ONCE(!pfn_valid(__pfn));				\
+>    Some clocks might be lurking in the shadows, especially as we don't
+>    support many HW capabilities yet.
+> 
+>  - The earlier the better. If we discover later down the road that,
+>    indeed, some more clocks were hiding, we'll have to do an ABI break.
+> 
+>    At that point, some people might actually be using the platform.
+>    Seeing what we currently have supported upstream versus the amount
+>    of HW blocks available in the SoC, I cannot imagine anyone using the
+>    platform with an upstream kernel.
+> 
+> So the choice is:
+>  - potential ABI break in the future, once people use the platform, or,
+>  - guaranteed ABI break now, when no one is using it.
+> 
+> I pick option two! Do you agree with the thought process?
 
-On powerpc I think it was a WARN_ON().
+Ultimately, it is up to you and the maintainers for the platform to 
+decide. I only ask that ABI breaks are called out as ABI breaks with 
+reasoning given for the ABI break.
 
-Will a WARN_ON_ONCE() be enough ?
+I had no clue whether you have access to RTL or are reverse engineering 
+this or something in between.
 
-> +	PFN_PHYS(__pfn);						\
-> +})
-> +#else
->   #define page_to_phys(page)	PFN_PHYS(page_to_pfn(page))
-> +#endif /* CONFIG_DEBUG_VIRTUAL */
->   #define phys_to_page(phys)	pfn_to_page(PHYS_PFN(phys))
->   
->   #endif /* __ASSEMBLY__ */
+Please summarize the above explanation for the commit msg.
+
+Rob

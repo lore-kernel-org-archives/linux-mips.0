@@ -1,32 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAF82003A0;
-	Tue, 12 Nov 2024 15:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A430200BA5;
+	Tue, 12 Nov 2024 15:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731424442; cv=none; b=m0L/yIcyre0KnU2fgxAtsK+Wy3CTAJfauZ3yLNjmzvqFI4VLi+tqLORxOuj/2ejLRoMZaxpolD3VKnLkBGrGt+r1xkbdsFte1PEaPjYAdAEcUa4K5pT9Vxw6jWnj6YhNWtNz0kScMXvwMqjfonk5T/4lNZHSYyTJBB4Sk+ykmq8=
+	t=1731425241; cv=none; b=RIJgLodCLa5Vpltj3ifqGOcBSqW/vkpDZaYkTBY6wt/aPAH6y5N378mpumvzX+RNbILALJTUyNxU83m9amax1jjaj7Rqt6pSLcd1f+cV7808qqRGK1/xKYKO8/Pedtgaw24LBnVHsQ8dXLa4wYKx9R/XwAfNK8dNfrmQR2vlPBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731424442; c=relaxed/simple;
-	bh=HU7xQZHVLo7mJxnU+OBgtHpRxQNpBqipDKG4HfaQa0M=;
+	s=arc-20240116; t=1731425241; c=relaxed/simple;
+	bh=HNgfvtBVLWi2KlzOgkPTGH92XT5IEgf6spap8erVFQQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SSvR/xMlW+T0fW01UJcEe0joErDHbJvmD4cwDatDo0WKdMVWuCtqE9EOD5hnf5H1KZxjVnWu64VkA6TVgRP5Ter24yXw/nZOdcp1O9MZ4Uatu70+dfZqPC4HrkrTFw/IDWYjjaV9RO+BqXpsem7Dh+MsnyitB95pl9khljlC+hg=
+	 Content-Type:Content-Disposition:In-Reply-To; b=agi3tviQ3+M471Q99/lJIvlx3XkfO/EzB8Xnx79mt1cXVHKwUyAoepS9yHWDnH9s74rOZSF4c0FxnXsKxhpTkLzgFwggVeKKH+iRZkO8bFdBG0iRrGmjA+p4/Kf2yle8f5tM6hvhOAXrQidYECPZZb2SzoHrKyu/jqQOao0CWhs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1tAsVf-0004rR-00; Tue, 12 Nov 2024 16:08:51 +0100
+	id 1tAsnW-000536-00; Tue, 12 Nov 2024 16:27:18 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 6E7E7C0110; Tue, 12 Nov 2024 15:56:10 +0100 (CET)
-Date: Tue, 12 Nov 2024 15:56:10 +0100
+	id E84ADC0110; Tue, 12 Nov 2024 16:10:40 +0100 (CET)
+Date: Tue, 12 Nov 2024 16:10:40 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: lee@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, andi.shyti@kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v9 2/4] mips: dts: realtek: Add syscon-reboot node
-Message-ID: <ZzNsiu+rbYs7l9Wb@alpha.franken.de>
-References: <20241106001835.2725522-1-chris.packham@alliedtelesis.co.nz>
- <20241106001835.2725522-3-chris.packham@alliedtelesis.co.nz>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+	linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] MAINTAINERS: Deal with the linux-mips.org mess
+Message-ID: <ZzNv8PWzPsxiuPSN@alpha.franken.de>
+References: <alpine.DEB.2.21.2411121327130.9262@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,45 +33,22 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241106001835.2725522-3-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <alpine.DEB.2.21.2411121327130.9262@angie.orcam.me.uk>
 
-On Wed, Nov 06, 2024 at 01:18:33PM +1300, Chris Packham wrote:
-> The board level reset on systems using the RTL9302 can be driven via the
-> switch. Use a syscon-reboot node to represent this.
+On Tue, Nov 12, 2024 at 01:47:17PM +0000, Maciej W. Rozycki wrote:
+> Hi,
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
+>  Here's v2 of the patch series to address Ralf Baechle to have stopped 
+> responding and linux-mips.org gone down, and Thomas stepping up as a 
+> replacement maintainer.  This has been regenerated against the current 
+> version of MAINTAINERS.  Please apply.
 > 
-> Notes:
->     Changes in v9:
->     - None
->     Changes in v8:
->     - None
->     Changes in v7:
->     - None
->     Changes in v6:
->     - Drop wildcard compatible
->     Changes in v5:
->     - Krzysztof did technically give a r-by on v4 but given the changes to
->       the rest of the series I haven't included it.
->     - Use reg instead of offset
->     - Add a rtl9302c.dtsi for the specific chip which pulls in the generic
->       rtl930x.dtsi and updates a few of the compatibles on the way through.
->     - Update Cameo board to use rtl9302c.dtsi
->     Changes in v4:
->     - None
->     Changes in v3:
->     - None
->     Changes in v2:
->     - drop redundant status = "okay"
+>  Previous iterations:
 > 
->  .../dts/realtek/cameo-rtl9302c-2x-rtl8224-2xge.dts  |  2 +-
->  arch/mips/boot/dts/realtek/rtl9302c.dtsi            |  7 +++++++
->  arch/mips/boot/dts/realtek/rtl930x.dtsi             | 13 +++++++++++++
->  3 files changed, 21 insertions(+), 1 deletion(-)
->  create mode 100644 arch/mips/boot/dts/realtek/rtl9302c.dtsi
+> - v1 at: <https://lore.kernel.org/r/alpine.DEB.2.21.2410131952550.40463@angie.orcam.me.uk/>.
 
-applied to mips-next.
+I didn't see this mail, but the v2 series in patchwork...
+Applied to mips-next.
 
 Thomas.
 

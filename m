@@ -1,29 +1,34 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C125D200B8E;
-	Tue, 12 Nov 2024 15:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C45200C8D;
+	Tue, 12 Nov 2024 15:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731424160; cv=none; b=ljlQpMLpgzfAZJL1ZaNTnhLlZl1gkYiudALCMc2PSMJfpLWvYfGPOOrMIkbERcT88tbj3tVfJ6J0AlXsXWq5GTmnyuWMBD23R1P6eAWyqnGEAlOrBIJIpZKzPfk3JVGI3XfKHxnO199aUG5HnIkY4J+5vO5ZrayLz6BI+L8ufKE=
+	t=1731424161; cv=none; b=ftKsOALZq7NbUTDBeQJn9ILtBBCfGbqkySzqO3yI0my3GUiS9mmoFF4a6+We7pOu6B6smLszGb0+zpkGhRhbtWxqAoqaYxjJKWIhnwUxT0qhDOEGVA0HwejNAXc6jQWcGtZLO9TFBH5mYqV1X22xdEreYDMW/ewagr9pSuo9uK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731424160; c=relaxed/simple;
-	bh=jeqNT81bZW90UN8U0ahCFddoiPgMIvBvHNcMhZjanzk=;
+	s=arc-20240116; t=1731424161; c=relaxed/simple;
+	bh=yC7qNkZa2EQhkOswYkNu3xJNB7x6A6biSjIrvj5GG6w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cvACC92Nl1PYhyYa75gg3Dd/PbJPHiPJ4bzlq77JHulFXU95Da7GInnjJE6LuQV9IJlgkX5aUxNviqdAd1tRARB8F/qupdZ9xsmg1OaqFz5hbOhe8F93i05T6Z/iVOAOLNt9f4HFHpqkdAiNixukYgsxzlNHhG2RT7/FFHwCV4I=
+	 Content-Type:Content-Disposition:In-Reply-To; b=W4Glf+Pt96tXbcI+LWfIRQXn3WGykc+PoDNtSUiBmdZu8npx4BHxqg3gPTIFijyfXXfHX0FFM3ueaT7SBT0N7BNHKVZyaXFhMBolXSr5X28oS2WnyZixzMBWvIQvBe+GhGsyQ+gemYN8EvXbVXgqmrhlSmxevqZpAOhGN4Gs0Xw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1tAsVf-0004rV-00; Tue, 12 Nov 2024 16:08:51 +0100
+	id 1tAsVf-0004rX-00; Tue, 12 Nov 2024 16:08:51 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id CE53BC014D; Tue, 12 Nov 2024 15:56:56 +0100 (CET)
-Date: Tue, 12 Nov 2024 15:56:56 +0100
+	id 2D528C014F; Tue, 12 Nov 2024 15:58:23 +0100 (CET)
+Date: Tue, 12 Nov 2024 15:58:23 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: kernel: proc: Use str_yes_no() helper function
-Message-ID: <ZzNsuMHPTJJGau98@alpha.franken.de>
-References: <20241105173837.37756-2-thorsten.blum@linux.dev>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: dhowells@redhat.com, jlayton@kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chenhuacai@kernel.org,
+	kernel@xen0n.name, jiaxun.yang@flygoat.com,
+	guanwentao@uniontech.com, zhanjun@uniontech.com,
+	xuerpeng@uniontech.com, maqianga@uniontech.com,
+	baimingcong@uniontech.com
+Subject: Re: [PATCH 0/2] MIPS: loongson3_defconfig: Enable blk_dev_nvme by
+ default
+Message-ID: <ZzNtD+b4zgfdFUe7@alpha.franken.de>
+References: <324362BC443F16F8+cover.1730638429.git.wangyuli@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,17 +37,22 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241105173837.37756-2-thorsten.blum@linux.dev>
+In-Reply-To: <324362BC443F16F8+cover.1730638429.git.wangyuli@uniontech.com>
 
-On Tue, Nov 05, 2024 at 06:38:36PM +0100, Thorsten Blum wrote:
-> Remove hard-coded strings by using the str_yes_no() helper function.
+On Sun, Nov 03, 2024 at 09:00:03PM +0800, WangYuli wrote:
+> A significant number of 3A4000 machines come with NVMe drives
+> pre-installed, so we should support it in its defconfig.
 > 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  arch/mips/kernel/proc.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+> To avoid confusion, update defconfig beforehand.
+> 
+> WangYuli (2):
+>   MIPS: loongson3_defconfig: Update configs dependencies
+>   MIPS: loongson3_defconfig: Enable blk_dev_nvme by default
+> 
+>  arch/mips/configs/loongson3_defconfig | 32 ++++++++-------------------
+>  1 file changed, 9 insertions(+), 23 deletions(-)
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

@@ -1,311 +1,100 @@
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AA146BF;
-	Sat, 23 Nov 2024 03:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803DC37171;
+	Sat, 23 Nov 2024 11:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732334352; cv=none; b=E5j/k1fvaq5EGpImk6P0vGtTogn0SvqIfpL5HdeOtpZAqqFMBqwbjE20ntiyor0rV0q/nnnxoMjjh/+pByytA52xjgwTBqCh/j94p1Y+bQ7Koe0TV1XJ+/WjRKwGOfx6oLmyQCw6MYFGtw0FoXNr79f6iui/XHoFYcT2NGVcqOg=
+	t=1732359888; cv=none; b=REsVd0tN8ipnSgdr4G/SxsMtbPQFyPYI2wsthZaSWzDVahrMdEDA8ZPeI7ephRjwCOnLSlRfinMA9p1QjzjGH72TD6uQz5UtAy69FuJbhQ31qf+Ptewe5m0AqmvaMwFtsMZApZGvrBlbxN0l/2Od1wV49tDO5BzsH6QA7TdA76g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732334352; c=relaxed/simple;
-	bh=qmQwjQMvRXA/d/ueVbokWMFZUHwHWn63WzKVHDaXqB4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KEvRi5uXYG+gb8+j+v6z7l0EjCIVbWdid7nKezDq5ccHebdJkBK50ytdQgx0ihbtiBd0qwQISsTFtV4rNhI280WMuEdjHhjIeUfQRwgVnRtbJYv/iXiX+gx1Cu2lDemEU1Dh1fl4OAhtFZxhlAxMXjZ4AQ3uh7r/JMhMM7GA2CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=dSDCvDEL; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="dSDCvDEL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xry111.site;
-	s=default; t=1732334340;
-	bh=3m6ZtMQPzOJszJqf0ZWZ4ZnY88ZlKomQ6zudX5AgoJ8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dSDCvDELr9XzGuDeXbR1j2nMyu9jRkl/yf+xDYd/YgqqmmeAPTQZeJmdD21g0nwvQ
-	 CuLsgFX+83ocDTjsw3bONbsb76nZ9ykTHino5vHckguhuYAc/lj/pnsAe6OAj15ixA
-	 krBeQx8nRgP7prlQtPh59nzohiAPdQg3W3/VbTSQ=
-Received: from stargazer.. (unknown [IPv6:240e:358:11e8:1100:dc73:854d:832e:4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 76206670C1;
-	Fri, 22 Nov 2024 22:58:56 -0500 (EST)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Yanteng Si <si.yanteng@linux.dev>,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>
-Subject: [PATCH] MIPS: Loongson64: DTS: Really fix PCIe port nodes for ls7a
-Date: Sat, 23 Nov 2024 11:57:37 +0800
-Message-ID: <20241123035737.24722-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1732359888; c=relaxed/simple;
+	bh=6g2lUM70jNivzuxuoC2WEihURosHXc9laXkjI5Lfb1Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dcQ6FPwGlxNlVKU12qWTP6eibwt/dWfesQhznOGC30Kxq3SAYzdwm8X4Vl4PcbaHNGkhx82DI+MX4wB/yNKNqutUVFfX4exPdEUOjiZWc+dJRWY/u5FwrMJyNPoh0ol8+bGbWPZthI2yflW/LEWnkAvR+hBaAE7xFuOqr/Ji4DA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1tEnw5-0005uq-00; Sat, 23 Nov 2024 12:04:21 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 98377C014F; Sat, 23 Nov 2024 12:03:49 +0100 (CET)
+Date: Sat, 23 Nov 2024 12:03:49 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, markus.stockhausen@gmx.de,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] mips: dts: realtek: Add SPI NAND controller
+Message-ID: <Z0G2lYGXHKwXpuWB@alpha.franken.de>
+References: <20241015225434.3970360-1-chris.packham@alliedtelesis.co.nz>
+ <20241015225434.3970360-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241015225434.3970360-3-chris.packham@alliedtelesis.co.nz>
 
-Fix the dtc warnings:
+On Wed, Oct 16, 2024 at 11:54:33AM +1300, Chris Packham wrote:
+> Add the SPI-NAND controller on the RTL9300 family of devices. This
+> supports serial/dual/quad data width and DMA for read/program
+> operations.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v4 & v5:
+>     - none
+>     Changes in v3:
+>     - drop wildcard rtl9300-snand compatible
+>     - drop clock-names
+>     Changes in v2:
+>     - Add clocks
+> 
+>  arch/mips/boot/dts/realtek/rtl930x.dtsi | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+> index f271940f82be..b01a40ec3064 100644
+> --- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
+> +++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+> @@ -32,6 +32,8 @@ lx_clk: clock-175mhz {
+>  };
+>  
+>  &soc {
+> +	ranges = <0x0 0x18000000 0x20000>;
+> +
+>  	intc: interrupt-controller@3000 {
+>  		compatible = "realtek,rtl9300-intc", "realtek,rtl-intc";
+>  		reg = <0x3000 0x18>, <0x3018 0x18>;
+> @@ -59,6 +61,17 @@ timer0: timer@3200 {
+>  		interrupts = <7>, <8>, <9>, <10>, <11>;
+>  		clocks = <&lx_clk>;
+>  	};
+> +
+> +	snand: spi@1a400 {
+> +		compatible = "realtek,rtl9301-snand";
+> +		reg = <0x1a400 0x44>;
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <19>;
+> +		clocks = <&lx_clk>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		status = "disabled";
+> +	};
+>  };
+>  
+>  &uart0 {
+> -- 
+> 2.47.0
 
-    arch/mips/boot/dts/loongson/ls7a-pch.dtsi:68.16-416.5: Warning (interrupt_provider): /bus@10000000/pci@1a000000: '#interrupt-cells' found, but node is not an interrupt provider
-    arch/mips/boot/dts/loongson/ls7a-pch.dtsi:68.16-416.5: Warning (interrupt_provider): /bus@10000000/pci@1a000000: '#interrupt-cells' found, but node is not an interrupt provider
-    arch/mips/boot/dts/loongson/loongson64g_4core_ls7a.dtb: Warning (interrupt_map): Failed prerequisite 'interrupt_provider'
+applied to mips-next.
 
-And a runtime warning introduced in commit 045b14ca5c36 ("of: WARN on
-deprecated #address-cells/#size-cells handling"):
+Thomas.
 
-    WARNING: CPU: 0 PID: 1 at drivers/of/base.c:106 of_bus_n_addr_cells+0x9c/0xe0
-    Missing '#address-cells' in /bus@10000000/pci@1a000000/pci_bridge@9,0
-
-The fix is similar to commit d89a415ff8d5 ("MIPS: Loongson64: DTS: Fix PCIe
-port nodes for ls7a"), which has fixed the issue for ls2k (despite its
-subject mentions ls7a).
-
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 73 +++++++++++++++++++----
- 1 file changed, 60 insertions(+), 13 deletions(-)
-
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index cce9428afc41..ee71045883e7 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -70,7 +70,6 @@ pci@1a000000 {
- 			device_type = "pci";
- 			#address-cells = <3>;
- 			#size-cells = <2>;
--			#interrupt-cells = <2>;
- 			msi-parent = <&msi>;
- 
- 			reg = <0 0x1a000000 0 0x02000000>,
-@@ -234,7 +233,7 @@ phy1: ethernet-phy@1 {
- 				};
- 			};
- 
--			pci_bridge@9,0 {
-+			pcie@9,0 {
- 				compatible = "pci0014,7a19.1",
- 						   "pci0014,7a19",
- 						   "pciclass060400",
-@@ -244,12 +243,16 @@ pci_bridge@9,0 {
- 				interrupts = <32 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 32 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@a,0 {
-+			pcie@a,0 {
- 				compatible = "pci0014,7a09.1",
- 						   "pci0014,7a09",
- 						   "pciclass060400",
-@@ -259,12 +262,16 @@ pci_bridge@a,0 {
- 				interrupts = <33 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 33 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@b,0 {
-+			pcie@b,0 {
- 				compatible = "pci0014,7a09.1",
- 						   "pci0014,7a09",
- 						   "pciclass060400",
-@@ -274,12 +281,16 @@ pci_bridge@b,0 {
- 				interrupts = <34 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 34 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@c,0 {
-+			pcie@c,0 {
- 				compatible = "pci0014,7a09.1",
- 						   "pci0014,7a09",
- 						   "pciclass060400",
-@@ -289,12 +300,16 @@ pci_bridge@c,0 {
- 				interrupts = <35 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 35 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@d,0 {
-+			pcie@d,0 {
- 				compatible = "pci0014,7a19.1",
- 						   "pci0014,7a19",
- 						   "pciclass060400",
-@@ -304,12 +319,16 @@ pci_bridge@d,0 {
- 				interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 36 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@e,0 {
-+			pcie@e,0 {
- 				compatible = "pci0014,7a09.1",
- 						   "pci0014,7a09",
- 						   "pciclass060400",
-@@ -319,12 +338,16 @@ pci_bridge@e,0 {
- 				interrupts = <37 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 37 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@f,0 {
-+			pcie@f,0 {
- 				compatible = "pci0014,7a29.1",
- 						   "pci0014,7a29",
- 						   "pciclass060400",
-@@ -334,12 +357,16 @@ pci_bridge@f,0 {
- 				interrupts = <40 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 40 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@10,0 {
-+			pcie@10,0 {
- 				compatible = "pci0014,7a19.1",
- 						   "pci0014,7a19",
- 						   "pciclass060400",
-@@ -349,12 +376,16 @@ pci_bridge@10,0 {
- 				interrupts = <41 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 41 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@11,0 {
-+			pcie@11,0 {
- 				compatible = "pci0014,7a29.1",
- 						   "pci0014,7a29",
- 						   "pciclass060400",
-@@ -364,12 +395,16 @@ pci_bridge@11,0 {
- 				interrupts = <42 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 42 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@12,0 {
-+			pcie@12,0 {
- 				compatible = "pci0014,7a19.1",
- 						   "pci0014,7a19",
- 						   "pciclass060400",
-@@ -379,12 +414,16 @@ pci_bridge@12,0 {
- 				interrupts = <43 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 43 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@13,0 {
-+			pcie@13,0 {
- 				compatible = "pci0014,7a29.1",
- 						   "pci0014,7a29",
- 						   "pciclass060400",
-@@ -394,12 +433,16 @@ pci_bridge@13,0 {
- 				interrupts = <38 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 38 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 
--			pci_bridge@14,0 {
-+			pcie@14,0 {
- 				compatible = "pci0014,7a19.1",
- 						   "pci0014,7a19",
- 						   "pciclass060400",
-@@ -409,9 +452,13 @@ pci_bridge@14,0 {
- 				interrupts = <39 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-parent = <&pic>;
- 
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				device_type = "pci";
- 				#interrupt-cells = <1>;
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 39 IRQ_TYPE_LEVEL_HIGH>;
-+				ranges;
- 			};
- 		};
- 
 -- 
-2.47.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

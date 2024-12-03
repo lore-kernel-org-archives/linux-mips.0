@@ -1,107 +1,99 @@
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587221F4725;
-	Tue,  3 Dec 2024 13:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A741C1F471B
+	for <linux-mips@vger.kernel.org>; Tue,  3 Dec 2024 17:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733234162; cv=none; b=h4kjEZAIjFepZ9WFDOrDKCpaPZAaUmxuVqSmNDJX8iV/mGox/A3Aqi8XGmG4nX2mLBP+Mc+LXBkYWVEjnw4VXea8OSgOVYZEcT+w3GskDTggGTqTNOrGlw8WFbmArQfYNDYnF8rYtPaE6M0XYjMtKNBN+M0anwULO1VRqcsVuN4=
+	t=1733247278; cv=none; b=iuoATuGeCrUX5rdptezKsqjeQuO0DaZ9SKkZ7k3GrO4pqx5ALJ3XlWMgRPOXNRPbPmZsEsMN7UKcPnSdZZOktr2JVtAE3P9W8uRAio/sCJuATnFAW6BtqKHB1XM526bLcmO9LUb2OgW5/yJVLLMxwoxWY8GTgIyVYTk+ktNXo7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733234162; c=relaxed/simple;
-	bh=pVnB3J68SJ5ZbxJrKUNajMzxZzFavA5FR2dTH5pwM0I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=uoibZH4sweHxixtj1bs4CZ711f/8SdFoiBtN7JZfYSUNtpZGCOdhMyyjCqyWOVleoRGPHfXX5NPq58jEkJeoES6wBcWT3+W9ouLUNeoj8qkQzKHLPoWWSuc+0Z/3lqs3tpQzFKrWBlD8JcSFV5luV+eggw/C+whAv/3zLpX7TQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GxS41E/f; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1733247278; c=relaxed/simple;
+	bh=3zGYGdTB6TnUBgQNb9FaHLEtVUBY7U330q2Taimm1TU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=lT0MOYysgUyhRqL8ppxT2W0ujNy0V5+6Iumm7/T2ZfAiDq7j7IUOReL7jVEu24+vZmkhx19csKLFh22HczWdAqQ3hy8wotLW0xRnJRBxjiymVkY6jK4fmpkbSLJ3FpLmsmLCG0yFwIpR0aohqsifnpsiBV/n99WohjFuso1nyMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--xur.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yrx/lgxz; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--xur.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GxS41E/f"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 785EE60012;
-	Tue,  3 Dec 2024 13:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733234152;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o69Mz00pbhAuPCU0BiftNOE1d7MIT8r8LNe86G5wyqg=;
-	b=GxS41E/fP4BUArZNLoPs+47NgNxZSk/SrDSF4rQwN3DJCqlfWXxiePM3CERDbbxvS5LGXR
-	GqZS8SsUytpbJPkH1/tjzrwLBKjh5ysd4arKAHn3ru9CEdbLCCaaPkFF0Tkle1FQSfHdxk
-	KDoslF8vQ7WXGWtYmEDV00oSU0s2fHdOKvyevQGaUaTSE4ZkwILDFy/8ZQRi2dZK8gqVod
-	oxCPN+lGsYsFQ6pjQGLqi1cQvoY/JPjGx1+pfkArHszoKz/qy3hj3RFUxYv3cVBX6mXbdD
-	w21RwZXjEMygK5KyiPODPs/FfvZlSVCI9koJkiMvliHiUIn5t8SVlS5LdFch7g==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Tue, 03 Dec 2024 14:55:49 +0100
-Subject: [PATCH 6/6] MIPS: mobileye: eyeq5: add bootloader config reserved
- memory
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yrx/lgxz"
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2e95713327eso5542195a91.1
+        for <linux-mips@vger.kernel.org>; Tue, 03 Dec 2024 09:34:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1733247276; x=1733852076; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zXBncvZ9vdZsF5fbKzAkxX5C8KUR7SVsxPVJa+dSNY0=;
+        b=yrx/lgxz4ti6D9d4iRncft2t+Hc/1sVXIFs4xUZAI7JASn/qAbmS+vjGKZAURmeYiO
+         fqjiY3qmr8TAXaB9afPkeyx4a8SnlNcg/0O1B77WPhIzxjxyZmiNB7no5WBopjJ0d7eG
+         62VmFwqnL5V3j4c53BHGThWxiP+zTtPdoA3JhNSWt1mOndP9qaG3sLU0kYLfcErQflUO
+         1gHKKS48TXWIbb/dJKUr+DZ8rSUXZ4Dakf8CpKE5rMGztHggUs3nzdhAr3gv4VT1Z8Xs
+         VHBo9oes9V0j2X2vbPI/4nmCsbP+lbXOV7jVOwbvXbDwK+aM6VSwEFrUs4SPB77C8J9Y
+         eJ+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733247276; x=1733852076;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zXBncvZ9vdZsF5fbKzAkxX5C8KUR7SVsxPVJa+dSNY0=;
+        b=vVreSnQ1gVxIWSKXB7AtmauX9jRScAinpvX/suz/kg2LvZ2NtcAtQXcGl0GWxHUTcw
+         EXdU6sULtPMYyWJoxXnXjCD+smRlS4Ec6d/Yy/OeJXSVMTtKvFH3ZZ1hwosFMZbPg7vw
+         h7wCc2r+qWYGsrQpUZkIOCqxyd1gUECl4hsy85zhF7/3DRnjwXe50up3Z+T100lmBWM1
+         IslVfSWDmomLRF5jC4TwIRkKSTv112lBvZLP/JlZprZ7HIwNsqhzLXQsKS1zAoJS3iPr
+         hye8Oj6vWIO4zAW3ibVmRMfpwHLMC4kIDHuBEocqw64UstNL65mp7hFwYyXoqJ+o9Z8C
+         5d1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVzD946gjfYNzHtxC2L7wRWe2J+wpNgiB3xIP33ZOBkHuIBRdbsjQZqLadLkZfZtcC/MJCbxPtDZT53@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFjHNM0K3G8FBAv3ALxzpOSIKuB7m9l8b71I3Dj04G8u6czTY/
+	ehqNT2tua24l0PzW9XGIqN6P5eXmCaydZJE0+6BzrGkDpcSoGhLDZGAlTvQYk91aQA==
+X-Google-Smtp-Source: AGHT+IFms79qBBOYMxF4VMXPfrG3RDmQyAJYwTiDO8KGvvXv58S9bgUJmgQo9KkixTuUky/11qsvSFA=
+X-Received: from pjbsz16.prod.google.com ([2002:a17:90b:2d50:b0:2e2:44f2:9175])
+ (user=xur job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:ec90:b0:2ef:19d0:2261
+ with SMTP id 98e67ed59e1d1-2ef19d02442mr1788593a91.16.1733247276107; Tue, 03
+ Dec 2024 09:34:36 -0800 (PST)
+Date: Tue,  3 Dec 2024 09:34:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241203-rmem-v1-6-24f4970cf14e@bootlin.com>
-References: <20241203-rmem-v1-0-24f4970cf14e@bootlin.com>
-In-Reply-To: <20241203-rmem-v1-0-24f4970cf14e@bootlin.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Nicolas Saenz Julienne <nsaenz@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-Sasl: theo.lebrun@bootlin.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
+Message-ID: <20241203173431.3790387-1-xur@google.com>
+Subject: [PATCH v2] MIPS: Add a blank line after __HEAD
+From: Rong Xu <xur@google.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Klara Modin <klarasmodin@gmail.com>, Rong Xu <xur@google.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
+	"Maciej W. Rozycki" <macro@orcam.me.uk>, Sergey Shtylyov <s.shtylyov@omp.ru>, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Add a new reserved-memory node, containing bootloader config with MAC
-addresses for both ethernet instances of the SoC.
+Add a blank line after __HEAD in the text section.
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+The __HEAD symbol was added in commit 52892ed6b03a ("MIPS:
+Place __kernel_entry at the beginning of text section").
+
+Signed-off-by: Rong Xu <xur@google.com>
+Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+
+---Changelog--
+Added suggested-by.
 ---
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/mips/kernel/head.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 5d73e8320b8efc1b4f68923482bf188c4345f1cb..a84e6e720619ef99e1405ae6296d8bad1aa3fa23 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -49,6 +49,28 @@ mini_coredump0_reserved: mini-coredump0@806200000 {
- 		mhm_reserved_0: the-mhm-reserved-0@0 {
- 			reg = <0x8 0x00000000 0x0 0x0000800>;
- 		};
-+
-+		nvram@461fe00 {
-+			compatible = "mobileye,eyeq5-bootloader-config", "nvmem-rmem";
-+			reg = <0x0 0x0461fe00 0x0 0x200>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			no-map;
-+
-+			nvmem-layout {
-+				compatible = "fixed-layout";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+
-+				eth0_mac: mac@7c {
-+					reg = <0x7c 0x6>;
-+				};
-+
-+				eth1_mac: mac@82 {
-+					reg = <0x82 0x6>;
-+				};
-+			};
-+		};
- 	};
+diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+index e3ff6179c99f9..d99ed58b7043d 100644
+--- a/arch/mips/kernel/head.S
++++ b/arch/mips/kernel/head.S
+@@ -60,6 +60,7 @@
+ 	.endm
  
- 	aliases {
+ 	__HEAD
++
+ #ifndef CONFIG_NO_EXCEPT_FILL
+ 	/*
+ 	 * Reserved space for exception handlers.
 
+base-commit: e70140ba0d2b1a30467d4af6bcfe761327b9ec95
 -- 
-2.47.1
+2.47.0.338.g60cca15819-goog
 

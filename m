@@ -1,204 +1,146 @@
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1884B13D8A3;
-	Mon,  9 Dec 2024 15:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8257E111
+	for <linux-mips@vger.kernel.org>; Tue, 10 Dec 2024 02:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733759984; cv=none; b=EFniyxY2rjIUrBr9V53RY4fHNBtNKOQGUttSRd+W985JJSj1ak+zsH0yHCvOcs9V6ygb5PQWcQcAX+d+IhoFmgrj+//CLkYxkorpDrHNeoBZnaGUbKkKCf0JtALPhUh+g5KSKitreo0Kvm7lkUz5sYVZBd+hwCAKqBKPIsL1s3g=
+	t=1733798487; cv=none; b=Wq4BwbmYAD8BmK4sPTujz3H2GiG+mdj0NspH173Rbx2GGlz3x60xJ4DMlcJJiDPVS+jqqCXpsbtm4byn1Ni3EUMHH4m+BywEZQSlraK1zkmVLCIgKorYGfiy4dlB1Gkrj3Od0ljBpPq9z7LqIK3zDrvi0wMUugg4/QtcIP+W8sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733759984; c=relaxed/simple;
-	bh=JQW+GRuAYpqVaYJr8AD+8K+ovcWI6p97DbY7ox6OxzQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pcMtRvjEYTXBD0YFM24rIytSTQgGiGBK5VfP1X97GxPb45Q2sd7jWas9EYt1KiTDu7Nq5pec/PLOoW9bYsyLAKH0PGhTIvlGr/qRJs+aZsRzHtWnTymplfy7EmIUcESf1wtsa78EFtLAJwfjvC69rSTR4oX1DzUN6K0eZkk6YIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZzeRFr9R; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1733798487; c=relaxed/simple;
+	bh=ggOOMFEQ9uCyBPLNj8pMCOzsrPNAOhGLml70owUEuAQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=sXbWIrP7HMIBA9c/Xr88K49uP8pFgk2e/Z1BeIYpE6zEFME9y74P7BUoBzpstT6dZztNRLBgFC7jzzKPZokldg2nJhYeCpmPfzodzUt1QParusF+0huGZvUTTDxz1asHR4UdpJArsSCkhMldCG278STDL1ld++6sAL8yWHwIGXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kaleshsingh.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1D1tjxUu; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kaleshsingh.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZzeRFr9R"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4894B20008;
-	Mon,  9 Dec 2024 15:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1733759979;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uoVHDS/FRQA9f0oimOdFs9drLE+G2Ls+ee4zqWm5bLs=;
-	b=ZzeRFr9RKaARWSc7QImRzvQQ/Caj7f8Xv7FMUX8S9bKpHttnxoAg5vFKMD8UE14hkxmAyD
-	3MviIT9gjA2V7LpQ7apklQofDimnHyLCFU6EmhpH30hfkCeQuwZFTh2IuK+kSd49G3VSMT
-	IXJCFLgqyW357LR1GMbZkhLim92zQ8bITgnjTQYHMHo7ZIPVmgGrg+VEdwdL6iFa3xkgXd
-	pnbEDxCFTLjBVa38xCCmrlmNI2r0p5ZWkjGjz+yMY3bMl+O/zI8/kLsEjfKv8qeb1tpeYY
-	la/B/97iauyTN5T5VPA+uX5obdstyIuH6+Mu1nrvSvxDI+MOAjAAj21FN0WECg==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Mon, 09 Dec 2024 16:59:39 +0100
-Subject: [PATCH v2 5/6] nvmem: rmem: add CRC validation for Mobileye EyeQ5
- NVMEM
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1D1tjxUu"
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2166855029eso7658985ad.0
+        for <linux-mips@vger.kernel.org>; Mon, 09 Dec 2024 18:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1733798484; x=1734403284; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bf22iGP6jf2y7qifILZ5XtpYUOy94hbxgtZW13umpxY=;
+        b=1D1tjxUujPUi/Ia3tAgiZZGc99IJQI6LLokQ3clTqe/glu84xRweia9vkmAjAc1Rky
+         x1x0AAY4CJcH0FIg6ESUBP6dvJu0JQZ2Wx3mUgD54mNzzKfh2emgVVcI4d0gO6hg2mrv
+         yGFSi3nA7AiegHUrLZD7oxUUNvqIHOCi1ySqnGbDgI2Sk9zekBas83zd0Aex+Rv9u8lU
+         SL3GQqi4mNMcOUH5gnCwBawMRaL41S2EHw70I4hS8oY5S8OASq8pLUgC8AZwjlkcxmMX
+         bhj0wKcYnG6e5RpUkiJLB93u+hCqnLzBhdUXTuTFNgSMe5rZYcH4za/cSzG6SyJDoNp2
+         a4Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733798484; x=1734403284;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bf22iGP6jf2y7qifILZ5XtpYUOy94hbxgtZW13umpxY=;
+        b=em2GBXdkuE5N+u40f3mDH07M8xzQuqqRhxoAWN0iZDUgTvsKWYN7SOxN5cN3eiF7uk
+         0caz3Bds/2g717ieb1QgTu1BgKz+c0vah6IhX4o2X5aS2d0rAqfkHRl8jLA3CfdlZ/Lg
+         8jw0q3bPIHjBUbikkQIDwyyMkcUd1EpL8m2y0psOTOboe2ZEpVkPlAGmbUd6Yh4yeECj
+         hOlH4eNgFDpAe0Xi0RulmvatuldU9HAJXMP9vVxyCC4AX4yX0vmVjhGOZ91X0G22g89y
+         YdHonRNQ1ZI3QMNR3MCK7i787BHd9O6dFhiPEBNVt/pFKlBmESJh8vODEBVwSizgH0BQ
+         fkaw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbVDYLPaotn0Jyqa1U2IGnBhNGAB59BsJffAWGhZBj8VCyGIboawXuwZXKsEE6kI3cXBH4JE8hHQO+@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyev05cIrWOBFpmjpwuOzx1ppJ9qJs/s2jxbUstgkbHOvf1/WgD
+	ZovpxC4H+e13U18sUILxWila32XsN+Qxd1JGdMPYCIaqGNJWrAiYK3kOskdQyMd8POaaTdw/75g
+	s+uwuyLdsXpivhisVwSue2A==
+X-Google-Smtp-Source: AGHT+IGmbMdmRSsqJri2ZoaLC+TQ8CWMLTK/EMvjfytSTGvuy8K5dpGza4XliOvDgrJOHh+vT9vCZPym9dpOQZfD/Q==
+X-Received: from plbmk12.prod.google.com ([2002:a17:903:2bcc:b0:215:5607:bc71])
+ (user=kaleshsingh job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:902:f64a:b0:216:2b14:b625 with SMTP id d9443c01a7336-2166a01e172mr48609585ad.31.1733798483773;
+ Mon, 09 Dec 2024 18:41:23 -0800 (PST)
+Date: Mon,  9 Dec 2024 18:41:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20241209-rmem-v2-5-cbc0e8c08a21@bootlin.com>
-References: <20241209-rmem-v2-0-cbc0e8c08a21@bootlin.com>
-In-Reply-To: <20241209-rmem-v2-0-cbc0e8c08a21@bootlin.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Nicolas Saenz Julienne <nsaenz@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-Sasl: theo.lebrun@bootlin.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
+Message-ID: <20241210024119.2488608-1-kaleshsingh@google.com>
+Subject: [PATCH mm-unstable 00/17] mm: Introduce arch_mmap_hint()
+From: Kalesh Singh <kaleshsingh@google.com>
+To: akpm@linux-foundation.org, vbabka@suse.cz, yang@os.amperecomputing.com, 
+	riel@surriel.com, david@redhat.com
+Cc: linux@armlinux.org.uk, tsbogend@alpha.franken.de, 
+	James.Bottomley@HansenPartnership.com, ysato@users.sourceforge.jp, 
+	dalias@libc.org, glaubitz@physik.fu-berlin.de, davem@davemloft.net, 
+	andreas@gaisler.com, tglx@linutronix.de, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, chris@zankel.net, 
+	jcmvbkbc@gmail.com, bhelgaas@google.com, jason.andryuk@amd.com, 
+	leitao@debian.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-mm@kvack.org, 
+	kernel-team@android.com, android-mm@google.com, 
+	Kalesh Singh <kaleshsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Mobileye EyeQ5 has a non-volatile memory region which
-gets used to store MAC addresses. Its format includes
-a prefix 12-byte header and a suffix 4-byte CRC.
+Hi all,
 
-Add an optional ->checksum() callback inside match data;
-it runs CRC32 onto the content.
+This series introduces aarch_mmap_hint() to handle allocating VA space
+for the hint address.
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- drivers/nvmem/rmem.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 81 insertions(+)
+Patches 1-16 introduce this new helper and Patch 17 uses it to fix the
+issue of mmap hint being ignored in some cases due to THP alignment [1]
 
-diff --git a/drivers/nvmem/rmem.c b/drivers/nvmem/rmem.c
-index ca89c2689031534ff316a48e03360aeec823b025..1f0caf1d2dc1b3d42e5ac79b55222beb59fdd30d 100644
---- a/drivers/nvmem/rmem.c
-+++ b/drivers/nvmem/rmem.c
-@@ -3,11 +3,13 @@
-  * Copyright (C) 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-  */
- 
-+#include <linux/crc32.h>
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
-+#include <linux/slab.h>
- 
- struct rmem {
- 	struct device *dev;
-@@ -15,6 +17,18 @@ struct rmem {
- 	struct reserved_mem *mem;
- };
- 
-+struct rmem_match_data {
-+	int (*checksum)(struct rmem *priv);
-+};
-+
-+struct __packed rmem_eyeq5_header {
-+	u32 magic;
-+	u32 version;
-+	u32 size;
-+};
-+
-+#define RMEM_EYEQ5_MAGIC	((u32)0xDABBAD00)
-+
- static int rmem_read(void *context, unsigned int offset,
- 		     void *val, size_t bytes)
- {
-@@ -47,10 +61,66 @@ static int rmem_read(void *context, unsigned int offset,
- 	return 0;
- }
- 
-+static int rmem_eyeq5_checksum(struct rmem *priv)
-+{
-+	struct rmem_eyeq5_header header;
-+	void *buf __free(kfree) = NULL;
-+	u32 computed_crc, *target_crc;
-+	size_t data_size;
-+	int ret;
-+
-+	ret = rmem_read(priv, 0, &header, sizeof(header));
-+	if (ret)
-+		return ret;
-+
-+	if (header.magic != RMEM_EYEQ5_MAGIC)
-+		return -EINVAL;
-+
-+	/*
-+	 * Avoid massive kmalloc() if header read is invalid;
-+	 * the check would be done by the next rmem_read() anyway.
-+	 */
-+	if (header.size > priv->mem->size)
-+		return -EINVAL;
-+
-+	/*
-+	 *           0 +-------------------+
-+	 *             | Header (12 bytes) | \
-+	 *             +-------------------+ |
-+	 *             |                   | | data to be CRCed
-+	 *             |        ...        | |
-+	 *             |                   | /
-+	 *   data_size +-------------------+
-+	 *             |   CRC (4 bytes)   |
-+	 * header.size +-------------------+
-+	 */
-+
-+	buf = kmalloc(header.size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = rmem_read(priv, 0, buf, header.size);
-+	if (ret)
-+		return ret;
-+
-+	data_size = header.size - sizeof(*target_crc);
-+	target_crc = buf + data_size;
-+	computed_crc = crc32(U32_MAX, buf, data_size) ^ U32_MAX;
-+
-+	if (computed_crc == *target_crc)
-+		return 0;
-+
-+	dev_err(priv->dev,
-+		"checksum failed: computed %#x, expected %#x, header (%#x, %#x, %#x)\n",
-+		computed_crc, *target_crc, header.magic, header.version, header.size);
-+	return -EINVAL;
-+}
-+
- static int rmem_probe(struct platform_device *pdev)
- {
- 	struct nvmem_config config = { };
- 	struct device *dev = &pdev->dev;
-+	const struct rmem_match_data *match_data = device_get_match_data(dev);
- 	struct reserved_mem *mem;
- 	struct rmem *priv;
- 
-@@ -73,10 +143,21 @@ static int rmem_probe(struct platform_device *pdev)
- 	config.size = mem->size;
- 	config.reg_read = rmem_read;
- 
-+	if (match_data && match_data->checksum) {
-+		int ret = match_data->checksum(priv);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
- }
- 
-+static const struct rmem_match_data rmem_eyeq5_match_data = {
-+	.checksum = rmem_eyeq5_checksum,
-+};
-+
- static const struct of_device_id rmem_match[] = {
-+	{ .compatible = "mobileye,eyeq5-bootloader-config", .data = &rmem_eyeq5_match_data },
- 	{ .compatible = "nvmem-rmem", },
- 	{ /* sentinel */ },
- };
+[1] https://lore.kernel.org/r/20241118214650.3667577-1-kaleshsingh@google.com/
+
+Thanks,
+Kalesh
+
+Kalesh Singh (17):
+  mm: Introduce generic_mmap_hint()
+  mm: x86: Introduce arch_mmap_hint()
+  mm: arm: Introduce arch_mmap_hint()
+  mm: alpha: Introduce arch_mmap_hint()
+  mm: arc: Use generic_mmap_hint()
+  mm: csky: Introduce arch_mmap_hint()
+  mm: loongarch: Introduce arch_mmap_hint()
+  mm: mips: Introduce arch_align_mmap_hint()
+  mm: parisc: Introduce arch_align_mmap_hint()
+  mm: s390: Introduce arch_mmap_hint()
+  mm: sh: Introduce arch_mmap_hint()
+  mm: sparc32: Introduce arch_mmap_hint()
+  mm: sparc64: Introduce arch_mmap_hint()
+  mm: xtensa: Introduce arch_mmap_hint()
+  mm: powerpc: Introduce arch_mmap_hint()
+  mm: Fallback to generic_mmap_hint()
+  mm: Respect mmap hint before THP alignment if allocation is possible
+
+ arch/alpha/include/asm/pgtable.h           |  1 +
+ arch/alpha/kernel/osf_sys.c                | 29 ++++++++++--
+ arch/arc/mm/mmap.c                         | 12 ++---
+ arch/arm/include/asm/pgtable.h             |  1 +
+ arch/arm/mm/mmap.c                         | 54 ++++++++++++---------
+ arch/csky/abiv1/inc/abi/pgtable-bits.h     |  1 +
+ arch/csky/abiv1/mmap.c                     | 38 ++++++++++-----
+ arch/loongarch/include/asm/pgtable.h       |  1 +
+ arch/loongarch/mm/mmap.c                   | 40 ++++++++++------
+ arch/mips/include/asm/pgtable.h            |  1 +
+ arch/mips/mm/mmap.c                        | 39 +++++++++------
+ arch/parisc/include/asm/pgtable.h          |  1 +
+ arch/parisc/kernel/sys_parisc.c            | 37 ++++++++++-----
+ arch/powerpc/include/asm/book3s/64/slice.h |  1 +
+ arch/powerpc/mm/book3s64/slice.c           | 31 ++++++++++++
+ arch/s390/include/asm/pgtable.h            |  1 +
+ arch/s390/mm/mmap.c                        | 32 ++++++-------
+ arch/sh/include/asm/pgtable.h              |  1 +
+ arch/sh/mm/mmap.c                          | 48 ++++++++++---------
+ arch/sparc/include/asm/pgtable_32.h        |  1 +
+ arch/sparc/include/asm/pgtable_64.h        |  1 +
+ arch/sparc/kernel/sys_sparc_32.c           | 21 +++++++--
+ arch/sparc/kernel/sys_sparc_64.c           | 47 +++++++++++++-----
+ arch/x86/include/asm/pgtable_64.h          |  1 +
+ arch/x86/kernel/sys_x86_64.c               | 49 ++++++++++---------
+ arch/xtensa/include/asm/pgtable.h          |  1 +
+ arch/xtensa/kernel/syscall.c               | 26 +++++++++-
+ include/linux/sched/mm.h                   |  8 ++++
+ mm/huge_memory.c                           | 15 +++---
+ mm/mmap.c                                  | 55 ++++++++++++++--------
+ 30 files changed, 401 insertions(+), 193 deletions(-)
 
 -- 
-2.47.1
+2.47.0.338.g60cca15819-goog
 

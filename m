@@ -1,121 +1,168 @@
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBDD17838C
-	for <linux-mips@vger.kernel.org>; Wed, 11 Dec 2024 23:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7660025949C;
+	Thu, 12 Dec 2024 07:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733961243; cv=none; b=svl+oGNHTyO8WA9ew/SFHSqENOeKauWWCSp3YoL7YRq9mqnEr0H9GiHajbLBSuMYEvjJj05Cdn9I2BwKH9YGo/85pJo2dlPPLj+dScu0mxXbOGITyvRqYVZMrTVr+VxLLemeCNqA7/jhKlLhoLXTLwbdJHEz99cNToEFUbea/b0=
+	t=1733989327; cv=none; b=qhhlX1TcyMLZM/UMWSKfFjxTGdbkyIHLEOgrR8p0JNbPeALJnzOUb+LvDn3HnKUR7NNbNKkTWKqjZ0WCNkiHEOAQaX9BGOfwd8iB2LUGQTtU8RjpaXgnBNmwjV7KuG+/2ZVL9IBUwXaBazwYj5JZ1DfnqrNV8Bp5Fk0tOz+VwVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733961243; c=relaxed/simple;
-	bh=jiXhH9kxXSn2Nw0H+KTvppAK2X+q60j+e8YmqY9FWOI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PwV2bjp+bg4/cWIBENAWDktJfq4jRbwrYbynTBsHVdorJPSV7/crG7klsLf5jg50p/nlbpYD5gnxjOXI+nx9kZiNb8WnHozGD+MRUbRImVN36LAnx0tWboF9Jd7xVvPTNW7QDNBIdfox60yn9QZQhh88IlLR6Z8lUyfwEcjn+Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=nAleCdE+; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+	s=arc-20240116; t=1733989327; c=relaxed/simple;
+	bh=22g68YoUG7ggvCcHl2heS5NuYgSrkP+Tus51SlR8lr4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ij2KSIupGcyKzgrLz+UMi6vpqBLKkLNuM6UtY+9/eqUz6tzoRHvQKA34AAgM7D3ZlCLIl5xqbgvcDgZb2nPPOQn6JNB9SyJHrUpMwZHg/ylWNtwFLpLnr1M4QsR1eSHeoErz6ld2p8VP2mEmV8Ttfd9fW8AzO/OK4JVoLinbPH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=yLdzr3Vn; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="nAleCdE+"
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 85FD32C04D0;
-	Thu, 12 Dec 2024 12:53:51 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1733961231;
-	bh=YYpbsxw/IWs9rcS8rKosIOXg91vbXIdTiqCuBpMbmaM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nAleCdE+4mBvOqZCsJtD9e/FtImUNu7U1cWCTJCNchoWuu9Jbv8vmmg2J3F/w/m7i
-	 JW4sRz2EZXKgQyselHquY9ZP6ArTC8dnbl9UGJYXbZikEaElF2OruttDiGjA/JjGAa
-	 b05KIxdckCDOuueCBVrZ8qCCnERYzOR8IcOdMSD153uBMgJdOZP5fy/z5S5dXBf0GH
-	 OWbcrgFLl544zQQJI5ORsGcmpGjUUT4RaHyOJLpJx8NokihI0t8ltk+94hOlDkBh8i
-	 CGgVD3lO4ZdIND/UF6E9clb9DYhJCXL6A4KC1w1pqnVkPRsmNeGE0QCIAuoW3sfwaL
-	 G7GDPiRb9BaUA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B675a260f0002>; Thu, 12 Dec 2024 12:53:51 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 24DEF13EE8E;
-	Thu, 12 Dec 2024 12:53:51 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 2175A280964; Thu, 12 Dec 2024 12:53:51 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: lee@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	tsbogend@alpha.franken.de,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	markus.stockhausen@gmx.de
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 2/4] dt-bindings: mfd: Add MDIO interface to rtl9301-switch
-Date: Thu, 12 Dec 2024 12:53:40 +1300
-Message-ID: <20241211235342.1573926-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241211235342.1573926-1-chris.packham@alliedtelesis.co.nz>
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="yLdzr3Vn"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=+T1OM/4I/e4utRodgxqpykIDeKJt0bCoOkqM8Dxbxek=; b=yLdzr3Vn6s+jjfyD9VxGX5qMAF
+	EqPr5/+u6TVImRbAQqE0AsZDajl40IPeoUslp5rjTS1pJ9WoOddyn6bkUMMUUvczg/lPqHdOjeY7o
+	W54413RVE5O39+1yGDVa8nVehT0/7UHinzjzQjYUucPTHmC2TAQTK6HDHvkBz3fsgcJk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1tLdpD-000Arz-6f; Thu, 12 Dec 2024 08:41:31 +0100
+Date: Thu, 12 Dec 2024 08:41:31 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: lee@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	tsbogend@alpha.franken.de, hkallweit1@gmail.com,
+	linux@armlinux.org.uk, markus.stockhausen@gmx.de,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 4/4] net: mdio: Add RTL9300 MDIO driver
+Message-ID: <2424683a-4620-43e6-9693-2cf959eacb7c@lunn.ch>
 References: <20241211235342.1573926-1-chris.packham@alliedtelesis.co.nz>
+ <20241211235342.1573926-5-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BNQQr0QG c=1 sm=1 tr=0 ts=675a260f a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=RZcAm9yDv7YA:10 a=0DcZ6JciK6r0_laEW2MA:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241211235342.1573926-5-chris.packham@alliedtelesis.co.nz>
 
-The MDIO controller is part of the switch on the RTL9300 family of
-devices. Add a $ref to the mfd binding for these devices.
+> +	/* get_phy_c45_ids() will stop the mdio bus scan if we return an error
+> +	 * here. So even though the SMI controller indicates an error for an
+> +	 * absent device don't proagate it here.
+> +	 */
+> +	//if (val & BIT(25)) {
+> +	//	err = -ENODEV;
+> +	//	return err;
+> +	//}
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- .../bindings/mfd/realtek,rtl9301-switch.yaml      | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Please don't leave committed out code. It should either be needed, and
+uncommented, or deleted.
 
-diff --git a/Documentation/devicetree/bindings/mfd/realtek,rtl9301-switch=
-.yaml b/Documentation/devicetree/bindings/mfd/realtek,rtl9301-switch.yaml
-index f053303ab1e6..eeb08e7435fa 100644
---- a/Documentation/devicetree/bindings/mfd/realtek,rtl9301-switch.yaml
-+++ b/Documentation/devicetree/bindings/mfd/realtek,rtl9301-switch.yaml
-@@ -41,6 +41,9 @@ patternProperties:
-   'i2c@[0-9a-f]+$':
-     $ref: /schemas/i2c/realtek,rtl9301-i2c.yaml#
-=20
-+  'mdio@[0-9a-f]+$':
-+    $ref: /schemas/net/realtek,rtl9301-mdio.yaml#
-+
- required:
-   - compatible
-   - reg
-@@ -110,5 +113,17 @@ examples:
-           };
-         };
-       };
-+
-+      mdio0: mdio@ca00 {
-+        compatible =3D "realtek,rtl9301-mdio";
-+        reg =3D <0xca00 0x200>;
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        ethernet-phy@0 {
-+          reg =3D <0>;
-+          realtek,smi-address =3D <0 1>;
-+        };
-+      };
-     };
-=20
---=20
-2.47.1
+> +static int realtek_mdiobus_init(struct realtek_mdio_priv *priv)
+> +{
+> +	u32 port_addr[5] = { };
+> +	u32 poll_sel[2] = { 0, 0 };
+> +	u32 glb_ctrl_mask = 0, glb_ctrl_val = 0;
+> +	int i, err;
+> +
+> +	for (i = 0; i < MAX_PORTS; i++) {
+> +		int pos;
+> +
+> +		if (priv->smi_bus[i] > 3)
+> +			continue;
+> +
+> +		pos = (i % 6) * 5;
+> +		port_addr[i / 6] |=  priv->smi_addr[i] << pos;
+> +
+> +		pos = (i % 16) * 2;
+> +		poll_sel[i / 16] |= priv->smi_bus[i] << pos;
+> +	}
+> +
+> +	for (i = 0; i < MAX_SMI_BUSSES; i++) {
+> +		if (priv->smi_bus_isc45[i]) {
+> +			glb_ctrl_mask |= GLB_CTRL_INTF_SEL(i);
+> +			glb_ctrl_val |= GLB_CTRL_INTF_SEL(i);
+> +		}
+> +	}
 
+Please could you add some comments because i don't understand this at
+all.
+
+> +
+> +	err = regmap_bulk_write(priv->regmap, priv->reg_base + SMI_PORT0_5_ADDR_CTRL,
+> +				port_addr, 5);
+> +	if (err)
+> +		return err;
+> +
+> +	err = regmap_bulk_write(priv->regmap, priv->reg_base + SMI_PORT0_15_POLLING_SEL,
+> +				poll_sel, 2);
+> +	if (err)
+> +		return err;
+> +
+> +	err = regmap_update_bits(priv->regmap, priv->reg_base + SMI_GLB_CTRL,
+> +				 glb_ctrl_mask, glb_ctrl_val);
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+> +}
+> +
+> +static int realtek_mdiobus_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct realtek_mdio_priv *priv;
+> +	struct fwnode_handle *child;
+> +	struct mii_bus *bus;
+> +	int err;
+> +
+> +	bus = devm_mdiobus_alloc_size(dev, sizeof(*priv));
+> +	if (!bus)
+> +		return -ENOMEM;
+> +
+> +	bus->name = "Reaktek Switch MDIO Bus";
+> +	bus->read_c45 = realtek_mdio_read_c45;
+> +	bus->write_c45 =  realtek_mdio_write_c45;
+> +	bus->parent = dev;
+> +	priv = bus->priv;
+> +
+> +	priv->regmap = syscon_node_to_regmap(dev->parent->of_node);
+> +	if (IS_ERR(priv->regmap))
+> +		return PTR_ERR(priv->regmap);
+> +
+> +	err = device_property_read_u32(dev, "reg", &priv->reg_base);
+> +	if (err)
+> +		return err;
+> +
+> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s", dev_name(dev));
+> +
+> +	device_for_each_child_node(dev, child) {
+> +		u32 pn, smi_addr[2];
+> +
+> +		err = fwnode_property_read_u32(child, "reg", &pn);
+> +		if (err)
+> +			return err;
+> +
+> +		if (pn > MAX_PORTS)
+> +			return dev_err_probe(dev, -EINVAL, "illegal port number %d\n", pn);
+> +
+> +		err = fwnode_property_read_u32_array(child, "realtek,smi-address", smi_addr, 2);
+> +		if (err) {
+> +			smi_addr[0] = 0;
+> +			smi_addr[1] = pn;
+> +		}
+
+Would returning -EINVAL be better here, since it indicates a bug in
+the device tree?
+
+> +
+> +		if (fwnode_device_is_compatible(child, "ethernet-phy-ieee802.3-c45"))
+> +			priv->smi_bus_isc45[smi_addr[0]] = true;
+
+If it is not C45 then what? I don't see any support for C22.
+
+	Andrew

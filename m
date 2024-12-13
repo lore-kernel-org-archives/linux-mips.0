@@ -1,94 +1,78 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA1844C6C;
-	Fri, 13 Dec 2024 01:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8957DA62;
+	Fri, 13 Dec 2024 03:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734053976; cv=none; b=gipHYLeu8gRnRDWvJlvqXDhUjpN7qo7OiX5z7wS79A32dPnR6YBprZxDuYTefBu6EICz1n4to91yMwCsXqhvIvDkEqSsOyNOraJbdH+KZU3dBmX0dM1YeSyqz7CQ/blEFoJimRYCfi9pEg/O0hlU2nDVUPwwk06jck3Vl/iSafA=
+	t=1734061838; cv=none; b=i+bbwsD4g0HFtzsXtsmavjAOoxZga6XcNblEyzO6dOmOP5EDBhQi7YbY6RovonTaqOyEcUaw5hTxGw/7r07aC6C8L32DJOtvDjx+NGgrAOqN2/eUuux0tv39L6uTZibakm2TWxQx3qegODJlnQkiIw2nJCalV06I1o7AkbChAJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734053976; c=relaxed/simple;
-	bh=z6KasiqXW9OocT/gPdXD8wxFCgxz3hJU5rxa3NS7ujM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=B7AtFy2Ac2um3oTsdQ+86tTvq9Avs4e8I5sC6wAb1R4rH3G+LzdiBOe86DGtEayXjsO9X1cSHGXSPPt6jzX4HVERMM1F3f3xFGtM7ZkSDi0QoRpyhTq3Fy8+9GGKit8YwTAsKBp3iR1eDUNhx+V/1E42sjsrp66zZHx04eFhkeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NOajGzF7; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NOajGzF7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA84DC4CECE;
-	Fri, 13 Dec 2024 01:39:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1734053976;
-	bh=z6KasiqXW9OocT/gPdXD8wxFCgxz3hJU5rxa3NS7ujM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NOajGzF7Oghi2j823OVBOAGjMfDE2y8sqhBtABteyi+xNwCVBGrHLGBc4kP8k/ZzS
-	 nGpVqOiOxYmCXtpYVq8CDh3d/Emvq9T/1xFLC/6g4wNbedpjpYuIv/cuTxF0CeV0MY
-	 ibJbSfQIh1u6+D2zMIFRD+W8TWrIVtCfqGegBRio=
-Date: Thu, 12 Dec 2024 17:39:34 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc: Kalesh Singh <kaleshsingh@google.com>, lorenzo.stoakes@oracle.com,
- vbabka@suse.cz, yang@os.amperecomputing.com, riel@surriel.com,
- david@redhat.com, minchan@kernel.org, jyescas@google.com,
- linux@armlinux.org.uk, tsbogend@alpha.franken.de,
- James.Bottomley@hansenpartnership.com, ysato@users.sourceforge.jp,
- dalias@libc.org, glaubitz@physik.fu-berlin.de, davem@davemloft.net,
- andreas@gaisler.com, tglx@linutronix.de, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, chris@zankel.net,
- jcmvbkbc@gmail.com, bhelgaas@google.com, jason.andryuk@amd.com,
- leitao@debian.org, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com,
- android-mm@google.com
-Subject: Re: [PATCH mm-unstable v2 06/16] mm: csky: Introduce
- arch_mmap_hint()
-Message-Id: <20241212173934.4dc429716acd4c71a76e15c2@linux-foundation.org>
-In-Reply-To: <vc2uhcysgosapznbuookcj5677w43a4kzxbotwqub237ccawww@i3pbqiacdwsx>
-References: <20241211232754.1583023-1-kaleshsingh@google.com>
-	<20241211232754.1583023-7-kaleshsingh@google.com>
-	<vc2uhcysgosapznbuookcj5677w43a4kzxbotwqub237ccawww@i3pbqiacdwsx>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1734061838; c=relaxed/simple;
+	bh=hiEC7arCdUSMBwLua35LiRBAuVwtm+9jEQwq35PRmnI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W2bXfln0lf52tFURWrw8VmwUM3pDnOOOVdzgxTXXaYxESHOkLQ1QrkkTgvitPKqpuvHZAxc79X4DuNLSIBf7Iwt09gKgbsFqjB3zg32NLeFcVLz/bo5gHdRIVHjKbMSMGb6WP0sqBdzp9wBXwq26n1xc7N5ptAZOrCtag63p6jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8AxaeEEr1tnMXBWAA--.36583S3;
+	Fri, 13 Dec 2024 11:50:28 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by front1 (Coremail) with SMTP id qMiowMBxP+EDr1tnV3WBAA--.53391S2;
+	Fri, 13 Dec 2024 11:50:27 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Jianmin Lv <lvjianmin@loongson.cn>
+Cc: WANG Xuerui <kernel@xen0n.name>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: [PATCH v3 0/2] irqchip/loongson-eiointc: Add multiple interrupt pin routing support
+Date: Fri, 13 Dec 2024 11:50:24 +0800
+Message-Id: <20241213035026.1643517-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowMBxP+EDr1tnV3WBAA--.53391S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+	nUUI43ZEXa7xR_UUUUUUUUU==
 
-On Thu, 12 Dec 2024 16:40:10 -0500 "Liam R. Howlett" <Liam.Howlett@oracle.com> wrote:
+There are four times EIOINTC_REG_ISR register group access in eiointc irq
+handler, in order to get all irq status about 256 interrupt vectors. It
+causes four times VM-exits since eiointc register are software emulated,
+here multiple interrupt pin routing is introduced and each 64 interrupt
+vector is routed to one interrupt pin.
 
-> * Kalesh Singh <kaleshsingh@google.com> [241211 18:28]:
-> > Introduce csky arch_mmap_hint() and define HAVE_ARCH_MMAP_HINT.
-> > This is a preparatory patch, no functional change is introduced.
-> 
-> This also looks like it has changed the validation order and potentially
-> introduced functional changes?
-> 
-> All these stem from the same cloned code (sparc32 iirc), but were not
-> updated when the cloned code was updated.  This is why I am against
-> arch_* code.  We should find a better way to unify the code so that
-> there is nothing different.  You seem to have gotten some of the shared
-> code together, but some still exists.
-> 
-> In the addresses, there are upper and lower limits, and sometimes
-> "colours".  Could we not just define the upper/lower limits in each arch
-> and if colour is used?  Maybe this is complicated with 32/64 handled
-> both in the 64 bit code.
-> 
-> Is there any plan to unite this code further?
-> 
-> We have had errors for many years in cloned but not updated code.  I
-> really wish there was more information in the cover letter on what is
-> going on here.  I'd like to try and reduce the arch_ code to, basically
-> nothing.
-> 
-> I was also disappointed that I wasn't Cc'ed because I've spent a lot of
-> time in this code and this area.  I am probably the last one to crawl
-> through and change any of this.
+With this method, there will be only once EIOINTC_REG_ISR register
+group acces in irq handler, it reduces VM-exits.
 
-Thanks, I removed this version of this series from mm-unstable.
+---
+v2 ... v3:
+  1. Update to latest kernel version and solve some confliction.
+  2. Add strict check about multiple interrupt pin support, only the first
+     eiointc device support this since intterrupt pin is limited. In order
+     to support multiple eiointc driver in future if there is in future.
+
+v1 ... v2:
+  1. Add different route_info handler as eiointc interrupt handler
+     parameter, so that irq handler can read corresponding ISR
+  2. Call function set_csr_ecfg() to enable cpu interrupt pin in eiointc
+     driver inside.
+---
+Bibo Mao (2):
+  irqchip/loongson-eiointc: Route interrupt parsed from bios table
+  irqchip/loongson-eiointc: Add multiple interrupt pin routing support
+
+ drivers/irqchip/irq-loongson-eiointc.c | 96 +++++++++++++++++++++++---
+ 1 file changed, 88 insertions(+), 8 deletions(-)
+
+
+base-commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4
+-- 
+2.39.3
+

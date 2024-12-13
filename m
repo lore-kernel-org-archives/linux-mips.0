@@ -1,117 +1,71 @@
-Received: from mail.wilcox-tech.com (mail.wilcox-tech.com [45.32.83.9])
+Received: from arara2.ipen.br (arara2.ipen.br [200.136.52.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7287DA62
-	for <linux-mips@vger.kernel.org>; Fri, 13 Dec 2024 03:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.32.83.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291C52F43
+	for <linux-mips@vger.kernel.org>; Fri, 13 Dec 2024 04:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=200.136.52.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734061940; cv=none; b=UrZYBYIIxpF10w9l5Fml7OS8NNznJV206/QK7URSYeSNnDoAcJPJEn8xoSJstuAJGpEzsCU0lUg7Cr0I5VxBkl5/5KokbAdvovqeHdCz2ZMS/B/h8PRu6aQB5C6gRw+EQBzQRG6rdWJH6wrgbTMj/8iprl1bQbChMOsRRLvQzwE=
+	t=1734064728; cv=none; b=YQII5uCusUSN4qkBlX9ubr3U8MU9IGYH6bhz/hjmP5zgyoY+VRB1xW2TxDrh39N7YWw47EkegHgW08Fy6A7DbygyLdmtxpoUA5tY+YiTiTK17EUws+502GLeoLqe/YiQdxU3Z3UZN1GRJAIwMXa+TyUM7zvANKk+5e+3VeQ/mFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734061940; c=relaxed/simple;
-	bh=zTn3PxlxF5bcug/5oevEdlwocu+z7R8NRL4NpTujYK8=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=LfTw/tUvD6h9vuPiiLk/SDuI4MYUmwnC57cPmvahpdXqhjkwdHZosjhXV2Y3EjtcY9uTqvF4P/U6myGf7Q5gabMeH5xEAczpkXKVDAK0IIOUoqPmJ66HQwZUc5rblFB0fd3x8ltIxDdd+MlhNxEItr9oRLEiXAlsVPLpN0qjT98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Wilcox-Tech.com; spf=pass smtp.mailfrom=Wilcox-Tech.com; arc=none smtp.client-ip=45.32.83.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Wilcox-Tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Wilcox-Tech.com
-Received: (qmail 15664 invoked from network); 13 Dec 2024 03:51:32 -0000
-Received: from ip98-184-130-195.tu.ok.cox.net (HELO smtpclient.apple) (AWilcox@Wilcox-Tech.com@98.184.130.195)
-  by mail.wilcox-tech.com with ESMTPA; 13 Dec 2024 03:51:32 -0000
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1734064728; c=relaxed/simple;
+	bh=Cgr97JBiSX1QIcd2ZZZsKVChGTY1ZlWJ/4AhaVFA7Wc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HmVOan0TJtJYOuF5PMjMuxB+BxAJm+7qf84DGQVPzs5oETAxMZPO7sqTHMNE1nHR8/ezA8PCuujUDy7sR0AATkYKNnE5WgSYU+blHCohGcCttNIPZHek1JCZmnoIHiXiqYjPVpSbfkJJ9CCD428l7fMN7YSpMp55Pt9s4/3aNcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ipen.br; spf=pass smtp.mailfrom=ipen.br; arc=none smtp.client-ip=200.136.52.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ipen.br
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ipen.br
+X-ASG-Debug-ID: 1734064679-055fc729eb147a6e0009-LVkJRb
+Received: from arara.ipen.br (webmail.ip.ipen.br [10.0.10.11]) by arara2.ipen.br with ESMTP id m71FKNwgpyxHNfaU for <linux-mips@vger.kernel.org>; Fri, 13 Dec 2024 01:38:31 -0300 (BRT)
+X-Barracuda-Envelope-From: TCWM122857@ipen.br
+X-Barracuda-RBL-Trusted-Forwarder: 10.0.10.11
+Received: from ipen.br (unknown [102.129.145.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by arara.ipen.br (Postfix) with ESMTPSA id 277C5FB5298
+	for <linux-mips@vger.kernel.org>; Fri, 13 Dec 2024 00:15:09 -0300 (-03)
+Reply-To: t.mazowieckie@mazowieckie.org
+X-Barracuda-Effective-Source-IP: UNKNOWN[102.129.145.191]
+X-Barracuda-Apparent-Source-IP: 102.129.145.191
+X-Barracuda-RBL-IP: 102.129.145.191
+From: <TCWM122857@ipen.br>
+To: linux-mips@vger.kernel.org
+Subject:  I urge you to understand my viewpoint accurately.
+Date: 13 Dec 2024 11:15:09 +0800
+X-ASG-Orig-Subj: I urge you to understand my viewpoint accurately.
+Message-ID: <20241213111509.87394A95B214E37F@ipen.br>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [RFC 0/5] KVM: drop 32-bit host support on all architectures
-From: "A. Wilcox" <AWilcox@Wilcox-Tech.com>
-In-Reply-To: <20241212125516.467123-1-arnd@kernel.org>
-Date: Thu, 12 Dec 2024 21:51:26 -0600
-Cc: kvm@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Huacai Chen <chenhuacai@kernel.org>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Naveen N Rao <naveen@kernel.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Alexander Graf <graf@amazon.com>,
- Crystal Wood <crwood@redhat.com>,
- Anup Patel <anup@brainfault.org>,
- Atish Patra <atishp@atishpatra.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- Vitaly Kuznetsov <vkuznets@redhat.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Paul Durrant <paul@xen.org>,
- Marc Zyngier <maz@kernel.org>,
- linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org,
- kvm-riscv@lists.infradead.org,
- linux-riscv@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <35E5C2A3-94AC-446B-A0A1-84B043DBC890@Wilcox-Tech.com>
-References: <20241212125516.467123-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-X-Mailer: Apple Mail (2.3774.600.62)
+X-Barracuda-Connect: webmail.ip.ipen.br[10.0.10.11]
+X-Barracuda-Start-Time: 1734064711
+X-Barracuda-URL: https://10.40.40.18:443/cgi-mod/mark.cgi
+X-Barracuda-Scan-Msg-Size: 512
+X-Virus-Scanned: by bsmtpd at ipen.br
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-BRTS-Evidence: 34fbb5788938ad5710ad28835fd12206-499-txt
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=1000.0 tests=NO_REAL_NAME
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.45577
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+	0.00 NO_REAL_NAME           From: does not include a real name
 
-On Dec 12, 2024, at 6:55=E2=80=AFAM, Arnd Bergmann <arnd@kernel.org> =
-wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> I submitted a patch to remove KVM support for x86-32 hosts earlier
-> this month, but there were still concerns that this might be useful =
-for
-> testing 32-bit host in general, as that remains supported on three =
-other
-> architectures. I have gone through those three now and prepared =
-similar
-> patches, as all of them seem to be equally obsolete.
->=20
-> Support for 32-bit KVM host on Arm hardware was dropped back in 2020
-> because of lack of users, despite Cortex-A7/A15/A17 based SoCs being
-> much more widely deployed than the other virtualization capable 32-bit
-> CPUs (Intel Core Duo/Silverthorne, PowerPC e300/e500/e600, MIPS P5600)
-> combined.
+I am Tomasz Chmielewski, a Portfolio Manager and Chartered=20
+Financial Analyst affiliated with Iwoca Poland Sp. Z OO in=20
+Poland. I have the privilege of working with distinguished=20
+investors who are eager to support your company's current=20
+initiatives, thereby broadening their investment portfolios. If=20
+this proposal aligns with your interests, I invite you to=20
+respond, and I will gladly share more information to assist you.
 
-
-I do use 32-bit KVM on a Core Duo =E2=80=9CYonah=E2=80=9D and a Power =
-Mac G4 (MDD), for
-purposes of bisecting kernel issues without having to reboot the host
-machine (when it can be duplicated in a KVM environment).
-
-I suppose it would still be possible to run the hosts on 6.12 LTS for
-some time with newer guests, but it would be unfortunate.
-
-Best,
--arw
-
-
->=20
-> It probably makes sense to drop all of these at the same time, =
-provided
-> there are no actual users remaining (not counting regression testing
-> that developers might be doing). Please let me know if you are still
-> using any of these machines, or think there needs to be deprecation
-> phase first.
->=20
->      Arnd
-
---
-Anna Wilcox (she/her)
-SW Engineering: C++/Rust, DevOps, POSIX, Py/Ruby
-Wilcox Technologies Inc.  |  Ad=C3=A9lie Linux=
+=20
+Yours sincerely,=20
+Tomasz Chmielewski Warsaw, Mazowieckie,
+=20
+Poland.

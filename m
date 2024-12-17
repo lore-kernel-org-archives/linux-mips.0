@@ -1,43 +1,44 @@
 Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C34A1F9F79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8836F1F9F75
 	for <linux-mips@vger.kernel.org>; Tue, 17 Dec 2024 22:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734475508; cv=none; b=jK/lCQCQkCmpqOUQna8s7MxbBUnaZZjmS3zJU7Q3uVUb70pJVHBFncnCJvBI/VUlOVF8ZYTjsqbg10dTYu89RJP8R+ugXtqVZEg7ZQ4ot0o/BCGVFPve9cf+ZNjh60gRYBsCX81S5J64gw5Fwa75NzDABARsaUbNN1O6Bte7dDA=
+	t=1734475508; cv=none; b=clIda3J4mZvKHEE//R4jnb33kXeRhwjqRgMUirR5YtAAPeHPKyF3k5Lc9TUPNYr7mvcIYuAUjhBPDWbsnyWoLhiPw8R/AzKyokIY6AfwwSk5XkZB1Lr4Za/9SiqFpbAayxLWUd3ikl3yGKWvU4UifRstNI8EDKdNPmTpdBZBPF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734475508; c=relaxed/simple;
-	bh=GodzzK/SHP3FLIiRQaRZCw2o62o+OtxGQPxthp05hos=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bl5DqDXETXQ7YejuFMVWsokHWHlgXVRfRgv1EZwZJLg+xXHr+gFdf+3vB0VdBmY4YLE2iEml6Aqstun9Gg3aOuYuPuL+emttbFrznkWCobfl3GsLly5pNyCVmRzDR6IAoDcw9xBXYIkwaDBWATnfXM9z7AvkTaZo9vij8kWWnVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=cqiHXzKB; arc=none smtp.client-ip=202.36.163.20
+	bh=L2zNWXxJ5UxK6fgydo86+GbBNyq6p2zYWOTn3TzzAas=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KOhSDoOrx+OCOVL15zemPDE0GHj0cJ/tbXioHPAp0WCbC1jbhHuIauPHzqq3yHOi/jn3lFxAisAWfTTQkdZEWbFuCInNNKuPhmG3FP5hCwnuUkndFN23bqfl5e3UYiI2gmrFhlRQmLwCk4TiI+tfKUiAVbP5208LAmpIoQKzFdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=obeNKy80; arc=none smtp.client-ip=202.36.163.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="cqiHXzKB"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="obeNKy80"
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3DB242C0A6D;
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 740A82C0C2E;
 	Wed, 18 Dec 2024 11:45:03 +1300 (NZDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
 	s=mail181024; t=1734475503;
-	bh=XnLK1Qp2oJondYT2Ns5zwG1oB9Q9bpYTdgWPD2mP5ms=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cqiHXzKB+9UXLqR++hJYQtsxE7zjrSArWrlz5eMwO5dqYNglkkBQ/VIs929ZP9/AN
-	 WGWhH6Ja0csE2Ex7r0WYbB8TB1lTBqAK6FrAGUI8A0VTvj0q0IOcgkpkTqsjgO6IPg
-	 iDpxMJFlx0RBEENzihYw9fwICk0BhyJ2RfBTyQd4SGA/pd3a1n5EmJepC0l6b9xVy3
-	 T2Z12v4ujZoNydceFWRoD5eE9dGBLRWSferp9KkI3CSUOKQ3+H1E7EsmV6P5DVcyvG
-	 dFqjcc7yxsZDa6B1kjIOR22rkNu7qjAu9kWUTBLciuvn154P1IE4pwaLvYnvcCVZTJ
-	 vu2E1B9RGtbdg==
+	bh=EIPwlfXRlaNYaXnu7Vurx8xTCXNMz21zUxxNVkjv+hQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=obeNKy80iMnYM63b1tfxp1RtVkiOyJ4fgI6dTUbfvOpj4fWBaoJKsdWADpeqnFZsd
+	 XOLoGoU1CnyJ6VDierlpRRpcrZe4QUMfOMAM3DqorJOVQEtGfsJMom6A4mO47S8SUX
+	 Mw6dsRwzYUParhZ+Z/Zn5qGIlViMRAgXe1M2sAqbdbEHBgiCGobBFw9BAXFri5rUYr
+	 Ljv/6MxfPiKubgSnf+lAByrWunj28Ru7GnUrVIYi1+228ILv9f/HzTA80jguwX6Czv
+	 b/vX9yTC5smFxclWcUkIxIbqc/h7/3PEVsEsEd3CngNpLsXlf3QRWZVfVl2fj8ed/u
+	 w9D1ptfeF070Q==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6761feef0000>; Wed, 18 Dec 2024 11:45:03 +1300
+	id <B6761feef0002>; Wed, 18 Dec 2024 11:45:03 +1300
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 08D7913EDC3;
+	by pat.atlnz.lc (Postfix) with ESMTP id 0CCE913EE8E;
 	Wed, 18 Dec 2024 11:45:03 +1300 (NZDT)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 012C42806F6; Wed, 18 Dec 2024 11:45:02 +1300 (NZDT)
+	id 078F528093B; Wed, 18 Dec 2024 11:45:03 +1300 (NZDT)
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: lee@kernel.org,
 	robh@kernel.org,
@@ -57,10 +58,12 @@ Cc: devicetree@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 0/3] RTL9300 MDIO driver
-Date: Wed, 18 Dec 2024 11:44:58 +1300
-Message-ID: <20241217224501.398039-1-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v3 2/3] mips: dts: realtek: Add MDIO controller
+Date: Wed, 18 Dec 2024 11:45:00 +1300
+Message-ID: <20241217224501.398039-3-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20241217224501.398039-1-chris.packham@alliedtelesis.co.nz>
+References: <20241217224501.398039-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -68,34 +71,44 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BNQQr0QG c=1 sm=1 tr=0 ts=6761feef a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=RZcAm9yDv7YA:10 a=RIclbMKvLBhRl8Y64RUA:9 a=3ZKOabzyN94A:10
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=BNQQr0QG c=1 sm=1 tr=0 ts=6761feef a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=RZcAm9yDv7YA:10 a=k4-7ynMye8UXlDNHH0IA:9 a=3ZKOabzyN94A:10
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 
-This series adds a driver for the MDIO controller on the RTL9300 family
-of devices. The controller is a little unique in that we can't access
-the SMI interfaces directly. Instead we associate the SMI interface with
-a switch port and use the port number to address the SMI bus in
-software.
+Add a device tree node for the MDIO controller on the RTL9300 chips.
 
-Lee has picked up the mfd binding change so I've dropped it from this rou=
-nd.
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-Chris Packham (3):
-  dt-bindings: net: Add Realtek MDIO controller
-  mips: dts: realtek: Add MDIO controller
-  net: mdio: Add RTL9300 MDIO driver
+Notes:
+    Changes in v3:
+    - None
+    Changes in v2:
+    - None
 
- .../bindings/net/realtek,rtl9301-mdio.yaml    |  82 +++++
- arch/mips/boot/dts/realtek/rtl930x.dtsi       |   8 +
- drivers/net/mdio/Kconfig                      |   7 +
- drivers/net/mdio/Makefile                     |   1 +
- drivers/net/mdio/mdio-realtek-rtl.c           | 341 ++++++++++++++++++
- 5 files changed, 439 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/realtek,rtl9301=
--mdio.yaml
- create mode 100644 drivers/net/mdio/mdio-realtek-rtl.c
+ arch/mips/boot/dts/realtek/rtl930x.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts=
+/realtek/rtl930x.dtsi
+index 17577457d159..5f74d121ce84 100644
+--- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
++++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+@@ -57,6 +57,14 @@ i2c1: i2c@388 {
+ 			#size-cells =3D <0>;
+ 			status =3D "disabled";
+ 		};
++
++		mdio0: mdio@ca00 {
++			compatible =3D "realtek,rtl9301-mdio";
++			reg =3D <0xca00 0x200>;
++			#address-cells =3D <1>;
++			#size-cells =3D <0>;
++			status =3D "disabled";
++		};
+ 	};
+ };
+=20
 --=20
 2.47.1
 

@@ -1,99 +1,80 @@
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5236E1F16B;
-	Thu,  2 Jan 2025 16:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704BE181334;
+	Thu,  2 Jan 2025 17:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735836870; cv=none; b=JKdLBmsKRe0bgf+yl8nprzUBWwrQcFSmYI9Mze5B8bpkFTLXRGjTT33LTPaH9IYgmh/UNuGz5OaHi2la3TONnLrE79SZcLk2Itq1wSoog4i+h5elLzJTSeNA2SyK6F3+oRW5CL6PuJP2Y41chS7LSk1uQv3GhLs9EZUf00WOpiA=
+	t=1735837220; cv=none; b=H+QP+h7KzuxgSNKMXzAJ+1K0or+ap9VPrAzoMHibC6VyQjPhQTpCohvYu7klwNxE0t2IEBDHn8SYA9OmWxn88XT3GmTMXN32e3vqkOnqvmJFrH/BhDEx/1f2A9+TsCfq6E30WW3HhUkOTQQoZ1lvGH5ZRuQ7+1rvclcSzYwoH54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735836870; c=relaxed/simple;
-	bh=WKBhCnvtMIY0gTCieqrMhUbL9KKmSsXX0ThPSNaPwls=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=txXqFDXgXhjE4/OgE4XT0h2Okjr/96FnMynmIoTUGoOztgRHXsH4TR5OTvMEXnXG0VkldQBEoBOY53Kjp4oFuKk2hE2hXctHZ0//x/f0fGBDGv4c9tC/tykD9SR8zNRaeLMg7gNO1JWccNDF8Rw7Bhfoj6U3gioE8x43oEh1zMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=kKgm3rMv; arc=none smtp.client-ip=54.206.34.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="kKgm3rMv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1735836823;
-	bh=MGRV4JGUlwRUQzrhpkSdmx2FoinaZwX3vwgwN4+ubic=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=kKgm3rMvViCUwIdsVeFZnzBhSk+uQ8gnb0jmNueSavcjt0WEU0VawPd4z0cKOVQAc
-	 Ip/cNYwVssmBIPSQN2Jfq98a2MnCrMuw5UyHYUIRUVUC3E4/CpmiMaTV/6EgOioZKn
-	 XWcwaJrrA8aMy1jyTBnBpJQhwa4z/e3c/ryG3zHQ=
-X-QQ-mid: bizesmtpip2t1735836780t05d0rc
-X-QQ-Originating-IP: 7Ti20rk5NQiroZTWd+ILbIe3fPVqsLzx1brMy7bfJNI=
-Received: from avenger-OMEN-by-HP-Gaming-Lapto ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 03 Jan 2025 00:52:58 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 7390309620555676409
-From: WangYuli <wangyuli@uniontech.com>
-To: macro@orcam.me.uk
-Cc: baimingcong@uniontech.com,
-	gregkh@linuxfoundation.org,
-	guanwentao@uniontech.com,
-	jiaxun.yang@flygoat.com,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	revy@deepin.org,
-	sashal@kernel.org,
-	stable@vger.kernel.org,
-	tsbogend@alpha.franken.de,
-	wangyuli@uniontech.com,
-	chenhuacai@kernel.org
-Subject: Re: Re: [PATCH 5.4~6.6] MIPS: Probe toolchain support of -msym32
-Date: Fri,  3 Jan 2025 00:52:58 +0800
-Message-ID: <8AC8E4D8519CF8E4+20250102165258.57525-1-wangyuli@uniontech.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <alpine.DEB.2.21.2501020550110.20821@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2501020550110.20821@angie.orcam.me.uk>
+	s=arc-20240116; t=1735837220; c=relaxed/simple;
+	bh=kKPcW5SP3t49iESF+fPdcZdBskM2E5K8YtDFi72drHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uC0+l81xzMErmXZuUBHgRiRarp+nIzIG2rHU675pz6zQTInKLa9oKMEWq8274tYTjnfB/wAmTij3sPCAT+UxBcm6b/yVjOJHiYF+LxRxJED8E1Llaqot7niaa92FuqpBDsxPdEZYCfiN+D99wsFWi4WYcFag5mhOObnorZF/wxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4B9911FB;
+	Thu,  2 Jan 2025 09:00:44 -0800 (PST)
+Received: from [10.57.91.208] (unknown [10.57.91.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91B853F673;
+	Thu,  2 Jan 2025 09:00:07 -0800 (PST)
+Message-ID: <04b0a778-7a6b-4df3-b40e-ca76adddb243@arm.com>
+Date: Thu, 2 Jan 2025 18:00:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: Mf+wQkWJ2TuYBMzfbZT7ecSDB0dI4ood/OxEkTzSJHLy1N6AsQiOX2XQ
-	xy22vrjWCuWCRIZehXizuyIZwLrIkXOrtYoRNxnOuEnYjLcpbXcYoSrmHGbv3nP5Jnje7/y
-	bUNMZi1vPKftMy7TyY5DZVHvRYmJC9LxoTGhB2G+pt2ZT7HMrHFdjqSKOrN/xfpFpqoQEhl
-	xlOVBbXTsu4k/rXYY73hUT2kUDmgc8DQNi806SIJzApo3fxPv39yG53R/dMY989mu7gqEq8
-	4ClCyrt6Jcx6kg+s32SohUjDMrF6sg/m8BCpIKnNbO/a0EMFeHiiupARd4AcckbgwGDl86r
-	szUPcMJrauBcx+kpaybzKUcrB6Cyxy/eYQ4+0lrwcB1eMaggbwft+e+B6ddSkpljcSYO/KL
-	9qynecwJ6Fa0tUb2XCwJbxq0v7Y3KNqxtvuCx8s6qrzfI8HV/VZojmvSJ/t8n3jzdED5DIt
-	7Ol8nDQSYsFaBMV4m6bh8sOmNJojmnxPnmdl75aCkHWPn8oloC3ylDNb6M7muuA8VOLDura
-	a2DEL+Lf7dEkV/hSjQny7Z3yCab1+LQ+OXowpR6ZeTD7VVUtFdOEu20Ce80hB4dgX8RwQcj
-	b+odPuv6c8pUcIKrDrx0aKqLkOt6k12yfF21eNaJDbIAZzIKbI3yxcLEC9kNxESSPU8t36b
-	3IHvLzCXGVVEvZId4ImtLxYTRweeWz6aOEnYfVvEEgZp70pLFJD7hy05zEDhFG3hkgy7khW
-	46mSgIlfiqc9H6My0ELD/WOHtYF2n968Pv01Skzphzm2rfqAHoaCrbX60hZWauuxK5AiNoz
-	cjCwcr0OMMTNcBligi6aWVddBuHL7149FwsNYcIkpNo0X7gRFhUb5SGHNcUwS+4FyKYCWsi
-	Cxv2ASYHc3JOth0AlMRwIsCpQrepI626vvVO1wfbKYWXNBBu4lbcrKeDx0QTFBpyS+JeqzH
-	GPmTZbg9n/5ksWrn+M3U1LKmplkFoozM2247frgn8Ta1lN2igsxzq+swrOBmYQPmxYP8QyY
-	9ME5DSmQ==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-X-QQ-RECHKSPAM: 0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/15] move pagetable_*_dtor() to __tlb_remove_table()
+To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org,
+ agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
+ david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
+ willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
+ lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
+ vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ rppt@kernel.org, ryan.roberts@arm.com
+Cc: linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, x86@kernel.org, linux-arch@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+Content-Language: en-GB
+From: Kevin Brodsky <kevin.brodsky@arm.com>
+In-Reply-To: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Are you suggesting that a commit from v6.8 reintroduced a regression that
-was fixed in v6.6?
+On 30/12/2024 10:07, Qi Zheng wrote:
+> Qi Zheng (13):
+>   Revert "mm: pgtable: make ptlock be freed by RCU"
+>   mm: pgtable: add statistics for P4D level page table
+>   arm64: pgtable: use mmu gather to free p4d level page table
+>   s390: pgtable: add statistics for PUD and P4D level page table
+>   mm: pgtable: introduce pagetable_dtor()
+>   arm: pgtable: move pagetable_dtor() to __tlb_remove_table()
+>   arm64: pgtable: move pagetable_dtor() to __tlb_remove_table()
+>   riscv: pgtable: move pagetable_dtor() to __tlb_remove_table()
+>   x86: pgtable: move pagetable_dtor() to __tlb_remove_table()
+>   s390: pgtable: also move pagetable_dtor() of PxD to
+>     __tlb_remove_table()
+>   mm: pgtable: introduce generic __tlb_remove_table()
+>   mm: pgtable: move __tlb_remove_table_one() in x86 to generic file
+>   mm: pgtable: introduce generic pagetable_dtor_free()
 
-If so, we should address this issue in the mainline first before backporting.
+Aside from the nit on patch 4 and the request for clarification on patch
+10, this is looking good to me, so for the whole series (aside from my
+own patches of course):
 
-As a general rule, we avoid introducing out-of-tree commits to linux-stable
-except for reverts.
+Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
 
-For this patch, merging it into linux-stable is crucial, as it would prevent
-certain configurations like loongson3_defconfig from building the kernel with
-clang.
+And happy new year!
 
-To fix follow error with clang-19:
-	clang: error: unknown argument: '-msym32'
-
-Thanks,
---
-WangYuli
+Cheers,
+- Kevin

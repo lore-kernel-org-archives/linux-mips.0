@@ -1,75 +1,99 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334BA79E1;
-	Thu,  2 Jan 2025 16:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5236E1F16B;
+	Thu,  2 Jan 2025 16:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735836854; cv=none; b=jGsMU2YwDDOea0oiojUtp28l2KiC69GOwzhlXMMDP4dPDDf/DoRbtuwNGoMCzLu8Dd3/6k3ib0w8FRUfgIMRVCnzgnyGCx1ZESn25sQO9uGkoU0hevRQcIE99u93UKO8G03UxkZ4y3m/MGxqAj/d1TSxBEG6Y+w0+rWSnPYLcHI=
+	t=1735836870; cv=none; b=JKdLBmsKRe0bgf+yl8nprzUBWwrQcFSmYI9Mze5B8bpkFTLXRGjTT33LTPaH9IYgmh/UNuGz5OaHi2la3TONnLrE79SZcLk2Itq1wSoog4i+h5elLzJTSeNA2SyK6F3+oRW5CL6PuJP2Y41chS7LSk1uQv3GhLs9EZUf00WOpiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735836854; c=relaxed/simple;
-	bh=IgkU4g40LO32Daf8xBlY3M/4jRo5sGPLtixNjoSZkZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ubwlbEGEtKoXTldMNkqd3KaKnitQm1+sYDHZlrFDtYeB6DLyOx8z17mDY2RGPwPbncob9uOKz3uUp2mvhPTbkDxD/o7YQ1DiqLUCp6ILH4tBtp0l8cU6smLd0LT6eXW4atjsy4RffXD+JB1wokit/Ot79QouEUM+Zu4v3v4Pl4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA569153B;
-	Thu,  2 Jan 2025 08:54:39 -0800 (PST)
-Received: from [10.57.91.208] (unknown [10.57.91.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23C923F673;
-	Thu,  2 Jan 2025 08:54:02 -0800 (PST)
-Message-ID: <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
-Date: Thu, 2 Jan 2025 17:53:58 +0100
+	s=arc-20240116; t=1735836870; c=relaxed/simple;
+	bh=WKBhCnvtMIY0gTCieqrMhUbL9KKmSsXX0ThPSNaPwls=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=txXqFDXgXhjE4/OgE4XT0h2Okjr/96FnMynmIoTUGoOztgRHXsH4TR5OTvMEXnXG0VkldQBEoBOY53Kjp4oFuKk2hE2hXctHZ0//x/f0fGBDGv4c9tC/tykD9SR8zNRaeLMg7gNO1JWccNDF8Rw7Bhfoj6U3gioE8x43oEh1zMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=kKgm3rMv; arc=none smtp.client-ip=54.206.34.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="kKgm3rMv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1735836823;
+	bh=MGRV4JGUlwRUQzrhpkSdmx2FoinaZwX3vwgwN4+ubic=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=kKgm3rMvViCUwIdsVeFZnzBhSk+uQ8gnb0jmNueSavcjt0WEU0VawPd4z0cKOVQAc
+	 Ip/cNYwVssmBIPSQN2Jfq98a2MnCrMuw5UyHYUIRUVUC3E4/CpmiMaTV/6EgOioZKn
+	 XWcwaJrrA8aMy1jyTBnBpJQhwa4z/e3c/ryG3zHQ=
+X-QQ-mid: bizesmtpip2t1735836780t05d0rc
+X-QQ-Originating-IP: 7Ti20rk5NQiroZTWd+ILbIe3fPVqsLzx1brMy7bfJNI=
+Received: from avenger-OMEN-by-HP-Gaming-Lapto ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 03 Jan 2025 00:52:58 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 7390309620555676409
+From: WangYuli <wangyuli@uniontech.com>
+To: macro@orcam.me.uk
+Cc: baimingcong@uniontech.com,
+	gregkh@linuxfoundation.org,
+	guanwentao@uniontech.com,
+	jiaxun.yang@flygoat.com,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	revy@deepin.org,
+	sashal@kernel.org,
+	stable@vger.kernel.org,
+	tsbogend@alpha.franken.de,
+	wangyuli@uniontech.com,
+	chenhuacai@kernel.org
+Subject: Re: Re: [PATCH 5.4~6.6] MIPS: Probe toolchain support of -msym32
+Date: Fri,  3 Jan 2025 00:52:58 +0800
+Message-ID: <8AC8E4D8519CF8E4+20250102165258.57525-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <alpine.DEB.2.21.2501020550110.20821@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2501020550110.20821@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
- __tlb_remove_table()
-To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org,
- agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
- david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
- willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
- lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
- vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
- rppt@kernel.org, ryan.roberts@arm.com
-Cc: linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, x86@kernel.org, linux-arch@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
-Content-Language: en-GB
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: Mf+wQkWJ2TuYBMzfbZT7ecSDB0dI4ood/OxEkTzSJHLy1N6AsQiOX2XQ
+	xy22vrjWCuWCRIZehXizuyIZwLrIkXOrtYoRNxnOuEnYjLcpbXcYoSrmHGbv3nP5Jnje7/y
+	bUNMZi1vPKftMy7TyY5DZVHvRYmJC9LxoTGhB2G+pt2ZT7HMrHFdjqSKOrN/xfpFpqoQEhl
+	xlOVBbXTsu4k/rXYY73hUT2kUDmgc8DQNi806SIJzApo3fxPv39yG53R/dMY989mu7gqEq8
+	4ClCyrt6Jcx6kg+s32SohUjDMrF6sg/m8BCpIKnNbO/a0EMFeHiiupARd4AcckbgwGDl86r
+	szUPcMJrauBcx+kpaybzKUcrB6Cyxy/eYQ4+0lrwcB1eMaggbwft+e+B6ddSkpljcSYO/KL
+	9qynecwJ6Fa0tUb2XCwJbxq0v7Y3KNqxtvuCx8s6qrzfI8HV/VZojmvSJ/t8n3jzdED5DIt
+	7Ol8nDQSYsFaBMV4m6bh8sOmNJojmnxPnmdl75aCkHWPn8oloC3ylDNb6M7muuA8VOLDura
+	a2DEL+Lf7dEkV/hSjQny7Z3yCab1+LQ+OXowpR6ZeTD7VVUtFdOEu20Ce80hB4dgX8RwQcj
+	b+odPuv6c8pUcIKrDrx0aKqLkOt6k12yfF21eNaJDbIAZzIKbI3yxcLEC9kNxESSPU8t36b
+	3IHvLzCXGVVEvZId4ImtLxYTRweeWz6aOEnYfVvEEgZp70pLFJD7hy05zEDhFG3hkgy7khW
+	46mSgIlfiqc9H6My0ELD/WOHtYF2n968Pv01Skzphzm2rfqAHoaCrbX60hZWauuxK5AiNoz
+	cjCwcr0OMMTNcBligi6aWVddBuHL7149FwsNYcIkpNo0X7gRFhUb5SGHNcUwS+4FyKYCWsi
+	Cxv2ASYHc3JOth0AlMRwIsCpQrepI626vvVO1wfbKYWXNBBu4lbcrKeDx0QTFBpyS+JeqzH
+	GPmTZbg9n/5ksWrn+M3U1LKmplkFoozM2247frgn8Ta1lN2igsxzq+swrOBmYQPmxYP8QyY
+	9ME5DSmQ==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+X-QQ-RECHKSPAM: 0
 
-On 30/12/2024 10:07, Qi Zheng wrote:
->  static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
->  {
-> -	if (riscv_use_sbi_for_rfence())
-> +	if (riscv_use_sbi_for_rfence()) {
->  		tlb_remove_ptdesc(tlb, pt);
-> -	else
-> +	} else {
-> +		pagetable_dtor(pt);
->  		tlb_remove_page_ptdesc(tlb, pt);
+Are you suggesting that a commit from v6.8 reintroduced a regression that
+was fixed in v6.6?
 
-I find the imbalance pretty confusing: pagetable_dtor() is called
-explicitly before using tlb_remove_page() but not tlb_remove_ptdesc().
-Doesn't that assume that CONFIG_MMU_GATHER_HAVE_TABLE_FREE is selected?
-Could we not call pagetable_dtor() from __tlb_batch_free_encoded_pages()
-to ensure that the dtor is always called just before freeing, and remove
-the extra handling from arch code? I may well be missing something, I'm
-not super familiar with the tlb handling code.
+If so, we should address this issue in the mainline first before backporting.
 
-- Kevin
+As a general rule, we avoid introducing out-of-tree commits to linux-stable
+except for reverts.
+
+For this patch, merging it into linux-stable is crucial, as it would prevent
+certain configurations like loongson3_defconfig from building the kernel with
+clang.
+
+To fix follow error with clang-19:
+	clang: error: unknown argument: '-msym32'
+
+Thanks,
+--
+WangYuli

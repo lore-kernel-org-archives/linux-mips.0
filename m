@@ -1,119 +1,143 @@
-Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBE7213E92;
-	Fri, 10 Jan 2025 17:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.100.241.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DDD224D7;
+	Fri, 10 Jan 2025 18:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736529763; cv=none; b=p9njQQMRfO7zaBpWOiCiXSkr1SqAOH9GGxrrK6S/KY7mGA7s4mNREp6ufd1W9DgjtoDdqfdf1CjSfk9+OlIwlMO62hWkDp0IqxsspOvgx+8D0b7msmMuFC7F5Shh6vpQ6x84/+3ZSoFGTCFmiG60rZVKG0tRiZn662B96WO4S7A=
+	t=1736532086; cv=none; b=Jy2/SuRH3LDsik4p64O8VmSFAskwkE3CjuQpFp4OgcubKqSUDmtIsMLsdU6lb1n4C885LNobWEXhOaUrcj0Q2NPijh53VFB1DVI3C38VG4x4TF0vqX3vy5u2Ot3b26s+OM3YTPUnYnTLB6EpeOhTLtNuxB6bAg/whwQYUMMAOC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736529763; c=relaxed/simple;
-	bh=sZx7dgImXTwjqmyF+Y3t6izCPj6C9AWw7JmwFYOO7JA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lvvL9na9P6lwNBe4sITo8ztj0CpVLcDul6kF7vbPN6i9Sx3KGkMdSo8eut2d8zBXmg3qjnWbjJHsrP8gulWbnBjhAbIDJD/EictVmTPPow9DONbNAm9J9ZDpj7kXzLhWffSEVkI68uBYgAp43dkA/xgbN91YAhF5SPHHRDj8u7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=aosc.io; spf=pass smtp.mailfrom=aosc.io; dkim=pass (1024-bit key) header.d=aosc.io header.i=@aosc.io header.b=Fj+lejn5; arc=none smtp.client-ip=159.100.241.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=aosc.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aosc.io
+	s=arc-20240116; t=1736532086; c=relaxed/simple;
+	bh=O57R9mirbuUO5wVAF4LfDqbIONsq2MWMpUtCISZxgcQ=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=nFfoDfRyVWM59J/TegcM3qTq0gxhInTK1FWr1R3LnYYG6WByZVjSFh3bHYFrkJKSBKFTJP7uo0exlfly41LERqAPRxmXbrWsZFD99EQ0qAXok8q5cSteEb5lR1w6IBRGj42SM2+xxgHQYLI6ZNblxKHB9yNqfnwGr8HNzQL5Pac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=EkrqWOkN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lnTPEnx0; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=aosc.io header.i=@aosc.io header.b="Fj+lejn5"
-Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.155])
-	by relay5.mymailcheap.com (Postfix) with ESMTPS id 2E3AC20761;
-	Fri, 10 Jan 2025 17:22:34 +0000 (UTC)
-Received: from nf2.mymailcheap.com (nf2.mymailcheap.com [54.39.180.165])
-	by relay4.mymailcheap.com (Postfix) with ESMTPS id C41D5201D9;
-	Fri, 10 Jan 2025 17:22:25 +0000 (UTC)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-	by nf2.mymailcheap.com (Postfix) with ESMTPSA id 9375340186;
-	Fri, 10 Jan 2025 17:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-	t=1736529743; bh=sZx7dgImXTwjqmyF+Y3t6izCPj6C9AWw7JmwFYOO7JA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Fj+lejn5HE7YS7eDqaoHJmUFR9YFaBGHCpVOe72YKvZmb7m+CeNel/9kjXLkDKWTU
-	 ujAxdxAhS9oVANSfeWghPStR57OovFTMPu1/ugJawrLrMHDlPpOniBfrxeIxNZm5S+
-	 WwEiDJcoLcDEnHVkGOYZTAP2JplYAtWHGBpRF+Oo=
-Received: from ProArtB550-CREATOR. (unknown [58.32.41.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail20.mymailcheap.com (Postfix) with ESMTPSA id E65664113C;
-	Fri, 10 Jan 2025 17:22:20 +0000 (UTC)
-From: Kexy Biscuit <kexybiscuit@aosc.io>
-Date: Sat, 11 Jan 2025 01:22:08 +0800
-Subject: [PATCH 1/2] MIPS: Loongson64: remove ROM Size unit in boardinfo
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="EkrqWOkN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lnTPEnx0"
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 6848211400D7;
+	Fri, 10 Jan 2025 13:01:23 -0500 (EST)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-09.internal (MEProxy); Fri, 10 Jan 2025 13:01:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1736532083;
+	 x=1736618483; bh=yen/mjiGBKQk9WGCqCrEDEXsWoRARsSFozzPh57oQTY=; b=
+	EkrqWOkNIo0IOoGGUZiUhGm7roWQAEmhKjgHA7HWOoLw05URjFp5cbuPcTQme0of
+	LdvuW+uIoRhWCJWGUrVl0EejrcwVCE+0uLw2juQinIxUZbe9rU5sOsJuOEr0Wr0V
+	OOQw6HvIwz29zDjJU42Yf2KhWy4V7IwvIbdKnwErjaX82bUrxAxPywD2ljDzwTmJ
+	Hok9eAq3Y7hHKZiBnnOGw+TlfT1/KDdTtdY8Fmu7AXPEypAUZ/vJVD/G2AW2dcxm
+	iRdotCOvmg+XtQlRqQcioiyE4M53AHuElJJoO9jMrH6mu/qzic9gu5ief7+UGQS5
+	x4AHTlJhnEN7Y+nwHcEFuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736532083; x=
+	1736618483; bh=yen/mjiGBKQk9WGCqCrEDEXsWoRARsSFozzPh57oQTY=; b=l
+	nTPEnx0hlE2+L5EzFlRGn2sD4iPV4/rWCW9IMTQRaNPzwj1qmUJBY2Xkj2VRMK4v
+	bWq05mKmP4s5HXs6cZrt12niefTYJ5rkcZP4aa/NlgyOo7rZ2O3Vq0WA8f91j2Tf
+	Cqj7ZZONt5YYNpViWjNghJXlMB4LQ5tDcpGaLel20PxxzH1lVMzqJVG5WxXuIZ22
+	9qnDKlcerkE+eBo4/ki/edARfQI4qqyuP6KG0ZRQkg2ghi8F5oCSkON418l+KObQ
+	QN6GGs4rMCUgQl0xz8+P37mKnnwbg7aHLdOioocHLQJDv9qsOA5qqMF1I9WKpmBP
+	TDpjF3NkPioNyUmn3BjuQ==
+X-ME-Sender: <xms:cmCBZ2M5PHmJqf94aZ9oApIm8ZUiwSjI_9R_MFfpFq3sej1br-iNRQ>
+    <xme:cmCBZ099bcOdDUb33SxxMu8GedAmuSmYvKVl5dMYT71ozLxA5TLaqT1FDNl41RY9L
+    FtJQV2G3y3MIMeQO-8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegkedguddtjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthhqredtredt
+    jeenucfhrhhomhepfdflihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgse
+    hflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeejheefuddvtdfggfdvffek
+    teehhfelgfdvvedvkeeuffefkeehheegvefhveetjeenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghho
+    rghtrdgtohhmpdhnsggprhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopehtshgsohhgvghnugesrghlphhhrgdrfhhrrghnkhgvnhdruggvpdhrtghpthht
+    ohepjhgvfhhfsggrihesrghoshgtrdhiohdprhgtphhtthhopehkvgighigsihhstghuih
+    htsegrohhstgdrihhopdhrtghpthhtohepuhifuhesihgtvghnohifhidrmhgvpdhrtghp
+    thhtoheptghhvghnhhhurggtrghisehkvghrnhgvlhdrohhrghdprhgtphhtthhopeihrg
+    hnghhtihgviihhuheslhhoohhnghhsohhnrdgtnhdprhgtphhtthhopehlihhnuhigqdhk
+    vghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    hmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsthgrsghlvges
+    vhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:cmCBZ9SsZ5KJPwtH4px0oWT95baoTgMdfdzkYz3DPKrMJtSgOe1vzg>
+    <xmx:cmCBZ2t6vuuMD7jqVPdmuvdDbn7t7B-HITml3YMsjCU1v4waeNX4eg>
+    <xmx:cmCBZ-cF_mIQZroTcJHa-LhoZP8-BnITQnIKhn3skJyv9fy7qxppyQ>
+    <xmx:cmCBZ62pUKPX3kOw3omLcWhLOGbxB9tZCyZXhpvleoxOrVQ4XMFnUg>
+    <xmx:c2CBZ1xyawMIT9mRuiVZJsErqSfryRgPEYr5QKFewIJuNFC6GdDZdpDw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 7059C1C20066; Fri, 10 Jan 2025 13:01:22 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20250111-loongson64-boardinfo-no-size-v1-1-e9f26fcd069e@aosc.io>
+Date: Fri, 10 Jan 2025 18:01:02 +0000
+From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To: "Kexy Biscuit" <kexybiscuit@aosc.io>,
+ "Huacai Chen" <chenhuacai@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Tiezhu Yang" <yangtiezhu@loongson.cn>
+Cc: "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, "Mingcong Bai" <jeffbai@aosc.io>,
+ "Icenowy Zheng" <uwu@icenowy.me>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Message-Id: <0a9d5494-f220-4883-95e2-112223f14c23@app.fastmail.com>
+In-Reply-To: 
+ <20250111-loongson64-boardinfo-no-size-v1-0-e9f26fcd069e@aosc.io>
 References: <20250111-loongson64-boardinfo-no-size-v1-0-e9f26fcd069e@aosc.io>
-In-Reply-To: <20250111-loongson64-boardinfo-no-size-v1-0-e9f26fcd069e@aosc.io>
-To: Huacai Chen <chenhuacai@kernel.org>, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Kexy Biscuit <kexybiscuit@aosc.io>, Mingcong Bai <jeffbai@aosc.io>, 
- Icenowy Zheng <uwu@icenowy.me>, stable@vger.kernel.org
-X-Mailer: b4 0.14.2
-X-Spamd-Result: default: False [-0.10 / 10.00];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_ONE(0.00)[1];
-	ASN(0.00)[asn:16276, ipnet:51.83.0.0/16, country:FR];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
-	SPFBL_URIBL_EMAIL_FAIL(0.00)[jeffbai.aosc.io:server fail,kexybiscuit.aosc.io:server fail,uwu.icenowy.me:server fail,stable.vger.kernel.org:server fail];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Server: nf2.mymailcheap.com
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9375340186
+Subject: Re: [PATCH 0/2] MIPS: Loongson64: Remove ROM Size in LEFI boardinfo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Per Appendix A.7 in Q/LS 0013-2014 (龙芯CPU开发系统固件与内核接口规范 V2.2,
-lit. Loongson DevSys Firmware Kernel Interface Specification V2.2),
-interface_info.size is size of this interface, not size of the LEFI BIOS
-ROM.
 
-In any case, the BIOS ROM Size just cannot be several kilobytes (KB) on
-Loongson64 LEFI platforms.
 
-Reported-by: Mingcong Bai <jeffbai@aosc.io>
-Suggested-by: Icenowy Zheng <uwu@icenowy.me>
-Fixes: 6c1bfbd9df8c ("MIPS: Loongson64: Add /sys/firmware/lefi/boardinfo")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kexy Biscuit <kexybiscuit@aosc.io>
----
- arch/mips/loongson64/boardinfo.c | 2 --
- 1 file changed, 2 deletions(-)
+=E5=9C=A82025=E5=B9=B41=E6=9C=8810=E6=97=A5=E4=B8=80=E6=9C=88 =E4=B8=8B=E5=
+=8D=885:22=EF=BC=8CKexy Biscuit=E5=86=99=E9=81=93=EF=BC=9A
+> In "MIPS: Loongson64: Add /sys/firmware/lefi/boardinfo", "ROM Size" was
+> added under section "BIOS Info". However, that is incorrect per Append=
+ix
+> A.7 in Q/LS 0013-2014 (=E9=BE=99=E8=8A=AFCPU=E5=BC=80=E5=8F=91=E7=B3=BB=
+=E7=BB=9F=E5=9B=BA=E4=BB=B6=E4=B8=8E=E5=86=85=E6=A0=B8=E6=8E=A5=E5=8F=A3=
+=E8=A7=84=E8=8C=83 V2.2,
+> lit. Loongson DevSys Firmware Kernel Interface Specification V2.2),
+> which defines the size to be the size of this interface itself.
+>
+> Removing "ROM Size" from boardinfo, and also adding comments to the
+> struct interface_info to clarify meanings of its members.
+>
+> Signed-off-by: Kexy Biscuit <kexybiscuit@aosc.io>
 
-diff --git a/arch/mips/loongson64/boardinfo.c b/arch/mips/loongson64/boardinfo.c
-index 280989c5a137b5f32708b21331b48bc581745130..8bb275c93ac0991c77827404d0c76cf97201a1a8 100644
---- a/arch/mips/loongson64/boardinfo.c
-+++ b/arch/mips/loongson64/boardinfo.c
-@@ -21,13 +21,11 @@ static ssize_t boardinfo_show(struct kobject *kobj,
- 		       "BIOS Info\n"
- 		       "Vendor\t\t\t: %s\n"
- 		       "Version\t\t\t: %s\n"
--		       "ROM Size\t\t: %d KB\n"
- 		       "Release Date\t\t: %s\n",
- 		       strsep(&tmp_board_manufacturer, "-"),
- 		       eboard->name,
- 		       strsep(&tmp_bios_vendor, "-"),
- 		       einter->description,
--		       einter->size,
- 		       especial->special_name);
- }
- static struct kobj_attribute boardinfo_attr = __ATTR(boardinfo, 0444,
+For the series:
 
--- 
-2.48.0.rc2
+Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
+Good catch, thanks!
+
+> ---
+> Kexy Biscuit (2):
+>       MIPS: Loongson64: remove ROM Size unit in boardinfo
+>       MIPS: Loongson: Add comments for interface_info
+>
+>  arch/mips/include/asm/mach-loongson64/boot_param.h | 8 ++++----
+>  arch/mips/loongson64/boardinfo.c                   | 2 --
+>  2 files changed, 4 insertions(+), 6 deletions(-)
+> ---
+> base-commit: 2144da25584eb10b84252230319b5783f6a83041
+> change-id: 20250111-loongson64-boardinfo-no-size-a25dd2a03a8b
+>
+> Best regards,
+> --=20
+> Kexy Biscuit <kexybiscuit@aosc.io>
+
+--=20
+- Jiaxun

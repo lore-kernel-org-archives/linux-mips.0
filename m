@@ -1,67 +1,84 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A594188734;
-	Sat, 11 Jan 2025 12:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B278B19DF98;
+	Sat, 11 Jan 2025 12:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736597921; cv=none; b=B8Db0TIYtPlmjmHNWqR+v1fLD+Qgw/7YPfeQUOKgjSx+rEbZfGlbQ++/229PRdofNHrUiyeww2Cyh5Y0zl1zsn91g4wyOUEmQ2Ioz/OIkYD8VfuU2XmpP1/7YQMgcXrqurXsz4iY1nY2YhgmRc71sG2x87Hq6cove8CslEfhJrA=
+	t=1736597925; cv=none; b=W4fyGShQshCc+LE0XOKgA+OGWazf/vjiTSfnYnTO4/7a04obcysrNGm8K5MNGBs6768ohEudecjDMq1yzCtEI+E316IPGXogKx0ZQmE6yWp5Tdx2wCJ0W0UTyIb5+7W9OwiLj7i1Bx0H3HqC31bE1FvvC/Y1MIpfNfi35lK1pBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736597921; c=relaxed/simple;
-	bh=6Si6UXrycb9zL+r+d3n+4RzqtwVyXn1hEdlnaJysWfA=;
+	s=arc-20240116; t=1736597925; c=relaxed/simple;
+	bh=G0j+rxfkOVl3z9RAPt9oe6aH0XqdmyhM1QLNxNwzeqc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VV4o7pc0T+gne4dQWXwiWEprWOI/fxq098Hsv5GGSwMn/3WH8srz0iaWab7k55vbOsoGUP+vW/sFKX8mjMnBxUDznRK2p1YQ4XJP9TPlCguW8gAN90NCKpf3SffATczQIzOmeeqo6QvAi4nI5nr2Sf2VU0rWD1D4Ej6yY3IrX4A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=V4iVgN9BSAbq7d3GW8jvMaHYTxZBpeRxCJ/du1n+KoFO3TyQdDPqst5VzmxTIwo6aX0Kuepu9+w+pxMjiWEUHLiauddfG8z0RCcV60IEH9s5Nn9qrpVuKl9X0rbnscL4obqTDlsZuI9e9B0gEgkxIGpkr5VCBpOOfNder7szoVo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1tWaRL-0006NO-00; Sat, 11 Jan 2025 13:18:07 +0100
+	id 1tWaRL-0006NS-00; Sat, 11 Jan 2025 13:18:07 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 93ADBC010B; Sat, 11 Jan 2025 13:01:43 +0100 (CET)
-Date: Sat, 11 Jan 2025 13:01:43 +0100
+	id 19C70C06B0; Sat, 11 Jan 2025 13:02:25 +0100 (CET)
+Date: Sat, 11 Jan 2025 13:02:25 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Kexy Biscuit <kexybiscuit@aosc.io>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Mingcong Bai <jeffbai@aosc.io>,
-	Icenowy Zheng <uwu@icenowy.me>, stable@vger.kernel.org
-Subject: Re: [PATCH 0/2] MIPS: Loongson64: Remove ROM Size in LEFI boardinfo
-Message-ID: <Z4Jdp2Da+e52Eolb@alpha.franken.de>
-References: <20250111-loongson64-boardinfo-no-size-v1-0-e9f26fcd069e@aosc.io>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, mark.rutland@arm.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, xzhong86@163.com, wuzhangjin@gmail.com,
+	srostedt@redhat.com, linux-mips@linux-mips.org,
+	ralf@duck.linux-mips.net, jeffbai@aosc.io, zhanjun@uniontech.com,
+	guanwentao@uniontech.com, jiaxun.yang@flygoat.com,
+	gregory.clement@bootlin.com, philmd@linaro.org, tglx@linutronix.de,
+	rppt@kernel.org
+Subject: Re: [RESEND PATCH] MIPS: ftrace: Declare ftrace_get_parent_ra_addr()
+ as static
+Message-ID: <Z4Jd0aiLQY2KYRmS@alpha.franken.de>
+References: <527F9AFF0430AB45+20250104144708.18438-1-wangyuli@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250111-loongson64-boardinfo-no-size-v1-0-e9f26fcd069e@aosc.io>
+In-Reply-To: <527F9AFF0430AB45+20250104144708.18438-1-wangyuli@uniontech.com>
 
-On Sat, Jan 11, 2025 at 01:22:07AM +0800, Kexy Biscuit wrote:
-> In "MIPS: Loongson64: Add /sys/firmware/lefi/boardinfo", "ROM Size" was
-> added under section "BIOS Info". However, that is incorrect per Appendix
-> A.7 in Q/LS 0013-2014 (龙芯CPU开发系统固件与内核接口规范 V2.2,
-> lit. Loongson DevSys Firmware Kernel Interface Specification V2.2),
-> which defines the size to be the size of this interface itself.
+On Sat, Jan 04, 2025 at 10:47:08PM +0800, WangYuli wrote:
+> Declare ftrace_get_parent_ra_addr() as static to suppress clang
+> compiler warning that 'no previous prototype'. This function is
+> not intended to be called from other parts.
 > 
-> Removing "ROM Size" from boardinfo, and also adding comments to the
-> struct interface_info to clarify meanings of its members.
+> Fix follow error with clang-19:
 > 
-> Signed-off-by: Kexy Biscuit <kexybiscuit@aosc.io>
+> arch/mips/kernel/ftrace.c:251:15: error: no previous prototype for function 'ftrace_get_parent_ra_addr' [-Werror,-Wmissing-prototypes]
+>   251 | unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
+>       |               ^
+> arch/mips/kernel/ftrace.c:251:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>   251 | unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
+>       | ^
+>       | static
+> 1 error generated.
+> 
+> Signed-off-by: WangYuli <wangyuli@uniontech.com>
 > ---
-> Kexy Biscuit (2):
->       MIPS: Loongson64: remove ROM Size unit in boardinfo
->       MIPS: Loongson: Add comments for interface_info
+>  arch/mips/kernel/ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  arch/mips/include/asm/mach-loongson64/boot_param.h | 8 ++++----
->  arch/mips/loongson64/boardinfo.c                   | 2 --
->  2 files changed, 4 insertions(+), 6 deletions(-)
-> ---
-> base-commit: 2144da25584eb10b84252230319b5783f6a83041
-> change-id: 20250111-loongson64-boardinfo-no-size-a25dd2a03a8b
+> diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
+> index 8c401e42301c..f39e85fd58fa 100644
+> --- a/arch/mips/kernel/ftrace.c
+> +++ b/arch/mips/kernel/ftrace.c
+> @@ -248,7 +248,7 @@ int ftrace_disable_ftrace_graph_caller(void)
+>  #define S_R_SP	(0xafb0 << 16)	/* s{d,w} R, offset(sp) */
+>  #define OFFSET_MASK	0xffff	/* stack offset range: 0 ~ PT_SIZE */
+>  
+> -unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
+> +static unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
+>  		old_parent_ra, unsigned long parent_ra_addr, unsigned long fp)
+>  {
+>  	unsigned long sp, ip, tmp;
+> -- 
+> 2.45.2
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

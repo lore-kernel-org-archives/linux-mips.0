@@ -1,412 +1,228 @@
-Received: from mail-lf1-f74.google.com (mail-lf1-f74.google.com [209.85.167.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A200324B23E
-	for <linux-mips@vger.kernel.org>; Fri, 10 Jan 2025 18:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11ED1179A3;
+	Sat, 11 Jan 2025 00:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736535002; cv=none; b=IaPyCJTKxA2Vh3tSQzNnoVffKx9O703twmP7DrlvwoJYwnj63jz8emv/OrMB3jy9OLzyPUCu6xWJaKjk+VGYMfj+pKvh3UZcT/cq+mwy+Q5F+UvtercThA+tRTjdTWl+uDhLfzsCCt3AHR8R/EDqz2sWQSkpcp1gukjoljvq14Y=
+	t=1736556069; cv=none; b=PF4OgWndXo6nXmf2HLzAnZ/pM5lGosnlHmNdUnYg0cOOnAxiXTIJQh1Dm+Ph3gzp3uGlnxdfkmrjkdqHa9jobEpuNptwdJ+F7YFPtumgppCyyA93uqgJHUbsHDtzr9QNxDd6WpbJO7uN6QOiaoPhBkpbVDPUpuwNclAw68dEv88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736535002; c=relaxed/simple;
-	bh=8oJWV2blYGjdlDquSZFlq/fzMSlPhCK7jJm0Q6N72yc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lsbYsZNtpHVVy9Wy01YGEvgJFT50ubMqRSau/Ahci2FnLLx5cvvqo1j6yH7Ja9OeR5pES6kxdmfKJxQnO0r6zX+bpa0rY57sV9PyFGUk7/Jh8XYCm1eAC/w5OlSSXEYBBWUYC+HDV+hE9w/KeEbkTfbUigGL5PdcLtknpS5ZEjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hgbz9Qg2; arc=none smtp.client-ip=209.85.167.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hgbz9Qg2"
-Received: by mail-lf1-f74.google.com with SMTP id 2adb3069b0e04-5401b7d34ceso1168799e87.0
-        for <linux-mips@vger.kernel.org>; Fri, 10 Jan 2025 10:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534999; x=1737139799; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P63tWziIl5MLfOevD/STQnofaJPDmGipUyDaNTwON8A=;
-        b=Hgbz9Qg2GqPms+0il44lcTEhsKTdlaC1VvxyUhLHiI4xpnHGMC+PL9gu/MQnfu2nQQ
-         EGZzBWOZKtZi0Ym51tz6Lg0ABkqiZ2n1yY6SGkYbHCtXuMM82fmYUfp4ZM0tOMn4GfPT
-         Gieodakyng3K+oIPiJ/U0J/jc3zuw1scryoSp421gldnpNvUclNXtby/ADewHKXaNXMj
-         uspbxIhoPH2CDw5BR7mjnHBPghKlqZm7xs39atDuJ9IQmK7VkrjYKl4A+JaBZJCalszS
-         DcAFp7nGL1EJbTsuFRvCR9cdl+24Xe/rqqWlSU1aj7fMdve1YKO7MM/5DanNx3+nlQ9P
-         Iiwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534999; x=1737139799;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P63tWziIl5MLfOevD/STQnofaJPDmGipUyDaNTwON8A=;
-        b=TSILdPUCk5l2mzcYV/W2OIpmpU+HmSKqYw/QxeO48bcF1mvp1coKcjJ2IZEwNl1Ikg
-         uoEpmUCquhCT6Jj3nD4gLEK6MBNG7pK7XNxRRzHrqaUmyx3QMWoobFViuc68gVBDGRvw
-         s+SNYJlNfXFI2wWD6+EVE8bJcQwHYpWr/At3f2Qnn7HkYGmZ35WjbALuz9SyPXqQ0SIF
-         rB3HcJdRwKkcTelPKq+/IJcgzVFuA+ZpaQLf0SRuSCZqdRgYd1BpLfw/QaSri2sDEa8j
-         K561Bop7ddk6SSjMWuv6eg5J2lOMhs+XAAMaxa2HCl9moepzYB0UfYNI9wfMtxqJPgoj
-         Jl0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXewA0av7vG9oIuoiVodaX0Ai6o5/Y2c5aa6+qE8cAQDeJ3thsGlYaWc//zzPAhMaXVAm0FuDz2Q642@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqyW1UwI40TCaQTnBPZBMlN+l+cF+BDgKPYun4YWZd8B5L7RAb
-	HLYbyVZHCEavmpalW1ZCVUWjY1dj3HLZfbo9i6rMBaG3V8LkQ1bi/3A/D7KqdnVY/NVRhciJF0F
-	06j1nPTgjtw==
-X-Google-Smtp-Source: AGHT+IFpLRoJ7ZhWq6f6CfOMCmb66msRmVLu03/rxTgeCGcpzkKTsEslMdO3oeVqCUER7+YbrfuCetVYZstiXQ==
-X-Received: from wmbew14.prod.google.com ([2002:a05:600c:808e:b0:436:16c6:831])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6000:156c:b0:385:e3c5:61ae with SMTP id ffacd0b85a97d-38a873125c3mr11343217f8f.31.1736534499784;
- Fri, 10 Jan 2025 10:41:39 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:50 +0000
-In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+	s=arc-20240116; t=1736556069; c=relaxed/simple;
+	bh=aUAiZMQHz04oOhO75f12tRErgfPPkpLVq8SbCELVEhI=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=MD46VVRCHgKS/T7tJuPGpv9Q9qa2q+VaAnVVO72VnRgFaoihFVWpHk8sf2vrpIfdtbv+ABG8Pm6nnWjEb8hsnl1JYNQcA+MUmr1px0D/gDdkusdExoyeMbWnVsvz6hbybd92FRVFG9yQ6A2E4W8qSdQXwTE7z9lcNJ1Pd0VY2KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:52578)
+	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1tWPBj-00F6GA-2j; Fri, 10 Jan 2025 17:17:15 -0700
+Received: from ip72-198-198-28.om.om.cox.net ([72.198.198.28]:42048 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1tWPBh-00CzIE-Tg; Fri, 10 Jan 2025 17:17:14 -0700
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Arnd Bergmann <arnd@arndb.de>,  Richard Henderson
+ <richard.henderson@linaro.org>,  Matt Turner <mattst88@gmail.com>,  Kees
+ Cook <kees@kernel.org>,  "Paul E. McKenney" <paulmck@kernel.org>,
+  linux-alpha@vger.kernel.org,  linux-mm@kvack.org,
+  linux-kernel@vger.kernel.org,  Michael Cree <mcree@orcon.net.nz>,  Sam
+ James <sam@gentoo.org>,  "Maciej W. Rozycki" <macro@orcam.me.uk>,  Geert
+ Uytterhoeven <geert@linux-m68k.org>,  Michael Karcher
+ <kernel@mkarcher.dialup.fu-berlin.de>,  Chris Hofstaedtler
+ <zeha@debian.org>,  util-linux@vger.kernel.org,
+  linux-mips@vger.kernel.org,  loongarch@lists.linux.dev
+References: <20250103140148.370368-1-glaubitz@physik.fu-berlin.de>
+	<24f03227-1b55-4e50-b6e9-7ac74fda2602@app.fastmail.com>
+	<678ee681-12c3-4e79-a04b-495daf343846@app.fastmail.com>
+	<bff3cfad8a87799101891b4f786c5104db9dab13.camel@physik.fu-berlin.de>
+	<82d33a2d-dffe-4268-a175-4536b3f9c07f@app.fastmail.com>
+	<cc420e1a843da3cf349607369851c338f4049c4e.camel@physik.fu-berlin.de>
+Date: Fri, 10 Jan 2025 18:16:28 -0600
+In-Reply-To: <cc420e1a843da3cf349607369851c338f4049c4e.camel@physik.fu-berlin.de>
+	(John Paul Adrian Glaubitz's message of "Thu, 09 Jan 2025 10:12:03
+	+0100")
+Message-ID: <87jzb2tdb7.fsf_-_@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
-X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-24-8419288bc805@google.com>
-Subject: [PATCH RFC v2 24/29] mm: asi: Add infrastructure for mapping
- userspace addresses
-From: Brendan Jackman <jackmanb@google.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Andrew Morton <akpm@linux-foundation.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mike Rapoport <rppt@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
-	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>, Junaid Shahid <junaids@google.com>, 
-	Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1tWPBh-00CzIE-Tg;;;mid=<87jzb2tdb7.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=72.198.198.28;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19QbIllH2f8XF6Psw43DyF7Jy4S+gf143M=
+X-Spam-Level: *
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.5000]
+	*  0.7 XMSubLong Long Subject
+	*  1.0 _Welcome_To_PayPal02 BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+	*  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 590 ms - load_scoreonly_sql: 0.04 (0.0%),
+	signal_user_changed: 10 (1.7%), b_tie_ro: 9 (1.5%), parse: 1.09 (0.2%),
+	 extract_message_metadata: 16 (2.7%), get_uri_detail_list: 3.2 (0.5%),
+	tests_pri_-2000: 22 (3.7%), tests_pri_-1000: 3.2 (0.5%),
+	tests_pri_-950: 1.23 (0.2%), tests_pri_-900: 0.99 (0.2%),
+	tests_pri_-90: 84 (14.3%), check_bayes: 78 (13.2%), b_tokenize: 13
+	(2.2%), b_tok_get_all: 22 (3.7%), b_comp_prob: 3.1 (0.5%),
+	b_tok_touch_all: 37 (6.2%), b_finish: 0.88 (0.1%), tests_pri_0: 438
+	(74.3%), check_dkim_signature: 0.59 (0.1%), check_dkim_adsp: 2.9
+	(0.5%), poll_dns_idle: 1.02 (0.2%), tests_pri_10: 2.2 (0.4%),
+	tests_pri_500: 8 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] alpha/elf: Fix misc/setarch test of util-linux by removing
+ 32bit support
+X-SA-Exim-Connect-IP: 166.70.13.51
+X-SA-Exim-Rcpt-To: loongarch@lists.linux.dev, linux-mips@vger.kernel.org, util-linux@vger.kernel.org, zeha@debian.org, kernel@mkarcher.dialup.fu-berlin.de, geert@linux-m68k.org, macro@orcam.me.uk, sam@gentoo.org, mcree@orcon.net.nz, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-alpha@vger.kernel.org, paulmck@kernel.org, kees@kernel.org, mattst88@gmail.com, richard.henderson@linaro.org, arnd@arndb.de, glaubitz@physik.fu-berlin.de
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-SA-Exim-Scanned: No (on out01.mta.xmission.com); SAEximRunCond expanded to false
 
-In preparation for sandboxing bare-metal processes, teach ASI to map
-userspace addresses into the restricted address space.
 
-Add a new policy helper to determine based on the class whether to do
-this. If the helper returns true, mirror userspace mappings into the ASI
-pagetables.
+Richard Henderson <richard.henderson@linaro.org> writes[1]:
 
-Later, it will be possible for users who do not have a significant
-security boundary between KVM guests and their VMM process, to take
-advantage of this to reduce mitigation costs when switching between
-those two domains - to illustrate this idea, it's now reflected in the
-KVM taint policy, although the KVM class is still hard-coded not to map
-userspace addresses.
+> There was a Spec benchmark (I forget which) which was memory bound and ran
+> twice as fast with 32-bit pointers.
+>
+> I copied the idea from DEC to the ELF abi, but never did all the other work
+> to allow the toolchain to take advantage.
+>
+> Amusingly, a later Spec changed the benchmark data sets to not fit into a
+> 32-bit address space, specifically because of this.
+>
+> I expect one could delete the ELF bit and personality and no one would
+> notice. Not even the 10 remaining Alpha users.
 
-Co-developed-by: Junaid Shahid <junaids@google.com>
-Signed-off-by: Junaid Shahid <junaids@google.com>
-Co-developed-by: Reiji Watanabe <reijiw@google.com>
-Signed-off-by: Reiji Watanabe <reijiw@google.com>
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
+In [2] it was pointed out that parts of setarch weren't working
+properly on alpha because it has it's own SET_PERSONALITY
+implementation.  In the discussion that followed Richard Henderson
+pointed out that the 32bit pointer support for alpha was never
+completed.
+
+Fix this by removing alpha's 32bit pointer support.
+
+As a bit of paranoia refuse to execute any alpha binaries that hafe
+the EF_ALPHA_32BIT flag set.  Just to fail explicitly in case someone
+somewhere has binaries that trying to use alpha's 32bit pointer
+support.
+
+[1] https://lkml.kernel.org/r/CAFXwXrkgu=4Qn-v1PjnOR4SG0oUb9LSa0g6QXpBq4ttm52pJOQ@mail.gmail.com
+[2] https://lkml.kernel.org/r/20250103140148.370368-1-glaubitz@physik.fu-berlin.de
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- arch/x86/include/asm/asi.h        | 11 +++++
- arch/x86/include/asm/pgalloc.h    |  6 +++
- arch/x86/include/asm/pgtable_64.h |  4 ++
- arch/x86/kvm/x86.c                | 12 +++--
- arch/x86/mm/asi.c                 | 92 +++++++++++++++++++++++++++++++++++++++
- include/asm-generic/asi.h         |  4 ++
- 6 files changed, 125 insertions(+), 4 deletions(-)
+ arch/alpha/include/asm/elf.h       |  6 +-----
+ arch/alpha/include/asm/pgtable.h   |  2 +-
+ arch/alpha/include/asm/processor.h |  8 ++------
+ arch/alpha/kernel/osf_sys.c        | 11 ++---------
+ 4 files changed, 6 insertions(+), 21 deletions(-)
 
-diff --git a/arch/x86/include/asm/asi.h b/arch/x86/include/asm/asi.h
-index 555edb5f292e4d6baba782f51d014aa48dc850b6..e925d7d2cfc85bca8480c837548654e7a5a7009e 100644
---- a/arch/x86/include/asm/asi.h
-+++ b/arch/x86/include/asm/asi.h
-@@ -133,6 +133,7 @@ struct asi {
- 	struct mm_struct *mm;
- 	int64_t ref_count;
- 	enum asi_class_id class_id;
-+	spinlock_t pgd_lock;
- };
- 
- DECLARE_PER_CPU_ALIGNED(struct asi *, curr_asi);
-@@ -147,6 +148,7 @@ const char *asi_class_name(enum asi_class_id class_id);
- 
- int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_asi);
- void asi_destroy(struct asi *asi);
-+void asi_clone_user_pgtbl(struct mm_struct *mm, pgd_t *pgdp);
- 
- /* Enter an ASI domain (restricted address space) and begin the critical section. */
- void asi_enter(struct asi *asi);
-@@ -286,6 +288,15 @@ static __always_inline bool asi_in_critical_section(void)
- 
- void asi_handle_switch_mm(void);
- 
-+/*
-+ * This function returns true when we would like to map userspace addresses
-+ * in the restricted address space.
-+ */
-+static inline bool asi_maps_user_addr(enum asi_class_id class_id)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
- 
- #endif
-diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
-index dcd836b59bebd329c3d265b98e48ef6eb4c9e6fc..edf9fe76c53369eefcd5bf14a09cbf802cf1ea21 100644
---- a/arch/x86/include/asm/pgalloc.h
-+++ b/arch/x86/include/asm/pgalloc.h
-@@ -114,12 +114,16 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
- {
- 	paravirt_alloc_pud(mm, __pa(pud) >> PAGE_SHIFT);
- 	set_p4d(p4d, __p4d(_PAGE_TABLE | __pa(pud)));
-+	if (!pgtable_l5_enabled())
-+		asi_clone_user_pgtbl(mm, (pgd_t *)p4d);
- }
- 
- static inline void p4d_populate_safe(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
- {
- 	paravirt_alloc_pud(mm, __pa(pud) >> PAGE_SHIFT);
- 	set_p4d_safe(p4d, __p4d(_PAGE_TABLE | __pa(pud)));
-+	if (!pgtable_l5_enabled())
-+		asi_clone_user_pgtbl(mm, (pgd_t *)p4d);
- }
- 
- extern void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud);
-@@ -137,6 +141,7 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgd, p4d_t *p4d)
- 		return;
- 	paravirt_alloc_p4d(mm, __pa(p4d) >> PAGE_SHIFT);
- 	set_pgd(pgd, __pgd(_PAGE_TABLE | __pa(p4d)));
-+	asi_clone_user_pgtbl(mm, pgd);
- }
- 
- static inline void pgd_populate_safe(struct mm_struct *mm, pgd_t *pgd, p4d_t *p4d)
-@@ -145,6 +150,7 @@ static inline void pgd_populate_safe(struct mm_struct *mm, pgd_t *pgd, p4d_t *p4
- 		return;
- 	paravirt_alloc_p4d(mm, __pa(p4d) >> PAGE_SHIFT);
- 	set_pgd_safe(pgd, __pgd(_PAGE_TABLE | __pa(p4d)));
-+	asi_clone_user_pgtbl(mm, pgd);
- }
- 
- static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long addr)
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index d1426b64c1b9715cd9e4d1d7451ae4feadd8b2f5..fe6d83ec632a6894527784f2ebdbd013161c6f09 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -157,6 +157,8 @@ static inline void native_set_p4d(p4d_t *p4dp, p4d_t p4d)
- static inline void native_p4d_clear(p4d_t *p4d)
- {
- 	native_set_p4d(p4d, native_make_p4d(0));
-+	if (!pgtable_l5_enabled())
-+		asi_clone_user_pgtbl(NULL, (pgd_t *)p4d);
- }
- 
- static inline void native_set_pgd(pgd_t *pgdp, pgd_t pgd)
-@@ -167,6 +169,8 @@ static inline void native_set_pgd(pgd_t *pgdp, pgd_t pgd)
- static inline void native_pgd_clear(pgd_t *pgd)
- {
- 	native_set_pgd(pgd, native_make_pgd(0));
-+	if (pgtable_l5_enabled())
-+		asi_clone_user_pgtbl(NULL, pgd);
- }
+diff --git a/arch/alpha/include/asm/elf.h b/arch/alpha/include/asm/elf.h
+index 4d7c46f50382..50c82187e60e 100644
+--- a/arch/alpha/include/asm/elf.h
++++ b/arch/alpha/include/asm/elf.h
+@@ -74,7 +74,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+ /*
+  * This is used to ensure we don't load something for the wrong architecture.
+  */
+-#define elf_check_arch(x) ((x)->e_machine == EM_ALPHA)
++#define elf_check_arch(x) (((x)->e_machine == EM_ALPHA) && !((x)->e_flags & EF_ALPHA_32BIT))
  
  /*
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3e0811eb510650abc601e4adce1ce4189835a730..920475fe014f6503dd88c7bbdb6b2707c084a689 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9712,11 +9712,15 @@ static inline int kvm_x86_init_asi_class(void)
- 	/*
- 	 * And the same for data left behind by code in the userspace domain
- 	 * (i.e. the VMM itself, plus kernel code serving its syscalls etc).
--	 * This should eventually be configurable: users whose VMMs contain
--	 * no secrets can disable it to avoid paying a mitigation cost on
--	 * transition between their guest and userspace.
-+	 *
-+	 *
-+	 * If we decided to map userspace into the guest's restricted address
-+	 * space then we don't bother with this since we assume either no bugs
-+	 * allow the guest to leak that data, or the user doesn't care about
-+	 * that security boundary.
- 	 */
--	policy.protect_data |= ASI_TAINT_USER_DATA;
-+	if (!asi_maps_user_addr(ASI_CLASS_KVM))
-+		policy.protect_data |= ASI_TAINT_USER_DATA;
+  * These are used to set parameters in the core dumps.
+@@ -137,10 +137,6 @@ extern int dump_elf_task(elf_greg_t *dest, struct task_struct *task);
+ 	: amask (AMASK_CIX) ? "ev6" : "ev67");	\
+ })
  
- 	return asi_init_class(ASI_CLASS_KVM, &policy);
+-#define SET_PERSONALITY(EX)					\
+-	set_personality(((EX).e_flags & EF_ALPHA_32BIT)		\
+-	   ? PER_LINUX_32BIT : PER_LINUX)
+-
+ extern int alpha_l1i_cacheshape;
+ extern int alpha_l1d_cacheshape;
+ extern int alpha_l2_cacheshape;
+diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
+index 635f0a5f5bbd..02e8817a8921 100644
+--- a/arch/alpha/include/asm/pgtable.h
++++ b/arch/alpha/include/asm/pgtable.h
+@@ -360,7 +360,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+ 
+ extern void paging_init(void);
+ 
+-/* We have our own get_unmapped_area to cope with ADDR_LIMIT_32BIT.  */
++/* We have our own get_unmapped_area */
+ #define HAVE_ARCH_UNMAPPED_AREA
+ 
+ #endif /* _ALPHA_PGTABLE_H */
+diff --git a/arch/alpha/include/asm/processor.h b/arch/alpha/include/asm/processor.h
+index 55bb1c09fd39..5dce5518a211 100644
+--- a/arch/alpha/include/asm/processor.h
++++ b/arch/alpha/include/asm/processor.h
+@@ -8,23 +8,19 @@
+ #ifndef __ASM_ALPHA_PROCESSOR_H
+ #define __ASM_ALPHA_PROCESSOR_H
+ 
+-#include <linux/personality.h>	/* for ADDR_LIMIT_32BIT */
+-
+ /*
+  * We have a 42-bit user address space: 4TB user VM...
+  */
+ #define TASK_SIZE (0x40000000000UL)
+ 
+-#define STACK_TOP \
+-  (current->personality & ADDR_LIMIT_32BIT ? 0x80000000 : 0x00120000000UL)
++#define STACK_TOP (0x00120000000UL)
+ 
+ #define STACK_TOP_MAX	0x00120000000UL
+ 
+ /* This decides where the kernel will search for a free chunk of vm
+  * space during mmap's.
+  */
+-#define TASK_UNMAPPED_BASE \
+-  ((current->personality & ADDR_LIMIT_32BIT) ? 0x40000000 : TASK_SIZE / 2)
++#define TASK_UNMAPPED_BASE (TASK_SIZE / 2)
+ 
+ /* This is dead.  Everything has been moved to thread_info.  */
+ struct thread_struct { };
+diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+index 86185021f75a..a08e8edef1a4 100644
+--- a/arch/alpha/kernel/osf_sys.c
++++ b/arch/alpha/kernel/osf_sys.c
+@@ -1210,8 +1210,7 @@ SYSCALL_DEFINE1(old_adjtimex, struct timex32 __user *, txc_p)
+ 	return ret;
  }
-diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
-index c5073af1a82ded1c6fc467cd7a5d29a39d676bb4..093103c1bc2677c81d68008aca064fab53b73a62 100644
---- a/arch/x86/mm/asi.c
-+++ b/arch/x86/mm/asi.c
-@@ -14,6 +14,7 @@
- #include <asm/pgalloc.h>
- #include <asm/mmu_context.h>
- #include <asm/traps.h>
-+#include <asm/pgtable.h>
  
- #include "mm_internal.h"
- #include "../../../mm/internal.h"
-@@ -351,6 +352,33 @@ static void __asi_destroy(struct asi *asi)
- 	memset(asi, 0, sizeof(struct asi));
- }
+-/* Get an address range which is currently unmapped.  Similar to the
+-   generic version except that we know how to honor ADDR_LIMIT_32BIT.  */
++/* Get an address range which is currently unmapped. */
  
-+static void __asi_init_user_pgds(struct mm_struct *mm, struct asi *asi)
-+{
-+	int i;
-+
-+	if (!asi_maps_user_addr(asi->class_id))
-+		return;
-+
-+	/*
-+	 * The code below must be executed only after the given asi is
-+	 * available in mm->asi[index] to ensure at least either this
-+	 * function or __asi_clone_user_pgd() will copy entries in the
-+	 * unrestricted pgd to the restricted pgd.
-+	 */
-+	if (WARN_ON_ONCE(&mm->asi[asi->class_id] != asi))
-+		return;
-+
-+	/*
-+	 * See the comment for __asi_clone_user_pgd() why we hold the lock here.
-+	 */
-+	spin_lock(&asi->pgd_lock);
-+
-+	for (i = 0; i < KERNEL_PGD_BOUNDARY; i++)
-+		set_pgd(asi->pgd + i, READ_ONCE(*(mm->pgd + i)));
-+
-+	spin_unlock(&asi->pgd_lock);
-+}
-+
- int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_asi)
+ static unsigned long
+ arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
+@@ -1230,13 +1229,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 		       unsigned long len, unsigned long pgoff,
+ 		       unsigned long flags, vm_flags_t vm_flags)
  {
- 	struct asi *asi;
-@@ -388,6 +416,7 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
+-	unsigned long limit;
+-
+-	/* "32 bit" actually means 31 bit, since pointers sign extend.  */
+-	if (current->personality & ADDR_LIMIT_32BIT)
+-		limit = 0x80000000;
+-	else
+-		limit = TASK_SIZE;
++	unsigned long limit = TASK_SIZE;
  
- 	asi->mm = mm;
- 	asi->class_id = class_id;
-+	spin_lock_init(&asi->pgd_lock);
- 
- 	for (i = KERNEL_PGD_BOUNDARY; i < PTRS_PER_PGD; i++)
- 		set_pgd(asi->pgd + i, asi_global_nonsensitive_pgd[i]);
-@@ -398,6 +427,7 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
- 	else
- 		*out_asi = asi;
- 
-+	__asi_init_user_pgds(mm, asi);
- 	mutex_unlock(&mm->asi_init_lock);
- 
- 	return err;
-@@ -891,3 +921,65 @@ void asi_unmap(struct asi *asi, void *addr, size_t len)
- 
- 	asi_flush_tlb_range(asi, addr, len);
- }
-+
-+/*
-+ * This function is to copy the given unrestricted pgd entry for
-+ * userspace addresses to the corresponding restricted pgd entries.
-+ * It means that the unrestricted pgd entry must be updated before
-+ * this function is called.
-+ * We map entire userspace addresses to the restricted address spaces
-+ * by copying unrestricted pgd entries to the restricted page tables
-+ * so that we don't need to maintain consistency of lower level PTEs
-+ * between the unrestricted page table and the restricted page tables.
-+ */
-+void asi_clone_user_pgtbl(struct mm_struct *mm, pgd_t *pgdp)
-+{
-+	unsigned long pgd_idx;
-+	struct asi *asi;
-+	int i;
-+
-+	if (!static_asi_enabled())
-+		return;
-+
-+	/* We shouldn't need to take care non-userspace mapping. */
-+	if (!pgdp_maps_userspace(pgdp))
-+		return;
-+
-+	/*
-+	 * The mm will be NULL for p{4,g}d_clear(). We need to get
-+	 * the owner mm for this pgd in this case. The pgd page has
-+	 * a valid pt_mm only when SHARED_KERNEL_PMD == 0.
-+	 */
-+	BUILD_BUG_ON(SHARED_KERNEL_PMD);
-+	if (!mm) {
-+		mm = pgd_page_get_mm(virt_to_page(pgdp));
-+		if (WARN_ON_ONCE(!mm))
-+			return;
-+	}
-+
-+	/*
-+	 * Compute a PGD index of the given pgd entry. This will be the
-+	 * index of the ASI PGD entry to be updated.
-+	 */
-+	pgd_idx = pgdp - PTR_ALIGN_DOWN(pgdp, PAGE_SIZE);
-+
-+	for (i = 0; i < ARRAY_SIZE(mm->asi); i++) {
-+		asi = mm->asi + i;
-+
-+		if (!asi_pgd(asi) || !asi_maps_user_addr(asi->class_id))
-+			continue;
-+
-+		/*
-+		 * We need to synchronize concurrent callers of
-+		 * __asi_clone_user_pgd() among themselves, as well as
-+		 * __asi_init_user_pgds(). The lock makes sure that reading
-+		 * the unrestricted pgd and updating the corresponding
-+		 * ASI pgd are not interleaved by concurrent calls.
-+		 * We cannot rely on mm->page_table_lock here because it
-+		 * is not always held when pgd/p4d_clear_bad() is called.
-+		 */
-+		spin_lock(&asi->pgd_lock);
-+		set_pgd(asi_pgd(asi) + pgd_idx, READ_ONCE(*pgdp));
-+		spin_unlock(&asi->pgd_lock);
-+	}
-+}
-diff --git a/include/asm-generic/asi.h b/include/asm-generic/asi.h
-index 4f033d3ef5929707fd280f74fc800193e45143c1..d103343292fad567dcd73e45e986fb3974e59898 100644
---- a/include/asm-generic/asi.h
-+++ b/include/asm-generic/asi.h
-@@ -95,6 +95,10 @@ void asi_flush_tlb_range(struct asi *asi, void *addr, size_t len) { }
- 
- static inline void asi_check_boottime_disable(void) { }
- 
-+static inline void asi_clone_user_pgtbl(struct mm_struct *mm, pgd_t *pgdp) { };
-+
-+static inline bool asi_maps_user_addr(enum asi_class_id class_id) { return false; }
-+
- #endif /* !CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
- 
- #endif  /* !_ASSEMBLY_ */
-
+ 	if (len > limit)
+ 		return -ENOMEM;
 -- 
-2.47.1.613.gc27f4b7a9f-goog
+2.41.0
 

@@ -1,131 +1,215 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C4C29D0E;
-	Sat, 11 Jan 2025 14:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from minute.unseen.parts (minute.unseen.parts [139.162.151.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756F618FDBA;
+	Sat, 11 Jan 2025 15:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.162.151.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736605216; cv=none; b=UpCZUrAVw6+OO4FSxH4xC/zLTEZAcnRJqgoeHvwU3b/Ocg+AYciZBBuhZJOoGA8TggEizMFexhBBFgygNxxw1x3CCg9Wx4BqTTevt7JuBBIs9mCoTP3ZK6XF3GBEtUp79PX/qPPjYow0PfjD58mSBzGwLTivfJ2lkeXTyJwlWHk=
+	t=1736610291; cv=none; b=eJC+/VtcEFnSe2iQ8PGIZA0EZiLBt9Gi3kz5zFPq1+Ym51QvvW2EI4RqdvAiidKhN8EeF+8+bzkhJ2DhQjHs4zgPfUz4FuO01GD0nDnNUPyMYcUOIVKaDjHuoVRKgYRUebM4mnpjzaFujw86liQa1gYsK6XWSBT7gDQyUHc5wnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736605216; c=relaxed/simple;
-	bh=xDn/s38PFdttbcUthOXq3YbothiXXATHIAepu25Xy3s=;
+	s=arc-20240116; t=1736610291; c=relaxed/simple;
+	bh=wz0cIUskTSsORfuW7AelHIrC07d+NBdKGJT/4C7eJN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m6X2S7wZNwVEcAm7MQZhqGV5b0lx8PzkFAPNr0x/X3ROf5vqEyasIu+uLg2zy3w66ADOB33HK1+dJx/cJGhJlp5JlzJ0x+hGjY8LsriCsiLrechvTw2UYwDTYBbVnEOkQolzJVHKUm/YIazX0sWlUEvLEqpFTqt09q6j7dLb3d8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1tWcLH-00075W-00; Sat, 11 Jan 2025 15:19:59 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 98F25C010B; Sat, 11 Jan 2025 14:16:40 +0100 (CET)
-Date: Sat, 11 Jan 2025 14:16:40 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Dengcheng Zhu <dzhu@wavecomp.com>,
-	Ming Wang <wangming01@loongson.cn>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH] mips/math-emu: fix emulation of the prefx instruction
-Message-ID: <Z4JvONDiaYkQLAv/@alpha.franken.de>
-References: <20250105211806.421305-1-mat.jonczyk@o2.pl>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hpStL2hGXNIA6gm9S8m9/6FiWVEbGMu5u14qTODbNt7bjIsKCGS6uQ3/9FF0IwKSWM/rmEgbjunnMWABBuip2Q3m3PCAukrr1pW8AbRZfadBRqFdW6NJ0PpYgVYkak5hE98tmx+4ddlrMX+ijwRo9E0vxf4nTILt0jyFhzVlymY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unseen.parts; spf=pass smtp.mailfrom=unseen.parts; dkim=pass (2048-bit key) header.d=unseen.parts header.i=@unseen.parts header.b=kdbW+UTT; arc=none smtp.client-ip=139.162.151.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unseen.parts
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unseen.parts
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=unseen.parts header.i=@unseen.parts header.b="kdbW+UTT"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=unseen.parts; s=sig; h=In-Reply-To:Content-Type:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zOrDauVS+hbkVPh0+UTcX6Mhkdkb3swMAa9sOE8DgIs=; b=kdbW+UTTT7P8L00nGt1qaCNFY8
+	az4qaKFEx3Qpp3Hr6WnNRVNsTHT4pYehH8H/hrZRuG6C0TiMKznaTJn4bAEiZh2VKKD4haNnZQdbD
+	hIUVzd38wXVerjNkcIMHXJpU+Ne9XSxq600sMfZEzYTyCIcIN1KG1ioBpMWhZ2GASgDdBQ5sp/l8Z
+	OIC/DY9tGSF2RXgQ3Ce6f2fQ8/5VCSftnhEPqW1U/1hnIhWpH7/QuZrZ0kkYCtQLrkC7OL79tJNQr
+	aO2afQ/a5KbXpRiTfJZH91e4LQ9plXaiRR3gtuy1kFPbsCNl648UG9r6F3ky8mVBhRzHeXhCUFZ0V
+	BnIKPKhQ==;
+Received: from minute.unseen.parts ([139.162.151.61]:35754 helo=minute)
+	by minute.unseen.parts with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <ink@unseen.parts>)
+	id 1tWdP6-0005Em-1T;
+	Sat, 11 Jan 2025 16:28:00 +0100
+Date: Sat, 11 Jan 2025 16:27:57 +0100
+From: Ivan Kokshaysky <ink@unseen.parts>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>, Kees Cook <kees@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	linux-alpha@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Michael Cree <mcree@orcon.net.nz>,
+	Sam James <sam@gentoo.org>, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+	Chris Hofstaedtler <zeha@debian.org>, util-linux@vger.kernel.org,
+	linux-mips@vger.kernel.org, loongarch@lists.linux.dev
+Subject: Re: [PATCH] alpha/elf: Fix misc/setarch test of util-linux by
+ removing 32bit support
+Message-ID: <Z4KN_aOT6uZRAm8a@minute>
+References: <20250103140148.370368-1-glaubitz@physik.fu-berlin.de>
+ <24f03227-1b55-4e50-b6e9-7ac74fda2602@app.fastmail.com>
+ <678ee681-12c3-4e79-a04b-495daf343846@app.fastmail.com>
+ <bff3cfad8a87799101891b4f786c5104db9dab13.camel@physik.fu-berlin.de>
+ <82d33a2d-dffe-4268-a175-4536b3f9c07f@app.fastmail.com>
+ <cc420e1a843da3cf349607369851c338f4049c4e.camel@physik.fu-berlin.de>
+ <87jzb2tdb7.fsf_-_@email.froward.int.ebiederm.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250105211806.421305-1-mat.jonczyk@o2.pl>
+In-Reply-To: <87jzb2tdb7.fsf_-_@email.froward.int.ebiederm.org>
 
-On Sun, Jan 05, 2025 at 10:18:06PM +0100, Mateusz Jończyk wrote:
-> Currently, installation of Debian 12.8 for mipsel fails on machines
-> without an FPU [1]. This is caused by the fact that zstd (which is used
-> for initramfs compression) executes the prefx instruction, which is not
-> emulated properly by the kernel.
+On Fri, Jan 10, 2025 at 06:16:28PM -0600, Eric W. Biederman wrote:
 > 
-> The prefx (Prefetch Indexed) instruction fetches data from memory into
-> the cache without any side effects. Though functionally unrelated, it
-> requires an FPU [2].
+> Richard Henderson <richard.henderson@linaro.org> writes[1]:
 > 
-> Bytecode format of this instruction ends on "001111" binary:
+> > There was a Spec benchmark (I forget which) which was memory bound and ran
+> > twice as fast with 32-bit pointers.
+> >
+> > I copied the idea from DEC to the ELF abi, but never did all the other work
+> > to allow the toolchain to take advantage.
+> >
+> > Amusingly, a later Spec changed the benchmark data sets to not fit into a
+> > 32-bit address space, specifically because of this.
+> >
+> > I expect one could delete the ELF bit and personality and no one would
+> > notice. Not even the 10 remaining Alpha users.
 > 
-> 	(prefx instruction format) & 0x0000003f = 0x0000000f
+> In [2] it was pointed out that parts of setarch weren't working
+> properly on alpha because it has it's own SET_PERSONALITY
+> implementation.  In the discussion that followed Richard Henderson
+> pointed out that the 32bit pointer support for alpha was never
+> completed.
 > 
-> The code in fpux_emu() runs like so:
+> Fix this by removing alpha's 32bit pointer support.
 > 
-> 	#define MIPSInst(x) x
-> 	#define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000007)
-> 	#define MIPSInst_FUNC(x) (MIPSInst(x) & 0x0000003f)
-> 	enum cop1x_func { ..., pfetch_op = 0x0f, ... };
-> 
-> 	...
-> 
-> 	switch (MIPSInst_FMA_FFMT(ir)) {
-> 	...
-> 
-> 	case 0x3:
-> 		if (MIPSInst_FUNC(ir) != pfetch_op)
-> 			return SIGILL;
-> 
-> 		/* ignore prefx operation */
-> 		break;
-> 
-> 	default:
-> 		return SIGILL;
-> 	}
-> 
-> That snippet above contains a logic error and the
-> 	if (MIPSInst_FUNC(ir) != pfetch_op)
-> comparison always fires.
-> 
-> When MIPSInst_FUNC(ir) is equal to pfetch_op, ir must end on 001111
-> binary. In this case, MIPSInst_FMA_FFMT(ir) must be equal to 0x7, which
-> does not match that case label.
-> 
-> This causes emulation failure for the prefx instruction. Fix it.
-> 
-> This has been broken by
-> commit 919af8b96c89 ("MIPS: Make definitions of MIPSInst_FMA_{FUNC,FMTM} consistent with MIPS64 manual")
-> which modified the MIPSInst_FMA_FFMT macro without updating the users.
-> 
-> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-> Cc: stable@vger.kernel.org # after 3 weeks
-> Cc: Dengcheng Zhu <dzhu@wavecomp.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Ming Wang <wangming01@loongson.cn>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Fixes: 919af8b96c89 ("MIPS: Make definitions of MIPSInst_FMA_{FUNC,FMTM} consistent with MIPS64 manual")
-> 
-> [1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1091858
-> [2] MIPS Architecture For Programmers Volume II-A: The MIPS32 Instruction Set
-> 
+> As a bit of paranoia refuse to execute any alpha binaries that hafe
+> the EF_ALPHA_32BIT flag set.  Just to fail explicitly in case someone
+> somewhere has binaries that trying to use alpha's 32bit pointer
+> support.
+
+In general I agree, but then someone ought to remove the "--taso" option
+from GNU ld, which produces such binaries.
+
+Ivan.
+
+> [1] https://lkml.kernel.org/r/CAFXwXrkgu=4Qn-v1PjnOR4SG0oUb9LSa0g6QXpBq4ttm52pJOQ@mail.gmail.com
+> [2] https://lkml.kernel.org/r/20250103140148.370368-1-glaubitz@physik.fu-berlin.de
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 > ---
+>  arch/alpha/include/asm/elf.h       |  6 +-----
+>  arch/alpha/include/asm/pgtable.h   |  2 +-
+>  arch/alpha/include/asm/processor.h |  8 ++------
+>  arch/alpha/kernel/osf_sys.c        | 11 ++---------
+>  4 files changed, 6 insertions(+), 21 deletions(-)
 > 
-> Tested in QEMU for mipsel and mips64el.
-> ---
->  arch/mips/math-emu/cp1emu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-> index 265bc57819df..c89e70df43d8 100644
-> --- a/arch/mips/math-emu/cp1emu.c
-> +++ b/arch/mips/math-emu/cp1emu.c
-> @@ -1660,7 +1660,7 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
->  		break;
->  	}
+> diff --git a/arch/alpha/include/asm/elf.h b/arch/alpha/include/asm/elf.h
+> index 4d7c46f50382..50c82187e60e 100644
+> --- a/arch/alpha/include/asm/elf.h
+> +++ b/arch/alpha/include/asm/elf.h
+> @@ -74,7 +74,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
+>  /*
+>   * This is used to ensure we don't load something for the wrong architecture.
+>   */
+> -#define elf_check_arch(x) ((x)->e_machine == EM_ALPHA)
+> +#define elf_check_arch(x) (((x)->e_machine == EM_ALPHA) && !((x)->e_flags & EF_ALPHA_32BIT))
 >  
-> -	case 0x3:
-> +	case 0x7:
->  		if (MIPSInst_FUNC(ir) != pfetch_op)
->  			return SIGILL;
+>  /*
+>   * These are used to set parameters in the core dumps.
+> @@ -137,10 +137,6 @@ extern int dump_elf_task(elf_greg_t *dest, struct task_struct *task);
+>  	: amask (AMASK_CIX) ? "ev6" : "ev67");	\
+>  })
 >  
+> -#define SET_PERSONALITY(EX)					\
+> -	set_personality(((EX).e_flags & EF_ALPHA_32BIT)		\
+> -	   ? PER_LINUX_32BIT : PER_LINUX)
+> -
+>  extern int alpha_l1i_cacheshape;
+>  extern int alpha_l1d_cacheshape;
+>  extern int alpha_l2_cacheshape;
+> diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
+> index 635f0a5f5bbd..02e8817a8921 100644
+> --- a/arch/alpha/include/asm/pgtable.h
+> +++ b/arch/alpha/include/asm/pgtable.h
+> @@ -360,7 +360,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>  
+>  extern void paging_init(void);
+>  
+> -/* We have our own get_unmapped_area to cope with ADDR_LIMIT_32BIT.  */
+> +/* We have our own get_unmapped_area */
+>  #define HAVE_ARCH_UNMAPPED_AREA
+>  
+>  #endif /* _ALPHA_PGTABLE_H */
+> diff --git a/arch/alpha/include/asm/processor.h b/arch/alpha/include/asm/processor.h
+> index 55bb1c09fd39..5dce5518a211 100644
+> --- a/arch/alpha/include/asm/processor.h
+> +++ b/arch/alpha/include/asm/processor.h
+> @@ -8,23 +8,19 @@
+>  #ifndef __ASM_ALPHA_PROCESSOR_H
+>  #define __ASM_ALPHA_PROCESSOR_H
+>  
+> -#include <linux/personality.h>	/* for ADDR_LIMIT_32BIT */
+> -
+>  /*
+>   * We have a 42-bit user address space: 4TB user VM...
+>   */
+>  #define TASK_SIZE (0x40000000000UL)
+>  
+> -#define STACK_TOP \
+> -  (current->personality & ADDR_LIMIT_32BIT ? 0x80000000 : 0x00120000000UL)
+> +#define STACK_TOP (0x00120000000UL)
+>  
+>  #define STACK_TOP_MAX	0x00120000000UL
+>  
+>  /* This decides where the kernel will search for a free chunk of vm
+>   * space during mmap's.
+>   */
+> -#define TASK_UNMAPPED_BASE \
+> -  ((current->personality & ADDR_LIMIT_32BIT) ? 0x40000000 : TASK_SIZE / 2)
+> +#define TASK_UNMAPPED_BASE (TASK_SIZE / 2)
+>  
+>  /* This is dead.  Everything has been moved to thread_info.  */
+>  struct thread_struct { };
+> diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+> index 86185021f75a..a08e8edef1a4 100644
+> --- a/arch/alpha/kernel/osf_sys.c
+> +++ b/arch/alpha/kernel/osf_sys.c
+> @@ -1210,8 +1210,7 @@ SYSCALL_DEFINE1(old_adjtimex, struct timex32 __user *, txc_p)
+>  	return ret;
+>  }
+>  
+> -/* Get an address range which is currently unmapped.  Similar to the
+> -   generic version except that we know how to honor ADDR_LIMIT_32BIT.  */
+> +/* Get an address range which is currently unmapped. */
+>  
+>  static unsigned long
+>  arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
+> @@ -1230,13 +1229,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+>  		       unsigned long len, unsigned long pgoff,
+>  		       unsigned long flags, vm_flags_t vm_flags)
+>  {
+> -	unsigned long limit;
+> -
+> -	/* "32 bit" actually means 31 bit, since pointers sign extend.  */
+> -	if (current->personality & ADDR_LIMIT_32BIT)
+> -		limit = 0x80000000;
+> -	else
+> -		limit = TASK_SIZE;
+> +	unsigned long limit = TASK_SIZE;
+>  
+>  	if (len > limit)
+>  		return -ENOMEM;
 > -- 
-> 2.25.1
-
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> 2.41.0
+> 
+> 

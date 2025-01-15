@@ -1,37 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D9B1E9915;
-	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3509120764C;
+	Wed, 15 Jan 2025 11:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736938992; cv=none; b=LGSOzZFgOdPObPQn4nDuigtldjdyILxP5J/fmiHq6y1XlQozHPDv5ZR3lhgYFEtkHDNxhdyRorSj8jNAblkG3xcgufY3+D78JhGI/pKFHKat5gY8mrM2qvssk05kXPBT5q4RQj/n3Yw+XLEpnZ/l0nmLI1rIGpA5BgkkubOwk74=
+	t=1736938992; cv=none; b=ShKl2N8kzW9Toj1EX82XPlc+r8VhHE/o3R7O/r0hz/hGjJeWWjOLS9YDdsnuS0Hjn5ANdP/pAeALgCZyrxu8SsPQ50BjN+fmdVTk2O3caZXYwEeJKh9s/QCe4uiZpTt8g51S3rqxlVmWlhgR2/8zjACRJ2uBPMW8MJtod8x3FXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736938992; c=relaxed/simple;
-	bh=AXY2pqOXfNjpLgRM81yWCwViVwuzN4z80XQbuR3cZYY=;
+	bh=5Tc53pxjVxa86rw6gH92zMKZ+MrFWBmscHtIF90fUbw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k6K474b1yXtswU6vxMw75/TKr4mcIKvmgoOA9AiMgvdbrvFI5TOvH1ObfLAcr0p6cOF+ESoTS8jzOnHLLozMYW070h5MnzRrwahAXmgBOyRpYn8ADA4Q2DZBiEGgl/sxmibAza5jsU4wlraejjVbF8TyCttUC1ss55X+aqS/5Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fs9LPIZe; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=lCzBEAB63t6IufJR+Xotsbkw7PIs42VdP2kdtxVr8CoARWjEbIuWQDM4JF5wT3NDcvjdoRtZ22ITEmk3u+AgwL6unLbP50QwA+Tm9KIoBoNl9UgWraiXTj7Y9smCgeyY2gf1zO88j05iNZMdkPr92+taUMkmfQouWF5zBWS8H/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pTzGJov5; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fs9LPIZe"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C542C4CEE6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pTzGJov5"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C15F0C4CEEF;
 	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1736938991;
-	bh=AXY2pqOXfNjpLgRM81yWCwViVwuzN4z80XQbuR3cZYY=;
+	bh=5Tc53pxjVxa86rw6gH92zMKZ+MrFWBmscHtIF90fUbw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=Fs9LPIZeHu9OnNOWFEJnrE/n2SdTpzsD73W3TT4Qlx7ya+WiSrNlUyZEq42yBfNWX
-	 jgLpI6HCyO1aLMEJ2+AKjeQmmvSRhKKF7nPAc3eV6gFmvTCyKurJXxsPUsp3+5CG/Q
-	 6Y9dXEuxUvIP4zyre/HQ40K8OIBmLIjMUpdD0brnlSSx8pZEWvymZFysbNVFAMaeY4
-	 kIsSnkBbh82tZpxm1evvbtVYwHVyA3/lOZONU3REcnjl52Pm6nuWiDnKPmc1HoI3GZ
-	 guUDv+KpQsgReB3V1x8wilIRbu2PJrhvb5cW+Jl8iFvkrdvKZWjmbuu884KuotSF2Q
-	 ieLWfhvf1wDhg==
+	b=pTzGJov5BI8ygk9TjEhr9sRqV4E26IyqdmjmZ08uXiHU32psxDS8F1RF4wOcP+oOD
+	 CZomfHpXzx/MsP0TnTOYcUsb/OHczb4lq6Q7QuzOYcnCv2C2bIRr7CEK7b/ww3oF7x
+	 GnghzarRf7cVH/EMCXKHwyTfDSrtiXagsqRDpLAe1dkE2w7W9aFOYqlWKI56zqpipE
+	 b/ClmdWZhpgOuGya3sNAxql5cc3Uqf4l9IV2beCtGCTAL2qEn2YFeNk/H8n8YfvEoD
+	 BJdoViljb4ytMLUfQGwtce949Uvek5dK2CAhJLsmMkMv08LD3mspfDKh3R5ROkrztU
+	 KTejR6d6Nk87g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F09CC02183;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8481C02180;
 	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
 From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
-Date: Wed, 15 Jan 2025 19:03:08 +0800
-Subject: [PATCH 2/4] ASoC: dt-bindings: Add Realtek ALC203 Codec
+Date: Wed, 15 Jan 2025 19:03:10 +0800
+Subject: [PATCH 4/4] ASoC: ac97: Add DT support
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250115-loongson1-ac97-v1-2-2087b04dcd7f@gmail.com>
+Message-Id: <20250115-loongson1-ac97-v1-4-2087b04dcd7f@gmail.com>
 References: <20250115-loongson1-ac97-v1-0-2087b04dcd7f@gmail.com>
 In-Reply-To: <20250115-loongson1-ac97-v1-0-2087b04dcd7f@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
@@ -51,11 +51,11 @@ Cc: linux-mips@vger.kernel.org, linux-sound@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Keguang Zhang <keguang.zhang@gmail.com>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1736938989; l=1261;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1736938989; l=1140;
  i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
- bh=RCYZ5LwKO9wo5eHWNA2+bL7kJQC8yTwQR/Y3fcfAXio=;
- b=W3ztVz5GeNHcTQgp9c+Ac07IJ+el8Q2afuKTc7RmJnXeWuVnE2RXiTOWWrV5cPCdZ2JaOD91T
- +l0p7EjqdnaBHZkGCeSGIMZ3gyWCCXvYMiOiVXaX12jdkMkq5JF6f5P
+ bh=zOmvkdjOxEXNVbs0rnSsZ3qVKBPQtGNTr4XJg6yjJq8=;
+ b=P3yzqblD2o8EvaKdf1XdWZyErWlDtmcrozd2JItjI9VlRkcQ6Oc8T6bKAVD98NtFYo83e7Xtd
+ 3jrW3XshfJrBQxWVVYLgzb04iqushcMCQMrnCIEyRr5PkD7l0+kJLgP
 X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
  pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
 X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
@@ -65,52 +65,45 @@ Reply-To: keguang.zhang@gmail.com
 
 From: Keguang Zhang <keguang.zhang@gmail.com>
 
-Add devicetree binding document for Realtek ALC203 codec.
+Add an of_match_table with 'realtek,alc203' to provide
+DT support for the AC97 generic codec driver.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- .../devicetree/bindings/sound/realtek,alc203.yaml  | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ sound/soc/codecs/ac97.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/realtek,alc203.yaml b/Documentation/devicetree/bindings/sound/realtek,alc203.yaml
-new file mode 100644
-index 000000000000..5be8e9ee1ed4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/realtek,alc203.yaml
-@@ -0,0 +1,33 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/realtek,alc203.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index 0e013edfe63d..d8444a083af2 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+@@ -127,9 +128,18 @@ static int ac97_probe(struct platform_device *pdev)
+ 			&soc_component_dev_ac97, &ac97_dai, 1);
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id ac97_codec_of_match[] = {
++	{ .compatible = "realtek,alc203", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ac97_codec_of_match);
++#endif
 +
-+title: Realtek ALC203 AC97 Audio Codec
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+description:
-+  ALC203 is a full duplex AC97 2.3 compatible stereo audio codec.
-+
-+properties:
-+  compatible:
-+    const: realtek,alc203
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    audio-codec {
-+        compatible = "realtek,alc203";
-+        #sound-dai-cells = <0>;
-+    };
+ static struct platform_driver ac97_codec_driver = {
+ 	.driver = {
+ 		.name = "ac97-codec",
++		.of_match_table = of_match_ptr(ac97_codec_of_match),
+ 	},
+ 
+ 	.probe = ac97_probe,
 
 -- 
 2.43.0

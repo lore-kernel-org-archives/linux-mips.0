@@ -1,157 +1,153 @@
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E551F9F41;
-	Wed, 15 Jan 2025 10:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D458B1DB15D;
+	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736936847; cv=none; b=gRk69OGtYi6OA84amyPXhDCUfmCc4CTRcwLK+lyF5ThF+4QEFPmbHEuLPKuW80XsQ1FlJmeVMsW54ACNRDNu0IOfHLwmy4lzwE/NFBlUYztkIpP0YWMguAKja6e+DC81TrOJ+ih3W1nh71kVJ3iRoLe3IPr53x3KZkslwqhE7mE=
+	t=1736938992; cv=none; b=u0O0cQhIDZq/Ro+p9jLYxQL59L5W+SYzhu1TE1YpG/4DCp4uIJZu1lcb05tTW/R4kwiV6q4rocdJveAHcsM4netYNMp/Fr7ugFInJWdFQ+yoHCaysB+yNZWh5Ty+U3Z0ahlMzDBewEqacSC1ZGsm0HkKEhFHO+7Rq4cMQKvzQsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736936847; c=relaxed/simple;
-	bh=aizAfGesBPH/eyF5gvKfmPPNzOwtPNeUlgHuO1pcuf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=sEvJcrmXOKM3G0ahXk008GgTuzTSwSy7Fl9+RrZgd6yUvY/weUpYsfifr9CWzym1Q1HnOl4MOpZl/QHIrP7ahgfa1csbXN0ZS9KemG5BAFhraO2w0rZv9b21LA7wwnz88YHQeZ/eKYtyssS9fRyT3+HgHYtUcXUvHPTONdi0V6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-	by vmicros1.altlinux.org (Postfix) with ESMTP id DE49E72C8CC;
-	Wed, 15 Jan 2025 13:27:16 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-	id CC8B47CCB3A; Wed, 15 Jan 2025 12:27:16 +0200 (IST)
-Date: Wed, 15 Jan 2025 12:27:16 +0200
-From: "Dmitry V. Levin" <ldv@strace.io>
-To: Shuah Khan <shuah@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	strace-devel@lists.strace.io, linux-kselftest@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/ptrace/get_syscall_info: fix for MIPS n32
-Message-ID: <20250115102716.GA20911@strace.io>
+	s=arc-20240116; t=1736938992; c=relaxed/simple;
+	bh=QKENepp+rlSH6WZ4tcGtMCN8Ho7Wn7/+o8HWHt/jW5w=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=YxVezltpXJA9CLLtQ/39PRiq4hunHSehL0XqduCzC0pxTpb7v/plWx2vsvg/BUmsSfZDhu3H0IPtQOWFmotR7ajwEFBbH9xUcgMaSKA7J1sgEb8DU6xDQigtb31Mb2PYDJX9V/CRt55ePw1PiK4ZN+ZUgs8xNEHolTwKQA8U6P4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n36KLwX1; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n36KLwX1"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 842C3C4CEE2;
+	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736938991;
+	bh=QKENepp+rlSH6WZ4tcGtMCN8Ho7Wn7/+o8HWHt/jW5w=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=n36KLwX1I6vwAHq0TnDlA6mqqqnPY8FNk0pSluum+3cchJbYP2VFJyoPjGtUkBnW/
+	 X+V3wLKlK8Oc+lPbmk4KbdB7Z/x7O2lOVFG0l6A2D8ipLvLsYFT6S2O0b9PBl43nHg
+	 7neSvSemgAVTYBydTrcsHeG1TPBnpkWj4YQmDgoKLblUCDAdryJlsaWM1OKhtqKDK9
+	 VKOm0ouDHgfHz+wGEwrivZSGTiaV1EIrqqvP5+KrgKot10RU7D3K1m7m+KYkJlK/OC
+	 L38H/zV1ZQL25+6K41BHaRg2IWeryzAoYFQhwPv9Td4TV/yXKG+k8k8jDlPpas7uaI
+	 vtVPPIbupJkpQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 721D6C02185;
+	Wed, 15 Jan 2025 11:03:11 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Date: Wed, 15 Jan 2025 19:03:07 +0800
+Subject: [PATCH 1/4] ASoC: dt-bindings: Add Loongson-1 AC97 Controller
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250115-loongson1-ac97-v1-1-2087b04dcd7f@gmail.com>
+References: <20250115-loongson1-ac97-v1-0-2087b04dcd7f@gmail.com>
+In-Reply-To: <20250115-loongson1-ac97-v1-0-2087b04dcd7f@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-mips@vger.kernel.org, linux-sound@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1736938989; l=2085;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=sj9gFgnj3eTfVF3m8C07vZrwbwVlXrglvLvbMnZ9jsI=;
+ b=xIA/2qQqzVoEkunR/DFz1G4Zb+2kfDoAPliIuHYfHCLR2MfwsA+4jjLa7IX8iWby9ThVmDwdb
+ 5xsGMr9QsW7Cit8s1ma6T6KsZQ7XHbmBYSLh+9IcFwc9cFhJMhUKJeB
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
+Reply-To: keguang.zhang@gmail.com
 
-MIPS n32 is one of two ILP32 architectures supported by the kernel
-that have 64-bit syscall arguments (another one is x32).
+From: Keguang Zhang <keguang.zhang@gmail.com>
 
-When this test passed 32-bit arguments to syscall(), they were
-sign-extended in libc, PTRACE_GET_SYSCALL_INFO reported these
-sign-extended 64-bit values, and the test complained about the mismatch.
+Add devicetree binding document for Loongson-1 AC97 controller.
 
-Fix this by passing arguments of the appropriate type to syscall(),
-which is "unsigned long long" on MIPS n32, and __kernel_ulong_t on other
-architectures.
-
-As a side effect, this also extends the test on all 64-bit architectures
-by choosing constants that don't fit into 32-bit integers.
-
-Signed-off-by: Dmitry V. Levin <ldv@strace.io>
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- .../selftests/ptrace/get_syscall_info.c       | 53 +++++++++++--------
- 1 file changed, 32 insertions(+), 21 deletions(-)
+ .../bindings/sound/loongson,ls1b-ac97.yaml         | 68 ++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-diff --git a/tools/testing/selftests/ptrace/get_syscall_info.c b/tools/testing/selftests/ptrace/get_syscall_info.c
-index 5bcd1c7b5be6..812f64d15955 100644
---- a/tools/testing/selftests/ptrace/get_syscall_info.c
-+++ b/tools/testing/selftests/ptrace/get_syscall_info.c
-@@ -11,8 +11,19 @@
- #include <err.h>
- #include <signal.h>
- #include <asm/unistd.h>
-+#include <linux/types.h>
- #include "linux/ptrace.h"
- 
-+#if defined(__mips__) && defined(_ABIN32)
-+/*
-+ * MIPS N32 is the only architecture where __kernel_ulong_t
-+ * does not match the bitness of syscall arguments.
-+ */
-+typedef unsigned long long kernel_ulong_t;
-+#else
-+typedef __kernel_ulong_t kernel_ulong_t;
-+#endif
+diff --git a/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml b/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml
+new file mode 100644
+index 000000000000..1c6a2771f942
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/loongson,ls1b-ac97.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static int
- kill_tracee(pid_t pid)
- {
-@@ -42,37 +53,37 @@ sys_ptrace(int request, pid_t pid, unsigned long addr, unsigned long data)
- 
- TEST(get_syscall_info)
- {
--	static const unsigned long args[][7] = {
-+	const kernel_ulong_t args[][7] = {
- 		/* a sequence of architecture-agnostic syscalls */
- 		{
- 			__NR_chdir,
--			(unsigned long) "",
--			0xbad1fed1,
--			0xbad2fed2,
--			0xbad3fed3,
--			0xbad4fed4,
--			0xbad5fed5
-+			(uintptr_t) "",
-+			(kernel_ulong_t) 0xdad1bef1bad1fed1ULL,
-+			(kernel_ulong_t) 0xdad2bef2bad2fed2ULL,
-+			(kernel_ulong_t) 0xdad3bef3bad3fed3ULL,
-+			(kernel_ulong_t) 0xdad4bef4bad4fed4ULL,
-+			(kernel_ulong_t) 0xdad5bef5bad5fed5ULL
- 		},
- 		{
- 			__NR_gettid,
--			0xcaf0bea0,
--			0xcaf1bea1,
--			0xcaf2bea2,
--			0xcaf3bea3,
--			0xcaf4bea4,
--			0xcaf5bea5
-+			(kernel_ulong_t) 0xdad0bef0caf0bea0ULL,
-+			(kernel_ulong_t) 0xdad1bef1caf1bea1ULL,
-+			(kernel_ulong_t) 0xdad2bef2caf2bea2ULL,
-+			(kernel_ulong_t) 0xdad3bef3caf3bea3ULL,
-+			(kernel_ulong_t) 0xdad4bef4caf4bea4ULL,
-+			(kernel_ulong_t) 0xdad5bef5caf5bea5ULL
- 		},
- 		{
- 			__NR_exit_group,
- 			0,
--			0xfac1c0d1,
--			0xfac2c0d2,
--			0xfac3c0d3,
--			0xfac4c0d4,
--			0xfac5c0d5
-+			(kernel_ulong_t) 0xdad1bef1fac1c0d1ULL,
-+			(kernel_ulong_t) 0xdad2bef2fac2c0d2ULL,
-+			(kernel_ulong_t) 0xdad3bef3fac3c0d3ULL,
-+			(kernel_ulong_t) 0xdad4bef4fac4c0d4ULL,
-+			(kernel_ulong_t) 0xdad5bef5fac5c0d5ULL
- 		}
- 	};
--	const unsigned long *exp_args;
-+	const kernel_ulong_t *exp_args;
- 
- 	pid_t pid = fork();
- 
-@@ -154,7 +165,7 @@ TEST(get_syscall_info)
- 			}
- 			ASSERT_LT(0, (rc = sys_ptrace(PTRACE_GET_SYSCALL_INFO,
- 						      pid, size,
--						      (unsigned long) &info))) {
-+						      (uintptr_t) &info))) {
- 				LOG_KILL_TRACEE("PTRACE_GET_SYSCALL_INFO: %m");
- 			}
- 			ASSERT_EQ(expected_none_size, rc) {
-@@ -177,7 +188,7 @@ TEST(get_syscall_info)
- 		case SIGTRAP | 0x80:
- 			ASSERT_LT(0, (rc = sys_ptrace(PTRACE_GET_SYSCALL_INFO,
- 						      pid, size,
--						      (unsigned long) &info))) {
-+						      (uintptr_t) &info))) {
- 				LOG_KILL_TRACEE("PTRACE_GET_SYSCALL_INFO: %m");
- 			}
- 			switch (ptrace_stop) {
++title: Loongson-1 AC97 Controller
++
++maintainers:
++  - Keguang Zhang <keguang.zhang@gmail.com>
++
++description:
++  The Loongson-1 AC97 controller supports 2-channel stereo output and input.
++  It is paired with the DMA engine to handle playback and capture functions.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: loongson,ls1b-ac97
++      - items:
++          - enum:
++              - loongson,ls1a-ac97
++              - loongson,ls1c-ac97
++          - const: loongson,ls1b-ac97
++
++  reg:
++    maxItems: 3
++
++  reg-names:
++    items:
++      - const: ac97
++      - const: audio-tx
++      - const: audio-rx
++
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++  '#sound-dai-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    audio-controller@1fe74000 {
++        compatible = "loongson,ls1b-ac97";
++        reg = <0x1fe74000 0x60>, <0x1fe72420 0x4>, <0x1fe74c4c 0x4>;
++        reg-names = "ac97", "audio-tx", "audio-rx";
++        dmas = <&dma 1>, <&dma 2>;
++        dma-names = "tx", "rx";
++        #sound-dai-cells = <0>;
++    };
+
 -- 
-ldv
+2.43.0
+
+

@@ -1,38 +1,40 @@
 Received: from polaris.svanheule.net (polaris.svanheule.net [84.16.241.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936051DF989
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BBB1DFD8F
 	for <linux-mips@vger.kernel.org>; Sun, 19 Jan 2025 18:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.241.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737312270; cv=none; b=MvWBKRBj3VMeX5Vs8o7JQ4jZmhkegF/HAHnlXP8pJzfOi69O5srEytNmQAsOZq6T9AfrHjKA9eiDhJYBY0wWB63SoZu3AxDZJyTtAggGTpwZ4c42gvU7rUntY9bb8eRr/1+39z9Hx8hcvSZAcDoGb5A/+OACWcVd8LSIK5QC4TI=
+	t=1737312270; cv=none; b=ifCvEcSjkYrxHdR+9eEC2U9OBj2JDWx+AbYEcC46AYelQpwdY/fUGVinPRzDQ+GG5MR8BWzCw1Ea1+1LuYwCXLYEiF8RwpMQDRLGH+ZkmwYyU7TxWdWgC5pbeZgkk+tW9V+YXNAFr6h40nSPWn92u8lZP7VM0MCmR1TCjOqd4c0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737312270; c=relaxed/simple;
-	bh=3Nx1x4rUhn0BOxrHWPI6gpRdJieVXNq6pV5/weJboic=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jKyN9P+6aS3DbUDM6seLzEHgj6BREGxkpZwTsHbPZjTg/u8qHUSsonp262lJYo2QLLba6hi+Yd88DzxJl0IQYMMr41jFs7zJ8jl0H421qHKiUL3f+JWIAdzqzj9fZ9JwEEvQdXAVbg0z+7gFMPyDIKmSMYU229rATwXUa1vN3ZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svanheule.net; spf=pass smtp.mailfrom=svanheule.net; dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b=zhSPcrLM; arc=none smtp.client-ip=84.16.241.116
+	bh=ON6PJKUcYmYMg0l3TDey9gKncPo/NlnG4KjDFUIdpDg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=E3s7ifW+GXFnL/IX1MGOrEap4UJdLmzo5J6ah/1Lu3BMWV0OCVE188eWFC6kBTX1w0fuUIRdrp+91p71cOxggQpjL3ynH510Hp8Vl1q2eZcCWR9pzf79jXJKUkZ0NOp+DVXvUTf1ij4PriovFvNwFM2rTyfEs2i8B15W7aeB17o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svanheule.net; spf=pass smtp.mailfrom=svanheule.net; dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b=oQmIvtBA; arc=none smtp.client-ip=84.16.241.116
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svanheule.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=svanheule.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b="zhSPcrLM"
+	dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b="oQmIvtBA"
 Received: from terra.vega.svanheule.net (unknown [94.110.49.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: sander@svanheule.net)
-	by polaris.svanheule.net (Postfix) with ESMTPSA id 5FCF55A7E4B;
-	Sun, 19 Jan 2025 19:34:49 +0100 (CET)
+	by polaris.svanheule.net (Postfix) with ESMTPSA id 96FB75A7E4D;
+	Sun, 19 Jan 2025 19:34:50 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-	s=mail1707; t=1737311689;
+	s=mail1707; t=1737311690;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=y/knckwelaT8aNo57HPLVZlLUD3WsgqE49L3o3AzMPI=;
-	b=zhSPcrLMYzylIrZkXHSwRWnPUx29u3/+QNcxZ6P1yxpoNPrqMUyLzCuLGfPA6F3x4rqrj+
-	7PJ1RyMM5sC3tykzXqFaEkh2vq8u/EviU1z+UQBZXxhutgUcV6DOAdfKjtzI4fQLB5X0Qs
-	iHRpduGOdBo6OfmOT5c4Cr7uvCHbGJgrc3+BXj/74AzhLOqyyVzOcfmkBTgx55Y+5ojyPn
-	AJiYzC9vq0ueexikpkZcMaATp1RJ5stTZmRkw7HnDkqdfmxL6Z1Rw7zAlqAMH2FcX0m/Hv
-	iYAgv5LMxnXwII17+7Op1aCzC4XJ4aDUsQJD9bJbLQh6crcwiTCWBoIuUENRBQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JmnlXKkw6WYoqwfymcm3ceL6H3zSYoIfS+V2I2wrFc8=;
+	b=oQmIvtBAZQknoMlSpM1tlit8GrRhyvwkpb0/HBeSTjwI6O8uw0oERSjkrkVT07/vHCmYKb
+	7r7gS+OwWRTNqe+HWxDj0xiQDpGF7IJ1wBU+P6ZuV9WOM4iUHlOMKKdmy7DtulWafGWiDb
+	YkFeAei+BCvLdVcItCUELpwnP33SuQu7ltIgr5ToKcVwSI4VMI56I6l9C48NoCi+NoT64o
+	VFXS0/xMJ0ihGYSZqtM44X4liIVtzVcQ6l4xC81mK51LnTNMzxjcYUV0SyTnthlLvH8vTe
+	WAkGQ3X0qJ4gekGfKP8ul4tqzmg8gEWMtEe9+kvUDdb2Chvx2v6HsjcoITcbmA==
 From: Sander Vanheule <sander@svanheule.net>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -43,10 +45,12 @@ To: Rob Herring <robh@kernel.org>,
 	linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH 0/9] mips: dts: Split Realtek devicetrees
-Date: Sun, 19 Jan 2025 19:34:15 +0100
-Message-ID: <20250119183424.259353-1-sander@svanheule.net>
+Subject: [PATCH 2/9] mips: dts: realtek: Clean up CPU clocks
+Date: Sun, 19 Jan 2025 19:34:17 +0100
+Message-ID: <20250119183424.259353-3-sander@svanheule.net>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250119183424.259353-1-sander@svanheule.net>
+References: <20250119183424.259353-1-sander@svanheule.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -55,32 +59,50 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series intends to clean up the base includes, shared between
-hardware devicetrees. To get rid of some dtbs_check warnings, some cpu
-clock prorerties are also modified.
+The referenced CPU clock does not require any additional #clock-cells,
+so drop the extraneous '0' in the referenced CPU clock.
 
-To indicate why the split-up is required, the series concludes with
-adding some CPU peripherals to rtl838x.dtsi, which are then used to add
-a gpio-restart for the Cisco SG220-26P.
+The binding for MIPS cpus also does not allow for the clock-names
+property, so just drop it.
 
-Sander Vanheule (9):
-  mips: dts: realtek: Decouple RTL930x base DTSI
-  mips: dts: realtek: Clean up CPU clocks
-  mips: dts: realtek: Add address to SoC node name
-  mips: dts: realtek: Fold rtl83xx into rtl838x
-  mips: dts: realtek: Add SoC IRQ node for RTL838x
-  mips: dts: realtek: Correct uart interrupt-parent
-  mips: dts: realtek: Replace uart clock property
-  mips: dts: realtek: Add RTL838x SoC peripherals
-  mips: dts: realtek: Add restart to Cisco SG220-26P
+This resolves some error message from 'dtbs_check':
+    cpu@0: clocks: [[4], [0]] is too long
+    'clock-names' does not match any of the regexes: 'pinctrl-[0-9]+'
 
- arch/mips/boot/dts/realtek/cisco_sg220-26.dts |  10 +-
- arch/mips/boot/dts/realtek/rtl838x.dtsi       | 111 +++++++++++++-
- arch/mips/boot/dts/realtek/rtl83xx.dtsi       |  59 --------
- arch/mips/boot/dts/realtek/rtl930x.dtsi       | 136 +++++++++++-------
- 4 files changed, 202 insertions(+), 114 deletions(-)
- delete mode 100644 arch/mips/boot/dts/realtek/rtl83xx.dtsi
+Signed-off-by: Sander Vanheule <sander@svanheule.net>
+---
+ arch/mips/boot/dts/realtek/rtl838x.dtsi | 3 +--
+ arch/mips/boot/dts/realtek/rtl930x.dtsi | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
+diff --git a/arch/mips/boot/dts/realtek/rtl838x.dtsi b/arch/mips/boot/dts/realtek/rtl838x.dtsi
+index 722106e39194..d2c6baabb38c 100644
+--- a/arch/mips/boot/dts/realtek/rtl838x.dtsi
++++ b/arch/mips/boot/dts/realtek/rtl838x.dtsi
+@@ -9,8 +9,7 @@ cpu@0 {
+ 			device_type = "cpu";
+ 			compatible = "mips,mips4KEc";
+ 			reg = <0>;
+-			clocks = <&baseclk 0>;
+-			clock-names = "cpu";
++			clocks = <&baseclk>;
+ 		};
+ 	};
+ 
+diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+index 67261d6fcaa7..f2e57ea3a60c 100644
+--- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
++++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
+@@ -26,8 +26,7 @@ cpu@0 {
+ 			device_type = "cpu";
+ 			compatible = "mips,mips34Kc";
+ 			reg = <0>;
+-			clocks = <&baseclk 0>;
+-			clock-names = "cpu";
++			clocks = <&baseclk>;
+ 		};
+ 	};
+ 
 -- 
 2.48.1
 

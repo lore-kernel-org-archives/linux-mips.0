@@ -1,142 +1,84 @@
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2803514A4C6
-	for <linux-mips@vger.kernel.org>; Mon, 20 Jan 2025 04:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE5B257D;
+	Mon, 20 Jan 2025 07:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737345752; cv=none; b=IczRrsay6HPel9uqY0H6Eo3O6ztLBlpc5mfDkrDIpJ9sKTnztK1XQRwFNtSqsA+B4UtA5m5hOIkdZqYh23N/K2Ka/f180FwPRPsRyK+bdPhuPL401sSKWoheVR1CcCM6BPVKHLEMKK1j+X8GSFbygTnXAxIqTH6BfWjbryz1XwU=
+	t=1737359151; cv=none; b=hdgntPOmzdiUmxQ2SMHBHMkjYIDrzhOLVaTSOlbTZJaVrxMGEEwfX5WETN6S4QtlAn9A/OhJB6sQqE80CE+/S5lXvDTRmMSWmYVrWD7Z4XUgVw1o2zJ4bTuat3CllefRXJIp0fPvbl35Am90GFoYoJe9I6e1dslmWZAy9jdAlmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737345752; c=relaxed/simple;
-	bh=VD6imiT5FXVt7uRzdx15NgMsCbcZlIJDvlR1GwWIyMY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YIiuKzu5oJo5Raj8nBEskzZzHaxA8EfOaBBtPYAiplftMVbD233b7xIQpavuDvX2VSvOtozKysbx+T6NUxMWY5T3dpe9MZWs2KfnebiLQA5EkqRw3nklbjf0Ps2SD2Ae7CHiLD8+L+5WwFvT/USuI1sVGCvy5EVR0ZMBcZVYXeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=v3TkMVcE; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+	s=arc-20240116; t=1737359151; c=relaxed/simple;
+	bh=SLyPkcqPR2Tw5C72SJaWnOo8jl9wu0NKblFOeOHCt4U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F0q7rjzdX9t8DPxXxFVuofZFpg0pJTCqMXO5xV25IwCWRDzgDQoX8HSAVi4NAZe2ZV+Fmie9cy4ghknBbi2MSiD3nn6fGKCKvyOGcB2BTJkDRUVlclpcyqPFtbSvEecRhTUek+Dfc1CKIZuaAn3/AVKXKyzDWIIN4apScSItkbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhTrJiiw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="v3TkMVcE"
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4B1552C0A03;
-	Mon, 20 Jan 2025 17:02:27 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1737345747;
-	bh=ZtcSOSWYGN71FDIeCDMTSwJXcVqykFy5QRQNex4r2wM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=v3TkMVcEHARoMDyF39s13Uh/sVch+ExDEjDu67L/4UOlV6x6Abx9dOIFXzY49oWAD
-	 UbejTmMoVriKkrqmvMBj4tzZqvNJvRlqjDRZg1oH7mshjFulOPOfoROVs1WCR9vDkI
-	 Ac1AMmdMLzILUol/hM/1HG62Ivm/gGItY4cqt3nB2NWvaYbnjISxgZtPVxx0FrGhSd
-	 SdB+PMDF7ITvLS6yM5LfsN/VsGN+CQ6XxdVtVKQEjopJhaOSvzasA542ra3RgjqmEi
-	 JMOqHuSKtfbDve3iWjtmgj3BoWn+4oaYDHFQCTSoCbWI0YfqWlVTVlwe1IFsEq6/5M
-	 CL/kAMqPrPzDA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B678dcac80003>; Mon, 20 Jan 2025 17:02:16 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 8CB3C13EE9B;
-	Mon, 20 Jan 2025 17:02:16 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 884F52801C5; Mon, 20 Jan 2025 17:02:16 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: lee@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	tsbogend@alpha.franken.de,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	sander@svanheule.net,
-	markus.stockhausen@gmx.de
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v4 3/4] mips: dts: realtek: Add MDIO controller
-Date: Mon, 20 Jan 2025 17:02:13 +1300
-Message-ID: <20250120040214.2538839-4-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250120040214.2538839-1-chris.packham@alliedtelesis.co.nz>
-References: <20250120040214.2538839-1-chris.packham@alliedtelesis.co.nz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhTrJiiw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A4EAC4CEDD;
+	Mon, 20 Jan 2025 07:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737359150;
+	bh=SLyPkcqPR2Tw5C72SJaWnOo8jl9wu0NKblFOeOHCt4U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhTrJiiwu4uCfcSwmNzAWzEjnL/3C8SHE5GWzLFP2KK+Hbo0DXeqe0XJgfDheXfJG
+	 rVx+PnGRpHy//caa/610+aBon6CjU/9kzlEkXpgjVcgso9An03p3YTViyAZImuAts8
+	 nHp7WwE3+yURkmWsu4jg9/rERsdQtFgoL89NkQbnBwyT0p+38nJ3KDIUV2xk9er7vX
+	 asYdqqxg31ZBmo3BwuYMgdYvFXSxqs9w+BF7QoG2RV9goINZgBcaAn1PpNreeKqn/0
+	 gDR5k7KAhXmM0tOlImuBDHCTg5ei329L4VsVKN+edgVVn69pKGzvQBVw0aFvwJUGy8
+	 yxYibTXzZPK9g==
+Date: Mon, 20 Jan 2025 08:45:47 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc: linux-clk@vger.kernel.org, sboyd@kernel.org, mturquette@baylibre.com, 
+	tsbogend@alpha.franken.de, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com, p.zabel@pengutronix.de, 
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org, yangshiji66@outlook.com, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: clock: add clock and reset
+ definitions for Ralink SoCs
+Message-ID: <20250120-expert-fox-of-argument-c4dcde@krzk-bin>
+References: <20250119154447.462857-1-sergio.paracuellos@gmail.com>
+ <20250119154447.462857-2-sergio.paracuellos@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BNQQr0QG c=1 sm=1 tr=0 ts=678dcac8 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=VdSt8ZQiCzkA:10 a=eNu-1RZL59X_yhr0BEUA:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250119154447.462857-2-sergio.paracuellos@gmail.com>
 
-Add a device tree node for the MDIO controller on the RTL9300 chips.
+On Sun, Jan 19, 2025 at 04:44:42PM +0100, Sergio Paracuellos wrote:
+> +#endif /* _DT_BINDINGS_CLK_MTMIPS_H */
+> diff --git a/include/dt-bindings/reset/mediatek,mtmips-sysc.h b/include/dt-bindings/reset/mediatek,mtmips-sysc.h
+> new file mode 100644
+> index 000000000000..1bc6024b1f22
+> --- /dev/null
+> +++ b/include/dt-bindings/reset/mediatek,mtmips-sysc.h
+> @@ -0,0 +1,152 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> +/*
+> + * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_RST_MTMIPS_H
+> +#define _DT_BINDINGS_RST_MTMIPS_H
+> +
+> +/* Ralink RT-2880 resets */
+> +
+> +#define RT2880_RST_SYS		0
+> +#define RT2880_RST_I2C		9
+> +#define RT2880_RST_FE		18
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+These do not look correct. I understood from previous discussions that
+driver relies on these for its internal operation. It looks true for
+clocks, but does not look true here at all. This is register bit passed
+to the hardware (and I explicitly mentioned last time: that I expect
+these not being register bits passed to hardware).
 
-Notes:
-    Changes in v4:
-    - Have a single mdio-controller with the individual buses as child
-      nodes
-    Changes in v3:
-    - None
-    Changes in v2:
-    - None
+None of the resets are bindings - these are just hardware constants.
 
- arch/mips/boot/dts/realtek/rtl930x.dtsi | 32 +++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/mips/boot/dts/realtek/rtl930x.dtsi b/arch/mips/boot/dts=
-/realtek/rtl930x.dtsi
-index f2e57ea3a60c..8410411fbba6 100644
---- a/arch/mips/boot/dts/realtek/rtl930x.dtsi
-+++ b/arch/mips/boot/dts/realtek/rtl930x.dtsi
-@@ -69,6 +69,38 @@ i2c1: i2c@388 {
- 			#size-cells =3D <0>;
- 			status =3D "disabled";
- 		};
-+
-+		mdio_controller: mdio-controller {
-+			compatible =3D "realtek,rtl9301-mdio";
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+			status =3D "disabled";
-+
-+			mdio0: mdio-bus@0 {
-+				reg =3D <0>;
-+				#address-cells =3D <1>;
-+				#size-cells =3D <0>;
-+				status =3D "disabled";
-+			};
-+			mdio1: mdio-bus@1 {
-+				reg =3D <1>;
-+				#address-cells =3D <1>;
-+				#size-cells =3D <0>;
-+				status =3D "disabled";
-+			};
-+			mdio2: mdio-bus@2 {
-+				reg =3D <2>;
-+				#address-cells =3D <1>;
-+				#size-cells =3D <0>;
-+				status =3D "disabled";
-+			};
-+			mdio3: mdio-bus@3 {
-+				reg =3D <3>;
-+				#address-cells =3D <1>;
-+				#size-cells =3D <0>;
-+				status =3D "disabled";
-+			};
-+		};
- 	};
-=20
- 	soc: soc@18000000 {
---=20
-2.47.1
+Best regards,
+Krzysztof
 

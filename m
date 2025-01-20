@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A5823A9;
-	Mon, 20 Jan 2025 21:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1544214830F;
+	Mon, 20 Jan 2025 22:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737410157; cv=none; b=j1MS3iM6IgR6QvRVtnzxvl83SDdKyvMjgGmkfUYAYkuHno+SOP7NrjusqXi12b9F/QhGAk5askm+ZWKSEi/5XToPGeEelExFRO/94doRA0ElQhlqjMWelV9qs13u2AWkVT9o2vkL4TVb53USely1LfzdFw7FGm2Ar33Kyp7fh/g=
+	t=1737410439; cv=none; b=fcsETn2K5kKkEzJyWyQt3VjP1UurF60cEgfMs65GGwBsUwLhGTOpl/Pf9bQOKvcZZEwVr8M3r9jXSnPf4JRM9oaV1iSbm7B37i2uKiJLbkFTrlrN48w5vPyOry+FbAn6vRLeYy7fNhBfXry4ozZ1zxtX2GtLGM648aU5AHcbryg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737410157; c=relaxed/simple;
-	bh=69VVu6VzykbfRha47TkcjIWnRLGOSO3UtXRheEUR2PQ=;
+	s=arc-20240116; t=1737410439; c=relaxed/simple;
+	bh=QydTgFx2tlV3wKwstA1o+PHgPAeyZHx6Y5RneVhyBxY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lGE4mMjLiauBpG675wsnypQg7NSniwEFmKvFUe48eDl8AqM++2dgUAYBhCdbq17HV74Nn86Jsa5UfQipBBdwhTdaHjkPno/6jIy3pziAui5tM6AeQGyBxzcIvOwKUk/yablCZJybo0PGjXzykR4b0XROC3PjQdvbmVjbxLvELbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EsUaMf97; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y2IUcQP83b2rJKxDw+vyWiL0EWmgM2ep1d2a+pw6L19uiA5WtciArG0pVoff+Nxpz6cWcw3FMLgOyZYgUjl6pgAJMtCJv00iDqYFZRIYFl4l23BY+zkgvB6LBfnfXGi2cCy9NjO1w8uRukwHFiCVylGZK98Sobm5O8IrNWwt75o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KSz3FXjO; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EsUaMf97"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82914C4CEDD;
-	Mon, 20 Jan 2025 21:55:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSz3FXjO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CE52C4CEDD;
+	Mon, 20 Jan 2025 22:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737410156;
-	bh=69VVu6VzykbfRha47TkcjIWnRLGOSO3UtXRheEUR2PQ=;
+	s=k20201202; t=1737410438;
+	bh=QydTgFx2tlV3wKwstA1o+PHgPAeyZHx6Y5RneVhyBxY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EsUaMf97jAFv1nRL3KNRyS5BjcZUNm9G/sGdGn0zulnz/myvBUb6ieRKsKb10DkzB
-	 QpqZbH6ZBxIq+6USgPxaLCfYmqcT+Dqhf61MP6nbJ7dXyTR3T1e3gPbeyh2tHUsrjT
-	 JiRRde6SDBMnqVtN/4UZxX5Bn/896X+XhKSdOpsVHiBkZ/rVvohEUNAII2763t28qb
-	 fK2Nd2qxlmSI8qwRCM2lagdEt5uIYVVt8om4fm+LqD2VliQ1oG20xJg9cWghWs2E1p
-	 nK7GYwh4rN3yS3oa9RcYPntPQ4F/kAE9q1sHDE+pqS+xcV5D7rsyVA6NdKV+MD/zkS
-	 78dGZi85tfhUQ==
-Date: Mon, 20 Jan 2025 13:55:54 -0800
+	b=KSz3FXjOnhJSy+OViALjtWEPph6mytJgOz7i+y2ylB3MRrDTtCgGvj0l0Q7+IrAp3
+	 FDZjbc0e4xG5lsHdKOy5Np6xziYExDu53QsRIY3Es3iEy+LN5e9HYrOjhH9FZJ+1J0
+	 VTMd8hZDRbZTSxa3X2V/4ff5u3s0fwEtbQxq9bnIcUte1Kp7xJaCFimsbXMH2q2qS2
+	 yTG4CSaiUXI3AA0MRE0BAOyPOvxH3N0B0Np1MxXQnJ5PCmA1KcqRl4Yxtz5eHVYtLU
+	 fgOU6Ej9LTu906sGjQPavBoyxR8u0j/cNfI6mR/ymR4X++b35Z3gtnzba6AzrLVCOb
+	 XiMhu1kEiP31Q==
+Date: Mon, 20 Jan 2025 14:00:35 -0800
 From: Kees Cook <kees@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
@@ -36,11 +36,11 @@ Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 3/4] seccomp: remove the 'sd' argument from
- __secure_computing()
-Message-ID: <202501201355.DDA4B6A24@keescook>
+Subject: Re: [PATCH 4/4] seccomp: remove the 'sd' argument from
+ __seccomp_filter()
+Message-ID: <202501201400.3518CED7C@keescook>
 References: <20250120134409.GA21241@redhat.com>
- <20250120134459.GA21284@redhat.com>
+ <20250120134505.GA21290@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,10 +49,10 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250120134459.GA21284@redhat.com>
+In-Reply-To: <20250120134505.GA21290@redhat.com>
 
-On Mon, Jan 20, 2025 at 02:44:59PM +0100, Oleg Nesterov wrote:
-> After the previous changes 'sd' is always NULL.
+On Mon, Jan 20, 2025 at 02:45:05PM +0100, Oleg Nesterov wrote:
+> After the previous change 'sd' is always NULL.
 > 
 > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 

@@ -1,57 +1,57 @@
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331A520E01C
-	for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 23:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1109C20D4EE
+	for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 23:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740441354; cv=none; b=r8V+TrrYCpnELXBhwyk9s5Q2/lDZwOHluVCY4gizgnzU0+qjiTSHWSuub0e8u76QonDQtCeZ6XrvNvGo8tFyJlEoaI1z2qVmNLRjZqZFuMIyrJgzeTFoErnoukOIXUo5g4KotyDcxVZoHJFHoPFBU5Dzd2EN6KJbWDGFnTY35Zg=
+	t=1740441356; cv=none; b=UT6QvQhQA3mRQzveg9Q2rid0B+JSFKvOJsm6AkcUQprO0+aub4EUgFkRqqubwuaUHy96FB9tFdPKHnmIu3tgaZO90hetS/xcjquU6yQ4Bd5DvAGPdHvPf9rBQEWWsIOYn5hqqGZSngx17OyiiJDSABfw7Msr53VwPlEZSTEknP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740441354; c=relaxed/simple;
-	bh=4XGt0AThhPQKODAnl6NTLZpfJZyUD3zLteURrvwSqiE=;
+	s=arc-20240116; t=1740441356; c=relaxed/simple;
+	bh=ACqJB2KXicxvfLHjzx6leY0tlI8JuUGirNReQgQidhg=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fmtOjca7Y1zcBFvo/N1IQieUxNdAxgW2Fp8go8UtxCje4ER7092VknGrQ6UP+Sydgw3itjUaQxFQYSb184ApPrZda7+zd3+3eqbXjnFwgEb7RmvXQx3grC6HhqmmLmReMzOLrWg9nB5h4rQZILLkeSODe4udd5zMDw9pXSMCELs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1VVQeIWj; arc=none smtp.client-ip=209.85.214.201
+	 To:Cc:Content-Type; b=SCSBjktyp2kTkJeLHmKc9xiK7+BLfB8MotOEInX5PoPcY0y5eLi5iPoZtOUqoWXKqBdny2cxgeGRFBKpq/aE0kxRVy5sWmGsk1gmL51VcCccsATnaR6v6nXRymEpm0oil7NJv8G33x0cinaWJJKIkiJItv7RqFG9xMBRnSxNGtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lFMz6PRg; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1VVQeIWj"
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-22114b800f0so44029635ad.1
-        for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 15:55:51 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lFMz6PRg"
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2fc45101191so9619722a91.1
+        for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 15:55:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740441350; x=1741046150; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1740441354; x=1741046154; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=cX82JgrIVLcCgP8NY5WI6d8YhxJG+M3Mihkk6f4MOJg=;
-        b=1VVQeIWjxHwt2g4y2ENuwGV87HBOsTKycjXrHxuNsxbqK3Xnd4EBQ7ffAT0joI1hk8
-         wrQB4botKcLivVa9uGIp6y5+4keNqsOt2B6P8uL6ZHqlAcz0OPsU+YbkWVICfJvfdRnx
-         KwCcS9Rqd/qbRBxp+FJ8vn9MZca0kuqbjBhZcyHrVr/M6vMbSFV9ut71QR+j283+JPzt
-         gYnGx3MTgiAMQneYDmM8pZM3+xDHuU3VhtWfZCL1nmmahdUlg3mss2g+VIieu/dsQ8nD
-         vDhdk7N4Us0FJkn/VfTv2Sj/k2yURUXtxWEvHB/M8FrZvx7BhsHQnuVdv/WzYTNNB9zA
-         kGJA==
+        bh=gY5t+lA+xCJMUFRKRfvQdv+q8kOSitFuxy9rKD2JbVY=;
+        b=lFMz6PRg3W6zA+Vx82sECaNcPfh2qXpP7Iz19pJpWUAG5mZ36vOjtzFln1IVXptop+
+         yTEk9gBhqvUzg7JIY1sILQV2Hag1FjwszNEOqzeJvzlpQI4F8/JEW4F13ZEzW8ScQJ5j
+         tBOqRc5iYNPYU93SgHHWgzupn5fpsu3FpR84lerQ17DOz8uLLWT7TxZLlccWMBqzOcms
+         znTd8xNApRBao79EPEQzFtpKzEic2ZK3B5H+T6naNgBexOz9utYzyNSa5aQqgq1Bcsuj
+         6YXzKdAcZIMDW5wTAJGdAvqMpOJYu0m9skrpPrNH10jFy+iYf8a/HSEg0tRjAdUD1Nx8
+         T8Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740441350; x=1741046150;
+        d=1e100.net; s=20230601; t=1740441354; x=1741046154;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cX82JgrIVLcCgP8NY5WI6d8YhxJG+M3Mihkk6f4MOJg=;
-        b=tItdyM70+2xWBGzTOk9uK+f21u7B3iau1TWXttMbfiJeTyQzwHfPMVGIte5g0WfHTo
-         tZGyqCsMW4EdQ+zBaezbslzCQl7tyh+GjJ651n2mAPiuhaqAEieVNrWsPBaCRuwm0eYY
-         b0hE4A73xZlFIoBwR/e4F5u0/TgFYf3v2Q5KL8N9hhzBkYwdjqczvurV+zBpwNOWUS1g
-         gYfhRIo+sdBwUsT2OYrM5HL5gczd4geDAE3Wljlo5mfnXIiSwp18PdKR2NiEJioby2nB
-         geSL1pkT1guRtSoCG9aHGHO54CiLkoALI1tCNQUZsWzZO/QZG4aQskuFW2QMr4b9darN
-         CDjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJbXyBP4xW1cB29+ISWQalJtwE9UwO7cV3nAGATyOdzlzqcepMQtl5g+eOhwUsbNjNSlXcFhA/TdYj@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8KpQVvAf5edlt5xZvClZLEcQSqtk2JGvPghmSygS+pDf9ZYsR
-	WkpATkD9pY3GugxWuTmajxq+wlpIsUTrOn7UanrRlaW4r57txhjYm7aFJvh77mmXx4Yibt4DLuq
-	rhw==
-X-Google-Smtp-Source: AGHT+IGsyGC9C+MeujnUnW2nPba4jsQ7IgXXOkNko0b7VAiFOZ5bP8OY6ummej4/xlJQLwWUr2RcXaF45Ig=
-X-Received: from pjbse14.prod.google.com ([2002:a17:90b:518e:b0:2ef:78ff:bc3b])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:2f8d:b0:220:d81d:f521
- with SMTP id d9443c01a7336-22307e72198mr15100345ad.51.1740441350608; Mon, 24
- Feb 2025 15:55:50 -0800 (PST)
+        bh=gY5t+lA+xCJMUFRKRfvQdv+q8kOSitFuxy9rKD2JbVY=;
+        b=HFs4HVf746dTaiDP/Ka9qOJVoKA5w2oXofgTOokRDBA6rZXZY8wYm6zgMVRel7cKcA
+         lNkSaxPdm5jvOOOhEuRw2WXbuCKQYwWzMALGCXpNgdwK9YV0gdvIuQwNTlrIxpgd2Vin
+         LANGT3/7eGaCLoLWolhSR0RvYviYwKK4h5dwNopM4VJ+n+Qc+aB42CvMOT64PMa5zbnN
+         bFVT1/cnzSeBEAHiSvt74ype3W65mHXt3o1gLFaVLq1t1McdxQOVecgVFQSWKrA3yPYN
+         hVOCWXglwWwbA9oT8GOZjNoyMREmK/aiokKodJaX/O19W4U73VGhUamf/MwXwDnTxGFj
+         Copg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbpglgRHbqQ1dE7Ot5RC7ahfZQu4w0+HwZ5yFvk/IT9VENT7CqzThhYvTRk1y153rSrwt9Gs8PCdKj@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYjlztFQ1RwQXYcgvqhXc8IMkaK24SbyYrUDwgHd+LRZsIdREm
+	nypnNjrx2G4gf5J6Prohe0seB8HzTOZVJ5xY0C83pyjv3IYY8Ij8ziYg1swUb2hTGhV1eGMFvEK
+	lSw==
+X-Google-Smtp-Source: AGHT+IG7Oktdw38sVEoOW4Tvh6JQ9psvOsFz+B6sIudCx6XDJiW/lrg1jUS4SL5IEqUCfnyPdnnvHXtLVtU=
+X-Received: from pfbgc10.prod.google.com ([2002:a05:6a00:62ca:b0:730:7648:7a74])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a20:6a27:b0:1ee:d6a7:e332
+ with SMTP id adf61e73a8af0-1eef3d5aabamr27634032637.26.1740441354199; Mon, 24
+ Feb 2025 15:55:54 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Mon, 24 Feb 2025 15:55:38 -0800
+Date: Mon, 24 Feb 2025 15:55:40 -0800
 In-Reply-To: <20250224235542.2562848-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,8 +61,8 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250224235542.2562848-1-seanjc@google.com>
 X-Mailer: git-send-email 2.48.1.658.g4767266eb4-goog
-Message-ID: <20250224235542.2562848-4-seanjc@google.com>
-Subject: [PATCH 3/7] KVM: Assert that a destroyed/freed vCPU is no longer visible
+Message-ID: <20250224235542.2562848-6-seanjc@google.com>
+Subject: [PATCH 5/7] KVM: x86: Unload MMUs during vCPU destruction, not before
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
@@ -81,43 +81,89 @@ Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
 	Kai Huang <kai.huang@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 
-After freeing a vCPU, assert that it is no longer reachable, and that
-kvm_get_vcpu() doesn't return garbage or a pointer to some other vCPU.
-While KVM obviously shouldn't be attempting to access a freed vCPU, it's
-all too easy for KVM to make a VM-wide request, e.g. via KVM_BUG_ON() or
-kvm_flush_remote_tlbs().
+When destroying a VM, unload a vCPU's MMUs as part of normal vCPU freeing,
+instead of as a separate prepratory action.  Unloading MMUs ahead of time
+is a holdover from commit 7b53aa565084 ("KVM: Fix vcpu freeing for guest
+smp"), which "fixed" a rather egregious flaw where KVM would attempt to
+free *all* MMU pages when destroying a vCPU.
 
-Alternatively, KVM could short-circuit problematic paths if the VM's
-refcount has gone to zero, e.g. in kvm_make_all_cpus_request(), or KVM
-could try disallow making global requests during teardown.  But given that
-deleting the vCPU from the array Just Works, adding logic to the requests
-path is unnecessary, and trying to make requests illegal during teardown
-would be a fool's errand.
+At the time, KVM would spin on all MMU pages in a VM when free a single
+vCPU, and so would hang due to the way KVM pins and zaps root pages
+(roots are invalidated but not freed if they are pinned by a vCPU).
+
+  static void free_mmu_pages(struct kvm_vcpu *vcpu)
+  {
+        struct kvm_mmu_page *page;
+
+        while (!list_empty(&vcpu->kvm->active_mmu_pages)) {
+                page = container_of(vcpu->kvm->active_mmu_pages.next,
+                                    struct kvm_mmu_page, link);
+                kvm_mmu_zap_page(vcpu->kvm, page);
+        }
+        free_page((unsigned long)vcpu->mmu.pae_root);
+  }
+
+Now that KVM doesn't try to free all MMU pages when destroying a single
+vCPU, there's no need to unpin roots prior to destroying a vCPU.
+
+Note!  While KVM mostly destroys all MMUs before calling
+kvm_arch_destroy_vm() (see commit f00be0cae4e6 ("KVM: MMU: do not free
+active mmu pages in free_mmu_pages()")), unpinning MMU roots during vCPU
+destruction will unfortunately trigger remote TLB flushes, i.e. will try
+to send requests to all vCPUs.
+
+Happily, thanks to commit 27592ae8dbe4 ("KVM: Move wiping of the kvm->vcpus
+array to common code"), that's a non-issue as freed vCPUs are naturally
+skipped by xa_for_each_range(), i.e. by kvm_for_each_vcpu().  Prior to that
+commit, KVM x86 rather stupidly freed vCPUs one-by-one, and _then_
+nullified them, one-by-one.  I.e. triggering a VM-wide request would hit a
+use-after-free.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/x86/kvm/x86.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 201c14ff476f..991e8111e88b 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -489,6 +489,14 @@ void kvm_destroy_vcpus(struct kvm *kvm)
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
- 		kvm_vcpu_destroy(vcpu);
- 		xa_erase(&kvm->vcpu_array, i);
-+
-+		/*
-+		 * Assert that the vCPU isn't visible in any way, to ensure KVM
-+		 * doesn't trigger a use-after-free if destroying vCPUs results
-+		 * in VM-wide request, e.g. to flush remote TLBs when tearing
-+		 * down MMUs, or to mark the VM dead if a KVM_BUG_ON() fires.
-+		 */
-+		WARN_ON_ONCE(xa_load(&kvm->vcpu_array, i) || kvm_get_vcpu(kvm, i));
- 	}
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9978ed4c0917..a61dbd1f0d01 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12374,6 +12374,9 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+ {
+ 	int idx;
  
- 	atomic_set(&kvm->online_vcpus, 0);
++	kvm_clear_async_pf_completion_queue(vcpu);
++	kvm_mmu_unload(vcpu);
++
+ 	kvmclock_reset(vcpu);
+ 
+ 	kvm_x86_call(vcpu_free)(vcpu);
+@@ -12767,17 +12770,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	return ret;
+ }
+ 
+-static void kvm_unload_vcpu_mmus(struct kvm *kvm)
+-{
+-	unsigned long i;
+-	struct kvm_vcpu *vcpu;
+-
+-	kvm_for_each_vcpu(i, vcpu, kvm) {
+-		kvm_clear_async_pf_completion_queue(vcpu);
+-		kvm_mmu_unload(vcpu);
+-	}
+-}
+-
+ void kvm_arch_sync_events(struct kvm *kvm)
+ {
+ 	cancel_delayed_work_sync(&kvm->arch.kvmclock_sync_work);
+@@ -12882,7 +12874,6 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+ 		__x86_set_memory_region(kvm, TSS_PRIVATE_MEMSLOT, 0, 0);
+ 		mutex_unlock(&kvm->slots_lock);
+ 	}
+-	kvm_unload_vcpu_mmus(kvm);
+ 	kvm_destroy_vcpus(kvm);
+ 	kvm_x86_call(vm_destroy)(kvm);
+ 	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
 -- 
 2.48.1.658.g4767266eb4-goog
 

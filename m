@@ -1,57 +1,57 @@
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EA420D4FA
-	for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 23:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3CD20D4F9
+	for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 23:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740441351; cv=none; b=AEI4jn3qlJ7QqPvOd5cGefa0c6wvMED2eQ2VqhdV4I93qNCvkSDwRWkvHyZSFRv8j0xQlnzododvuG7WgCWGCiWv8z8+V2GcJLTf9TISzjdOeYs+cdxE44T3hWyuTeL/JOodJqdJcXR0cDmEcYOtQo7u5IORrEAEmMek0qQ9KsE=
+	t=1740441354; cv=none; b=DczQZAlfd0LNqiHy8SnXGL/40nVCUxOodOxgIFhZf9KMNsaIdjssyewhPx3srYh77V8pObGh6JQpogG2XWaxTQ4dckyg4pJ6x8TXdSSZFKGWppvPZhSHUzlLOEo5r4wDvb5axtLtb/UNEBx5zytZ82m98ewB+dFVd5zav0K/PYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740441351; c=relaxed/simple;
-	bh=Pgnsnfhe7JEsCHeo8nxgfh9t3AoyozrxKe/Nn1f4YRk=;
+	s=arc-20240116; t=1740441354; c=relaxed/simple;
+	bh=xi1QaJ351EOkGaXqg6ZlisugvTQJp9S68DQPIs/E4wk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OrjwXcGVjeMKbQhwYjmpZ1briQZarEd1A1zfwQeuJrPqQZ8xY2SwwFu5OzdgmC8wEj+XY7oJtc7U8mV0Wxkq23NzR9S+rpwVog/2k0Rkun57ACbgZd/J6Ugjit4UiYY4ECKEuQi/SL+stL8HsCdiijajX5xVYqqtHce5bY655k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cS404g5M; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=VW7RnAk0Myp6ic4DEAshxmiH6t3FLqPo3xtQaS3E+RFtx7LwXA1O09uCTqb4gf9v2tdQL6/Kf0DXCedjMPEXN1NcRrojHH9kP6/ugHqn6+rbbmq05MmiE436LOswZXiKklpVMrlw5LXDuKawErwhHmTDtcdkhb49fa24V5SN+Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1DMQFpqB; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cS404g5M"
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2fc43be27f8so16634413a91.1
-        for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 15:55:49 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1DMQFpqB"
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2fc1a70935fso10360362a91.1
+        for <linux-mips@vger.kernel.org>; Mon, 24 Feb 2025 15:55:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740441349; x=1741046149; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1740441352; x=1741046152; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGU0ybTwy223eIpDzZVLI/W8vnqy8rZ9uLMIqzhcN/c=;
-        b=cS404g5MRmCHdXBoRyF5yO1wQTbGnYu7txQDUK/dvXjPWEsdRNd0ftO8I8PeaOT2+4
-         SauNFfEuVPinGQ/Qs73c0es8Jv9qUSbmngL/qMVHaKMFbAWPYN/3hNOQh1WMCINkkgRy
-         TbrDB1V//I6O+dpwYCghirUwbAGIAS7/SLhSBO+6Wd5nel4yfRKxqVuWdV4vbrfjHmOX
-         DMassa/zQ9xgUkTKlXRB283Zm/xzi2k5zm3h1zH7//LwXHinUB7EHcLJKwsQzIvB46M7
-         mJUa/IIJAmfq4UeD8NTQpw6m+fdh5Fe+B4wp2i7Sw+yj2hrFnTkCjLdW5+DYa4k387YB
-         cckg==
+        bh=3T0ArXtBue+4jQS8m14aDT4hO1iQN7UONJOY2Dznj0I=;
+        b=1DMQFpqBG6+U6bFaViWV59mGoO/T1F5bADrX92rXup/dNZ5FnwnpYRTnOQ9Kt3QWHI
+         WghfYrXbECVztjWYsw2BufD5uPzs821sDyrD37zc3jeI5io4qx8WcrsGWvOSqr1IUydO
+         LAbuFBwlG39OQbo/8KwnzWDimNYAKCt1YMI53WsFAgmLloNqfuY5net+7M64JpfZBXT0
+         2ZbmLK7cUsccZpRowg8/XAEJlji67Pka1i0opb8UPyhvfNMaiRmTytqnFtWnUjh2AxzD
+         HytdXfCj4/mVKoFe/Q/dXAdsqn0kcbCkDSRZGcpYts4UTTUipP9+AMDSfJyGCUWV1qOt
+         pz5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740441349; x=1741046149;
+        d=1e100.net; s=20230601; t=1740441352; x=1741046152;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TGU0ybTwy223eIpDzZVLI/W8vnqy8rZ9uLMIqzhcN/c=;
-        b=UK2IOqivs+ebaYdSM3QpvBQfsViFxJB+/5pryELSYiNwh6WBo1xEngDtS6tJxZduHU
-         kQhcza/MXK62DAzD6pydA+2fd0a/dFhcfKRT16IxnWakkbtU8FEVcREGsInMgphSOpM7
-         8qWrw2p+C/8asMx3C8qyDgQ3MlwWd4piTF8Vh+/SZEY2SCEgrvgDlZO1es6CkY/q377p
-         jmVoP3Ezl9UN09JvQjd9PGPNYrNufyDEqSn61pMZM7gBpOJlj7ELGgRMf/LzWAO/smqs
-         FEc9SHBCIYwUkJaxvYDjPY5d401NE/eZBFeJI0ool+s5gkaK1YesNQYBnL2pSZ8ENOKd
-         dkZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5d83ZsFada1rbzewvMbg2PYUGJYxmgTjPDjHQhyM7p9YLLjYeTi4t/wpoNtJDhSpAtBwdHoJUAWzH@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTxeQ5eWqW2Aj1d9amSD7ZzZtxpEuCt3XkvLwDEBk0xokyZopU
-	h5D0B/5V/CaPmMF480C9nl/WFusB9aVZQ51VPTfGeokGnzM+6RWVc2G0wPTgDW4OdRDpnxSIavA
-	9Tg==
-X-Google-Smtp-Source: AGHT+IHcos0szxLwYcsW2Q/WbhHjoZ/1wFjhF3Xa+8fw1kzKNZT2q6/VDS58iA2uFYrVe3USusRDS/R8AlY=
-X-Received: from pjbnb15.prod.google.com ([2002:a17:90b:35cf:b0:2fc:b544:749e])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:e7cd:b0:2fa:17d2:166
- with SMTP id 98e67ed59e1d1-2fce7b40077mr23992311a91.31.1740441348957; Mon, 24
- Feb 2025 15:55:48 -0800 (PST)
+        bh=3T0ArXtBue+4jQS8m14aDT4hO1iQN7UONJOY2Dznj0I=;
+        b=XE8nPqiDBYMBH8fYHB2SVgeI3KT1n1WQ0R6Oiynz6zQDLfXRKJI0z7l6e8/05+/tz5
+         PxCHZrqKy5bUJTrOKuYuR17/422I+J1pDl4A7cAZhRsL83zUzNLByzEMUtVLc81ohzXf
+         hjPDpa4RgbvwiZBpGhNuAX4YG6+ZWZLzSaaNnznXBEN+eQchw5YooZre1NcaWXn8YrJ5
+         04zf5WniLQYpdL33J/zdbzlMWrrr17beS0yiBmXU0WZg+oADxTwIuIehvugTDtixlmBX
+         bymuzNf7JlBNXYHPXPEmG25GguH8cOxTsY8cYFD61dMnHQj/DwrS1L+m0K8Fk2q1vQxi
+         c0fg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnWA1i9M2gi+xoaPZKgvjdwd6a/LfFMNw3UINdrL2V6vzt/m9s5cJPPcCZhIW5SAm6uC0EVD/TZE+0@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNHx/u7Y+9wOcU9/WEUG4SC6JmxEQbpaq/TRm932wovCJa7Xkm
+	NWTczUqI/6y3lelfnwrNM8ccPn+L/H20qAvkkVXjl9kCzrSRYKQK5qHXXDjUt68PGYkNu/0TBoK
+	o/g==
+X-Google-Smtp-Source: AGHT+IGLhJjtwIM7JWkK50LEGpVa5IYsMEMrJLtXcv45TfVI0Bcew2BvOmcJCUf4CWX8wuCtTe3G30kBi3Q=
+X-Received: from pfbhd3.prod.google.com ([2002:a05:6a00:6583:b0:734:cc8:a107])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:695:b0:1ee:bb7f:9b39
+ with SMTP id adf61e73a8af0-1f0fbff6aebmr1778237637.1.1740441352385; Mon, 24
+ Feb 2025 15:55:52 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Mon, 24 Feb 2025 15:55:37 -0800
+Date: Mon, 24 Feb 2025 15:55:39 -0800
 In-Reply-To: <20250224235542.2562848-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,9 +61,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250224235542.2562848-1-seanjc@google.com>
 X-Mailer: git-send-email 2.48.1.658.g4767266eb4-goog
-Message-ID: <20250224235542.2562848-3-seanjc@google.com>
-Subject: [PATCH 2/7] KVM: nVMX: Process events on nested VM-Exit if injectable
- IRQ or NMI is pending
+Message-ID: <20250224235542.2562848-5-seanjc@google.com>
+Subject: [PATCH 4/7] KVM: x86: Don't load/put vCPU when unloading its MMU
+ during teardown
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
@@ -82,45 +82,42 @@ Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
 	Kai Huang <kai.huang@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Process pending events on nested VM-Exit if the vCPU has an injectable IRQ
-or NMI, as the event may have become pending while L2 was active, i.e. may
-not be tracked in the context of vmcs01.  E.g. if L1 has passed its APIC
-through to L2 and an IRQ arrives while L2 is active, then KVM needs to
-request an IRQ window prior to running L1, otherwise delivery of the IRQ
-will be delayed until KVM happens to process events for some other reason.
+Don't load (and then put) a vCPU when unloading its MMU during VM
+destruction, as nothing in kvm_mmu_unload() accesses vCPU state beyond the
+root page/address of each MMU, i.e. can't possible need to run with the
+vCPU loaded.
 
-The missed failure is detected by vmx_apic_passthrough_tpr_threshold_test
-in KVM-Unit-Tests, but has effectively been masked due to a flaw in KVM's
-PIC emulation that causes KVM to make spurious KVM_REQ_EVENT requests (and
-apparently no one ever ran the test with split IRQ chips).
-
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/kvm/x86.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index bca2575837ce..8220b09e91ce 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5084,6 +5084,17 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 045c61cc7e54..9978ed4c0917 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12767,13 +12767,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	return ret;
+ }
  
- 		load_vmcs12_host_state(vcpu, vmcs12);
+-static void kvm_unload_vcpu_mmu(struct kvm_vcpu *vcpu)
+-{
+-	vcpu_load(vcpu);
+-	kvm_mmu_unload(vcpu);
+-	vcpu_put(vcpu);
+-}
+-
+ static void kvm_unload_vcpu_mmus(struct kvm *kvm)
+ {
+ 	unsigned long i;
+@@ -12781,7 +12774,7 @@ static void kvm_unload_vcpu_mmus(struct kvm *kvm)
  
-+		/*
-+		 * Process events if an injectable IRQ or NMI is pending, even
-+		 * if the event is blocked (RFLAGS.IF is cleared on VM-Exit).
-+		 * If an event became pending while L2 was active, KVM needs to
-+		 * either inject the event or request an IRQ/NMI window.  SMIs
-+		 * don't need to be processed as SMM is mutually exclusive with
-+		 * non-root mode.  INIT/SIPI don't need to be checked as INIT
-+		 * is blocked post-VMXON, and SIPIs are ignored.
-+		 */
-+		if (kvm_cpu_has_injectable_intr(vcpu) || vcpu->arch.nmi_pending)
-+			kvm_make_request(KVM_REQ_EVENT, vcpu);
- 		return;
+ 	kvm_for_each_vcpu(i, vcpu, kvm) {
+ 		kvm_clear_async_pf_completion_queue(vcpu);
+-		kvm_unload_vcpu_mmu(vcpu);
++		kvm_mmu_unload(vcpu);
  	}
+ }
  
 -- 
 2.48.1.658.g4767266eb4-goog

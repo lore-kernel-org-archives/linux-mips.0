@@ -1,144 +1,184 @@
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FABE13DDB9
-	for <linux-mips@vger.kernel.org>; Fri, 28 Feb 2025 02:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A221BEF77;
+	Fri, 28 Feb 2025 04:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740710675; cv=none; b=l8HSXz1AscF4LNY5gYngvYXGGq9ukmu8p+TnXkoGxq+K+T5DVct++4TnUYdtH3UI/HVcAXFq5zxIdCLeJ5AtPLYnwFLHEiwiIz5ZDzlhzMa2qCpEB3/ZF4jNGnV1qx3a1v6FNUBG72uYXtXlyKhZKdVcjhedEyXEfK4xV5Un3Vg=
+	t=1740715962; cv=none; b=XzvRjvKFpz5RXp/3y0TfLVhPCjSQ9XJ4p30tCSEHpl2aYtq/norv4TsXHsLzgE4L4er91FgOUC9zP1rqZba6gNwc8Xejx2qDPcNVzxINn0Qj2shFKbTwPuVPdMFn2m1uMxADr1iC5MeOJR2RWlfNqC3ObULwb8Ix+RU8fIzXeew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740710675; c=relaxed/simple;
-	bh=0fz6H8dlUgf8ko9N18YypQHlBg79eNoT5rDDE25IBq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d2eK1gOFczSOb6fn/hqV4bs6BW1qH5O7DwlDk1ypbI7HxPGEneimOwoCHy3KP2xEweib0TvvraN+uANKgTIelmZa5tZ40FTd/ZXZU/dx6NBFKr0Er+S7Y9rbZE3ZDJDPHmDmdFrC87I47jmX9CWEqtbKbZGKq0GmKZhQumhE0RE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=cdGvg9LM; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1740715962; c=relaxed/simple;
+	bh=FvZPNbx5Q2m1gAoxzfB4hFFsiiy5F8PtvQBiBlL4Pow=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GRg1fe9u9E8kt5yjxGaV/bPA8jqU/yOpFu/TsrOJ344XWUGHLmB5hwPhfq0SdKo4sMF0vK0jWC1wl6bgHwpqQLkGgVmfIV3mp2FPF31XCgwzJfwVnYEFnt4OmXUy8iVaChA88M1awxWUannMS9PxNIaq2dcLoBknFylnzWAXDFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7aPGZ5e; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="cdGvg9LM"
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22185cddbffso48455865ad.1
-        for <linux-mips@vger.kernel.org>; Thu, 27 Feb 2025 18:44:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740710673; x=1741315473; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=cdGvg9LMCPgA86eF1veU8MttIzjFc4M9bOp1Q+ej90hvu2aZr7uyASxs7uRlr3D8kE
-         YQQQANN+KG+nVURDCNJSv5gXBZoaa0W0i35WiZlp+mcBPmLoJfGx/iPTsUQgBx1Od+bK
-         riOJ/vkAG14G2L8zko8aUF3QwPxJv+wmmzqITfAAwEEj6QVyvyt382VqOYTnBuj9KJAU
-         HZNHwiMw671NsErHZxT6yRYWcQ8PvZzb/ikpwi5VOwlvOlu3HTNLh12KwEYvo2mJ8GYP
-         PjXRKUtbafnl+V/PCk7t9Iw7EHZB8TYDo5psvQDupJbFjo70IVyq0wgSs20gO+qgyNoS
-         eNKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740710673; x=1741315473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=LE0tDubih+rWpx849LmSvNpM7YwFvonXCDenLioaSJb90b/w5n0/AEfG1BIX2y6O9s
-         x1LypkodfUwkR3g5cbZ6a/zJGIGNvAxe0PCllNdbRPhUTUi3pEJR+YsQ246C+3zupJs1
-         InTCqrmqenD65/uradYMiIxbGPeDTGDs5EjUD68f+MCAnfTgPqKcDPyPvgR0U/PxwHb8
-         /KePBo/dChDqEhnzryc395wy7o92B1clXWZ4GKzgeuuj4yQ4mnKYVc2hNxsblft0Ek2V
-         7BJZbgW6dr5qT9IPrwFpb7xQQe4AgMQmTUjcGi0VI0rwbyTbitqTEVdR7J5I1l2jmHRM
-         /6pA==
-X-Forwarded-Encrypted: i=1; AJvYcCVF5h7XtdHiw6WqSwnlEigcJfvX//ntCIQf/gEDipRdkIPw4KvDxC/FIDfvMiAc+gIY1NzwHFCq+VEF@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSj3id2JF6BVI/gwnXS+xNZNkWbo12+a3E2wUxd6zUd7TVJu3f
-	lGz0rhzHubYSSOKuUBYbKFIrOGkzOvwf7dry0HXavszI1HwALlES5Nb/ufb6YF4=
-X-Gm-Gg: ASbGnctWhOd9x+NX0RxhBSszI9dtu5FLGgnmXgp/Vqz+hNTTlkCBNaVxnstCUQIpoGj
-	LtoMOSDNOK37dHxOg33gd11wK/HW+Tkg7LA6XqEF+y57NyZXB+aDvNiqX9L7p9b/YqXi59m8UQr
-	U8hCyruzs87iPKTEJ5UMElL70e4FdTSDv4AhNomlPHrgX0UuOqtTR8ZcDodeqWzQxbIZmzmKxyT
-	oYuiGIluagSRBdgbUTNqwDAIOyMBhe06icKhgN+LVcjkZfK3FQ0HH6smXoQ4QTu7SZtJ1Jq89AG
-	juo46S4fCgTo6pl+qVF9Vsw13eB7V4fJWAneLQaoah7VIjKpIg==
-X-Google-Smtp-Source: AGHT+IF4hsdZRiz/aSbemK655CZrsY9ZUuvu4Xu2ENST8y9hxHTSO7PJo35OmCgDgimYWycuvOakGg==
-X-Received: by 2002:a05:6a20:1591:b0:1ee:d19c:45f9 with SMTP id adf61e73a8af0-1f2f3e11f86mr2902815637.19.1740710672736;
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Received: from [10.68.122.90] ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe514besm2559832b3a.71.2025.02.27.18.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Message-ID: <e5f4e310-5bcd-4901-8ec3-757cf55dfa64@bytedance.com>
-Date: Fri, 28 Feb 2025 10:44:21 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7aPGZ5e"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98792C4CEF6;
+	Fri, 28 Feb 2025 04:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740715961;
+	bh=FvZPNbx5Q2m1gAoxzfB4hFFsiiy5F8PtvQBiBlL4Pow=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=p7aPGZ5eXgnWu9A0Ea+dKSS08y2a1/EKC3UE/Z2FEipoGmFug6U2/VPCpdALCrbev
+	 LWLYgY5slJIp6msFH5PifaBFnncPID5fOt0WPkN12UBhfDZNQvGCOtYxz98AFwQi9r
+	 WgAMNScUHgU/QCjIKBdM+8toLz0a69cR+y5wAfUL4XD0c2BeHTwNCj0rzEjg7t/9jk
+	 ztjGkYoqwsoe90w5wMaOO2qloHvLVN/nr5b6wbQvI6qWPhBrUhwPfLI8l+1c+B6Thq
+	 ulyHRyvkxI9G4GoAz23IVUQD3B6jXfZUXSLnQ7KRRzCbYXuYs+PWcPp/VNturJjJVp
+	 +DhyJ3PhSI9Og==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-abbec6a0bfeso258047766b.2;
+        Thu, 27 Feb 2025 20:12:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUEB5g99z1wh0IHEjwCD3kwvUcn+fDyL7M636h6b5wVw2i/Jn2nnGQge0su5sENZJYTmO/CLJqvznRHBEM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGwQ3NCJufw/Ow6+GDcYlLrhlsRaAR5JoUlNgEpdwjWTCi7C5s
+	K8M6utEyfI4tgRpZANLGwXZ2qGO9RbpBDXGAhtQ80u5qvYvot4K3KpufAoHWV2jUUOvsRDUezdg
+	Xpe4F+5nVq4ibL1HMjuvt8s41fjY=
+X-Google-Smtp-Source: AGHT+IG+IXmafpOkUuzzS8tQrRn3X2e+N/GjztXEBD4K6dhIwhLqaGLVg7e2U/2l0BG19YB0NjX5QGMi2+bDYhFmsMk=
+X-Received: by 2002:a17:907:3f25:b0:ab7:b5d9:525a with SMTP id
+ a640c23a62f3a-abf265cee06mr203938466b.37.1740715960093; Thu, 27 Feb 2025
+ 20:12:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] mm: pgtable: convert some architectures to use
- tlb_remove_ptdesc()
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
- vishal.moola@gmail.com, david@redhat.com, jannh@google.com,
- hughd@google.com, willy@infradead.org, yuzhao@google.com,
- muchun.song@linux.dev, akpm@linux-foundation.org, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, arnd@arndb.de,
- dave.hansen@linux.intel.com, rppt@kernel.org, alexghiti@rivosinc.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
- linux-riscv@lists.infradead.org
-References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
- <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
- <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250227134539.267169-1-marco.crivellari@suse.com> <20250227134539.267169-2-marco.crivellari@suse.com>
+In-Reply-To: <20250227134539.267169-2-marco.crivellari@suse.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Fri, 28 Feb 2025 12:12:29 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7U1CMrCqWwjYYhuZjD3-Fu7Wi__mUwvjvzLO5bZADr8w@mail.gmail.com>
+X-Gm-Features: AQ5f1JoUBrJ2oAhPHBMSw5VZwty-bCqwbvdZHp2bJ-aPgIkFg8cVthJRihCfcAU
+Message-ID: <CAAhV-H7U1CMrCqWwjYYhuZjD3-Fu7Wi__mUwvjvzLO5bZADr8w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] MIPS: Fix idle VS timer enqueue
+To: Marco Crivellari <marco.crivellari@suse.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Frederic Weisbecker <frederic@kernel.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Peter Zijlstra <peterz@infradead.org>, "Maciej W . Rozycki" <macro@orcam.me.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 27, 2025 at 9:45=E2=80=AFPM Marco Crivellari
+<marco.crivellari@suse.com> wrote:
+>
+> MIPS re-enables interrupts on its idle routine and performs
+> a TIF_NEED_RESCHED check afterwards before putting the CPU to sleep.
+>
+> The IRQs firing between the check and the 'wait' instruction may set the
+> TIF_NEED_RESCHED flag. In order to deal with this possible race, IRQs
+> interrupting __r4k_wait() rollback their return address to the
+> beginning of __r4k_wait() so that TIF_NEED_RESCHED is checked
+> again before going back to sleep.
+>
+> However idle IRQs can also queue timers that may require a tick
+> reprogramming through a new generic idle loop iteration but those timers
+> would go unnoticed here because __r4k_wait() only checks
+> TIF_NEED_RESCHED. It doesn't check for pending timers.
+>
+> Fix this with fast-forwarding idle IRQs return address to the end of the
+> idle routine instead of the beginning, so that the generic idle loop
+> handles both TIF_NEED_RESCHED and pending timers.
+>
+> CONFIG_CPU_MICROMIPS has been removed along with the nop instructions.
+> There, NOPs are 2 byte in size, so change the code with 3 _ssnop which ar=
+e
+> always 4 byte and remove the ifdef. Added ehb to make sure the hazard
+> is always cleared.
+>
+> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
+> ---
+>  arch/mips/kernel/genex.S | 42 ++++++++++++++++++++++------------------
+>  arch/mips/kernel/idle.c  |  1 -
+>  2 files changed, 23 insertions(+), 20 deletions(-)
+>
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index a572ce36a24f..5e333cd27fc7 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -104,27 +104,30 @@ handle_vcei:
+>
+>         __FINIT
+>
+> -       .align  5       /* 32 byte rollback region */
+> +       .align  5
+>  LEAF(__r4k_wait)
+>         .set    push
+>         .set    noreorder
+> -       /* start of rollback region */
+> -       LONG_L  t0, TI_FLAGS($28)
+> -       nop
+> -       andi    t0, _TIF_NEED_RESCHED
+> -       bnez    t0, 1f
+> -        nop
+> -       nop
+> -       nop
+> -#ifdef CONFIG_CPU_MICROMIPS
+> -       nop
+> -       nop
+> -       nop
+> -       nop
+> -#endif
+> +       /* start of idle interrupt region */
+> +       MFC0    t0, CP0_STATUS
+> +       /* Enable Interrput */
+> +       ori     t0, 0x1f
+> +       xori    t0, 0x1e
+> +       MTC0    t0, CP0_STATUS
+> +       _ssnop
+> +       _ssnop
+> +       _ssnop
+> +       _ehb
+>         .set    MIPS_ISA_ARCH_LEVEL_RAW
+> +       /*
+> +        * If an interrupt lands here, between enabling interrupts above =
+and
+> +        * going idle on the next instruction, we must *NOT* go idle sinc=
+e the
+> +        * interrupt could have set TIF_NEED_RESCHED or caused a timer to=
+ need
+> +        * resched. Fall through -- see rollback_handler below -- and hav=
+e
+> +        * the idle loop take care of things.
+> +        */
+>         wait
+> -       /* end of rollback region (the region size must be power of two) =
+*/
+> +       /* end of rollback region */
+Oh, no, still something wrong.... "rollback region" here should be
+"idle interrupt region".
+Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
 
+Huacai
 
-On 2/27/25 9:21 PM, Geert Uytterhoeven wrote:
-> Hi Qi,
-> 
-> On Tue, 25 Feb 2025 at 04:46, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->> Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
->> nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
->> and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
->> tlb_remove_page()). This is the same as the implementation of
->> tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
->> convert these architectures to use tlb_remove_ptdesc().
->>
->> The ultimate goal is to make the architecture only use tlb_remove_ptdesc()
->> or tlb_remove_table() for page table pages.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> Thanks for your patch!
-> 
->>   arch/m68k/include/asm/sun3_pgalloc.h | 3 +--
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-
-Thanks for your review.
-
-> 
->> --- a/arch/m68k/include/asm/sun3_pgalloc.h
->> +++ b/arch/m68k/include/asm/sun3_pgalloc.h
->> @@ -19,8 +19,7 @@ extern const char bad_pmd_string[];
->>
->>   #define __pte_free_tlb(tlb, pte, addr)                         \
->>   do {                                                           \
->> -       pagetable_dtor(page_ptdesc(pte));                       \
->> -       tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
->> +       tlb_remove_ptdesc((tlb), page_ptdesc(pte));             \
->>   } while (0)
->>
-> 
-> With only a single statement remaining, you can remove the do { ... }
-> while construct, too.
-
-Ah, right. Will do in the next version.
-
-Thanks!
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-
+>  1:
+>         jr      ra
+>          nop
+> @@ -136,9 +139,10 @@ LEAF(__r4k_wait)
+>         .set    push
+>         .set    noat
+>         MFC0    k0, CP0_EPC
+> -       PTR_LA  k1, __r4k_wait
+> -       ori     k0, 0x1f        /* 32 byte rollback region */
+> -       xori    k0, 0x1f
+> +       PTR_LA  k1, 1b
+> +       /* 36 byte idle interrupt region */
+> +       ori     k0, 0x1f
+> +       PTR_ADDIU       k0, 5
+>         bne     k0, k1, \handler
+>         MTC0    k0, CP0_EPC
+>         .set pop
+> diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
+> index 5abc8b7340f8..1f74c0589f7e 100644
+> --- a/arch/mips/kernel/idle.c
+> +++ b/arch/mips/kernel/idle.c
+> @@ -37,7 +37,6 @@ static void __cpuidle r3081_wait(void)
+>
+>  void __cpuidle r4k_wait(void)
+>  {
+> -       raw_local_irq_enable();
+>         __r4k_wait();
+>         raw_local_irq_disable();
+>  }
+> --
+> 2.48.1
+>

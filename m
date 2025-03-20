@@ -1,168 +1,192 @@
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BB7213245
-	for <linux-mips@vger.kernel.org>; Thu, 20 Mar 2025 08:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0A04A1D;
+	Thu, 20 Mar 2025 10:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742460278; cv=none; b=lvzOlXLld/er6UPpYEJSHftENS84wdr/VKEsgZUkg5/3JTkYglIDUNqks+Dc4H4WUucgILDykuEIWNglWNuG11EmlyOVqoaeMjmc3caIjI93bofHLW8wwEUV9LMbBrCIyySoARCg8YrHDKxBOlFYvWxqtv+f7z8nVd0hBey6vcE=
+	t=1742466744; cv=none; b=SGLOQPaCdV9wdU44in13fdUsWXuWXtxt5ZEoCt4EqGe0LY56ZpAr1rBKUdxmfGJ2+ucRDt+xGlwNcVlrphdcJLV5g1EvvAYxKrSEt5VpbFbocmUHPLNsz03IEuPggGJUfZHPv6Wq2oNtq9vEttP26979rJA+zYRGFsMpM0tZPFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742460278; c=relaxed/simple;
-	bh=sNlZgEoM5+8aD5NbLEVmAJRTCvDhbMemNyvFDAP0U7c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=py6ZuSwQIIwKG1q//6ljQjTODsA9P7Dqb3A7KD19VTh0jzhx8RYv8Nn1hh1OHdmEqKOUjRjEDJjvP3W2DLKWMZGZe7MFq/9oC+SDawstseL1/DhgrqeDrzQ6GQjdF69RUJ9ohzGs+CvDcgX06QpEX9NHFx+3p1j+Fw3hgljF2bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Zt7drcpH; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1742466744; c=relaxed/simple;
+	bh=hxYlmUs1ex9xP6tDrm4swGJGo7R0rw8PuZP48+IJWRk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=eNiJQ/gXV2EFiNGt57C3n7lOTYH3vKg6cwP/eh1Zo6tOROvc6Zum0zgYmYZpi9ZVmWs6e31Nxok0MmUcQ7+Zv1+JhkpzbcJRsqKKrdWpFZnk2UUA2QrihN5PPN5a6YESnVmPfLB3pwpioAZ8VquSDi22xzyFjJCtaaPdrDRS15g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ateZN3e+; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Zt7drcpH"
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-549963b5551so594919e87.2
-        for <linux-mips@vger.kernel.org>; Thu, 20 Mar 2025 01:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1742460274; x=1743065074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/k1TBH3sxq1FZoSFnZ47X5UW8nMXZ6o8WkSmhqI6VCM=;
-        b=Zt7drcpHLiUY7ibCOp0G6krqNUnhmgJrfECLZdsS4fVkmxOOpO1FFSLC+6wIDxnGep
-         uRG4EReaxjiBEyPD0l3NCdGC9FDn3N1F80qjtaLPUZkj1HfffIT/QdxPZVtvw6HGNicP
-         VGLLWSu1trMcVh0uPYeqyQyJar1fjBMCnjHOyFAvgubGriYRqyLyyDZ17utw4GuLVDhF
-         DPQ7VjOY68bJL8cbsxpEdYig43gTlneiIk28fsf2a+3osTn/klVt0NkmXVuOt+LO6iPO
-         VKxFR0gu3/u4ejNcNYtf7Xh7BMZfOMeizuff2w7FBT88zFS6fy6x3oTrfC39AtJdWOrx
-         VMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742460274; x=1743065074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/k1TBH3sxq1FZoSFnZ47X5UW8nMXZ6o8WkSmhqI6VCM=;
-        b=mpoDN7nb+BjBh2KjuGFWZxkH/xa5wBY/pczjbmnoBuLYkqmERaCiqOQaf5JYV9zOH5
-         sbreJidRHyLQTsJyj9t3kU9rmlUxOUcnKa6qoIEVdcJ11kMxyE/m1wJjUGaq9V0GvdDl
-         MIY2xEh1iAbl+fhrcqour3wWBiXmCrOj4HgujZ/ItbbyOxJoZ7H9y7G8tnnpc+BUJ0ID
-         80lg8oYnDmsEi+sFVtyZNsmy0XNzfWwgMJXPZ7f0k3T4ipiEOU72hrq63tUsXP0d/G21
-         MuCQYhFeSCHGp4BBOY7xI37hjOphXA5Ka/r/+lY8jd1FoND64gvrm9EmccT+9BiUBzV1
-         rLKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXb8OgiGN8jW16w6bgykOVN1ziS+E7PdpcoHSU59nYntUTW4sls7p8ISIHU8BlsN48xUGsYOIUeqv3y@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1Y3E/hzNuP0ljM3QFCd+dosYNctQuK4DpofD40/t27mXOQGos
-	FQtuiiQy+eGdCFxpAkQGQizD6a4rtiVbYf8syxXwvBMGpv7uJ4hB2R39lV3/mwBiy+kdjkWvt74
-	ICpmDC9aAkhZnZIGhiX0vQIjp3492Zm418q2RVfsP1vazdBGpDUg=
-X-Gm-Gg: ASbGncsSSNkpKlLG6KmZOHFndxZhmWWvZ/4Tq9G2GcKjYfDbzVSaAh4lIvq2bWI5lag
-	pYnDQ4eNkTY6tRw7mh5vG85QeJswxMJhKEpForHHw7nltRxo7YhdfJYZUvd8mQg4N727/5WF1aR
-	KM7cGVy24QZLnlXkJywAulA2BD1/gr1GqO80YrfNTwWfBK3uqWZjebny7X0CQ=
-X-Google-Smtp-Source: AGHT+IEuHwmPAR1ROEzqIm1aQrHOofhKz5uOBNf8gwg/I+sejCSoTONHquML3Fgi57OcUmPeeWD1YxzLYo+rSgbjh7g=
-X-Received: by 2002:a05:6512:1392:b0:54a:c835:cc4d with SMTP id
- 2adb3069b0e04-54acb21bbc6mr2508359e87.49.1742460274029; Thu, 20 Mar 2025
- 01:44:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ateZN3e+"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D0B24C4CEEA;
+	Thu, 20 Mar 2025 10:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742466743;
+	bh=hxYlmUs1ex9xP6tDrm4swGJGo7R0rw8PuZP48+IJWRk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=ateZN3e+r+VAUTrzYIvLWmo/1N0WIE9RkoNb9+uAiV3N747cmwKksbwWVy7fbLZqM
+	 riUAnAZeWtblCqZfFhLLqgixvjYsqn5LNhqlFZcvRoFAXdsZV1m+msfb/7EnjUrepQ
+	 0MkOROFSnMGQ+ieLptUYYPazfUHkKTh9Ic71znHn5nUWYapF3QjiOhaoWMH4mE0OvX
+	 uyLoK2uxXufTVWa0QaVzSKQEkUh0HALZkarWS4eaPNCXlIrR6M1FeVHHI4W2jCNRS4
+	 XQ5iss8G7vErUBribQyHIQbqlpFgcGCSu5qct7VWusQ7o2sHjTL/gYk8sxATP1ARau
+	 ErI3ueIKS8VlA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB818C36000;
+	Thu, 20 Mar 2025 10:32:23 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Date: Thu, 20 Mar 2025 18:31:37 +0800
+Subject: [PATCH v14 1/2] dt-bindings: mtd: Add Loongson-1 NAND Controller
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250315194002.13778-1-marco.crivellari@suse.com>
- <20250315194002.13778-2-marco.crivellari@suse.com> <Z9qlW81QikxeVzQa@alpha.franken.de>
- <Z9rYAT9i3Ko92uUo@p200300d06f3e987545685175b554ae65.dip0.t-ipconnect.de> <Z9rjZf0ZT7iejVlA@alpha.franken.de>
-In-Reply-To: <Z9rjZf0ZT7iejVlA@alpha.franken.de>
-From: Marco Crivellari <marco.crivellari@suse.com>
-Date: Thu, 20 Mar 2025 09:44:23 +0100
-X-Gm-Features: AQ5f1JqyLjiKXqmNpIwG9UcMdDGhB0TKhG-YIBjnpUe78TaXIeqSWf6otiVZBVU
-Message-ID: <CAAofZF7XPm+tzPpwAPu0oDZem+EOVY18oAbVwAXzkGmtstnBQg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/1] MIPS: Fix idle VS timer enqueue
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Frederic Weisbecker <frederic@kernel.org>, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, "Maciej W . Rozycki" <macro@orcam.me.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250320-loongson1-nand-v14-1-2fef37c8607f@gmail.com>
+References: <20250320-loongson1-nand-v14-0-2fef37c8607f@gmail.com>
+In-Reply-To: <20250320-loongson1-nand-v14-0-2fef37c8607f@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1742466741; l=3140;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=4C+tUdfjB6TBT3V6UKSnHgRR8i46bLkHWjil5rEo8d0=;
+ b=aUu16b3aCHT6MpbhnhY3GOByiJTx16z+E1ajpFWujrb45Mw99JLD+xQGeVU6ZpwrBlTnUtPO5
+ zgK/qznRcq1AZcYS1IKQGLArvyUepFlnHFvYIi3S+GH0iJwWs/cHUwV
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
+Reply-To: keguang.zhang@gmail.com
 
-Hi,
+From: Keguang Zhang <keguang.zhang@gmail.com>
 
-yesterday I made this changes:
+Add devicetree binding document for Loongson-1 NAND controller.
 
-@@ -128,7 +128,11 @@ LEAF(__r4k_wait)
-        */
-       wait
-       /* End of idle interrupt region. */
--1:
-+SYM_INNER_LABEL(__r4k_wait_exit, SYM_L_LOCAL)
-+       /* Check idle interrupt region size. */
-+       .ifne   __r4k_wait_exit - __r4k_wait - 36
-+       .error  "Idle interrupt region size mismatch: expected 36 bytes."
-+       .endif
-       jr      ra
-        nop
-       .set    pop
-@@ -139,7 +143,7 @@ LEAF(__r4k_wait)
-       .set    push
-       .set    noat
-       MFC0    k0, CP0_EPC
--       PTR_LA  k1, 1b
-+       PTR_LA  k1, __r4k_wait_exit
-       /* 36 byte idle interrupt region. */
-       ori     k0, 0x1f
-       PTR_ADDIU       k0, 5
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+Changes in v14:
+- None
+
+Changes in v13:
+- None
+
+Changes in v12:
+- Add MTD label in the example.
+
+Changes in v11:
+- Remove the requirement for 'nand-use-soft-ecc-engine' and 'nand-ecc-algo'.
+- Add 'reg-names' to support DMA address.
+
+Changes in v10:
+- None
+
+Changes in v9:
+- Change the compatible to 'loongson,ls1*-nand-controller'.
+- Rename the file to loongson,ls1b-nand-controller.yaml
+- Some minor adjustments.
+
+Changes in v8:
+- Add a description part.
+- Adjust the compatible because the match data for ls1c-nfc differs from ls1b-nfc.
+- Mark 'nand-use-soft-ecc-engine' and 'nand-ecc-algo' as mandatory.
+- Delete the superfluous blank lines.
+
+Changes in v7:
+- rename the file to loongson,ls1b-nfc.yaml
+
+Changes in v6:
+- A newly added patch
+---
+ .../mtd/loongson,ls1b-nand-controller.yaml         | 72 ++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml
+new file mode 100644
+index 000000000000..a09e92e416c4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nand-controller.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/loongson,ls1b-nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson-1 NAND Controller
++
++maintainers:
++  - Keguang Zhang <keguang.zhang@gmail.com>
++
++description:
++  The Loongson-1 NAND controller abstracts all supported operations,
++  meaning it does not support low-level access to raw NAND flash chips.
++  Moreover, the controller is paired with the DMA engine to perform
++  READ and PROGRAM functions.
++
++allOf:
++  - $ref: nand-controller.yaml
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - loongson,ls1b-nand-controller
++          - loongson,ls1c-nand-controller
++      - items:
++          - enum:
++              - loongson,ls1a-nand-controller
++          - const: loongson,ls1b-nand-controller
++
++  reg:
++    maxItems: 2
++
++  reg-names:
++    items:
++      - const: nand
++      - const: nand-dma
++
++  dmas:
++    maxItems: 1
++
++  dma-names:
++    const: rxtx
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@1fe78000 {
++        compatible = "loongson,ls1b-nand-controller";
++        reg = <0x1fe78000 0x24>, <0x1fe78040 0x4>;
++        reg-names = "nand", "nand-dma";
++        dmas = <&dma 0>;
++        dma-names = "rxtx";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nand@0 {
++            reg = <0>;
++            label = "ls1x-nand";
++            nand-use-soft-ecc-engine;
++            nand-ecc-algo = "hamming";
++        };
++    };
+
+-- 
+2.43.0
 
 
-Would it be ok to have the check done in this way?
-
-Thanks
-
-
-On Wed, Mar 19, 2025 at 11:09=E2=80=AFPM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Wed, Mar 19, 2025 at 03:43:13PM +0100, Frederic Weisbecker wrote:
-> > > >   .set    MIPS_ISA_ARCH_LEVEL_RAW
-> > > > + /*
-> > > > +  * If an interrupt lands here, between enabling interrupts above =
-and
-> > > > +  * going idle on the next instruction, we must *NOT* go idle sinc=
-e the
-> > > > +  * interrupt could have set TIF_NEED_RESCHED or caused a timer to=
- need
-> > > > +  * resched. Fall through -- see rollback_handler below -- and hav=
-e
-> > > > +  * the idle loop take care of things.
-> > > > +  */
-> > > >   wait
-> > > > - /* end of rollback region (the region size must be power of two) =
-*/
-> > > > + /* End of idle interrupt region. */
-> > > >  1:
-> > >
-> > > please give this label a name for example __r4k_wait_exit and do a
-> > > runtime check that it really has 36 bytes offset to __r4k_wait
-> >
-> > Where would be the best place for that?
-> >
-> > arch/mips/kernel/setup.c:setup_arch() maybe?
->
-> scratch runtime check, a compile check is what I wanted to write...
->
-> something like
->
-> .if ((__r4k_wait_exit - __r4k_wait) !=3D 36)
-> .err
-> .endif
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
-y a
-> good idea.                                                [ RFC1925, 2.3 =
-]
-
-
-
---=20
-
-Marco Crivellari
-
-L3 Support Engineer, Technology & Product
-
-
-
-
-marco.crivellari@suse.com

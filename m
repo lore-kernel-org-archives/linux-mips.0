@@ -1,131 +1,92 @@
-Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0BC08634D;
-	Fri, 21 Mar 2025 13:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D7D223703;
+	Fri, 21 Mar 2025 15:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742565184; cv=none; b=pwgY/qTQ29eaW4TXnd1HDz8KrXiOz7eXXOR6gmoEEcSORVbfCLFkOa5JT7/Zxnfx1OMK+lbM/BFkKAd2P0G+FZzk/witvrAIo+04UsvbbiVJEFo3boRGZGTg22UlAw6SD3QJGB2tWQldVypXMF29QaAsJlE3a4L8dazNpulO4S4=
+	t=1742572325; cv=none; b=rxXi/RghFxPqINJOOkGjX2pfQIIPtvbkiJTSasPCjBAQfmSxU4381Vel/2MdmxBHz190Jle+D4ytokhbpQDG8v7Rs66Iw0vj4i98EPE+/gNqu/UmpAI7Q3yQjyiUTiBHI/FM04XnxtJCt6flwMUM7XiwfZd4TiDmY6pmZ3Nc2fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742565184; c=relaxed/simple;
-	bh=+aiL+p2ov4+pM1i5cwWRqtp2MYNr8iqYSe9B38Y548Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SJzv1438uIUV2YVNd2STBoRgIcuIq25GmRHFUrXpK5iC4szpdmvDnalz0JWh7KljOfy1pRVXrdp71m523hBxTZ68vgcWh5yN2nEeIAGWCgkkoYhUX7D37da8iftiWTVhHGanEeiUNc+pqNysJaMeFz0AFiGIEoyBqYB3NTIGLFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=dho3f9un; arc=none smtp.client-ip=5.135.140.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+	s=arc-20240116; t=1742572325; c=relaxed/simple;
+	bh=+MlNXD+nU/FyW3Z2jZmfsNxmoyYLAZ6DjsTXsGyJU40=;
+	h=Date:Content-Type:MIME-Version:From:Cc:To:In-Reply-To:References:
+	 Message-Id:Subject; b=dkVZlFjnrru9h588GivdgPSYvsdlxRLPwwAt54mdjHiMc/D8EBVQUYCxjZGZ+D8BeUkRg63+5nbjV+C+lHvr2t6KyFqnMelAi4tYNh2bIt4RVkoQv+zSAGO1tiynuUldIkKuuwUAP8rCluXdfc88kcZquWLI4eIvslQwz6uaOKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHILnwct; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="dho3f9un"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 750A02A3CDB;
-	Fri, 21 Mar 2025 14:47:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1742564821; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=5ECQIt5LS+npnSHmGqlA157ZkVUis+o/etFccNszfYc=;
-	b=dho3f9unQ4s5ZwqD4ojoNLIsXfxT02syVtWFJ9qekB+OYaz6vH0WfvrICgIEZ0g9phaiJp
-	aPKqvXTdWqa/bm9J6t4Ur8Oe13CTwERNgSELHoeid3SlvcgZvJYDBBrGy6teplMMexf6Cs
-	txmxhRwMyIJNlXOjeF8WL9w1opM967UuP19d1KCDeMraJ/4DaHvJWDuCkbq9s5n/BM0bMk
-	dOt359YVwQZgb5x3eHRwm0wg6luhwQ9nYMOMEa5shrWijF5PvDchhVE0QKYZEppsEAwAkX
-	fL9nVZ3BbYuRrliHKLGUgEiyYVfQX4Kf7R53fXOTvyhuLLzwjVkid7W59EmzeA==
-From: Caleb James DeLisle <cjd@cjdns.fr>
-To: linux-mips@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	benjamin.larsson@genexis.eu,
-	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v1 4/8] dt-bindings: timer: Add EcoNet HPT CPU Timer
-Date: Fri, 21 Mar 2025 13:46:29 +0000
-Message-Id: <20250321134633.2155141-5-cjd@cjdns.fr>
-In-Reply-To: <20250321134633.2155141-1-cjd@cjdns.fr>
-References: <20250321134633.2155141-1-cjd@cjdns.fr>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHILnwct"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5384C4CEE3;
+	Fri, 21 Mar 2025 15:52:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742572324;
+	bh=+MlNXD+nU/FyW3Z2jZmfsNxmoyYLAZ6DjsTXsGyJU40=;
+	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
+	b=hHILnwctpsR2U3NwJKnAltNyE1+kAw+SlNF6GhQl77dNVgUgJ/w6fUOEoY0pSvNsd
+	 mRBRjeQZZ8+AC/8P/EoJ6CI7OK26Smdv7OTT9Z13gXK7cUFp6YtQWHJwtknoHVlqia
+	 TMmTUOUfX6qV0aPcyDJuXjGz7aqcHdg+1jI+MGR9sISmgnihz46rcCZLUNltUDXs36
+	 EhVc5PcmhGRw9ktk+ba3pd7OhigWJa14l814TeQJ74igJrdbvdSoNmUV0Ew6r1ZBD/
+	 F4iBX+9jwkCgdKyKoFgTcMKDDX7Ti+fftV+82FoB4UQE6uc/adMXruZr9n3kySxPQQ
+	 6dzLZuSOV5JGA==
+Date: Fri, 21 Mar 2025 10:52:03 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+ Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, benjamin.larsson@genexis.eu, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+To: Caleb James DeLisle <cjd@cjdns.fr>
+In-Reply-To: <20250321134633.2155141-3-cjd@cjdns.fr>
+References: <20250321134633.2155141-1-cjd@cjdns.fr>
+ <20250321134633.2155141-3-cjd@cjdns.fr>
+Message-Id: <174257232355.3436156.11164230137695407225.robh@kernel.org>
+Subject: Re: [PATCH v1 2/8] dt-bindings: interrupt-controller: Add EcoNet
+ EN751221 INTC
 
-Add device tree binding documentation for the high-precision timer (HPT)
-in the EcoNet EN751221 SoC.
 
-Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
----
- .../bindings/timer/econet,timer-hpt.yaml      | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/timer/econet,timer-hpt.yaml
+On Fri, 21 Mar 2025 13:46:27 +0000, Caleb James DeLisle wrote:
+> Document the device tree binding for the interrupt controller in the
+> EcoNet EN751221 MIPS SoC.
+> 
+> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+> ---
+> If anyone is aware of a standard name for this "shadow interrupt" pattern,
+> please let me know and I will re-send with updated naming.
+> ---
+>  .../econet,en751221-intc.yaml                 | 77 +++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
+> 
 
-diff --git a/Documentation/devicetree/bindings/timer/econet,timer-hpt.yaml b/Documentation/devicetree/bindings/timer/econet,timer-hpt.yaml
-new file mode 100644
-index 000000000000..8b7ff9bce947
---- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/econet,timer-hpt.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/econet,timer-hpt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: EcoNet High Precision Timer (HPT)
-+
-+maintainers:
-+  - Calev James DeLisle <cjd@cjdns.fr>
-+
-+description: |
-+  The EcoNet High Precision Timer (HPT) is a timer peripheral found in various
-+  EcoNet SoCs, including the EN751221 and EN751627 families. It provides per-VPE
-+  count/compare registers and a per-CPU control register, with a single interrupt
-+  line using a percpu-devid interrupt mechanism.
-+
-+properties:
-+  compatible:
-+    const: econet,timer-hpt
-+
-+  reg:
-+    minItems: 1
-+    maxItems: 2
-+    description: |
-+      Physical base address and size of the timer's register space. On 34Kc
-+      processors, a single region is used. On 1004Kc processors, two regions are
-+      used, one for each core.
-+
-+  interrupts:
-+    maxItems: 1
-+    description: |
-+      The interrupt number for the timer. This is a percpu-devid interrupt shared
-+      across CPUs.
-+
-+  clocks:
-+    maxItems: 1
-+    description: |
-+      A clock to get the frequency of the timer.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    timer_hpt@1fbf0400 {
-+        compatible = "econet,timer-hpt";
-+        reg = <0x1fbf0400 0x100>;
-+        interrupt-parent = <&intc>;
-+        interrupts = <30>;
-+        clocks = <&hpt_clock>;
-+    };
-+...
--- 
-2.30.2
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.example.dtb: interrupt-controller@1fb40000: 'interrupt-parent' is a required property
+	from schema $id: http://devicetree.org/schemas/interrupt-controller/econet,en751221-intc.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20250321134633.2155141-3-cjd@cjdns.fr
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 

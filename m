@@ -1,91 +1,136 @@
-Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AE81D95A9;
-	Fri, 21 Mar 2025 17:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E831DE3A7;
+	Fri, 21 Mar 2025 19:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742577560; cv=none; b=Mj4A+hRPlW8Qgdp2zb6onLeJpXfP/3U287RmKNdVAjRUfWWdwY8HviMOAOCgI/DTRkMu6/pOtlKeVhQG7+4ejUjP5nAmT0oMZ6t8dQmUDTXA7bAmUjOW3KlFanbHW7fG0z6y7YHgG9mQetUUDaMkuAajd86xw7AGvTa21o6NOjg=
+	t=1742584446; cv=none; b=GJUAGOGbEJv30R+Qxtu1TeZfHzozdCgAKwqO92+Kw43qsXeRccBe2khmo1LA2kYv2wJu+EBe+AXoEfRhcyDYb9P7Aftpk3SMa9Qmnt0bmv6zuW31x/e0WIhaEYX0Pbxdnnb/lTajoulq0ESfl7ccAagBg+g8xv//WzLj4mm4LUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742577560; c=relaxed/simple;
-	bh=iUjrZZviz0HratLYPa9I0r6ES1UGZaKfPifNHoR5kXA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p9wG7sr9E2xcilV1OYAuE391VAls6DM3iaSG3HE271GR9FNeQi/yvRKrFo/Pla2nvdZh14Sj+PskSQ+jhCuUVjAJ9rGR7Gppk6mGRRoHErf6Fx55CsvzZ3KXA+s3KRyPhN/q9+7ryAffd3FU7bHYjDvBPXwginH0kTqtOneckE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=NQBI8X13; arc=none smtp.client-ip=5.135.140.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+	s=arc-20240116; t=1742584446; c=relaxed/simple;
+	bh=LsRyZApPf+VKlO6rBlga/U1+K1IZu2R33QZRCEABJAE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=GKyncG3Odpvn5JGPpkbqsYAMssrxycGgtiJqC4q8qtTuN/Drz9JPcnIIo1bK+ibW0/xfUWjIL753wrG68aqqdNAZNvnZWG12HLes8rGRaVtF8YIqr162JQYnIksKN7GmuvNQg06CGZlEpOtdByfujmkbnioczR3saoCPdmES4WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=e3Eejegi; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="NQBI8X13"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 06661291C36;
-	Fri, 21 Mar 2025 18:19:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1742577555; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=zzPyt7C28wJDA71/0ZNWzwkpyL1VjuZamOj0CGGN+uk=;
-	b=NQBI8X13zFj3alYAZHLjU3eOj2iMZP+Tzsw8RR2S2EettgrRTWQQDc8Ui4OnqsY6KqYGXS
-	glNiGXPJp+7qHHvo48N3sCOi7pMv5vquUJ8ohHjROnNGYD7YI1AB/0aHJI9n0VUs7Iffg9
-	jIQXaoEphNstLU1lJnSFhRncfFOXIG9I9BRsaA7tzi+vNfKu/OaefYvDRi2aNuueBDP8Cf
-	kqvkf4tJRWo7mTwwbGYlCqIVLL4kQ2pMB5T/FxPZIerGfWYbQkwsvKl6yMBbmK96WTtvDq
-	tKD3Mv3IlSoS+oeU7rhl5cO2qvPT3KVIX0okWw9HkipnVW1XtewtqRZwV+XtKg==
-Message-ID: <4479c4cc-404b-48b9-9e0f-b6b371c8c159@cjdns.fr>
-Date: Fri, 21 Mar 2025 18:19:10 +0100
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="e3Eejegi"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A850544557;
+	Fri, 21 Mar 2025 19:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1742584442;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iePdyYSf/+g+pm8h9F0nQI+y9CDPVqPcquQl0nemLzI=;
+	b=e3EejegiFRwW3JpWgNVSn8BAS55pjTPk5K/NuhH0F505gCF3tyQ4vgBJM8G+TirnkZXnLS
+	+sO0Rc+MzLSXYJBRX7Ddq7XX3GqfURZ2r9bpAa7yfHNrYuU3/8iHsFhc8gk+BAwii0zGf7
+	DLRGTk83Xtd9CstN3mRY9rnjhadjSyF++IPd9NzgILHZUq145KFxU/SECWmIYYo/TyHgNj
+	CErQGGLUpiiCBypZRlp9z+mO3yAsVhOouKSIqMGN5FLPWeUC8tsdLwS4Zwpdc/L9OGG2CN
+	CnpQXxiHVfP9v9HwhSxxG5opOEnS1I3VxjkXdpCAnS0sfGPC3J8xu5RaA75Ijg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Fri, 21 Mar 2025 20:09:35 +0100
+Subject: [PATCH net-next 04/13] net: macb: use BIT() macro for capability
+ definitions
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v1 2/8] dt-bindings: interrupt-controller: Add EcoNet
- EN751221 INTC
-To: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, devicetree@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, benjamin.larsson@genexis.eu,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <20250321134633.2155141-1-cjd@cjdns.fr>
- <20250321134633.2155141-3-cjd@cjdns.fr>
- <174257232355.3436156.11164230137695407225.robh@kernel.org>
-Content-Language: en-US
-From: Caleb James DeLisle <cjd@cjdns.fr>
-In-Reply-To: <174257232355.3436156.11164230137695407225.robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250321-macb-v1-4-537b7e37971d@bootlin.com>
+References: <20250321-macb-v1-0-537b7e37971d@bootlin.com>
+In-Reply-To: <20250321-macb-v1-0-537b7e37971d@bootlin.com>
+To: Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexandre Ghiti <alex@ghiti.fr>, Samuel Holland <samuel.holland@sifive.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ linux-mips@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduheduledtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepvfhhrohoucfnvggsrhhunhcuoehthhgvohdrlhgvsghruhhnsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelvefhkeeufedvkefghefhgfdukeejlefgtdehtdeivddtteetgedvieelieeuhfenucfkphepjeejrddufeehrdekuddrieehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepjeejrddufeehrdekuddrieehpdhhvghloheplgduledvrdduieekrddurdeftdgnpdhmrghilhhfrhhomhepthhhvghordhlvggsrhhunhessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdekpdhrtghpthhtohepghhrvghgohhrhidrtghlvghmvghnthessghoohhtlhhinhdrtghomhdprhgtphhtthhopehlihhnuhigqdhrihhstghvsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepphgruhhlrdifrghlmhhslhgvhiesshhifhhivhgvrdgtohhmpdhrtghpthhtohepthhssghoghgvnhgusegrlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgtphhtthhopehkuhgsrgesk
+ hgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhhitgholhgrshdrfhgvrhhrvgesmhhitghrohgthhhiphdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomh
+X-GND-Sasl: theo.lebrun@bootlin.com
 
+Replace all capabilities values by calls to the BIT() macro.
 
-On 21/03/2025 16:52, Rob Herring (Arm) wrote:
-> On Fri, 21 Mar 2025 13:46:27 +0000, Caleb James DeLisle wrote:
->> Document the device tree binding for the interrupt controller in the
->> EcoNet EN751221 MIPS SoC.
->>
->> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
->> ---
->> If anyone is aware of a standard name for this "shadow interrupt" pattern,
->> please let me know and I will re-send with updated naming.
->> ---
->>   .../econet,en751221-intc.yaml                 | 77 +++++++++++++++++++
->>   1 file changed, 77 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
->>
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.example.dtb: interrupt-controller@1fb40000: 'interrupt-parent' is a required property
-> 	from schema $id: http://devicetree.org/schemas/interrupt-controller/econet,en751221-intc.yaml#
->
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ drivers/net/ethernet/cadence/macb.h | 40 ++++++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-Reproduced and fixed, thank you.
+diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
+index c9a5c8beb2fa8166195d1d83f187d2d0c62668a8..3b43cb9468e3618754ff2bc6c5f360447bdeeed0 100644
+--- a/drivers/net/ethernet/cadence/macb.h
++++ b/drivers/net/ethernet/cadence/macb.h
+@@ -727,26 +727,26 @@
+ #define MACB_MAN_C45_CODE			2
+ 
+ /* Capability mask bits */
+-#define MACB_CAPS_ISR_CLEAR_ON_WRITE		0x00000001
+-#define MACB_CAPS_USRIO_HAS_CLKEN		0x00000002
+-#define MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII	0x00000004
+-#define MACB_CAPS_NO_GIGABIT_HALF		0x00000008
+-#define MACB_CAPS_USRIO_DISABLED		0x00000010
+-#define MACB_CAPS_JUMBO				0x00000020
+-#define MACB_CAPS_GEM_HAS_PTP			0x00000040
+-#define MACB_CAPS_BD_RD_PREFETCH		0x00000080
+-#define MACB_CAPS_NEEDS_RSTONUBR		0x00000100
+-#define MACB_CAPS_MIIONRGMII			0x00000200
+-#define MACB_CAPS_NEED_TSUCLK			0x00000400
+-#define MACB_CAPS_QUEUE_DISABLE			0x00000800
+-#define MACB_CAPS_PCS				0x01000000
+-#define MACB_CAPS_HIGH_SPEED			0x02000000
+-#define MACB_CAPS_CLK_HW_CHG			0x04000000
+-#define MACB_CAPS_MACB_IS_EMAC			0x08000000
+-#define MACB_CAPS_FIFO_MODE			0x10000000
+-#define MACB_CAPS_GIGABIT_MODE_AVAILABLE	0x20000000
+-#define MACB_CAPS_SG_DISABLED			0x40000000
+-#define MACB_CAPS_MACB_IS_GEM			0x80000000
++#define MACB_CAPS_ISR_CLEAR_ON_WRITE		BIT(0)
++#define MACB_CAPS_USRIO_HAS_CLKEN		BIT(1)
++#define MACB_CAPS_USRIO_DEFAULT_IS_MII_GMII	BIT(2)
++#define MACB_CAPS_NO_GIGABIT_HALF		BIT(3)
++#define MACB_CAPS_USRIO_DISABLED		BIT(4)
++#define MACB_CAPS_JUMBO				BIT(5)
++#define MACB_CAPS_GEM_HAS_PTP			BIT(6)
++#define MACB_CAPS_BD_RD_PREFETCH		BIT(7)
++#define MACB_CAPS_NEEDS_RSTONUBR		BIT(8)
++#define MACB_CAPS_MIIONRGMII			BIT(9)
++#define MACB_CAPS_NEED_TSUCLK			BIT(10)
++#define MACB_CAPS_QUEUE_DISABLE			BIT(11)
++#define MACB_CAPS_PCS				BIT(24)
++#define MACB_CAPS_HIGH_SPEED			BIT(25)
++#define MACB_CAPS_CLK_HW_CHG			BIT(26)
++#define MACB_CAPS_MACB_IS_EMAC			BIT(27)
++#define MACB_CAPS_FIFO_MODE			BIT(28)
++#define MACB_CAPS_GIGABIT_MODE_AVAILABLE	BIT(29)
++#define MACB_CAPS_SG_DISABLED			BIT(30)
++#define MACB_CAPS_MACB_IS_GEM			BIT(31)
+ 
+ /* LSO settings */
+ #define MACB_LSO_UFO_ENABLE			0x01
 
-In the interest of limiting mailing list noise, I plan to send a v2 sometime
-around Monday, ideally to aggregate a few more reviews in the process.
-
-
-Thanks,
-
-Caleb
+-- 
+2.48.1
 

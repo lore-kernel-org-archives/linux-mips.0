@@ -1,125 +1,155 @@
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AE1254872
-	for <linux-mips@vger.kernel.org>; Tue,  8 Apr 2025 23:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3434125D902;
+	Wed,  9 Apr 2025 10:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744156485; cv=none; b=CsbyU6avQDeRyZXPRbZqVMXaMeTWXQIVMYoPjEYdA5XQxFemPbqYojakk4FLej6+7oWvMxV+XOCvJHpu4Dg7yjfREc3mYeDVL372IMM0oX45AcnO0kP0D4KCGL6junGiUbje3X/fGG6cjQ9tqprVVxWtwYH+D7awwHJWpXRBWRA=
+	t=1744194600; cv=none; b=NH+kX8XajhyKz5vGSq5oiwZ8+Kh/QxYMCo7qg8RnxCITtXMdQRBP8PoO6f2zsr2rC3avKObLI5kzfo8hEkRoZN1Qa9XUCJiaL6TnCLjwM7NeNKbZHjSITrOqowXIcHtJWJcF1XEIvGoBM3HiWcqcTqlOhP1XH+hcUFX32RAOPWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744156485; c=relaxed/simple;
-	bh=Jnx6PKKzCvL4p4g+uO/ftLP/ihvxn+++kI74c7ySLPY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CMLAt41ea2T1gFyDIHjES9gAm/8uma0Fs6OnpJpRMy4A+FYRz6X2Aw8cu5ELu2U62c3NpldVDsKkzMSaViS1lT+YVhb6dtnSyFooXcPQYmqHI3oJsKybCNP9YttibGmjnxvPzIBz+fh9IhVWx9++li0temmSCziFU1xYI7gMgFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RJMpo4gE; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1744194600; c=relaxed/simple;
+	bh=/0CqusxdTosY+7jmlkvRfHoOXqcAy++TyFyAO2t0MA0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=BBN6yjdo2AC6NLMwsPvByITwcNEAGGsI+utoLLZAH3UK1caoirIMjlTkawq8TXxqYG++45/uNUT9SsrnvPBlX74c0m+8e0ioo5gEq1WqokNrkr6DyN65xije5zNjGzQ1JF9jnjrSSHPFwWyH7jpMqH8LKnOx29K9Sz/cEQmcxUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ALQ21rtC; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RJMpo4gE"
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-861525e9b0aso119012639f.3
-        for <linux-mips@vger.kernel.org>; Tue, 08 Apr 2025 16:54:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1744156481; x=1744761281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zdRyBtliQ5cx07mISx4wCHyn5iramOMcxVolUqi92Io=;
-        b=RJMpo4gE/CclGysCZHF4DFNZsSnXV4P4XuEjnWRUTJ9omVb675XMkP0rDKjJIXgGqR
-         QLn7HxEEUlqjtQiIyOZ8RBMTzUJ/XQZB7BHuSY/olcc272F/Uxt+iYgdIMs3C+cSM3Xi
-         0DvCjOUiR/VPa/tZwkgRPn6Dzl5/OVyDbKNeQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744156481; x=1744761281;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zdRyBtliQ5cx07mISx4wCHyn5iramOMcxVolUqi92Io=;
-        b=NXcCOFTU/z2Y5nYWF8EkyYFk8pPWuwqnhn5xVas1TbDfJ0MIGmYUWNxKhzDB0t9r9V
-         nD88BADD0OuQOJSn4q4orlIOzQyUmJhahhrokG4WjJGfUSlXWXDbXz7krkY+IzFJ44Kj
-         /jzfO5zWRwT//jLWw/feI6XPeBGUCkxNFSczRFn9SsHDH2a2cdaQNdZ1SPhKTpC4QERZ
-         LI9sjNmFU5mK/KJkm3k9sRC+cGb1L9qHXBcyOP+HwsnQR/Oa5XkTtcip9lH4FWxA9roI
-         4G46pukmBO8w6rV1mIqH4BTgv1pgcYdHE73YGBkpxOo0YQeNd/zk8C2ZpLAEW2kSEtyk
-         feDA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsPtkAm+YXGcPc5L1kzijzLAKDuym/Q0y61if/T71s7sa8LV3NqEziW1ap5amB49oDw7HMme8aUY/u@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOnvYtJdfeCEjBM5Jf7t+67WHbPFnE+UWqj6IxlMyzhYDdXbON
-	JRH/pDkFh/pys9suThRbbiyP0gA1eNyjeecbit6PRS0EwokBQWGqbiXwzCP3i9k=
-X-Gm-Gg: ASbGncuRVsipH5duKLvTs6xPkbnElSkW30YpXjRD3wTOkeSsy/2y0F742mxH3s86cLN
-	8pRWIwXHBjZANH2rcKbPmT73eVKo+w45bheiS0SlDitXSw9UOXwieYaHJr6QKwCv2k3xu9hsdUB
-	VyRzEITvtSIgOCqTNRk4GTRXthnX35Mc14/uDbMHf04ou2TNM/oC1dZj0nmQi3Mgf7NQOTJSUKC
-	1aeTxTKffluvyjkdjW0OZ88PEfg28u3r4j3d0C8BkAGQAM0yIjKZoGV9NB2cH0D5+7JpcauJwLp
-	/QuKdHqWXz4BSNPF21Iilu3WYM5MQ2Wv5ljh2RfbLdjvofEBYbwvwrU=
-X-Google-Smtp-Source: AGHT+IHrbk9mfKXAQeL9/yafdcqMUAyL8vOKCLUsGKcMZRbOPlFSarz6cufkOxtG6i0ALC59RzlGtw==
-X-Received: by 2002:a05:6602:720e:b0:85b:3dcd:d8c0 with SMTP id ca18e2360f4ac-8616128f2f0mr132204539f.12.1744156481759;
-        Tue, 08 Apr 2025 16:54:41 -0700 (PDT)
-Received: from [192.168.1.14] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f4f43bda91sm746758173.27.2025.04.08.16.54.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Apr 2025 16:54:41 -0700 (PDT)
-Message-ID: <dae94ac2-63d7-419c-9bec-bea0840ea534@linuxfoundation.org>
-Date: Tue, 8 Apr 2025 17:54:40 -0600
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ALQ21rtC"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BB250C4CEEB;
+	Wed,  9 Apr 2025 10:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744194599;
+	bh=/0CqusxdTosY+7jmlkvRfHoOXqcAy++TyFyAO2t0MA0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=ALQ21rtCqvoiGi2Lln17KIZxUFg0R1PJzyqgHQsrpnfKpdf3UHNz1klHgfW3PyILu
+	 3CTPVrIHV7/HOsTa78pwK1WG2PJctlTz+2CFQgHk0TNqTo/Wglx2novPHkoFxaKGMH
+	 yUnrwY8/IY+/SyqGD+J26+RQ0qNaFYLa5+oX0+DR02xq1D5gOm2jxKqUTSTsFDxPQv
+	 LAi510Iedygc9Chw/c98jvKRBi6ySHAXFhWdVZKWiHkhJazaTRv8J6Y4//DhgbYAsl
+	 HQfeL2Pkh7OUmeCV/5Mw8gMEQoFKfb7vI+DcxgBFIXWKz0vUDWmGyQ2KzBMrhAhopk
+	 Of87DrNxaQx4g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5C7FC369A2;
+	Wed,  9 Apr 2025 10:29:59 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Date: Wed, 09 Apr 2025 18:29:31 +0800
+Subject: [PATCH v2 1/4] ASoC: dt-bindings: Add Loongson-1 AC97 Controller
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] selftests/ptrace/get_syscall_info: fix for MIPS n32
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>, "Dmitry V. Levin" <ldv@strace.io>
-Cc: Shuah Khan <shuah@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
- strace-devel@lists.strace.io, linux-kselftest@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20250115233747.GA28541@strace.io>
- <0262acf1-4d3f-471b-bd56-4ddf8a2bc1a3@linuxfoundation.org>
- <20250329124856.GA1356@strace.io>
- <alpine.DEB.2.21.2503291345580.47733@angie.orcam.me.uk>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <alpine.DEB.2.21.2503291345580.47733@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20250409-loongson1-ac97-v2-1-65d5db96a046@gmail.com>
+References: <20250409-loongson1-ac97-v2-0-65d5db96a046@gmail.com>
+In-Reply-To: <20250409-loongson1-ac97-v2-0-65d5db96a046@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-mips@vger.kernel.org, linux-sound@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1744194597; l=2137;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=P1S4AuhzoXKqy79wJB2DjJNFjHpZ3nLQ0TPqe3hAemY=;
+ b=nk5jaD70Ua88bs3L6xEm+55oKBloApPqbJfXiqfyyoxgswnxaU80LvjzS4RVZaVGRB3uxzG3Q
+ NCGiEaFRqkIDJ2BbCqWGaG+TBFO1npkc57NGR35Gy6/F3iCPDQFXFFy
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
+Reply-To: keguang.zhang@gmail.com
 
-On 3/29/25 08:02, Maciej W. Rozycki wrote:
-> On Sat, 29 Mar 2025, Dmitry V. Levin wrote:
-> 
->>>> +#if defined(_MIPS_SIM) && _MIPS_SIM == _MIPS_SIM_NABI32
->>>> +/*
->>>> + * MIPS N32 is the only architecture where __kernel_ulong_t
->>>> + * does not match the bitness of syscall arguments.
->>>> + */
->>>> +typedef unsigned long long kernel_ulong_t;
->>>> +#else
->>>> +typedef __kernel_ulong_t kernel_ulong_t;
->>>> +#endif
->>>> +
->>>
->>> What's the reason for adding these typedefs? checkpatch should
->>> have warned you about adding new typedefs.
->>>
->>> Also this introduces kernel_ulong_t in user-space test code.
->>> Something to avoid.
->>
->> There has to be a new type for this test, and the natural way to do this
->> is to use typedef.  The alternative would be to #define kernel_ulong_t
->> which is ugly.  By the way, there are quite a few typedefs in selftests,
->> and there seems to be given no rationale why adding new types in selftests
->> is a bad idea.
-> 
+From: Keguang Zhang <keguang.zhang@gmail.com>
 
-It causes problems down the road for maintenance. I would rather not
-see these types of kernel typedefs added to user-space.
+Add devicetree binding document for Loongson-1 AC97 controller.
 
->   FWIW I agree, and I fail to see a reason why this would be a problem in a
-> standalone test program where the typedef does not propagate anywhere.
-> 
->   The only potential issue I can identify would be a namespace clash, so
-> perhaps the new type could have a name prefix specific to the test, but it
-> doesn't appear to me a widespread practice across our selftests and then
-> `kernel_' ought to be pretty safe against ISO C or POSIX, so perhaps let's
-> leave the things alone?
-> 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+ .../bindings/sound/loongson,ls1b-ac97.yaml         | 68 ++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-Can't this be solved with ifdef?
+diff --git a/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml b/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml
+new file mode 100644
+index 000000000000..1c6a2771f942
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/loongson,ls1b-ac97.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/loongson,ls1b-ac97.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson-1 AC97 Controller
++
++maintainers:
++  - Keguang Zhang <keguang.zhang@gmail.com>
++
++description:
++  The Loongson-1 AC97 controller supports 2-channel stereo output and input.
++  It is paired with the DMA engine to handle playback and capture functions.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: loongson,ls1b-ac97
++      - items:
++          - enum:
++              - loongson,ls1a-ac97
++              - loongson,ls1c-ac97
++          - const: loongson,ls1b-ac97
++
++  reg:
++    maxItems: 3
++
++  reg-names:
++    items:
++      - const: ac97
++      - const: audio-tx
++      - const: audio-rx
++
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++  '#sound-dai-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    audio-controller@1fe74000 {
++        compatible = "loongson,ls1b-ac97";
++        reg = <0x1fe74000 0x60>, <0x1fe72420 0x4>, <0x1fe74c4c 0x4>;
++        reg-names = "ac97", "audio-tx", "audio-rx";
++        dmas = <&dma 1>, <&dma 2>;
++        dma-names = "tx", "rx";
++        #sound-dai-cells = <0>;
++    };
 
-thanks,
--- Shuah
+-- 
+2.43.0
+
+

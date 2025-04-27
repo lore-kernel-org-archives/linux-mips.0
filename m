@@ -1,74 +1,135 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1A925178E;
-	Sun, 27 Apr 2025 08:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40BC6250C16;
+	Sun, 27 Apr 2025 09:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745743729; cv=none; b=KcJlSMjGhmYSyrXwotRdH1ZD6AmZ+MWBidgBL+8Gt1WyEAHJvNAgN6rik7foozgwv3y//DEwOMV7geBMX51B05HL/2/aTemSIU9YUiJfJRAjG7rKWqkltAxe4L5nfvIsvqtA+xu8zufm02CyfHDvFLFr0QJWdORO7+Qe6Z2N2oo=
+	t=1745745954; cv=none; b=kuR+k8SbPVvWlNcTwhXDRXqzZg6JUMbYmrmop0vQ2cjYLE5e8/w7vzrHnFlCHXooCL+bsAoR82Rr4Bu4MkmeCxktie1MwBiSXuSQxmQefmOlHP06Am0C4zrCQtpmb+ZrlKYKAjY6PAJfUwhVBX1VmgroEB0zE1TBgkN9KW0i0aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745743729; c=relaxed/simple;
-	bh=R/i3UWuvMC8Y8kBqHMrj/K8JCWtfnW6Fo6LEyskQU1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kWFdgnYWEAqRSNJfpNCi4NlOVbnuWu1wWDry86ptPT0oK8YDkZTWtMxmSe++ADis9CFiM16SrAIB4Yx1DriDyiFA7kywEqLRHa5L1RpVVT4zK1sZmtrs3kVrPLnkNQBl2xMpBRMLCFo/yE3vACy6P0TbRS81ZnGbylccy7qQWsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1u8wse-0007Ks-00; Sun, 27 Apr 2025 09:56:52 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 4479CC0B2A; Sun, 27 Apr 2025 09:55:58 +0200 (CEST)
-Date: Sun, 27 Apr 2025 09:55:58 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: BCM63XX: Replace strcpy() with strscpy() in
- board_prom_init()
-Message-ID: <aA3jDmwoeobJRShD@alpha.franken.de>
-References: <20250422074257.544016-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1745745954; c=relaxed/simple;
+	bh=1e4CIKEeHfm0tSrUDVV62N5Ny2tt4pWKijp71I0byWE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WeAliJw0r5y8h2gKdIZEBHEImzPEuF4CvrznKKNj1pLY4qIr8ai2cHov9M0L4nrtjM9hRYZ/nu56v4yLjFkQoNFSMgEb7nn71LyNn9P6dz61edDYTmjQCywpGzhsKP5hQAiljdNgdkLDhqA3d7dLcfmPO4dLufPv5BMk5A0RzMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fLmttuBn; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fLmttuBn"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b061a06f127so2640579a12.2;
+        Sun, 27 Apr 2025 02:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745745952; x=1746350752; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uuVzj3Lbaamf0mUJuJOWnfeTMqxKyWNfVP9RiszFhk4=;
+        b=fLmttuBn/bGhdJbIMtPofgELU+/SsBpWhj/11Tw/mYha4pJ8rwqZtmGnqfJfWeWkt4
+         GqJdbZZgeGdUBBSPYe7amTtHn82huyYyhrz4S1Pv5CKOFieyecNeuCl8ySA1N/4lu/Tm
+         FAO+wPGDCBIVkr7W2JYtlIvb8l86ADklaHqQ/ePAe/LHIDIRsWVJGGcHISNXL6B7kh15
+         dkmcMkj/cEc1M0dkOPkzRT5fvJYu+SvovVdWJKPsYNDjftoMTgIWTleMmZAvkldw8r09
+         HCuCRzNywmtda5851DZQuUixfnVbqMghQnPe7emfc36134bvzr2z8Mli1wbSTo0f45Uu
+         MoHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745745952; x=1746350752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uuVzj3Lbaamf0mUJuJOWnfeTMqxKyWNfVP9RiszFhk4=;
+        b=wLArG+ve/MF6mP+c6/sDdSEDUiLn9wj3gTqsh/2gLjDIkdLoH3UvvhpuOlOGJYVmBL
+         3/6CDRdHUFeYa7n+RuPU95OjSnqfIEYyxsH8IOuTZZy4RCzcHKzh3iO+WWrRUSvI74iK
+         n6IUYsssa75aaMQXpcGfHSgPvbJySe2CfPbS5hPDVVHmcbTCH9UM/u+S3xG0s9pjtI+y
+         slIx4OOgzTHqAWcoN6d2WfUvSReBLTu2ZMa+03BZIthB3pNS8dGoIbGeeW6XkgIVevXD
+         yj5ztTD+fJM7OOdl0CPNmgIEKre8OsvSUDN2+QwYhtkdY9GYMOhbev5F9xhMJZ6fIJvf
+         NErQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDVrqEmVIGmBw+A3joztEQalnIViuobrjW0LRsBtjvQhC3CGUdkrOGxssfapwt3COJU5bwZqBF/hoOFF0=@vger.kernel.org, AJvYcCXND5ZB3gAkx7kLAiFWMzZrx0XJC4LobvSU53co7yfQWQlH2csNqtH33B/1ouhjS7lbhZ8kUb2EbqWbRg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwuT/25me8RnBWWtZB8TrSBFyBMvcb77/p1szXAzLCQFpxlUUA
+	Uu7+eAelzPMGlRBOZetjDXwkQ65ogD/Sc3myO38vWY8iG39lNcS9uoyc1QuZidpifTtMat0JGRi
+	ljrHJvC3XELUN67eqdoVKNF6p6W4=
+X-Gm-Gg: ASbGnct6Yj8f6qfzgkFb3PAdpThE6wiQ/mSlTfT4PxfZ0iak2pHMCvyZlT5SNb731I/
+	tVo4TSjwfzISvySq5ZDjOEzKNTdS35r59G3hFAZucoz1R2cOLYFAVNWPsN74yWcDEPgRML9strf
+	lTga6Dh1MNwGT3PK11Uqq3FDptPmE6iA==
+X-Google-Smtp-Source: AGHT+IEvNEKNcBCrC3dOSLCWqJZa24uptxKsTbgRS3KfFHvuA8w4r5EgPvD56tcMPPjZHxN1GoRLDtsiAtFYwOYDwGM=
+X-Received: by 2002:a17:90a:d006:b0:308:637c:74f2 with SMTP id
+ 98e67ed59e1d1-309f7dde701mr14210727a91.17.1745745952441; Sun, 27 Apr 2025
+ 02:25:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250422074257.544016-2-thorsten.blum@linux.dev>
+References: <20250408082804.796515-2-thorsten.blum@linux.dev> <aA3oWzkUP3CYbShi@alpha.franken.de>
+In-Reply-To: <aA3oWzkUP3CYbShi@alpha.franken.de>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Sun, 27 Apr 2025 11:25:41 +0200
+X-Gm-Features: ATxdqUHsQgio5coT_ulWz__2XIhUL9CbgqohLGtDe6BQ79QMKly8Ps9gTgzo_SU
+Message-ID: <CAMhs-H-GYrGMr-yorvYtX1Nud47c5pWrwtcEx9O9kmfJgZiSAw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: ralink: Avoid x/x division in rt_timer_config()
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>, John Crispin <john@phrozen.org>, 
+	David Laight <david.laight.linux@gmail.com>, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 22, 2025 at 09:42:55AM +0200, Thorsten Blum wrote:
-> strcpy() is deprecated; use strscpy() instead.
-> 
-> Link: https://github.com/KSPP/linux/issues/88
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> index 9cc8fbf218a5..c5617b889b1c 100644
-> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> @@ -764,7 +764,7 @@ void __init board_prom_init(void)
->  			snprintf(cfe_version, 12, "%s", (char *) &cfe[4]);
->  		}
->  	} else {
-> -		strcpy(cfe_version, "unknown");
-> +		strscpy(cfe_version, "unknown");
->  	}
->  	pr_info("CFE version: %s\n", cfe_version);
->  
-> -- 
-> 2.49.0
+Hi,
 
-applied to mips-next.
+First of all, sorry for missing this patch.
 
-Thomas.
+On Sun, Apr 27, 2025 at 10:19=E2=80=AFAM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Tue, Apr 08, 2025 at 10:28:05AM +0200, Thorsten Blum wrote:
+> > Avoid the 'rt->timer_freq / rt->timer_freq' division when the divisor i=
+s
+> > larger than the timer frequency and use '1' directly.
+> >
+> > No functional changes intended.
+> >
+> > Suggested-by: David Laight <david.laight.linux@gmail.com>
+> > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> > ---
+> >  arch/mips/ralink/timer.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/mips/ralink/timer.c b/arch/mips/ralink/timer.c
+> > index 54094f6e033e..5d8286603584 100644
+> > --- a/arch/mips/ralink/timer.c
+> > +++ b/arch/mips/ralink/timer.c
+> > @@ -75,12 +75,16 @@ static int rt_timer_request(struct rt_timer *rt)
+> >
+> >  static int rt_timer_config(struct rt_timer *rt, unsigned long divisor)
+> >  {
+> > -     if (rt->timer_freq < divisor)
+> > +     u32 t;
+> > +
+> > +     if (rt->timer_freq < divisor) {
+> >               rt->timer_div =3D rt->timer_freq;
+> > -     else
+> > +             t =3D 1;
+> > +     } else {
+> >               rt->timer_div =3D divisor;
+> > -
+> > -     rt_timer_w32(rt, TIMER_REG_TMR0LOAD, rt->timer_freq / rt->timer_d=
+iv);
+> > +             t =3D rt->timer_freq / rt->timer_div;
+> > +     }
+> > +     rt_timer_w32(rt, TIMER_REG_TMR0LOAD, t);
+>
+> I really don't see the point for this change. IMHO, this isn't really
+> runtime critical and I prefer the code like it is at the moment.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Yes, I agree with you. I also prefer the code as it is.
+
+Thanks,
+    Sergio Paracuellos
+
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
+y a
+> good idea.                                                [ RFC1925, 2.3 =
+]

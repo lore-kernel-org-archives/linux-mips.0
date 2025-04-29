@@ -1,106 +1,78 @@
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD3A27A90A
-	for <linux-mips@vger.kernel.org>; Tue, 29 Apr 2025 08:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76397279347;
+	Tue, 29 Apr 2025 08:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745915731; cv=none; b=PIBLddTZJfJjoY7MF2hUksI5BQU9KeR7R1cHEdM50Y2n6LmJkBckQYs1ux87YJQOcsIpyVmc5Y+TceQ/wIYwhJhzxXIRLkqS958GNoRkuBP3g/0TVrJ21P/caqnHFUiw4k6uujgb1dmwGlKcz5lHn1sg6wZgjtRZ329zp0BRWAo=
+	t=1745916638; cv=none; b=qOjqaDU0GMmEvO+mpcBbSVBbdnqP57twnfbAlRcP/+yOJ2DmgSbH/q0fBIHCfOrMOq3v3JR6g1F47qyip67t/FrABh6zRmk06Cu4xGAiPh5wH6Hs5dP4GR8JFhYpWX22/p1FJCdFmqgrCKkKD7FkeW0TSAtG09Ft38aCgw7IVGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745915731; c=relaxed/simple;
-	bh=ydLDKnQ91OvT5IwY/23gzsrsTpAlhEMjzxMQZcD1sso=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZNYGuJ5ZnmpHA6u7r5rFVFJx6yxCgaDsYCk3S6DbaGOMXjlOgo5cJdiQNi7DSJSOty2LFO7eIU39qWRnIN4ulfFgDy0IuKhf7AMsZuLpGyTXBUH8yGzSrgJO7ZoxnROaitceM3tnWMYr22rcrM2PM7J6w/blZhALpz+RX57y5x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y91tsDSK; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y91tsDSK"
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-30db1bc464dso59271751fa.0
-        for <linux-mips@vger.kernel.org>; Tue, 29 Apr 2025 01:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1745915728; x=1746520528; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ydLDKnQ91OvT5IwY/23gzsrsTpAlhEMjzxMQZcD1sso=;
-        b=Y91tsDSKXNbUMxI6xm/s20eo7WOsAA8RXL4vNxAMz7frt90kBek7h/Rt5h4cqvxZOn
-         TzvpyPsA/VjTr+A7J0JPaZ3bdahSZxMZnTPPTAUXSXRDVsy+R8UBjn4AL0kxkzWo4/j9
-         +h7ohyMRYO3wWSLDexJCcDgBif8Bc8viAGJtZD8qisaIOVE1ehewiDfhgBznmPajzmFR
-         Lxq6/+gk2oRojzZ1ckgPWF0jE/sb3+VNlM41cHQmsw7vvOWwhGEZTinXHovXO2FK3Wz0
-         yNqM564AknHtSjn8Yi7owQehobKHjwl5jJQ8kEiwvi9FFBI1wbpxrzvTqsD4y1qDTVUq
-         r9Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745915728; x=1746520528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ydLDKnQ91OvT5IwY/23gzsrsTpAlhEMjzxMQZcD1sso=;
-        b=SCECBBmsYttn2MrqjnrK2XtsgLHt6TPZZlvXPez7XmhutcYcGYblkintxxtV+YYVj3
-         MOaDtgL65CE2ctfIQOtDlOa6Y6wIpiz4GAYWTrHMvuBNksapO9y+yspnteBTXhxLpUBP
-         PGkfAmqsvnBQ70Kk0eVyhwxa5qOs3mY7hrFyU7jPER1OWQzWwLMn1KSVT0biBhN9BU7C
-         xGcvSYMgCnqjxtsLY/GCdWJ13skSVoNFtLyYCNPGnSwYDycVFcIFnacppoWNuCpAftMN
-         8smbCYe2DVXu3LhI0cXgVKF9b305RXm+IjH9MFarhsLeNzn7/ptMXevbBJRNR9TCtyus
-         CXzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdo/GFWQ1bUW63DS5AQsIQ1GLjys6LrsmK+x7MsO1tFS/A7ax1zeAWMF3vNMQGnxH4X7X6vfsZ5u0A@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlwLDqZHaewo8MkAErPxBp5eaa2UBlVokXfmm1p7cTdLyONmiH
-	iaPib/P41Tysiy81g6/fELT0hxN1pfiFSzpCDK8Qpn0yuXRcIOtwXe+QM5sgvZWxLtTbI902M56
-	cv67aQg/uKFArI4l+AvMYwk4XmdfEqYJ9xe4mPQ==
-X-Gm-Gg: ASbGnctAlJQ9CByKr6SF25Tz509Gg2XF0IGuiIhFdF6KcR77KXZLGdSJXM4IUoyGXun
-	uauncbScrcd6EGlvA9Fj0Yio7JCM42XP9QDnATeiVwygR0/ttwl31Xp/pDRdf598QccTnTS3xEF
-	Y2xUdUg5tE9HXiyo/LEY6FAw==
-X-Google-Smtp-Source: AGHT+IEsezp5muMVAY/lE/H7DEdH8WV2VmTWB3mmT7yKNRZ/0B58jZOoyjXMik/+mxI9FIbD9XZIJdk/S7T9DrPLhZQ=
-X-Received: by 2002:a05:651c:30cb:b0:30b:b7c3:949a with SMTP id
- 38308e7fff4ca-31d5b13bdb9mr4753431fa.18.1745915728423; Tue, 29 Apr 2025
- 01:35:28 -0700 (PDT)
+	s=arc-20240116; t=1745916638; c=relaxed/simple;
+	bh=6C2TMS+n6qqj5M83V5ptzbHpW40e+AmDHnNCpPTAXdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t5eoK39GHJVxFvL2PADcfoUMuOSQhG5sS2nzrD2nF681IPXkQa6QHRO7a7wwQzBK0Uu2W9TSHkWiwdIQtFI/MCL2iTQ5Mb3wD0OiUohQL6K/6Zq+UUmEvM7fQrYS4fhuIqorRqeRtwEvi2hAJzYin3cyUVXEn1GnghSkWfsXgRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4ZmtbH6JVvz9sFT;
+	Tue, 29 Apr 2025 10:22:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id e30qWr8CZO0g; Tue, 29 Apr 2025 10:22:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4ZmtbG0699z9sCk;
+	Tue, 29 Apr 2025 10:22:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id F1CD98B766;
+	Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id 2CpqnVV7VgEF; Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 3E7F68B763;
+	Tue, 29 Apr 2025 10:22:17 +0200 (CEST)
+Message-ID: <df566157-5320-47cf-ae14-a2e578f68a35@csgroup.eu>
+Date: Tue, 29 Apr 2025 10:22:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250424-gpiochip-set-rv-pinctrl-part2-v1-0-504f91120b99@linaro.org>
- <20250424-gpiochip-set-rv-pinctrl-part2-v1-2-504f91120b99@linaro.org>
- <CAGb2v67jH2G_i51fg3T7qu2dDtj7FqUO7q9pBJJw_uKhdGV6uQ@mail.gmail.com> <CAMRc=McmRB8iNPrTztoSLbEXX2WxNp5d3t5--AAqzqU2LQ+FGw@mail.gmail.com>
-In-Reply-To: <CAMRc=McmRB8iNPrTztoSLbEXX2WxNp5d3t5--AAqzqU2LQ+FGw@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 29 Apr 2025 10:35:17 +0200
-X-Gm-Features: ATxdqUFfjlFyz-8zlCBHswKX86tkhKgqvxLDp3L8XiORh1-aFhf72vJ7elWy1Tk
-Message-ID: <CACRpkdYRCx8_zLa_OtcFwjmL6_pCsU0hcUe0_PP3=EbukbM7Jg@mail.gmail.com>
-Subject: Re: [PATCH 02/12] pinctrl: axp209: use new GPIO line value setter callbacks
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: wens@csie.org, Basavaraj Natikar <Basavaraj.Natikar@amd.com>, 
-	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Paul Cercueil <paul@crapouillou.net>, 
-	Steen Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon <daniel.machon@microchip.com>, 
-	UNGLinuxDriver@microchip.com, 
-	Ludovic Desroches <ludovic.desroches@microchip.com>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
-	Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org, 
-	linux-mips@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/13] crypto: powerpc - drop redundant dependencies on
+ PPC
+To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, x86@kernel.org,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, Ard Biesheuvel <ardb@kernel.org>
+References: <20250422152716.5923-1-ebiggers@kernel.org>
+ <20250422152716.5923-3-ebiggers@kernel.org>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20250422152716.5923-3-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 24, 2025 at 8:55=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
-> On Thu, Apr 24, 2025 at 7:43=E2=80=AFPM Chen-Yu Tsai <wens@csie.org> wrot=
-e:
 
-> > I guess you could also drop the curly braces, but otherwise
-> >
-> > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
->
-> Right. Linus: can you remove them while applying?
 
-Fixed it!
+Le 22/04/2025 à 17:27, Eric Biggers a écrit :
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> arch/powerpc/crypto/Kconfig is sourced only when CONFIG_PPC=y, so there
+> is no need for the symbols defined inside it to depend on PPC.
+> 
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Yours,
-Linus Walleij
+
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+Note that there are other redundancies in the file, for instance 
+CONFIG_VSX already depends on CONFIG_PPC64
+
+Christophe
+

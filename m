@@ -1,54 +1,104 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7AC4AEE2;
-	Mon, 28 Apr 2025 17:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3C32144A1
+	for <linux-mips@vger.kernel.org>; Tue, 29 Apr 2025 08:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745863006; cv=none; b=DXVtop7i1tQfr66C3iastjCq6DZJyptHKEkv22w01pXC30gnVOVLpku4ica/05UGGuFpmoV5GRAb+B+IDNZfPqMIKKCYTiLtLKO5DjauqdAvcY20r0BdaSmLvAQ6Kg42DRZ9pUm3bnGlW3rH8BGu4QKJ06oyGXxYABJozGqauFQ=
+	t=1745915499; cv=none; b=n2QmIAw/Tm0uuEbr7TNKmppSc3mPE3lW/vJydPmD3clXo0EzAQ0sOSwOdnNlfX1FCTa9a63aPm2Qo4iaHM92SB8MGW+lVNAWr59x75zu6H+MLNEScmxd+LFXKx6fzma19nUMB1Mlun6znU+xK/8DPmsLoIxjpNhoE3gv2/FeoyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745863006; c=relaxed/simple;
-	bh=5jBCL2eS98IiGi6f4BGEsDcJUQXrxV+Po99NJPqxytQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Kud/eSt2mb1M88ILb8dOIpLTuYcDJPrN8J6c/qSBrig2gePbfyiWOXZIXCBblAsvZ/vqaHxho887fZzlqHGRGmyJsfnaPmsHM9DJ/u3+IPyMVOhywr/kM9Bqf+C32458XA/wGI48mFrq7oyYn/eOv2uxvwRMgFXMGBTCL9XF2Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id C168492009C; Mon, 28 Apr 2025 19:56:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id BA8AA92009B;
-	Mon, 28 Apr 2025 18:56:40 +0100 (BST)
-Date: Mon, 28 Apr 2025 18:56:40 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc: Marco Crivellari <marco.crivellari@suse.com>, 
-    Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
-    Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-    Thomas Gleixner <tglx@linutronix.de>, 
-    Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v7 2/2] MIPS: Move r4k_wait() to .cpuidle.text section
-In-Reply-To: <aA9XNgh7qGRZ5HBY@alpha.franken.de>
-Message-ID: <alpine.DEB.2.21.2504281547020.31828@angie.orcam.me.uk>
-References: <20250403161143.361461-1-marco.crivellari@suse.com> <20250403161143.361461-3-marco.crivellari@suse.com> <CAAhV-H4dQ8hRfBm2JWmgMzYH5tuy4ph6hyOSXQBLOvtCQ+K9dQ@mail.gmail.com> <alpine.DEB.2.21.2504280426010.31828@angie.orcam.me.uk>
- <CAAhV-H4WTrYecBj0wev8AUi_of_qAnvHCk4heTU5P_3pMZv4fA@mail.gmail.com> <CAAofZF4J6H5jgqKu=KUowBrwfHJyGEzL5ThC_DOs-XPdgm497A@mail.gmail.com> <aA9XNgh7qGRZ5HBY@alpha.franken.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1745915499; c=relaxed/simple;
+	bh=gF3fPF6CllcQs9x0YHwVW91aBk4339QyjWLq4v3kcvo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oSxyFriKFksQlcuHY0tmeWWUrKO1Hv9ZJ7qB1Cw0AKJKblq2qT753WIfvyWNr6xRc3UPVmwu3tGfWjKq9Kt+5/MJGdPmckarHfOWospfOZ6QcGhOvO4TXd6GUd5aJWqbPTSDbN8CN4V0/a5Nb14rmKI38HB5ba1XxtaiUi7JbIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kgfkFngT; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kgfkFngT"
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-31062172698so59895941fa.0
+        for <linux-mips@vger.kernel.org>; Tue, 29 Apr 2025 01:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1745915493; x=1746520293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gF3fPF6CllcQs9x0YHwVW91aBk4339QyjWLq4v3kcvo=;
+        b=kgfkFngT99U37cDcTimcj0eBfZU1V/wgcNATyGtPXehLnEVmGSUE0LU3wq+5ZjH7hG
+         EnzsgEizMSscxt7wEpR6A/FDTu9ru6KCnm2WawOoobl/AfOKVmj/Zixx4SOiIAQaGXF1
+         1UNZHLkqTg0oyrUf7ezNnbx0rGSVAlRVfUMAszfezTwjOKhPfzdmuT5XJ0sHSRvt+P3A
+         YsUEZ2TdJAHzA797v7glxk+EbHylXUKTBGxWN5cA6RCFA8gOniDGir32XzLTQwQiuBy/
+         nbYWlni9+vITWDvbo48cIl6itlAHj3TXtZfuKUps43G3m8fPz4cV46DWM+1FD2MGAMQd
+         qyaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745915493; x=1746520293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gF3fPF6CllcQs9x0YHwVW91aBk4339QyjWLq4v3kcvo=;
+        b=gaIkg6Y7nm2Isf70JXBqG047sWe1pS3+Jfg3tQvdvKL1no5rPTG6IXx8zekmPEiMCe
+         j1zGK07fqUTVYQ8rfW/7jqN40/5slSyi+0ZSp4DOGDVz4693m5l+YgaDHy8yg0krJtxL
+         ibv05jcnMPWynPGLMDF/vTJsmOqVX9ykchz/I/S5cLk8wtWDvjjXFSphUZSejiI/eMbQ
+         6TwEQxRfa1n7wXobU6qofRLxOQAg70N0btNGKsRj95JGeF4itpC7191Zl2rpPUnLxdaH
+         BWWA4oVXFEEftufLRQCoB6/I407hNP9Z28yBi81h6BgTeHV7VmU9YoNRJKl/QsV61DBe
+         ReXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXm0c67cSXjYv+1IIRF2O3H9WK0rcNOIRLdiwfkg0wH0Uu0gooykoI/lO74jHLDa26g5DGRa+tTed6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOvdSFm3wzxvC6U6lilNzuRZcb6DgtB6FFPHKZZfbo1oAHjzxh
+	TRaINYVlCJLf/XkVHQ2DvQW93nKwAoj7TH70b2eP5xxDBo3vqSNtIUVq7gevAIrif3P8mrRgUwb
+	UIWzd+JDYCnRni/bJqIS/Y2tsVGIifxZVbNmPlA==
+X-Gm-Gg: ASbGncslW4K05yESQyszhZ0nxzdik5CzeQqyklF+poAuUFdoEHfwr5vvUKglYoQOpv+
+	koTppaitTNpEkyVsEcweXu/4DUusiW52rQHbp43f1fgSNAFP8BpoJSrAW4EcPMkXySRNxW1fECd
+	oE6cYt16WnbKS8MTqHpBFKyw==
+X-Google-Smtp-Source: AGHT+IEQGZYoiDX6agThY6MEttiXW/phwPHOzvMp4EUn15NcMCCtvMBuCxgvpSJ2KIlE88xdOI9ul/LqAjmdMjo0Oj0=
+X-Received: by 2002:a05:651c:b08:b0:30d:e104:b67c with SMTP id
+ 38308e7fff4ca-31d36ad1ac0mr6506481fa.39.1745915493462; Tue, 29 Apr 2025
+ 01:31:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20250424-gpiochip-set-rv-pinctrl-part2-v1-0-504f91120b99@linaro.org>
+In-Reply-To: <20250424-gpiochip-set-rv-pinctrl-part2-v1-0-504f91120b99@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 29 Apr 2025 10:31:22 +0200
+X-Gm-Features: ATxdqUEwnjlawzkertE2U747LwGdYLhBGRSu2FbSCTDtMI-ddocvoVo9dn0tQa0
+Message-ID: <CACRpkdYbf4zSrkzrGLn9+Sn0Wh5LvZxW3omCdMP4w1VdFf-iZg@mail.gmail.com>
+Subject: Re: [PATCH 00/12] pinctrl: convert GPIO chips to using new value
+ setters - part 2 for v6.16
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Basavaraj Natikar <Basavaraj.Natikar@amd.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
+	Chen-Yu Tsai <wens@csie.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Paul Cercueil <paul@crapouillou.net>, 
+	Steen Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon <daniel.machon@microchip.com>, 
+	UNGLinuxDriver@microchip.com, 
+	Ludovic Desroches <ludovic.desroches@microchip.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Sylwester Nawrocki <s.nawrocki@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 28 Apr 2025, Thomas Bogendoerfer wrote:
+On Thu, Apr 24, 2025 at 10:35=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 
-> > If it sounds good also to Maciej, I will submit the new version with the
-> > space before "ax" (and of course, the ".previous").
-> 
-> save your time, this is already applied and I won't rebase the branch
-> just because of this minor bisection problem.
+> struct gpio_chip now has callbacks for setting line values that return
+> an integer, allowing to indicate failures. We're in the process of
+> converting all GPIO drivers to using the new API. This series converts
+> the another round of pinctrl GPIO controllers.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
- For the record we actually have 121 cases without a space vs 4 with one, 
-so formatting is a non-issue here in my view.
+Patches applied!
 
-  Maciej
+Yours,
+Linus Walleij

@@ -1,32 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4251DFE09;
-	Wed, 30 Apr 2025 13:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04907E107;
+	Wed, 30 Apr 2025 13:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746020106; cv=none; b=KxoQau0d561nncwO/OUKtO3OHkV92AGdb6xwX8FKPrFezCXSLP+N5jrlieR9ziFP3C/6YPistJLi0HyrFvjxZ0olEUmrG48zToQhp9qwXDWR3eBCk0ZKaIyYT4SMiTIL/TnEkyIMv2Rai9DC1SapN3RTb4ZOY22UpxQwglzMih4=
+	t=1746020506; cv=none; b=QQvysyOZlXA+rxrPYOMB+HAFW2TFJkp+iIE961K9bwaYsDtOHF3QtWDNGK72U77xiABf0kigmbX6FoArBk+w0OP4Uts1mxskgydllg5vDYJKzJcyek9yDlo9zq+UpJBv9peL4glbxkW2vnvQ9q2AYpGxaDAfjzXUSuxFCglojr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746020106; c=relaxed/simple;
-	bh=niMPINOkFVx5bXWZLyuB/RR3KMFa3n8V8mFU5pt9skY=;
+	s=arc-20240116; t=1746020506; c=relaxed/simple;
+	bh=0HU07G/vQo7GSFXf2skFbVjtV/6lx73rneWLukW0Ny8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ir4/t7zwO7hqMXebBjo+uXR0kzlwHC9XGs1Khw6RSzWVAOFfEee+0jil7+eiAL2T/iazOJJCwDgwBWDyWKwc0xpbyY464jvZjdM8zi8ADHLNIwqB2/cOWCls5+TM/YfTfvoHUhW5dCIB1wr9vQwWkebh2jTSHRHhEmw48qLROXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=O1KHwqtz; arc=none smtp.client-ip=5.135.140.105
+	 MIME-Version; b=cBGTUd1T6t53bqGIQ1t9rX0uKirYi51q99wXQpIjwAZDKfKYtLDRDXI6VU6Ta4MI47VFhn1eeO48gGM7LtodPt66he3/C4uw9Npf7hYBABYqZ9ktBKqh4Zj3wdqE9/ujG2pM2NSEPy6BREBEet690yuiyLeh3q2sk8UEe3GFX6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=Ypy/vWKj; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="O1KHwqtz"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A60FD91928;
-	Wed, 30 Apr 2025 15:35:00 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="Ypy/vWKj"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CF8CD8F1B9;
+	Wed, 30 Apr 2025 15:34:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1746020102; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1746020093; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=FgYHCHNLZhXHkXFDQAs/9vHqNNNImu0dpU/ViiHu3Sk=;
-	b=O1KHwqtzBzVsh4YZgbK6l8bchX+RcA5MVsBWE45rn/FP2Z/x90x07aCMMOQFG2LXPYylIL
-	snm+O+KhLnHu5ShUyhoCrTgFElls+9kRdAgrQrJNs2XBzMcHqrucoRpSq+5iVwgJ9wAjTM
-	RezYGU1OzDVFdCauZPKdcTFNouhp5KKly9Ac7dN/fJXuod9S+Nj/XY+q5Kwt23MjrjsI5z
-	pSIec3Z4MIkVdpW8eh1hbQbAFK0/TGoKooWL4ggTxlUPINNzLsT53ANm+2xoQXkfSn2M9X
-	wxsDSG9WhIry64KlEzGGf9O3x+wEFPqfOQUiD9ILuBgsLKtq50hMk57XsyJ+cA==
+	bh=WFuKeZ2Mgo5yTqNGhX/kKLsejXNkpw0wnwsa5YPEGN4=;
+	b=Ypy/vWKjlwN7oipP2cKMMTlMYLqMyOmNjxxbnn2Yp28xPds7KfwZYKNcuHhP06gLH9e4nr
+	sGXXyNCRZVtzLzamt0II0jQrcMtV6jNT5b/54FQxdAoCLykkR/O5Y+4L/TxZxFhoykoz34
+	EtPzwrZHQovwuPzZk4pqK0SoSOAjqjSN11+IWZCDQH0Vdf4m7TDSrQAFJ6WMrgXiA5Ai6D
+	3dnLavCOshi8nFgrq8+9Czl/NhblebqsiCNrdtwG+fF7XbonbQ+drm6b+tlxJ+kWZfb3px
+	Ve0aqjuX70XCN9gdj9RbYD+H+qcQXK98EpCHTVLivO5u6MyQ6IofZSuh6AsGJA==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: tglx@linutronix.de,
@@ -39,10 +39,11 @@ Cc: tglx@linutronix.de,
 	linux-kernel@vger.kernel.org,
 	benjamin.larsson@genexis.eu,
 	linux-mediatek@lists.infradead.org,
-	cjd@cjdns.fr
-Subject: [PATCH v4 7/7] MAINTAINERS: Add entry for newly added EcoNet platform.
-Date: Wed, 30 Apr 2025 13:34:33 +0000
-Message-Id: <20250430133433.22222-8-cjd@cjdns.fr>
+	cjd@cjdns.fr,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 3/7] dt-bindings: mips: Add EcoNet platform binding
+Date: Wed, 30 Apr 2025 13:34:29 +0000
+Message-Id: <20250430133433.22222-4-cjd@cjdns.fr>
 In-Reply-To: <20250430133433.22222-1-cjd@cjdns.fr>
 References: <20250430133433.22222-1-cjd@cjdns.fr>
 Precedence: bulk
@@ -54,36 +55,47 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Add a MAINTAINERS entry as part of integration of the EcoNet MIPS platform.
+Document the top-level device tree binding for EcoNet MIPS-based SoCs.
 
 Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../devicetree/bindings/mips/econet.yaml      | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/econet.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 96b827049501..5b2536150996 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8352,6 +8352,18 @@ W:	https://linuxtv.org
- Q:	http://patchwork.linuxtv.org/project/linux-media/list/
- F:	drivers/media/dvb-frontends/ec100*
- 
-+ECONET MIPS PLATFORM
-+M:	Caleb James DeLisle <cjd@cjdns.fr>
-+L:	linux-mips@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
-+F:	Documentation/devicetree/bindings/mips/econet.yaml
-+F:	Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
-+F:	arch/mips/boot/dts/econet/
-+F:	arch/mips/econet/
-+F:	drivers/clocksource/timer-econet-en751221.c
-+F:	drivers/irqchip/irq-econet-en751221.c
+diff --git a/Documentation/devicetree/bindings/mips/econet.yaml b/Documentation/devicetree/bindings/mips/econet.yaml
+new file mode 100644
+index 000000000000..d8181b58c781
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/econet.yaml
+@@ -0,0 +1,26 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mips/econet.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- ECRYPT FILE SYSTEM
- M:	Tyler Hicks <code@tyhicks.com>
- L:	ecryptfs@vger.kernel.org
++title: EcoNet MIPS SoCs
++
++maintainers:
++  - Caleb James DeLisle <cjd@cjdns.fr>
++
++properties:
++  $nodename:
++    const: '/'
++
++  compatible:
++    oneOf:
++      - description: Boards with EcoNet EN751221 family SoC
++        items:
++          - enum:
++              - smartfiber,xp8421-b
++          - const: econet,en751221
++
++additionalProperties: true
++
++...
 -- 
 2.39.5
 

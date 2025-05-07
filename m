@@ -1,205 +1,165 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5DF212FB8;
-	Wed,  7 May 2025 06:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D141C259498;
+	Wed,  7 May 2025 13:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746599542; cv=none; b=RR2pIe1MEwZ745zEKuzBYO58iJzwMcoAu6NPzvRKxjmQqFH1OstflM1FvGsMDu5XWDhkaUJgtgtum30dbx52f2kuvT/HLk0N/IbQSGfqDKG4MNLWQs8XsfIhb+jiAWqkQZEicBZ15kE0oRPudV673NOS+FhBk59eyP8iEtzC5rg=
+	t=1746625529; cv=none; b=p/MWWKocaqdk+a3/3OhjkYBUFyeHyILgMGKKJS2Dx2o8TDKUGAZEGg+pCVabDgbaBGLhH8gklRGSNKSwW/HgmLhfGu7dcggFFS+P9Jz1V9i2+gAa5MFatoTNGhewP/wO3u8NcgvlDAuxTp7C88Ueu3iNrr3hQXalyyI+8V3w5ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746599542; c=relaxed/simple;
-	bh=gVnr8TnU5oBPUOllfUkHDqgYRsX0nAzlPey3pz8QsSw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QasUDT1vK8VkqEtMU40dhGQjAn0Z975l/mi9stsuSFZ8lIN10JEAZN4PKWURWYjk0O9Rz3v/crq1LyIJ3A+OSfM9P+YSvZveAqQK80/7jMMGJLwPQhLUyu4ZA/TgON81FITBNMSoaZekOKm+PGbtec5O3hRoSuR9nRck/Njl9ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTDPSW8X; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1746625529; c=relaxed/simple;
+	bh=Y1VnxbOU4sYjS1myJYO1mNIJBsXDF6YtXnqekAg6IRY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gxMFlxZFwxHUviNbmJFNXlmAkSZ9M5mmACntiSglrKTmLgPbEDZMth1R0N/SH1Z9ZRbMF2+sRPtLg6BO3z9BuJ5HnzlTkyXY27rD6tQfp8o+drFM83pjTIOsXXwwXEdyofq+0+tcbPhr9S/THpi1E0WuGY0pM2tQI8aR0VfhHfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=L1CM2kf9; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTDPSW8X"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-22423adf751so73716855ad.2;
-        Tue, 06 May 2025 23:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746599540; x=1747204340; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8YWstoYnxasTg7tshxJbl1B8GWpQGF7X65mCdPOf1/0=;
-        b=CTDPSW8XZD6Be5HIisLjLIaoiMkLL+tFC3VX20M9GpI3SJ4sTDsfGG2F+2eJe39jil
-         Kuwqv0YbbIX9xMcjzuDPCybuWdNbY5+k1qwGFFOm7cFb3xJsRjj7m5VbcpVUCeRhJYW1
-         nR4EE6cFHwTD9L0HhPoOQ3ULbBZ13deEr9y7fpevOJNXziUMZiy/qa3OvSYifuYCA6u9
-         2m1W0FTUUIjP2YtJa1Xy1pBADwLZDRvIE7fyYozCSYGH8b85oKm43TDr4J1oqI9ZGZni
-         lX10LqHrdjov8II0//0Ln0pRfqtvrn85aaxbhx5+0Q+agImUNIoSEVqCQLcNi9dOC86C
-         2CbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746599540; x=1747204340;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8YWstoYnxasTg7tshxJbl1B8GWpQGF7X65mCdPOf1/0=;
-        b=Xmra7d4lMoScKSu3/rFpLaw2V8YkaKCR3RCRmc3wOSZxd3IH50ky7oQKiHR6nmRCN5
-         /7DD8e/QphKK0855yemNE1CPVhqwLZc2AsUFXML0kFIA1pTWBOHy7frfFRtTyiH7W9Gm
-         HEerklEXhvTyvrvJjTHXEBH0UIbWjI41x0VtR3ZKcqyxiqCzLGW2t1RUTTcChbhUZko3
-         g9/q51pkIkuue1GQb+QmUHGBpaHud7vZKUsRHOM+Aq7lIw5KCqSDvjQxStrh7o5AAJrj
-         Y4CNvIRrgLBYkC/xIQMt4c97dAMrLT9kS//REQOhgldJCbm7yhdBqpIGTxEJtUne+QcU
-         l9wg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiuDM1SaLiHzsuRUTTW5kBZHt6dCLnXSbRvyIXc9OBwXevHs0Jm5nYfX5x/gyE250cyguEI9UpeNGq@vger.kernel.org, AJvYcCUrYaSoFQYvt8i0VoY4+edgAqILpV+Nt+nWm/c93jOU5CBhJOpvdpOntte1phCQtJYmqK7o829LllG8nQ==@vger.kernel.org, AJvYcCXjlFAiQtHOXG7Q+ZZXRWfUvdXBey8oRcYbP+pCDz6CIUPPHcsIdDeYEtKnYonXOOf+xtEl8qiyLrPqJKo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YypSrY+x+D4XmHzF2Yrmf3KI3d0NIfbbyWmHej44rPgAdaDvB4t
-	SahReigSv940o/+rBTHzfWM2R8CbJZwqD/4ODbGFph4dg+sOKem1
-X-Gm-Gg: ASbGncv20WHx/MywniplRnNDO4HdNVIvyQk53hXCRgRtALFba9xHjdImKQev6nvTGuD
-	/0m/utw2DD4/upia7NDJnGT0pK07TRTCmp0serW+aaO1Hn2ghhs76ac0wswN7lxcD6cLgPlVgLI
-	YAzF/O3fEdSlfmYhJzM06FH/FUl4GufS8u64ouXB2Dis66hWCnaBKLIR3TUjkjZad6mviRjhhtH
-	Sv9E/re79+cfQCUHiUgIqBPc3GyMa6jpqB75DsSR8wtsAqSOfioJHxNSQ3eqLokbyAg/LnKVChg
-	PtJ5IeRNtWGlt9hNGV4XBKCI92O5L42oJuvRrQACIUt0NKgEPhM=
-X-Google-Smtp-Source: AGHT+IGJ/qWe5PPqzuHBICQzeHVIVKp5crJzNNKXqyBfyk7uaOLcOkz/tYZnutpwUCMI1zF55cUgKQ==
-X-Received: by 2002:a17:902:e844:b0:22c:3609:97ed with SMTP id d9443c01a7336-22e5ec9e997mr25272325ad.30.1746599540530;
-        Tue, 06 May 2025 23:32:20 -0700 (PDT)
-Received: from Black-Pearl. ([122.162.204.119])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22e15229384sm85805295ad.206.2025.05.06.23.32.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 May 2025 23:32:20 -0700 (PDT)
-From: Charan Pedumuru <charan.pedumuru@gmail.com>
-Date: Wed, 07 May 2025 06:29:36 +0000
-Subject: [PATCH 2/2] dt-binding: mmc: microchip,sdhci-pic32: convert text
- based binding to json schema
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="L1CM2kf9"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 34A91DBBB9;
+	Wed,  7 May 2025 15:45:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1746625518; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=PF2ufsspbUyVXcyj52+f3BIvslTKbWkBdC0SAWy4kPQ=;
+	b=L1CM2kf9iVEkWz5MAbbCF21OykDRYZF39ogC6VUkflOl4FY3iD5PggXE7eu3Qw1HiL6jGe
+	NxoWoqzjvwidjj9H8RvsMDHZwVfIIr9WKLN5Vy+8xbf7Wk3JvtDGlepVBtKqARlsbOJAOS
+	SPrMw5u+w7484QVvR/EqGdsEYmyq8X+odj8hMYqCgpLH7djQnOyOP6751CXAPdKAdlFRHK
+	3pCPOmE74bgrcciaEpt0Fxep+N73x4vETTPF9jC10xj894KjTeKpw+MUzcnnZEJwQj/qYd
+	tXBglMgBaJPkTbDARIKkxwGhzw7PJ/AfZ74QpGmi/D1rO1T1hsGVVkUQtYzKXA==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: tglx@linutronix.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	daniel.lezcano@linaro.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	benjamin.larsson@genexis.eu,
+	linux-mediatek@lists.infradead.org,
+	cjd@cjdns.fr
+Subject: [PATCH v5 0/7] Add EcoNet EN751221 MIPS platform support
+Date: Wed,  7 May 2025 13:44:53 +0000
+Message-Id: <20250507134500.390547-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250507-mchp-sdhci-v1-2-ed29de05295a@gmail.com>
-References: <20250507-mchp-sdhci-v1-0-ed29de05295a@gmail.com>
-In-Reply-To: <20250507-mchp-sdhci-v1-0-ed29de05295a@gmail.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Ulf Hansson <ulf.hansson@linaro.org>
-Cc: devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- Charan Pedumuru <charan.pedumuru@gmail.com>
-X-Mailer: b4 0.14.2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-Update text binding to YAML.
-Changes during conversion:
-Add appropriate include statements for interrupts and clock-names
-to resolve errors identified by `dt_binding_check` and `dtbs_check`.
+EcoNet MIPS SoCs are big endian machines based on 34Kc and 1004Kc
+processors. They are found in xDSL and xPON modems, and contain PCM
+(VoIP), Ethernet, USB, GPIO, I2C, SPI (Flash), UART, and PCIe.
 
-Signed-off-by: Charan Pedumuru <charan.pedumuru@gmail.com>
----
- .../bindings/mmc/microchip,sdhci-pic32.txt         | 29 ----------
- .../bindings/mmc/microchip,sdhci-pic32.yaml        | 66 ++++++++++++++++++++++
- 2 files changed, 66 insertions(+), 29 deletions(-)
+The EcoNet MIPS SoCs are divided broadly into two families, the
+EN751221 family based on the 34Kc, and the EN751627 family based on
+the 1004Kc. Individual SoCs within a family are very similar, only
+with different peripherals.
 
-diff --git a/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.txt b/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.txt
-deleted file mode 100644
-index f064528effed31f30d1d1c6e0b49c02e215d99af..0000000000000000000000000000000000000000
---- a/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.txt
-+++ /dev/null
-@@ -1,29 +0,0 @@
--* Microchip PIC32 SDHCI Controller
--
--This file documents differences between the core properties in mmc.txt
--and the properties used by the sdhci-pic32 driver.
--
--Required properties:
--- compatible: Should be "microchip,pic32mzda-sdhci"
--- interrupts: Should contain interrupt
--- clock-names: Should be "base_clk", "sys_clk".
--               See: Documentation/devicetree/bindings/resource-names.txt
--- clocks: Phandle to the clock.
--          See: Documentation/devicetree/bindings/clock/clock-bindings.txt
--- pinctrl-names: A pinctrl state names "default" must be defined.
--- pinctrl-0: Phandle referencing pin configuration of the SDHCI controller.
--             See: Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
--
--Example:
--
--	sdhci@1f8ec000 {
--		compatible = "microchip,pic32mzda-sdhci";
--		reg = <0x1f8ec000 0x100>;
--		interrupts = <191 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&rootclk REF4CLK>, <&rootclk PB5CLK>;
--		clock-names = "base_clk", "sys_clk";
--		bus-width = <4>;
--		cap-sd-highspeed;
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_sdhc1>;
--	};
-diff --git a/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.yaml b/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.yaml
-new file mode 100644
-index 0000000000000000000000000000000000000000..ca0ca7df9ee991d8402bc4c62b1235ef5db2e85f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/microchip,sdhci-pic32.yaml
-@@ -0,0 +1,66 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/microchip,sdhci-pic32.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip PIC32 SDHI Controller
-+
-+description:
-+  The Microchip PIC32 family of microcontrollers (MCUs) includes models with
-+  Secure Digital Host Controller Interface (SDHCI) controllers, allowing them
-+  to interface with Secure Digital (SD) cards. This interface is used for reading,
-+  writing, and managing data on SD cards, enabling storage and data transfer
-+  capabilities in embedded systems.
-+
-+allOf:
-+  - $ref: mmc-controller.yaml
-+
-+maintainers:
-+  - Ulf Hansson <ulf.hansson@linaro.org>
-+
-+properties:
-+  compatible:
-+    const: microchip,pic32mzda-sdhci
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: base_clk
-+      - const: sys_clk
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - pinctrl-names
-+  - pinctrl-0
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/clock/microchip,pic32-clock.h>
-+    mmc@1f8ec000 {
-+        compatible = "microchip,pic32mzda-sdhci";
-+        reg = <0x1f8ec000 0x100>;
-+        interrupts = <191 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&rootclk REF4CLK>, <&rootclk PB5CLK>;
-+        clock-names = "base_clk", "sys_clk";
-+        bus-width = <4>;
-+        cap-sd-highspeed;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_sdhc1>;
-+    };
-+...
+This patchset adds basic "boots to a console" support for the EN751221
+family and adds SmartFiber XP8421-B, a low cost commercially available
+board that is useful for testing and development.
+
+Note that Airoha (AN7523, AN7581) is similar to EcoNet in terms of
+peripherals, and for historical reasons Airoha chips are sometimes
+referred to with the EN75xx prefix. However this is a different
+platform because Airoha chips are ARM based.
+
+This patchset is against mips-next.
+
+v4 -> v5
+* 2/7 clocksource/drivers: Add EcoNet Timer HPT driver:
+  * Improve explanation of HPT timer in changelog
+  * Move pr_info to pr_debug per recommendation
+  * Remove pointless debug on spurious interrupt
+  * Small code-style change
+
+v3 -> v4
+* Rebase to 3b3704261e851e25983860e4c352f1f73786f4ab
+* Omit already accepted patches (thanks guys!):
+  - https://patchwork.kernel.org/project/linux-mips/patch/20250330170306.2584136-2-cjd@cjdns.fr/
+  - https://patchwork.kernel.org/project/linux-mips/patch/20250330170306.2584136-3-cjd@cjdns.fr/
+  - https://patchwork.kernel.org/project/linux-mips/patch/20250330170306.2584136-4-cjd@cjdns.fr/
+
+v2 -> v3
+* econet,en751221-timer.yaml -> Improve code style
+* vendor-prefixes.yaml -> Correct alphabetic order
+* en751221.dtsi
+  - interrupt-controller code style
+  - serial: Explain reason for clock-frequency = <1843200>
+* v3->v3 diff provided for reference
+  - https://gist.github.com/cjdelisle/21c9f0cd225f499bdff3c574c7f185f2
+* CC: linux-mediatek@lists.infradead.org who may be interested.
+
+v1 -> v2
+* Codestyle
+  - Apply codestyle from "The tip tree handbook" and recommendations
+  - Remove "_rai" and "_m" symbol suffixes which are not standard
+* irq-econet-en751221.c
+  - Use cleanup.h _guard() and _free()
+  - Separate irq_domain_ops from irq_chip, eliminating econet_intc struct
+  - Remove irqsave in econet_wreg, irqs are already disabled in mask/unmask
+  - Add explainatory comments
+  - Refactor shadow logic for clarity, e.g. INTC_NO_SHADOW -> NOT_PERCPU
+  - Improve error handling in case of invalid DTS
+* econet,timer-hpt.yaml
+  - Rename to econet,timer-en751221.yaml
+  - Impose rule: "reg" must have 1 item on EN751221 and 2 on EN751627
+* timer-econet-hpt.c
+  - Rename to timer-econet-en751221.c to follow naming scheme from DT
+* econet,en751221-intc.yaml
+  - Fix validation error from required: interrupt-parent
+  - shadow-interrupts -> switch to uint32-matrix for list of pairs
+* MAINTAINERS -> Fixed accidental F: MAINTAINERS
+* Replace "test image" with device SmartFiber-XP8421-B
+* Restructure arch/mips/econet/Kconfig per arch/mips/ralink example
+* v1->v2 diff is offered for reference:
+  - https://gist.github.com/cjdelisle/bb3acab78b5f70dcdfe5dd6338293efe
+
+
+Caleb James DeLisle (7):
+  dt-bindings: timer: Add EcoNet EN751221 "HPT" CPU Timer
+  clocksource/drivers: Add EcoNet Timer HPT driver
+  dt-bindings: mips: Add EcoNet platform binding
+  mips: Add EcoNet MIPS platform support
+  dt-bindings: vendor-prefixes: Add SmartFiber
+  mips: dts: Add EcoNet DTS with EN751221 and SmartFiber XP8421-B board
+  MAINTAINERS: Add entry for newly added EcoNet platform.
+
+ .../devicetree/bindings/mips/econet.yaml      |  26 +++
+ .../bindings/timer/econet,en751221-timer.yaml |  80 +++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  12 +
+ arch/mips/Kbuild.platforms                    |   1 +
+ arch/mips/Kconfig                             |  25 ++
+ arch/mips/boot/compressed/uart-16550.c        |   5 +
+ arch/mips/boot/dts/Makefile                   |   1 +
+ arch/mips/boot/dts/econet/Makefile            |   2 +
+ arch/mips/boot/dts/econet/en751221.dtsi       |  67 ++++++
+ .../econet/en751221_smartfiber_xp8421-b.dts   |  19 ++
+ arch/mips/econet/Kconfig                      |  48 ++++
+ arch/mips/econet/Makefile                     |   2 +
+ arch/mips/econet/Platform                     |   5 +
+ arch/mips/econet/init.c                       |  78 +++++++
+ drivers/clocksource/Kconfig                   |   8 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-econet-en751221.c   | 216 ++++++++++++++++++
+ 18 files changed, 598 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/econet.yaml
+ create mode 100644 Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+ create mode 100644 arch/mips/boot/dts/econet/Makefile
+ create mode 100644 arch/mips/boot/dts/econet/en751221.dtsi
+ create mode 100644 arch/mips/boot/dts/econet/en751221_smartfiber_xp8421-b.dts
+ create mode 100644 arch/mips/econet/Kconfig
+ create mode 100644 arch/mips/econet/Makefile
+ create mode 100644 arch/mips/econet/Platform
+ create mode 100644 arch/mips/econet/init.c
+ create mode 100644 drivers/clocksource/timer-econet-en751221.c
 
 -- 
-2.43.0
+2.39.5
 

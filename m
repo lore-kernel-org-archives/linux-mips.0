@@ -1,84 +1,32 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DEF1DE2DF;
-	Mon, 19 May 2025 17:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC7D255E38;
+	Tue, 20 May 2025 06:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747675209; cv=none; b=nzmdV7pdP3ZqRQcDjNmd+hDZ+c0HQu+Up+tVHBWPoO+LiuRJa8SiZWy65vZdNOQpA/iK0XVIPMbbt5zybdhNoHiHI/cNqmAHE2L0X10m6O27s6EwmX92eOfOyZ1XaRo2oE8IIvGXgBXOxFrgOBXu6dUEFFbRnIEa6XQQd/i9CjQ=
+	t=1747724212; cv=none; b=Mu9ucQ5YW5dmVZPnVUXPYxMVEv+xb/IQM1/qlh9Kwb0pKiFaRhAju3r4R3miZ6+cSubhsovTR78oXLkqiCZv0VqxaDR0uAxno7J5lSfIHcAK1eAZBBQVxd9QPOKoq7J98wtPLJfBfFhR+fBFWsvaKjfQ60HK1QCYR93DbkBgtl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747675209; c=relaxed/simple;
-	bh=/qDPGAJe6QWZQRFh5mkIaN3rUECBPrvhVDophOu0STQ=;
+	s=arc-20240116; t=1747724212; c=relaxed/simple;
+	bh=t02HdpVH7bByjCdpHA96IjGXEvuZGH0oFB9tYzj5jyQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kDsIzr/h8OwM3S8fzRfwd/auHPBxqnubkI86JW5C5n+qO8fxXY5mlWvOtqDpvlRZDXRuruys3PudRSuSyVdMzsxV2dbG8SV+IMsIBBXrXa9mUJS9Pc9iw0+26i0+8KWprzLHPZ+w8UYWg7E2isrgyp0sG13GsICfwfaIIe7W2fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nv6a6o/9; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nv6a6o/9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0486C4CEE4;
-	Mon, 19 May 2025 17:19:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747675208;
-	bh=/qDPGAJe6QWZQRFh5mkIaN3rUECBPrvhVDophOu0STQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nv6a6o/9GXqFce+WdqziKMZrgOnXd14Xk3g4S1nNlUHZltfdV2rEB9RDQCOmCeSgK
-	 ebQsjcpfmgR6sWVWBw5dta/I6m1xLYkae6rTJ4OSb859vEywgddyloj50eaFEjRTPe
-	 8FJ2qDU6rfYPGiDk1ORLqVzTGk/lQ8qlSrYclPnaRHuqKyuUafe4DFZ6lMgRdY6Wt1
-	 dRptEgZtQ8qGZDrQUwGD8JbkbioWwAY9aSpa8iIJWxNVsecoqluy1Xci9uIALX28U6
-	 ObnLi7IgFlid4DAXOMe7kw3cQbAB55J7ruXkv/fKErQRWuv0MXWPHfuo3pZS732DBZ
-	 yyZPReh2t/BVw==
-Date: Mon, 19 May 2025 20:19:48 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Pratyush Yadav <ptyadav@amazon.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Mark Brown <broonie@kernel.org>, Matt Turner <mattst88@gmail.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Praveen Kumar <pravkmr@amazon.de>,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH v2 10/13] arch, mm: set high_memory in free_area_init()
-Message-ID: <aCtoNLf1FbtqijGr@kernel.org>
-References: <20250313135003.836600-1-rppt@kernel.org>
- <20250313135003.836600-11-rppt@kernel.org>
- <mafs05xi0o9ri.fsf@amazon.de>
- <aCdveN2w9ThjVhae@kernel.org>
- <dc4e60dc-9b78-473a-9c18-3a2f128a02d2@ghiti.fr>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nLTKMwtvI4pwJsMPjxUBwib3uMPcEI3JaeMFIQyUjHw1IcASlDQoVEyM8oiJhCaBEGJNC/OyegH5Zl3e5S/1RRM3OAoj8bHpJcPjkhqrSfGuOVr1vZODG7h8z4hH2WYjImYy1yN/ZLy7CajEZqvtpK9zcSsivESUmGc7exTmpy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1uHGu1-0006iT-00; Tue, 20 May 2025 08:56:41 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id A10A6C0609; Tue, 20 May 2025 08:56:11 +0200 (CEST)
+Date: Tue, 20 May 2025 08:56:11 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] MIPS: bcm63xx: nvram: avoid inefficient use of
+ crc32_le_combine()
+Message-ID: <aCwni0qo_2IxfffY@alpha.franken.de>
+References: <20250511182836.21611-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -87,27 +35,31 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc4e60dc-9b78-473a-9c18-3a2f128a02d2@ghiti.fr>
+In-Reply-To: <20250511182836.21611-1-ebiggers@kernel.org>
 
-Hi Alexandre,
-
-On Mon, May 19, 2025 at 05:54:23PM +0200, Alexandre Ghiti wrote:
-> Hi Mike,
+On Sun, May 11, 2025 at 11:28:36AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> I encountered the same error as Pratyush and the above diff fixes it: do you
-> plan on sending this fix for 6.15?
+> bcm963xx_nvram_checksum() was using crc32_le_combine() to update a CRC
+> with four zero bytes.  However, this is about 5x slower than just
+> CRC'ing four zero bytes in the normal way.  Just do that instead.
 > 
-> If so, you can add:
+> (We could instead make crc32_le_combine() faster on short lengths.  But
+> all its callers do just fine without it, so I'd like to just remove it.)
 > 
-> Tested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> 
+> Please consider this patch for the mips tree for 6.16.  If it doesn't
+> get picked up, I'll take it through the crc tree.
+> 
+>  include/linux/bcm963xx_nvram.h | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
 
-Thanks!
-Here's the patch:
-https://lore.kernel.org/linux-mm/20250519171805.1288393-1-rppt@kernel.org
+applied to mips-next
 
-> Thanks,
-> Alex
+Thomas.
 
 -- 
-Sincerely yours,
-Mike.
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

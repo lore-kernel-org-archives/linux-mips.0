@@ -1,35 +1,35 @@
 Received: from mout-u-107.mailbox.org (mout-u-107.mailbox.org [80.241.59.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576E51F12F6;
-	Thu, 12 Jun 2025 07:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F412147E7;
+	Thu, 12 Jun 2025 07:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.59.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749713709; cv=none; b=AtGq0h+Z7vTdPCJjawsMdCBSPvr3bGkuSIYNdiHrDljEn04yBGbeKztnW8La3Qn/vYocMfzsTfQcyMggfqB/8uf/4D7NsaDWP8P6spG19bT8ow/V97/XFD1V2+AgxeQiak33knGH9v/dJf001burFE/eHiPkgyiD9NvQODPh/wI=
+	t=1749714227; cv=none; b=PXAVlAn32siuykS9wpqChlg9HfndYGP5ildpN5w2GSzREmpNNBh3FyFDPZVhsL7Jxf+VH/SLGn5Iycuenlt8uo49GAouT/HD7rUtGS6AZ2xpGjZw9C67wxvMXy2AwbIxj9oXCaYaTyOzO4+mfJfwX62EeGtBcnjJdO+FJeBUDtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749713709; c=relaxed/simple;
-	bh=p1j9QOtPk3ZIlPqNiNr1tiipGrWDfoJ3dSSpP2dPRV0=;
+	s=arc-20240116; t=1749714227; c=relaxed/simple;
+	bh=vnCbR/HzZbgU5wNd8mKc20nhhKPSaZCgt9Y3cvhubt8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=atdRaYZsI7rtURuPxRtNgc3Jxfy8ReuCgbtO742a7Bzxv0FExRjzWfhHM3rEOkfrB2Yhgd6RaMRN3ulDHGmS7snEgm/g0xvGnGMte9ufaFJD4v+gNkC0yAvPlOldmnBfIBBCUYXw3LQOs3H8SzO1f6L9Dvfqf2U5PE/YLfnr7C0=
+	 In-Reply-To:Content-Type; b=DZJ3VBX19fiAfTUG8fiSMJidEYHiZA7p7tTETXNPQhvLxD1cg2FkmrQFEeTLazCqim+OzbNiAsC0Lp0IbfkX0tIV+a9nE+khemwSrTUILaiVnXLhgzHZ8OmHWwwRddsmLOOK+to1AP5tBo82ACvncxHOCqybzU7ntwTQwXVbS2Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=80.241.59.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4bHvSR3yhhz9tgy;
-	Thu, 12 Jun 2025 09:35:03 +0200 (CEST)
-Message-ID: <7db61610-890a-480e-b74d-3565d0e9ba16@denx.de>
-Date: Thu, 12 Jun 2025 09:35:02 +0200
+	by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4bHvRw1nNcz9tf2;
+	Thu, 12 Jun 2025 09:34:36 +0200 (CEST)
+Message-ID: <d81d54d9-1e22-4895-9700-c4f4a50026a4@denx.de>
+Date: Thu, 12 Jun 2025 09:34:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 3/3] MIPS: dts: ralink: gardena_smart_gateway_mt7688:
- Fix power LED
+Subject: Re: [PATCH v1 1/3] MIPS: dts: ralink: mt7628a: Fix sysc's compatible
+ property for MT7688
 To: Ezra Buehler <ezra@easyb.ch>, linux-mips@vger.kernel.org
 Cc: Conor Dooley <conor+dt@kernel.org>,
  Harvey Hunt <harveyhuntnexus@gmail.com>,
@@ -40,21 +40,19 @@ Cc: Conor Dooley <conor+dt@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>, devicetree@vger.kernel.org,
  Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 References: <20250611194716.302126-1-ezra@easyb.ch>
- <20250611194716.302126-4-ezra@easyb.ch>
+ <20250611194716.302126-2-ezra@easyb.ch>
 Content-Language: en-US
 From: Stefan Roese <sr@denx.de>
-In-Reply-To: <20250611194716.302126-4-ezra@easyb.ch>
+In-Reply-To: <20250611194716.302126-2-ezra@easyb.ch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4bHvRw1nNcz9tf2
 
 On 11.06.25 21:47, Ezra Buehler wrote:
 > From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 > 
-> When starting up, the GARDENA smart Gateway's power LED should be
-> flashing green. It is unclear why it was initially set to "off".
-> 
-> The LED frequency cannot be configured in the devicetree. Luckily, the
-> default is 1 Hz, which is what we want.
+> Otherwise, the MT7688-based GARDENA smart Gateway will fail to boot
+> printing "Kernel panic - not syncing: unable to get CPU clock, err=-2".
 > 
 > Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
@@ -64,22 +62,22 @@ Thanks,
 Stefan
 
 > ---
->   arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts | 2 +-
+>   arch/mips/boot/dts/ralink/mt7628a.dtsi | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts b/arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts
-> index 7743d014631a..0bfb1dde9764 100644
-> --- a/arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts
-> +++ b/arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts
-> @@ -56,7 +56,7 @@ led-power-blue {
->   		led-power-green {
->   			label = "smartgw:power:green";
->   			gpios = <&gpio 19 GPIO_ACTIVE_HIGH>;
-> -			default-state = "off";
-> +			linux,default-trigger = "timer";
->   		};
+> diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
+> index 0212700c4fb4..10221a41f02a 100644
+> --- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
+> +++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
+> @@ -33,7 +33,7 @@ palmbus@10000000 {
+>   		#size-cells = <1>;
 >   
->   		led-power-red {
+>   		sysc: syscon@0 {
+> -			compatible = "ralink,mt7628-sysc", "syscon";
+> +			compatible = "ralink,mt7628-sysc", "ralink,mt7688-sysc", "syscon";
+>   			reg = <0x0 0x60>;
+>   			#clock-cells = <1>;
+>   			#reset-cells = <1>;
 
 Viele Grüße,
 Stefan Roese

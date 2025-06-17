@@ -1,132 +1,142 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF05128A406;
-	Tue, 17 Jun 2025 08:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D551E834F
+	for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 10:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750148452; cv=none; b=mjCUZwI4Z17xZ1v3V3tJokQ7jIybzmiQYQdZgWGVX/qPQmyaeCdixr+lnYkl14xQHN+tUb/zU5FM5kLJtaCHj3cJ/P/zPhgcocK9+XKkBJT+LbdEKPd2Px/wMfQvbY4qORUazevl+QJN+0Q7KJOK427faH1IGm0Zv7iQLsQtaK4=
+	t=1750156266; cv=none; b=cF3IYZgeJ+Yww+aoYcqnYuQ862xM/92a7MQbECK7beQbt8MMpQaXN6efdPlQbjXNZ+hGo7ess2KUXE1jcd3rjIteBhHXRW0evVfh3XsYcjcou2QrfxhL+xABH5oTxQfdx140crLLjq6vz4bWlcHdEQF5r3hbzAi5R3Liz5edgew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750148452; c=relaxed/simple;
-	bh=Ev+wfPjNp3+1OpBLuAzKgLGnCgCxFvUoz+LDbZgxvhw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=szE3E80BwcHHsLkLit7h0TAaMLToQNJy8L60xjfwqH4e/yM3XPF3vxhFHRyixX2F6cIDTXzLQ+bcRs4cnDdslhQdfT1ztZpvxZOacyqOZCF99lrg5vyAlXmrLzDoQLgkJtygkq+eN0j+LL6y0MOOlMhuTQHYWYfhmR7pUObMrSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B631/Nn/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750156266; c=relaxed/simple;
+	bh=MRktcHHE5wKe1jZB0TVIrWfJ6bF6zz5pS8h9jFrX2gs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=L7zTYlY+p6PWBzxV0K7hXnj6YnMNQB+3L+YsTX8vqjpLeyKnhNO5aih3FGvQTm6jTOtlvnPDzqslLUnq/RDgl83OlVw+PvJpEhqBKrk2yAPbsF8+k63GqSiHXY+J6oNR5TL3SKRDV8dyVGO6GQUr0XVaeuu6cDzGPawFT7sxPOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=lpwi6DZs; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=easyb.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B631/Nn/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70AAAC4CEED;
-	Tue, 17 Jun 2025 08:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750148451;
-	bh=Ev+wfPjNp3+1OpBLuAzKgLGnCgCxFvUoz+LDbZgxvhw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=B631/Nn/cy/bQXrqyd3ei8DtsMgnXhazeRqQkZSn3r7+4lFyU0dJ4K3/kANNBgW14
-	 /IJk4Gx0bP0iS4dwvfIQj/C7rSqJ1xRIrO1eJBE+sGKiNzbGYJZndyChvFT2H3pfTR
-	 Zd8ykZVTdGMrugCfPhV8yQCfQOgFTHhuCaagmPg3p9spWAZWH8JcVcjrvJLyXJBLb+
-	 /0tZQC+vNyMXUuUQiu4AS6wK0l3AVvSV49BW/c6iKoi/SifkiZBzzWftpWbk6nmDtT
-	 091bccuhSLNxXP9ymwB0935kN97KX4RL4xxNNodZJJ1sEXkF6Xi92CCYH6TuZLCftn
-	 L3+3O7dapRE3A==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-60497d07279so11150843a12.3;
-        Tue, 17 Jun 2025 01:20:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVgLb88huYwDisJWgf11K0lhWVd47c9CfUvtQsWhQaZUkZHJDpwTXJtvVVwDUmbNohvQBquHfzRPinH4qkHfq6y@vger.kernel.org, AJvYcCWcfbkwRzWtxtSS3KkMoDrKSBlNuu/aZqYetGa03ICJYyWMN/exZXfpod6L4SUeHWZMJ4gZIYX6Co838g==@vger.kernel.org, AJvYcCXgh1YqNnQ7h6/wb+MIfFLWvaH8KiU7ENSqc2fDwLfkIZUMCBPOSSYD4mVJfilEfoqp0ddwDcE/7I4h3Jk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQKMyhU06gnvRnyDMq0NHP9bevbo9zL5Yi2T5Wx9RyLuH34+59
-	S5YfUJAQCZYzhiTQls9VDSw/W8mfLSNG8CDK7i6IHOSzr31tjYwGXDc2zr6dY7NeqsM+YSf6TOg
-	Z8+enWPdNylavCz054ISF+4sFb9lPpvo=
-X-Google-Smtp-Source: AGHT+IGCY996UEycX3rPs/EXwjI2oXNCo8GiIM3kOQg1rxmp+0q/+J/gPPFAcdHzYME/kA8NqX297i+ePyR0A3UBcQk=
-X-Received: by 2002:a05:6402:40c3:b0:602:ef0a:cef8 with SMTP id
- 4fb4d7f45d1cf-608d09c0ademr9953300a12.18.1750148450032; Tue, 17 Jun 2025
- 01:20:50 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="lpwi6DZs"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4531e146a24so33936245e9.0
+        for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 03:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1750156262; x=1750761062; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HmNwwFnf4rvDB+kei3WgHFlAgrsujTs+X07iVmmGktU=;
+        b=lpwi6DZsWypgLKtWppK6ln/feYxTanwZdKrDZErTP7dCRtsCCglpHbv/cVmIMjxxFe
+         ZEAHwGBGyPlgLm8wW3TpkvDUblTPI28Vtp5zXrxwHXe+wmhv/JuIx6kNW7FeMVJlqvZD
+         RquXE4djvtxZni2v8VSm9DH446ou5LBtp6U0mG+z6DAWrvy+CADaakEdn5qZZtwQuxEp
+         ceVDai68kwEwGEPwbHZ31/YojX5tc6MQLOMgm8DGG2m+AV52vjzLUMebrR81RHL/PEga
+         IJLihngsLsEW9xao9evVTNXgw5HHDkYp4x2FnoDYBi26U2dKhuWBgH63ZQLznkgdXh0R
+         NNtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750156262; x=1750761062;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HmNwwFnf4rvDB+kei3WgHFlAgrsujTs+X07iVmmGktU=;
+        b=aE9S7qKR/5WVSIl31oqTt+r/547MCO4a/n8vUgXUjUN6sJFnmy37yMo/rKpJcXvv/l
+         J6uLv8HQPEkYoN6FleAtn/MHpk2fEdbniowi2Za8uccIgpTC0HcLGDIW/mW7HZcKBv1h
+         d7OikI0nJFOsWso4WXjs9UeXZ/mPcjp0GrNoVo5STaJ/7e0z/f6Ua9VVwYY8eWY9LTFF
+         oQSKsDVJeXyNgJTdm3r6ceN8a8N3uno7smlkbaB9MR6KOtMMjWv+lRzM5Dk/Zdx/rWfb
+         js6YQEWu6FXlE0QYRwplDhEWG+EEhZBWCdarxCJ0Y/8EhfUQLj8IvxLFKyN6AV1TrBSp
+         Q7Eg==
+X-Gm-Message-State: AOJu0YykFd8wYsopB1exlINYVFlvXkNMpyGJR101GJLEQJiwXrMIH5ZK
+	/P/xKtu6c4o0oeKzpZMTmSWrMY3ceNTHTg2SJc/d8qc1PQxV7/x8WhFiiKQMaYA9WqdHrQn1I+s
+	MhpgS
+X-Gm-Gg: ASbGncv9q6kPDzWQRMGdAE9ID9009Q6wkdfXSOiolLWZfXVc2WpTTRkjCUp5Fmmn/hp
+	3lDbvg56ULZSfhzurmXuXhGNFWYP/KoXH6Oo0r9wfNd1eQwmRPawX/h0bqIScdwbhgvcO1Bpbws
+	Mcy++6ZYFuykbzIoeuCZT4RPgOUrjmvK/0aNJTHL+dUSRLeRnJmbLGvYWkPhuCCYgiMf4PkTxJL
+	cUZQllKi42mBGr1smyjmG4Qovnb18BAxpEiVNnyYX0RKwhBUY030E1JDeM5b+C+d34xFiIfCGiV
+	7Zh90wSX9MXhrOJQ2KrZ+woJ4Kfqg04YVv9+7phCP7MR8cvbrbJzk1PzU5FwgyiZ6y38nA==
+X-Google-Smtp-Source: AGHT+IErcBfFQKTQ8cJ59Qswbejq+S65j5wGZCmMhc8Be5vHHaKvya54mDzCAiVvaL2D0IBYhiyYYw==
+X-Received: by 2002:a05:600c:350f:b0:441:ac58:ead5 with SMTP id 5b1f17b1804b1-4534f580000mr52297055e9.31.1750156262162;
+        Tue, 17 Jun 2025 03:31:02 -0700 (PDT)
+Received: from fraxinus.easyland ([2a02:16a:7402:0:b1a7:bc8:262a:3102])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e16a097sm176749215e9.33.2025.06.17.03.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jun 2025 03:31:01 -0700 (PDT)
+From: Ezra Buehler <ezra@easyb.ch>
+To: linux-mips@vger.kernel.org
+Cc: Conor Dooley <conor+dt@kernel.org>,
+	Harvey Hunt <harveyhuntnexus@gmail.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Reto Schneider <reto.schneider@husqvarnagroup.com>,
+	Rob Herring <robh@kernel.org>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Stefan Roese <sr@denx.de>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	devicetree@vger.kernel.org,
+	Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+Subject: [PATCH v2 1/4] dt-bindings: clock: mediatek,mtmips-sysc: Adapt compatible for MT7688 boards
+Date: Tue, 17 Jun 2025 12:30:55 +0200
+Message-ID: <20250617103058.1125836-2-ezra@easyb.ch>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250617103058.1125836-1-ezra@easyb.ch>
+References: <20250617103058.1125836-1-ezra@easyb.ch>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250611-kunit-mips-v4-0-1d8997fb2ae4@linutronix.de> <20250611-kunit-mips-v4-1-1d8997fb2ae4@linutronix.de>
-In-Reply-To: <20250611-kunit-mips-v4-1-1d8997fb2ae4@linutronix.de>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 17 Jun 2025 16:20:38 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H42T9gE99HWx8xg_Te7CTvahJrTR0WF=pX94jauPKkW-Q@mail.gmail.com>
-X-Gm-Features: AX0GCFszQjuGTwZ5dXKkObFTNt0vTANijboW7ch2caZ1wYDoEtdyzvT3RCBSrUk
-Message-ID: <CAAhV-H42T9gE99HWx8xg_Te7CTvahJrTR0WF=pX94jauPKkW-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] MIPS: Don't crash in stack_top() for tasks without
- ABI or vDSO
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Brendan Higgins <brendan.higgins@linux.dev>, 
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
+From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-On Wed, Jun 11, 2025 at 7:28=E2=80=AFPM Thomas Wei=C3=9Fschuh
-<thomas.weissschuh@linutronix.de> wrote:
->
-> Not all tasks have an ABI associated or vDSO mapped,
-> for example kthreads never do.
-> If such a task ever ends up calling stack_top(), it will derefence the
-> NULL ABI pointer and crash.
->
-> This can for example happen when using kunit:
->
->     mips_stack_top+0x28/0xc0
->     arch_pick_mmap_layout+0x190/0x220
->     kunit_vm_mmap_init+0xf8/0x138
->     __kunit_add_resource+0x40/0xa8
->     kunit_vm_mmap+0x88/0xd8
->     usercopy_test_init+0xb8/0x240
->     kunit_try_run_case+0x5c/0x1a8
->     kunit_generic_run_threadfn_adapter+0x28/0x50
->     kthread+0x118/0x240
->     ret_from_kernel_thread+0x14/0x1c
->
-> Only dereference the ABI point if it is set.
->
-> The GIC page is also included as it is specific to the vDSO.
-> Also move the randomization adjustment into the same conditional.
->
-> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
-> Reviewed-by: David Gow <davidgow@google.com>
-> ---
->  arch/mips/kernel/process.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> index b630604c577f9ff3f2493b0f254363e499c8318c..02aa6a04a21da437909eeac4f=
-149155cc298f5b5 100644
-> --- a/arch/mips/kernel/process.c
-> +++ b/arch/mips/kernel/process.c
-> @@ -690,18 +690,20 @@ unsigned long mips_stack_top(void)
->         }
->
->         /* Space for the VDSO, data page & GIC user page */
-> -       top -=3D PAGE_ALIGN(current->thread.abi->vdso->size);
-> -       top -=3D PAGE_SIZE;
-> -       top -=3D mips_gic_present() ? PAGE_SIZE : 0;
-> +       if (current->thread.abi) {
-> +               top -=3D PAGE_ALIGN(current->thread.abi->vdso->size);
-> +               top -=3D PAGE_SIZE;
-> +               top -=3D mips_gic_present() ? PAGE_SIZE : 0;
-> +
-> +               /* Space to randomize the VDSO base */
-> +               if (current->flags & PF_RANDOMIZE)
-> +                       top -=3D VDSO_RANDOMIZE_SIZE;
-> +       }
->
->         /* Space for cache colour alignment */
->         if (cpu_has_dc_aliases)
->                 top -=3D shm_align_mask + 1;
->
-> -       /* Space to randomize the VDSO base */
-> -       if (current->flags & PF_RANDOMIZE)
-> -               top -=3D VDSO_RANDOMIZE_SIZE;
-> -
->         return top;
->  }
->
->
-> --
-> 2.49.0
->
+As the MT7628 and MT7688 are identical in most respects, mt7628a.dtsi is
+used for both SoCs. To prevent "Kernel panic - not syncing: unable to
+get CPU clock, err=-2" and allow an MT7688-based board to boot, the
+following must be allowed:
+
+    compatible = "ralink,mt7628-sysc", "ralink,mt7688-sysc", "syscon";
+
+Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+---
+ .../bindings/clock/mediatek,mtmips-sysc.yaml  | 29 +++++++++++--------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+index 83c1803ffd16..550807301fc5 100644
+--- a/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
++++ b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+@@ -26,18 +26,23 @@ description: |
+ 
+ properties:
+   compatible:
+-    items:
+-      - enum:
+-          - ralink,mt7620-sysc
+-          - ralink,mt7628-sysc
+-          - ralink,mt7688-sysc
+-          - ralink,rt2880-sysc
+-          - ralink,rt3050-sysc
+-          - ralink,rt3052-sysc
+-          - ralink,rt3352-sysc
+-          - ralink,rt3883-sysc
+-          - ralink,rt5350-sysc
+-      - const: syscon
++    oneOf:
++      - items:
++          - enum:
++              - ralink,mt7620-sysc
++              - ralink,mt7628-sysc
++              - ralink,mt7688-sysc
++              - ralink,rt2880-sysc
++              - ralink,rt3050-sysc
++              - ralink,rt3052-sysc
++              - ralink,rt3352-sysc
++              - ralink,rt3883-sysc
++              - ralink,rt5350-sysc
++          - const: syscon
++      - items:
++          - const: ralink,mt7628-sysc
++          - const: ralink,mt7688-sysc
++          - const: syscon
+ 
+   reg:
+     maxItems: 1
+-- 
+2.43.0
+

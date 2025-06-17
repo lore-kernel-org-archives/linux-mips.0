@@ -1,62 +1,60 @@
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B301289E2D
-	for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 10:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EEE20C48C
+	for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 10:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750156266; cv=none; b=o3H/2hTdOWsXf4IN8XMD7PUMHfsXWZd1O2zv+9pDO/hxhUcxE8pU3dyOg4YStmoJg709N01uQlH5k5YA5UgqBSC/Df4CrEAG+kDurLwNgEoj78r9weje2ohgWxTw2M32zCP8sB7uvIebRIPHLrWXAcKojdkmsMiPRcSQ4tav+RM=
+	t=1750156267; cv=none; b=fELTsexHOpIERfDXCB5AZkj1MN38OCTzA3dS4vGt8J02DX3vMMJVaI+N4h4Hpx4uv3XCIHOebjnnu6EKDK1zhPrd98Yua3yYUteID3jertrSOilB8B4qpjz36rmB3exeHxAAJTgrf+6SbRVwoJz3s4OahK75gO542VvRnispLMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750156266; c=relaxed/simple;
-	bh=h3UPqbe4sHsIOrKmfTrEkvLZUI22mR3WiPaH1WtZ+Lc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wmchw8ghWB33JWPLyiQNil9I22dKbpd6dHyyWHZFLoIPdU238Kfyn+hEUiFriMr7XeaEX0cXvD5/UHv0NlQr4jLhL/ziRZME3U/9G5+Ri9fMXwIF0DJkFLD2fZd6kPIqI+eVi4C7NIaQHhQli+Wf5cWf5LVqnwjapDmk/8bBzDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=HFYNO20N; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1750156267; c=relaxed/simple;
+	bh=w2W+a7ZuJe8FPbpYaxgD14dwPzRBuZguXtykQbsnYXU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Gh4lwXIsZNSqG1n7Xu3z3Et476MLcqhcr37nECvE3F0bzhti0CZoh89296i0yFYlviDGaVaQLmw8TQMEgx5Gy0Yk+Hig/+QwNXd8L7HrZII6KkL6LmUc6k2BOfOH2iPy7aKgATaWbFH0MbmGrcNcItepoiFXaCuxedTKQWPU7vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=sJyLcvb4; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=easyb.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="HFYNO20N"
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so40805815e9.0
-        for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 03:31:04 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="sJyLcvb4"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-453398e90e9so29419805e9.1
+        for <linux-mips@vger.kernel.org>; Tue, 17 Jun 2025 03:31:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1750156263; x=1750761063; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UqIJMZJtR2MozSAlBaEIUnoVSAIXjXDAyYywqzDZ/go=;
-        b=HFYNO20Nej9tmolIz56r9+n7s1pJzU21ti5c3eKAj0bESw6A+H+1JWTj1/bWbAWwec
-         Zi3DcfPHM7dnLs/plIdSh8ShVhWAPKU1k/zFB8bD4h5OMj/UqtL+ZyOyzVUYHYo+FKeg
-         IFyjxXlCX9pMthLkm9Gj6rpZ0wYIQ7QGPJ5z1akFvSmSztHix9xBPrw3PjJ6OLVwousT
-         85w/eTfj2IQYKFohlLfJxRIKn1vANULBc5hvU2dYwSNI74fLz/K3k9xLhqXwc0YpQKhb
-         awYgcLjChtwLhBS5BOocdo3Zg6hs9cvIEnEnFtlYi0/ourOaQ2TjAjgfFfSxy04svwKh
-         +A/g==
+        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1750156261; x=1750761061; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hRfOEu471ZP+Fq1dUltM36H0O9UoIGuBZtAP9JnR5qo=;
+        b=sJyLcvb4HjB7Lz9+CZaQEJ8rvsyNptSn634Q/6qhTQZj5DISeOtO4uVEvzNk5i4z4p
+         v0g0eLVu7mvkySSifLef0P2M5eCJAaFANwOhLq9R63Of2AXjZk71KO1dOz41gMNb0nxy
+         UCDXeDMxUDCKg4EYV0y8hUbdDhr5sogx+VHDBUz0sRzjYS+7k/BtPY1lS37hPrcwxhlY
+         X1rH0e8Ow+FpX6n29MppMFbkoWO0Gcz+m2LyY8L2eZB2gwGs9X+QSRJ7W+dlhGICnPWl
+         wDBidRO25V8cpBODZZ9OW63DJWUiYyTSJQ7ZQRD6R1zaIho+GrkJZHPpHLu/RxGnzBwn
+         2Nmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750156263; x=1750761063;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UqIJMZJtR2MozSAlBaEIUnoVSAIXjXDAyYywqzDZ/go=;
-        b=Gc4PRUyiq8odHiRbRfasswiJs4eNmW6Sy5wyedZvuua8QoBr3zP91LttNdKtCX8dm6
-         5GRTDh+CulF4e0h0vfF+sLrA24EKvfyjSOm69Ln/l1OFIAu+O9v84m1D25jrIO46KaKM
-         3MgyaSytJZjfBmLW3kgp5YCGy27rUIHvF1cnqPpa9TiBF/WPMK2ra3eQmYoB6h2+3/Wh
-         g5SijcOs0pzYEdXPMh31Eho0RAAUzQtjnutqEx9AXuAW+F+urHqwE+1Yq4pwXfdVXMQz
-         iLtv0NL5SX842CnsA0KKRObO6p2D/mKLeGF2pSaNTjK9d21XSr1GGHZEzNBnJVsORFkQ
-         UbOA==
-X-Gm-Message-State: AOJu0YwFTCCAKcPlx8t6Ak2++ST81M7CRBzkn4lVg74NYtEn4JZ24Mne
-	98n900v5CmfNouOOxHxQZEIGykPz2QKtcbvrPQAWcW1EOAC9tZBkcHbTav9jmBuDXMs8bhDuyU1
-	efqSb
-X-Gm-Gg: ASbGncvNE7Is8Jjo6nHe1GJbe0J8f4EfTBPe0yWlKaAlViwYFyllWV/TvZ9QqzG9SlY
-	gZioG1x6L+FE22DNU+AqV4U+JZJf9qIzQF8A7l2R7Eyv/Vu0SUArLen/DAMUR0rjsaP4H797P1s
-	MAjYReXdQO5ASWjjNlYG1Z9UvILJ3fwzN3uoHMSosbXOM09gwGQaaZ5C4zMGJIwNcVZdo/oW+oC
-	VtfR5MB4URBnRGKUMc/6lz5SlXnDn5/B2QzOFXO35gIPVsZ+LgqQmS7fQOjZl4iX1tf5ufO8nPM
-	irD4fBziBVGOSCZBgfQmtmLij5sxolT746TGehajqLJKnYlLz3YyW0a1q3s=
-X-Google-Smtp-Source: AGHT+IFckKe3byVNm1QEfEuvovCTkRMrtIRrkEAwuikE34eUnr0Dr4YPk54ws5E2rachMpTIg39dGg==
-X-Received: by 2002:a05:600c:1c28:b0:440:6a79:6df0 with SMTP id 5b1f17b1804b1-4533cb4bc8fmr94802615e9.22.1750156263263;
-        Tue, 17 Jun 2025 03:31:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750156261; x=1750761061;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hRfOEu471ZP+Fq1dUltM36H0O9UoIGuBZtAP9JnR5qo=;
+        b=qsEzrpwwNrwHkOJuf2cYrtGlej0xAlI+Buw+0DiIJsr6zvoqz4bsZFGKt1srjBAzHA
+         U144jRUayVLswxdaCu+RAV87f2RtAF2j7/0H7qH2ExMdZHcdxmgPqPEO53coXUpw7J0B
+         1BRHDZBWzTPyRIpd0oMSautcrAmKdL0o4Wb2zvqToCrhvusDupPMczCtk+Q0OzP911XS
+         jF34x8kVXnCZmGdxeaLqRr5RhNOTNiOSTh/FQitKqYhda+AO1ZZ773P+sU3Vi5IgVnLt
+         8Tj/vfjTuCTfbQo3CyGOdunoeyRTJQCA8j3rxQ4XP8WFvT70I9fTUIBrVYUqoqXrbwpz
+         Hagg==
+X-Gm-Message-State: AOJu0Yxyw9sSq2CpzI6UsLsSAlQMdFldqi6yxL8Q1ClTEoMQdV3XKA9F
+	8H6h0wOwH6f9clMwkiK5NNQ3Pgp//95pC2i2bCfDkKAWaQjfC5eNXN9Qc+7hoByHeaDzL4ocZ28
+	Dko7o
+X-Gm-Gg: ASbGncv762/6pVC3I9GMiZChCwqPn0ZZdT0a+Uvc62MDd8+bRv3Hvs0C7ysll3MG8B0
+	iyfgceMIUvAqRQIdLwbWlxctwHgR4dv0Y8vwxJlUP3AN6oFEmrqIYzXWDDeZR1q5D/c/NWf7Ft8
+	TmbcFQGYGnnb7A73YXWoVtzP+jj1yQJ8ZRzz86VrzfxaGSpiEy8G7ZzEKV1znyfudO9IvEAvCTV
+	RLPwvaGxyLWHptsLSvmrDxnSXwthIsrQp0KTxa5sazqj7O8DIu4K1f5bdTGNT2HTQFpVGy9urEL
+	E95Sx9yB5tyIYrKFIapgdPsUaXdd/3ztPmpDOKh6TChNG8Jy6hFurXTt+Fs=
+X-Google-Smtp-Source: AGHT+IHYHG8cndqPwafpQjRD9EUbG2L/pxbFOAX4rToacEG9GSUaTz4CsGD1Gpyjxtb1SkOeS/X27w==
+X-Received: by 2002:a05:600d:11a:b0:450:d5a5:e6c5 with SMTP id 5b1f17b1804b1-4533ccbd60fmr58601615e9.26.1750156261024;
+        Tue, 17 Jun 2025 03:31:01 -0700 (PDT)
 Received: from fraxinus.easyland ([2a02:16a:7402:0:b1a7:bc8:262a:3102])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e16a097sm176749215e9.33.2025.06.17.03.31.02
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e16a097sm176749215e9.33.2025.06.17.03.31.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jun 2025 03:31:02 -0700 (PDT)
+        Tue, 17 Jun 2025 03:31:00 -0700 (PDT)
 From: Ezra Buehler <ezra@easyb.ch>
 To: linux-mips@vger.kernel.org
 Cc: Conor Dooley <conor+dt@kernel.org>,
@@ -69,12 +67,10 @@ Cc: Conor Dooley <conor+dt@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	devicetree@vger.kernel.org,
 	Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-Subject: [PATCH v2 2/4] MIPS: dts: ralink: mt7628a: Fix sysc's compatible property for MT7688
-Date: Tue, 17 Jun 2025 12:30:56 +0200
-Message-ID: <20250617103058.1125836-3-ezra@easyb.ch>
+Subject: [PATCH v2 0/4] MIPS: dts: ralink: mt7628a: Tweak for GARDENA smart Gateway
+Date: Tue, 17 Jun 2025 12:30:54 +0200
+Message-ID: <20250617103058.1125836-1-ezra@easyb.ch>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250617103058.1125836-1-ezra@easyb.ch>
-References: <20250617103058.1125836-1-ezra@easyb.ch>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -85,28 +81,28 @@ Content-Transfer-Encoding: 8bit
 
 From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-Otherwise, the MT7688-based GARDENA smart Gateway will fail to boot
-printing "Kernel panic - not syncing: unable to get CPU clock, err=-2".
+Various devicetree changes needed for the MT7688-based GARDENA smart
+Gateway.
 
 Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-Reviewed-by: Stefan Roese <sr@denx.de>
 ---
- arch/mips/boot/dts/ralink/mt7628a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+- Add patch for mediatek,mtmips-sysc DT binding
+- Add Reviewed-by tags
+- Link to v1: https://lore.kernel.org/20250611194716.302126-1-ezra@easyb.ch
 
-diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-index 0212700c4fb4..10221a41f02a 100644
---- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-@@ -33,7 +33,7 @@ palmbus@10000000 {
- 		#size-cells = <1>;
- 
- 		sysc: syscon@0 {
--			compatible = "ralink,mt7628-sysc", "syscon";
-+			compatible = "ralink,mt7628-sysc", "ralink,mt7688-sysc", "syscon";
- 			reg = <0x0 0x60>;
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
--- 
+---
+Ezra Buehler (4):
+  dt-bindings: clock: mediatek,mtmips-sysc: Adapt compatible for MT7688
+    boards
+  MIPS: dts: ralink: mt7628a: Fix sysc's compatible property for MT7688
+  MIPS: dts: ralink: mt7628a: Update watchdog node according to bindings
+  MIPS: dts: ralink: gardena_smart_gateway_mt7688: Fix power LED
+
+ .../bindings/clock/mediatek,mtmips-sysc.yaml  | 29 +++++++++++--------
+ .../ralink/gardena_smart_gateway_mt7688.dts   |  2 +-
+ arch/mips/boot/dts/ralink/mt7628a.dtsi        | 11 ++-----
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+--
 2.43.0
-

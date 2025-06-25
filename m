@@ -1,123 +1,72 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576112264BA;
-	Wed, 25 Jun 2025 07:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073181FE444;
+	Wed, 25 Jun 2025 07:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750835436; cv=none; b=qFWhXB/IsvntcnkE6NmnEO68jqCh7pmuI4ztbuK0SP9VMCZytrN1QTfxrfku4WANikc+moWDphiLm4BzBTyNBUbNlT1vXpqc4098jeb3+JW7TmyG/FeHe+or5uTe45S3lnfy8Y7qf3Ovv0lKhhj1UuKKsivgnfwFBc3rUk0Za98=
+	t=1750835639; cv=none; b=ixN7/+7/yaL2dA1t7gkDcVF+97BY+rR5wJjtnDtU0hWmuswHMLLzqMoODFv2RtuUQGYNJPyvoA4KIZr/NMz4hyB4PV2bAGa6KgWUz3fyOiCd/yIipcQVGx4uVohwYaLbcA5s1ao1arHmw+GTo6FYblJkatT8ZB9ZDg1j8LQQxqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750835436; c=relaxed/simple;
-	bh=Y+OM4xhFGnbbVJB2/pk7w3PVA+sL8KWZ8Ahn07y2y1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L0dCymTNOtzycKi51/FhbJFNUR8a9wsr0F/qNxoknrIh/I9vIUnCrV+03F+ZYP3HTBJ58KQX9OMyV6gJf6O+w/SNPTd0nYl08SibQ0lJ9ujrVVn5YrdTz6ObPVBUz2/cmJtM3/RS1HS4UciNSqVAWSuvyJGihB8SiUy7j/odaZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bH9JuMjc; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750835639; c=relaxed/simple;
+	bh=ioDOykbRAIMsPtUk0yYrd7nhSgTj1xSX+9JWbbQY5nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cc6uL0wPUVgrFswHb5ayG6yaV1oeR9xD47fFDBypBHKmy+XQr6BVmmO1hJYNZK14fGyZOJZf/o7IaoHhR+iwLx1cii1Ocd8AZLP5PX915682eZwoRfivmuuN3+XUx1vVw0emv6kuApVXuSqc4O57Cj1l01Ov+DkL+Tw0agU/IG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ou+qBlTJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bH9JuMjc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EFCAC4CEF2;
-	Wed, 25 Jun 2025 07:10:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ou+qBlTJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37CCC4CEEA;
+	Wed, 25 Jun 2025 07:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750835435;
-	bh=Y+OM4xhFGnbbVJB2/pk7w3PVA+sL8KWZ8Ahn07y2y1A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bH9JuMjcvx3J7GtUczSjT11nGI4YWbo07MYlZLzC2HhSWEMCp2w/3F76EUQDdl9aH
-	 x3U0E8JYWVjle7diqxhGtq75vEUoC36KAdmOt5ehtup8q9m0RB23nlpgatFdW+xPro
-	 JnvpTRlkc04oJMwRgnosZlVo8rkhPtz1xEyaez2xP71hb1UjwpZwEHoEgz9hwvZZ8w
-	 Xg73giZDP2UVojmC6ER8rObGC/udaKqdU8qwkmAQlqBDk2z567b670tXgzD5vy92Bv
-	 LTPxk9gDYjyHb92F+u8ONsV4Eu9yHAg8GfgBAM3Y1PeC6Az6HX0fnNqfEvvqWnzfdm
-	 PfOgccGBMYwtA==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 17/18] lib/crypto: sha256: Sync sha256_update() with sha512_update()
-Date: Wed, 25 Jun 2025 00:08:18 -0700
-Message-ID: <20250625070819.1496119-18-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.50.0
-In-Reply-To: <20250625070819.1496119-1-ebiggers@kernel.org>
-References: <20250625070819.1496119-1-ebiggers@kernel.org>
+	s=k20201202; t=1750835638;
+	bh=ioDOykbRAIMsPtUk0yYrd7nhSgTj1xSX+9JWbbQY5nc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ou+qBlTJhEBWipC6ErQ+Vl1iIeTv+Gr03SyqGZpyQ2ekgC6W9m7s99AbODNOQ6pL2
+	 EfbgprhAGpASlBZtcWq3eorlHGTHgmT7SWKIxTiL9MhuNyCnCNU9kqz2okCR0VAhZU
+	 83ew1ppeva9Hhf+PWUc+f/y6M0xdZJ+irAOSvOTCb/R6d3ZJ8v7dIP+GpDHesUk8UP
+	 GAaPKU/4+I8BeaO8jJpCkP5JPXPTc20biudlQjAZD8Dh/p3w/aA1z7bftVGivlK2rA
+	 I/160JSHqFszNYfG+iSN1yx+M+wSLrVFU7nCRXYbMMZtxTFN9PY7TV44dw8NfIFHxt
+	 od4B6CPVE3GZQ==
+Date: Wed, 25 Jun 2025 09:13:55 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Ezra Buehler <ezra@easyb.ch>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+	Conor Dooley <conor+dt@kernel.org>, Harvey Hunt <harveyhuntnexus@gmail.com>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Reto Schneider <reto.schneider@husqvarnagroup.com>, 
+	Rob Herring <robh@kernel.org>, Sergio Paracuellos <sergio.paracuellos@gmail.com>, 
+	Stefan Roese <sr@denx.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: clock: mediatek,mtmips-sysc: Adapt
+ compatible for MT7688 boards
+Message-ID: <xzffmdojbio6rgo6a4vhaeuygg7b63lcvx55xs44mkt265d4c2@onnefkldwatt>
+References: <20250624115810.37851-1-ezra@easyb.ch>
+ <20250624115810.37851-2-ezra@easyb.ch>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250624115810.37851-2-ezra@easyb.ch>
 
-The BLOCK_HASH_UPDATE_BLOCKS macro is difficult to read.  For now, let's
-just write the update explicitly in the straightforward way, mirroring
-sha512_update().  It's possible that we'll bring back a macro for this
-later, but it needs to be properly justified and hopefully a bit more
-readable.
+On Tue, Jun 24, 2025 at 01:58:07PM +0200, Ezra Buehler wrote:
+> From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+> 
+> As the MT7628 and MT7688 are identical in most respects, mt7628a.dtsi is
+> used for both SoCs. To prevent "Kernel panic - not syncing: unable to
+> get CPU clock, err=-2" and allow an MT7688-based board to boot, the
+> following must be allowed:
+> 
+>     compatible = "ralink,mt7628-sysc", "ralink,mt7688-sysc", "syscon";
+> 
+> Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+> ---
+>  .../bindings/clock/mediatek,mtmips-sysc.yaml  | 28 +++++++++++--------
+>  1 file changed, 16 insertions(+), 12 deletions(-)
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- lib/crypto/sha256.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-index 0de49bf8e8b8b..c93bf4699160c 100644
---- a/lib/crypto/sha256.c
-+++ b/lib/crypto/sha256.c
-@@ -8,11 +8,10 @@
-  * Copyright (c) 2014 Red Hat Inc.
-  * Copyright 2025 Google LLC
-  */
- 
- #include <crypto/hmac.h>
--#include <crypto/internal/blockhash.h>
- #include <crypto/sha2.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/unaligned.h>
-@@ -177,12 +176,35 @@ EXPORT_SYMBOL_GPL(sha256_init);
- void __sha256_update(struct __sha256_ctx *ctx, const u8 *data, size_t len)
- {
- 	size_t partial = ctx->bytecount % SHA256_BLOCK_SIZE;
- 
- 	ctx->bytecount += len;
--	BLOCK_HASH_UPDATE_BLOCKS(sha256_blocks, &ctx->state, data, len,
--				 SHA256_BLOCK_SIZE, ctx->buf, partial);
-+
-+	if (partial + len >= SHA256_BLOCK_SIZE) {
-+		size_t nblocks;
-+
-+		if (partial) {
-+			size_t l = SHA256_BLOCK_SIZE - partial;
-+
-+			memcpy(&ctx->buf[partial], data, l);
-+			data += l;
-+			len -= l;
-+
-+			sha256_blocks(&ctx->state, ctx->buf, 1);
-+		}
-+
-+		nblocks = len / SHA256_BLOCK_SIZE;
-+		len %= SHA256_BLOCK_SIZE;
-+
-+		if (nblocks) {
-+			sha256_blocks(&ctx->state, data, nblocks);
-+			data += nblocks * SHA256_BLOCK_SIZE;
-+		}
-+		partial = 0;
-+	}
-+	if (len)
-+		memcpy(&ctx->buf[partial], data, len);
- }
- EXPORT_SYMBOL(__sha256_update);
- 
- static void __sha256_final(struct __sha256_ctx *ctx,
- 			   u8 *out, size_t digest_size)
--- 
-2.50.0
+Best regards,
+Krzysztof
 

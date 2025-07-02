@@ -1,86 +1,56 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D921E485;
-	Wed,  2 Jul 2025 13:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEFD275B0A;
+	Wed,  2 Jul 2025 13:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751462347; cv=none; b=AX+tqf4FU4eu/JTHzk7QXzpld7wXIOqxObRDfORmwesF0gwIAuTW7opHcLi1/Yj4FPP8HZBDiIBdjXwBrR6WYjr8EnGkNwzmhRbdNUcSHVb6+Yn3n7J2rHsCB7BtvszebkTZd1BQFIkrmCwd5Z1RV+P4B1LUk2KbEFKLTu9BHhQ=
+	t=1751462350; cv=none; b=Es9by2ONvK6GK97FrkMx1lt/4WQiPL7fV4ozjxd6vDO/acWj0hskOEDN1R9ej8OFfoFsnXXKfAiw8NxC8XhYM81inP4Tb/Zo5z8+WMBeLl+Wf0tIcBNSDedoDX0TFxpiF90o4kthBk7BNVaAkz0oR0bTCddtlfV1AYdZWtgKWxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751462347; c=relaxed/simple;
-	bh=a3Wyp5SqjigUho7y7SxxcO6AUOzylt0NJ22sAZJxEPE=;
+	s=arc-20240116; t=1751462350; c=relaxed/simple;
+	bh=6VbctXr1HBmpPa4pxAPQly7LQ9NAwqI/QXAnT6EFxzM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZDnihphMIOmyBNZT6hXnfHuG3GA7F0KksF85al6P+XDkWTqXblHuijimC1BIs55mwhwBoMCWQQ0QM+3aut8okhHwKVFw3dvtvq3vfoIp1Z0+pRxNcKn2odRekYmt7IeOY8NZ4n0qG2HhXNOVLsVWL+gV3BP+jAn1YGS+7yHH+Yw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=CfFD7Zq4UGxhPtuZFeYrNcXrLzqEL2E7cvnmMaH9Z65EwNObvi6SWNLUwT05cvr7wSTTTAALj+/pPngpSzx5DxtSqIcV7XYzQlONqClAtX/LtC+lVcJJC+vetDPmCYgKPLtjpq+yDoWKHKvG4EUzS4QOdQl5kWe6nl1JlCqHtPg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1uWwab-00058O-00; Wed, 02 Jul 2025 14:29:25 +0200
+	id 1uWwaa-00058G-00; Wed, 02 Jul 2025 14:29:24 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id B451FC0C37; Wed,  2 Jul 2025 14:08:48 +0200 (CEST)
-Date: Wed, 2 Jul 2025 14:08:48 +0200
+	id 5A574C0B23; Wed,  2 Jul 2025 14:02:30 +0200 (CEST)
+Date: Wed, 2 Jul 2025 14:02:30 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	sander@svanheule.net, markus.stockhausen@gmx.de,
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: disable MMID if GINVT is not usable
-Message-ID: <aGUhUM1y-ZLGWZg-@alpha.franken.de>
-References: <20250625-mmid_disable_no_ginv_on_noc-v1-1-38a3902607a7@bootlin.com>
- <808e21d2-1212-4358-9ba6-29f9d097be8a@app.fastmail.com>
+Subject: Re: [PATCH 0/4] mips: dts: Updates for RTL9300
+Message-ID: <aGUf1rLBbcuKCHTC@alpha.franken.de>
+References: <20250619010754.3760612-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <808e21d2-1212-4358-9ba6-29f9d097be8a@app.fastmail.com>
+In-Reply-To: <20250619010754.3760612-1-chris.packham@alliedtelesis.co.nz>
 
-On Wed, Jun 25, 2025 at 03:44:00PM +0100, Jiaxun Yang wrote:
-> 在2025年6月25日周三 下午2:27，Gregory CLEMENT写道：
+On Thu, Jun 19, 2025 at 01:07:50PM +1200, Chris Packham wrote:
+> This is a series of small dts changes for the RTL9300 to enable various
+> peripherals.
 > 
-> Hi Gregory,
+> Chris Packham (4):
+>   mips: dts: cameo-rtl9302c: Add switch block
+>   mips: dts: realtek: Add switch interrupts
+>   mips: dts: realtek: Add watchdog
+>   mips: dts: realtek: Add gpio block
 > 
-> > If System-level Interconnect (aka Network on Chip) does not support
-> > the global invalidation, then MMID feature is not usable. Indeed the
-> > current implementation of MMID relies on the GINV* instruction.
-> 
-> Yes, it is the case if the NoC IP can't handle AMBA ACE DVM requests.
-> 
-> >
-> > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> > ---
-> >  arch/mips/Kconfig                    | 6 ++++++
-> >  arch/mips/include/asm/cpu-features.h | 5 ++++-
-> >  arch/mips/mobileye/Kconfig           | 2 ++
-> >  3 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> > index 
-> > 1e48184ecf1ec8e29c0a25de6452ece5da835e30..05ce008459b89f03fa71d94429607feb9d06526f 
-> > 100644
-> > --- a/arch/mips/Kconfig
-> > +++ b/arch/mips/Kconfig
-> > @@ -2575,6 +2575,12 @@ config WAR_R10000_LLSC
-> >  config WAR_MIPS34K_MISSED_ITLB
-> >  	bool
-> > 
-> > +# Some I6500 based SoC do not support the global invalidation on their
-> > +# System-level Interconnect (aka Network on Chip), this have an
-> > +# influence on the MMID support.
-> > +config GINVT_UNSUPPORTED_NOC
-> > +	bool
-> > +
-> 
-> I believe this should be a DeviceTree property of CM node instead of Kconfig
-> hack.
+>  .../cameo-rtl9302c-2x-rtl8224-2xge.dts        | 96 +++++++++++++++++++
+>  arch/mips/boot/dts/realtek/rtl930x.dtsi       | 31 ++++++
+>  2 files changed, 127 insertions(+)
 
-Either that or by a runtime check, if possible.
+series applied to mips-next.
 
 Thomas.
 

@@ -1,32 +1,37 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908428640A;
-	Wed,  2 Jul 2025 13:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B75B286D5D;
+	Wed,  2 Jul 2025 13:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751462372; cv=none; b=kcjmULwDiMF9zSv4xijJzljrz93xwVOHgNukCxl+ftSo22Nr/3a0+y4QLaes8gc6CrzgkPkyJVMMOovqWIEEz9fTmIZL/raIpb+6ypwGp3e7tetMNgJqMu+TBSDXuuU2lkb0oSYoyGqTr04tVOYwFs+r+EJL3NzPhylUXuTcGfQ=
+	t=1751462375; cv=none; b=ShalVzZFRv8eW6/Ic19GCHfeL39tNb7yeePA2dFwcO2+I+1q4OEhvRNGG9rjfcv9dpOJEyX5G/R0lFBv1rAkk1Fb7SOMtLnEXf7wsvsfKEqxDwCXBz2mcDdesa0myZoq7QCcIgASxMGQYb8QKMMZggJbyYFQC8ghaKa9KZ5FbP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751462372; c=relaxed/simple;
-	bh=1BbhlC+l1xKw8p+Nevl5eUTHDecQXYfUOAsFqanGWjY=;
+	s=arc-20240116; t=1751462375; c=relaxed/simple;
+	bh=U21Vck/VgyCaiFV68QQ9fY52qyjiIU3NzWjI2rcDFEI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FSkSx8VeMMdEGHUdu1g7B9bbZSPUn0bsNpjJvZqC4+PKMKb/XO/OACXmgTpUyTqGY8mWcDCFaLzmB+vblhV21ivpigl32HBEEvKPdiL0jOil8SYvgzhQYEGS9pSg1Y5Y+jb5fiLbjXfbSpRZCHK3fD96W20AnQUr74BL5G9VK24=
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fxe6UfwCrSm/AeBepOOkyizstYvZK24OS9McVE74g+y5buLDYZ4F9BNW0z1SQ/M+YNOKwu36QrkpZ+Be8HqHu7jsXSEE/D6ZoCH+eLbjzrKpE4cfi/AINjFg0+hXlmXjZfT1kH2Qs8ucOqjtlfr/3yYZvcC1iipGNG7sl99ztDA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1uWwab-00058M-00; Wed, 02 Jul 2025 14:29:25 +0200
+	id 1uWwab-00058S-00; Wed, 02 Jul 2025 14:29:25 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id A43D6C0C1C; Wed,  2 Jul 2025 14:07:45 +0200 (CEST)
-Date: Wed, 2 Jul 2025 14:07:45 +0200
+	id E7961C0C1C; Wed,  2 Jul 2025 14:28:11 +0200 (CEST)
+Date: Wed, 2 Jul 2025 14:28:11 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Shiji Yang <yangshiji66@outlook.com>
-Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-spi@vger.kernel.org, John Crispin <john@phrozen.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/16] MIPS: some compilation fixes for the Lantiq
- platform
-Message-ID: <aGUhERHN5FH5Rwtc@alpha.franken.de>
-References: <OSBPR01MB1670163BDCA60924B3671D45BC72A@OSBPR01MB1670.jpnprd01.prod.outlook.com>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-wireless@vger.kernel.org,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+	nbd@nbd.name, Johannes Berg <johannes@sipsolutions.net>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:MIPS" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCHv5 5/5] mips: dts: qca: add wmac support
+Message-ID: <aGUl2_kSTkF4qUgZ@alpha.franken.de>
+References: <20250609030851.17739-1-rosenp@gmail.com>
+ <20250609030851.17739-6-rosenp@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,48 +40,26 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB1670163BDCA60924B3671D45BC72A@OSBPR01MB1670.jpnprd01.prod.outlook.com>
+In-Reply-To: <20250609030851.17739-6-rosenp@gmail.com>
 
-On Wed, Jun 18, 2025 at 10:53:13PM +0800, Shiji Yang wrote:
-> This patch series fixes some MIPS Lantiq platform compilation issues
-> found on the 6.12 kernel[1].
+On Sun, Jun 08, 2025 at 08:08:51PM -0700, Rosen Penev wrote:
+> Now that OF ahb support was added to the ath9k driver, we can use it to
+> enable and use the SoC wireless found in these chipsets.
 > 
-> [1] https://github.com/openwrt/openwrt/pull/18751
-> 
-> Shiji Yang (16):
->   MIPS: lantiq: xway: mark ltq_ar9_sys_hz() as static
->   MIPS: lantiq: xway: mark dma_init() as static
->   MIPS: lantiq: xway: mark dcdc_init() as static
->   MIPS: lantiq: irq: fix misc missing-prototypes warnings
->   MIPS: lantiq: xway: add prototype for ltq_get_cp1_base()
->   MIPS: pci: lantiq: marks pcibios_init() as static
->   MIPS: lantiq: falcon: fix misc missing-prototypes warnings
->   MIPS: lantiq: falcon: sysctrl: remove unused falcon_trigger_hrst()
->   MIPS: lantiq: falcon: sysctrl: add missing header prom.h
->   MIPS: lantiq: falcon: sysctrl: fix request memory check logic
->   MIPS: lantiq: xway: gptu: mark gptu_init() as static
->   MIPS: vpe-mt: mark vpe_free() and vpe_stop() as static
->   MIPS: vpe-mt: drop unused functions vpe_alloc() and vpe_start()
->   pinctrl: xway: mark xway_pinconf_group_set() as static
->   pinctrl: falcon: mark pinctrl_falcon_init() as static
->   spi: falcon: mark falcon_sflash_xfer() as static
-> 
->  .../include/asm/mach-lantiq/xway/lantiq_soc.h |  3 ++
->  arch/mips/kernel/vpe-mt.c                     | 35 ++-----------------
->  arch/mips/lantiq/falcon/prom.c                |  4 +--
->  arch/mips/lantiq/falcon/sysctrl.c             | 29 ++++++---------
->  arch/mips/lantiq/irq.c                        |  3 +-
->  arch/mips/lantiq/xway/clk.c                   |  2 +-
->  arch/mips/lantiq/xway/dcdc.c                  |  2 +-
->  arch/mips/lantiq/xway/dma.c                   |  2 +-
->  arch/mips/lantiq/xway/gptu.c                  |  2 +-
->  arch/mips/pci/pci-lantiq.c                    |  2 +-
->  drivers/pinctrl/pinctrl-falcon.c              |  2 +-
->  drivers/pinctrl/pinctrl-xway.c                |  2 +-
->  drivers/spi/spi-falcon.c                      |  2 +-
->  13 files changed, 28 insertions(+), 62 deletions(-)
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/mips/boot/dts/qca/ar9132.dtsi                       | 9 +++++++++
+>  arch/mips/boot/dts/qca/ar9132_tl_wr1043nd_v1.dts         | 4 ++++
+>  arch/mips/boot/dts/qca/ar9331.dtsi                       | 9 +++++++++
+>  arch/mips/boot/dts/qca/ar9331_dpt_module.dts             | 4 ++++
+>  arch/mips/boot/dts/qca/ar9331_dragino_ms14.dts           | 4 ++++
+>  arch/mips/boot/dts/qca/ar9331_omega.dts                  | 4 ++++
+>  .../mips/boot/dts/qca/ar9331_openembed_som9331_board.dts | 4 ++++
+>  arch/mips/boot/dts/qca/ar9331_tl_mr3020.dts              | 4 ++++
+>  8 files changed, 42 insertions(+)
 
-applied patches 1-11 to mips-next.
+applied to mips-next.
 
 Thomas.
 

@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A8526F45A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE0F28CF6C;
 	Wed,  9 Jul 2025 11:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752059247; cv=none; b=ojPc35uy+GaOeuM/h+JLiHk4xz0K45qu6agU7GN2RFI/EiLbWOtw8lQp9cGPAeq/p/PxrxFGjVAu2IV9C+US0ZNxnvCp6wdzYfryslSl2TkuL6W/VvRsCCU1GquO6qeN1Q6kouIpAQWZxdFa+GMm4YSHNterTjKTwTwOi6FVDss=
+	t=1752059248; cv=none; b=hGpOGOw72Sa8UDgezq3zw3WY5uYsCdApXd1Lp8GUxj2wj5IOZCPeTJzFMRMK+LKHCbrpY3sFlrLT8xWayVQlWKmDyjdZjrp3Vcu7WbDCr6GflHwPi+RjmrLs7zwcLEWIRBq0+LWNm6NTj3dmuD5ktcvfqUMUcfb6lHJpM0iKwHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752059247; c=relaxed/simple;
-	bh=9xgK+fBhA8h6jU2nAkgquJvvHtf3UTyu5jZV7nmkulY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=lqxKAR4Nd4qq6HHAqj4cfx30mvF12VMal1NTDtQ7tfOEmJaCyLUtsMK504QhNOM7v+mIXYcnRVfiWkcR9PXhPYwcxbQKus+sMfMprR51J2fSUYcq1UWEmyCGzj3AG7XALW+nJbizgrwUYjHbvA+Qz5s95YTU0NcvD0Jg6hmJf0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0Ayf6ZX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752059248; c=relaxed/simple;
+	bh=sw8LilsBeWM2uoxpUyNOa0qVdBOQkWNfCZs3AbfzpLw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=pfPrHXlqy6+ZdTTRMKJWxToJe1ilARn7td9fu4QeO+tfH1CoQT3S5vbrtxhE/SboJYhZnf7mj5fpFHbT7KhI2/eounCOpjsYNY4Uo9RrVesKUwX9IJ+GMpz0NE/tlT920ON+AT2pMJxzP64zUwKxv7Cp/L1uPHFKP4YHDLq3gWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TFsrT6hT; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0Ayf6ZX"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 87503C4CEEF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TFsrT6hT"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A6893C4CEF5;
 	Wed,  9 Jul 2025 11:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1752059247;
-	bh=9xgK+fBhA8h6jU2nAkgquJvvHtf3UTyu5jZV7nmkulY=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=l0Ayf6ZXcoKrtMmriIZLctPpPQQ+doQ/iXreRso00nHWkXJqDa9EGTe/a76dERfUf
-	 CKY+D54U1F39xa+stGjhAH94xUgPZBjbeoCDk1ZmhD8aOGy7LetCR0MIA0MP5ZbnPY
-	 e69SvQsM+soSjGtDH32XmydI5AnGheg01k5eOnLMk3AjvcUxdFm/4PpDOHQm8Oslsd
-	 Kg7WgigAWkHKBpqxulAvcfdbKsVL34/pQVGr1oBXgJkkxvRw/Gm5lwGHVuycxbcxHw
-	 PiiuXcxXwlYaBFKkjV9jNtQ5nxTzFF50XCcgK+5NIiOJ5puS5b3SHDneJN3BaHpYCg
-	 TbkJOLpjAwlWg==
+	bh=sw8LilsBeWM2uoxpUyNOa0qVdBOQkWNfCZs3AbfzpLw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=TFsrT6hT7HL3Z96UPLX/koRk/Yv2Ynrh1oAW6WP6qWNMmun4XKT8Tin02PLDmCDKv
+	 /iX97p+ZYRhlObluoiWJ/iuVWNRyysDv/0cvmkIpbiD/ciM11ft77URXZQpj4yMA0a
+	 jRvJKq7Q16iSs9Zee3u7DHOjD/DQHoSvSZbIlyJux3fqTTB3AAM3OBoc6wl+bgC9+O
+	 TsdLHcESZUCOtFoIIfMbaa5DsRyaQLHzMYG9zRzMVDoOtQxDMEKU59EK0wjkLL1Tx2
+	 Md8qgTVpmPOsRD9RzfcYIx4sVT8uPi5X/AFx5ISHxf6xdYfIxRHABBBXlexl6DuPjj
+	 cnqOflMtvbvBA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77566C83F0A;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FD5C83F12;
 	Wed,  9 Jul 2025 11:07:27 +0000 (UTC)
 From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
-Subject: [PATCH v2 0/9] MIPS: loongson32: Convert all platform devices to
- DT
-Date: Wed, 09 Jul 2025 19:05:51 +0800
-Message-Id: <20250709-loongson1-arch-v2-0-bcff6e518c09@gmail.com>
+Date: Wed, 09 Jul 2025 19:05:53 +0800
+Subject: [PATCH v2 2/9] dt-bindings: mips: loongson: Add CQ-T300B board
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -41,23 +40,21 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAA9NbmgC/zWNSw7CIBQAr9K8tY8ApR9ceQ/jgtBXILZgQI2x6
- d1FE5ezmJkNCuVABY7NBpmeoYQUK8hDA9ab6AjDVBkklx1XQuGSUnQlRYEmW48dmdHSpKw2Gqp
- 0yzSH1y94vlSec1rx7jOZf6blg9SiVa0Ymei1Uv2AAq/kHnXH3t/pya0mLMymFfb9A3byxBqjA
- AAA
+Message-Id: <20250709-loongson1-arch-v2-2-bcff6e518c09@gmail.com>
+References: <20250709-loongson1-arch-v2-0-bcff6e518c09@gmail.com>
+In-Reply-To: <20250709-loongson1-arch-v2-0-bcff6e518c09@gmail.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
  Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
  Keguang Zhang <keguang.zhang@gmail.com>
 Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+ linux-kernel@vger.kernel.org
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1752059245; l=3440;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1752059245; l=783;
  i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
- bh=9xgK+fBhA8h6jU2nAkgquJvvHtf3UTyu5jZV7nmkulY=;
- b=H+G1PpJx5Jx4sLoMA0qdN+92ka3q+Vr90XkUJakkUx8pUHiGmrDHCKGJh7ShbhBrmbFWrjXRi
- kfMkC6BMBMcCQx97SH4ple36WcC5lWv6ymHDOBlFDRjzU3bHkabn0bF
+ bh=4UnKtWWBR/lKpvKPk/u0S68OurozbQkpD8iTBCm47UM=;
+ b=0pK1mnfNtYwyiRNlPdI32qFp3B/GCl0CfXWiOwNNBujCg0mBx/EkdOymfczQuooGj3BdtCMYS
+ 9VSlPCMTXYkA67DBa7so5SQscm/QjiIH4yuulnZgP3qK2emqh8pvaki
 X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
  pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
 X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
@@ -65,72 +62,29 @@ X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
 X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
 Reply-To: keguang.zhang@gmail.com
 
-Convert all platform devices to Device Tree.  
-Remove all obsolete platform device code.  
-Switch to the generic MIPS kernel.  
-Update Kconfig and Makefile accordingly.  
-Update and rename the defconfig.
+From: Keguang Zhang <keguang.zhang@gmail.com>
 
-Changes in v2:
-- Document two new boards: loongson,ls1b-demo and loongson,cq-t300b.
-- Submit complete DTS files for each board.
-- Switch to the generic MIPS kernel.
-- Consolidate Loongson1 defconfigs.
-- Link to v1: https://lore.kernel.org/all/20230729134318.1694467-1-keguang.zhang@gmail.com/
+Document loongson,cq-t300b, a board based on Loongson-1C.
 
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
-Keguang Zhang (9):
-      dt-bindings: mips: loongson: Add LS1B demo board
-      dt-bindings: mips: loongson: Add CQ-T300B board
-      MIPS: dts: loongson: Add LS1B-DEMO board
-      MIPS: dts: loongson: Add LSGZ_1B_DEV board
-      MIPS: dts: loongson: Add Smartloong-1C board
-      MIPS: dts: loongson: Add CQ-T300B board
-      MIPS: loongson32: Switch to generic kernel
-      MIPS: Unify Loongson1 PRID_REV
-      MIPS: configs: Consolidate Loongson1 defconfigs
+ Documentation/devicetree/bindings/mips/loongson/devices.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../devicetree/bindings/mips/loongson/devices.yaml |   2 +
- MAINTAINERS                                        |   3 +-
- arch/mips/Kconfig                                  |  64 ++---
- arch/mips/boot/dts/Makefile                        |   1 +
- arch/mips/boot/dts/loongson/Makefile               |   9 +
- arch/mips/boot/dts/loongson/cq-t300b.dts           |  93 +++++++
- arch/mips/boot/dts/loongson/loongson1.dtsi         | 136 ++++++++++
- arch/mips/boot/dts/loongson/loongson1b.dtsi        | 198 ++++++++++++++
- arch/mips/boot/dts/loongson/loongson1c.dtsi        | 141 ++++++++++
- arch/mips/boot/dts/loongson/ls1b-demo.dts          | 108 ++++++++
- arch/mips/boot/dts/loongson/lsgz_1b_dev.dts        | 145 +++++++++++
- arch/mips/boot/dts/loongson/smartloong-1c.dts      |  93 +++++++
- .../{loongson1b_defconfig => loongson1_defconfig}  |  94 +++++--
- arch/mips/configs/loongson1c_defconfig             | 121 ---------
- arch/mips/include/asm/cpu-type.h                   |   3 +-
- arch/mips/include/asm/cpu.h                        |   3 +-
- arch/mips/include/asm/mach-loongson32/irq.h        | 107 --------
- arch/mips/include/asm/mach-loongson32/loongson1.h  |  50 ----
- arch/mips/include/asm/mach-loongson32/platform.h   |  23 --
- arch/mips/include/asm/mach-loongson32/regs-mux.h   | 124 ---------
- arch/mips/kernel/cpu-probe.c                       |   6 +-
- arch/mips/loongson32/Kconfig                       |  43 +---
- arch/mips/loongson32/Makefile                      |  17 --
- arch/mips/loongson32/Platform                      |   1 -
- arch/mips/loongson32/common/Makefile               |   6 -
- arch/mips/loongson32/common/irq.c                  | 191 --------------
- arch/mips/loongson32/common/platform.c             | 285 ---------------------
- arch/mips/loongson32/common/prom.c                 |  42 ---
- arch/mips/loongson32/common/setup.c                |  26 --
- arch/mips/loongson32/common/time.c                 |  23 --
- arch/mips/loongson32/ls1b/Makefile                 |   6 -
- arch/mips/loongson32/ls1b/board.c                  |  55 ----
- arch/mips/loongson32/ls1c/Makefile                 |   6 -
- arch/mips/loongson32/ls1c/board.c                  |  23 --
- 34 files changed, 1049 insertions(+), 1199 deletions(-)
----
-base-commit: b5a1f9870f9828bd6625d6c946c66be4983d56f6
-change-id: 20250414-loongson1-arch-5ea8ced4c9a9
+diff --git a/Documentation/devicetree/bindings/mips/loongson/devices.yaml b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
+index 8736eb9fe224..4532b774c0eb 100644
+--- a/Documentation/devicetree/bindings/mips/loongson/devices.yaml
++++ b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
+@@ -47,6 +47,7 @@ properties:
+       - description: LS1C based boards
+         items:
+           - enum:
++              - loongson,cq-t300b
+               - loongmasses,smartloong-1c
+           - const: loongson,ls1c
+ 
 
-Best regards,
 -- 
-Keguang Zhang <keguang.zhang@gmail.com>
+2.43.0
 
 

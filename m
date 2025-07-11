@@ -1,108 +1,105 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00D51DDC18;
-	Fri, 11 Jul 2025 09:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDADB27FB38;
+	Fri, 11 Jul 2025 09:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752227047; cv=none; b=juZ5cbm2vz/mM2t8C2mZmK0gPG/1FOSAzZ+mVMEHKGEyQ8uzK5pGRRtOnpUFbPsB9ANQWlQJBxYxWg63w3fZcCwx0iLw5hyAflX800gF4x1MLrTTHFclisWatvqK/eu/HQz86JEyppb6duWYt0WxL9duuuSHiUhAD4hmwQAUvZE=
+	t=1752227669; cv=none; b=kuFYTcFqC/ZJOoQgckJdNjpv9vKTt4fUfFM+zOWRc4hDrvZ8oM6TPjblmtkSr7g/26fMwMUcuPFOlK1fora1YefSHldgAbZ3rFdXNk8oCn9GN4+zedHRdbqhQCLZQfCDf6RmxEXwJVfI+DkI4ik0AIfUm9hJAOeZ/5qRqAEcZ9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752227047; c=relaxed/simple;
-	bh=ZgNIlljq0sSLNGHixZnKcOag5Jo/KJvWOyFFtE0BHWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eG0xx2+Mhf9Iyn7VJTmO1mdN/46RKZSMfxFavqDrm9Lo3muo6Jwqztuvb0h6DZIHAsw5sjAsVH8IB7RqQneRF0N98zliYdW8zTvN/Dtmwgz8QRaKl1ezqnivx9XbV1OK5xe1G9HrA8aSZdqGl1iGudwiT/mOjpoqvPVUbLoVFO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AaroPAis; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1752227669; c=relaxed/simple;
+	bh=k492wyPg1/aSmygem0XNrsfXTcZ/jKItqYhTy3qtMs0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=nnXW3w7G2XwEEy9jkhjk52NkphUos3EKep+nz5RjHqI7SQwGASZ9DAIBsr2TBhJUnVwEfCIRCfzVWB8j/8a/NvKM6DfcTTQYqU387swjTf/+irEMH3p6Ula0tpCutjmuzBBJGtnNWcUz22ci76odFylnQaMQc5xjo4TwYAIv+dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cBkSdE7u; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AaroPAis"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752227046; x=1783763046;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZgNIlljq0sSLNGHixZnKcOag5Jo/KJvWOyFFtE0BHWc=;
-  b=AaroPAis7apnLVmcvxoeUlK91IIO3z8LGVkcm+VKyLVYqNzobGCstsfR
-   hvMOFOjrmzGBsMR6QVAdDGY+59ufkXEhBYN3Tav9G1fOfYwl+/DGkWrlR
-   MQ0D+T2njhZMOjPBti/QmYJNMtqYckSN6t/9FGjiYyc+T5YpXzEMpMmV+
-   U3Z1HxEqgP7lA2RVydgDuwVwq+1O0lGR4oa8CdTDSAwMHXXiNDz+kXnKI
-   tFDqk2WGjco2t6/3p8fN8vrhyt0k/rf+SOvuV310yp3rl5ryA9RJR03X6
-   2trKSH9wzX5TtNkpRTA0MZspeEDK0a0n+0Bbc5/8y/LJgWHRIiwjhgqXJ
-   g==;
-X-CSE-ConnectionGUID: zBF2ksF/Q3qz5bJ167UjkQ==
-X-CSE-MsgGUID: 8eAkQfy+QVKypK4LEk7hxA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11490"; a="54650218"
-X-IronPort-AV: E=Sophos;i="6.16,303,1744095600"; 
-   d="scan'208";a="54650218"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2025 02:42:56 -0700
-X-CSE-ConnectionGUID: K7RkNTEORcWzr2noqFbcgQ==
-X-CSE-MsgGUID: 0qIwAEkMQuSVzGaqzVaE9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,303,1744095600"; 
-   d="scan'208";a="155745914"
-Received: from smile.fi.intel.com ([10.237.72.52])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2025 02:42:55 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98.2)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1uaAHM-0000000ETrI-0glr;
-	Fri, 11 Jul 2025 12:42:52 +0300
-Date: Fri, 11 Jul 2025 12:42:51 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v1 1/1] MIPS: Alchemy: Remove unused forward declaration
-Message-ID: <aHDcmweOoZ9njDsS@smile.fi.intel.com>
-References: <20250531194346.3630898-1-andriy.shevchenko@linux.intel.com>
- <aEv_y5Lfe3Dul48I@smile.fi.intel.com>
- <aEwMFVSPzc-mV1ve@alpha.franken.de>
- <aEweZReuPzQ_hq8L@smile.fi.intel.com>
- <aEwy2Ud08nHHAdED@alpha.franken.de>
- <aEydkh4EkKu6w2NJ@surfacebook.localdomain>
- <aFqvuIzH2zo5X76q@smile.fi.intel.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cBkSdE7u"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 86D44433D0;
+	Fri, 11 Jul 2025 09:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1752227665;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HRYTwmrTTEIRWgg+kkfZPmUJH6CKDeujlUlFeIiF8II=;
+	b=cBkSdE7ukb8fyBUMmszSIuoxzoSSNxdDpo/ZtLQzAC3ULJ8tlsrJ/kINaY/Vbo5qp/Xsjv
+	0Xpv7nt8LfvXEmCI/f9h4Cf7u0LPhivL6BPTHfHH/f4tIXCH0OS2FH4qpErp6RryeDtmZu
+	d/lmhKAj3ZXus7CPBCrCnaJb3lyuaqZHgOJntLrHef+dKH48VjF7z1ChSmEss3R34c2Pwk
+	2+XPID3ZgtO3SV7+jiEl0B8THTTtq/0/BgYlBLWIXtL+L6PZa+J5wihRNtpQqNgGNXFUF1
+	lNdnWhZnsvQzpjHCQXkRehpnFLe0HeDUwx/4NT84eHKZRZ9uTFxiPemHPebn+A==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+Date: Fri, 11 Jul 2025 11:54:21 +0200
+Subject: [PATCH v4 2/2] MIPS: CPS: Optimise delay CPU calibration for SMP
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aFqvuIzH2zo5X76q@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250711-smp_calib-v4-2-1e743b225bcc@bootlin.com>
+References: <20250711-smp_calib-v4-0-1e743b225bcc@bootlin.com>
+In-Reply-To: <20250711-smp_calib-v4-0-1e743b225bcc@bootlin.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdegfedtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpefirhgvghhorhihucevnffgoffgpffvuceoghhrvghgohhrhidrtghlvghmvghnthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepfedvffevfefhieefteeuieeuleevgffhveegvdegueegjeehfeejudettdegvdffnecukfhppedvrgdtudemtggsudegmeehheeimeejrgdttdemgegtjeekmedvkegtvgemfegtjeegmeefgeegtgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemtggsudegmeehheeimeejrgdttdemgegtjeekmedvkegtvgemfegtjeegmeefgeegtgdphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepghhrvghgohhrhidrtghlvghmvghnthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepledprhgtphhtthhopehthhgvohdrlhgvsghruhhnsegsohhothhlihhnrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhot
+ hhlihhnrdgtohhmpdhrtghpthhtohepvhhlrgguihhmihhrrdhkohhnughrrghtihgvvhesmhhosghilhgvhigvrdgtohhmpdhrtghpthhtohepghhrvghgohhrhidrtghlvghmvghnthessghoohhtlhhinhdrtghomhdprhgtphhtthhopehtshgsohhgvghnugesrghlphhhrgdrfhhrrghnkhgvnhdruggvpdhrtghpthhtohepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomhdprhgtphhtthhopehlihhnuhigqdhmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Tue, Jun 24, 2025 at 05:01:28PM +0300, Andy Shevchenko wrote:
-> On Sat, Jun 14, 2025 at 12:52:18AM +0300, Andy Shevchenko wrote:
-> > Fri, Jun 13, 2025 at 04:16:57PM +0200, Thomas Bogendoerfer kirjoitti:
-> > > On Fri, Jun 13, 2025 at 03:49:41PM +0300, Andy Shevchenko wrote:
-> > > > On Fri, Jun 13, 2025 at 01:31:33PM +0200, Thomas Bogendoerfer wrote:
-> > > > > On Fri, Jun 13, 2025 at 01:39:07PM +0300, Andy Shevchenko wrote:
-> > > > > > On Sat, May 31, 2025 at 10:43:46PM +0300, Andy Shevchenko wrote:
+On MIPS architecture with CPS-based SMP support, all CPU cores in the
+same cluster run at the same frequency since they share the same L2
+cache, requiring a fixed CPU/L2 cache ratio.
 
-...
+This allows to implement calibrate_delay_is_known(), which will return
+0 (triggering calibration) only for the primary CPU of each
+cluster. For other CPUs, we can simply reuse the value from their
+cluster's primary CPU core.
 
-> > > > > > I think we can take it via GPIO tree if there is no reply.
-> > > > > 
-> > > > > please do
-> > > > 
-> > > > Acked-by?
-> > > 
-> > > Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > 
-> > Thank you! Bart, seems we are all set to route this via GPIO tree. Do you have
-> > any objections?
-> 
-> Bart, can you apply this one, please? Or do you have objections?
+With the introduction of this patch, a configuration running 32 cores
+spread across two clusters sees a significant reduction in boot time
+by approximately 600 milliseconds.
 
-Bart, you are pretty much active in the mailing list, but ignoring this thread.
-Can you, please, shed a light on what's going on or what should I do?
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/kernel/smp-cps.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 6c5f15293a8e58a701601b242f43ba19a6814f06..22d4f9ff3ae2671b07da5bb149154c686e07b209 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -281,6 +281,17 @@ static void __init cps_smp_setup(void)
+ #endif /* CONFIG_MIPS_MT_FPAFF */
+ }
+ 
++unsigned long calibrate_delay_is_known(void)
++{
++	int first_cpu_cluster = 0;
++
++	/* The calibration has to be done on the primary CPU of the cluster */
++	if (mips_cps_first_online_in_cluster(&first_cpu_cluster))
++		return 0;
++
++	return cpu_data[first_cpu_cluster].udelay_val;
++}
++
+ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ {
+ 	unsigned int nclusters, ncores, core_vpes, nvpe = 0, c, cl, cca;
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.47.2
 

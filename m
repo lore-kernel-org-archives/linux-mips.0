@@ -1,185 +1,164 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D032D3A93;
-	Tue, 15 Jul 2025 06:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC232727F9
+	for <linux-mips@vger.kernel.org>; Tue, 15 Jul 2025 07:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752560916; cv=none; b=ZAdwpedw2Z50GW2hlNeI0PoOTgJXMXX4+8x++f57zq2XISP2vYndu0HyR0DyuQTWfffUIM8IFKLLc9lz15jJWFwg8AEVM64twNE9hJKTEGYWHlzEn/FUGLAUvdvHUsGYCceVo/Yetn+oiUoypxPtL/Gc930e86I96KGxO0cR4Co=
+	t=1752565966; cv=none; b=D0CJWkqV4arEpwt9doPTQ1QwXOPwcUx5X0Mw9M8eeaIgmqBsxn/D5NLc065+nVjGmAfK8goTAG+C46w87+K7nKzq77qqlDE0H56tPY1TF7YHoIscJQyqpHTCgCyVVgbVLK28jjDxwln+EcrQUnPrWY4wIZUAwLneSLKhSLPjTZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752560916; c=relaxed/simple;
-	bh=BJsnU8xVlShjcg5+ZFwrkWOQBaBFls93PGR1Hwz0nLI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iPEsyHgM7wcmTi8TkAVlwwbPUwxw3D5tQSUtS6FC6roEF0ZV54g3tyTemACvlH0/AphJXHGnF6xEteMW++kw1wTklG46H2rCOzBatv0Qo4miDfc4c4RqiT+/5Oy9FmUDksUV31uGKynqztN8anhU7d9PqXqBiOD60gTMKUiSz4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QlelfTFr; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752565966; c=relaxed/simple;
+	bh=cEUVdcujAERb/tj9Q8Lft0d+pDMMGvuNI0j0EYVcsso=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Y4oL6QC3h2Dj7XQ65ezf3ynvCZ+tTlECLevYUkByAzJ5jVIa4KS48TWFRN+UONeACpTpIVD+3qI9PU2kOmxB3delipmD4FmHxzFaOceXVPNN4/tIMu8yI3EkIkQUbsxkEn6zxR8x3GRS04YBns5Md8fd98zLMcM2DkqaxbI3Ors=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=taIOEnfv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rtvKuufM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=taIOEnfv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rtvKuufM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QlelfTFr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD34FC4CEE3;
-	Tue, 15 Jul 2025 06:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752560915;
-	bh=BJsnU8xVlShjcg5+ZFwrkWOQBaBFls93PGR1Hwz0nLI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=QlelfTFr8Rhi4m0sFq/NarCbyHtIvfy52UDegp08jMNiITRMTdz2sPUaEEHhLXulm
-	 nWHqC0buwbfLtL/02X+vgjAJu6QvaRl0sVoRJltoknIrQ0vfkoDCtKyD9VN8fjZykn
-	 vE3s0XbjPiPRe1MY8hnDIn5dsPEEyBz6XnHtb7X4j12RXlTXj5LIbM/rQ/tJjgjOdS
-	 6NZASM3CKmYzoInRBWf8DmWC0YkPYRUVmib7iIBPNLm8Z6X3lTaqBJHv83ZKKbk1Gp
-	 T5tv2E6M3Xta9eEZ/kB2sv+0s29W5k5VmdwZN8053KWt98CtebNti2xgfG5M/A9g8p
-	 BCDKQ/Sjll3kQ==
-Message-ID: <8b2ee5da-4696-432a-bb0e-bed723192353@kernel.org>
-Date: Tue, 15 Jul 2025 08:28:30 +0200
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="taIOEnfv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rtvKuufM";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="taIOEnfv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rtvKuufM"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8E1331F397;
+	Tue, 15 Jul 2025 07:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1752565962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bEUMF4eWRlQ8TLOqCX4QecdfnIvcNGC40IXakOIlkYc=;
+	b=taIOEnfv5XpFwUHIq9YmCSWwsuSdzoq+S50lepaNcMy4sS9uoW0/Je1bG9VOQ3oO1rnKUC
+	zoPlwNZHzAPjjisx0JR3eCB4t849ojbRooHaDim+S8EpSZjcwQd/FmzCNefXKxanB3m1xp
+	9zK0sjpFgiERvP40hq21SyhluMkdBfI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1752565962;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bEUMF4eWRlQ8TLOqCX4QecdfnIvcNGC40IXakOIlkYc=;
+	b=rtvKuufMAJJodP1eCX4Bnxt+30S918TVo+ahfOuIFInfUC53SjqTwwXuidnkx4HNT5wMRD
+	FJvqCbgEYUB5mPDg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=taIOEnfv;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rtvKuufM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1752565962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bEUMF4eWRlQ8TLOqCX4QecdfnIvcNGC40IXakOIlkYc=;
+	b=taIOEnfv5XpFwUHIq9YmCSWwsuSdzoq+S50lepaNcMy4sS9uoW0/Je1bG9VOQ3oO1rnKUC
+	zoPlwNZHzAPjjisx0JR3eCB4t849ojbRooHaDim+S8EpSZjcwQd/FmzCNefXKxanB3m1xp
+	9zK0sjpFgiERvP40hq21SyhluMkdBfI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1752565962;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bEUMF4eWRlQ8TLOqCX4QecdfnIvcNGC40IXakOIlkYc=;
+	b=rtvKuufMAJJodP1eCX4Bnxt+30S918TVo+ahfOuIFInfUC53SjqTwwXuidnkx4HNT5wMRD
+	FJvqCbgEYUB5mPDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CF7113A6C;
+	Tue, 15 Jul 2025 07:52:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OOqLFcoIdmjnSAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 15 Jul 2025 07:52:42 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: linux-sound@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm: multi_v7_defconfig: Update HD-audio configs
+Date: Tue, 15 Jul 2025 09:51:21 +0200
+Message-ID: <20250715075237.28476-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250715075237.28476-1-tiwai@suse.de>
+References: <20250715075237.28476-1-tiwai@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv4 wireless-next 7/7] dt-bindings: net: wireless: rt2800:
- add
-To: Rosen Penev <rosenp@gmail.com>
-Cc: linux-wireless@vger.kernel.org, Johannes Berg
- <johannes@sipsolutions.net>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Stanislaw Gruszka <stf_xl@wp.pl>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:MIPS" <linux-mips@vger.kernel.org>,
- "moderated list:ARM/Mediatek SoC support"
- <linux-arm-kernel@lists.infradead.org>,
- "moderated list:ARM/Mediatek SoC support"
- <linux-mediatek@lists.infradead.org>
-References: <20250712210448.429318-1-rosenp@gmail.com>
- <20250712210448.429318-8-rosenp@gmail.com>
- <20250714-subtle-origami-gopher-c9099f@krzk-bin>
- <CAKxU2N8au-uncWoP+vGH4cHhHMOtq+VRFGNDs6rRLuHn-i1G-Q@mail.gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <CAKxU2N8au-uncWoP+vGH4cHhHMOtq+VRFGNDs6rRLuHn-i1G-Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:dkim,suse.de:email];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 8E1331F397
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-On 14/07/2025 21:44, Rosen Penev wrote:
-> On Mon, Jul 14, 2025 at 12:27 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On Sat, Jul 12, 2025 at 02:04:48PM -0700, Rosen Penev wrote:
->>> Add device-tree bindings for the RT2800 SOC wifi device found in older
->>> Ralink/Mediatek devices.
->>
->> Your subject was cut. Probably you wanted something like add "Realtek foo adapter" etc.
-> Not sure I follow.
+Since the reorganization of HD-audio drivers, Realtek and HDMI codec
+drivers have been split.  Update to the new Kconfigs to catch up.
 
-Your subject is oddly incomplete.
+Fixes: aeeb85f26c3b ("ALSA: hda: Split Realtek HD-audio codec driver")
+Fixes: 73cd0490819d ("ALSA: hda/hdmi: Split vendor codec drivers")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/20250715170422.5162c666@canb.auug.org.au
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
->>
->>
->>>
->>> Signed-off-by: Rosen Penev <rosenp@gmail.com>
->>> ---
->>>  .../bindings/net/wireless/ralink,rt2880.yaml  | 47 +++++++++++++++++++
->>>  1 file changed, 47 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/net/wireless/ralink,rt2880.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/wireless/ralink,rt2880.yaml b/Documentation/devicetree/bindings/net/wireless/ralink,rt2880.yaml
->>> new file mode 100644
->>> index 000000000000..a92aedf6ba01
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/net/wireless/ralink,rt2880.yaml
->>> @@ -0,0 +1,47 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/net/wireless/ralink,rt2880.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Ralink RT2880 wireless device
->>> +
->>> +maintainers:
->>> +  - Stanislaw Gruszka <stf_xl@wp.pl>
->>> +
->>> +description: |
->>> +  This node provides properties for configuring RT2880 SOC wifi devices.
->>> +  The node is expected to be specified as a root node of the device.
->>> +
->>> +allOf:
->>> +  - $ref: ieee80211.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - ralink,rt2880-wifi
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  clocks:
->>> +    maxItems: 1
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>
->> Why clocks are optional? SoC devices rarely work without a clock.
-> Before this patchset the code was doing
-> 
->  25         rt2x00dev->clk = clk_get(&pdev->dev, NULL);
->  24         if (IS_ERR(rt2x00dev->clk))
->  23                 rt2x00dev->clk = NULL;
+I'm going to put to sound git tree if no one objects
 
+ arch/arm/configs/multi_v7_defconfig | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-That's driver. I am asking about hardware. Hardware rarely works without
-clock. Just because some driver works is not a really a good proof,
-because clock could be enabled by bootloader which would still prove my
-point: hardware cannot work without clock.
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 50c170b4619f..02ddd7ce9e3e 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -791,8 +791,11 @@ CONFIG_SND=m
+ CONFIG_SND_HDA_TEGRA=m
+ CONFIG_SND_HDA_INPUT_BEEP=y
+ CONFIG_SND_HDA_PATCH_LOADER=y
+-CONFIG_SND_HDA_CODEC_REALTEK=m
++CONFIG_SND_HDA_CODEC_REALTEK=y
++CONFIG_SND_HDA_CODEC_REALTEK_LIB=m
++CONFIG_SND_HDA_CODEC_ALC269=m
+ CONFIG_SND_HDA_CODEC_HDMI=m
++CONFIG_SND_HDA_CODEC_HDMI_TEGRA=m
+ CONFIG_SND_USB_AUDIO=m
+ CONFIG_SND_SOC=m
+ CONFIG_SND_ATMEL_SOC=m
+-- 
+2.50.1
 
-Best regards,
-Krzysztof

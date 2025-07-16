@@ -1,59 +1,75 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1163829E0F2;
-	Wed, 16 Jul 2025 18:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2342BDC11;
+	Wed, 16 Jul 2025 18:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752690113; cv=none; b=ptB6aLMk09zqp8LwOTGLMbg8SOyw1FkpYCc9qeisv5j1zdgsdljDTMax8s0dg5GPLiqOtZXNtsgaqH8hRx1SQbFXKX44iKex/Ii1EUB5vivx/z9zULO+QVRH2nTysNoe9hWdMfkESODCz26CKTSM+Eq+cBBP/5y4mc6kORK97Mo=
+	t=1752690115; cv=none; b=B4UoAQIPrO9/S+GJQArTW40QTXkS77L5mGkTY+3Rq+mK4IwdzAl5OYlDiWm7OG96/C8SX5ebdvBrrn2gdajhgU0OSg+Dp6Q0Gs1UpaMqDv0kB8mqWipkZ+RQSAFPKpKhADy06H4yotXQDvqkkmANX4mknzHgVBzjtRpNlmDTD8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752690113; c=relaxed/simple;
-	bh=Pu+bzorDPjOZ+A8Rzw4I29bbTRHuIWu0zxXuR2zx1Ic=;
+	s=arc-20240116; t=1752690115; c=relaxed/simple;
+	bh=ydtojz9hNJsFsakBuijbNO3E8a7kHM4z42aoSjzWsxg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dS2Yscw5YL3m6x8O7Dutpe6qlMmTnyij3AHvcDwDZGZZSKOjEhx1NLKAEGqIsTG8xc7IPfXfoHE/7yznnfm+rrIQ9OQdqcw8RCA1rpWLbmLF8nE0nTlPICruRu8eWhh9oppolMPKpZ2nWGMUXZLn+SvCKGJ7gPWiLszVnIu856w=
+	 Content-Type:Content-Disposition:In-Reply-To; b=IB0XAcV6jBLdE9PH0qqqFWM8JnuahotEdgZw/Pp16bnY2G4TDHA2TP1EISiNvTj478X5SpYQZ1dwJxW8CwZZmRmz/+wkgkaSlcGDdFUP9KieT553ZwNAMd/HbmNAepX7uUStlAzwWzUdx4X81yEh1bDvrEfBlLXvig7dsTtL600=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1uc6ZW-0006DL-00; Wed, 16 Jul 2025 20:09:38 +0200
+	id 1uc6ZW-0006DJ-00; Wed, 16 Jul 2025 20:09:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id B244AC0176; Wed, 16 Jul 2025 20:04:35 +0200 (CEST)
-Date: Wed, 16 Jul 2025 20:04:35 +0200
+	id 040E7C076D; Wed, 16 Jul 2025 20:04:54 +0200 (CEST)
+Date: Wed, 16 Jul 2025 20:04:53 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: Re: [PATCH v2] MIPS: mm: tlb-r4k: Uniquify TLB entries on init
-Message-ID: <aHfpszi6l_YRSOjY@alpha.franken.de>
-References: <20250607-tlb-fix-v2-1-6751eccd86f1@flygoat.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-mips@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] MIPS: SGI-IP27: Delete an unnecessary check before
+ kfree() in hub_domain_free()
+Message-ID: <aHfpxcZG_QMXT_Um@alpha.franken.de>
+References: <d3066a18-2e78-43ae-ad3b-8931777ee265@web.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250607-tlb-fix-v2-1-6751eccd86f1@flygoat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d3066a18-2e78-43ae-ad3b-8931777ee265@web.de>
 
-On Sat, Jun 07, 2025 at 01:43:56PM +0100, Jiaxun Yang wrote:
-> Hardware or bootloader will initialize TLB entries to any value, which
-> may collide with kernel's UNIQUE_ENTRYHI value. On MIPS microAptiv/M5150
-> family of cores this will trigger machine check exception and cause boot
-> failure. On M5150 simulation this could happen 7 times out of 1000 boots.
+On Tue, Jun 10, 2025 at 12:28:43PM +0200, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 10 Jun 2025 11:44:20 +0200
 > 
-> Replace local_flush_tlb_all() with r4k_tlb_uniquify() which probes each
-> TLB ENTRIHI unique value for collisions before it's written, and in case
-> of collision try a different ASID.
+> It can be known that the function “kfree” performs a null pointer check
+> for its input parameter.
+> It is therefore not needed to repeat such a check before its call.
 > 
-> Cc: stable@kernel.org
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Thus remove a redundant pointer check.
+> 
+> The source code was transformed by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 > ---
-> Changes in v2:
-> - Cycle ASID instead of ENTRYHI index in case of collison.
-> - Avoid int over flow UB (Maciej)
-> - Link to v1: https://lore.kernel.org/r/20250605-tlb-fix-v1-1-4af496f17b2f@flygoat.com
-> ---
->  arch/mips/mm/tlb-r4k.c | 56 +++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 55 insertions(+), 1 deletion(-)
+>  arch/mips/sgi-ip27/ip27-irq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
+> index 288d4d17eddd..20ef663af16e 100644
+> --- a/arch/mips/sgi-ip27/ip27-irq.c
+> +++ b/arch/mips/sgi-ip27/ip27-irq.c
+> @@ -165,7 +165,7 @@ static void hub_domain_free(struct irq_domain *domain,
+>  		return;
+>  
+>  	irqd = irq_domain_get_irq_data(domain, virq);
+> -	if (irqd && irqd->chip_data)
+> +	if (irqd)
+>  		kfree(irqd->chip_data);
+>  }
+>  
+> -- 
+> 2.49.0
 
 applied to mips-next.
 

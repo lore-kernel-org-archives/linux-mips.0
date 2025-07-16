@@ -1,33 +1,33 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C206C2BDC11;
-	Wed, 16 Jul 2025 18:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A8F28D8FB;
+	Wed, 16 Jul 2025 19:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752690121; cv=none; b=tMQfrfAsO31wyP2VIyo2XiVgpLJFgBGuOE25I1ZzTURdId5fvWrzXn389wK8ZmxrEyAu0EsupdbzN8ebDhrLKIkHLDvk7jnC1h1Mahd4ZqEgmfK719eylNAS8zAW2ypmuvPFzK00VKS3usKLdxerbO00unOr4dmyfbyoiJ5pkws=
+	t=1752693860; cv=none; b=qnxs5oyCJjF2ArSS7AXHV3sZmdiQBaNZZXnPA/1FbiUzjUF4EEJRBZWqp2Xi0ijWALVL2dRe+tV7e3ucY43GAS/hRrvJZSoMMX5etzWdaTmymJNQmJfH1TJHuwggunwT3NWQOlFwd7C2pexbLepPE6coVcf7T1XGw+FEEuD6JPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752690121; c=relaxed/simple;
-	bh=/oGziUdPCWQitkZENikuMrSMqJpwa23ft2a99VVyVYI=;
+	s=arc-20240116; t=1752693860; c=relaxed/simple;
+	bh=NN78oOJyGkBNFGAA9HL4Ihk6/u+7E3V4MXrjEqNAP7w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XzJY94sQFvaP0IkC8/UP/rkRnemloS6p0DU3HYGSHwWk3HCo8ZEI653j4l9JI2lTaCYyphIinq4mz0uHE2DxEOmC2PyUMRqL7ECkKgYvY2YJ0OoqkmdcLDJAVDR/Fak4XxWJi6VjZPjSzuTL0DPDzHcJCA3OWdIkJjnVEK93jVc=
+	 Content-Type:Content-Disposition:In-Reply-To; b=XgkA7wZQyXVQeEYExCAzQdKNxapnXJBZV4GBxOd/XoZ8YbWAIK/K7/ANzZEVRU3ilSIasLD9Oity9D0heApu8+aJgAo99Ji7Tqzw11yFXCBTTihilyKGWqHNm6ZmOFjL/KPEM3s+ikV+02GxNCAPml/PvTWGqzAc7l4QEFQb4/I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1uc6ZX-0006DR-00; Wed, 16 Jul 2025 20:09:39 +0200
+	id 1uc7jh-0007Fl-00; Wed, 16 Jul 2025 21:24:13 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 3D249C09E4; Wed, 16 Jul 2025 20:06:19 +0200 (CEST)
-Date: Wed, 16 Jul 2025 20:06:19 +0200
+	id 110E3C0176; Wed, 16 Jul 2025 21:24:02 +0200 (CEST)
+Date: Wed, 16 Jul 2025 21:24:02 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: disable MMID when not supported by the hardware
-Message-ID: <aHfqG2yhp3-rVUms@alpha.franken.de>
-References: <20250710-mmid_disable_no_ginv_on_noc-v2-1-228aa2056dfa@bootlin.com>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: WangYuli <wangyuli@uniontech.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, zhanjun@uniontech.com,
+	niecheng1@uniontech.com, guanwentao@uniontech.com
+Subject: Re: Gentle ping: [PATCH v2 0/6] MIPS: Resolve build problems on
+ decstation_64
+Message-ID: <aHf8Uo2FEcRqus9T@alpha.franken.de>
+References: <24EC7D2CA58B25F5+20250422101855.136675-1-wangyuli@uniontech.com>
+ <9ED003291C66C906+94d03a66-3573-4e3f-aaac-d7c55f750776@uniontech.com>
+ <alpine.DEB.2.21.2507071545400.56608@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -36,52 +36,48 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250710-mmid_disable_no_ginv_on_noc-v2-1-228aa2056dfa@bootlin.com>
+In-Reply-To: <alpine.DEB.2.21.2507071545400.56608@angie.orcam.me.uk>
 
-On Thu, Jul 10, 2025 at 04:54:42PM +0200, Gregory CLEMENT wrote:
-> It is possible that MMID is supported at the CPU level, but its
-> integration in a SoC prevents its usage. For instance, if the
-> System-level Interconnect (also known as Network on Chip) does not
-> support global invalidation, then the MMID feature is not usable. The
-> current implementation of MMID relies on the GINV* instructions.
+On Mon, Jul 07, 2025 at 03:57:01PM +0100, Maciej W. Rozycki wrote:
+> Hi WangYuli,
 > 
-> This patch allows the disabling of MMID based on a device tree
-> property, as this issue cannot be detected at runtime.
+> > This is a gentle ping.
+> > 
+> > I've addressed all the feedback from previous discussions and tried resending
+> > multiple times, but haven't received any response
 > 
-> MMID is set up very early during the boot process, even before device
-> tree data can be accessed. Therefore, when we determine whether MMID
-> needs to be disabled, some MMID setup has already been performed for
-> the boot CPU. Consequently, we must revert the MMID setup on the first
-> CPU before disabling the feature for the subsequent CPUs that will be
-> initialized later.
+>  Thank you for pinging.
 > 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
-> Since the issue around MMID support cannot be detected at runtime,
-> this patch now relies on a device tree property instead of a Kconfig
-> option, as requested by Jiaxun and Thomas. However, as I pointed out
-> in the commit log, MMID is enabled very early in the boot
-> process. Therefore, I had to track all the parts of the kernel where
-> MMID was set up before being able to access the device tree.
-> 
-> I found that MMID was only set up for the first CPU, and I also
-> ensured that we can revert the MMID configuration. Indeed, the MMID
-> feature is not actively used until paging is set up, which occurs
-> later in the boot process.
-> 
-> Gregory
-> ---
-> Changes in v2:
-> - Remove Kconfig dependencies
-> - Rely on device tree property
-> - Link to v1: https://lore.kernel.org/r/20250625-mmid_disable_no_ginv_on_noc-v1-1-38a3902607a7@bootlin.com
-> ---
->  arch/mips/include/asm/cpu-info.h |  1 +
->  arch/mips/kernel/cpu-probe.c     | 42 ++++++++++++++++++++++++++++++++++++++--
->  arch/mips/kernel/mips-cm.c       |  5 +++++
->  3 files changed, 46 insertions(+), 2 deletions(-)
+>  I've tried to verify your changes at run time and it's turned out that a 
+> generic change to the serial communication subsystem made a while ago has 
+> caused the port to become unbootable, and it now crashes early on in port 
+> registration.
 
-applied to mips-next.
+I'm hitting the same issue for IP22, my dirty hack to get serial console
+back is
+
+diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
+index 5d1677f1b651..fccb0f1c3cc5 100644
+--- a/drivers/tty/serial/serial_base_bus.c
++++ b/drivers/tty/serial/serial_base_bus.c
+@@ -78,12 +78,14 @@ static int serial_base_device_init(struct uart_port *port,
+ 		return -EPROBE_DEFER;
+ 	}
+ 
++#if 0
+ 	if (type == &serial_ctrl_type)
+ 		return dev_set_name(dev, "%s:%d", dev_name(port->dev), ctrl_id);
+ 
+ 	if (type == &serial_port_type)
+ 		return dev_set_name(dev, "%s:%d.%d", dev_name(port->dev),
+ 				    ctrl_id, port_id);
++#endif
+ 
+ 	return -EINVAL;
+ }
+
+I'm not sure, if port->dev needs to be populated now for every serial
+port or if there should be a check for port->dev == NULL in the code above...
 
 Thomas.
 

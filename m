@@ -1,32 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2342BDC11;
-	Wed, 16 Jul 2025 18:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51392BE04D;
+	Wed, 16 Jul 2025 18:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752690115; cv=none; b=B4UoAQIPrO9/S+GJQArTW40QTXkS77L5mGkTY+3Rq+mK4IwdzAl5OYlDiWm7OG96/C8SX5ebdvBrrn2gdajhgU0OSg+Dp6Q0Gs1UpaMqDv0kB8mqWipkZ+RQSAFPKpKhADy06H4yotXQDvqkkmANX4mknzHgVBzjtRpNlmDTD8s=
+	t=1752690118; cv=none; b=MSJaDVyb7gxGrF7lBejBBfsrAfs8kUoM8xaWXAeunht2M0f3V9rUI6DC6RV4/MbcVU4PqVjHKkg5da5/uQ0lf+8z7jIl/z1QOF6JgrBpoeu8K5zAg5syQs+FnwZRJ+8o3Iy0gS218d6JyQwwEEPJduIUj0nuCx8lXnzs+RHkiRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752690115; c=relaxed/simple;
-	bh=ydtojz9hNJsFsakBuijbNO3E8a7kHM4z42aoSjzWsxg=;
+	s=arc-20240116; t=1752690118; c=relaxed/simple;
+	bh=D8Hv4OGHZrVMgoVJluQ3bHG8biIF97yJJYH9uaRD7k8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IB0XAcV6jBLdE9PH0qqqFWM8JnuahotEdgZw/Pp16bnY2G4TDHA2TP1EISiNvTj478X5SpYQZ1dwJxW8CwZZmRmz/+wkgkaSlcGDdFUP9KieT553ZwNAMd/HbmNAepX7uUStlAzwWzUdx4X81yEh1bDvrEfBlLXvig7dsTtL600=
+	 Content-Type:Content-Disposition:In-Reply-To; b=BLyo5fL+inu6qtRevfZQVDqMHLwqphOOMeNuazRtKIoRCpEr2nVyjzpQFobWs2YB3fWSxLLXVToU+FKxRd+Jh5XCEdx2Mc80rz5sxIrNcIAQQPPpbL3ehdUu/xwsakVitlEF0QfmXNHQSBLZGw/ApEPBCcYfIhGHnOfC9mELWCE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1uc6ZW-0006DJ-00; Wed, 16 Jul 2025 20:09:38 +0200
+	id 1uc6ZW-0006DP-00; Wed, 16 Jul 2025 20:09:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 040E7C076D; Wed, 16 Jul 2025 20:04:54 +0200 (CEST)
-Date: Wed, 16 Jul 2025 20:04:53 +0200
+	id F2E65C0B44; Wed, 16 Jul 2025 20:07:00 +0200 (CEST)
+Date: Wed, 16 Jul 2025 20:07:00 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-mips@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	LKML <linux-kernel@vger.kernel.org>,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SGI-IP27: Delete an unnecessary check before
- kfree() in hub_domain_free()
-Message-ID: <aHfpxcZG_QMXT_Um@alpha.franken.de>
-References: <d3066a18-2e78-43ae-ad3b-8931777ee265@web.de>
+To: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-mips@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH 0/4] mips: CMOS RTC refactoring
+Message-ID: <aHfqRH7vwcjmamMd@alpha.franken.de>
+References: <20250713100434.699843-1-mat.jonczyk@o2.pl>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -36,42 +35,49 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3066a18-2e78-43ae-ad3b-8931777ee265@web.de>
+In-Reply-To: <20250713100434.699843-1-mat.jonczyk@o2.pl>
 
-On Tue, Jun 10, 2025 at 12:28:43PM +0200, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 10 Jun 2025 11:44:20 +0200
+On Sun, Jul 13, 2025 at 12:04:30PM +0200, Mateusz Jończyk wrote:
+> Hello,
 > 
-> It can be known that the function “kfree” performs a null pointer check
-> for its input parameter.
-> It is therefore not needed to repeat such a check before its call.
+> A while ago I wrote some patches that refactor a bit the RTC CMOS support on the
+> MIPS architecture. These were in response to a bug report about locking
+> problems during suspend / resume:
 > 
-> Thus remove a redundant pointer check.
+> Link: https://lore.kernel.org/all/CAP-bSRZ0CWyZZsMtx046YV8L28LhY0fson2g4EqcwRAVN1Jk+Q@mail.gmail.com/
 > 
-> The source code was transformed by using the Coccinelle software.
+> Back then, I was trying to convert the rtc_lock to a raw spinlock. This proved
+> to be unnecessary and harmful, but in the process I removed some dead and
+> duplicated code that touches the MC146818 (the chip of the CMOS RTC) for
+> the MIPS architecture.
 > 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  arch/mips/sgi-ip27/ip27-irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> These patches were tested only in an emulator, as I don't have the hardware.
+> They are roughly in the order of increasing risk.
 > 
-> diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-> index 288d4d17eddd..20ef663af16e 100644
-> --- a/arch/mips/sgi-ip27/ip27-irq.c
-> +++ b/arch/mips/sgi-ip27/ip27-irq.c
-> @@ -165,7 +165,7 @@ static void hub_domain_free(struct irq_domain *domain,
->  		return;
->  
->  	irqd = irq_domain_get_irq_data(domain, virq);
-> -	if (irqd && irqd->chip_data)
-> +	if (irqd)
->  		kfree(irqd->chip_data);
->  }
->  
+> Greetings,
+> Mateusz
+> 
+> Mateusz Jończyk (4):
+>   mips: remove unused function mc146818_set_rtc_mmss
+>   mips/mach-rm: remove custom mc146818rtc.h file
+>   mips: remove redundant macro mc146818_decode_year
+>   mips/malta,loongson2ef: use generic mc146818_get_time function
+> 
+>  arch/mips/Kconfig                             |   2 +
+>  .../include/asm/mach-generic/mc146818rtc.h    |   4 -
+>  arch/mips/include/asm/mach-jazz/mc146818rtc.h |   2 -
+>  .../mips/include/asm/mach-malta/mc146818rtc.h |   2 -
+>  arch/mips/include/asm/mach-rm/mc146818rtc.h   |  21 ----
+>  arch/mips/include/asm/mc146818-time.h         | 105 ++----------------
+>  6 files changed, 9 insertions(+), 127 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-rm/mc146818rtc.h
+> 
+> 
+> base-commit: d7b8f8e20813f0179d8ef519541a3527e7661d3a
 > -- 
-> 2.49.0
+> 2.25.1
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

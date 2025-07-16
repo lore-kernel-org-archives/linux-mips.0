@@ -1,123 +1,92 @@
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C51F52F88;
-	Wed, 16 Jul 2025 18:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EE6293454;
+	Wed, 16 Jul 2025 18:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752689765; cv=none; b=MUb+NLDl3umxOA+k0XN3Yt2pg9Mzu5NiLMDPhjCwN9iT8zptoNBLQDXgzjxMweN+Uvp1bV83mTWbefFrPCkikulHkKRd5h1iBFZ/6lWxx1MpRtAeZAmTumhgh6+GXA6fSf7vhnUK85f4Bdnte5Db9MlJGjQrEcDYdE04ITNaSWc=
+	t=1752690105; cv=none; b=MqNFQFvgDwksdRjvNsNeiqWcXV+XrYt83k18UVP+rGwEo7sGz9Hic4N5zINWYoRbZxAeD64mbA0FLpr0Saw7Ysr4e9CwSJyPT2X2tEV73GVB8RULQMklQG8ZfqJSm6LHVBFcsIGb5LtqK2yS5iGjgx78AlVx2Ox8wN4NKfHztbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752689765; c=relaxed/simple;
-	bh=AxYk3hb0otPOpe8iCoKRDXyzipO8+IEj3pxhrwFiias=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=mv36Ox1PVk8hnD3xOC4ArP2C0pFpqq2+z1/sbV9o6l4M56er6JhN0x4fFODYCIdeuwg4xhSxltO5n5HpqPKg640zcUTQ9664JInY5hte0hvnuMaAjcCmPuRlEY2opVZb2MV+TqfJCOl9ogFF1HleuLA0yBegB0kQX4mhiXA0uzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PdYs1CW7; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PdYs1CW7"
-Received: from [127.0.0.1] (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 56GI4wZF1640497
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 16 Jul 2025 11:05:02 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 56GI4wZF1640497
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025062101; t=1752689107;
-	bh=AxYk3hb0otPOpe8iCoKRDXyzipO8+IEj3pxhrwFiias=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=PdYs1CW7P6NGZ7nqrSTKiw9kGz8+zKtbJLnnYWGn7EmE85IhMRHjUsfqejqSu3NpC
-	 F8mkqPxV94oRfsry8xLqbBh6TIeqEphXrM8IQVQXG98VV0VtmaqRkm8gcHZ1DS8I+Y
-	 9Ud40lsWpWvI8f/Mw4fJttPFSqVPnBxm60MpDadKClPpxIliIxgGgmXKbtvKQmNI4w
-	 9zRbpJ/rGGTy9XhzMH+JGYmHR8cviSmLp4ZAluTl43LX0HJw1hILVpbbrTd8F7h/pQ
-	 VEaChnOfID89c6bfwtXUBb4UKngfABWVJFjrAYzLGKal7C5mVferZwFoGX1uSfry52
-	 xqWYa7EnyTKlQ==
-Date: Wed, 16 Jul 2025 11:04:52 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.osdn.me>, Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-arch@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_1/1=5D_uapi/termios=3A_remov?=
- =?US-ASCII?Q?e_struct_ktermios_from_uapi_headers?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <aHfn9z9_oIVgNGgx@shell.armlinux.org.uk>
-References: <20250716164735.170713-1-hpa@zytor.com> <aHfn9z9_oIVgNGgx@shell.armlinux.org.uk>
-Message-ID: <9AEAF0BE-39D7-4617-9CB5-D0703B3E6DF8@zytor.com>
+	s=arc-20240116; t=1752690105; c=relaxed/simple;
+	bh=EFMoox8yHjk0Xql4TGbVjS/QwkVvUS+xPPnSLQfWEcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lq4TqPOT6OFpR36Sltr/AXV4P/cTAUr/25zD6j+HH0E3XMYxU56Rl2TGGKFDBDXJltuVvFv/OxZz0eZScSoWpoSCVw9BbvYd3DZ0yJ48hI+sqAxa7qC3/LEgITau+gUrIKF0WHaIFi+L2VmGn8g3tryiZH08evMadkt3lfBKbco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1uc6ZX-0006DT-00; Wed, 16 Jul 2025 20:09:39 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 037D6C0B23; Wed, 16 Jul 2025 20:06:39 +0200 (CEST)
+Date: Wed, 16 Jul 2025 20:06:38 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] MIPS: CPS: Optimise delay CPU calibration and
+ cluster helper function
+Message-ID: <aHfqLjX_Ml3AnjEH@alpha.franken.de>
+References: <20250711-smp_calib-v4-0-1e743b225bcc@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250711-smp_calib-v4-0-1e743b225bcc@bootlin.com>
 
-On July 16, 2025 10:57:11 AM PDT, "Russell King (Oracle)" <linux@armlinux=
-=2Eorg=2Euk> wrote:
->On Wed, Jul 16, 2025 at 09:47:32AM -0700, H=2E Peter Anvin wrote:
->> diff --git a/arch/arm/include/asm/ktermios=2Eh b/arch/arm/include/asm/k=
-termios=2Eh
->> new file mode 100644
->> index 000000000000=2E=2E4320921a82a9
->> --- /dev/null
->> +++ b/arch/arm/include/asm/ktermios=2Eh
->> @@ -0,0 +1 @@
->> +#include <asm-generic/ktermios=2Eh>
->
->Isn't this what arch/arm/include/asm/Kbuild's generic-y is for?
->
->Ditto for other arches=2E
->
+On Fri, Jul 11, 2025 at 11:54:19AM +0200, Gregory CLEMENT wrote:
+> This series allow booting faster by reusing the delay calibration
+> across the CPU belonging of the same cluster. While doing it we now
+> reuse the mips_cps_first_online_in_cluster() that we improve also.
+> 
+> This series enables faster booting by reusing delay calibration across
+> CPUs within the same cluster. During this process, we reuse the
+> improved mips_cps_first_online_in_cluster function.
+> 
+> With the introduction of this series, a configuration running 32 cores
+> spread across two clusters sees a significant reduction in boot time
+> by approximately 600 milliseconds.
+> 
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+> Changes in v4:
+> - Fix build issue reported by kernel test robot <lkp@intel.com>
+>   at https://lore.kernel.org/all/aG3AJ2XnH2JKOjzY@rli9-mobl/#t
+> - Add reviewed-by tags from Jiaxun
+> - Link to v3: https://lore.kernel.org/r/20250708-smp_calib-v3-0-6dabf01a7d9f@bootlin.com
+> 
+> Changes in v3:
+> - Do not depend anymore of a Kconfig entry (suggested by Jiaxun).
+> - cpumask for cluster filled now later in cps_prepare_cpus().
+> - Patch 2 of the v2 has been removed.
+> - Link to v2: https://lore.kernel.org/r/20250704-smp_calib-v2-0-bade7e9c0463@bootlin.com
+> 
+> Changes in v2:
+> - Add a patch improving mips_cps_first_online_in_cluster()
+> - Use mips_cps_first_online_in_cluster() in calibrate_delay_is_known()
+>   as suggested by Jiaxun
+> - Link to v1: https://lore.kernel.org/r/20250520-smp_calib-v1-1-cd04f0a78648@bootlin.com
+> 
+> ---
+> Gregory CLEMENT (2):
+>       MIPS: CPS: Improve mips_cps_first_online_in_cluster()
+>       MIPS: CPS: Optimise delay CPU calibration for SMP
+> 
+>  arch/mips/include/asm/mips-cps.h |  4 +++-
+>  arch/mips/include/asm/smp-cps.h  |  1 +
+>  arch/mips/kernel/mips-cm.c       | 47 ++++++++++++++--------------------------
+>  arch/mips/kernel/smp-cps.c       | 16 +++++++++++++-
+>  4 files changed, 35 insertions(+), 33 deletions(-)
 
-Ah, yes, you're right (except for those with nontrivial stubs=2E)
+series applied to mips-next.
 
-I also found that a handful of drivers and arch/sparc needs <asm/termios=
-=2Eh> =E2=86=92 <linux/termios=2Eh> in <linux/termios_internal=2Eh>=2E
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

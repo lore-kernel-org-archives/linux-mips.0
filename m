@@ -1,100 +1,86 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5EC287244;
-	Tue, 29 Jul 2025 11:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04547221FA1;
+	Tue, 29 Jul 2025 20:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753788141; cv=none; b=puvIkGyllqc4wvkh0BzAEfQwSWpqbbEOuHXelHuGEd2SASXv/aKTfKPHeeAYoKNsWCfFxh4zA9iWSS+yoHXvqiGrSz4RfXuGYcyAat/HaeZNc99uCdO5ygZwwh8qcJY7EmtteMJ7HQb88LVX0ITgMH1CHPdCmOo7cqJsUxZu7EE=
+	t=1753822750; cv=none; b=TYSYWDXb0TcptliDQVJVbrA3tS1V2KW3dw31lDWn9VszHjfsYKuWgxBrjLm4AboTWyt/FDR0BryNZsiG6SuRBd9AGUFnsBXclvuuxOUb34m4jFcrfgCXOhUM7BSuxL3zNwfOqpTGI01pyZ6u7PjJPLNy8tTYZjgvUmQ/OvlXY8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753788141; c=relaxed/simple;
-	bh=ETWABwZPKFTxPB2jUDWABbHxWBXST8dOhq35U7qveV8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j7wLMxJ69dbEuKjbAu7bKqXZSoIZuppizc4FN4fxzSygajmor6DitHinqMNwF1F3rJe1pKvN5cMzl1s6Xc3OtWLCt06FunaGLLFygcgyqAgbjDHD4BaKZTntvcWdObco2g5sDd1IHrsF9LbI5xpK1WSn02XkTFIJfJ4dRe+9D6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iHIWqRNt; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1753822750; c=relaxed/simple;
+	bh=B1GjCFdZePkk9UeGd4mGcZnBu7IW/DNI7O5djpAHT7I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jO4OSCg4XLlwkPaqGSt0zjx0BoDbMkrdG8n/+JB0ddw3KW0bOkDblwyXYu81NmGm5WenD2JZKJHZyEAdCKsVaeYUBW9IC/+mPcYZMRoKYomMyf5QHnFtWzyRsIjxgCjTXlyNyPlZ8Yz91rjnj7rzoFmkxZHXQoyicWGTVPaApa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ME5Xm7qt; arc=none smtp.client-ip=192.19.144.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iHIWqRNt"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b792b0b829so324226f8f.3;
-        Tue, 29 Jul 2025 04:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753788136; x=1754392936; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mRhGn5hDYxClsYuz4YXSiUquXvIRn/M5Xg9R/3PUOEI=;
-        b=iHIWqRNtm+/TLbmlY8TOLxWuiYODBX4DNuPNqJwjVKN3SDHltHq0jRXL6q725marL2
-         EPmOwPpcmw458spzQaos6GJ9ogAfzUR8vyrPIWZ4QgQ0a8ZgaQGejwufi1BF8FN0zYmN
-         Jr0TsCtU5xFWMcgLiz1ZySJrF2rhSf1OVahq6DATNof6MHvQ0hT3O+i0a5NFAOA2ml3f
-         d1B3TqMua9G41IZFTYmbfFNLzXHbmxwFZ+0BbQHDbW1hPlBUBS3A57Dufb4NarUJ0k2U
-         akVKeOocQ5vtcZALxtiEz/Zzh0P5vWkxhafWJJjUoaBCW18RQ8NG0JxaR8S1lBjx6jBn
-         mmFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753788136; x=1754392936;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mRhGn5hDYxClsYuz4YXSiUquXvIRn/M5Xg9R/3PUOEI=;
-        b=YTCWzt8oM9WrENctLCl7U2Fv6y6Dj/cJ2qC/iYjOmOLjOnbd2IZPvY1XOQwZ57+f/X
-         Ud6FESSQXcHzHn3YI1piZlvuhmaVUelCuZxW2VaK1VwNkTV1srPwNDY91XYzdOrliKiV
-         LH9zxyUqu8DoJuWw/97/rOpGcPV6ssU3+o0Lescj4C3Hx/L00tJeVftWhEHj7EvPL+ek
-         eGUriHAp9RcEjvTLMVJMAxCE7jTQ8S9x36Ac4hTz9hdlMLXwF4CZGb0QkDWgPb/utmq6
-         jdlr9Aol0hE6SdgeAOu1Ojr8Otdha11tFp93DPmtYUQw5KPHgsR6R/4KiWNlPAsMe0VH
-         mQfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwbYbBHgIiTope4TfAnYsTrJbMpzs4ODuQndtsK8bAFOTj5JqsHnsxCc1LAMtYk5hq9kd1VG6v2Ku080c=@vger.kernel.org, AJvYcCVPMr6aCJS2hCX3ZmAOCaCaXD3CDfuD0wRE/VRESh+p1qR8EcwXoWGvxJjdH3gcHwdOs9jb0rt6+fDpJg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIvytZRWBNDjoW1aE7Xzxvz6Vt6SAK1Gt4Umb7MwiS8G6puJfT
-	V7IVtaq2Oh8RHnBrnra0AVrTAdfW/iultFqWB+jEwCYENvgoFghgaYaw
-X-Gm-Gg: ASbGncvwktVk8FnZFULhCAZe50v+MfGcKrxbMnqcWNatRUQLjTUVgIPO0KmUb6mY3MM
-	nKlgbClpAuSORx+zRstO07+sUI13E88zLc4r1sadKoQGFjQfbMNd681yQagLPS7zlY96aTyynlk
-	pxPeEvxEGGGtyI1pWJmWJGovLcfZ8FrLuFXWFKxcMMsIm5sYqQkEukiKZtxme2HbPRy7J2/aRaz
-	Zzlg/UbveK5XEYAKWrwOoY1tLsvBa3JZ2X+xjwQW5pqyXJyXcbv7QPIpJ4f+ojrwa4iTnU+mYd0
-	CmczbTQzz3/oQ/Zpq09yhTbRSK9PlS4AoFJdYBFio3jqWTFotX7QC/hb5UP1mn7yWqrFzBNO/go
-	7jAz30oDknt7JO806imJcgumLEgFf3zc=
-X-Google-Smtp-Source: AGHT+IHg5Ykmb9OI8TVQEOdcut1VncLuIC+TBfNQ0EWFFIJMQXIDal6E7TwIRH+gmIF/v1F2SEcBng==
-X-Received: by 2002:a05:6000:2287:b0:3b7:8d3f:6669 with SMTP id ffacd0b85a97d-3b78d3f6aeemr2830893f8f.32.1753788136206;
-        Tue, 29 Jul 2025 04:22:16 -0700 (PDT)
-Received: from localhost ([87.254.0.133])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3b793519ee5sm1006268f8f.62.2025.07.29.04.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jul 2025 04:22:15 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mips/octeon/smp: Remove space before newline
-Date: Tue, 29 Jul 2025 12:21:41 +0100
-Message-ID: <20250729112141.1924206-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.50.0
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ME5Xm7qt"
+Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 494CBC0003CF;
+	Tue, 29 Jul 2025 13:52:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 494CBC0003CF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1753822354;
+	bh=B1GjCFdZePkk9UeGd4mGcZnBu7IW/DNI7O5djpAHT7I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ME5Xm7qtzSSjI/wyYZ/tli8EyollOzuxwlI3CUnhMrSbomUzS9l0aQfTsWYvvSUkD
+	 1vi7xS78ZwqXqpUdE49XiAh+xV3Q+V0NTLWE3OsWvCyyZHAiSD3lzbAnUvts5+0XMo
+	 Wh5tGyeKsKBXkfwevP9moX2iEKIJccp1u4q6jETo=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id E42C018000A61;
+	Tue, 29 Jul 2025 13:52:33 -0700 (PDT)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: linux-mips@vger.kernel.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org (open list:MEMORY CONTROLLER DRIVERS),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE)
+Subject: [PATCH 1/2] dt-bindings: memory: Update brcmstb-memc-ddr binding with older chips
+Date: Tue, 29 Jul 2025 13:52:12 -0700
+Message-ID: <20250729205213.3392481-2-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
+References: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-There is an extraneous space before a newline in a pr_info message.
-Remove it.
+The older MIPS-based chips incorporated a memory controller with the
+revision A.0.0, update the binding to list that compatible.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- arch/mips/cavium-octeon/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml    | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-index 08ea2cde1eb5..054e331b3202 100644
---- a/arch/mips/cavium-octeon/smp.c
-+++ b/arch/mips/cavium-octeon/smp.c
-@@ -334,7 +334,7 @@ static void octeon_cpu_die(unsigned int cpu)
- 		new_mask = *p;
- 	}
+diff --git a/Documentation/devicetree/bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml b/Documentation/devicetree/bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml
+index b935894bd4fc..3328c8df8190 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml
+@@ -42,6 +42,10 @@ properties:
+         items:
+           - const: brcm,brcmstb-memc-ddr-rev-b.1.x
+           - const: brcm,brcmstb-memc-ddr
++      - description: Revision 0.x controllers
++        items:
++          - const: brcm,brcmstb-memc-ddr-rev-a.0.0
++          - const: brcm,brcmstb-memc-ddr
  
--	pr_info("Reset core %d. Available Coremask = 0x%x \n", coreid, new_mask);
-+	pr_info("Reset core %d. Available Coremask = 0x%x\n", coreid, new_mask);
- 	mb();
- 	cvmx_write_csr(CVMX_CIU_PP_RST, 1 << coreid);
- 	cvmx_write_csr(CVMX_CIU_PP_RST, 0);
+   reg:
+     maxItems: 1
 -- 
-2.50.0
+2.43.0
 

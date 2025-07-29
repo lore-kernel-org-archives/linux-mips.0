@@ -1,37 +1,38 @@
 Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9FE267B12;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447F927816B;
 	Tue, 29 Jul 2025 20:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753822765; cv=none; b=OAC1ceDLFyiLn2CxBt3FTaCu5uj8YresAKVcZsWEeN+qoG10s29M49ncPGfH4Ruy1tl+DlcjQpzLL7a862+fMcCfyZ4Y0DyLWDFgdn+uZTjzX32iN4QbR+BeASWUeSH0OS0BcHmJwsaBzdVsujg9IX9zRbjwrYeXYBuw1U7+DTM=
+	t=1753822765; cv=none; b=HCN3x7iEIJjyfQ4IJNoaMhX1xxL8xJvui+uuXSySU1qo98vBRN3aKhutCKnluF7r8yTzf3cm2YrJvYWoiC3dkXSZa5JhLf9/bQXfRiwaMhkIPcvH3NfLTBbC1aQskB5H8QAuDthQMVzHXqloRmg7CMW7y5LkMyrtcuphEncQZNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753822765; c=relaxed/simple;
-	bh=IKDUD/Kptz7+IbPpIAAK6wTe6FFm5ZQYQNDSXdWrdSE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A+Tqc5bB5ZdVAfFIfYTgzekiVxuhR4WGIiwMPy20l5hgh5JyhcZI/DQPr9VNc4TIWCN30RstyPhSzwWfhwOb+egawol7khnKFDGbx/QWc0Z4QDL0dWIC6CHVZM2URChaZxSqdxrn8hz0g+p0a/BXRNw+o0xkwRVLwxGcAymdhSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=kNenJpuu; arc=none smtp.client-ip=192.19.166.231
+	bh=zBLNmvKbrgqGs0Ax1UJG+EsEMkfc9OigzsQ9bQodKqw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DaBjoaEqT5KnbkyhwQtf5sJb5ubSYumgRso8FNDmJPnaKJmaHhPpW5kabh5Z6YJ295p5CTyN7a65hdnDK8xR35aaqb6NybYLtqGRS1zH7AXXc4jsZ4aY5wbhOm1ITruNy/64iirn/KS1aiFzh40fGi9AnoU/RFD7ZZJYcUuruWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ezKidRNI; arc=none smtp.client-ip=192.19.166.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="kNenJpuu"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ezKidRNI"
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id E424FC0000DD;
-	Tue, 29 Jul 2025 13:52:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com E424FC0000DD
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 2EBCDC0000DE;
+	Tue, 29 Jul 2025 13:52:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 2EBCDC0000DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1753822353;
-	bh=IKDUD/Kptz7+IbPpIAAK6wTe6FFm5ZQYQNDSXdWrdSE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=kNenJpuuzuy1/PBLn0Wq6B2HVE34i9o8JJUOzR54Nf+FbyUS4hz4M9hQxf/KhGtgZ
-	 ywESyr3CV+m6WGCK7w0WY0qc2NR11KGAsWoETkd785/YWyu5udcAE+kaUz/2jRd8+t
-	 csnbhcl0EszoSxVKEjiaD3/BBiRynHejKuP3+AKU=
+	s=dkimrelay; t=1753822354;
+	bh=zBLNmvKbrgqGs0Ax1UJG+EsEMkfc9OigzsQ9bQodKqw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ezKidRNIXtoGCcD6clzhbrvdA/DJLghN+Expet6wd+5G3jO0PR0Ivj7vnJevuDqFo
+	 WuWIilnQBZN+ZRJRmcDjB49cxkbh+GnPmeFBByCGmvcX8UMbyZiHuQkySFxzNay3lZ
+	 VwXHpQqS38HuclrMNGiWPYFalG8k47LH3U6+9SL8=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id B4EE6180004FC;
-	Tue, 29 Jul 2025 13:52:33 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 10C05180004FC;
+	Tue, 29 Jul 2025 13:52:34 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: linux-mips@vger.kernel.org
 Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -43,10 +44,12 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	linux-kernel@vger.kernel.org (open list:MEMORY CONTROLLER DRIVERS),
 	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
 	linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE)
-Subject: [PATCH 0/2] brcmstb-memc-ddr binding updates for MIPS boards
-Date: Tue, 29 Jul 2025 13:52:11 -0700
-Message-ID: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
+Subject: [PATCH 2/2] MIPS: BMIPS: Properly define memory controller compatible
+Date: Tue, 29 Jul 2025 13:52:13 -0700
+Message-ID: <20250729205213.3392481-3-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
+References: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -55,23 +58,109 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series updates the MIPS-based Broadcom STB chips to use a
-proper compatible string for their memory controller node(s) after
-501be7cecec9 ("dt-bindings: memory-controller: Define fallback
-compatible").
+With the DT binding updated with 501be7cecec9 ("dt-bindings:
+memory-controller: Define fallback compatible") we need to define a
+proper compatible string for the memory controller node(s).
 
-Florian Fainelli (2):
-  dt-bindings: memory: Update brcmstb-memc-ddr binding with older chips
-  MIPS: BMIPS: Properly define memory controller compatible
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ arch/mips/boot/dts/brcm/bcm7346.dtsi | 3 ++-
+ arch/mips/boot/dts/brcm/bcm7360.dtsi | 3 ++-
+ arch/mips/boot/dts/brcm/bcm7362.dtsi | 3 ++-
+ arch/mips/boot/dts/brcm/bcm7425.dtsi | 6 ++++--
+ arch/mips/boot/dts/brcm/bcm7435.dtsi | 6 ++++--
+ 5 files changed, 14 insertions(+), 7 deletions(-)
 
- .../bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml  | 4 ++++
- arch/mips/boot/dts/brcm/bcm7346.dtsi                        | 3 ++-
- arch/mips/boot/dts/brcm/bcm7360.dtsi                        | 3 ++-
- arch/mips/boot/dts/brcm/bcm7362.dtsi                        | 3 ++-
- arch/mips/boot/dts/brcm/bcm7425.dtsi                        | 6 ++++--
- arch/mips/boot/dts/brcm/bcm7435.dtsi                        | 6 ++++--
- 6 files changed, 18 insertions(+), 7 deletions(-)
-
+diff --git a/arch/mips/boot/dts/brcm/bcm7346.dtsi b/arch/mips/boot/dts/brcm/bcm7346.dtsi
+index 2afa0dada575..9d6f97e02ff9 100644
+--- a/arch/mips/boot/dts/brcm/bcm7346.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7346.dtsi
+@@ -531,7 +531,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm7360.dtsi b/arch/mips/boot/dts/brcm/bcm7360.dtsi
+index a57cacea91cf..a7f60f059e50 100644
+--- a/arch/mips/boot/dts/brcm/bcm7360.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7360.dtsi
+@@ -450,7 +450,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm7362.dtsi b/arch/mips/boot/dts/brcm/bcm7362.dtsi
+index 728b9e9f84b8..2d483cbf254f 100644
+--- a/arch/mips/boot/dts/brcm/bcm7362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7362.dtsi
+@@ -446,7 +446,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm7425.dtsi b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+index 62588c53d356..c3bb020ff2b5 100644
+--- a/arch/mips/boot/dts/brcm/bcm7425.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+@@ -542,7 +542,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+@@ -569,7 +570,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm7435.dtsi b/arch/mips/boot/dts/brcm/bcm7435.dtsi
+index cfdf9804e126..60cfa4074cce 100644
+--- a/arch/mips/boot/dts/brcm/bcm7435.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7435.dtsi
+@@ -558,7 +558,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
+@@ -585,7 +586,8 @@ memc-arb@1000 {
+ 			};
+ 
+ 			memc-ddr@2000 {
+-				compatible = "brcm,brcmstb-memc-ddr";
++				compatible = "brcm,brcmstb-memc-ddr-rev-a.0.0",
++					     "brcm,brcmstb-memc-ddr";
+ 				reg = <0x2000 0x300>;
+ 			};
+ 
 -- 
 2.43.0
 

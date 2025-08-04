@@ -1,90 +1,134 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448A7242D8D;
-	Mon,  4 Aug 2025 08:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF90285CB4;
+	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754295600; cv=none; b=LZk0TjpOq1RD2WFLgwe9/p9cfqOI3XTE7Qwkn8EqC+HMgrsiCraatcylTMiMHOieCMpaPeI7//AFOk/ziy7c8nbNqGdI3hsIuS+n3qk5ugC/tKpen9AdzA18Kz7n+WSuicdvP7sdP5Fas97mo1xLsXCRj3OdF6Eut0aqcrnAcXo=
+	t=1754325858; cv=none; b=WSNq1mC/KDvlcmwHxDw8FCOgDF0aaA15hB5yFvjdPgCO5OlPQcaE6FgH38E9mkf7Fnj0oFngUamQh+ANJX87bjh3aDeFcp2ghnCxxnrHb8/OeeHgmbNi/7hpjs8Avf7sosUZDn5kWVz+Yf5vaDdZcBcX81FElnXmRBCy9KoWRhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754295600; c=relaxed/simple;
-	bh=UgWhFDPfqwWi/B5y9DEeGb7u7hq/hkDsGo2z5krccHs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R8xo3zZ+IjpeuZsY3WWOQGRyZh09N7mqI1XhdJ/96viBtZoClD1o5STWx+860PZl5G1FP1K8q4xHEiVIC3MnTl5Ht8TIhwfsz1F1Eu1iWXwdrhIp6j4m50k/ORXhhxMap7p9vL1p9VJT39mC8/yoa4toOA5AzWh2QhjDsDJgt3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8AxbeIlbZBoATk4AQ--.7152S3;
-	Mon, 04 Aug 2025 16:19:49 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowJAxE+QibZBoTUU1AA--.65480S2;
-	Mon, 04 Aug 2025 16:19:46 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Jianmin Lv <lvjianmin@loongson.cn>
-Cc: WANG Xuerui <kernel@xen0n.name>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	loongarch@lists.linux.dev,
+	s=arc-20240116; t=1754325858; c=relaxed/simple;
+	bh=r2v62d4bVt9owj808SKHRzdSx9oLY8KjiUCy34x/12Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WQVQ2nnyYT+7/wID2RgApF7nwkD5Xigec+azBHEQl736z6Vt3hMFF9209D7lTbsTFRUfaYWm1zfOS4dg9zsUY3xw1ayJC+9RqBqNRXrCq84Y81twEFa8DwdetY2cNfZ5GtqdfBbE+CLLrpL19nuppZKHHMjawe1+lOJZbjBWAUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qoDkY9It; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qoDkY9It"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE13C4CEE7;
+	Mon,  4 Aug 2025 16:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754325857;
+	bh=r2v62d4bVt9owj808SKHRzdSx9oLY8KjiUCy34x/12Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qoDkY9It5/lqR9fbX6g8iGg/nmmtCv14BOgAwhkb5uNiClyFaMkiukY7Oc+J1MaKh
+	 dZnz4X/S3ajFCt76duYJHDx0quVZH6oSu/c0vStSRzaSzbCcMKFV4L18ye0ZTJoXPN
+	 i3oURUhH5BvGFLUiBhUMaVt9LAqwPNrH4pyC8RyKbvz3yMn0pqcXcQS+g91j40QHjM
+	 lNQCmlS8pNR7LcsmFHjuc2AbEWdFGnRvWbhlC/VB8DAo2fUatOIF7DscYokL7FpXgy
+	 l5z39sJCmL4o5lHPcQDJdF9jtn/jsrC9WDmDQnvKWCYKZ26XpAxSx9TjSBv7Ns52lt
+	 j7UHemkdNe4Mg==
+From: Kees Cook <kees@kernel.org>
+To: linux-arch@vger.kernel.org
+Cc: Kees Cook <kees@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org
-Subject: [PATCH v4 0/2] irqchip/loongson-eiointc: Add multiple interrupt pin routing support
-Date: Mon,  4 Aug 2025 16:19:44 +0800
-Message-Id: <20250804081946.1456573-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	x86@kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 00/17] Add __attribute_const__ to ffs()-family implementations
+Date: Mon,  4 Aug 2025 09:43:56 -0700
+Message-Id: <20250804163910.work.929-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3619; i=kees@kernel.org; h=from:subject:message-id; bh=r2v62d4bVt9owj808SKHRzdSx9oLY8KjiUCy34x/12Y=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHofFXgjp7KzykhVPcF48Q+LLy7qNn3Wc38x5WLbt/ 44z4VPWdZSyMIhxMciKKbIE2bnHuXi8bQ93n6sIM4eVCWQIAxenAEzERo7hf8kiKe0FSd8l7Cv7 We7uUrdPYDs+m0lg/c5Dkx57tW49XMrwT2vS53lTDZ/v/XEnZcFFsaM9CXKfOL49eCxys3TZx5i tytwA
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxE+QibZBoTUU1AA--.65480S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
 
-There are four times EIOINTC_REG_ISR register group access in eiointc irq
-handler, in order to get all irq status about 256 interrupt vectors. It
-causes four times VM-exits since eiointc register are software emulated,
-here multiple interrupt pin routing is introduced and each 64 interrupt
-vector is routed to one interrupt pin.
+Hi,
 
-With this method, there will be only once EIOINTC_REG_ISR register
-group acces in irq handler, it reduces VM-exits.
+While tracking down a problem where constant expressions used by
+BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
+initializer was convincing the compiler that it couldn't track the state
+of the prior statically initialized value. Tracing this down found that
+ffs() was used in the initializer macro, but since it wasn't marked with
+__attribute_const__, the compiler had to assume the function might
+change variable states as a side-effect (which is not true for ffs(),
+which provides deterministic math results).
 
-There is about 6% improvement with netperf -t UDP_RR on 3C5000 Dual-way
-machine, where netserver runs in VM and netperf runs in host.
-            Socket Size   Request  Resp.   Elapsed  Trans      Improve
-            Send   Recv   Size     Size    Time     Rate
-            bytes  Bytes  bytes    bytes   secs.    per sec
-Orininal    212992 212992 1        1       10.00    21689.78
-With Patch  212992 212992 1        1       10.00    23022.67   +6%
+Add KUnit tests for the family of functions and then add __attribute_const__
+to all architecture implementations and wrappers.
 
----
-v3 ... v4:
-  1. Update to kernel 6.16
-  2. Add performance result
+-Kees
 
-v2 ... v3:
-  1. Update to latest kernel version and solve some confliction.
-  2. Add strict check about multiple interrupt pin support, only the first
-     eiointc device support this since intterrupt pin is limited. In order
-     to support multiple eiointc driver in future if there is in future.
+[1] https://github.com/KSPP/linux/issues/364
 
-v1 ... v2:
-  1. Add different route_info handler as eiointc interrupt handler
-     parameter, so that irq handler can read corresponding ISR
-  2. Call function set_csr_ecfg() to enable cpu interrupt pin in eiointc
-     driver inside.
----
-Bibo Mao (2):
-  irqchip/loongson-eiointc: Route interrupt parsed from bios table
-  irqchip/loongson-eiointc: Add multiple interrupt pin routing support
+Kees Cook (17):
+  KUnit: Introduce ffs()-family tests
+  bitops: Add __attribute_const__ to generic ffs()-family
+    implementations
+  csky: Add __attribute_const__ to ffs()-family implementations
+  x86: Add __attribute_const__ to ffs()-family implementations
+  powerpc: Add __attribute_const__ to ffs()-family implementations
+  sh: Add __attribute_const__ to ffs()-family implementations
+  alpha: Add __attribute_const__ to ffs()-family implementations
+  hexagon: Add __attribute_const__ to ffs()-family implementations
+  riscv: Add __attribute_const__ to ffs()-family implementations
+  openrisc: Add __attribute_const__ to ffs()-family implementations
+  m68k: Add __attribute_const__ to ffs()-family implementations
+  mips: Add __attribute_const__ to ffs()-family implementations
+  parisc: Add __attribute_const__ to ffs()-family implementations
+  s390: Add __attribute_const__ to ffs()-family implementations
+  xtensa: Add __attribute_const__ to ffs()-family implementations
+  sparc: Add __attribute_const__ to ffs()-family implementations
+  KUnit: ffs: Validate all the __attribute_const__ annotations
 
- drivers/irqchip/irq-loongson-eiointc.c | 96 +++++++++++++++++++++++---
- 1 file changed, 88 insertions(+), 8 deletions(-)
+ lib/Kconfig.debug                          |  14 +
+ lib/tests/Makefile                         |   1 +
+ arch/alpha/include/asm/bitops.h            |  14 +-
+ arch/csky/include/asm/bitops.h             |   8 +-
+ arch/hexagon/include/asm/bitops.h          |  10 +-
+ arch/m68k/include/asm/bitops.h             |  14 +-
+ arch/mips/include/asm/bitops.h             |   8 +-
+ arch/openrisc/include/asm/bitops/__ffs.h   |   2 +-
+ arch/openrisc/include/asm/bitops/__fls.h   |   2 +-
+ arch/openrisc/include/asm/bitops/ffs.h     |   2 +-
+ arch/openrisc/include/asm/bitops/fls.h     |   2 +-
+ arch/parisc/include/asm/bitops.h           |   6 +-
+ arch/powerpc/include/asm/bitops.h          |   4 +-
+ arch/riscv/include/asm/bitops.h            |   6 +-
+ arch/s390/include/asm/bitops.h             |  10 +-
+ arch/sh/include/asm/bitops.h               |   4 +-
+ arch/sparc/include/asm/bitops_64.h         |   8 +-
+ arch/x86/include/asm/bitops.h              |  12 +-
+ arch/xtensa/include/asm/bitops.h           |  10 +-
+ include/asm-generic/bitops/__ffs.h         |   2 +-
+ include/asm-generic/bitops/__fls.h         |   2 +-
+ include/asm-generic/bitops/builtin-__ffs.h |   2 +-
+ include/asm-generic/bitops/builtin-__fls.h |   2 +-
+ include/asm-generic/bitops/builtin-fls.h   |   2 +-
+ include/asm-generic/bitops/ffs.h           |   2 +-
+ include/asm-generic/bitops/fls.h           |   2 +-
+ include/asm-generic/bitops/fls64.h         |   4 +-
+ include/linux/bitops.h                     |   2 +-
+ lib/clz_ctz.c                              |   8 +-
+ lib/tests/ffs_kunit.c                      | 566 +++++++++++++++++++++
+ 30 files changed, 656 insertions(+), 75 deletions(-)
+ create mode 100644 lib/tests/ffs_kunit.c
 
-
-base-commit: 3c4a063b1f8ab71352df1421d9668521acb63cd9
 -- 
-2.39.3
+2.34.1
 

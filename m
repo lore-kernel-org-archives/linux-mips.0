@@ -1,37 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBB62E9749;
-	Mon, 11 Aug 2025 15:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031CA2E9EB8;
+	Mon, 11 Aug 2025 15:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754925511; cv=none; b=DNXihS4k551iX5naSyHNokKoSvxV+MG0KDuSGpGkXiEZ7T6BVLWXXvr2Sdsa6NWO3aGNne24EHX9Ug4EWRrEQQh8Qos8+e4Gu3KpkT7BUnORqLlmNvPuhRrfNetQSW42tDCQClnVmE/xopk3Nc0QVt5zh6QoyQCGgSutlYQITjQ=
+	t=1754925512; cv=none; b=i32LqxVSMKb9AOUGaDWB9kvZ0EoCH89Y1jLBzN4/+cggWoKl18nLkU7tcb06MlY9x32hn0YdDHDUf+36t6kR3cJl8ICihihWW0oYZ+o3v/sUdfkMVOtPahkzVlKtyS+Vog4Vi7BYheNtvhk4MPZm8WGzWXYMLpi4AOKxjc1nauE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754925511; c=relaxed/simple;
-	bh=ywCyF0Fa0lC0l5tJthglyiv60OzMev7/HUUbrLMS3sw=;
+	s=arc-20240116; t=1754925512; c=relaxed/simple;
+	bh=FgTsfhnMMh5oybgs+L4Nl3f1gECPArfhsuU8UEMXyDs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=c8VvaQ6K1nrqEIn7k6L+peZSEGtXm0SZk4AiuMcOiZNcZw1s45k7DqiWd+tZty75wrgZGVuoD5A5CSOdRKdzSpyOswInJrG8n/npJQDcEXO/2NcBM13FZdcFBZgR7gREnzoBolzbllOpua4egFclymDpgIqQePi0F3cQHBgCRaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PN/I5lZr; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=QJ3HK6bLB11GSY+pOCgzfSvSkpJf5KN436sfCIr3f/mz3JzH9WIM+6ZIsYi5I1040vC4Ij7J/oO4/ZqY+i1jHwVcFCi8hll/WuMWs8JhGohpmVECVAAzq7gSC/KgWNQviVEbQTqUqqE40Ox3KHCaV2ax2Mbyv2sa+7HQ0bgO/PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajLjwGle; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PN/I5lZr"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 49CA2C4AF09;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajLjwGle"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E2E2C4E68E;
 	Mon, 11 Aug 2025 15:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754925510;
-	bh=ywCyF0Fa0lC0l5tJthglyiv60OzMev7/HUUbrLMS3sw=;
+	bh=FgTsfhnMMh5oybgs+L4Nl3f1gECPArfhsuU8UEMXyDs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=PN/I5lZrQKpJHta8Yq7isPOBgKDXGI3BrfIr9j59kQJ6RRSQgebjB3WrBSZR4RDIE
-	 FEZ0Rna2SfhWuz/tGHhg8lKDN0pPKzf3Krii/cAII9qAKJwUk3OlRyWJpQYKdI4k8Z
-	 bN8EPrJ/dIiyFRDV6yUbwMtafSkmIgc0LMNGXYO9nawzz1zYDXK/YEL+xniZ23RkgX
-	 jJ+GlXX0/WeSr+bj2rvW3zofRG+j0OQMrvMTASZX8K8TFov8BLcdW//wo/8C2xoWiR
-	 IR8WXFEUwq+RblI4UOonh9y4UMcBTpXoMeCSFbAmBod7NdlV3FyonKNuE+iecF6O3T
-	 Gjc2IHL5sgDaA==
+	b=ajLjwGletpr/8UzMR2YKxXQcSg0eEk4xk+oj9bmLZW2swvwqYq1qKNuoJxddYp8SO
+	 qZ0QFuWhgbaBhkS83ZXT6ShHlMomVuFvd5wpL9Sty2AolJuvvKkSa7ZxoMp1QEUwpQ
+	 DEYoGUYqOSJr1ISluokms2K5ZaDtj1uwPWnkr3dzHG4rm8DGHaeQVPzaYBkVJjbLvv
+	 nhctm3WYLHat/7hBBroDU1lJwfEOI3jGE9N/okPMEziYS0Zim/dWREYB0Zhsi5VhFJ
+	 cQcgKKSD7EXYZpckrxHs0t97ie0Lpth1kPlT5a3lLgxHN+6SBGdaU3PZkBZggsbxRP
+	 g+yffNdfxtNww==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30B74C87FDA;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73A4DC87FDA;
 	Mon, 11 Aug 2025 15:18:30 +0000 (UTC)
 From: Brian Masney via B4 Relay <devnull+bmasney.redhat.com@kernel.org>
-Date: Mon, 11 Aug 2025 11:18:41 -0400
-Subject: [PATCH 049/114] clk: spacemit: ccu_ddn: convert from round_rate()
+Date: Mon, 11 Aug 2025 11:18:43 -0400
+Subject: [PATCH 051/114] clk: spacemit: ccu_pll: convert from round_rate()
  to determine_rate()
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -41,7 +41,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250811-clk-for-stephen-round-rate-v1-49-b3bf97b038dc@redhat.com>
+Message-Id: <20250811-clk-for-stephen-round-rate-v1-51-b3bf97b038dc@redhat.com>
 References: <20250811-clk-for-stephen-round-rate-v1-0-b3bf97b038dc@redhat.com>
 In-Reply-To: <20250811-clk-for-stephen-round-rate-v1-0-b3bf97b038dc@redhat.com>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -107,11 +107,11 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev, 
  Brian Masney <bmasney@redhat.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1754925498; l=1586;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754925498; l=1453;
  i=bmasney@redhat.com; s=20250528; h=from:subject:message-id;
- bh=Q2TuaoklcZpxwcaXojiI5t4NGNrEeEdgmVBgrmJhVoo=;
- b=PJESzC7zwJTPxAWi59umkEjGox9k8SghWrpUziPgrvvgJLmU6njNduTEeZHXqgqKzmL3XJOhM
- H+0tDIV6owLA/chXmcJqQ20NX5XfXbHNP0+91x81NinnEilxb8LnTjt
+ bh=JXsYqWAZacHUxbqEN/QSlzjO7xfIkLVymVGyN2m0Kok=;
+ b=3yr2J6oHop0Uso5LDpsWb2tuayKtN1WKSr7lGPg11kl+jDdQHhmig3zQ0OJ4h6D9Mc9hrxTFd
+ KeJIH/fHqBbDVpNgiZ/BH3y3MtOe4vsVXun2Fy/KHaoFYvIrAlDBywK
 X-Developer-Key: i=bmasney@redhat.com; a=ed25519;
  pk=x20f2BQYftANnik+wvlm4HqLqAlNs/npfVcbhHPOK2U=
 X-Endpoint-Received: by B4 Relay for bmasney@redhat.com/20250528 with
@@ -127,40 +127,38 @@ on the cover letter of this series.
 
 Signed-off-by: Brian Masney <bmasney@redhat.com>
 ---
- drivers/clk/spacemit/ccu_ddn.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/clk/spacemit/ccu_pll.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/spacemit/ccu_ddn.c b/drivers/clk/spacemit/ccu_ddn.c
-index be311b045698e95a688a35858a8ac1bcfbffd2c7..02b68ea84db9bd3ecdde41f8013c48263edbd917 100644
---- a/drivers/clk/spacemit/ccu_ddn.c
-+++ b/drivers/clk/spacemit/ccu_ddn.c
-@@ -39,13 +39,16 @@ static unsigned long ccu_ddn_calc_best_rate(struct ccu_ddn *ddn,
- 	return ccu_ddn_calc_rate(prate, *num, *den);
+diff --git a/drivers/clk/spacemit/ccu_pll.c b/drivers/clk/spacemit/ccu_pll.c
+index 45f540073a656c0edc341a903acc3f2405971fc9..d92f0dae65a490e9db52f25a538a518baa487ea8 100644
+--- a/drivers/clk/spacemit/ccu_pll.c
++++ b/drivers/clk/spacemit/ccu_pll.c
+@@ -125,12 +125,14 @@ static unsigned long ccu_pll_recalc_rate(struct clk_hw *hw,
+ 	return entry ? entry->rate : 0;
  }
  
--static long ccu_ddn_round_rate(struct clk_hw *hw, unsigned long rate,
+-static long ccu_pll_round_rate(struct clk_hw *hw, unsigned long rate,
 -			       unsigned long *prate)
-+static int ccu_ddn_determine_rate(struct clk_hw *hw,
++static int ccu_pll_determine_rate(struct clk_hw *hw,
 +				  struct clk_rate_request *req)
  {
- 	struct ccu_ddn *ddn = hw_to_ccu_ddn(hw);
- 	unsigned long num, den;
+ 	struct ccu_pll *pll = hw_to_ccu_pll(hw);
  
--	return ccu_ddn_calc_best_rate(ddn, rate, *prate, &num, &den);
-+	req->rate = ccu_ddn_calc_best_rate(ddn, req->rate,
-+					   req->best_parent_rate, &num, &den);
+-	return ccu_pll_lookup_best_rate(pll, rate)->rate;
++	req->rate = ccu_pll_lookup_best_rate(pll, req->rate)->rate;
 +
 +	return 0;
  }
  
- static unsigned long ccu_ddn_recalc_rate(struct clk_hw *hw, unsigned long prate)
-@@ -78,6 +81,6 @@ static int ccu_ddn_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- const struct clk_ops spacemit_ccu_ddn_ops = {
- 	.recalc_rate	= ccu_ddn_recalc_rate,
--	.round_rate	= ccu_ddn_round_rate,
-+	.determine_rate = ccu_ddn_determine_rate,
- 	.set_rate	= ccu_ddn_set_rate,
+ static int ccu_pll_init(struct clk_hw *hw)
+@@ -152,6 +154,6 @@ const struct clk_ops spacemit_ccu_pll_ops = {
+ 	.disable	= ccu_pll_disable,
+ 	.set_rate	= ccu_pll_set_rate,
+ 	.recalc_rate	= ccu_pll_recalc_rate,
+-	.round_rate	= ccu_pll_round_rate,
++	.determine_rate = ccu_pll_determine_rate,
+ 	.is_enabled	= ccu_pll_is_enabled,
  };
 
 -- 

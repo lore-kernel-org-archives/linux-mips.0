@@ -1,35 +1,35 @@
-Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.10])
+Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791DA2EF64A
-	for <linux-mips@vger.kernel.org>; Wed, 13 Aug 2025 14:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E252F0C64
+	for <linux-mips@vger.kernel.org>; Wed, 13 Aug 2025 14:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755095374; cv=none; b=eZ5+48LbyXfpwTnoOqgGVhKnBe9uxeNo1t1x+MDq5UsCXfoLVgRHwoLT/Q1Yph/JE3PVZKUz9kd+/MpqCeG0K4M8blE90VQ+rRHjs9cTaMCaq3HhFN9/IlFKMlauOmf0SUhgAnfCE4qs1XaJPzafWKxGgeQiDswxMr3LefS4/1U=
+	t=1755095375; cv=none; b=LT/up8R2FZ1NVb503ZjrXVcIZ3hcI0Mp3hSg3DIH4n5jXdZeCrsAQQBdZZn+HZsIFsUiQmn4HoHL5PYzQiv7RKfBtiZVIJgdCNuHhJ1b5J01UC4KAXw33Vudrhg2Xzitt/J2tAeQJ6J1LKaIo1+dA8XKcZqqgMCnRinM5d85Xko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755095374; c=relaxed/simple;
-	bh=tRLScCNd8aEoR0RyHaME8NIV0CK3UrHxOL8x20xrrAU=;
+	s=arc-20240116; t=1755095375; c=relaxed/simple;
+	bh=qihzpTxj5De8Q1aeb/tzYw6U/W+sS4FraSESg7kL6UI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WCVsJVMUGymwRkuaLszvo/SesGo5T2OhDLqnknp9oKQ1XXUar3VtgrVxVtXp0pRnvQT0tIRjhbOz14qLzrI3QwRt+YJhE4oDl0VKC8C9yrjZYOPZvZEwtQW/lWtCpbfhSA29xJV9LamcYFy6USnpT7WlyslccdozcdR4xaNOw+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=mD4Ikz+w; arc=none smtp.client-ip=212.77.101.10
+	 MIME-Version; b=Cj2PmDFxSNnIm3m+7ogExbj5hJLfJ/0sfCx1hv4PFQ8OcXt6SzpA9WcOHd8j3dO7QI87fKuPohmj7XJCfqaE5NpEn63VYS5Z1nOQ5JbBJwtG88FLieBKXJ0FNRKlVAX6Q5GqGQmfrDyP8tsq1fkhHY4MYMTFvBhIWhKxnIK6jcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=cRYKtO11; arc=none smtp.client-ip=212.77.101.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="mD4Ikz+w"
-Received: (wp-smtpd smtp.wp.pl 1499 invoked from network); 13 Aug 2025 16:29:21 +0200
+	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="cRYKtO11"
+Received: (wp-smtpd smtp.wp.pl 15862 invoked from network); 13 Aug 2025 16:29:31 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
-          t=1755095361; bh=jhZJFs6zqhMHoUl3MWKTNF2RGyknUAVAXASmzqrI2+4=;
+          t=1755095371; bh=D3oxhsCXayNd8nbZZK3yVVcUaoK/rK3H5eEbvDOy3ms=;
           h=From:To:Subject;
-          b=mD4Ikz+wzacdrQeylio2irs3qrlefZspY/rwVN6k89wsm8/rxoj1tmDUX1zEcPkua
-           1x2XUemTaJq8lguR4W20N3pEh2lAlCLg2CyLYxGlQoSfBCIz/f4+IJVNcTLf7lZklU
-           /TCm6VVGoCOl4V/eKW2nQaD+OXhi4Gz36bnC86iKDibPMkpfvZm0otRt4B8+eH7PB2
-           Yw3zBRci1ZhHytWaW6NY3EXq036aMEGZJSfD2NwN6fpXa8XQycFifP//xn8HYi0aDD
-           ZmRbgkWoWI73wFn9078MyNEfFMkFdBvDMzGv2wNb0ytyimUCSKrmBZl+61F/NcY7OG
-           eXmZcs2ZNPrdQ==
+          b=cRYKtO11oVIDxSTg3PUEVWFrV+z4F8q/wF5mRLRN4zCyrdKo59l3ntnBUB9Z0QrWv
+           KQhylpdgXrOpncipNKM5XAXSva3WuI8WSbnJHPNsyoNgyO9Dx03LosajlrZ80i6QbV
+           yGcTaByCjJaU1NQkOfq/MXamgqk30IINuEILt/hP3PRjj9T5g/USgmRMdmeNvPrIS1
+           fawRPgV/y6ZO1KGQQZNih8QYFIv8fgePx2aeYKddM2KPXnkC5IU9vsKuHUc68stw/4
+           uiM1SUdbcVJ5efCJK1IKoWcr3nNykkKRVn1wI2iYuQspauCW7z+wi+/jM1gHIjEpaA
+           qHs+uc7HKK3hg==
 Received: from 83.24.134.210.ipv4.supernova.orange.pl (HELO laptop-olek.lan) (olek2@wp.pl@[83.24.134.210])
           (envelope-sender <olek2@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <robh@kernel.org>; 13 Aug 2025 16:29:21 +0200
+          for <robh@kernel.org>; 13 Aug 2025 16:29:31 +0200
 From: Aleksander Jan Bajkowski <olek2@wp.pl>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -45,9 +45,9 @@ To: robh@kernel.org,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] dt-bindings: vendor-prefixes: add British Telecom
-Date: Wed, 13 Aug 2025 16:21:32 +0200
-Message-ID: <20250813142917.2053814-2-olek2@wp.pl>
+Subject: [PATCH 3/3] dt-bindings: mips: lantiq: Add Lantiq platform binding
+Date: Wed, 13 Aug 2025 16:21:34 +0200
+Message-ID: <20250813142917.2053814-4-olek2@wp.pl>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250813142917.2053814-1-olek2@wp.pl>
 References: <20250813142917.2053814-1-olek2@wp.pl>
@@ -58,32 +58,84 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: 3140f8cfc6028825d164cf319c772054
+X-WP-MailID: d9bd7045da565dc21e14cf586744e21b
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [caOB]                               
+X-WP-SPAM: NO 0000000 [scMR]                               
 
-British Telecom is a telecommunications operator. It provides various
-home routers popular among OpenWRT enthusiasts.
-Link: https://www.bt.com/
+Document the top-level device tree binding for Lantiq MIPS-based SoCs
 
 Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/mips/lantiq/soc.yaml  | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/lantiq/soc.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 77160cd47f54..e91879137e43 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -243,6 +243,8 @@ patternProperties:
-     description: Shanghai Broadmobi Communication Technology Co.,Ltd.
-   "^bsh,.*":
-     description: BSH Hausgeraete GmbH
-+  "^bt,.*":
-+    description: British Telecom
-   "^bticino,.*":
-     description: Bticino International
-   "^buffalo,.*":
+diff --git a/Documentation/devicetree/bindings/mips/lantiq/soc.yaml b/Documentation/devicetree/bindings/mips/lantiq/soc.yaml
+new file mode 100644
+index 000000000000..e1708cd9b07e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/lantiq/soc.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mips/lantiq/soc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lantiq SoC based Platform
++
++maintainers:
++  - Aleksander Jan Bajkowski <olek2@wp.pl>
++
++description:
++  Devices with a Lantiq CPU shall have the following properties.
++
++properties:
++  $nodename:
++    const: "/"
++  compatible:
++    oneOf:
++      - description: Boards with Lantiq Amazon-SE SoC
++        items:
++          - const: lantiq,ase
++
++      - description: Boards with Lantiq Danube SoC
++        items:
++          - const: lantiq,danube
++
++      - description: Boards with Lantiq Falcon SoC
++        items:
++          - const: lantiq,falcon
++
++      - description: Boards with Lantiq Twinpass SoC
++        items:
++          - const: lantiq,twinpass
++
++      - description: Boards with Lantiq ARX100 SoC
++        items:
++          - const: lantiq,ar9
++
++      - description: Boards with Lantiq GRX100 SoC
++        items:
++          - const: lantiq,gr9
++
++      - description: Boards with Lantiq xRX200 SoC
++        items:
++          - enum:
++              - bt,homehub-v5a
++          - const: lantiq,vr9
++
++      - description: Boards with Lantiq xRX300 SoC
++        items:
++          - const: lantiq,ar10
++
++      - description: Boards with Lantiq xRX330 SoC
++        items:
++          - const: lantiq,grx390
++
++additionalProperties: true
++
++...
 -- 
 2.47.2
 

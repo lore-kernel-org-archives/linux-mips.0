@@ -1,204 +1,139 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF63B2FFDDE;
-	Thu, 14 Aug 2025 13:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A9921ABA4;
+	Thu, 14 Aug 2025 15:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755179438; cv=none; b=M+/GR9OPN2EJMxsFVNsK4LgsqSsRAoHGYjzEcDiFGswpuHT4qKarraPv8hksTyh004MaJ/niIxkpiIPYV5P1hPRNYXkhgG+FYA/+4tm8h1f8QPquHq6LXMbwUISY+JvIYxHzBtAzIg81voAfaTo5oSpmmlDvAS/1TqkswRAkRQM=
+	t=1755184617; cv=none; b=AumI7WSdaBXL9BbE42b5x/ttazIaJdfHSWu97l/JuE3ei9ou2VA6b4qZaFFSiv9CTFX0/RVk2eR9UrIvOTa6ZvbgSWsJHf7cMD9ju3xk1aWfi8EquY0m6pSz/ivZoe18BsM/29PZiMX4Xgg25cueaY/Frux2JvtmcWuaR7jWHPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755179438; c=relaxed/simple;
-	bh=vFczm8e5OaiPzDro8LfC6emO/k/Igt0MHXU7T1y7z8g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HTFYqDf5JsR6ImuBh7i77+YLW1BXiaPjEYt5q/9AAS8X5+TaSndzVRHybOQvPGRUOrJegKoHTOef6GcilvK5Wf6QZaCRfDft1d5uvGkFOmbv8jKzEb952lr62rUZ8vBdXsmMbgbeJLV985rBdVxHAijOggqZX6qKllGUfSU9t60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4c2mf83rJXz9sSN;
-	Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id DBzqxKLEhtqg; Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4c2mf82mg0z9sSH;
-	Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 48B088B764;
-	Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id u4JdrB2diOCo; Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
-Received: from [192.168.235.99] (unknown [192.168.235.99])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id C584A8B763;
-	Thu, 14 Aug 2025 15:43:09 +0200 (CEST)
-Message-ID: <86186254-b2c6-4818-af0a-4eb67d90e501@csgroup.eu>
-Date: Thu, 14 Aug 2025 15:43:09 +0200
+	s=arc-20240116; t=1755184617; c=relaxed/simple;
+	bh=PMFf9xzg7pxujnDyrrhyaKEYpp1klQQY8RGxuDDnp2c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Foc47pchPHR53/m+ITLfaI1PlxFcQ+5FzsIkD/y8Wwduf0OgYx7ym32EM7Nekz8nHEPFwMaKIQ0l5mHmsOhw3scmP6LHjyhGgYT8TfxQc9poSdka9z91Xcx3sJj/oABBQKG9m+ZENDiJCQd+vZmXy9mzsVwOIQiWF1py4y9JB/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-30cce83fb5fso690993fac.1;
+        Thu, 14 Aug 2025 08:16:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755184614; x=1755789414;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nUx5rdSAym75bidV8LMMjvhD6atsKdb4p+2dl0DoyhU=;
+        b=l5Q21Ytj861r/MJ2QcB6qBEvYCQQw2vzULZaUyb9libIMq3z5kQ2xixcs9dZf8xKtK
+         YXZu2e8M9qk5wRP83rh+1q53qj4w+HRkHrAacWucdN0Zb5OkmukS59wPgQnth+Nh3orc
+         Ci7mpxAKXlt8KsoFmv54fVayQaSOTe6YE5ho2paEvcbjpWwXV1UHi4hoS6VJgMwg5Y2i
+         jNI/3pRdiWjK+88bYHH4KLlZgqLsTJ5NoTQxQMhoNcx2ThptO4aK1s2iZ8gT0tb2ay90
+         INwa9azF6cCk04+r318+8gQhWYFo/6iaA5iE102yCtIy8pr3S4nILJnzMEjGDkkpv5EL
+         SQ3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU2rLaOtKqrhBLCCEQkbaLeEBDNucWro5BTuCf1momoHs0cGyDDmfeU7U927WOPa4FZDDNXTcNVEg6b+Kn6@vger.kernel.org, AJvYcCVsuiAo5oobAaos1XJcUgosg6ZEwmglC4z0JB2I+DYpsW8dX9oHBxmDw/RCkt8BMYEaXmYWdw7b5JegGAANWQ==@vger.kernel.org, AJvYcCW/6zUTxAY6nY6r0f99bOGad8FrhIeI/66V4sc1UmAJ8QGlpEnOpVlu7+UvNvFRJFYr2MKCn7DUbh2IWQ==@vger.kernel.org, AJvYcCWcQvJ043y17WJpQLuEZeQ9ylXCk/vw+aSw0PBFS/ZOBOLfkmGXvRPDftvnHHSZkmtqhVpUpJAw7EkQvIm3LgXwrcE=@vger.kernel.org, AJvYcCWe9Ej+5tuAoGgBKFS7FhNLu2wLiw6mcShMuWJHs1/7ilWqOx1657D5sJvklPhrXtRcdUMhAveLiw==@vger.kernel.org, AJvYcCXPbUip6cp5Wsjq0RUC8oU3jIN5dCCKY181R02AktHwX0vuCErIgfmqKCU78e+SA7uUdZvbMG2Tgcr2@vger.kernel.org, AJvYcCXWKK2qqtXFkmiIxXlukO14na9wNdyqrkf42XYB0As7IaFHZ+mSFOr5VfuhqcxoKmyXty9WRoqglpySsKQRPMMsjy0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwwPtJeBVhYnkUqAliMg2K5tYsHfjZoytTDo6D7CxPy91OejcP
+	fUG42DsFc84vnTJK8prrQagV7+weQSruQe3mvZVz1ztdF5WX7/BnZE7q5tAqyvlf
+X-Gm-Gg: ASbGncteX2oD5SfKKOUCIL3hI+V+usQmPKBOkSVaIkSpngiIgF6i0SMzq1yJV76ycTi
+	DrfbnYEkVUkjFbY5BbaQl+O+7EJIEhfpYZQVnonSVLFHAvtVL5wA6ia82YuwZDoAYqTmmGQN4/n
+	9YFqefhS3Zd8JSzgiwc3+Klnh6RsD2a/19gFnRjMyhIEkih9qSgi3gzsPRUyVVCWX5+htzBx+pp
+	z8BAvsogtQMDorRnd+/XJ3+R51Sug6yn2ClPWc1bVB9X1HvPtlFa3GLO5szn39a6ZAQYmyl/VV+
+	WFeEPOEZRksa5KIYoLgvEzkDkwxthAX9SMxT2q1++fOnOL4CnMog5IiZyPH0J5cNtkok/E0205r
+	JiPaIONa1uE4WInGoDNo/MF6TCeM5C8x9S8W1NSsCpOujCOEfBBX/wjeWm5SS
+X-Google-Smtp-Source: AGHT+IHleF1KhCQRwQpLHBVeZ+jksRslQfFyEIsTwcpiCcsptA+0rXQr1GPfUSEE9xIWH7UtUzWUoA==
+X-Received: by 2002:a05:6870:9726:b0:30c:99ff:730a with SMTP id 586e51a60fabf-30cd12cabb4mr2387487fac.23.1755184614186;
+        Thu, 14 Aug 2025 08:16:54 -0700 (PDT)
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com. [209.85.160.53])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7436f982410sm1476336a34.40.2025.08.14.08.16.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Aug 2025 08:16:53 -0700 (PDT)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-30cce83fb5fso690983fac.1;
+        Thu, 14 Aug 2025 08:16:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU6okWnQAYfYw+vCM3Z1ql6X8tQkVb+5j6u/HhrOXA/hiXKR3wH0ME92KCXnM8sQsyCE+HGQv96CKe6UAN3zQ==@vger.kernel.org, AJvYcCVswhOg7x9NUu8Z0xaDl+T87z3fC/vTRORtFC/7bmNnRKolV2so5foPicmfheXELibuslKprwlW0ZThMcbUf2mSzfE=@vger.kernel.org, AJvYcCWfMO9gabqXobIs9IaR5OfmokZglfZx9mfOF3D6Re1oeaCTvcD/NLoO7rtt2LBjiVvktAfAZEbqwLLXRd0g@vger.kernel.org, AJvYcCWkU4UY00BpWaPU4jdDK4VNJGhF/RDekehglCECnXr5o/2cBQNXEO/8VqNs0wgVaEfw8oOFt90Sl2sP@vger.kernel.org, AJvYcCXLUlXlKbYvPeDSohLPnRvR1tSD8LbSZFQUDfgaSOAo5u5LymsOIvWvav4jhi+u9GNgnzelYPhDIdnANg==@vger.kernel.org, AJvYcCXcdoWc7WanchgGoUNlTaP0EGnaPHszw+BdXQXbb7xVSobDDPyz9jaax40C2Gz4ZXi/VRVhEvCyTfyMGes2VfvBFOA=@vger.kernel.org, AJvYcCXh9HAOeWp0vc73LPyouBtKPvpLXDM2+HRN73dWXh5uZ0aQu0iFMUIj5i/903eIiW3DmL7QjUtxEg==@vger.kernel.org
+X-Received: by 2002:a05:6102:e09:b0:4fc:b033:cdc5 with SMTP id
+ ada2fe7eead31-50fe9974df5mr1305485137.22.1755184225208; Thu, 14 Aug 2025
+ 08:10:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/24] vdso: Reject absolute relocations during build
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Kees Cook <kees@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
- Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
- Danilo Krummrich <dakr@kernel.org>, Nicolas Schier <nicolas.schier@linux.dev>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, linux-mm@kvack.org, linux-um@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- loongarch@lists.linux.dev, linux-s390@vger.kernel.org,
- linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org,
- linux-kbuild@vger.kernel.org, Jan Stancek <jstancek@redhat.com>,
- Arnaldo Carvalho de Melo <acme@redhat.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>
-References: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Language: fr-FR
-In-Reply-To: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250811-clk-for-stephen-round-rate-v1-0-b3bf97b038dc@redhat.com> <20250811-clk-for-stephen-round-rate-v1-111-b3bf97b038dc@redhat.com>
+In-Reply-To: <20250811-clk-for-stephen-round-rate-v1-111-b3bf97b038dc@redhat.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Aug 2025 17:10:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXnN+4B1=RhOOHZ9mCN4e4WnfjtY_HO1t+176=dSs26Qw@mail.gmail.com>
+X-Gm-Features: Ac12FXz03sJgdAZuxBhvZVUnciJ_u8JIfA74KaWnv048j9en2I4ZzU7p0Ef3ecQ
+Message-ID: <CAMuHMdXnN+4B1=RhOOHZ9mCN4e4WnfjtY_HO1t+176=dSs26Qw@mail.gmail.com>
+Subject: Re: [PATCH 111/114] clk: divider: remove round_rate() in favor of determine_rate()
+To: bmasney@redhat.com
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
+	Chen Wang <unicorn_wang@outlook.com>, Inochi Amaoto <inochiama@gmail.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Paul Cercueil <paul@crapouillou.net>, Keguang Zhang <keguang.zhang@gmail.com>, 
+	Taichi Sugaya <sugaya.taichi@socionext.com>, Takao Orito <orito.takao@socionext.com>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>, 
+	Vladimir Zapolskiy <vz@mleia.com>, Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Samuel Holland <samuel.holland@sifive.com>, 
+	Yixun Lan <dlan@gentoo.org>, Steen Hegelund <Steen.Hegelund@microchip.com>, 
+	Daniel Machon <daniel.machon@microchip.com>, UNGLinuxDriver@microchip.com, 
+	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Chunyan Zhang <zhang.lyra@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Michal Simek <michal.simek@amd.com>, 
+	Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Sven Peter <sven@kernel.org>, Janne Grunau <j@jannau.net>, 
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Neal Gompa <neal@gompa.dev>, 
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Daniel Palmer <daniel@thingy.jp>, 
+	Romain Perier <romain.perier@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Gregory Clement <gregory.clement@bootlin.com>, 
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Andrea della Porta <andrea.porta@suse.com>, 
+	Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+	Chanwoo Choi <cw00.choi@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Qin Jian <qinjian@cqplus1.com>, Viresh Kumar <vireshk@kernel.org>, 
+	Ulf Hansson <ulf.hansson@linaro.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Alex Helms <alexander.helms.jy@renesas.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Liviu Dudau <liviu.dudau@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, arm-scmi@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, sophgo@lists.linux.dev, 
+	linux-mips@vger.kernel.org, imx@lists.linux.dev, 
+	linux-riscv@lists.infradead.org, spacemit@lists.linux.dev, 
+	linux-stm32@st-md-mailman.stormreply.com, patches@opensource.cirrus.com, 
+	linux-actions@lists.infradead.org, asahi@lists.linux.dev, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 11 Aug 2025 at 17:19, Brian Masney via B4 Relay
+<devnull+bmasney.redhat.com@kernel.org> wrote:
+> From: Brian Masney <bmasney@redhat.com>
+>
+> This driver implements both the determine_rate() and round_rate() clk
+> ops, and the round_rate() clk ops is deprecated. When both are defined,
+> clk_core_determine_round_nolock() from the clk core will only use the
+> determine_rate() clk ops. Also all clk drivers that directly calls
+> divider's round_rate() have been migrated over to determine_rate(). So
+> let's remove the round_rate() clk ops.
+>
+> Signed-off-by: Brian Masney <bmasney@redhat.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Le 12/08/2025 à 07:44, Thomas Weißschuh a écrit :
-> The compiler can emit absolute relocations in vDSO code,
-> which are invalid in vDSO code.
-> Detect them at compile-time.
+Gr{oetje,eeting}s,
 
-I'm a bit puzzled with this series.
+                        Geert
 
-If I understand correctly, the check will be done only when you have 
-RUST available ?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I wouldn't expect having RUST to build a C kernel.
-
-By the way, aren't relocations already detected by command 
-cmd_vdso_check in lib/vdso/Makefile.include , using readelf ? Why is a 
-new tool needed and why does it have to be written in RUST langage ?
-
-Thanks
-Christophe
-
-> 
-> libc elf.h is missing some of the relocation constants,
-> so make user of the kernels own UAPI headers instead.
-> 
-> Kbuild and Rust folks: This contains custom definitions of hostprog
-> bindgen and rust library commands.
-> These are currently only defined inside the subsystem directory.
-> Let me know if they should go into scripts/Makefile.host.
-> 
-> This will conflict with my SPARC64 generic vDSO patches [0].
-> If both end up being applied at the same time, please leave out commit
-> 'vdso/vdsocheck: Drop the transitional kconfig option' from this series.
-> 
-> [0] https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F20250724-vdso-sparc64-generic-2-v1-0-e376a3bd24d1%40linutronix.de%2F&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749561064%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=HacF%2FvlUoxA9P6fTiN1ytw49gwayX1wNE7IxfEkFutE%3D&reserved=0
-> 
-> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> ---
-> Changes in v4:
-> - Replace the inline shell logic with a dedicated build-time tool
-> - Link to v3: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250611-vdso-absolute-reloc-v3-0-47897d73784b%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749584369%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=7NxAhutk6IXl%2B3fe1kkZEzhZz6CWye%2FVAcFO%2BgtS4uo%3D&reserved=0
-> 
-> Changes in v3:
-> - Drop already applied bugfix for arm64
-> - Disable LTO for the riscv vDSO, as it is incompatible
-> - Link to v2: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250430-vdso-absolute-reloc-v2-0-5efcc3bc4b26%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749600546%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=uv0qMS5qq0DovLHtxfRvT42atbJEkztylpOS8zt6bJ4%3D&reserved=0
-> 
-> Changes in v2:
-> - Link to openend (invalid) GCC bug containing more explanations
-> - Refine commit messages
-> - Don't fail on commit absolute relocations in debug info
-> - Link to v1: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250429-vdso-absolute-reloc-v1-0-987a0afd10b5%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749616057%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=K5iwoz0Xqc8kheotWEc4M2KrZ7UVMDObOyFfCPj4N8Q%3D&reserved=0
-> 
-> ---
-> Thomas Weißschuh (24):
->        elf, uapi: Add a header for relocation constants
->        x86/elf, um/x86/elf: Move relocation constants to UAPI
->        ARM: elf: Move relocation constants to UAPI
->        arm64: elf: Move relocation constants to UAPI
->        powerpc/elf: Move relocation constants to UAPI
->        riscv: elf: Move relocation constants to UAPI
->        LoongArch: Move relocation constants to UAPI
->        s390/elf: Move relocation constants to UAPI
->        MIPS: ELF: Move relocation constants to UAPI
->        tools headers UAPI: Sync ELF headers with the kernel sources
->        vdso: Add the vdsocheck tool
->        x86/vdso: Enable the vdsocheck tool
->        ARM: vdso: Enable the vdsocheck tool
->        arm64: vdso: Enable the vdsocheck tool
->        powerpc/elf: Add 32-bit REL16 relocation definitions
->        powerpc/vdso: Enable the vdsocheck tool
->        riscv: vdso: Deduplicate CFLAGS_REMOVE_* variables
->        riscv: vdso: Disable LTO for the vDSO
->        riscv: vdso: Enable the vdsocheck tool
->        LoongArch: vDSO: Enable the vdsocheck tool
->        s390/vdso: Enable the vdsocheck tool
->        MIPS: ELF: Add more PC-relative relocation definitions
->        MIPS: vdso: Enable the vdsocheck tool
->        vdso/vdsocheck: Drop the transitional kconfig option
-> 
->   arch/arm/include/asm/elf.h          |  24 --
->   arch/arm/vdso/Makefile              |   4 +-
->   arch/arm64/include/asm/elf.h        |  55 ----
->   arch/arm64/kernel/vdso/Makefile     |   4 +-
->   arch/loongarch/include/asm/elf.h    | 100 ------
->   arch/loongarch/vdso/Makefile        |   4 +-
->   arch/mips/include/asm/elf.h         |  53 ---
->   arch/mips/vdso/Makefile             |   8 +-
->   arch/powerpc/include/uapi/asm/elf.h | 201 ------------
->   arch/powerpc/kernel/vdso/Makefile   |   4 +-
->   arch/riscv/include/uapi/asm/elf.h   |  66 ----
->   arch/riscv/kernel/vdso/Makefile     |  11 +-
->   arch/s390/include/asm/elf.h         |  83 -----
->   arch/s390/kernel/vdso32/Makefile    |   4 +-
->   arch/s390/kernel/vdso64/Makefile    |   4 +-
->   arch/x86/entry/vdso/Makefile        |   6 +-
->   arch/x86/include/asm/elf.h          |  34 --
->   arch/x86/um/asm/elf.h               |  33 --
->   include/uapi/linux/elf-r.h          | 631 ++++++++++++++++++++++++++++++++++++
->   include/uapi/linux/elf.h            |   1 +
->   lib/vdso/Makefile                   |   2 +
->   lib/vdso/Makefile.include           |  17 +
->   lib/vdso/check/.gitignore           |   3 +
->   lib/vdso/check/Makefile             |  28 ++
->   lib/vdso/check/elf.rs               | 488 ++++++++++++++++++++++++++++
->   lib/vdso/check/vdsocheck.rs         | 279 ++++++++++++++++
->   tools/include/uapi/linux/elf-em.h   |  71 ++++
->   tools/include/uapi/linux/elf-r.h    | 631 ++++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/elf.h      | 112 ++++++-
->   29 files changed, 2277 insertions(+), 684 deletions(-)
-> ---
-> base-commit: 5180c6526acc9f1cb58f8b11fba67583c22e0854
-> change-id: 20250428-vdso-absolute-reloc-a226293c1761
-> 
-> Best regards,
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

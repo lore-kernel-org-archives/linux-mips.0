@@ -1,106 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0032EAB90;
-	Thu, 14 Aug 2025 09:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5443B2F1FFD
+	for <linux-mips@vger.kernel.org>; Thu, 14 Aug 2025 09:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755162719; cv=none; b=f+V7L9oJslkUcfe/K848Tf+CF6WtKwmGu/TfY2BCJ/3Rgs/R0LYu3rhnT1fF2dp8jNuNUV4xh9f/fWSN8zidRchnclX+ksF+cd33HAlvTjpV3FRBM1CrGGoiuYUEN3QeyAYJxUm54LgNnLZFSRcuwbbLe+EcAxz3Hx1MubZmIMk=
+	t=1755164242; cv=none; b=O8aMygqH+JAvhmZKmLCp2OWbnQDZp4IarzbpB4sWlJVD7I8gHR1c1qo92bHUXI0NOeckCf4ce+cSQ/hqKwf0wEua0hHlsKU900oVWF7AamrzpadzH/+RyAYt9QJHHlGAO/kqZLLQl0NVoqxqxeD5ScNffQn7uGnEVK+m2GnTWEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755162719; c=relaxed/simple;
-	bh=KpPt0fkcfW+EkmwbLOQPg8tnnnTCZmXxVb8az3l0UWo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fWQG6eA7po+buycmojPcOPgl/40uwpBjaf2ZjkAcPSGVNVbVwscHYnOJPkGozzRcEEvqoAU1m1pqXkxc+9xdB7Ve7endIVv+gJjO1VrQSBr0BbdiNg3Lv+5G2mGJoNcjCt34eLGg0bJKBoSdP1Vhf1XiC45nwOeh9ePqiqVWToY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p2LR4MNA; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1755164242; c=relaxed/simple;
+	bh=U2iAQMp4g0ZN39jsnM57rlfE8KcHOoYwzBM20ZK5y14=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=juRf8hQEIrnmCfjEpW97/al5FVTtTeI3En1eUTr1/wzmEcFCZJlAy0/AGDAgKxB0CqxXlVJwjfVSL9+1nCPAXXku31h8zy9R004VC4PM8Z6GQRaweksY6X+L7hpLsKZpfHlrMCGa9mi4q00aWIbkXP9jNSFJbiN5ozt7Z7rJauo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=JoAkYahM; arc=none smtp.client-ip=212.77.101.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p2LR4MNA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BAE0C4CEED;
-	Thu, 14 Aug 2025 09:11:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755162719;
-	bh=KpPt0fkcfW+EkmwbLOQPg8tnnnTCZmXxVb8az3l0UWo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p2LR4MNAJtYja39bXuF6NPDdvuiX3a0LgHExroY+OLXuR7DaBbg04P8zyIRZYShg1
-	 pM5wdlIWjMw4ExrGN2JxXvuntQOs6MsH/NKnEskujnZsK3HpI6rMHx1fTUNgvLTihu
-	 Ht/v6gec/Mak8UJCiAGVcbzWz7gDaC68lHWR8geteWEZKPD0bEQzck2/HlxTvtOZmY
-	 nUx9cz+jBCeXWkU4K1oHh3BNOAFVzD1g6X2eoAvwtUZ5fJxl2uaVxjk1GDjxtEXg21
-	 iyCFuJnCPNc6XG/ISzi2Tj4dr5V3qfjU2ru6qXI/xDiboCWp8gZdprsr+iR2nK4WnL
-	 Jy5BAUDILqJcg==
-Date: Thu, 14 Aug 2025 11:11:56 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Rosen Penev <rosenp@gmail.com>
-Cc: linux-wireless@vger.kernel.org, 
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, Johannes Berg <johannes@sipsolutions.net>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:MIPS" <linux-mips@vger.kernel.org>
-Subject: Re: [PATCHv2 1/3] dt-bindings: net: wireless: ath9k: add led bindings
-Message-ID: <20250814-dramatic-glorious-dugong-eecfae@kuoka>
-References: <20250812192334.11651-1-rosenp@gmail.com>
- <20250812192334.11651-2-rosenp@gmail.com>
- <14f0cb76-1694-4330-899a-7565af0dfdfc@kernel.org>
- <CAKxU2N_vo9NThjGaiX1Fq5jet0vdw390ZYpVct4=XPa5gwj-Kg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="JoAkYahM"
+Received: (wp-smtpd smtp.wp.pl 44156 invoked from network); 14 Aug 2025 11:37:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
+          t=1755164238; bh=afbiCjV80weq/eiM1cMoltt+x6GiJ4VsyS8QO5eA2D8=;
+          h=From:To:Subject;
+          b=JoAkYahMZVe1grtUA5+j0clKtNV36E6KL9M8YesDCSU+if+BeToKUqrUCN2Zeb/Ve
+           sriRqqdo7i0VqBypc/DZJGZfPhUdwVeF+wm290vtiuwVpScvUSouJaOojtGTOiTZVn
+           A8nFohTtap7S4hEOpv3eITZP0NkWVz8sgiKNKEnU43BDW+AHBeqIc8zize1uNfjq9N
+           gEJ0z8TG8SxyVNTrlqBtpCJFBtEP5VBMdn/HkWiqhEhiaTNv6aYbgQF1MqzJr74Brz
+           darGaN9BxHSdqkYCL06D0CslTkvOK4+VjbsRtdczrEZNwNkflIwfKqS0DqOMOUOvk6
+           vreScAB+F0DXQ==
+Received: from 83.24.134.210.ipv4.supernova.orange.pl (HELO laptop-olek.lan) (olek2@wp.pl@[83.24.134.210])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <tsbogend@alpha.franken.de>; 14 Aug 2025 11:37:18 +0200
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
+To: tsbogend@alpha.franken.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	olek2@wp.pl,
+	linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] mips: lantiq: danube: add missing timer interrupts
+Date: Thu, 14 Aug 2025 11:37:00 +0200
+Message-ID: <20250814093704.3197030-2-olek2@wp.pl>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250814093704.3197030-1-olek2@wp.pl>
+References: <20250814093704.3197030-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAKxU2N_vo9NThjGaiX1Fq5jet0vdw390ZYpVct4=XPa5gwj-Kg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 037b4bee9050fa9c7e688cfbea2e5690
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [wRNB]                               
 
-On Wed, Aug 13, 2025 at 04:04:27PM -0700, Rosen Penev wrote:
-> On Wed, Aug 13, 2025 at 1:16=E2=80=AFAM Krzysztof Kozlowski <krzk@kernel.=
-org> wrote:
-> >
-> > On 12/08/2025 21:23, Rosen Penev wrote:
-> > > The ath9k driver has various pin GPIO numbers for different chipsets
-> > > which are not always correct for every device.
-> > >
-> > > Add bindings to specify the correct number and if it should be
-> > > active-low.
-> > >
-> > > Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> > > ---
-> > >  .../bindings/net/wireless/qca,ath9k.yaml           | 14 ++++++++++++=
-++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/net/wireless/qca,ath9k=
-=2Eyaml b/Documentation/devicetree/bindings/net/wireless/qca,ath9k.yaml
-> > > index d16ca8e0a25d..e701046146f2 100644
-> > > --- a/Documentation/devicetree/bindings/net/wireless/qca,ath9k.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/wireless/qca,ath9k.yaml
-> > > @@ -50,6 +50,17 @@ properties:
-> > >
-> > >    ieee80211-freq-limit: true
-> > >
-> > > +  led:
-> > > +    type: object
-> >
-> > Each node must end with additional/unevaluatedProperties: false. See
-> > example schema and writing schema.
-> >
-> > That will probably lead you to missing LED common binding.
->=20
-> >
-> > > +    properties:
-> > > +      reg:
-> > > +        maxItems: 1
-> > > +
-> > > +      led-active-low:
-> > > +        description:
-> > > +          LED is enabled with ground signal.
-> >
-> > Aren't you redefining existing properties?
-> I don't think led-active-low is specified in any central location:
+The driver expects six interrupt lines to be specified.
 
-True, because it is active-low which you could easily find if you opened
-and read the LED binding you were already referencing here.
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ arch/mips/boot/dts/lantiq/danube.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Best regards,
-Krzysztof
+diff --git a/arch/mips/boot/dts/lantiq/danube.dtsi b/arch/mips/boot/dts/lantiq/danube.dtsi
+index 7a7ba66aa534..371d06d1a225 100644
+--- a/arch/mips/boot/dts/lantiq/danube.dtsi
++++ b/arch/mips/boot/dts/lantiq/danube.dtsi
+@@ -71,6 +71,8 @@ fpi@10000000 {
+ 		gptu@e100a00 {
+ 			compatible = "lantiq,gptu-xway";
+ 			reg = <0xe100a00 0x100>;
++			interrupt-parent = <&icu0>;
++			interrupts = <126 127 128 129 130 131>;
+ 		};
+ 
+ 		serial@e100c00 {
+-- 
+2.47.2
 

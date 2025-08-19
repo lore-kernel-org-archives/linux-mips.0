@@ -1,97 +1,79 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623332EB84F;
-	Tue, 19 Aug 2025 13:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FCF7262F;
+	Tue, 19 Aug 2025 13:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755609953; cv=none; b=IqEgOARZDfpqNF4kbf8yjrKtWxPQJV08J1ByvXllAV9H/BWlXJlt4Fe4PnbXsqvY0KpLOicVW974pgA762rekzVN8mMieUbOdaUdYK4j5meP6QuCpZbyGBcOHwm/rrWeHvoGHz+JuIP7lUvOTPKXkzIaKF03vfgWc48jqkBbTBk=
+	t=1755610749; cv=none; b=hU6LCrsevHh7MGkF2+NUCnAWt9wrpMYNAfyujTUVsJXf4lz4WvIbNeRqcSkwsZypEt8nE1TvUCywro2MOA5nOnOXydy9To/dxMBdiY6GEzTq8Il1HevlbwQWFKlTojUfvu12qVDkN8JQ3dlEvZZT5DyD0QWFPIe7LV6nzE1cN7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755609953; c=relaxed/simple;
-	bh=pBeIj/4Npl8WnOICq3KNLkIDe0MOER85JIhoxlatFuI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=RAuGWBCjLs34psniSdZYhebq3KbR5GKIlZslf4dRw/nqp9IvzI/A8niX+ZA2jWYk+W3hXbst8vqIOO0YNbaSs0cneEhR/uKktnuH5IPEsgBahGZR++waE8oYTWpSt5vgUoQh7fouoF66cwXdLtQcC9jRgjU4D4V3Lbgtw7yVyNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CEF116A3;
-	Tue, 19 Aug 2025 06:25:42 -0700 (PDT)
-Received: from [10.1.196.50] (e121345-lin.cambridge.arm.com [10.1.196.50])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 884583F738;
-	Tue, 19 Aug 2025 06:25:46 -0700 (PDT)
-Message-ID: <271daf71-3c57-49a5-a65f-c58ac670864f@arm.com>
-Date: Tue, 19 Aug 2025 14:25:45 +0100
+	s=arc-20240116; t=1755610749; c=relaxed/simple;
+	bh=kKVpD/+U4H/9/Fm3FDnpqnB1RCJMjPohCtNqg0WUqsI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FXlHLUAzKsUiKb5HG0J3AF6nu6szDlOa8dqO7yYMD0XaTl9pkOAmNuE/c0cy+9t8k8XJun+s3Q5UUwiWdIOO07Z3o33G6VfRx/tGjMsdUQFgaGjNFeFDTLsYURVJYA8PHOhHe06+PRWTDgv9vrfCA/4uHCSRZDVyKhdnKuVeCFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1uoLkJ-00063D-00; Tue, 19 Aug 2025 14:47:23 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 6960AC075D; Tue, 19 Aug 2025 14:08:11 +0200 (CEST)
+Date: Tue, 19 Aug 2025 14:08:11 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, Kees Cook <kees@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, patches@lists.linux.dev,
+	linux-mips@vger.kernel.org
+Subject: Re: [PATCH 05/10] mips: Unconditionally select
+ ARCH_HAS_CURRENT_STACK_POINTER
+Message-ID: <aKRpK8v4NlzSBwLI@alpha.franken.de>
+References: <20250818-bump-min-llvm-ver-15-v1-0-c8b1d0f955e0@kernel.org>
+ <20250818-bump-min-llvm-ver-15-v1-5-c8b1d0f955e0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/19] perf: Garbage-collect event_init checks
-From: Robin Murphy <robin.murphy@arm.com>
-To: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
- mark.rutland@arm.com, acme@kernel.org, namhyung@kernel.org,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, kan.liang@linux.intel.com
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-rockchip@lists.infradead.org, dmaengine@vger.kernel.org,
- linux-fpga@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, coresight@lists.linaro.org,
- iommu@lists.linux.dev, linux-amlogic@lists.infradead.org,
- linux-cxl@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-riscv@lists.infradead.org
-References: <cover.1755096883.git.robin.murphy@arm.com>
- <ace3532a8a438a96338bf349a27636d8294c7111.1755096883.git.robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <ace3532a8a438a96338bf349a27636d8294c7111.1755096883.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250818-bump-min-llvm-ver-15-v1-5-c8b1d0f955e0@kernel.org>
 
-On 13/08/2025 6:01 pm, Robin Murphy wrote:
-[...]
-> diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-> index 297ff5adb667..98ffab403bb4 100644
-> --- a/arch/x86/events/intel/uncore.c
-> +++ b/arch/x86/events/intel/uncore.c
-> @@ -731,24 +731,11 @@ static int uncore_pmu_event_init(struct perf_event *event)
->   	struct hw_perf_event *hwc = &event->hw;
->   	int ret;
->   
-> -	if (event->attr.type != event->pmu->type)
-> -		return -ENOENT;
-> -
->   	pmu = uncore_event_to_pmu(event);
->   	/* no device found for this pmu */
->   	if (!pmu->registered)
->   		return -ENOENT;
->   
-> -	/* Sampling not supported yet */
-> -	if (hwc->sample_period)
-> -		return -EINVAL;
-> -
-> -	/*
-> -	 * Place all uncore events for a particular physical package
-> -	 * onto a single cpu
-> -	 */
-> -	if (event->cpu < 0)
-> -		return -EINVAL;
+On Mon, Aug 18, 2025 at 11:57:21AM -0700, Nathan Chancellor wrote:
+> Now that the minimum supported version of LLVM for building the kernel
+> has been bumped to 15.0.0, the selection of
+> ARCH_HAS_CURRENT_STACK_POINTER can be made unconditional since it is
+> always true.
+> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> ---
+>  arch/mips/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index caf508f6e9ec..bc7473505f4a 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -6,7 +6,7 @@ config MIPS
+>  	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+>  	select ARCH_HAS_CPU_CACHE_ALIASING
+>  	select ARCH_HAS_CPU_FINALIZE_INIT
+> -	select ARCH_HAS_CURRENT_STACK_POINTER if !CC_IS_CLANG || CLANG_VERSION >= 140000
+> +	select ARCH_HAS_CURRENT_STACK_POINTER
+>  	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
+>  	select ARCH_HAS_DMA_OPS if MACH_JAZZ
+>  	select ARCH_HAS_FORTIFY_SOURCE
+> 
+> -- 
+> 2.50.1
 
-Oopsie, I missed that this isn't just the usual boilerplate as the 
-comment kind of implies, but is also necessary to prevent the 
-uncore_pmu_to_box() lookup going wrong (since the core code won't reject 
-a task-bound event until later). I'll put this back with an updated 
-comment for v2 (and double-check everything else again...), thanks LKP!
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Robin.
-
-
->   	box = uncore_pmu_to_box(pmu, event->cpu);
->   	if (!box || box->cpu < 0)
->   		return -EINVAL;
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

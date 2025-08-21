@@ -1,74 +1,75 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78851369322
-	for <linux-mips@vger.kernel.org>; Thu, 21 Aug 2025 20:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4169636C07E
+	for <linux-mips@vger.kernel.org>; Thu, 21 Aug 2025 20:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755806888; cv=none; b=O/QyFUUuzGCJPgEQMdZVs9Sus28yXKk6zOLKolUdxEvlqB6/Bq3M6wZjVeu+zWgbZpiBo5EuWT+hipJHlR0w7VfeJAaNZ2nCtCfTHqO2wRzpg5KkCVcZy+uVQeomB9h0fok++ovTD53UTOLCpJeg7PlzvhIQSWeN6vfhOYKNd+U=
+	t=1755806894; cv=none; b=omYt/1FNZWSsudbMUqmyPu0K04YPjvO3hgdDrXPp92h+AeJ86PJQwsXGiFn3cDNTYo3qPFxHwiLHufWZ2ZWnBQ9dvYBufH1aY+uj+SuqkpKxHUlcWHDtV+Ws3iiRfbhSiaQWdHGBr+CXtQrYBpg89sMWN/X9Frzu54GLFvalJ7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755806888; c=relaxed/simple;
-	bh=3RfOoWzbZTj8EGhrr7OVQfmCtFM6TSZBuGB7jdppkcE=;
+	s=arc-20240116; t=1755806894; c=relaxed/simple;
+	bh=35i5s1BcLEONuxohRPeqiFHOreLIpfTF289+ZIXZu/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WGq3BSpn8aNKFabK8e6wpKy0DgwUAsKNmU9PniNxCMv7vbzLnxkuhIUl2gQlpzZUOKPJQtlyKQwR2jTk51jPz6g105wOxxJMpCGZjEbhveoZPl+s9Q3buPFhpsC1H53+OgKK2Il2qDxFcLoTCce7GyjC/fXMuUiWH7xhjE+C0FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MvbdMBfT; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=q0Tw0eKOwZ4vcEw7/bapGVEhxMboptOV4mS+jGGUK2uZWzwRRREE9xj5DLd9BHB+YhvRLoqvOIs3hBdhmLef7ogPDFHimbOmJm6Hysp8TGXIz4I2JVJPbKMDTmgUJn9Xm3e04ItH349ZCJrQL50+8Jcfp0+gLzeqXpKbVX+UfIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iy3wgKBi; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MvbdMBfT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iy3wgKBi"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755806885;
+	s=mimecast20190719; t=1755806891;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jaRFM4K4Pg6WYlxhcM2k1BGbQ/DW6XfjnDsCttbmjXY=;
-	b=MvbdMBfTqdQ6okRujD8N1OXYa2zAJvzXIHBmxWowKdCygcxHEOVS3cacfsv5FgttnyWel7
-	eNuVNqoQpBxAi7bZCHh/sOwRxNqPvOslOKiwYFH4vLVIhewU6XekHVlqwCw6y0KeanfO9F
-	3a7le6bkXupTPyaTbxCMdx5tgWinoNw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Pq6EMCEhMXNA7HGNe/O1qYHWHhWZrBzRdRZ7YmKumJw=;
+	b=iy3wgKBi03EyZ3sRdRWSgr84psZuJtpBypQHP7law3eYFY+FVr08x31c3sGqpwjxqAGmTX
+	xqBGUqiu8RyAPg93w1dvnEzol1HjwjQI/m6o382BgrH/D7lRFhyqnnqDsexkYq33pFBhbr
+	yj7lMaG4r48RcxYaH/qGbQzbdKtKz3w=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-rnsYUpNRNtGK2cgDjKGvww-1; Thu, 21 Aug 2025 16:08:04 -0400
-X-MC-Unique: rnsYUpNRNtGK2cgDjKGvww-1
-X-Mimecast-MFC-AGG-ID: rnsYUpNRNtGK2cgDjKGvww_1755806883
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3b9dc566cb4so996487f8f.1
-        for <linux-mips@vger.kernel.org>; Thu, 21 Aug 2025 13:08:03 -0700 (PDT)
+ us-mta-478-Fu1p6z9rPrKRv0z44BgtdQ-1; Thu, 21 Aug 2025 16:08:10 -0400
+X-MC-Unique: Fu1p6z9rPrKRv0z44BgtdQ-1
+X-Mimecast-MFC-AGG-ID: Fu1p6z9rPrKRv0z44BgtdQ_1755806889
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3b9d41b88ffso838236f8f.0
+        for <linux-mips@vger.kernel.org>; Thu, 21 Aug 2025 13:08:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755806883; x=1756411683;
+        d=1e100.net; s=20230601; t=1755806889; x=1756411689;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jaRFM4K4Pg6WYlxhcM2k1BGbQ/DW6XfjnDsCttbmjXY=;
-        b=l1P433tF+6MprdxTNfRGUZvtIfd6MxBQM1UP+N6PLZAVdGIBlwF40g1zkwYEm6O4DU
-         EWQ8LXJ9zcUNc9091B3uS7vKtDnLFT49zj7/ME4OSsXMZJHwNb314SI7Pk8wCzalvCQl
-         PgbzXpLuudIrbnHZyaHY/u2rVDz2IxboJ0+1g0/KLAqOCmplEk4M5YIgzzNuk5sk3Yon
-         hzvwTQOA3s7/10jLFXOB795DaTx0hZxwk2jmDtW5NEeUkC0QRZ2DOt/w4tX9oI8CuLzv
-         hzaRN3iE2ez0UWAa/4BiYK6rlUV3iHxS3I7jokewWN6yx/7oSdfYjUY8W3GDTlPwDUGf
-         +8yA==
-X-Forwarded-Encrypted: i=1; AJvYcCWJPmiyAoyltMGizWCl7s7MBp2P66xNkWqy7Ifb/mkXmgHP5JDxWTgtG4sS98nutyobzUl9boF96SN1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6o9sMawMxoZGtpFg+PXZty9V6vAodYqiXbLCdYQ80bAmWYqkO
-	utGEysjWq0Jx/JAPbKiVIqRATuc+h+gC/6seSpLTvNf4k8kThgcr0W3LbgJx9qWwija6ATpOJSD
-	tPqJrlv9LFYGCFMeiD5qkG+nAy8oJlaGwiZ9UO1WqgseJOu7e39DT66g4LNp6Ei4=
-X-Gm-Gg: ASbGnctR668RdgipVqhLB9wDV/AcxF/p/S4KaDLCmSfdoX6hvtG1m1h7sTqlQQ4Y4cG
-	CFszGAi5m7yy+Ke7KhT+dLhJP2F7D+mSq1CsUiQT5a8w7kneWc4jbIsAxulwKWlWtjZjHVooPCZ
-	x6EbPC21iDC0G4LJJatRdL8kgpYgmCwtPD7p+BMzOq7ZTBVQoKgGCAhK9P9rjyL/S3E/AOdV7IA
-	XwygdEKvz6anVkEkUYWIX4d6WHZcWqOvwEGjulgAUsaG0Y9iOeSwoOKL+IcdOXHf+Jv8mfkTsnn
-	hjcVdhfmP6M+S1l/EoZzWWDnOsWekcPBfSu2Q4IMWuBIX8YZ5e42LlpHTapLT+tq63DrUUmFrfg
-	6G7V13JAGcdiZgg6WQxsOjw==
-X-Received: by 2002:a05:6000:2012:b0:3b7:dd87:d741 with SMTP id ffacd0b85a97d-3c5dcc095c3mr196181f8f.42.1755806882800;
-        Thu, 21 Aug 2025 13:08:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFiRO9AsztHDXjXXwtKcCswXKV/HQQvQjujQOlltIgK9F5s1Ca8ikdDYrX2bvCVEtKZoFK6NA==
-X-Received: by 2002:a05:6000:2012:b0:3b7:dd87:d741 with SMTP id ffacd0b85a97d-3c5dcc095c3mr196155f8f.42.1755806882316;
-        Thu, 21 Aug 2025 13:08:02 -0700 (PDT)
+        bh=Pq6EMCEhMXNA7HGNe/O1qYHWHhWZrBzRdRZ7YmKumJw=;
+        b=Dse8EEaz4XcoPYsYLbOCN5L3NrmLpwDecuzgxM4HnaQKJGRmKlCn7A14kCS3u7amvT
+         P9WA0VRsC3L1/fAy9KTSrb5rQa0JEYZ09d0jgLW+7WxqjUEYHhmCFhC6oThoKeGkiYLz
+         ILUsI29tXsq0FNsjdxPC4s3wbjoFcvVa4G20xwSryojEJS3VlvTqxu0hmw5aMLvF9yFG
+         /47WlRPz/gtIJJVdRXfkt/GaOHkkqwPBarqDIFlUYMgVdLVPLDt9ZhVgAruH9VsxUo7P
+         2YMb5+EteJzMmUQvtVxERC7o+L/SoHQENWpTViYpn8krAX0r36ljhmMu9SpnwGhfhFpJ
+         z3ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjhyGOEbIPjTvSlLJESAL7IQtX7tdNkemz5bopggdxhp5oJMFfudG3ZAJfFT5cJ2pcjpSD1qj+hCI5@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhTf2ZDhN12G0KWN1vD1eILqNP/SvxQLjtHe1TLpaKzKg3Qd0n
+	SWt9iWmjGVyB73BbJTQawCqukz6rx1s69JAsv1yDNOv63P8DYCojuy81Z88PSsEc9SQtxM5AgXa
+	KXiP/MEIzo/9nvkbKSCe84PODfnoEeL9pXSMB1UDQi5tWjlBuw3ZYwVTlFZL4TR4=
+X-Gm-Gg: ASbGncuiI3e6K0uV8Zn5xmFpPmNHbkpYYFQth4KJ72I/Qo/QUv/9WQjADeOWToye+PB
+	M9cEM32DBhitdJwweolnasxXAQvWdvuMbBImxjSVD8WohLKpTNSTpkGMM3brAS37pAFnftvqw0c
+	2eVOeC2n/wrP4aGs+UaEYX4FIWQdet+bfWjVxqtdmmw/wXNRN0F0ECs6aVNUdsmLgNwCKParoXN
+	Xii6itLjmiNaySRErdE+58drIdeKh73onNXE2t00Kh/PiTTN1Ua4PecTKUcep3f9HenbvgtMSsu
+	3onZ9uBw9Z3fIO2DtAs/0gcNry7ibG+tdHuChMLSVtWaNMTcwr6DsI2qo7Fi3YkTHG1gT2ImYH3
+	2+i4OGDfY+gnGKNBFSjTRiQ==
+X-Received: by 2002:a05:6000:40c9:b0:3b7:911c:83f with SMTP id ffacd0b85a97d-3c5da83bf5bmr151958f8f.9.1755806888898;
+        Thu, 21 Aug 2025 13:08:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGeHEkncn914iQLB6IDJFbFllUgyuseH1VcCPvg+Bdgchh7CcvmYDhAXktPsYS0hqHcr6hQuQ==
+X-Received: by 2002:a05:6000:40c9:b0:3b7:911c:83f with SMTP id ffacd0b85a97d-3c5da83bf5bmr151916f8f.9.1755806888456;
+        Thu, 21 Aug 2025 13:08:08 -0700 (PDT)
 Received: from localhost (p200300d82f26ba0008036ec5991806fd.dip0.t-ipconnect.de. [2003:d8:2f26:ba00:803:6ec5:9918:6fd])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45b50e0b299sm8957945e9.22.2025.08.21.13.08.00
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45b4e2790a8sm21120815e9.1.2025.08.21.13.08.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Aug 2025 13:08:01 -0700 (PDT)
+        Thu, 21 Aug 2025 13:08:07 -0700 (PDT)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: David Hildenbrand <david@redhat.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
 	Alexander Potapenko <glider@google.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Brendan Jackman <jackmanb@google.com>,
@@ -100,14 +101,12 @@ Cc: David Hildenbrand <david@redhat.com>,
 	linux-scsi@vger.kernel.org,
 	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	Marco Elver <elver@google.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
 	Michal Hocko <mhocko@suse.com>,
 	Mike Rapoport <rppt@kernel.org>,
 	Muchun Song <muchun.song@linux.dev>,
 	netdev@vger.kernel.org,
 	Oscar Salvador <osalvador@suse.de>,
 	Peter Xu <peterx@redhat.com>,
-	Robin Murphy <robin.murphy@arm.com>,
 	Suren Baghdasaryan <surenb@google.com>,
 	Tejun Heo <tj@kernel.org>,
 	virtualization@lists.linux.dev,
@@ -115,9 +114,9 @@ Cc: David Hildenbrand <david@redhat.com>,
 	wireguard@lists.zx2c4.com,
 	x86@kernel.org,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH RFC 20/35] mips: mm: convert __flush_dcache_pages() to __flush_dcache_folio_pages()
-Date: Thu, 21 Aug 2025 22:06:46 +0200
-Message-ID: <20250821200701.1329277-21-david@redhat.com>
+Subject: [PATCH RFC 22/35] dma-remap: drop nth_page() in dma_common_contiguous_remap()
+Date: Thu, 21 Aug 2025 22:06:48 +0200
+Message-ID: <20250821200701.1329277-23-david@redhat.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250821200701.1329277-1-david@redhat.com>
 References: <20250821200701.1329277-1-david@redhat.com>
@@ -129,86 +128,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Let's make it clearer that we are operating within a single folio by
-providing both the folio and the page.
+dma_common_contiguous_remap() is used to remap an "allocated contiguous
+region". Within a single allocation, there is no need to use nth_page()
+anymore.
 
-This implies that for flush_dcache_folio() we'll now avoid one more
-page->folio lookup, and that we can safely drop the "nth_page" usage.
+Neither the buddy, nor hugetlb, nor CMA will hand out problematic page
+ranges.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/mips/include/asm/cacheflush.h | 11 +++++++----
- arch/mips/mm/cache.c               |  8 ++++----
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ kernel/dma/remap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/cacheflush.h b/arch/mips/include/asm/cacheflush.h
-index 1f14132b3fc98..8a2de28936e07 100644
---- a/arch/mips/include/asm/cacheflush.h
-+++ b/arch/mips/include/asm/cacheflush.h
-@@ -50,13 +50,14 @@ extern void (*flush_cache_mm)(struct mm_struct *mm);
- extern void (*flush_cache_range)(struct vm_area_struct *vma,
- 	unsigned long start, unsigned long end);
- extern void (*flush_cache_page)(struct vm_area_struct *vma, unsigned long page, unsigned long pfn);
--extern void __flush_dcache_pages(struct page *page, unsigned int nr);
-+extern void __flush_dcache_folio_pages(struct folio *folio, struct page *page, unsigned int nr);
+diff --git a/kernel/dma/remap.c b/kernel/dma/remap.c
+index 9e2afad1c6152..b7c1c0c92d0c8 100644
+--- a/kernel/dma/remap.c
++++ b/kernel/dma/remap.c
+@@ -49,7 +49,7 @@ void *dma_common_contiguous_remap(struct page *page, size_t size,
+ 	if (!pages)
+ 		return NULL;
+ 	for (i = 0; i < count; i++)
+-		pages[i] = nth_page(page, i);
++		pages[i] = page++;
+ 	vaddr = vmap(pages, count, VM_DMA_COHERENT, prot);
+ 	kvfree(pages);
  
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
- static inline void flush_dcache_folio(struct folio *folio)
- {
- 	if (cpu_has_dc_aliases)
--		__flush_dcache_pages(&folio->page, folio_nr_pages(folio));
-+		__flush_dcache_folio_pages(folio, folio_page(folio, 0),
-+					   folio_nr_pages(folio));
- 	else if (!cpu_has_ic_fills_f_dc)
- 		folio_set_dcache_dirty(folio);
- }
-@@ -64,10 +65,12 @@ static inline void flush_dcache_folio(struct folio *folio)
- 
- static inline void flush_dcache_page(struct page *page)
- {
-+	struct folio *folio = page_folio(page);
-+
- 	if (cpu_has_dc_aliases)
--		__flush_dcache_pages(page, 1);
-+		__flush_dcache_folio_pages(folio, page, folio_nr_pages(folio));
- 	else if (!cpu_has_ic_fills_f_dc)
--		folio_set_dcache_dirty(page_folio(page));
-+		folio_set_dcache_dirty(folio);
- }
- 
- #define flush_dcache_mmap_lock(mapping)		do { } while (0)
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index bf9a37c60e9f0..e3b4224c9a406 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -99,9 +99,9 @@ SYSCALL_DEFINE3(cacheflush, unsigned long, addr, unsigned long, bytes,
- 	return 0;
- }
- 
--void __flush_dcache_pages(struct page *page, unsigned int nr)
-+void __flush_dcache_folio_pages(struct folio *folio, struct page *page,
-+		unsigned int nr)
- {
--	struct folio *folio = page_folio(page);
- 	struct address_space *mapping = folio_flush_mapping(folio);
- 	unsigned long addr;
- 	unsigned int i;
-@@ -117,12 +117,12 @@ void __flush_dcache_pages(struct page *page, unsigned int nr)
- 	 * get faulted into the tlb (and thus flushed) anyways.
- 	 */
- 	for (i = 0; i < nr; i++) {
--		addr = (unsigned long)kmap_local_page(nth_page(page, i));
-+		addr = (unsigned long)kmap_local_page(page + i);
- 		flush_data_cache_page(addr);
- 		kunmap_local((void *)addr);
- 	}
- }
--EXPORT_SYMBOL(__flush_dcache_pages);
-+EXPORT_SYMBOL(__flush_dcache_folio_pages);
- 
- void __flush_anon_page(struct page *page, unsigned long vmaddr)
- {
 -- 
 2.50.1
 

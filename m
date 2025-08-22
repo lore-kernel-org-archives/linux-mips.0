@@ -1,73 +1,65 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C295291C07
-	for <linux-mips@vger.kernel.org>; Fri, 22 Aug 2025 18:10:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359D71D5174;
+	Fri, 22 Aug 2025 20:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755886260; cv=none; b=tcKFMr/K/VSCdhl4GSZ60gXr3HiGIKfdka2e1CNSRpmKOlMu8MVHj9OykKrnc5uxdHfoF++haVWPNuLWloNwsJ5kQjNedYBEQvTBt2nICWxChfzazXF/Q4MEIMVgAoGSa86O0mdw+uK/2tqNliakQ38WnLO+no6ea4vpyJwikJs=
+	t=1755894940; cv=none; b=BN4rzf+hcmdPuVfV4h0xFX1VBohF1PIBlvGxnRrkJBSl4PO0DTaXHffEKclGPKq0ntMsLEnWevigXI/wLAxCBFROic/5zQRdgaHI1m8z18BbG2HTrq9m+n4GOOzzheZJb3+w9BiqoZKyFGtLcYafDMOO+gSAMVPpshuaVF1OFc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755886260; c=relaxed/simple;
-	bh=zx8MvH5t85eVRYN60js9SAsxgYkD1auMlyzP4cjVgeQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YwlcLPTGt+2/f1/HVrymws6QJ8eyx4GGkz0CQ+IJGFtZF3plh6S6OUoNHwV86Vac2N0TBkc7zzXq9y9svYhWObLG6cg9FlE8N+UXdgLhkzo34MqMN1TUQ0dlJrBH42iT81vHzblwxL+R320HezKh3ZeHUpurO/xZhJpyQVJTpEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IWgj6Fci; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1755894940; c=relaxed/simple;
+	bh=ACmzXamtUkFOMJa6lmYz4KINABUO+0S4KsHWuUfFFqc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=muHyeQzbffs2FVPqTCI3BJilc2XE/pqICCwsna63JG3YifVkYdRu7W+upucL1H+KAs4Nzi/UokH8ORyX/G1fSa2qCvG4MDLWhXTUV2XnUnrTnR9+Velg7wtXiVcnNtzFnBLXjBOqIX73Rg0y7tmvp+fRWF2p+nN4ATyU2RZUVE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6ZPdqeV; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IWgj6Fci"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755886257;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Cs65i5/BwS5INh2iU3PXL6F11yYfHDlCfNAhWqRXwfw=;
-	b=IWgj6Fci9ElqdFXj8byMf4hxIXgsBUs1GfAurgb2wzF4VBWb83+rfw8u9VAQN6Gfo45UHu
-	8n35STJv+8SXFFdHtS6SdH0BBxPPZCgHCB4rhX4kCf2hW7REbooqNSsT24jWkplEqYppAh
-	6nlXEQcj+Vdpc2pDBdPhGBzzZFG2Y6E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-81-Ji_xqDsLO6WMcWt3u1jJxQ-1; Fri, 22 Aug 2025 14:10:55 -0400
-X-MC-Unique: Ji_xqDsLO6WMcWt3u1jJxQ-1
-X-Mimecast-MFC-AGG-ID: Ji_xqDsLO6WMcWt3u1jJxQ_1755886255
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3b9edf41d07so1140880f8f.3
-        for <linux-mips@vger.kernel.org>; Fri, 22 Aug 2025 11:10:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6ZPdqeV"
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-45a1b00f23eso15246415e9.0;
+        Fri, 22 Aug 2025 13:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755894935; x=1756499735; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:autocrypt:subject:from
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ngegEq4W7EG9N2JmbWEs/MfIfA90UpT+UDvgWSX3iDY=;
+        b=O6ZPdqeVSxBadujEWDpFlk8HaeMmz74QGcXKjX9/zM5wvvogyMpu7KNWZwuQERuGy8
+         83cFxjJqg21Akl+3X6ot3BLLBUKwFbE6CBVfCa2n6q+sIR0nWS9bZsrn8oPkUQzy/oQM
+         mBIRafkY4ppULqf8DHoF/W86cxkmSKovU2TjJ7REc8VtmcoOoj1SE0ifKIy9DGgP15qK
+         enLhJni9530AU//kjdv9d6hFQxXliY2KENhkMH4+temgpsGkAudYNHlKWykF7V3X1qnE
+         QdkFwcY4PgRz7RkSEQ42zS9xMQOKZMxsK0cCmWJxvNQIhdtvyfkzib6gs6uvpUH1dhuL
+         3ShQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755886254; x=1756491054;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cs65i5/BwS5INh2iU3PXL6F11yYfHDlCfNAhWqRXwfw=;
-        b=SFjMH63rIRhMZv6WZXTqq96bahIzLYmYN2a2Ap3COpCztKUJJYHICe0hBHxhb0fD2Y
-         Q3Py7kHPsMWKdFyxXuWmZbn71qdu/dDVs7xsbj5ImiXASeFElof36a+OEQUguyo9x0ZH
-         LhlyBS3+xcBfV/hI3luzXFBrmsr0de5XMUHsmguavSVv4bBaQyC4ZB/hOk1ihGoC/KyG
-         rCXdimtgM9/v0wU9TkPwD5VmK5IXWeBPgIaxlKjip/DrYgvR+DLcA56Qai/XwjGZ6KmA
-         jiT1gZdMu72jXBbPpTy1u5NGMuc/aR8EsJoyI/8/0IYXJRX/LDhcpxFIxOhlmnKsRy5z
-         hYwg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIrxpRCtvyISCpEKSocFbAHsbDYEmTCxoBn9nZeketwh6tdPjeZS2IBaND8gnwcJS9qP0L+znPQhCv@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsgVNr2x9NTWloZeWBBEOedonSzMOwyeSRBuBZntrExBy1QkWF
-	poS4k17PzhfD+wf13EWAyT6ROV5xUVFvP+lHu/lw6G3qOh7oss11yvyGL5LueUm2/r++VD27Xyd
-	f+j3rp3oQTmk5jAa2s0DW/u3YaDw9mYw7JwLMBgZzvLqn+FTQrG/HEDbqkAn9Nrg=
-X-Gm-Gg: ASbGncskjKX+JNgHHc03WVPoFIEgROo/x1MA6bfhRa4XziYDn1hJGnsMup287XDIGZW
-	v8aSZMLZcTpMzHKYPgKTMD6AB6FLXPeHc5m7MmRgef4h982TryKPRCRkCX6Qk9m5TUu5AeY9Gg4
-	xRHEdegcjVxUawBSADO0rqf5qDSlj2sxlascts0igL1yRqumbkpTpFX9cUcQ/jYy46Z0dLRkBAi
-	1nhIjsV5pexmXXYGWS1xGOTT4qL36ltFwYyqEJ4bh1zIPyACyd3+0Giy+uW5dmhW6wu8o5uovRG
-	MMCg8gY7UuhqU3IuIKim736ZmD2NIbrSmbph1SYJMiKrhSm9a3JtuYITn333N6PWmMD5oEnnOzR
-	myJBuk4M0eHcYSF/8Oj0nSFt2Iqf/hB/STBz4Dhkdca8Mxl4IAbZeedEbDQ6G8albVqw=
-X-Received: by 2002:a05:6000:26ce:b0:3b7:83c0:a9e0 with SMTP id ffacd0b85a97d-3c5daefc76amr3207828f8f.25.1755886254518;
-        Fri, 22 Aug 2025 11:10:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFruF/9yLWC9qQiiSeqlnaZybt0y1Lc6OlpmYaNOwlaf7dspYYth5O1iwJEpGlFoX5TNvjMRA==
-X-Received: by 2002:a05:6000:26ce:b0:3b7:83c0:a9e0 with SMTP id ffacd0b85a97d-3c5daefc76amr3207779f8f.25.1755886254021;
-        Fri, 22 Aug 2025 11:10:54 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f2e:6100:d9da:ae87:764c:a77e? (p200300d82f2e6100d9daae87764ca77e.dip0.t-ipconnect.de. [2003:d8:2f2e:6100:d9da:ae87:764c:a77e])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c70f238640sm404818f8f.26.2025.08.22.11.10.51
+        d=1e100.net; s=20230601; t=1755894935; x=1756499735;
+        h=content-transfer-encoding:cc:to:autocrypt:subject:from
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ngegEq4W7EG9N2JmbWEs/MfIfA90UpT+UDvgWSX3iDY=;
+        b=XYgq63Sgsd+K7H0VTJrnAh9JP5v4VIgyZZLjcT+axSUAHmpvneIgjdqgnUxtqW5ek/
+         utMFvBxvvHfYxAy1woxdVk2pS0uXyaud156QHoj0R6A/4Vw1iyWOAEWN9qM/SjMP4hFH
+         KfY0XaWxOocttOF+W0pKS2iiFoJD7FvrzXqjDqae+uHyiGXVr+nJA/NIpKPkuTMU+7zI
+         3/ritCXZZHJbFvdymuMAO1vH/MlrK28HoYlfjM5xc2da1aWbjE+65noPBxObzhiJon0e
+         YuXQOm7WGDp1+k5yeybBH5mndYp9cjxktyXU5llrAobkm4t/TiVnwfw4IC9yA4pna3b7
+         dTtg==
+X-Forwarded-Encrypted: i=1; AJvYcCVelgWj3MJvZtF/jWtnHdXzqR62cN1URJJ9yNh4mxUrbSaOqG/Dy9eeAmp5Ue9lWQPXwlcb+uM+TnGX@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcOghGcYH5HsigCaGAkmT8uJ/accP4O+/oK9e/TG+ozvxsKbIo
+	JRgVgs9EJ8bKqj6XzTiyyAOQheXIkYrsdMm3qiTQHw7QI/fvFqNht5EBo8M3iw==
+X-Gm-Gg: ASbGncvfRY9NbekHJ5tsVhEi//kE3ZZITXqYnhWIKoikwIEY+qSwKcwRfWbxRDWdVje
+	32tx2kYw0Xc9wqW63X083s9xYtx0MX6JucGfYVgNQKqggoisyeYOEBZTlnKGIGaXiBkI1ykJAm7
+	n7M7YZV1QbQx9eVz//v1UluqK4PhCzDsVKA1eyznSkVJFlIiuxSF7D1lfe5LwCgIoKIWrWyokNj
+	Q6UUbsXaV0ePpMTde2a2au9XO26pHFT/kKXHMTu2HGnb/I+1ypH3lwUwl59CJhniI0qg2HGKTt+
+	YoV+sngWIcTTZv6Fh9Y6kEH8Z/OdQZMJTx5dlBskmLp9Tmtekl0KBB8lDKV8kMAXh4/m/FmqK/Q
+	saWxGdN6bEQ9UfLX4EyQKbQ/7um5Gne/QrY5iDSKTtx3ug7t6Bw2xAIovGObNQTJgdwjd18RRRU
+	4z/m3OI4PSak/pkpPpERpI+yelF6KvMTTEng2TcOvU9UxTVM2+jeDgU/ns4bs05rEeRWAgtw==
+X-Google-Smtp-Source: AGHT+IEOHOQoDPWM/XZQBfXXst8+83rwDz6NjfXLVy4d5VP6h9R+W+Z5jAABDa7tDFwF/394YtVJFg==
+X-Received: by 2002:a05:600c:3b95:b0:455:bd8a:7e7 with SMTP id 5b1f17b1804b1-45b5179ce2fmr36504465e9.9.1755894935129;
+        Fri, 22 Aug 2025 13:35:35 -0700 (PDT)
+Received: from ?IPV6:2003:ea:8f4c:4200:c3d:b19b:1c2c:62a3? (p200300ea8f4c42000c3db19b1c2c62a3.dip0.t-ipconnect.de. [2003:ea:8f4c:4200:c3d:b19b:1c2c:62a3])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-45b57498b37sm12110275e9.23.2025.08.22.13.35.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Aug 2025 11:10:53 -0700 (PDT)
-Message-ID: <9a9eb9ca-a5ae-4230-8921-fd0e0a79ccbb@redhat.com>
-Date: Fri, 22 Aug 2025 20:10:51 +0200
+        Fri, 22 Aug 2025 13:35:34 -0700 (PDT)
+Message-ID: <762700e5-a0b1-41af-aa03-929822a39475@gmail.com>
+Date: Fri, 22 Aug 2025 22:36:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -75,100 +67,176 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 29/35] scsi: core: drop nth_page() usage within SG
- entry
-To: Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Doug Gilbert <dgilbert@interlog.com>, Alexander Potapenko
- <glider@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Brendan Jackman <jackmanb@google.com>, Christoph Lameter <cl@gentwo.org>,
- Dennis Zhou <dennis@kernel.org>, Dmitry Vyukov <dvyukov@google.com>,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- iommu@lists.linux.dev, io-uring@vger.kernel.org,
- Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
- Johannes Weiner <hannes@cmpxchg.org>, John Hubbard <jhubbard@nvidia.com>,
- kasan-dev@googlegroups.com, kvm@vger.kernel.org,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-arm-kernel@axis.com,
- linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mm@kvack.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Marco Elver <elver@google.com>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>,
- Muchun Song <muchun.song@linux.dev>, netdev@vger.kernel.org,
- Oscar Salvador <osalvador@suse.de>, Peter Xu <peterx@redhat.com>,
- Robin Murphy <robin.murphy@arm.com>, Suren Baghdasaryan <surenb@google.com>,
- Tejun Heo <tj@kernel.org>, virtualization@lists.linux.dev,
- Vlastimil Babka <vbabka@suse.cz>, wireguard@lists.zx2c4.com, x86@kernel.org,
- Zi Yan <ziy@nvidia.com>
-References: <20250821200701.1329277-1-david@redhat.com>
- <20250821200701.1329277-30-david@redhat.com>
- <58816f2c-d4a7-4ec0-a48e-66a876ea1168@acm.org>
-From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <58816f2c-d4a7-4ec0-a48e-66a876ea1168@acm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH net-next] net: phy: fixed: let fixed_phy_add always use addr 0
+ and remove return value
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+To: Greg Ungerer <gerg@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Hauke Mehrtens
+ <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Andrew Lunn
+ <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Russell King - ARM Linux <linux@armlinux.org.uk>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, David Miller <davem@davemloft.net>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 22.08.25 20:01, Bart Van Assche wrote:
-> On 8/21/25 1:06 PM, David Hildenbrand wrote:
->> It's no longer required to use nth_page() when iterating pages within a
->> single SG entry, so let's drop the nth_page() usage.
-> Usually the SCSI core and the SG I/O driver are updated separately.
-> Anyway:
+We have only two users of fixed_phy_add(), both use address 0 and
+ignore the return value. So simplify fixed_phy_add() accordingly.
 
-Thanks, I had it separately but decided to merge per broader subsystem 
-before sending. I can split it up in the next version.
+Whilst at it, constify the fixed_phy_status configs.
 
+Note:
+fixed_phy_add() is a legacy function which shouldn't be used in new
+code, as it's use may be problematic:
+- No check whether a fixed phy exists already at the given address
+- If fixed_phy_register() is called afterwards by any other driver,
+  then it will also use phy_addr 0, because fixed_phy_add() ignores
+  the ida which manages address assignment
+Drivers using a fixed phy created by fixed_phy_add() in platform code,
+should dynamically create a fixed phy with fixed_phy_register()
+instead.
+
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ arch/m68k/coldfire/m5272.c  | 4 ++--
+ arch/mips/bcm47xx/setup.c   | 4 ++--
+ drivers/net/phy/fixed_phy.c | 4 ++--
+ include/linux/phy_fixed.h   | 8 ++------
+ 4 files changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/arch/m68k/coldfire/m5272.c b/arch/m68k/coldfire/m5272.c
+index 5b70dfdab..918e2a323 100644
+--- a/arch/m68k/coldfire/m5272.c
++++ b/arch/m68k/coldfire/m5272.c
+@@ -108,7 +108,7 @@ void __init config_BSP(char *commandp, int size)
+  * an ethernet switch. In this case we need to use the fixed phy type,
+  * and we need to declare it early in boot.
+  */
+-static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
++static const struct fixed_phy_status nettel_fixed_phy_status __initconst = {
+ 	.link	= 1,
+ 	.speed	= 100,
+ 	.duplex	= 0,
+@@ -119,7 +119,7 @@ static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
+ static int __init init_BSP(void)
+ {
+ 	m5272_uarts_init();
+-	fixed_phy_add(0, &nettel_fixed_phy_status);
++	fixed_phy_add(&nettel_fixed_phy_status);
+ 	clkdev_add_table(m5272_clk_lookup, ARRAY_SIZE(m5272_clk_lookup));
+ 	return 0;
+ }
+diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
+index de426a474..a93a4266d 100644
+--- a/arch/mips/bcm47xx/setup.c
++++ b/arch/mips/bcm47xx/setup.c
+@@ -256,7 +256,7 @@ static int __init bcm47xx_cpu_fixes(void)
+ }
+ arch_initcall(bcm47xx_cpu_fixes);
+ 
+-static struct fixed_phy_status bcm47xx_fixed_phy_status __initdata = {
++static const struct fixed_phy_status bcm47xx_fixed_phy_status __initconst = {
+ 	.link	= 1,
+ 	.speed	= SPEED_100,
+ 	.duplex	= DUPLEX_FULL,
+@@ -282,7 +282,7 @@ static int __init bcm47xx_register_bus_complete(void)
+ 	bcm47xx_leds_register();
+ 	bcm47xx_workarounds();
+ 
+-	fixed_phy_add(0, &bcm47xx_fixed_phy_status);
++	fixed_phy_add(&bcm47xx_fixed_phy_status);
+ 	return 0;
+ }
+ device_initcall(bcm47xx_register_bus_complete);
+diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+index 7902b35c5..b39532abf 100644
+--- a/drivers/net/phy/fixed_phy.c
++++ b/drivers/net/phy/fixed_phy.c
+@@ -153,9 +153,9 @@ static int fixed_phy_add_gpiod(unsigned int irq, int phy_addr,
+ 	return 0;
+ }
+ 
+-int fixed_phy_add(int phy_addr, const struct fixed_phy_status *status)
++void fixed_phy_add(const struct fixed_phy_status *status)
+ {
+-	return fixed_phy_add_gpiod(PHY_POLL, phy_addr, status, NULL);
++	fixed_phy_add_gpiod(PHY_POLL, 0, status, NULL);
+ }
+ EXPORT_SYMBOL_GPL(fixed_phy_add);
+ 
+diff --git a/include/linux/phy_fixed.h b/include/linux/phy_fixed.h
+index 5399b9e41..6227a1bde 100644
+--- a/include/linux/phy_fixed.h
++++ b/include/linux/phy_fixed.h
+@@ -17,7 +17,7 @@ struct net_device;
+ 
+ #if IS_ENABLED(CONFIG_FIXED_PHY)
+ extern int fixed_phy_change_carrier(struct net_device *dev, bool new_carrier);
+-int fixed_phy_add(int phy_id, const struct fixed_phy_status *status);
++void fixed_phy_add(const struct fixed_phy_status *status);
+ struct phy_device *fixed_phy_register(const struct fixed_phy_status *status,
+ 				      struct device_node *np);
+ 
+@@ -26,11 +26,7 @@ extern int fixed_phy_set_link_update(struct phy_device *phydev,
+ 			int (*link_update)(struct net_device *,
+ 					   struct fixed_phy_status *));
+ #else
+-static inline int fixed_phy_add(int phy_id,
+-				const struct fixed_phy_status *status)
+-{
+-	return -ENODEV;
+-}
++static inline void fixed_phy_add(const struct fixed_phy_status *status) {}
+ static inline struct phy_device *
+ fixed_phy_register(const struct fixed_phy_status *status,
+ 		   struct device_node *np)
 -- 
-Cheers
-
-David / dhildenb
+2.50.1
 

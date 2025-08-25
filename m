@@ -1,80 +1,76 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5145A279DCA;
-	Mon, 25 Aug 2025 04:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CF524A074;
+	Mon, 25 Aug 2025 07:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756097302; cv=none; b=M6/uamd1Dn6keEF9AveTGZXrmrddd51nBkDG2SrClaVDmOWOSjqp1YX0izvR8XXYieeWvjZcMY7tQRDVVX43+hMoo5cECPIn8Tjl65FmEzAFE22U1ngVo3xhbO0iW/TnDs36XkecH9qiqBEc/EIMNCwDbpY94vpRiVDOWRxeuwk=
+	t=1756107766; cv=none; b=TZIKPw53KYH7zb/HOY2IoNnZw9PUvfjvdOuFQ9aY9n89ffddacpgtIbopcxGJAJ3NRSUPev26YyobtV0AxrRImtx4QzhVPWXwth5oGCkrOUMM3RH7ekJuxqgMcTF6eD+KkU0oNPiutObAmkbgmfuIY9lyKydNXMok4TepCtF4hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756097302; c=relaxed/simple;
-	bh=W40kY5wbvrujI3XoYcNY8F73SYmOlQZdIoEMWzKo428=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Yzvd4ly+b9aH4QRCGP35cTnSlr9KLFp8RV0N2eYpOM378kOVOKv/vWBIKs+wj0McXvM7JQoiH/s6YIqLUHtPWkHSmYDInRx6+S2aMgwHxmLJOW04hg3Q08ALfjKNF7dH7wPf9YhORuYbO7/F71yzX1uHT/cq+OtUoBM/Zeg45Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIitUTgQ; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1756107766; c=relaxed/simple;
+	bh=CF3nCaQrlkAeMy06uuovK8drERouHS65tJ8iar6vLsY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mvSAg8rkLMCV+TDliBbbHYHe7ZYAfmCTSCnyZTKwRFAqTKQQy1wWKU/SODfl+z/vJ6Foseb0ft2lwqEaXfh8Jkii/UiumxbTm2tnuMrzEkQg3H3rqlywCLp6DUEAq/2fLXM5TJ0OHNELNuxoz4w23p+2vs8x83tjmMPZVcaoc50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k5XCEXJ3; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIitUTgQ"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-770522b34d1so821994b3a.1;
-        Sun, 24 Aug 2025 21:48:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k5XCEXJ3"
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-324fb2bb058so2615939a91.3;
+        Mon, 25 Aug 2025 00:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756097296; x=1756702096; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3zksa426wZGWz5xoWsOiI60ErY/o4m1oTspwldflGbw=;
-        b=BIitUTgQ078Fgfzy0Ws8TqRPth67z4pBy0+ZWzd0TkmWsCPvjl6apTCvQhDxBhWupy
-         gTd7K/l5hybgQlfWRtFvGbB8qKHXJH1Y3ZuJCfjpi5g9lo2cmWeVHfRhEBFk7L0bHv6z
-         XHuxMS7jT4ChCOrVMkfgmQeVYXLBq1qyFY1QXOrrkGZ5pyXz0VF8nNyn0uBl8ltIHNNu
-         iNzMzALNLfPZl82seJbxmqBUbUNc6SsO9JF/YwJ3DnPRlyt8WY7jwz3NaSz8g3NNvhMU
-         jsVheZg0QF404F1RAD6qUmEB2ZHx7OephPv1EwtRlT3jr9uyKuAlGXziixFWYwj22q4B
-         5uiw==
+        d=gmail.com; s=20230601; t=1756107764; x=1756712564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+iedLlKmbf9rTuBT+gfMn79Q+NQYLm/fmWWO3YkJIA=;
+        b=k5XCEXJ3o1OjlfxfaQWd0sLNV24GpXXvTq9+DQuk54Y1kzpZpMsr147sSaCNfa1MDg
+         jkQwqfHbxCTlLPT5wcozPspeTf8K4zIT0/Oa+grK2d5UwIFBXZRYsZTsPGzKGdpik8VN
+         7OkiTWKiJR3YaDwxBccAMbZAT7R5v2uS/KTebZ8GqknhVyHPoZJBMOp1JNUnGLJaFA+I
+         /qHlwk26yFXj19eVSRdtF9o3PJVxpMgH2CNslSrhqyTLCPfPuwz1GeYc2yUHaIPCr0cK
+         Y6S/CeGLPSK+9DwOUYZG0dTs54Z6QZ6vihi0oj1WMWwtn+HAsz/WLGXQhbXjvuiP7+b8
+         DuMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756097296; x=1756702096;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3zksa426wZGWz5xoWsOiI60ErY/o4m1oTspwldflGbw=;
-        b=r46TqXWiRynf0Q3h8nfM5riq7bd4byOEklVF7yaQNXKzIgqQqDWXvuyObMFUy7HNsv
-         jhiEuQ2qHnIP5Mfa7DZHWeRRQdjcF5weW4V+2RR93Wg3nq5FVVRS+AON+NNh+3gmXKjd
-         L37nnRqoCnD5p31QMIzIa1JikHS+EYyAy5AWnwxvoxF+02mldzyYVqdGBsqS3qs3WU4l
-         vQ7K9xDcXD2Kmzea2FgYyWoyAbUoI9GQ2B0eQwVRGzEklgqgk9i5759OnghxDoneLPRG
-         IQv/ix0FVrVc+EAdTJNHGMbzQhPQsZBDKK5cAT6HkiRm8nKnitgr5fhnvjfE4PQ3Ml56
-         ZgNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUDLoXfo3V92Kg64tDwiGTb3z1EGrl6C3QUp8lCJi+TeU7XkIrfxFKVeppqlSaXKYfRTOeJhqiCs3RM@vger.kernel.org, AJvYcCUsBxJHn/RuWa/ue/cA4wt40+3pchsvzmyzQzru/9QlFP8BxUxF1i7RcwkuSEZUIv65Y+TOnrzV5iHMJ8xm@vger.kernel.org, AJvYcCW2BMLdzV6IPSDbARFPxzSb8GeHd03/hnWl1YlhLQJPpSdrbjo0RLDkNFSi2D32hg/v4hIm2cRjtfGmTw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbStgtyTCf8wC559zx0F9tOx35o2oIlsXim9uZJq3ipd/bdmBR
-	SCOwb2kPuA9Gy5BWXFw+6kARtiDnhmFVI/EgphmAkGvNbRTpHGUT+HEZX1I/PA==
-X-Gm-Gg: ASbGncusYSHZJcMA6q8P3d7ZXN/L3nN5Z0FON1YO9mc6iP7nOcxzT9PsFsu7Khi5gGy
-	kYOXeUKqi1lrVIastI7zmSEUjmLnU0PleA9u53ijRcREa5K8lrSi7q4yYuA0odJaQGn+Vtn3sB/
-	3i1v2V6dKnBNy2j4xJJMVyXymaAJsw1Yn4HyMCgSmhPbY2nh0nmpmU48LZVg0/f8RCqmgrQMfCt
-	2KTe6YY58glpm6PnBdjaVwSc/dApWuyaZa4H8XIYvRDVbROP4xcRDuK4Yon0y99YZ6ceOMaoLFv
-	So58qaoALkDS2LWcwe4cENNlK1tFoOc9Uh4ZAYqMi9PS4XxqGSUKI5ojjhIdmEXKW3Rcel0UqDi
-	AYhzDCaNYBKzrspZ2BSOhn8LyskxEwAFy6T5m3DQfcVQMtoUDY5ccddjJUuJKqo8w7Q==
-X-Google-Smtp-Source: AGHT+IGMbvA1fRQJwmpM2k+yGypRyBq83t7qsLxSLdp+YurVFWf1dWesggIrkclU+8wcpw2f098ezw==
-X-Received: by 2002:a05:6a20:5493:b0:240:10d2:adf5 with SMTP id adf61e73a8af0-24340b57600mr16289611637.2.1756097296348;
-        Sun, 24 Aug 2025 21:48:16 -0700 (PDT)
-Received: from archlinux.lan ([2601:644:8200:acc7::1f6])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770400010a1sm6170153b3a.43.2025.08.24.21.48.15
+        d=1e100.net; s=20230601; t=1756107764; x=1756712564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z+iedLlKmbf9rTuBT+gfMn79Q+NQYLm/fmWWO3YkJIA=;
+        b=Jkphi2peJv5v0ml6OMFrYGbI4Pv5+OEIpcaNsIVnc89krucReO0XE1YxKR4cFKHO4r
+         MOlOtsp9oO9RhRDgt+42mwmf/ehAsOThcvrhnC/9SrtFtUS3++lcp1lSrhzNYcNWZgny
+         4FHnqFgSbujLtkZ/BhMyitLtk8NbImT0v/kOy5Q043ZY7bXMMWugkq9YFvn8M00eE7gQ
+         I2e83atsapDQ2uJwm4vJVRQHJhhr/Yjmmay9YXLQJJgMsNX7GgVmFtjwJjKJLXt+uXSY
+         SrifcibOXYRu3a6zSH+UsKQaJMd/gGkRIPt7h4AZPuHKZkVP7lnG/Gz2WYeKIQ1562SJ
+         0Tyg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4jMEVHqvIpSY02CNBpg5Y1m5YeNQrBR0IVkDzl9JXAMZZTCmW2/7R6NjWQSxvwXIAuItGJhXmyykQAA==@vger.kernel.org, AJvYcCVZTlIdOuor2gZUtod3hiehFW7FRU6y1TAVtinQnke49hw+BiPPEsrw9wlSSlmnndiLT1YHfRtIXB8=@vger.kernel.org, AJvYcCVx/Sx9wqWH4WeXCl6SSJ+Uhecc7QnV9zxZxTF99K1pZz5b47BKnNDjzA/pj5l3ZpUuau+dF4YyPdbCEzcC@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfKvNkHwuARiOEvBCE+Y2Y3eKVbmR9jPGUHp6jUkLWsFsdLouz
+	taSw0wMy/xcdoEQF68DE4OdQOAzAVgKcGlLeEDfS6prLrSK1XG87Cz11/BtpPtcA
+X-Gm-Gg: ASbGncuzpFCBonXAG1rwoL3mGOpPbbaVnmTXngzAVt2hgN5UfKyIIk2YYEbJeb6ZWTH
+	GYBuTzF4Eroj7NE3KG3R/CCoUOrzJR5TqR26benbSrfwbTI/sxcaX+1JkM3eqGywiu7FkLWaxLm
+	7OvKDyeF1KFMUy3XrS/n2FiwQHaXLMwzAavIM5zoUXHOWqhvs0olmlZ9XvqjuDs5Ta0HlJ9OLYI
+	fg96fRTtD9G+2RlyW/vXbIdwYAGd4o2a3RpdE36oo+90X/nTDtHocu8w94Nu3NrqJRJzgVngW97
+	6xLaAu5tGkitqQt5OE7XE23jlRCSUBNFwOTOvHVAwRp7Xe8I0czmdr4emdezR0XSudDMRDhtINJ
+	K2BLvNDH2nsJQ06ENAnub/7rIbR3dsqZ3yTwQmjzScIJlWQ4JMGqt8A==
+X-Google-Smtp-Source: AGHT+IEaUrxdiHAQTBJbTzF/2pJwOoJ4BhJ3kWnE128jOIU8pVoa9qAhPX9k9LAdpusHHPu7o458fw==
+X-Received: by 2002:a17:90b:278b:b0:324:ffcf:153a with SMTP id 98e67ed59e1d1-32515eaeef7mr14636408a91.20.1756107763923;
+        Mon, 25 Aug 2025 00:42:43 -0700 (PDT)
+Received: from 100ask.localdomain ([116.234.74.152])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3252e7433ccsm3513423a91.8.2025.08.25.00.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Aug 2025 21:48:15 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-wireless@vger.kernel.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-kernel@vger.kernel.org (open list),
-	linux-mips@vger.kernel.org (open list:MIPS)
-Subject: [PATCHv3 2/3] wifi: ath9k: ahb: add led pin OF support
-Date: Sun, 24 Aug 2025 21:48:11 -0700
-Message-ID: <20250825044812.1575524-3-rosenp@gmail.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250825044812.1575524-1-rosenp@gmail.com>
-References: <20250825044812.1575524-1-rosenp@gmail.com>
+        Mon, 25 Aug 2025 00:42:43 -0700 (PDT)
+From: Nino Zhang <ninozhang001@gmail.com>
+To: devicetree@vger.kernel.org
+Cc: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	vkoul@kernel.org,
+	rahulbedarkar89@gmail.com,
+	linux-mips@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Nino Zhang <ninozhang001@gmail.com>
+Subject: [PATCH v3] dt-bindings: dma: img-mdc-dma: convert to DT schema
+Date: Mon, 25 Aug 2025 15:41:41 +0800
+Message-ID: <20250825074141.560141-1-ninozhang001@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -83,41 +79,185 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The old and removed platform code had support for assigning a value for
-the LED pin for when the default is not correct. Effectively a fix for a
-non working LED.
+Convert the img-mdc-dma binding from txt to YAML schema.
+No functional changes except dropping the consumer node
+(spi@18100f00) from the example, which belongs to the
+consumer binding instead.
 
-For setting an LED to active high, a negation of led-active-low is used,
-as two drivers currently use that and no drivers use led-active-high or
-something similar.
-
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Nino Zhang <ninozhang001@gmail.com>
 ---
- drivers/net/wireless/ath/ath9k/init.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+v2 -> v3:
+- Fix remaining issues based on Rob's and Krzysztof's comments.
+- Link to v2: https://lore.kernel.org/all/20250824034509.445743-1-ninozhang001@gmail.com/
 
-diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
-index c911b178dcc2..269a792c3256 100644
---- a/drivers/net/wireless/ath/ath9k/init.c
-+++ b/drivers/net/wireless/ath/ath9k/init.c
-@@ -662,6 +662,17 @@ static int ath9k_of_init(struct ath_softc *sc)
- 	if (ret == -EPROBE_DEFER)
- 		return ret;
- 
-+	np = of_get_child_by_name(np, "led");
-+	if (np) {
-+		u32 led_pin;
+v1 -> v2:
+- Addressed review comments from Rob.
+- Link to v1: https://lore.kernel.org/all/20250821150255.236884-1-ninozhang001@gmail.com/
+
+ .../bindings/dma/img,pistachio-mdc-dma.yaml   | 89 +++++++++++++++++++
+ .../devicetree/bindings/dma/img-mdc-dma.txt   | 57 ------------
+ 2 files changed, 89 insertions(+), 57 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/img,pistachio-mdc-dma.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/img-mdc-dma.txt
+
+diff --git a/Documentation/devicetree/bindings/dma/img,pistachio-mdc-dma.yaml b/Documentation/devicetree/bindings/dma/img,pistachio-mdc-dma.yaml
+new file mode 100644
+index 000000000000..198e80b528c8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dma/img,pistachio-mdc-dma.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dma/img,pistachio-mdc-dma.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		if (!of_property_read_u32(np, "reg", &led_pin))
-+			ah->led_pin = led_pin;
++title: IMG Multi-threaded DMA Controller (MDC)
 +
-+		ah->config.led_active_high = !of_property_read_bool(np, "led-active-low");
-+		of_node_put(np);
-+	}
++maintainers:
++  - Rahul Bedarkar <rahulbedarkar89@gmail.com>
++  - linux-mips@vger.kernel.org
 +
- 	return 0;
- }
- 
++allOf:
++  - $ref: /schemas/dma/dma-controller.yaml#
++
++properties:
++  compatible:
++    const: img,pistachio-mdc-dma
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 32
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: sys
++
++  img,cr-periph:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to peripheral control syscon node with DMA request to channel
++      mapping registers.
++
++  img,max-burst-multiplier:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    description:
++      Maximum supported burst size multiplier. The maximum burst size is this
++      value multiplied by the hardware-reported bus width.
++
++  "#dma-cells":
++    const: 3
++    description: |
++      DMA specifier cells:
++        1: peripheral's DMA request line
++        2: channel bitmap: bit N set indicates channel N is usable
++        3: thread ID to be used by the channel
++
++  dma-channels:
++    minimum: 1
++    maximum: 32
++    description: Defaults to HW-reported value if not specified.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - img,cr-periph
++  - img,max-burst-multiplier
++  - "#dma-cells"
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    dma-controller@18143000 {
++      compatible = "img,pistachio-mdc-dma";
++      reg = <0x18143000 0x1000>;
++      interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>,
++                   <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&system_clk>;
++      clock-names = "sys";
++
++      img,max-burst-multiplier = <16>;
++      img,cr-periph = <&cr_periph>;
++
++      #dma-cells = <3>;
++    };
+diff --git a/Documentation/devicetree/bindings/dma/img-mdc-dma.txt b/Documentation/devicetree/bindings/dma/img-mdc-dma.txt
+deleted file mode 100644
+index 28c1341db346..000000000000
+--- a/Documentation/devicetree/bindings/dma/img-mdc-dma.txt
++++ /dev/null
+@@ -1,57 +0,0 @@
+-* IMG Multi-threaded DMA Controller (MDC)
+-
+-Required properties:
+-- compatible: Must be "img,pistachio-mdc-dma".
+-- reg: Must contain the base address and length of the MDC registers.
+-- interrupts: Must contain all the per-channel DMA interrupts.
+-- clocks: Must contain an entry for each entry in clock-names.
+-  See ../clock/clock-bindings.txt for details.
+-- clock-names: Must include the following entries:
+-  - sys: MDC system interface clock.
+-- img,cr-periph: Must contain a phandle to the peripheral control syscon
+-  node which contains the DMA request to channel mapping registers.
+-- img,max-burst-multiplier: Must be the maximum supported burst size multiplier.
+-  The maximum burst size is this value multiplied by the hardware-reported bus
+-  width.
+-- #dma-cells: Must be 3:
+-  - The first cell is the peripheral's DMA request line.
+-  - The second cell is a bitmap specifying to which channels the DMA request
+-    line may be mapped (i.e. bit N set indicates channel N is usable).
+-  - The third cell is the thread ID to be used by the channel.
+-
+-Optional properties:
+-- dma-channels: Number of supported DMA channels, up to 32.  If not specified
+-  the number reported by the hardware is used.
+-
+-Example:
+-
+-mdc: dma-controller@18143000 {
+-	compatible = "img,pistachio-mdc-dma";
+-	reg = <0x18143000 0x1000>;
+-	interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 29 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 30 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 31 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 32 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 33 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 34 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 35 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 36 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 37 IRQ_TYPE_LEVEL_HIGH>,
+-		     <GIC_SHARED 38 IRQ_TYPE_LEVEL_HIGH>;
+-	clocks = <&system_clk>;
+-	clock-names = "sys";
+-
+-	img,max-burst-multiplier = <16>;
+-	img,cr-periph = <&cr_periph>;
+-
+-	#dma-cells = <3>;
+-};
+-
+-spi@18100f00 {
+-	...
+-	dmas = <&mdc 9 0xffffffff 0>, <&mdc 10 0xffffffff 0>;
+-	dma-names = "tx", "rx";
+-	...
+-};
 -- 
-2.50.1
+2.43.0
 

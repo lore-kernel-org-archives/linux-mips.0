@@ -1,153 +1,106 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEB91F4191
-	for <linux-mips@vger.kernel.org>; Wed, 27 Aug 2025 22:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3704438B;
+	Wed, 27 Aug 2025 22:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756333763; cv=none; b=BYsRT48sgKG5AYCLwYTtSSa2Hr3fwPHD5FqD4CfcaFxurHoEEU1SFjlGD+TRW6ZffmtGMBzentBjtoWLtFMfLJER2PIijJoX9ctLH2F/jE4zl8nOC8mklO40aoCjOh1tXO0s2FzbIB4kdehLtd7fwJ8zugnwisaX3NPYp0YzBwY=
+	t=1756334169; cv=none; b=QDggZiLqi8kJNimMoCLdNCDFT6jgIhCcST7tCPT4a+i9cYs1Pks/oT3Fd+qt4aThe93oOGE663bV1ezvbt3RPLD0SxeejvlxyWXXXFH2/1ULrsnYoW1wE1rx2Iaxm982WortLHTmebSaKPY7lEGMsfJINZz4VbgaG8zw8fnL2J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756333763; c=relaxed/simple;
-	bh=YElmM2yrQKi6oHEoGmgtdijLItlmJRYKh4T8MaNYT9c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H246/nUWWfQdx2Vh/xASnO7+t5gOmTO3dffTHG6gIpbsipEcBG422ZVRFNkk8YUuakfQzRkjt3QF46pOtvMJGGb7783IWLGWQujr7y2LdXM9RsvZlMfn6bg0cqnBJSP9gyaxeJS5vb2deZJwMzR8NPdYRKZKXiRYcBnElDz9WCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SkcPYgZS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1756334169; c=relaxed/simple;
+	bh=SuvtG9zPU1paS6zdtAQLH1EmQzS92Y488uepGCslfWI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=FANBEHsYc+JZAcAgVqyNA+ReDGEuKt0Ah7/hf+bqGxWM7BpFfzRTvZgQr14mz6fAfvRX08wUyjgEmxB5Vy0+nsxhxKjn+LAS/m8WxQ3Y4gR11WV0iaGWqhAUFDNEGTm3Sw486jybZDpMsHrwDRcueNuKi/3FfmjgNXF24HbV2K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUpxeAZt; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SkcPYgZS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756333761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J4GDJdCQl51NuSKZxl+9iTiOXWhrOYbM3n+02Irtvfk=;
-	b=SkcPYgZSGfqKJ4lbZS+yYb1GgOGhdJbUT13uxvX9BvehDHZp5XdtVLMdjku4knd22x/XFq
-	PPxWIn2uS4HMO+v5e4KroS7kqqhRQx8nhsKrRcs4jB6RCyC6qg79q4q6LM8p3et2LXbc35
-	wZshVW7aaO8ckfH7Hzc538iboEl+VK0=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-581-9TdTk-QAOCyo3sfI9-0djQ-1; Wed,
- 27 Aug 2025 18:11:36 -0400
-X-MC-Unique: 9TdTk-QAOCyo3sfI9-0djQ-1
-X-Mimecast-MFC-AGG-ID: 9TdTk-QAOCyo3sfI9-0djQ_1756332692
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F1280180028E;
-	Wed, 27 Aug 2025 22:11:31 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.22.80.195])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 78E0330001A1;
-	Wed, 27 Aug 2025 22:11:16 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: David Hildenbrand <david@redhat.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Brendan Jackman <jackmanb@google.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	Dennis Zhou <dennis@kernel.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	iommu@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	John Hubbard <jhubbard@nvidia.com>,
-	kasan-dev@googlegroups.com,
-	kvm@vger.kernel.org,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-arm-kernel@axis.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-crypto@vger.kernel.org,
-	linux-ide@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Marco Elver <elver@google.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	netdev@vger.kernel.org,
-	Oscar Salvador <osalvador@suse.de>,
-	Peter Xu <peterx@redhat.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Tejun Heo <tj@kernel.org>,
-	virtualization@lists.linux.dev,
-	Vlastimil Babka <vbabka@suse.cz>,
-	wireguard@lists.zx2c4.com,
-	x86@kernel.org,
-	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH v1 33/36] mm/gup: drop nth_page() usage in unpin_user_page_range_dirty_lock()
-Date: Thu, 28 Aug 2025 00:01:37 +0200
-Message-ID: <20250827220141.262669-34-david@redhat.com>
-In-Reply-To: <20250827220141.262669-1-david@redhat.com>
-References: <20250827220141.262669-1-david@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUpxeAZt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C3EBC4CEEB;
+	Wed, 27 Aug 2025 22:36:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756334168;
+	bh=SuvtG9zPU1paS6zdtAQLH1EmQzS92Y488uepGCslfWI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=DUpxeAZt3sd2SF+CHF9cOy/FaqwBpkfO3QmQLN4WtjqYJww1JgdN330EJgtOo7awf
+	 xyWVC65Ik9s82mLjd16u/fsvSuu23dv4M1YBxCe8bO6CXWEgzoRLhpV3WDHPmP25aY
+	 MN84rM34MoHWDkORX0/iiQ1n3JoUADeR5wXKbBAovlj1sAMI5uZeJDeOfTYi0lz+zn
+	 V5/DUusNTXr35xQCbizoSyjKjZgXsropAj0Da/2jC4EKIm5VEVn251opw5aNwUVvou
+	 RRsuPYOe7vPF9M/TvmOxlhhB1X2T3hVX9lRk7L3x0iNPNnhqbMmQokcb4oci+E0njx
+	 QPfbX1CvuOzSQ==
+Date: Wed, 27 Aug 2025 17:36:06 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-pci@vger.kernel.org, sparclinux@vger.kernel.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Yinghai Lu <yinghai@kernel.org>,
+	Igor Mammedov <imammedo@redhat.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	linux-kernel@vger.kernel.org,
+	=?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 00/24] PCI: Bridge window selection improvements
+Message-ID: <20250827223606.GA915856@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <20250822145605.18172-1-ilpo.jarvinen@linux.intel.com>
 
-There is the concern that unpin_user_page_range_dirty_lock() might do
-some weird merging of PFN ranges -- either now or in the future -- such
-that PFN range is contiguous but the page range might not be.
+On Fri, Aug 22, 2025 at 05:55:41PM +0300, Ilpo Järvinen wrote:
+> This series is based on top of the three resource fitting and
+> assignment algorithm fixes (v3).
+> 
+> PCI resource fitting and assignment code needs to find the bridge
+> window a resource belongs to in multiple places, yet, no common
+> function for that exists. Thus, each site has its own version of
+> the decision, each with their own corner cases, misbehaviors, and
+> some resulting in complex interfaces between internal functions.
+> ...
 
-Let's sanity-check for that and drop the nth_page() usage.
+> I've tried to look out for any trouble that code under arch/ could
+> cause after the flags start to behave differently and therefore ended
+> up consolidating arch/ code to use pci_enable_resources(). My
+> impression is that strictly speaking only the MIPS code would break
+> similar to PCI core's copy of pci_enable_resources(), the others were
+> much more lax in checking so they'd likely keep working but
+> consolidation seemed still the best approach there as the enable checks
+> seemed diverging for no apparent reason.
+> ...
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/gup.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+>   m68k/PCI: Use pci_enable_resources() in pcibios_enable_device()
+>   sparc/PCI: Remove pcibios_enable_device() as they do nothing extra
+>   MIPS: PCI: Use pci_enable_resources()
+> ...
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 89ca0813791ab..c24f6009a7a44 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -237,7 +237,7 @@ void folio_add_pin(struct folio *folio)
- static inline struct folio *gup_folio_range_next(struct page *start,
- 		unsigned long npages, unsigned long i, unsigned int *ntails)
- {
--	struct page *next = nth_page(start, i);
-+	struct page *next = start + i;
- 	struct folio *folio = page_folio(next);
- 	unsigned int nr = 1;
- 
-@@ -342,6 +342,9 @@ EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
-  * "gup-pinned page range" refers to a range of pages that has had one of the
-  * pin_user_pages() variants called on that page.
-  *
-+ * The page range must be truly contiguous: the page range corresponds
-+ * to a contiguous PFN range and all pages can be iterated naturally.
-+ *
-  * For the page ranges defined by [page .. page+npages], make that range (or
-  * its head pages, if a compound page) dirty, if @make_dirty is true, and if the
-  * page range was previously listed as clean.
-@@ -359,6 +362,8 @@ void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
- 	struct folio *folio;
- 	unsigned int nr;
- 
-+	VM_WARN_ON_ONCE(!page_range_contiguous(page, npages));
-+
- 	for (i = 0; i < npages; i += nr) {
- 		folio = gup_folio_range_next(page, npages, i, &nr);
- 		if (make_dirty && !folio_test_dirty(folio)) {
--- 
-2.50.1
+>  arch/m68k/kernel/pcibios.c   |  39 +-
+>  arch/mips/pci/pci-legacy.c   |  38 +-
+>  arch/sparc/kernel/leon_pci.c |  27 --
+>  arch/sparc/kernel/pci.c      |  27 --
+>  arch/sparc/kernel/pcic.c     |  27 --
+> ...
 
+I love the fact that you're doing so much cleanup.  Thanks for all the
+work in this!
+
+Obviously all this code is quite sensitive, so I put it on
+pci/resource to get more exposure in -next.  If it turns out that we
+trip over things or just don't feel comfortable yet for v6.18, we can
+always defer this part until the next cycle.
+
+I will also watch for acks from the m68k, mips, and sparc maintainers
+for those pieces.
+
+Bjorn

@@ -1,108 +1,52 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66F7342C92;
-	Wed, 27 Aug 2025 13:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1E02777FD;
+	Wed, 27 Aug 2025 14:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756302631; cv=none; b=bc9h+gGGyZ/ohefJtj25jaExmeN0UpW35lBCbimGbcRsGY9EQSZr0b5n+WQOlj4wihDQzWTxt7aAZYmNnrWYQFLJBgETU/Jspn+hASSp+pugOR9tNjcwBpYIbKNlj17472tC1uN5qd2WSWI1dXptI9fLM5dVhAKq2yXj8ByGPBY=
+	t=1756303427; cv=none; b=YuIkowAHhNFN8sAC3wHQJoukNZ/UvCk9JQwpihFHJnnImCRJnipAeY/729UmcBShrr8/GlEBGSJI/8Ejy3naxzZTuwLJ5t2i1Z2bBAR/ira5nFLVwSCrISxd6k00mZARtuBfwXG5H34AK0B4dH0TXmHfoURWvhlj2ICAqnVA90c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756302631; c=relaxed/simple;
-	bh=sjDy2yPaMyRUWRHA7zNCNkrYIPM6l4g0nDQeVISxPDs=;
+	s=arc-20240116; t=1756303427; c=relaxed/simple;
+	bh=Raut/Y3QhFz4pCtCI4WlrGPrxYFCg/MxG6p0mRrxWl4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VvLjF50lMH9BSuMKY/T0ifYiu9BvZ9cOl5k7gZaEOMdlVu7hNVjMY+LLOvtvLKbsV9m/MjIAwQ7d9WPFuzzMuXPGB5Z73mcC/HTaQFguerZhp7GLSzOEsM5jbgU9U0O7aaj1x4c+U7gEezTN1/gqIlOd69QCOx2KAlSMkcOe0IU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com; spf=none smtp.mailfrom=foss.arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=foss.arm.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZjIuRSZZnm3YZ2e9Gbe7ZVrcI76yluX0INvboYOL3liQ1R9BQQ29B8d365OgBOlHnmNlr1Jw5FnQ38jfYW8lETTN53A1V4VhVpxncfv+MZfq5wJLegXclL7CFB1klFQz3cwlKERM/ZhM7GpSRlCQGTa4knjabGPIbqRPVRLnCDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1ECC1688;
-	Wed, 27 Aug 2025 06:50:20 -0700 (PDT)
-Received: from bogus (unknown [10.57.57.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A11B23F694;
-	Wed, 27 Aug 2025 06:50:11 -0700 (PDT)
-Date: Wed, 27 Aug 2025 14:49:48 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Brian Masney <bmasney@redhat.com>
-Cc: Peng Fan <peng.fan@oss.nxp.com>, Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@gmail.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	Taichi Sugaya <sugaya.taichi@socionext.com>,
-	Takao Orito <orito.takao@socionext.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Shan-Chun Hung <schung@nuvoton.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Yixun Lan <dlan@gentoo.org>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	UNGLinuxDriver@microchip.com, Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Sven Peter <sven@kernel.org>, Janne Grunau <j@jannau.net>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Neal Gompa <neal@gompa.dev>,
-	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Daniel Palmer <daniel@thingy.jp>,
-	Romain Perier <romain.perier@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andrea della Porta <andrea.porta@suse.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Qin Jian <qinjian@cqplus1.com>, Viresh Kumar <vireshk@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Alex Helms <alexander.helms.jy@renesas.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	arm-scmi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	sophgo@lists.linux.dev, linux-mips@vger.kernel.org,
-	imx@lists.linux.dev, linux-riscv@lists.infradead.org,
-	spacemit@lists.linux.dev, linux-stm32@st-md-mailman.stormreply.com,
-	patches@opensource.cirrus.com, linux-actions@lists.infradead.org,
-	asahi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev
-Subject: Re: [PATCH 112/114] clk: scmi: remove round_rate() in favor of
- determine_rate()
-Message-ID: <20250827-abstract-maize-tanuki-d1bdcb@sudeepholla>
-References: <20250811-clk-for-stephen-round-rate-v1-0-b3bf97b038dc@redhat.com>
- <20250811-clk-for-stephen-round-rate-v1-112-b3bf97b038dc@redhat.com>
- <20250827070933.GB18994@nxa18884-linux.ap.freescale.net>
- <aK8EbcEHz3Yzpa1W@x1>
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 417AD2720;
+	Wed, 27 Aug 2025 07:03:36 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 662DB3F738;
+	Wed, 27 Aug 2025 07:03:37 -0700 (PDT)
+Date: Wed, 27 Aug 2025 15:03:22 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+	acme@kernel.org, namhyung@kernel.org,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+	linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, coresight@lists.linaro.org,
+	iommu@lists.linux.dev, linux-amlogic@lists.infradead.org,
+	linux-cxl@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 02/19] perf/hisilicon: Fix group validation
+Message-ID: <aK8QKlGsjB4WWg2e@J2N7QTR9R3>
+References: <cover.1755096883.git.robin.murphy@arm.com>
+ <c7b877e66ba0d34d8558c5af8bbb620e8c0e47d9.1755096883.git.robin.murphy@arm.com>
+ <aK2XS_GhLw1EQ2ml@J2N7QTR9R3>
+ <ab80cb84-42b2-4ce8-aa6c-4ce6be7a12b7@arm.com>
+ <aK3TS3s5_Pczx1nu@J2N7QTR9R3>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -111,79 +55,62 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aK8EbcEHz3Yzpa1W@x1>
+In-Reply-To: <aK3TS3s5_Pczx1nu@J2N7QTR9R3>
 
-On Wed, Aug 27, 2025 at 09:13:17AM -0400, Brian Masney wrote:
-> On Wed, Aug 27, 2025 at 03:09:33PM +0800, Peng Fan wrote:
-> > Hi Brian, Sudeep, Cristian
-> > 
-> > On Mon, Aug 11, 2025 at 11:19:44AM -0400, Brian Masney via B4 Relay wrote:
-> > >From: Brian Masney <bmasney@redhat.com>
-> > >
-> > >This driver implements both the determine_rate() and round_rate() clk
-> > >ops, and the round_rate() clk ops is deprecated. When both are defined,
-> > >clk_core_determine_round_nolock() from the clk core will only use the
-> > >determine_rate() clk ops, so let's remove the round_rate() clk ops since
-> > >it's unused.
-> > >
-> > >Signed-off-by: Brian Masney <bmasney@redhat.com>
-> > >---
-> > > drivers/clk/clk-scmi.c | 30 ------------------------------
-> > > 1 file changed, 30 deletions(-)
-> > >
-> > >diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> > >index d2408403283fc72f0cf902e65f4c08bcbc7b4b0b..6c6ddb92e7cf6a0cfac2c7e19c0f15f777bb8c51 100644
-> > >--- a/drivers/clk/clk-scmi.c
-> > >+++ b/drivers/clk/clk-scmi.c
-> > >@@ -54,35 +54,6 @@ static unsigned long scmi_clk_recalc_rate(struct clk_hw *hw,
-> > > 	return rate;
-> > > }
+On Tue, Aug 26, 2025 at 04:31:23PM +0100, Mark Rutland wrote:
+> On Tue, Aug 26, 2025 at 03:35:48PM +0100, Robin Murphy wrote:
+> > On 2025-08-26 12:15 pm, Mark Rutland wrote:
+> > > On Wed, Aug 13, 2025 at 06:00:54PM +0100, Robin Murphy wrote:
+
+> > > > diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > > > index c5394d007b61..3b0b2f7197d0 100644
+> > > > --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > > > +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > > > @@ -338,21 +338,16 @@ static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
+> > > >   	int counters = 1;
+> > > >   	int num;
+> > > > -	event_group[0] = leader;
+> > > > -	if (!is_software_event(leader)) {
+> > > > -		if (leader->pmu != event->pmu)
+> > > > -			return false;
+> > > > +	if (leader == event)
+> > > > +		return true;
+> > > > -		if (leader != event && !hisi_pcie_pmu_cmp_event(leader, event))
+> > > > -			event_group[counters++] = event;
+> > > > -	}
+> > > > +	event_group[0] = event;
+> > > > +	if (leader->pmu == event->pmu && !hisi_pcie_pmu_cmp_event(leader, event))
+> > > > +		event_group[counters++] = leader;
 > > > 
-> > >-static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> > >-				unsigned long *parent_rate)
-> > >-{
-> > 
-> > I see the point of round_rate is not used if determine_rate is there.
-> > But reading the code of round_rate, It might be better to rename
-> > scmi_clk_round_rate to scmi_clk_determine_rate.
-> > 
-> > Anyway, need Sudeep and Cristian to comment.
-> 
-> In this case, yes the round_rate implementation is filled out, whereas
-> the determine_rate lets the firmware handle it, and
-> scmi_clk_recalc_rate() will later populate the rate the clock is running
-> at.
-> 
-> I can convert round_rate over to determine_rate in this case, however it
-> would be a change to what's there now, and risks a regression. Here's
-> the relevant code from drivers/clk/clk.c where the determine_rate and
-> round_rate ops are called:
+> > > Looking at this, the existing logic to share counters (which
+> > > hisi_pcie_pmu_cmp_event() is trying to permit) looks to be bogus, given
+> > > that the start/stop callbacks will reprogram the HW counters (and hence
+> > > can fight with one another).
 
-I am inclined towards this. Determine rate was added recently when the
-clock parent support was added IIUC, so I don't think it should regress
-anything.
-
+> > It does seem somewhat nonsensical to have multiple copies of the same event
+> > in the same group, but I imagine it could happen with some sort of scripted
+> > combination of metrics, and supporting it at this level saves needing
+> > explicit deduplication further up. So even though my initial instinct was to
+> > rip it out too, in the end I concluded that that doesn't seem justified.
 > 
->     static int clk_core_determine_round_nolock(struct clk_core *core,
->                                                struct clk_rate_request *req)
->     {
->     	...
->             if (clk_core_rate_is_protected(core)) {
->                     req->rate = core->rate;
->             } else if (core->ops->determine_rate) {
->                     return core->ops->determine_rate(core->hw, req);
->             } else if (core->ops->round_rate) {
->                     rate = core->ops->round_rate(core->hw, req->rate,
->                                                  &req->best_parent_rate);
->     	...
+> As above, I think it's clearly bogus. I don't think we should have
+> merged it as-is and it's not something I'd like to see others copy.
+> Other PMUs don't do this sort of event deduplication, and in general it
+> should be up to the user or userspace software to do that rather than
+> doing that badly in the kernel.
 > 
-> If Sudeep / Cristian want the round rate converted to determine rate in
-> this driver, then I can do that in a v2.
-> 
+> Given it was implemented with no rationale I think we should rip it out.
+> If that breaks someone's scripting, then we can consider implementing
+> something that actually works.
 
-Yes please. Also please post it independent if it doesn't have to be in
-the series. To many in cc and lots of patches to respin all.
+Having dug some more, I see that this was intended to handle the way
+the hardware shares a single config register between pairs of counter
+and counter_ext registers, with the idea being that two related events
+could be allocated into the same counter pair (but would only occupy a
+single counter each).
 
--- 
-Regards,
-Sudeep
+I still think the code is wrong, but it is more complex than I made it
+out to be, and you're right that we should leave it as-is for now. I can
+follow up after we've got this series in.
+
+Mark.

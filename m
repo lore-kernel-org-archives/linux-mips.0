@@ -1,55 +1,51 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493EE28DF36
-	for <linux-mips@vger.kernel.org>; Wed, 27 Aug 2025 22:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1AD2D9ECD
+	for <linux-mips@vger.kernel.org>; Wed, 27 Aug 2025 22:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756332304; cv=none; b=hpYtERdT2471ZH6lQSEpGt5d62ubXKMkB3k2lYPtf8/k9m1/HosK6mw9pCvhOpPDP4edhpgTcO5GRYrQyCBaqfGDaYbqvSkEr/RDoxbMXqODAvIUlZYSoM6sOmCXf3/5352mPZAniXwIl+HaoVKgG/DBV4bZn7NydWz7xh2jujs=
+	t=1756332306; cv=none; b=VJJ1YiRrhydLkYJmtu5X5hgRjrGiMSSV4Zj0UbdsUd2uEsygIeEmnYMSBZ+8GITR+V7w1bOgRCDIsoKfsSNXkr1H1N5AcciZEgtTN9l2Jj14ciwRb5igA8J6jWJP84djKLf7KrfS7UA85YBcfSr06clGJIwxHvRBJCsnQ+7J9As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756332304; c=relaxed/simple;
-	bh=G8hBKtBVwZFtj4CkF2iFuP4QWE3SoN2SvkzJrofZOlQ=;
+	s=arc-20240116; t=1756332306; c=relaxed/simple;
+	bh=D2u5/+G1xeXtF2zeLldC795zgkCN5Lto6ZcYMqZjZMQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dGM+co0sGRfddE7y9mSkPtg6NLMk8B7eNABFfKV+VxhZmUU+lRr8xQOPyHSu8Y6a0C65sGN0N6d2xIqLgIxYCL6NaLXAxD7H+CWHFwTaeiw70B+OLVcyXQqE0LDBhSkiYe4bVTcogdSgwdkRamR94Me38A0qOGFqvHaUJcUnbug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aEX7s3X9; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=Fl30FJmu/84bsu95j8d530O0cvZdypaWIjDY1oH9QZmUi6GSUe0CljIY6dwYNlTCgZ85+IFjYFS1vM/K+9HSXHzPOY6nqBHWz8ojV0op6fSlyNtdcq8Y99CTY5WsnHpztIgS/QCOHRiydHPvj4Adu7BBNYk7Zrn75IsKQ1RSRGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dWhf3y32; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aEX7s3X9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dWhf3y32"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756332302;
+	s=mimecast20190719; t=1756332304;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BoCigziN+sd3886gtncwVGrOobwk0eDvjUtVkuDjFuc=;
-	b=aEX7s3X9ASidYDwanH3dMRxRtjBWFHMLAtaYclOYMVUyHsYH0jLxW5qAXjBrZwPUIXBW4e
-	i5LqVFDet+36SFpudPMdy1P0rhpxA0UPwgvqo/ciuqMmPd2D+21WD0skPXfU50IaKtIj81
-	Estj3wsmgt0eV1TYjcSsYKNduqyD5do=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+	bh=sdduxfP9sOW11CIIetzrq/g2aOdRCb5eN+kQk0XudUI=;
+	b=dWhf3y32upAUkzuMoEIWDbWIZHs307KGjUPmKV6PbIwI+Q1CQwzZbC7Ui2xrFBwXM30OtG
+	Hl49Q1twfjFmEWHHOytEkqPYRPk2iP5KIE3y2wem8k0KrgH+RHUC9zSk106OUhkzeZwSB5
+	hwi8GwooR4++jY76cndgNFnNSew9gvc=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-389-k0g0ERAQMDW3c6U23kRavw-1; Wed,
- 27 Aug 2025 18:03:37 -0400
-X-MC-Unique: k0g0ERAQMDW3c6U23kRavw-1
-X-Mimecast-MFC-AGG-ID: k0g0ERAQMDW3c6U23kRavw_1756332211
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-417-EpEDj_iqOtyJ7pKJWv6ETA-1; Wed,
+ 27 Aug 2025 18:04:58 -0400
+X-MC-Unique: EpEDj_iqOtyJ7pKJWv6ETA-1
+X-Mimecast-MFC-AGG-ID: EpEDj_iqOtyJ7pKJWv6ETA_1756332292
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ACA3A195608E;
-	Wed, 27 Aug 2025 22:03:30 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 995B919541AC;
+	Wed, 27 Aug 2025 22:04:52 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.22.80.195])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2E8CE30001A5;
-	Wed, 27 Aug 2025 22:03:13 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id CAF5B30001A1;
+	Wed, 27 Aug 2025 22:04:36 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: David Hildenbrand <david@redhat.com>,
 	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
 	Alexander Potapenko <glider@google.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Brendan Jackman <jackmanb@google.com>,
@@ -95,9 +91,9 @@ Cc: David Hildenbrand <david@redhat.com>,
 	wireguard@lists.zx2c4.com,
 	x86@kernel.org,
 	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH v1 04/36] x86/Kconfig: drop superfluous "select SPARSEMEM_VMEMMAP"
-Date: Thu, 28 Aug 2025 00:01:08 +0200
-Message-ID: <20250827220141.262669-5-david@redhat.com>
+Subject: [PATCH v1 09/36] mm/mm_init: make memmap_init_compound() look more like prep_compound_page()
+Date: Thu, 28 Aug 2025 00:01:13 +0200
+Message-ID: <20250827220141.262669-10-david@redhat.com>
 In-Reply-To: <20250827220141.262669-1-david@redhat.com>
 References: <20250827220141.262669-1-david@redhat.com>
 Precedence: bulk
@@ -109,31 +105,59 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Now handled by the core automatically once SPARSEMEM_VMEMMAP_ENABLE
-is selected.
+Grepping for "prep_compound_page" leaves on clueless how devdax gets its
+compound pages initialized.
+
+Let's add a comment that might help finding this open-coded
+prep_compound_page() initialization more easily.
+
+Further, let's be less smart about the ordering of initialization and just
+perform the prep_compound_head() call after all tail pages were
+initialized: just like prep_compound_page() does.
+
+No need for a comment to describe the initialization order: again,
+just like prep_compound_page().
 
 Reviewed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/x86/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ mm/mm_init.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 58d890fe2100e..e431d1c06fecd 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1552,7 +1552,6 @@ config ARCH_SPARSEMEM_ENABLE
- 	def_bool y
- 	select SPARSEMEM_STATIC if X86_32
- 	select SPARSEMEM_VMEMMAP_ENABLE if X86_64
--	select SPARSEMEM_VMEMMAP if X86_64
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 5c21b3af216b2..df614556741a4 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -1091,6 +1091,12 @@ static void __ref memmap_init_compound(struct page *head,
+ 	unsigned long pfn, end_pfn = head_pfn + nr_pages;
+ 	unsigned int order = pgmap->vmemmap_shift;
  
- config ARCH_SPARSEMEM_DEFAULT
- 	def_bool X86_64 || (NUMA && X86_32)
++	/*
++	 * We have to initialize the pages, including setting up page links.
++	 * prep_compound_page() does not take care of that, so instead we
++	 * open-code prep_compound_page() so we can take care of initializing
++	 * the pages in the same go.
++	 */
+ 	__SetPageHead(head);
+ 	for (pfn = head_pfn + 1; pfn < end_pfn; pfn++) {
+ 		struct page *page = pfn_to_page(pfn);
+@@ -1098,15 +1104,8 @@ static void __ref memmap_init_compound(struct page *head,
+ 		__init_zone_device_page(page, pfn, zone_idx, nid, pgmap);
+ 		prep_compound_tail(head, pfn - head_pfn);
+ 		set_page_count(page, 0);
+-
+-		/*
+-		 * The first tail page stores important compound page info.
+-		 * Call prep_compound_head() after the first tail page has
+-		 * been initialized, to not have the data overwritten.
+-		 */
+-		if (pfn == head_pfn + 1)
+-			prep_compound_head(head, order);
+ 	}
++	prep_compound_head(head, order);
+ }
+ 
+ void __ref memmap_init_zone_device(struct zone *zone,
 -- 
 2.50.1
 

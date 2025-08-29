@@ -1,30 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26ED3093D3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0845D309DB1;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463486; cv=none; b=tCJZl5ll3XeCGfjSgsfaCA1GPJ/L3wou5m8WKEo2OFlSD6VHPpZNEk6rgEZo6W7ZspGq5Bx4EnnAZnRucvLprGPRj8XSwHZWwWzjjnwJ2b6NbaiT65WSMZ0EDktvtJU+U3exGC0lXquqFvjd3J2IFgB1caONrYt/7ubo3i+4Poo=
+	t=1756463486; cv=none; b=kNqrlW512dS2jRIGJd6ZDQ1fbqTI3edjzu7xxP2TELxnDS1k32OaAsxePRsTM82tK2UT8gl8XUrfx9sWoNXNhsXPicGGnyI2nccOLNlmI/QFF5JBbokHcO7COO/K4uAws96/2sTiRxlR92YoZrhSO173U1YV9oGSH9YE7x+lplg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756463486; c=relaxed/simple;
-	bh=x0DcpxoaJzC3eABj+pJYwVsNbp9ziU6/CfwsIAiA+d0=;
+	bh=UD6rHchI8RIPt2L32FB7OhcnFnZFxyijGVTuxA6DLB8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tyCoqUdbYQNT35wzaahSujCRtxjq9ux4whMC9mVOVcmU1Dd5sLj2EODecO1qYnNrBcKpFxiiRrpvd7n5pEkIrvv4bXeWegPd4dF0VVInl+ULaN6vjvuzwvlaPiNu38wYI+hhXLcbDZWoF44zCAwAeg+hKrMV4HIIOSlZjjmdpg0=
+	 Content-Type:Content-Disposition:In-Reply-To; b=so8kAHh7N4I+7ZGf9FZjyO+75W+OhbcpYN2eWCjhnGoZKoVWltu8yybApm/mQUwLLcWrCQKPlm+wYHsSh4tRPuyqY2tp2ZCTB5u2nB3gtyAeJAXXE12Wj3qtKu4bDCueThvvmE+5q/8kXOz+XQYh0bUzGpKzNGNNRdIPXuTB5JE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO1-0004Fc-00; Fri, 29 Aug 2025 12:31:13 +0200
+	id 1urwO2-0004Fj-00; Fri, 29 Aug 2025 12:31:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id D3433C0965; Fri, 29 Aug 2025 12:23:24 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:23:24 +0200
+	id C0136C0AC9; Fri, 29 Aug 2025 12:23:56 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:23:56 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Aleksander Jan Bajkowski <olek2@wp.pl>
 Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
 	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: lantiq: danube: add missing properties to cpu node
-Message-ID: <aLF_nDfoiQ76Yqrj@alpha.franken.de>
-References: <20250811115818.735670-1-olek2@wp.pl>
+Subject: Re: [PATCH] mips: lantiq: danube: rename stp node on EASY50712
+ reference board
+Message-ID: <aLF_vFz7iB2turcr@alpha.franken.de>
+References: <20250812101700.970879-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -33,39 +34,31 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250811115818.735670-1-olek2@wp.pl>
+In-Reply-To: <20250812101700.970879-1-olek2@wp.pl>
 
-On Mon, Aug 11, 2025 at 01:58:15PM +0200, Aleksander Jan Bajkowski wrote:
-> This fixes the following warnings:
-> arch/mips/boot/dts/lantiq/danube_easy50712.dtb: cpus: '#address-cells' is a required property
-> 	from schema $id: http://devicetree.org/schemas/cpus.yaml#
-> arch/mips/boot/dts/lantiq/danube_easy50712.dtb: cpus: '#size-cells' is a required property
-> 	from schema $id: http://devicetree.org/schemas/cpus.yaml#
-> arch/mips/boot/dts/lantiq/danube_easy50712.dtb: cpu@0 (mips,mips24Kc): 'reg' is a required property
-> 	from schema $id: http://devicetree.org/schemas/mips/cpus.yaml#
+On Tue, Aug 12, 2025 at 12:16:57PM +0200, Aleksander Jan Bajkowski wrote:
+> This fixes the following warning:
+> arch/mips/boot/dts/lantiq/danube_easy50712.dtb: stp@e100bb0 (lantiq,gpio-stp-xway): $nodename:0: 'stp@e100bb0' does not match '^gpio@[0-9a-f]+$'
+> 	from schema $id: http://devicetree.org/schemas/gpio/gpio-stp-xway.yaml#
 > 
 > Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 > ---
->  arch/mips/boot/dts/lantiq/danube.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
+>  arch/mips/boot/dts/lantiq/danube_easy50712.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/boot/dts/lantiq/danube.dtsi b/arch/mips/boot/dts/lantiq/danube.dtsi
-> index 7a7ba66aa534..0a942bc09143 100644
-> --- a/arch/mips/boot/dts/lantiq/danube.dtsi
-> +++ b/arch/mips/boot/dts/lantiq/danube.dtsi
-> @@ -5,8 +5,12 @@ / {
->  	compatible = "lantiq,xway", "lantiq,danube";
->  
->  	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
->  		cpu@0 {
->  			compatible = "mips,mips24Kc";
-> +			reg = <0>;
+> diff --git a/arch/mips/boot/dts/lantiq/danube_easy50712.dts b/arch/mips/boot/dts/lantiq/danube_easy50712.dts
+> index 1ce20b7d05cb..aa7256ddd529 100644
+> --- a/arch/mips/boot/dts/lantiq/danube_easy50712.dts
+> +++ b/arch/mips/boot/dts/lantiq/danube_easy50712.dts
+> @@ -91,7 +91,7 @@ etop@e180000 {
+>  			mac-address = [ 00 11 22 33 44 55 ];
 >  		};
->  	};
 >  
+> -		stp0: stp@e100bb0 {
+> +		stp0: gpio@e100bb0 {
+>  			#gpio-cells = <2>;
+>  			compatible = "lantiq,gpio-stp-xway";
+>  			gpio-controller;
 > -- 
 > 2.47.2
 

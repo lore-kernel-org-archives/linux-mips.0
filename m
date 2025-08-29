@@ -1,34 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CEF53081B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B7E309DA5;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463484; cv=none; b=IvKexR6wzyff0/5IkDTz/SzA9G46OpoU/KYPh/hxZE9I7QoT/G/cit1Erh7rZp6B7gtyeRbT+wE/1XCUetvIJGJrwbuX6weHGYZPjwMHBpbfAJGYmQp5ypi8X+HeOCweGUVZYl6puwoqdcVUlkTezJHpA3si3eiON1GUCVuCx0c=
+	t=1756463484; cv=none; b=gkCmncENc8uI7CXeV20Wq1xC0q/jDnP4pKjcKXxI0iabzG3qcW1LHGT+ZrNDjB5uf+Bh9LSgos42Civ9yr3Ge2JPehCI6Gw6mLp1vegKRZgCGWzSlJQKynwc7niPFrih+oGRLMIQlF60S4G1xyH1g/aKIv5Hju9B1Md/6ATESZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756463484; c=relaxed/simple;
-	bh=v6j5gIxyOYuyK4xSV1ZCVMRo3rpHZVW2elwuuj5tzoo=;
+	bh=7plASZAYid0OW1+WabE17O9wn/eOweohKuNlfy/AVvo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WtM+5njIFWd8+ic1BF4AS6HTNTVsxQpmdFr6GB2DVGIze8EwGkQ1WnqBVfzSsiYGGJmiZMjFTvxR2H09AeYc4Vbe6yyLy6KizNe4FfAj90rzJHGecwdTTxkx6OHxMDdkRUL3GOFNgrUzqdhrJHTOWOZo++y6MPcJa2UdFwdD6TM=
+	 Content-Type:Content-Disposition:In-Reply-To; b=d6+zWLRztNnI8OO3rYKoZEkCXmdOw2ShRPbq+0AezpVggp4WZdhOkH+GMXN/tDAew9KtVT9don61Poxh4Xh4qciOMGWk5/mZnAVTCpU+eqtblO2cX3YUobK/bNQiq2rQZlyPtB2pFQ/DRKSZzu08PriMI/widz/pWh2GJR4AkQw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO1-0004FQ-00; Fri, 29 Aug 2025 12:31:13 +0200
+	id 1urwO2-0004Ga-00; Fri, 29 Aug 2025 12:31:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 3B495C04FD; Fri, 29 Aug 2025 12:20:10 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:20:10 +0200
+	id EFB10C0EEC; Fri, 29 Aug 2025 12:27:36 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:27:36 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: keguang.zhang@gmail.com
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
-Subject: Re: [PATCH v3 0/9] MIPS: loongson32: Convert all platform devices to
- DT
-Message-ID: <aLF-2sxq3mw4hx2s@alpha.franken.de>
-References: <20250716-loongson1-arch-v3-0-d160974d696b@gmail.com>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Loongson64: Replace deprecated strcpy() with
+ strscpy_pad()
+Message-ID: <aLGAmDgmfqaSOvaB@alpha.franken.de>
+References: <20250819102319.711935-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -37,84 +35,54 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250716-loongson1-arch-v3-0-d160974d696b@gmail.com>
+In-Reply-To: <20250819102319.711935-2-thorsten.blum@linux.dev>
 
-On Wed, Jul 16, 2025 at 07:25:09PM +0800, Keguang Zhang via B4 Relay wrote:
-> Convert all platform devices to Device Tree.
-> Remove all obsolete platform device code.
-> Switch to the generic MIPS core.
-> Add built-in DTB support.
-> Update Kconfig and Makefile accordingly.
-> Update and rename the defconfig.
+On Tue, Aug 19, 2025 at 12:23:19PM +0200, Thorsten Blum wrote:
+> strcpy() is deprecated; use strscpy_pad() instead.
 > 
-> Changes in v3:
-> - Squash two previous changes that documented DT bindings for the
->   LS1B-DEMO and CQ-T300B into a single patch.
-> - Separate the built-in DTB support into a single patch.
-> - Move the timer node under the APB bus.
-> - Remove redundant console bootargs since it is covered by stdout-path.
-> - Replace mtdparts bootargs with a "partitions" node.
-> - Link to v2: https://lore.kernel.org/r/20250709-loongson1-arch-v2-0-bcff6e518c09@gmail.com
+> strscpy_pad() already copies the source strings and zero-pads the tail
+> of the destination buffers, making the explicit initializations to zero
+> redundant. Remove them to ensure the buffers are only written to once.
 > 
-> Changes in v2:
-> - Document two new boards: loongson,ls1b-demo and loongson,cq-t300b.
-> - Submit complete DTS files for each board.
-> - Switch to the generic MIPS kernel.
-> - Consolidate Loongson1 defconfigs.
-> - Link to v1: https://lore.kernel.org/all/20230729134318.1694467-1-keguang.zhang@gmail.com/
+> No functional changes intended.
 > 
+> Link: https://github.com/KSPP/linux/issues/88
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
-> Keguang Zhang (9):
->       dt-bindings: mips: loongson: Add LS1B-DEMO and CQ-T300B
->       MIPS: dts: loongson: Add LS1B-DEMO board
->       MIPS: dts: loongson: Add LSGZ_1B_DEV board
->       MIPS: dts: loongson: Add Smartloong-1C board
->       MIPS: dts: loongson: Add CQ-T300B board
->       MIPS: loongson: Add built-in DTB support
->       MIPS: loongson32: Switch to generic core
->       MIPS: Unify Loongson1 PRID_REV
->       MIPS: configs: Consolidate Loongson1 defconfigs
+>  arch/mips/loongson64/boardinfo.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
->  .../devicetree/bindings/mips/loongson/devices.yaml |   2 +
->  MAINTAINERS                                        |   3 +-
->  arch/mips/Kconfig                                  |  64 ++---
->  arch/mips/boot/dts/Makefile                        |   1 +
->  arch/mips/boot/dts/loongson/Makefile               |  10 +
->  arch/mips/boot/dts/loongson/cq-t300b.dts           | 110 ++++++++
->  arch/mips/boot/dts/loongson/loongson1.dtsi         | 136 ++++++++++
->  arch/mips/boot/dts/loongson/loongson1b.dtsi        | 198 ++++++++++++++
->  arch/mips/boot/dts/loongson/loongson1c.dtsi        | 141 ++++++++++
->  arch/mips/boot/dts/loongson/ls1b-demo.dts          | 125 +++++++++
->  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts        | 162 ++++++++++++
->  arch/mips/boot/dts/loongson/smartloong-1c.dts      | 110 ++++++++
->  .../{loongson1b_defconfig => loongson1_defconfig}  |  94 +++++--
->  arch/mips/configs/loongson1c_defconfig             | 121 ---------
->  arch/mips/include/asm/cpu-type.h                   |   3 +-
->  arch/mips/include/asm/cpu.h                        |   3 +-
->  arch/mips/include/asm/mach-loongson32/irq.h        | 107 --------
->  arch/mips/include/asm/mach-loongson32/loongson1.h  |  50 ----
->  arch/mips/include/asm/mach-loongson32/platform.h   |  23 --
->  arch/mips/include/asm/mach-loongson32/regs-mux.h   | 124 ---------
->  arch/mips/kernel/cpu-probe.c                       |   6 +-
->  arch/mips/loongson32/Kconfig                       |  43 +---
->  arch/mips/loongson32/Makefile                      |  17 --
->  arch/mips/loongson32/Platform                      |   1 -
->  arch/mips/loongson32/common/Makefile               |   6 -
->  arch/mips/loongson32/common/irq.c                  | 191 --------------
->  arch/mips/loongson32/common/platform.c             | 285 ---------------------
->  arch/mips/loongson32/common/prom.c                 |  42 ---
->  arch/mips/loongson32/common/setup.c                |  26 --
->  arch/mips/loongson32/common/time.c                 |  23 --
->  arch/mips/loongson32/ls1b/Makefile                 |   6 -
->  arch/mips/loongson32/ls1b/board.c                  |  55 ----
->  arch/mips/loongson32/ls1c/Makefile                 |   6 -
->  arch/mips/loongson32/ls1c/board.c                  |  23 --
->  34 files changed, 1118 insertions(+), 1199 deletions(-)
-> ---
-> base-commit: b5a1f9870f9828bd6625d6c946c66be4983d56f6
-> change-id: 20250414-loongson1-arch-5ea8ced4c9a9
+> diff --git a/arch/mips/loongson64/boardinfo.c b/arch/mips/loongson64/boardinfo.c
+> index 8bb275c93ac0..827ab94b98b3 100644
+> --- a/arch/mips/loongson64/boardinfo.c
+> +++ b/arch/mips/loongson64/boardinfo.c
+> @@ -1,17 +1,18 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <linux/kobject.h>
+> +#include <linux/string.h>
+>  #include <boot_param.h>
+>  
+>  static ssize_t boardinfo_show(struct kobject *kobj,
+>  			      struct kobj_attribute *attr, char *buf)
+>  {
+> -	char board_manufacturer[64] = {0};
+> +	char board_manufacturer[64];
+>  	char *tmp_board_manufacturer = board_manufacturer;
+> -	char bios_vendor[64] = {0};
+> +	char bios_vendor[64];
+>  	char *tmp_bios_vendor = bios_vendor;
+>  
+> -	strcpy(board_manufacturer, eboard->name);
+> -	strcpy(bios_vendor, einter->description);
+> +	strscpy_pad(board_manufacturer, eboard->name);
+> +	strscpy_pad(bios_vendor, einter->description);
+>  
+>  	return sprintf(buf,
+>  		       "Board Info\n"
+> -- 
+> 2.50.1
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

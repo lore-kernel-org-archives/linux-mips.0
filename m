@@ -1,33 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2FE3093CB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC163093C8;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463484; cv=none; b=kQOiU4TcYm3N4PFZI+ix6HjWeXI6OElFkH8/U5Egfdkcy9GUI28gaMvkyEWbka0aws71Yca4zaE/dvvXDsVEEZbkMDUfX8zvksuqLqUMGJryfzfT8yApUI32nux+6pXOLeihQnqG/A9yRWtpaQm3SZWc/K2zOTOREcbdzGMyGfI=
+	t=1756463485; cv=none; b=O7WuP3n84wr5sr1ZcUxWCBFJyjUBBn3C5FNBxKvbuN/WVaE4XDt6tPAavdmaOb7Aev2cciE25DSxfR8RMWGvEwl83RDOnBD/a2JH0RO26oIwzWbxWixnrg3b15bgKWVhUN6J6rnhthazt8QV+N5pCVveVaR1aoFZGgzgd1wvE04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756463484; c=relaxed/simple;
-	bh=scZcinbTzN8o8Y+jCWTGEqcBsO2Nuy7SNS2QbPiMiXo=;
+	s=arc-20240116; t=1756463485; c=relaxed/simple;
+	bh=mKeCRhe0f/6G6Jn+o+AOJ6n+rr3wYmeAywchh2F85bs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eQaR9+ZFMqs7mm1pcriVPL6RiF7eoNrrjCSJMgTSpLRZVT7ooP8cllv+as14H6nyRHC/n+O5div0eMYzzVVmRCn4fgaYOtiCXihBCipJ4l92ZdOo0OGYUZ1jd7JKWiw5XE4tT2nH9Zx9KagkivXJb4/edxvCh6Efe45jl3I80g4=
+	 Content-Type:Content-Disposition:In-Reply-To; b=TDpjY4mafXSO9G+nuEMwOd+aXwFhNcHgs2svv5na6FuqmWPpV2DjTAzH0rvHbGl9wnOx9dvtnPaDozQZiLgwvDdnpt5IkZJpX8bQC5SXQw60fGhOCSSqVfDoHqCMOX0De/U7OEhC602WJpgKMlUvU9BiQY4xdUFDNcWU38r5r3U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO1-0004FO-00; Fri, 29 Aug 2025 12:31:13 +0200
+	id 1urwO1-0004FW-00; Fri, 29 Aug 2025 12:31:13 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id E19A6C0796; Fri, 29 Aug 2025 12:21:00 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:21:00 +0200
+	id A2DC3C0905; Fri, 29 Aug 2025 12:22:57 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:22:57 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: linux-mips@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"open list:MEMORY CONTROLLER DRIVERS" <linux-kernel@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/2] brcmstb-memc-ddr binding updates for MIPS boards
-Message-ID: <aLF_DEu6YNSCSRxu@alpha.franken.de>
-References: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	zhouyanjie@wanyeetech.com, linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mips: cpu: Add MIPS 34Kc Core
+Message-ID: <aLF_ga6E0joS89W6@alpha.franken.de>
+References: <20250811092048.497087-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -36,27 +33,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250729205213.3392481-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20250811092048.497087-1-olek2@wp.pl>
 
-On Tue, Jul 29, 2025 at 01:52:11PM -0700, Florian Fainelli wrote:
-> This patch series updates the MIPS-based Broadcom STB chips to use a
-> proper compatible string for their memory controller node(s) after
-> 501be7cecec9 ("dt-bindings: memory-controller: Define fallback
-> compatible").
+On Mon, Aug 11, 2025 at 11:20:36AM +0200, Aleksander Jan Bajkowski wrote:
+> Document MIPS 34Kc device tree bindings. It is used in the Realtek
+> RTL930x SoC.
 > 
-> Florian Fainelli (2):
->   dt-bindings: memory: Update brcmstb-memc-ddr binding with older chips
->   MIPS: BMIPS: Properly define memory controller compatible
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> ---
+>  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->  .../bindings/memory-controllers/brcm,brcmstb-memc-ddr.yaml  | 4 ++++
->  arch/mips/boot/dts/brcm/bcm7346.dtsi                        | 3 ++-
->  arch/mips/boot/dts/brcm/bcm7360.dtsi                        | 3 ++-
->  arch/mips/boot/dts/brcm/bcm7362.dtsi                        | 3 ++-
->  arch/mips/boot/dts/brcm/bcm7425.dtsi                        | 6 ++++--
->  arch/mips/boot/dts/brcm/bcm7435.dtsi                        | 6 ++++--
->  6 files changed, 18 insertions(+), 7 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
+> index 471373ad0cfb..d3677f53f142 100644
+> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
+> @@ -33,6 +33,7 @@ properties:
+>        - mips,mips1004Kc
+>        - mips,mips24KEc
+>        - mips,mips24Kc
+> +      - mips,mips34Kc
+>        - mips,mips4KEc
+>        - mips,mips4Kc
+>        - mips,mips74Kc
+> -- 
+> 2.47.2
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

@@ -1,30 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC163093C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF7C3081D4;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463485; cv=none; b=O7WuP3n84wr5sr1ZcUxWCBFJyjUBBn3C5FNBxKvbuN/WVaE4XDt6tPAavdmaOb7Aev2cciE25DSxfR8RMWGvEwl83RDOnBD/a2JH0RO26oIwzWbxWixnrg3b15bgKWVhUN6J6rnhthazt8QV+N5pCVveVaR1aoFZGgzgd1wvE04=
+	t=1756463485; cv=none; b=B85vEmHHN1eVZEH5AbDyU5fnWb9ltDlbYe9FmDXpSaMtleGcqUoyAfXjR/3+RM9O0k0t4TDCbP9CHWQGRIATGsLZKCrWGdkWMIojea6cd/h2X6FdhbzPpxmnTozihZfDTNyAaRS50qL+HhaTGER/JU1xRiszGITeEJ7bavGkfDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756463485; c=relaxed/simple;
-	bh=mKeCRhe0f/6G6Jn+o+AOJ6n+rr3wYmeAywchh2F85bs=;
+	bh=92SKU3EpfkGcS6IIcLwXlPj+A5HE40/1CNG66+vsSa4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TDpjY4mafXSO9G+nuEMwOd+aXwFhNcHgs2svv5na6FuqmWPpV2DjTAzH0rvHbGl9wnOx9dvtnPaDozQZiLgwvDdnpt5IkZJpX8bQC5SXQw60fGhOCSSqVfDoHqCMOX0De/U7OEhC602WJpgKMlUvU9BiQY4xdUFDNcWU38r5r3U=
+	 Content-Type:Content-Disposition:In-Reply-To; b=AmnzwCJysmuD5byD03baK9NvxCs8TxrZAZeRoPk+Up/a5ySHkXkWmoJKNc+poruh8qUGXHzE+2KpiKMaRgnMeef9IvWaMAK8yGE0yIKsp5tBMICVRIO6WhH5LoKi/ITRn3kb75GEbcqEM0hX4uVkjXLi+0ez9TINMXXlLII/trg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO1-0004FW-00; Fri, 29 Aug 2025 12:31:13 +0200
+	id 1urwO2-0004Fn-00; Fri, 29 Aug 2025 12:31:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id A2DC3C0905; Fri, 29 Aug 2025 12:22:57 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:22:57 +0200
+	id D6AC8C0B87; Fri, 29 Aug 2025 12:25:16 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:25:16 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	zhouyanjie@wanyeetech.com, linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mips: cpu: Add MIPS 34Kc Core
-Message-ID: <aLF_ga6E0joS89W6@alpha.franken.de>
-References: <20250811092048.497087-1-olek2@wp.pl>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/8] MIPS: sgi-ip22: Replace deprecated strcpy() in
+ plat_mem_setup()
+Message-ID: <aLGADELlnJaBrnhz@alpha.franken.de>
+References: <20250817183728.612012-1-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -33,31 +33,40 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250811092048.497087-1-olek2@wp.pl>
+In-Reply-To: <20250817183728.612012-1-thorsten.blum@linux.dev>
 
-On Mon, Aug 11, 2025 at 11:20:36AM +0200, Aleksander Jan Bajkowski wrote:
-> Document MIPS 34Kc device tree bindings. It is used in the Realtek
-> RTL930x SoC.
+On Sun, Aug 17, 2025 at 08:37:11PM +0200, Thorsten Blum wrote:
+> strcpy() is deprecated; use strscpy() instead.
 > 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> Link: https://github.com/KSPP/linux/issues/88
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/mips/sgi-ip22/ip22-setup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-> index 471373ad0cfb..d3677f53f142 100644
-> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-> @@ -33,6 +33,7 @@ properties:
->        - mips,mips1004Kc
->        - mips,mips24KEc
->        - mips,mips24Kc
-> +      - mips,mips34Kc
->        - mips,mips4KEc
->        - mips,mips4Kc
->        - mips,mips74Kc
+> diff --git a/arch/mips/sgi-ip22/ip22-setup.c b/arch/mips/sgi-ip22/ip22-setup.c
+> index e06a818fe792..f083b25be13b 100644
+> --- a/arch/mips/sgi-ip22/ip22-setup.c
+> +++ b/arch/mips/sgi-ip22/ip22-setup.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/types.h>
+>  #include <linux/console.h>
+>  #include <linux/sched.h>
+> +#include <linux/string.h>
+>  #include <linux/tty.h>
+>  
+>  #include <asm/addrspace.h>
+> @@ -65,7 +66,7 @@ void __init plat_mem_setup(void)
+>  		static char options[8] __initdata;
+>  		char *baud = ArcGetEnvironmentVariable("dbaud");
+>  		if (baud)
+> -			strcpy(options, baud);
+> +			strscpy(options, baud);
+>  		add_preferred_console("ttyS", *(ctype + 1) == '2' ? 1 : 0,
+>  				      baud ? options : NULL);
+>  	} else if (!ctype || *ctype != 'g') {
 > -- 
-> 2.47.2
+> 2.50.1
 
 applied to mips-next.
 

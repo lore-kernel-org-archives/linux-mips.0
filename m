@@ -1,31 +1,34 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFF2308F28;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEABF3093A7;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463484; cv=none; b=odQMkDycrKEuulEAW/7FWJfCr6lw9P3kYh8Ng/YJ2NTYOY+/4a7KzteTDAj7VfoNgoOMRWtmcXtpmFEnN15v80vcA2SKPyERDeVkgos9gsPBRmM+aI0/0jCfwn1fsaJckspWsFiwMuhQYfmQKZnRBC1FRIHi0filqXykboExFt8=
+	t=1756463484; cv=none; b=eB2KnMA2t1/Gc8bqQnc1/3prSCmFH6VOx3An/zjGZzlyUvBoCFkSJJyWLf3xvreetx3ZmutviI+q52i9FccA6NHX2U0pcqzMTG47AcVK12UACxp34nEoheIXLjXJB1uMWru3AZfV4/HNx0vMtkKwFuZePKybt8tEgGWWb1KxYkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756463484; c=relaxed/simple;
-	bh=5p5WJzMjWam2mZ+Jzdrb+nS7rxu+18+BXN1F3zIqdFI=;
+	bh=erCvdmuNynv/Glo8SbKw9XQtzIKpERjPcY5AltzhKks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Re1piRXUNjof7hk5lMWqJn2qNlWjenRSsWDuCa6efIMvST10vQCT4/bolSOWYYr3PbBMvxhukPGmytF5Jag4YY0pWen1CK6sUnwGEuzN6iwXD8hm0EIiHb3EAM0ka2vDtvj/FsHxq6rHMSOpMx7Gd4rSJHgpykvqrgeC23SMH0A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=k7+TkRGKwPpbV6eAfcKOz0Omo9z8/GuUEgx6CuN1KjUG7DFU3iU7Df6bK2PSNUB86JayBqSiAdiTr/gUCkZtweRXHyMBoSw6SWndBEV4fK6aPLT4jfcas3o9LaCgQ/DmA1c/m42tCjV77xy9LHnmol0T5Y9nobBLRn3EWDXx8DQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO2-0004Ft-00; Fri, 29 Aug 2025 12:31:14 +0200
+	id 1urwO2-0004G2-00; Fri, 29 Aug 2025 12:31:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 94711C0BCD; Fri, 29 Aug 2025 12:25:30 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:25:30 +0200
+	id 2858CC0D68; Fri, 29 Aug 2025 12:25:58 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:25:58 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] MIPS: sgi-ip32: Replace deprecated strcpy() in
- plat_mem_setup()
-Message-ID: <aLGAGpCK5MKH3e-8@alpha.franken.de>
+Subject: Re: [PATCH 4/8] MIPS: txx9: Replace deprecated strcpy() with
+ strscpy()
+Message-ID: <aLGANory-ZVAg2_d@alpha.franken.de>
 References: <20250817183728.612012-1-thorsten.blum@linux.dev>
- <20250817183728.612012-2-thorsten.blum@linux.dev>
+ <20250817183728.612012-4-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,38 +37,39 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250817183728.612012-2-thorsten.blum@linux.dev>
+In-Reply-To: <20250817183728.612012-4-thorsten.blum@linux.dev>
 
-On Sun, Aug 17, 2025 at 08:37:12PM +0200, Thorsten Blum wrote:
+On Sun, Aug 17, 2025 at 08:37:14PM +0200, Thorsten Blum wrote:
 > strcpy() is deprecated; use strscpy() instead.
 > 
 > Link: https://github.com/KSPP/linux/issues/88
 > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  arch/mips/sgi-ip32/ip32-setup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/mips/txx9/generic/setup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/mips/sgi-ip32/ip32-setup.c b/arch/mips/sgi-ip32/ip32-setup.c
-> index aeb0805aae57..c2ebc4bbd866 100644
-> --- a/arch/mips/sgi-ip32/ip32-setup.c
-> +++ b/arch/mips/sgi-ip32/ip32-setup.c
-> @@ -14,6 +14,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/param.h>
->  #include <linux/sched.h>
-> +#include <linux/string.h>
+> diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
+> index 5dc867ea2c69..03f8a3a95637 100644
+> --- a/arch/mips/txx9/generic/setup.c
+> +++ b/arch/mips/txx9/generic/setup.c
+> @@ -200,7 +200,7 @@ static void __init preprocess_cmdline(void)
+>  	static char cmdline[COMMAND_LINE_SIZE] __initdata;
+>  	char *s;
 >  
->  #include <asm/bootinfo.h>
->  #include <asm/mipsregs.h>
-> @@ -90,7 +91,7 @@ void __init plat_mem_setup(void)
->  			static char options[8] __initdata;
->  			char *baud = ArcGetEnvironmentVariable("dbaud");
->  			if (baud)
-> -				strcpy(options, baud);
-> +				strscpy(options, baud);
->  			add_preferred_console("ttyS", *(con + 1) == '2' ? 1 : 0,
->  					      baud ? options : NULL);
->  		}
+> -	strcpy(cmdline, arcs_cmdline);
+> +	strscpy(cmdline, arcs_cmdline);
+>  	s = cmdline;
+>  	arcs_cmdline[0] = '\0';
+>  	while (s && *s) {
+> @@ -270,7 +270,7 @@ void __init prom_init(void)
+>  	preprocess_cmdline();
+>  	select_board();
+>  
+> -	strcpy(txx9_system_type, txx9_board_vec->system);
+> +	strscpy(txx9_system_type, txx9_board_vec->system);
+>  
+>  	txx9_board_vec->prom_init();
+>  }
 > -- 
 > 2.50.1
 

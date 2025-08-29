@@ -1,74 +1,123 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0CC3090F5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE1F3054E9;
 	Fri, 29 Aug 2025 10:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756463485; cv=none; b=XdMkWxv1O2Afh/5CiuJKkjc9Spg5FZSBDD7sxS32K5wNa+CwrE9euswHkSCEgvVJl5wCG+8vV/p/Q4WF9SruY2LIIfldYcqYlZOP1yBee7n3AN0uoFKGWAuUypW/OLaBROnQF5OwEJMI709O34+EYlyjCvS2yq4x+RrlsJNmLfw=
+	t=1756463485; cv=none; b=oPriI6OG0PblMQBLcBqQEmMOWntkT1IZfVX1zZ9B+frsSUl36BfCD5LuLFtOAdJjmuwP6QpiN7hAV8VtBXGHQBuv7iVAykgwILaL/fgZ+/DWFAE+70hJex7X7ogTuwTjgTYMJx1bOK9sYdZ7cFdjIlHu7bi8rWq3iv1TyqOQdA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756463485; c=relaxed/simple;
-	bh=Cpial3Non0T0RnStQ1s2F7DK4+A/XB5gDN5G+WWdJ6E=;
+	bh=k/Ux2LAh/ziRrcYbe5+YO3YaWkgLVowuW5e+SMpJppk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=arMfdW67hPCYEzKQGnXfwto342u5SH3AOlrga/Sb6uyu2BADORmkmUbXcDHF7G1G9Q2KZgsWeSJ5N6ifyEkK18sSqvPA0rYigsBXv5I/6e35kuUrKr/Z/vOgUpfAtCbywV6HEdI7FNdvq4oNCehWYDCIlzbLHXVf6Ul0+XOL/XI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=HFc0XOpPh7Cw3hGr0lVv0t1cC58df4HIxKcHkEboxzotsRvZETf8VBs3ZjtRi64GtyorcnVl263w5FY0O86SROvrogdQG4thSYUODj0Q2RfpPdJP4NCfX1QWGB0MVhCgC4oN76008l4vXmhQnYM8zJyMPFDwYZ2t/cSg13RYaGg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1urwO2-0004G0-00; Fri, 29 Aug 2025 12:31:14 +0200
+	id 1urwO1-0004FU-00; Fri, 29 Aug 2025 12:31:13 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 79D50C0D64; Fri, 29 Aug 2025 12:25:44 +0200 (CEST)
-Date: Fri, 29 Aug 2025 12:25:44 +0200
+	id B9B9AC0810; Fri, 29 Aug 2025 12:21:28 +0200 (CEST)
+Date: Fri, 29 Aug 2025 12:21:28 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-hardening@vger.kernel.org, linux-mips@vger.kernel.org,
+To: Thomas Huth <thuth@redhat.com>
+Cc: "Maciej W . Rozycki" <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
+	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/8] MIPS: sni: Replace deprecated strcpy() in
- sni_console_setup()
-Message-ID: <aLGAKCeTQBxV16Ns@alpha.franken.de>
-References: <20250817183728.612012-1-thorsten.blum@linux.dev>
- <20250817183728.612012-3-thorsten.blum@linux.dev>
+Subject: Re: [PATCH v3] mips: Replace __ASSEMBLY__ with __ASSEMBLER__ in the
+ mips headers
+Message-ID: <aLF_KF9yQ8Vm-Mf-@alpha.franken.de>
+References: <20250804065629.55397-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250817183728.612012-3-thorsten.blum@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250804065629.55397-1-thuth@redhat.com>
 
-On Sun, Aug 17, 2025 at 08:37:13PM +0200, Thorsten Blum wrote:
-> strcpy() is deprecated; use strscpy() instead.
+On Mon, Aug 04, 2025 at 08:56:29AM +0200, Thomas Huth wrote:
+> From: Thomas Huth <thuth@redhat.com>
 > 
-> Link: https://github.com/KSPP/linux/issues/88
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> While the GCC and Clang compilers already define __ASSEMBLER__
+> automatically when compiling assembler code, __ASSEMBLY__ is a macro
+> that only gets defined by the Makefiles in the kernel. Defining
+> such a macro was necessary in the early days of the kernel, since GCC
+> only started providing __ASSEMBLER__ since version 3.0 in 2000 (see
+> https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=f8f769ea4e69 ).
+> However, having two macros can be very confusing nowadays for the
+> developers when switching between userspace and kernelspace coding,
+> or when dealing with uapi headers that should use __ASSEMBLER__
+> instead. So let's now standardize on the __ASSEMBLER__ macro that is
+> provided by the compilers.
+> 
+> This is almost a completely mechanical patch (done with a simple
+> "sed -i" statement), with just one comment tweaked manually in
+> arch/mips/include/asm/cpu.h (that was missing some underscores).
+> 
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
 > ---
->  arch/mips/sni/setup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  v3: Updated the patch description according to the suggestions of Maciej
 > 
-> diff --git a/arch/mips/sni/setup.c b/arch/mips/sni/setup.c
-> index 03cb69937258..fc7da12284f5 100644
-> --- a/arch/mips/sni/setup.c
-> +++ b/arch/mips/sni/setup.c
-> @@ -13,6 +13,7 @@
->  #include <linux/export.h>
->  #include <linux/console.h>
->  #include <linux/screen_info.h>
-> +#include <linux/string.h>
->  
->  #ifdef CONFIG_FW_ARC
->  #include <asm/fw/arc/types.h>
-> @@ -80,7 +81,7 @@ static void __init sni_console_setup(void)
->  			break;
->  		}
->  		if (baud)
-> -			strcpy(options, baud);
-> +			strscpy(options, baud);
->  		if (strncmp(cdev, "tty552", 6) == 0)
->  			add_preferred_console("ttyS", port,
->  					      baud ? options : NULL);
-> -- 
-> 2.50.1
+>  arch/mips/include/asm/addrspace.h            |  4 +--
+>  arch/mips/include/asm/asm-eva.h              |  6 ++--
+>  arch/mips/include/asm/asm.h                  |  8 ++---
+>  arch/mips/include/asm/bmips.h                |  4 +--
+>  arch/mips/include/asm/cpu.h                  |  4 +--
+>  arch/mips/include/asm/dec/ecc.h              |  2 +-
+>  arch/mips/include/asm/dec/interrupts.h       |  4 +--
+>  arch/mips/include/asm/dec/kn01.h             |  2 +-
+>  arch/mips/include/asm/dec/kn02.h             |  2 +-
+>  arch/mips/include/asm/dec/kn02xa.h           |  2 +-
+>  arch/mips/include/asm/eva.h                  |  4 +--
+>  arch/mips/include/asm/ftrace.h               |  8 ++---
+>  arch/mips/include/asm/hazards.h              |  4 +--
+>  arch/mips/include/asm/irqflags.h             |  4 +--
+>  arch/mips/include/asm/jazz.h                 | 16 ++++-----
+>  arch/mips/include/asm/jump_label.h           |  4 +--
+>  arch/mips/include/asm/linkage.h              |  2 +-
+>  arch/mips/include/asm/mach-generic/spaces.h  |  4 +--
+>  arch/mips/include/asm/mips-boards/bonito64.h |  4 +--
+>  arch/mips/include/asm/mipsmtregs.h           |  6 ++--
+>  arch/mips/include/asm/mipsregs.h             |  6 ++--
+>  arch/mips/include/asm/msa.h                  |  4 +--
+>  arch/mips/include/asm/pci/bridge.h           |  4 +--
+>  arch/mips/include/asm/pm.h                   |  6 ++--
+>  arch/mips/include/asm/prefetch.h             |  2 +-
+>  arch/mips/include/asm/regdef.h               |  4 +--
+>  arch/mips/include/asm/sibyte/board.h         |  4 +--
+>  arch/mips/include/asm/sibyte/sb1250.h        |  2 +-
+>  arch/mips/include/asm/sibyte/sb1250_defs.h   |  6 ++--
+>  arch/mips/include/asm/smp-cps.h              |  6 ++--
+>  arch/mips/include/asm/sn/addrs.h             | 18 +++++-----
+>  arch/mips/include/asm/sn/gda.h               |  4 +--
+>  arch/mips/include/asm/sn/kldir.h             |  4 +--
+>  arch/mips/include/asm/sn/klkernvars.h        |  4 +--
+>  arch/mips/include/asm/sn/launch.h            |  4 +--
+>  arch/mips/include/asm/sn/nmi.h               |  8 ++---
+>  arch/mips/include/asm/sn/sn0/addrs.h         | 14 ++++----
+>  arch/mips/include/asm/sn/sn0/hub.h           |  2 +-
+>  arch/mips/include/asm/sn/sn0/hubio.h         | 36 ++++++++++----------
+>  arch/mips/include/asm/sn/sn0/hubmd.h         |  4 +--
+>  arch/mips/include/asm/sn/sn0/hubni.h         |  6 ++--
+>  arch/mips/include/asm/sn/sn0/hubpi.h         |  4 +--
+>  arch/mips/include/asm/sn/types.h             |  2 +-
+>  arch/mips/include/asm/sync.h                 |  2 +-
+>  arch/mips/include/asm/thread_info.h          |  4 +--
+>  arch/mips/include/asm/unistd.h               |  4 +--
+>  arch/mips/include/asm/vdso/gettimeofday.h    |  4 +--
+>  arch/mips/include/asm/vdso/processor.h       |  4 +--
+>  arch/mips/include/asm/vdso/vdso.h            |  4 +--
+>  arch/mips/include/asm/vdso/vsyscall.h        |  4 +--
+>  arch/mips/include/asm/xtalk/xtalk.h          |  4 +--
+>  arch/mips/include/asm/xtalk/xwidget.h        |  4 +--
+>  drivers/soc/bcm/brcmstb/pm/pm.h              |  2 +-
+>  53 files changed, 142 insertions(+), 142 deletions(-)
 
 applied to mips-next.
 

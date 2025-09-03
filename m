@@ -1,45 +1,92 @@
 Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BB82D6E6D
-	for <linux-mips@vger.kernel.org>; Wed,  3 Sep 2025 19:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C282D7DD5;
+	Wed,  3 Sep 2025 19:18:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756926710; cv=none; b=ddngXQbiReuO8gqDCJ5C/0QHN5T6qfdS4L+3XtJsDIpcMrbI/d/0rsaYXQ8x37niPmmZvTcQfXeCPQdkEsJAGUVR2Niw1jBZU+jqGrf/UWzL2Yuhhf/TPjHC2xsrC4KeOAbixHjJCNb7KSNTyP3MvRYA6LBBrt9shIICU/ktMC0=
+	t=1756927099; cv=none; b=IqHyQiV/pJjlKUvIuBcNiRcu3jJYlkilGiue0r7a8rU381yxi13qrwXzFYSjraPAJXBuUk1hwfWcEhcpHgaXhUc8Pd4+8RdYaWQgeduIj3I/l1UhJ1qblQVM7iFnXDtojfbbnGmjoiDlmBSijGELUf3iOkn3lo77jRNeaGF2tVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756926710; c=relaxed/simple;
-	bh=M+RUQjyGg6VYNscTJByklmOdst/GdrJZEjFbbU/cmo8=;
+	s=arc-20240116; t=1756927099; c=relaxed/simple;
+	bh=83cV/7EoxlRdQz7wlI4WnGn5t/IKXeIv5jWCwnuB+14=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JV5GwsLuZxbTwy95W9OhggmVXLnBzeGB9qFulG9vf2pmTWAS3WcFwd7LLPkWPJXUFq4x41JZy83NpjS3ItVoqoRj1Z2f9L7QsveM+c4yrVlhd/Ag1lUaw2weYtw4X89JQhvjC/PEIYQwqWHdrYhEVyg+Rhwbe0Sgb9hixnMR5u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=XUBkO3Bp; arc=none smtp.client-ip=185.119.170.32
+	 Content-Type:MIME-Version; b=aocHHxX/hMc1Zj01hIw721pZ6iQCwG3iNVFSsI/nbKCW2kxz4+vpyzRUHgSCnf48l+py0dMJ+HmjlNmoqPCaIcoB3ySVRoB9m/Lqo67YwA+FeUXQSuPF0uipeiR63zgK8Qc5X7nP6Y++bm6JsjNER//MNyvn3Mf1bouzD577BBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=M013U4Ma; arc=none smtp.client-ip=185.119.170.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="XUBkO3Bp"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="M013U4Ma"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1756926234;
+	s=mail; t=1756927095;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=EToa9DUv5S2yqWVgv21Tyyq/IGMsQV774Nd/X220Vzs=;
-	b=XUBkO3Bp3HYvOjGm3qBjYgI41NuNcQDMAybwlHnHkh+UPaMxf4uLnOzLW3HruCBvALm+gf
-	jzuLVqUopQFVqSLrFydy8lXFEpnCQWu4crJN37ndbV6OzinDPn6G4kaR8WJVpZ5SA8w425
-	68re+wW9b1XStnF9KVa6suzZwR/f7Yw=
-Message-ID: <7fa81efab32e5d3865282eb99325be862c8d5fb0.camel@crapouillou.net>
-Subject: Re: [PATCH v2 11/37] drm/ingenic: ipu: Switch to
- drm_atomic_get_new_crtc_state()
+	bh=zUd3hbPutfTlDAjUwHIkED1FOMMH63fasP77ATNMKWI=;
+	b=M013U4MaToItOZxUrRJlNgf3goruACFm3i1msJg9jS7+HrTxirIsbgBywDk0B5jKoJZNHe
+	5GoEutO36JaVJOooUiUSeVBruDzW1fnbZkbLEJf2t0JycvE4miuhDdGhJAyVfZ57ChqOga
+	N/tyTnB51UGdvYdyVgUUSZcxz127gLI=
+Message-ID: <9387ed0a6d4e4c77ffd0f7aee55eaa1ff6ecd22e.camel@crapouillou.net>
+Subject: Re: [PATCH 022/114] clk: ingenic: cgu: convert from round_rate() to
+ determine_rate()
 From: Paul Cercueil <paul@crapouillou.net>
-To: Maxime Ripard <mripard@kernel.org>, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>,  David Airlie <airlied@gmail.com>, Simona Vetter
- <simona@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org
-Date: Wed, 03 Sep 2025 21:03:51 +0200
-In-Reply-To: <20250902-drm-no-more-existing-state-v2-11-de98fc5f6d66@kernel.org>
+To: bmasney@redhat.com, Michael Turquette <mturquette@baylibre.com>, Stephen
+ Boyd <sboyd@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, Cristian
+ Marussi	 <cristian.marussi@arm.com>, Chen Wang <unicorn_wang@outlook.com>,
+ Inochi Amaoto	 <inochiama@gmail.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>,  Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Keguang Zhang	 <keguang.zhang@gmail.com>, Taichi Sugaya
+ <sugaya.taichi@socionext.com>,  Takao Orito <orito.takao@socionext.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer	 <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,  Fabio Estevam
+ <festevam@gmail.com>, Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung
+ <schung@nuvoton.com>,  Vladimir Zapolskiy	 <vz@mleia.com>, Piotr
+ Wojtaszczyk <piotr.wojtaszczyk@timesys.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Samuel Holland <samuel.holland@sifive.com>,
+ Yixun Lan	 <dlan@gentoo.org>, Steen Hegelund
+ <Steen.Hegelund@microchip.com>, Daniel Machon	
+ <daniel.machon@microchip.com>, UNGLinuxDriver@microchip.com, Orson Zhai	
+ <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan
+ Zhang <zhang.lyra@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue	 <alexandre.torgue@foss.st.com>, Michal Simek
+ <michal.simek@amd.com>, Maxime Ripard <mripard@kernel.org>, Andreas
+ =?ISO-8859-1?Q?F=E4rber?= <afaerber@suse.de>,  Manivannan Sadhasivam	
+ <mani@kernel.org>, Sven Peter <sven@kernel.org>, Janne Grunau
+ <j@jannau.net>,  Alyssa Rosenzweig <alyssa@rosenzweig.io>, Neal Gompa
+ <neal@gompa.dev>, Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,  Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
+ internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Max
+ Filippov <jcmvbkbc@gmail.com>, Matthias Brugger	 <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno	 <angelogioacchino.delregno@collabora.com>,
+ Daniel Palmer <daniel@thingy.jp>,  Romain Perier <romain.perier@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement	
+ <gregory.clement@bootlin.com>, Sebastian Hesselbarth	
+ <sebastian.hesselbarth@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, Heiko Stuebner
+ <heiko@sntech.de>, Andrea della Porta <andrea.porta@suse.com>,  Krzysztof
+ Kozlowski	 <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Chanwoo Choi	 <cw00.choi@samsung.com>, Alim Akhtar
+ <alim.akhtar@samsung.com>, Qin Jian	 <qinjian@cqplus1.com>, Viresh Kumar
+ <vireshk@kernel.org>, Ulf Hansson	 <ulf.hansson@linaro.org>, Luca Ceresoli
+ <luca.ceresoli@bootlin.com>, Alex Helms	 <alexander.helms.jy@renesas.com>,
+ Linus Walleij <linus.walleij@linaro.org>,  Liviu Dudau
+ <liviu.dudau@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Nobuhiro
+ Iwamatsu	 <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	arm-scmi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	sophgo@lists.linux.dev, linux-mips@vger.kernel.org, imx@lists.linux.dev, 
+	linux-riscv@lists.infradead.org, spacemit@lists.linux.dev, 
+	linux-stm32@st-md-mailman.stormreply.com, patches@opensource.cirrus.com, 
+	linux-actions@lists.infradead.org, asahi@lists.linux.dev, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev
+Date: Wed, 03 Sep 2025 21:18:09 +0200
+In-Reply-To: <20250811-clk-for-stephen-round-rate-v1-22-b3bf97b038dc@redhat.com>
 References: 
-	<20250902-drm-no-more-existing-state-v2-0-de98fc5f6d66@kernel.org>
-	 <20250902-drm-no-more-existing-state-v2-11-de98fc5f6d66@kernel.org>
+	<20250811-clk-for-stephen-round-rate-v1-0-b3bf97b038dc@redhat.com>
+	 <20250811-clk-for-stephen-round-rate-v1-22-b3bf97b038dc@redhat.com>
 Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
  keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
  LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
@@ -62,59 +109,65 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Le mardi 02 septembre 2025 =C3=A0 11:35 +0200, Maxime Ripard a =C3=A9crit=
-=C2=A0:
-> The ingenic IPU atomic_set_property implementation uses the
-> deprecated
-> drm_atomic_get_existing_crtc_state() helper.
->=20
-> This hook is called during the state building process, before
-> atomic_check, and thus before the states are swapped. The existing
-> state
-> thus points to the new state, and we can use
-> drm_atomic_get_new_crtc_state() instead.
->=20
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+Hi Brian,
 
-Tested it and my screen still works.
+Le lundi 11 ao=C3=BBt 2025 =C3=A0 11:18 -0400, Brian Masney via B4 Relay a
+=C3=A9crit=C2=A0:
+> From: Brian Masney <bmasney@redhat.com>
+>=20
+> The round_rate() clk ops is deprecated, so migrate this driver from
+> round_rate() to determine_rate() using the Coccinelle semantic patch
+> on the cover letter of this series.
+>=20
+> Signed-off-by: Brian Masney <bmasney@redhat.com>
 
 Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-
-and/or:
-
-Tested-by: Paul Cercueil <paul@crapouillou.net>
 
 Cheers,
 -Paul
 
->=20
 > ---
-> To: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> ---
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-ipu.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> =C2=A0drivers/clk/ingenic/cgu.c | 12 +++++++-----
+> =C2=A01 file changed, 7 insertions(+), 5 deletions(-)
 >=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
 > index
-> 26ebf424d63ec21ccee80221745c3e8bcc6b3d7f..2574a4b4d40a2c27cb212114117
-> 829d9f6ab3ddb 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> @@ -703,11 +703,11 @@ ingenic_ipu_plane_atomic_set_property(struct
-> drm_plane *plane,
+> 0c9c8344ad1103b13337a26e14b0d5d5c340d705..91e7ac0cc3342e3552acb9d2ec0
+> 0865a5234ad4f 100644
+> --- a/drivers/clk/ingenic/cgu.c
+> +++ b/drivers/clk/ingenic/cgu.c
+> @@ -174,14 +174,16 @@ ingenic_pll_calc(const struct
+> ingenic_cgu_clk_info *clk_info,
+> =C2=A0		n * od);
+> =C2=A0}
 > =C2=A0
-> =C2=A0	mode_changed =3D val !=3D ipu->sharpness;
-> =C2=A0	ipu->sharpness =3D val;
+> -static long
+> -ingenic_pll_round_rate(struct clk_hw *hw, unsigned long req_rate,
+> -		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long *prate)
+> +static int ingenic_pll_determine_rate(struct clk_hw *hw,
+> +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct clk_rate_request *req)
+> =C2=A0{
+> =C2=A0	struct ingenic_clk *ingenic_clk =3D to_ingenic_clk(hw);
+> =C2=A0	const struct ingenic_cgu_clk_info *clk_info =3D
+> to_clk_info(ingenic_clk);
 > =C2=A0
-> =C2=A0	if (state->crtc) {
-> -		crtc_state =3D
-> drm_atomic_get_existing_crtc_state(state->state, state->crtc);
-> +		crtc_state =3D drm_atomic_get_new_crtc_state(state-
-> >state, state->crtc);
-> =C2=A0		if (WARN_ON(!crtc_state))
-> =C2=A0			return -EINVAL;
+> -	return ingenic_pll_calc(clk_info, req_rate, *prate, NULL,
+> NULL, NULL);
+> +	req->rate =3D ingenic_pll_calc(clk_info, req->rate, req-
+> >best_parent_rate,
+> +				=C2=A0=C2=A0=C2=A0=C2=A0 NULL, NULL, NULL);
+> +
+> +	return 0;
+> =C2=A0}
 > =C2=A0
-> =C2=A0		crtc_state->mode_changed |=3D mode_changed;
-> =C2=A0	}
+> =C2=A0static inline int ingenic_pll_check_stable(struct ingenic_cgu *cgu,
+> @@ -317,7 +319,7 @@ static int ingenic_pll_is_enabled(struct clk_hw
+> *hw)
+> =C2=A0
+> =C2=A0static const struct clk_ops ingenic_pll_ops =3D {
+> =C2=A0	.recalc_rate =3D ingenic_pll_recalc_rate,
+> -	.round_rate =3D ingenic_pll_round_rate,
+> +	.determine_rate =3D ingenic_pll_determine_rate,
+> =C2=A0	.set_rate =3D ingenic_pll_set_rate,
+> =C2=A0
+> =C2=A0	.enable =3D ingenic_pll_enable,

@@ -1,38 +1,38 @@
 Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF93274B44;
-	Fri, 12 Sep 2025 09:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73241537E9;
+	Fri, 12 Sep 2025 09:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757669917; cv=none; b=qWZ/8/KcUpHOg/6PYpF0Wi3aT8Vni3UIUhg/LywtyQVg33vz8dI98uvww8JoAw1FeKhqgT9QLo21JqytkCByzvDRMK3st8170tb8l6zCpOn+vdovehIT1e+9xexemzGzHuB7Uc9BCMvceByX88ParYVZ8J1MNHOCMMSOZkDh3wo=
+	t=1757671192; cv=none; b=RQZxK0UVS5fH5+fTekmOusP3iQeguSpp9mHCuxdF8Et1l3U2cRXdpq5CZykKi99Dp0vqeaRI7ecujqiP4dqNe7oj6kw76wB11ZYM6cRy2z6wi9w+q4N4FfkfoiPNknHp8y0JZ0YSXPB5uX5FwO136xOQky2poBN8Ws5WrLmXGEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757669917; c=relaxed/simple;
-	bh=XudfAtsdEhEQX5UuGyhpuqOTangiL792TdLl4y095g0=;
+	s=arc-20240116; t=1757671192; c=relaxed/simple;
+	bh=wXwHzs3cuy4XVADNPAdl5sfqQoJprLOTD7qqu5IX6ek=;
 	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=IzFA+v/mN6+GPGUvmqlCBPf8iI7/46+gGIJLFil1TBYbg5bqiGs0kcz4G2ZatTORhMX/VbIDpUaVGLfzANJbSC5mnc96m3os734+cnB/926sxB8i3Wzlm7DeDqRuvLa49dAPCjlnLjOqrjiLYqr7VPlBg8TFGRUqOHM7qNos/5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=jxIBuKWB; arc=none smtp.client-ip=198.137.202.136
+	 MIME-Version:Content-Type; b=sh5xRQPeE9/tL/2KtolEgIf+rQ+aIPSCKiUewdw/DtVnF1Ml4SZt2Tqvzycgvag8yXX9W+b3nmi1Bf/gc0MKeJt7Puh4osimmzBEjgq+e1Eu8jT2V1poMW25/aQFLpK4B2rAfBGB8VYpQ3R1kgqX0ELO7SsuH0xiFQvLtpmL1cM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Iv4suKXi; arc=none smtp.client-ip=198.137.202.136
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="jxIBuKWB"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Iv4suKXi"
 Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
 	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 58C9b0xv1357625
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 58C9wovj1383935
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 12 Sep 2025 02:37:00 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 58C9b0xv1357625
+	Fri, 12 Sep 2025 02:58:50 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 58C9wovj1383935
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025082201; t=1757669821;
-	bh=GE2ISEvWqh9sN8UYw61P33fDsnFm1/nb1kUiiX/ifUM=;
+	s=2025082201; t=1757671132;
+	bh=wXwHzs3cuy4XVADNPAdl5sfqQoJprLOTD7qqu5IX6ek=;
 	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=jxIBuKWBOuwi8Xn/pfTljgb3zhi4Bf+6TpFn4wY12CV2bo/HBYvEFlNNTSG8fPcmd
-	 Jj/Tfu0GL4cwgOIGmCy3Nn+jkWh8vnC8zuP/GErTXN0RQ77TNqxFkI31NPKxEScs+g
-	 3vOnPn4RJLBqsy4KnA1eIay9kM3VJsautov8wGzn+movTKqUP1FRL6RWjeOsUKd4W1
-	 PzI9yWN2VGly1IKj7GF6C15ow1c72iThcEsS5Y7nUNwJIqldXBZ/Cz0CDjQetsdIXJ
-	 cSf1aezna12azQgXZfQWWPOQrMR8BIbyp5qTPTfw3ynfjS2Z5IuCtNAHsMLsakvOcZ
-	 RcYRHWLQ0/FWA==
-Date: Fri, 12 Sep 2025 02:36:58 -0700
+	b=Iv4suKXiAxoLsxR2i11aAdvhMLL0LO5cMcs1CvBme2/ey9ISbE8mmgQ2f9bOYVhlv
+	 2l1qElf6X9ZwESTueasD9/lDo017OlrdCm8f2y4ckj3NA9QXf4T5BYDKS6pLCC2hQE
+	 8q+SZy2Dwf91S5hGoA2CP767WUCArqI8deJyBK171k0gbhXOuRszd/TpSl98B8Gicy
+	 pmBmXN/1mNCAHsS+pgcVurnG5yieK0YeNEr4nImgCKJ7mZJmOM5odOCX4B0Ck3SN+E
+	 blt70msFBUwxUp3/M097HMDT54EEYk5VaHutWeDlQ5yVo3/5b/ggpIM2UrfLYw+JHB
+	 /PgINChn3uJzg==
+Date: Fri, 12 Sep 2025 02:58:48 -0700
 From: "H. Peter Anvin" <hpa@zytor.com>
 To: Andreas Larsson <andreas@gaisler.com>, Arnd Bergmann <arnd@arndb.de>,
         ksummit@lists.linux.dev
@@ -59,9 +59,9 @@ CC: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Sergio Paracuellos <sergio.paracuellos@gmail.com>
 Subject: Re: [TECH TOPIC] Reaching consensus on CONFIG_HIGHMEM phaseout
 User-Agent: K-9 Mail for Android
-In-Reply-To: <a393f6bd-ac30-4861-818c-ba0b558df4a4@gaisler.com>
-References: <4ff89b72-03ff-4447-9d21-dd6a5fe1550f@app.fastmail.com> <5d2fec2b-8e59-417e-b9e6-12c6e27dd5f0@gaisler.com> <363853cd-7f10-4aa9-8850-47eee6d516b9@app.fastmail.com> <a393f6bd-ac30-4861-818c-ba0b558df4a4@gaisler.com>
-Message-ID: <0FEA041E-A07E-4259-AFBC-02906D122C3A@zytor.com>
+In-Reply-To: <5d2fec2b-8e59-417e-b9e6-12c6e27dd5f0@gaisler.com>
+References: <4ff89b72-03ff-4447-9d21-dd6a5fe1550f@app.fastmail.com> <5d2fec2b-8e59-417e-b9e6-12c6e27dd5f0@gaisler.com>
+Message-ID: <E986779F-C7AA-4940-9508-08601EE2FDD0@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -72,91 +72,40 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On September 12, 2025 2:32:04 AM PDT, Andreas Larsson <andreas@gaisler=2Eco=
-m> wrote:
->On 2025-09-11 09:53, Arnd Bergmann wrote:
->> On Thu, Sep 11, 2025, at 07:38, Andreas Larsson wrote:
->>>
->>> We have a upcoming SoC with support for up to 16 GiB of DRAM=2E When t=
-hat is
->>> used in LEON sparc32 configuration (using 36-bit physical addressing),=
- a
->>> removed CONFIG_HIGHMEM would be a considerable limitation, even after =
-an
->>> introduction of different CONFIG_VMSPLIT_* options for sparc32=2E
+On September 10, 2025 10:38:15 PM PDT, Andreas Larsson <andreas@gaisler=2Ec=
+om> wrote:
+>On 2025-09-09 23:23, Arnd Bergmann wrote:
+>> High memory is one of the least popular features of the Linux kernel=2E
+>> Added in 1999 for linux-2=2E3=2E16 to support large x86 machines, there
+>> are very few systems that still need it=2E I talked about about this
+>> recently at the Embedded Linux Conference on 32-bit systems [1][2][3]
+>> and there were a few older discussions before[4][5][6]=2E
 >>=20
->> I agree that without highmem that chip is going to be unusable from Lin=
-ux,
->> but I wonder if there is a chance to actually use it even with highmem,
->> for a combination of reasons:
->
->I would definitely not call it unusable in LEON sparc32 mode with
->HIGHMEM gone, but it would of course be seriously hampered memory wise
->without HIGHMEM support compared to with HIGHMEM=2E In NOEL-V 64-bit
->RISC-V mode it will of course not be affected by these matters=2E
->
->
->> - sparc32 has 36-bit addressing in the MMU, but Linux apparently never
->>   supported a 64-bit phys_addr_t here, which would be required=2E
->>   This is probably the easiest part and I assume you already have patch=
-es
->>   for it=2E
+>> While removing a feature that is actively used is clearly a regression
+>> and not normally done, I expect removing highmem is going to happen
+>> at some point anyway when there are few enough users, but the question
+>> is when that time will be=2E
 >>=20
->> - As far as I can tell, the current lowmem area is 192MB, which would
->>   be ok(-ish) on a 512MB maxed-out SPARCstation, but for anything bigge=
-r
->>   you likely run out of lowmem long before being able to touch the
->>   all highmem pages=2E This obviously depends a lot on the workload=2E
->>=20
->> - If you come up with patches to extend lowmem to 2GB at the expense
->>   of a lower TASK_SIZE, you're still  looking at a ration of 7:1 with
->>   14GB of highmem on the maxed-out configuration, so many workloads
->>   would still struggle to actually use that memory for page cache=2E
+>> I'm still collecting information about which of the remaining highmem
+>> users plan to keep updating their kernels and for what reason=2E Some
+>> users obviously are alarmed about potentially losing this ability,
+>> so I hope to get a broad consensus on a specific timeline for how long
+>> we plan to support highmem in the page cache and to give every user
+>> sufficient time to migrate to a well-tested alternative setup if that
+>> is possible, or stay on a highmem-enabled LTS kernel for as long
+>> as necessary=2E
 >
->Yes, we already have patches for 36-bit addressing with 64-bit
->phys_addr_t=2E Patches for CONFIG_VMSPLIT_* are under development=2E
+>We have a upcoming SoC with support for up to 16 GiB of DRAM=2E When that=
+ is
+>used in LEON sparc32 configuration (using 36-bit physical addressing), a
+>removed CONFIG_HIGHMEM would be a considerable limitation, even after an
+>introduction of different CONFIG_VMSPLIT_* options for sparc32=2E
 >
->Even with 192 MiB lowmem we have being using up to 4 GiB without running
->into problems=2E Could you elaborate on why you think lowmem would run ou=
-t
->before 14 GiB highmem in a VMSPLIT_3G or VMSPLIT_2G configuration?
->
->And even if 14 GiB highmem would be hard to get full usage out of, for a
->board with 8 GiB memory (or a configuration limiting 16 GiB down to only
->use 8 GiB or somewhere in between) the difference between getting to use
->2 GiB and 8 GiB is quite hefty=2E
->
->=20
->> - If we remove HIGHPTE (as discussed in this thread) but keep HIGHMEM,
->>   you probably still lose on the 16GB configuration=2E On 4GB configura=
-tions,
->>   HIGHPTE is not really a requirement, but for workloads with many
->>   concurrent tasks using a lot of virtual address space, you would
->>   likely want to /add/ HIGHPTE support on sparc32 first=2E
->
->That is an interesting point=2E Regardless of workloads though, it still
->would be a huge difference between having or not having HIGHMEM, with or
->without HIGHPTE=2E
->
->
->> When you say "used in LEON sparc32 configuration", does that mean
->> you can also run Linux in some other confuration like an rv64
->> kernel on a NOEL-V core on that chip?
->
->Yes, boot strapping will select between sparc32 LEON and rv64 NOEL-V=2E
->
->
->> Aside from the upcoming SoC and whatever happens to that, what is
->> the largest LEON Linux memory configuration that you know is used
->> in production today and still requires kernel updates beyond ~2029?
->
->The maximum I know of for systems currently in production has the
->capacity to have up to 2 GiB memory=2E
->
->
->Cheers,
+>Regards,
 >Andreas
 >
 >
 
-SPARC32 has a 4:4 address space=2E  You still use HIGHMEM?!
+It really sounds like a self-inflicted problem=2E=2E=2E getting your custo=
+mers switched over to the RV64 side is probably the best you can do for the=
+m=2E

@@ -1,87 +1,125 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EB72DC779;
-	Fri, 12 Sep 2025 13:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E823218AE;
+	Fri, 12 Sep 2025 16:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757684800; cv=none; b=pJEe2ag0wWDffAD/uMFYYVUIWcPS2Z9L61BzM2UdvW7V3SoEVcpEZVtRz57KkNucM2B4FgvAlEyHsb6n1ptVgqwc2J9R/jSs5X+z3tGGM7RN4GzL0GCQwuItlsqwCdkG8HlidcE6hsiu3NmJ/m652XeWLed2+jCQwrp9PJPKfBc=
+	t=1757695791; cv=none; b=Ojhfdx6NGuX1xqZw/E4IQMzd2b/Z7/IuR/u26gPS6IlAvpr2WDjNd5r8vYuPtHudHeemXrdXcsmc3nkt0+Q34Li0eRQzzv2w9hC8Qgo0k0XgSzzhC/l+YWxQFNHdduslLxCwBtfDQibEJQa2FyaV/pacqDABYXivRKZzuH1kInk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757684800; c=relaxed/simple;
-	bh=awM10ARnSomfRf77X4JpgNoOS8RRUpOlj7vgTKGAv9E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fZ5I5VkMUYogPp/51saWw00COcj0etqbIcKhwuB7yVFOWF7wF5XuA/ISi5zh5sxNK1N7ocApBTrd99fqhKZmUN9GlSmH4YBf4Ezzg3N9NkrN2g2sGoo7A2O1jnDUutA8151VlrwbF6HJoy49zbd1li13zH7femEL310tc5ezDcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1ux3eW-0007Zl-00; Fri, 12 Sep 2025 15:17:24 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id D91C6C0770; Fri, 12 Sep 2025 13:51:54 +0200 (CEST)
-Date: Fri, 12 Sep 2025 13:51:54 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Osama Abdelkader <osama.abdelkader@gmail.com>
-Cc: macro@orcam.me.uk, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mips: math-emu: replace deprecated strcpy() in
- me-debugfs
-Message-ID: <aMQJWlDsvZ8sADQ1@alpha.franken.de>
-References: <20250904192525.39830-1-osama.abdelkader@gmail.com>
+	s=arc-20240116; t=1757695791; c=relaxed/simple;
+	bh=u1apkPsXybe68Jt3zrIWLyQZ7H3ZjR0gWhhluRQrN3k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qcRp9/TpuhvvGBKitCa0U52rY+GnU4L4nAQFoYzwr0ASD/tKppUS3F8143rvigVahsgaBKPv7PYTSG5M8jensYp6FgWic5i5T3MFRVshnfmgP7XQ6qJkb7WqDFXefVop/MBDTtpLVBJ/jVNNK08fm2bYBJxkbK39E5gE9JrDAbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=qr7OyQyB; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="qr7OyQyB"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1757695790; x=1789231790;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=u1apkPsXybe68Jt3zrIWLyQZ7H3ZjR0gWhhluRQrN3k=;
+  b=qr7OyQyBDYKpscyEM28tV1X85Pv/vB1ZALdCQl5nK11rCN06r7vFP9vC
+   eUtb48ZJh6c4S1kUpSweaQ3NECITpA/moz8qlP4iWoiynK8jSEzb3wcJN
+   HxpEacSFyIXxWfRlA0JQGhQx5k4h0hwD+pBjSXQy32R+9iGvjDv4zkQQJ
+   oNYP09vm1DsqpxZh/AGQ4zYVBnCkxFlXA6cGEo2VJ1IIGa2xVHqligvH2
+   EbKTAQGWjnjM3fUKvCUbAJgZu5pKDydqVhw8dMrTuiYTC66ptHXpb1Nj4
+   GZ/Eo+oaXovr0Dhq87eTY0hokCn2pS6o2w/5+UGcJpZbWfnQI+54Elkil
+   A==;
+X-CSE-ConnectionGUID: s3gPgfU6QPiurXqxeBySFg==
+X-CSE-MsgGUID: 0XiE5fKtQqWtnhAnsP3idA==
+X-IronPort-AV: E=Sophos;i="6.18,259,1751266800"; 
+   d="scan'208";a="46433595"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Sep 2025 09:49:42 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.58; Fri, 12 Sep 2025 09:49:38 -0700
+Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
+ Transport; Fri, 12 Sep 2025 09:49:32 -0700
+Message-ID: <f931da29-5f10-494a-acc0-309bd805d41a@microchip.com>
+Date: Fri, 12 Sep 2025 18:49:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250904192525.39830-1-osama.abdelkader@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [TECH TOPIC] Reaching consensus on CONFIG_HIGHMEM phaseout
+To: Arnd Bergmann <arnd@arndb.de>, <ksummit@lists.linux.dev>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-mips@vger.kernel.org>,
+	<linux-mm@kvack.org>, <imx@lists.linux.dev>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>, Richard Weinberger <richard@nod.at>, "Lucas
+ Stach" <l.stach@pengutronix.de>, Linus Walleij <linus.walleij@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>, Ankur Arora
+	<ankur.a.arora@oracle.com>, David Hildenbrand <david@redhat.com>, "Mike
+ Rapoport" <rppt@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Matthew Wilcox <willy@infradead.org>, Andrew Morton
+	<akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
+	"Ira Weiny" <ira.weiny@intel.com>, Nishanth Menon <nm@ti.com>,
+	=?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Alexander Sverdlin
+	<alexander.sverdlin@gmail.com>, "Chester A. Unal"
+	<chester.a.unal@arinc9.com>, Sergio Paracuellos
+	<sergio.paracuellos@gmail.com>, Andreas Larsson <andreas@gaisler.com>, "Mihai
+ Sain" <Mihai.Sain@microchip.com>, Alexandre Belloni
+	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>
+References: <4ff89b72-03ff-4447-9d21-dd6a5fe1550f@app.fastmail.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Content-Language: en-US, fr
+Organization: microchip
+In-Reply-To: <4ff89b72-03ff-4447-9d21-dd6a5fe1550f@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 04, 2025 at 09:25:25PM +0200, Osama Abdelkader wrote:
-> use strscpy() instead of deprecated strcpy().
-> 
-> Signed-off-by: Osama Abdelkader <osama.abdelkader@gmail.com>
-> ---
-> v2:
-> change function signature to get len and the caller.
-> v3:
-> use same parameters and arguments order
-> ---
->  arch/mips/math-emu/me-debugfs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/mips/math-emu/me-debugfs.c b/arch/mips/math-emu/me-debugfs.c
-> index d5ad76b2bb67..49bf2b827ce2 100644
-> --- a/arch/mips/math-emu/me-debugfs.c
-> +++ b/arch/mips/math-emu/me-debugfs.c
-> @@ -37,11 +37,11 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_fpuemu_stat, fpuemu_stat_get, NULL, "%llu\n");
->   * used in debugfs item names to be clearly associated to corresponding
->   * MIPS FPU instructions.
->   */
-> -static void adjust_instruction_counter_name(char *out_name, char *in_name)
-> +static void adjust_instruction_counter_name(char *out_name, char *in_name, size_t len)
->  {
->  	int i = 0;
->  
-> -	strcpy(out_name, in_name);
-> +	strscpy(out_name, in_name, len);
->  	while (in_name[i] != '\0') {
->  		if (out_name[i] == '_')
->  			out_name[i] = '.';
-> @@ -226,7 +226,7 @@ do {									\
->  
->  #define FPU_STAT_CREATE_EX(m)						\
->  do {									\
-> -	adjust_instruction_counter_name(name, #m);			\
-> +	adjust_instruction_counter_name(name, #m, sizeof(name));			\
->  									\
->  	debugfs_create_file(name, 0444, fpuemu_debugfs_inst_dir,	\
->  				(void *)FPU_EMU_STAT_OFFSET(m),		\
-> -- 
-> 2.43.0
+Arnd,
 
-applied to mips-next.
+On 09/09/2025 at 23:23, Arnd Bergmann wrote:
+> I'm still collecting information about which of the remaining highmem
+> users plan to keep updating their kernels and for what reason.
 
-Thomas.
+We have 1GB of memory on our latest Cortex-A7 SAMA7D65 evaluation boards 
+[1] (full production announced beg. 2025). The wide range of DDR types 
+supported make some of these types interesting to use at such density.
+Both our Cortex-A7 SoCs don't have IOMMU; core and DMAs can address the 
+full range of the 32 bit address space, so we're quite 
+standard/simplistic in this area. We use CMA with large chunks as our 
+camera or display interfaces address "modern-ish" resolutions (~1080p).
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+We use CONFIG_HIGHMEM and activated it for simplicity, conformance to 
+usual user-space workloads and planned to add it to our sama7_defconfig 
+[2]. I understand that we might reconsider this "by default" choice and 
+move to one of the solutions you highlighted in your message, lwn.net 
+article or recent talk at ELC-E.
+
+Of course we plan to maintain these boards and keep updating our kernel 
+"offer" once a year for those associated SoCs (with maintaining 
+upstream, as usual). As you said, being ARMv7, we're quite confident for 
+now.
+
+As you mentioned, we've recently released one ARMv5te arm926ejs-based 
+soc: the SAM9x75 family. But we don't have the intention to use too big 
+memory sizes on them, even if they do address large screens, with LVDS 
+and MIPI or modern camera interfaces...
+
+I don't have too much info about our customer's use cases as they are 
+very, very diverse, but don't hesitate to reach out to me if you have 
+questions about a particular combination of use.
+Thanks for your regular update on these topics.
+
+Best regards,
+   Nicolas
+
+[1]: for instance: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/microchip/at91-sama7d65_curiosity.dts#n29
+
+[2]: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/configs/sama7_defconfig

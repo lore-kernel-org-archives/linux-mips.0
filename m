@@ -1,135 +1,121 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6DB1E25FA
-	for <linux-mips@vger.kernel.org>; Wed, 17 Sep 2025 14:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143BB26159E;
+	Wed, 17 Sep 2025 14:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758120475; cv=none; b=WOFOro4/NmceQhIfK/hf8TBu2oDGSHL+ei77JzQzrVRC6fGmEj+DwhhC0VEiF44QsQ+0PAO5A6XPEwjwh0dLw/ObrUqYtH+qOPhihRUZ2iepJeSfSEIiUQHE62k7kiX58a42+C0HjOCijaMNJGT1kpC9VN2CVfn7ATTdVE/JuoI=
+	t=1758120638; cv=none; b=lhKnfr5p4TvBtQxB0vEj9EEa46VkP375qVEKKJOImw3xnsIWQdDWlKRQfix9JDArVF8nPA0vlDmf5E6IrHPT+G0DNsjl8Kxpc7paX9AIi6cl0Nspr9Vamg6zIsMIXRZUA5xAcyr7Ikr6RKdZxu+Vg/s/SxdbzmdMjVPVc08La30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758120475; c=relaxed/simple;
-	bh=w9FYSGCFlvp1v1BCXyAA0Xy9sUV+AIrXP/toqUxniEQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=riNt8mWf8oLtq08BdMkgUJOgyEswcwFxw//Ns7RB3JI512CrU8Qj760ORMTONGUU/tj8afdJZ2E6kCP2T7Z1w/EGgXuHQrF4TggTNMuJp08MkjK78pH8qItg3YdROUHDYFZB0+YThb0ll8B0lhyVcVl6z37YF+I7RVb5i2RPxsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oNqET/kH; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oNqET/kH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E81C4CEFA;
-	Wed, 17 Sep 2025 14:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758120475;
-	bh=w9FYSGCFlvp1v1BCXyAA0Xy9sUV+AIrXP/toqUxniEQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oNqET/kHKZLRuh4R89fIMtFhu+kPzsP0McepxuDdw8zc1/JEV6/XT4foKK5u334Cx
-	 SMLbRx/jjB7KqxqUYlSzgZb3L4geqYK9p0H/yzw+mCRPjapFsX13MXt/ErvBpTlBaJ
-	 o7ayuzUZfySHw+Kv71KFlhrXEG0NbCELgT7R4DZLGI2PWkhx1Kq9mX3zWAu7R2pVb0
-	 lkcWkCJvfl0UhTT7ZmXUqkFvEPc7GMWwu9y/IQ2u2U3Z7HrK4wQnNVmZx/yWjYdPnm
-	 G0NskpsROE46l74WSI4rn/zHcO5UhREBeSM+EEF6juP2oMvyHoO/LnnE/ouWGJNhnK
-	 1KaQ/5LaTCukQ==
-From: Maxime Ripard <mripard@kernel.org>
-Date: Wed, 17 Sep 2025 16:46:18 +0200
-Subject: [PATCH v4 37/39] drm/ingenic: crtc: Switch to
- ingenic_drm_get_new_priv_state()
+	s=arc-20240116; t=1758120638; c=relaxed/simple;
+	bh=4Wc+7RlDyYQxsFMt1VpemfvZM7UmiTSNVLu2rV9GnqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n+4dTZOOr3e2BinJ9Uzovtkju+2Wd/GXLQ6mex4XLWOXJnOUw3atW11Kvgvt9H2NnSL3/pnVw6JjxUfLJNC5+l3pa5l82EZzvvsg+uWyD/50tnmkpelgWvP5fso2leYjvIRqt/IjwG39k8uTGNlCw9PhFYwwgN+WYaBcAaMWhmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4cRhL8185Cz9sxm;
+	Wed, 17 Sep 2025 16:41:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id JixBRAxvbto3; Wed, 17 Sep 2025 16:41:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4cRhL76yxbz9sxl;
+	Wed, 17 Sep 2025 16:41:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id D0FA18B76C;
+	Wed, 17 Sep 2025 16:41:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id VStNY412crOA; Wed, 17 Sep 2025 16:41:51 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 452048B767;
+	Wed, 17 Sep 2025 16:41:50 +0200 (CEST)
+Message-ID: <41d100c5-4706-400e-a61a-46b068f1bc74@csgroup.eu>
+Date: Wed, 17 Sep 2025 16:41:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 07/36] powerpc/vdso: Explicitly include asm/cputable.h
+ and asm/feature-fixups.h
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Arnd Bergmann
+ <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Nick Alcock <nick.alcock@oracle.com>,
+ John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Shuah Khan <shuah@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, Russell King
+ <linux@armlinux.org.uk>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Nagarathnam Muthusamy <nagarathnam.muthusamy@oracle.com>,
+ Shannon Nelson <sln@onemain.com>, Nicholas Piggin <npiggin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-s390@vger.kernel.org
+References: <20250917-vdso-sparc64-generic-2-v3-0-3679b1bc8ee8@linutronix.de>
+ <20250917-vdso-sparc64-generic-2-v3-7-3679b1bc8ee8@linutronix.de>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Language: fr-FR
+In-Reply-To: <20250917-vdso-sparc64-generic-2-v3-7-3679b1bc8ee8@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250917-drm-no-more-existing-state-v4-37-5d4b9889c3c8@kernel.org>
-References: <20250917-drm-no-more-existing-state-v4-0-5d4b9889c3c8@kernel.org>
-In-Reply-To: <20250917-drm-no-more-existing-state-v4-0-5d4b9889c3c8@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
- =?utf-8?q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, 
- Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3183; i=mripard@kernel.org;
- h=from:subject:message-id; bh=w9FYSGCFlvp1v1BCXyAA0Xy9sUV+AIrXP/toqUxniEQ=;
- b=owGbwMvMwCmsHn9OcpHtvjLG02pJDBmnTq6fcKfv9fe7Eq+uxLxYd2njuaU/9vs5vHvCvtWAN
- 8chSs/zYMdUFgZhTgZZMUWWJzJhp5e3L65ysF/5A2YOKxPIEAYuTgGYiFwIY8MB4Xpen/3xeTXW
- SReibDjKuSRmCFxetXn6VcEFrS92PbSeMTuKsfXylqX7+SbuEn4oLsRYnzJ1+azsbtW9N9Ujorz
- +TWirqb4Q9Fz1FvtKx+KeOT8/nL3+/ENMVMEpVt6dVoyLuXYwAAA=
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-The ingenic CRTC atomic_enable() implementation will indirectly call
-drm_atomic_get_private_obj_state() through ingenic_drm_get_priv_state().
 
-drm_atomic_get_private_obj_state() will either return the new state for
-the object in the global state if it exists, or will allocate a new one
-and add it to the global state.
 
-atomic_enable() however isn't allowed to modify the global state. So
-what the implementation should use is the
-drm_atomic_get_new_private_obj_state() helper to get the new state for
-the CRTC, without performing an extra allocation.
+Le 17/09/2025 à 16:00, Thomas Weißschuh a écrit :
+> The usage of ASM_FTR_IFCLR(CPU_TR_ARCH_31) requires asm/cputable.h and
+> asm/feature-fixups.h. Currently these headers are included transitively,
+> but that transitive inclusion is about to go away.
 
-We still need to make sure the private state will be part of the global
-state by the time atomic_enable runs, so we still need to call
-ingenic_drm_get_priv_state() in atomic_check. We can then call
-ingenic_drm_get_new_priv_state() in atomic_enable, which is a wrapper
-around drm_atomic_get_new_private_obj_state().
+Hum ...
 
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+That was unexpectedly added by commit 9c7bfc2dc21e ("powerpc/64s: Make 
+POWER10 and later use pause_short in cpu_relax loops")
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 05faed933e5619c796f2a4fa1906e0eaa029ac68..d3213fbf22be14b177fc1b7100c5b721d5f17924 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -245,12 +245,12 @@ static void ingenic_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- {
- 	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
- 	struct ingenic_drm_private_state *priv_state;
- 	unsigned int next_id;
- 
--	priv_state = ingenic_drm_get_priv_state(priv, state);
--	if (WARN_ON(IS_ERR(priv_state)))
-+	priv_state = ingenic_drm_get_new_priv_state(priv, state);
-+	if (WARN_ON(!priv_state))
- 		return;
- 
- 	/* Set addresses of our DMA descriptor chains */
- 	next_id = priv_state->use_palette ? HWDESC_PALETTE : 0;
- 	regmap_write(priv->map, JZ_REG_LCD_DA0, dma_hwdesc_addr(priv, next_id));
-@@ -338,17 +338,23 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
- {
- 	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state,
- 									  crtc);
- 	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
- 	struct drm_plane_state *f1_state, *f0_state, *ipu_state = NULL;
-+	struct ingenic_drm_private_state *priv_state;
- 
- 	if (crtc_state->gamma_lut &&
- 	    drm_color_lut_size(crtc_state->gamma_lut) != ARRAY_SIZE(priv->dma_hwdescs->palette)) {
- 		dev_dbg(priv->dev, "Invalid palette size\n");
- 		return -EINVAL;
- 	}
- 
-+	/* We will need the state in atomic_enable, so let's make sure it's part of the state */
-+	priv_state = ingenic_drm_get_priv_state(priv, state);
-+	if (IS_ERR(priv_state))
-+		return PTR_ERR(priv_state);
-+
- 	if (drm_atomic_crtc_needs_modeset(crtc_state) && priv->soc_info->has_osd) {
- 		f1_state = drm_atomic_get_plane_state(crtc_state->state,
- 						      &priv->f1);
- 		if (IS_ERR(f1_state))
- 			return PTR_ERR(f1_state);
+In theory, vdso/ headers shouldn't include any headers outside of vdso/
 
--- 
-2.50.1
+
+> 
+> Explicitly include the headers.
+> 
+> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+> ---
+>   arch/powerpc/include/asm/vdso/processor.h | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/powerpc/include/asm/vdso/processor.h b/arch/powerpc/include/asm/vdso/processor.h
+> index 80d13207c5688d73954822aede2bbe2d0e05c054..42b64903bdf47cc5bd571fc3b5caed45e6358cb9 100644
+> --- a/arch/powerpc/include/asm/vdso/processor.h
+> +++ b/arch/powerpc/include/asm/vdso/processor.h
+> @@ -4,6 +4,9 @@
+>   
+>   #ifndef __ASSEMBLY__
+
+__ASSEMBLY__ is replaced by __ASSEMBLER__ in powerpc-next in commit 
+74db6cc331b0 ("powerpc: Replace __ASSEMBLY__ with __ASSEMBLER__ in 
+non-uapi headers")
+
+>   
+> +#include <asm/cputable.h>
+> +#include <asm/feature-fixups.h>
+> +
+>   /* Macros for adjusting thread priority (hardware multi-threading) */
+>   #ifdef CONFIG_PPC64
+>   #define HMT_very_low()		asm volatile("or 31, 31, 31	# very low priority")
+> 
 

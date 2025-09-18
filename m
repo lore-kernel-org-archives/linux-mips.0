@@ -1,69 +1,111 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D91D2D9494;
-	Thu, 18 Sep 2025 18:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A551B424F;
+	Thu, 18 Sep 2025 19:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758221171; cv=none; b=RRO4UmSfwNtdMVnDMSYyeSwPO8M7F2pD1rwZH++X0UOvwgCNBRarBfdDrvMJLrCp0CGHxCOFd3MNCEnUCzNQx5zg2cqQiRu9XHPtLtUc+A0A4BVJ0oIXIKOftgnwUzvMnCW5irp17hl2Z9oYhOHKT2mHONa3A214Tg08ipgGMx0=
+	t=1758222706; cv=none; b=DEKY+KE0+eSPGFnKeP7Mub7iYl2sIFK0HYBso3Ay51hFAKUFbWDpQ6AMkvUl4kT1QZrZ1yQj83fuI3rAQFlXAkU26nUAEHs9cYrlBtqkLJehnHExeqBjSphxo4BIg424jCDjHczOCYynLGEYvugLQbsm25VkxW3XSgUD2gEmLeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758221171; c=relaxed/simple;
-	bh=uXtCKxAn4lJIk0uyzU0s1tMehbPq4hSpIpuFU2JE2Qo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BjrdRT7dN9FDKOFmQqYcJCPKgOSHKgovMLjku/ki78qdj78ijm4e1lnxBqdy9ALtfXhkydNKWwcR0kW/rMLkQw4JdnpnJpk9N0ssejrAFRU6Tipb6aGYXcR3DA8j/LJlGy7oApD1q9uDv/CtVkSJ3Vv8KcDOJaUWL0oRk+xwD+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XcDUWoml; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1758222706; c=relaxed/simple;
+	bh=lOR27FB60WfaXG9XY9l0rBk9RW2/T7eyBicEZvQ9F+4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dTifaP30JZzwIi7oLb1PEcFZAA+m/IjDZCw/nZH1LB33Oj1JdVRFsfYHYEWpwlCENgfFalbOOXLqtSCOwQevWaB6W+MwZw9XWTzcO82biD1ssNJs2MtvqWhCVs6jI2fKlGUxFsesIqPJclE7uI9eC2wQAzDalHQLeCD5M9Awl6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=e1PjzYEw; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XcDUWoml"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41BE7C4CEE7;
-	Thu, 18 Sep 2025 18:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758221171;
-	bh=uXtCKxAn4lJIk0uyzU0s1tMehbPq4hSpIpuFU2JE2Qo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XcDUWomlStMMeFZ3/TJvShNKVI2ne4pT3ymiWQxIQ5cB6pCz+OArBrbwKpELnS63X
-	 AsFRL1spAgwyeCLnIS2Br262lbJnqBbpCVd4ULOZVZtnj2C10kT6CvJ8n+8JUEAfYP
-	 jFqxdtfM+opMXomXA3Ct9jKZuU3nvXXXih1anUIUmeYA2+NA0FUjI4Yl436qNKhCCW
-	 Aa/Vm8u8X4+psfEgiqdpsNqbGjvUEPS8JA0bNbKSpeXk0dd7H1N/gfHZ8mh5pUso/C
-	 fhMyzuZ9ej7kREv+eyKj/qcU15OhLAX2+3kVxzRJlcJjo/s2nJbBu1ygM503fdcjcp
-	 lkA9Tjnlkw/og==
-From: Leon Romanovsky <leon@kernel.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Geoff Levand <geoff@infradead.org>,
-	Helge Deller <deller@gmx.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	iommu@lists.linux.dev,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Juergen Gross <jgross@suse.com>,
-	linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Matt Turner <mattst88@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	sparclinux@vger.kernel.org,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	virtualization@lists.linux.dev,
-	x86@kernel.org,
-	xen-devel@lists.xenproject.org
-Subject: [PATCH 8/9] xen: swiotlb: Convert mapping routine to rely  on physical address
-Date: Thu, 18 Sep 2025 21:45:08 +0300
-Message-ID: <bdc496de560c8a62ab934a65ebab4137421c4cb1.1758219787.git.leon@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1758219786.git.leon@kernel.org>
-References: <cover.1758219786.git.leon@kernel.org>
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="e1PjzYEw"
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 58IHFrYs3277934;
+	Thu, 18 Sep 2025 12:11:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=n7WMUyT5L/wA654bmEoUeQzuO+YeNxS6ichaQfAm4K0=; b=e1PjzYEwP6rW
+	SfUk5eeciJxn+YRaNAOwJfo0mF1M9af1ue6fOutyvFad79DSht413xYSjq60mDZn
+	YfAeHI3teHoLHj2Ahw36GPsEKjr9nWC6XNFV5yDHpZFkBziHEg6+zY9tRtbFHZ7L
+	euLc+3yKJdYsaDbCHeYUrokmz4OdnyNONXB/EoFpk84RGhgSRcJayfWUqspezpej
+	t5GboU+18x4kwUz9VDEY546JJy77c6NrIDp7S3nspwxS3VyRR3cDcJUXjns/AlUx
+	vHU6c1NA5Yk/53XX8iJhs34HuxkDG9lTlReCBuQkPbYQPU3FHSiVsk3ft4wTv6TT
+	ArN8tU50uw==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 498f7yccgs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Thu, 18 Sep 2025 12:11:41 -0700 (PDT)
+Received: from devbig091.ldc1.facebook.com (2620:10d:c085:108::150d) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.20; Thu, 18 Sep 2025 19:11:36 +0000
+From: Chris Mason <clm@meta.com>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+CC: Chris Mason <clm@meta.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Guo Ren <guoren@kernel.org>,
+        "Thomas
+ Bogendoerfer" <tsbogend@alpha.franken.de>,
+        Heiko Carstens
+	<hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+	<agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S . Miller"
+	<davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>, Arnd Bergmann
+	<arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Dan
+ Williams" <dan.j.williams@intel.com>,
+        Vishal Verma
+	<vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, Nicolas Pitre
+	<nico@fluxnic.net>,
+        "Muchun Song" <muchun.song@linux.dev>,
+        Oscar Salvador
+	<osalvador@suse.de>,
+        "David Hildenbrand" <david@redhat.com>,
+        Konstantin
+ Komarov <almaz.alexandrovich@paragon-software.com>,
+        Baoquan He
+	<bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young
+	<dyoung@redhat.com>, Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre
+	<reinette.chatre@intel.com>,
+        "Dave Martin" <Dave.Martin@arm.com>,
+        James Morse
+	<james.morse@arm.com>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        Christian
+ Brauner <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
+        "Liam R . Howlett"
+	<Liam.Howlett@oracle.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>, Mike Rapoport
+	<rppt@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko
+	<mhocko@suse.com>, Hugh Dickins <hughd@google.com>,
+        Baolin Wang
+	<baolin.wang@linux.alibaba.com>,
+        "Uladzislau Rezki" <urezki@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Andrey Konovalov"
+	<andreyknvl@gmail.com>,
+        Jann Horn <jannh@google.com>, Pedro Falcato
+	<pfalcato@suse.de>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <sparclinux@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+        <linux-cxl@vger.kernel.org>, <linux-mm@kvack.org>,
+        <ntfs3@lists.linux.dev>, <kexec@lists.infradead.org>,
+        <kasan-dev@googlegroups.com>, Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v2 11/16] mm: update mem char driver to use mmap_prepare
+Date: Thu, 18 Sep 2025 12:11:05 -0700
+Message-ID: <20250918191119.3622358-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <aeee6a4896304d6dc7515e79d74f8bc5ec424415.1757534913.git.lorenzo.stoakes@oracle.com>
+References:
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -71,92 +113,88 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=Wr8rMcfv c=1 sm=1 tr=0 ts=68cc596e cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=QLIaiyCFZkuJlwHvl48A:9
+X-Proofpoint-ORIG-GUID: yzU4eNHLhAUfSh4h33V6r2BXOldJckJZ
+X-Proofpoint-GUID: yzU4eNHLhAUfSh4h33V6r2BXOldJckJZ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE4MDE3MCBTYWx0ZWRfX+OH6/CZXfYF1
+ ZQZSd3MY5d1+huXM92tmUuaixGbvXh9eslNEM1bRcbWXduWBJkY9hM7pAwYK1UmVGB6+KtMLK3+
+ 5xu0OvXnTYTE5X3/j7r0YUT9jTEQIyg7vs2wzGv7et2oYHzPIQqFSONTUbrUfKZtQGE+5Ql2G/m
+ FB+fFTcxSnJqueTYbtn/kFdO7ZXWcwZvUvPEHQAajQYNZXBbU5RIDDKbQMkKIDQGqkR8eZiO5xs
+ q0uwGSCKiMwePOEm2hD3yphFf7LSfGFQnTUqyn0uufzwKaznKzrNA1c2BW91Ht07S88ASQbLxJd
+ y3Z61QWwzOnbaToH1kdrhAuNayIEpInurTQIzwra/DJzb/lInqX9Bhz50sofEw=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-18_02,2025-09-18_02,2025-03-28_01
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, 10 Sep 2025 21:22:06 +0100 Lorenzo Stoakes <lorenzo.stoakes@oracle.com> wrote:
 
-Switch to .map_phys callback instead of .map_page.
+> Update the mem char driver (backing /dev/mem and /dev/zero) to use
+> f_op->mmap_prepare hook rather than the deprecated f_op->mmap.
+> 
+> The /dev/zero implementation has a very unique and rather concerning
+> characteristic in that it converts MAP_PRIVATE mmap() mappings anonymous
+> when they are, in fact, not.
+> 
+> The new f_op->mmap_prepare() can support this, but rather than introducing
+> a helper function to perform this hack (and risk introducing other users),
+> simply set desc->vm_op to NULL here and add a comment describing what's
+> going on.
+> 
+> We also introduce shmem_zero_setup_desc() to allow for the shared mapping
+> case via an f_op->mmap_prepare() hook, and generalise the code between this
+> and shmem_zero_setup().
+> 
+> We also use the desc->action_error_hook to filter the remap error to
+> -EAGAIN to keep behaviour consistent.
+> 
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> ---
+>  drivers/char/mem.c       | 75 ++++++++++++++++++++++------------------
+>  include/linux/shmem_fs.h |  3 +-
+>  mm/shmem.c               | 40 ++++++++++++++++-----
+>  3 files changed, 76 insertions(+), 42 deletions(-)
+> 
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/xen/grant-dma-ops.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+[ ... ]
 
-diff --git a/drivers/xen/grant-dma-ops.c b/drivers/xen/grant-dma-ops.c
-index 29257d2639dbf..7f76e516fe24c 100644
---- a/drivers/xen/grant-dma-ops.c
-+++ b/drivers/xen/grant-dma-ops.c
-@@ -163,18 +163,22 @@ static void xen_grant_dma_free_pages(struct device *dev, size_t size,
- 	xen_grant_dma_free(dev, size, page_to_virt(vaddr), dma_handle, 0);
- }
- 
--static dma_addr_t xen_grant_dma_map_page(struct device *dev, struct page *page,
--					 unsigned long offset, size_t size,
-+static dma_addr_t xen_grant_dma_map_phys(struct device *dev, phys_addr_t phys,
-+					 size_t size,
- 					 enum dma_data_direction dir,
- 					 unsigned long attrs)
- {
- 	struct xen_grant_dma_data *data;
-+	unsigned long offset = offset_in_page(phys);
- 	unsigned long dma_offset = xen_offset_in_page(offset),
- 			pfn_offset = XEN_PFN_DOWN(offset);
- 	unsigned int i, n_pages = XEN_PFN_UP(dma_offset + size);
- 	grant_ref_t grant;
- 	dma_addr_t dma_handle;
- 
-+	if (attrs & DMA_ATTR_MMIO)
-+		return DMA_MAPPING_ERROR;
-+
- 	if (WARN_ON(dir == DMA_NONE))
- 		return DMA_MAPPING_ERROR;
- 
-@@ -190,7 +194,7 @@ static dma_addr_t xen_grant_dma_map_page(struct device *dev, struct page *page,
- 
- 	for (i = 0; i < n_pages; i++) {
- 		gnttab_grant_foreign_access_ref(grant + i, data->backend_domid,
--				pfn_to_gfn(page_to_xen_pfn(page) + i + pfn_offset),
-+				pfn_to_gfn(page_to_xen_pfn(phys_to_page(phys)) + i + pfn_offset),
- 				dir == DMA_TO_DEVICE);
- 	}
- 
-@@ -199,7 +203,7 @@ static dma_addr_t xen_grant_dma_map_page(struct device *dev, struct page *page,
- 	return dma_handle;
- }
- 
--static void xen_grant_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
-+static void xen_grant_dma_unmap_phys(struct device *dev, dma_addr_t dma_handle,
- 				     size_t size, enum dma_data_direction dir,
- 				     unsigned long attrs)
- {
-@@ -242,7 +246,7 @@ static void xen_grant_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- 		return;
- 
- 	for_each_sg(sg, s, nents, i)
--		xen_grant_dma_unmap_page(dev, s->dma_address, sg_dma_len(s), dir,
-+		xen_grant_dma_unmap_phys(dev, s->dma_address, sg_dma_len(s), dir,
- 				attrs);
- }
- 
-@@ -257,7 +261,7 @@ static int xen_grant_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 		return -EINVAL;
- 
- 	for_each_sg(sg, s, nents, i) {
--		s->dma_address = xen_grant_dma_map_page(dev, sg_page(s), s->offset,
-+		s->dma_address = xen_grant_dma_map_phys(dev, sg_phys(s),
- 				s->length, dir, attrs);
- 		if (s->dma_address == DMA_MAPPING_ERROR)
- 			goto out;
-@@ -286,8 +290,8 @@ static const struct dma_map_ops xen_grant_dma_ops = {
- 	.free_pages = xen_grant_dma_free_pages,
- 	.mmap = dma_common_mmap,
- 	.get_sgtable = dma_common_get_sgtable,
--	.map_page = xen_grant_dma_map_page,
--	.unmap_page = xen_grant_dma_unmap_page,
-+	.map_phys = xen_grant_dma_map_phys,
-+	.unmap_phys = xen_grant_dma_unmap_phys,
- 	.map_sg = xen_grant_dma_map_sg,
- 	.unmap_sg = xen_grant_dma_unmap_sg,
- 	.dma_supported = xen_grant_dma_supported,
--- 
-2.51.0
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 990e33c6a776..cb6ff00eb4cb 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
 
+[ ... ]
+
+> @@ -5920,6 +5925,25 @@ int shmem_zero_setup(struct vm_area_struct *vma)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * shmem_zero_setup_desc - same as shmem_zero_setup, but determined by VMA
+> + * descriptor for convenience.
+> + * @desc: Describes VMA
+> + * Returns: 0 on success, or error
+> + */
+> +int shmem_zero_setup_desc(struct vm_area_desc *desc)
+> +{
+> +	struct file *file = __shmem_zero_setup(desc->start, desc->end, desc->vm_flags);
+> +
+> +	if (IS_ERR(file))
+> +		return PTR_ERR(file);
+> +
+> +	desc->vm_file = file;
+> +	desc->vm_ops = &shmem_anon_vm_ops;
+> +
+> +	return 0;
+> +}
+> +
+
+Hi Lorenzo,
+
+shmem_zero_setup() does a if (vma->vm_file) fput(vma->vm_file) dance.
+
+It looks like we need one here too?
+
+-chris

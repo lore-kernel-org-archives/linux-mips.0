@@ -1,123 +1,150 @@
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3570275112
-	for <linux-mips@vger.kernel.org>; Fri, 19 Sep 2025 07:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054C4315D34;
+	Fri, 19 Sep 2025 14:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758266276; cv=none; b=uRgNZEUHOXht7MFOI2le6XTQxV6v/n9EnlAbzyG7bSkA1eHvJYlBW5Rn2jaaB9KfYCH/G55UbB7pHs8FYsAyMTna4Re0maIob0VSJ4/ElVZ/QnGi5811/dty3HhHCn2F8UQ/DXDhoyMrR8riIXmtE6EBJG1lZO7RkvkCfXK23I4=
+	t=1758291777; cv=none; b=mMmUJrhH7phmzVN0uFJd25oB2M1nmDRtUcDk8uKmuSxuu/ev5qhcaS2AJnAjCBCJgF/lalxUKWfUPKTyHedBan1WzscGeNOo9APoafqghSUjwglOmG8LTS72N1UUobVCNL0khpL7tqCR7YYp1J+gnU6bv0yquQkPA+dtb01lptE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758266276; c=relaxed/simple;
-	bh=wb2qdIEva+9wMnDjLkyVGNO79u5HZMke8qdhK9b51SU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dduFCNJTpKMD+mLTgvD+kuK/mC4qZJonR02QgBjYJ0P5KFd8pIYu9PA0zMzTGph4dewwwqAjyTswxQVQUuY/I/pzqGU7Gd20EWMnHpcbYY7gt9b2ovJgGSPWUdP6vulvYHReWZYUskyZt0qwfs0VhSPkQzIE2P6+IKrjB50qyco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-545df2bb95dso739030e0c.0
-        for <linux-mips@vger.kernel.org>; Fri, 19 Sep 2025 00:17:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758266272; x=1758871072;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jN8ls4Umh9EIXSEQoAkCyXxQ8L8mjN2Gdzzs4J/riyA=;
-        b=PtuU9pZ4zPduqvlDnTG2LWRFcLoa2NtEu3vmTqSzyn57uFolJVPhN4UJ9pcWsVW7Rg
-         KYk88C5YWnvSI71pu9o0GG1g7jxIRN7t3v1eOXaPIvGcUTeo/X03IZ+A4/+NR/fqgHkT
-         ZoPkh/Fneqxk5V73m7nCUGzunrBDxtK0aXvbqqr0NaNHdyPlVeghdEH901yLgplynoeQ
-         AYPl+MyHsis8Z/mplBH6iTn2ljJ8opPEYjYmYqANTq+1krDB0PubJOA7pMX4+msyys3N
-         rAB+iZgpwkkxinP93hfvuWMWV5Qcd19YT8BBERHyA+U3yA3MbAHyJO+FeBk/gp3cXJA7
-         GaHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWcfpbBthaSi/ZpoeOAoFlhOV4rce8fZ+XPkOp2YyqtVWA9VbQ30xutxfRDNvC3Wcvi0YaqnUp85895@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJRxjeFW/iimmaG41s/BWz+RublJNJyjGsSQWyBHS3/6Mbobl2
-	VVmepdsIpKTIWSN7jjX4Ua6aGL1MeZST2uCLN/UCNaJanmM4giNNgyOzBMPMO+h0
-X-Gm-Gg: ASbGnctIhEY3+XGnVk9K+wSdcligGXj8UHGlo6sGuFgLtvmN19mAyuDh1XOUg+MC05d
-	CQwbkDOkxV9xbt4qtgPH6Y74Wxb6T7joO5rXQzwoWjDaYqAceP/DKepBntweD/SG1SBaDKxvSy7
-	tTa02G8MRqZDZDmmmU7OSbnc9dg+ieJZ/r5JLv7ouV34uBc5njTFU6O1x1MFnQ1+uHQN6oqMIca
-	pjMnHHylqEImml4trAhPQffWQlFY98rxkxHrfABfXWlFZru5eJddSWAfev00UO1IqbZwL5oceHU
-	zAjDcxxFrzeg7hTvtpslDi90vvSsYdZkUMxRt5tXVUVKHa6kWGJGvGL3rHK7iKl5S3a3I22eS4K
-	YPo49/oLp7ES9jqU2SavO90kuDQWLV2d079crQd4fLmPYU4raHqnzHzhO6i8g0wU7Zfz3ftg=
-X-Google-Smtp-Source: AGHT+IELb9GPs67fcp8Kxn3+mPQckapbAxA1Y4ngCO1pGx0/hQvKxDZY6YDrNRLhYJeeuLi6edLNOA==
-X-Received: by 2002:a05:6102:3e1d:b0:521:57e7:3b19 with SMTP id ada2fe7eead31-588f3c01d6emr638033137.25.1758266272494;
-        Fri, 19 Sep 2025 00:17:52 -0700 (PDT)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-8e3e58e81d8sm752306241.4.2025.09.19.00.17.52
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Sep 2025 00:17:52 -0700 (PDT)
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-5910f37bdffso14581137.1
-        for <linux-mips@vger.kernel.org>; Fri, 19 Sep 2025 00:17:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWH8XJImCy6JFjJTflRrPDU0ibfpNWVuCZV/Rs7hNmTTX7Vvy5GgOlK4h4crz7Rtf3OerQgg31s5kdq@vger.kernel.org
-X-Received: by 2002:a05:6102:534c:b0:55d:b35e:7a58 with SMTP id
- ada2fe7eead31-588f3357b74mr639278137.23.1758266271934; Fri, 19 Sep 2025
- 00:17:51 -0700 (PDT)
+	s=arc-20240116; t=1758291777; c=relaxed/simple;
+	bh=aZA8prTitTZ/eYBw5SroAW+Jfqg49mZTo5qsSdtKR3s=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=Kf9wtOYXm22SkYZQ5didS6b1ow6wL/aUDdicxNdkVMudR5CFMu5cT/WRWYvQRIelsSZYKpT0behldSWn3PENgcVAFL6QERjVBsNFs+FMY3+iFkulmu6l2in7/rscNgobf7ma0FBIXz26KGt+eNLds/DbQD4yTVrqWkCUjIM1ksI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=3P7vtOxX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NwEFh+Eh; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="3P7vtOxX";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NwEFh+Eh"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 3BC477A0068;
+	Fri, 19 Sep 2025 10:22:53 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-05.internal (MEProxy); Fri, 19 Sep 2025 10:22:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1758291773;
+	 x=1758378173; bh=DGBIXWoQfciFg5TTWblokxBsiewcOE1bszsE8YzDKWM=; b=
+	3P7vtOxXTlRKZGWlZLsRFVQlQg4bj5SvQvb5v1zmryo4PCz5xUCZ/fSZUuL33qsW
+	2XFxpoh130HNWVqUH00GYFR2OLcWx0fbXjhyeBAR8yseNvBXLhN/0OOMJL6U3cy9
+	NOxQGScNJsPb3WM84wfJPFb4rdhDXJNr0eUbkkBFZAqgCNYQVkp1Eolbo7eGfx6T
+	UIhoCwGZmmCD2l9Vdt05U1amomaUxFZDiopcE8Uiha2UPEfSrnPL/cBLPrd/w2SK
+	AOAYXKR8GES89WQNC+kxfLcj7gP5oZndIPzi3FtUM0Qapm2gqlAC8zK00Iux7Czt
+	u3Hzk4X0b7bccGPCfsVDGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758291773; x=
+	1758378173; bh=DGBIXWoQfciFg5TTWblokxBsiewcOE1bszsE8YzDKWM=; b=N
+	wEFh+Ehq8I5Ne8BUFO132THoMndwZ6szg6zS6b+qZvszYrP+sSryFfqlrr++t+re
+	52mUZjJS/MqYpcQK4IrqneI3Q+QV87n44m8BdrbXyltTFUsKqWVoFc7LxhztSzR1
+	/CyOnK6h4cAgGvOrrvZPqQ+kytQaKCIBFxaNl1m4svOmCOmwcwS8Yq4fdKJu928x
+	+iYoSc2Dwk0r2zFgWPLHA2uWyYEEbO2I/L1Q2EIYz5f60VEk6QPi921HwITH7WAh
+	xpt1386OGSe7LQJ7/CDBPPYMPl7W+ZdVVK91Q5wl7+/wWjKCPzRy6B5d7I5vClBH
+	kLIZeQgRg6fEx8N/FKj5Q==
+X-ME-Sender: <xms:O2fNaHPZsDEluqQ3K1xXVYzEPxMOHfVlGvrDBsZCIGFfPOnh7MIMIw>
+    <xme:O2fNaB8EpINHV6429QucyQqOJUWdlBgZRzftFfr0w1fqno7OIhXeVkca9g9sUwCxx
+    WJ4lzYGsR2mwvafSTA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdegleeggecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
+    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeeftddpmhhouggvpehsmhhtphhouhht
+    pdhrtghpthhtoheptghhvghsthgvrhdrrgdruhhnrghlsegrrhhinhgtledrtghomhdprh
+    gtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhrohhuphdrvghupdhr
+    tghpthhtoheprghnughrvggrshesghgrihhslhgvrhdrtghomhdprhgtphhtthhopehgvg
+    gvrhhtodhrvghnvghsrghssehglhhiuggvrhdrsggvpdhrtghpthhtoheprghlvgigrghn
+    uggvrhdrshhvvghrughlihhnsehgmhgrihhlrdgtohhmpdhrtghpthhtohepshgvrhhgih
+    hordhprghrrggtuhgvlhhlohhssehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhurhgv
+    nhgssehgohhoghhlvgdrtghomhdprhgtphhtthhopeifihhllhihsehinhhfrhgruggvrg
+    gurdhorhhgpdhrtghpthhtohepihhrrgdrfigvihhnhiesihhnthgvlhdrtghomh
+X-ME-Proxy: <xmx:O2fNaLcxJAwbyL7fF-hDxzqk5CnB_5srfmblzDObKefDa2_Yw3Nu9Q>
+    <xmx:O2fNaI_XmRHiAy2z_8UrPdVkq5oq8nmdQ4T2W7CdP781TiN2_pBACw>
+    <xmx:O2fNaJixEsf2I4UZLqtJvoBDqXbeFMrBT42lISbnoEN9uVt68m1a8w>
+    <xmx:O2fNaE_oeBhVK0r7xewR08-ipIjEJmwOjKy_oXBB5MOm1ZA557kJ_A>
+    <xmx:PWfNaL2dV5R9mOO8RHYelr4frobgiBB2zH1lISJhguP3OD7Lp1pVdNvG>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 04B80700098; Fri, 19 Sep 2025 10:22:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-ThreadId: AneuvEk2E7Kg
+Date: Fri, 19 Sep 2025 16:22:20 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Jason Gunthorpe" <jgg@nvidia.com>, ksummit@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, imx@lists.linux.dev,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Lucas Stach" <l.stach@pengutronix.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Ankur Arora" <ankur.a.arora@oracle.com>,
+ "David Hildenbrand" <david@redhat.com>,
+ "Mike Rapoport" <rppt@kernel.org>,
+ "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>,
+ "Matthew Wilcox" <willy@infradead.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ "Vlastimil Babka" <vbabka@suse.cz>,
+ "Suren Baghdasaryan" <surenb@google.com>,
+ "Ira Weiny" <ira.weiny@intel.com>, "Nishanth Menon" <nm@ti.com>,
+ =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
+ "Chester A. Unal" <chester.a.unal@arinc9.com>,
+ "Sergio Paracuellos" <sergio.paracuellos@gmail.com>,
+ "Andreas Larsson" <andreas@gaisler.com>
+Message-Id: <547dcb81-434d-4910-aa7c-1d69019fcb3d@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdVecUeLZ2LPpa457C0a=uduvDhQ4KZJx-++dEFJraRi3w@mail.gmail.com>
 References: <4ff89b72-03ff-4447-9d21-dd6a5fe1550f@app.fastmail.com>
- <20250917125951.GA1390993@nvidia.com> <02b0f383-1c43-4eeb-a76f-830c2970b833@app.fastmail.com>
-In-Reply-To: <02b0f383-1c43-4eeb-a76f-830c2970b833@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 19 Sep 2025 09:17:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVecUeLZ2LPpa457C0a=uduvDhQ4KZJx-++dEFJraRi3w@mail.gmail.com>
-X-Gm-Features: AS18NWAI1tRNfDFQjIFUy24j2rmv5VjIZdZQpBy05JHeqlSMB-7iVf4odZQDlmM
-Message-ID: <CAMuHMdVecUeLZ2LPpa457C0a=uduvDhQ4KZJx-++dEFJraRi3w@mail.gmail.com>
+ <20250917125951.GA1390993@nvidia.com>
+ <02b0f383-1c43-4eeb-a76f-830c2970b833@app.fastmail.com>
+ <CAMuHMdVecUeLZ2LPpa457C0a=uduvDhQ4KZJx-++dEFJraRi3w@mail.gmail.com>
 Subject: Re: [TECH TOPIC] Reaching consensus on CONFIG_HIGHMEM phaseout
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, ksummit@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org, imx@lists.linux.dev, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Richard Weinberger <richard@nod.at>, 
-	Lucas Stach <l.stach@pengutronix.de>, Linus Walleij <linus.walleij@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Ankur Arora <ankur.a.arora@oracle.com>, 
-	David Hildenbrand <david@redhat.com>, Mike Rapoport <rppt@kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Matthew Wilcox <willy@infradead.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>, Ira Weiny <ira.weiny@intel.com>, 
-	Nishanth Menon <nm@ti.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, 
-	"Chester A. Unal" <chester.a.unal@arinc9.com>, 
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>, Andreas Larsson <andreas@gaisler.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Hi Arnd,
-
-On Thu, 18 Sept 2025 at 15:13, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wed, Sep 17, 2025, at 14:59, Jason Gunthorpe wrote:
-> > On Tue, Sep 09, 2025 at 11:23:37PM +0200, Arnd Bergmann wrote:
-> >
-> >> I'm still collecting information about which of the remaining highmem
-> >> users plan to keep updating their kernels and for what reason.
-> >
-> > On this topic of removing some parts of highmem, can we say goodbye to
-> > kmap_high_get()? Only ARM uses it and only for
-> > !cache_is_vipt_nonaliasing() systems.
+On Fri, Sep 19, 2025, at 09:17, Geert Uytterhoeven wrote:
+> On Thu, 18 Sept 2025 at 15:13, Arnd Bergmann <arnd@arndb.de> wrote:
+>> On Wed, Sep 17, 2025, at 14:59, Jason Gunthorpe wrote:
+>> > On Tue, Sep 09, 2025 at 11:23:37PM +0200, Arnd Bergmann wrote:
 >
-> Good idea. I think we are almost there, just need to verify that
-> there is actually no impact for existing users. I already knew
-> that there is very little highmem usage on ARMv6 and earlier, but
-> I tried to recheck all platforms that might be affected:
+>> * Microchip SAM9x7 is the newest ARMv5 chip, clearly does
+>>   get kernel updates, and the only one I can think of with
+>>   DDR3 support, but seems to be limited to 256MB total memory.
+>
+> Are they limited to DDR3?
+>
+> IIRC, someone (you? ;-) told me at ELCE that Microchip keeps on spinning
+> new variants of old SoCs, to accommodate the changing DDR landscape
+> and market.  So perhaps they also accept larger RAM sizes?
 
-> * Microchip SAM9x7 is the newest ARMv5 chip, clearly does
->   get kernel updates, and the only one I can think of with
->   DDR3 support, but seems to be limited to 256MB total memory.
+Yes, that was me. The previous SAM9x60 was released in 2020
+and I think that one was an upgrade to a smaller process node,
+raising the clock frequency to 600MHz and adding more modern
+peripherals, but I see now that this used the same SDRAM/LPDDR/DDR2
+memory controller as previous chips, with a limit of 128MB
+total DRAM.
 
-Are they limited to DDR3?
+SAM9X7 in 2023 added DDR3 mode with up to 256MB according to
+the datasheet, no idea why they chose not to support more,
+since a 32-bit wide DDR3 bus should allow up to 1GB with two
+256Mbit x16 chips that are widely available, or even more using
+expensive 512Mbit x16 or 1Gbit x8 chips.
 
-IIRC, someone (you? ;-) told me at ELCE that Microchip keeps on spinning
-new variants of old SoCs, to accommodate the changing DDR landscape
-and market.  So perhaps they also accept larger RAM sizes?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+       Arnd

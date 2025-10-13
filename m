@@ -1,194 +1,164 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B86D1547D2;
-	Mon, 13 Oct 2025 13:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E8720E03F;
+	Mon, 13 Oct 2025 16:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760361638; cv=none; b=VyiMYuhY2bm5dMPcpaX8Xc+UlIPFOLcycQQ3rN2+uHpTnxMYxYtkF8ul85Zr3T1XpQm3WHVQJWDuhYZckyC/T+EQPc3WJF+nA2rR5A8zKfo/PAkBU6TB8pvxgNVTpVNRhbHGuwdYYgtG9i36K0ZyyYap+21WQDoFKjzkkHi18ws=
+	t=1760372704; cv=none; b=O6nZTw7PrTL93RfZIm6iRuWo1pnY2iENgTeCR/7f0dnN89cklTCBuqhlRE+rTtuoe96VxAFQvMLu/A+BK/Cbdbfn8imz9v71kbeYGTeuyWyVGSuyTEfKS0oBOZrcvFhRxE04Zig6QHUlWIhuHyBnEMI2i4TJkDSEowNrdAh6iN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760361638; c=relaxed/simple;
-	bh=08P6/S9TSCs7VItMP+DAa4ys+h3oQiIBbFRrGwsYaiY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rm3cwUaiUisAgdam45k1UGgyspLoHP0lMGP5OKAb9Mx/pOS0wDRT7KVX91EYZwcMSNSHnpae/EbIxn1cAqGGJogwRa2e9b7RWD4yCy4W9MP1t/hYjXPwW77wWwCP/yTyGLOQxUw78cvqEc5LDR6AIdQ/bre+lcQuTjh7zXjK3yI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4cld112tJkz9sSv;
-	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id O5E7p9M28w-y; Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4cld1122pDz9sSs;
-	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 328DF8B768;
-	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id 7EZ7Ik3eZcv6; Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [10.25.207.160])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 02E3C8B763;
-	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	John Crispin <john@phrozen.org>
-Subject: [PATCH 1/2] gpio: mm-lantiq: Drop legacy-of-mm-gpiochip.h header from GPIO driver
-Date: Mon, 13 Oct 2025 15:07:14 +0200
-Message-ID: <c7415e2870b3bd9109f95bab3784d48e708e30e6.1760360638.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1760372704; c=relaxed/simple;
+	bh=LL/jGdgQJ90AWuzd5LGIpGz74iyqDUJabfmgYeb+peI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QLZL+hWMjKP7k4w6XmAH7DS/q9i2BC5wO98J9Ku/H0ekim9STQKlCBtNKREzp2t9eT1EPB+mAT67yyNz4Zz7AcUrHesmEJrvaaL/Rn+Y7gI9FQyMnidy+Mn7fWWgKc0ZHbQclkfn6GsF0qiFQcdPlLIrmsOI848nr3+5vSTFOEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=04OTVAjT; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="04OTVAjT"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D89684E4102F;
+	Mon, 13 Oct 2025 16:24:59 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9DF6A6067B;
+	Mon, 13 Oct 2025 16:24:59 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 98BE7102F2240;
+	Mon, 13 Oct 2025 18:24:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1760372697; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=PC31koJdVp7I18KJXXznsupuFReAJu7dqL5WcMJcy3A=;
+	b=04OTVAjTiOEFsDi5yuKJEPPMia+eupmavbDoA7y9ukJCInFmK1cylzLMINZpgRiKkjS12R
+	LHD1uKGL0p4tiUjnB760f9sOkZbD072dMYy2ndR8Q1xN4kIu4ig4qZnV8CdJkckoMLui+D
+	NV8q+5fjRt5FWWtTT5Pz1ZATGth7vynV5yEPDJcODpBltuIZj5/1X/Aa4+8Tv+CrIJSdZz
+	CT/iRbBrdfgm0YaFNloPsvdwqK1mQEQzLU+8Ibg7GMTbfYllbtOreoa6w4psXE2nlABLY9
+	b4JA2+aW1E5j1pbLPT5DLwhnEulgEwtuOly7fAUjaROdsK8sqTwtzOd/1iomrg==
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Subject: [PATCH 0/2] drm/atomic: protect bridge private_obj during bridge
+ removal
+Date: Mon, 13 Oct 2025 18:24:21 +0200
+Message-Id: <20251013-drm-bridge-atomic-vs-remove-private_obj-v1-0-1fc2e58102e0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1760360834; l=4682; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=08P6/S9TSCs7VItMP+DAa4ys+h3oQiIBbFRrGwsYaiY=; b=Qh7mMJyAZpFgoDIS7x52mAKA0zkU5FMUYQszSuDw8b8vGHyjs02lC8B+QfO9P7yWCBIOpVZhR eed+vVRL6BNDw2CCSpqA+w1EiOScuPSdTCiTmGNDf1gDQpBLOQIpcA3
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIALUn7WgC/x2N0QqDMAwAf0XyvEDbIW7+iozRNtFlUCuplIH47
+ ys+Hgd3BxRW4QJjd4BylSJ5bWBvHcSPXxdGocbgjOutsXckTRhUqBm/5yQRa0HllCvjplL9zu8
+ cvkjD0z1MHzhQhFbblGf5XafpdZ5/1Mbq7nkAAAA=
+X-Change-ID: 20251013-drm-bridge-atomic-vs-remove-private_obj-d792805bebdc
+To: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>, 
+ Rodrigo Siqueira <siqueira@igalia.com>, 
+ Alex Deucher <alexander.deucher@amd.com>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+ Liviu Dudau <liviu.dudau@arm.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Paul Cercueil <paul@crapouillou.net>, 
+ Rob Clark <robin.clark@oss.qualcomm.com>, 
+ Dmitry Baryshkov <lumag@kernel.org>, 
+ Abhinav Kumar <abhinav.kumar@linux.dev>, 
+ Jessica Zhang <jessica.zhang@oss.qualcomm.com>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Mikko Perttunen <mperttunen@nvidia.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Dave Stevenson <dave.stevenson@raspberrypi.com>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>, 
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>
+Cc: Hui Pu <Hui.Pu@gehealthcare.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
+ linux-tegra@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-Remove legacy-of-mm-gpiochip.h header file. The above mentioned
-file provides an OF API that's deprecated. There is no agnostic
-alternatives to it and we have to open code the logic which was
-hidden behind of_mm_gpiochip_add_data(). Note, most of the GPIO
-drivers are using their own labeling schemas and resource retrieval
-that only a few may gain of the code deduplication, so whenever
-alternative is appear we can move drivers again to use that one.
+This series avoids a race between DRM bridge removal and usage of the
+bridge private_obj during DRM_MODESET_LOCK_ALL_BEGIN/END() and other
+locking operations.
 
-[Text copied from commit 34064c8267a6 ("powerpc/8xx: Drop
-legacy-of-mm-gpiochip.h header")]
+This is part of the work towards removal of bridges from a still existing
+DRM pipeline without use-after-free. The grand plan was discussed in [0].
+Here's the work breakdown (➜ marks the current series):
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+ 1. … add refcounting to DRM bridges (struct drm_bridge)
+    (based on devm_drm_bridge_alloc() [0])
+    A. ✔ add new alloc API and refcounting (v6.16)
+    B. ✔ convert all bridge drivers to new API (v6.17)
+    C. ✔ kunit tests (v6.17)
+    D. ✔ add get/put to drm_bridge_add/remove() + attach/detach()
+         and warn on old allocation pattern (v6.17)
+    E. … add get/put on drm_bridge accessors
+       1. ✔ drm_bridge_chain_get_first_bridge(), add cleanup action (v6.18)
+       2. ✔ drm_bridge_get_prev_bridge() (v6.18)
+       3. ✔ drm_bridge_get_next_bridge() (v6.19)
+       4. ✔ drm_for_each_bridge_in_chain() (v6.19)
+       5. ✔ drm_bridge_connector_init (v6.19)
+       6. … protect encoder bridge chain with a mutex
+       7. of_drm_find_bridge
+       8. drm_of_find_panel_or_bridge, *_of_get_bridge
+       9. … enforce drm_bridge_add before drm_bridge_attach
+    F. ✔ debugfs improvements
+       1. ✔ add top-level 'bridges' file (v6.16)
+       2. ✔ show refcount and list lingering bridges (v6.19)
+ 2. ➜ handle gracefully atomic updates during bridge removal
+    A. … Add drm_dev_enter/exit() to protect device resources
+    B. ➜ protect private_obj removal from list
+ 3. … DSI host-device driver interaction
+ 4. ✔ removing the need for the "always-disconnected" connector
+ 5. finish the hotplug bridge work, moving code to the core and potentially
+    removing the hotplug-bridge itself (this needs to be clarified as
+    points 1-3 are developed)
+
+[0] https://lore.kernel.org/lkml/20250206-hotplug-drm-bridge-v6-0-9d6f2c9c3058@bootlin.com/#t
+
+The need for this series emerged during testing of DRM bridge
+hot-plugging. Very rarely on hot-unplug the following warning has appeared:
+  
+  WARNING: CPU: 0 PID: 123 at include/drm/drm_modeset_lock.h:114 drm_atomic_private_obj_fini+0x64/0x80
+  ...
+  Call trace:
+   drm_atomic_private_obj_fini+0x64/0x80
+   drm_bridge_detach+0x38/0x98
+
+The actual change is in patch 2 along with a detailed explanation.
+Patch 1 is just a preparation step.
+
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 ---
- drivers/gpio/Kconfig          |  1 -
- drivers/gpio/gpio-mm-lantiq.c | 47 +++++++++++++++++++----------------
- 2 files changed, 25 insertions(+), 23 deletions(-)
+Luca Ceresoli (2):
+      drm/atomic: pass drm_device pointer to drm_atomic_private_obj_fini()
+      drm_atomic_private_obj_fini: protect private_obj removal from list
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 7ee3afbc2b05d..8fde6730a02dd 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -476,7 +476,6 @@ config GPIO_MENZ127
- config GPIO_MM_LANTIQ
- 	bool "Lantiq Memory mapped GPIOs"
- 	depends on LANTIQ && SOC_XWAY
--	select OF_GPIO_MM_GPIOCHIP
- 	help
- 	  This enables support for memory mapped GPIOs on the External Bus Unit
- 	  (EBU) found on Lantiq SoCs. The GPIOs are output only as they are
-diff --git a/drivers/gpio/gpio-mm-lantiq.c b/drivers/gpio/gpio-mm-lantiq.c
-index 8f1405733d98b..3d2e24d614751 100644
---- a/drivers/gpio/gpio-mm-lantiq.c
-+++ b/drivers/gpio/gpio-mm-lantiq.c
-@@ -10,7 +10,6 @@
- #include <linux/platform_device.h>
- #include <linux/mutex.h>
- #include <linux/gpio/driver.h>
--#include <linux/gpio/legacy-of-mm-gpiochip.h>
- #include <linux/of.h>
- #include <linux/io.h>
- #include <linux/slab.h>
-@@ -27,7 +26,8 @@
- #define LTQ_EBU_WP	0x80000000	/* write protect bit */
- 
- struct ltq_mm {
--	struct of_mm_gpio_chip mmchip;
-+	struct gpio_chip gc;
-+	void __iomem *regs;
- 	u16 shadow;	/* shadow the latches state */
- };
- 
-@@ -44,7 +44,7 @@ static void ltq_mm_apply(struct ltq_mm *chip)
- 
- 	spin_lock_irqsave(&ebu_lock, flags);
- 	ltq_ebu_w32(LTQ_EBU_BUSCON, LTQ_EBU_BUSCON1);
--	__raw_writew(chip->shadow, chip->mmchip.regs);
-+	__raw_writew(chip->shadow, chip->regs);
- 	ltq_ebu_w32(LTQ_EBU_BUSCON | LTQ_EBU_WP, LTQ_EBU_BUSCON1);
- 	spin_unlock_irqrestore(&ebu_lock, flags);
- }
-@@ -87,19 +87,19 @@ static int ltq_mm_dir_out(struct gpio_chip *gc, unsigned offset, int value)
-  * ltq_mm_save_regs() - Set initial values of GPIO pins
-  * @mm_gc: pointer to memory mapped GPIO chip structure
-  */
--static void ltq_mm_save_regs(struct of_mm_gpio_chip *mm_gc)
-+static void ltq_mm_save_regs(struct ltq_mm *chip)
- {
--	struct ltq_mm *chip =
--		container_of(mm_gc, struct ltq_mm, mmchip);
--
- 	/* tell the ebu controller which memory address we will be using */
--	ltq_ebu_w32(CPHYSADDR(chip->mmchip.regs) | 0x1, LTQ_EBU_ADDRSEL1);
-+	ltq_ebu_w32(CPHYSADDR((__force void *)chip->regs) | 0x1, LTQ_EBU_ADDRSEL1);
- 
- 	ltq_mm_apply(chip);
- }
- 
- static int ltq_mm_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct gpio_chip *gc;
- 	struct ltq_mm *chip;
- 	u32 shadow;
- 
-@@ -107,25 +107,29 @@ static int ltq_mm_probe(struct platform_device *pdev)
- 	if (!chip)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(pdev, chip);
-+	gc = &chip->gc;
-+
-+	gc->base = -1;
-+	gc->ngpio = 16;
-+	gc->direction_output = ltq_mm_dir_out;
-+	gc->set = ltq_mm_set;
-+	gc->parent = dev;
-+	gc->owner = THIS_MODULE;
-+	gc->label = devm_kasprintf(dev, GFP_KERNEL, "%pOF", np);
-+	if (!gc->label)
-+		return -ENOMEM;
-+
-+	chip->regs = devm_of_iomap(dev, np, 0, NULL);
-+	if (IS_ERR(chip->regs))
-+		return PTR_ERR(chip->regs);
- 
--	chip->mmchip.gc.ngpio = 16;
--	chip->mmchip.gc.direction_output = ltq_mm_dir_out;
--	chip->mmchip.gc.set = ltq_mm_set;
--	chip->mmchip.save_regs = ltq_mm_save_regs;
-+	ltq_mm_save_regs(chip);
- 
- 	/* store the shadow value if one was passed by the devicetree */
- 	if (!of_property_read_u32(pdev->dev.of_node, "lantiq,shadow", &shadow))
- 		chip->shadow = shadow;
- 
--	return of_mm_gpiochip_add_data(pdev->dev.of_node, &chip->mmchip, chip);
--}
--
--static void ltq_mm_remove(struct platform_device *pdev)
--{
--	struct ltq_mm *chip = platform_get_drvdata(pdev);
--
--	of_mm_gpiochip_remove(&chip->mmchip);
-+	return devm_gpiochip_add_data(dev, gc, chip);
- }
- 
- static const struct of_device_id ltq_mm_match[] = {
-@@ -136,7 +140,6 @@ MODULE_DEVICE_TABLE(of, ltq_mm_match);
- 
- static struct platform_driver ltq_mm_driver = {
- 	.probe = ltq_mm_probe,
--	.remove = ltq_mm_remove,
- 	.driver = {
- 		.name = "gpio-mm-ltq",
- 		.of_match_table = ltq_mm_match,
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c       | 2 +-
+ drivers/gpu/drm/arm/display/komeda/komeda_private_obj.c | 2 +-
+ drivers/gpu/drm/display/drm_dp_mst_topology.c           | 2 +-
+ drivers/gpu/drm/display/drm_dp_tunnel.c                 | 2 +-
+ drivers/gpu/drm/drm_atomic.c                            | 9 ++++++++-
+ drivers/gpu/drm/drm_bridge.c                            | 2 +-
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c               | 2 +-
+ drivers/gpu/drm/ingenic/ingenic-ipu.c                   | 2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c                 | 2 +-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c                | 2 +-
+ drivers/gpu/drm/omapdrm/omap_drv.c                      | 2 +-
+ drivers/gpu/drm/tegra/hub.c                             | 2 +-
+ drivers/gpu/drm/vc4/vc4_kms.c                           | 6 +++---
+ include/drm/drm_atomic.h                                | 3 ++-
+ 14 files changed, 24 insertions(+), 16 deletions(-)
+---
+base-commit: 3b80ba4fb2d81c77cfef535b202162cbb8aa1f6e
+change-id: 20251013-drm-bridge-atomic-vs-remove-private_obj-d792805bebdc
+
+Best regards,
 -- 
-2.49.0
+Luca Ceresoli <luca.ceresoli@bootlin.com>
 

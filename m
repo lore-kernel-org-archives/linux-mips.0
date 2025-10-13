@@ -1,114 +1,248 @@
-Received: from mail-yx1-f53.google.com (mail-yx1-f53.google.com [74.125.224.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB902247284
-	for <linux-mips@vger.kernel.org>; Fri, 10 Oct 2025 04:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.53
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33516269B1C;
+	Mon, 13 Oct 2025 13:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760072282; cv=none; b=n+7usAjaLqVF2WSO99ygSJSTHwT+lHpW1MnkK9CRXHASnX5WZV3x9rH9qyDXu9R5RIc5UHNT7mcS33+Q/opQwrFgG47xP1HjUK+h5uHVa2Jj9TTOUfdVEIUkWmBdImFuy2CY4Pl0WVsF19/wHoQMN2zJMRhPjMpXRihK2BZAUSo=
+	t=1760361637; cv=none; b=nhqOitENl3r4ntzIAiFfiIooKFhhgBolcOQW/ZGfP9m424WFhiHD4lMuXmeHPG5dlnH0yP0XLbatAvGJ2vh2SoQSAXI05Vn70yrxk8TyQESTYTPBpHqcOUINvKPW1OuEDdRc/c1G1avYY98ZWr6qbkbEe8RPp/OkK7bFFQwjSJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760072282; c=relaxed/simple;
-	bh=20zVq/I1A85ImSdUuzZ7bh9Qs7dqD4eEIEsQzzw5Ci4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hqX4TBrHJxPLRLmQaGHu29WCXsOVJppzidDal/wGIUAs9f+tr5LBK7Bgx3hemMVzNYRvsTyyA8T+fPrgGUhQVcqDP/WJGrJCNs1v15XEPvWVmiYU8kAiulSy9Mh/ivpEV7ErlbHJOfp4FGB7Rpban8OnJ5TXMWSjHtc8SP0KCKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GrdiTzbT; arc=none smtp.client-ip=74.125.224.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GrdiTzbT"
-Received: by mail-yx1-f53.google.com with SMTP id 956f58d0204a3-63b960a0a2bso2025001d50.1
-        for <linux-mips@vger.kernel.org>; Thu, 09 Oct 2025 21:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760072278; x=1760677078; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=GrdiTzbTpmXrgj0/PjkohCZ6LgFNbxV45gb5L/ZVbzaWKAHJgA12/mfFqFdtOpY72m
-         bZZCyt4k8jRvQo4unsWw4ZeaFcU/eOYR2U/wcLgsvZR/RYdUoV9fmyuViF8Of5PYj/l4
-         634Gm0JHXypxB9ycdlhLckuOP80mjqw4wIO9HLiTQ6purdE8gu3SXgXaNMsYndjRbf75
-         1dPvVv1bpLUsn7UsoLTsiGPIZ2KQmnwtMFB4nrm8RHlzLeSFwrO7OIHtu7G4t0f6Q3Az
-         maevl8wn3jZRwLsUqzTevJOM0Q45hnxhlAkendZd7mXKlZsyaRmG6ugJRYjmZ1sxfyiy
-         qCrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760072278; x=1760677078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=sJe+el5qiGHinxC+MGZLJ/neNyRZ6JJ9RiHhaZ1494c4QlqoohsGej9Bq89nR3HZxn
-         Y1+dIzoXZESjHLq8fhJ4bQows52LgmfR42yRmJgw/Ej3IjThImImv+H4ZRb/IuJgSGAD
-         VzeE5jLYEeujdU5Zdx11cYGvKMQDQcxIlRjJJG3cdc+vot+h8lgK2/smJE/eDp2obdm8
-         f0f5DEnxHfrtfQAVQvChGqNfpxpYDTx9cboLXeo/c5va7MvU1duEcn4DTYlPTtymABBO
-         aNZR3F+pv6zIt2U/zUFB50lKFfTNY8RC1EfY7/oMPwNdYZ3Nha5CaANzCo9iGkXOXe+O
-         qmRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJXWjUOCqVZrB2XGjOq7I4p/Qm4IG5fXg/vOQyGpp5EtnvNbdymJOVGfQGPntlnOwTcOdfw7+5p/OR@vger.kernel.org
-X-Gm-Message-State: AOJu0YziwmTL95nwZsT/OWR76FgoN6DptheikiPd0+dmeECZ4e5nYfLl
-	biS+7Yek7Fg8OlT/qqLope+riuz75k5EiSiKpzCrv93LKHJ9JPpsfrpWwG9YegKNjisr73bNfzs
-	wu/HeZXj8NDTUEtG/+Tb7smH7yOomOt4=
-X-Gm-Gg: ASbGnctHRYyzyBlwJrsNTn3V/J1Bys0QElQKjcAZLJ2Wq8rkgqZQ599CtSnJlif8GrY
-	Xcgh3CfWp2u5dpuJAVG0w3ZC1IoxO65KXfPKZdl5kx45MCFlIIHEL7G2QDvflnlMtN1y7tcDTge
-	aeYMAK9iZADqXCLlGL8F7E3mAKkZZemTjPaaRv4DBz7ogJOBWawdg1EEuuUh+Fzap+fQAICW/vb
-	Ly9E9Z8o/HL8zyKmK8BCeV2Wg==
-X-Google-Smtp-Source: AGHT+IHqDciv7GAPYfMGdKr9Fwuo5GT168N8GcrpsJ5KozP5HqYqg/LDALxuogvzJXgNCm6zrA+DoCqu7lr8uhQrVc0=
-X-Received: by 2002:a53:5009:0:b0:636:2420:d3ce with SMTP id
- 956f58d0204a3-63ccb93456dmr7466309d50.51.1760072277565; Thu, 09 Oct 2025
- 21:57:57 -0700 (PDT)
+	s=arc-20240116; t=1760361637; c=relaxed/simple;
+	bh=ef2s9p6jYLAdXDaS+zt9DqMZ6ZmrlV+rXr3jgJNXoqQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uH50WVL6ylawUPoFyJnzdno79vD6TNVxrNjsTABA5/ogjw6um2o6pJeh+W59oNGhhwcMesOrUHNA5kVGI0yswrSq5YwxDH9GFEn+ekmXpsSUszzXkR50lnrmb3OspeJTw3nf7hHVfDPo90CzXIxZtjKVA++MANvEKWOnA3jchY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4cld1249rpz9sSy;
+	Mon, 13 Oct 2025 15:07:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id PFL4tiX2ENYH; Mon, 13 Oct 2025 15:07:18 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4cld112qQtz9sSt;
+	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 4AECF8B763;
+	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id 9BQah-aAhZmX; Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [10.25.207.160])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B6C78B767;
+	Mon, 13 Oct 2025 15:07:17 +0200 (CEST)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	John Crispin <john@phrozen.org>
+Subject: [PATCH 2/2] gpiolib: of: Get rid of <linux/gpio/legacy-of-mm-gpiochip.h>
+Date: Mon, 13 Oct 2025 15:07:15 +0200
+Message-ID: <e8efe5d1828a99e68552e2b88c20e784e2cac106.1760360638.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <c7415e2870b3bd9109f95bab3784d48e708e30e6.1760360638.git.christophe.leroy@csgroup.eu>
+References: <c7415e2870b3bd9109f95bab3784d48e708e30e6.1760360638.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
- <20250925131055.3933381-1-nschichan@freebox.fr>
-In-Reply-To: <20250925131055.3933381-1-nschichan@freebox.fr>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Fri, 10 Oct 2025 07:57:21 +0300
-X-Gm-Features: AS18NWAQwCKadWHXCZjVUBNaD3TaKIilJiJAQzSbvGFaYuFuE8UDpW1_H3riB-k
-Message-ID: <CAPnZJGBPyONjJoM6cskxysDnN4pxWuWJCK5A6TgikR2xHsrN5Q@mail.gmail.com>
-Subject: Re: [PATCH-RFC] init: simplify initrd code (was Re: [PATCH RESEND
- 00/62] initrd: remove classic initrd support).
-To: nschichan@freebox.fr
-Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
-	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
-	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
-	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
-	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
-	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
-	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
-	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
-	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1760360834; l=5690; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=ef2s9p6jYLAdXDaS+zt9DqMZ6ZmrlV+rXr3jgJNXoqQ=; b=I8qsze1XiPDT3+7RtNtSA9XIjOvhhjlkcSomzx8ut3kRRQJadrUKXwagcNmtA7L7t+/GHeseB xexRovCpWGVCpny5ew6LeluTBnOYJXL8QR6LQipFiE8dCwlCwiMelD2
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 25, 2025 at 4:12=E2=80=AFPM <nschichan@freebox.fr> wrote:
-> - drop prompt_ramdisk and ramdisk_start kernel parameters
-> - drop compression support
-> - drop image autodetection, the whole /initrd.image content is now
->   copied into /dev/ram0
-> - remove rd_load_disk() which doesn't seem to be used anywhere.
+Last user of linux/gpio/legacy-of-mm-gpiochip.h is gone.
 
-I welcome any initrd simplification!
+Remove linux/gpio/legacy-of-mm-gpiochip.h and
+CONFIG_OF_GPIO_MM_GPIOCHIP
 
-> Hopefully my email config is now better and reaches gmail users
-> correctly.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/gpio/Kconfig                       |  8 ---
+ drivers/gpio/TODO                          | 11 ---
+ drivers/gpio/gpiolib-of.c                  | 79 ----------------------
+ include/linux/gpio/legacy-of-mm-gpiochip.h | 36 ----------
+ 4 files changed, 134 deletions(-)
+ delete mode 100644 include/linux/gpio/legacy-of-mm-gpiochip.h
 
-Yes, I got this email.
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 8fde6730a02dd..40b7a295a8d2c 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -42,14 +42,6 @@ config GPIOLIB_IRQCHIP
+ 	select IRQ_DOMAIN
+ 	bool
+ 
+-config OF_GPIO_MM_GPIOCHIP
+-	bool
+-	help
+-	  This adds support for the legacy 'struct of_mm_gpio_chip' interface
+-	  from PowerPC. Existing drivers using this interface need to select
+-	  this symbol, but new drivers should use the generic gpio-regmap
+-	  infrastructure instead.
+-
+ config DEBUG_GPIO
+ 	bool "Debug GPIO calls"
+ 	depends on DEBUG_KERNEL
+diff --git a/drivers/gpio/TODO b/drivers/gpio/TODO
+index 8ed74e05903a9..5acaeab029ec6 100644
+--- a/drivers/gpio/TODO
++++ b/drivers/gpio/TODO
+@@ -86,17 +86,6 @@ Work items:
+ 
+ -------------------------------------------------------------------------------
+ 
+-Get rid of <linux/gpio/legacy-of-mm-gpiochip.h>
+-
+-Work items:
+-
+-- Get rid of struct of_mm_gpio_chip altogether: use the generic  MMIO
+-  GPIO for all current users (see below). Delete struct of_mm_gpio_chip,
+-  to_of_mm_gpio_chip(), of_mm_gpiochip_add_data(), of_mm_gpiochip_remove(),
+-  CONFIG_OF_GPIO_MM_GPIOCHIP from the kernel.
+-
+--------------------------------------------------------------------------------
+-
+ Collect drivers
+ 
+ Collect GPIO drivers from arch/* and other places that should be placed
+diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+index fad4edf9cc5c0..8657379e9165c 100644
+--- a/drivers/gpio/gpiolib-of.c
++++ b/drivers/gpio/gpiolib-of.c
+@@ -1031,85 +1031,6 @@ static int of_gpio_threecell_xlate(struct gpio_chip *gc,
+ 	return gpiospec->args[1];
+ }
+ 
+-#if IS_ENABLED(CONFIG_OF_GPIO_MM_GPIOCHIP)
+-#include <linux/gpio/legacy-of-mm-gpiochip.h>
+-/**
+- * of_mm_gpiochip_add_data - Add memory mapped GPIO chip (bank)
+- * @np:		device node of the GPIO chip
+- * @mm_gc:	pointer to the of_mm_gpio_chip allocated structure
+- * @data:	driver data to store in the struct gpio_chip
+- *
+- * To use this function you should allocate and fill mm_gc with:
+- *
+- * 1) In the gpio_chip structure:
+- *    - all the callbacks
+- *    - of_gpio_n_cells
+- *    - of_xlate callback (optional)
+- *
+- * 3) In the of_mm_gpio_chip structure:
+- *    - save_regs callback (optional)
+- *
+- * If succeeded, this function will map bank's memory and will
+- * do all necessary work for you. Then you'll able to use .regs
+- * to manage GPIOs from the callbacks.
+- *
+- * Returns:
+- * 0 on success, or negative errno on failure.
+- */
+-int of_mm_gpiochip_add_data(struct device_node *np,
+-			    struct of_mm_gpio_chip *mm_gc,
+-			    void *data)
+-{
+-	int ret = -ENOMEM;
+-	struct gpio_chip *gc = &mm_gc->gc;
+-
+-	gc->label = kasprintf(GFP_KERNEL, "%pOF", np);
+-	if (!gc->label)
+-		goto err0;
+-
+-	mm_gc->regs = of_iomap(np, 0);
+-	if (!mm_gc->regs)
+-		goto err1;
+-
+-	gc->base = -1;
+-
+-	if (mm_gc->save_regs)
+-		mm_gc->save_regs(mm_gc);
+-
+-	fwnode_handle_put(mm_gc->gc.fwnode);
+-	mm_gc->gc.fwnode = fwnode_handle_get(of_fwnode_handle(np));
+-
+-	ret = gpiochip_add_data(gc, data);
+-	if (ret)
+-		goto err2;
+-
+-	return 0;
+-err2:
+-	of_node_put(np);
+-	iounmap(mm_gc->regs);
+-err1:
+-	kfree(gc->label);
+-err0:
+-	pr_err("%pOF: GPIO chip registration failed with status %d\n", np, ret);
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(of_mm_gpiochip_add_data);
+-
+-/**
+- * of_mm_gpiochip_remove - Remove memory mapped GPIO chip (bank)
+- * @mm_gc:	pointer to the of_mm_gpio_chip allocated structure
+- */
+-void of_mm_gpiochip_remove(struct of_mm_gpio_chip *mm_gc)
+-{
+-	struct gpio_chip *gc = &mm_gc->gc;
+-
+-	gpiochip_remove(gc);
+-	iounmap(mm_gc->regs);
+-	kfree(gc->label);
+-}
+-EXPORT_SYMBOL_GPL(of_mm_gpiochip_remove);
+-#endif
+-
+ #ifdef CONFIG_PINCTRL
+ static int of_gpiochip_add_pin_range(struct gpio_chip *chip)
+ {
+diff --git a/include/linux/gpio/legacy-of-mm-gpiochip.h b/include/linux/gpio/legacy-of-mm-gpiochip.h
+deleted file mode 100644
+index 2e2bd3b19cc35..0000000000000
+--- a/include/linux/gpio/legacy-of-mm-gpiochip.h
++++ /dev/null
+@@ -1,36 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0+ */
+-/*
+- * OF helpers for the old of_mm_gpio_chip, used on ppc32 and nios2,
+- * do not use in new code.
+- *
+- * Copyright (c) 2007-2008  MontaVista Software, Inc.
+- *
+- * Author: Anton Vorontsov <avorontsov@ru.mvista.com>
+- */
+-
+-#ifndef __LINUX_GPIO_LEGACY_OF_MM_GPIO_CHIP_H
+-#define __LINUX_GPIO_LEGACY_OF_MM_GPIO_CHIP_H
+-
+-#include <linux/gpio/driver.h>
+-#include <linux/of.h>
+-
+-/*
+- * OF GPIO chip for memory mapped banks
+- */
+-struct of_mm_gpio_chip {
+-	struct gpio_chip gc;
+-	void (*save_regs)(struct of_mm_gpio_chip *mm_gc);
+-	void __iomem *regs;
+-};
+-
+-static inline struct of_mm_gpio_chip *to_of_mm_gpio_chip(struct gpio_chip *gc)
+-{
+-	return container_of(gc, struct of_mm_gpio_chip, gc);
+-}
+-
+-extern int of_mm_gpiochip_add_data(struct device_node *np,
+-				   struct of_mm_gpio_chip *mm_gc,
+-				   void *data);
+-extern void of_mm_gpiochip_remove(struct of_mm_gpio_chip *mm_gc);
+-
+-#endif /* __LINUX_GPIO_LEGACY_OF_MM_GPIO_CHIP_H */
+-- 
+2.49.0
 
---
-Askar Safin

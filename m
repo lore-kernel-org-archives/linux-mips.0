@@ -1,110 +1,108 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0137A1E3DED;
-	Tue, 14 Oct 2025 07:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EED212572;
+	Tue, 14 Oct 2025 08:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760428237; cv=none; b=ZRAbwsPUkxS8Ir7c0xaMa+samitbUgHC8MB+XMGkkW07axcKtjpmLuJe4Fs9ht+CW89M+ChyrUE613ZdpghwqXeJJ892HEVFEjYXqriZRfmvaVEyelHsAWOSNTvnzohri0Et/Y4aOzpzwx/33HKdtkCBcitc8RWmJPumjgKW+hE=
+	t=1760429094; cv=none; b=sBkp9bgR0KSLNhzJseJdK4tu7mgxDRb+cN16jAlaF4BNUra+AnmpxkqgjY2omqtcq/tewwVnm3y0JsCQJo/YsVev2zTng+KgKWToAye/B1CiGX+raQFjbCgp0XfjILX8s/CyqAFqkriVhECnxiTaBzIv8Q+2JcRFjbb0LgVTtDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760428237; c=relaxed/simple;
-	bh=LF/wX3C8mmlPSeO26AlwuOqnE9fpiLF1bsBkySWWDJk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iHag8F3d8WIPMFzAzqkzjzQ6JtHVWqTcb4FrsNhg78+qYhNpaxk6K0tLZbsMcG1o20zFPQIa4LHYL8E+8jYgx3AltdZp0surKXC0bw+BvxR0yMr0IzX0sHjz2fML2253rX6kgbAXqZvLZL+VgbAUbbNEve53bUWVayRWtGNEIb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4cm5lc3Hnjz9sST;
-	Tue, 14 Oct 2025 09:42:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id dfjcQFiX-ub0; Tue, 14 Oct 2025 09:42:20 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4cm5lc2Gfnz9sRy;
-	Tue, 14 Oct 2025 09:42:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 358268B768;
-	Tue, 14 Oct 2025 09:42:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id zsFJORiQt4Vt; Tue, 14 Oct 2025 09:42:20 +0200 (CEST)
-Received: from [192.168.235.99] (unknown [192.168.235.99])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DA788B763;
-	Tue, 14 Oct 2025 09:42:18 +0200 (CEST)
-Message-ID: <6942ea07-e6fa-4a5e-a003-0c7ee5e0c936@csgroup.eu>
-Date: Tue, 14 Oct 2025 09:42:17 +0200
+	s=arc-20240116; t=1760429094; c=relaxed/simple;
+	bh=S/VrvL9Q/dlcIWOf0mAk1bPtS2BlYclL4MQ4cWiU7A4=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=U3D1KPcHq7pqxDRFG2kywvIpmJo86lxToNso4odiTKPzOkTAUUkK7B8NKPO7GroYRmBwZ/ycEvU/msHFIaSSZE1GeoVvO1+3aHGa4VMpDp6y6/LjvgqT5uDBP66Cx1v/Cz9A3snGt6tzrlGZLyLgdv7iP/vqu6rHFKrMcuXguko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=G1DCyej+; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="G1DCyej+"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id CE04D1A1375;
+	Tue, 14 Oct 2025 08:04:48 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 9C0F6606EC;
+	Tue, 14 Oct 2025 08:04:48 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9C10B102F2259;
+	Tue, 14 Oct 2025 10:04:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1760429086; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=GIIeOiA+EHLhetZL9C/NMdu7ddLETfZ/iyx450VmB+o=;
+	b=G1DCyej+ZJvGk7EonfwQ/mncRsM+vJF2B0qZhJE7q9oiqodxvAjw7euPlQHu/geuj3TsCg
+	AMJgs8a2n9HowcnEwcMtgYb802u5QwzJVq9bEOHWtc8ymnzQD46qUUeMyfqfpjNDcfzhJr
+	N+p57CfH2WVTJIRvEHXgdfLN4PYQP4CXAJwTHifUQ+xdoqAvR9tY287YqZScg26NO6Jli0
+	Hb+JtXsaSSY0fytpzjUy6eu5IoIJWJi5XmlOo8lVXzhey9GKUZL4fUvFqt8wWeBsLcmjRX
+	KhxJLN1c4A5GHupxl8RsEatQfzPgL5pSOiPhM0AVuXLpVw53tINDJLfI20vwnw==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 06/35] powerpc/vdso/gettimeofday: Explicitly include
- vdso/time32.h
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Arnd Bergmann
- <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, Nick Alcock <nick.alcock@oracle.com>,
- John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Shuah Khan <shuah@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>, Russell King
- <linux@armlinux.org.uk>, Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Nagarathnam Muthusamy <nagarathnam.muthusamy@oracle.com>,
- Shannon Nelson <sln@onemain.com>
-Cc: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-s390@vger.kernel.org
-References: <20251014-vdso-sparc64-generic-2-v4-0-e0607bf49dea@linutronix.de>
- <20251014-vdso-sparc64-generic-2-v4-6-e0607bf49dea@linutronix.de>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Language: fr-FR
-In-Reply-To: <20251014-vdso-sparc64-generic-2-v4-6-e0607bf49dea@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 14 Oct 2025 10:04:23 +0200
+Message-Id: <DDHW0RB42KJW.3T5APFG3ORAOO@bootlin.com>
+From: "Luca Ceresoli" <luca.ceresoli@bootlin.com>
+To: "Maxime Ripard" <mripard@kernel.org>
+Cc: "Harry Wentland" <harry.wentland@amd.com>, "Leo Li"
+ <sunpeng.li@amd.com>, "Rodrigo Siqueira" <siqueira@igalia.com>, "Alex
+ Deucher" <alexander.deucher@amd.com>, =?utf-8?q?Christian_K=C3=B6nig?=
+ <christian.koenig@amd.com>, "David Airlie" <airlied@gmail.com>, "Simona
+ Vetter" <simona@ffwll.ch>, "Liviu Dudau" <liviu.dudau@arm.com>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, "Thomas Zimmermann"
+ <tzimmermann@suse.de>, "Andrzej Hajda" <andrzej.hajda@intel.com>, "Neil
+ Armstrong" <neil.armstrong@linaro.org>, "Robert Foss" <rfoss@kernel.org>,
+ "Laurent Pinchart" <Laurent.pinchart@ideasonboard.com>, "Jonas Karlman"
+ <jonas@kwiboo.se>, "Jernej Skrabec" <jernej.skrabec@gmail.com>, "Paul
+ Cercueil" <paul@crapouillou.net>, "Rob Clark"
+ <robin.clark@oss.qualcomm.com>, "Dmitry Baryshkov" <lumag@kernel.org>,
+ "Abhinav Kumar" <abhinav.kumar@linux.dev>, "Jessica Zhang"
+ <jessica.zhang@oss.qualcomm.com>, "Sean Paul" <sean@poorly.run>, "Marijn
+ Suijten" <marijn.suijten@somainline.org>, "Tomi Valkeinen"
+ <tomi.valkeinen@ideasonboard.com>, "Thierry Reding"
+ <thierry.reding@gmail.com>, "Mikko Perttunen" <mperttunen@nvidia.com>,
+ "Jonathan Hunter" <jonathanh@nvidia.com>, "Dave Stevenson"
+ <dave.stevenson@raspberrypi.com>, =?utf-8?q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, "Raspberry Pi Kernel Maintenance"
+ <kernel-list@raspberrypi.com>, "Hui Pu" <Hui.Pu@gehealthcare.com>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, <amd-gfx@lists.freedesktop.org>,
+ <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <freedreno@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 1/2] drm/atomic: pass drm_device pointer to
+ drm_atomic_private_obj_fini()
+X-Mailer: aerc 0.20.1
+References: <20251013-drm-bridge-atomic-vs-remove-private_obj-v1-0-1fc2e58102e0@bootlin.com> <20251013-drm-bridge-atomic-vs-remove-private_obj-v1-1-1fc2e58102e0@bootlin.com> <lunecs4wjujws7rczn4lmrjhbqfljbwzwrrw4yst5v2xgh3dip@hwz5kt5fzkw5>
+In-Reply-To: <lunecs4wjujws7rczn4lmrjhbqfljbwzwrrw4yst5v2xgh3dip@hwz5kt5fzkw5>
+X-Last-TLS-Session-Version: TLSv1.3
 
+Hi Maxime,
 
+On Tue Oct 14, 2025 at 9:44 AM CEST, Maxime Ripard wrote:
+>> --- a/include/drm/drm_atomic.h
+>> +++ b/include/drm/drm_atomic.h
+>> @@ -672,7 +672,8 @@ void drm_atomic_private_obj_init(struct drm_device *=
+dev,
+>>  				 struct drm_private_obj *obj,
+>>  				 struct drm_private_state *state,
+>>  				 const struct drm_private_state_funcs *funcs);
+>> -void drm_atomic_private_obj_fini(struct drm_private_obj *obj);
+>> +void drm_atomic_private_obj_fini(struct drm_device *dev,
+>> +				 struct drm_private_obj *obj);
+>
+> It's redundant with
+>
+> https://lore.kernel.org/dri-devel/20251008-drm-private-obj-reset-v1-1-805=
+ab43ae65a@kernel.org/
 
-Le 14/10/2025 à 08:48, Thomas Weißschuh a écrit :
-> The usage of 'struct old_timespec32' requires vdso/time32.h. Currently
-> this header is included transitively, but that transitive inclusion is
-> about to go away.
-> 
-> Explicitly include the header.
-> 
-> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> Tested-by: Andreas Larsson <andreas@gaisler.com>
-> Reviewed-by: Andreas Larsson <andreas@gaisler.com>
+What a timing! Thanks for the pointer, I hadn't noticed that series. It
+looks useful for my work, I'm definitely reviewing and testing it very
+soon.
 
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Luca
 
-> ---
->   arch/powerpc/include/asm/vdso/gettimeofday.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
-> index ab3df12c8d947ed3a5b0b173567ca8469afbf2d6..b2f0e971076acaea8bc70107fc0f5b2d23e0b312 100644
-> --- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-> +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-> @@ -8,6 +8,7 @@
->   #include <asm/barrier.h>
->   #include <asm/unistd.h>
->   #include <uapi/linux/time.h>
-> +#include <vdso/time32.h>
->   
->   #define VDSO_HAS_CLOCK_GETRES		1
->   
-> 
-
+--
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

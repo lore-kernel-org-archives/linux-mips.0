@@ -1,85 +1,81 @@
-Received: from manage.vyzra.com (unknown [104.128.60.218])
+Received: from mx4.wp.pl (mx4.wp.pl [212.77.101.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F115C342C85
-	for <linux-mips@vger.kernel.org>; Fri, 17 Oct 2025 13:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.128.60.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08A2C21D4
+	for <linux-mips@vger.kernel.org>; Fri, 17 Oct 2025 18:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760706310; cv=none; b=GllQrFnZVa7CPsGk0OX9K/jeUYM3lyZzHE5mS73dSttl2csddI1F5LDUsyCXkSNkwqYqpITKDa0aE/CaFGXnTWagDUKym4JjBdfZaVay9VtruJPdBNh3WNJXQw58fB9jIpmBchiCmsf7xluO3mxTI9AVUvJkxmtvmKh8tfv+DcE=
+	t=1760724101; cv=none; b=qseP6fF93bSTMY14XT/7Ky5ACAtsaZklBV/5djWcfqqYJmZtqT3H1Eu+N7aUQL+0CnKcy9rZYd6ZgFFl/AZWrtKxgWeUb0g0i51YVSVujWY1IO/1PDk9W5Ps4j+0QHxz4sTei0o+ub1Chf6fBBBWaHZhdBTi6YpwTxIL1LyxKJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760706310; c=relaxed/simple;
-	bh=biLnUx9jTTyVdIbdiavoTAgEZeIqqOihfb373MH/e18=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Zxlxjk0BC05ZgcDP38M0BXsbdd4Jn7+04JojOn7UEGEjwO8x61cV6W+sILkVWuDaZJpGl1AJyX+DUxXf8Jenq6pqUmXjvMq5L1nvCAqCnzF9GAfvdsxFVTsXxYkNsUUH5nT1n8MjAg+zG6G/QVgiWyGsUuVlzCcJY9AkDtPrvAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debtmanager.org; spf=none smtp.mailfrom=manage.vyzra.com; dkim=fail (0-bit key) header.d=debtmanager.org header.i=@debtmanager.org header.b=diT3e6ly reason="key not found in DNS"; arc=none smtp.client-ip=104.128.60.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debtmanager.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=manage.vyzra.com
+	s=arc-20240116; t=1760724101; c=relaxed/simple;
+	bh=uEz8JPPhrI+Zgyxi1YiGmOrJxuRQ6sLk9rBqa8GNTCI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lHs8ZKxOHMtlcF9A3duK8L25jQG3tm8CzP534jek/dhK+DXNToqfGlkxbtvaJYULQ0UFneZJPnr5KbU5VhQwiAZnxRzJAm9fMjGVEtRCcgveUCaATw27/Yvtwh9IN5V20av5yOdPwkO16BhAARrOHxkNqoF9q2V0yJQQqBbpIw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=LvX26175; arc=none smtp.client-ip=212.77.101.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=debtmanager.org header.i=@debtmanager.org header.b="diT3e6ly"
-Received: from debtmanager.org (unknown [103.237.86.103])
-	by manage.vyzra.com (Postfix) with ESMTPA id 006345338038
-	for <linux-mips@vger.kernel.org>; Fri, 17 Oct 2025 07:45:33 -0500 (CDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=debtmanager.org;
-	s=DKIM2021; t=1760705134; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=Aj8bDacQlJB5qNMC5+yWWged1+K/M8YReXQkzUminbQ=;
-	b=diT3e6ly7awLWHgZHz2KqoV3SyWXnsSups8dc1JO6Lfqo77vJtSEsIoyhjdMjAPWD/Fixx
-	afhOjVht1OAElAR3h3fbnqgYY+KsKBwZx47LfQ5SKRSq7YGEfqItg/F7GsATuUgSUjyMz2
-	ueMQFah2Tbn76WFimvMFvoEEG2S5XnEP5E+G2dj++wwyXtkfKvZ0/KshQn/7YxRS8iAeOU
-	b9TiwOazoli9cT7ghK4XZd1icyV8AmB56Xkftbo8exe7giT0Zoiw2WB1jt5xIsnLd5LbvL
-	ahTLmmrdMlyIHNAunzg4lhggi6WNy5AObHFBF1ttd/JG7oo3DIa8eORNCiGi7w==
-Reply-To: vlad.dinu@rdslink.ro
-From: "Vlad Dinu" <info@debtmanager.org>
-To: linux-mips@vger.kernel.org
-Subject: *** Urgent Change ***
-Date: 17 Oct 2025 05:45:33 -0700
-Message-ID: <20251017054533.268784C8CA0610BD@debtmanager.org>
+	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="LvX26175"
+Received: (wp-smtpd smtp.wp.pl 301 invoked from network); 17 Oct 2025 20:01:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
+          t=1760724087; bh=55VmtpXFFb4oHifdRS0/Qic3faGPb6qOmUUmEq1Bvpw=;
+          h=From:To:Cc:Subject;
+          b=LvX26175n0nVoaS76aZsMrflTUwWcQTxmLLeZBJTeHBPqri9HBaekcOSo7etxRMR/
+           2h420u/0nL+AD+CLzbk2TUBlfla9JTFtHRHYT6D2d5/3fWLsaX9iU+TZ784+NUOe0t
+           YjxFE7tqvD7yg8MmXjc2FJ2xsmHQ7hEnbW8fuD3t3oIE24W2hncLrAMFFZxYJgq+CE
+           WC5/vmZyCCUWdno/3xK+IX96cO4HVP8i59+ImgqyJsm2Go8wujvN94ayBSD2bt/Omd
+           jnNHYxTRq9HlhJWmZzGerKh9o5fks8p/4RpMKf1kKLQRyFYsXuxxEkD9x2B1cSfpXW
+           FVaTkMy6bhuLA==
+Received: from 83.24.149.147.ipv4.supernova.orange.pl (HELO laptop-olek.lan) (olek2@wp.pl@[83.24.149.147])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <jd@cjdns.fr>; 17 Oct 2025 20:01:27 +0200
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
+To: jd@cjdns.fr,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH] mips: dts: econet: fix EN751221 core type
+Date: Fri, 17 Oct 2025 20:01:19 +0200
+Message-ID: <20251017180124.67687-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -0.10
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                                      
+X-WP-MailID: c5c271ad7cb4d967f2347832fe9b88e7
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 000000A [URMU]                               
 
-Hello,
+In fact, it is a multi-threaded MIPS34Kc, not a single-threaded MIPS24Kc.
 
-I am Vlad Dinu, the newly appointed Director of IMF Legal=20
-Affairs, Security and Investigation. I have been given the=20
-responsibility to look into all the payments that are still=20
-pending and owed to fund beneficiaries / scam victims worldwide.
+Fixes: 0ec488700972 ("mips: dts: Add EcoNet DTS with EN751221 and SmartFiber XP8421-B board")
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ arch/mips/boot/dts/econet/en751221.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This action was taken because there have been issues with some=20
-banks not being able to send or release money to the correct=20
-beneficiary accounts. We have found out that some directors in=20
-different organizations are moving pending funds to their own=20
-chosen accounts instead of where they should go.
+diff --git a/arch/mips/boot/dts/econet/en751221.dtsi b/arch/mips/boot/dts/econet/en751221.dtsi
+index 66197e73d4f0..2abeef5b744a 100644
+--- a/arch/mips/boot/dts/econet/en751221.dtsi
++++ b/arch/mips/boot/dts/econet/en751221.dtsi
+@@ -18,7 +18,7 @@ cpus: cpus {
+ 
+ 		cpu@0 {
+ 			device_type = "cpu";
+-			compatible = "mips,mips24KEc";
++			compatible = "mips,mips34Kc";
+ 			reg = <0>;
+ 		};
+ 	};
+-- 
+2.47.3
 
-During my investigation, I discovered that an account was=20
-reported to redirect your funds to a bank in Sweden.
-The details of that account are provided below. I would like you=20
-to confirm if you are aware of this new information, as we are=20
-now planning to send the payment to the account mentioned.
-
-NAME OF BENEFICIARY: ERIK KASPERSSON
-BANK NAME: SWEDBANK AB
-ADDRESS: REPSLAGAREGATAN 23A, 582 22 LINK=C3=96PING, SWEDEN
-SWIFT CODE: SWEDSESS
-ACCOUNT NUMBER: 84806-31282205
-
-
-A payment instruction has been issued by the Department of=20
-Treasury for an immediate release of your payment to the bank=20
-account above without further prejudice. We cannot approve or=20
-schedule payment to the 
-
-given bank account without your confirmation. May we proceed with=20
-the transfer to the Beneficiary: Erik Kaspersson, bank account in=20
-Sweden?
-
-I await your urgent response.
-
-Mr. Vlad Dinu.

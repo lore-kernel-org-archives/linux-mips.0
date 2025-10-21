@@ -1,60 +1,118 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A1333B957;
-	Tue, 21 Oct 2025 14:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7829A34DB7A
+	for <linux-mips@vger.kernel.org>; Tue, 21 Oct 2025 16:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761057667; cv=none; b=sctpzHUvODH/8xwDLuFOn4+/tOEFwTmAZSpLWXagrhRrqAaQL8JWajbHMKryuldANPHYxa+gGf/ktdKe7FbvnStAuY+7Ma+PSmfsmEtx6UpQx9YzAgCiBeAGJjJewMTuOgPEmfzyX7HhnSP08rnVo4RIhhYSM1g0TvWODbd+bYc=
+	t=1761064394; cv=none; b=mRWzJNsXLfWWLkDpfFdqvFD2T/dtdwJDKsj3aHkcm9YQ4d3xf7uq2mKeD+WOtnd4hBjnnYEJeCXon1AqHsHRxfmGCYlni5N55aTXPMK08CKTOfdLylC0QNQREmvEXeXvGGFjkcQ+xaR+oL09vdTDph4wXC/qHKQv+3y/oUkY73g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761057667; c=relaxed/simple;
-	bh=psNfBZyyNJC/BgyLpkpbbZ23QMFeN9l9ZAGSUVtrzLc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=cnH43N49ZCIETITb1hNHJ+rUNeKfO+7+vtSX8lVS2Vfg6ahWSTJDBk7IB/SxDrYQn+WB6/f+GJN/t0mMUVIn5a5LdsIkJWOCTN44a0CyTx9BelCI7BTVfb5khys2rCxdrCh6tvJDBS3Pdukk4zWLwpdcZ4swEYWQIyIyK736kmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id E587992009C; Tue, 21 Oct 2025 16:41:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id DF88192009B;
-	Tue, 21 Oct 2025 15:41:01 +0100 (BST)
-Date: Tue, 21 Oct 2025 15:41:01 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-cc: Bjorn Helgaas <helgaas@kernel.org>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-pci@vger.kernel.org, 
-    Guenter Roeck <linux@roeck-us.net>, Bjorn Helgaas <bhelgaas@google.com>, 
-    linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] MIPS: Malta: Use pcibios_align_resource() to
- block io range
-In-Reply-To: <9ff182b0-076b-78fd-adec-99ae7ea5341f@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.2510211536330.8377@angie.orcam.me.uk>
-References: <20251020223714.GA1165320@bhelgaas> <alpine.DEB.2.21.2510210145260.8377@angie.orcam.me.uk> <9ff182b0-076b-78fd-adec-99ae7ea5341f@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1761064394; c=relaxed/simple;
+	bh=k4MMwotRueKQ73IFVBunfx4WBg3XwCGO4UhdsRh7hww=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=qn10JfWT+g7DjHQJTphwxwbXHK4UI8rkjOjikqxZzX448FUtrkGqe3us3QHevEcggkgLAZMmirRLFuDxOh4atUXhK4kATk8qkMP1t/D7BrerUfvWoufLO4rzz/RCv3UCdk/dO0PRXVpc7INeUGMLmIXfQWae+tBM9H+dAEKgYIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dd2WKl4r; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dd2WKl4r"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id CB177C0B897;
+	Tue, 21 Oct 2025 16:32:50 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 66D0460680;
+	Tue, 21 Oct 2025 16:33:10 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3030F102F2405;
+	Tue, 21 Oct 2025 18:33:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1761064388; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=L/XpHoQ2KPQc9riZ+r/LMfIVvh/XodPx0VGR9VmHzQ0=;
+	b=dd2WKl4rlX7iuNhneCMwl8/nGilha0A6oGI+pLtSZKJzGZRFeYUyZnpqOB9uBhZ2Aegwee
+	FYSAzU+yRZcfq/RU0ZriMlXqtD0aNxcf4erzxc0wrUnFnCcWXfwYF6Z7at63J+0UnFyzDw
+	AEvdOE2zCuZEg+ZmUaAX/+/oaaL/XedOyMV1M2AIPDliW0HK+b2lRy6aDJNWOmWBVYJDm9
+	ZDa5cGU5rKh/T5heRPKK4ZGfLiTNTAhnbWNCDIVmL5FQj9n6IL4UVPlcQbwZaJufYUpSac
+	J+zemdnErjqGuFG73uRCBlqLJlWyF+eO2ka4Ei9j11+TagCvmYxLXlo62RFyfQ==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Tue, 21 Oct 2025 18:32:42 +0200
+Subject: [PATCH net-next 01/12] dt-bindings: net: cdns,macb: add Mobileye
+ EyeQ5 ethernet interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20251021-macb-eyeq5-v1-1-3b0b5a9d2f85@bootlin.com>
+References: <20251021-macb-eyeq5-v1-0-3b0b5a9d2f85@bootlin.com>
+In-Reply-To: <20251021-macb-eyeq5-v1-0-3b0b5a9d2f85@bootlin.com>
+To: Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, 
+ Russell King <linux@armlinux.org.uk>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ linux-phy@lists.infradead.org, linux-clk@vger.kernel.org, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Tue, 21 Oct 2025, Ilpo Järvinen wrote:
+Add "cdns,eyeq5-gem" as compatible for the integrated GEM block inside
+Mobileye EyeQ5 SoCs. It is different from other compatibles in two main
+ways: (1) it requires a generic PHY and (2) it is better to keep TCP
+Segmentation Offload (TSO) disabled.
 
-> > > If the missing resource reservations (dma1, tiger, dma page reg)
-> > > mentioned by Maciej are an issue or can be fixed up, let me know and
-> > > we can amend this.
-> > 
-> >  NB this comes from `plat_mem_setup' in arch/mips/mti-malta/malta-setup.c 
-> > iterating over `standard_io_resources'.  ISTR now this being my original 
-> > reason to come up with the approach taken with commit aa0980b80908 rather 
-> > than using PCIBIOS_MIN_IO.  Since the ranges are now owned by the PCI host 
-> > bridge, calls to `request_resource' referring `ioport_resource' fail.
-> 
-> So this platform would actually need multiple root bus IO resources to 
-> cover PIIX4 range without capturing non-PCI ranges?
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ Documentation/devicetree/bindings/net/cdns,macb.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
- I've got it covered now; will send patches shortly.  It was easier than I 
-thought, phew!
+diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+index 02f14a0b72f9..ea8337846ab2 100644
+--- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
++++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+@@ -57,6 +57,7 @@ properties:
+           - cdns,np4-macb             # NP4 SoC devices
+           - microchip,sama7g5-emac    # Microchip SAMA7G5 ethernet interface
+           - microchip,sama7g5-gem     # Microchip SAMA7G5 gigabit ethernet interface
++          - mobileye,eyeq5-gem        # Mobileye EyeQ5 SoCs
+           - raspberrypi,rp1-gem       # Raspberry Pi RP1 gigabit ethernet interface
+           - sifive,fu540-c000-gem     # SiFive FU540-C000 SoC
+ 
+@@ -183,6 +184,15 @@ allOf:
+         reg:
+           maxItems: 1
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mobileye,eyeq5-gem
++    then:
++      required:
++        - phys
++
+ unevaluatedProperties: false
+ 
+ examples:
 
-  Maciej
+-- 
+2.51.1
+

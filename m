@@ -1,41 +1,42 @@
 Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5226347BBA;
-	Wed, 22 Oct 2025 15:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8520D34321A
+	for <linux-mips@vger.kernel.org>; Wed, 22 Oct 2025 15:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761147577; cv=none; b=jMIgRqdTCof5zDDHuQAhjGuqK+eezYjfOJ0mocjp3CYWjzTyHRGjsHzglVqv2zrGiWZRJUSycPA6pjcFe+AqEpstKm9cE76OOU4PbQgNKmEz5MypIgwk9nJqU45UXGLhbQSIDvSzAdg7nS7qDOT8Iv/Jf616/i9urOMjOQae0ag=
+	t=1761147579; cv=none; b=QhVTZEBHgE7ZVFAGNxHHAdSu/tP0LyIl2Ju+7EauzdWzgeB8Zxsi1fO+Nh+Czlej+H7ejmI6gva3cLX+mMw+qGhY0jx8bQoB2nLsLp6+PEk2eOqgk//IMTbiczosd5GZ7JMSTK0yOKq6PJ+lPMeKxg7vMte+xUavE7Qzz9CrCKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761147577; c=relaxed/simple;
-	bh=sir3J4gSwhHTRdJ1BAz2vNiZTw6r2T/fSmbbEzzZvdM=;
+	s=arc-20240116; t=1761147579; c=relaxed/simple;
+	bh=rgtM81TJHrWSLfa7vgXN8x+VRWEr3crk3rI32ufCnI8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kWIlR7D7FR8QiWd/uXV9+kHh7cxZKNOVAtYL9Ngk1a33PVamhG6m8fjrLr6WteQdzDcpdjbuaYuKG+FtH/ndq7mHmjKA2h2io9vJfdbFb7FK8gSKyONSHSkIMVORzw4ge7+nRdKko95pJgHmThBlYx1PRpmGpfN9vvTQwabiLBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hymOWQWm; arc=none smtp.client-ip=185.246.85.4
+	 In-Reply-To:To:Cc; b=hV+vLKha1MRZLYYQW0oZtS2yIw48CzVzW49hBkdYpfxYIZBbyPFKK4pc4NZI0emhphNIYYOYK8SaZYccINeocSO4NamMoN77sjw1DYERz7/L4rJJRx84D2sAMHvRKADg11Zc9WWK+iY0yr2XobFjZEQ+CqSdRbz1ryTAzMdnKQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dRsEDB8N; arc=none smtp.client-ip=185.246.85.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hymOWQWm"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dRsEDB8N"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 1CD004E4127F;
-	Wed, 22 Oct 2025 15:39:29 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 6B8494E4127B;
+	Wed, 22 Oct 2025 15:39:32 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id E8AE4606DC;
-	Wed, 22 Oct 2025 15:39:28 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 14339102F2448;
-	Wed, 22 Oct 2025 17:39:26 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 43A38606DC;
+	Wed, 22 Oct 2025 15:39:32 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F02FB102F2446;
+	Wed, 22 Oct 2025 17:39:29 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1761147567; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1761147571; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=M7/ONsHb0ArB5bCF7FZGbfdHV5WjqY9DA/Z65CQxU0E=;
-	b=hymOWQWm2u4SOdkcWA1GVBMijDT0Q5s84DYGXqLT240sCIL74+gOgYTPLRwWgE3WtZB1t1
-	/BaL59GWPB4Fzwbd0WJ7+XTEiLRT02T4p6zr9eqDCk6vDvmIJfu1tic40XWhR5z79fqMB8
-	kX4C6MUmNYxQOKIAVFxXKV7RcqxVL9kyAVJvYJMDhpBeetP1UeP+wq3vrZqJjQlwU5bYuc
-	famjhoh3Kmx1X0RRatkPfNXbMskQDDW7rE5tWyIbBysB7p79nwSvVLoShzcxmhuy5DUk5Q
-	vZoNb1NQYBvzNwwOL7RqURzTED3IXVPNSNw2olJUDp8PkuwSdUcavon8Lsj8ZA==
+	bh=rXG4FkA1j+W5VMPKCg2jc3dsIgNY9MiT6EY2h7XkH50=;
+	b=dRsEDB8N5JneNQn7hxvFvYDTFZXB94M8drF7Nw3EldISxvI7QUOhni5q7rJ8sLYL+9bS9j
+	fOJ4ihmj+2MHrAhbXPZP78MGYclF8pjtLvu+ko5sS3Vq77w9xCmxjoTI/tZTCx4RHV3Ex6
+	1AXI4kYPfiT0WhNGCCGFdGftCH7AY4Ma5H4HCpS5u/kReA31cOBCAqVWVKoYD6b352KjhQ
+	lvGNBohNxwRbt4UBSQ9SyIp81sFejQaL2wTcaBFMlEc4rZY0g25/JNyE5gFiAWlfpNbN/O
+	RzQpjSrGunvinQEMl453OqYRMRJW2uEQLB2VyzT6uylU2QUIqUFnHwjK9CkQtw==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 22 Oct 2025 17:39:05 +0200
-Subject: [PATCH 3/7] clk: eyeq: use the auxiliary device creation helper
+Date: Wed, 22 Oct 2025 17:39:07 +0200
+Subject: [PATCH 5/7] reset: eyeq: drop device_set_of_node_from_dev() done
+ by parent
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -44,7 +45,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251022-macb-phy-v1-3-f29f28fae721@bootlin.com>
+Message-Id: <20251022-macb-phy-v1-5-f29f28fae721@bootlin.com>
 References: <20251022-macb-phy-v1-0-f29f28fae721@bootlin.com>
 In-Reply-To: <20251022-macb-phy-v1-0-f29f28fae721@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
@@ -67,104 +68,62 @@ Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+Our parent driver (clk-eyeq) now does the
+	device_set_of_node_from_dev(dev, dev->parent)
+call through the newly introduced devm_auxiliary_device_create() helper.
 
-The auxiliary device creation of this driver is simple enough to
-use the available auxiliary device creation helper.
+Doing it again in the reset-eyeq probe would be redundant.
+Drop both the WARN_ON() and the device_set_of_node_from_dev() call.
+Also fix the following comment that talks about "our newfound OF node".
 
-Use it and remove some boilerplate code.
-
-Tested-by: Théo Lebrun <theo.lebrun@bootlin.com>  # On Mobileye EyeQ5
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- drivers/clk/clk-eyeq.c | 57 +++++++++++---------------------------------------
- 1 file changed, 12 insertions(+), 45 deletions(-)
+ drivers/reset/reset-eyeq.c | 24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
-index ea1c3d78e7cd..664ce7d7868d 100644
---- a/drivers/clk/clk-eyeq.c
-+++ b/drivers/clk/clk-eyeq.c
-@@ -322,38 +322,18 @@ static void eqc_probe_init_fixed_factors(struct device *dev,
- 	}
+diff --git a/drivers/reset/reset-eyeq.c b/drivers/reset/reset-eyeq.c
+index 2d3998368a1c..8018fa895427 100644
+--- a/drivers/reset/reset-eyeq.c
++++ b/drivers/reset/reset-eyeq.c
+@@ -410,13 +410,6 @@ static int eqr_of_xlate_twocells(struct reset_controller_dev *rcdev,
+ 	return eqr_of_xlate_internal(rcdev, reset_spec->args[0], reset_spec->args[1]);
  }
  
--static void eqc_auxdev_release(struct device *dev)
+-static void eqr_of_node_put(void *_dev)
 -{
--	struct auxiliary_device *adev = to_auxiliary_dev(dev);
+-	struct device *dev = _dev;
 -
--	kfree(adev);
+-	of_node_put(dev->of_node);
 -}
 -
--static int eqc_auxdev_create(struct device *dev, void __iomem *base,
--			     const char *name, u32 id)
-+static void eqc_auxdev_create_optional(struct device *dev, void __iomem *base,
-+				       const char *name)
+ static int eqr_probe(struct auxiliary_device *adev,
+ 		     const struct auxiliary_device_id *id)
  {
- 	struct auxiliary_device *adev;
--	int ret;
+@@ -427,21 +420,8 @@ static int eqr_probe(struct auxiliary_device *adev,
+ 	int ret;
  
--	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
--	if (!adev)
--		return -ENOMEM;
+ 	/*
+-	 * We are an auxiliary device of clk-eyeq. We do not have an OF node by
+-	 * default; let's reuse our parent's OF node.
+-	 */
+-	WARN_ON(dev->of_node);
+-	device_set_of_node_from_dev(dev, dev->parent);
+-	if (!dev->of_node)
+-		return -ENODEV;
 -
--	adev->name = name;
--	adev->dev.parent = dev;
--	adev->dev.platform_data = (void __force *)base;
--	adev->dev.release = eqc_auxdev_release;
--	adev->id = id;
--
--	ret = auxiliary_device_init(adev);
+-	ret = devm_add_action_or_reset(dev, eqr_of_node_put, dev);
 -	if (ret)
 -		return ret;
 -
--	ret = auxiliary_device_add(adev);
--	if (ret)
--		auxiliary_device_uninit(adev);
--
--	return ret;
-+	if (name) {
-+		adev = devm_auxiliary_device_create(dev, name,
-+						    (void __force *)base);
-+		if (!adev)
-+			dev_warn(dev, "failed creating auxiliary device %s.%s\n",
-+				 KBUILD_MODNAME, name);
-+	}
- }
- 
- static int eqc_probe(struct platform_device *pdev)
-@@ -365,7 +345,6 @@ static int eqc_probe(struct platform_device *pdev)
- 	unsigned int i, clk_count;
- 	struct resource *res;
- 	void __iomem *base;
--	int ret;
- 
- 	data = device_get_match_data(dev);
- 	if (!data)
-@@ -379,21 +358,9 @@ static int eqc_probe(struct platform_device *pdev)
- 	if (!base)
- 		return -ENOMEM;
- 
--	/* Init optional reset auxiliary device. */
--	if (data->reset_auxdev_name) {
--		ret = eqc_auxdev_create(dev, base, data->reset_auxdev_name, 0);
--		if (ret)
--			dev_warn(dev, "failed creating auxiliary device %s.%s: %d\n",
--				 KBUILD_MODNAME, data->reset_auxdev_name, ret);
--	}
--
--	/* Init optional pinctrl auxiliary device. */
--	if (data->pinctrl_auxdev_name) {
--		ret = eqc_auxdev_create(dev, base, data->pinctrl_auxdev_name, 0);
--		if (ret)
--			dev_warn(dev, "failed creating auxiliary device %s.%s: %d\n",
--				 KBUILD_MODNAME, data->pinctrl_auxdev_name, ret);
--	}
-+	/* Init optional auxiliary devices. */
-+	eqc_auxdev_create_optional(dev, base, data->reset_auxdev_name);
-+	eqc_auxdev_create_optional(dev, base, data->pinctrl_auxdev_name);
- 
- 	if (data->pll_count + data->div_count + data->fixed_factor_count == 0)
- 		return 0; /* Zero clocks, we are done. */
+-	/*
+-	 * Using our newfound OF node, we can get match data. We cannot use
+-	 * device_get_match_data() because it does not match reused OF nodes.
++	 * Get match data. We cannot use device_get_match_data() because it does
++	 * not accept reused OF nodes; see device_set_of_node_from_dev().
+ 	 */
+ 	match = of_match_node(dev->driver->of_match_table, dev->of_node);
+ 	if (!match || !match->data)
 
 -- 
 2.51.1

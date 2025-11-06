@@ -1,145 +1,90 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4643254A7;
-	Thu,  6 Nov 2025 10:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983A52DF3E7
+	for <linux-mips@vger.kernel.org>; Thu,  6 Nov 2025 10:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762423361; cv=none; b=OK5Pg1qOh0rWLl0wR/c8oz2L3xFD1NpfKvwdmaI5vdm+bQKYSl1FtAdnDLLYOSVHrnFDrT37QrnR2rj+KdktlmGZTBI7NZIWL5MPTsE0/XcoUY7yEpcoTXM8+tEBPp163KqklLttNt/QC5CwRHW4YN/j3MD8ER33L+zU9JgV/W8=
+	t=1762426306; cv=none; b=d9PaM1c0EsEvuNjHu5yVky6OyPfaQMopUQNHmD2f5aGPjdj3h7b/DcB9sDNlkHjGoZjKzw0BA5hL6VUhizViJXcBisOWWSorAQ14buPFBuXjFuId9SnfufE7EDD+nreCJ4HGlhveUZ71UxXRWXcwSv/5GD9dle10XM7zSjdUL4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762423361; c=relaxed/simple;
-	bh=R2dVhre2T8n2qzoofQAXu+jOBab42AUukdse5kq9VNI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IYBL5OhfdJhtOe7/UAQt3qqIK0gwJZPaMH2ex+p5I16S3dc234wJTHNzoByOhjUqvKrqtdfTJc0ws3eJIRn26wnz+XDTYpsHYqMkLVzD0qeHii166TV8P38Pk1Boc0oXmnDdy1JPzV9wsUfX483gMgAgVN5c6W9vlQE46IUWAWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ukZ4xA6V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wdet2324; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ukZ4xA6V";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wdet2324"
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1762423351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ctw6z2zVCPFpRDjjK/Bor9mxmqzsDUqKVIr3JUMCPTE=;
-	b=ukZ4xA6VMy8Kt0FQwFFNDx6HyFszi48OmTb6Cekc257aWBUoIh9WgBxsG9/zTw+vU9Pdtm
-	+fvMsScYYwWrK2zhQg8UJofVQzw6/PUjMti9i3Duw0pCgYUh0vblcn0ENE/aah4Gk4Z6Gw
-	H2bLt8zmr06JtpY9KYyfH1kYgaQJS1kFRybhmtJHU6WFIG3wlyuYNeaqN7Ce9fBdvJHDlb
-	88lniXb7W0obwS90lw3cTO5V5FceGY0YN3yoXEdRWfz5Plq5boQmmHs6OmzfdbthhEW33p
-	5/8Uy1TW+6kKiVxEygAP6EhTO3e9wi/Md7E2FL8Yzy1fwtLpTnwqQNxg+cC8oA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1762423351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ctw6z2zVCPFpRDjjK/Bor9mxmqzsDUqKVIr3JUMCPTE=;
-	b=wdet232463nNOwVZwYlaNoIvfOv/cO2eGPt/hDZAA+phi8f2WLHCMaofKd6ja5fSEFoxe9
-	mV9EP3mCPOxd6hCw==
-Date: Thu, 06 Nov 2025 11:02:27 +0100
-Subject: [PATCH v5 34/34] clocksource: remove ARCH_CLOCKSOURCE_DATA
+	s=arc-20240116; t=1762426306; c=relaxed/simple;
+	bh=X3Kcq41e22aVvFcL+aCsb9T1Yc89cQd1pHhT/wWGrgE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=W1FEwfST6AjxrIffPNv+joDukg9nbv8/G5nqDZrNmNdBzcVcGJ+NlrIUNXE/cVdUhzjLqzuxQyl/79h1YPsLECDOaMlop1mWqzDGP7LTyLwnBf/hyZ0oj8U756/Qy6EYjWh6EOEJnZQeK6DmvChzjXSrDWiEIzXw+MFJvCPk1l4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1vGxaS-00027b-CG; Thu, 06 Nov 2025 11:51:28 +0100
+Received: from lupine.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::4e] helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1vGxaS-007LZm-0V;
+	Thu, 06 Nov 2025 11:51:28 +0100
+Received: from pza by lupine with local (Exim 4.98.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1vGxaS-000000004Pb-0Gcb;
+	Thu, 06 Nov 2025 11:51:28 +0100
+Message-ID: <9506997c56808cc9fd58fe0d384976421d6c9bfc.camel@pengutronix.de>
+Subject: Re: [PATCH v2 5/7] reset: eyeq: drop device_set_of_node_from_dev()
+ done by parent
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: =?ISO-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>, Vladimir
+ Kondratiev <vladimir.kondratiev@mobileye.com>, =?ISO-8859-1?Q?Gr=E9gory?=
+ Clement	 <gregory.clement@bootlin.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,  Kishon Vijay Abraham
+ I	 <kishon@kernel.org>, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd	 <sboyd@kernel.org>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, 
+	linux-clk@vger.kernel.org, =?ISO-8859-1?Q?Beno=EEt?= Monin	
+ <benoit.monin@bootlin.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>,  Tawfik Bayouk
+ <tawfik.bayouk@mobileye.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Jerome Brunet	 <jbrunet@baylibre.com>
+Date: Thu, 06 Nov 2025 11:51:27 +0100
+In-Reply-To: <20251101-macb-phy-v2-5-c1519eef16d3@bootlin.com>
+References: <20251101-macb-phy-v2-0-c1519eef16d3@bootlin.com>
+	 <20251101-macb-phy-v2-5-c1519eef16d3@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1-1+deb13u1 
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20251106-vdso-sparc64-generic-2-v5-34-97ff2b6542f7@linutronix.de>
-References: <20251106-vdso-sparc64-generic-2-v5-0-97ff2b6542f7@linutronix.de>
-In-Reply-To: <20251106-vdso-sparc64-generic-2-v5-0-97ff2b6542f7@linutronix.de>
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
- Vincenzo Frascino <vincenzo.frascino@arm.com>, 
- Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, Nick Alcock <nick.alcock@oracle.com>, 
- John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Shuah Khan <shuah@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- "Jason A. Donenfeld" <Jason@zx2c4.com>, 
- Russell King <linux@armlinux.org.uk>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Shannon Nelson <sln@onemain.com>
-Cc: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1762423327; l=1786;
- i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=dQYrfrH6p59kOQp8CklF/Vp09pCtZ6J6GVY/7odturY=;
- b=1Wi9mWGUpw4gouObAIh4SKslvazl7wdxf+u0FsihHL9CxGgJV9Kufo1aP1r6igMIsXWd8O+PB
- zw5j5PN1Fk0Bx4MhmZvwus8qCRYjKYfcFQLyL1yLLHUC/dfVVt3SccB
-X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
- pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Sa, 2025-11-01 at 09:53 +0100, Th=C3=A9o Lebrun wrote:
+> Our parent driver (clk-eyeq) now does the
+> 	device_set_of_node_from_dev(dev, dev->parent)
+> call through the newly introduced devm_auxiliary_device_create() helper.
+>=20
+> Doing it again in the reset-eyeq probe would be redundant.
+> Drop both the WARN_ON() and the device_set_of_node_from_dev() call.
+> Also fix the following comment that talks about "our newfound OF node".
+>=20
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 
-After sparc64, there are no remaining users of ARCH_CLOCKSOURCE_DATA
-and it can just be removed.
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: John Stultz <jstultz@google.com>
-[Thomas: drop sparc64 bits from the patch]
-Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-Tested-by: Andreas Larsson <andreas@gaisler.com>
-Reviewed-by: Andreas Larsson <andreas@gaisler.com>
----
- include/linux/clocksource.h | 6 +-----
- kernel/time/Kconfig         | 4 ----
- 2 files changed, 1 insertion(+), 9 deletions(-)
+and
 
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 65b7c41471c390463770c2da13694e58e83b84ea..12d853b1883265cb47d93e33d8370e3957e7e695 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -25,8 +25,7 @@ struct clocksource_base;
- struct clocksource;
- struct module;
- 
--#if defined(CONFIG_ARCH_CLOCKSOURCE_DATA) || \
--    defined(CONFIG_GENERIC_GETTIMEOFDAY)
-+#if defined(CONFIG_GENERIC_GETTIMEOFDAY)
- #include <asm/clocksource.h>
- #endif
- 
-@@ -106,9 +105,6 @@ struct clocksource {
- 	u64			max_idle_ns;
- 	u32			maxadj;
- 	u32			uncertainty_margin;
--#ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
--	struct arch_clocksource_data archdata;
--#endif
- 	u64			max_cycles;
- 	u64			max_raw_delta;
- 	const char		*name;
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 7c6a52f7836cef248e0949060b50baa293f446cf..fe33118770978682d0ff6c6e7990896f42703b50 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -9,10 +9,6 @@
- config CLOCKSOURCE_WATCHDOG
- 	bool
- 
--# Architecture has extra clocksource data
--config ARCH_CLOCKSOURCE_DATA
--	bool
--
- # Architecture has extra clocksource init called from registration
- config ARCH_CLOCKSOURCE_INIT
- 	bool
+Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
 
--- 
-2.51.0
+to be merged via the clk tree together with patch 3.
 
+regards
+Philipp

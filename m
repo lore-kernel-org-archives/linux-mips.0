@@ -1,34 +1,34 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AC330FC31;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A45277C9E;
 	Mon, 10 Nov 2025 16:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762793528; cv=none; b=eFhcCn+wE56VH+F0eEFbWN6PvSn199L+atPj3TEmkm1kN4pqGIPCTCmzLtdB/9aijN4ipsrrs8Gmztv3zEVKwia5LqzIuBnbhTxDNEaYXUXVDMQJupYIQh7f3suvQTnht4XY9q7yk0xbzfmx1EKXUnDGlXJllBynn0DRMRdaBhU=
+	t=1762793528; cv=none; b=kwDOuc9kW09a6aTLy8UljjwzQqiZgTQAaJp9rA3BN0bIwQHoUVqqxBWmlu/uqvpGifaUbXtC8MYOA+/Hcoa9qGK/o211MqwCs4Qmbe2kMls6kwnU9k71lnXLtWmh3Lce5irbF/EDao/Cgaev/m8bg82nPCYo1R4o7BbjZP1SEqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762793528; c=relaxed/simple;
-	bh=R/IQpoRi1HuDKqQifvAwjIb9BDC5XbzLDfSTK+Q3BdU=;
+	bh=g/3LWrwhzXiK+StyewVO5x9YDmbI74yUYMlvkCQHe6Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdDRpOzSK12UpKdo+98qNGGnoID7qURj6rqWCrxQkISiMSFZP3szTk13qAGWm2ImNcz5gT7Q8DfjLfC52w/YfTClk7xq3H3VVFKmVN2sd0Ee0+d6aKrf+/tJroGE4aslBKVNeuJaaE3SU/+yKlOXmEIJ8OzKibsYNfJMy7Tv+M8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=mPeGMd48IUXz5E27IqFg2+/sehJ5/t4Ttd29dmXblmQbZdsFQjQUKbvWIDv+Fu3090SVXt+rdt6QpcTM1Am17oRyzb8DVv0pzlyygpo2dfSRIXwlDDQZ7N6O5zn6j/1i4Qp79WP7w4lYVVM+T2kSByKT352ha2j4ADkg2vjMA20=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vIV7V-0005rk-00; Mon, 10 Nov 2025 17:51:57 +0100
+	id 1vIV7V-0005ri-00; Mon, 10 Nov 2025 17:51:57 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 032D8C051B; Mon, 10 Nov 2025 17:51:37 +0100 (CET)
-Date: Mon, 10 Nov 2025 17:51:37 +0100
+	id 9D032C0591; Mon, 10 Nov 2025 15:37:22 +0100 (CET)
+Date: Mon, 10 Nov 2025 15:37:22 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Nick Bowler <nbowler@draconx.ca>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: PROBLEM: boot hang on Indy R4400SC (regression)
-Message-ID: <aRIYGUzHa-8U85Ei@alpha.franken.de>
-References: <g3scb7mfjbsohdszieqkappslj6m7qu3ou766nckt2remg3ide@izgvehzcdbsu>
- <e4ed75c7-b108-437f-b44b-69a9b340c085@app.fastmail.com>
- <ea6p4efuwbrlqjiwkgjcd7ofj7aahfnnvnkooo2il36ggzrlcj@n6mcofpb2jep>
- <j5uutbx2oi2ccudo54o4hgxfmwfchwmd2ktig6xjgkqa7ho2pj@xb4luighppnc>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: =?iso-8859-1?Q?Beno=EEt?= Monin <benoit.monin@bootlin.com>,
+	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] MIPS: Fix HOTPLUG_PARALLEL dependency
+Message-ID: <aRH4osz_OFxx8QZc@alpha.franken.de>
+References: <20251027-mips_paralell_hotplug-v1-1-01b6cd13ee85@bootlin.com>
+ <87v7jirnj0.fsf@BLaptop.bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -37,41 +37,24 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <j5uutbx2oi2ccudo54o4hgxfmwfchwmd2ktig6xjgkqa7ho2pj@xb4luighppnc>
+In-Reply-To: <87v7jirnj0.fsf@BLaptop.bootlin.com>
 
-On Sat, Nov 08, 2025 at 03:02:17PM -0500, Nick Bowler wrote:
-> On Fri, Nov 07, 2025 at 03:12:31PM -0500, Nick Bowler wrote:
-> > On Fri, Nov 07, 2025 at 07:29:25PM +0000, Jiaxun Yang wrote:
-> > > Unfortunately my Indy won't go over ARCS prom so I'm not in a position
-> > > to debug this on my side. I have inspected the code again and I can't
-> > > see anything preventing it to work on R4000 family.
-> > 
-> > I'll try adding some extra prints to at least figure out where it is
-> > actually hanging.
+On Mon, Nov 10, 2025 at 03:05:23PM +0100, Gregory CLEMENT wrote:
+> Hello Thomas,
 > 
-> I did not have much success with adding prints, but looking more closely
-> at the console output it seems that what is ultimately failing is the
-> SCSI bus enumeration which does not complete unless I revert commit
-> 35ad7e181541.
+> > With MIPS, it is possible to have SMP enabled without HOTPLUG_CPU
+> > selected. However, in kernel/cpu.c, some code that uses
+> > HOTPLUG_PARALLEL also requires HOTPLUG_CPU to be selected. Therefore,
+> > we should fix the HOTPLUG_PARALLEL dependency to depend on
+> > HOTPLUG_CPU, not just SMP.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202510270120.21wA1aX1-lkp@intel.com/
+> > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> 
+> Do you have any comments about this fix?
 
-the problem is the tlb_probe() r4k_tlb_uniquify(), if the TLB contains
-
-Index:  0 pgmask=4kb va=80000000 asid=00
-	[pa=00000000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
-Index:  1 pgmask=4kb va=80000000 asid=00
-	[pa=00000000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
-Index:  2 pgmask=4kb va=80000000 asid=00
-	[pa=00000000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
-Index:  3 pgmask=4kb va=80000000 asid=00
-	[pa=00000000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
-Index:  4 pgmask=4kb va=80000000 asid=00
-	[pa=00000000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
-[...]
-
-which is coming from the Indy PROM. I only tested this patch on an R5k
-Indy and the R5000 CPU doesn't have a problem with this.
-
-I'm working on a fix for this.
+all good from my side, does it need to go via mips-fixes ?
 
 Thomas.
 

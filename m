@@ -1,160 +1,100 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8325833D6F7
-	for <linux-mips@vger.kernel.org>; Wed, 12 Nov 2025 15:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E3E279334;
+	Wed, 12 Nov 2025 20:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762962756; cv=none; b=BMPJ5A/3f2t9zCaabx5H4a6vY9FvO2048KfmDW3I+7g1sDzOXU/zHoGEadGx1v1wPDQN5BioUHAj29YmWqloAeAhfxNbkruj3R8VXFOcS0K22bCt5lKJOBU52BAxV0u685VJ7K6ytZvVmuqZWvW0tiCPRMnyQYzVa5C+p/3GQ7U=
+	t=1762977818; cv=none; b=UJCAuNAF4JHudJFjHYEbt/sWWdiwWfD9jvJx2kWCTbEArIXuSwKwamiP82rQGZfzQQCK6XAvr6q/PggzFaPnOpsT04JDVrSzLrsJUSi8o6Zttuqym1pIVjoxXjeLg6d4RjPCn5Ckdji7uf6M4olFm1OAxbxCjIN/IyXdJZR7XGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762962756; c=relaxed/simple;
-	bh=tR7bI/m025l7tOJNK6FhBW5pPPIFCb98vBpLMQ0VV+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TSPGiIbBCN634jCASfoxugcMVfBZnZBGB6SCWkShWvYMqxUzsgt+dfSXlJ7eqO/+1TlhI1Jg9wHTmY3o3/MMuV8X3f60rGafxv5v17Y08fCqmHGA26XwH7TB6tUo/hmrYm/Y+OHW0a63jL0hIm1ebkPKHAbJVoae7R7RlYI7I/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mH4S60as; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1762977818; c=relaxed/simple;
+	bh=zAvG1Qo2HuWOnUmKk3EcMjBeNxBNM8ZFtr9UpT/34Vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YkCwsGi6nRRxk1RFmcM44zmj74tQjC4R7mF3qInKSlaMYNURUANDc+D8qasOC/LWbUPipUzGm4l2FEDYTIpHnjvJVAmvZm7yLG6mHOXwyvtMW/6xcx2jg9CSIIOrbQ6ear8dqpZre9u+wShwhcLa0qNAxbGQ3ei1u+c7O0rj7pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJlDjxq7; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mH4S60as"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id E69621A1A2E;
-	Wed, 12 Nov 2025 15:52:32 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B917D6070B;
-	Wed, 12 Nov 2025 15:52:32 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 14C42102F1C6A;
-	Wed, 12 Nov 2025 16:52:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1762962751; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=r4KXq6vkaTt39JXbcQflKkjoNE2v/KM+S0WlsXZAnWY=;
-	b=mH4S60asMSlrYa5LEl6HMPEaLrLHp3nTRcdY789GHstthPo+1ZKZOasDuBrvb/B7xSIJEn
-	gLzFsmmQ0/YWMUZHd/Z8nE9LwO7kahUfw3IPS08jPLIbyJ1yFIKoMI2HU9OGN5Vztdt57z
-	obPJXopwHPqceIemoztIMNv9uBZZYwgqEEGBlbSxJkL78OokCAW/aHVsokKNEOg1DXfpY4
-	SqWYxCOGnZoqaZ9zVjUpQxVeBTpLPYJ0PY4dkUZ6rS3UkYEtghKVjpNqjJgew8uhSYn1Fa
-	ljP0wuCUmm4Jp1567gNaGadL5i/B1bXOwL1NTRRMtnsEKZp0j9AqTV3k5nc9cA==
-Message-ID: <a4dfe008-a7e2-4323-bed5-a444dcc6aa3d@bootlin.com>
-Date: Wed, 12 Nov 2025 16:52:23 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJlDjxq7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88134C116B1;
+	Wed, 12 Nov 2025 20:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762977818;
+	bh=zAvG1Qo2HuWOnUmKk3EcMjBeNxBNM8ZFtr9UpT/34Vw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BJlDjxq7IfTUQQ7KUoqeZvLJ7e7liS62fkRaIr+cTAEO3z6jy+mhhshvOmd3bh8vc
+	 LKQO04khJh2oTe+f9rb+O0G37uBzgRuvleSSc1k+8vfLQQV7cKjeurjC9gI6nKycv6
+	 PtFT/rC0/q2cqD1G9etafq9EthszRCQfMIRlsYu7HBTVjs9du5ebCl4+i2pradypdg
+	 uuGbRqvggNZ1Vq8SYiqLM6ZaYk0XhBHTie0iiVMSMc61PWlcq5ZLMdJpdkHbN/3sxg
+	 o1Sg+B3yFgDuYTpbiL1bDCgFQIu50KZMRUyF2kc3V/3zdo4GQF+AkhnVV8Fo5aIP9W
+	 TUrrjnu0wLLlw==
+Date: Wed, 12 Nov 2025 20:55:55 +0100
+From: Nicolas Schier <nsc@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Nathan Chancellor <nathan@kernel.org>, Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: Re: [PATCH v2 01/10] kbuild: don't enable CC_CAN_LINK if the dummy
+ program generates warnings
+Message-ID: <aRTmSzzOmdhBy_lO@derry.ads.avm.de>
+References: <20251014-kbuild-userprogs-bits-v2-0-faeec46e887a@linutronix.de>
+ <20251014-kbuild-userprogs-bits-v2-1-faeec46e887a@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 06/13] net: stmmac: mediatek: simplify
- set_interface() methods
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- "David S. Miller" <davem@davemloft.net>,
- Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Minda Chen <minda.chen@starfivetech.com>, netdev@vger.kernel.org,
- Nobuhiro Iwamatsu <nobuhiro.iwamatsu.x90@mail.toshiba>,
- Paolo Abeni <pabeni@redhat.com>
-References: <aRLvrfx6tOa-RhrY@shell.armlinux.org.uk>
- <E1vIjU4-0000000DqtV-3qsX@rmk-PC.armlinux.org.uk>
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <E1vIjU4-0000000DqtV-3qsX@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251014-kbuild-userprogs-bits-v2-1-faeec46e887a@linutronix.de>
 
-
-
-On 11/11/2025 09:12, Russell King (Oracle) wrote:
-> Use the phy_intf_sel field value when deciding what other options to
-> apply for the configuration register.
+On Tue, Oct 14, 2025 at 03:05:16PM +0200, Thomas Weiﬂschuh wrote:
+> It is possible that the kernel toolchain generates warnings when used
+> together with the system toolchain. This happens for example when the
+> older kernel toolchain does not handle new versions of sframe debug
+> information. While these warnings where ignored during the evaluation
+> of CC_CAN_LINK, together with CONFIG_WERROR the actual userprog build
+> will later fail.
 > 
-> Note that this will allow GMII as well as MII as the phy_intf_sel
-> value is the same for both.
+> Example warning:
 > 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-
-Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-
-Maxime
-
+> .../x86_64-linux/13.2.0/../../../../x86_64-linux/bin/ld:
+> error in /lib/../lib64/crt1.o(.sframe); no .sframe will be created
+> collect2: error: ld returned 1 exit status
+> 
+> Make sure that the very simple example program does not generate
+> warnings already to avoid breaking the userprog compilations.
+> 
+> Fixes: ec4a3992bc0b ("kbuild: respect CONFIG_WERROR for linker and assembler")
+> Fixes: 3f0ff4cc6ffb ("kbuild: respect CONFIG_WERROR for userprogs")
+> Signed-off-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
 > ---
->  .../ethernet/stmicro/stmmac/dwmac-mediatek.c  | 50 +++++--------------
->  1 file changed, 12 insertions(+), 38 deletions(-)
+>  scripts/cc-can-link.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
-> index 0f32732efb75..1f2d7d19ca56 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
-> @@ -110,26 +110,13 @@ static const char * const mt8195_dwmac_clk_l[] = {
->  static int mt2712_set_interface(struct mediatek_dwmac_plat_data *plat,
->  				u8 phy_intf_sel)
->  {
-> -	int rmii_clk_from_mac = plat->rmii_clk_from_mac ? RMII_CLK_SRC_INTERNAL : 0;
-> -	int rmii_rxc = plat->rmii_rxc ? RMII_CLK_SRC_RXC : 0;
-> -	u32 intf_val;
-> +	u32 intf_val = phy_intf_sel;
->  
-> -	intf_val = phy_intf_sel;
-> -
-> -	/* select phy interface in top control domain */
-> -	switch (plat->phy_mode) {
-> -	case PHY_INTERFACE_MODE_RMII:
-> -		intf_val |= rmii_rxc | rmii_clk_from_mac;
-> -		break;
-> -	case PHY_INTERFACE_MODE_MII:
-> -	case PHY_INTERFACE_MODE_RGMII:
-> -	case PHY_INTERFACE_MODE_RGMII_TXID:
-> -	case PHY_INTERFACE_MODE_RGMII_RXID:
-> -	case PHY_INTERFACE_MODE_RGMII_ID:
-> -		break;
-> -	default:
-> -		dev_err(plat->dev, "phy interface not supported\n");
-> -		return -EINVAL;
-> +	if (phy_intf_sel == PHY_INTF_SEL_RMII) {
-> +		if (plat->rmii_clk_from_mac)
-> +			intf_val |= RMII_CLK_SRC_INTERNAL;
-> +		if (plat->rmii_rxc)
-> +			intf_val |= RMII_CLK_SRC_RXC;
->  	}
->  
->  	regmap_write(plat->peri_regmap, PERI_ETH_PHY_INTF_SEL, intf_val);
-> @@ -289,26 +276,13 @@ static const struct mediatek_dwmac_variant mt2712_gmac_variant = {
->  static int mt8195_set_interface(struct mediatek_dwmac_plat_data *plat,
->  				u8 phy_intf_sel)
->  {
-> -	int rmii_clk_from_mac = plat->rmii_clk_from_mac ? MT8195_RMII_CLK_SRC_INTERNAL : 0;
-> -	int rmii_rxc = plat->rmii_rxc ? MT8195_RMII_CLK_SRC_RXC : 0;
-> -	u32 intf_val;
-> +	u32 intf_val = FIELD_PREP(MT8195_ETH_INTF_SEL, phy_intf_sel);
->  
-> -	intf_val = FIELD_PREP(MT8195_ETH_INTF_SEL, phy_intf_sel);
-> -
-> -	/* select phy interface in top control domain */
-> -	switch (plat->phy_mode) {
-> -	case PHY_INTERFACE_MODE_RMII:
-> -		intf_val |= rmii_rxc | rmii_clk_from_mac;
-> -		break;
-> -	case PHY_INTERFACE_MODE_MII:
-> -	case PHY_INTERFACE_MODE_RGMII:
-> -	case PHY_INTERFACE_MODE_RGMII_TXID:
-> -	case PHY_INTERFACE_MODE_RGMII_RXID:
-> -	case PHY_INTERFACE_MODE_RGMII_ID:
-> -		break;
-> -	default:
-> -		dev_err(plat->dev, "phy interface not supported\n");
-> -		return -EINVAL;
-> +	if (phy_intf_sel == PHY_INTF_SEL_RMII) {
-> +		if (plat->rmii_clk_from_mac)
-> +			intf_val |= MT8195_RMII_CLK_SRC_INTERNAL;
-> +		if (plat->rmii_rxc)
-> +			intf_val |= MT8195_RMII_CLK_SRC_RXC;
->  	}
->  
->  	/* MT8195 only support external PHY */
 
+Reviewed-by: Nicolas Schier <nsc@kernel.org>
+
+-- 
+Nicolas

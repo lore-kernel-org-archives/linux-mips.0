@@ -1,53 +1,70 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BA33370EC;
-	Thu, 20 Nov 2025 12:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3E22E5B0E;
+	Thu, 20 Nov 2025 15:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763642317; cv=none; b=dQHbOipC2dSYtTHz3Qs/BWPL/VWGVXEJQ7gNb1YxGIB8OYIg21dl2kDPY7tQwN5cv7dQzaAkPbJv7iHAJ7kIQEFtrIeB/ZYJNO30WDU9GizE1wCMblSNbkGfQJoCtfCy+0miEduAzFfC/Fk3lezHD0v58+NQBWInvcEDFmFpKLE=
+	t=1763651165; cv=none; b=nimX1YKZvcQwFN+cXplxGIXPA463rsc3CulqTimqkX9Fsr67Fnwj/Ulvit0L9HjChQ3uMIrZXPrb8O6UvFOEWcOzwb83A23GP86VjwWTup2JweBCeUbBSQKKAlC604+e+aK9MyNxpZNLxUUTGv9bBf22bQJcPzevyyq9MkpZFLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763642317; c=relaxed/simple;
-	bh=FB/I4vkd0SLVXGGvejhBwNCufCVbW8MzeHmaQUfFnhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MD8nAVX7m/EC7D031+BCdvRrpIw44097oXPhj/GBD6R0sANvPNrX5ukBxx9fN2eqCqghZAFIZyPaImMdOXf5JJa8tkqngdK2/gae5c+qfAkseicOI95Rbk1k1kdDT7qEy4rErQjqCahbPedaWzzYBEZIkB22thl7VnlEbIckUbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vM3Xs-0002VH-00; Thu, 20 Nov 2025 13:13:52 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 50243C0256; Thu, 20 Nov 2025 13:13:44 +0100 (CET)
-Date: Thu, 20 Nov 2025 13:13:44 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Nam Cao <namcao@linutronix.de>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Fix reservation for VDSO area
-Message-ID: <aR8F-F41MOHi2edk@alpha.franken.de>
-References: <20251117191815.69556-1-tsbogend@alpha.franken.de>
- <CAAhV-H7eoKgCWRVGWzgM55YOM9V8TRXe6Ax6-XQJF-STTpNpOg@mail.gmail.com>
+	s=arc-20240116; t=1763651165; c=relaxed/simple;
+	bh=TRZgnWWhWokNCTh21dPzITYdwFXz/FKAuKLA1pr/dFI=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kuiWCRlbacIs966bw4QLGgu4tYoLUMLi7RIUU7v9z3ozc+sryC3bSRgN03KIrl/8/Kcb4xpbhSgxTPj/0G/sZXHPlRs6BgjhPPRwHFDmDbs7zP/NzVi1h2H7aoWSSbsdG4Xfo8Ii4haq484WI3Uyyzk1JYjc+qHczXS0B5VMlHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OLz+tdlO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D02NC6YP; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OLz+tdlO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D02NC6YP"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1763651159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TRZgnWWhWokNCTh21dPzITYdwFXz/FKAuKLA1pr/dFI=;
+	b=OLz+tdlO+QXMQ4yPIk4iwDyGTubdTlbgyslhf+7+bcfswopBbDCyBcY4+bZ/GZ/wbOkXnt
+	p3jWy92QiMoNroMZLY9jh/NQSJl9fDKZ6tJMfhfWq+J13br5UQFBeEA2KisqrtsA+ZmnfK
+	uOtX3KTCH2+5veFZsuV0PjV1SOpXMHj7oVeUNBynLdQIu68h75NQLS7R0w8T6q7Cog4o9d
+	Ziq5HvwDB/mb7/3F9orfH1HluGmsC2bxI7pLTpDw2VnzQq+ISn/YXjvvd6JpiG+jDfWjqy
+	eb7yOfptjQt+DLuU55GJPHFBbe3igDuuYfmQE7hcINY69eiPev5kR9/CEY7Ing==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1763651159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TRZgnWWhWokNCTh21dPzITYdwFXz/FKAuKLA1pr/dFI=;
+	b=D02NC6YPM0KbO03bsfmWoG0gijLbuR/phmkjhYlOLEYCXG2DatGCYkdckHpBsR/gC68Syv
+	ivyW5jJ/QH3TzPCA==
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas =?utf-8?Q?Wei?=
+ =?utf-8?Q?=C3=9Fschuh?=
+ <thomas.weissschuh@linutronix.de>, Nam Cao <namcao@linutronix.de>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: kernel: Fix random segmentation faults
+In-Reply-To: <20251120121030.28524-1-tsbogend@alpha.franken.de>
+References: <20251120121030.28524-1-tsbogend@alpha.franken.de>
+Date: Thu, 20 Nov 2025 16:05:58 +0100
+Message-ID: <87qztskall.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAhV-H7eoKgCWRVGWzgM55YOM9V8TRXe6Ax6-XQJF-STTpNpOg@mail.gmail.com>
+Content-Type: text/plain
 
-On Tue, Nov 18, 2025 at 09:15:59AM +0800, Huacai Chen wrote:
-> Hi, Thomas,
-> 
-> I think 69896119dc9d ("MIPS: vdso: Switch to generic storage
-> implementation") changes the size of VDSO data from one page to
-> VDSO_NR_PAGES pages, so here we need to remove "top -= PAGE_SIZE".
+On Thu, Nov 20 2025 at 13:10, Thomas Bogendoerfer wrote:
+> Commit 69896119dc9d ("MIPS: vdso: Switch to generic storage
+> implementation") switches to a generic vdso storage, which increases
+> the number of data pages from 1 to 4. But there is only one page
+> reserved, which causes segementation faults depending where the VDSO
+> area is randomized to. To fix this use the same size of reservation
+> and allocation of the VDSO data pages.
+>
+> Fixes: 69896119dc9d ("MIPS: vdso: Switch to generic storage implementation")
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-you are right, thank you. Sent v2 of the patch.
+I assume this goes through the MIPS tree to Linus.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>

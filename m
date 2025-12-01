@@ -1,49 +1,63 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F2178F4A;
-	Mon,  1 Dec 2025 06:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E4B3016FF;
+	Mon,  1 Dec 2025 09:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764571820; cv=none; b=Gq2tLPlgYXYc3pWw4ZHp0dbAhkgv6lpYY2BYhQiOeqTjwNcGR/5D2y/AolJLHrymM8UcXSWvwmEZ822nxckf3Dksrdpgf16HxdPtGAwEwkejCt1KQzBXmUZgOv9bIgnPRg45FZ9bnyammcTC4coHEOREMhiZ0LmIZbMuZRtuJ7g=
+	t=1764582307; cv=none; b=oemXwyq0Kyc77ofOEhmSJ0DDmrm2dl0IsqvRQ3pJXX+RYbAnK5vBV45TcPeqVj/TTxRzPdhwK05TV4TYzzxmxsGiDIC2Q835Grxj1SZ4ttpZDwATMG2oEyMxNB+/dQPu9RV0pAtThZWgqwtVkE+K/kfs5cWYUZETALZq7uWSPE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764571820; c=relaxed/simple;
-	bh=MM0fw6+/bo7KaYo+RObp9nV6RaZvtuMlytnTLKmqIUM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=uxkhxCq7VU2Dv0e/aaLcFHiG7KxkD3UPOw5l81RSfCzVfDroPl+bSM+DYMsgrgzUK7rJk8tS1HNferFrTEQD6TB83r0us573gaF9Me45IUPnZVnAY7aynepdUIvd8p1ga2B7mkLALmxOw6gsDm0Z8hPsORDk4O7TGEVrRPnSeo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id EE35992009C; Mon,  1 Dec 2025 07:50:16 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id E7AD592009B;
-	Mon,  1 Dec 2025 06:50:16 +0000 (GMT)
-Date: Mon, 1 Dec 2025 06:50:16 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc: Marco Crivellari <marco.crivellari@suse.com>, 
-    Frederic Weisbecker <frederic@kernel.org>, linux-mips@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: [PING][PATCH] MIPS: Fix whitespace damage in r4k_wait from VS timer
- fix
-In-Reply-To: <alpine.DEB.2.21.2510191229030.39634@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2512010648070.36486@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2510191229030.39634@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1764582307; c=relaxed/simple;
+	bh=X4KHRr8qM5FrljnxnIGsfd/uzUZx9ygEZKHeKdqkl9E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S1kFFBM35wLl6yNa38BynQQBQ6STv4NH8I98IQNbXNnfcx3/J+qw6NDOuFVPH+Y3Z2I7Zo5IhMLG0pTh4BV3kD742f0ZVVFzI9KmQUb+NySqYF1wBy1VYjcf8dYEFB5wddXAXQhuHTY1DJAkfRpysXXBo6IX4sKmjK3Gpd5/HNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1vQ0Sn-0002fw-00; Mon, 01 Dec 2025 10:44:57 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id E1D2AC07E9; Mon,  1 Dec 2025 10:42:32 +0100 (CET)
+Date: Mon, 1 Dec 2025 10:42:32 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: dts: Always descend vendor subdirectories
+Message-ID: <aS1jCDNfAFrGZzT2@alpha.franken.de>
+References: <20251120204717.1982418-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251120204717.1982418-1-robh@kernel.org>
 
-On Sun, 19 Oct 2025, Maciej W. Rozycki wrote:
+On Thu, Nov 20, 2025 at 02:47:16PM -0600, Rob Herring (Arm) wrote:
+> Commit 41528ba6afe6 ("MIPS: DTS: Only build subdir of current platform")
+> broke building of all DTBs when CONFIG_OF_ALL_DTBS is enabled unless all
+> the various kconfig options were also enabled. The only effect that commit
+> had was getting rid of some harmless build lines such as:
+> 
+>       AR      arch/mips/boot/dts/mti/built-in.a
+> 
+> Those lines were part of the built-in DTB support. Since commit
+> 04e4ec98e405 ("MIPS: migrate to generic rule for built-in DTBs"), how the
+> built-in DTBs are handled has changed and those lines are no longer
+> generated, so revert to the prior behavior.
+> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+>  arch/mips/boot/dts/Makefile         | 35 +++++++++++++----------------
+>  arch/mips/boot/dts/realtek/Makefile |  4 ++--
+>  2 files changed, 18 insertions(+), 21 deletions(-)
 
-> Remove stray spaces/tabs introduced with commit 56651128e2fb ("MIPS: Fix 
-> idle VS timer enqueue") and add missing indentation for a branch delay 
-> slot.
+applied to mips-next.
 
- Ping for: 
-<https://lore.kernel.org/r/alpine.DEB.2.21.2510191229030.39634@angie.orcam.me.uk/>.
+Thomas.
 
-  Maciej
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

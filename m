@@ -1,33 +1,28 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98C63019A5;
-	Mon,  1 Dec 2025 09:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D3B3016E8;
+	Mon,  1 Dec 2025 09:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764582307; cv=none; b=SK863ctAcCqDzNoFnzaLB97/DnIourIGzxYdHAgn2qKzNcbR4Q0dvNYrB2HsCjpdW7rVOypHX3cNJYoZUV0749+PeNSqZLBrX3Er1ZFlChWVmulg2gKSlUTBU4Gki9eEt/wNb8qKBcJ5xHkd0W/+XL8nDg8flYNNcRsXhl7WlbE=
+	t=1764582308; cv=none; b=NZS2NWGjIpsAY9czXiZMCVrV8bSDeNXSCNn1i1eHn4rpVu8flJat+g1Ax82iQMAKjK+OXY6nZtnMM5o82fjac75mjvv0ERXGutzjrB7E0f5dIO7o64fPSvGEH5REdMl7rTxAR23KaDZoydUEuHH4SDKEA4AuhjI9Efk4zWfmoYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764582307; c=relaxed/simple;
-	bh=7lQvuIQPwXl/Y6giB1a5RkxJ3LoQ5ibsvANlLPCBq7Y=;
+	s=arc-20240116; t=1764582308; c=relaxed/simple;
+	bh=gad9gMctkG6LMdjZ60iQSvdHjiUl9czGhkGCC/O9qUw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GYtnnVNhzeSdGCEQh80V1K/dZbnye1KHmqtud2oYzDNAd99Oq5/fB4UU8roG5dUqL343sdpshBuyjxYHlo9r6eVsy+safi3aTbA5Ckd0sukVezGPAEt7D52BRbbP6VEbEppumNMsnj6fLxIiwtJ5c7BdMVNgWurqY6FcDypPA3o=
+	 Content-Type:Content-Disposition:In-Reply-To; b=fh9cHG+nJYY3TmR2q06ueYFVO/d+uGE31F3RSVPRP5Dj3xgJopxjXq5ybb0hlsC3gfTqJsRKgt1sK4Ao1vf7OiU+CyQghxKnMh2nM+ICaNrVz/HElmwJkNv7IM9tbvwgPEMDb3S3i0++iC5ojisYFkbyo/6K+pmAJsKTyWfHSOI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vQ0Sn-0002g2-00; Mon, 01 Dec 2025 10:44:57 +0100
+	id 1vQ0Sm-0002fm-00; Mon, 01 Dec 2025 10:44:56 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 7EA7BC0862; Mon,  1 Dec 2025 10:43:24 +0100 (CET)
-Date: Mon, 1 Dec 2025 10:43:24 +0100
+	id 74162C0778; Mon,  1 Dec 2025 10:41:40 +0100 (CET)
+Date: Mon, 1 Dec 2025 10:41:40 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Arnd Bergmann <arnd@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org
-Subject: Re: [PATCH] MIPS: alchemy: mtx1: switch to static device properties
-Message-ID: <aS1jPMqIhl36Zucn@alpha.franken.de>
-References: <retzurthfjwc6fqtkta6uhd2xje42vyugryj36yynesvxwygnv@wwmcx2yh4orm>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: Remove __GFP_HIGHMEM masking
+Message-ID: <aS1i1HrCrLhj_Gxx@alpha.franken.de>
+References: <20251107232758.105850-1-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -36,21 +31,34 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <retzurthfjwc6fqtkta6uhd2xje42vyugryj36yynesvxwygnv@wwmcx2yh4orm>
+In-Reply-To: <20251107232758.105850-1-vishal.moola@gmail.com>
 
-On Mon, Aug 11, 2025 at 03:41:28PM -0700, Dmitry Torokhov wrote:
-> Convert GPIO-connected buttons and LEDs on MTX1 board to software
-> nodes/properties, so that support for platform data can be removed
-> from gpio-keys driver (which will rely purely on generic device
-> properties for configuration).
+On Fri, Nov 07, 2025 at 03:27:58PM -0800, Vishal Moola (Oracle) wrote:
+> Remove unnecessary __GFP_HIGHMEM masking, which was introduced with
+> commit 3e14fb19ad7c ("mips: convert various functions to use ptdescs").
+> GFP_KERNEL doesn't contain __GFP_HIGHMEM.
 > 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 > ---
+>  arch/mips/include/asm/pgalloc.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> This compiles but I have not tried it on real hardware.
-> 
->  arch/mips/alchemy/board-mtx1.c | 181 ++++++++++++++++++++++-----------
->  1 file changed, 124 insertions(+), 57 deletions(-)
+> diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+> index 942af87f1cdd..7a04381efa0b 100644
+> --- a/arch/mips/include/asm/pgalloc.h
+> +++ b/arch/mips/include/asm/pgalloc.h
+> @@ -81,8 +81,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+>  static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+>  {
+>  	pud_t *pud;
+> -	struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL & ~__GFP_HIGHMEM,
+> -			PUD_TABLE_ORDER);
+> +	struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL, PUD_TABLE_ORDER);
+>  
+>  	if (!ptdesc)
+>  		return NULL;
+> -- 
+> 2.51.1
 
 applied to mips-next.
 

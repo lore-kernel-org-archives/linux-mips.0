@@ -1,104 +1,104 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5A5286891;
-	Mon,  8 Dec 2025 10:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8287826738C
+	for <linux-mips@vger.kernel.org>; Mon,  8 Dec 2025 18:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765190539; cv=none; b=t4nbCn4wLHVbxbR62MHDyWgFu3anmVDopwpyqFA91R79eNsHbBHgDi1njV4i68NLvwoEA/UhNfHi6dGzoUYXW4PRaF21w6SdAdi47iAxIs2B0pBcCgqK29xHRi4LkLnOywnY0Zlpi5qwHX0w/ktz/lgBBY/wOzJDGrLKV4ftbIE=
+	t=1765217797; cv=none; b=VfcFAEsoDfsLsklQrkrpKLTMYktE16aIVfN2eHfmSuxZTdv3SgK4FzhcL407A2rBGkglZfAOp1ogAyA0slKpLQ/zyXBPj/SSFcEUuogYEZeJRFZIlxj4HrM1gZYuJl8VzF/FjEq5lTGKIHGogehB09JT/+W0whBTNDClbJcFhhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765190539; c=relaxed/simple;
-	bh=TAnDl6sPhcy+IUlbX2x8cziKUCBVlmn2sw/09aCCSsI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B924UxaXOUjijxYwhnmdQaAFYc/Bnk+hUuky+Y+6CiDGUYkHlPxWP2c/1TwfepD+5vPoA2m91RR3AZdOZxp3uZybjdTfgojeKtj1xGccX5KpdLQvRM3hj4xprDRiuaAVTeyXu7/tuHrjCJseUIV1KgIpFJ3kFVCbvtpBHXLuuLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X39h8sTJ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1765217797; c=relaxed/simple;
+	bh=GaTGIUsHCRbA+CJvEJnX3R4M2tslrnRiQxBWt8LUJYk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d0NkV76C+mBKTg909eatEgEy/UWEj4TMrdRncPumT0Q62IFGkvhcJJQFVGA8dkxxXza1bo7xf3QguupszNXAgK+OIJbYbZJ3TQYlQjealFf+YcUEQqrZXtwSTzwN5psXsY776JFUHWM+G8rkV5v1HtGgis+y4BEyd1dw+4jlg0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LbWJ4/wL; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X39h8sTJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA12C4CEF1;
-	Mon,  8 Dec 2025 10:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765190538;
-	bh=TAnDl6sPhcy+IUlbX2x8cziKUCBVlmn2sw/09aCCSsI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=X39h8sTJnWGPt8aAvzjUIiETMHFCA3RazvKyqIgwrxEc58CgplJjrACjAAoXNDu9v
-	 Mf4FaQLF71Mpzddiqh8kUrRua4Tc83Ql8bVBgkYb1NwV/s948y0TBK6H1F/bs9Ola/
-	 sZu+jSyI5iZIZdEKwdjRFL1iArddlpoE9LJVlY5w70w1lpY2RFr5VT3HWhCLjjqgO/
-	 7UHZkgAfe6RkxZmmdW+6fR624bPxRz7mmacB9JWaHHKj3qGDASLOxRB1uz0L/yo7E6
-	 bJOkeoaduri8FaD9L2jy/l1FCprmQ0KANGIOHDqKa2svuZK9Ni4EKDeVCuLiDQBGK1
-	 trQavZzLM6zlg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <maz@kernel.org>)
-	id 1vSYh6-0000000BGKA-1nWA;
-	Mon, 08 Dec 2025 10:42:16 +0000
-Date: Mon, 08 Dec 2025 10:42:15 +0000
-Message-ID: <865xahp854.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Oliver Upton <oupton@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Anup Patel <anup@brainfault.org>,
-	Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] KVM: Remove subtle "struct kvm_stats_desc" pseudo-overlay
-In-Reply-To: <20251205232655.445294-1-seanjc@google.com>
-References: <20251205232655.445294-1-seanjc@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/30.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LbWJ4/wL"
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-88043139c35so47256546d6.0
+        for <linux-mips@vger.kernel.org>; Mon, 08 Dec 2025 10:16:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765217794; x=1765822594; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y76x02r0ebrJlFwjzgT6mGE9kYNZrDiEUslU7gRuUv0=;
+        b=LbWJ4/wLq/4sPizwnXeI0r39oijDzTr6JPN4+LStpLZwKAUMjG99PZxc9aNxO9K8jO
+         H//p5L7NX+d5S5Zi/pq5yMyRnsTaOlpFABlhRsIyPar9sT+/uQe21sQB4JeYo7IPpwKK
+         mjTt8G0Fx8GUvzzzjxdg+9ZogsRHZonykvgxZn4aXGleZxx5DI1hiWleFeu2vlW1z6Qn
+         r+1KWKgssoTrawkDkBe0BXzprQmYv8YDZZ20uQPHaTzekZ+1eAM9rEWNt2pX8YxCRjpI
+         vxYdDF1IQKgrxaIBWKrgwkZ7zJt8npY32KB4MIwM/Hiejx7VMoX95+21+9xqO/Zq2OQ1
+         bQog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765217794; x=1765822594;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y76x02r0ebrJlFwjzgT6mGE9kYNZrDiEUslU7gRuUv0=;
+        b=HDgSHYxpEfLfIejHskatXKt+83JZdIdGTFPWaKO15yMHLuGDTwlMZZ/3yjKR9LNYPL
+         OCuG7lLDEJ/VOG5MPp7N8WkHwZTk8fSrSlP7tBcBoM054vP0luYpZtca12kS/B7HB3Wc
+         eMZKlkABvFgNmeALTUtAjTWxfg4Yg6ED5dUUWMNcQEM5Yw7b+WOAJrnaVutdlop3aQIh
+         cfvJPuPNO/QlS4SLVKdN9gqsoa7tBfXUEmS1AMwsDFIJASJmpCZGjDG6dTGzFN3yS5ta
+         kHqMONFdwC8SMHThlKzJatvmd74FYQQIB8aERwR3F6sZ1fQcqDM1hOPHQ5mSXUQA8CtY
+         R65g==
+X-Forwarded-Encrypted: i=1; AJvYcCUW337FprBKcnDXTYt7v53Ey1KdNjRqGh7nq5emC9Wcbq4PH+3NbYApEypB2JGfLExbIgiAK+1omfrM@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEBv4wqXkom5Yknk1vFQBQeuIdJoD2u/mz5DzYrkGOci9bA0P3
+	yjk4p2lSDLQv0EWJi8Paj9CjCAY0cej/5VK4uy9WtI5VML/1m3RU4dGZ
+X-Gm-Gg: ASbGncujrhi+jHuLkwrEByKhlw1g1/BEwOAu3iGzyg1O829flltK2EJ089c3LLiu9hu
+	vdoQmz+wvh1EkaApvePxb9T9CAS0+zbzP1QwnYMpGjho9Pi3+lryke7Y8YS+LMOpaZd82q9w2hf
+	88NWU72lUFNkolUbVrrd+P+lIkEJs9tJRaLbbDceCQu5cYldgcBzO2fcc/+98r/DSnpBfuJi+Lh
+	Bjya3eZg7CwZaodhpstG/tdD0v7TeVCX3a6w5Ik8q5RgUFePfltMey9E0Lr3VFYimoPkNHvElsd
+	A2tUb+IBISB1195NWnytPChF6m3v4hxFx1MJYaxa0J73MZiUM26TB4Wcg5Zokt7DBIHzti63SDi
+	27Z4MbKUC4cqTjKwfF/GAxSrcZlmC4hbjNtz29UY4S7Gvyju0b5fszthY1E4PJdIjcdMOZgwNdr
+	DFpRbVz/ZRlTSNUS9pGu0VGZgFb6GeQa5t5nzcLA==
+X-Google-Smtp-Source: AGHT+IHEg4/6Vqw7yuQ3zfLX/YIBI83Nsv/wJ8Aksjqr8LGVJxCG87bHmM2kXzaltnLZbv6mj/Yi5A==
+X-Received: by 2002:a05:6214:c48:b0:875:ffef:682 with SMTP id 6a1803df08f44-8883dc30771mr144840076d6.32.1765217794378;
+        Mon, 08 Dec 2025 10:16:34 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-888288013e2sm104539936d6.55.2025.12.08.10.16.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Dec 2025 10:16:32 -0800 (PST)
+Message-ID: <c4212b4d-4728-4e01-b12f-43c1dc85436d@gmail.com>
+Date: Mon, 8 Dec 2025 10:16:29 -0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: seanjc@google.com, oupton@kernel.org, zhaotianrui@loongson.cn, maobibo@loongson.cn, chenhuacai@kernel.org, maddy@linux.ibm.com, anup@brainfault.org, pjw@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu, borntraeger@linux.ibm.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com, pbonzini@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, gustavoars@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MIPS: Alchemy: Remove bogus static/inline specifiers
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20251029150316.2522555-1-thierry.reding@gmail.com>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20251029150316.2522555-1-thierry.reding@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 05 Dec 2025 23:26:55 +0000,
-Sean Christopherson <seanjc@google.com> wrote:
+On 10/29/25 08:03, Thierry Reding wrote:
+> From: Thierry Reding <treding@nvidia.com>
 > 
-> Remove KVM's internal pseudo-overlay of kvm_stats_desc, which subtly
-> aliases the flexible name[] in the uAPI definition with a fixed-size array
-> of the same name.  The unusual embedded structure results in compiler
-> warnings due to -Wflex-array-member-not-at-end, and also necessitates an
-> extra level of dereferencing in KVM.  To avoid the "overlay", define the
-> uAPI structure to have a fixed-size name when building for the kernel.
+> The recent io_remap_pfn_range() rework applied the static and inline
+> specifiers to the implementation of io_remap_pfn_range_pfn() on MIPS
+> Alchemy, mirroring the same change on other platforms. However, this
+> function is defined in a source file and that definition causes a
+> conflict with its declaration. Fix this by dropping the specifiers.
 > 
-> Opportunistically clean up the indentation for the stats macros, and
-> replace spaces with tabs.
-> 
-> No functional change intended.
-> 
-> Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Closes: https://lore.kernel.org/all/aPfNKRpLfhmhYqfP@kspp
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Fixes: 8efb51ad1b05 ("mm: abstract io_remap_pfn_range() based on PFN")
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
-	M.
+Thanks!
 
+Thomas, can you pick this up so we have working alchemy builds again? 
+Thanks!
 -- 
-Without deviation from the norm, progress is not possible.
+Florian

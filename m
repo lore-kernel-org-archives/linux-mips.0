@@ -1,37 +1,36 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605F82FE593;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA0C2FE566;
 	Wed, 10 Dec 2025 08:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765355001; cv=none; b=ZWMqEKXFwWsPKvLRIX+ORIXKjL1Q+eBLuI7IgAku0RwbFUF4krvTE+7RQ2cvsFfpYTxJWKEHkQ53k5lmkT0bfhgKFL19/OwO0kqoAC1ybP2mI/R+RVBsvOgK5A2z/Tk1jGc6x/ois3KYeBJZlUWZGncr4oKsSemHhTmnP5isFiQ=
+	t=1765355001; cv=none; b=glXTIYOKsuooOniRRM9MYXKI3ibjEhZ14gn/LAdIqp/va9iIGojXy5I5trydDaO71+qFaJ4EOZHV52Lludtbu5rrqYHfqyLu/Igu53kOpgpxIqa/V8TCj70HCJJN1tsupA2hc8QLc0kqfFeK0jXUcBQPxLn6x2X5GBji4o0qMpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1765355001; c=relaxed/simple;
-	bh=WI1RGflSqZT0wUnH19O2lHW2JJfkBMQcqBhs77Ks0qQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ixk/HXbyd60EWK4KUzIPr4dTnHe7XurHhPJlxFy/oon8CWw/ZpcFSd6J6P64Z4tKyOcsDjUwMVylC8aA5c70zyu3/RlOhgStnlSe3qaD4dEAF5coNF2V9AYdsAKcjbe1zLfJqDVAfK7yyNZvj+22sNinVfn25CISpQ4fvkTl8/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hhPaRhrg; arc=none smtp.client-ip=10.30.226.201
+	bh=ta7Rj04LqynwKRB55oqJL23eDlqkUxKemCp332ah8yQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PI5wmC0iTbf4J3H94wTORleVrwG8ze65/uqKDHrBm6itqINk6w1xWq1AL2hIqn1cYPeTF0tQj8fjrxcZdrTj+5JLMlBGgYyOWDnQpCeDEuG+SX/2TnvVW+dlNbD1GeH34dMJmSqBhs7l3wqTTqBXoSpVLHEZwZvnLrY55va4BVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EuwBnLMw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hhPaRhrg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D23AC16AAE;
-	Wed, 10 Dec 2025 08:23:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EuwBnLMw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E457EC4CEF1;
+	Wed, 10 Dec 2025 08:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765355001;
-	bh=WI1RGflSqZT0wUnH19O2lHW2JJfkBMQcqBhs77Ks0qQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hhPaRhrgKZo8ZlK/gGxRKlD5k+N8knjlyrk66hBsHqcjSWjf7T2K0jl/ccjvFGiB+
-	 7d12GVgBcI34QiNzw4mRF6c3oFsoQUp0oNyWOeDlMH5MtHp05P3YsIzKl7Vb0eTHvw
-	 /iBwe0tqhleAMuROynKMtTTHpXJ/XBKKX8GYMKalpuy7nv4iwnqcXqIe13m3Op9osc
-	 DgjHdF5SqPhihBhxWhVinSLnGKTYcQ2LzwX74as1sn71BmfB8ivVvjnDwSAaOt92O4
-	 NRCIX6ZC2RN+lBlqybmlpanQLvql0OR0uByL6sl4z6+StRXgzgIMnvSw7ndkxKCNGZ
-	 nLg8bBPaD2tOA==
+	s=k20201202; t=1765355000;
+	bh=ta7Rj04LqynwKRB55oqJL23eDlqkUxKemCp332ah8yQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EuwBnLMwtx3iUwJeXGV06zVOXAm4ZDcxsgYW6gVRvQd75jK6y0TTM8ud0pEOq169H
+	 7l7PVn6Y946SQRwNsSbMsxumVgPJZAbKIPemqudbQjjlqBu2i7bZzW/es01AjZim2h
+	 egBq+eXwGFLYdANdD1YTI3eWEN790uXbcRH54uFemlw9psbLD8gm+hYOV6qLiyXPuO
+	 xdu4NAsKrtEVSf52UJRWnquAenxAP+5qR4qbjY4ARZ0yYWtXTKMnvsI9HHPsGYCF5X
+	 AiSPO4H52SxHCZtCvZ/eIyYGN44IcLWx5TReEhqFeuG8ESVqFP4VO6x6isRKJ4Smyf
+	 6w+uO1yRC0oCQ==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
 	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <maz@kernel.org>)
-	id 1vTFTj-0000000BhIm-0k1y;
-	Wed, 10 Dec 2025 08:23:19 +0000
+	id 1vTFTi-0000000BhIm-2wuv;
+	Wed, 10 Dec 2025 08:23:18 +0000
 From: Marc Zyngier <maz@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org
@@ -39,12 +38,10 @@ Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Joshua Kinard <kumba@gentoo.org>
-Subject: [PATCH 2/6] genirq: Remove __request_percpu_irq() helper
-Date: Wed, 10 Dec 2025 08:22:38 +0000
-Message-ID: <20251210082242.360936-3-maz@kernel.org>
+Subject: [PATCH 0/6] genirq: Post 6.19-rc1 API cleanup
+Date: Wed, 10 Dec 2025 08:22:36 +0000
+Message-ID: <20251210082242.360936-1-maz@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251210082242.360936-1-maz@kernel.org>
-References: <20251210082242.360936-1-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -57,106 +54,69 @@ X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, dan
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-With the IRQ timing stuff being gone, there is no need to specify
-a flag when requesting a percpu interrupt. Not only IRQF_TIMER was
-the only flag (set of flags actually) allowed, but nobody ever
-passed it.
+Fixing the issue reported at [1] pushed me to look into some of the
+ugly corners of the percpu IRQ configuration, and to notice that:
 
-Get rid of __request_percpu_irq(), which was only getting 0 as flags,
-and promote request_percpu_irq_affinity() as its replacement.
+- we only have 3 users left of setup_percpu_irq(), all MIPS timers
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- include/linux/interrupt.h | 18 ++++--------------
- kernel/irq/manage.c       | 16 ++++++----------
- 2 files changed, 10 insertions(+), 24 deletions(-)
+- none of the timer drivers using request_percpu_irq() are passing the
+  IRQF_TIMER flag (this function doesn't take a flag argument)
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 44e335b17ed64..00c01b0a43be1 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -181,9 +181,8 @@ request_any_context_irq(unsigned int irq, irq_handler_t handler,
- 			unsigned long flags, const char *name, void *dev_id);
- 
- extern int __must_check
--__request_percpu_irq(unsigned int irq, irq_handler_t handler,
--		     unsigned long flags, const char *devname,
--		     const cpumask_t *affinity, void __percpu *percpu_dev_id);
-+request_percpu_irq_affinity(unsigned int irq, irq_handler_t handler, const char *devname,
-+			    const cpumask_t *affinity, void __percpu *percpu_dev_id);
- 
- extern int __must_check
- request_nmi(unsigned int irq, irq_handler_t handler, unsigned long flags,
-@@ -193,17 +192,8 @@ static inline int __must_check
- request_percpu_irq(unsigned int irq, irq_handler_t handler,
- 		   const char *devname, void __percpu *percpu_dev_id)
- {
--	return __request_percpu_irq(irq, handler, 0,
--				    devname, NULL, percpu_dev_id);
--}
--
--static inline int __must_check
--request_percpu_irq_affinity(unsigned int irq, irq_handler_t handler,
--			    const char *devname, const cpumask_t *affinity,
--			    void __percpu *percpu_dev_id)
--{
--	return __request_percpu_irq(irq, handler, 0,
--				    devname, affinity, percpu_dev_id);
-+	return request_percpu_irq_affinity(irq, handler, devname,
-+					   NULL, percpu_dev_id);
- }
- 
- extern int __must_check
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 7b25ffc5c43a4..1c858be09ba13 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2510,10 +2510,9 @@ struct irqaction *create_percpu_irqaction(irq_handler_t handler, unsigned long f
- }
- 
- /**
-- * __request_percpu_irq - allocate a percpu interrupt line
-+ * request_percpu_irq_affinity - allocate a percpu interrupt line
-  * @irq:	Interrupt line to allocate
-  * @handler:	Function to be called when the IRQ occurs.
-- * @flags:	Interrupt type flags (IRQF_TIMER only)
-  * @devname:	An ascii name for the claiming device
-  * @affinity:	A cpumask describing the target CPUs for this interrupt
-  * @dev_id:	A percpu cookie passed back to the handler function
-@@ -2526,9 +2525,9 @@ struct irqaction *create_percpu_irqaction(irq_handler_t handler, unsigned long f
-  * the handler gets called with the interrupted CPU's instance of
-  * that variable.
-  */
--int __request_percpu_irq(unsigned int irq, irq_handler_t handler,
--			 unsigned long flags, const char *devname,
--			 const cpumask_t *affinity, void __percpu *dev_id)
-+int request_percpu_irq_affinity(unsigned int irq, irq_handler_t handler,
-+				const char *devname, const cpumask_t *affinity,
-+				void __percpu *dev_id)
- {
- 	struct irqaction *action;
- 	struct irq_desc *desc;
-@@ -2542,10 +2541,7 @@ int __request_percpu_irq(unsigned int irq, irq_handler_t handler,
- 	    !irq_settings_is_per_cpu_devid(desc))
- 		return -EINVAL;
- 
--	if (flags && flags != IRQF_TIMER)
--		return -EINVAL;
--
--	action = create_percpu_irqaction(handler, flags, devname, affinity, dev_id);
-+	action = create_percpu_irqaction(handler, 0, devname, affinity, dev_id);
- 	if (!action)
- 		return -ENOMEM;
- 
-@@ -2564,7 +2560,7 @@ int __request_percpu_irq(unsigned int irq, irq_handler_t handler,
- 
- 	return retval;
- }
--EXPORT_SYMBOL_GPL(__request_percpu_irq);
-+EXPORT_SYMBOL(request_percpu_irq_affinity);
- 
- /**
-  * request_percpu_nmi - allocate a percpu interrupt line for NMI delivery
+- the IRQ_TIMINGS subsystem therefore cannot identify that it should
+  consider these interrupts as timer interrupts, and would mistakenly
+  take them into account
+
+- but as it turns out, nobody can enable IRQ_TIMINGS the first place
+
+- so passing flags at percpu IRQ request time is not required
+
+The cumulative effects of the above is that we can:
+
+- drop the IRQ_TIMINGS stuff -- it was never used, and Daniel
+  indicates[2] that there is no immediate path to finishing it
+
+- replace __request_percpu_irq() with request_percpu_irq_affinity()
+
+- convert all three MIPS timers to request_percpu_irq()
+
+- finally kill setup_percpu_irq() for good
+
+Note that when it comes to MIPS, I have only tested the GIC timer
+change, as I don't have any SGI HW anymore. And even that was on
+QEMU. I'd appreciate someone with the necessary zoo to give it a go on
+actual metal.
+
+Patches on top of [3].
+
+[1] https://lore.kernel.org/r/aTFozefMQRg7lYxh@aspen.lan
+[2] https://lore.kernel.org/r/3f3d42d2-13e3-43ef-b839-f77424769add@linaro.org
+[3] https://patch.msgid.link/20251205091814.3944205-1-maz@kernel.org
+
+Marc Zyngier (6):
+  genirq: Remove IRQ timing tracking infrastructure
+  genirq: Remove __request_percpu_irq() helper
+  mips: Move IP30 timer to request_percpu_irq()
+  mips: Move IP27 timer to request_percpu_irq()
+  clocksource: mips-gic-timer: Move GIC timer to request_percpu_irq()
+  genirq: Kill setup_percpu_irq()
+
+ arch/mips/include/asm/cevt-r4k.h     |   1 -
+ arch/mips/kernel/cevt-r4k.c          |  11 -
+ arch/mips/sgi-ip27/ip27-timer.c      |  10 +-
+ arch/mips/sgi-ip30/ip30-timer.c      |   5 +-
+ drivers/clocksource/mips-gic-timer.c |  10 +-
+ include/linux/interrupt.h            |  24 +-
+ include/linux/irq.h                  |   3 -
+ kernel/irq/Kconfig                   |   3 -
+ kernel/irq/Makefile                  |   4 -
+ kernel/irq/handle.c                  |   2 -
+ kernel/irq/internals.h               | 110 ---
+ kernel/irq/manage.c                  |  49 +-
+ kernel/irq/timings.c                 | 959 ---------------------------
+ lib/Kconfig.debug                    |   8 -
+ 14 files changed, 16 insertions(+), 1183 deletions(-)
+ delete mode 100644 kernel/irq/timings.c
+
 -- 
 2.47.3
 

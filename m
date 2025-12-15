@@ -1,71 +1,129 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7FB30DD22;
-	Mon, 15 Dec 2025 17:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B556E3242B4
+	for <linux-mips@vger.kernel.org>; Mon, 15 Dec 2025 17:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765819120; cv=none; b=U0fOTSU1xeUkx7s3svLt+7e7KSW2eeLXQqpTahBZHlS5iUxFne4eZ9v73osOvTuVJ3AlnvFT7s4iStFo/dSl6Sl4aysRat65zgap9KMS8doUDt+ZqCqGWiylfYOq4/u24vcH2cOUNJ0Lz5SEILCM1F+YKKVKvZC17TwcbjTtyB8=
+	t=1765821313; cv=none; b=g8Ks5uTSHgVogLTK7JOuFnl1gVnJ0jL0B6D8i5o0ZTZrHCpoNR74gNvQk9wRBm9sX8Dk3xOqPOK7EylTuSTmNX7XXGWwWJDTnITnlONyvmG4yuX6rs/6EhZ8ZC8Ey9TSltJ3E1mrdSFf5NRMG4Yd0zts608tSykcRKOmW+HTxk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765819120; c=relaxed/simple;
-	bh=db2VVQs3dRMlF7Uetw6hK9XZa6LQ54LWidtipvEMZp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mHoqGPBB39koReObj+aNDJy4+hZ3kJ0ezC8qQ1PAg7QsaMvUy9oWb2eCNJ78CnXBiJfuVtTTJR7jY1pRyw5TnThOm8ksw8VbJ0P/kGsVkD8Oi7ZgsDBaCtvWFxGrBXfW/en5dyC4lYeLr+5FRX2BMvV/FfhGaOZCqiA4N+u7YRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vVCDP-0007vy-00; Mon, 15 Dec 2025 18:18:31 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 56755C06A7; Mon, 15 Dec 2025 18:17:37 +0100 (CET)
-Date: Mon, 15 Dec 2025 18:17:37 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Haoxiang Li <haoxiang_li2024@163.com>
-Cc: FlorianSchandinat@gmx.de, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix a reference leak bug in ip22_check_gio()
-Message-ID: <aUBCsTeplCT6oNO-@alpha.franken.de>
-References: <20251204103618.89502-1-haoxiang_li2024@163.com>
+	s=arc-20240116; t=1765821313; c=relaxed/simple;
+	bh=fIfWTO7EZ/tNSzgVoDIbwQCc/akNTQHCJxVpm8Ss1h0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=X0eybIBU54dBE9yzypn4QWRfqPzjF6nnScQve2bm/b4J6sovZ+aUuFrJYxIGEEN1nUqdenWKDNZM0PdDm6waz1pplLFgBE82ssMN7goFzYQDRk2D3/1OrjVrUdyMc8KFqerkGH5sbjiWhzJ/JDSuhXlCISbMK7VyNTVTIvkjWVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id D2FD892009C; Mon, 15 Dec 2025 18:55:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id CB9A992009B;
+	Mon, 15 Dec 2025 17:55:01 +0000 (GMT)
+Date: Mon, 15 Dec 2025 17:55:01 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+cc: linux-mips@vger.kernel.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Realtek rtl838x MIPS boot hangs since 6.6.119
+In-Reply-To: <b35fe4b3-8f42-49f4-a6bf-9f0e56d4050c@hauke-m.de>
+Message-ID: <alpine.DEB.2.21.2512151706150.31276@angie.orcam.me.uk>
+References: <b35fe4b3-8f42-49f4-a6bf-9f0e56d4050c@hauke-m.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251204103618.89502-1-haoxiang_li2024@163.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Dec 04, 2025 at 06:36:18PM +0800, Haoxiang Li wrote:
-> If gio_device_register fails, gio_dev_put() is required to
-> drop the gio_dev device reference.
+On Mon, 15 Dec 2025, Hauke Mehrtens wrote:
+
+> Linux 6.6.119 does not boot on my Zyxel GS1900-8 v1 Switch (rtl838x SoC) any
+> more.
 > 
-> Fixes: e84de0c61905 ("MIPS: GIO bus support for SGI IP22/28")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
-> ---
->  arch/mips/sgi-ip22/ip22-gio.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> When I revert these two patches the system boots up again:
 > 
-> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-> index 5893ea4e382c..19b70928d6dc 100644
-> --- a/arch/mips/sgi-ip22/ip22-gio.c
-> +++ b/arch/mips/sgi-ip22/ip22-gio.c
-> @@ -372,7 +372,8 @@ static void ip22_check_gio(int slotno, unsigned long addr, int irq)
->  		gio_dev->resource.flags = IORESOURCE_MEM;
->  		gio_dev->irq = irq;
->  		dev_set_name(&gio_dev->dev, "%d", slotno);
-> -		gio_device_register(gio_dev);
-> +		if (gio_device_register(gio_dev))
-> +			gio_dev_put(gio_dev);
->  	} else
->  		printk(KERN_INFO "GIO: slot %d : Empty\n", slotno);
->  }
-> -- 
-> 2.25.1
+> MIPS: mm: Prevent a TLB shutdown on initial uniquification
+> commit 9f048fa upstream.
+> https://github.com/gregkh/linux/commit/135713cd0751bf296e515f5fdec234320f73bbd8
+> 
+> MIPS: mm: kmalloc tlb_vpn array to avoid stack overflow
+> commit 841ecc9 upstream.
+> https://github.com/gregkh/linux/commit/231ac951fabae2aaed8b2c00b4a097107be49c8c
 
-applied to mips-fixes
+ Thank you for the report and apologies to cause you trouble.  This area 
+seems quite model-specific in a subtle way, as we have both CPU and the 
+way firmware has initialised it to take into account.
 
-Thomas.
+ Can you please try the debug patch included below (which I used to verify 
+the correct operation of the changes referred above) and report the output 
+produced?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+  Maciej
+---
+ arch/mips/mm/tlb-r4k.c |   17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+linux-mips-tlb-r4k-uniquify-fix-debug.diff
+Index: linux-macro/arch/mips/mm/tlb-r4k.c
+===================================================================
+--- linux-macro.orig/arch/mips/mm/tlb-r4k.c
++++ linux-macro/arch/mips/mm/tlb-r4k.c
+@@ -516,7 +516,10 @@ static int r4k_vpn_cmp(const void *a, co
+ {
+ 	long v = *(unsigned long *)a - *(unsigned long *)b;
+ 	int s = sizeof(long) > sizeof(int) ? sizeof(long) * 8 - 1: 0;
+-	return s ? (v != 0) | v >> s : v;
++	int w = s ? (v != 0) | v >> s : v;
++	printk("a: %08lx, b: %08lx, w: %2d",
++	       *(unsigned long *)a, *(unsigned long *)b, w);
++	return w;
+ }
+ 
+ /*
+@@ -532,6 +535,7 @@ static void r4k_tlb_uniquify(void)
+ 	unsigned long vpn_mask;
+ 	int cnt, ent, idx, i;
+ 
++	printk("r4k_tlb_uniquify: %d\n", slab_is_available());
+ 	vpn_mask = GENMASK(cpu_vmbits - 1, 13);
+ 	vpn_mask |= IS_ENABLED(CONFIG_64BIT) ? 3ULL << 62 : 1 << 31;
+ 
+@@ -545,15 +549,17 @@ static void r4k_tlb_uniquify(void)
+ 	htw_stop();
+ 
+ 	for (i = start, cnt = 0; i < tlbsize; i++, cnt++) {
+-		unsigned long vpn;
++		unsigned long entryhi, vpn;
+ 
+ 		write_c0_index(i);
+ 		mtc0_tlbr_hazard();
+ 		tlb_read();
+ 		tlb_read_hazard();
+-		vpn = read_c0_entryhi();
++		entryhi = vpn = read_c0_entryhi();
+ 		vpn &= vpn_mask & PAGE_MASK;
+ 		tlb_vpns[cnt] = vpn;
++		printk("[%02x/%02x]: %08lx/%08lx/%08x\n", i, cnt, entryhi, vpn,
++		       read_c0_pagemask());
+ 
+ 		/* Prevent any large pages from overlapping regular ones.  */
+ 		write_c0_pagemask(read_c0_pagemask() & PM_DEFAULT_MASK);
+@@ -564,6 +570,9 @@ static void r4k_tlb_uniquify(void)
+ 
+ 	sort(tlb_vpns, cnt, sizeof(tlb_vpns[0]), r4k_vpn_cmp, NULL);
+ 
++	for (idx = 0; idx < cnt; idx++)
++		printk("[%02x]: %08lx\n", idx, tlb_vpns[idx]);
++
+ 	write_c0_pagemask(PM_DEFAULT_MASK);
+ 	write_c0_entrylo0(0);
+ 	write_c0_entrylo1(0);
+@@ -577,6 +586,8 @@ static void r4k_tlb_uniquify(void)
+ 			entryhi = UNIQUE_ENTRYHI(ent);
+ 			vpn = entryhi & vpn_mask & PAGE_MASK;
+ 
++			printk("[%02x/%02x/%02x]: %08lx/%08lx\n", i, idx, ent,
++			       vpn, tlb_vpns[idx]);
+ 			if (idx >= cnt || vpn < tlb_vpns[idx]) {
+ 				write_c0_entryhi(entryhi);
+ 				write_c0_index(i);

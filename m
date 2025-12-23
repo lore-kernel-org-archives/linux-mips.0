@@ -1,254 +1,154 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B03A230BE9
-	for <linux-mips@vger.kernel.org>; Tue, 23 Dec 2025 09:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1A42DE70B
+	for <linux-mips@vger.kernel.org>; Tue, 23 Dec 2025 10:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766480975; cv=none; b=u4+xGx58S/8wyQ+JJKEjdx5WG3Uh4meEiT8UDAMFMOz7qSADoRfwBVEv3xfnsgRBs/cjjN/JGCTApdGpFh5Ngw18CiAEA6cMpzwr5PVThE8JZrn0ijeLwx9EEqXTTCs6eztxEGrFld61s4ksLSQNULX6NrZqXCeJUt/wS6iJjLU=
+	t=1766484159; cv=none; b=PfYcWQ8vdgkEO1hAJO3WVtgTZAG5RY41ueKU9YuR66jBonRX+deo0FH0cRuUBZhzp99Ib6xyMdUGGiiLmfQT5QAl+LGb9jRNyVy6QMthQ0TVoGIlmB+WjUDmAZ6qXfJ4ChKpFQhyTS0K87xxy0P8l3Vh3Fc7tnvvd95nl/Q5KIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766480975; c=relaxed/simple;
-	bh=aijJLNBS9FZrpQNJH65aBhLFlhQt68MEzRvn16zEJK4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ker75FU4ezlMQYlKWNDz60kMOkarKr/oRrGR2CeGzd2QonIHKCxK/r0xHEBL0LQK2pVVxFyn+SwRmWrnqEzvBhvUsAa0C2tDglZIVjby8rvh0t1IV+nXB/B7wkm35ZLLtG/pgYCwP+7XU9vTYUWA7HJzLC+tLjgkPz/LORzwKi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qbf1xjGZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1766484159; c=relaxed/simple;
+	bh=m590nntX4ppviCCDPhndoQX+FPzbzQg/sWseHpjS0L8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=X0IHhJH9WissBwYT8Caxs6iK/tozVhiftoEa3FfEJbuVrR+3JS2oZ30Gh2tcnuO64pnPZHUJ9XoxeHMIedjkDXCM79VS3TvSbFjtAO9ZZcgr2vkohhrXMrWsSt5wo5L6PYHF2LnXarBmS5Bf51Os/ujckHZM18kd//pnBjQMIUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dgPE4CA4; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbf1xjGZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A469BC116B1
-	for <linux-mips@vger.kernel.org>; Tue, 23 Dec 2025 09:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766480974;
-	bh=aijJLNBS9FZrpQNJH65aBhLFlhQt68MEzRvn16zEJK4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qbf1xjGZyJPPrQLNc1knLr4X5mvvj/UD1sZqYKd9YaEdmU6a3cT6srUeH+VezYcGy
-	 ex7Z53ylPdiM0cGII/1qKNIURYjM7ewGSNCf4tnBhvKOePVDDX/hnh7EgQhEQcnMyZ
-	 ax0N9mxAoKLEwGpZILPpkCMEQx7PHk+v22VIQaUGOr2K6pNqRlUr+KX0BYC85SLA9Q
-	 xglJcdcrPqLrIQYJy4TRcbXHcMPKWGJFG6I8OCdFizBJhrQNskhDWPt0QOySBedZXA
-	 B6KcTOsGQeiRbxvwsgbUNRykiPlb0tyNhoggyuWQAk52ISowlsxAJY0G6h9/Lkk6eC
-	 LRrHhqlOvQoeQ==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b7ffbf4284dso584248366b.3
-        for <linux-mips@vger.kernel.org>; Tue, 23 Dec 2025 01:09:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVXHOvURdl76HWdHs1cOEjrFLiWEoKGO4qigNYuaKIZW6L8jSwTsO1Qk8jHYo9DJj9lt07s2cA8E5Gt@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDSr//zAmxTlP4izxkmiWB9dbJaP+QFYtYHOs0bvB1QWCPdhrw
-	Jcz1OcYXpJq85mAe63FG7jfd2SwDCTYcvhmPI9Awp5mQ8klffsQS+XXv+xIunIfa8vjsRyIrHSq
-	ZjcC2vZwo13i8isgB3tIyZiE0XnnHiow=
-X-Google-Smtp-Source: AGHT+IHCH6qRyZ+LlGBGWAYWrVVBBEch+kme5XPnOA4eZ76YfYm6U2BH2/2ZNnC0lBPNJTuHr9jtEQ0+kOgXTjemH0w=
-X-Received: by 2002:a17:907:96a7:b0:b33:b8bc:d1da with SMTP id
- a640c23a62f3a-b8036f11019mr1350206266b.1.1766480973213; Tue, 23 Dec 2025
- 01:09:33 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dgPE4CA4"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id B82D64E41D5E;
+	Tue, 23 Dec 2025 10:02:35 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8CCA460716;
+	Tue, 23 Dec 2025 10:02:35 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2CC0710AB09B9;
+	Tue, 23 Dec 2025 11:02:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1766484154; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=WwV71J+GvRMt5S0XG+Cm4p0MxsmS37VCZZFJasiab4A=;
+	b=dgPE4CA4NJiyvD+3zMHVMZ6uKxsSeRg90J/e4AImqxYW4msGNW57yhhYz6Cmee86G0kAKT
+	DKQw5vw3zwX1zvvycmMKC80ra98a1XoWIK4XaPNugZThGVIGc+SWT9leqexzOoz9uMUwIQ
+	ZcU/+hhII+SgxJadAE74LNOL+gPMdhogL1JI0XSg/JgRTrej47jrPA21vgsRkadjDQrly9
+	bXqN/uZ8wRtgjJN1soHdFXAFwRQIx6GpMRFAvQj28Zu1f/xa8od5JoXQ1iRvM211w3GDoo
+	SXbekO2VoQaexJn0sSc4ijOcdmn/nQDDHUphfZfRs+8ERzLBTSG1PCKjUrnyDQ==
+From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+Date: Tue, 23 Dec 2025 11:02:19 +0100
+Subject: [PATCH v2 04/13] reset: eyeq: Add Mobileye EyeQ6Lplus OLB
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1766471839.git.zhoubinbin@loongson.cn> <6e10c70653b32f1f79e3f98116924e1aad7154bf.1766471839.git.zhoubinbin@loongson.cn>
- <CAAhV-H5WfEhsV4fEzThR-C95cg0nPpJ+OfQ10NXEsFKneJQQ5A@mail.gmail.com> <CAMpQs4LMkq6BpsrnS+e+cvh2hJshO4=41vX4ETq+tkJEMZ7zdA@mail.gmail.com>
-In-Reply-To: <CAMpQs4LMkq6BpsrnS+e+cvh2hJshO4=41vX4ETq+tkJEMZ7zdA@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 23 Dec 2025 17:09:48 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6VEnKZwoDc3zMWXQZ6BLrnq=rb9nQLdrSouOcMah3feg@mail.gmail.com>
-X-Gm-Features: AQt7F2rnk7HaqDKh4LbatbnGFaCLAWIN8Ox6DiUferozFlqUt2UftDcMfuBBg4w
-Message-ID: <CAAhV-H6VEnKZwoDc3zMWXQZ6BLrnq=rb9nQLdrSouOcMah3feg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] rtc: loongson: Add Loongson-2K0300 support
-To: Binbin Zhou <zhoubb.aaron@gmail.com>
-Cc: Binbin Zhou <zhoubinbin@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org, 
-	Xiaochuang Mao <maoxiaochuan@loongson.cn>, Xuerui Wang <kernel@xen0n.name>, loongarch@lists.linux.dev, 
-	devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
-	Keguang Zhang <keguang.zhang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20251223-eyeq6lplus-v2-4-cd1fd21d182c@bootlin.com>
+References: <20251223-eyeq6lplus-v2-0-cd1fd21d182c@bootlin.com>
+In-Reply-To: <20251223-eyeq6lplus-v2-0-cd1fd21d182c@bootlin.com>
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Linus Walleij <linusw@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-mips@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Tue, Dec 23, 2025 at 5:06=E2=80=AFPM Binbin Zhou <zhoubb.aaron@gmail.com=
-> wrote:
->
-> Hi:
->
->
-> On Tue, Dec 23, 2025 at 4:40=E2=80=AFPM Huacai Chen <chenhuacai@kernel.or=
-g> wrote:
-> >
-> > Hi, Binbin,
-> >
-> > On Tue, Dec 23, 2025 at 2:42=E2=80=AFPM Binbin Zhou <zhoubinbin@loongso=
-n.cn> wrote:
-> > >
-> > > The Loongson-2K0300's rtc hardware design is similar to that of the
-> > > Loongson-1B, but it does not support the alarm feature.
-> > >
-> > > Introduce `LOONGSON_RTC_ALARM_WORKAROUND`, which indicates a chip tha=
-t
-> > > does not support the alarm function, and rewritethe related logic in
-> > > `loongson_rtc_alarm_setting()`
-> > >
-> > > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > > ---
-> > >  drivers/rtc/rtc-loongson.c | 65 ++++++++++++++++++++++++++----------=
---
-> > >  1 file changed, 44 insertions(+), 21 deletions(-)
-> > >
-> > > diff --git a/drivers/rtc/rtc-loongson.c b/drivers/rtc/rtc-loongson.c
-> > > index 2ca7ffd5d7a9..6b076bd4e24e 100644
-> > > --- a/drivers/rtc/rtc-loongson.c
-> > > +++ b/drivers/rtc/rtc-loongson.c
-> > > @@ -67,6 +67,7 @@
-> > >   * Accessing the relevant registers will cause the system to hang.
-> > >   */
-> > >  #define LS1C_RTC_CTRL_WORKAROUND       BIT(0)
-> > > +#define LOONGSON_RTC_ALARM_WORKAROUND  BIT(1)
-> > Can we reuse existing logic, which means "alarm_irq =3D
-> > platform_get_irq(pdev, 0)" return 0 for LS2K0300?
->
-> First of all, as I understand it, platform_get_irq() doesn't normally
-> return 0 unless interrupt 0 is configured in the DTS, which doesn't
-> seem appropriate.
->
-> Also, the return value of platform_get_irq() was previously used to
-> determine if the alarm feature was supported, which is not
-> particularly accurate. It should be an inherent feature of the chip,
-> and I think it would be more appropriate to define it in
-> loongson_rtc_config.
-OK, then I think it is better to rename LS1C_RTC_CTRL_WORKAROUND to
-LOONGSON_RTC_CTRL_WORKAROUND for consistency.
+Declare the two reset domains found in the EyeQ6Lplus OLB and add
+them to the data matched by 'mobileye,eyeq6lplus-olb' compatible.
 
-Huacai
+Those reset domains are identical to those present in the EyeQ5
+OLB, so no changes are needed to support them.
 
-> >
-> > Huacai
-> >
-> > >
-> > >  struct loongson_rtc_config {
-> > >         u32 pm_offset;  /* Offset of PM domain, for RTC alarm wakeup =
-*/
-> > > @@ -89,7 +90,7 @@ static const struct loongson_rtc_config ls1b_rtc_co=
-nfig =3D {
-> > >
-> > >  static const struct loongson_rtc_config ls1c_rtc_config =3D {
-> > >         .pm_offset =3D 0,
-> > > -       .flags =3D LS1C_RTC_CTRL_WORKAROUND,
-> > > +       .flags =3D LS1C_RTC_CTRL_WORKAROUND | LOONGSON_RTC_ALARM_WORK=
-AROUND,
-> > >  };
-> > >
-> > >  static const struct loongson_rtc_config generic_rtc_config =3D {
-> > > @@ -97,6 +98,11 @@ static const struct loongson_rtc_config generic_rt=
-c_config =3D {
-> > >         .flags =3D 0,
-> > >  };
-> > >
-> > > +static const struct loongson_rtc_config ls2k0300_rtc_config =3D {
-> > > +       .pm_offset =3D 0x0,
-> > > +       .flags =3D LOONGSON_RTC_ALARM_WORKAROUND,
-> > > +};
-> > > +
-> > >  static const struct loongson_rtc_config ls2k1000_rtc_config =3D {
-> > >         .pm_offset =3D 0x800,
-> > >         .flags =3D 0,
-> > > @@ -299,9 +305,41 @@ static const struct rtc_class_ops loongson_rtc_o=
-ps =3D {
-> > >         .alarm_irq_enable =3D loongson_rtc_alarm_irq_enable,
-> > >  };
-> > >
-> > > +static int loongson_rtc_alarm_setting(struct platform_device *pdev, =
-void __iomem *regs)
-> > > +{
-> > > +       int ret =3D 0, alarm_irq;
-> > > +       struct device *dev =3D &pdev->dev;
-> > > +       struct loongson_rtc_priv *priv =3D dev_get_drvdata(dev);
-> > > +
-> > > +       if (priv->config->flags & LOONGSON_RTC_ALARM_WORKAROUND) {
-> > > +               /* Loongson-1C/Loongson-2K0300 RTC does not support a=
-larm */
-> > > +               clear_bit(RTC_FEATURE_ALARM, priv->rtcdev->features);
-> > > +               return 0;
-> > > +       }
-> > > +
-> > > +       /* Get RTC alarm irq */
-> > > +       alarm_irq =3D platform_get_irq(pdev, 0);
-> > > +       if (alarm_irq < 0)
-> > > +               return alarm_irq;
-> > > +
-> > > +       ret =3D devm_request_irq(dev, alarm_irq, loongson_rtc_isr, 0,=
- "loongson-alarm",
-> > > +                              priv);
-> > > +       if (ret < 0)
-> > > +               return ret;
-> > > +
-> > > +       priv->pm_base =3D regs - priv->config->pm_offset;
-> > > +       device_init_wakeup(dev, true);
-> > > +
-> > > +       if (has_acpi_companion(dev))
-> > > +               acpi_install_fixed_event_handler(ACPI_EVENT_RTC,
-> > > +                                                loongson_rtc_handler=
-, priv);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > >  static int loongson_rtc_probe(struct platform_device *pdev)
-> > >  {
-> > > -       int ret, alarm_irq;
-> > > +       int ret;
-> > >         void __iomem *regs;
-> > >         struct loongson_rtc_priv *priv;
-> > >         struct device *dev =3D &pdev->dev;
-> > > @@ -330,25 +368,9 @@ static int loongson_rtc_probe(struct platform_de=
-vice *pdev)
-> > >                 return dev_err_probe(dev, PTR_ERR(priv->rtcdev),
-> > >                                      "devm_rtc_allocate_device failed=
-\n");
-> > >
-> > > -       /* Get RTC alarm irq */
-> > > -       alarm_irq =3D platform_get_irq(pdev, 0);
-> > > -       if (alarm_irq > 0) {
-> > > -               ret =3D devm_request_irq(dev, alarm_irq, loongson_rtc=
-_isr,
-> > > -                                      0, "loongson-alarm", priv);
-> > > -               if (ret < 0)
-> > > -                       return dev_err_probe(dev, ret, "Unable to req=
-uest irq %d\n",
-> > > -                                            alarm_irq);
-> > > -
-> > > -               priv->pm_base =3D regs - priv->config->pm_offset;
-> > > -               device_init_wakeup(dev, true);
-> > > -
-> > > -               if (has_acpi_companion(dev))
-> > > -                       acpi_install_fixed_event_handler(ACPI_EVENT_R=
-TC,
-> > > -                                                        loongson_rtc=
-_handler, priv);
-> > > -       } else {
-> > > -               /* Loongson-1C RTC does not support alarm */
-> > > -               clear_bit(RTC_FEATURE_ALARM, priv->rtcdev->features);
-> > > -       }
-> > > +       ret =3D loongson_rtc_alarm_setting(pdev, regs);
-> > > +       if (ret)
-> > > +               return ret;
-> > >
-> > >         /* Loongson RTC does not support UIE */
-> > >         clear_bit(RTC_FEATURE_UPDATE_INTERRUPT, priv->rtcdev->feature=
-s);
-> > > @@ -379,6 +401,7 @@ static const struct of_device_id loongson_rtc_of_=
-match[] =3D {
-> > >         { .compatible =3D "loongson,ls1b-rtc", .data =3D &ls1b_rtc_co=
-nfig },
-> > >         { .compatible =3D "loongson,ls1c-rtc", .data =3D &ls1c_rtc_co=
-nfig },
-> > >         { .compatible =3D "loongson,ls7a-rtc", .data =3D &generic_rtc=
-_config },
-> > > +       { .compatible =3D "loongson,ls2k0300-rtc", .data =3D &ls2k030=
-0_rtc_config },
-> > >         { .compatible =3D "loongson,ls2k1000-rtc", .data =3D &ls2k100=
-0_rtc_config },
-> > >         { /* sentinel */ }
-> > >  };
-> > > --
-> > > 2.47.3
-> > >
-> > >
->
-> --
-> Thanks.
-> Binbin
+Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
+---
+ drivers/reset/Kconfig      |  4 ++--
+ drivers/reset/reset-eyeq.c | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 6e5d6deffa7d..ba0814f0f292 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -85,9 +85,9 @@ config RESET_EIC7700
+ 
+ config RESET_EYEQ
+ 	bool "Mobileye EyeQ reset controller"
+-	depends on MACH_EYEQ5 || MACH_EYEQ6H || COMPILE_TEST
++	depends on MACH_EYEQ5 || MACH_EYEQ6H || MACH_EYEQ6LPLUS || COMPILE_TEST
+ 	select AUXILIARY_BUS
+-	default MACH_EYEQ5 || MACH_EYEQ6H
++	default MACH_EYEQ5 || MACH_EYEQ6H || MACH_EYEQ6LPLUS
+ 	help
+ 	  This enables the Mobileye EyeQ reset controller, used in EyeQ5, EyeQ6L
+ 	  and EyeQ6H SoCs.
+diff --git a/drivers/reset/reset-eyeq.c b/drivers/reset/reset-eyeq.c
+index 2d3998368a1c..791b7283111e 100644
+--- a/drivers/reset/reset-eyeq.c
++++ b/drivers/reset/reset-eyeq.c
+@@ -49,6 +49,18 @@
+  *  8. MPC0	 9. MPC1	10. MPC2	11. MPC3
+  * 12. MPC4
+  *
++ * Known resets in EyeQ6Lplus domain 0 (type EQR_EYEQ5_PCIE):
++ *  0. SPI0	 1. SPI1	 2. UART0	 3. I2C0
++ *  4. I2C1	 5. TIMER0	 6. TIMER1	 7. TIMER2
++ *  8. TIMER3	 9. WD0		10. WD1		11. EXT0
++ * 12. EXT1	13. GPIO
++ *
++ * Known resets in EyeQ6Lplus domain 1 (type EQR_EYEQ5_ACRP):
++ *  0. VMP0	 1. VMP1	 2. VMP2	 3. VMP3
++ *  4. PMA0	 5. PMA1	 6. PMAC0	 7. PMAC1
++ *  8. MPC0	 9. MPC1	10. MPC2	11. MPC3
++ * 12. MPC4
++ *
+  * Known resets in EyeQ6H west/east (type EQR_EYEQ6H_SARCR):
+  *  0. CAN	 1. SPI0	 2. SPI1	 3. UART0
+  *  4. UART1	 5. I2C0	 6. I2C1	 7. -hole-
+@@ -521,6 +533,24 @@ static const struct eqr_match_data eqr_eyeq6l_data = {
+ 	.domains	= eqr_eyeq6l_domains,
+ };
+ 
++static const struct eqr_domain_descriptor eqr_eyeq6lplus_domains[] = {
++	{
++		.type = EQR_EYEQ5_PCIE,
++		.valid_mask = 0x3FFF,
++		.offset = 0x004,
++	},
++	{
++		.type = EQR_EYEQ5_ACRP,
++		.valid_mask = 0x00FF,
++		.offset = 0x200,
++	},
++};
++
++static const struct eqr_match_data eqr_eyeq6lplus_data = {
++	.domain_count	= ARRAY_SIZE(eqr_eyeq6lplus_domains),
++	.domains	= eqr_eyeq6lplus_domains,
++};
++
+ /* West and east OLBs each have an instance. */
+ static const struct eqr_domain_descriptor eqr_eyeq6h_we_domains[] = {
+ 	{
+@@ -555,6 +585,7 @@ static const struct eqr_match_data eqr_eyeq6h_acc_data = {
+ static const struct of_device_id eqr_match_table[] = {
+ 	{ .compatible = "mobileye,eyeq5-olb", .data = &eqr_eyeq5_data },
+ 	{ .compatible = "mobileye,eyeq6l-olb", .data = &eqr_eyeq6l_data },
++	{ .compatible = "mobileye,eyeq6lplus-olb", .data = &eqr_eyeq6lplus_data },
+ 	{ .compatible = "mobileye,eyeq6h-west-olb", .data = &eqr_eyeq6h_we_data },
+ 	{ .compatible = "mobileye,eyeq6h-east-olb", .data = &eqr_eyeq6h_we_data },
+ 	{ .compatible = "mobileye,eyeq6h-acc-olb", .data = &eqr_eyeq6h_acc_data },
+
+-- 
+2.52.0
+

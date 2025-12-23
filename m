@@ -1,41 +1,42 @@
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A8E32B9BE;
-	Tue, 23 Dec 2025 10:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6943032C303;
+	Tue, 23 Dec 2025 10:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766484163; cv=none; b=N7t8z24JUkc8TZi+k4hnt1mCzTSn3g/ZLUjjoCyT9bYRh6pcu2Xop+SA61BHueR4QGLKZjjliOzZ2LILhT7tedNR7OZLGV8vrjIUsQLZlTb9Fq/FBO6zKMUVi1EKSNj93ydnVfZEk1OfHkkKaNdwh+ugZI+dLhiZqU7Ar4Gli0M=
+	t=1766484164; cv=none; b=LNLnNAmzc+g62qKCFezdrih6twXv/DrxSFpOQ3IZ3lv3jrDkH6Mny7z2+H5kfCoqCtIW3oseGqQ/Um6bm75HvqgVn05m0nQVZzDXbbeKzl/Yr3ToFYs9pYGGzGrmy8l/c390+BTkQDTzUyXOIiIt/QekE2OOabL4nz/qzcVa6rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766484163; c=relaxed/simple;
-	bh=H3w2FgxOSJvqVuj+SXiEHLgoCWFljus4cGldBzKIl24=;
+	s=arc-20240116; t=1766484164; c=relaxed/simple;
+	bh=z8+04K3m+/VfZFp+iGAvWoWW9TNlD9vV5sf0uskJwAg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Z4RtG9c2cJzJPtiaQrq75BHQLlRE2CD4+/oR6U6IRtUfKO49wiGx23NLY8V/j+ixvR85jXIDESr9CMfHs2YmJaNFqj8Jbk8EjXH6binpKRD4keXba6rOSVZ65Blgkrevxy/iJ8K8gp7/B95Nr0e7YWJ4V5FAVM86RnbE4ldJLAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DaMMBtMZ; arc=none smtp.client-ip=185.246.85.4
+	 In-Reply-To:To:Cc; b=blbml5PeP1QlPnBgk3enl68J/IelfoAT9fx3i71HgnLN6eZPH4EJRYhSlnlkFnesZHRIuUGw6SC7V92rgxG29+Zm+2ck4QJfdFrqRcYpJ8Q8MIOMHP5d1BGuyFRYkOgL5wXtVdEpkWspqffTr3lvL+YyRL9ZiYAIYb9pc4IEYVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=g2iDsAg5; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DaMMBtMZ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="g2iDsAg5"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id E47894E41D5D;
-	Tue, 23 Dec 2025 10:02:33 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id E43DD1A23A1;
+	Tue, 23 Dec 2025 10:02:40 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B8CE960716;
-	Tue, 23 Dec 2025 10:02:33 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 68EB310AB09B8;
-	Tue, 23 Dec 2025 11:02:31 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AFFD960716;
+	Tue, 23 Dec 2025 10:02:40 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6D64610AB09BD;
+	Tue, 23 Dec 2025 11:02:38 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1766484152; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1766484159; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=8Zfsq2Q0KKHFsJh7C/6RUmQNJurLVBsixLOXVYzrljE=;
-	b=DaMMBtMZOq1VXdZpP2Fep0Fzf2JTO+qgHfkdz2TnPJIwRRYUbfCdMkv982SUUY6UlIqYcw
-	klLIarVn/Lf/tQ30sUTLc/PQfJpQxsaqWgXCdeuP99KM+vWfmb5zajq3n3aNDpJ2vxn+B6
-	CHXcJ/7N01cu+D66tUUkT5N2iIGHKhQ0SctWHrPgcyPKMSHzIuorraxbWTRFwUus8DNccj
-	us5RkMlsOLsk/4/igRVCm1Ejbal8MZbRd8SiZCSzegQ5lkbHVKlITGBYn7lj4vmuFc3Mya
-	ludidOv2V2SIL0B52y67OAWybbHXsPv8LQQX7uMdSsJBEqH1vcqBp5NYZD+SjQ==
+	bh=cMM9rHXVDDAVjpqacJOwBMRQUCSdXDMyytqvCHPp5HQ=;
+	b=g2iDsAg5Zx9iB7iI7NgUFLgVSxnQMg19+qj0nYKjAKq0xR5XJFus5vBNdd5eDSIfcWOKzb
+	2iKrFjfh9hHWmfZn+mkFxpS0hI4LjJpxM1VBV9iKW/KHCpGxuwnt8Y8epYe4Y5HcJOMoDo
+	28UcDUE3erBekJg/ennky0jYMQvfR2RL/33RZ43N0BSYvBJZhxd/pTdhR+ZVRE9ih+HmVo
+	7fSCAb6qn15HUQoM+rIFV6+Yo130ddXKGVUAudEJQqJDrEQkUGFPZjTorIUnCM4NXYwSTU
+	CjLv5cliHsSVYT695z9DDu5zYB1ckIV7v/PuzxO9qIOqNwTIfU5D8aQi2xGr+g==
 From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Date: Tue, 23 Dec 2025 11:02:18 +0100
-Subject: [PATCH v2 03/13] MIPS: Add Mobileye EyeQ6Lplus support
+Date: Tue, 23 Dec 2025 11:02:22 +0100
+Subject: [PATCH v2 07/13] clk: eyeq: Skip post-divisor when computing PLL
+ frequency
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -44,7 +45,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251223-eyeq6lplus-v2-3-cd1fd21d182c@bootlin.com>
+Message-Id: <20251223-eyeq6lplus-v2-7-cd1fd21d182c@bootlin.com>
 References: <20251223-eyeq6lplus-v2-0-cd1fd21d182c@bootlin.com>
 In-Reply-To: <20251223-eyeq6lplus-v2-0-cd1fd21d182c@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
@@ -64,41 +65,35 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.14.3
 X-Last-TLS-Session-Version: TLSv1.3
 
-Add the EyeQ6Lplus to the group of choices for Mobileye SoC
-and set the kernel load address specific to this SoC.
+The output of the PLL is routed before the post-divisor so it should be
+ignored when computing the frequency of the PLL, functional change is
+implemented to reflect how the clock signal is wired internally.
+
+For the PLL of the EyeQ5, EyeQ6L, and EyeQ6H, this change has no impact
+as the post-divisor is either reported as disabled or set to 1. The PLL
+frequency is the same before and after the post-divisor.
+
+For the PLL in EyeQ6Lplus, however, the post-divisor is not 1, so it must
+be ignored to compute the correct frequency.
 
 Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
 ---
- arch/mips/mobileye/Kconfig  | 3 +++
- arch/mips/mobileye/Platform | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/clk/clk-eyeq.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/mips/mobileye/Kconfig b/arch/mips/mobileye/Kconfig
-index f9abb2d6e178..8a4868d2e28f 100644
---- a/arch/mips/mobileye/Kconfig
-+++ b/arch/mips/mobileye/Kconfig
-@@ -12,6 +12,9 @@ choice
+diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
+index ea1c3d78e7cd..182b408b6aa4 100644
+--- a/drivers/clk/clk-eyeq.c
++++ b/drivers/clk/clk-eyeq.c
+@@ -177,8 +177,6 @@ static int eqc_pll_parse_registers(u32 r0, u32 r1, unsigned long *mult,
  
- 	config MACH_EYEQ6H
- 		bool "Mobileye EyeQ6H SoC"
-+
-+	config MACH_EYEQ6LPLUS
-+		bool "Mobileye EyeQ6Lplus SoC"
- endchoice
+ 	*mult = FIELD_GET(PCSR0_INTIN, r0);
+ 	*div = FIELD_GET(PCSR0_REF_DIV, r0);
+-	if (r0 & PCSR0_FOUTPOSTDIV_EN)
+-		*div *= FIELD_GET(PCSR0_POST_DIV1, r0) * FIELD_GET(PCSR0_POST_DIV2, r0);
  
- config FIT_IMAGE_FDT_EPM5
-diff --git a/arch/mips/mobileye/Platform b/arch/mips/mobileye/Platform
-index 69f775bbbb1e..93b533492b58 100644
---- a/arch/mips/mobileye/Platform
-+++ b/arch/mips/mobileye/Platform
-@@ -10,6 +10,7 @@
- 
- load-$(CONFIG_MACH_EYEQ5)	= 0xa800000808000000
- load-$(CONFIG_MACH_EYEQ6H)	= 0xa800000100800000
-+load-$(CONFIG_MACH_EYEQ6LPLUS)	= 0xa800000108800000
- all-$(CONFIG_MACH_EYEQ5)	+= vmlinux.gz.itb
- 
- its-y					:= vmlinux.its.S
+ 	/* Fractional mode, in 2^20 (0x100000) parts. */
+ 	if (r0 & PCSR0_DSM_EN) {
 
 -- 
 2.52.0

@@ -1,142 +1,105 @@
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8393D26D4EF;
-	Fri,  2 Jan 2026 15:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E1628DB46;
+	Fri,  2 Jan 2026 15:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767367671; cv=none; b=D94xRkL44mV0q5Tnx+3KYcl//VTztDzUxt9OIqtj0N1qyf9RqIywf6/epZJKWAEqzKUW/Xr+bVtycPWtQQGqRsr6qJvlFWRaxfwSDG+qPDuxcTMJwOKnxZH71ROwHM6GXJaPT41i0YpwSYvA5YaYob0olJMVKzqM9ZcKqHSggd4=
+	t=1767369187; cv=none; b=Y10QmO2pcTxK9x0oz2B4EGdCRfikAQPoCtXlgusq1YimkWTqCoq0R9wdKOrUKs0ntN0qlYXLES+3qAR2d/6fjyOwM3qGnTbmGeGYwmd8KWO4JgB5fmYIiCKycirNI2Z+wqneEwUBUscpvfBBepBHytfZLNNm4tCr0mEgXQrQzOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767367671; c=relaxed/simple;
-	bh=SS2yV2DafXZ82Hx7kPgx/KxsyZ2YqKWv5FrorUnyBug=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jvrjyuTF53b3cMHqRFZ0Aqygnh8DyaU5FKk/NUSGM19eos3nEiKrNXl2Xz2pkvIy71GhGHwHj1Ofc2E/2fXxXpY1uIZsCW/HhlA+FgPSfj9HBz7W+nR+9uZCAnlYSap7ChMRZFZeQ66EolJukxtcLyfyow9yT+Gf2WOHQkBNT7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VlFGiiQg; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VlFGiiQg"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 0DC53C1C3B6;
-	Fri,  2 Jan 2026 15:27:15 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id C6D1E606C7;
-	Fri,  2 Jan 2026 15:27:40 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F036B113B0726;
-	Fri,  2 Jan 2026 16:27:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1767367659; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=XPS1mjvtZ+X94jm0JM9hHsjy2dgTByBQDp6LZfgUsSQ=;
-	b=VlFGiiQgyp4A1jr1xVk3EEGB85uX0RicBd+tpt6aBlXBJJU5VZFGs6HfjTaleC9IT9dWb7
-	jX6NkeMB0LJLHzQIrrQS4yM/1qqtyr/87Df1aMhUdLNwOZQkkcF2jM5DpztcXTVufyhI+5
-	2Tej944Nisw1cu2YXgteKsF2Q2UVlw5UHguPe8eFMuK5sPihb0Wm956X0UgjYfX3Pb33iP
-	sjtJ793m1Ixv9v8AeNS0VbMTUo9LGpXn2u67apY/pOeHcOD8CYKNTXq5sApIopOPQOBmuH
-	0C/zIB3QNzw2rWSJJWf4923tCBNJf6D0IXuXmSuTTGxCMo1Kdf/co5qh64vJHQ==
-From: =?UTF-8?B?QmVub8OudA==?= Monin <benoit.monin@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- Linus Walleij <linusw@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 11/13] MIPS: Add Mobileye EyeQ6Lplus evaluation board dts
-Date: Fri, 02 Jan 2026 16:27:34 +0100
-Message-ID: <2775216.vuYhMxLoTh@benoit.monin>
-In-Reply-To:
- <CAD++jL=7eU+jSHn0t2KKzHjipXYKoQreOdaHH8OcyriPmwHJQw@mail.gmail.com>
-References:
- <20251217-eyeq6lplus-v1-0-e9cdbd3af4c2@bootlin.com>
- <fe9e594f-9718-48b5-8208-fb567a54cae9@bootlin.com>
- <CAD++jL=7eU+jSHn0t2KKzHjipXYKoQreOdaHH8OcyriPmwHJQw@mail.gmail.com>
+	s=arc-20240116; t=1767369187; c=relaxed/simple;
+	bh=6xwXaESbQDcoH6UquNWlaguH/ghPy1QEXupzkKp1O0w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Gu25X7jS/rl/96Y3KYIclVeJTUVZbrQOPP6jDxS98IPGuLx5kGqZqsi3DMWF3Zq89ZewvgDqJrgoJoPmfk9jY7R8SkMei7vD8Dr2IAKlv9fKwZO+Fgq0wNiBxwX0BOFC3v/R7LhnlG9jDOvv91V5k/H3UIdbY60hHWrYPloLnec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from edelgard.fodlan.icenowy.me (unknown [112.94.103.158])
+	by APP-03 (Coremail) with SMTP id rQCowABnaL_N6VdpJWUQAw--.54339S2;
+	Fri, 02 Jan 2026 23:52:47 +0800 (CST)
+From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Icenowy Zheng <zhengxingda@iscas.ac.cn>
+Subject: [PATCH] MIPS: Loongson64: dts: fix phy-related definition of LS7A GMAC
+Date: Fri,  2 Jan 2026 23:52:43 +0800
+Message-ID: <20260102155243.3639731-1-zhengxingda@iscas.ac.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:rQCowABnaL_N6VdpJWUQAw--.54339S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4DCr4DJw1fKF1ftr18Zrb_yoW8Wr4Dpa
+	y3Cws7Xrn8ur1avay8CFyUXr4fAa98KFs5uF47C3y5Jw10vF10vr17JFyrtr1UGrWFqa40
+	qw109ayxX3Z7Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
+	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWI
+	evJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-Hi Linus,
+Currently the LS7A GMAC device tree node lacks a proper phy-handle
+property pointing to the PHY node.
 
-On Thursday, 1 January 2026 at 23:42:36 CET, Linus Walleij wrote:
-> On Fri, Dec 19, 2025 at 4:57=E2=80=AFPM Beno=C3=AEt Monin <benoit.monin@b=
-ootlin.com> wrote:
->=20
-> > In my particular case of a microcontroller acting as an SPI "relay" on =
-the
-> > evaluation board, what would be the best way to describe it? It connects
-> > the two SPI controllers of the SoC, one is a host and one is a target, =
-so
-> > it behave as an SPI target on one side and as an SPI host on the other.
-> >
-> > The trivial devices bindings seems to be dedicated to devices, thus not=
- for
-> > SPI hosts. Do I need a dedicated binding or did I miss something I could
-> > use for a trivial spidev slave?
->=20
-> That needs to be detailed and discussed with the SPI maintainer on the SPI
-> devel list. (Added.)
->=20
-> Can you illustrate with a picture or so what is going on here?
->=20
-> Yours,
-> Linus Walleij
->=20
-Here is what it looks like on the evaluation board of the EyeQ6Lplus:
+In addition, the phy-mode property specifies "rgmii" without any
+internal delay information, which means the board trace needs to add 2ns
+delay to the RGMII data lines; but that isn't known to happen on any
+Loongson board. The ACPI-based initialization codepath, which is used on
+LoongArch-based 3A5000 + 7A1000 hardwares, specifies "rgmii-id" phy
+mode, which should be the one we are using.
 
-    +------------------------+          +------------------------+
-    | EyeQ6Lplus SoC         |          | Evaluation board MCU   |
-    |                        |          |                        |
-    |           +------------+          +------------+           |
-    |           | SPI host   |          | SPI target |           |
-    |           |            |          |            |           |
-    |           |        CLK >----------> CLK        |           |
-    |           |        SDO >----------> SDI        |           |
-    |           |        SDI <----------< SDO        |=C2=B7=C2=B7=C2=B7=C2=
-=B7=C2=B7      |
-    |           |        CS0 >----------> CS         |    =C2=B7      |
-    |           +------------+          +------------+    =C2=B7      |
-    |                        |          |                 =C2=B7 (1)  |
-    |           +------------+          +------------+    =C2=B7      |
-    |           | SPI target |          | SPI host   |    =C2=B7      |
-    |           |            |          |            |<=C2=B7=C2=B7=C2=B7=
-=C2=B7      |
-    |           |        CLK <----------< CLK        |           |
-    |           |        SDI <----------< SDO        |           |
-    |           |        SDO >----------> SDI        |           |
-    |           |        CS  <----------< CS0        |           |
-    |           +------------+          +------------+           |
-    |                        |          |                        |
-    +------------------------+          +------------------------+
+Add the lacking phy-handle property and set proper phy-mode.
 
-(1): The MCU, when the chip select is asserted on its SPI target, starts
-     a transaction on its SPI host side. It then copies data received by
-     the target side to the host side.
+Tested on a LS3A4000_7A1000_NUC_BOARD_V2.1 board with YT8521S PHY.
 
-With the spidev entries in the device tree, it is used to test that SPI
-of the SoC is working with `spidev_test`. So the MCU is part of the test
-harness found on the evaluation board.
+Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+---
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-If the SPI signals of the SoC had been routed to a header, we could do the
-same test with jumper wires, directly connecting the host and the target.
-
-Best regards,
-=2D-=20
-Beno=C3=AEt Monin, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
-
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index ee71045883e7e..6dee85909f5a6 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -199,7 +199,8 @@ gmac@3,0 {
+ 					     <13 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-names = "macirq", "eth_lpi";
+ 				interrupt-parent = <&pic>;
+-				phy-mode = "rgmii";
++				phy-mode = "rgmii-id";
++				phy-handle = <&phy0>;
+ 				mdio {
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
+@@ -222,7 +223,8 @@ gmac@3,1 {
+ 					     <15 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-names = "macirq", "eth_lpi";
+ 				interrupt-parent = <&pic>;
+-				phy-mode = "rgmii";
++				phy-mode = "rgmii-id";
++				phy-handle = <&phy1>;
+ 				mdio {
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
+-- 
+2.52.0
 

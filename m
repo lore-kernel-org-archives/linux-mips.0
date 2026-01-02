@@ -1,111 +1,94 @@
-Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37500298991
-	for <linux-mips@vger.kernel.org>; Fri,  2 Jan 2026 15:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92D72222C4;
+	Fri,  2 Jan 2026 17:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767369237; cv=none; b=J4FXz++Pb4/bE14T4damEoquPTV+1/emK7skHDT9DpJNDISlDBciVWkUuk81y+l1b59YvhA02Mx3uLfFIBd4G91uForCOWjnuKDs2/OxihOlcYMjs5GzJLseUf3g3ZzRy37/RnCjLH8LzoCkHuybGoLwSWIHeiP1yW2MmXx2TmE=
+	t=1767375510; cv=none; b=XNJ2usr09R6LdrN4Knb+JsBtcW6gDfPSR+8zVylxA9rvQ/QrjmO2IcEyR353+ELdOKXZkziek1Bb2KrM18r7v5/CANxK1tdy+Hyr8lld5WnAFmeNi/xlAUEV2iQ5i/Rs+fllI2C9U+oZMLUeEMXg1kGLO6fJegekos730anCPVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767369237; c=relaxed/simple;
-	bh=EAmGXJhS+kV/8kTjvDsx6PH6pL66FGnsepLKxD69+3w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uKOx/kjaHzUrmZel/GARyjfSUF+jYKljmawv9f1zOGb9U52o86Jy8cuwIzwt+JXMxHBCamT2Ge912q49I9VD6rY+ETrWeK3IVqFzYCVPFakNIkEy5MJFtMLVfFLSfTHsaGCxArvGwmbZOvxol/XajMQ2u89rzwIs2yfdZMbBqWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=oOYRycXC; arc=none smtp.client-ip=212.77.101.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
+	s=arc-20240116; t=1767375510; c=relaxed/simple;
+	bh=QcknUrYBl8gCUaV1a78vCxQD5n24yW7uv7ymg3UZsKQ=;
+	h=Date:Content-Type:MIME-Version:From:Cc:To:In-Reply-To:References:
+	 Message-Id:Subject; b=gkBLI6Q0MmIjEKTpVx6bP8h7LOFQ2u4lj5bacvlnvn/xN0xO+Qb1ULykAy7LCttJiz/HapMZbxrspZdVS/qkRzNhCc3sWoPs4++dQjrGVtG0eVqp8i0pApxS/HQmZBygYok215tM636LV55s06wQohg5+FiiTIXaPHnWpQL0oWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DB+6042d; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="oOYRycXC"
-Received: (wp-smtpd smtp.wp.pl 32318 invoked from network); 2 Jan 2026 16:53:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
-          t=1767369227; bh=TTGeIMt25YFQMOKiNe5dlnsk2HQeFBOtHs64bmOahIU=;
-          h=From:To:Cc:Subject;
-          b=oOYRycXCsRyk+B/Ca18edU2AKKDlzAzcLRAB4fvsVuhdQedWv9wCd2GYSs0z4gdgT
-           W0x0l52G/q4Qyx1xulNw3ma7UgLk6emEu7eoQCERSlLVv+VC9/sY6gMjZCluOwnjXO
-           lvOaOWapATbMIvat+NpA9EPnyTGuW/DYENZOpGGQfSIxkzK5uTwDY8g16I5TYpGOaZ
-           HP5iwuyibqgc6+PQLYSuPxkoFfbO0r1cKqbtE2ilPG/geG0L+eCSh9fuhJO1tShFh8
-           RVmszpbUJz5ENLQ0M5X8+0QUMKYLsSpV1peBHCP0PdWSR4slIxQJOY62NZgAmVn7uy
-           vCnOipsR4BT2w==
-Received: from 83.5.157.18.ipv4.supernova.orange.pl (HELO laptop-olek.lan) (olek2@wp.pl@[83.5.157.18])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <benjamin.larsson@genexis.eu>; 2 Jan 2026 16:53:47 +0100
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
-To: benjamin.larsson@genexis.eu,
-	chester.a.unal@arinc9.com,
-	davem@davemloft.net,
-	angelogioacchino.delregno@collabora.com,
-	ansuelsmth@gmail.com,
-	conor+dt@kernel.org,
-	herbert@gondor.apana.org.au,
-	krzk+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	robh@kernel.org,
-	sergio.paracuellos@gmail.com,
-	tsbogend@alpha.franken.de,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-mips@vger.kernel.org
-Cc: Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH v3 3/3] mips: dts: ralink: mt7621: add crypto offload support
-Date: Fri,  2 Jan 2026 16:47:35 +0100
-Message-ID: <20260102155341.3682013-3-olek2@wp.pl>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260102155341.3682013-1-olek2@wp.pl>
-References: <20260102155341.3682013-1-olek2@wp.pl>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DB+6042d"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FC47C116B1;
+	Fri,  2 Jan 2026 17:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767375510;
+	bh=QcknUrYBl8gCUaV1a78vCxQD5n24yW7uv7ymg3UZsKQ=;
+	h=Date:From:Cc:To:In-Reply-To:References:Subject:From;
+	b=DB+6042dL0G5ELqyiLR7WjVeG/WEjV3ACWHki7Qc7OmIbo01rSw8/bZk/kVcuej3P
+	 B7JwNU4kORP5Lpn9QaFz/M3RoeTLQi+QiVD5xH7A9rN8JotoDRRM9GM9b1RAbhZveB
+	 HAfDqvy8V2Zl54xRbkgrrGNV/cadxQwFO6ZDiztHOZfStVkyH0RM/woaGXVc4ocQyv
+	 pbLEVDp1x+X/iJiP85H+pFu3sfmPMrd1N6x36g7LKcLO0rhP7nxlXw8nkW855sxCif
+	 AzkKT/5CQUc3QmP4CLyppeNJqJOq22f3cPYEBqDZlGisqCA9DGSd2RE+XE3xv7fC0Y
+	 NCip/kEY1GsLw==
+Date: Fri, 02 Jan 2026 11:38:29 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                                      
-X-WP-MailID: 7b471dd560ee9b622f99c1c75cb1178e
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [8SOE]                               
+From: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: matthias.bgg@gmail.com, sergio.paracuellos@gmail.com, 
+ tsbogend@alpha.franken.de, linux-crypto@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, ansuelsmth@gmail.com, 
+ devicetree@vger.kernel.org, benjamin.larsson@genexis.eu, 
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ conor+dt@kernel.org, herbert@gondor.apana.org.au, krzk+dt@kernel.org, 
+ chester.a.unal@arinc9.com, angelogioacchino.delregno@collabora.com, 
+ davem@davemloft.net, linux-arm-kernel@lists.infradead.org
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+In-Reply-To: <20260102155341.3682013-2-olek2@wp.pl>
+References: <20260102155341.3682013-1-olek2@wp.pl>
+ <20260102155341.3682013-2-olek2@wp.pl>
+Message-Id: <176737550920.3990125.15817156622138815627.robh@kernel.org>
+Subject: Re: [PATCH v3 2/3] dt-bindings: crypto: eip93: add support for
+ Mediatek MT7621 SoC
 
-Add support for the built-in cryptographic accelerator. This accelerator
-supports 3DES, AES (128/192/256 bit), ARC4, MD5, SHA1, SHA224, and SHA256.
-It also supports full IPSEC, SRTP and TLS offload.
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
-v3:
-- Add reset line and clock gate
-- Change commit description
-- Wrap long line
----
- arch/mips/boot/dts/ralink/mt7621.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Fri, 02 Jan 2026 16:47:34 +0100, Aleksander Jan Bajkowski wrote:
+> Add compatible for Mediatek MT7621 SoC. The implementation is exactly the
+> same os in the Airoha SoC.
+> 
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> ---
+> v3:
+> - Use enum
+> v2:
+> - Corrected commit description
+> ---
+>  .../bindings/crypto/inside-secure,safexcel-eip93.yaml         | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 0704eab4a80b..e1047dd861c0 100644
---- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -361,6 +361,19 @@ cdmm: cdmm@1fbf8000 {
- 		reg = <0x1fbf8000 0x8000>;
- 	};
- 
-+	crypto@1e004000 {
-+		compatible = "mediatek,mt7621-eip93",
-+			     "inside-secure,safexcel-eip93ies";
-+		reg = <0x1e004000 0x1000>;
-+
-+		clocks = <&sysc MT7621_CLK_CRYPTO>;
-+
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_SHARED 19 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		resets = <&sysc MT7621_RST_CRYPTO>;
-+	};
-+
- 	ethernet: ethernet@1e100000 {
- 		compatible = "mediatek,mt7621-eth";
- 		reg = <0x1e100000 0x10000>;
--- 
-2.47.3
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/crypto/inside-secure,safexcel-eip93.yaml:35:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.kernel.org/project/devicetree/patch/20260102155341.3682013-2-olek2@wp.pl
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 

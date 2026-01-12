@@ -1,86 +1,86 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF5E2C0F6D
-	for <linux-mips@vger.kernel.org>; Mon, 12 Jan 2026 22:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E58296BB7
+	for <linux-mips@vger.kernel.org>; Mon, 12 Jan 2026 22:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768258154; cv=none; b=mFfwE1PUomgFdMtp9dYK2GkQC6pyBzkHYzs5c6qA8Tn6POl9PT1eJMdWkQPUuSCqKuoIV1Y0Mxi0GL7DmO42byFZl/aFAZnzKUTVnL+N4KMXIMPLOAiRRS3m9+ucSK/0i6y0jV9gwdcwOOX9cyPoVBMSYfOE5JXr4h3vO4NgiMA=
+	t=1768258154; cv=none; b=BdahtXdAlx2j4WtuQvIDIXGpuOVup14u+E+WmTuRkanGxw5I04DXC7MWDSAjx4V9LqG07Z2zX611o4NQk4ajClU7h6soDdLWY4rIrBuaEqcAgDjqgHFa1NRFidcu/TFONhAfhtABC54Ugud3LewEV1qMygE2MF3caLtpeWduIag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768258154; c=relaxed/simple;
-	bh=ujjrCeYW4Gws3dC552q2XCMpqxd2pU0ffvvLryV2FnY=;
+	bh=+CeBdqNkhTo0Vz7mLS7Hz0nmrzj1DD3v7IFsU0i6AJY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UFgeCjx03ExJ/tmm/p9V6k0jQCH0ROS0bGK6isnkIZ79knJJGVUoRaDo1YAHv0N1tmEQxufLQ1NMfVWhKrAZzGBiX+fhCJD/uZVzmnKLhnYh7kKeOVn5a+uOLfzvE25fLLwHMNImMixgCS+osF7hIqAKWNyB2JjpmZo8uzHMavo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UPJu6o9Y; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=uCwoRCDs; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:To:Cc; b=rt40uUXZ0GGd+TlC19xPqGl6m/8ZHldQCDldxN17LzYS1rTXhcwKnHb1OpV8wKH9JAZUxTuiyiafynETJrWWmUUdBUtY6cqwYdS3czVMzzjI4zE8rLF7lYJBzA7r4uApF5NnQGnH6o8yGGfrDm3YHNOPn/PQb7lnKIQelMbs6o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nk4EeUf1; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=B2dQibkj; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UPJu6o9Y";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="uCwoRCDs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nk4EeUf1";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="B2dQibkj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768258146;
+	s=mimecast20190719; t=1768258151;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xPVVsDO6rA1DUsYXI1T3bEgIhuRr3/ZOG3IZ44Wx0sU=;
-	b=UPJu6o9YDEUWMzcSDQx9qtc8/LhRBs9mvTHGWtuyNdsLrGBpuVJrC2On09SuQvbAp8Mb0g
-	ujTlUUqeVWSNlRHzy0JO9zWehoSKkC2R7z2m4mARXDXCZkH9CntOeW/Aaj78XdRYVn5Cnu
-	Mklsctr+f7Sa7PKicG6yxv4y7fCokyQ=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Kq817KTqUgty31Jw4OUgrwYkI9qQGz93n4JioGYSdIA=;
+	b=Nk4EeUf10QPEECd95xvWKGjNP40gNL4nIi0wAFDXrsWGYwdhfavoOoTwci1BrlE+2DxiG9
+	oW4DOZE2InGj+5cgcgUew5mrJIrz7pJIS10cdrjMySqknEdFtHyBmBIUqVXGp+yhBguX+G
+	R5jf6zYQJzeny99n4Z9b4jHCptmm/RI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-548-RsHR3zVlNEqVhqabAUlgag-1; Mon, 12 Jan 2026 17:49:05 -0500
-X-MC-Unique: RsHR3zVlNEqVhqabAUlgag-1
-X-Mimecast-MFC-AGG-ID: RsHR3zVlNEqVhqabAUlgag_1768258145
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8b2e19c8558so379339685a.2
-        for <linux-mips@vger.kernel.org>; Mon, 12 Jan 2026 14:49:05 -0800 (PST)
+ us-mta-564-wfMGWTXnNaaYZWjuAb4dYQ-1; Mon, 12 Jan 2026 17:49:09 -0500
+X-MC-Unique: wfMGWTXnNaaYZWjuAb4dYQ-1
+X-Mimecast-MFC-AGG-ID: wfMGWTXnNaaYZWjuAb4dYQ_1768258149
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8c277fe676eso2079700485a.0
+        for <linux-mips@vger.kernel.org>; Mon, 12 Jan 2026 14:49:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768258145; x=1768862945; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1768258149; x=1768862949; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xPVVsDO6rA1DUsYXI1T3bEgIhuRr3/ZOG3IZ44Wx0sU=;
-        b=uCwoRCDsm4DNYgVvCrkY2lkxZGUOJPj688VrhtVoyIjAvAZR016BY0aUpcnvebCuGi
-         c7KYDHJ59upTHFrpOsTyKyBfWENWewEFM7oyjou7yOCBR8DEUZpUl9Ua7UjRS19YtKHk
-         l7RdAgx5+1Pl7nJI6zWMFfz+BUtQSiHKdwDV0lSilAlUYlry6BXDc5ZfucplXB6P45TD
-         W75QX3WoepNsirOjmoJAv4Nr7ujYYltvQsOsw/DXZQQZnwooKbix0BKw6skKz/0+tshu
-         rwbtCmPLrpkc8A6lNK6ouYg2ZHCV8EHtq4sRYDOgy3m1A7r/W374P2ZeDXmqed2a3Cks
-         KRSA==
+        bh=Kq817KTqUgty31Jw4OUgrwYkI9qQGz93n4JioGYSdIA=;
+        b=B2dQibkjLmQSIXiD8CQ6udy+AxGIfMuvRMoeM/bsXzIjT0jtelwY+J5twtCQfM14pY
+         y2QrcQnFqsW/eDATpqiWtVtDpOg6S9ZX4PjTLzhpSyqOENO5AgTuKiiSpoS3sM/GhZcC
+         AU2fLlk/fJyjnMxsq5p/Ogq+sO/WlIfMQHAm6jSSw8U7vwt37RSh60HCLogp954ydGvT
+         uoRcMSAaBumY5UKujCpPSzgVjkUehsWwJAjRLPYzva+yjuhnzSzc4OM69zBbOw1W5/nS
+         wSc1/eN+qq2FdIh8CJoO8l2UU/Gu+98fkOOiUdyG0fpUDAUrsoMGs17I7RbTD8cuqILF
+         ZD/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768258145; x=1768862945;
+        d=1e100.net; s=20230601; t=1768258149; x=1768862949;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=xPVVsDO6rA1DUsYXI1T3bEgIhuRr3/ZOG3IZ44Wx0sU=;
-        b=KsB9w+ORARefxnQU6IsMPOw0LD1ouqYIeCe6XGWuJly0m7gGeFoIfE14NG9Bo6qP1V
-         H1TyR0p8UUiSNmKDM/KaQhXdvLHI/2JQ96uuUeoLwyPTTfDyW0RrtMKoBmpU/t7t8W1y
-         W22i8tybIX7IafT1fpjfel3yjpTt0D09SpTN95nDWM81J1fQXurUbNxsRykUOYhnGcea
-         RPuMheyPQ/oBVPZnR2oCzmb5uNkTyrnIzFLZswoskv0/6qdBiwpp0D/gOhcZFZ2S3fqC
-         RV1lYcGK7u+j+xSpNPJAAJnDaNaGz+xDbxalyADl49Dw/udbnFyaAA0m+eYE3GTK5xj7
-         Ne/Q==
-X-Gm-Message-State: AOJu0YykXFBqZPit+C1x48fpQdK2vFOqZ/kKyx5iKqRbWhETnivFm8os
-	eHrpg/m7ylpOLfDwncBAZdhBz5gpy56BY9ufOyScT8hG81pT3CQAgnHRcJTtQvNSvZwe7tLsGUu
-	GQ+MfkvhkT6jAVja3UJh+TGO08vtsmpXO6pQ1j/Mk4GMWPjF45x7mIFVw65ryMhI=
-X-Gm-Gg: AY/fxX4ha352xmuyYHJmausdoxtPw2q89dH/8zGSZ09pfXI3SpgsRrM0it2dJidKI4c
-	SPugVC3uPYKxgnDpQgqoRNjDaM3+dqNzNNClpUe1lXMU2+FwszLSMJxojEKISz4Tv2I611OyqAg
-	9FBEAUe85nb93Iym5aK/6sQx4XeSPnu453+tF7c1P3BAW/4tYETO33Er9IGEynDS3WutH4/9iIs
-	j3Iolq7MyLbp0K3Vf763OaNRIe7DMhpYjv15sItAaitrbe36SRhKnBNfKoAZIfxVimvXHdHXyvQ
-	F1Uf2CpHvOdHv2j6I4jfYbULFotXJcG1Z4QFq9kohgsE0GWHoDlEKc2SpPUmV3riBcQF/E0Bx0w
-	EKt+kWSzkuEjrcWYayV6PGjg2nWCaaBxi8/3bULAvw/E8igZeeQ==
-X-Received: by 2002:a05:620a:191d:b0:8bb:ac44:bd34 with SMTP id af79cd13be357-8c389368d86mr2436419985a.4.1768258145064;
-        Mon, 12 Jan 2026 14:49:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFNXCc8z9qIgmtoPJLDZiBaHPvREI5QKz6xqckNeA02fMmWIrp28+uV08fFzeeVnlq/j5MHQw==
-X-Received: by 2002:a05:620a:191d:b0:8bb:ac44:bd34 with SMTP id af79cd13be357-8c389368d86mr2436418085a.4.1768258144624;
-        Mon, 12 Jan 2026 14:49:04 -0800 (PST)
+        bh=Kq817KTqUgty31Jw4OUgrwYkI9qQGz93n4JioGYSdIA=;
+        b=hHN+vFU2e00zyUU7q9J27Pie2sBYDWR68eWIDpl5SQNJ2eJ09EGR387u+HlfZFtX0m
+         8rwBiTD+ViXcZduxlr3CfXAshW1jNbaIjKdNFfMC7x5ktlcA99LrpHEnf4BUCb7aPpm3
+         /4DbGlI69ujzVb79GJq7RhksA2Od1SK43uDA7FcIqIfZ8Hb8QzsM97zeksyO+VQQHx4t
+         b285Zvz1CxYHy+YOp+KQtst9JGy397qVAcLuRfu5GMBdBRDQgi479E7MENYTXIeENb4q
+         m1duLpldG8WqnkaxbVeAVsqOfq7fXyzS1F07kCmrdKhG7lmuv73qP7EvdqIhaysuofdo
+         9clg==
+X-Gm-Message-State: AOJu0YwO+z4HfikheZ8cPADAFfP9ba323kAsDD2+NGCBqx/jdUlq6E6O
+	IQSq5dg21OYDt1Jz6yfa/RxHK2oeepvaaSXuH/vTc/S0xoJunZuG/fUFjHKFBlgB7dHs3/xwn2n
+	c/CzmiuYrkXujg5/ZvfC+JW1mWm62S4D8LJQZ8zjHuUZpy15N2ok4Y9u/j1ZWz/A=
+X-Gm-Gg: AY/fxX629IRQiv/ZmdBp7NdWofuthF3mjJoCH8ZECwg7INzyEM0HS9pf7QQCnLoW83r
+	3N+AKbsyPfmIZF7YwHrnkbn0HWDKwlznJBRBwNvWZ+Xz6nZDxFj3XyyCyZVL9LAZtwW7zWaD1Zb
+	2s9Z5xOYlQlvEelXW8N00XhJluWpiLkJBgGZggENnGIK3U3RJcutIgjE1wNGK117kzGRGEiaj82
+	V0QrIHu4Q8FmBE6B9qZ2YNzgKgmLDK1le6FIT9tg6fX5ObwvBf9rGgoxKrX8fJDTYuFMzhgudLe
+	QxyF4MHPzLnRzqlNY/RZcjlprgSAO0qn+EKsqvcqXe+LTzvHgop3c3WFTXDQzFUDxHuy+vNP/GE
+	sx3fihI4TPXyw6VJ4Wn4e/NdMCyWJ1iDWb/XaJJn6QHE4NrFfng==
+X-Received: by 2002:a05:620a:6914:b0:8c3:6692:1f03 with SMTP id af79cd13be357-8c389433cd8mr2608116585a.81.1768258149318;
+        Mon, 12 Jan 2026 14:49:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEGYmM7hQdX8Bi4+xsGFjdc9uCq2IsPbJWi6gD0R550vN1IswNtRG+t+9zu8an4goEKWmgTYA==
+X-Received: by 2002:a05:620a:6914:b0:8c3:6692:1f03 with SMTP id af79cd13be357-8c389433cd8mr2608114385a.81.1768258148958;
+        Mon, 12 Jan 2026 14:49:08 -0800 (PST)
 Received: from [192.168.1.15] (c-73-183-52-120.hsd1.pa.comcast.net. [73.183.52.120])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a6145sm1580930385a.5.2026.01.12.14.49.03
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a6145sm1580930385a.5.2026.01.12.14.49.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 14:49:04 -0800 (PST)
+        Mon, 12 Jan 2026 14:49:08 -0800 (PST)
 From: Brian Masney <bmasney@redhat.com>
-Date: Mon, 12 Jan 2026 17:48:06 -0500
-Subject: [PATCH v2 12/16] serial: pic32_uart: update include to use pic32.h
- from platform_data
+Date: Mon, 12 Jan 2026 17:48:08 -0500
+Subject: [PATCH v2 14/16] watchdog: pic32-wdt: update include to use
+ pic32.h from platform_data
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -89,23 +89,22 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260112-mips-pic32-header-move-v2-12-927d516b1ff9@redhat.com>
+Message-Id: <20260112-mips-pic32-header-move-v2-14-927d516b1ff9@redhat.com>
 References: <20260112-mips-pic32-header-move-v2-0-927d516b1ff9@redhat.com>
 In-Reply-To: <20260112-mips-pic32-header-move-v2-0-927d516b1ff9@redhat.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
  Claudiu Beznea <claudiu.beznea@tuxon.dev>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Brian Masney <bmasney@redhat.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+ Brian Masney <bmasney@redhat.com>, Guenter Roeck <linux@roeck-us.net>, 
+ Wim Van Sebroeck <wim@linux-watchdog.org>, linux-watchdog@vger.kernel.org
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1095; i=bmasney@redhat.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1189; i=bmasney@redhat.com;
  s=20250903; h=from:subject:message-id;
- bh=ujjrCeYW4Gws3dC552q2XCMpqxd2pU0ffvvLryV2FnY=;
- b=owGbwMvMwCW2/dJd9di6A+2Mp9WSGDJTq3xSvDvZXIseCG8/w7I1cUdP3sV3++582GLI+WOu0
- v6IW88rOkpZGMS4GGTFFFmW5BoVRKSusr13R5MFZg4rE8gQBi5OAZjIQVNGhpcPaxNz/7ac/Xzk
- OdPLhcZ2u9Y3OPZ+N4pffEFq3iX9f1IM/9Put6XPv/nbMz9jqeFny70FDT8Wi/a66mgGdjdYtl2
- VZQYA
+ bh=+CeBdqNkhTo0Vz7mLS7Hz0nmrzj1DD3v7IFsU0i6AJY=;
+ b=owGbwMvMwCW2/dJd9di6A+2Mp9WSGDJTq3wYfpdGrjjFGvBKX8Dksb5Z7YaFlidSX1fVZPc9N
+ Prb3vG8o5SFQYyLQVZMkWVJrlFBROoq23t3NFlg5rAygQ3h4hSAifDlMPzh3vy7U7ej7NM9zt9q
+ fzndUs7UvZvasXgyR9IU/UKhuBduDP8jGNgzBEpY5JaYvny8IrW7/eP+O/nrtY64PNa9yu3FupI
+ DAA==
 X-Developer-Key: i=bmasney@redhat.com; a=openpgp;
  fpr=A46D32705865AA3DDEDC2904B7D2DD275D7EC087
 
@@ -114,31 +113,36 @@ asm/mach-pic32/pic32.h so that the asm variant can be dropped. This
 is in preparation for allowing some drivers to be compiled on other
 architectures with COMPILE_TEST enabled.
 
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Brian Masney <bmasney@redhat.com>
 
 ---
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Jiri Slaby <jirislaby@kernel.org>
+To: Wim Van Sebroeck <wim@linux-watchdog.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-watchdog@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: linux-serial@vger.kernel.org
 ---
- drivers/tty/serial/pic32_uart.c | 3 +--
+ drivers/watchdog/pic32-wdt.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/pic32_uart.c b/drivers/tty/serial/pic32_uart.c
-index 14d50bd7f1bd3575e60e51783bf5b2d821f9168d..8407f85776c07a7495688fc4f95b8672b1543bd0 100644
---- a/drivers/tty/serial/pic32_uart.c
-+++ b/drivers/tty/serial/pic32_uart.c
-@@ -22,8 +22,7 @@
- #include <linux/tty_flip.h>
- #include <linux/serial_core.h>
- #include <linux/delay.h>
--
--#include <asm/mach-pic32/pic32.h>
+diff --git a/drivers/watchdog/pic32-wdt.c b/drivers/watchdog/pic32-wdt.c
+index 1d282de312ef1bd683529088fc88456983e8efb9..2e7186b85194645d40f32e69f198514fca83b601 100644
+--- a/drivers/watchdog/pic32-wdt.c
++++ b/drivers/watchdog/pic32-wdt.c
+@@ -12,12 +12,11 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
 +#include <linux/platform_data/pic32.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/watchdog.h>
  
- /* UART name and device definitions */
- #define PIC32_DEV_NAME		"pic32-uart"
+-#include <asm/mach-pic32/pic32.h>
+-
+ /* Watchdog Timer Registers */
+ #define WDTCON_REG		0x00
+ 
 
 -- 
 2.52.0

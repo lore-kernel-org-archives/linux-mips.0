@@ -1,46 +1,46 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287E237A49B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2872437A494;
 	Wed, 14 Jan 2026 08:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768377716; cv=none; b=TC7tnScM4t7wy2LhQmxoNgnoliVoDlcmumBN6rqDJiztEGCkHMTpxGSt08zbUulzdq+YpaWbjXSicaJmT5q/6lhzGSaSSNsgxtxl0JnbP5tnJknEFsLWZQBBeyMHr0w8c3RlNG6CK0lGjLkZZCdPekuzhrjj0E7K2k9FqU94okw=
+	t=1768377716; cv=none; b=Oe7spJqNRSYf48E0KiQCsPweYGjj0J50EfiktIsjMfoAkxRr2JJWOr2fwQniex9FjPrMgIKYZtPRJo95+RrLtBnmp5RKM72QHUiII1ubkaVcXBc8fzP8iplMtprzKRFV9zRI4GmQpGz79SgTBbLEMrkgV9dCyji+t8c/Jwd/K7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768377716; c=relaxed/simple;
-	bh=THNDDXQ5TJBoKfKwxJAGg9FjA6LPNIXQ/ren/+Tn+Gg=;
+	bh=Ko7rOXN2f5vKh19n3ut994p4BW56m9dv4kY+PIvm7Yk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tNLIdGElMimpMYPhOewJOpcMkGVmjQ5L7J4rjRI08y4L8O8bpA9dnQEqVp2WH9DmLc2ZeQthrj0CeAKzlHuQ6EpMsLwEK//Udb6lWYWcycJxhdJVokEzdFgrmgiXTpqLD193UxGSO1OIbGIHVkFBXrTN0PpH+00kM31Hp3tAiPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gNSUNHT2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MaPGvtNJ; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=WHtWaWSgXJc3QqsXp3dEd92AiTzyTElfIvTeDpfVOUxWnkOgUCKC2+OvtZWATtdRmJOZYGDtbbDCf66NOP8U8cLOGOfptd9QGPFlqCRwUfINdUIDsIxz/Jy4htUFouW/uA+4mZg4Tj9oIJVi1eh/coSXwzJL7eDJQRXvpPje844=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pJFUzWW0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zIgedRcN; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gNSUNHT2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MaPGvtNJ"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pJFUzWW0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zIgedRcN"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1768377709;
+	s=2020; t=1768377707;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=srutgp5ltsK5marNkXQAClosvwfX5paP7Qw50M/lPDc=;
-	b=gNSUNHT2Rz5KWbaYoJZcHnn2Z7Cm9xqgr++QSlSfckMUpi0W5cuqFkFGzXeNa7z4g1q79U
-	B9K69bs/QTv6p2Ng3PW2GEtZjpgTa6u8uYIfAQyUNOUNKara8IXmwUuXfoKNVFnDZUiPCX
-	fpB4dfv3i6hJd8Lfj+gbWx3laWHB9UTQjZlQ0Oo3vkRCSJupPnoiDdMz/D8e2Awb3tlztf
-	kKp9xnhEhN7JJM44fgdmClbROa9nCbeSjSuj0WBZy3e8dbcxnsTlgDNesFZ8OS2hjjvfGg
-	AWUImUCRUAuskq5Sv7lKK3iZPkkDxy82K45E5X4tZ+vb+kQj4ZbTsEwFGY9fHQ==
+	bh=2g3QVbHrWMxbltOpJFbYJDEOEW8Rpv5rFE4qRg3bpXo=;
+	b=pJFUzWW05k5+SSg3f6116KzG9PtFSdPOXjYr/Y7ZNCV3dg2pqVk0Kh5F+WEGurOMxEvGLE
+	e8WYlK46AjuQ1yAo4BHqfJ7OBebZp9MdZHX/jDMy6KeCFNsxRRgpaPLB5+rXbS+BVb9BbV
+	MdHbtBPXSJK6/lrYeASQ+abCoQtNAKK3tHtoIvyNXqHLJIhPgkdoxHW7gsd6MbPwBPk7/I
+	A9/vclGzyQH7p0C7So8wjn6VhQZDZQSlkSeHaDhxa3PVylvsORCST058MJx0LkJiKLlUSx
+	jXp/no7CybdXDtdCD4+m5u6u7nyLj+SYsl4j4+SUUX/anoXGPOcxt9lfEZaYGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1768377709;
+	s=2020e; t=1768377707;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=srutgp5ltsK5marNkXQAClosvwfX5paP7Qw50M/lPDc=;
-	b=MaPGvtNJuMUPnfncILTFe2Zf99j2549MU4IWOa7gyBdFT/i9VYhXllWkbHCgTiFecCpppF
-	A1i5EXra5kq7wLCQ==
-Date: Wed, 14 Jan 2026 09:01:44 +0100
-Subject: [PATCH 12/15] vdso/datapage: Remove inclusion of gettimeofday.h
+	bh=2g3QVbHrWMxbltOpJFbYJDEOEW8Rpv5rFE4qRg3bpXo=;
+	b=zIgedRcNd3q11NN2zkOnafQCoSRyD8+2dkrpNSIdUlN8QrHNXHEcE4bTlFmXGrUE5jATc9
+	9KB/8Yf/M60VhQBQ==
+Date: Wed, 14 Jan 2026 09:01:41 +0100
+Subject: [PATCH 09/15] random: vDSO: Add explicit includes
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260114-vdso-header-cleanups-v1-12-803b80ee97b4@linutronix.de>
+Message-Id: <20260114-vdso-header-cleanups-v1-9-803b80ee97b4@linutronix.de>
 References: <20260114-vdso-header-cleanups-v1-0-803b80ee97b4@linutronix.de>
 In-Reply-To: <20260114-vdso-header-cleanups-v1-0-803b80ee97b4@linutronix.de>
 To: Catalin Marinas <catalin.marinas@arm.com>, 
@@ -66,68 +66,39 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
  linux-mips@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768377702; l=1781;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1768377702; l=796;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=THNDDXQ5TJBoKfKwxJAGg9FjA6LPNIXQ/ren/+Tn+Gg=;
- b=hfSBhCE095e3Dj2NAT41lp2oiOrF4FT96hfOuVk3jxeSncAn8rDr8dcwKf9HFHyeu3O8JEIZt
- QlK94/k4dWsDrhSqlhjs+eLBNm+uf5y5tW11k4se4l4taKK7aJW69kc
+ bh=Ko7rOXN2f5vKh19n3ut994p4BW56m9dv4kY+PIvm7Yk=;
+ b=PbIRfpWFNk9BAu4/xZnM8LVqwnYh83cMAfcRW7ldaxC8YUzNBltZ6iiaNDxvKbJrUjBSDRKG8
+ VF9TendS0JWAdSkvD00Kqbs3zGzzNt5ZkyIFAgLOrROICTue30rPSrW
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-vdso/datapage.h is useful without pulling in the architecture-specific
-gettimeofday() helpers.
+Various used symbols are only visible through transitive includes.
+These transitive includes are about to go away.
 
-Move the include to the only users which needs it.
+Explicitly include the necessary headers.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- include/vdso/datapage.h | 11 -----------
- lib/vdso/gettimeofday.c | 11 +++++++++++
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ lib/vdso/getrandom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 23c39b96190f..752856b36a3a 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -184,17 +184,6 @@ enum vdso_pages {
- 	VDSO_NR_PAGES
- };
- 
--/*
-- * The generic vDSO implementation requires that gettimeofday.h
-- * provides:
-- * - __arch_get_hw_counter(): to get the hw counter based on the
-- *   clock_mode.
-- * - gettimeofday_fallback(): fallback for gettimeofday.
-- * - clock_gettime_fallback(): fallback for clock_gettime.
-- * - clock_getres_fallback(): fallback for clock_getres.
-- */
--#include <asm/vdso/gettimeofday.h>
--
- #else /* !__ASSEMBLY__ */
- 
- #ifdef CONFIG_VDSO_GETRANDOM
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index 7b3fbae85544..9dddf6c23913 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -12,6 +12,17 @@
- #include <vdso/time32.h>
- #include <vdso/time64.h>
- 
-+/*
-+ * The generic vDSO implementation requires that gettimeofday.h
-+ * provides:
-+ * - __arch_get_hw_counter(): to get the hw counter based on the
-+ *   clock_mode.
-+ * - gettimeofday_fallback(): fallback for gettimeofday.
-+ * - clock_gettime_fallback(): fallback for clock_gettime.
-+ * - clock_getres_fallback(): fallback for clock_getres.
-+ */
-+#include <asm/vdso/gettimeofday.h>
-+
- /* Bring in default accessors */
- #include <vdso/vsyscall.h>
+diff --git a/lib/vdso/getrandom.c b/lib/vdso/getrandom.c
+index 440f8a6203a6..7e29005aa208 100644
+--- a/lib/vdso/getrandom.c
++++ b/lib/vdso/getrandom.c
+@@ -7,8 +7,11 @@
+ #include <linux/minmax.h>
+ #include <vdso/datapage.h>
+ #include <vdso/getrandom.h>
++#include <vdso/limits.h>
+ #include <vdso/unaligned.h>
++#include <asm/barrier.h>
+ #include <asm/vdso/getrandom.h>
++#include <uapi/linux/errno.h>
+ #include <uapi/linux/mman.h>
+ #include <uapi/linux/random.h>
  
 
 -- 

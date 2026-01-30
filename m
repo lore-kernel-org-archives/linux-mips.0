@@ -1,43 +1,37 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948A0329E40;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B288534C808;
 	Fri, 30 Jan 2026 14:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769783905; cv=none; b=Sp+fnFLzGlAACs4horA3lwN6bjd+0BbnhcHuGGZbwjUpseMJCEL7uL5Bb649mW76hZmW9EBVAMQ8/SgHelTGm1K5Ksz2BG4WRRbjeFYW0MYsVDi8PRa6AnBYCR+DdOWWIP8/MhOgmXp89ovQ1V0tqOXMiWyFtOWXjQ0lLW0mVq8=
+	t=1769783906; cv=none; b=LY1kLoWVe09FBoS3Aa+YuB7PH7bxpywpb/mSKQ4wE4PcnA765EdfVUYduFS8i9I1leZxTyL3ZF/KJnc95wceRsbMk/H8ySj6QX05k1EZjVKDBdE/EE4u0zBvTRFNuNBSXo5W270kPo1oPLLZxNRxPV0zMbJON5EbBD2rFWaxk7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769783905; c=relaxed/simple;
-	bh=JwWdTtXP6aYnY46cQ244PNUDxwPqzAMtK4NQiX4+FVM=;
+	s=arc-20240116; t=1769783906; c=relaxed/simple;
+	bh=p+NC8Gd1SP5hs+nB4mSjsdjYhzvrrnCa5+V7sBTPhBY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIuWLFlnvqvTggP/P41qqTpHYwBBeCEB45H/fsfUg/19yNprMkAHhqbpI3mdwwIs/5bUryWqaDLxrYkhivgeL1cISebyfViCv0sTyCegS+yJb1h9lgJNtICeljuhD1MXs8gF1OQDZnHZB7GJcV+0r30VpL+4BHxrIzPp40Nwzlg=
+	 Content-Type:Content-Disposition:In-Reply-To; b=YncaUt+KBj2q6+WIBW6AT4TcQQXxSL86fsORtYgh2C8QRssVSqnl6TR6sLul2qE8HeFuWyVG3kwxnu326CLEkT2DexnjOWQMIGouqOXxHT8+eIt6Mf0g+acHUkyFAJPINUd0QYZkaP7wV9Vkie3lkLQRraREQuiyjGFqcduO+KY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vlpdb-0007Ev-00; Fri, 30 Jan 2026 15:38:19 +0100
+	id 1vlpdb-0007Ep-00; Fri, 30 Jan 2026 15:38:19 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id C4CE7C0748; Fri, 30 Jan 2026 15:37:58 +0100 (CET)
-Date: Fri, 30 Jan 2026 15:37:58 +0100
+	id D8ABBC0113; Fri, 30 Jan 2026 15:34:01 +0100 (CET)
+Date: Fri, 30 Jan 2026 15:34:01 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Brian Masney <bmasney@redhat.com>
-Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-	Linus Walleij <linusw@kernel.org>, linux-gpio@vger.kernel.org,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-rtc@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v2 00/16] MIPS: move pic32.h header file from asm to
- platform_data
-Message-ID: <aXzCRgyHjG-NfiRw@alpha.franken.de>
-References: <20260112-mips-pic32-header-move-v2-0-927d516b1ff9@redhat.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: chenhuacai@kernel.org, kernel@xen0n.name, jiaxun.yang@flygoat.com,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+	peterz@infradead.org, arnd@arndb.de, x86@kernel.org,
+	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+	vulab@iscas.ac.cn, gregkh@linuxfoundation.org, rafael@kernel.org,
+	dakr@kernel.org
+Subject: Re: [PATCH v2 3/4] MIPS: Loongson: Make cpumask_of_node() robust
+ against NUMA_NO_NODE
+Message-ID: <aXzBWUBNtearOrz9@alpha.franken.de>
+References: <20260107094007.966496-1-john.g.garry@oracle.com>
+ <20260107094007.966496-4-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -46,86 +40,34 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260112-mips-pic32-header-move-v2-0-927d516b1ff9@redhat.com>
+In-Reply-To: <20260107094007.966496-4-john.g.garry@oracle.com>
 
-On Mon, Jan 12, 2026 at 05:47:54PM -0500, Brian Masney wrote:
-> There are currently some pic32 MIPS drivers that are in tree, and are
-> only configured to be compiled on the MIPS pic32 platform. There's a
-> risk of breaking some of these drivers when migrating drivers away from
-> legacy APIs. It happened to me with a pic32 clk driver.
+On Wed, Jan 07, 2026 at 09:40:06AM +0000, John Garry wrote:
+> The arch definition of cpumask_of_node() cannot handle NUMA_NO_NODE - which
+> is a valid index - so add a check for this.
 > 
-> Let's go ahead and move the pic32.h from the asm to the platform_data
-> include directory in the tree. This will make it easier, and cleaner to
-> enable COMPILE_TEST for some of these pic32 drivers. To do this requires
-> updating some includes, which I do at the beginning of this series.
-> 
-> This series was compile tested on a centos-stream-10 arm64 host in two
-> different configurations:
-> 
-> - native arm64 build with COMPILE_TEST (via make allmodconfig)
-> - MIPS cross compile on arm64 with:
->       ARCH=mips CROSS_COMPILE=mips64-linux-gnu- make pic32mzda_defconfig
-> 
-> Note that there is a separate MIPS compile error in linux-next, and I
-> reported it at https://lore.kernel.org/all/aWVs2gVB418WiMVa@redhat.com/
-> 
-> I included a patch at the end that shows enabling COMPILE_TEST for a
-> pic32 clk driver.
-> 
-> Merge Strategy
-> ==============
-> - Patches 1-15 can go through the MIPS tree.
-> - Patch 16 I can repost to Claudiu after patches 1-15 are in Linus's
->   tree after the next merge window. There is a separate patch set that
->   fixes a compiler error I unintentionally introduced via the clk tree.
->   https://lore.kernel.org/linux-clk/CABx5tq+eOocJ41X-GSgkGy6S+s+Am1yCS099wqP695NtwALTmg@mail.gmail.com/T/
-> 
-> Signed-off-by: Brian Masney <bmasney@redhat.com>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
-> Changes in v2:
-> - Fix native MIPS build by updating include files
-> - Link to v1: https://lore.kernel.org/r/20260109-mips-pic32-header-move-v1-0-99859c55783d@redhat.com
+>  arch/mips/include/asm/mach-loongson64/topology.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> ---
-> Brian Masney (16):
->       MIPS: pic32: include linux/io.h header on several files
->       MIPS: pic32: include linux/types.h on pic32.h
->       MIPS: pic32: drop unused include linux/io.h from pic32.h
->       MIPS: copy pic32.h header file from asm/mach-pic32/ to include/platform-data/
->       MAINTAINERS: add include/linux/platform_data/pic32.h to MIPS entry
->       MIPS: update include to use pic32.h from platform_data
->       clk: microchip: core: update include to use pic32.h from platform_data
->       irqchip/irq-pic32-evic: update include to use pic32.h from platform_data
->       mmc: sdhci-pic32: update include to use pic32.h from platform_data
->       pinctrl: pic32: update include to use pic32.h from platform_data
->       rtc: pic32: update include to use pic32.h from platform_data
->       serial: pic32_uart: update include to use pic32.h from platform_data
->       watchdog: pic32-dmt: update include to use pic32.h from platform_data
->       watchdog: pic32-wdt: update include to use pic32.h from platform_data
->       MIPS: drop unused pic32.h header
->       clk: microchip: core: allow driver to be compiled with COMPILE_TEST
-> 
->  MAINTAINERS                                             |  1 +
->  arch/mips/pic32/common/reset.c                          |  3 ++-
->  arch/mips/pic32/pic32mzda/config.c                      |  3 +--
->  arch/mips/pic32/pic32mzda/early_clk.c                   |  3 ++-
->  arch/mips/pic32/pic32mzda/early_console.c               |  3 ++-
->  drivers/clk/microchip/Kconfig                           |  2 +-
->  drivers/clk/microchip/clk-core.c                        |  6 +++++-
->  drivers/irqchip/irq-pic32-evic.c                        |  2 +-
->  drivers/mmc/host/sdhci-pic32.c                          |  2 +-
->  drivers/pinctrl/pinctrl-pic32.c                         |  3 +--
->  drivers/rtc/rtc-pic32.c                                 |  3 +--
->  drivers/tty/serial/pic32_uart.c                         |  3 +--
->  drivers/watchdog/pic32-dmt.c                            |  3 +--
->  drivers/watchdog/pic32-wdt.c                            |  3 +--
->  .../mach-pic32 => include/linux/platform_data}/pic32.h  | 17 ++++++++++-------
->  15 files changed, 31 insertions(+), 26 deletions(-)
-> ---
-> base-commit: f417b7ffcbef7d76b0d8860518f50dae0e7e5eda
-> change-id: 20260109-mips-pic32-header-move-6ac9965aa70a
+> diff --git a/arch/mips/include/asm/mach-loongson64/topology.h b/arch/mips/include/asm/mach-loongson64/topology.h
+> index 3414a1fd17835..89bb4deab98a6 100644
+> --- a/arch/mips/include/asm/mach-loongson64/topology.h
+> +++ b/arch/mips/include/asm/mach-loongson64/topology.h
+> @@ -7,7 +7,7 @@
+>  #define cpu_to_node(cpu)	(cpu_logical_map(cpu) >> 2)
+>  
+>  extern cpumask_t __node_cpumask[];
+> -#define cpumask_of_node(node)	(&__node_cpumask[node])
+> +#define cpumask_of_node(node)	  ((node) == NUMA_NO_NODE ? cpu_all_mask : &__node_cpumask[node])
+>  
+>  struct pci_bus;
+>  extern int pcibus_to_node(struct pci_bus *);
+> -- 
+> 2.43.5
 
-series applied to mips-next
+applied to mips-next
 Thomas.
 
 -- 

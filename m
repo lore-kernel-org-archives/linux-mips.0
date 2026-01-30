@@ -1,29 +1,33 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAA732D0D8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F703191CE;
 	Fri, 30 Jan 2026 14:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769783903; cv=none; b=bHj7NTGa5ZfH2H56iZqZBAsycBKIVajDpYnyTk1hMfuiFjkZvZPhYa9l2p4sKcbd8mxXKikgFRAIcBFdNlq5AkZx8rUyfFcelyNt0CvOjy8YeTHwSdxDgZ+I4GjDxNeBhp5eRZTcYc53OdhkgNRR00Gt1ffW6LLyn6TvO3Q6w5I=
+	t=1769783904; cv=none; b=USrSSNB6+gqDdVNOI7ROqW7EBw4YRb16LPU2fhHlZmbWKmBKjBKXmMIg9E+WrncIjDz763f9d4/MQTMYUxtM/0+1GLe/9hVJWKpiRfwl31nZms5f0ADXlvHgFm5790qN/FZuWZZW6+imx+QZv6grU06teJK2uqgF+tu6t0zdATw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769783903; c=relaxed/simple;
-	bh=2tMmb1Coa4kTr6gZQ72agTZZJTOnqg7sJtNF1SmIMmI=;
+	s=arc-20240116; t=1769783904; c=relaxed/simple;
+	bh=Vpj6epuo9fG8PKz4sZexbr8ZrNbxLueecrNLYcvVZnM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QyqbdYWqdw/TU5avfCormmwCqZkXJ2ceCAq3BzhWIw5RlaxZTpSy9heor6xnE7JRqd3qw4rkuYUpSecNdBD2X8zWGLxirrcg1bmqkBmUVGFrYf6bCkLF+NV+/6BUpFDvtRb0/NABnuX0FhEe46KbRcrPwRHmNXr8Sfftgp2Z28U=
+	 Content-Type:Content-Disposition:In-Reply-To; b=BMvk5oH835I8zsD0OHx+9YflDNhyEPOC6H7j/dXmou2VeT/IsZAoeOCnVE1fr5v0AI8s6QlRrW7KVS7PAtf/eztxs4pndZ5jwKbyVN4pbOsu07vv6RnCqu96EXUHX1MPjNoaTE1oaSP/f5+b6HQkatD1Pq+5eEJdqPUz1lJY+wo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1vlpdb-0007Er-00; Fri, 30 Jan 2026 15:38:19 +0100
+	id 1vlpdb-0007Et-00; Fri, 30 Jan 2026 15:38:19 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id EADF8C061A; Fri, 30 Jan 2026 15:34:29 +0100 (CET)
-Date: Fri, 30 Jan 2026 15:34:29 +0100
+	id 4E5E4C0907; Fri, 30 Jan 2026 15:35:49 +0100 (CET)
+Date: Fri, 30 Jan 2026 15:35:49 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Keguang Zhang <keguang.zhang@gmail.com>,
-	linux-mips@vger.kernel.org
-Subject: Re: [PATCH] mips: LOONGSON32: drop a dangling Kconfig symbol
-Message-ID: <aXzBdfjPC0patZd9@alpha.franken.de>
-References: <20251228190443.2479978-1-rdunlap@infradead.org>
+To: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Loongson64: dts: fix phy-related definition of
+ LS7A GMAC
+Message-ID: <aXzBxfYp13yZGRNd@alpha.franken.de>
+References: <20260102155243.3639731-1-zhengxingda@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,34 +36,56 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251228190443.2479978-1-rdunlap@infradead.org>
+In-Reply-To: <20260102155243.3639731-1-zhengxingda@iscas.ac.cn>
 
-On Sun, Dec 28, 2025 at 11:04:43AM -0800, Randy Dunlap wrote:
-> CPU_GAS_LOAD_STORE_LR is not used anywhere in the kernel sources,
-> so drop it.
+On Fri, Jan 02, 2026 at 11:52:43PM +0800, Icenowy Zheng wrote:
+> Currently the LS7A GMAC device tree node lacks a proper phy-handle
+> property pointing to the PHY node.
 > 
-> Fixes: 85c4354076ca ("MIPS: loongson32: Switch to generic core")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> In addition, the phy-mode property specifies "rgmii" without any
+> internal delay information, which means the board trace needs to add 2ns
+> delay to the RGMII data lines; but that isn't known to happen on any
+> Loongson board. The ACPI-based initialization codepath, which is used on
+> LoongArch-based 3A5000 + 7A1000 hardwares, specifies "rgmii-id" phy
+> mode, which should be the one we are using.
+> 
+> Add the lacking phy-handle property and set proper phy-mode.
+> 
+> Tested on a LS3A4000_7A1000_NUC_BOARD_V2.1 board with YT8521S PHY.
+> 
+> Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 > ---
-> Cc: Keguang Zhang <keguang.zhang@gmail.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
+>  arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
->  arch/mips/Kconfig |    1 -
->  1 file changed, 1 deletion(-)
-> 
-> --- linux-next-20251219.orig/arch/mips/Kconfig
-> +++ linux-next-20251219/arch/mips/Kconfig
-> @@ -1408,7 +1408,6 @@ config CPU_LOONGSON32
->  	select CPU_MIPS32
->  	select CPU_MIPSR2
->  	select CPU_HAS_PREFETCH
-> -	select CPU_HAS_LOAD_STORE_LR
->  	select CPU_SUPPORTS_32BIT_KERNEL
->  	select CPU_SUPPORTS_HIGHMEM
->  	select CPU_SUPPORTS_CPUFREQ
+> diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+> index ee71045883e7e..6dee85909f5a6 100644
+> --- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+> +++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+> @@ -199,7 +199,8 @@ gmac@3,0 {
+>  					     <13 IRQ_TYPE_LEVEL_HIGH>;
+>  				interrupt-names = "macirq", "eth_lpi";
+>  				interrupt-parent = <&pic>;
+> -				phy-mode = "rgmii";
+> +				phy-mode = "rgmii-id";
+> +				phy-handle = <&phy0>;
+>  				mdio {
+>  					#address-cells = <1>;
+>  					#size-cells = <0>;
+> @@ -222,7 +223,8 @@ gmac@3,1 {
+>  					     <15 IRQ_TYPE_LEVEL_HIGH>;
+>  				interrupt-names = "macirq", "eth_lpi";
+>  				interrupt-parent = <&pic>;
+> -				phy-mode = "rgmii";
+> +				phy-mode = "rgmii-id";
+> +				phy-handle = <&phy1>;
+>  				mdio {
+>  					#address-cells = <1>;
+>  					#size-cells = <0>;
+> -- 
+> 2.52.0
 
-applied to mips-next with the typo fixed
+applied to mips-next
 Thomas.
 
 -- 

@@ -1,22 +1,22 @@
 Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649602F60A3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81633164BB;
 	Sat, 31 Jan 2026 09:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769852778; cv=none; b=N2tTwnh7XkYUcRTUphVdIduZ2kaZ3Exj4S0WuYlLzvKGEHM7CsNRWHKUX1zk0s2xTPHAU5ws7SjhFVlDNgNAfNcdYPM6EHnbDVJiOkEh6+i+h25cagi5wfFkhdnvo1Qrnzfx4b6iPkH0IJ4Ofi/4MAVZHi1NlITX0xUQOn8anUQ=
+	t=1769852778; cv=none; b=MQ5jTUL9aLFHv4Nlw+iOCbzbuXrirO5C6qcjwJ7Z/Lw28PA0HDftH8ieK6W/5nuCasOeoWnHU4P6qjyt5oM1XdwKq0tirIeuglD0NGSdB+mfdYJTTPlggW/cGY+yd0O8Wrrlp9zI8RI2jKyCPPP4GfaP8sLyBnl0YDQfZRbzFAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769852778; c=relaxed/simple;
-	bh=ZWkmJST26Se+Dq0sEKR+qMBuLWRCh23H5A3Ti+ZrnpY=;
+	bh=N5kK6S8PFSPQelD+YvhxuXEvoRW1SeFvBRq1h2RAgeA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nZo1gxmtatazOob931Qia0hKHpHUutHy543kPNovahDJI9BXl+nnmXqDAyGhtmDQZbu2aXrUpvQupE7O8IQ4en5Zspr8IEMM9P1Gv5mGisn8XuU9KNEzdNzBXLh4pvsVkwORX29vX/a4BHE2wGu24TUTFZrHI8IYFCZ8F/29njY=
+	 MIME-Version; b=u4jFE3NkSVLLw/Sa05lxv31nepqkcR2sfw2b3FA4ARypJDPoI0dYBjXFJq8Z3eyyGGrnVOtucJWqmLhIDwuYJQM2B/H6HLX7hxJjEWGmNpgYze46FD8gqaZ6K3tuiJNqFxAZUrIldOhSGkfdR/ICE403lml+8qSImGLeSep1KNo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
 Received: from edelgard.fodlan.icenowy.me (unknown [112.94.102.235])
-	by APP-05 (Coremail) with SMTP id zQCowAC3Sw9Rz31p9UgiBw--.57463S6;
-	Sat, 31 Jan 2026 17:46:08 +0800 (CST)
+	by APP-05 (Coremail) with SMTP id zQCowAC3Sw9Rz31p9UgiBw--.57463S8;
+	Sat, 31 Jan 2026 17:46:11 +0800 (CST)
 From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 To: Thomas Gleixner <tglx@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -29,9 +29,9 @@ Cc: linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Icenowy Zheng <zhengxingda@iscas.ac.cn>
-Subject: [PATCH 4/8] irqchip/loongson-pch-lpc: guard ACPI init code with CONFIG_ACPI
-Date: Sat, 31 Jan 2026 17:45:43 +0800
-Message-ID: <20260131094547.455916-5-zhengxingda@iscas.ac.cn>
+Subject: [PATCH 6/8] irqchip/loongson-pch-lpc: enable building on MIPS Loongson64
+Date: Sat, 31 Jan 2026 17:45:45 +0800
+Message-ID: <20260131094547.455916-7-zhengxingda@iscas.ac.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260131094547.455916-1-zhengxingda@iscas.ac.cn>
 References: <20260131094547.455916-1-zhengxingda@iscas.ac.cn>
@@ -42,10 +42,10 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAC3Sw9Rz31p9UgiBw--.57463S6
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF1rtF4kWF13Zr1fWw1DGFg_yoWDAFc_CF
-	yY9Fs7GrWjgr1kXr1IgrW5WFy2v3yxWF1DurWIy3W5X3yIkwn3Ar17Aw13JFW3CFyrCF9x
-	C395Cr1fAw12kjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:zQCowAC3Sw9Rz31p9UgiBw--.57463S8
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4DKr18CF47Jw43Jr4fKrg_yoW3ArgEk3
+	4j9Fs7XFy2kry7JryrWF4fZry2kayqgrn2kF4Fqw1fX3WIqw1xW3Wjva15Jr47Ga48WFna
+	v3yI9rn7Aw10yjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbv8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
 	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
 	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -56,39 +56,35 @@ X-Coremail-Antispam: 1UD129KBjvdXoWrZF1rtF4kWF13Zr1fWw1DGFg_yoWDAFc_CF
 	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
 	kIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
 	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+	AY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAI
 	cVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
 	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
 	KfnxnUUI43ZEXa7VUbPC7UUUUUU==
 X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-As OF-based initialization is going to be added to the driver, guard the
-ACPI-based initialization code with CONFIG_ACPI.
+As the driver can now support OF-based platforms, it's now possible to
+use it on MIPS Loongson64 machines.
 
-Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Drop the requirement of LOONGARCH for this driver, to allow build on
+both MIPS-based and LoongArch-based Loongson systems.
+
 Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 ---
- drivers/irqchip/irq-loongson-pch-lpc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/irqchip/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-index 4507000b991a6..96489e031d34e 100644
---- a/drivers/irqchip/irq-loongson-pch-lpc.c
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -225,6 +225,7 @@ static int __init pch_lpc_init(phys_addr_t addr, unsigned long size,
- 	return -ENOMEM;
- }
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index f334f49c9791f..80a3ec2fc2aed 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -754,7 +754,6 @@ config LOONGSON_PCH_MSI
  
-+#ifdef CONFIG_ACPI
- int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 					struct acpi_madt_lpc_pic *acpi_pchlpc)
- {
-@@ -255,3 +256,4 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 
- 	return 0;
- }
-+#endif /* CONFIG_ACPI */
+ config LOONGSON_PCH_LPC
+ 	bool "Loongson PCH LPC Controller"
+-	depends on LOONGARCH
+ 	depends on MACH_LOONGSON64
+ 	default MACH_LOONGSON64
+ 	select IRQ_DOMAIN_HIERARCHY
 -- 
 2.52.0
 

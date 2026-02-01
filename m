@@ -1,93 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from helium.openadk.org (helium.openadk.org [89.238.66.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888ED20E025;
-	Sun,  1 Feb 2026 16:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1855E202F71
+	for <linux-mips@vger.kernel.org>; Sun,  1 Feb 2026 18:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.238.66.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769962789; cv=none; b=NpaEMVYrz4SGtpGe+cgI6l1q/dWJt/sv88J5ZvO2DIcPXvMx1JvlHn+snoXqz3thQRIFN7Pp1JJ2VnbDT+mr3WjO6Jy7MYUHYoD3VquQ2l1GVHsMd/P8r5LgdQ5Fc05mlaifZjQcICWjuPEmvYeizcW1q6/tvDOsGpwcWZOaspg=
+	t=1769971162; cv=none; b=dTG7fcFOwolmuS8QOyzspqOS4rFgbrbKFRJcrKpbVtUuzxnvlJuevcTFAUZftFrA67ioReB84Bf6KQy94iOnc57xjqCDsHWKl0ya3646GSgAyUBQZTZJyntVZtgICVEdgHOiGNaAZY1+zzKMWUnQsKA2xsU6cwMwQ5B/lSkQXjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769962789; c=relaxed/simple;
-	bh=+/ZYbLgXXiNhzmv0QiFeghXcN5vpfxmjlp+iHQdnir0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pq9ZTfV8LRWWLaMnWM28/+MsZKQYSq+5YdWYY7ja/s8vCmsXRrLplvtjFo0xIrbpvCXo3IftjRwjT5hQ1lVu5uzlcug0FHlPb+LMUa375G8Z0V7pfBqFQjIRHgvr0E5qnQZNF6QyBzSnxB23G9ksVUupteFgzlAoDAnGYIg2NhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EX9I/ppY; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1769971162; c=relaxed/simple;
+	bh=TIyQBrsaCFHDWoyiOSw3i/5MGiOXssoNqXJpcPOYfx0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=R/uC3dGIIeC1v3HYLMUs77Qi9VkS9KgdZJEBxXsXqmhM+tr19pTTIMSSyHF5+R2NVDDHvrXhLbVLr8xxUMiOcFLdsCJ/fWbEmwu0NNowFw6mhwy3/pHoonwaA4IfIr/pUWYB0vQY1pVPax4XoI37W8CygpbVPGzQb/T7dY8rBoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org; spf=pass smtp.mailfrom=openadk.org; dkim=fail (0-bit key) header.d=openadk.org header.i=@openadk.org header.b=nHe54crD reason="key not found in DNS"; arc=none smtp.client-ip=89.238.66.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openadk.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EX9I/ppY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57ED3C4CEF7;
-	Sun,  1 Feb 2026 16:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769962789;
-	bh=+/ZYbLgXXiNhzmv0QiFeghXcN5vpfxmjlp+iHQdnir0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=EX9I/ppYHxw2UBbuVxa+hGZjsJn1i7Qo8CBwIKzUCqIn8MFlzIZMpJ8ZnutTJzf+z
-	 CUHfdoysZ4b5HkpP62Uq7LEV5A+JcyqzxYzXQUlcUcOCtEkOLHTxo9xTkWl1kDqu/C
-	 HUL2pcRGUKwbges4nllxDoOEAGB1noF81ZS9C8RjDPS3cVCt1lUKw7eU23BHDakynE
-	 E6xho9DyC9K+hMBugPCR9csbNCmmnkALfAxSMxXnq+nvSgHdAcEORWj4OQIJ/lANuF
-	 /LDuBQ3kMUeZ33lvFptNcONWSZ/pbskfHho9LeHhUfSF2ME81j967nkdZfIi6Avdvz
-	 ikS/7v+HDQ9QA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Icenowy Zheng <zhengxingda@iscas.ac.cn>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Huacai Chen <chenhuacai@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org, Icenowy Zheng <zhengxingda@iscas.ac.cn>
-Subject: Re: [PATCH 5/8] irqchip/loongson-pch-lpc: add OF init code
-In-Reply-To: <20260131094547.455916-6-zhengxingda@iscas.ac.cn>
-References: <20260131094547.455916-1-zhengxingda@iscas.ac.cn>
- <20260131094547.455916-6-zhengxingda@iscas.ac.cn>
-Date: Sun, 01 Feb 2026 17:19:45 +0100
-Message-ID: <87v7ggfnby.ffs@tglx>
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=openadk.org header.i=@openadk.org header.b="nHe54crD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=openadk.org; s=2022;
+	t=1769971153; bh=TIyQBrsaCFHDWoyiOSw3i/5MGiOXssoNqXJpcPOYfx0=;
+	h=Date:From:To:Subject:From;
+	b=nHe54crDtil+bB3XtGnxE0DD2na6LDHzdPeVLd+VrVisHiR1JL7d0/ki/XlorzpKw
+	 uznZecKFESlOnbKj2wSH8fd/F7CJ4jd5J8u8d3j1ZB1o4hTOj7b8XANJ83uHf0kGtA
+	 wKkt2daBTIWcQU3MM3QS6xAq3ku1MBQna2M3Blj3iV+LHsNC1VjR9XU8ncx4E9KN8x
+	 bMDOXem1kMKPbEDoc2WLSEEQ9OEvgGqzdvK0z9zN3DCnVChn5fl/RI35ghuXQeOv2O
+	 PiiG90rze3C2E0GnNScVV5gPesTOjcUMOaY943ogDe6D0J4wYKNnH3nQvaV3mQgoAJ
+	 Oivvmr0a+rOGA==
+Received: by helium.openadk.org (Postfix, from userid 1000)
+	id 8AEF831E0B83; Sun, 01 Feb 2026 19:39:13 +0100 (CET)
+Date: Sun, 1 Feb 2026 19:39:13 +0100
+From: Waldemar Brodkorb <wbx@openadk.org>
+To: linux-mips@vger.kernel.org
+Subject: serial console on Mikrotik RB532 non-working
+Message-ID: <aX-d0ShTplHKZT33@waldemar-brodkorb.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Operating-System: Linux 6.12.63+deb13-amd64 x86_64
 
-On Sat, Jan 31 2026 at 17:45, Icenowy Zheng wrote:
+Hi MIPS hackers,
 
-> As the (kernel-internally) OF-based MIPS Loongson-3 systems can also
+I want to use the latest Linux kernel on my Mikrotik RB532, but the
+serial console is non working. I bisected the problem and the first
+breaking change is this commit:
 
-What are kernel-internally systems?
+6e690d54cfa802f939cefbd2fa2c91bd0b8bd1b6 is the first bad commit
+commit 6e690d54cfa802f939cefbd2fa2c91bd0b8bd1b6
+Author: Yi Yang <yiyang13@huawei.com>
+Date:   Tue Jun 28 16:35:15 2022 +0800
 
-> have PCH LPC interrupt controller, add OF-based initialization code for
+    serial: 8250: fix return error code in serial8250_request_std_resource()
+    
+    If port->mapbase = NULL in serial8250_request_std_resource() , it need
+    return a error code instead of 0. If uart_set_info() fail to request new
+    regions by serial8250_request_std_resource() but the return value of
+    serial8250_request_std_resource() is 0, The system incorrectly considers
+    that the resource application is successful and does not attempt to
+    restore the old setting. A null pointer reference is triggered when the
+    port resource is later invoked.
+    
+    Signed-off-by: Yi Yang <yiyang13@huawei.com>
+    Cc: stable <stable@kernel.org>
+    Link: https://lore.kernel.org/r/20220628083515.64138-1-yiyang13@huawei.com
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-have a ... controller.
+ drivers/tty/serial/8250/8250_port.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Add OF ....
+When I compile the commit before this commit everything is fine.
+When I just try to revert it on master I still get no output on my
+serial console.
 
-> +#ifdef CONFIG_OF
-> +static int pch_lpc_of_init(struct device_node *node,
-> +				struct device_node *parent)
+Anyone here have an idea what is defect in arch/mips/rb532 nowadays?
 
-No line break required.
-
-> +{
-> +	int parent_irq;
-> +	struct fwnode_handle *irq_handle;
-> +	struct resource res;
-
-Variable ordering.
-
-> +	if (of_address_to_resource(node, 0, &res))
-> +		return -EINVAL;
-> +
-> +	parent_irq = irq_of_parse_and_map(node, 0);
-> +	if (!parent_irq) {
-> +		pr_err("Failed to get the parent IRQ for LPC IRQs\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	irq_handle = of_fwnode_handle(node);
-> +
-> +	return pch_lpc_init(res.start, resource_size(&res), irq_handle,
-> +			    parent_irq);
-
-If pch_lpc_init() fails the parent interrupt mapping is leaked, no?
-
-Thanks,
-
-        tglx
+Thanks in advance,
+ Waldemar

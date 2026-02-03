@@ -1,62 +1,72 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AE6340A57
-	for <linux-mips@vger.kernel.org>; Tue,  3 Feb 2026 12:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096643B8BD9
+	for <linux-mips@vger.kernel.org>; Tue,  3 Feb 2026 15:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770121931; cv=none; b=WBdh0GxMYKqNYWeoH3rVoX36eq9+h+WGOTGMZJkkC0o+9NIqthuoySChf1Ruwh7SzEIIpCGcmBq0v0NwuLMXSwNC8snQUz8Nc8qp+O1R+DAC9Q5YLfAbxeB7FHT8atPR9V8dWa89gXnzwkhMBje4ljUyNU3p8bRaM+LTui7RzMg=
+	t=1770132521; cv=none; b=c3MBna+64TbDv0bvfOLXP8ej7BCY7c8qXJnH8v2AY3Z+eS546nVVWVY6D23ZrVTR7xjZoS+4fo//wEFa2tRJazqwEkKzaBEKqGv6fChONTmevjgVjsnJws9DSCT3EqyRp/aGeaW6QL3PkEhOxzyVbcGNuoA58pWY662lVuy2o2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770121931; c=relaxed/simple;
-	bh=QST511wQ21zjJWktvSqUpl7l53NcCuAZYCXZsPCIGpw=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=H4enRU214+TeLBPUxNv6X5MFRG3IL783FrguIRSBlq/EWR94DZvvz3cP/NQ4j0CGo9meG6K6/mrBlPm/5Y8Bu/lF+cRctOo9kbejS8KS9t9vGPnq8I19Psg7Rq+uj+zTyRvcLTxjUuC6egkSXmQi8//qzr31QtBJ2DE0ynxGYp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1fH615x; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1770132521; c=relaxed/simple;
+	bh=30vQMzXBU4V1GPKBgdGb2+JJvuZ/jvEXZ9DIlaOvP/M=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=HxK9jMoUCWj4p1HkO9VYhm3bpsvtrpS/J8og4w+1e4aKXEIdtVqiFJVf6CfIDwNqe7OpWxr9gFNS/JQDpGHQqJsEQmPHQlPUc8PfCxC6N9deYk7SNX4TNGMzNlVmELsGaQEPN5IT8Q47utsm21eYy/yT6DYZzXhFLlRD17QKWHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=e01qNo4r; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VrR00ejl; arc=none smtp.client-ip=202.12.124.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1fH615x"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D555C19421
-	for <linux-mips@vger.kernel.org>; Tue,  3 Feb 2026 12:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770121931;
-	bh=QST511wQ21zjJWktvSqUpl7l53NcCuAZYCXZsPCIGpw=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=D1fH615xn68N8WNaLvieZ8KVEp7iOiXKcyp2ni69RBq7mTZAyC/IVQcjhLOn+o2qr
-	 9BgfIxzDqN23+VhURvuh5l1Ti5Ib6lKTG77O4nFYiPkJgMpzfSQ+MUdUmk5TBE1R5t
-	 ZiK0pVnDSjet+bWW81Pb76b5prgGb7Eokr22WbOw0YECBuSO6dtPBzRup7KOm2YaO4
-	 wPxCIlmvbnubWe3M/D1Rn1viAJw2F6IE/+yRGEJe7nkaXBcpTCzZfTweGpS3p6LnPl
-	 msIFZOfg7W+xljanhcGwSUkpU1G683ahIorQPrnkcepkbWZiKuynPEBqnJ8NP7iOSd
-	 Zj14ZQBGbcZ4Q==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 2AC5FF4006A;
-	Tue,  3 Feb 2026 07:32:10 -0500 (EST)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-01.internal (MEProxy); Tue, 03 Feb 2026 07:32:10 -0500
-X-ME-Sender: <xms:yuqBafaJRXubEgY_S_1yT7rR5bxRrVOtXQWOfU5bseC0P0-yr65QGQ>
-    <xme:yuqBaZOV5VQbg8Ske7mlDZkKWu0FqEkomzXJLg9Xqt6OBVWn0fkybdAbGlTRDXREE
-    3RCRFPBxrd7cq6Mm79Wu3o38yuGEpr6vyGwrDGdVSv6RD_m40ogJyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukedttdekucetufdoteggodetrf
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="e01qNo4r";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VrR00ejl"
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id 512921D0009A;
+	Tue,  3 Feb 2026 10:28:39 -0500 (EST)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-03.internal (MEProxy); Tue, 03 Feb 2026 10:28:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1770132519;
+	 x=1770218919; bh=xzI+mVBJS8NXcwBBA86E/hqOK5/oybE4GLxEX7cZOlQ=; b=
+	e01qNo4rywhIgDeMlhlUAQ4sjBoUjGY3SnUi6G2X7AuRg7x4DxWJCEhkL0PSmJGY
+	hNlXAleYzfj8yfKlJ3uWAalgUBh3ppnHKAuT+fwx3jlALKW2ZnuQ93nIJS8UY0fk
+	qoeLIi29Wy4cXV6gwNGRXd41xPD9OxqBLuzwSIdY16XszPckXyqXoV/bSm+AVKmX
+	KO/p9bK91Yu2EUd3MiE9yr+7eMtp0xHZnqcftFKliJSlEX6GOSTafhX4WlMH1ScE
+	IFEWkj0kCAoQW936cRRYlbWJMb7paWfAluRR6aaLXVXWkiYmL5uipNe/C1QgeUl1
+	8F1KNc8ySiBvplqtxLmp/g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1770132519; x=1770218919; bh=x
+	zI+mVBJS8NXcwBBA86E/hqOK5/oybE4GLxEX7cZOlQ=; b=VrR00ejl94gjkBknl
+	PGR4Ras04HdKZkPdl6G7GFXIkoBru0HR3xhWIBONyDKAgrvDgmL5heMWpp6N8ZQz
+	yjlbt5uT9/SlVp81whRrv7/LVBxjKHbPGQRCsc0Y+YRyOXq94yfL+zciv0znZ4eF
+	pN5xfFykbEPxPfsHGXWF5UtKuligSBObHbcHsMirb8VVBu7t6Mb3t3QsFWUyA2Oo
+	m5Met1E3jiDaefx8sujfOGElwL5E1odcEomB3Wpf4mqH4w9odVk++WCbnXjZ6vIf
+	RhVIWnxZB3py0QkKSAvqeHDosiGTJVmECcGgyc5AoBMUh++/OC7H1sAYJ1RR5+yH
+	G90nw==
+X-ME-Sender: <xms:JxSCaekthvbjm2War2xFWfqJAOyTO9kQ0EjYjUbmVhEkzLaUDo4Yqw>
+    <xme:JxSCaQq2u8BFJ0_CXgkDoGqOi_xSr3WJb_fyJ1goYy7I0N_IPvnk1ozjQoZbyc7BD
+    ZWWcPhncZFP3HgmhLxKdUkh0dWibzr156k1vP4FQbEyWwEzbuxRQxk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukedtgeduucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrugcu
-    uehivghshhgvuhhvvghlfdcuoegrrhgusgeskhgvrhhnvghlrdhorhhgqeenucggtffrrg
-    htthgvrhhnpefhhfeguedtgffgkeeigedvieegffeilefgleeftedtkeehudetiefhvefg
-    fedtteenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrugdomhgvshhmthhprghu
-    thhhphgvrhhsohhnrghlihhthidqudeijedthedttdejledqfeefvdduieegudehqdgrrh
-    gusgeppehkvghrnhgvlhdrohhrghesfihorhhkohhfrghrugdrtghomhdpnhgspghrtghp
-    thhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhssghoghgvnhguse
-    grlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgtphhtthhopehnrghthhgrnheskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtohepmhgvseiiihihrghordgttg
-X-ME-Proxy: <xmx:yuqBaWOggf-WC5xrnjcAc8bolrep0nT0flywBS4AFfSG_IUs_J-d6g>
-    <xmx:yuqBaYp9_-w2fsgFpqPbKCL5F61P_bgNd_osMGzUIGyqbY74RR-oSw>
-    <xmx:yuqBaXHKjSNQ9PdfUBrJO8qDHusj7sM1Yl5ZfqlU8NnG_Qz2X-Lobg>
-    <xmx:yuqBadonWgms5uSTks_0wOSbBYtXnOznraQeYGd0oegfr5iU9ww8MA>
-    <xmx:yuqBaQajnir2Z8N3vU4yz-UhWblOh2wwZHQEmRu9F3ykkhJoC_NapAUu>
-Feedback-ID: ice86485a:Fastmail
+    rghilhhouhhtmecufedttdenucenucfjughrpefoggffhffvkfgjfhfutgfgsehtjeertd
+    ertddtnecuhfhrohhmpedflfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghn
+    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepkeevvdduleehgfetfe
+    effeefieevfefgieelgfelveeujedvgeefheelffekhffgnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
+    hgohgrthdrtghomhdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtohepfigsgiesohhpvghnrggukhdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    hmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:JxSCaVThS83cBXG9KEgiLWE_Zdd9cRakjLLUSZLOLm44iRskF3V0Yg>
+    <xmx:JxSCacuxCk9oqmjXYezM123dWUPjtQXBiEvRe3K3V3cHUvxDHK-5Zw>
+    <xmx:JxSCaSaTNB7bAKIW4B-B3Zdos_RgFIrEYBvaXt3IJCx7998D4jJpWg>
+    <xmx:JxSCaZu2NlFAuOxRHhfJ2GH5bLZ1SN_yOfDF8XZf2w4X-0JhWrV2_A>
+    <xmx:JxSCacn9bTo168NeiMy8Hgx9NzCFRkZsrKCqrF42I0J99DfQIpM2M9q_>
+Feedback-ID: ifd894703:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 02C56700065; Tue,  3 Feb 2026 07:32:10 -0500 (EST)
+	id 0A11E2CE0072; Tue,  3 Feb 2026 10:28:39 -0500 (EST)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -64,65 +74,54 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A8lqlFeQHG57
-Date: Tue, 03 Feb 2026 13:31:48 +0100
-From: "Ard Biesheuvel" <ardb@kernel.org>
-To: "Yao Zi" <me@ziyao.cc>, "Nathan Chancellor" <nathan@kernel.org>
-Cc: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <aeca11fb-aa31-4fb2-b937-189626a81f81@app.fastmail.com>
-In-Reply-To: <aYFx5L2xC_u9t0IN@pie>
-References: <20260202041610.61389-1-me@ziyao.cc>
- <99c54e93-fb8c-4bdb-ad40-a3161a42bb8b@app.fastmail.com>
- <20260202230729.GA2319189@ax162> <aYFx5L2xC_u9t0IN@pie>
-Subject: Re: [PATCH] MIPS: tools: relocs: Ship a definition of R_MIPS_PC32
+X-ThreadId: AVHZR4n_KsVg
+Date: Tue, 03 Feb 2026 15:28:18 +0000
+From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To: "Waldemar Brodkorb" <wbx@openadk.org>,
+ "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
+Message-Id: <1e9086c1-0cec-4aa7-aab6-e1e605dd9ebf@app.fastmail.com>
+In-Reply-To: <f0413775-1a6f-49a6-841b-bf52214a2841@app.fastmail.com>
+References: <aX-d0ShTplHKZT33@waldemar-brodkorb.de>
+ <f0413775-1a6f-49a6-841b-bf52214a2841@app.fastmail.com>
+Subject: Re: serial console on Mikrotik RB532 non-working
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
 
 
-On Tue, 3 Feb 2026, at 04:56, Yao Zi wrote:
-> On Mon, Feb 02, 2026 at 04:07:29PM -0700, Nathan Chancellor wrote:
->> On Mon, Feb 02, 2026 at 10:17:53AM +0100, Ard Biesheuvel wrote:
->> > 
->> > On Mon, 2 Feb 2026, at 05:16, Yao Zi wrote:
->> > > R_MIPS_PC32 is a GNU extension, its definition is available in glibc
->> > > only since 2.39 (released in 2024), and not available in musl libc yet.
->> > > Provide our own definition for R_MIPS_PC32 and use it if necessary to
->> > > fix relocs tool building on musl and older glibc systems.
->> > >
->> > > Fixes: ff79d31eb536 ("mips: Add support for PC32 relocations in vmlinux")
->> > > Signed-off-by: Yao Zi <me@ziyao.cc>
->> > 
->> > Thanks for fixing this.
->> > 
->> > It does imply that the subsequent kallsyms patch will result in 32-bit MIPS no longer being buildable with older toolchains if CONFIG_RELOCATABLE=y.
->> 
->> Doing a little research, it seems like R_MIPS_PC32 has been recognized
->> by the toolchains for a long time, as I found these commits in binutils:
->> 
->>   https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=092dcd755dcdcf664b25a7011fd15957f124c29f
->>   https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=b47468a6dbd1b54c44c2edc0f7db64a073d894ea
->> 
->> It seems like this relocation was not documented in glibc until
->> recently, along with many other relocation types:
->> 
->>   https://sourceware.org/git/gitweb.cgi?p=glibc.git;h=a6e8ceb3bb532236e1eecd0bb0ee8e4b7fd5ff7c
->> 
->> I interpret that to mean that the kallsyms patch should work fine since
->> the toolchain can handle these relocations? It is just building the
->> relocs tool against an older glibc or musl that does not have the
->> R_MIPS_PC32 definition that is broken? Or am I misunderstanding
->> something?
+On Tue, 3 Feb 2026, at 3:24 PM, Jiaxun Yang wrote:
+> On Sun, 1 Feb 2026, at 6:39 PM, Waldemar Brodkorb wrote:
+>> Hi MIPS hackers,
+>>
+>> I want to use the latest Linux kernel on my Mikrotik RB532, but the
+>> serial console is non working. I bisected the problem and the first
+>> breaking change is this commit:
 >
-> Yes, this patch is only meant to fix building of relocs tool. I don't
-> think there are problems about toolchain supporting since R_MIPS_PC32
-> has been in binutils for a long time, as Nathan found, since 2004. The
-> situation is that it's likely to have a toolchain supporting
-> R_MIPS_PC32, while elf.h on the build machine doesn't have its
-> definition. And after ff79d31eb536 ("mips: Add support for PC32
-> relocations in vmlinux"), the relocs tool started to require a
-> definition of R_MIPS_PC32 to build.
+> Hi,
 >
+> Can you try this?
 
-OK, thanks for the clarification.
+Oops sorry I missed a flag, it should be:
+
+diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+index 8ecb56be81ac..239018540221 100644
+--- a/arch/mips/rb532/devices.c
++++ b/arch/mips/rb532/devices.c
+@@ -213,11 +213,12 @@ static struct platform_device rb532_wdt = {
+ static struct plat_serial8250_port rb532_uart_res[] = {
+        {
+                .type           = PORT_16550A,
+-               .membase        = (char *)KSEG1ADDR(REGBASE + UART0BASE),
++               .mapbase        = REGBASE + UART0BASE,
++               .mapsize        = SZ_4K,
+                .irq            = UART0_IRQ,
+                .regshift       = 2,
+                .iotype         = UPIO_MEM,
+-               .flags          = UPF_BOOT_AUTOCONF,
++               .flags          = UPF_BOOT_AUTOCONF | UPF_IOREMAP,
+        },
+        {
+                .flags          = 0,
+
+Thanks
+- Jiaxun

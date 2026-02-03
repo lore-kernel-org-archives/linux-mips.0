@@ -1,155 +1,117 @@
-Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048C83AE705
-	for <linux-mips@vger.kernel.org>; Tue,  3 Feb 2026 15:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0942936655E
+	for <linux-mips@vger.kernel.org>; Tue,  3 Feb 2026 17:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770132696; cv=none; b=k+XozCUaa04wdoc8l9dluzu1nwcuP0BDaeMYI8JT29m09vw4mZtUBW8G2lKBZk3PQfafh0GbuCkh2/H6qwvQ1uJ6xc4KScbz+JUoCz12I7HELtx1qaTfDKaP050iLrMSYNuMa3nXp3x6nQaCTMPEfYCWVvR6bOBzDBLUtwhygdo=
+	t=1770141299; cv=none; b=cSHvlykjVHEAqkSmXKCJpnDhsJ4qoBnX8xdfNi4RpjSo5juJOfuR/HK+fAsZbFGmKgRoAMEacpDYWN0Ly4bBwYJC1dIk1zJpsLUILKUov7r+pdGxJQjzUVmIQ//tbY4R66UxmcLyqo16pWGCDYOAtsQx1mZeF3MmJAZeVF0C6s4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770132696; c=relaxed/simple;
-	bh=OHt+pVC7XMy2S1m6DaDTjOVRlFgP4jtMkpHEDdIkP50=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=KGDpqK38HPoz43s0nXpht7btMMNqK1P74AlyLh36Uz58ObuUguSWR8GHSQYAeHTMPlx0Mjg1JKXQ82dU3oL1MScwJ4Ksq0VZiAttn2RhMuvq+9g3LicM9bY9KEQJaQjlCrtvmuAOn3puofLq+vQq7ewykfuK196/aPoES931aMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=hOkg8a/o; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=M+0KaPKZ; arc=none smtp.client-ip=202.12.124.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+	s=arc-20240116; t=1770141299; c=relaxed/simple;
+	bh=EbeudItOUlxxdZ+A3AiWDVtDb3JqRGR++QR9pByKdSk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HRGPPnY3BErQnPSQHBatEt7ur4fdNbXpJux9RwyPfp57HpJsLldkGVlREvOyltulw3md53+/m3M3r18SPcMxEJF5Z4ukWvN8MeffIQpLjL+m/clQ3+ss05kaPrHXZNkz4aCmcDP0JqhYqShtnCjmt0bk2QyFtz171gbdufyHXBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TmzMYPVx; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rpw4/rGf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="hOkg8a/o";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="M+0KaPKZ"
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id D7FCD1D00125;
-	Tue,  3 Feb 2026 10:24:39 -0500 (EST)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-03.internal (MEProxy); Tue, 03 Feb 2026 10:24:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1770132279;
-	 x=1770218679; bh=Ni60kKZ2JdSxIUCCQBi8jKP9pGHzTaAVCnbylWuKVxo=; b=
-	hOkg8a/olighjY9khJXwbXMDYLmdyclBg7U8VENicK/Bl7GLmAavZG7uzT7foilW
-	7/NzrDEf5d+vMeEYtrdMWsCPzm6zvT6+LfcU357rMnplF3MFWkkROyS3BQcif51V
-	3BvU5Mc9Cxu2RLiOGZl6On6jN6gQ6OxjVFqgwp+KmotsqHBxEWWWMHWR3M2PBeRd
-	Wn2oYVXBcCcLM9C4OdnBe+UzFGq0H8I0SgUjKgsXE3m8rTorxBBaIUk1DxApsLiD
-	jB8sSQUW0GI+v/ErUXrpt4ZZWyAOhtXYI+Hbt3itnNt0lKJCl6OOFe0TRcSNxvTt
-	etwAEk+lC1j9B27UH7lmEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1770132279; x=1770218679; bh=N
-	i60kKZ2JdSxIUCCQBi8jKP9pGHzTaAVCnbylWuKVxo=; b=M+0KaPKZzY88pHV0d
-	g2mgQ/aEv6JtvdkWtWvB3Z5pjrpFj9JoshRujl243hivLe3mHbYrhrt9KMtkG/Nz
-	THdA7iQhIlduqH8zHwlqpg3vKSbJaO+nI/10GRjoV6zs7P2OmEsifEvoiq76mcVy
-	+DY05JmMCYy6ZtTFnjMOiLTBYIZxRhFTdPuF5z6DqrAm/fC9i1jUwHgvCOfZWR/L
-	AUvYwd8b24NUSLbuKHKWzFBnk8lc5C8vWi1HDt/L9oNB5IjKb4Qx/H3MakeTVrC9
-	+fWdoUZWUjjuTYYMTrbIj3A4jnE5FdPcExuPZX+8Isttc9gWMUCHn1eMS3Uo1gG/
-	1JauA==
-X-ME-Sender: <xms:NxOCaX3lC8BrXjT9ek7itrw_diM-L0p0FNxk6riEGhYPgdtt94QHcQ>
-    <xme:NxOCaQ7YCUb7gcB53W9vbwXro9Jxye7EZIbPc3RFS0zieoohBPGJk1v0OGePr5c_z
-    dhUhQJ2gtlhMxtU69T1HngPdfNQWq2SYLYib72_Hx_0H_1SWLFCoFgr>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddukedtgeduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpefoggffhffvkfgjfhfutgfgsehtjeertd
-    ertddtnecuhfhrohhmpedflfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhephfdvffdvjeelvddvgf
-    ejieetueffhfelledtudejgeffiefhgfefieegtddvjeefnecuffhomhgrihhnpehkvghr
-    nhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmpdhnsggprhgtphht
-    thhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeifsgigsehophgvnhgrug
-    hkrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghl
-    rdhorhhg
-X-ME-Proxy: <xmx:NxOCaeilvrJV5si1GHIu59HyQNgoKRIiPvtloOjcN7ZYfABOYVipOQ>
-    <xmx:NxOCac9c9a3zGKGiiKdTz0DsBgaGWDA6DwRKRUX5dWd5OzdNQaVWyg>
-    <xmx:NxOCadr7dH2AII81Vl_UsEyOtD8n2DYaGkvMgGRweV8ilkBuxtfCPg>
-    <xmx:NxOCaT8DpVvc0FGVZ8d9mSzhv_c277SJfY40q86-HLTMknlWDZeUdQ>
-    <xmx:NxOCaa1xlLY0fUx8s4LUUYOdQdySVfyhHyI_TXyzxEeARoRHKRFk_Ib7>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 73D8C2CE0078; Tue,  3 Feb 2026 10:24:39 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TmzMYPVx";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rpw4/rGf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770141296;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TH04C7HHcDm+vfuEaUs+pyru8FvGanMszlIgowU+sDs=;
+	b=TmzMYPVxEejfCspZQvKW7R+KFFTjBpS4zAdpC70UY+kGtDuuUUVNRMKunsCMGLtO7zXwlW
+	io56wC0WzH8cztOtS/c/JTLyPKCy62Pdg/yGwnRV8ojxXzzflAac0phGiBobdU7USgZMCU
+	ha4A/+c6pjZBT6Ih7ZlnitTqVtkEyW4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-670-YEJyklxfM1awg47BFNj6ew-1; Tue, 03 Feb 2026 12:54:55 -0500
+X-MC-Unique: YEJyklxfM1awg47BFNj6ew-1
+X-Mimecast-MFC-AGG-ID: YEJyklxfM1awg47BFNj6ew_1770141295
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-503342386a8so240083401cf.0
+        for <linux-mips@vger.kernel.org>; Tue, 03 Feb 2026 09:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1770141295; x=1770746095; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TH04C7HHcDm+vfuEaUs+pyru8FvGanMszlIgowU+sDs=;
+        b=Rpw4/rGfWKFIxHQSKGNkXo3hrZtrNuAk2KG8uGJhMRWnVuHxtAuVTQuQnZjKLnEWUP
+         XkKo9nr9xGeW3hJwkIXjyeaNyDbO7Ymo8AnS9YOYLNC1eH81G8P/0YmsiBTsKDc1GxKX
+         aWHl61/zsEWxwAx54Zc+oxocL/7nKKJ6vIXFkZ88FNAgIfGIusm1Cr4ESI35azCEDN1e
+         2Zh9vNq2xG3rSrJsvw1k9v41KmuQmPVZUfQfPaG8zsHo9+hziJvjlEFsU86IY7P5AYjK
+         EmXpKNMF5GLT7fF9rqveOUfEevZ0fDPZM6t/b27lmdsdgtYFi34zT45/U63CnE9q8oet
+         lJTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770141295; x=1770746095;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=TH04C7HHcDm+vfuEaUs+pyru8FvGanMszlIgowU+sDs=;
+        b=u8+uAnRsGS0KKLbO9xhHesf2O/fc5iuiHSJgIf/Bbx6zrkxokih8Tw00BvaPkAsBDO
+         Ef1sYHUeGK49hHYC80oAgqQneje/03ntYtRKCQlSGpPRxO5mQEWNFhZl9bBUjcOIIlx+
+         +aPD+DTQMBXCqVOwHa+vdaYUN0FpjAQLCKcaP4JJXMCpSxHjxpBzNhDQcO3PW4WEk0Bf
+         qpI8GnhNsAZZhrDi/528rTMQZQBE/VYI/0KWjmAPAZzUs4zv2lm1e90rADQ38sAycbA/
+         2aM2Xr2kEs3enxELA/ElMuz/ExjlfootHZM3vJ8ZRao/4BFfka6osyhV+6df+6bzixYh
+         wyFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCIlkUR2zqS3IIXwtmm3nn+RmZymxr3I++oReC1n3oLd7Nec7TefWr+H/nairzrNR4NGUytRXxJ4es@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxn4vcg7gl6de6oBTgmUdAB6EYmm+qbSGlFKBQqTQU5gCPNmrfc
+	C8bvwIc7QoF6C4YXmWVMuUrqreD7Bi7ZZ6LtKSIGp7OLO+ShIoCEBsFW1tSZHSGAvcb7I7AC7sF
+	R5kfPM44N5mOfAogCA2shn98EZmtGI44jIC9zOQtTaAyt+vxY1vNAoU+vcHNJeJM=
+X-Gm-Gg: AZuq6aK83ngNmMaLECG+3MI/C9AFRtjmxTqmg1TIhCegh/hLatTwV+mu4VZZ52jamRw
+	kFL/e9a4vUqhkzvgGyF/WT81NdBC6GwMN/AfIsKVhMUC82doge9HQ8BJGEzBch+8AmtA4pIiXNQ
+	qcKEqvSGdmhEpieg5HYdC7g8wDkoZHVMJSdVMg8oEYkeBbx1HjB3iZOtjfQ0ehuiQhJvOROKNBX
+	YTSls22hJmO79TjW8pyV2RFy9K8SftXi8jNtj3GtR4k8x5tB3w4aew8Wdd2eVq7ttxUe9LX02xF
+	sgFqWszSPQOYpzi0q7DeJvr8KQBBexR59nAS3Q0LtJ4PNFfCttXp0WqGYbJ8wlJuvSZai+PuVMv
+	m/70TcAMLLhJy2es7Vsnm1p2KHSSdFRsEKZHpeO/mg0Te
+X-Received: by 2002:a05:622a:5ca:b0:4f0:22df:9afe with SMTP id d75a77b69052e-5061c18db52mr1685131cf.51.1770141295391;
+        Tue, 03 Feb 2026 09:54:55 -0800 (PST)
+X-Received: by 2002:a05:622a:5ca:b0:4f0:22df:9afe with SMTP id d75a77b69052e-5061c18db52mr1684941cf.51.1770141294980;
+        Tue, 03 Feb 2026 09:54:54 -0800 (PST)
+Received: from redhat.com (c-73-183-52-120.hsd1.pa.comcast.net. [73.183.52.120])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5061c1e7f63sm658131cf.18.2026.02.03.09.54.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Feb 2026 09:54:54 -0800 (PST)
+Date: Tue, 3 Feb 2026 12:54:52 -0500
+From: Brian Masney <bmasney@redhat.com>
+To: Lukas Bulwahn <lbulwahn@redhat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: Re: [PATCH] clk: microchip: fix typo in reference to a config option
+Message-ID: <aYI2bKIfRfoFQr2e@redhat.com>
+References: <20260203090101.348879-1-lukas.bulwahn@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AVHZR4n_KsVg
-Date: Tue, 03 Feb 2026 15:24:19 +0000
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Waldemar Brodkorb" <wbx@openadk.org>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Message-Id: <f0413775-1a6f-49a6-841b-bf52214a2841@app.fastmail.com>
-In-Reply-To: <aX-d0ShTplHKZT33@waldemar-brodkorb.de>
-References: <aX-d0ShTplHKZT33@waldemar-brodkorb.de>
-Subject: Re: serial console on Mikrotik RB532 non-working
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203090101.348879-1-lukas.bulwahn@redhat.com>
+User-Agent: Mutt/2.2.14 (2025-02-20)
 
+On Tue, Feb 03, 2026 at 10:01:01AM +0100, Lukas Bulwahn wrote:
+> From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+> 
+> Commit 026d70dcfe5d ("clk: microchip: core: allow driver to be compiled
+> with COMPILE_TEST") introduces a typo when referring to a config option in
+> an ifdef directive.
+> 
+> Fix this typo.
+> 
+> Fixes: 026d70dcfe5d ("clk: microchip: core: allow driver to be compiled with COMPILE_TEST")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
 
+Ugh... thanks for catching that.
 
-On Sun, 1 Feb 2026, at 6:39 PM, Waldemar Brodkorb wrote:
-> Hi MIPS hackers,
->
-> I want to use the latest Linux kernel on my Mikrotik RB532, but the
-> serial console is non working. I bisected the problem and the first
-> breaking change is this commit:
+Reviewed-by: Brian Masney <bmasney@redhat.com>
 
-Hi,
-
-Can you try this?
-
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index 8ecb56be81ac..030e0b41ff06 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -213,7 +213,8 @@ static struct platform_device rb532_wdt = {
- static struct plat_serial8250_port rb532_uart_res[] = {
-        {
-                .type           = PORT_16550A,
--               .membase        = (char *)KSEG1ADDR(REGBASE + UART0BASE),
-+               .mapbase        = REGBASE + UART0BASE,
-+               .mapsize        = SZ_4K,
-                .irq            = UART0_IRQ,
-                .regshift       = 2,
-                .iotype         = UPIO_MEM,
-
-Thanks
-Jiaxun
-
->
-> 6e690d54cfa802f939cefbd2fa2c91bd0b8bd1b6 is the first bad commit
-> commit 6e690d54cfa802f939cefbd2fa2c91bd0b8bd1b6
-> Author: Yi Yang <yiyang13@huawei.com>
-> Date:   Tue Jun 28 16:35:15 2022 +0800
->
->     serial: 8250: fix return error code in serial8250_request_std_resource()
->    
->     If port->mapbase = NULL in serial8250_request_std_resource() , it need
->     return a error code instead of 0. If uart_set_info() fail to request new
->     regions by serial8250_request_std_resource() but the return value of
->     serial8250_request_std_resource() is 0, The system incorrectly considers
->     that the resource application is successful and does not attempt to
->     restore the old setting. A null pointer reference is triggered when the
->     port resource is later invoked.
->    
->     Signed-off-by: Yi Yang <yiyang13@huawei.com>
->     Cc: stable <stable@kernel.org>
->     Link: https://lore.kernel.org/r/20220628083515.64138-1-yiyang13@huawei.com
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
->  drivers/tty/serial/8250/8250_port.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> When I compile the commit before this commit everything is fine.
-> When I just try to revert it on master I still get no output on my
-> serial console.
->
-> Anyone here have an idea what is defect in arch/mips/rb532 nowadays?
->
-> Thanks in advance,
->  Waldemar
-
--- 
-- Jiaxun

@@ -1,68 +1,135 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7591E25F9;
-	Tue,  3 Feb 2026 01:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770081239; cv=none; b=qYCd5cwBECybEln09gzvipG3T491J5zRflJog/PLINb7b+b/jiBHI9m7DWEhCT8vCvwIbL4TtDac7R0bocxn9mycA3/GEoyWR9zaVnQJBX+niyciRC1Z+CoiIK01t0Dm1FPjgEIGAZIEa1ZzqpVi2HPTV276nYxTJVRvzZNVJqE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770081239; c=relaxed/simple;
-	bh=SaJkrdt5k2anq2Urx8bRHPWyklckA/4xYEE5hJDDSgU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jUe8mZLQWAGrLjWnpXAoVqTdUFDe94tfRemCnwijJRDBCmdLD7rzGyelCaeaw3n3tBIjt3gAl1M4JA+iWrMQ8IXmhxlhsgxmhmT6aNfOLOncftAUTGzQ8Gk12r1JTp9B3nhIXHnZkAFMXZG5zO8MLntEQIpndgZSvLQLv3Bl1zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKNPOKXk; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC0B7260F;
+	Tue,  3 Feb 2026 03:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770091006; cv=pass; b=eUWIsuhhvYhXWNmbPytCkGHzFYVIsGpylGNwgvUZxbb1f4dERQW8/keKZc8t7vo9q4YgQ5iUUCFRsZtMS4l0pAEZR+OwO5jUlh3HQ6aVvILEcwn0H10Rdzf0L0D/65wwmGfrHGxizwa/awznUhcik3xX8AJ5bWnI0yQUghkmYXk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770091006; c=relaxed/simple;
+	bh=Y1CR0uF+AxH9J5bPxKnMX+OpbHa8TXc5PzabWf14SrE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hOmJ5pWVncI45ua1kSW+d1Smr/oIvyNrfqGOlDV6xShhezs3MIeXhMLICTV/TzX0M0Tsmbi9iC2EOE3ezcUkeGGHsC65Q1Tr/wOBy2aopJ7rOEbegfRIHhIH6FFiWxeEypnIyG2sAAymjGndZpsvCM+b0aeBsgZUziIXxeUuIsk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ziyao.cc; spf=pass smtp.mailfrom=ziyao.cc; dkim=pass (1024-bit key) header.d=ziyao.cc header.i=me@ziyao.cc header.b=GPgyDlTi; arc=pass smtp.client-ip=136.143.188.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ziyao.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziyao.cc
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKNPOKXk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F696C116C6;
-	Tue,  3 Feb 2026 01:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770081239;
-	bh=SaJkrdt5k2anq2Urx8bRHPWyklckA/4xYEE5hJDDSgU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MKNPOKXk6nE6ae8dgHfoMkC2fuHWgj35tCJuny4m1IzaeLKTJt8YR+P4vAFbqxpEw
-	 O1lz5YEcMrtQd7GXLlUzEubVUUHSSZF2j2YWnV43RcSqv04ZlLSuYxYNYYKNzo8Jfl
-	 c88VPqJoeJA+ICpzptdG3TJpIdEv479p6zitrXReSlVR07xbMEcyfl/w84TaTYFnLW
-	 WIcWudRqvgglkoXywxfWYOD72U/DZSdFfKytZNGJwrSFozuEU/PDACAOAHinVAivCj
-	 fbPieYd+ORrjxZ6nUTjbsMG9TlKaXxdhMEB13OdEjvNR76sDpRaGJztaLxFk5UwAKF
-	 9Uamr29WXMgVA==
-Date: Mon, 2 Feb 2026 17:13:57 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, David Miller <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Simon Horman <horms@kernel.org>, Andrew
- Lunn <andrew+netdev@lunn.ch>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, Vadim Fedorenko <vadim.fedorenko@linux.dev>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, OpenWrt
- Development List <openwrt-devel@lists.openwrt.org>, Daniel Golle
- <daniel@makrotopia.org>
-Subject: Re: [PATCH v2 net-next] net: lantiq_etop: remove driver
-Message-ID: <20260202171357.0e4a9e38@kernel.org>
-In-Reply-To: <73f3ea5f-57ed-40b1-9acb-ab595083aab6@gmail.com>
-References: <73f3ea5f-57ed-40b1-9acb-ab595083aab6@gmail.com>
+	dkim=pass (1024-bit key) header.d=ziyao.cc header.i=me@ziyao.cc header.b="GPgyDlTi"
+ARC-Seal: i=1; a=rsa-sha256; t=1770090996; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=YU0ltI3NIVVgn/95tSOi3mxfmwllKc0xccXb9lpp5yLMNnYVb3OCW7xGUxOXWJfzqsCJ09khTKRQELWMyyCebVoC8KU7U2z5yWcZ5U9yA9REMofkjmTjyXiAtNXtUJcqvm8ZL2spvmO+OalPoSt6DWXx0tI/2eSW2SBqixWrZAo=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1770090996; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=V/7GtO73V9fEkwQX9fVGnsl56kwMBFaTeiHRr383sR8=; 
+	b=Lp/zG7rujxMzpzuFMSg8H6JQKqERL6Ow6b5pMXmA8CXOHYXJJRGqajWkU8OtChDa958JGQ0uKfAxWyLKes+w63hN9xJQmCV6KBNTICxAg5t0EQW/WgQu26fN/UhRNfOUp8CLXjvemDgRgxNVo/nN2MP0mySJE0UXAUExdPtPEkQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=ziyao.cc;
+	spf=pass  smtp.mailfrom=me@ziyao.cc;
+	dmarc=pass header.from=<me@ziyao.cc>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1770090996;
+	s=zmail; d=ziyao.cc; i=me@ziyao.cc;
+	h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
+	bh=V/7GtO73V9fEkwQX9fVGnsl56kwMBFaTeiHRr383sR8=;
+	b=GPgyDlTiZiqd4cJmVMN3ahdm/Y7YuN1hpedmGrP8Z4nn6Vt2fFapRu4Dr5W4o6fI
+	yOKpJ3BGV3buuQgpTjxBVxXsSLM/Wh9+RDHQ9Cq+BTYEuEdv4w3NWPvRx1K7xJO9P9J
+	rBDho0CrY1ep5G4gKa0LSk29bjI1bUFsVqmvn9N0=
+Received: by mx.zohomail.com with SMTPS id 1770090993834770.1273639904817;
+	Mon, 2 Feb 2026 19:56:33 -0800 (PST)
+Date: Tue, 3 Feb 2026 03:56:20 +0000
+From: Yao Zi <me@ziyao.cc>
+To: Nathan Chancellor <nathan@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: tools: relocs: Ship a definition of R_MIPS_PC32
+Message-ID: <aYFx5L2xC_u9t0IN@pie>
+References: <20260202041610.61389-1-me@ziyao.cc>
+ <99c54e93-fb8c-4bdb-ad40-a3161a42bb8b@app.fastmail.com>
+ <20260202230729.GA2319189@ax162>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260202230729.GA2319189@ax162>
+X-ZohoMailClient: External
 
-On Fri, 30 Jan 2026 17:40:49 +0100 Heiner Kallweit wrote:
->  arch/mips/configs/xway_defconfig              |   1 -
->  .../include/asm/mach-lantiq/lantiq_platform.h |  18 -
->  drivers/net/ethernet/Kconfig                  |   6 -
->  drivers/net/ethernet/Makefile                 |   1 -
->  drivers/net/ethernet/lantiq_etop.c            | 745 ------------------
->  5 files changed, 771 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-lantiq/lantiq_platform.h
->  delete mode 100644 drivers/net/ethernet/lantiq_etop.c
+On Mon, Feb 02, 2026 at 04:07:29PM -0700, Nathan Chancellor wrote:
+> On Mon, Feb 02, 2026 at 10:17:53AM +0100, Ard Biesheuvel wrote:
+> > 
+> > On Mon, 2 Feb 2026, at 05:16, Yao Zi wrote:
+> > > R_MIPS_PC32 is a GNU extension, its definition is available in glibc
+> > > only since 2.39 (released in 2024), and not available in musl libc yet.
+> > > Provide our own definition for R_MIPS_PC32 and use it if necessary to
+> > > fix relocs tool building on musl and older glibc systems.
+> > >
+> > > Fixes: ff79d31eb536 ("mips: Add support for PC32 relocations in vmlinux")
+> > > Signed-off-by: Yao Zi <me@ziyao.cc>
+> > 
+> > Thanks for fixing this.
+> > 
+> > It does imply that the subsequent kallsyms patch will result in 32-bit MIPS no longer being buildable with older toolchains if CONFIG_RELOCATABLE=y.
+> 
+> Doing a little research, it seems like R_MIPS_PC32 has been recognized
+> by the toolchains for a long time, as I found these commits in binutils:
+> 
+>   https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=092dcd755dcdcf664b25a7011fd15957f124c29f
+>   https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=b47468a6dbd1b54c44c2edc0f7db64a073d894ea
+> 
+> It seems like this relocation was not documented in glibc until
+> recently, along with many other relocation types:
+> 
+>   https://sourceware.org/git/gitweb.cgi?p=glibc.git;h=a6e8ceb3bb532236e1eecd0bb0ee8e4b7fd5ff7c
+> 
+> I interpret that to mean that the kallsyms patch should work fine since
+> the toolchain can handle these relocations? It is just building the
+> relocs tool against an older glibc or musl that does not have the
+> R_MIPS_PC32 definition that is broken? Or am I misunderstanding
+> something?
 
-Also Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml ?
-and arch/mips/boot/dts/lantiq/danube_easy50712.dts but that needs 
-to go via the MIPS tree
--- 
-pw-bot: cr
+Yes, this patch is only meant to fix building of relocs tool. I don't
+think there are problems about toolchain supporting since R_MIPS_PC32
+has been in binutils for a long time, as Nathan found, since 2004. The
+situation is that it's likely to have a toolchain supporting
+R_MIPS_PC32, while elf.h on the build machine doesn't have its
+definition. And after ff79d31eb536 ("mips: Add support for PC32
+relocations in vmlinux"), the relocs tool started to require a
+definition of R_MIPS_PC32 to build.
+
+> If we get an obvious build breakage report down the road, we can always
+> add another forward fix or back out of the changes altogether.
+> 
+> > Not sure if that is an issue, but it needs calling out. Nathan, any thoughts?
+> > 
+
+Best regards,
+Yao Zi
+
+> > > ---
+> > >  arch/mips/boot/tools/relocs.h | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/arch/mips/boot/tools/relocs.h b/arch/mips/boot/tools/relocs.h
+> > > index 607ff0103064..942981d9ce73 100644
+> > > --- a/arch/mips/boot/tools/relocs.h
+> > > +++ b/arch/mips/boot/tools/relocs.h
+> > > @@ -29,6 +29,13 @@ void die(char *fmt, ...);
+> > >  #define R_MIPS_PC26_S2		61
+> > >  #endif
+> > > 
+> > > +/*
+> > > + * GNU extension that available in glibc only since 2023, not 
+> > > available on musl.
+> > > + */
+> > > +#ifndef R_MIPS_PC32
+> > > +#define R_MIPS_PC32		248
+> > > +#endif
+> > > +
+> > >  #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+> > > 
+> > >  enum symtype {
+> > > -- 
+> > > 2.52.0

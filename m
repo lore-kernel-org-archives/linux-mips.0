@@ -1,114 +1,97 @@
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B342EC562
-	for <linux-mips@vger.kernel.org>; Tue, 10 Feb 2026 19:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA04935B65E;
+	Wed, 11 Feb 2026 09:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770752253; cv=none; b=uoW8NWWGX84td9TwjoyVGs1YoNotvNr/6IToEcbsSaNeAHrzCxnBmZJg5ys/MLka08plDWifZ2GqVeh2kSo83YpPD2CrGknLIO5OJhpP/jXE/BKGuHDsR2wTKFFjAjEcnwaNpVW3tunEo1d6TNMKoZ/ACDFQmiQ72r6K9r6Fnn4=
+	t=1770803077; cv=none; b=dq34JsDNKgbWInj8JE8mMDqVP9pycEYRqypreLjfU24lG3dGeRxraJsFELfDrwDUyDnspfrH3fZSbQqs2pnRyVUW6zRMWkKpBuvGniS7QpRiP4Tw0CYLrepfAMHvfzmWgqoHo25c41fYyMLpjKqxyP002sRdlDTV9XU8X+m0+MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770752253; c=relaxed/simple;
-	bh=fRur79AaHqNQV3fBr4hf5Rrc3u8CGGPgcbZLe1PvlTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mY0sMlZrwo/lWKEDJ2qTYM//GFCq9/w/Tyqhxzj4qCCgdoF7QvKqEKKXMofz9taCsXKitJ/r+GOc7FfndyaUxzN7CNBgdOavUQs0dzkb9rJsnrVWUTZRf+sUfwqpB741Yju0qt/ixLxnOsQukulUiPHjqUFsOhNms4NYDjaWpOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R5fefDvU; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R5fefDvU"
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-4376bd50b01so307934f8f.3
-        for <linux-mips@vger.kernel.org>; Tue, 10 Feb 2026 11:37:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770752250; x=1771357050; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fqDz8Drx8XjDtZc8LsAC+uLDhKgLLYdxTPVtiF/ij7I=;
-        b=R5fefDvUd00un7dIomu5/1O1/MvCC9JM8X4upAFz60c/ub91qrSPIuetKpbXV8gIqi
-         YFQIyDLbTcJi+H4iRKR98ib6Wi6unP8GBW2b0tXYrRr5GwVkJcLlqUfhi2p/ot3Qv61t
-         vurZ0WJYck/zenfGJSe0krk0uxKaQ4n9EfvIbRZYhbS6Ij42Bx47J/YbkWKXHOqvpyIq
-         UzCkfipCNL7e2mC6H4SRCiOWeuDoaSnAqpvZzDrXKQpwh7H+d/ZQQ57ImxsLihOgZw/D
-         ZxsJRacQL7ZMjkUamPG8ethuix9QCUOVfa/mWYeTh/25mymB0VRVXzFhZWaZznQmPEbC
-         un8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770752250; x=1771357050;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fqDz8Drx8XjDtZc8LsAC+uLDhKgLLYdxTPVtiF/ij7I=;
-        b=dY+SGptaknooLqdoRf4rDf4eIIr8HLcveE3n6F4oV1YKVFG+92Z301kopKFrrO6r2k
-         QXlfEJgX2VP5H2lf63Mtjipe5EGREukn8IZYV2pj3sWe1+7jgGIjmr8uwvUmMkbPqPdT
-         C5pyPVV7MEvSPYxfGajxyFlF07V+l5xe3rOvQxjhoKVX7tjYp0scKDTsidNhElgYcok0
-         Y6ERydY9RzATAEvsO0X57PRF5l57vEDnmSMZpUVkE+7/lkBEjX6I7oqHa6RrXYam/n3h
-         RiR11RZv6TVZM3A1jGctcYEdKA0jvQitYP4JN1HInVcLlAxaIa2otGwhwwUN2XAcU8Cj
-         H7Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCXH05SA+J38Ky7SLeN/17JsDCDXrvRIrF0YMVeFGniyyIfA4z9YRYgrNOikbas1WBPZKo5quKvsIRhd@vger.kernel.org
-X-Gm-Message-State: AOJu0YyY8YbaUvmlBgsK2sQqNEklKVKYQ29j/uPqhEI9i8kw+5k/dfex
-	LssF1/ljqXF73A+43ZogmC4Xykl7Qn3FXu3L0honmMB9DuGWd2qo65mNfJirug==
-X-Gm-Gg: AZuq6aLw2O66hmdGbmUqyO6WT9bW1f+b9Ows4Mr1QlL7CHg91+wrPJ42BLpGn0ER9zN
-	vOTi5a4WdNlxcCCPVud/P4aJpVrDWSBYlvxOEK+0Tm21GiyFYf9F2Z2qWZtyrAOZ8uCOGkGVpYr
-	UDi1lFNIAFUo4IWULKMBodAGjA0q3If2QnXpP52G9FnQQyBFFe8ul6Uk5KhmnOBfcR6AEKjDFbk
-	EUwDiaIhwRskjFTbwwjvvT4cz8xq90CLNxvuK+glhZDLU3TSQMGpWRgsvZ6zz0LNA6vqyErW3Dz
-	4nGn9sUCCbmGvvNuYHJIzOLNjvhvqPjV8gOyH1QxMjTTx0sLFZ/y7eFKJJtT2MLqfCUyNaUC1F5
-	LcBBR+YtVUKfhzhTS7Ml4vjNFe91jeHkdiyME8cCPvHAlLvruE5v3Djg2IlycnpTErI3YZr7ufa
-	MKxu+IziUt9d0PGF4=
-X-Received: by 2002:a05:6000:3104:b0:437:771e:9dbd with SMTP id ffacd0b85a97d-4377aba5bd2mr2497517f8f.0.1770752250206;
-        Tue, 10 Feb 2026 11:37:30 -0800 (PST)
-Received: from skbuf ([2a02:2f04:d501:d900:d8ac:c964:9b43:1b13])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-436296bd4a1sm36328520f8f.17.2026.02.10.11.37.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Feb 2026 11:37:29 -0800 (PST)
-Date: Tue, 10 Feb 2026 21:37:26 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: =?utf-8?Q?Gr=C3=A9gory?= Clement <gregory.clement@bootlin.com>,
+	s=arc-20240116; t=1770803077; c=relaxed/simple;
+	bh=yhICwmO9+4DcH8AQoGAZUzq3EQ/BjEbi5SQHou6/SGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JvfrXU2Pab3Q8gRmE+xZXY3xnt0booTAlTr6e81kq8en5T9aE+xD5lPI3p8QOcQryr438OJ8/HctFrDZb6iDFzM8dyDV/Q261/sHMGI2EMGA3liUSlZJtYmlYia1rm88PJtwk1VeSmvv4HrLB6LsDEiYuYBdJ5EKKA5L1p9zDpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from edelgard.fodlan.icenowy.me (unknown [112.94.101.168])
+	by APP-01 (Coremail) with SMTP id qwCowAAHsm1rT4xph_KtBw--.27918S9;
+	Wed, 11 Feb 2026 17:44:24 +0800 (CST)
+From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+To: Thomas Gleixner <tglx@kernel.org>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-clk@vger.kernel.org,
-	=?utf-8?Q?Beno=C3=AEt?= Monin <benoit.monin@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: Re: [PATCH v6 2/8] phy: sort Kconfig and Makefile
-Message-ID: <20260210193726.h6fc65gekida65la@skbuf>
-References: <20260127-macb-phy-v6-0-cdd840588188@bootlin.com>
- <20260127-macb-phy-v6-2-cdd840588188@bootlin.com>
+	Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Yao Zi <me@ziyao.cc>,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Icenowy Zheng <zhengxingda@iscas.ac.cn>
+Subject: [PATCH v2 7/7] MIPS: Loongson64: dts: add node for LS7A PCH LPC
+Date: Wed, 11 Feb 2026 17:44:08 +0800
+Message-ID: <20260211094408.3463916-8-zhengxingda@iscas.ac.cn>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260211094408.3463916-1-zhengxingda@iscas.ac.cn>
+References: <20260211094408.3463916-1-zhengxingda@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260127-macb-phy-v6-2-cdd840588188@bootlin.com>
+X-CM-TRANSID:qwCowAAHsm1rT4xph_KtBw--.27918S9
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw47JryxCrWftrWkGF17KFg_yoWftrX_Ar
+	12kan5WrZ3AasFk34kZrWDCFy7u3y7Awnak3ZrKr15XF9YyrnxGFWUZ3yUAF1fWrWYqr1r
+	t3yvqr4DCF4IkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbvxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
+	IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
+	xhVjvjDU0xZFpf9x0JUQFxUUUUUU=
+X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-Hi Theo,
+Loongson 7A series PCH contain a LPC IRQ controller.
 
-On Tue, Jan 27, 2026 at 06:09:30PM +0100, Théo Lebrun wrote:
-> Neither Kconfig nor Makefile are sorted; reorder them.
-> 
-> $ diff -U100 <(grep ^config drivers/phy/Kconfig) \
->              <(grep ^config drivers/phy/Kconfig | sort)
-> 
-> $ diff -U100 <(grep ^obj-\\$ drivers/phy/Makefile) \
->              <(grep ^obj-\\$ drivers/phy/Makefile | sort)
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
+Add the device tree node of it.
 
-This patch is appreciated, however it no longer applies on top of
-current linux-phy/next.
+Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+---
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Since we are in the merge window currently, would you mind reposting in
-2 weeks (or as RFC in the meantime)?
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index 5269bf0f789b0..84546ebfaf443 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -19,6 +19,15 @@ pic: interrupt-controller@10000000 {
+ 			#interrupt-cells = <2>;
+ 		};
+ 
++		lpc: interrupt-controller@10002000 {
++			compatible = "loongson,ls7a-lpc";
++			reg = <0 0x10002000 0 0x1000>;
++			interrupt-controller;
++			interrupt-parent = <&pic>;
++			interrupts = <19 IRQ_TYPE_LEVEL_HIGH>;
++			#interrupt-cells = <2>;
++		};
++
+ 		ls7a_uart0: serial@10080000 {
+ 			compatible = "ns16550a";
+ 			reg = <0 0x10080000 0 0x100>;
+-- 
+2.52.0
+

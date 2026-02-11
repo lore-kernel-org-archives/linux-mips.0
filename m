@@ -1,22 +1,22 @@
 Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A4035D60E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93C435CBC4;
 	Wed, 11 Feb 2026 09:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770803078; cv=none; b=FB5eJKe+H+Uh1wm9W0diJoxUJJ5cIlDKrXy/RJmALkPK0DTMA5uyAh0w2hICPqDFdsf/Wui+r3JES9dNg+snkmBlTdcc/QcYwTNRxmXOF87ogbAurQs4ONgxTscM+EJcFFRq4Mn1ZHcStzjYIA7XMfBEBUWFzvhpoTpim+cNdlk=
+	t=1770803078; cv=none; b=LepHM+vZO7e+CZHk4gtUJJFsFu5CNIUuix67hcmHgqu2RVVVHnrB9TPn70DAoe6ZGW2rDGSCvzE4IE4TRXwMAnNoDIT0LvY0E7zM2ppCZr8gu1D44WoANMlg4ikLBqJqUiJ7DGUIxrvt0KkKrZ9Pid4CTkC1yaO6+f6yr9iP91g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770803078; c=relaxed/simple;
-	bh=z+/qeUUsgL94VGkWmXSIAUlHsYWz7DdHrW58v2HF+Ug=;
+	bh=I+rssv+0nUdQzsMGGOhrpWMTrsitNqWe+iYZ4xBypRg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FbZuUvPQvmZG1c7mRF4IeLZ1k7bVk2tdZxAB92eE1dC80hpI1ij5k8YDe24kZXVp2rYmpJdyN813P47iQ23OsJcFCqEs2f8U2JpVgpCvqf7Ya4fzueJt3lVoGU/6/2PxHTfHjU+YeQPNn+/q/wtRdQXGwMbITM4YSWj1xZ+ju/k=
+	 MIME-Version; b=SQKPEPSvWcJiR7om9oWWp/IxjtNq3SMIYXTOQPZjEw5AvoQJUSKgr6SsdB0DOHI6J3SgYHlqLUc/ZosZzECyQJOyYZbJHOXPaIkl/olsBkGtWZVxbhLllP3n2dffEJZqr4WEbzFx/N5rHkLIAAma8jTRabv//lEIzIWNtxOUqaQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
 Received: from edelgard.fodlan.icenowy.me (unknown [112.94.101.168])
-	by APP-01 (Coremail) with SMTP id qwCowAAHsm1rT4xph_KtBw--.27918S5;
-	Wed, 11 Feb 2026 17:44:19 +0800 (CST)
+	by APP-01 (Coremail) with SMTP id qwCowAAHsm1rT4xph_KtBw--.27918S3;
+	Wed, 11 Feb 2026 17:44:16 +0800 (CST)
 From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 To: Thomas Gleixner <tglx@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -29,10 +29,14 @@ Cc: Yao Zi <me@ziyao.cc>,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
-	Icenowy Zheng <zhengxingda@iscas.ac.cn>
-Subject: [PATCH v2 3/7] irqchip/loongson-pch-lpc: extract non-ACPI-related code from ACPI init
-Date: Wed, 11 Feb 2026 17:44:04 +0800
-Message-ID: <20260211094408.3463916-4-zhengxingda@iscas.ac.cn>
+	Icenowy Zheng <zhengxingda@iscas.ac.cn>,
+	linux-s390@vger.kernel.org,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: [PATCH v2 1/7] genirq: reserve NR_IRQS_LEGACY IRQs in dynirq by default
+Date: Wed, 11 Feb 2026 17:44:02 +0800
+Message-ID: <20260211094408.3463916-2-zhengxingda@iscas.ac.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260211094408.3463916-1-zhengxingda@iscas.ac.cn>
 References: <20260211094408.3463916-1-zhengxingda@iscas.ac.cn>
@@ -43,145 +47,66 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowAAHsm1rT4xph_KtBw--.27918S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1xAF1rZr48JFW5AF15twb_yoWrXF45pF
-	W5Xa42vF45JF4jgw1kA3WDZ3y3Aw1fKayUCFWfC34fJrnF9r1vkF10y3WDZF4fArW5WF45
-	ZrsYv3W8CrnxAF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-	6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-	AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-	2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x0JUHWlkUUUUU=
+X-CM-TRANSID:qwCowAAHsm1rT4xph_KtBw--.27918S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWkXFW5Zw17XFWDAr1xGrg_yoW8Ar4rpr
+	WxGry3XFWxJw17Za4rXw1S9a43uas5G34IkF90kw4xZwn8Jr1vvwnagF4YqFyFvrWrCF4Y
+	yF1agFy5X34DZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+	ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
+	62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
+	AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
+	0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI
+	1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+	Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
+	CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
+	I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
+	8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73
+	UjIFyTuYvjfU8XdbUUUUU
 X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-A lot of code could be shared between the current ACPI init flow with
-the possible OF init flow.
+Several architectures define NR_IRQS_LEGACY to reserve a low range of IRQ
+numbers for fixed legacy allocations (e.g. ISA interrupts) which should
+not be handed out by the dynamic IRQ allocator.
 
-Extract it to a dedicated function.
+arch_dynirq_lower_bound() exists to enforce this, but today only x86 wires
+it up. In the current boot order this typically works because legacy IRQ
+domains register early and claim the low IRQ numbers first; however, that
+assumption breaks if the legacy controller is probed later.
 
-The re-ordering of parent interrupt acquisition requires the
-architecture code to reserve legacy interrupts from the dynamic
-allocation by overriding arch_dynirq_lower_bound(), otherwise the parent
-of LPC irqchip will be allocated to the intended static range of LPC
-interrupts, which leads to allocation failure of LPC interrupts.
+Make the default arch_dynirq_lower_bound() implementation honour
+NR_IRQS_LEGACY by clamping the allocation start to at least that value.
 
+Architectures that do not define NR_IRQS_LEGACY keep the current behaviour
+(effectively 0). Arm/PowerPC/MIPS/LoongArch use legacy IRQ domains for ISA
+interrupts and benefit from this change. x86 and s390 already provide their
+own implementations.
+
+Cc: linux-s390@vger.kernel.org
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 Tested-by: Yao Zi <me@ziyao.cc>
 ---
- drivers/irqchip/irq-loongson-pch-lpc.c | 52 ++++++++++++++++----------
- 1 file changed, 32 insertions(+), 20 deletions(-)
+ kernel/softirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-index 3a125f3e42873..035c621d1a069 100644
---- a/drivers/irqchip/irq-loongson-pch-lpc.c
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -175,13 +175,10 @@ static struct syscore pch_lpc_syscore = {
- 	.ops = &pch_lpc_syscore_ops,
- };
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 77198911b8dd4..cdc77d52c36b2 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -1184,5 +1184,5 @@ int __init __weak arch_early_irq_init(void)
  
--int __init pch_lpc_acpi_init(struct irq_domain *parent,
--					struct acpi_madt_lpc_pic *acpi_pchlpc)
-+static int __init pch_lpc_init(phys_addr_t addr, unsigned long size,
-+			       struct fwnode_handle *irq_handle, int parent_irq)
+ unsigned int __weak arch_dynirq_lower_bound(unsigned int from)
  {
--	int parent_irq;
- 	struct pch_lpc *priv;
--	struct irq_fwspec fwspec;
--	struct fwnode_handle *irq_handle;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -189,7 +186,7 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 
- 	raw_spin_lock_init(&priv->lpc_lock);
- 
--	priv->base = ioremap(acpi_pchlpc->address, acpi_pchlpc->size);
-+	priv->base = ioremap(addr, size);
- 	if (!priv->base)
- 		goto free_priv;
- 
-@@ -198,12 +195,6 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 		goto iounmap_base;
- 	}
- 
--	irq_handle = irq_domain_alloc_named_fwnode("lpcintc");
--	if (!irq_handle) {
--		pr_err("Unable to allocate domain handle\n");
--		goto iounmap_base;
--	}
--
- 	/*
- 	 * The LPC interrupt controller is a legacy i8259-compatible device,
- 	 * which requires a static 1:1 mapping for IRQs 0-15.
-@@ -213,15 +204,10 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 						    &pch_lpc_domain_ops, priv);
- 	if (!priv->lpc_domain) {
- 		pr_err("Failed to create IRQ domain\n");
--		goto free_irq_handle;
-+		goto iounmap_base;
- 	}
- 	pch_lpc_reset(priv);
- 
--	fwspec.fwnode = parent->fwnode;
--	fwspec.param[0] = acpi_pchlpc->cascade + GSI_MIN_PCH_IRQ;
--	fwspec.param[1] = IRQ_TYPE_LEVEL_HIGH;
--	fwspec.param_count = 2;
--	parent_irq = irq_create_fwspec_mapping(&fwspec);
- 	irq_set_chained_handler_and_data(parent_irq, lpc_irq_dispatch, priv);
- 
- 	pch_lpc_priv = priv;
-@@ -230,8 +216,6 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 
- 	return 0;
- 
--free_irq_handle:
--	irq_domain_free_fwnode(irq_handle);
- iounmap_base:
- 	iounmap(priv->base);
- free_priv:
-@@ -239,3 +223,31 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent,
- 
- 	return -ENOMEM;
+-	return from;
++	return MAX(from, NR_IRQS_LEGACY);
  }
-+
-+int __init pch_lpc_acpi_init(struct irq_domain *parent, struct acpi_madt_lpc_pic *acpi_pchlpc)
-+{
-+	struct fwnode_handle *irq_handle;
-+	struct irq_fwspec fwspec;
-+	int parent_irq, ret;
-+
-+	irq_handle = irq_domain_alloc_named_fwnode("lpcintc");
-+	if (!irq_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		return -ENOMEM;
-+	}
-+
-+	fwspec.fwnode = parent->fwnode;
-+	fwspec.param[0] = acpi_pchlpc->cascade + GSI_MIN_PCH_IRQ;
-+	fwspec.param[1] = IRQ_TYPE_LEVEL_HIGH;
-+	fwspec.param_count = 2;
-+	parent_irq = irq_create_fwspec_mapping(&fwspec);
-+
-+	ret = pch_lpc_init(acpi_pchlpc->address, acpi_pchlpc->size,
-+			   irq_handle, parent_irq);
-+	if (ret) {
-+		irq_domain_free_fwnode(irq_handle);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
 -- 
 2.52.0
 

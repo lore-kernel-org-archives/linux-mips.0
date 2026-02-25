@@ -1,212 +1,118 @@
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF9027E04C;
-	Tue, 24 Feb 2026 17:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E3F2FFF81;
+	Wed, 25 Feb 2026 07:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771953632; cv=none; b=nDIhjc+2Sg+DdKT/pbM8t5DeXetoEVCFZtlwMO+b+QFkpjO7nKSoxh2fyNYoBV8wojRN0mOUB5YMKSNBaPvAVWnRjqWYIxSO/yOjIsxM4HVZDQ9wtbONg/bIpaB2b56RITfXWB1G2VTklZ/habvvxdn//+3JFXCtxzyoKs7XBvI=
+	t=1772005269; cv=none; b=agGz1jLQD2VchGYxMC0dFbIuKd8+FQtUuyoWp5RTpAx+NyeSoN0802GYdaHvZ3AI4MDcvoX6cPGOwHqsXAf0izRgclkywsD/zH9cekqv5H7fEFKeyaEZdxY36ISAlSA8AR01r6NFVr9BBgfMXBtpISynE+l1MlCcpvU2LU06VEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771953632; c=relaxed/simple;
-	bh=DUVNcM4ZpiXdZoj7Fqc0w7Z8CDbVSGq7Er36MdyuXgc=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=LcQCdgnhcEoU7ZOdIMAfPP9OXZRYZSA9YmwdkwT3ftwsfIj9xoBRH95vGQcF5DLKxQyEQH0CLJbu3kKj+LmByO7QJ530cHLR/JihqVA/74mCOCR8OB1YF6l7VdvTBQecqsOG7IcTeZ+Ev2LS4cacYN9/w9erv65F8JNNlEE9goo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=izeIcZpv; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="izeIcZpv"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 1C3F04E41097;
-	Tue, 24 Feb 2026 17:20:28 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id CD97C5FD9D;
-	Tue, 24 Feb 2026 17:20:27 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1B5B6103691E0;
-	Tue, 24 Feb 2026 18:20:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1771953626; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=yExKHNVxFpAWclIgqpsx9aPnPMbndULosVf0raAPb3E=;
-	b=izeIcZpv+zsH5ELNbOIzYlKCtln4IHs8bL9rxTlwSelk/V31o5uggfMUVFBKn/HZkqFQR1
-	B3EjMM2VOo2QAZCf/5hybFnRzacICR/WOCQrqVciux9Lq2xZgTHaatWPJcjfaQNE0sgObT
-	nIsEl/tqis/DAsnbs/ghu2yJMekY4WC3aTFFIXCkF4T+ygxoCDG2Re9mFpwqQjJxU20qbw
-	zuulRut0W17M1O+/7iOa8dWt/Mpc0IZnQfwkZsHLddTE7c5R4h2tdH2iJRlNwMhiF/TCkc
-	l8wXwmQ52SmerOLUpdQELx1AQ/Rac3tknpWBCfrgvCjLbb+O0rJionLKZUXTag==
+	s=arc-20240116; t=1772005269; c=relaxed/simple;
+	bh=+zavlZAcI3vqcaccCnPJtVeS9jrVg0d/AQOQW8OdM8M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VE05fZyv1Kan+TsTastNeOCKdNw7mEKEyunkhq4kDkAP0a6djEFZmSp0OIO5qN3x+Yxv+ko1GSpZ3RHeqzLGA7nsasfvmucql9v9lSZ0ew7pd98WrOqEv4d5HwKlcT7z/MGYuv3E3ekm3xW7UTvohSVwIdE6LU18nnvQhL77g6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [223.64.68.227])
+	by gateway (Coremail) with SMTP id _____8CxIMCQp55p6P0UAA--.5161S3;
+	Wed, 25 Feb 2026 15:41:04 +0800 (CST)
+Received: from kernelserver (unknown [223.64.68.227])
+	by front1 (Coremail) with SMTP id qMiowJCxGOCIp55pFMRKAA--.9627S4;
+	Wed, 25 Feb 2026 15:41:03 +0800 (CST)
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+To: Binbin Zhou <zhoubb.aaron@gmail.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@kernel.org>,
+	dmaengine@vger.kernel.org
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	linux-mips@vger.kernel.org,
+	Binbin Zhou <zhoubinbin@loongson.cn>,
+	Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v3 2/6] dmaengine: loongson: loongson2-apb: Convert to dmaenginem_async_device_register()
+Date: Wed, 25 Feb 2026 15:40:40 +0800
+Message-ID: <ff40ab8f25bac37cd4528f5189f55d86d6d9717c.1771989596.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <cover.1771989595.git.zhoubinbin@loongson.cn>
+References: <cover.1771989595.git.zhoubinbin@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 24 Feb 2026 18:20:21 +0100
-Message-Id: <DGND4VXM9X0N.2CP1VBD8E128M@bootlin.com>
-Cc: "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Rob
- Herring" <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
- "Conor Dooley" <conor+dt@kernel.org>, "Vinod Koul" <vkoul@kernel.org>,
- "Kishon Vijay Abraham I" <kishon@kernel.org>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Philipp
- Zabel" <p.zabel@pengutronix.de>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, "Neil Armstrong" <neil.armstrong@linaro.org>,
- <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
- <linux-clk@vger.kernel.org>, =?utf-8?q?Beno=C3=AEt_Monin?=
- <benoit.monin@bootlin.com>, "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Luca Ceresoli"
- <luca.ceresoli@bootlin.com>
-To: "Vladimir Oltean" <olteanv@gmail.com>, =?utf-8?q?Th=C3=A9o_Lebrun?=
- <theo.lebrun@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v6 3/8] phy: Add driver for EyeQ5 Ethernet PHY wrapper
-X-Mailer: aerc 0.21.0-0-g5549850facc2
-References: <20260127-macb-phy-v6-0-cdd840588188@bootlin.com>
- <20260127-macb-phy-v6-3-cdd840588188@bootlin.com>
- <20260210193516.temrg46yozxma7xb@skbuf>
-In-Reply-To: <20260210193516.temrg46yozxma7xb@skbuf>
-X-Last-TLS-Session-Version: TLSv1.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJCxGOCIp55pFMRKAA--.9627S4
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/1tbiAQEJCGmejz8BjwAAsI
+X-Coremail-Antispam: 1Uk129KBj93XoW7WF4xZw4xKw1xKr43uw4rWFX_yoW8WFy5pa
+	s3Ca4fGrW0qF429ws8JrWUZFy3KFy3XayxZay7Jw1UC3sxJ340gF18JFyxXF4UArW8Kaya
+	qa4vkayruF4UCrcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWr
+	XVW3AwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04
+	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j6VbgUUUUU=
 
-Hello Vladimir,
+Use the dmaenginem_async_device_register() helper function to simplify
+the probe routine.
 
-On Tue Feb 10, 2026 at 8:35 PM CET, Vladimir Oltean wrote:
-> On Tue, Jan 27, 2026 at 06:09:31PM +0100, Th=C3=A9o Lebrun wrote:
->> +static int eq5_phy_init(struct phy *phy)
->> +{
->> +	struct eq5_phy_inst *inst =3D phy_get_drvdata(phy);
->> +	struct eq5_phy_private *priv =3D inst->priv;
->> +	struct device *dev =3D priv->dev;
->> +	u32 reg;
->> +
->> +	dev_dbg(dev, "phy_init(inst=3D%td)\n", inst - priv->phys);
->
-> Nitpick: can you please remove the debugging prints and maybe add some
-> trace points to the PHY core if you feel strongly about having some
-> introspection?
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+---
+ drivers/dma/loongson/loongson2-apb-dma.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Ack!
-
->> +
->> +	writel(0, inst->gp);
->> +	writel(0, inst->sgmii);
->> +
->> +	udelay(5);
->
-> Could you please add a macro or comment hinting at the origin of the
-> magic number 5 here? You could also place these 3 lines in a common
-> helper, also called from eq5_phy_exit(), to avoid minor code
-> duplication.
-
-ACK, something named `eq5_phy_reinit()`.
-
-I don't have precise explanation for the 5=C2=B5s value; I only know it is
-time to let the PHY settle before further register config writes.
-Is this enough?
-
-   udelay(5); /* settling time */
-
->> +
->> +	reg =3D readl(inst->gp) | EQ5_GP_TX_SWRST_DIS | EQ5_GP_TX_M_CLKE |
->
-> When you write 0 to inst->gp and then read it back, do you expect to
-> (a) get back 0 or
-> (b) are some fields non-resetting?
->
-> I see both as inconsistent, since if (a), you can remove the
-> readl(inst->gp) and expect the same result. And if (b), it also
-> shouldn't matter if you write zeroes a second time, if it was fine the
-> first time?
->
-> Shortly said, is readl(inst->gp) really needed?
-
-Some fields are non-resetting (BIT 30).
-Will drop. I was trying to play it safe for no good reason.
-
->
->> +	      EQ5_GP_SYS_SWRST_DIS | EQ5_GP_SYS_M_CLKE |
->> +	      FIELD_PREP(EQ5_GP_RGMII_DRV, 0x9);
->
-> Quick sanity check on your proposal to use #phy-cells =3D <1>. This is no=
-t
-> a request to change anything.
->
-> What if you need to customize the RGMII drive strength (or some other
-> setting, maybe SGMII polarity if that is available) per lane, for a
-> particular board? How would you do that if each PHY does not have its
-> own OF node?
-
-I have no knowledge of what that 0x9 stands for, I didn't see the point
-exposing it to devicetree. We could plan for the future and add a cell
-or create subnodes, but here I kept it simple stupid. Is it OK?
-
->> +	writel(reg, inst->gp);
->> +
->> +	return 0;
->> +}
->> +
->> +static int eq5_phy_exit(struct phy *phy)
->> +{
->> +	struct eq5_phy_inst *inst =3D phy_get_drvdata(phy);
->> +	struct eq5_phy_private *priv =3D inst->priv;
->> +	struct device *dev =3D priv->dev;
->> +
->> +	dev_dbg(dev, "phy_exit(inst=3D%td)\n", inst - priv->phys);
->> +
->> +	writel(0, inst->gp);
->> +	writel(0, inst->sgmii);
->> +	udelay(5);
->> +
->> +	return 0;
->> +}
->> +
->> +static int eq5_phy_set_mode(struct phy *phy, enum phy_mode mode, int su=
-bmode)
->> +{
->> +	struct eq5_phy_inst *inst =3D phy_get_drvdata(phy);
->> +	struct eq5_phy_private *priv =3D inst->priv;
->> +	struct device *dev =3D priv->dev;
->> +
->> +	dev_dbg(dev, "phy_set_mode(inst=3D%td, mode=3D%d, submode=3D%d)\n",
->> +		inst - priv->phys, mode, submode);
->> +
->> +	if (mode !=3D PHY_MODE_ETHERNET)
->> +		return -EOPNOTSUPP;
->> +
->> +	if (!phy_interface_mode_is_rgmii(submode) &&
->> +	    submode !=3D PHY_INTERFACE_MODE_SGMII)
->> +		return -EOPNOTSUPP;
->
-> Both PHYs are equal in capabilities, and support both RGMII and SGMII,
-> correct? I see the driver is implemented as if they were, but it doesn't
-> hurt to ask.
-
-Datasheet indicates 0 can do SGMII/RGMII and 1 can do only RGMII.
-Did you imply that the driver code should reject SGMII on PHY 1
-if it ever gets asked for?
-
->> +
->> +	inst->phy_interface =3D submode;
->
-> Short story: don't rely on the phy_set_mode_ext() -> phy_power_on() order=
-.
-> Implement the driver so that it works the other way around too.
->
-> Long story:
-> https://lore.kernel.org/netdev/aXzFH09AeIRawCwU@shell.armlinux.org.uk/
-
-I wouldn't mind, but what should phy_power_on() do if no submode has
-been provided through phy_set_mode_ext() yet? Guess one? Fail?
-
-Also our PHY will need to be reset to change its mode if we do
-power_on() followed by set_mode(), which in practice is never something
-we want. Maybe there is a flag to indicate that we require a submode to
-power on?
-
-Thanks for the extensive review Vladimir,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/drivers/dma/loongson/loongson2-apb-dma.c b/drivers/dma/loongson/loongson2-apb-dma.c
+index fc7d9f4a96ec..2d16842e1658 100644
+--- a/drivers/dma/loongson/loongson2-apb-dma.c
++++ b/drivers/dma/loongson/loongson2-apb-dma.c
+@@ -650,21 +650,19 @@ static int ls2x_dma_probe(struct platform_device *pdev)
+ 	ddev->dst_addr_widths = LDMA_SLAVE_BUSWIDTHS;
+ 	ddev->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 
+-	ret = dma_async_device_register(&priv->ddev);
++	ret = dmaenginem_async_device_register(&priv->ddev);
+ 	if (ret < 0)
+ 		goto disable_clk;
+ 
+ 	ret = of_dma_controller_register(dev->of_node, of_dma_xlate_by_chan_id, priv);
+ 	if (ret < 0)
+-		goto unregister_dmac;
++		goto disable_clk;
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 
+ 	dev_info(dev, "Loongson LS2X APB DMA driver registered successfully.\n");
+ 	return 0;
+ 
+-unregister_dmac:
+-	dma_async_device_unregister(&priv->ddev);
+ disable_clk:
+ 	clk_disable_unprepare(priv->dma_clk);
+ 
+@@ -680,7 +678,6 @@ static void ls2x_dma_remove(struct platform_device *pdev)
+ 	struct ls2x_dma_priv *priv = platform_get_drvdata(pdev);
+ 
+ 	of_dma_controller_free(pdev->dev.of_node);
+-	dma_async_device_unregister(&priv->ddev);
+ 	clk_disable_unprepare(priv->dma_clk);
+ }
+ 
+-- 
+2.52.0
 

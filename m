@@ -1,55 +1,55 @@
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
+Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D8C36C0B9;
-	Fri, 27 Feb 2026 08:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D286C36CE03;
+	Fri, 27 Feb 2026 08:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772182321; cv=none; b=Ly/RdF8A8jwmGdMLgDj53E8HQve0uPxK6SwL1OR2t5ZKAB9j3AWoLrazETxG5ZpkzzXVNhj2xQxjoZG0AeZTlpzWoYZfcchsCIB31UblpF867/y7IM3fVW07OcT9xEUvKp30rB88+UUd8WTL6uQRkLIVWnaQQ+fDKOZK8m5cZ8E=
+	t=1772182738; cv=none; b=BcfOtDV7bkwqSAWAG71WvWKa7SCzW0l2oz3fL4YtORyiaYJG0qeNtsO3Opq0DPUdEaTkjAckIS80y/deuARlfLebsEWOBNXYijJpuYWFGSjFpQ5aGKOXTlDpmQ3tSFtwI01WMiX5xx97lWyA46FtCMxP+rKIdb28DynwX9bJ6HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772182321; c=relaxed/simple;
-	bh=+KCsio2wrHwIiV5/dMoK3Tw/3j2a8KEfcABD565rOG4=;
+	s=arc-20240116; t=1772182738; c=relaxed/simple;
+	bh=Wc4JdZqzTPrSWBdKeH1Rt/v4PYqJ31SJ3lwRj447W+4=;
 	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=dAV/QWCdqhus9AC+v59pM94Munp07qI4WB7XQf/nc/PdGouD/U29xay1AbwwcL3bGxmOU3RVO7V01VJp4puHHUtZhRPQjSrxflHiI33f87JMAAo4O58TnV8XNHDnE+Uafr4YtN5jVaVtX6Yerug2mMeCpNXteCuuieUW6TcMVjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Blq25ZTI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JGOXmZzM; arc=none smtp.client-ip=202.12.124.158
+	 Subject:Content-Type; b=AW9TOEWKdgqTL4E6P9JuPukPZdiuJJ7NkgN0jl30lLgn0YPEcfP2kHh3ZP/RbZt5+eBSpderlPZ+177Iru5Mm58R404P7UG72Ob6fZRwXhocpFT4aPCJ64FijgTS1pIdj2QOjvNpXvG0FmPP2Fy+ZZcaGzCA/e+UbGL18TQZm74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=B7eMZx4h; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WJzCKqPG; arc=none smtp.client-ip=202.12.124.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Blq25ZTI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JGOXmZzM"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="B7eMZx4h";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WJzCKqPG"
 Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id B193B7A0090;
-	Fri, 27 Feb 2026 03:51:58 -0500 (EST)
+	by mailfout.stl.internal (Postfix) with ESMTP id AAFD61D00127;
+	Fri, 27 Feb 2026 03:58:56 -0500 (EST)
 Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Fri, 27 Feb 2026 03:51:59 -0500
+  by phl-compute-04.internal (MEProxy); Fri, 27 Feb 2026 03:58:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
 	:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1772182318;
-	 x=1772268718; bh=+KCsio2wrHwIiV5/dMoK3Tw/3j2a8KEfcABD565rOG4=; b=
-	Blq25ZTIr2oecLSxKNEUueJHjo4Evtx26CAq9L8MjT0z2zDKnwTIxAIj/Zu5djrd
-	7qzXiXqL/PwjOp5EfNRC8OPb34ozFWwrtdfMyw1HboBSWlZfa9EEhfdDoSm6aBKQ
-	VGoZUgtcBIFNI61PU7/lbEe+C75i5BAGouT1SL+9PDRH1LhPxwTVTZjOtEBCWYWe
-	nnlXz6pqvrBQvkr2UQxUiL7NIlzwXbsSAI6ceOjzrd1PeFQ775FgObKnWtcxVPSN
-	6aOTxej5pe9OSwP+/TqZJT4k3hejBMbsYW8iXX8fXFR58C9gniRSbZAoUiqXoaMZ
-	nxrLJPWqZBZoZ/VVr3MNcQ==
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1772182736;
+	 x=1772269136; bh=nVR0/jHCHCTybsnFppLJhwJIYngbvSaKTgEl/9JqNSo=; b=
+	B7eMZx4hKVMLP4/fUiBh5TwyL0/COXRDHA3c32Ydsu5eXpS7xYjIi80vE2HFdW3u
+	dytOj2XUHXBdqdO7IwWHRAZmOzKKfdUqltsNHWshkKpVc5IhR0mXW7TXMuAz3CP3
+	iz0rm/K+wZmyU3dNxo/SCg8l5pskcKRR2B58cinrX8AI6OE5KInXOancwZjGpjDW
+	b5vxVDZs9Gv04y6d4/Dl7KYbPv1Q42h0OYKJqQxBlvc1syWIsd/fad3vyr2HNCob
+	Sw63Ja2x4rfLahhkp8QVi7W6JaDgm2u8n2DJVn0zhjCOaiUjmD7PReXWSLUgS743
+	Etjjz/VSUL8uTZ430bDGPQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1772182318; x=
-	1772268718; bh=+KCsio2wrHwIiV5/dMoK3Tw/3j2a8KEfcABD565rOG4=; b=J
-	GOXmZzMJnGKWMmUc0ue+u2pXOBIrYTmAxLuSpTsDuTA5n+4c/vPWyCj15FGwcRVK
-	0fkFIm6TdWSW3J7Nn0U9/1Z2eTnPTMgxfIpBU6Ul6Mybmo0ZOpuUoqoXzqkLFO76
-	13lDWTgKrLRbY2anDPqF1c8UO1H3I+sgEXDTXTjMCVg7G7fFfDWQNNYFyIc+4ST/
-	+l6aNHJ1K6YEyzCd19lv7Ov8bpTEojUBLObCB4Jb3/vYDuTPbyNnKxXYyQxabwbK
-	rwcWaGKjkbdZa54IgyKm0QuDgPq5L8lZorSgZ5UUzU1QXmpef0pXIhRE9VC2G4jz
-	BUeuwyKS/6B4Zl91OHsxQ==
-X-ME-Sender: <xms:LluhaSAzAZPE6KRpH-aznGnF-edp0VO-ppRwUVRjiDU_PLNE5eifNw>
-    <xme:LluhaXVYgGg7XgYWCfF-hlJ8ZwLAiAe7nZuMDZj6Q6diFbueVzkr-FShp7OpwZj4_
-    OGHjawiQzyyZPvBUw2XeIV1qQBo18Uem0bu1iyHO03nIT4-gCKjs44>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgeekheeiucetufdoteggodetrf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1772182736; x=
+	1772269136; bh=nVR0/jHCHCTybsnFppLJhwJIYngbvSaKTgEl/9JqNSo=; b=W
+	JzCKqPGj+ok5fdimIrdSvoG0b2rhDbFbxg+Z4oV6TBEWwTbmv7GJpVuaJ10WAqhb
+	a3orhxuqeIogyQbj+bR/3KK1iPsv0AlMfWsuo54nZnM8fNcXNLFAwa4b969gaqU+
+	EI7GCT6TXi3Frms37bg7jozgJCHJOkDaajfuoUbLMW9+qJSybjnv+qlYXW3dAbgs
+	SBLBMj9/QVwsTv0Xws/GSeZi0XB50dN8V67LhpCQ5bgSE7GnVKCzgJ1K8UUxOH/J
+	23SCTtoUuKenXzJOTIjZ4ZCYrEhH+SRCWXn3BEfNecm2SSvMH9D95xKdd7Dm0rx0
+	Sja6fef77et3Z2hHGr42Q==
+X-ME-Sender: <xms:0FyhaQrK2tHArSP0tjf6QtNa4PmQw11xpvTel2O84eAuXPW41C7Tgw>
+    <xme:0FyhaRfWc7T5yfllWxtssXaS-uATvEDw1YPopV76YXZBxmpw_oh0Pjg5cgfMppFGR
+    jr--RmHJ-gCaZ_64RHyEukfkNFYJvYI1kfdQ86lzN--SxpWxLIULTAs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgeekheejucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedftehrnhgu
@@ -65,14 +65,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgeekheeiucetufdote
     gtphhtthhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtghpthhtoheptghhlhgv
     rhhohieskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhuthhosehkvghrnhgvlhdroh
     hrgh
-X-ME-Proxy: <xmx:Lluhaa_Z-NYZFJU8JxieTGZ8X3mA1PQy2-Wi-UNa4EOIGcjh0y3j-A>
-    <xmx:LluhaWSQ7VCUZ699wMGLPT878vS4RJq1aVEnB16IRyXAvSX5DB0rsQ>
-    <xmx:LluhaQDvCoc1WHlNRQytR8CUzFe0vNQ5VFFCAmDi1T64p4zRiMCv7g>
-    <xmx:LluhaXa2sqhlcTFagSv8ygCNJkXiUVnmn1YeXZkzLMSw8yQbGYA5lg>
-    <xmx:LluhafC83NJGThoiRMmADNRyjJkNd33U8dE4gx47yWse_NbXWivPWLf4>
+X-ME-Proxy: <xmx:0FyhaQr1uk4-oN-CjkdyXVpeCTOgFy2L34CbK9ea3nr5SOtFxcj3hA>
+    <xmx:0FyhabhEShFKEkqU8z1w5P_Qk6OAfURF76oXBGYYX4nEu5yxa8I_YQ>
+    <xmx:0FyhaSyjKFiFOn0MP6LM4SXCmeLmyfnKiew9Y5uoziXjb-xyU5UX8A>
+    <xmx:0FyhaZ_RGa3TuNh5CDrfbBzUxxwVNHibdt9uXrhzeqhL9toSU289Pg>
+    <xmx:0FyhaR098kJ6FLglrpM-x-UirrOo6DBbRUiUGfGAseQHx1zY4r1LSwgC>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 3B969700065; Fri, 27 Feb 2026 03:51:58 -0500 (EST)
+	id 1E039700065; Fri, 27 Feb 2026 03:58:56 -0500 (EST)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -81,7 +81,7 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-ThreadId: ARwL1vy566MZ
-Date: Fri, 27 Feb 2026 09:51:37 +0100
+Date: Fri, 27 Feb 2026 09:58:35 +0100
 From: "Arnd Bergmann" <arnd@arndb.de>
 To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
  "Andy Lutomirski" <luto@kernel.org>, "Thomas Gleixner" <tglx@kernel.org>,
@@ -97,25 +97,38 @@ To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
  "Vincenzo Frascino" <vincenzo.frascino@arm.com>
 Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org
-Message-Id: <c29f5e70-bd17-4e1b-a005-5a3282e70075@app.fastmail.com>
-In-Reply-To: 
- <20260227-vdso-compat_32bit_time-v1-1-3f0286a7bac3@linutronix.de>
+Message-Id: <03cd1e21-a2f2-46a1-a674-cbaef9712016@app.fastmail.com>
+In-Reply-To: <c29f5e70-bd17-4e1b-a005-5a3282e70075@app.fastmail.com>
 References: <20260227-vdso-compat_32bit_time-v1-0-3f0286a7bac3@linutronix.de>
  <20260227-vdso-compat_32bit_time-v1-1-3f0286a7bac3@linutronix.de>
+ <c29f5e70-bd17-4e1b-a005-5a3282e70075@app.fastmail.com>
 Subject: Re: [PATCH 1/7] x86/vdso: Respect COMPAT_32BIT_TIME
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 27, 2026, at 07:57, Thomas Wei=C3=9Fschuh wrote:
-> If CONFIG_COMPAT_32BIT_TIME is disabled then the vDSO should not
-> provide any 32-bit time related functionality. This is the intended
-> effect of the kconfig option and also the fallback system calls would
-> also not be implemented.
+On Fri, Feb 27, 2026, at 09:51, Arnd Bergmann wrote:
+> On Fri, Feb 27, 2026, at 07:57, Thomas Wei=C3=9Fschuh wrote:
+>> If CONFIG_COMPAT_32BIT_TIME is disabled then the vDSO should not
+>> provide any 32-bit time related functionality. This is the intended
+>> effect of the kconfig option and also the fallback system calls would
+>> also not be implemented.
+>>
+>> Currently the kconfig option does not affect the gettimeofday() sysca=
+ll,
+>> so also keep that in the vDSO.
+>>
+>> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
 >
-> Currently the kconfig option does not affect the gettimeofday() syscal=
-l,
-> so also keep that in the vDSO.
->
-> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Actually, I need to revise that. I think gettimeofday() should be
+guarded by CONFIG_COMPAT_32BIT_TIME for both the syscall and the
+vdso. Looking back at the history, I see that we added the #ifdef
+for each syscall we modified to have both time32 and time64 version.
+
+The thing about gettimeofday() and time() is that they don't have
+a 64-bit version and libc implementations are expected to call
+clock_gettime() instead. The result was that there was never a
+patch to turn the off either.
+
+     Arnd

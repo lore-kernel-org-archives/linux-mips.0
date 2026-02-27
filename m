@@ -1,76 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883541F4C8E
-	for <linux-mips@vger.kernel.org>; Fri, 27 Feb 2026 00:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C4B3876D0;
+	Fri, 27 Feb 2026 06:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772151284; cv=none; b=f0spD/syQUzsConl95FgZzncHgqXKUYkHSbDQ89nfG0hqz/mSVyYlMjhkqbyfs6DjdWRXXr5vYbaOHFjR7FUyCuCd7Eb+D6IILHR722lDmbUjVUff4vUE20ub4lUXX5QOZmSLXnV8oM2I45WzBy3AhrLx9M7tmdxSvGK2YlR8J8=
+	t=1772174685; cv=none; b=Qs68oTLrmtfxGctHVLmcPQFhb+UJW0Y1EnvCtxHu2WDv4hRnjNyvisiJr3YCzMRfUgIKYAw99mlkVJTOVu3ppBixiy9b4xhCPRmhCe18bNHwfBocyxWMUlCXFligmozH537wwfMeSiIoq4oag/9ZFvCDDYwy+H+b6GNzf3LPfqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772151284; c=relaxed/simple;
-	bh=rQ5BXVxUVHiinx/9etXdjLyj8TBe6JBCnlqh0HwlpdA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CMO0vcB/5u6x036r2+F/rxxbvoNbnMtePO02ICRW7yEyozbrGiiCRXRdvq6pg5iOpg2gNstZNEcwDGaYleF9hGrvdgwlBT3xme5JqBI1cugbXfWZQIkguJbV0nSSEFwf7WTuAYVE+yJwuzFQNSjIQ4SUYbURmDrhYBSwWKW49Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GgGw/Drp; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772174685; c=relaxed/simple;
+	bh=Eaw7e67Q2te9EZvmR96CdfmDp1KIfoTuR5UbP8dxulc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=XPE9Qa3mIBR9ioDKdWyo5BkRONSSYqds0H+LyA3a5kzBh4bKB665xMqHLNJsrkBKmM/r6XieEHIUSEhPeSU/qJ1jyZpEKHvZrvNxUEffmVB/x0ctG5fC01ezjK2hkvvTT10EPKCCrVUXQ9JBvE2AO8v02YjVggWKyQpDPshPgTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=acXbSzcl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=64N+lwSN; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GgGw/Drp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C43C2BCB9
-	for <linux-mips@vger.kernel.org>; Fri, 27 Feb 2026 00:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772151284;
-	bh=rQ5BXVxUVHiinx/9etXdjLyj8TBe6JBCnlqh0HwlpdA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GgGw/Drp/yzeK9KJqNiuHu8XTgilYOaWwtYCtjoIqBFmTzi5uqABr5T2RqeUsuF5o
-	 ppPYfHELv7ZxT3xibfq0swgSCEApScUmTnkLUC4EwuYPANpxVFV1XWvw7vUBfJvOXS
-	 ABUFreoVuhW14L6SiGaXrh7yrXAl6AmAZiiq2hgva1ANaCdQAy6dXChkUWT1tLFHg3
-	 7tOZAtOZdV5F4CcrI1BGeD79W+l/7P6bDGJ4akPBkl9l+j6JN07cEPLsgB8Ghv1u60
-	 LYYTTT50kCO3I3L+ieW++pDik8doQhJw62467T5jwpp7bF2Om+mNYiZcKuwBpBBJbG
-	 Vj6JdjQSV2khg==
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-798578e2918so13879027b3.2
-        for <linux-mips@vger.kernel.org>; Thu, 26 Feb 2026 16:14:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUSG1YeJg4qJJ7pIHBwfRSzSLNoEvbYDuT9v/YkC0KCgcpULbrF5nxxAHxKMeHxpi2/lh88J8V62uZJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsPtCP0J/FDuufU5VihnPQBLoe9HbqMDvCxWuTfrS4YdM6Ir+O
-	Y5eWPZNI/Ya9u6tj5pz1jOqop7q3E0RbyajEvNzT72gEfZlPcH8QEld5DlK8b3LCorIJaJOugXS
-	2QweLbigt+Q2lpjRa09gRDR+wLXQHPNc=
-X-Received: by 2002:a05:690c:6610:b0:798:6d23:17d3 with SMTP id
- 00721157ae682-7988564c5e3mr10555717b3.61.1772151283680; Thu, 26 Feb 2026
- 16:14:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="acXbSzcl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="64N+lwSN"
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1772174682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdFUUlU8YM0o6VyeNKRzp/DOfUbD4WRTS4ygszyQZTo=;
+	b=acXbSzclUrurp80PG0+fAyoUBWKSjXDVZqaEtoj8/RVPP+PLjt3GupUBLm3PILwGEDcmm6
+	gmWi/+1jNyzdF+2sua8Q+R95D+RDd3PHW9wP/4vFUakNybRw4IJmUwJIuijbCOSu8qrWuC
+	OX+b2BWAsQKuMCRMQraJ0m1p0psP86UgWSnAvf2UvZmmZUvyySDN+iwvZpY0O7r2/ZDwYK
+	FCRfX5Yn8U/Oe21BUkcqS04TcsqWWw55ob8FZySl4dTnorTelm0ROWW8EfBvbTq/LkKJCt
+	RwzHhuz634UZB6QRgbh3Kd9qbhl0kRB5IWvHp9LGIgUEaY4UM0fUgGGEZ6ifXA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1772174682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdFUUlU8YM0o6VyeNKRzp/DOfUbD4WRTS4ygszyQZTo=;
+	b=64N+lwSNZac8Cf0Ey5PbaJQV7uGBG7blCdI+GkkIljVqGkR9CCp5iKvDa84caXy0u2IFPj
+	MXM396HbFbJ2o+AQ==
+Date: Fri, 27 Feb 2026 07:44:28 +0100
+Subject: [PATCH v2 02/15] arm64: vDSO: compat_gettimeofday: Add explicit
+ includes
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260226-eyeq6lplus-v3-0-9cbeb59268b0@bootlin.com>
-In-Reply-To: <20260226-eyeq6lplus-v3-0-9cbeb59268b0@bootlin.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Fri, 27 Feb 2026 01:14:32 +0100
-X-Gmail-Original-Message-ID: <CAD++jLmEU=PkmsPOksF9dtV5UpH3S9X=VJey8ZEf5wdsPbsNvg@mail.gmail.com>
-X-Gm-Features: AaiRm51UQuRyWgPHPv_4d3kto0BL8UVCMzhYwuXDM3xAvEcO-lHxkGc_S7Y28qc
-Message-ID: <CAD++jLmEU=PkmsPOksF9dtV5UpH3S9X=VJey8ZEf5wdsPbsNvg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/13] Introducing the Mobileye EyeQ6Lplus SoC
-To: =?UTF-8?Q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Gregory CLEMENT <gregory.clement@bootlin.com>, =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-mips@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260227-vdso-header-cleanups-v2-2-35d60acf7410@linutronix.de>
+References: <20260227-vdso-header-cleanups-v2-0-35d60acf7410@linutronix.de>
+In-Reply-To: <20260227-vdso-header-cleanups-v2-0-35d60acf7410@linutronix.de>
+To: Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+ Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+ linux-mips@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772174681; l=973;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=Eaw7e67Q2te9EZvmR96CdfmDp1KIfoTuR5UbP8dxulc=;
+ b=3OuahSNReBiPRuqoaLBpLN/JEX8iDVn/BcKBSiE+DA//SxSqiQPPogs7Z07/0DvpuO59Q7uZF
+ J8H2ZtJgBREA4Y4SXfmQMnWLVugQZQSFq5ODdBR0W+0eK3JdfsNyOwv
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-Hi Benoit,
+The reference to VDSO_CLOCKMODE_ARCHTIMER requires vdso/clocksource.h and
+'struct old_timespec32' requires vdso/time32.h. Currently these headers
+are included transitively, but those transitive inclusions are about to go
+away.
 
-On Thu, Feb 26, 2026 at 2:34=E2=80=AFPM Beno=C3=AEt Monin <benoit.monin@boo=
-tlin.com> wrote:
+Explicitly include the headers.
 
->       pinctrl: eyeq5: Use match data
->       pinctrl: eyeq5: Add Mobileye EyeQ6Lplus OLB
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+---
+ arch/arm64/include/asm/vdso/compat_gettimeofday.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Can I just apply these two to the pinctrl tree?
+diff --git a/arch/arm64/include/asm/vdso/compat_gettimeofday.h b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+index 0d513f924321..a03e34b572f1 100644
+--- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
++++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+@@ -7,6 +7,9 @@
+ 
+ #ifndef __ASSEMBLER__
+ 
++#include <vdso/clocksource.h>
++#include <vdso/time32.h>
++
+ #include <asm/barrier.h>
+ #include <asm/unistd_compat_32.h>
+ #include <asm/errno.h>
 
-Yours,
-Linus Walleij
+-- 
+2.53.0
+

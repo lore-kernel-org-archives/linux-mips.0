@@ -1,22 +1,22 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6956A3D903C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7AC3E9F80;
 	Fri, 27 Feb 2026 06:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772175472; cv=none; b=nDLX4xEpJp7PhKBRmDkP45IgtyJJD0teufKK1cjxW7wp9uO2IeDSfZGZUmSMoV+E8Z65+ioG7NcRpEULVZIpo5S9tPhUaeH4TgOZH8kG5H48SsoHXVzHJIxOVX8o7+5OnKz+da6EKZKpES0HHjxksq7yNKJx59S9dvy6y0zUGUo=
+	t=1772175472; cv=none; b=Of6egeUo/tAb0SVehmjlp56ws210OGP2intlmpn9qjiwAG/i2Jcx6qURFhIPiBRdNGHtr1zVnd+vf9d9lanLdQ/u+lhL7oRYpb8yqZZYvf3bc4QfkUnJxsCrNwZ7mmviqfpNPXsGlsyYfu0QGV8HhPNuhm5rYj+wIvNfGWZReZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1772175472; c=relaxed/simple;
-	bh=Xv3eH/9VHgNpvqglSUhIiLYYyy1PpoIoaT4yuSsTW5M=;
+	bh=oahUDDzRXbGFMlkc0RC1a89GUCrIJez2IL5R9Ep+PBo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tZYYRuoPCLzjNryHeHw2MZCPsRqYbBR8v9BaFCLGsDmU9KtP+j3k7o7g+QmYqXn3Bi6rVcuxJVmORAW1+C2rirxg7V4nvZq5gZAEPLo4ekOPAhEisTdIwjzJ4RPS3molMe5sFv8v+oZYGuQ9H3S5Gn7Qrbr8+xMhuf30QwudNvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=w0103LqB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dwQQbZwa; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=TzR0dxm7SEUKTKijiiA2H2gYUaF8F+gLVOzKwJIOXFObQ40hsHxgAKEB8SmQf3ffkhaQwJZ1ZXI0emZ76biGqPm9hA77Xyc6efN48KRkRErNhAPCcZdlLfvXIPRueXvMuYm/ZKA8GsKwTdZsf6ApjdrFqQYtnMqsaktyWmG0vBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jz3sFWXh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mNoDAPoh; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="w0103LqB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dwQQbZwa"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jz3sFWXh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mNoDAPoh"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1772175469;
@@ -24,23 +24,23 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tB8OLfzV0yLcpSZIz+yX61nKI7piyON1S04PRpwPwsA=;
-	b=w0103LqBgb+JA2hk7slblHRyqhjUgMxbAPY1uaHto4KknOa65o5qZhZJlSzj8WaWXUL5rJ
-	KLQwaABcEs70WKppllRY1NLTTt2BT0xHaV0kBtAvE7bFTL2FPzPjEa4GOXFIYJ/jmoGkhr
-	UUvlfEzXcdEgDcn1zS4TirH4v9LMx/IHqPQmd/W+N1tbZaRayrZUWQ6d6bti51du61LToX
-	NJXofMLo0aDmkuXFlmANrlPNT8nqVo9yLDssTkhF5+JJH6ARgWCCEwM1DB/H7/ZtUuOvRc
-	CoXCN/nr3ixC4OrC+cVsh8RWFkHdVUgZUcfm0zezs16N1YdLY0FvPLFXdILOFg==
+	bh=PMoWoELWXhUvJ+5dGoSFr0fxre5mWeKbDwq8tLK0U1w=;
+	b=jz3sFWXhcbKGJDvHLemZ34PNAxwppfUXe+wTPhRtV3gLeHLzKe7G/sOWhp432nGhXwdSHn
+	MgPHL/ieh4CRL+Sj/V0VrSdeXNrJJWdNoAnA+kUYdLhaxe5hRqxfwTSIVQqT/n2JRu11Db
+	54GUiQ3Ep2UOkUDN0lDHYCt1mgYt3lWckWML/nc21HoopTL0vjWSaXA5qYRwVq0Bz0oILh
+	Mywz5yZTC95dNZKv+8lxx7sqRgP0XM9ESwO9geQDyk0s6GnuSbY0G6jK3tLh/1UPre0lm2
+	maFHxd31Y+gGwZf3eZw3N0MbkkfM5ZYX34hb3FOHezAsDQlFPn+cURluRusTEg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1772175469;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tB8OLfzV0yLcpSZIz+yX61nKI7piyON1S04PRpwPwsA=;
-	b=dwQQbZwa0iNY4Z2tCRDuTF0yTx5tJzYwPhL58hNbssVKjkzYmrS56sigv0jtjlcjwdR3qc
-	sBdobaHcn+xe0xAA==
-Date: Fri, 27 Feb 2026 07:57:43 +0100
-Subject: [PATCH 4/7] powerpc/vdso: Respect COMPAT_32BIT_TIME
+	bh=PMoWoELWXhUvJ+5dGoSFr0fxre5mWeKbDwq8tLK0U1w=;
+	b=mNoDAPohU52TI7Xd8JWlXSfQ8jNjk3ZTMwand/oL+vE8eWgqiq+6XegH6AjkjIti8lIJxM
+	gQC7dMc48YTxE5AQ==
+Date: Fri, 27 Feb 2026 07:57:44 +0100
+Subject: [PATCH 5/7] MIPS: VDSO: Drop kconfig MIPS_CLOCK_VSYSCALL
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260227-vdso-compat_32bit_time-v1-4-3f0286a7bac3@linutronix.de>
+Message-Id: <20260227-vdso-compat_32bit_time-v1-5-3f0286a7bac3@linutronix.de>
 References: <20260227-vdso-compat_32bit_time-v1-0-3f0286a7bac3@linutronix.de>
 In-Reply-To: <20260227-vdso-compat_32bit_time-v1-0-3f0286a7bac3@linutronix.de>
 To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
@@ -66,136 +66,109 @@ Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, 
  Arnd Bergmann <arnd@arndb.de>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1772175466; l=4469;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772175466; l=3146;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=Xv3eH/9VHgNpvqglSUhIiLYYyy1PpoIoaT4yuSsTW5M=;
- b=MdmjO5KPhmsMXEd+ePjxhegLEWrjviduid5rr6rky5WJ94+NBzZC0pKA3jwyXKw3kLi1cCcfS
- /XYsS38ugRTB2pvIoZOiDkb7YT3sStIbRvJA37ZRPZfVvanqzK6DEU9
+ bh=oahUDDzRXbGFMlkc0RC1a89GUCrIJez2IL5R9Ep+PBo=;
+ b=04Iyq9XCQR4S4Ii1jZ1CW+E0jOmqmZS2e+vnTE9U0dCmMRBUvfyhPR94yWmPUG9n2pIN7c9iT
+ 6C8JYr4OYX/DVncCggJaRcX5U23VD83H+KnRI5WnFMgp2MAlxM6D477
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-If CONFIG_COMPAT_32BIT_TIME is disabled then the vDSO should not
-provide any 32-bit time related functionality. This is the intended
-effect of the kconfig option and also the fallback system calls would
-also not be implemented.
+This configuration option exists so "that we don't provide the symbol
+when there's no possibility of there being a usable clocksource".
+However it only covers __vdso_gettimeofday() and none of the other vDSO
+functions which should be affected by the same circumstances.
+As these are more widely used than gettimeofday() and nobody seems to
+have had an issue with them so far, drop MIPS_CLOCK_VSYSCALL completely.
 
-Currently the kconfig option does not affect the gettimeofday() syscall,
-so also keep that in the vDSO.
+The removal of the ifdeffery will also make some upcomming changes
+easier to read.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/powerpc/kernel/vdso/gettimeofday.S  |  6 ++++++
- arch/powerpc/kernel/vdso/vdso32.lds.S    | 10 ++++++----
- arch/powerpc/kernel/vdso/vgettimeofday.c | 16 ++++++++++------
- 3 files changed, 22 insertions(+), 10 deletions(-)
+ arch/mips/Kconfig              |  3 ---
+ arch/mips/vdso/vdso.lds.S      |  2 --
+ arch/mips/vdso/vgettimeofday.c | 20 --------------------
+ 3 files changed, 25 deletions(-)
 
-diff --git a/arch/powerpc/kernel/vdso/gettimeofday.S b/arch/powerpc/kernel/vdso/gettimeofday.S
-index 1c8e51691bf8..c8fda56ac520 100644
---- a/arch/powerpc/kernel/vdso/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso/gettimeofday.S
-@@ -77,9 +77,11 @@ V_FUNCTION_END(__kernel_gettimeofday)
-  * int __kernel_clock_gettime(clockid_t clock_id, struct timespec *tp);
-  *
-  */
-+#if defined(__powerpc64__) || defined(CONFIG_COMPAT_32BIT_TIME)
- V_FUNCTION_BEGIN(__kernel_clock_gettime)
- 	cvdso_call __c_kernel_clock_gettime
- V_FUNCTION_END(__kernel_clock_gettime)
-+#endif
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e48b62b4dc48..4c8592fd1556 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1137,9 +1137,6 @@ config CSRC_R4K
+ config CSRC_SB1250
+ 	bool
  
- /*
-  * Exact prototype of clock_gettime64()
-@@ -99,9 +101,11 @@ V_FUNCTION_END(__kernel_clock_gettime64)
-  * int __kernel_clock_getres(clockid_t clock_id, struct timespec *res);
-  *
-  */
-+#if defined(__powerpc64__) || defined(CONFIG_COMPAT_32BIT_TIME)
- V_FUNCTION_BEGIN(__kernel_clock_getres)
- 	cvdso_call __c_kernel_clock_getres
- V_FUNCTION_END(__kernel_clock_getres)
-+#endif
- 
- /*
-  * Exact prototype of clock_getres_time64()
-@@ -122,6 +126,8 @@ V_FUNCTION_END(__kernel_clock_getres_time64)
-  * time_t time(time *t);
-  *
-  */
-+#if defined(__powerpc64__) || defined(CONFIG_COMPAT_32BIT_TIME)
- V_FUNCTION_BEGIN(__kernel_time)
- 	cvdso_call __c_kernel_time call_time=1
- V_FUNCTION_END(__kernel_time)
-+#endif
-diff --git a/arch/powerpc/kernel/vdso/vdso32.lds.S b/arch/powerpc/kernel/vdso/vdso32.lds.S
-index 3f384a2526ae..53fe3796a571 100644
---- a/arch/powerpc/kernel/vdso/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso/vdso32.lds.S
-@@ -119,13 +119,15 @@ VERSION
- {
- 	VDSO_VERSION_STRING {
- 	global:
--		__kernel_get_syscall_map;
--		__kernel_gettimeofday;
-+#ifdef CONFIG_COMPAT_32BIT_TIME
- 		__kernel_clock_gettime;
--		__kernel_clock_gettime64;
- 		__kernel_clock_getres;
--		__kernel_clock_getres_time64;
- 		__kernel_time;
-+#endif /* CONFIG_COMPAT_32BIT_TIME */
-+		__kernel_gettimeofday;
-+		__kernel_get_syscall_map;
-+		__kernel_clock_gettime64;
-+		__kernel_clock_getres_time64;
- 		__kernel_get_tbfreq;
- 		__kernel_sync_dicache;
- 		__kernel_sigtramp32;
-diff --git a/arch/powerpc/kernel/vdso/vgettimeofday.c b/arch/powerpc/kernel/vdso/vgettimeofday.c
-index 3c194e1ab562..dfefd13a19e1 100644
---- a/arch/powerpc/kernel/vdso/vgettimeofday.c
-+++ b/arch/powerpc/kernel/vdso/vgettimeofday.c
-@@ -18,23 +18,25 @@ int __c_kernel_clock_getres(clockid_t clock_id, struct __kernel_timespec *res,
- 	return __cvdso_clock_getres_data(vd, clock_id, res);
- }
- #else
-+#ifdef CONFIG_COMPAT_32BIT_TIME
- int __c_kernel_clock_gettime(clockid_t clock, struct old_timespec32 *ts,
- 			     const struct vdso_time_data *vd)
- {
- 	return __cvdso_clock_gettime32_data(vd, clock, ts);
- }
- 
--int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
--			       const struct vdso_time_data *vd)
--{
--	return __cvdso_clock_gettime_data(vd, clock, ts);
--}
+-config MIPS_CLOCK_VSYSCALL
+-	def_bool CSRC_R4K || CLKSRC_MIPS_GIC
 -
- int __c_kernel_clock_getres(clockid_t clock_id, struct old_timespec32 *res,
- 			    const struct vdso_time_data *vd)
- {
- 	return __cvdso_clock_getres_time32_data(vd, clock_id, res);
+ config GPIO_TXX9
+ 	select GPIOLIB
+ 	bool
+diff --git a/arch/mips/vdso/vdso.lds.S b/arch/mips/vdso/vdso.lds.S
+index 5d08be3a6b85..76b6ad898288 100644
+--- a/arch/mips/vdso/vdso.lds.S
++++ b/arch/mips/vdso/vdso.lds.S
+@@ -97,9 +97,7 @@ VERSION
+ #ifndef CONFIG_MIPS_DISABLE_VDSO
+ 	global:
+ 		__vdso_clock_gettime;
+-#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
+ 		__vdso_gettimeofday;
+-#endif
+ 		__vdso_clock_getres;
+ #if _MIPS_SIM != _MIPS_SIM_ABI64
+ 		__vdso_clock_gettime64;
+diff --git a/arch/mips/vdso/vgettimeofday.c b/arch/mips/vdso/vgettimeofday.c
+index 1d236215e8f6..00f9fcfc327e 100644
+--- a/arch/mips/vdso/vgettimeofday.c
++++ b/arch/mips/vdso/vgettimeofday.c
+@@ -18,22 +18,12 @@ int __vdso_clock_gettime(clockid_t clock,
+ 	return __cvdso_clock_gettime32(clock, ts);
  }
-+#endif /* CONFIG_COMPAT_32BIT_TIME */
-+
-+int __c_kernel_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts,
-+			       const struct vdso_time_data *vd)
-+{
-+	return __cvdso_clock_gettime_data(vd, clock, ts);
-+}
  
- int __c_kernel_clock_getres_time64(clockid_t clock_id, struct __kernel_timespec *res,
- 				   const struct vdso_time_data *vd)
-@@ -49,7 +51,9 @@ int __c_kernel_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz
- 	return __cvdso_gettimeofday_data(vd, tv, tz);
+-#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
+-
+-/*
+- * This is behind the ifdef so that we don't provide the symbol when there's no
+- * possibility of there being a usable clocksource, because there's nothing we
+- * can do without it. When libc fails the symbol lookup it should fall back on
+- * the standard syscall path.
+- */
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+ 			struct timezone *tz)
+ {
+ 	return __cvdso_gettimeofday(tv, tz);
  }
  
-+#if defined(__powerpc64__) || defined(CONFIG_COMPAT_32BIT_TIME)
- __kernel_old_time_t __c_kernel_time(__kernel_old_time_t *time, const struct vdso_time_data *vd)
+-#endif /* CONFIG_MIPS_CLOCK_VSYSCALL */
+-
+ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct old_timespec32 *res)
  {
- 	return __cvdso_time_data(vd, time);
+@@ -59,22 +49,12 @@ int __vdso_clock_gettime(clockid_t clock,
+ 	return __cvdso_clock_gettime(clock, ts);
  }
-+#endif
+ 
+-#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
+-
+-/*
+- * This is behind the ifdef so that we don't provide the symbol when there's no
+- * possibility of there being a usable clocksource, because there's nothing we
+- * can do without it. When libc fails the symbol lookup it should fall back on
+- * the standard syscall path.
+- */
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+ 			struct timezone *tz)
+ {
+ 	return __cvdso_gettimeofday(tv, tz);
+ }
+ 
+-#endif /* CONFIG_MIPS_CLOCK_VSYSCALL */
+-
+ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct __kernel_timespec *res)
+ {
 
 -- 
 2.53.0

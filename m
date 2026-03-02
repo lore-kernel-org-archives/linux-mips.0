@@ -1,106 +1,91 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16633033D5;
-	Sun,  1 Mar 2026 02:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E76338D006
+	for <linux-mips@vger.kernel.org>; Mon,  2 Mar 2026 09:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772330678; cv=none; b=g2FiVlVg0PYnOmtCMEG8fxegbQHDa74jGHU9uQFe8VIvmbTvT3u21TiScv91ezu9jesahrSpuf029RIWB+dbmVLctx4cFH85qWdPoUnJiwqP8TmjeWzmxaY2+7eEQfwa874iayN9njOFZsXVgyWCITVcZF4c6AMlxdfoEHvOgLo=
+	t=1772443180; cv=none; b=gt69IiZidRq+odg7QrQHDZa/ohv2wEX87i4HLH5hWBWq6YCo6b9Udrd7/99Du+Q+ecShLN4Fh2vREdB+zNI86fTYSA3LLcNJGOAeQ/meIzsnAtu+cqC/3kK2egLp/3g0ldkKfkNBodzHd+nFJ5wy62+M1mv/+r97lHj/Ig0NAdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772330678; c=relaxed/simple;
-	bh=abJuzd8IED88yXGa/PCFUUEY+yt8wuis2nE6uP7GOL4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KrF/Wly0DDO0JkHbCB+uY8cbUvGrZTsC9xz0Q1kjRmRhKQeufTzwkCS6ffi3fL9binDbboCBOpzTOP+j9EGkQBw2evcdqUyClzaDJAsQagR2eayXwAEc0x0mvsMrZGTWIeC4IxWX93Gk6hogJH15T5kG50bL/4XEZa7XAoJQ2P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YqfM59f7; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772443180; c=relaxed/simple;
+	bh=7ckUxNu6Er/vlKjRLTGYQicGp10gUC8i4ulwH0qnW6Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tiB6hG3YBX7qYO50wK0PPfuaPKVZEWrjiEPPH+GagZCvRM90N1QjV1pGmaiwCmnMNxgCXdrwW2qP1C9PTOrUC8TPHhNgiQ/48GdVuaSIBXmdre/bQXlNKx79aSrhDKs+opj2CdK0TQ14EC/eulqQR1gyONj1xcCsbTAdyp1S4Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaSaYEwv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YqfM59f7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ACA2C19421;
-	Sun,  1 Mar 2026 02:04:37 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaSaYEwv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1FFEC2BCB7
+	for <linux-mips@vger.kernel.org>; Mon,  2 Mar 2026 09:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772330677;
-	bh=abJuzd8IED88yXGa/PCFUUEY+yt8wuis2nE6uP7GOL4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YqfM59f7/qqyPaoY/kIb536tFCax79KuUAik0SLjTgYTDAdplAyX6rUuo2XY9fOZU
-	 Dhf5iuVzvdeM7dI6XohcW5FVlnaPTQm7jM7DBhX63t5vTaapQLAZtMKT+72SE/F7vz
-	 5C5pNHqMT96z/yvkpTJMPXBvACDI9kSEIEpNj9QC/mniHki7xdFBg+mG6thR89fiMU
-	 f23pIjvdywvTmov2hBwNDeADFTIhtyAVJ2yprL4PgGIrhXk/dsRmhfYhXvRoTC+k1a
-	 FUGqgkwQ7I0aH1JbUGzMw/K7PmA620LipBtuHr5Ic5cvKDCwPkwDaGpdg1i/XrGS/f
-	 gwdnOOsqzDiaQ==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	jiaxun.yang@flygoat.com
-Cc: Waldemar Brodkorb <wbx@openadk.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Subject: FAILED: Patch "MIPS: rb532: Fix MMIO UART resource registration" failed to apply to 5.10-stable tree
-Date: Sat, 28 Feb 2026 21:04:35 -0500
-Message-ID: <20260301020436.1733075-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
+	s=k20201202; t=1772443179;
+	bh=7ckUxNu6Er/vlKjRLTGYQicGp10gUC8i4ulwH0qnW6Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NaSaYEwv6W5X/DgCkkxrsPmp/GhAulMTl+hZiRTxUxtDDakDwwhsiq+R5pTeHAsZM
+	 OIbDNM1DveCGwTAONAxVOu/KcPk0lRkgP8WI72/xqx6lOfBbBbU7RSaOQijai8aXqE
+	 Iph6v21mAHpkVFT2/v4EuO4Hhul4HjChQ0pU6S5v1tJDVMm/uPsy5B3zye42S5H+L/
+	 zwlbLDCwfPC/QUd2hC418X1y4CHEeXuHxZmckZMzg2mhCGvn6A7YncTJHd8Xnsxo18
+	 hpZQvhGk41Vg43V6LhnmHFk3tZjPopY4U+BtxJI2mm4cH+mtHH+mP3OJ27P/d5fZMb
+	 f6zFXUS0FBF8g==
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-7982c3b7da9so39310587b3.1
+        for <linux-mips@vger.kernel.org>; Mon, 02 Mar 2026 01:19:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1Obv6Chba5TVT1EwtULsIsmmcZu+TpubgyMwTsboRED6hPIP2sUKrF0g1VG4iU+rBFhia0Z1+ObmM@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNIc2cqDb7RrwZT3fpW/+BwZ1lt3/E5d2TeuHzVqWJM6JLFPAi
+	45vvgDDAYeSAq36ZrLoWaxV3brs/SYvUzpWDTQVayRK9I0+dDZHWNeL6KwQqp7E6XoyLzaVJp1R
+	egJ/LhwLlyUAhZN1X4Vz4H/BuAVEOe4Y=
+X-Received: by 2002:a05:690c:385:b0:798:6c28:dd57 with SMTP id
+ 00721157ae682-7988554de07mr102205297b3.28.1772443179061; Mon, 02 Mar 2026
+ 01:19:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+References: <20260226-eyeq6lplus-v3-0-9cbeb59268b0@bootlin.com>
+ <CAD++jLmEU=PkmsPOksF9dtV5UpH3S9X=VJey8ZEf5wdsPbsNvg@mail.gmail.com> <5262868.Qq0lBPeGtt@benoit.monin>
+In-Reply-To: <5262868.Qq0lBPeGtt@benoit.monin>
+From: Linus Walleij <linusw@kernel.org>
+Date: Mon, 2 Mar 2026 10:19:27 +0100
+X-Gmail-Original-Message-ID: <CAD++jL=aQwj3vfGQcJQGoFGneKyDPTMWik1zVhhoH3BM42odug@mail.gmail.com>
+X-Gm-Features: AaiRm52IPrnZjaOF5tFQCgs0uPwRGDpKCfSWJ4D7JFeg9UWmQRrGRVgXGFakAgc
+Message-ID: <CAD++jL=aQwj3vfGQcJQGoFGneKyDPTMWik1zVhhoH3BM42odug@mail.gmail.com>
+Subject: Re: [PATCH v3 00/13] Introducing the Mobileye EyeQ6Lplus SoC
+To: =?UTF-8?Q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Gregory CLEMENT <gregory.clement@bootlin.com>, =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-mips@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The patch below does not apply to the 5.10-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On Fri, Feb 27, 2026 at 2:54=E2=80=AFPM Beno=C3=AEt Monin <benoit.monin@boo=
+tlin.com> wrote:
+> On Friday, 27 February 2026 at 01:14:32 CET, Linus Walleij wrote:
+> > Hi Benoit,
+> >
+> > On Thu, Feb 26, 2026 at 2:34=E2=80=AFPM Beno=C3=AEt Monin <benoit.monin=
+@bootlin.com> wrote:
+> >
+> > >       pinctrl: eyeq5: Use match data
+> > >       pinctrl: eyeq5: Add Mobileye EyeQ6Lplus OLB
+> >
+> > Can I just apply these two to the pinctrl tree?
+> >
+> > Yours,
+> > Linus Walleij
+> >
+> Yes you can, they apply and build cleanly on their own.
 
-Thanks,
-Sasha
+I applied patches 5 & 6 to the pin control tree.
 
------------------- original commit in Linus's tree ------------------
+The corresponding DT binding is in patch 1, and since that
+is already ACKed by Rob I positively expect it to be merged
+for v7.1.
 
-From e93bb4b76cfefb302534246e892c7667491cb8cc Mon Sep 17 00:00:00 2001
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Thu, 5 Feb 2026 10:08:42 +0000
-Subject: [PATCH] MIPS: rb532: Fix MMIO UART resource registration
-
-Since commit 6e690d54cfa8 ("serial: 8250: fix return error code in
-serial8250_request_std_resource()"), registering an 8250 MMIO port
-without mapbase no longer works, as the resource range is derived from
-mapbase/mapsize.
-
-Populate mapbase and mapsize accordingly. Also drop ugly membase KSEG1
-pointer and set UPF_IOREMAP instead, letting the 8250 core perform the
-ioremap.
-
-Fixes: 6e690d54cfa8 ("serial: 8250: fix return error code in serial8250_request_std_resource()")
-Cc: stable@vger.kernel.org
-Reported-by: Waldemar Brodkorb <wbx@openadk.org>
-Link: https://lore.kernel.org/linux-mips/aX-d0ShTplHKZT33@waldemar-brodkorb.de/
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/rb532/devices.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index b7f6f782d9a13..ffa4d38ca95df 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -212,11 +212,12 @@ static struct platform_device rb532_wdt = {
- static struct plat_serial8250_port rb532_uart_res[] = {
- 	{
- 		.type           = PORT_16550A,
--		.membase	= (char *)KSEG1ADDR(REGBASE + UART0BASE),
-+		.mapbase        = REGBASE + UART0BASE,
-+		.mapsize        = 0x1000,
- 		.irq		= UART0_IRQ,
- 		.regshift	= 2,
- 		.iotype		= UPIO_MEM,
--		.flags		= UPF_BOOT_AUTOCONF,
-+		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
- 	},
- 	{
- 		.flags		= 0,
--- 
-2.51.0
-
-
-
-
+Yours,
+Linus Walleij

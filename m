@@ -1,107 +1,93 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CCC3932E1;
-	Tue,  3 Mar 2026 21:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616324DBD99;
+	Tue,  3 Mar 2026 21:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772573845; cv=none; b=Kf8ameX1uGxcnJFqJpH6Q10jdUFE6jGcxBjPa5ThSZmyaZW3XptHfgCC8wLVQIjMOu5d5qVBCxHld39WecAML9tbYGdnlujwpTna5abhWe23e7/cIzuU5h2yVZFM4Fy0nrDY+U3LZQGRZw/2tZC/kxzcLJCCTT+cRo4g+dJ++us=
+	t=1772574827; cv=none; b=rQUrywVhjsve5rWluV+D0zlBnhNWWz9yiEuOD5XkxXRpBWoqdcxJgh/BtLXMBpdMxG0lLGALbyVQqo3h7d9EtDYpTjw0XY2EsK98a6t+6DIrGW5JGUnYeWwlOcc/DaZn5cTFqV+Yx6qZL3bWs06UMDDEsEK2QVAFpEdiSYZvcHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772573845; c=relaxed/simple;
-	bh=M78l9HR2fJaBwC1AYnZPHhHEUHYVAhTg67OYlSD26Fg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=EnUKy0qSGE2aCeMsF4fvtUsLw6P5fAE8pNEC7gOrkhccmoEzkYHiSLMm5j1CKU6pDAP+rRt3uAH2yKBezJbSIaxZbdjFzEDjYHotMmCCfprSrzWSzIWI+4r5PRf8kRQk4asiEEnBp6wXvrbfwNz6iEr9JObBDuDGMD9PTEWhLjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LB3wcnKA; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772574827; c=relaxed/simple;
+	bh=Qj69O/bykwzEu4dk5vkBv9W3rTXakvfnATFfpya/oiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=asZih0+PLofwrXFYOiOI7RuNX8UTn2OGS3rrJvEbD96V6V61dKElcTbj53LkbC5UVMLIUh7XebhNEMr0s36Oq6Jc47DjGAiFGPxemhDR/ypTQ2aXc3kIifOtPmvVaEHa7fluZ1P7T6RQ5+zT7PECEeh3F80YnENyLEJ9IHR3XUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=RLwZ/rk8; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LB3wcnKA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16850C116C6;
-	Tue,  3 Mar 2026 21:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772573845;
-	bh=M78l9HR2fJaBwC1AYnZPHhHEUHYVAhTg67OYlSD26Fg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=LB3wcnKAGww15fEsToiIVqeqsdTq+g32I0+Qg7uSECBZHRb37F2PVjMiJ06rx8CY3
-	 cKTEXLVavlUWASAjzQK1XUWsJSBR2OCvi90rREZB+nZtBy2qchVeqFNXazeXLkWwtv
-	 hWOZvVF8U0LL1MsXABPutxqriK0F40EtzFdMDyD0SNBD6vPMwGqLhh0UH82XLmvdR8
-	 dgc/aFqS0YBn/wlnBi6cTRuGZlj25DywRIZwZ2WUhJzO7L9imj6k8E9OJP5751hh6E
-	 D2V9E2ITwu83htBgYekdOnYr1kAwmVcwIjJBrihSE66lAnCiixaSuE3DBNoSfURZcN
-	 X+MpsT9tg7C6w==
-Date: Tue, 3 Mar 2026 15:37:23 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Caleb James DeLisle <cjd@cjdns.fr>
-Cc: linux-mips@vger.kernel.org, naseefkm@gmail.com, mturquette@baylibre.com,
-	sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, tsbogend@alpha.franken.de,
-	ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
-	lpieralisi@kernel.org, kwilczynski@kernel.org, mani@kernel.org,
-	bhelgaas@google.com, vkoul@kernel.org, neil.armstrong@linaro.org,
-	p.zabel@pengutronix.de, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com, nbd@nbd.name,
-	ansuelsmth@gmail.com, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-phy@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 7/8] PCI: Skip bridge window reads when window is not
- supported
-Message-ID: <20260303213723.GA4075286@bhelgaas>
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="RLwZ/rk8"
+Received: from [172.27.2.41] (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 623LavOS3436858
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 3 Mar 2026 13:36:57 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 623LavOS3436858
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026022301; t=1772573825;
+	bh=D1r1C1nkJC8myDUqBbWlJuno+S+Hsv+z3MI/a3FcqHc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RLwZ/rk8vaq6V4tFXUGKShs9EBYHpeXArYtAO8GRTPF0Qb9ckRJAy3tcD5EWeuBHX
+	 vr0OB9eU7N3DVYjRVanoVDfqhq4F+AkTzExopgowDGEFypgJWOgNXBkU6FNdThL97f
+	 Lw7JtD6O+ENFjRKkORJY5LGdYpcgeiUuBzkeJbD5nNV5qeKq9oq8xMw9GJMwXTJY58
+	 GQjC3/XyTBNrpt/UhJOXTqWbTWEJKRY1JmqsyxsLflRD6J85F4d6toUWrWmiKQly38
+	 ciLSIrOtlh968Kr67YxA/mjWIPI5I11u1R6hN8+kq3t5kAbHjJDAA+e6EhT7AmEGux
+	 lOCVXVCJis+ZQ==
+Message-ID: <0d2d834d-0f3c-43bb-9530-da6c2492763a@zytor.com>
+Date: Tue, 3 Mar 2026 13:36:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260303190948.694783-8-cjd@cjdns.fr>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] x86/vdso: Respect COMPAT_32BIT_TIME
+To: Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <chleroy@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org
+References: <20260227-vdso-compat_32bit_time-v1-0-3f0286a7bac3@linutronix.de>
+ <20260227-vdso-compat_32bit_time-v1-1-3f0286a7bac3@linutronix.de>
+ <c29f5e70-bd17-4e1b-a005-5a3282e70075@app.fastmail.com>
+ <03cd1e21-a2f2-46a1-a674-cbaef9712016@app.fastmail.com>
+ <20260227103226-cc3bb32c-0107-4c09-b81a-ca33ea03ad5c@linutronix.de>
+ <49b7c9f9-198a-49f7-880b-6ae74d7bd985@zytor.com>
+ <2b1ac7b9-fcc8-4aa3-a0ad-eb37e4bce030@app.fastmail.com>
+ <56591FD5-0DD0-4117-BC7B-4565E3F6512E@zytor.com>
+ <d92f424c-9aee-417e-899e-3a0002a80f4a@app.fastmail.com>
+Content-Language: en-US, sv-SE
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <d92f424c-9aee-417e-899e-3a0002a80f4a@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 03, 2026 at 07:09:47PM +0000, Caleb James DeLisle wrote:
-> pci_read_bridge_io() and pci_read_bridge_mmio_pref() read bridge window
-> registers unconditionally. If the registers are hardwired to zero
-> (not implemented), both base and limit will be 0. Since (0 <= 0) is
-> true, a bogus window [mem 0x00000000-0x000fffff] or [io 0x0000-0x0fff]
-> gets created.
+On 2026-03-03 13:27, Arnd Bergmann wrote:
 > 
-> pci_read_bridge_windows() already detects unsupported windows by
-> testing register writability and sets io_window/pref_window flags
-> accordingly. Check these flags at the start of pci_read_bridge_io()
-> and pci_read_bridge_mmio_pref() to skip reading registers when the
-> window is not supported.
+> I see. I would argue here that a link failure is actually the best
+> case then: the entire point of CONFIG_COMPAT_32BIT_TIME=n is to
+> enforce the fail-early case, as opposed to silent data corruption
+> after (now) 12 years of operation.
+> 
+> I don't think there is an actual link failure here, as dl_vdso_vsym()
+> resolves it at runtime by glibc (when using time32), while musl
+> doesn't use __vdso_gettimeofday at all.
+> 
 
-BTW, I'm still interested in the details of how we got here.  It
-shouldn't be too unusual to have a bridge without an I/O window or
-maybe even without a prefetchable (64-bit) memory window.
+Well, the former is a link failure -- just one handled reasonably gracefully.
+A library that really wants a fallback can presumably also avoid the problem
+by provide a weak reference for the fallback.
 
-> Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-> Signed-off-by: Ahmed Naseef <naseefkm@gmail.com>
-> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
-> ---
->  drivers/pci/probe.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index bccc7a4bdd79..4eacb741b4ec 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -395,6 +395,9 @@ static void pci_read_bridge_io(struct pci_dev *dev, struct resource *res,
->  	unsigned long io_mask, io_granularity, base, limit;
->  	struct pci_bus_region region;
->  
-> +	if (!dev->io_window)
-> +		return;
-> +
->  	io_mask = PCI_IO_RANGE_MASK;
->  	io_granularity = 0x1000;
->  	if (dev->io_window_1k) {
-> @@ -465,6 +468,9 @@ static void pci_read_bridge_mmio_pref(struct pci_dev *dev, struct resource *res,
->  	pci_bus_addr_t base, limit;
->  	struct pci_bus_region region;
->  
-> +	if (!dev->pref_window)
-> +		return;
-> +
->  	pci_read_config_word(dev, PCI_PREF_MEMORY_BASE, &mem_base_lo);
->  	pci_read_config_word(dev, PCI_PREF_MEMORY_LIMIT, &mem_limit_lo);
->  	base64 = (mem_base_lo & PCI_PREF_RANGE_MASK) << 16;
-> -- 
-> 2.39.5
-> 
+	-hpa
+

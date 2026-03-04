@@ -1,110 +1,89 @@
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.avm.de (mail.avm.de [212.42.244.120])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2FE346A06;
-	Wed,  4 Mar 2026 15:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0ACA3A1A48
+	for <linux-mips@vger.kernel.org>; Wed,  4 Mar 2026 17:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772637982; cv=none; b=Xu/4HIErtiWh83FBshDSxQLYhjCfRovyFqFnFP8bBUotTJrLVKi9pfTTfkaF6pI0ni1Vab4QDs32HrOxT3wfDn2JueJMn+vzMs7+gBJqF1JeaMRHPfAsig3aKOlIRYFDKplSYhBNP7oi//TudFSBycUeOq2kw+FwZ9L7/J5WdGU=
+	t=1772646517; cv=none; b=PqTSVAyI6mDgeYSxiTPOthKMZOXWJhEnhamG7AK0TPruNLr+4jmUBiKUjhgTD25q15zc7XIb6yagVQSz5PgL+J6/r/9Z1Gx3JDJGioW8lJbExaAjYkf3UibI4ApzFb6ieaDdnr7S6v5pcgsU6CHWvEJC7YKgCgH1dgoLAeUypiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772637982; c=relaxed/simple;
-	bh=oeXM94kV6KHPAXahFiulkvM6OwqAeFx4teAXmvi9pCo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cfSYLv7yAuEKOpuj0IPDEpXoXFCV8mX3oAX3hzRxZsQ9pZOm9p8tekcwKKKgr0POUApdXw2MhbMYIjzKDggOSLOzDZHaKN/+ckWiSmOJtYWfZNE/1U3LfZkXD93vF/gLj02WTx7VSgO59Cm4OzBFx7Qsb5YA4CFEUd2UGy24pPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nSRBIKPr; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1772646517; c=relaxed/simple;
+	bh=qruMeCiyXniTYSw67dZnVQvj6lFtHivIfh3NglFZ+u8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=I0r6fSV9q/XQYSonIz53Ho6ZuvA2P8esTcO4egS7rbT75mDGivsCV60k5vuMDRLWWoQSoxQ3dqvrzcLe7AIJTvyvmelu4lqtI+iLfDpkeEQqbuFBtrWNSrghqAA2mc+NirBMbDnexh3a27wUntaVzmo3FZOulJbaANzt07bSj9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=u3laX670; arc=none smtp.client-ip=212.42.244.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nSRBIKPr"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id D2CC7C16573;
-	Wed,  4 Mar 2026 15:26:36 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AC2FF5FF5C;
-	Wed,  4 Mar 2026 15:26:18 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CE875103697AE;
-	Wed,  4 Mar 2026 16:26:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1772637977; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=CQCPdFYuBjBjLSKu+vdlGdK6ZBcUmbZ+RsQ4S72GLlQ=;
-	b=nSRBIKPr38NFab2uSfgMDC9MoRS9I59s+LdEf3oQGQKkDn0HN8XO01iZWimLJW7Nlsje09
-	2UM6j7/J7yQ6xSUtS1y5frzCMAMcFsLnygVsuyJLnqmAWaz5/CprwtvrIUgpfDSVboQF+f
-	r48gcaZ3VuJjTUPfq1TeivhuBzd43hGXDT8ZapR8ULsmAK252QL+Tqlgl553bBYEWTtSvN
-	f4A26uDlW2MezHJbcfVbVVKt8iHTrOieVEn2+RcNwISMT+mOX3MgXtObsLND0E2ZvQkdtY
-	8pz9Nd6eu3Km3jfsJVuK0+1uPCgkYtnyPN9FPrM7fqHna6vvIhKQnkhJ45I4aA==
-From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Date: Wed, 04 Mar 2026 16:25:24 +0100
-Subject: [PATCH v4 10/10] MAINTAINERS: Add entry for Mobileye RISC-V SoCs
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="u3laX670"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1772646503; bh=qruMeCiyXniTYSw67dZnVQvj6lFtHivIfh3NglFZ+u8=;
+	h=Date:From:To:Subject:From;
+	b=u3laX670Ea7wDjd2ufUGkfp7/DQHdMakVIiPHhXlG1oVHjzI5GQ18qd21k+JTsOm7
+	 abW7CwQOw9d+pLc5dCR7ujOzJEqJkCgwXrTCKow7yB/wD3h72YyQIQ4d6H/5KNe+Hi
+	 gHBPfEabk2+2YG3U5aSf43XB8E3SxEv7ZqfUZ5RQ=
+Received: from [212.42.244.71] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.55.2)
+	(envelope-from <phahn-oss@avm.de>)
+	id 69a87067-b734-7f0000032729-7f00000180d6-1
+	for <multiple-recipients>; Wed, 04 Mar 2026 18:48:23 +0100
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Wed,  4 Mar 2026 18:48:23 +0100 (CET)
+Date: Wed, 4 Mar 2026 18:48:23 +0100
+From: Philipp Matthias Hahn <phahn-oss@avm.de>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, linux-mips@vger.kernel.org
+Subject: drivers/clocksource/mips-gic-timer.c:283 looks suspicious: ret != clk
+Message-ID: <aahwZ3iJVbo55int@mail-auth.avm.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260304-clk-eyeq7-v4-10-9d6bd9d24bec@bootlin.com>
-References: <20260304-clk-eyeq7-v4-0-9d6bd9d24bec@bootlin.com>
-In-Reply-To: <20260304-clk-eyeq7-v4-0-9d6bd9d24bec@bootlin.com>
-To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-riscv@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-clk@vger.kernel.org, linux-mips@vger.kernel.org, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-purgate-ID: 149429::1772646503-C2589A3D-F6AC2B60/0/0
+X-purgate-type: clean
+X-purgate-size: 802
+X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
 
-Add Vladimir, Gregory, Théo and myself as co-maintainers for the
-Mobileye RISC-V SoCs, and clarify the dt-bindings entries between
-MIPS and RISC-V SoCs.
+Hello,
 
-Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
----
- MAINTAINERS | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+while looking where IS_ERR(…) plus a manual NULL check can be converted
+to IS_ERR_OR_NULL(…) I stumbled by accident over
+gic_clocksource_of_init() line 283, where `IS_ERR(clk)` is used combined
+with `!ret`:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 63048d5ede7d..8ccc99b44850 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17808,7 +17808,8 @@ M:	Théo Lebrun <theo.lebrun@bootlin.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/mips/mobileye.yaml
--F:	Documentation/devicetree/bindings/soc/mobileye/
-+F:	Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
-+F:	Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq6lplus-olb.yaml
- F:	arch/mips/boot/dts/mobileye/
- F:	arch/mips/configs/eyeq*_defconfig
- F:	arch/mips/mobileye/board-epm5.its.S
-@@ -17818,6 +17819,16 @@ F:	drivers/reset/reset-eyeq.c
- F:	include/dt-bindings/clock/mobileye,eyeq5-clk.h
- F:	include/dt-bindings/clock/mobileye,eyeq6lplus-clk.h
- 
-+MOBILEYE RISC-V SOCS
-+M:	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-+M:	Benoît Monin <benoit.monin@bootlin.com>
-+M:	Gregory CLEMENT <gregory.clement@bootlin.com>
-+M:	Théo Lebrun <theo.lebrun@bootlin.com>
-+L:	linux-riscv@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq7h-olb.yaml
-+F:	include/dt-bindings/clock/mobileye,eyeq7h-clk.h
-+
- MODULE SUPPORT
- M:	Luis Chamberlain <mcgrof@kernel.org>
- M:	Petr Pavlu <petr.pavlu@suse.com>
+static int __init gic_clocksource_of_init(struct device_node *node)
+{
+	struct clk *clk;
+	int ret;
+	…
+	clk = of_clk_get(node, 0);
+	if (!IS_ERR(clk)) {
+		ret = clk_prepare_enable(clk);
+		if (ret < 0) {
+			pr_err("Failed to enable clock\n");
+			clk_put(clk);
+			return ret;
+		}
+		gic_frequency = clk_get_rate(clk);
+	} else {
+		…
+	}
+	ret = gic_clockevent_init();
+	if (!ret && !IS_ERR(clk)) {
+	     ^^^            ^^^
 
--- 
-2.53.0
+If this right or should with be changed to
+	if (!ret && !IS_ERR(ret)) {
+or even better
+	if (!IS_ERR_OR_NULL(ret)) {
 
+Philipp Hahn

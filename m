@@ -1,22 +1,22 @@
 Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51DDE2BCF68;
-	Sat, 14 Mar 2026 16:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8D22580CF;
+	Sat, 14 Mar 2026 16:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773505753; cv=none; b=EYYxHwc/7ZGKM1AWzeXh2jc9UjJmwSMxdpSbsHqbw6Im0QO4CsE5RnQEKaHEyqIq51njBlpuAa3lOzbgYDFjO0lhJNaNCCgd29aF7UQpeHAKyHIc1Z+Z29nqRFZ1gAH7GaskvyKBPQLFqVQ5yim2a5sDDSr/DIU/S3HoYMXJ86k=
+	t=1773505754; cv=none; b=maSPAplcdnbl/+vjmwVnYCvjAehpXxFjZ2Oqo3RhksC8hQ266S45Ob7izbNspKr+hBR1VfsYIRiuYf9liiDkwbH9CR8jpPftdq2T3n+x7kvG3zQUqpu70ZBioHpgoMRd4oikUox8/XsGuCLuVGkKNwKXN5+B/w5IbE+7ab024sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773505753; c=relaxed/simple;
-	bh=PqgYLsxxHf/EwFryPpSBbRFtMIMaSoX/1rNimV2z5Sk=;
+	s=arc-20240116; t=1773505754; c=relaxed/simple;
+	bh=azf8egCosncAKrAMZL9syaPRJMy6JXAjvVymUNzyvUo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=csaP5l/XdCbQ9B4aq6sudr1kPukZBqwktN6OBNZPYmH7qzY5mKDWaPpvHtjeKGIDUVTXsRt6qHf+uJEFP+IConHzE31gvarfOrXiHNfrrBntyV9sox5ZlKKwCjgRAJaMyg0q266n3EZtQV1JxjqKod9dfPVfPoT12oBZMER26qc=
+	 MIME-Version; b=aPgLIruEN7XgCgb1JlcJB3nLxpgrYY5BXEZBMr8x/xlQa69kO3xJdu56rcW+GFUB0Y+FZ9T28qVF2F1S54AaJREvzRqwtAH0cL1ZYJ9L0vN5AouLMY/6r0rRqHGd6BiK+dIldDO1RjxH5tQ10xrx5C6AWqLXVtkluDlieq1bP20=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
 Received: from edelgard.fodlan.icenowy.me (unknown [112.94.100.43])
-	by APP-03 (Coremail) with SMTP id rQCowAB3ktmwjLVpHpqpCg--.41252S7;
-	Sun, 15 Mar 2026 00:28:59 +0800 (CST)
+	by APP-03 (Coremail) with SMTP id rQCowAB3ktmwjLVpHpqpCg--.41252S10;
+	Sun, 15 Mar 2026 00:29:05 +0800 (CST)
 From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 To: Thomas Gleixner <tglx@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -33,9 +33,9 @@ Cc: Icenowy Zheng <uwu@icenowy.me>,
 	loongarch@lists.linux.dev,
 	linux-mips@vger.kernel.org,
 	Icenowy Zheng <zhengxingda@iscas.ac.cn>
-Subject: [PATCH v3 5/8] irqchip/loongson-pch-lpc: add OF init code
-Date: Sun, 15 Mar 2026 00:28:25 +0800
-Message-ID: <20260314162828.1055188-6-zhengxingda@iscas.ac.cn>
+Subject: [PATCH v3 8/8] MIPS: Loongson64: dts: add node for LS7A PCH LPC
+Date: Sun, 15 Mar 2026 00:28:28 +0800
+Message-ID: <20260314162828.1055188-9-zhengxingda@iscas.ac.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260314162828.1055188-1-zhengxingda@iscas.ac.cn>
 References: <20260314162828.1055188-1-zhengxingda@iscas.ac.cn>
@@ -46,95 +46,55 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAB3ktmwjLVpHpqpCg--.41252S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr13ZFy8Zr48Jr4Duw1UGFg_yoW8uF48pF
-	W5Zay3Ar4rJF4Igwn3AFW8ArZIvr4rGrW2krWxC3WfAw1DKrWkC3WDCF1qvr4rArW5WFW5
-	uF4rKF45CFWUAaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_
-	Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x
-	IIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_
-	Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
-	xan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4U
-	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-	1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUQFxUUUUUU=
+X-CM-TRANSID:rQCowAB3ktmwjLVpHpqpCg--.41252S10
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw47JryxCrWftrWkGF17KFg_yoWftrX_Aw
+	12gan5WrZ3AasFkrykZrWkCFy7u3y7Awn3C3ZFgr45XF9YyrnxGFWUZ3yDCF1fWrWYqr1r
+	K3yvqr4DC3WIkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb9xFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+	1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWx
+	Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+	x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
+	JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
+	ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+	z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+	AF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1l
+	IxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+	1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
+	CTnIWIevJa73UjIFyTuYvjfUOyIUUUUUU
 X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-The OF-based MIPS Loongson-3 systems can also have a PCH LPC interrupt
-controller.
+Loongson 7A series PCH contain a LPC IRQ controller.
 
-Add OF-based initialization code for this driver.
+Add the device tree node of it.
 
-Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 ---
- drivers/irqchip/irq-loongson-pch-lpc.c | 35 ++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-index 38d05135d2a7c..a3d2c759f6a9d 100644
---- a/drivers/irqchip/irq-loongson-pch-lpc.c
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -13,6 +13,8 @@
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
- #include <linux/kernel.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
- #include <linux/syscore_ops.h>
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index 59ca1ef0a7b64..f304f99946f16 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -19,6 +19,15 @@ pic: interrupt-controller@10000000 {
+ 			#interrupt-cells = <2>;
+ 		};
  
- #include "irq-loongson.h"
-@@ -224,6 +226,7 @@ static int __init pch_lpc_init(phys_addr_t addr, unsigned long size,
- 	return -ENOMEM;
- }
- 
-+#ifdef CONFIG_ACPI
- int __init pch_lpc_acpi_init(struct irq_domain *parent, struct acpi_madt_lpc_pic *acpi_pchlpc)
- {
- 	struct fwnode_handle *irq_handle;
-@@ -251,3 +254,35 @@ int __init pch_lpc_acpi_init(struct irq_domain *parent, struct acpi_madt_lpc_pic
- 
- 	return 0;
- }
-+#endif /* CONFIG_ACPI */
++		lpc: interrupt-controller@10002000 {
++			compatible = "loongson,ls7a-lpc";
++			reg = <0 0x10002000 0 0x1000>;
++			interrupt-controller;
++			interrupt-parent = <&pic>;
++			interrupts = <19 IRQ_TYPE_LEVEL_HIGH>;
++			#interrupt-cells = <2>;
++		};
 +
-+#ifdef CONFIG_OF
-+static int __init pch_lpc_of_init(struct device_node *node, struct device_node *parent)
-+{
-+	struct fwnode_handle *irq_handle;
-+	struct resource res;
-+	int parent_irq, ret;
-+
-+	if (of_address_to_resource(node, 0, &res))
-+		return -EINVAL;
-+
-+	parent_irq = irq_of_parse_and_map(node, 0);
-+	if (!parent_irq) {
-+		pr_err("Failed to get the parent IRQ for LPC IRQs\n");
-+		return -EINVAL;
-+	}
-+
-+	irq_handle = of_fwnode_handle(node);
-+
-+	ret = pch_lpc_init(res.start, resource_size(&res), irq_handle,
-+			   parent_irq);
-+	if (ret) {
-+		irq_dispose_mapping(parent_irq);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+IRQCHIP_DECLARE(pch_lpc, "loongson,ls7a-lpc", pch_lpc_of_init);
-+#endif /* CONFIG_OF */
+ 		ls7a_uart0: serial@10080000 {
+ 			compatible = "ns16550a";
+ 			reg = <0 0x10080000 0 0x100>;
 -- 
 2.52.0
 

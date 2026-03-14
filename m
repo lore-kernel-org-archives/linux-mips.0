@@ -1,22 +1,22 @@
 Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8D22580CF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8664D2EAB82;
 	Sat, 14 Mar 2026 16:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773505754; cv=none; b=maSPAplcdnbl/+vjmwVnYCvjAehpXxFjZ2Oqo3RhksC8hQ266S45Ob7izbNspKr+hBR1VfsYIRiuYf9liiDkwbH9CR8jpPftdq2T3n+x7kvG3zQUqpu70ZBioHpgoMRd4oikUox8/XsGuCLuVGkKNwKXN5+B/w5IbE+7ab024sg=
+	t=1773505754; cv=none; b=FxZ6/5hgAAhHjrmW6NZYiAiVMMM/X8iHLwfur4AstpXuydfBvECFq2BHj61Ad/rwMB8LrWOt0830ut2oeOr0EAJ4rV2FSYmvf2g7H5y66Tc4pmFviZEZ/9aKGOYK7NYULXvpeHwxK0WBDZ/eonUYa3VWX1E0nyV32k/a354XmdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1773505754; c=relaxed/simple;
-	bh=azf8egCosncAKrAMZL9syaPRJMy6JXAjvVymUNzyvUo=;
+	bh=/CeqxqPUnQJzjFvzJniNuf9u59MDwcOFw9vAHhBJwHY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aPgLIruEN7XgCgb1JlcJB3nLxpgrYY5BXEZBMr8x/xlQa69kO3xJdu56rcW+GFUB0Y+FZ9T28qVF2F1S54AaJREvzRqwtAH0cL1ZYJ9L0vN5AouLMY/6r0rRqHGd6BiK+dIldDO1RjxH5tQ10xrx5C6AWqLXVtkluDlieq1bP20=
+	 MIME-Version; b=HMQSAWR7Th6tvAcCDU2blJK01CwclMZ2sNu4iIalvjbO+pKk3Qq3Z4A/GUF4OljiHDAO7O8a9VCJ5IojJQ5iXLRXeTA3gyup6H4lC1EGBLIohWr8uv+HvkdsdG1E9HOLwcaquk9PTD79mmKWLxw00EZoKQUuUo3mEboVT5pzveI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
 Received: from edelgard.fodlan.icenowy.me (unknown [112.94.100.43])
-	by APP-03 (Coremail) with SMTP id rQCowAB3ktmwjLVpHpqpCg--.41252S10;
-	Sun, 15 Mar 2026 00:29:05 +0800 (CST)
+	by APP-03 (Coremail) with SMTP id rQCowAB3ktmwjLVpHpqpCg--.41252S8;
+	Sun, 15 Mar 2026 00:29:01 +0800 (CST)
 From: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 To: Thomas Gleixner <tglx@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -33,9 +33,9 @@ Cc: Icenowy Zheng <uwu@icenowy.me>,
 	loongarch@lists.linux.dev,
 	linux-mips@vger.kernel.org,
 	Icenowy Zheng <zhengxingda@iscas.ac.cn>
-Subject: [PATCH v3 8/8] MIPS: Loongson64: dts: add node for LS7A PCH LPC
-Date: Sun, 15 Mar 2026 00:28:28 +0800
-Message-ID: <20260314162828.1055188-9-zhengxingda@iscas.ac.cn>
+Subject: [PATCH v3 6/8] irqchip/loongson-pch-lpc: enable building on MIPS Loongson64
+Date: Sun, 15 Mar 2026 00:28:26 +0800
+Message-ID: <20260314162828.1055188-7-zhengxingda@iscas.ac.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260314162828.1055188-1-zhengxingda@iscas.ac.cn>
 References: <20260314162828.1055188-1-zhengxingda@iscas.ac.cn>
@@ -46,10 +46,10 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAB3ktmwjLVpHpqpCg--.41252S10
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw47JryxCrWftrWkGF17KFg_yoWftrX_Aw
-	12gan5WrZ3AasFkrykZrWkCFy7u3y7Awn3C3ZFgr45XF9YyrnxGFWUZ3yDCF1fWrWYqr1r
-	K3yvqr4DC3WIkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:rQCowAB3ktmwjLVpHpqpCg--.41252S8
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4DKr18CF47Jw43Jr4fKrg_yoW3CrX_C3
+	4Y9Fs7JF17CryUJryrGF4fZryjkayqgr92kF4Yqw1fX3WxXw1xWw1UZay5JF13WFyrWFna
+	v3yxurn7Ar1ayjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUb9xFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
 	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
 	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -66,35 +66,29 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7Xw47JryxCrWftrWkGF17KFg_yoWftrX_Aw
 	CTnIWIevJa73UjIFyTuYvjfUOyIUUUUUU
 X-CM-SenderInfo: x2kh0wp0lqwv3d6l2u1dvotugofq/
 
-Loongson 7A series PCH contain a LPC IRQ controller.
+As the driver can now support OF-based platforms, it's now possible to
+use it on MIPS Loongson64 machines.
 
-Add the device tree node of it.
+Drop the requirement of LOONGARCH for this driver, to allow build on
+both MIPS-based and LoongArch-based Loongson systems.
 
 Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
 ---
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/irqchip/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 59ca1ef0a7b64..f304f99946f16 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -19,6 +19,15 @@ pic: interrupt-controller@10000000 {
- 			#interrupt-cells = <2>;
- 		};
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index f07b00d7fef90..f2eee2bd61dd0 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -761,7 +761,6 @@ config LOONGSON_PCH_MSI
  
-+		lpc: interrupt-controller@10002000 {
-+			compatible = "loongson,ls7a-lpc";
-+			reg = <0 0x10002000 0 0x1000>;
-+			interrupt-controller;
-+			interrupt-parent = <&pic>;
-+			interrupts = <19 IRQ_TYPE_LEVEL_HIGH>;
-+			#interrupt-cells = <2>;
-+		};
-+
- 		ls7a_uart0: serial@10080000 {
- 			compatible = "ns16550a";
- 			reg = <0 0x10080000 0 0x100>;
+ config LOONGSON_PCH_LPC
+ 	bool "Loongson PCH LPC Controller"
+-	depends on LOONGARCH
+ 	depends on MACH_LOONGSON64 || LOONGARCH
+ 	default MACH_LOONGSON64
+ 	select IRQ_DOMAIN_HIERARCHY
 -- 
 2.52.0
 

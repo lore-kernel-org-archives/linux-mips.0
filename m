@@ -1,93 +1,80 @@
-Received: from sg-1-12.ptr.blmpb.com (sg-1-12.ptr.blmpb.com [118.26.132.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CBA514F9FB
-	for <linux-mips@vger.kernel.org>; Sat, 14 Mar 2026 23:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51DFB14F9FB;
+	Sun, 15 Mar 2026 09:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773532438; cv=none; b=duXONvRdKCnCTSTQMcYP8sNrsr8MEb3wwMvmh7p9jh7MK91ZSKYC08Jg9nmyJNlIMjlXKEMQl7Yed5f03weA1mJ7SolfyUE3YJA56ZFnzugtizxfq1djEGY5Hv/ItcY1GXzuwZKLWSHQO5manhlKG6DygRmQ7g5fgY7MACuAbtE=
+	t=1773565740; cv=none; b=ZhSNUYAPChizqKoNoRF4N4/aZZvDy1dv4pt7LUx/pvgR2w4gZlacIz8tnfwFP/FOUnZsL7zWlFEB4r7gdnLTFoeu3lpns7Gj44wObSo32n//9X1m5Byb1D3RLc61ah2dTe0hAZgAhbItESFZ3iWNfSd8QynFZ+I3DDwmAypaLyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773532438; c=relaxed/simple;
-	bh=jbTjQzTzKLODEEV96JhJ4cxD23a4Xp2o5KR4Cttb9Y0=;
-	h=To:References:From:Subject:Mime-Version:In-Reply-To:Cc:Message-Id:
-	 Content-Type:Date; b=a6Qa20RXATKA7ltJJKTt2JI9Cxep9cPK9+nhQOjj+uwVnoTR0ncErLaiuS9/cdOQMYFZZbdUW4aWNvEQMJFpsOwF4CZBiLc+G8vN4JcqGu24UgXWgS/pRwJQdNu37k4EYQBd7LX0S2sxzbTdXbHP0ZYjQ+/ilQ12gW/KQoTrZRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com; spf=pass smtp.mailfrom=oss.cipunited.com; dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b=JjsZ2sox; arc=none smtp.client-ip=118.26.132.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
+	s=arc-20240116; t=1773565740; c=relaxed/simple;
+	bh=HjYvoB4f85qvsndu8SOgOTKaSMRZRps5PYp2U6ltbx0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rh3VYrCosvm6Oalt+LyYnRO35JbbQ5SxXykmzlI+S52v8j6eWcQ+uInZkYxkvHWDdzDVbH3Vacz3cDxtmnD54qy/RC9IeVqS4ZLxkuYEHREBhoOwgnDUv94c+4dznZjnFZNckrBqHFjKpQpC1svTyVq5YulJjv9Q2rJgFMs6CXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYvX51nt; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b="JjsZ2sox"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1773531710;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=qjwiWQK9ND0M8GvhVewD7xqCAHpseSipYcAsLmniDM0=;
- b=JjsZ2soxrm2uT3cQ0RfZzTqf9Z5jZJpknXpTVicIXVB95m9P2ZCTsiXkbtrfpV2rlNZHAU
- 3e5S939OxYIZf3HGci9Oeo9l1mcaqP8u5ncOwn/wMQuVs11YrvbZJUm8iOAHUUPipN9XMq
- ig6z+HwiV5mTDv2Wm5DEME31Pya+d++VBaUBbOFfHGC2NrlEhPd2rIjyN9MQ4Edar+edLA
- OsA936Vub6dEenhy3M97Cv/s7ixOEg3XJouYXH72phJt/RUTMfFpW/vX4Jd8JwJxYs8J+2
- E3LUm+suixc1OGrC4n1Wpi10Yae8ZXaRZVE2SZN0LvfsZinLPH5anCHx1uvnng==
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, 
-	"Jiri Slaby" <jirislaby@kernel.org>, "Rob Herring" <robh@kernel.org>, 
-	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
-	"Conor Dooley" <conor+dt@kernel.org>, 
-	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, 
-	"Huacai Chen" <chenhuacai@loongson.cn>, 
-	"Jiaxun Yang" <jiaxun.yang@flygoat.com>
-Received: from tb ([223.88.91.90]) by smtp.feishu.cn with ESMTPS; Sun, 15 Mar 2026 07:41:48 +0800
-X-Mailer: git-send-email 2.53.0
-X-Lms-Return-Path: <lba+269b5f23c+edc5c7+vger.kernel.org+rongrong@oss.cipunited.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYvX51nt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476D9C4CEF7;
+	Sun, 15 Mar 2026 09:08:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773565739;
+	bh=HjYvoB4f85qvsndu8SOgOTKaSMRZRps5PYp2U6ltbx0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EYvX51nt4btMTqx3rBXVQHScRd5ULQjZgaw7jmq9/9B8UFoeejy2zZxl/tHtliMcd
+	 OPZG8HdVO2upSq/NrQZ+BZa7DkQ46hHwb6+DbqPZHWdZfUQg2DTYo+HhEgcbZNLxkP
+	 ieFQswmetuyw+BsArSotxokJkNwOEJ6HqX9Dji2mKAvSHZjME/1DzTJsF4Eiz2sCwm
+	 tDbWPmkUTyby9xJOy2w+wpHr5invcTzEKuuj6SBf0d5b+vl1FL23CC4ZViRpb5Rq5i
+	 hXaK7U9c3xVbc4Uw0F75nFtk77+yAQNcjMEjgC8+IcYenzwz6d3ug5PwwwpJ7BuQak
+	 ct0dFHHZ0DR/A==
+Date: Sun, 15 Mar 2026 10:08:57 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Rong Zhang <rongrong@oss.cipunited.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Huacai Chen <chenhuacai@loongson.cn>, 
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org, Yao Zi <me@ziyao.cc>, 
+	Icenowy Zheng <uwu@icenowy.me>, Rong Zhang <i@rong.moe>
+Subject: Re: [PATCH 3/3] MIPS: dts: loongson64g-package: Switch to Loongson
+ UART driver
+Message-ID: <20260315-towering-black-oxpecker-1dc2e0@quoll>
 References: <20260314234143.651298-1-rongrong@oss.cipunited.com>
-From: "Rong Zhang" <rongrong@oss.cipunited.com>
-Subject: [PATCH 2/3] serial: 8250: loongson: Enable building on MIPS Loongson64
+ <20260314234143.651298-4-rongrong@oss.cipunited.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-In-Reply-To: <20260314234143.651298-1-rongrong@oss.cipunited.com>
-Cc: "Rong Zhang" <rongrong@oss.cipunited.com>, 
-	<linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>, 
-	<linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>, 
-	"Yao Zi" <me@ziyao.cc>, "Icenowy Zheng" <uwu@icenowy.me>, 
-	"Rong Zhang" <i@rong.moe>
-Message-Id: <20260314234143.651298-3-rongrong@oss.cipunited.com>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 15 Mar 2026 07:41:42 +0800
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260314234143.651298-4-rongrong@oss.cipunited.com>
 
-Loongson 3A4000 is a MIPS-based Loongson64 CPU which also supports
-8250_loongson (loongson-uart).
+On Sun, Mar 15, 2026 at 07:41:43AM +0800, Rong Zhang wrote:
+> Loongson64g is Loongson 3A4000, whose UART controller is compatible with
+> Loongson 2K1500, which is NS16550A-compatible with an additional
+> fractional frequency divisor register.
+> 
+> Update the compatible strings to reflect this, so that 3A4000 can
+> benefit from the fractional frequency divisor provided by loongson-uart.
+> This is required on some devices, otherwise their UART can't work at
+> some high baud rates, e.g., 115200.
+> 
+> Tested on Loongson-LS3A4000-7A1000-NUC-SE with a 25MHz UART clock.
+> Without fractional frequency divisor, the actual baud rate was 111607
+> (25MHz / 16 / 14, measured value: 111545) and some USB-to-UART
+> converters couldn't work with it at all. With fractional frequency
+> divisor, the measured baud rate becomes 115207, which is quite accurate.
+> 
+> Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
+> ---
+>  arch/mips/boot/dts/loongson/loongson64g-package.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Enable building on MIPS Loongson64 so that Loongson 3A4000 can benefit
-from it.
+DTS should be sent separately, don't mix independent patches targetting
+serial tree.
 
-Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
----
- drivers/tty/serial/8250/Kconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Best regards,
+Krzysztof
 
-diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index fd4e8b6ab60d..fc3e58d62233 100644
---- a/drivers/tty/serial/8250/Kconfig
-+++ b/drivers/tty/serial/8250/Kconfig
-@@ -465,11 +465,12 @@ config SERIAL_8250_OMAP_TTYO_FIXUP
- config SERIAL_8250_LOONGSON
- 	tristate "Loongson 8250 based serial port"
- 	depends on SERIAL_8250
--	depends on LOONGARCH || COMPILE_TEST
-+	depends on LOONGARCH || MACH_LOONGSON64 || COMPILE_TEST
- 	help
--	  If you have a machine based on LoongArch CPU you can enable
--	  its onboard serial ports by enabling this option. The option
--	  is applicable to both devicetree and ACPI, say Y to this option.
-+	  If you have a machine based on LoongArch CPU or MIPS-based Loongson
-+	  3A4000 CPU you can enable its onboard serial ports by enabling this
-+	  option. The option is applicable to both devicetree and ACPI, say Y
-+	  to enable this option.
- 	  If unsure, say N.
- 
- config SERIAL_8250_LPC18XX
--- 
-2.53.0

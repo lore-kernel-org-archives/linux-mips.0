@@ -1,165 +1,111 @@
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C4B2D1936
-	for <linux-mips@vger.kernel.org>; Tue, 17 Mar 2026 16:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136643914F6;
+	Tue, 17 Mar 2026 21:29:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773763331; cv=none; b=QjoCJAkk8jVEkklPCQ6PrlEYPZtEbhSmUGBol2hTkhK7+K5Q75fU3DoyVpq4Ll5ojy5eRhljJaDvgby4S9fQWwJW4yS7t0EKJk/ESqFCvgnIP8t9Ac7YK8SxEE1zXqKAc1ISQdpLyT/ZQ1Ra9ubY5Y+ARoRHULhLmAQSdFwV4Lc=
+	t=1773782950; cv=none; b=HzpJ6UP/YIvPDmUj1dbbOjKZrKqSPEn7CqpwssmoUOn1OjiAf28sK4D7rDyVZOL3fyEPwRTwgWJKeVz2NoMnlnNoI3zpMTG8P6ySB7kwIhPBbATmw1To74laC9tLNoIoMCt+HQcJjLWUT3/0yJPMAk2WHPfrgWypjHB7F7wA8Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773763331; c=relaxed/simple;
-	bh=sIXRyKcBB8QlxcJr7L52j/3CiZELN2iAHmA6Aw4pzm0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tM8KkJewNE6SCI17ZIKcdaH/8H3kOvYws2zxxpqbJWJzq77KVc6BJmte5hx3smZY3fTNHSL2XLpL2686pXCrGRKiZVu6xYEgUgRzQ8tgHPSDtD06R8y6lQ2XFQiiRrnqqj2rGpO4AzAJs1IGCnFGj/Q2IOY3afwyZ0oLxCvuoWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5a278b4c1a5so269524e87.3
-        for <linux-mips@vger.kernel.org>; Tue, 17 Mar 2026 09:02:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773763329; x=1774368129;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=twLG+LiXs44QUcz9Iwy6OkpeTFkusmg+ejXI1TbxJ+E=;
-        b=BbX/t5+DKMEpKrImw2jJBsGchUsZn9c8VLfR+BmwZH197GgnyC4QcrfnpH2Aoo3vwd
-         CUWY52FWVZTYxJv0qgrYfp4xOsy0Vfn7sxNfZEbsZaKSNSWbXgjPSyrU5X/7JYtwW14j
-         LQ2mLgjLtvEoUbi7DqlQy2eUTpkdlb6ocYUP0TxisPQrtGM2x9ofXxmjsEn3p2ceVO/8
-         XAIR3tk3EANPuZD8MPh96QPuFlf3PTUkr5WD1gwL2MjF94QUkuwwj91bHJ91F7j/RTUe
-         /P2pEI3DD/uz2yTMMAuTHXICJlJm0j5ctLBUGp7CitWeGuN+rWGnCdsWeMtK9p7xb0T8
-         WU+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUKmhk/061TT+YuvbOBjQHKQltSp3rgP+9F+UkAhhWQ6JpXfupoYgqz4GGvHIW4w+4UAmMjo6VcAdQ/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDCqqBIT0BuUoYuGKSi2nhS9ISQGBFiS205xRaMDKHnytUuV5/
-	srImhG6PzQR9krNiuwU7Fsw/nxyrKzKFzunbxDkHpzA3fP86E/SixQKWH00MwcfLxK8=
-X-Gm-Gg: ATEYQzxxaxFy2qgGwXod1FFXh9xNP+2GjSto57YqPvZCWes542gpgQaa9Ucd0EwoYSc
-	m2kFbdNXub3NupNMq5/5ByOQ+pN0tGZQafMmgalfTPwWgpdEw40BtiQqTGcVBq/fyiVEUG2Vamj
-	aSMznQ2fpaWh/l+DbYWftOvAwaiS17nQ1JWFc6JXVMo7srUTvuGF5wXfRER1MRU5WWWJ5jtCvDl
-	JUD+TpAu+S34yloyyV1zN+XxAZAHc1GKiYzetDVrfxd5xUMrTh9ts5QGPop77/BhYg7LOXqMyC6
-	dTuLVXSTRgT4oMT7vJQph/UjQmCM9EKrxxvsk4qRnd1B6/ATesorRbTPCv/9knSbt361AD18JEm
-	pKmsdDafWPNY/g0Mge+E8DMQqv1fgYpmyVLU61WLO6qSw0+vUXllB8gahDcxnk2viKH0zv9cnzD
-	bnytsS+iwEXhNFPgNNbXEmChfcQE/s0sb++b0S8WZGhjHteBpginVJfP5MnJi97M5u
-X-Received: by 2002:a05:6512:31d5:b0:5a2:78f2:3ade with SMTP id 2adb3069b0e04-5a2796a2b69mr34776e87.20.1773763328449;
-        Tue, 17 Mar 2026 09:02:08 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a15636a95asm4239729e87.80.2026.03.17.09.02.05
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Mar 2026 09:02:07 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-38bd3bc3061so1370971fa.0
-        for <linux-mips@vger.kernel.org>; Tue, 17 Mar 2026 09:02:05 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVpvL/CAJSzahzk+9ulLPd07KMCt2ftyiU1gJtRbVAZztw7LKDm9H6mWH6vWxwFdnaW7zBsj3L4artC@vger.kernel.org
-X-Received: by 2002:a17:907:d1e:b0:b94:1d92:7eb with SMTP id
- a640c23a62f3a-b976505a45fmr1113540866b.18.1773762847178; Tue, 17 Mar 2026
- 08:54:07 -0700 (PDT)
+	s=arc-20240116; t=1773782950; c=relaxed/simple;
+	bh=EEPcdwfYA2i1wDNKfSw099Z5veH/DJsStfCV0MN+hNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=WsAoUbAQYy6KQn6zbIamEHg1F3c/knSqlxJilZB8sBsjoT4Zh/UuQd/43viMItNtgeKEP5p0Dg91SI+yWIjWMYkEUtqTHRCQYfwIX3XElYfArcj+eCbG1MTs5SCmPCkbfuFJsDtqQ39gzy/15aFbx0Q6tfiAL/aQRJxFscrtkpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNngK0/F; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNngK0/F"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C6EC4CEF7;
+	Tue, 17 Mar 2026 21:29:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773782949;
+	bh=EEPcdwfYA2i1wDNKfSw099Z5veH/DJsStfCV0MN+hNM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=mNngK0/Fs/0IBKQ6aMEbV8XD37uWZwqxk9Xp1x3CSxJsS/UYuc7J+7WpeXQjIv9ec
+	 X8EcEeWKHBjvgKMyu88CqnlBxL2FAWqBgqJ4ozol6/VeGTI5aw1QFR1zLgeXFDVjMj
+	 Vh6uui+Fy6IJVUmetrS8GwD0rBJEg8lPlnZn8e78rGdrnEcwsHeuy895dwjCKj/iZe
+	 dJo+fNqA/n+fe+zuUf5P+uyUVtuF5G2F5N53qMXibkbEQPNAYVaY1EcNuLb40V7IK+
+	 bTXVtpbv+vjN6Jcthvxlff79woq7ce2WQMs/ChrloY0QQo6VedrOb7moFEJyJlBC9E
+	 IM6wbxpicP85A==
+Date: Tue, 17 Mar 2026 16:29:08 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Caleb James DeLisle <cjd@cjdns.fr>
+Cc: linux-pci@vger.kernel.org, linux-mips@vger.kernel.org,
+	naseefkm@gmail.com, ryder.lee@mediatek.com, bhelgaas@google.com,
+	lpieralisi@kernel.org, kwilczynski@kernel.org, mani@kernel.org,
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	ansuelsmth@gmail.com, linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] PCI: Skip bridge window reads when window is not
+ supported
+Message-ID: <20260317212908.GA109023@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260317-arm_defconf_cleanup-v1-0-8eecb7fdd24d@kernel.org> <20260317-arm_defconf_cleanup-v1-3-8eecb7fdd24d@kernel.org>
-In-Reply-To: <20260317-arm_defconf_cleanup-v1-3-8eecb7fdd24d@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 17 Mar 2026 16:53:54 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV50nOT06wKfj_X5LU2z=1XZZGd6Gac0C41qWWNZHRLXg@mail.gmail.com>
-X-Gm-Features: AaiRm53kA4BcUnu8DzmJWc_bmCImw2GJpSjbqTP7vNJFqk2-PxsMkq0NOVh2FgU
-Message-ID: <CAMuHMdV50nOT06wKfj_X5LU2z=1XZZGd6Gac0C41qWWNZHRLXg@mail.gmail.com>
-Subject: Re: [PATCH 3/9] configs: remove obsolete assignments to CONFIG_NFS_V4_1
-To: "Vincent Mailhol (Arm)" <mailhol@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
-	Mikko Rapeli <mikko.rapeli@linaro.org>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
-	Andreas Kemnade <andreas@kemnade.info>, Kevin Hilman <khilman@baylibre.com>, 
-	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Pablo Neira Ayuso <pablo@netfilter.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Frank Li <Frank.Li@nxp.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, 
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>, Liviu Dudau <liviu.dudau@arm.com>, 
-	Sudeep Holla <sudeep.holla@kernel.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Gregory CLEMENT <gregory.clement@bootlin.com>, =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>, =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Arnd Bergmann <arnd@arndb.de>, Heiko Stuebner <heiko@sntech.de>, 
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, 
-	Eric Biggers <ebiggers@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Michael Walle <mwalle@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>, 
-	"Rob Herring (Arm)" <robh@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Anna Schumaker <anna.schumaker@oracle.com>, 
-	Alexandre Gonzalo <alexandre.gonzalo@arm.com>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, linux-samsung-soc@vger.kernel.org, 
-	imx@lists.linux.dev, linux-renesas-soc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, openbmc@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260316155157.679533-4-cjd@cjdns.fr>
 
-Hi Vincent,
+On Mon, Mar 16, 2026 at 03:51:57PM +0000, Caleb James DeLisle wrote:
+> pci_read_bridge_io() and pci_read_bridge_mmio_pref() read bridge window
+> registers unconditionally. If the registers are hardwired to zero
+> (not implemented), both base and limit will be 0. Since (0 <= 0) is
+> true, a bogus window [mem 0x00000000-0x000fffff] or [io 0x0000-0x0fff]
+> gets created.
+> 
+> pci_read_bridge_windows() already detects unsupported windows by
+> testing register writability and sets io_window/pref_window flags
+> accordingly. Check these flags at the start of pci_read_bridge_io()
+> and pci_read_bridge_mmio_pref() to skip reading registers when the
+> window is not supported.
 
-On Tue, 17 Mar 2026 at 10:16, Vincent Mailhol (Arm) <mailhol@kernel.org> wrote:
-> CONFIG_NFS_V4_1 was revomed in commit 7537db24806f ("NFS: Merge
-> CONFIG_NFS_V4_1 with CONFIG_NFS_V4"). However, some defconfigs are
-> still referring the old configuration.
->
-> Clean-up all the leftover references to CONFIG_NFS_V4_1.
->
-> FYI, the suppressions were done using:
->
->   git grep -z -l '^CONFIG_NFS_V4=' -- 'arch/*/configs/*defconfig' |\
->     xargs -0 sed -i -E '/^CONFIG_NFS_V4_1=/d'
->
-> CONFIG_NFS_V4_1_IMPLEMENTATION_ID_DOMAIN and CONFIG_NFS_V4_1_MIGRATION
-> were not in scope of the renaming and still use V4_1 in their name, so
-> keep those two untouched.
->
-> Fixes: 7537db24806f ("NFS: Merge CONFIG_NFS_V4_1 with CONFIG_NFS_V4")
-> Signed-off-by: Vincent Mailhol (Arm) <mailhol@kernel.org>
+The fundamental problem here is that assigned space to a bridge window
+that isn't implemented.  I wish we understood the connection between
+this "read window" path and the assignment path.
 
-Thanks for your patch!
+Maybe this patch fixes it because we enter pci_read_bridge_mmio_pref()
+with res->flags being NULL, and we set IORESOURCE_MEM |
+IORESOURCE_PREFETCH again, which makes it look like we can assign
+space for it?
 
-> --- a/arch/arm/configs/shmobile_defconfig
-> +++ b/arch/arm/configs/shmobile_defconfig
-> @@ -217,7 +217,6 @@ CONFIG_TMPFS=y
->  CONFIG_NFS_FS=y
->  CONFIG_NFS_V3_ACL=y
->  CONFIG_NFS_V4=y
-> -CONFIG_NFS_V4_1=y
->  CONFIG_ROOT_NFS=y
->  CONFIG_NLS_CODEPAGE_437=y
->  CONFIG_NLS_ISO8859_1=y
+If that's the case, I think it would improve the commit log to mention
+the actual mechanism by which we avoid assigning space.
 
-Already done, cfr. commit 8c6cccefb33e2022 ("ARM: shmobile: defconfig:
-Refresh for v7.0-rc1") in next-20260309 and later.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
+> Link: https://lore.kernel.org/all/20260113210259.GA715789@bhelgaas/
+> Signed-off-by: Ahmed Naseef <naseefkm@gmail.com>
+> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+> ---
+>  drivers/pci/probe.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index bccc7a4bdd79..4eacb741b4ec 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -395,6 +395,9 @@ static void pci_read_bridge_io(struct pci_dev *dev, struct resource *res,
+>  	unsigned long io_mask, io_granularity, base, limit;
+>  	struct pci_bus_region region;
+>  
+> +	if (!dev->io_window)
+> +		return;
+> +
+>  	io_mask = PCI_IO_RANGE_MASK;
+>  	io_granularity = 0x1000;
+>  	if (dev->io_window_1k) {
+> @@ -465,6 +468,9 @@ static void pci_read_bridge_mmio_pref(struct pci_dev *dev, struct resource *res,
+>  	pci_bus_addr_t base, limit;
+>  	struct pci_bus_region region;
+>  
+> +	if (!dev->pref_window)
+> +		return;
+> +
+>  	pci_read_config_word(dev, PCI_PREF_MEMORY_BASE, &mem_base_lo);
+>  	pci_read_config_word(dev, PCI_PREF_MEMORY_LIMIT, &mem_limit_lo);
+>  	base64 = (mem_base_lo & PCI_PREF_RANGE_MASK) << 16;
+> -- 
+> 2.39.5
+> 

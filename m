@@ -1,123 +1,112 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69ED23EAB4
-	for <linux-mips@vger.kernel.org>; Tue, 24 Mar 2026 17:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAB32FFFB8;
+	Tue, 24 Mar 2026 17:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774372338; cv=none; b=WGe4tRson0OiW7Bay7RU3a3UnQtKH+xBGZBh/8ApyAawCdPAo0fiGDVRHnE0Ie1gbd1YCqISbnwi1rhm00ZLsELxuUoItmKekSPRS6YYSPCZ5nTkxIpQIJ9zJGFGqCLVevTuVQiFUBEgeaBWso7JnkoKJJf2BZOjFch16EBzjXk=
+	t=1774372614; cv=none; b=ovW+QBjlfTujEGqWtr1QUmHfOB+kW4CS+yr8/6OQAj75PMPZthlbEPAAk8cVsrrZoxwAz2XYUtLyOSaqoJMmkcfDtEVgGxRa7Otv9uguPfoF4zPoYMyVOqZ5K4dXbUTozYd6U25K/vsUr4pZUUohoR0TGWHUp9FUKdHNaoFN8HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774372338; c=relaxed/simple;
-	bh=3GEJwPfpmz1HAcFqPqDcCHr7DP7fs2OA9k1TBgcroIs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RwLYlyQ46pvMgNVqBU2pwjG5fvw4nT+wEliM2a4EVKfyhhX9l8V1C0Td8Uvh9eCsLqK4Qpg58akSkzNb017xpDbwkMBCSegOf/i8+SZzfvimxDVq54T2viACPTMkiiRNLzZvOyAWYJy8+xqBOQ/akQwNoTs6kNNOZFgEh11Oevw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-35b905a05a8so3338529a91.1
-        for <linux-mips@vger.kernel.org>; Tue, 24 Mar 2026 10:12:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774372336; x=1774977136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=imA4hBFgRxEV6K6PxesH3aFI8Gk9es7sFYCGiASF9lc=;
-        b=A6hhjBHAxxbOWJoOWp+FvqZhGTEmZI/AftLpYuTdD9ASLDdkNEWxLSqJqr/vGq3Jxq
-         ILDWyGKYNgM9z4X/By0EQGOOisXo8Av8Pa0XLw5g9Y8Yg3CS+WleIICbXo0c5SdJEEhd
-         jNyQ0c+agrL+V/aCvyBckhI3TCk6eb1Nj/mrY3OeCTgmlbRtQ8lhvkaRIJHthA1yXQI+
-         SvdDIoBGHjT+MK/8y3ncEBb6CDA4lSkgIqHt30z2rsLZXf3oDXEnU0tRyfQPwYpH8Efo
-         kPzQLVeABcjunBmLRsPQesZmC8gkLLJk496zFPKynd5RKyuEdAcOrJoKxlT68YXEvzXw
-         oHKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXWwtU3Zg4XrzULod2HNssuHwWB1dKisZQDlZpKh8ypB4O8L5QrYxRRGnUn+xUa0Ud/KKVghFGhTdW@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyGk+5LrzJ+FKhg3aaA6HSaMt1bZ4qKYOLJnSGL5LxO+D/yAR3
-	fRHkavnsWghjC+hPlZeUfisUDxgPL67PaEL9ZeWaE0S9wipCHKSgspY/NtH8ltgkphg=
-X-Gm-Gg: ATEYQzw60SDaZvh1VkVDTXtR1R5htvfwUU5duHa4Imo94lhFwSIcx+w6eU28Vb1eau0
-	TgYhLr5KXrjGrZfoCLYw6MkOIkLMnqAqIe90G/lhsprIqpJ9T16Ov2DjoSPHvG1IYEJ/0zKYl4E
-	uG8G72EgBIZ5KfexDL6GjP/dengyY2v0Sn8WZaKAhBA6+CvdoplWRzOaOMWh4V1X1AtsqFtodmk
-	otCVtEIeI8kvikruibvhAzND0m6LZd5J6MZ0RNw83ENCoUakvp17T7jldpN1xF2ZqjQd7uw3AnS
-	Imc44bKN9NPeIjjgHDfZemgG8+e+cByc9N3cqV2kZlbA9B2aQq9p9qWbP/EcmMW0MW47tDYQThk
-	n3HtwgJ5lgBaw/EvhowMOumwi38sn9kH+Te++z4nrHxsr5u9pz4Q6AvoAvF+0LYzacmb7l5DO/h
-	qq5IUn/c37M1CDCj+yrf0cxMNbhTiYlYiKfKyBmdClN+r+yNAyH29EGtD+xwAfdnU=
-X-Received: by 2002:a17:90b:3f45:b0:35b:96bb:47b5 with SMTP id 98e67ed59e1d1-35c0dcdc453mr129817a91.15.1774372335981;
-        Tue, 24 Mar 2026 10:12:15 -0700 (PDT)
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com. [74.125.82.174])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35c03124aaesm2692648a91.1.2026.03.24.10.12.15
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Mar 2026 10:12:15 -0700 (PDT)
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-2c0c955a481so5999506eec.1
-        for <linux-mips@vger.kernel.org>; Tue, 24 Mar 2026 10:12:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWnRMTk47+EIyQhhwtN7Si7VyFLUSJDee9BD8lqDhGkruaHuqrTXQmzirwPctZc3nB1eiRJHBYLPxpi@vger.kernel.org
-X-Received: by 2002:a05:6122:1da4:b0:56b:5978:22f5 with SMTP id
- 71dfb90a1353d-56d220a8b85mr416671e0c.12.1774371994638; Tue, 24 Mar 2026
- 10:06:34 -0700 (PDT)
+	s=arc-20240116; t=1774372614; c=relaxed/simple;
+	bh=dduxJCgHweVxYiNvudg2ZsGjXC2SsrE2dgbU9AwUCbA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ln4v5ut0WsFxKR6KLun/8wwT44g15QrO4vC7aci2dUaWHxFEfFLXlmLYA9aJqg6BiPcqD+qiBgf8v0CD7fUa9pX3HBm6ng602pDUylqe4LVPzJDjIJnFV423Rjyu9IPtUzI+1qHTyh6qF0PXHQXsp4BSQ4VOJnGN1ujAN6qjA/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=ZFmMFyGH; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="ZFmMFyGH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1774372611;
+	bh=dduxJCgHweVxYiNvudg2ZsGjXC2SsrE2dgbU9AwUCbA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=ZFmMFyGHh8xLPoK0dJkucVrkCeSoHuJSPlHpbGmwX0EQlK9L1DCVMrrJDusFkzKh0
+	 xCJtXs6P0TuSMxUwncWucmUDu148p4V6JUNYV3bK/FRwOe4Lw4Aw8pjE8a1rWVvqJv
+	 0NGxAkOKVmosMYCT9KpoKNbIAU5Hymj6lbpTtq64=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 24 Mar 2026 18:16:46 +0100
+Subject: [PATCH v2 2/3] checksyscalls: only run when necessary
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com> <20260324165633.4583-6-ilpo.jarvinen@linux.intel.com>
-In-Reply-To: <20260324165633.4583-6-ilpo.jarvinen@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 24 Mar 2026 18:06:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXX16=pih34yehj=3bJkg2H3ivGUj_34JDg31ABheLE5Q@mail.gmail.com>
-X-Gm-Features: AQROBzA3vydAXwvxX7mNaSzU55R-3eBg9lznDuFtNbFYtRdYd66gsLQKONTytjo
-Message-ID: <CAMuHMdXX16=pih34yehj=3bJkg2H3ivGUj_34JDg31ABheLE5Q@mail.gmail.com>
-Subject: Re: [PATCH 05/10] am68k/PCI: Remove unnecessary second application of align
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
-	Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	linux-kernel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260324-kbuild-missing-syscalls-v2-2-651b8beb0bfd@weissschuh.net>
+References: <20260324-kbuild-missing-syscalls-v2-0-651b8beb0bfd@weissschuh.net>
+In-Reply-To: <20260324-kbuild-missing-syscalls-v2-0-651b8beb0bfd@weissschuh.net>
+To: Arnd Bergmann <arnd@arndb.de>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1774372608; l=1897;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=dduxJCgHweVxYiNvudg2ZsGjXC2SsrE2dgbU9AwUCbA=;
+ b=kAHN5WQSNDvqL5cVowFQLOPm7uQNBmUnSkbP4ygCMbiQeekCS/sIu+2fTy5KCDGm4j8v1VgbI
+ q4my+qCwnmBDIkcsHl9d84DQ0j62lZRgBjGK+weUqVcAcZHkkxroKFZ
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-CC gerg
+Currently checksyscalls.sh is unconditionally executed during each build.
+Most of these executions are unnecessary.
 
-On Tue, 24 Mar 2026 at 17:59, Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> Aligning res->start by align inside pcibios_align_resource() is
-> unnecessary because caller of pcibios_align_resource() is
-> __find_resource_space() that aligns res->start with align before
-> calling pcibios_align_resource().
->
-> Aligning by align in case of IORESOURCE_IO && start & 0x300 cannot ever
-> result in changing start either because 0x300 bits would have not
-> survived the earlier alignment if align was large enough to have an
-> impact.
->
-> Thus, remove the duplicated aligning from pcibios_align_resource().
->
-> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  arch/m68k/kernel/pcibios.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
-> index 1415f6e4e5ce..7e286ee1976b 100644
-> --- a/arch/m68k/kernel/pcibios.c
-> +++ b/arch/m68k/kernel/pcibios.c
-> @@ -36,8 +36,6 @@ resource_size_t pcibios_align_resource(void *data, cons=
-t struct resource *res,
->         if ((res->flags & IORESOURCE_IO) && (start & 0x300))
->                 start =3D (start + 0x3ff) & ~0x3ff;
->
-> -       start =3D (start + align - 1) & ~(align - 1);
-> -
->         return start;
->  }
->
-> --
-> 2.39.5
+Only run checksyscalls.sh if one of its inputs have changed.
+
+This new logic does not work for the multiple invocations done for MIPS.
+The effect is that checksyscalls.sh is still executed unconditionally.
+However this is not worse than before.
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ Kbuild                   | 12 +++++++++---
+ scripts/checksyscalls.sh |  5 +++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/Kbuild b/Kbuild
+index 13324b4bbe23..515cc6a27477 100644
+--- a/Kbuild
++++ b/Kbuild
+@@ -47,12 +47,18 @@ $(rq-offsets-file): kernel/sched/rq-offsets.s FORCE
+ 
+ # Check for missing system calls
+ 
++missing-syscalls-file := .tmp_missing-syscalls
++
++targets += $(missing-syscalls-file)
++
+ quiet_cmd_syscalls = CALL    $<
+-      cmd_syscalls = $(CONFIG_SHELL) $< $(CC) $(c_flags) $(missing_syscalls_flags)
++      cmd_syscalls = DEPFILE=$(depfile) $(CONFIG_SHELL) $< $(CC) $(c_flags) $(missing_syscalls_flags); touch $@
++
++$(missing-syscalls-file): scripts/checksyscalls.sh $(rq-offsets-file) FORCE
++	$(call if_changed_dep,syscalls)
+ 
+ PHONY += missing-syscalls
+-missing-syscalls: scripts/checksyscalls.sh $(rq-offsets-file)
+-	$(call cmd,syscalls)
++missing-syscalls: $(missing-syscalls-file)
+ 
+ # Check the manual modification of atomic headers
+ 
+diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
+index 9becaf8d7b78..a6d0882f07e1 100755
+--- a/scripts/checksyscalls.sh
++++ b/scripts/checksyscalls.sh
+@@ -273,3 +273,8 @@ syscall_list() {
+ 
+ (ignore_list && syscall_list ${reference_table}) | \
+ $* -Wno-error -Wno-unused-macros -E -x c - > /dev/null
++
++# For fixdep
++if [ -n "${DEPFILE}" ]; then
++	echo "${0}: ${0} ${reference_table}" >> "${DEPFILE}"
++fi
+
+-- 
+2.53.0
+

@@ -1,150 +1,288 @@
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from mail.ilvokhin.com (mail.ilvokhin.com [178.62.254.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553DE2F6565;
-	Thu, 26 Mar 2026 01:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1123FB7C2;
+	Thu, 26 Mar 2026 15:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.254.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774487329; cv=none; b=Xu5ixHmGqsn203IT4tIoTaKN4vE/KxJCYHO7B/obcPvaGp0/YxlxRThmum5ELWSUmTxLIzFzoktrpHFtqpxuPASz/8TqsXluduA95sliV6+5eNa2RJlSWGmZwOsDEAgEWp+RjYPvqFe1G+/xf3f9eeu9Y82+ebx3LN7e5LBUdw4=
+	t=1774537830; cv=none; b=imVhjkXbbOC8k8L4Ny9N/YW+cqZ9lD7uuBqxKknlzTvNOC6bPjWnqruA8XM0RClNw+q24QitYaGh626i9P+n2pgOi5U8COULthTEiO4UICsYsyXssZolz9i8ke1WmRFtXsQpOexScNGKxZVQhJwqhtVw7RT/HLxQQRe5xktThAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774487329; c=relaxed/simple;
-	bh=4uecKRHDBhbz6GMEPeOcd+SqBF5xnJKMd0h9nwTDfzc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BWJgV14UBUG0dy8VgshPnNDlcBBLIOX3jlOGml4zxUZJn7VIGUWpm8YvGOwYpeMCuZeuC0sH/vb4SHlpi83fx5+xFqwEh3Jm863+LfCyi1HRbRyTUC+bejz9qXO7dQ/IwpHAXwpEO79TZ3m87sdomsHxmTqUpbl9BpGSFasM7u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=3k+TjSE4; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+	s=arc-20240116; t=1774537830; c=relaxed/simple;
+	bh=ImpOumTXiHhK2E/RRqtjHi28bu7nryXk7tD/1s0FNio=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AnYZkGy4DMYw+F7RS2e0LVSox5U+FDQ/XN60gUzRqT6QAcPcERHspx7JlG9O3pHihtAJmVQJdN/sidLYdo491y/HYvt0apDS302htnXP8KsSEVOjP6YO7r6Fky5voMdeNnxTFldKyWqCfqSTLwGHwCx4V+YMB0ywYj4m1Bp+jrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com; spf=pass smtp.mailfrom=ilvokhin.com; dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b=dLLqDI1p; arc=none smtp.client-ip=178.62.254.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ilvokhin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="3k+TjSE4"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=HZk9cX6zPb++VDwxFCjztWsZ6cPWXsFQhOd6PIpC+jg=; b=3k+TjSE4T5siYJvmjf+q67z7Bo
-	blgq/01N77awBnx7m8dxKS+XWCjvcdDITItvnD/oPHPgdpnl/fYTwqn9SZnLpumvD+4pQ9MuXPyJz
-	LLcgWn8WmSKGBEQCaDnMeONlaYVoPwlRLHNuJiDEDQk8r41BKPWSIExdHBN5qyXIf2iA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1w5ZD0-00DNsG-6i; Thu, 26 Mar 2026 02:08:26 +0100
-Date: Thu, 26 Mar 2026 02:08:26 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Chen-Yu Tsai <wens@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
-	Jan Petrous <jan.petrous@oss.nxp.com>, s32@nxp.com,
-	Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>,
-	Romain Gantois <romain.gantois@bootlin.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Christophe Roullier <christophe.roullier@foss.st.com>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Radu Rendec <rrendec@redhat.com>, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	Drew Fustini <dfustini@tenstorrent.com>,
-	linux-sunxi@lists.linux.dev, linux-amlogic@lists.infradead.org,
-	linux-mips@vger.kernel.org, imx@lists.linux.dev,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, sophgo@lists.linux.dev,
-	linux-riscv@lists.infradead.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH net-next v9 2/6] net: stmmac: qcom-ethqos: use generic
- device properties
-Message-ID: <409265d8-532a-44d4-abc6-02ac5a19d286@lunn.ch>
-References: <20260316-qcom-sa8255p-emac-v9-0-c58934e76ff2@oss.qualcomm.com>
- <20260316-qcom-sa8255p-emac-v9-2-c58934e76ff2@oss.qualcomm.com>
+	dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b="dLLqDI1p"
+Received: from localhost.localdomain (shell.ilvokhin.com [138.68.190.75])
+	(Authenticated sender: d@ilvokhin.com)
+	by mail.ilvokhin.com (Postfix) with ESMTPSA id 9D059BDE1E;
+	Thu, 26 Mar 2026 15:10:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilvokhin.com;
+	s=mail; t=1774537822;
+	bh=vg6orVDTPecMi8OeXzXS8oUaQlC99nRHDPvEe4x4LeU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=dLLqDI1p21R53wCA8eob+BVI6XwqXJpZuprXjmvBjW/iBsJ7cf+ADApcxOKpwSyya
+	 A+lKSNgUYnHa1L7n0SzHyd2w1GjjlxWJLI8NECaewbUXU7VVQTj7a3s0E5eKkMk38Z
+	 dNvaBjriNbIT5ix6kJ00hgEddssmRBYJMPY+afno=
+From: Dmitry Ilvokhin <d@ilvokhin.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Juergen Gross <jgross@suse.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Alexey Makhalov <alexey.makhalov@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dennis Zhou <dennis@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	Dmitry Ilvokhin <d@ilvokhin.com>
+Subject: [PATCH v4 5/5] locking: Add contended_release tracepoint to spinning locks
+Date: Thu, 26 Mar 2026 15:10:04 +0000
+Message-ID: <81eb8e0cd90b31e761e12721dbacb967281f840f.1774536681.git.d@ilvokhin.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <cover.1774536681.git.d@ilvokhin.com>
+References: <cover.1774536681.git.d@ilvokhin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260316-qcom-sa8255p-emac-v9-2-c58934e76ff2@oss.qualcomm.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 16, 2026 at 01:05:07PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> In order to drop the dependency on CONFIG_OF, convert all device property
-> getters from OF-specific to generic device properties and stop pulling
-> in any linux/of.h symbols.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/Kconfig             | 2 +-
->  drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 9 ++++-----
->  2 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index 07088d03dbab5bd1abf66e9460613b839c1d565e..e2af4fdd654340d618477ed87d3889dbb9aab456 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -135,7 +135,7 @@ config DWMAC_MESON
->  config DWMAC_QCOM_ETHQOS
->  	tristate "Qualcomm ETHQOS support"
->  	default ARCH_QCOM
-> -	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-> +	depends on ARCH_QCOM || COMPILE_TEST
->  	help
->  	  Support for the Qualcomm ETHQOS core.
+Extend the contended_release tracepoint to queued spinlocks and queued
+rwlocks.
 
-Are you sure you want to do that?
+Use the arch-overridable queued_spin_release(), introduced in the
+previous commit, to ensure the tracepoint works correctly across all
+architectures, including those with custom unlock implementations (e.g.
+x86 paravirt).
 
-static int qcom_ethqos_probe(struct platform_device *pdev)
-{
-	struct device_node *np = pdev->dev.of_node;
-	const struct ethqos_emac_driver_data *data;
-	struct plat_stmmacenet_data *plat_dat;
-	struct stmmac_resources stmmac_res;
-	struct device *dev = &pdev->dev;
-	struct qcom_ethqos *ethqos;
-	int ret, i;
+When the tracepoint is disabled, the only addition to the hot path is a
+single NOP instruction (the static branch). When enabled, the contention
+check, trace call, and unlock are combined in an out-of-line function to
+minimize hot path impact, avoiding the compiler needing to preserve the
+lock pointer in a callee-saved register across the trace call.
 
-	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-	if (ret)
-		return dev_err_probe(dev, ret,
-				     "Failed to get platform resources\n");
+Binary size impact (x86_64, defconfig):
+  uninlined unlock (common case): +983 bytes  (+0.00%)
+  inlined unlock (worst case):    +58165 bytes (+0.24%)
 
-	plat_dat = devm_stmmac_probe_config_dt(pdev, stmmac_res.mac);
-	if (IS_ERR(plat_dat)) {
-		return dev_err_probe(dev, PTR_ERR(plat_dat),
-				     "dt configuration failed\n");
-	}
+The inlined unlock case could not be achieved through Kconfig options on
+x86_64 as PREEMPT_BUILD unconditionally selects UNINLINE_SPIN_UNLOCK on
+x86_64. The UNINLINE_SPIN_UNLOCK guards were manually inverted to force
+inline the unlock path and estimate the worst case binary size increase.
 
-https://elixir.bootlin.com/linux/v6.19.9/source/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c#L684
+Architectures with fully custom qspinlock implementations (e.g.
+PowerPC) are not covered by this change.
 
+Signed-off-by: Dmitry Ilvokhin <d@ilvokhin.com>
+---
+ include/asm-generic/qrwlock.h   | 48 +++++++++++++++++++++++++++------
+ include/asm-generic/qspinlock.h | 18 +++++++++++++
+ kernel/locking/qrwlock.c        | 16 +++++++++++
+ kernel/locking/qspinlock.c      |  8 ++++++
+ 4 files changed, 82 insertions(+), 8 deletions(-)
 
-#else
-struct plat_stmmacenet_data *
-devm_stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
-{
-	return ERR_PTR(-EINVAL);
-}
-#endif /* CONFIG_OF */
+diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
+index 75b8f4601b28..e24dc537fd66 100644
+--- a/include/asm-generic/qrwlock.h
++++ b/include/asm-generic/qrwlock.h
+@@ -14,6 +14,7 @@
+ #define __ASM_GENERIC_QRWLOCK_H
+ 
+ #include <linux/atomic.h>
++#include <linux/tracepoint-defs.h>
+ #include <asm/barrier.h>
+ #include <asm/processor.h>
+ 
+@@ -35,6 +36,10 @@
+  */
+ extern void queued_read_lock_slowpath(struct qrwlock *lock);
+ extern void queued_write_lock_slowpath(struct qrwlock *lock);
++extern void queued_read_unlock_traced(struct qrwlock *lock);
++extern void queued_write_unlock_traced(struct qrwlock *lock);
++
++DECLARE_TRACEPOINT(contended_release);
+ 
+ /**
+  * queued_read_trylock - try to acquire read lock of a queued rwlock
+@@ -102,10 +107,16 @@ static inline void queued_write_lock(struct qrwlock *lock)
+ }
+ 
+ /**
+- * queued_read_unlock - release read lock of a queued rwlock
++ * queued_rwlock_is_contended - check if the lock is contended
+  * @lock : Pointer to queued rwlock structure
++ * Return: 1 if lock contended, 0 otherwise
+  */
+-static inline void queued_read_unlock(struct qrwlock *lock)
++static inline int queued_rwlock_is_contended(struct qrwlock *lock)
++{
++	return arch_spin_is_locked(&lock->wait_lock);
++}
++
++static __always_inline void __queued_read_unlock(struct qrwlock *lock)
+ {
+ 	/*
+ 	 * Atomically decrement the reader count
+@@ -114,22 +125,43 @@ static inline void queued_read_unlock(struct qrwlock *lock)
+ }
+ 
+ /**
+- * queued_write_unlock - release write lock of a queued rwlock
++ * queued_read_unlock - release read lock of a queued rwlock
+  * @lock : Pointer to queued rwlock structure
+  */
+-static inline void queued_write_unlock(struct qrwlock *lock)
++static inline void queued_read_unlock(struct qrwlock *lock)
++{
++	/*
++	 * Trace and unlock are combined in the traced unlock variant so
++	 * the compiler does not need to preserve the lock pointer across
++	 * the function call, avoiding callee-saved register save/restore
++	 * on the hot path.
++	 */
++	if (tracepoint_enabled(contended_release)) {
++		queued_read_unlock_traced(lock);
++		return;
++	}
++
++	__queued_read_unlock(lock);
++}
++
++static __always_inline void __queued_write_unlock(struct qrwlock *lock)
+ {
+ 	smp_store_release(&lock->wlocked, 0);
+ }
+ 
+ /**
+- * queued_rwlock_is_contended - check if the lock is contended
++ * queued_write_unlock - release write lock of a queued rwlock
+  * @lock : Pointer to queued rwlock structure
+- * Return: 1 if lock contended, 0 otherwise
+  */
+-static inline int queued_rwlock_is_contended(struct qrwlock *lock)
++static inline void queued_write_unlock(struct qrwlock *lock)
+ {
+-	return arch_spin_is_locked(&lock->wait_lock);
++	/* See comment in queued_read_unlock(). */
++	if (tracepoint_enabled(contended_release)) {
++		queued_write_unlock_traced(lock);
++		return;
++	}
++
++	__queued_write_unlock(lock);
+ }
+ 
+ /*
+diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
+index df76f34645a0..915a4c2777f6 100644
+--- a/include/asm-generic/qspinlock.h
++++ b/include/asm-generic/qspinlock.h
+@@ -41,6 +41,7 @@
+ 
+ #include <asm-generic/qspinlock_types.h>
+ #include <linux/atomic.h>
++#include <linux/tracepoint-defs.h>
+ 
+ #ifndef queued_spin_is_locked
+ /**
+@@ -129,12 +130,29 @@ static __always_inline void queued_spin_release(struct qspinlock *lock)
+ }
+ #endif
+ 
++DECLARE_TRACEPOINT(contended_release);
++
++extern void queued_spin_release_traced(struct qspinlock *lock);
++
+ /**
+  * queued_spin_unlock - unlock a queued spinlock
+  * @lock : Pointer to queued spinlock structure
++ *
++ * Generic tracing wrapper around the arch-overridable
++ * queued_spin_release().
+  */
+ static __always_inline void queued_spin_unlock(struct qspinlock *lock)
+ {
++	/*
++	 * Trace and release are combined in queued_spin_release_traced() so
++	 * the compiler does not need to preserve the lock pointer across the
++	 * function call, avoiding callee-saved register save/restore on the
++	 * hot path.
++	 */
++	if (tracepoint_enabled(contended_release)) {
++		queued_spin_release_traced(lock);
++		return;
++	}
+ 	queued_spin_release(lock);
+ }
+ 
+diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+index d2ef312a8611..5f7a0fc2b27a 100644
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -90,3 +90,19 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+ 	trace_contention_end(lock, 0);
+ }
+ EXPORT_SYMBOL(queued_write_lock_slowpath);
++
++void __lockfunc queued_read_unlock_traced(struct qrwlock *lock)
++{
++	if (queued_rwlock_is_contended(lock))
++		trace_contended_release(lock);
++	__queued_read_unlock(lock);
++}
++EXPORT_SYMBOL(queued_read_unlock_traced);
++
++void __lockfunc queued_write_unlock_traced(struct qrwlock *lock)
++{
++	if (queued_rwlock_is_contended(lock))
++		trace_contended_release(lock);
++	__queued_write_unlock(lock);
++}
++EXPORT_SYMBOL(queued_write_unlock_traced);
+diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
+index af8d122bb649..c72610980ec7 100644
+--- a/kernel/locking/qspinlock.c
++++ b/kernel/locking/qspinlock.c
+@@ -104,6 +104,14 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
+ #define queued_spin_lock_slowpath	native_queued_spin_lock_slowpath
+ #endif
+ 
++void __lockfunc queued_spin_release_traced(struct qspinlock *lock)
++{
++	if (queued_spin_is_contended(lock))
++		trace_contended_release(lock);
++	queued_spin_release(lock);
++}
++EXPORT_SYMBOL(queued_spin_release_traced);
++
+ #endif /* _GEN_PV_LOCK_SLOWPATH */
+ 
+ /**
+-- 
+2.52.0
 
-It seems like this is just going to result in the probe failing with
--EINVAL.
-
-	Andrew

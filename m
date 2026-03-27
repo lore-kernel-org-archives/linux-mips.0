@@ -1,73 +1,94 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C89315D40;
-	Thu, 26 Mar 2026 22:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A7333DEFE;
+	Fri, 27 Mar 2026 02:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774565214; cv=none; b=uX0LOWkkTQeouclHOnrS1BvJzHPdHyiiqmt4z1vP965tnWZ6qaVNIe3mVHXVcr/rjd7K61uIARsQD5TETNH8pQwMyRvs3eGxKPIkIuhtHNBs0Lss+HpyBsV+Dcj18OpKDqVj7d3S0VTNLY25UOFoXwC2+eJnOWFS17nZ/lajJCw=
+	t=1774580166; cv=none; b=PYppQGzQakaZvb5XWfx246yOneNOlAL8md37/l9d94+CyEK9+5RjMJgLO2TG/kMscSEuwHwpTrNXJDG4BbxN7ozcPVDHphHm24/SUQch9gisKh+j1DyKDV2Sq/t6faGQEsnbPlaX+xQhNP0aa171i0MMjMV26WScxxI0aSdMfZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774565214; c=relaxed/simple;
-	bh=jPeS7Hz/OZoONDvOoUxwObQ2rk7SW5d2Xjyob7BXJSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oMOQV6aSJjJUotaVZZuzlFRN9v0PXhyPRim+cMkM3reh77n4TC2TbmpxwIAIn/VfP9hjNdNTQU50Y5s7tSSnTlKPFL6HWyMto1YTlNCNu9UoVturwyZrgsKjNANRnoO/6dff283LEfRGDcanITaiSvHveK90tRoi5ROygdd5pTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1w5tTI-0004YP-00; Thu, 26 Mar 2026 23:46:36 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 5D484C0256; Thu, 26 Mar 2026 23:46:28 +0100 (CET)
-Date: Thu, 26 Mar 2026 23:46:28 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Icenowy Zheng <zhengxingda@iscas.ac.cn>, Icenowy Zheng <uwu@icenowy.me>,
-	Yao Zi <me@ziyao.cc>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, loongarch@lists.linux.dev,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>, Thomas Gleixner <tglx@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>
-Subject: Re: [PATCH v4 1/6] MIPS: loongson64: Override
- arch_dynirq_lower_bound to reserve LPC IRQs
-Message-ID: <acW3RMKjA194cyHm@alpha.franken.de>
-References: <20260321092032.3502701-1-zhengxingda@iscas.ac.cn>
- <20260321092032.3502701-2-zhengxingda@iscas.ac.cn>
- <a8cb7352-2d1e-46e9-b526-de4d4dd7b460@app.fastmail.com>
+	s=arc-20240116; t=1774580166; c=relaxed/simple;
+	bh=OXABB1eFjeN1oGH/SXFHZZT4FCIkSR1xm49zyhunO7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mL6oPjZ6AV+g3fkAf9SZCzXneiKUUjWFVQz58U87NpDv7XBvPVHCKNOHPf/08i0XS8inf7tWC62+cJqUlB1RdL47O/nyrRqYb9pjCpWJ6kPVMguhXeqYD5nmaDsRpqDGV8+ooT/tcUHcSQbhPwczO7hsMW1ClEOCeLMuInIHzYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62989C116C6;
+	Fri, 27 Mar 2026 02:55:59 +0000 (UTC)
+Message-ID: <b89ac970-7990-4a12-9769-82efc945c950@linux-m68k.org>
+Date: Fri, 27 Mar 2026 12:55:55 +1000
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8cb7352-2d1e-46e9-b526-de4d4dd7b460@app.fastmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/10] am68k/PCI: Remove unnecessary second application of
+ align
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+ Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Madhavan Srinivasan
+ <maddy@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-kernel@vger.kernel.org
+References: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com>
+ <20260324165633.4583-6-ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20260324165633.4583-6-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 26, 2026 at 09:40:09PM +0000, Jiaxun Yang wrote:
+
+
+On 25/3/26 02:56, Ilpo Järvinen wrote:
+> Aligning res->start by align inside pcibios_align_resource() is
+> unnecessary because caller of pcibios_align_resource() is
+> __find_resource_space() that aligns res->start with align before
+> calling pcibios_align_resource().
 > 
+> Aligning by align in case of IORESOURCE_IO && start & 0x300 cannot ever
+> result in changing start either because 0x300 bits would have not
+> survived the earlier alignment if align was large enough to have an
+> impact.
 > 
-> On Sat, 21 Mar 2026, at 9:20 AM, Icenowy Zheng wrote:
-> > On some Loongson 3A devices, a LPC bus is present and some legacy
-> > devices (e.g. 8259) on it expect hardcoded low interrupt numbers. However
-> > currently the expected low range interrupt numbers are not exempted from
-> > the dynamic allocation, which leads to confliction when registering LPC
-> > interrupts in the fixed range.
-> >
-> > Override arch_dynirq_lower_bound() to reserve these low range interrupt
-> > numbers and prevent them from being dynamically allocated.
-> >
-> > Signed-off-by: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+> Thus, remove the duplicated aligning from pcibios_align_resource().
 > 
-> Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+LGTM.
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+
+> ---
+>   arch/m68k/kernel/pcibios.c | 2 --
+>   1 file changed, 2 deletions(-)
 > 
-> @Thomas Bogendoerfer, do you mind picking this over MIPS tree?
+> diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+> index 1415f6e4e5ce..7e286ee1976b 100644
+> --- a/arch/m68k/kernel/pcibios.c
+> +++ b/arch/m68k/kernel/pcibios.c
+> @@ -36,8 +36,6 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+>   	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
+>   		start = (start + 0x3ff) & ~0x3ff;
+>   
+> -	start = (start + align - 1) & ~(align - 1);
+> -
+>   	return start;
+>   }
+>   
 
-https://lore.kernel.org/all/177453852024.1647592.16054697624437632741.tip-bot2@tip-bot2/
-
-IMHO this in tip tree already
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

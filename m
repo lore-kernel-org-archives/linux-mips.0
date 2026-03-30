@@ -1,88 +1,120 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2E237EFF5
-	for <linux-mips@vger.kernel.org>; Mon, 30 Mar 2026 08:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CA33822B4
+	for <linux-mips@vger.kernel.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774857885; cv=none; b=dhdfTcS9HfFro+Nf55HgtVUJVawJ9GhJEETdGPkL3U4Mgav02BOD9KZ/92W4NsgTVQGZrwKw7woC1RiY2z9ECq+6AUCPBBup6YK3g59FuzdvvczcPvy/vSnPOMsUXaVx97arursvKWtk/Y+4Z0XN3NmUqpW9amTrPBnjeB+4v4k=
+	t=1774861923; cv=none; b=jCu6HHnQjAA7c3pLekjmjpd/L4Kk8uCsQkmvXjApRz1xytGI7cmAY1Xl8tArdY+/px2gwBR6AEw0lkv+tNP9Ru/UnR4GqCi2ZVLRUBc07n4r4e6Hw89XyrOTrDXJLZVE4R7PQEDQ5Zrt+jz6zMecVQL8uUY5BnB5olrv1L/U8U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774857885; c=relaxed/simple;
-	bh=NI+dDSFb+B4wbwRhOwzVtiWfHdckWtXrPaqJM/br4Gw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=bYclCddX0p2c0eFwtExq9Io/svKP0faCNvbFA5d3P3yhwgFZ6QQCJWZUDAeOGmCAdHe0CD/9U99Q0hlMxc/aB55gongtQUwa3WAyyVq4oDAH/X7gPU+eoqj+Nz5WOy8Umwsajp/jWguwDdufNs5B1hcYBOZjqJvOQxfxMVExzSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BuLAqCs+; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1774861923; c=relaxed/simple;
+	bh=ceON4+OyPO9Dpt3uRo/YI9ctvvIsu5NXrp2cWjyJbGM=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qxSHbC3ksanNUxMeEjG2TInfriHddjWXWn96ucM5DmNvKhkRh7mF2N/otHn9x9yULOG5azRCEGgs3L7E8g+g8oavEU8rsSrJ9j3phcWsryLWgappfzeEwZK/Kwu9zCRR0rT/HdBZAX/PwPGE5WNn25bIHxWRi/QJGhe9aigeWmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhbUYW1m; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BuLAqCs+"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id D41151A3095;
-	Mon, 30 Mar 2026 08:04:34 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A8E525FFA8;
-	Mon, 30 Mar 2026 08:04:34 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CC6F110451B68;
-	Mon, 30 Mar 2026 10:04:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1774857874; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=e9yXhXYtA6S7FCEzYya4xIi0QVtCAmYf97xEC+a39pE=;
-	b=BuLAqCs+HBjveDvPLCofBbG3aZy+a93jX/iMOoC574ORAOecwYhDZ09PuPx2PYleznVEuX
-	F+SVcj/mvXpWnUqakXVfj+24ofCXLNpg87FiS2fkHDdD+N3uvb1Bn7M50LKueAwkimYCwo
-	F/ebg/i4BGA104opCHdNPWw1/pDQjewsSbM95bsM5WAhx8lkUEI5YEXlVgKMOp3K7ZrEWc
-	gVT/CrDIU/adbPBjqFewfx+8OGL8KnGZz9vUtT3JdgwqkiZbe7+ynqPhXmf/ozL6pj7INl
-	VBJN8D7+dUhrOX1ksxOMMzZVABbl7TaBhcjPKVIQuxBi1Ov5yE84uCqiP9rQTA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Walleij <linusw@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,  Dmitry Torokhov
- <dmitry.torokhov@gmail.com>,  Bartosz Golaszewski <brgl@kernel.org>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-mips@vger.kernel.org,
-  linux-input@vger.kernel.org,  linux-gpio@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] MIPS/mtd: Handle READY GPIO in generic NAND
- platform data
-In-Reply-To: <20260328-mips-input-rb532-button-v1-2-98e201621501@kernel.org>
-	(Linus Walleij's message of "Sat, 28 Mar 2026 16:55:48 +0100")
-References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org>
-	<20260328-mips-input-rb532-button-v1-2-98e201621501@kernel.org>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Mon, 30 Mar 2026 10:04:30 +0200
-Message-ID: <87a4vpbv5d.fsf@bootlin.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhbUYW1m"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24952C2BCB2
+	for <linux-mips@vger.kernel.org>; Mon, 30 Mar 2026 09:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774861923;
+	bh=ceON4+OyPO9Dpt3uRo/YI9ctvvIsu5NXrp2cWjyJbGM=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc:From;
+	b=RhbUYW1mny2+1VgOOKTjJlNgARppS1K9nt7p4vpy0jKBvrMYdfM0wQKv0I14eSCdJ
+	 HvPbgZFcjWyv0PJXoZOBX4tTlamzeGfteGy5KmcxV3rgC6Yw6imrhxXlCAehnSOzvV
+	 FlwEpqnYzWJyF53poKcxDSCGxfyfixlgcDsQYEtDWU6Td9sJ0sH7Vh4g4Wj5BRKy+0
+	 N8BzdWPmbNRNGV637fkqEcY0dNobxhOf6ohvVtVY7b8UrSkJrADR8rT5XVJy3aJBYI
+	 Kb4pOCR1o2NNisdwpg6viQCe14RIB5F/XGupZz4pEjdSfRsE8VE+gvrVutISqiDaKT
+	 U9iRekWyD0KCQ==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-38be5d7c27cso40253521fa.0
+        for <linux-mips@vger.kernel.org>; Mon, 30 Mar 2026 02:12:03 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz/Ie6CxZP5K8LxerqD2GGmqehlFEwKfhr5DQtXuSIZ9sA2fF7r
+	NHt+nXTjKPKJXPLqaNN8xZqBIsV74ZPjX+tU/QFExbmVRQCWcixkgPfy/n/Z3+v3giOYWAYLXfN
+	bv5QLMypMr4dgRZKjpghhekj7T36NcufkSxCx4pVqEA==
+X-Received: by 2002:a05:651c:1594:b0:38a:8c44:75a1 with SMTP id
+ 38308e7fff4ca-38c730901a6mr29310131fa.8.1774861921807; Mon, 30 Mar 2026
+ 02:12:01 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 30 Mar 2026 02:12:00 -0700
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20260328-mips-input-rb532-button-v1-0-98e201621501@kernel.org> <20260328-mips-input-rb532-button-v1-1-98e201621501@kernel.org>
+Date: Mon, 30 Mar 2026 02:12:00 -0700
+X-Gmail-Original-Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
+X-Gm-Features: AQROBzDH9cuPCu9EfBdDYtLtddxHJtuJYI_E5t-aB4_H_wCaSEBQDt7of5qpvKI
+Message-ID: <CAMRc=Mct_F-LPAsvsHWxS1SeT+SBXQ7opikmf33eR7tz_5tJwA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MIPS/input: Move RB532 button to GPIO descriptors
+To: Linus Walleij <linusw@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Bartosz Golaszewski <brgl@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 28/03/2026 at 16:55:48 +01, Linus Walleij <linusw@kernel.org> wrote:
-
-> The callbacks into the MIPS RB532 platform to read the GPIO pin
-> indicating that the NAND chip is ready are oldschool and does
-> not assign GPIOs as properties to the NAND device.
+On Sat, 28 Mar 2026 16:55:47 +0100, Linus Walleij <linusw@kernel.org> said:
+> Convert the Mikrotik RouterBoard RB532 to use GPIO descriptors
+> by defining a software node for the GPIO chip, then register
+> the button platform device with full info passing the GPIO
+> as a device property.
 >
-> Add a capability to the generic platform NAND chip driver to use
-> a GPIO line to detect if a NAND chip is ready and override the
-> platform-local drv_ready() callback with this check if the GPIO
-> is present.
+> This can be used as a base to move more of the RB532 devices
+> over to passing GPIOs using device properties.
 >
-> This makes it possible to drop the legacy include header
-> <linux/gpio.h> from the RB532 devices.
+> Use the GPIO_ACTIVE_LOW flag and drop the inversion in the
+> rb532_button_pressed() function.
 >
 > Signed-off-by: Linus Walleij <linusw@kernel.org>
 > ---
->  arch/mips/rb532/devices.c        | 36 +++++++++++++++++++++-------------=
---
->  drivers/mtd/nand/raw/plat_nand.c | 24 +++++++++++++++++++++++-
+>  arch/mips/rb532/devices.c         | 47 +++++++++++++++++++++++++++++++++------
+>  drivers/input/misc/rb532_button.c | 35 ++++++++++++++++++++++++-----
+>  2 files changed, 69 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+> index 4f027efbf27b..3f56d9feb73a 100644
+> --- a/arch/mips/rb532/devices.c
+> +++ b/arch/mips/rb532/devices.c
+> @@ -16,8 +16,10 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/gpio.h>
+>  #include <linux/gpio/machine.h>
+> +#include <linux/gpio/property.h>
+>  #include <linux/gpio_keys.h>
+>  #include <linux/input.h>
+> +#include <linux/property.h>
+>  #include <linux/serial_8250.h>
+>
+>  #include <asm/bootinfo.h>
+> @@ -38,6 +40,10 @@ extern unsigned int idt_cpu_freq;
+>
+>  static struct mpmc_device dev3;
+>
+> +static const struct software_node rb532_gpio0_node = {
+> +	.name = "gpio0",
+> +};
+> +
 
-Fine by me for the MTD bits!
+Hi Linus!
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+I'm seeing patches from you lately using the pattern of "dangling software"
+nodes that's documented under Documentation/driver-api/gpio/board.rst as the
+recommended approach but which I have been trying to come up with a better
+alternetive for and eventually phase out. I will post a series providing a way
+to automatically assign software nodes as secondary firmware nodes for devices
+and this series will also remove the offending bits from the docs.
+
+As you're dealing with a board file here: could you assign the firmware node
+you get after registering this software node to the target GPIO controller
+under arch/mips/rb532/gpio.c so that the firmware node lookup can work by
+matching the address rather than falling back to the label string matching?
 
 Thanks,
-Miqu=C3=A8l
+Bartosz

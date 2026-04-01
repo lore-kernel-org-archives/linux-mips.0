@@ -1,156 +1,65 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D753A1A58
-	for <linux-mips@vger.kernel.org>; Wed,  1 Apr 2026 09:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4C91A0B15;
+	Wed,  1 Apr 2026 20:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775034479; cv=none; b=BcMP2JhwfDJBkLXAfXhXU0qLDz6akhj+G0w4Qn5Ce+7zU5udICX0XF9ikpJzLpXgMlXjMTYne+gD8w+2iEXj1M3QjFwnRoUQdNoFE1ghfkWNwDa0YusrZrhMC0rz9I+ox/2s0PRezD0Y+aObYtFJpMK2rB7TEprtdGcsUxmEbfg=
+	t=1775075456; cv=none; b=VYTdX0p96vYzJ1ypRJLHZPd+ZM9uBXa0dpiy3v31J/ZactO4B+G32+vqJeJuapzk3vSa4z2iMMLH8f9TDLRZ4cH/tZ7nsl9EvVsR8JlP6o08kQW9+djIxpsumYJqwSTVctskLgRsOz3ztAzDWIJHJ/3RkUd7oeL/MLeNTOUagzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775034479; c=relaxed/simple;
-	bh=Iyld1u9TlHLVPlViIYFXXPU6CHPGVhqflTiLiOAhnUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q7iYJCWTuJrnfKzzrhr5a0OCCjt3ifr9AQ9zQ1kdkEtIgKXjHPWzmE6qiRALdbpLyn9qn967L1FFhcy+d+4CZcI08wTQwc8ZxcBM+3vfLbRQvvRmyj4hHEOaLY/9KLLrsMqx3BGfBIgxmNgjGCsyCNAVrU/P0sH/v9ToxuULU74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E9B195BD44;
-	Wed,  1 Apr 2026 09:07:56 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 976D04A0B0;
-	Wed,  1 Apr 2026 09:07:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NhNPI2zgzGm1LwAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Wed, 01 Apr 2026 09:07:56 +0000
-Message-ID: <786390ea-e42c-4d9f-be55-09093cf09918@suse.de>
-Date: Wed, 1 Apr 2026 11:07:56 +0200
+	s=arc-20240116; t=1775075456; c=relaxed/simple;
+	bh=JpBx18Gt2PrHk2QtesQSNQ4tjuv1KnomDhSxJHrVhKg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CfPQM50+T1jtzAYvutT4d9oIjLVH7FeZrEx0pLmzi9CAfXg8chDrWKf1LwQdUVNJuT8hiIolVmduPEglrNjsYPuQcjZjtjSDBf1n5WSWArWJwE7Ak/eyy2jwd5VugIKkLS76zDi9pz/QZuo/JMJjyGlAUOV9StaTOFdKuC6cy5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1w82D7-0008HD-00; Wed, 01 Apr 2026 22:30:45 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 1D265C0DC9; Wed,  1 Apr 2026 22:30:28 +0200 (CEST)
+Date: Wed, 1 Apr 2026 22:30:28 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Fix the GCC version check for `__multi3' workaround
+Message-ID: <ac2AZPDScM4Nlft5@alpha.franken.de>
+References: <alpine.DEB.2.21.2603300218310.60268@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arch/sh: Drop CONFIG_FIRMWARE_EDID from defconfig files
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: ysato@users.sourceforge.jp, dalias@libc.org,
- glaubitz@physik.fu-berlin.de, arnd@arndb.de, linux-sh@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mips@vger.kernel.org
-References: <20260401083242.214492-1-tzimmermann@suse.de>
- <CAMuHMdX5B6LpZ5ffaOc0Et0PK+G=_c8yD5K8JynRwu5T8rHfsw@mail.gmail.com>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <CAMuHMdX5B6LpZ5ffaOc0Et0PK+G=_c8yD5K8JynRwu5T8rHfsw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Queue-Id: E9B195BD44
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2603300218310.60268@angie.orcam.me.uk>
 
-Hi Geert
+On Mon, Mar 30, 2026 at 02:54:09AM +0100, Maciej W. Rozycki wrote:
+> It was only GCC 10 that fixed a MIPS64r6 code generation issue with a 
+> `__multi3' libcall inefficiently produced to perform 64-bit widening 
+> multiplication while suitable machine instructions exist to do such a 
+> calculation.  The fix went in with GCC commit 48b2123f6336 ("re PR 
+> target/82981 (unnecessary __multi3 call for mips64r6 linux kernel)").
+> 
+> Adjust our code accordingly, removing build failures such as:
+> 
+> mips64-linux-ld: lib/math/div64.o: in function `mul_u64_add_u64_div_u64':
+> div64.c:(.text+0x84): undefined reference to `__multi3'
+> 
+> with the GCC versions affected.
+> 
+> Fixes: ebabcf17bcd7 ("MIPS: Implement __multi3 for GCC7 MIPS64r6 builds")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202601140146.hMLODc6v-lkp@intel.com/
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v4.15+
+> ---
+>  arch/mips/lib/multi3.c |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Am 01.04.26 um 10:55 schrieb Geert Uytterhoeven:
-> Hi Thomas,
->
-> CC arm/mips/ppc, as you sent similar patches for these arches.
->
-> On Wed, 1 Apr 2026 at 10:40, Thomas Zimmermann <tzimmermann@suse.de> wrote:
->> CONFIG_FIRMWARE_EDID=y depends on X86 or EFI_GENERIC_STUB. Neither is
->> true here, so drop the lines from the defconfig files.
->>
->> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Thanks for your patch!
->
-> Upon first look, your changes match the (current) dependencies
-> of FIRMWARE_EDID.  The dependency on X86 was added in commit
-> 7e35fc7ab433683f ("video: Make CONFIG_FIRMWARE_EDID generally
-> available") in v6.17-rc1.
-> However, CONFIG_FIRMWARE_EDID also protects fb_firmware_edid(),
-> which seems to extract the EDID from the PCI ROM, and is thus not
+applied to mips-fixes
 
-The PCI code in the function tests whether the BIOS ROM has been 
-shadowed into system memory. That's a common way of testing if the PCI 
-device is the primary graphics card. The provided EDID is only for the 
-primary device.
-
-The test shouldn't actually be there any more. We now have 
-video_is_primary_device() for this.
-
-> x86-specific?  That function is only ever called by three fbdev drivers
-> (i810, nv, savagefb), though.
-
-I know. But IDK why it hasn't been more prominently featured in fbdev.  
-Nowadays, we use the firmware EDID with DRM's generic drivers on any 
-hardware.
-
->
-> I assume none of these work on SuperH, so
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Thanks
-
-Best regards
-Thomas
-
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+Thomas.
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstr. 146, 90461 Nürnberg, Germany, www.suse.com
-GF: Jochen Jaser, Andrew McDonald, Werner Knoblich, (HRB 36809, AG Nürnberg)
-
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

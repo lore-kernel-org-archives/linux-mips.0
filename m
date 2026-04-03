@@ -1,114 +1,71 @@
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3235A221D96
-	for <linux-mips@vger.kernel.org>; Fri,  3 Apr 2026 07:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1A13845B1;
+	Fri,  3 Apr 2026 08:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775203118; cv=none; b=UZGxOkh2LEOrvE11J9k8qFRmHvl2wtheBQXweYjowLb2rsHRQQr+07HkPiu7sO/PdATV0A3xqrg7HfQuvEZlI80OrmvaVLorpcX6O63CQqmppwcWbZ69KKyNIul+1/Rlm8yU0fLCAez9G8W6twvE+xdyN52LTV4WikQcYULfFjI=
+	t=1775206090; cv=none; b=ANSQTfRL1pMfl9L6RHADEzPqLF38vupDKaoFgXewQl4MrljsiHR3aZk+xkKuCfreM2ZtBW7K4ieG5BfUBp8hd7vANIfHLaiSzgZ7nNuUE81fo/DKnNJ1Z3xvTRX2Ze+uPIZf/9rz6sv2IvwwcFAIug/092i5V5OOHZtxjXiiMuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775203118; c=relaxed/simple;
-	bh=iyAB7gII/1CNHhLdPYcLIvBYUxpBRetpu0BGjIDOoAM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eTJ7qNlDLbW/fiuBs6DQjICst1/NhAtMaSv9Mw3k4xqCC134vsDXekNBimbmuebqLhrcazREe/8ba3Ox+n2oiaB0eQnsWg/kMzdCOyTxF43RO9ViV7oED+WaLrED5Jffnj49Ttksiw5gILx9pba+dPHQ5nT83ohiqcceWW2vYw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jiyB4Zb8; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1775206090; c=relaxed/simple;
+	bh=06cSFbB6Pd8/6jNNaiACu6E5Rd6wULxB8jLFZ7TA/XA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYOe0+SrvbBoS9BwkBwyoEn5eHpsMwaedltGflrK4dR8h5Nitm4zGCmN1rsfBTByniNJB65CCQakY48RdNRYTvr66VG0HBANEZCRc9tPyegwk6yp1DMBswsHxqIvRq4S394RhxDRP7dA3h/pkHDiRTX/inTZhZ+iNkw02sEB4iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LDnk7S/p; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jiyB4Zb8"
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-38cc0b91b01so13089401fa.1
-        for <linux-mips@vger.kernel.org>; Fri, 03 Apr 2026 00:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775203115; x=1775807915; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MGCHyYl1z+dat38USyLCtY9Jhy0Oc9fCrN4Rc2ieXuw=;
-        b=jiyB4Zb8Enoee+9+qMsNydnmbuum9bv1n4E8XTCwFiRJaan80utZQxF0gOI+JdMTmG
-         yG3Vv9UOpjuT0e6ed/QBel/6PjQ+48j6FGywPRzN8hV7xMKffyinegdxC9Af4/aCC32O
-         Uk2IxWqkTIYDOVo7jltrgpDqmTzqrqG6XIM/1mTsHY2u5zBw8OVt2eNREcTJRmViyJGS
-         xOsUaomVeFRvMqTvVcayD5nr6PDxlFHZb2W6//ZKBn50FBJ5sLk7FxM7tQNMeCL4SoTR
-         OfsHaV0KhI79SWfS1zrxWrT/K3CxI4JcYXtgIXC+hLD797p3OInYjoxTh/iwTSngBj1Q
-         3kFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775203115; x=1775807915;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MGCHyYl1z+dat38USyLCtY9Jhy0Oc9fCrN4Rc2ieXuw=;
-        b=cGqLtlUL+T3fVna2eXq/u/5t4Xg6bZSeKUFRLcSyeRW97ILkcJvTk6UMMgyJViT2Xh
-         51mLdLgA5RH7OqSR5auZtI43vYEMJZnCTQULmw1Uh5un3eSI340hjssQrTwDJHqTmN5h
-         YXeo9q67I/VpOOp05m3M/OYh7IKXY5I9qocg5m5FOymidU0UlUjFzV2TkA6fw0JtpQCD
-         sEASVBFc/2TRJr7FXGWV7pjT32AGX6RRX8KtG1noBWX7FtQPVR5bgiln+A2KZ+0tOnR2
-         0UDFkAzUvMjsXTK4roILxAhi+nS+2kwRoiuv85VnXx9H4jQ98RXiRW3fknxXhwy0GxLq
-         bFyg==
-X-Gm-Message-State: AOJu0YwKgMH60VSn0+y4ibHRlYWcieeRXtAM5+DgAR8gVCVtP4ook8pk
-	LgibiEtaVBx+z5ayeoQ1rY9MfQCfYE5xCXoYC9NjmCZmBv5G8IuR7CZReOeHKg==
-X-Gm-Gg: AeBDiesVpE4gfNCPdAz0FBbvAS+3iF7ma7TzX79XWeSPEsi+MxJLQBr86YTH8DU7vUo
-	t8O2sIStTiiJN0QN1/shdp2thr2kNvMwY31wzdS0bGMOjnJyn4p4ZWV0GT+Ul0xiZ9l2A2UfTOL
-	PaRZogN7VQPpaURwPj95aVfUbFZq+P7/rbKs4KNXPs9iyskr8Uk/x7meHcEvbE23eK4TBzHdIKV
-	PoalHW3EzW6G3izqNi1wyEmlrhzjD7kAZN1pad7UVV/ErRpDPnawoYojFYIYrmpa6VO4TngWW59
-	yeifvGIB9Qe/fD6mR9KYN2WfU02L/PWCro9Y+etwpuhw6zFhLoPVmbeXxQb8YSLXp8QhI9lG42N
-	SZI6kg9MQEPE/qBmGHtJChvLy8MF28oM4F83Lo+L57ph7ome+jzaTAV0/pkxMPMEw5NW78UluYV
-	sjSZzmZD02WQx03nv3JELghdOnImOkZsghhLfgOWXO1FGkyAY6Buygz4xkCQJDH9uiwAOjoLxTR
-	wHzA7w=
-X-Received: by 2002:a05:651c:41c9:b0:38a:2917:8546 with SMTP id 38308e7fff4ca-38d91d4871amr6012871fa.30.1775203115008;
-        Fri, 03 Apr 2026 00:58:35 -0700 (PDT)
-Received: from ?IPV6:2a00:1fa0:4251:186d:5db5:ce7:dcb1:3a02? ([2a00:1fa0:4251:186d:5db5:ce7:dcb1:3a02])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-38cd20088a8sm10758341fa.18.2026.04.03.00.58.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2026 00:58:34 -0700 (PDT)
-Message-ID: <591cb5e6-26aa-4ed0-9298-5fc4c9742071@gmail.com>
-Date: Fri, 3 Apr 2026 10:58:32 +0300
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LDnk7S/p"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5078CC2BCB0;
+	Fri,  3 Apr 2026 08:48:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1775206089;
+	bh=06cSFbB6Pd8/6jNNaiACu6E5Rd6wULxB8jLFZ7TA/XA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LDnk7S/pNFohQ10dX4/nYUt5Jgi6pqvcaG/5+Z17/3TfF57gHIwm+IPPm3DCcIV4K
+	 1m0r3PW3Qgh1rqa/Fi6GDMYw2CM5NqZ69Ab0CSIQ8tkafCEEca6ZkEU13ibl4g+pP6
+	 xtgPq9tl41QLyNGGkg0C6MVpppASUZa43AqTncHA=
+Date: Fri, 3 Apr 2026 10:48:06 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+	pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
+	jes@trained-monkey.org, chenhuacai@kernel.org, kernel@xen0n.name,
+	tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com,
+	deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au,
+	npiggin@gmail.com, chleroy@kernel.org, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com, svens@linux.ibm.com, bhelgaas@google.com,
+	dakr@kernel.org, kwilczynski@kernel.org, ojeda@kernel.org,
+	boqun@kernel.org, gary@garyguo.net, bjorn3_gh@protonmail.com,
+	lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+	tmgross@umich.edu, ebiggers@google.com, ardb@kernel.org,
+	tiwai@suse.de, tytso@mit.edu, enelsonmoore@gmail.com,
+	martin.petersen@oracle.com, jirislaby@kernel.org,
+	geert@linux-m68k.org, herbert@gondor.apana.org.au,
+	vineethr@linux.ibm.com, lirongqing@baidu.com, kshk@linux.ibm.com,
+	vadim.fedorenko@linux.dev, dong100@mucse.com,
+	wangruikang@iscas.ac.cn, hkallweit1@gmail.com, kees@kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-pci@vger.kernel.org,
+	rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH net-next] eth: remove the driver for acenic / tigon1&2
+Message-ID: <2026040357-flick-coil-0c5d@gregkh>
+References: <20260402183029.1236713-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MIPS: validate DT bootargs before appending them
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260403161001.1-mips-dt-bootargs-pengpeng@iscas.ac.cn>
-Content-Language: en-US
-From: Sergey Shtylyov <sergei.shtylyov@gmail.com>
-In-Reply-To: <20260403161001.1-mips-dt-bootargs-pengpeng@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260402183029.1236713-1-kuba@kernel.org>
 
-On 4/3/26 8:41 AM, Pengpeng Hou wrote:
-
-> bootcmdline_scan_chosen() fetches the raw flat-DT bootargs property and
-> passes it straight to bootcmdline_append(). That helper later feeds the
-> same pointer into strlcat(), which computes strlen(src) before copying.
-> Flat DT properties are external boot input, and this path does not
-> prove that bootargs is NUL-terminated within its declared bounds.
+On Thu, Apr 02, 2026 at 11:30:29AM -0700, Jakub Kicinski wrote:
+> The entire git history for this driver looks like tree-wide
+> and automated cleanups. There's even more coming now with
+> AI, so let's try to delete it instead.
 > 
-> Reject unterminated bootargs properties before appending them to the
-> kernel command line.
-> 
-> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
-> ---
->  arch/mips/kernel/setup.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index f9b228e33f3b..dd7915110820 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-[...]
-> @@ -541,6 +542,9 @@ static int __init bootcmdline_scan_chosen(unsigned long node, const char *uname,
->  
->  	p = of_get_flat_dt_prop(node, "bootargs", &l);
->  	if (p != NULL && l > 0) {
-> +		if (!memchr(p, '\0', l))
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-   Maybe strnlen()?
-
-[...]
-
-MBR, Sergey
-
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>

@@ -1,51 +1,50 @@
 Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632E5331A77
-	for <linux-mips@vger.kernel.org>; Sun,  5 Apr 2026 23:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07A92C859
+	for <linux-mips@vger.kernel.org>; Mon,  6 Apr 2026 00:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775431785; cv=none; b=ba5VvCD/mSsSZ4GCtFK/NmXVowXXDg4QIa2z/uwIAt+0fp2YYCUUzmpseaHdcdlXB1z4AyBaB+3QKpgOk5x/tsuGsUetQymx5l9IwmCckusY5u8Njgux4/85wHknEUrPmuLFV2Ml5j/GgjAVTU1QOmWS9c3pzSYqo+dvzB6A9xo=
+	t=1775433630; cv=none; b=J307vW5snrtu4GFF3p9g+65W55Q0szU8gidlKslOSrScogmGT8b2gtlMHcXeshg+mYEPynr3ic+XFqRNTOF4mOV9LIVWhRzqyQclPr2m8FCSYMOb3Q7S6Q5bAcI/R4IUge6jQcBMDYS0F0ff6PmeaGnMD9IrOMDPm1bKNhHplFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775431785; c=relaxed/simple;
-	bh=WBtoJlyzwzl0z5G+onVM+hBmm+izb0wwhEc2aKicr/4=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=rvpUsXYVACv4X9x8II5wYgnJduc8ti9agTY4UWvQX44w8hTMpM1f2KHo0+9HSw9rfuZfpfbdMYZgkf6aYMPkHL1JX1lV5wijE1T/U/xuZW6oQbQYdOE5BgkHVE/Ij4rsP/JFs1Au5F4dsCLjUe1mBX0MkZQAeBJDPro/o2CHaM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=lp7ZzFfJ; arc=none smtp.client-ip=198.252.153.129
+	s=arc-20240116; t=1775433630; c=relaxed/simple;
+	bh=Dq+KrhEG0Zbp7rMuJfQLjAlQaF2+4T6+U0LWU1tJMeY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=So2+yK9x3uwtLdwLjS5KXCV3x0AWVn2UBF+rRskn+D54ELa6tp6Hg/i6SV4WYyIKbOafwEAlpaSBK4h79CKML7SW1GYkchxM1JC0dpUs/HClMammzolca8zlh5H4tr4er0NEqTibLo5ZunJiSnBZHgsYN3st+WtqhSk4lwjzrMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=XCn0bWnt; arc=none smtp.client-ip=198.252.153.129
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="lp7ZzFfJ"
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="XCn0bWnt"
+Received: from fews03-sea.riseup.net (fews03-sea-pn.riseup.net [10.0.1.153])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4fppQK096MzDqF8;
-	Sun,  5 Apr 2026 23:22:17 +0000 (UTC)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4fpqGN2n6CzDqFT;
+	Mon,  6 Apr 2026 00:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riseup.net; s=squak;
-	t=1775431337; bh=OX13nJb///x4AZ3PO9Gwjgnmrm+ZmRHABN+VdqZUNSM=;
-	h=Date:From:Subject:To:Cc:From;
-	b=lp7ZzFfJw5Mr+3nc+6t15sZdMnZjlAUSr4kwcOXuZCD2J+ZY1YNiKFE7mT6638TuC
-	 P071frAIsA5HLzDaKcgAubHBZXYyrzn1VooRKWFcx9gj4SEM6MKKPRQBVl0oNFIe+B
-	 k2iIQenYXrEclxxlnR3yDp8F+Q0pqbyGC35IVXZw=
-X-Riseup-User-ID: DEFEF46DF20C9E2418BF7D1220A57ECFF04039FB564881659FDAF8739222F8C2
+	t=1775433628; bh=xjSaC3XXj7Fy4GLOO2ewZDNpRhMJsrhpoo/mq8YVJRQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XCn0bWnt+s6O058gitcMwJ98MeKPf+QcVOiu0hoSO7drvlDGM/Nrq2TT7fVFOmWSn
+	 OlT1HkVrlPfB56ZVBJiT02nEwM3j6g1a5wxtTxAfJEpNzrehcxO7+XPJoZUB1B5q0O
+	 JqIKQ0fwRNlregckaFDpKMiW1W245B2nOSgG2Dzo=
+X-Riseup-User-ID: 68DEAC880F3BA3FC3271694453E54B8AB7412B7E1604B674FE3F85DAA15516B8
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4fppQH2pk4z22Ml;
-	Sun,  5 Apr 2026 23:22:15 +0000 (UTC)
-Message-ID: <5288255e-3522-42b5-a410-c77cbece4a93@riseup.net>
-Date: Mon, 6 Apr 2026 02:22:13 +0300
+	 by fews03-sea.riseup.net (Postfix) with ESMTPSA id 4fpqG21kcKz1yLn;
+	Mon,  6 Apr 2026 00:00:09 +0000 (UTC)
+From: Rany Hany <rany_hany@riseup.net>
+To: linux-mips@vger.kernel.org
+Cc: Rany Hany <rany_hany@riseup.net>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 0/3] Fix MT7621 restart deadlock
+Date: Mon,  6 Apr 2026 02:59:52 +0300
+Message-ID: <20260405235956.79535-1-rany_hany@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rany Hany <rany_hany@riseup.net>
-Subject: [PATCH 0/3] Fix for MT7621 hanging on reboot
-To: linux-mips@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 These patches fix an issue on some MT7621 devices where the reboot
 hangs. They were submitted to OpenWrt and have been merged.
@@ -60,6 +59,16 @@ and using TCHalt was attempted but ClkOff appears to be necessary.
 
 This fix was only tested on ASUS RT-AX53U as I don't have other
 MT7621 devices with this problem.
+
+Unrelated note:
+
+Sorry I had to resend this as my Thunderbird client was not properly
+setup for this. I used imap-send which just caused issues. I am not
+sure how I previously setup Thunderbird so that it groups the patches
+in one thread.
+
+In any case, I ended up just using send-email as I didn't want to mess
+with Thunderbird again.
 
 Rany Hany (3):
   MIPS: Stop secondary CPUs before platform restart/halt/poweroff

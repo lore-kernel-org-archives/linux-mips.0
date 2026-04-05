@@ -1,88 +1,88 @@
 Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912E55B21A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913411A6820;
 	Sun,  5 Apr 2026 02:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775356334; cv=none; b=n0hySNo3DOqXUer3TjF2qTEPBkKlzGLA7lCfaOdPiaJ2SZNhzm1pNcG1La2UVbNx8VpzIWr2MoVSJ0ola61NKNW51FFyH6V5zsQH24JXgTmpJMWbSVBTcJetrNCRYhYHpOG5Nwgeqb2ittRJCB0IfdypkK3lmYjo+Cs651AMRFI=
+	t=1775356334; cv=none; b=uQ8vT9ZoRxEslPLkRBqilSArGMyen3JfjH0f9Cm2Te1iz3okpNAirDedYqWLarNXKmqrpOdBwF3akdNjAiL9L9ZeY608EENku+6B/Yxu9ZXnP3ooXzScoSS5YW5IuGKxKDKXWCMhl5nrIvJ74la/1QF4LRSIN27SDASUSoBBtLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1775356334; c=relaxed/simple;
-	bh=v3B7nEQsjXMP6J+5qQ0xcdjje6RSyDrMaKEvBLvBuRM=;
-	h=From:Date:Message-ID:To:Cc:In-Reply-To:References:Subject; b=CSfUNC9m/sy18yL9QAP+KvQhPjLrpS7QTmUkr71nqN6Ow7dxyDMYLnke9pbzR01gGROFMI6hzChPOqzrnu2yI2BOHZi32/n1ocbmjGAko3S9/jtQL2jCAmiAzO4LnnPmXIrVcMab1IvGmrMZlmYpjZOvmZ6GsUze6J6jE733RZo=
+	bh=3ipgEsSQ6QLb9KUKRZ0++WLCQRF0lGSkABtPEXh7XPg=;
+	h=From:Date:Message-ID:To:Cc:Subject:MIME-Version:Content-Type; b=SnJjZ7WNCcQk5lAdfYhFBLV5etZ23fIBYxXx/0shgz5vvwi29VaYxodmCtY35aKS51vIevvqtzK+bJYT5Kc82l0Cy1P+mcdjc87DCuZuKyu8qhAyEIrbyftv91UzKfX2ywzs9ozUAj8NvR7n3lfEjS0IQNnPZ80rOjHphAsGZmA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from 0001-MIPS-dec-bound-PROM-command-line-appends.eml (unknown [111.196.245.197])
-	by APP-01 (Coremail) with SMTP id qwCowAAXwWypydFpQFU5DA--.13509S2;
-	Sun, 05 Apr 2026 10:32:10 +0800 (CST)
+Received: from 0000-cover-letter.eml (unknown [111.196.245.197])
+	by APP-01 (Coremail) with SMTP id qwCowABH8GupydFpPVU5DA--.42795S2;
+	Sun, 05 Apr 2026 10:32:09 +0800 (CST)
 From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Date: Sat, 4 Apr 2026 22:06:16 +0800
-Message-ID: <20260405102001.1-mips-cmdline-pengpeng@iscas.ac.cn>
+Date: Sun, 5 Apr 2026 10:20:00 +0800
+Message-ID: <20260405102000.0-mips-cmdline-series-pengpeng@iscas.ac.cn>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "Maciej W. Rozycki" <macro@orcam.me.uk>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, pengpeng@iscas.ac.cn
-In-Reply-To: <20260405102000.0-mips-cmdline-series-pengpeng@iscas.ac.cn>
-References: <20260405102000.0-mips-cmdline-series-pengpeng@iscas.ac.cn>
-Subject: [PATCH 1/8] MIPS: dec: bound PROM command-line appends
-X-CM-TRANSID:qwCowAAXwWypydFpQFU5DA--.13509S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7XryUAF47AF4DAw48Kw1DAwb_yoW8Jr4Upa
-	yYkanxWF1rur47J3s8ZFW5Xay8Zas5WwsI9r1jq34xu3WrXFn5Wr4Fgrs8ur18JrWIvFyx
-	ZF429ryUJFyxZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK6x804I0_Grv_XF1l8cAvFVAK0II2c7
-	xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE
-	2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-	vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAG
-	YxC7MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-	b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-	nxnUUI43ZEXa7VUbhvttUUUUU==
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+Subject: [PATCH 0/8] MIPS: bound early command-line construction
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowABH8GupydFpPVU5DA--.42795S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrW3XF45tF1kZFyDZF4kXrb_yoW8Gw15pa
+	n5tFW3JF9xXFyUu3sFvrW5Xa4fZ3s0ka4qqr15XrykAa4DAa92yF4rtr4rua4jgrsa9343
+	JFW7tw1kWF13Ar7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_JF0_
+	Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+	1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUehL0UUUUU
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 
-prom_init_cmdline() appends raw firmware arguments into the fixed
-arcs_cmdline buffer with strcat() and adds spaces with another unchecked
-strcat(). A long enough argument list can therefore run past the end of
-the command-line buffer during early boot.
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Date: Sun, 5 Apr 2026 10:20:00 +0800
+Subject: [PATCH 0/8] MIPS: bound early command-line construction
 
-Switch the appends to bounded concatenation so the PROM argument scan
-cannot overflow arcs_cmdline.
+These eight fixes harden a set of MIPS early boot paths that build the
+kernel command line in fixed-size buffers with unchecked appends.
 
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- arch/mips/dec/prom/cmdline.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+The affected paths take firmware- or PROM-provided arguments and extend
+`arcs_cmdline` or `fw_getcmdline()` with repeated `strcat()`, in-place
+`sprintf()`, or equivalent unchecked copies. A long enough firmware
+argument set can therefore run past the fixed command-line buffer during
+early boot.
 
-diff --git a/arch/mips/dec/prom/cmdline.c b/arch/mips/dec/prom/cmdline.c
-index 3ed63280ae29..954b14c103d2 100644
---- a/arch/mips/dec/prom/cmdline.c
-+++ b/arch/mips/dec/prom/cmdline.c
-@@ -29,9 +29,13 @@ void __init prom_init_cmdline(s32 argc, s32 *argv, u32 magic)
- 		start_arg = 2;
- 	for (i = start_arg; i < argc; i++) {
- 		arg = (void *)(long)(argv[i]);
--		strcat(arcs_cmdline, arg);
--		if (i < (argc - 1))
--			strcat(arcs_cmdline, " ");
-+		if (strlcat(arcs_cmdline, arg, COMMAND_LINE_SIZE) >=
-+		    COMMAND_LINE_SIZE)
-+			break;
-+		if (i < (argc - 1) &&
-+		    strlcat(arcs_cmdline, " ", COMMAND_LINE_SIZE) >=
-+		    COMMAND_LINE_SIZE)
-+			break;
- 	}
- 
- #ifdef PROM_DEBUG
--- 
-2.50.1 (Apple Git-155)
+This series switches those constructions over to bounded concatenation
+while keeping the existing boot-time behavior otherwise unchanged.
+
+Patches:
+- 1/8 MIPS: dec: bound PROM command-line appends
+- 2/8 MIPS: sni: bound PROM command-line appends
+- 3/8 MIPS: lemote-2f: bound machtype command-line append
+- 4/8 MIPS: txx9: bound command-line reconstruction
+- 5/8 MIPS: arc: bound firmware command-line construction
+- 6/8 MIPS: cavium-octeon: bound default console command-line append
+- 7/8 MIPS: malta-init: bound default console command-line append
+- 8/8 MIPS: malta-setup: bound pci_clock command-line append
+
+Base:
+- `origin/master`
+- `3aae9383f42f`
+
+Checks:
+- all 8 patches apply cleanly to the latest `origin/master`
+- `checkpatch --strict` is clean on all 8 exported patch files
+
+Thanks,
+Pengpeng
 
 

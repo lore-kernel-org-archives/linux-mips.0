@@ -1,29 +1,28 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024DC3368BF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02080334C1C;
 	Mon,  6 Apr 2026 12:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775478910; cv=none; b=ps+djf70cw6ue1YAwq728tVqPI4iol9Miqk/mnSdLNZgCDTuAaaiI2Gu3J4mbdiLgTt8DKnbaKdOX/bOgQHtrFIlFByHK3O7SLtEfRb6rujHt6zP3gS0DGpNJlzO1cETmRrLM94gJ8i4mT7pbn2txsSpXvTrGNf7kBd0513uPmw=
+	t=1775478910; cv=none; b=JuVqEzsCpSN/pRBo/Dk8MufQV6aZy+/dtxzs/sJvHJe/5wC+M+NksRWlLrCDjHFI0LL6Uv68Pjb1eUo8Y8yK8IYy0+9DXNX5eLjFFgdQym19CHbGS9UxljT1uSpsgKo2obHSxONDBXGyxcBV0yygeVAaFgpWq3HNdgKIQZxgznU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1775478910; c=relaxed/simple;
-	bh=EzXZmIupglbArA3oC7Mzn/QRVx9DOmg7OPXfojpjLoc=;
+	bh=Sv35e/4aVpkN9NRvLBMAG0bfQeJoGoPQLZSh2oao9yo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W0fUwppl7iXoCD0+lw+MVAWnU1OInWuhewG0fNFtODHw3bE1pcB81KqqrQDj5fjWiisrCKopbDDuw+i1MybaWVIRSoU4YM8VKIJTSasPIcYFHQAYqy4qDucRteWQn80xrPumCxhHNjEHhLxKx+zluR4gGXQUXom+U5p0hcz5q5A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=RRfQSVR1JrsxciC6DknJ0QdumCMelqB8Nf4IHKwtzVjeazypcY4g+UpekLLcfrsq97btKLBQoDJnJY3YxnfN6p8bDNSuETQ8Z22pC0I0qQw0XTHddAr4O1zs/ElDpjHJHdDFeVI45wBt3nEYa6Sbp4lQ1GYuRM/4/GOcL58y+Oc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1w9jAQ-00040z-00; Mon, 06 Apr 2026 14:34:58 +0200
+	id 1w9jAQ-00040v-00; Mon, 06 Apr 2026 14:34:58 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 9ECD8C0EB5; Mon,  6 Apr 2026 14:34:31 +0200 (CEST)
-Date: Mon, 6 Apr 2026 14:34:31 +0200
+	id E5D2DC0E09; Mon,  6 Apr 2026 14:33:40 +0200 (CEST)
+Date: Mon, 6 Apr 2026 14:33:40 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: arnd@arndb.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] arch/mips: Drop CONFIG_FIRMWARE_EDID from defconfig files
-Message-ID: <adOoV8N5BYueZavi@alpha.franken.de>
-References: <20260401082805.214198-1-tzimmermann@suse.de>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: kernel: Remove $0 clobber from `mult_sh_align_mod'
+Message-ID: <adOoJAYbhEvCNtfC@alpha.franken.de>
+References: <alpine.DEB.2.21.2603281409240.60268@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,22 +31,37 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260401082805.214198-1-tzimmermann@suse.de>
+In-Reply-To: <alpine.DEB.2.21.2603281409240.60268@angie.orcam.me.uk>
 
-On Wed, Apr 01, 2026 at 10:27:57AM +0200, Thomas Zimmermann wrote:
-> CONFIG_FIRMWARE_EDID=y depends on X86 or EFI_GENERIC_STUB. Neither is
-> true here, so drop the lines from the defconfig files.
+On Sat, Mar 28, 2026 at 02:29:10PM +0000, Maciej W. Rozycki wrote:
+> Remove rubbish $0 clobber added to inline asm within `mult_sh_align_mod' 
+> with the removal of support for GCC versions below 3.4 made with commit 
+> 57810ecb581a ("MIPS: Remove GCC_IMM_ASM & GCC_REG_ACCUM macros").  
 > 
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Previously a macro was used that, depending on GCC version, expanded to 
+> either `accum' or $0.  Since the latter choice was only a placeholder to 
+> keep the syntax consistent and the register referred is hardwired, there 
+> is no point in having it here as it has no effect on code generation.  
+> 
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 > ---
->  arch/mips/configs/ip32_defconfig            | 1 -
->  arch/mips/configs/lemote2f_defconfig        | 1 -
->  arch/mips/configs/malta_qemu_32r6_defconfig | 1 -
->  arch/mips/configs/maltaaprp_defconfig       | 1 -
->  arch/mips/configs/maltasmvp_defconfig       | 1 -
->  arch/mips/configs/maltasmvp_eva_defconfig   | 1 -
->  arch/mips/configs/maltaup_defconfig         | 1 -
->  7 files changed, 7 deletions(-)
+>  arch/mips/kernel/r4k-bugs64.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> linux-mips-cpu-bugs64-gcc-reg-accum-zero.diff
+> Index: linux-macro/arch/mips/kernel/r4k-bugs64.c
+> ===================================================================
+> --- linux-macro.orig/arch/mips/kernel/r4k-bugs64.c
+> +++ linux-macro/arch/mips/kernel/r4k-bugs64.c
+> @@ -91,7 +91,7 @@ void mult_sh_align_mod(long *v1, long *v
+>  		".set	pop"
+>  		: "=&r" (lv1), "=r" (lw)
+>  		: "r" (m1), "r" (m2), "r" (s), "I" (0)
+> -		: "hi", "lo", "$0");
+> +		: "hi", "lo");
+>  	/* We have to use single integers for m1 and m2 and a double
+>  	 * one for p to be sure the mulsidi3 gcc's RTL multiplication
+>  	 * instruction has the workaround applied.  Older versions of
 
 applied to mips-next
 

@@ -1,28 +1,37 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02080334C1C;
-	Mon,  6 Apr 2026 12:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDD933263B;
+	Mon,  6 Apr 2026 12:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775478910; cv=none; b=JuVqEzsCpSN/pRBo/Dk8MufQV6aZy+/dtxzs/sJvHJe/5wC+M+NksRWlLrCDjHFI0LL6Uv68Pjb1eUo8Y8yK8IYy0+9DXNX5eLjFFgdQym19CHbGS9UxljT1uSpsgKo2obHSxONDBXGyxcBV0yygeVAaFgpWq3HNdgKIQZxgznU=
+	t=1775478912; cv=none; b=I3pwjebWf6f//AL9mwO+RPBVKVeVaXb5EvFJuxm3oArrg0oIThoNjgTig8vKD7CJ/VRvK8htfBITVV/xy7EKdaxlHQmoY9uVoBjykSjDVj3FDSUvTRd80dh7A8DiEMga6qwlqPXzhcDv037wZMab1bN3bCMu6bvQSU37/qtNX94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775478910; c=relaxed/simple;
-	bh=Sv35e/4aVpkN9NRvLBMAG0bfQeJoGoPQLZSh2oao9yo=;
+	s=arc-20240116; t=1775478912; c=relaxed/simple;
+	bh=vo/6lo+iAkG6UawG71EzFRxbyPgiOp0wfB7hhPyA8g0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RRfQSVR1JrsxciC6DknJ0QdumCMelqB8Nf4IHKwtzVjeazypcY4g+UpekLLcfrsq97btKLBQoDJnJY3YxnfN6p8bDNSuETQ8Z22pC0I0qQw0XTHddAr4O1zs/ElDpjHJHdDFeVI45wBt3nEYa6Sbp4lQ1GYuRM/4/GOcL58y+Oc=
+	 Content-Type:Content-Disposition:In-Reply-To; b=NhHSijcH3z2UuyqCTdmJN+KRcCFnayNJNQzWOsKeR2PRlRKsKxIE679o1rE+sVTsymCo+V4C8DqBzxe4I7AfExMQmMqKFMOA3rwLPzZJsWG06YXEaNlQRgiaADePGWczF825gOeIk1ZRujuSbKBEG/54EZ8MfF+Kco5h3Cuz0qo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1w9jAQ-00040v-00; Mon, 06 Apr 2026 14:34:58 +0200
+	id 1w9jAQ-00040t-00; Mon, 06 Apr 2026 14:34:58 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id E5D2DC0E09; Mon,  6 Apr 2026 14:33:40 +0200 (CEST)
-Date: Mon, 6 Apr 2026 14:33:40 +0200
+	id 6973EC0DC9; Mon,  6 Apr 2026 14:32:19 +0200 (CEST)
+Date: Mon, 6 Apr 2026 14:32:19 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Remove $0 clobber from `mult_sh_align_mod'
-Message-ID: <adOoJAYbhEvCNtfC@alpha.franken.de>
-References: <alpine.DEB.2.21.2603281409240.60268@angie.orcam.me.uk>
+To: Rong Zhang <rongrong@oss.cipunited.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org, Yao Zi <me@ziyao.cc>,
+	Icenowy Zheng <uwu@icenowy.me>, Rong Zhang <i@rong.moe>
+Subject: Re: [PATCH v2] MIPS: dts: loongson64g-package: Switch to Loongson
+ UART driver
+Message-ID: <adOn00g-uE3-vRXS@alpha.franken.de>
+References: <20260315184401.413975-1-rongrong@oss.cipunited.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -31,37 +40,40 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2603281409240.60268@angie.orcam.me.uk>
+In-Reply-To: <20260315184401.413975-1-rongrong@oss.cipunited.com>
 
-On Sat, Mar 28, 2026 at 02:29:10PM +0000, Maciej W. Rozycki wrote:
-> Remove rubbish $0 clobber added to inline asm within `mult_sh_align_mod' 
-> with the removal of support for GCC versions below 3.4 made with commit 
-> 57810ecb581a ("MIPS: Remove GCC_IMM_ASM & GCC_REG_ACCUM macros").  
+On Mon, Mar 16, 2026 at 02:44:00AM +0800, Rong Zhang wrote:
+> Loongson64g is Loongson 3A4000, whose UART controller is compatible with
+> Loongson 2K1500, which is NS16550A-compatible with an additional
+> fractional frequency divisor register.
 > 
-> Previously a macro was used that, depending on GCC version, expanded to 
-> either `accum' or $0.  Since the latter choice was only a placeholder to 
-> keep the syntax consistent and the register referred is hardwired, there 
-> is no point in having it here as it has no effect on code generation.  
+> Update the compatible strings to reflect this, so that 3A4000 can
+> benefit from the fractional frequency divisor provided by loongson-uart.
+> This is required on some devices, otherwise their UART can't work at
+> some high baud rates, e.g., 115200.
 > 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Tested on Loongson-LS3A4000-7A1000-NUC-SE with a 25MHz UART clock.
+> Without fractional frequency divisor, the actual baud rate was 111607
+> (25MHz / 16 / 14, measured value: 111545) and some USB-to-UART
+> converters couldn't work with it at all. With fractional frequency
+> divisor, the measured baud rate becomes 115207, which is quite accurate.
+> 
+> Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
 > ---
->  arch/mips/kernel/r4k-bugs64.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This patch targets the MIPS tree.
 > 
-> linux-mips-cpu-bugs64-gcc-reg-accum-zero.diff
-> Index: linux-macro/arch/mips/kernel/r4k-bugs64.c
-> ===================================================================
-> --- linux-macro.orig/arch/mips/kernel/r4k-bugs64.c
-> +++ linux-macro/arch/mips/kernel/r4k-bugs64.c
-> @@ -91,7 +91,7 @@ void mult_sh_align_mod(long *v1, long *v
->  		".set	pop"
->  		: "=&r" (lv1), "=r" (lw)
->  		: "r" (m1), "r" (m2), "r" (s), "I" (0)
-> -		: "hi", "lo", "$0");
-> +		: "hi", "lo");
->  	/* We have to use single integers for m1 and m2 and a double
->  	 * one for p to be sure the mulsidi3 gcc's RTL multiplication
->  	 * instruction has the workaround applied.  Older versions of
+> The series for the serial tree to update dt-bindings and enable building
+> 8250_loongson (loongson-uart) on MIPS Loongson64 is sent separately, as
+> it's independant of this patch and can be applied in any order (the
+> compatible strings here still contain "ns16550a", so no regression will
+> be introduced).
+> 
+> Changes in v2:
+> - Separated from v1 (patch 3): https://lore.kernel.org/r/20260314234143.651298-1-rongrong@oss.cipunited.com/
+> (thanks Krzysztof Kozlowski)
+> ---
+>  arch/mips/boot/dts/loongson/loongson64g-package.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 applied to mips-next
 

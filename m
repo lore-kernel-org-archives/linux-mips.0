@@ -1,37 +1,39 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDD933263B;
-	Mon,  6 Apr 2026 12:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5FA3368BF;
+	Mon,  6 Apr 2026 12:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775478912; cv=none; b=I3pwjebWf6f//AL9mwO+RPBVKVeVaXb5EvFJuxm3oArrg0oIThoNjgTig8vKD7CJ/VRvK8htfBITVV/xy7EKdaxlHQmoY9uVoBjykSjDVj3FDSUvTRd80dh7A8DiEMga6qwlqPXzhcDv037wZMab1bN3bCMu6bvQSU37/qtNX94=
+	t=1775479062; cv=none; b=iIWHArlAqok0o5aMF1/YxsnKH/NKDZ81B46ViTJ3wX49nmI2FGfGFZA3UnYw7cR0fw6UpeCjHbBAPok/19E9JoTVdS6k7z1f9JZ8puK7fmNRWuw4BN8eLQTlnZdRQGu3+EGcAYJ5Yg8BiiNKrjs3moDMkQhz+f8y5LukPXIlaQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775478912; c=relaxed/simple;
-	bh=vo/6lo+iAkG6UawG71EzFRxbyPgiOp0wfB7hhPyA8g0=;
+	s=arc-20240116; t=1775479062; c=relaxed/simple;
+	bh=jDWo6+SjLg0ECrFBwUS2wSfSOs3ThAS24loBQlJOI9c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NhHSijcH3z2UuyqCTdmJN+KRcCFnayNJNQzWOsKeR2PRlRKsKxIE679o1rE+sVTsymCo+V4C8DqBzxe4I7AfExMQmMqKFMOA3rwLPzZJsWG06YXEaNlQRgiaADePGWczF825gOeIk1ZRujuSbKBEG/54EZ8MfF+Kco5h3Cuz0qo=
+	 Content-Type:Content-Disposition:In-Reply-To; b=i+lsCRj558Q/mhUEpRj0ABvQdLAUSaQJjyrdmskeYeTm3tAlszoMn/JbOMCWFzDpgz3EtrMsRqMq3uZ1/AMQOi6Izhtj5dMZLKp8q61ufrktDy++ijzv4KdL1Ks3ZUbOH9Gmit3Z06rGsZ6io9a4AuLCNsPWpYUN2tCVfjInz8o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1w9jAQ-00040t-00; Mon, 06 Apr 2026 14:34:58 +0200
+	id 1w9jD1-000441-00; Mon, 06 Apr 2026 14:37:39 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 6973EC0DC9; Mon,  6 Apr 2026 14:32:19 +0200 (CEST)
-Date: Mon, 6 Apr 2026 14:32:19 +0200
+	id 1F503C0256; Mon,  6 Apr 2026 14:37:11 +0200 (CEST)
+Date: Mon, 6 Apr 2026 14:37:11 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Rong Zhang <rongrong@oss.cipunited.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org, Yao Zi <me@ziyao.cc>,
-	Icenowy Zheng <uwu@icenowy.me>, Rong Zhang <i@rong.moe>
-Subject: Re: [PATCH v2] MIPS: dts: loongson64g-package: Switch to Loongson
- UART driver
-Message-ID: <adOn00g-uE3-vRXS@alpha.franken.de>
-References: <20260315184401.413975-1-rongrong@oss.cipunited.com>
+To: Caleb James DeLisle <cjd@cjdns.fr>
+Cc: linux-mips@vger.kernel.org, naseefkm@gmail.com, mturquette@baylibre.com,
+	sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, ryder.lee@mediatek.com,
+	jianjun.wang@mediatek.com, lpieralisi@kernel.org,
+	kwilczynski@kernel.org, mani@kernel.org, bhelgaas@google.com,
+	vkoul@kernel.org, neil.armstrong@linaro.org, p.zabel@pengutronix.de,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	nbd@nbd.name, ansuelsmth@gmail.com, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-phy@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 8/8] mips: dts: Add PCIe to EcoNet EN751221
+Message-ID: <adOo9xZxXT3FkufM@alpha.franken.de>
+References: <20260309131818.74467-1-cjd@cjdns.fr>
+ <20260309131818.74467-9-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,40 +42,19 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260315184401.413975-1-rongrong@oss.cipunited.com>
+In-Reply-To: <20260309131818.74467-9-cjd@cjdns.fr>
 
-On Mon, Mar 16, 2026 at 02:44:00AM +0800, Rong Zhang wrote:
-> Loongson64g is Loongson 3A4000, whose UART controller is compatible with
-> Loongson 2K1500, which is NS16550A-compatible with an additional
-> fractional frequency divisor register.
+On Mon, Mar 09, 2026 at 01:18:18PM +0000, Caleb James DeLisle wrote:
+> Add PCIe based on EN7528 PCIe driver, also add two MT76 wifi devices
+> to SmartFiber XP8421-B.
 > 
-> Update the compatible strings to reflect this, so that 3A4000 can
-> benefit from the fractional frequency divisor provided by loongson-uart.
-> This is required on some devices, otherwise their UART can't work at
-> some high baud rates, e.g., 115200.
-> 
-> Tested on Loongson-LS3A4000-7A1000-NUC-SE with a 25MHz UART clock.
-> Without fractional frequency divisor, the actual baud rate was 111607
-> (25MHz / 16 / 14, measured value: 111545) and some USB-to-UART
-> converters couldn't work with it at all. With fractional frequency
-> divisor, the measured baud rate becomes 115207, which is quite accurate.
-> 
-> Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
+> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
 > ---
-> This patch targets the MIPS tree.
+>  arch/mips/boot/dts/econet/en751221.dtsi       | 114 ++++++++++++++++++
+>  .../econet/en751221_smartfiber_xp8421-b.dts   |  21 ++++
+>  arch/mips/econet/Kconfig                      |   2 +
+>  3 files changed, 137 insertions(+)
 > 
-> The series for the serial tree to update dt-bindings and enable building
-> 8250_loongson (loongson-uart) on MIPS Loongson64 is sent separately, as
-> it's independant of this patch and can be applied in any order (the
-> compatible strings here still contain "ns16550a", so no regression will
-> be introduced).
-> 
-> Changes in v2:
-> - Separated from v1 (patch 3): https://lore.kernel.org/r/20260314234143.651298-1-rongrong@oss.cipunited.com/
-> (thanks Krzysztof Kozlowski)
-> ---
->  arch/mips/boot/dts/loongson/loongson64g-package.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 
 applied to mips-next
 

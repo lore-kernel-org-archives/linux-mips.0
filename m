@@ -1,76 +1,94 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F06A3090D7;
-	Mon,  6 Apr 2026 05:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD93331A41;
+	Mon,  6 Apr 2026 11:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775454589; cv=none; b=LBSusPKa43umQ/OW7TAp2HwE/l7yTCi00tz4bA4zgnZwmNXAI18sTft4G/WhbRCrVP2Zk7w1yNzJ6WwG8j1L8zrQ9qFl2XPa67zEQ9iMQPjV5vF/NU6lX3+eKI3MqIw+Elj+gh9SwqXloanyGUXx6PfyT9Eu+DI4/k6fFhowlHo=
+	t=1775473558; cv=none; b=tqm95zkwj9T+uFTAho9v8nNoxkaK6v6CuZdeiZGxWn4elHBlpyHfg2U+tvH0waceeHo7HW9eXb0z3wwt7R7kNX0fhQnNaeenG1zwBTa7IuhGGNWhqyZTiZViuo4bA+mKkw6nEGtdS7tHEkveOOfsWAjFuNp4QJkCJj8AKg1r7S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775454589; c=relaxed/simple;
-	bh=4thoVWcMmw4MkYMp3l5E6+QpX/OSrE+K9Cc8bqDe0Ss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQA4CbXkLBh/o9TM0l3GHR8HOE78UCdfBV72jWkwslMVUXRxJS+ZcLeyesQw5vQW7xivUc9xGXMEe0ISToWApF++OWszmBh55flPbttz3W3kBqutDVv4gX9JDszEfNZNZJTFeurTcw8uGPXfV4+b5hO5YcXPImqnU7CPVa/GgBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgXI890r; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1775473558; c=relaxed/simple;
+	bh=GF9J9vpWFVIBF4raC9wLtC1QxUxzDdkVQpZiaEy7ESs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=njMMSXW6OKvTW6ck6T47cerzA9MEgO7V6wx5MQ1HA6skgizCpdm91hrJ9A4UiHc9rQBK+9BNyNKUKLkyrAM7ns9zoRKMRrMM4OwFa+0uug8Idgg6i7/3vlt7mA9jBpoV52VGSePXqwRrCvnWzYbFpO88OzlQURXve8DFN8IjSss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GGGAF5QJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgXI890r"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BD2C4CEF7;
-	Mon,  6 Apr 2026 05:49:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGGAF5QJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2113BC19425;
+	Mon,  6 Apr 2026 11:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775454589;
-	bh=4thoVWcMmw4MkYMp3l5E6+QpX/OSrE+K9Cc8bqDe0Ss=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bgXI890rX05ktv9oPv33HQAY90wguIlq0zeVRBIbmeDKXLA/c1mE1e5ydxu7hcduI
-	 kTZ9nO2+CkEVZjIDQGxe5bkfu2tmthXMLqKff1bqGFPaj+08+iHC08xjxc92g1DPEE
-	 KwVzjDTLqo2zhZDXkIrcuY5ezh3/H92TsCyGn+R1UdZRVT4pOQwueRJNE+JlSFvysL
-	 s3ofTuZZGE6Y2soiw9bIkJ/yTIdEF/ZL9+ftN7CICVlDH8rbwnbFFIAgWY4IyHBOsS
-	 w2C3bcHMNGEXDzAizYg/NRL6FHwycOJuhBHTezD2YnqnSWkNgtd7JsDL5QtQx8LstU
-	 +278O8yuLefAQ==
-Date: Mon, 6 Apr 2026 11:19:45 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Christoph Hellwig <hch@lst.de>, Eric Dumazet <edumazet@google.com>,
-	Johan Hovold <johan@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Alexey Kardashevskiy <aik@ozlabs.ru>,
-	Robin Murphy <robin.murphy@arm.com>, Frank.Li@kernel.org,
-	alex@ghiti.fr, andre.przywara@arm.com, andrew@lunn.ch,
-	aou@eecs.berkeley.edu, catalin.marinas@arm.com,
-	dmaengine@vger.kernel.org, driver-core@lists.linux.dev,
-	gregory.clement@bootlin.com, iommu@lists.linux.dev, jgg@ziepe.ca,
-	kees@kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
-	linux@armlinux.org.uk, m.szyprowski@samsung.com, palmer@dabbelt.com,
-	peter.ujfalusi@gmail.com, pjw@kernel.org,
-	sebastian.hesselbarth@gmail.com, tsbogend@alpha.franken.de,
-	vgupta@kernel.org, will@kernel.org, willy@infradead.org
-Subject: Re: [PATCH v4 7/9] driver core: Replace dev->dma_coherent with
- dev_dma_coherent()
-Message-ID: <adNJebiLoHqgQEyZ@vaman>
-References: <20260404000644.522677-1-dianders@chromium.org>
- <20260403170432.v4.7.If839f6dde98979fce177f70c6c74689a1904ee76@changeid>
+	s=k20201202; t=1775473557;
+	bh=GF9J9vpWFVIBF4raC9wLtC1QxUxzDdkVQpZiaEy7ESs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GGGAF5QJiDPGbh9+ATaluyOgvvc1tylCmSjFydq5Tc8jX2QBjhyimLqphg4LnTJ+3
+	 QVtY14aR+5kBd06WJhUNW3YHBBrEJ4tRhd8LmoZ4wR38IzWBeU1MCgIetSzsHI17eJ
+	 CJ6/GUl4zDO3gJbhMN3eQxeXKchmT+aaF8KjBY9dO8WyBczGJURiLf9bQhIngLv3pO
+	 CZiFTv9Al3Pb+H/66OrcIpN0WRVv8P9dhXcuMhcAr4ifSdIVGDA4cM5qlMkjaAK+pY
+	 gmggP0CiwxrDw4nU8veQJTQvEobVSvxslGeixf2WdZLJzeY9wEVS4d1A2RbGBQMuCN
+	 n/6FSb2h1HeCA==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.19-5.10] MIPS: mm: Suppress TLB uniquification on EHINV hardware
+Date: Mon,  6 Apr 2026 07:05:37 -0400
+Message-ID: <20260406110553.3783076-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260406110553.3783076-1-sashal@kernel.org>
+References: <20260406110553.3783076-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260403170432.v4.7.If839f6dde98979fce177f70c6c74689a1904ee76@changeid>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.19.11
+Content-Transfer-Encoding: 8bit
 
-On 03-04-26, 17:05, Douglas Anderson wrote:
-> In C, bitfields are not necessarily safe to modify from multiple
-> threads without locking. Switch "dma_coherent" over to the "flags"
-> field so modifications are safe.
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+[ Upstream commit 74283cfe216392c7b776ebf6045b5b15ed9dffcd ]
 
+Hardware that supports the EHINV feature, mandatory for R6 ISA and FTLB
+implementation, lets software mark TLB entries invalid, which eliminates
+the need to ensure no duplicate matching entries are ever created.  This
+feature is already used by local_flush_tlb_all(), via the UNIQUE_ENTRYHI
+macro, making the preceding call to r4k_tlb_uniquify() superfluous.
+
+The next change will also modify uniquification code such that it'll
+become incompatible with the FTLB and MMID features, as well as MIPSr6
+CPUs that do not implement 4KiB pages.
+
+Therefore prevent r4k_tlb_uniquify() from being used on EHINV hardware,
+as denoted by `cpu_has_tlbinv'.
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/mips/mm/tlb-r4k.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
+index 44a662536148e..27bb644696047 100644
+--- a/arch/mips/mm/tlb-r4k.c
++++ b/arch/mips/mm/tlb-r4k.c
+@@ -640,7 +640,8 @@ static void r4k_tlb_configure(void)
+ 	temp_tlb_entry = current_cpu_data.tlbsize - 1;
+ 
+ 	/* From this point on the ARC firmware is dead.	 */
+-	r4k_tlb_uniquify();
++	if (!cpu_has_tlbinv)
++		r4k_tlb_uniquify();
+ 	local_flush_tlb_all();
+ 
+ 	/* Did I tell you that ARC SUCKS?  */
 -- 
-~Vinod
+2.53.0
+

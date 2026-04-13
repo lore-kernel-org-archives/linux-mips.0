@@ -1,31 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0B233D6DD;
-	Mon, 13 Apr 2026 13:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0B46BFCE;
+	Mon, 13 Apr 2026 13:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776087923; cv=none; b=Eix2aW0vJ6IS/IBWPc4Jt5ER776YT3J9zKzE9JTXS1AA5NH3CSieiRQRFEBnR8Y7m0fi21gxUCldbOfDBRq+ESXyzbYQ1a0fcmovPp5GJTw6cgo7ycHB2SODhgGbw45OmBsrWORq2wU16n/RKYhJv4/AbObHblhkA1hOR+TAg5o=
+	t=1776087923; cv=none; b=QlNyxc+hsXmbzBTQ3pGlRV7RFMUb0vKltBXJquA/tZjA+cJ6a2jjN2O1tnzziGSwDv+eaid6Hws9+z4mFJcDyPON7C6N8IUl0aMu9PCWzI0vsJ5lpf5vA+ojXDZ3gxKAvVs5ESvTg8lfGv0EvtKSEbZ5/9hcOW1xSc21CcpA8Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1776087923; c=relaxed/simple;
-	bh=WyiUE0gUbdjjvEx1688riyxWEbMO5SIwWFq6YOC87iM=;
+	bh=yh3iJ/MioreNmZnVc0OTHf4MJ0O2cfP9x6JcTisig+o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o16VJ47AL/aid6Pz4kOY+lRcS0uyxmYMctpNfgpYJk/6te63R7HQV57vYcFqtQvldn1Z4uYBP0svU/Ju/qjA1Lo9ZNO+b47yP+qD8H5xqx7cvFkzCtQHi8l9fjEcoqNxCfono3hOPhofRbnNvKOuv8ldp8DWtQFA3Q1ebq/Eh9E=
+	 Content-Type:Content-Disposition:In-Reply-To; b=n4E2QDKFn8Nk/t2D4ykpjclu4F9dOJu3RF9noSEghakKF0imU0EkIhtJTi0v9Mu7KyVjz5qItbZtag6YA0tuwpl08+Fl3PL3yheimkhnHHAm8gkb/sJhCILeLHFrOmdsfpPPAUVmcc2jZe97CGRfk8JcDaRFRy4z5tCr++TfVDU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wCHbE-0004aJ-00; Mon, 13 Apr 2026 15:45:12 +0200
+	id 1wCHbE-0004aD-00; Mon, 13 Apr 2026 15:45:12 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 5A4C6C0CA1; Mon, 13 Apr 2026 15:44:53 +0200 (CEST)
-Date: Mon, 13 Apr 2026 15:44:53 +0200
+	id 71DA7C0988; Mon, 13 Apr 2026 15:43:25 +0200 (CEST)
+Date: Mon, 13 Apr 2026 15:43:25 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>, linux-gpio@vger.kernel.org
-Subject: Re: [resend, PATCH v2 1/1] MIPS: Alchemy: Remove unused forward
- declaration
-Message-ID: <adzzVQNjjk9ZifNk@alpha.franken.de>
-References: <20260320202852.3233790-1-andriy.shevchenko@linux.intel.com>
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Cc: Sergey Shtylyov <sergei.shtylyov@gmail.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: validate DT bootargs before appending them
+Message-ID: <adzy_YQfWWS8OcIF@alpha.franken.de>
+References: <20260403161001.1-mips-dt-bootargs-pengpeng@iscas.ac.cn>
+ <20260407120002.2-mips-dt-bootargs-v2-pengpeng@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,53 +33,50 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260320202852.3233790-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20260407120002.2-mips-dt-bootargs-v2-pengpeng@iscas.ac.cn>
 
-On Fri, Mar 20, 2026 at 09:28:08PM +0100, Andy Shevchenko wrote:
-> The 'struct gpio' is not used in the code, remove unneeded forward declaration.
-> This seems to be a leftover for a 5 years.
+On Tue, Apr 07, 2026 at 09:57:03AM +0800, Pengpeng Hou wrote:
+> bootcmdline_scan_chosen() fetches the raw flat-DT bootargs property and
+> passes it straight to bootcmdline_append(). That helper later feeds the
+> same pointer into strlcat(), which computes strlen(src) before copying.
+> Flat DT properties are external boot input, and this path does not
+> prove that bootargs is NUL-terminated within its declared bounds.
 > 
-> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reject unterminated bootargs properties before appending them to the
+> kernel command line.
+> 
+> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 > ---
+> Changes since v1:
+> - use strnlen() instead of memchr() for the local NUL-termination check
 > 
-> v2 (resend): Cc'ed to GPIO maintainers and ML
-> v2: collected tags (Thomas)
+> arch/mips/kernel/setup.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> Bart, it was agreed to take this patch via GPIO tree
-> (that's why we have an Ack), can you apply it, please?
-> 
->  arch/mips/include/asm/mach-au1x00/gpio-au1000.h | 2 --
->  arch/mips/include/asm/mach-au1x00/gpio-au1300.h | 1 -
->  2 files changed, 3 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-> index d820b481ac56..e6306f6820e6 100644
-> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-> @@ -40,8 +40,6 @@
->  #define AU1000_GPIO2_INTENABLE	0x10
->  #define AU1000_GPIO2_ENABLE	0x14
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index f9b228e33f3b..1ae6d0c0e1d6 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/of_fdt.h>
+>  #include <linux/dmi.h>
+>  #include <linux/crash_dump.h>
+> +#include <linux/string.h>
 >  
-> -struct gpio;
-> -
->  static inline int au1000_gpio1_to_irq(int gpio)
->  {
->  	return MAKE_IRQ(1, gpio - ALCHEMY_GPIO1_BASE);
-> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1300.h b/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
-> index 43d44f384f97..b12f37262cfa 100644
-> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
-> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
-> @@ -12,7 +12,6 @@
->  #include <asm/io.h>
->  #include <asm/mach-au1x00/au1000.h>
+>  #include <asm/addrspace.h>
+>  #include <asm/bootinfo.h>
+> @@ -541,6 +542,9 @@ static int __init bootcmdline_scan_chosen(unsigned long node, const char *uname,
 >  
-> -struct gpio;
->  struct gpio_chip;
->  
->  /* with the current GPIC design, up to 128 GPIOs are possible.
+>  	p = of_get_flat_dt_prop(node, "bootargs", &l);
+>  	if (p != NULL && l > 0) {
+> +		if (strnlen(p, l) >= l)
+> +			return 1;
+> +
+>  		bootcmdline_append(p, min(l, COMMAND_LINE_SIZE));
+>  		*dt_bootargs = true;
+>  	}
 > -- 
-> 2.50.1
+> 2.50.1 (Apple Git-155)
 
 applied to mips-next
 

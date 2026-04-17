@@ -1,169 +1,112 @@
-Received: from va-2-36.ptr.blmpb.com (va-2-36.ptr.blmpb.com [209.127.231.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2EB63624B2
-	for <linux-mips@vger.kernel.org>; Fri, 17 Apr 2026 05:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.127.231.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA43F388E60;
+	Fri, 17 Apr 2026 08:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776403579; cv=none; b=jyGThbaD5pP+TM9J4A1P3LipjogGll4olJKRBw6HRfFF8iEFD8mEV3RT/moahOxmXXq/ITa5irIVQxsm7ueequLWUQL2my8L0mFIi55q5L97vlAx1XE5ZXgLlnC3Nxz8NSShYUz08eVUPkmTbazVGo0Ccj3FDBBODfZl6pK+QhM=
+	t=1776412916; cv=none; b=XfH0hocjA9qdWOVkRg+Wp17OFCE6IUcBUBb3F75dE8nOxwMQ2CJMIMWtQV0EoPw2V0i84n3tqe0np/MGFR5jtbLNot5Kr9Rqt/VyWulvAFTsouQiiSvjn3/RxyScKBMEzAL+WVrdMCa70p5QKxBeLEgRT448D3tIJ6el6cCkyk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776403579; c=relaxed/simple;
-	bh=2qhpwsOerN2zephpVI/+rM3QvqBkuMsPMbEkN44RHio=;
-	h=In-Reply-To:References:Subject:Cc:Date:To:Content-Type:
-	 Mime-Version:Message-Id:From; b=q+h0CznZn2AqtBkZ9Gfrx7RcZbiqiOhP1Q2CJTcdBzWOJU21ttBX5ZoLeNBsPpBTZ090HFwQAnaPBpimiqdLDlFsUiyXjeHGIVu2l3hDP9tuXtrwm52et1q4Kha+cf6KgQYE74bUadtPXLp5b/si6UXp8dEL/AZ7+EjNLjtzWkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com; spf=pass smtp.mailfrom=oss.cipunited.com; dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b=kzSnDhwk; arc=none smtp.client-ip=209.127.231.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
+	s=arc-20240116; t=1776412916; c=relaxed/simple;
+	bh=D3XsKtf/DWrxBLu1AcgfGhF6zzU3o81w6oIhyh5xwOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UuqDSwzxXN5AtAXmuevJIrsddY0lJcHuHLxDF1mW3KFqGN7Yk13Tt6jFZSENxmw2AAoO6fiGF/IOcpR4pulVG3UOsEshoyhFtrH8NRlIKkdXA4r633Lh5kQyf2mz2gm09U5J0gzHOcJYZBWiDJZJnuOgw+Ywr/O2csA3m5Jw9o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yj1+szGk; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b="kzSnDhwk"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1776403445;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=8uKUjmboHagm+FlOR0a5cgZRJN50CFrwF7YGFzp6e9M=;
- b=kzSnDhwkoPhZ60rVpsW/q3eiVwncsZg6sHPoqfBlj9/GwLG6IUELvIpS+U/TIaG9uz9PGq
- dhzhxLFCkxvS8A3o8jPf1TWJyIl6trYKWsL6f2aDNr0FOv6zt50rfUt3mXV8/ijpvZ43xI
- f82egA18THqiEAafbsJwpug7Qz2osB6yp8OXdEIFDIpkhK79hapHQLbmEL6BBylF2Ti+Gb
- bGvmyJNFlMZi7a3dAodCxucTibw6upk6Wfqq2buX7+uHFkNohex4tUuhVIkK5U1Bp2dPKQ
- QMID+KZvvv7SY9pscmbdf02CGCv9OGU7dEOMTk+9v6Wnh6CY519hwV2BVsoJ/g==
-In-Reply-To: <20260416011815.9140-1-felipers@ime.usp.br>
-Received: from [192.168.8.156] ([123.52.19.211]) by smtp.feishu.cn with ESMTPS; Fri, 17 Apr 2026 13:24:02 +0800
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yj1+szGk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1776412913; x=1807948913;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=D3XsKtf/DWrxBLu1AcgfGhF6zzU3o81w6oIhyh5xwOU=;
+  b=Yj1+szGkux5ejJGVk9fIjfnlkeFJXBTcO9A6+YOgiDK+3BHHzxI+Ffh0
+   VOCDMJ+uNiWOlJiLmwx656ly7GSWN1zILWabvS6S/PMfb5Sj9MXNCHLCg
+   fBmPdyCMZUH0DvUDKkEkNTEJHSssJdLlTDonS3eM5PgYFGfLVFZT0kcjx
+   fIha3yCuSizZUc59a5o44hOTuZPmrL+b2LsZ6g/w6EnOt6mPmJg6tzDQE
+   KfJlBL/VWviFscvrOvXQbOgVSfFsDl60wn297wpELAn8yHDDXjURYGj0E
+   3C5kjW0bBng+IHhy1y4l7slyfL+zoakmyjdQaY2NHGrRUZ8eyvL0hlLsA
+   A==;
+X-CSE-ConnectionGUID: JROjbd+tRNC8tw1JrBpc8Q==
+X-CSE-MsgGUID: 9q5+xQnrSqKhcaU3GYyUOw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11761"; a="100072833"
+X-IronPort-AV: E=Sophos;i="6.23,183,1770624000"; 
+   d="scan'208";a="100072833"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2026 01:01:53 -0700
+X-CSE-ConnectionGUID: ot7oOc28QkKKr0WR1EZLiw==
+X-CSE-MsgGUID: ePIeW+7dTtGaoF/0CnVc+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,183,1770624000"; 
+   d="scan'208";a="230902678"
+Received: from hrotuna-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.78])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2026 01:01:51 -0700
+Date: Fri, 17 Apr 2026 11:01:48 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Felipe Ribeiro de Souza <felipers@ime.usp.br>
+Cc: paul@crapouillou.net, jic23@kernel.org, dlechner@baylibre.com,
+	nuno.sa@analog.com, andy@kernel.org,
+	Lucas Ivars Cadima Ciziks <lucas@ciziks.com>,
+	linux-mips@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: ingenic-adc: use guard(mutex)(&lock) to handle
+ synchronisation
+Message-ID: <aeHo7NFgvWe_3kPQ@ashevche-desk.local>
 References: <20260416011815.9140-1-felipers@ime.usp.br>
-Subject: Re: [PATCH] iio: adc: ingenic-adc: use guard(mutex)(&lock) to handle synchronisation
-Cc: "Rong Zhang" <i@rong.moe>, 
-	"Lucas Ivars Cadima Ciziks" <lucas@ciziks.com>, 
-	<linux-mips@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Date: Fri, 17 Apr 2026 13:18:52 +0800
-To: "Felipe Ribeiro de Souza" <felipers@ime.usp.br>, <paul@crapouillou.net>, 
-	<jic23@kernel.org>, <dlechner@baylibre.com>, <nuno.sa@analog.com>, 
-	<andy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-User-Agent: Evolution 3.56.2-9
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <d47618d58e88a65f5b28f1a8e3474819894b2f9b.camel@oss.cipunited.com>
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
-X-Lms-Return-Path: <lba+269e1c3f3+3068bd+vger.kernel.org+rongrong@oss.cipunited.com>
-From: "Rong Zhang" <rongrong@oss.cipunited.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260416011815.9140-1-felipers@ime.usp.br>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Hi Felipe,
-
-On Wed, 2026-04-15 at 22:18 -0300, Felipe Ribeiro de Souza wrote:
+On Wed, Apr 15, 2026 at 10:18:11PM -0300, Felipe Ribeiro de Souza wrote:
 > Replace mutex_lock(&lock) and mutex_unlock(&lock) calls with
 > guard(mutex)(&lock) in functions ingenic_adc_set_adcmd,
 > ingenic_adc_set_config, ingenic_adc_enable, ingenic_adc_capture
 > and ingenic_adc_read_chan_info_raw.
-> 
+
+We refer to the functions as func().
+
 > This removes the need to call the unlock function, as the lock is
 > automatically released when the function return or the scope exits
 > for any other case.
-> 
-> Signed-off-by: Felipe Ribeiro de Souza <felipers@ime.usp.br>
-> Co-developed-by: Lucas Ivars Cadima Ciziks <lucas@ciziks.com>
-> Signed-off-by: Lucas Ivars Cadima Ciziks <lucas@ciziks.com>
-> ---
->  drivers/iio/adc/ingenic-adc.c | 19 +++++++------------
->  1 file changed, 7 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
-> index 1e802c877..bb7abdcd8 100644
-> --- a/drivers/iio/adc/ingenic-adc.c
-> +++ b/drivers/iio/adc/ingenic-adc.c
-> @@ -20,6 +20,7 @@
+
+...
+
 >  #include <linux/of.h>
 >  #include <linux/platform_device.h>
 >  #include <linux/property.h>
 > +#include <linux/cleanup.h>
 
-Can you keep #include sorted?
+Preserve ordering.
 
-Thanks,
-Rong
+...
 
->  
->  #define JZ_ADC_REG_ENABLE		0x00
->  #define JZ_ADC_REG_CFG			0x04
-> @@ -115,7 +116,7 @@ static void ingenic_adc_set_adcmd(struct iio_dev *iio_dev, unsigned long mask)
->  {
->  	struct ingenic_adc *adc = iio_priv(iio_dev);
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  
->  	/* Init ADCMD */
->  	readl(adc->base + JZ_ADC_REG_ADCMD);
-> @@ -162,8 +163,6 @@ static void ingenic_adc_set_adcmd(struct iio_dev *iio_dev, unsigned long mask)
->  
->  	/* We're done */
->  	writel(0, adc->base + JZ_ADC_REG_ADCMD);
-> -
-> -	mutex_unlock(&adc->lock);
->  }
->  
->  static void ingenic_adc_set_config(struct ingenic_adc *adc,
-> @@ -172,13 +171,11 @@ static void ingenic_adc_set_config(struct ingenic_adc *adc,
->  {
->  	uint32_t cfg;
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  
->  	cfg = readl(adc->base + JZ_ADC_REG_CFG) & ~mask;
->  	cfg |= val;
->  	writel(cfg, adc->base + JZ_ADC_REG_CFG);
-> -
-> -	mutex_unlock(&adc->lock);
->  }
->  
->  static void ingenic_adc_enable_unlocked(struct ingenic_adc *adc,
-> @@ -201,9 +198,8 @@ static void ingenic_adc_enable(struct ingenic_adc *adc,
->  			       int engine,
->  			       bool enabled)
->  {
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  	ingenic_adc_enable_unlocked(adc, engine, enabled);
-> -	mutex_unlock(&adc->lock);
->  }
->  
->  static int ingenic_adc_capture(struct ingenic_adc *adc,
-> @@ -218,7 +214,7 @@ static int ingenic_adc_capture(struct ingenic_adc *adc,
->  	 * probably due to the switch of VREF. We must keep the lock here to
->  	 * avoid races with the buffer enable/disable functions.
->  	 */
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  	cfg = readl(adc->base + JZ_ADC_REG_CFG);
->  	writel(cfg & ~JZ_ADC_REG_CFG_CMD_SEL, adc->base + JZ_ADC_REG_CFG);
->  
-> @@ -229,7 +225,6 @@ static int ingenic_adc_capture(struct ingenic_adc *adc,
->  		ingenic_adc_enable_unlocked(adc, engine, false);
->  
->  	writel(cfg, adc->base + JZ_ADC_REG_CFG);
-> -	mutex_unlock(&adc->lock);
->  
->  	return ret;
->  }
-> @@ -643,7 +638,8 @@ static int ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
->  	}
->  
 >  	/* We cannot sample the aux channels in parallel. */
 > -	mutex_lock(&adc->aux_lock);
 > +	guard(mutex)(&adc->lock);
-> +
->  	if (adc->soc_data->has_aux_md && engine == 0) {
->  		switch (chan->channel) {
->  		case INGENIC_ADC_AUX0:
-> @@ -677,7 +673,6 @@ static int ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
->  
+
+	...
+
 >  	ret = IIO_VAL_INT;
 >  out:
 > -	mutex_unlock(&adc->aux_lock);
 >  	clk_disable(adc->clk);
->  
+
+Not sure about this. At bare minimum you should elaborate on this change in the
+commit message.
+
 >  	return ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+

@@ -1,146 +1,118 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E5F28F5;
-	Fri, 17 Apr 2026 16:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F387E2BDC3F;
+	Fri, 17 Apr 2026 21:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776442645; cv=none; b=e0OU0A7LR8WPYIARlk6mZSU7PPkxMJN/Ad9/BEUG4H6k27S9SWjuN3WjB+tCJS27no9YNdp1g1jpGARki1HYKB5r4Xt8RuljXg6A7Z5kofnwN1d6w7gCKTBPEPUyh74QvPFu2CApc97mepkIdGHIO6ISi1hnkowqU3R/bAbgKOw=
+	t=1776460638; cv=none; b=Mmak1yDYCfn4qyEyvY/2tUNKznOg8z6h96soMwPu3ACNid4aFVr5BgJdMNpZE9CvYMBKvi/+PoT4MKtOaXjRMUbJ1qnUCh8BFVpVuTKGF2xRbKSRqcYFDWxL+VtNP7CsEz5OXzac6PU6H/UAwApd1mc+1Gh0+bbXg4cG3Y3n6zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776442645; c=relaxed/simple;
-	bh=8apwD0Uu49O9/L0RV1+lQTrPxFIZu8qTAZBBQWMysOU=;
+	s=arc-20240116; t=1776460638; c=relaxed/simple;
+	bh=epwlFBsalxdWuyw5+up4ZTUPp6kN7di9A6zZ9iMpm/c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hvPvWFd1MaAYA2815HzY7O25NiZq2TUuQo/jp35r/AKeIPz575pbtdXXeRQ+V0YZhC2pr6DeWOhXI5Gj27mNkiXEHEvU7bQHfzOmlkZeMyDqAkU+4BhndM6GdOU7zFn64J3Xl4htpjwHLV5KhU/qno0+HmF36uhAlUbaMeXpKxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4huMo5t; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hd4TH2n6Jm7YWalWkUNz5RTjy1sYMbj6BCB25rN6P8gUfTMXZSIq6Y5wGH8kaw8FCWRhHyiZ0v7fInms1+FPETGw1Iv0TG2MGcvAsoT0zc27nkG6ev8H+rWurMn5qx/Q9srk7QSSh2SpqDT87OnBSBUJqAQT8SDAag0QhqQUBEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HI/2s/ts; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4huMo5t"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75FFCC19425;
-	Fri, 17 Apr 2026 16:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776442645;
-	bh=8apwD0Uu49O9/L0RV1+lQTrPxFIZu8qTAZBBQWMysOU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X4huMo5tVUupfqMqLJvJbvXWZepfaZuz0/fPjHxbWIcVpykF+xdD98DT0MVjPhftq
-	 Ib6dq2Jx2LjHcQPhXRJavO8y0KAv3jY/DY1bvhlU4Ne2Z2slSeCGsRsoqL3UXZ/Iyo
-	 vLerK9pH3UVJq/NwDmk6WgNtE1nFLGsg+jp9ajWZkZ25yfaqsvkYNENWgkaw6IGHan
-	 X1DH6gjj5fkKsV4i9RT2bIz2yGMLFrJCgEoa0a/UUOSKRKKuTdEBj0sNdCb4l64QjS
-	 dhnS/MdTFZUzqemm/Buxvhk5gl+2a9MnzD7U4uzgmU/vQJHCTAdKYG5o73Tbtwv3ES
-	 Q2uxD8ul0csHw==
-Date: Fri, 17 Apr 2026 17:17:21 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Caleb James DeLisle <cjd@cjdns.fr>
-Cc: linux-mips@vger.kernel.org, naseefkm@gmail.com,
-	daniel.lezcano@kernel.org, tglx@kernel.org, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: timer: econet: Update EN751627 for
- multi-IRQ
-Message-ID: <20260417-outlet-ascent-eefba2a4aa19@spud>
-References: <20260416175101.958073-1-cjd@cjdns.fr>
- <20260416175101.958073-2-cjd@cjdns.fr>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HI/2s/ts"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1776460637; x=1807996637;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=epwlFBsalxdWuyw5+up4ZTUPp6kN7di9A6zZ9iMpm/c=;
+  b=HI/2s/tsZnj8GUIWZ+0NLFLxz8/dO79bxnvFBJbThThbtHD58BenYF1T
+   rrBT1mG69CVOxpRROAbmynNHOmMZuXWf4xm6zFsax5UG/YYYjzQakofHw
+   KbreLNukwteaqVyG9nm/YkCJqWj84iSpM+L0yXczKphw250YWJyK5fPEN
+   kZzRAziYI1Svyh/+WR7P1xxQ8ubdK+1pm0wj7XLSqCC26r2xUMYp2D5vz
+   +9IwEdFs6zVvK6KrFZ1EWAOYcrvLSMxclmjBkvWfMJT2GrsZBu404g4Is
+   6/XJx779UB3QtTRrX7l5gIJytFchlLYNXUaAgQ+Ifzywr2GHSWxl8+45y
+   A==;
+X-CSE-ConnectionGUID: VGmPVxWHR12mWEmJy/Ivwg==
+X-CSE-MsgGUID: F+SHlaRiS0SXNGZQ34+PcQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11762"; a="81359264"
+X-IronPort-AV: E=Sophos;i="6.23,185,1770624000"; 
+   d="scan'208";a="81359264"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2026 14:17:16 -0700
+X-CSE-ConnectionGUID: 5ASwowp/TbqcQytqdkzjPg==
+X-CSE-MsgGUID: V+h3r/JcTpagkaHHqD2fsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,185,1770624000"; 
+   d="scan'208";a="269156937"
+Received: from lkp-server01.sh.intel.com (HELO 7e48d0ff8e22) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 17 Apr 2026 14:17:14 -0700
+Received: from kbuild by 7e48d0ff8e22 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wDqYo-000000000hs-2thS;
+	Fri, 17 Apr 2026 21:17:10 +0000
+Date: Sat, 18 Apr 2026 05:16:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Maxwell Doose <m32285159@gmail.com>, gregkh@linuxfoundation.org,
+	tsbogend@alpha.franken.de
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, len.bao@gmx.us,
+	yoelvisoliveros@gmail.com, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2] staging: octeon: remove SPI, POW, PKO, and Helper
+ typedef enums
+Message-ID: <202604180530.yvwobb0w-lkp@intel.com>
+References: <20260415122939.77847-1-m32285159@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ahSFO216kMteIe+a"
-Content-Disposition: inline
-In-Reply-To: <20260416175101.958073-2-cjd@cjdns.fr>
-
-
---ahSFO216kMteIe+a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20260415122939.77847-1-m32285159@gmail.com>
 
-On Thu, Apr 16, 2026 at 05:51:00PM +0000, Caleb James DeLisle wrote:
-> From conception, this driver supported EN751627 as it is the same
-> hardware that is used in EN751221. However, it was expected that
-> EN751627 would use a percpu IRQ as does EN751221, this is how it
-> works in vendor code. However upon finding that the "mti,gic" intc
-> works on EN751627 with no modification - but it provides a unique
-> interrupt per-timer, it is deemed best to make this driver use
-> multiple IRQs when on the EN751627 platform.
+Hi Maxwell,
 
-Please drop mention of drivers here, bindings are about hardware,
-whether or not the driver uses 1 or 4 interrupts doesn't matter, the
-binding should have 4 because the hardware has 4.
-pw-bot: changes-requested
+kernel test robot noticed the following build errors:
 
-Otherwise, this looks fine, so with that stuff culled
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+[auto build test ERROR on staging/staging-testing]
 
->=20
-> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
-> ---
->  .../bindings/timer/econet,en751221-timer.yaml    | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/timer/econet,en751221-time=
-r.yaml b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
-> index c1e7c2b6afde..f338739e039c 100644
-> --- a/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
-> +++ b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
-> @@ -28,8 +28,8 @@ properties:
->      maxItems: 2
-> =20
->    interrupts:
-> -    maxItems: 1
-> -    description: A percpu-devid timer interrupt shared across CPUs.
-> +    minItems: 1
-> +    maxItems: 4
-> =20
->    clocks:
->      maxItems: 1
-> @@ -52,21 +52,31 @@ allOf:
->            items:
->              - description: VPE timers 0 and 1
->              - description: VPE timers 2 and 3
-> +        interrupts:
-> +          description: An interrupt for each timer (one per VPE)
-> +          minItems: 4
->      else:
->        properties:
->          reg:
->            items:
->              - description: VPE timers 0 and 1
-> +        interrupts:
-> +          description: A percpu-devid timer interrupt shared across time=
-rs
-> +          maxItems: 1
-> =20
->  additionalProperties: false
-> =20
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
->      timer@1fbf0400 {
->          compatible =3D "econet,en751627-timer", "econet,en751221-timer";
->          reg =3D <0x1fbf0400 0x100>, <0x1fbe0000 0x100>;
->          interrupt-parent =3D <&intc>;
-> -        interrupts =3D <30>;
-> +        interrupts =3D <GIC_SHARED 30 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SHARED 29 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SHARED 37 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SHARED 36 IRQ_TYPE_LEVEL_HIGH>;
->          clocks =3D <&hpt_clock>;
->      };
->    - |
-> --=20
-> 2.39.5
->=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Maxwell-Doose/staging-octeon-remove-SPI-POW-PKO-and-Helper-typedef-enums/20260417-103458
+base:   staging/staging-testing
+patch link:    https://lore.kernel.org/r/20260415122939.77847-1-m32285159%40gmail.com
+patch subject: [PATCH v2] staging: octeon: remove SPI, POW, PKO, and Helper typedef enums
+config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20260418/202604180530.yvwobb0w-lkp@intel.com/config)
+compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260418/202604180530.yvwobb0w-lkp@intel.com/reproduce)
 
---ahSFO216kMteIe+a
-Content-Type: application/pgp-signature; name="signature.asc"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202604180530.yvwobb0w-lkp@intel.com/
 
------BEGIN PGP SIGNATURE-----
+All errors (new ones prefixed by >>):
 
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaeJdEQAKCRB4tDGHoIJi
-0hSOAQCaJODtAPQb5wGy//l8xDIYl60EXO9mwMqpJ7jVMXy+CwEAvkrqwFkte9qD
-UOZywla/ZGFA1/MhHGy7LTAp0dwhuQ8=
-=EmxE
------END PGP SIGNATURE-----
+   In file included from drivers/staging/octeon/ethernet.c:23:
+   In file included from drivers/staging/octeon/octeon-ethernet.h:41:
+>> drivers/staging/octeon/octeon-stubs.h:1270:49: error: incomplete result type 'struct cvmx_helper_interface_mode' in function definition
+    1270 | static inline struct cvmx_helper_interface_mode cvmx_helper_interface_get_mode(int
+         |                                                 ^
+   drivers/staging/octeon/octeon-stubs.h:1270:22: note: forward declaration of 'struct cvmx_helper_interface_mode'
+    1270 | static inline struct cvmx_helper_interface_mode cvmx_helper_interface_get_mode(int
+         |                      ^
+>> drivers/staging/octeon/octeon-stubs.h:1273:9: error: returning 'int' from a function with incompatible result type 'struct cvmx_helper_interface_mode'
+    1273 |         return 0;
+         |                ^
+   2 errors generated.
 
---ahSFO216kMteIe+a--
+
+vim +1270 drivers/staging/octeon/octeon-stubs.h
+
+  1269	
+> 1270	static inline struct cvmx_helper_interface_mode cvmx_helper_interface_get_mode(int
+  1271									   interface)
+  1272	{
+> 1273		return 0;
+  1274	}
+  1275	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki

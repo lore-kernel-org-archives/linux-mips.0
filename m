@@ -1,41 +1,41 @@
 Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5475C3E3C71
-	for <linux-mips@vger.kernel.org>; Thu, 23 Apr 2026 09:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8606C3CB2D0;
+	Thu, 23 Apr 2026 09:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776936240; cv=none; b=FqmpHOTmSKySsYaD4O+LuP7gIXkv9Yd5uoSXhPQJ/s1aNDsN3I51NIuwRiRgYWDR4gTiqT/RlTe6iU3R0IsMl1w/LvRYPB1E/f1oqVDA5cCpelquGUiLGUVhFYTTx00h+nJQCjDTvJ2r2COpwwjA7xyFpl9PJKsnHYvYKTx2UYg=
+	t=1776936256; cv=none; b=B2Qw0NNWME+Rmf6QduH2RSU+dcIdURCt0BZ9EqE3oUn0G6Ao3hDvbSz/TLVNqmIuz+btk1oIas2kfgY1GBbDae813HKOu9qSI6vy0wgPtZXLG3e7TrigCuNuxqyyWcN2aRKeKEzfy6xoFw7hZOg3jH59XIthdXt4y/4NHPRR4AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776936240; c=relaxed/simple;
-	bh=B+5nUgmN2dmT5Sisf6ZX5++zbb00pQnSOfW8yvdIQKk=;
+	s=arc-20240116; t=1776936256; c=relaxed/simple;
+	bh=kpwEO2TRKidVcp+F6bStJG3lQ4ULPq3ep1aXHnBu+lE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sTDA33cZcCN7JDmzwBRI5An/PVAfu0ovciOc/1NWlEuOhsJwNJuetF0gAAIIUrfXsk6zuDox6Hw+phXxbz5lP3CBBS4uuIGHCoGi2fD7om5f99tsCcAvGr3oAeXoB/Qf4BWAKMumGjHBwiO1UsB0BiWEk7efUXRwdDl+S7bRO74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nRGVgYG+; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=MH0QuMXDG5vKiu3ry6tYtKKGE44rflofyKIdb9P3xTjbhjWPbRe7fbOVh7yl/PJnl31PHg4HM7Eq7x54LoNKK69L4MGPOPJkF74rgX58FW0wIPp/SSc8Z5RcAQdh+gRQOMeQvMJbASrjx7O7OuZ5slQW5U7IQlU9ZmdDj7HYbEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=n74CTXJU; arc=none smtp.client-ip=185.171.202.116
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nRGVgYG+"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="n74CTXJU"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 20E97C5EF0B;
-	Thu, 23 Apr 2026 09:24:38 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 3AFD8C5EF0D;
+	Thu, 23 Apr 2026 09:24:54 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DFBFE604EB;
-	Thu, 23 Apr 2026 09:23:56 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8524C10460BE8;
-	Thu, 23 Apr 2026 11:23:39 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 05F73604EB;
+	Thu, 23 Apr 2026 09:24:13 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5942D10460B12;
+	Thu, 23 Apr 2026 11:23:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1776936233; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1776936249; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=5pPMX14ws1kz1RuU0PtQ5Be1UIEAgUoepSFG9jf9zL4=;
-	b=nRGVgYG+o55uFlh6cRZupZCpGJBRJJ+KKR9VCJtdU0g7D8ZQmwl6ISMZtZbvfF5mm3ku7U
-	RTTZ0rKun01ws0h5Y0S3xswypHRULqZKNwUEY+/yawVAGXE8FacoFu/zmUtcRPocd2HZK1
-	KOXXB1Y4tJ+IQGGhAExsDQNmQ6gCdwPpE00G1v/zn8pRqPG0Tw7DcAWlVewM7T7eGQICsc
-	iwf7ITWtd7Py8jGAbfDPwG7/m7kUZ5Fcpke8O3wtx/YB0Bfq4QD1EiZnv1SIRYXUVvokyo
-	ODNc0lF9gl6tG908XKoTAF89emhFnyFIbariKEEJYI4rByqovZ5Wjcwyg1/trA==
+	bh=hHreTF5UsM+/5KFOm8ixdx5rwjisLGM2O64i/IkGzAY=;
+	b=n74CTXJU78zzsgPjKkGkghfxZ9OtKVBW5Bn3VfQOrmW213MFdXW84egqu1ul/3W/jxfqhP
+	jp42EpKbXOVvBnQGS3VivkrIeOnTCBFos5/Yvvy32eRi3uPTRjWZs9pZlNIJJ/IFa7sX5/
+	nBBbHWDhqge9+iIfRGIGqUA3O1bFXoQg9IkqRWh6H0PMaWVPJDV0HeVF0HxgxbnM0+fZjf
+	ZeM7T46FVWR6mD1cg+NLqYsLM1C4aXLtvUREbzaKYfVpZOMfczWkDKF213l1O0t8a4yafT
+	xcTFjd/tOvxMwT5cIDa1WYYIuA1Ngng4tmYCmFQHCoE6tirpaBysjSfCmWn6mA==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Thu, 23 Apr 2026 11:17:17 +0200
-Subject: [PATCH v2 23/41] drm/tests: bridge: remove now-redundant call to
+Date: Thu, 23 Apr 2026 11:17:18 +0200
+Subject: [PATCH v2 24/41] drm: verisilicon: remove now-redundant call to
  drm_connector_attach_encoder()
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -45,7 +45,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260423-drm-bridge-connector-attach_encoder-v2-23-2ae6ca69b390@bootlin.com>
+Message-Id: <20260423-drm-bridge-connector-attach_encoder-v2-24-2ae6ca69b390@bootlin.com>
 References: <20260423-drm-bridge-connector-attach_encoder-v2-0-2ae6ca69b390@bootlin.com>
 In-Reply-To: <20260423-drm-bridge-connector-attach_encoder-v2-0-2ae6ca69b390@bootlin.com>
 To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
@@ -112,22 +112,21 @@ drm_bridge_connector_init().
 
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 ---
- drivers/gpu/drm/tests/drm_bridge_test.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/verisilicon/vs_bridge.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tests/drm_bridge_test.c b/drivers/gpu/drm/tests/drm_bridge_test.c
-index 887020141c7f..dbba06a486f0 100644
---- a/drivers/gpu/drm/tests/drm_bridge_test.c
-+++ b/drivers/gpu/drm/tests/drm_bridge_test.c
-@@ -173,8 +173,6 @@ drm_test_bridge_init(struct kunit *test, const struct drm_bridge_funcs *funcs)
- 	if (IS_ERR(priv->connector))
- 		return ERR_CAST(priv->connector);
+diff --git a/drivers/gpu/drm/verisilicon/vs_bridge.c b/drivers/gpu/drm/verisilicon/vs_bridge.c
+index 2a0ad00a94d6..83c91d5ce397 100644
+--- a/drivers/gpu/drm/verisilicon/vs_bridge.c
++++ b/drivers/gpu/drm/verisilicon/vs_bridge.c
+@@ -365,7 +365,6 @@ struct vs_bridge *vs_bridge_init(struct drm_device *drm_dev,
+ 		ret = PTR_ERR(bridge->conn);
+ 		return ERR_PTR(ret);
+ 	}
+-	drm_connector_attach_encoder(bridge->conn, bridge->enc);
  
--	drm_connector_attach_encoder(priv->connector, enc);
--
- 	drm_mode_config_reset(drm);
- 
- 	return priv;
+ 	return bridge;
+ }
 
 -- 
 2.53.0

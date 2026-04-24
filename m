@@ -1,43 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF11B364E9C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF241365A07;
 	Fri, 24 Apr 2026 10:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777026538; cv=none; b=ObFR0+XIgz5BM6zTgMU78BBRn49MsEAq73TrZddS1axPlreeglozLP/98umEIG+0gzjPLO3Ua49HhF+uY4sLngXUn5iTw6YKMpI2r+krpAHBTPPzYhZkcHnpswTYRNXQuBYq54rOzJWSL+2ivEFxw/ckXbLEXZlbjkdKSAMnGfk=
+	t=1777026538; cv=none; b=Yaaw83IDLZhQw1NBGi7cVoS1+eaJeHvj/0QG0GqbiaiOGDsxt93naYzJr55OamTEYLIqoc1Fs/XdoBScs794ktHPjj6nSjdIPQGmj4Cul40DsmvkoeabXIU7qr3/EWpoLLvnIOB3csled8rTxn0sP40zXGwpT8lcsZvXtl7e/0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1777026538; c=relaxed/simple;
-	bh=bg9oJZjssjl8PSO+dx5xJ3p5/zle9VIUhCA1mWT3A/Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qu86sygNZyB/afISVffcBAn0Sy+RmFmnrlNFoLbNLyylhs8XCc1NZwbx4kiR8djWv5IXd2ljT/GoPGw9V0edwdLwNZfsODRlQkJOBD8DJBu6YZ2HpfIOThyFz3TYy2zTWnvBO/+7/VTpkt1CPM+5Y2PprLAJWjjt37CrYPOW8g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H4Z/1M55; arc=none smtp.client-ip=10.30.226.201
+	bh=5fSbprhbuJCT7074gb9C0N4PXZSwAueInjsh8DXULfw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=X8k/UU17YnG962fsRBKsoVBTgrGeSp8sYubQ5d67FagJaSH8KItBH4yj6xKjrdqAEhp3T2m6N4fnKjfzbShbVj+de27jIkl+8y/jpxtnHMXMVXW/ATRSCH3BJtQ+xX5F1vyUbkwf6BIcdoT5Xnk+DjnRqcxg7d8qfQWPWNLK4+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eEWKR/aF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H4Z/1M55"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84146C2BCB6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEWKR/aF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81B65C2BCB4;
 	Fri, 24 Apr 2026 10:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1777026538;
-	bh=bg9oJZjssjl8PSO+dx5xJ3p5/zle9VIUhCA1mWT3A/Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=H4Z/1M55f68XcqrcbJAp1N5aaLx1+ub8CTTB8Z/P5L/g7zqrwfh78pIj1X7MHbFFk
-	 Rr07JR2Hx8bx52sJQgFw+gYJcinEPLoQQ5l+UivXpcWT+RJ02J7y3TvnxAQks+/XLC
-	 QEPS+tJKlz+eMLHgH1RI60bKHxgLQ+CpMT//2rTf82cY5n1iewVvvdGGToUZRqh+Q7
-	 iZkkVX+ErKff5aAipdnVuJ7w9we5rdPrND1VjQGAxJTgLcJhky0Z5y+jLivCM6K8uc
-	 IgqWtGO0LzGyyHekeWU6rolbLfmDhklU/D/uSEAhJC3d76hXFkx3ukqnUqHRLdo/Rn
-	 bsMggAtkACy3w==
+	bh=5fSbprhbuJCT7074gb9C0N4PXZSwAueInjsh8DXULfw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eEWKR/aF6TVvXD+vKd9S7NrAJohlWN4rQQNRcgvmWQQo36wtYhB+efmVh5UdSm7p+
+	 MCI6WZoeL/VDL/Cg0bTfpcT2UIZAdju1RKP6Ln08j/r6uI3NVVIXPEdVHpxkSB0/i+
+	 /rB5JQ3J3hp/1TfXGEF8Du69wrzJJYGEzwuJlae/9tvQazOIOacK+YnOeiF/nhKaZH
+	 8qe7dBoLizAVgDMLrSgk3bYs5I6FhpUXNxO4a4Z9JgzGtyrqhncXSptlArRufIRHIZ
+	 IWo0pSj6P0HcJGs1VWHqpsOjXJZcywgT2Q08S5gyXGByh1Al+MsYJR3ZJ4R1r2fDRF
+	 FDN/iSpfPV0xw==
 Received: from johan by xi.lan with local (Exim 4.98.2)
 	(envelope-from <johan@kernel.org>)
-	id 1wGDmK-0000000AyYS-1e0C;
+	id 1wGDmK-0000000AyYY-1ojd;
 	Fri, 24 Apr 2026 12:28:56 +0200
 From: Johan Hovold <johan@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan@kernel.org>
-Subject: [PATCH 0/5] MIPS: ip22-gio: fix leaks and replace static root
-Date: Fri, 24 Apr 2026 12:28:44 +0200
-Message-ID: <20260424102849.2616035-1-johan@kernel.org>
+	Johan Hovold <johan@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH 3/5] MIPS: ip22-gio: fix device reference leak in probe
+Date: Fri, 24 Apr 2026 12:28:47 +0200
+Message-ID: <20260424102849.2616035-4-johan@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260424102849.2616035-1-johan@kernel.org>
+References: <20260424102849.2616035-1-johan@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -46,23 +50,36 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series fixes some issues found through inspection when looking into
-replacing the statically allocated gio bus root device.
+The gio probe function needlessly takes a device reference which is
+never released and therefore prevents unbound gio devices from being
+freed.
 
-Johan
+Fixes: e84de0c61905 ("MIPS: GIO bus support for SGI IP22/28")
+Cc: stable@vger.kernel.org	# 3.3
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ arch/mips/sgi-ip22/ip22-gio.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-
-Johan Hovold (5):
-  MIPS: ip22-gio: fix kfree() of static object
-  MIPS: ip22-gio: fix gio device memory leak
-  MIPS: ip22-gio: fix device reference leak in probe
-  MIPS: ip22-gio: switch to dynamic root device
-  MIPS: ip22-gio: do not export device release function
-
- arch/mips/include/asm/gio_device.h |  6 ------
- arch/mips/sgi-ip22/ip22-gio.c      | 34 ++++++++++--------------------
- 2 files changed, 11 insertions(+), 29 deletions(-)
-
+diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
+index 2f5c6c6f8254..7b7572d11250 100644
+--- a/arch/mips/sgi-ip22/ip22-gio.c
++++ b/arch/mips/sgi-ip22/ip22-gio.c
+@@ -133,13 +133,9 @@ static int gio_device_probe(struct device *dev)
+ 	if (!drv->probe)
+ 		return error;
+ 
+-	gio_dev_get(gio_dev);
+-
+ 	match = gio_match_device(drv->id_table, gio_dev);
+ 	if (match)
+ 		error = drv->probe(gio_dev, match);
+-	if (error)
+-		gio_dev_put(gio_dev);
+ 
+ 	return error;
+ }
 -- 
 2.53.0
 

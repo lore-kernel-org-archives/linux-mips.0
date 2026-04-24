@@ -1,79 +1,185 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77DF366816;
-	Fri, 24 Apr 2026 10:28:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D92391840;
+	Fri, 24 Apr 2026 11:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777026539; cv=none; b=PAjMrbvZE7Z4Lb4loxEw6b2ysI1ZgNzSxoCd1B+N6ybgB9syHaHhkOwzIDYHnSjrxq+cZh1VDFTYAL47+WsN8Ucuxy5PDQcT6ArhlEm8Vg65QBwvWweudFYc19LbHIieVPLCWTs8S2G5LCx5U6ItdI/i6spkDcJ5o07gYsuEIdI=
+	t=1777029929; cv=none; b=u4kzaShktzm03BxZnWlPxBjzlAhuTX3wudutd5+jqohLP8mj3kkBxkvZ6PeuFtXTXBaMdwo8ykLp6bUg4RN3EIA1Wm8Hym5qsti2tZ7PZ6JINTYJLv93xdpLOpb6lipVQh2XOd/NzmUh5fK55hUCSdt1XFiaAr0Y5KWujcsl3mM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777026539; c=relaxed/simple;
-	bh=RMhz1PsBiyG4tTItzIZDeqBjCCwN+4jIIJ/RtVNaaHE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rdyp05j0pT2GSn7AhB9+rqdMr74NXx9hffDYc+R6rDn16gAHEUpP5X/84BA7ydMRtcfDBU9BKUrwtCcrPBcqZP1Loi+Ceo0LoUp5IbuX6KcpWsOV1ZvQFuQEFw1vgwDSnRRS2QHxeW7cU/6ppsFXB7zj8CYn9+q42NqvIMCXiuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uy2u3pVV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777029929; c=relaxed/simple;
+	bh=k2dQSsUN3UsAJ1unGnAR4k55qpqNs0OBMSNvjxtQslQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PHmfgNTBl1a7/zR7rZS86xs6Obhpjq7LISmWeBLdk1vCIWPPW3/sDqy8Z4aPONj/+RIJAbkMdnFQReQm6TNsvDl//9u3zEQ85EwmxhD7zSoZ3fB3GwIs0/xl2yKs65zJ15+Eknh1kcU5vq+1g4yg0x5BySd/wznOjVmk4eBHqis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RieTxTY+; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uy2u3pVV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C17C2BCB8;
-	Fri, 24 Apr 2026 10:28:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RieTxTY+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AE9AC19425;
+	Fri, 24 Apr 2026 11:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777026538;
-	bh=RMhz1PsBiyG4tTItzIZDeqBjCCwN+4jIIJ/RtVNaaHE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Uy2u3pVVHvGZIARSbxdEoVorSbDUpeOs1HzbWc9hY93PNpTsr1HcbURf+uMxIFb5X
-	 ZAuWuw0ugN3lDveS7Zn/nOXXCDZqkidVfzkJmYjoJYd50tcAfg/GukmKnktRl5rONt
-	 LfT3zFmo1VXQsucuGSpvj0ipHcc69Qdl5FUSUTx9SDLNKMPtZ6ZqHJxgTukQmwNArv
-	 xgiMDN5X+2V/lJNSjiG/RCQ2qe1pcc5hTy9BUK6JbfISTpRc2Q2sGsnN4CGwG/SVK0
-	 3GhL/siVu0suU4BDdiKWJvIj6+B0Jp611ny099ShpoCk/bRstJ0IHlL/pNAqeYDMLF
-	 ro0qfsKhs+JmQ==
-Received: from johan by xi.lan with local (Exim 4.98.2)
-	(envelope-from <johan@kernel.org>)
-	id 1wGDmK-0000000AyYW-1mO4;
-	Fri, 24 Apr 2026 12:28:56 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH 2/5] MIPS: ip22-gio: fix gio device memory leak
-Date: Fri, 24 Apr 2026 12:28:46 +0200
-Message-ID: <20260424102849.2616035-3-johan@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260424102849.2616035-1-johan@kernel.org>
-References: <20260424102849.2616035-1-johan@kernel.org>
+	s=k20201202; t=1777029929;
+	bh=k2dQSsUN3UsAJ1unGnAR4k55qpqNs0OBMSNvjxtQslQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RieTxTY+OD0EHdNFiednn77ShTUW23fykA/Y/bTaXoQrA9pwGKwc5da4GAD7kaZUn
+	 CDmONrjaaWYzuHighXVinGgBsy0kGhp8yORunivuRc3gs+0LrG8nnU2iiP48tiIcAZ
+	 Lqw5HEiVGh4aMFys9I3VUASZLzQmvHwdH97wDa5et/dQUw6/ICJcn6jS7I9rwAqeAN
+	 +hTpJzJlVTZqi/9GZwzT2l9YumVf/XmyLuRsIrlbIB+9QcNNZpYhBmOSz0pRooL7ow
+	 rVlawbmYTMW/m13he4E7UNODSi2xC25K+QunJtX+1qXGzIOQRSszzRG1oab/g0hDZZ
+	 WAj8ROG+YiFlQ==
+Date: Fri, 24 Apr 2026 12:25:21 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Felipe Ribeiro de Souza <felipers@ime.usp.br>, andy@kernel.org,
+ dlechner@baylibre.com, nuno.sa@analog.com, paul@crapouillou.net,
+ linux-iio@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] use guard()() to handle synchronisation
+Message-ID: <20260424122521.7d33d944@jic23-huawei>
+In-Reply-To: <aesmhCADsVmJoSgQ@ashevche-desk.local>
+References: <20260423012011.41001-1-felipers@ime.usp.br>
+	<aesmhCADsVmJoSgQ@ashevche-desk.local>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The gio device release callback was never wired up so gio devices are
-not freed when the last reference is dropped.
+On Fri, 24 Apr 2026 11:15:00 +0300
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
 
-Fixes: e84de0c61905 ("MIPS: GIO bus support for SGI IP22/28")
-Cc: stable@vger.kernel.org	# 3.3
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- arch/mips/sgi-ip22/ip22-gio.c | 2 ++
- 1 file changed, 2 insertions(+)
+> On Wed, Apr 22, 2026 at 10:18:29PM -0300, Felipe Ribeiro de Souza wrote:
+> > Refactor ingenic_adc_read_chan_info_raw() and replace mutex_lock()
+> > and mutex_unlock() calls with guard()() in drivers/iio/adc/ingenic-adc.c  
+Note for future, the cover letter title needs to be more specific.
 
-diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-index a574441fa44b..2f5c6c6f8254 100644
---- a/arch/mips/sgi-ip22/ip22-gio.c
-+++ b/arch/mips/sgi-ip22/ip22-gio.c
-@@ -100,6 +100,8 @@ int gio_device_register(struct gio_device *giodev)
- {
- 	giodev->dev.bus = &gio_bus_type;
- 	giodev->dev.parent = &gio_bus;
-+	giodev->dev.release = gio_release_dev;
-+
- 	return device_register(&giodev->dev);
+
+[PATCH v4 0/2] iio: adc: ingenic: use guard()() to handle synchronization
+
+That is what it turns up as in tools like patchwork and sashiko rather than
+the names of individual patches so I'd like it to be clear in what it affects.
+
+Speaking of which Sashiko raises a valid concern with the naming.
+_locked() normally means a lock is already held rather than it
+won't be taken.  However, locked naming is in line with existing _unlocked()
+naming in this driver. 
+
+Now I'm not sure what best solution to this is. We don't have particularly
+firm naming conventions in IIO but we probably should have.
+
+We could move to the reasonably common variant of __xxx() means the
+variant of xxx() that should be called with a lock held.  With the addition of
+__must_hold() markings that should be clear.
+
+I've been meaning to mess around with the new context analysis stuff so I had
+a play.  Note that enabling it for all ADCs gives a mess so I'll need
+to dig into that.  My understanding is that this stuff is prone to false
+positives, but maybe some are correct or reflect missing markings.
+
+The makefile change is not something I'd upstream yet
+but if you have clang 22 or later and enable CONFIG_WARN_CONTEXT_ANALYSIS
+this will turn it on for this one driver.
+
+If you want to confirm it is working flip the __must_hold to __must_not_hold()
+and you'll get something like:
+
+drivers/iio/adc/ingenic-adc.c:202:2: warning: cannot call function '__ingenic_adc_enable' while mutex 'adc->lock' is held [-Wthread-safety-analysis]
+  202 |         __ingenic_adc_enable(adc, engine, enabled);
+      |         ^
+
+which is cool as the form combines effectively documenting the locking rules
+and checking them at compile time.
+
+If other reviewers are fine with the naming convention, then a precursor
+patch to change the existing _unlocked() naming + add the __must_hold()
+marking then the new naming folded into patch 1 of this series.
+
+
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index 097357d146ba..a06807609bde 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for IIO ADC drivers
+ #
+ 
++CONTEXT_ANALYSIS_ingenic-adc.o=y
+ obj-$(CONFIG_IIO_ADC_HELPER) += industrialio-adc.o
+ 
+ # When adding new entries keep the list in alphabetical order
+diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
+index 5622b62840e6..a4d5d139af5f 100644
+--- a/drivers/iio/adc/ingenic-adc.c
++++ b/drivers/iio/adc/ingenic-adc.c
+@@ -179,9 +179,8 @@ static void ingenic_adc_set_config(struct ingenic_adc *adc,
+ 	writel(cfg, adc->base + JZ_ADC_REG_CFG);
  }
- EXPORT_SYMBOL_GPL(gio_device_register);
--- 
-2.53.0
+ 
+-static void ingenic_adc_enable_unlocked(struct ingenic_adc *adc,
+-					int engine,
+-					bool enabled)
++static void __ingenic_adc_enable(struct ingenic_adc *adc, int engine,
++				 bool enabled) __must_hold(&adc->lock)
+ {
+ 	u8 val;
+ 
+@@ -200,7 +199,7 @@ static void ingenic_adc_enable(struct ingenic_adc *adc,
+ 			       bool enabled)
+ {
+ 	guard(mutex)(&adc->lock);
+-	ingenic_adc_enable_unlocked(adc, engine, enabled);
++	__ingenic_adc_enable(adc, engine, enabled);
+ }
+ 
+ static int ingenic_adc_capture(struct ingenic_adc *adc,
+@@ -219,11 +218,11 @@ static int ingenic_adc_capture(struct ingenic_adc *adc,
+ 	cfg = readl(adc->base + JZ_ADC_REG_CFG);
+ 	writel(cfg & ~JZ_ADC_REG_CFG_CMD_SEL, adc->base + JZ_ADC_REG_CFG);
+ 
+-	ingenic_adc_enable_unlocked(adc, engine, true);
++	__ingenic_adc_enable(adc, engine, true);
+ 	ret = readb_poll_timeout(adc->base + JZ_ADC_REG_ENABLE, val,
+ 				 !(val & BIT(engine)), 250, 1000);
+ 	if (ret)
+-		ingenic_adc_enable_unlocked(adc, engine, false);
++		__ingenic_adc_enable(adc, engine, false);
+ 
+ 	writel(cfg, adc->base + JZ_ADC_REG_CFG);
+ 
+@@ -624,9 +623,8 @@ static int ingenic_adc_read_avail(struct iio_dev *iio_dev,
+ 	}
+ }
+ 
+-static int ingenic_adc_read_chan_locked(struct ingenic_adc *adc,
+-					struct iio_chan_spec const *chan,
+-					int *val)
++static int ingenic_adc_read_chan(struct ingenic_adc *adc,
++				 struct iio_chan_spec const *chan, int *val)
+ {
+ 	int cmd, ret, engine = (chan->channel == INGENIC_ADC_BATTERY);
+ 
+@@ -680,7 +678,7 @@ static int ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
+ 		return ret;
+ 	}
+ 
+-	ret = ingenic_adc_read_chan_locked(adc, chan, val);
++	ret = ingenic_adc_read_chan(adc, chan, val);
+ 
+ 	clk_disable(adc->clk);
+ 
+
+
+
+> 
+> Now LGTM,
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> 
+> One side note in case you want to address it keep my tag for the existing
+> changes.
+Separate change anyway so I'm fine with that as a follow up.
+
+
+> 
 

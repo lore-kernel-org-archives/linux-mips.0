@@ -1,30 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B5B64;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5032530DEA9;
 	Sat, 25 Apr 2026 12:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777120857; cv=none; b=fUnnm+chlJx/deCKSmTsJNJFBQUD9MPqNZ7MC1a2O+hOIbO5KMqfhn9pmPq2MoI3ORo2VfIdvy4A4wi5Do3f2v2ovHws9lVMJOfze50RTzAX8MXA0tfo3+1chSaemBB/H0nxaO9eTGwhi8nMvISAfUF1p0sCDI37A/VFn6dEGK8=
+	t=1777120857; cv=none; b=JlypQRrFPulPrQ4ueqLzw2mNdicqcLN2tn+mc0qA1xTo1tJiPyNK5Y0uNB0zmry9c2O8KyO5wmLFXVctOcu00HZzsl9dddPK7Du2FXE9sXuN5RMm4PjuXZB76ckWoBLEcM+A6Zl7vz7e1XEsPUCM5194pC5dNy3II7PRN2dr9vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1777120857; c=relaxed/simple;
-	bh=C1FiZQSWN4pNHKqEHtDiqhgEmtODFXmwC/SsPIKbs98=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I/zcPLvjC9+Dfc4CCg6gafgHD+l+yREqErIt4cESD23YPDPMy/n7C4cippSpmJOAmX3UaJTY/i7T5aalTp2QECj1Dz4FpoKNWAJeFkMzj5QXuB6AJM/4w7sWF8OI1/gLZML1/VNUFUb+twy0nc2lelMM4WCsZB9tCJAvtITuSHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=iIuobtd7; arc=none smtp.client-ip=5.135.140.105
+	bh=auWmPo/D8ZHKTSPsTF9MUDnrdNHgiHS6NpdwXtKPWSU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=udqCR56Vn4IUNGpl4xPFvHiyo0SpmA/OEVERCrAxji5yP6xhVsfqLS5n60AywlRr/8Hje95tKZxq6Op3S90vmvzawiBw+P3UkWB3/IGnqTds++uMW71eIlkDo/JGkgyh+A2NYTT+PQBAAQQVnxjku0XkG0ubdWUbZaH+C1hlhuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=NOmdTIEs; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="iIuobtd7"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 033ED1E62B9;
-	Sat, 25 Apr 2026 14:35:34 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="NOmdTIEs"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 908B01E62DF;
+	Sat, 25 Apr 2026 14:35:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1777120536; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=ZC/i3BeoVR8HoA2zXNVtcnaHT1wH14+5t/jHFOLtJ8E=;
-	b=iIuobtd7LawtBn0RMt/s0AMW1OX7mCfg4l+cEJR+B8va0+BxjuTpKKv+Ddjo8ohQDj6m3G
-	R6EuQqxXeDIdybBNnn9KH7kp1tEBwGr9QCACs5dh2VvHzLzF0FYWd94gh/EvMojSD+ccV9
-	W3CnjO0WeCUelSq9XHdXVmQfFR/Htdo5+RRNyGArnM7m4r079AUXhS+6U4qZTKfNYjP0oM
-	zOYjtUIfsLoG6iZG3vgfJNicWx0DdfY/e8P5H6Pa62ab+5GKSwliNOVuOLQ9p6tfpnJgcz
-	GYPz4ewECuG3hksEHGEugyUuFIceFzv0pmdWy5OVu3ax/GH2WZlHmA99cAOuQA==
+	t=1777120537; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=JmFXSZor7fQMTrew4AqP4rWTVoGhlxXQsjr3Mr/5pFg=;
+	b=NOmdTIEsGt8sCRVqeFRnXLK1rGm8uhli+pmtaA8WswmZuj5H/gyLByC+/B+zIQ2rrGjV+D
+	JSQ9chIrHn/BYveWEAL/KX7ohRab2k6YzH82LFriIwLFbsniVavspD91HmLc0WdukMTfh3
+	0WZCx24RgJl57EOmhgfCHWJMtnAV5a66duvK7xQfBUVm8ABW2bSTVRameTl4BvP90Gr5I4
+	eNbmLFdoL9sD9mHEFs4azVt9psLnX170byXXDvm7WPAWf8jvGuBhN6EyXdG1TbZl5v4B5Q
+	0shVU0n+Fty5D+sCQacPqrcNjRMrnkODLLhvfuOsw9HA6XPgpKhYlRRgdQyd3Q==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: tglx@kernel.org,
@@ -34,9 +36,11 @@ Cc: tglx@kernel.org,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH 0/2] irqchip/econet-en751221: Support MIPS 34Kc VEIC mode
-Date: Sat, 25 Apr 2026 12:35:29 +0000
-Message-Id: <20260425123531.270548-1-cjd@cjdns.fr>
+Subject: [PATCH 1/2] dt-bindings: interrupt-controller: econet: Add CPU interrupt mapping
+Date: Sat, 25 Apr 2026 12:35:30 +0000
+Message-Id: <20260425123531.270548-2-cjd@cjdns.fr>
+In-Reply-To: <20260425123531.270548-1-cjd@cjdns.fr>
+References: <20260425123531.270548-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -46,45 +50,68 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-MIPS 34Kc and 1004Kc have a Vectored External Interrupt mode, where
-CPU interrupts are re-routed to the external interrupt controller,
-which prioritizes them, renumbers them, and integrates them with its
-own, creating a flat interrupt table.
+In MIPS VEIC mode (Vectored External Interrupt Controller), the
+hardware stops directly dispatching CPU interrupts such as IPIs or CPU
+performance counters, and instead it communicates them to the external
+interrupt controller (the hardware described here) which prioritizes,
+renumbers, and integrates them with its own hardware interrupt pins.
+Interrupts from the external controller are then dispatched through a
+different method via a dispatch table. In effect, the external
+controller subsumes the CPU controller and becomes the root.
 
-This bypasses the CPU interrupt controller entirely, which is not ideal
-for modern Linux which formalizes the interrupt hierarchy. The 1004Kc
-standardized the interrupt controller (MIPS_GIC) so it can be viewed as
-"part of the CPU" and it's tolerable for it to be more closely coupled
-to arch/mips/* than a typical interrupt controller driver.
+34K Manual (MD00534) Section 6.3.1.3 rev 1.13 page 136
 
-The 34Kc supports VEIC mode, but the interrupt controller is not
-standardized, so it's different per-SoC. This creates a challenge of
-writing a reasonably modular driver, given hardware that actually does
-take over the interrupt hierarchy.
+Since there are interrupts which ought to be controlled by the CPU
+controller driver - particularly the IPI interrupts - we create a
+reverse mapping where those interrupts may be sent back to the CPU
+intc when they are received. This maintains the fiction that there is
+still a hierarchy, and keeps the DT the same no matter whether the
+processor is in VEIC mode or not. The econet,cpu-interrupt-map is
+optional and if omitted, it's assumed that no interrupts need to be
+mapped.
 
-Ordinarily we wouldn't bother with VEIC on the 34Kc but it is required
-for MIPS_MT_SMP, so without it you get a single thread processor. The
-only other 34Kc device which has an in-tree DTS file is
-realtek,rtl9302-soc, in OpenWrt there is this, realtek,rtl839x-soc, and
-lantiq,xway. Of these, only the realtek,rtl839x-soc has multi-thread
-support via an out-of-tree patch to its interrupt controller. Everybody
-else is not solving this problem and instead sacrificing multi-thread
-support.
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+---
+ .../econet,en751221-intc.yaml                 | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-This patchset aims to tackle this challenge in a way that is most
-likely generalizable to other 34Kc interrupt controllers which are
-facing the same problem.
-
-Caleb James DeLisle (2):
-  dt-bindings: interrupt-controller: econet: Add CPU interrupt mapping
-  irqchip/econet-en751221: Support MIPS 34Kc VEIC mode
-
- .../econet,en751221-intc.yaml                 |  20 ++
- drivers/irqchip/irq-econet-en751221.c         | 176 +++++++++++++++++-
- 2 files changed, 193 insertions(+), 3 deletions(-)
-
-
-base-commit: e8be82c2d77ec1bb0148406e54b105028a83537e
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
+index 5536319c49c3..32d20f7bbd0b 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.yaml
+@@ -52,6 +52,25 @@ properties:
+         - description: primary per-CPU IRQ
+         - description: shadow IRQ number
+ 
++  econet,cpu-interrupt-map:
++    $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    description:
++      When running in VEIC mode, the hardware re-routes interrupts from the
++      CPU interrupt controller core to the "external" interrupt controller
++      (this device). It then prioritizes them and sends them back to the CPU
++      along with its own interrupts. The CPU hardware handles interrupts using
++      a special dispatch table (the normal interrupt handler is not invoked).
++      In this interrupt controller, the CPU interrupts are renumbered as they
++      are merged with this controller's own hardware interrupts.
++
++      This is the inverse of an interrupt-map, mapping which interrupts from
++      this controller must be routed back to the CPU interrupt domain for
++      correct handling there.
++    items:
++      items:
++        - The interrupt number which will be received in this controller
++        - The interrupt number which must then be dispatched on the CPU intc
++
+ required:
+   - compatible
+   - reg
+@@ -74,5 +93,6 @@ examples:
+         interrupts = <2>;
+ 
+         econet,shadow-interrupts = <7 2>, <8 3>, <13 12>, <30 29>;
++        econet,cpu-interrupt-map = <7 0>, <8 1>;
+     };
+ ...
 -- 
 2.39.5
 

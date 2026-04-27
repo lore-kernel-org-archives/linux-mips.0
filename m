@@ -1,111 +1,126 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091D33C3BED;
-	Mon, 27 Apr 2026 14:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF7A2F9D82
+	for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2026 15:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777299244; cv=none; b=PCQkjFL8CF9NjNHumFo1x5tLJ2zZLoAiCCryCelZsxpkPtPi03yU3PfjffKU/TAK8R4+QxGbS0IpE64pNvoe8zpyIcE4OlIyxNJgycNsGCUs7b02+rRimVG5P9YxGAQUibWyyWiBPAqwxecEXH04OJZhtRZW4CskmLSc3bUWamA=
+	t=1777305273; cv=none; b=SaPWi7rvyLcLYar/32JFO97ccNHqmTvr+tS+On8Rwa9GXxA6mEDF/bDfQnEzlty77AFQNiAJLW4SN6rcHyoTqSo/+92d2ygqah7cQrjteVntRCDOSkljj6y+JFRaHNUZh+fpAXf9je84YDAtnnS0uE7s6Y7W80eCulspWDBjjxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777299244; c=relaxed/simple;
-	bh=bMEAfV/9DleZOO02PXeqD9OGwfV45rNtxoathPc2c9Q=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tuQbqyLIhaTtf6ehN9GJjOdQ4FRnb7deEBENhjsuw1d7zmgD8NvUeHxMI7ucR8uU2ZyNZFTgZFEARy3UReWPgCQCA4k9CH2CjC+JRUo8z3+bIuVVR/UIsybyuUvQJlxhXzhXpmxAKHNZgh8zGluYAuYyJ6Jo8llzbPwPW4RQlPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 3B5CE92009D; Mon, 27 Apr 2026 16:13:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 2D62792009C;
-	Mon, 27 Apr 2026 15:13:55 +0100 (BST)
-Date: Mon, 27 Apr 2026 15:13:55 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Jiri Slaby <jirislaby@kernel.org>, 
-    Elena Reshetova <elena.reshetova@intel.com>, 
-    David Windsor <dwindsor@gmail.com>, Kees Cook <kees@kernel.org>, 
-    Hans Liljestrand <ishkamiel@gmail.com>, linux-mips@vger.kernel.org, 
-    linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] Revert "drivers: convert sbd_duart.map_guard from
- atomic_t to refcount_t"
-In-Reply-To: <2026042630-diaphragm-reactor-7cfe@gregkh>
-Message-ID: <alpine.DEB.2.21.2604271435070.28583@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2604130239560.29980@angie.orcam.me.uk> <alpine.DEB.2.21.2604130416440.29980@angie.orcam.me.uk> <2026042630-diaphragm-reactor-7cfe@gregkh>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1777305273; c=relaxed/simple;
+	bh=QYIETYCuf4XH2n8d+qC4biDZlEAIskUJbYZoYf67LHQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u0WCHbA67qRuxsYolqgJ+ZpNDLHgofhCQMKN98UEDKv0r1OMbXatjUZUcxOVQ+yZ1AIK7zGndas4UUjbTEkLfF40jRNGiAucozu8vzIPJCzOvwUopSVY0y+WHRJk2ypn+9s3jFWM/mo7zPK5atosbSwl2sBb9NUgGvAGUeo8zF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dONV+fGE; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dONV+fGE"
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-35fbca04006so5211043a91.1
+        for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2026 08:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777305271; x=1777910071; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tuu1s9tU3uSim9SJGKXaRXNcFSL5VnoinNEq7EZdSCo=;
+        b=dONV+fGEr0l8w8EifgcREw/4qH8wLk/MWXCfdSOxCmS61yP4qCIPXHgV96EXIcwWWn
+         rExIOmvr7Xvvtlkt4mMPOUn10n9QH9EVBDBKN3KfW/zG7xmDul0YRIjZCF7GyodjCCvJ
+         y3XKUA9O3ME5nwdot2A9rbgMUHOa0Lg7P7a+l7yh8et9HERDZSOgQ8HSFtDiDjWJ2Q+z
+         8loBZ+Zcz4de14EW+zE3Wtv1fPXRV8OUn//2qEG8nNYyIbfklXhmnk20BEczYT33CBF4
+         9HsEOnMxcfQ4TIj2ISLdObCAfa6+B/nabrvjepP/tEigEXJDSUHl5g6l3GaErq+hvDYa
+         KcNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777305271; x=1777910071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tuu1s9tU3uSim9SJGKXaRXNcFSL5VnoinNEq7EZdSCo=;
+        b=QuT5T+uAPuN3TjqhxSuRErBO6LiwYLmO9ywhqWRufqvw0Du7Pi7dvyCseCQq67enrk
+         aueemWWPOjYOyktZ9dRWsL97d//HJQhqhT7YjbYQ1Wpe1Q3uHWr9PqwIz9uDHdJwmOuG
+         wmGz0pdLNPbNj3/smW7oT0yocH/6isiNbmYVUkcJUxtBsWKHr9s53z7tWIVBCO+tWqqG
+         3BcOo6HmAUagCiALBTzeLqkeF7f+7BaPON8KfLkW6OBZRQRASHXhr+F04U8ohx2XioR9
+         A4xu18Qngr1R08piMjpe5NC3JlJCjs+OfuxmA6Y4kMWFHLfBhOH7Q3b0NktKYlT8+m1S
+         yAjg==
+X-Gm-Message-State: AOJu0YxvATm3kyUeErFoJDq8I+K20I6vg8NvPciS5tnzWir5bypCBWnk
+	uXNo5OvykgHlYM2nqkbHtIN+fwc1GwbEgEaVQwVkoZ4FQo+txNSSy1yR
+X-Gm-Gg: AeBDiesD7UAgpfvPrZXppD6AMvj+b1U+gdw3XplCPviCI8sUs6rxuJ+UuiRkbts+xQL
+	/jkrbGwVJsJDQltpf+TrHHo9AQkrmkTqgjLIYwLgO0qGNx6lt5+Mj432vC1aE3F6qXR6kjnGJHz
+	arigXxKdssElZod43aTDo2oIs2LXirJQ2tcm22+CNABWjLJuay1vb6m3xNDLdIjTSApbe9JTcjP
+	iOoQ6OYm71tUan/WImlIjHNmKdaiAU2hs0hZ0DVhlr7XBhxTOa6LwpoK+CRmzhqaEav7qFnD7OF
+	k6UnLoZEDXWKJk8mbmc1gN+gpikFSG+VWyp0kLw75G1CAtfRqRtPrhKibnBmPdl4iWzgSFTllfD
+	IYmjIpM8OzaYHwDue9LUilvYixHjt2FOhAUrtyzmTJdCQkXmFHRm4TcX3POcrrB/X2JfWh8I02y
+	8xZcY9+flqZ2onE1KVxCj+m2NZD7R7cnDXQ4jWI1g5
+X-Received: by 2002:a17:90a:dfce:b0:364:78a5:8d39 with SMTP id 98e67ed59e1d1-36478a58eb6mr5217870a91.20.1777305271444;
+        Mon, 27 Apr 2026 08:54:31 -0700 (PDT)
+Received: from localhost (vps-e1cc9378.vps.ovh.us. [2604:2dc0:202:300::1365])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c797702fbfcsm25138982a12.22.2026.04.27.08.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2026 08:54:31 -0700 (PDT)
+From: Eric Wu <kunjinkao.jp@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-mips@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Eric Wu <kunjinkao.jp@gmail.com>
+Subject: [PATCH 0/7] staging: octeon: remove typedefs for enums and structs
+Date: Mon, 27 Apr 2026 23:54:20 +0800
+Message-ID: <20260427155427.668540-1-kunjinkao.jp@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Sun, 26 Apr 2026, Greg Kroah-Hartman wrote:
+The staging octeon driver's TODO list includes "general code review and
+clean up". This series addresses that by removing unnecessary typedefs
+for enums and structs, converting them to plain types as required by the
+Linux kernel coding style (Documentation/process/coding-style.rst,
+section 5).
 
-> > Revert commit 22a33651a56f ("drivers: convert sbd_duart.map_guard from
-> > atomic_t to refcount_t"), which broke perfectly valid code:
-> > 
-> >   ------------[ cut here ]------------
-> >   WARNING: CPU: 1 PID: 1 at lib/refcount.c:114 sbd_request_port+0x54/0x140
-> >   refcount_t: increment on 0; use-after-free.
-> >   CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.11.0-rc2+ #34
-> >   Stack : 0000000014001fe0 0000000000000000 ffffffff80830000 0000000000000000
-> >           ffffffff8127bc7a ffffffff8016fe08 ffffffff808d0000 ffffffff808d0000
-> >           ffffffff807aa828 ffffffff80822337 ffffffff808ce188 a8000001860b0000
-> >           0000000000000001 0000000000000001 00000000000001c8 ffffffff808a3090
-> >           00000000000000bb ffffffff801b09d4 a80000018609bb68 ffffffff801231cc
-> >           ffffffff812a0000 ffffffff80171388 0000000000001000 ffffffff807aa828
-> >           0000000000000001 0000000000000001 0000000000000000 0000000000000000
-> >           0000000000000000 a80000018609bab0 0000000000000000 ffffffff803c47cc
-> >           0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> >           ffffffff807cb648 ffffffff8010bff8 0000000014001fe1 ffffffff803c47cc
-> >           ...
-> >   Call Trace:
-> >   [<ffffffff8010bff8>] show_stack+0x28/0x88
-> >   [<ffffffff803c47cc>] dump_stack+0x8c/0xc0
-> >   [<ffffffff801aff5c>] __warn+0xe0/0x114
-> >   [<ffffffff801233f0>] warn_slowpath_fmt+0x40/0x50
-> >   [<ffffffff80455bcc>] sbd_request_port+0x54/0x140
-> >   [<ffffffff804563a4>] sbd_config_port+0x2c/0x68
-> >   ---[ end trace f666d696412caa3e ]---
-> > 
-> > (report at the offending commit) -- sbd_request_port() is called twice
-> > per DUART instance, to reserve a resource holding the control register
-> > block shared between the two channels, so there's no slightest chance
-> > for an overflow.  Also this doesn't stop the driver from working and
-> > it's just the reservation that is missing as a result, i.e.:
-> > 
-> > 10060100-100601ff : sb1250-duart
-> > 10060200-100602ff : sb1250-duart
-> > 
-> > as from the offending change, vs:
-> > 
-> > 10060100-100601ff : sb1250-duart
-> > 10060200-100602ff : sb1250-duart
-> > 10060300-100603ff : sb1250-duart
-> > 
-> > beforehand, which is surely why the breakage has gone so long unnoticed.
-> > 
-> > "If it ain't broke, don't fix it," so just revert the broken commit.
-> 
-> How about fix this up to work properly with a refcount?  having "open
-> coded" atomic variables like this is ripe for problems, like it seems
-> this driver is abusing.
+All typedefs ending in _t have been removed from the staging driver
+stubs (drivers/staging/octeon/octeon-stubs.h) and correspondingly updated
+in the arch/mips/ implementation headers and source files.
 
- Clearly refcount has odd semantics for this use case, as the failed 
-attempt to "fix" this code has shown.
+The series converts:
+- 5 enum typedefs to plain enums:
+  cvmx_spi_mode_t, cvmx_helper_interface_mode_t, cvmx_pow_wait_t,
+  cvmx_pko_lock_t, cvmx_pko_status_t
+- 2 struct typedefs to plain structs:
+  cvmx_pko_port_status_t, cvmx_pip_port_status_t
 
- The natural values for `map_guard' are 0 and 1 (FALSE and TRUE), for the 
-resource not taken and taken respectively, however refcount code complains 
-about this arrangement as indicated by the report quoted.
+No functional change intended. All patches have been compile-tested
+for both MIPS (cavium_octeon_defconfig) and x86_64 (with
+CONFIG_STAGING=y, CONFIG_OCTEON_ETHERNET=y, CONFIG_COMPILE_TEST=y).
 
- I suppose I can bend backwards and adopt other values, which I'll have to 
-figure out from the API somehow, but it's not clear to me how it would 
-cause less confusion than original straightforward code, the whole point 
-of which is to prevent the resource from being requested again for the 
-second port in a DUART.
+Eric Wu (7):
+  staging: octeon: convert cvmx_spi_mode_t from typedef to plain enum
+  staging: octeon: convert cvmx_helper_interface_mode_t from typedef to
+    plain enum
+  staging: octeon: convert cvmx_pow_wait_t from typedef to plain enum
+  staging: octeon: convert cvmx_pko_lock_t from typedef to plain enum
+  staging: octeon: convert cvmx_pko_status_t from typedef to plain enum
+  staging: octeon: convert cvmx_pko_port_status_t from typedef to plain
+    struct
+  staging: octeon: convert cvmx_pip_port_status_t from typedef to plain
+    struct
 
- Or I could use an ordinary variable, possibly of the `bool' type, guarded 
-by a spinlock, but that would be even more of an overkill IMO.
+ .../executive/cvmx-helper-util.c              |  2 +-
+ .../cavium-octeon/executive/cvmx-helper.c     |  8 ++--
+ arch/mips/cavium-octeon/executive/cvmx-pko.c  |  6 +--
+ arch/mips/cavium-octeon/executive/cvmx-spi.c  | 16 +++----
+ .../include/asm/octeon/cvmx-helper-util.h     |  2 +-
+ arch/mips/include/asm/octeon/cvmx-helper.h    |  6 +--
+ arch/mips/include/asm/octeon/cvmx-pip.h       |  6 +--
+ arch/mips/include/asm/octeon/cvmx-pko.h       | 26 +++++-----
+ arch/mips/include/asm/octeon/cvmx-pow.h       | 12 ++---
+ arch/mips/include/asm/octeon/cvmx-spi.h       | 38 +++++++--------
+ drivers/staging/octeon/ethernet.c             |  6 +--
+ drivers/staging/octeon/octeon-stubs.h         | 48 +++++++++----------
+ 12 files changed, 88 insertions(+), 88 deletions(-)
 
-  Maciej
+-- 
+2.43.0
+

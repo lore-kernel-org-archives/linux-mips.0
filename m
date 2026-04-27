@@ -1,38 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05B178F2E;
-	Sun, 26 Apr 2026 00:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F3921257F;
+	Mon, 27 Apr 2026 00:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777161815; cv=none; b=XoIELjK7HrGmSIcSyQ96vSZlXWH9qFmOS8IFXKYAZ/xplcayiHa1sU6OCqWxGWzIDAL+EIEjPeGMnBNjcySYhCWydA9tBGuRT4ZtDZv2Jwi92fXC1owsqyw8/4u4PWyXLdo6YbF6Vc/95eUvlaraYxzjOTB0KHNXzFr/h1RRYC0=
+	t=1777250261; cv=none; b=XUgJT38dJJ+82r1goTF+4Xxq4frXyoXJSp3M4+OtR2Z0A9o4E4wWaqJVNrFDHKnphMKKeQ5cilRnErs/jSWF+a1l2c8uMi/Mkuh8di2KPxSeN8odLceST14Xk+aiX4QuTm+DM1Ps7tZaM2k5toVG1aiSRLfshSsiIobvyGsJ9Xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777161815; c=relaxed/simple;
-	bh=y+tMLWqGW1hDKiWksJbV6BV5c3/YKYX45JSb3CIVaIw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rg3sVCHqNTnK6XGXx8vawdKFeG5GxEz2jWLuY1f0O231Ox2ejF70OiDgnWHsNdIlHHbd3ab0HKWGDBHF8w9/DvXeFQZeZYAoy1/+V05rStIOg0c+ZKxAGfD/+8CusFDVs8SRNV+wemUOUsWHYwmeoWQZ4tG+rVa4TtKqLlVOa00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gt71I/af; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777250261; c=relaxed/simple;
+	bh=/KQyIIXxBANDbJVbULlbyLCLd8t/G3HnMy/6KaTpJyo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ewf2VnwWykc3txzGyP8C0gDbKJr89hQJzL+RvfTH6l/RDd1C3/WYTaAdJLm280RYLhiy/xF1NMNrQx50cOu62+6BX5cbks4uoFDUJGYXAezDR0lqLpoIHKYwN0YlbIXFrmwWYEEKo5hITnZlnlQG7KEb35JG1ylGUiwSEzzB/Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FJk7is+H; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gt71I/af"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA32C2BCB2;
-	Sun, 26 Apr 2026 00:03:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FJk7is+H"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 406E3C2BCAF;
+	Mon, 27 Apr 2026 00:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777161814;
-	bh=y+tMLWqGW1hDKiWksJbV6BV5c3/YKYX45JSb3CIVaIw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gt71I/af4qkHfWGIcvquSPat9dGKjQBl8nv4UAqFoI2pekgEbjVQOlUuIcqHgohVG
-	 jcsTradO9lh3A0VBIE+T99YcddNRVKCHu4MprzZcX9sRvThBVpLUBWAAhRmvn+PUus
-	 vzCbBXffeZmnWKC/YMb3gaFtu0nlNkaf6g18CurIS+VbyHWG+mv3+q2Cvil3us3i+i
-	 ivQmQedVe3bSsoPCBFhQE/iQXn1T6slhaMjAjuWTXfxduHEB57LSmVJlDAnVEDY7kf
-	 BPS5z6V9MbDi+7xuxm+HGJiViXu6kaodxchJkKmfMwXLsaI6gzUXbXbfjfmIfox5Cw
-	 5S87HjbxpkZjA==
-From: Sasha Levin <sashal@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: mobileye: Remove duplicate FIT_IMAGE_FDT_EPM5 from main Kconfig
-Date: Sat, 25 Apr 2026 20:03:32 -0400
-Message-ID: <20260426000332.56177-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
+	s=k20201202; t=1777250261;
+	bh=/KQyIIXxBANDbJVbULlbyLCLd8t/G3HnMy/6KaTpJyo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=FJk7is+Hy5OEaY3cjP+TfeQwamOc2VwogBDAIxZ6TLjWHWxV8gH6fwuHp/PoxRk2o
+	 oi2tIu9jDq9Jdq3ufB6mAx61Z8FkICyEXZ/lO31S38fUgQN4cbtQmLVhXhcaX6/iM+
+	 IYBbWSWoOUQtVg9Jg8Aa23MXfOA2RDhAPpnmY+A0J5lEZA9Fa+PDIM8n9pWiMEmO97
+	 BQzoIUM8aN6wXZCYhBaoRzEPVIccJ3G7xdcrdnN1dQplAFc7fYwz6i9ME2VIqvrtti
+	 V5DlYGI3OnZIrysDCAa8OJDUlXkLM/wE1BHbCnTf8MbKXVzq2Af3ntEnfcNWt3RRHD
+	 FZ55/2fAgDeug==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA06A38119E5;
+	Mon, 27 Apr 2026 00:37:00 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,59 +37,51 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-deletions v2] net: remove unused ATM protocols and
+ legacy
+ ATM device drivers
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177725021958.2839245.12173011555079376914.git-patchwork-notify@kernel.org>
+Date: Mon, 27 Apr 2026 00:36:59 +0000
+References: <20260422041846.2035118-1-kuba@kernel.org>
+In-Reply-To: <20260422041846.2035118-1-kuba@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org, corbet@lwn.net,
+ skhan@linuxfoundation.org, linux@armlinux.org.uk, tsbogend@alpha.franken.de,
+ maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
+ chleroy@kernel.org, 3chas3@gmail.com, razor@blackwall.org, idosch@nvidia.com,
+ jani.nikula@intel.com, mchehab+huawei@kernel.org, tytso@mit.edu,
+ herbert@gondor.apana.org.au, geert@linux-m68k.org, ebiggers@kernel.org,
+ johannes.berg@intel.com, jonathan.cameron@huawei.com, kees@kernel.org,
+ kuniyu@google.com, fourier.thomas@gmail.com, andriy.shevchenko@intel.com,
+ rdunlap@infradead.org, akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ bridge@lists.linux.dev, dwmw2@infradead.org
 
-kconfiglint reports:
+Hello:
 
-  K008: config FIT_IMAGE_FDT_EPM5 has prompts in 2 separate definitions
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The FIT_IMAGE_FDT_EPM5 Kconfig symbol is defined identically in two places:
+On Tue, 21 Apr 2026 21:18:44 -0700 you wrote:
+> Remove the ATM protocol modules and PCI/SBUS ATM device drivers
+> that are no longer in active use.
+> 
+> The ATM core protocol stack, PPPoATM, BR2684, and USB DSL modem
+> drivers (drivers/usb/atm/) are retained in-tree to maintain PPP
+> over ATM (PPPoA) and PPPoE-over-BR2684 support for DSL connections.
+> 
+> [...]
 
-  arch/mips/Kconfig:1052
-  arch/mips/mobileye/Kconfig:17
+Here is the summary with links:
+  - [net-deletions,v2] net: remove unused ATM protocols and legacy ATM device drivers
+    https://git.kernel.org/netdev/net/c/6deb53595092
 
-Both have the same prompt, depends, default, and help text. Since
-arch/mips/mobileye/Kconfig is sourced from arch/mips/Kconfig, both
-definitions are parsed and the symbol ends up with two prompts.
-
-The symbol was first introduced in commit 101bd58fde10 ("MIPS: Add
-support for Mobileye EyeQ5") directly in
-arch/mips/Kconfig. Three months later, commit fbe0fae601b7 ("MIPS:
-mobileye: Add EyeQ6H support") created the
-arch/mips/mobileye/Kconfig sub-file to organize the growing Mobileye
-platform code and added the MACH_EYEQ5/MACH_EYEQ6H choice along with
-a copy of FIT_IMAGE_FDT_EPM5. However, the original definition in
-arch/mips/Kconfig was not removed at that time, leaving a duplicate.
-
-Remove the definition from arch/mips/Kconfig, keeping the one in
-arch/mips/mobileye/Kconfig where it belongs alongside the related
-MACH_EYEQ5 machine type definition that it depends on.
-
-Assisted-by: Claude:claude-opus-4-6 kconfiglint
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/Kconfig | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 4364f3dba688f..1cd8fc9033876 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1049,15 +1049,6 @@ config CAVIUM_OCTEON_SOC
- 
- endchoice
- 
--config FIT_IMAGE_FDT_EPM5
--	bool "Include FDT for Mobileye EyeQ5 development platforms"
--	depends on MACH_EYEQ5
--	default n
--	help
--	  Enable this to include the FDT for the EyeQ5 development platforms
--	  from Mobileye in the FIT kernel image.
--	  This requires u-boot on the platform.
--
- source "arch/mips/alchemy/Kconfig"
- source "arch/mips/ath25/Kconfig"
- source "arch/mips/ath79/Kconfig"
+You are awesome, thank you!
 -- 
-2.53.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 

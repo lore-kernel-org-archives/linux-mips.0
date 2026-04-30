@@ -1,43 +1,42 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E708120E334;
-	Thu, 30 Apr 2026 15:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFB03F9F22;
+	Thu, 30 Apr 2026 16:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777563243; cv=none; b=dDbEoJ95MsQsfXTQQhl7GFVvADVH2UesY/1fjzUGjPklo9WqYc9OIA7S+B2wXpzeI4TvW3BJBWKSy9ESWoUijsoankUMY3TNrGHtV18D7l5wAGeMMyasvZQB54O5ieK885G47NWH0QnYAZ8vItFdhbdNa4kva+V6VKuphFp3JxI=
+	t=1777567328; cv=none; b=NnDXDkLlRjBXH2URoC21oFMyw5tWAihJet0jLxb52Lf96+hna3tnpkxZ9eCm0k11IAwKgqZjDcwJ67qMVLE9TbSLEVA9eEbo2lxrHndC5x2GrdpX4FpeLWKkUO2KvicvjZ7xpWOOMBevYgaomu+uREp/++yPm5OsmLjMP8odQgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777563243; c=relaxed/simple;
-	bh=751QAqK4aOm3hsprG5JXhBWVnKICFIp3TJ0K+M+IEt8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RzEHQcbk8yKXCbMbtPHlzV4QqU28VqjxtJjUGWoIb9fkHhFg8w5XX772VdwoNcI1ZcCUOfPnamVNH2ZrEfZ3H1RmVT83k4ptEBKMHyTUHmHuScY1hOPiUET7Gwc+17soGJItRbDmA2/N2n390E5aGK+LA0XaUrEMXqsa+pvBVOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42CE2C4AF0B;
-	Thu, 30 Apr 2026 15:33:59 +0000 (UTC)
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Linus Walleij <linusw@kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Sean Wang <sean.wang@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
+	s=arc-20240116; t=1777567328; c=relaxed/simple;
+	bh=IUfPWF7dOPNJutwKP7Grq3wqHZLTELZZX0Xl8dXRywg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=O0aGyoXCP1LjJq5auRfwdRt+VFgTLeai+alag7xMedcxvKgc6EkeRDy7Zmu0qPHGod/291kMnmegbmEYMIIfQiGYtnHLYURNPwdCmGgx2URfN/bsOvVZukRx8OnB2wfuwADrfDjqtau9FI9NyY6gbM0jPIsDlmosS5om38zzENk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=KL7w+b97; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="KL7w+b97"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EAFDB273AE1;
+	Thu, 30 Apr 2026 18:41:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1777567321; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=B2/9kt2XJKLSu5SuJVTvOoK1lMQlmWFZxpZr7YOvClo=;
+	b=KL7w+b97uxdQYCswXIykC4A3VZCEenhVQ4sLM62A+PZJF5CCKCBJNKK1+tmiz1romvVvod
+	GGgL8Hcy8gJ7g3XxYsZSjulPDg0XY9FmMdmpMS/rD35C1OOTELed6EtM+I74JyXO5veVYG
+	3chpw9pcNpSdP7GQwqbccswHEeGnwz56jy1FTsJoYoMhhTEsQZr1yWlffjFowoLMhdEpH7
+	ofIKONvW6mgSIGQA65dSccsmI9xDrhWxS5udq67mcJYQilnBzt2Qdgk3SVlmY07JFk0LXr
+	g56TPd/Ux9YildaYFMtyYTtrM8pUteZYsWp8QWP8C5fOq1DUTywsg+SpMnZXuQ==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: tglx@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-omap@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 7/7] pinctrl: single: Fix type in .pin_config_group_get() callback
-Date: Thu, 30 Apr 2026 17:33:18 +0200
-Message-ID: <72df69f272aa302059c470e0680a9c70985aaf36.1777562725.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1777562725.git.geert+renesas@glider.be>
-References: <cover.1777562725.git.geert+renesas@glider.be>
+	devicetree@vger.kernel.org,
+	Caleb James DeLisle <cjd@cjdns.fr>
+Subject: [PATCH v3 0/2] irqchip/econet-en751221: Support MIPS 34Kc VEIC mode
+Date: Thu, 30 Apr 2026 16:41:55 +0000
+Message-Id: <20260430164157.6026-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -45,31 +44,56 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On 64-bit platforms, "unsigned long" is 64-bit.  Hence checking if all
-"unsigned long" configuration values are equal should be done using an
-"unsigned long" temporary.
+MIPS 34Kc and 1004Kc have a Vectored External Interrupt mode, where
+CPU interrupts are re-routed to the external interrupt controller,
+which prioritizes them, renumbers them, and integrates them with its
+own, creating a flat interrupt table.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/pinctrl/pinctrl-single.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This bypasses the CPU interrupt controller entirely, which is not ideal
+for modern Linux which formalizes the interrupt hierarchy. The 1004Kc
+standardized the interrupt controller (MIPS_GIC) so it can be viewed as
+"part of the CPU" and it's tolerable for it to be more closely coupled
+to arch/mips/* than a typical interrupt controller driver.
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 7e022a46ee422dc1..4d5f85b7e6bbe2b0 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -619,8 +619,9 @@ static int pcs_pinconf_set(struct pinctrl_dev *pctldev,
- static int pcs_pinconf_group_get(struct pinctrl_dev *pctldev,
- 				unsigned group, unsigned long *config)
- {
-+	unsigned long old = 0;
- 	const unsigned *pins;
--	unsigned npins, old = 0;
-+	unsigned npins;
- 	int i, ret;
- 
- 	ret = pinctrl_generic_get_group_pins(pctldev, group, &pins, &npins);
+The 34Kc supports VEIC mode, but the interrupt controller is not
+standardized, so it's different per-SoC. This creates a challenge of
+writing a reasonably modular driver, given hardware that actually does
+take over the interrupt hierarchy.
+
+Ordinarily we wouldn't bother with VEIC on the 34Kc but it is required
+for MIPS_MT_SMP, so without it you get a single thread processor. The
+only other 34Kc device which has an in-tree DTS file is
+realtek,rtl9302-soc, in OpenWrt there is this, realtek,rtl839x-soc, and
+lantiq,xway. Of these, the realtek,rtl839x-soc has multi-thread support
+via an out-of-tree patch to its interrupt controller, and the lantiq
+is not 34Kc compliant in that it lacks the VEIC cpu flag, causing linux
+to fall back on legacy interrupts despite CPU_MIPSR2_IRQ_EI being set.
+
+This patchset aims to tackle this challenge in a way that is most
+likely generalizable to other 34Kc interrupt controllers which are
+facing the same problem.
+
+Changes from v2:
+* Fix goofup that changes were not actually in the patch...
+* v2: https://lore.kernel.org/linux-mips/20260430150809.1827881-1-cjd@cjdns.fr/
+
+Changes from v1:
+* Address notes from Thomas Gleixner (Thank you very much!)
+* Additional info in cover letter regarding lantiq,xway
+* v1: https://lore.kernel.org/linux-mips/20260425123531.270548-1-cjd@cjdns.fr/
+
+Caleb James DeLisle (2):
+  dt-bindings: interrupt-controller: econet: Add CPU interrupt mapping
+  irqchip/econet-en751221: Support MIPS 34Kc VEIC mode
+
+ .../econet,en751221-intc.yaml                 |  20 ++
+ drivers/irqchip/irq-econet-en751221.c         | 187 +++++++++++++++++-
+ 2 files changed, 199 insertions(+), 8 deletions(-)
+
+
+base-commit: e8be82c2d77ec1bb0148406e54b105028a83537e
 -- 
-2.43.0
+2.39.5
 

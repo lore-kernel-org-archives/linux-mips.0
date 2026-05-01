@@ -1,28 +1,31 @@
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEEC3603FC;
-	Fri,  1 May 2026 23:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1DF36EA8D;
+	Fri,  1 May 2026 23:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777677270; cv=none; b=BINWeJWwLeQ/DAvoqpfZI1Ma6SqhU0TO3zae4ZghRUUizE63/0VrGgfikD29I3rnZ7CVmY+vcJa7R/6rk67QLzVZF7f+Uy/3F1IBCZ8v2dZYFpm7NM2K2QZPqds/BfLtomTFXm9Y+OmZcf0T0BmtPRBODyIJHfTibisWxvpSe+s=
+	t=1777677282; cv=none; b=tyVESJFnavXw7UdWb6QZk6+DFlUXOVaEmj+37rIfm8Dr72fZJt5FuQfoup/d3MJZaesVkM4VelMPbmb549YC3P+bW0j4WCTFCzt3RtRkVEAl7tYfKItJtP8qEkJS10LJ7AtTSx7NPFxAiTrs3HHZFjkFVPJI5Az2GsSlgJzHg2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777677270; c=relaxed/simple;
-	bh=tCWOcQ533B7x5m/vluI5paFFtXWAJfoAerA609/jWnI=;
-	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZI04DP+6/JYtVjh65vfOad45hj0BlgBc+DB9bV6jPtQ9fGDz0fLDoiN2uy6Fdo7Yo3hbV51jIdVPNuJvhCqoxWcwgXxKeuTKU1JHRQnNRN26mirpU731Q85+zZCpoSQWn2lRcYD30RyugA3NRuyA2IyLfOn2OwmayYBz73NDq4Y=
+	s=arc-20240116; t=1777677282; c=relaxed/simple;
+	bh=P0wIicz74vK7GNVE9XaFK9JgLygQDW0ZYAp42XZf0lA=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=HPR0RS9WGHUFCrK6mBsEy7/CN6E/AdxmKiLt0VrVxlCrXyo9OU6an0JXimWb2XF53+86fQQIIZj3vATxxtfZ/2GtULsSni+QjKUWLdACtt4lP3hprJWu+nV7cFItlM7PXtexiS/PVXi6NUywO51izTtgwOlQe5VDq4QFqDpSQa8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id E83CA92009D; Sat,  2 May 2026 01:14:20 +0200 (CEST)
+	id 91EB492009D; Sat,  2 May 2026 01:14:39 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id E511992009C;
-	Sat,  2 May 2026 00:14:20 +0100 (BST)
-Date: Sat, 2 May 2026 00:14:20 +0100 (BST)
+	by angie.orcam.me.uk (Postfix) with ESMTP id 8ACF592009C;
+	Sat,  2 May 2026 00:14:39 +0100 (BST)
+Date: Sat, 2 May 2026 00:14:39 +0100 (BST)
 From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Fix big-endian stack argument fetching in o32
- wrapper
-Message-ID: <alpine.DEB.2.21.2604302350440.38805@angie.orcam.me.uk>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>
+cc: linux-mips@vger.kernel.org, linux-serial@vger.kernel.org, 
+    linux-serial@vger.kernel.org
+Subject: [PATCH v2 00/10] MIPS: DEC: Fix serial device regressions + RTC
+ cleanup
+Message-ID: <alpine.DEB.2.21.2604302336260.38805@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -32,51 +35,60 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 
-Fix an issue in call_o32() where the upper 32-bit half of incoming n64 
-stack arguments is fetched and used for outgoing o32 stack arguments on 
-big-endian platforms.
+Hi,
 
-This code was adapted from arch/mips/dec/prom/call_o32.S which was meant 
-for a little-endian platform only and therefore using 32-bit loads from 
-64-bit stack slot locations holding incoming stack arguments resulted in 
-correct values being retrieved for data that is expected to be 32-bit.  
+ This is v2 of the series, addressing fallout for 64-bit configurations 
+where the initial console ouutput handler that uses calls into 32-bit 
+firmware has to ensure no register input including the stack pointer is 
+outside the 32-bit range, now that the handler is now also called from 
+kernel threads other beyond the initial one.
 
-This works on little-endian platforms where the lower 32-bit half of the 
-64-bit value is located at every 64-bit stack slot location.  However on 
-big-endian platforms the lower 32-bit half is instead located at offset 
-4 from every 64-bit stack slot location.
+ Two extra introductory changes, 01/10 and 02/10 have now been added to 
+platform code.  No modification has been made to original changes.  The 
+original description follows, updated for patch renumbering.
 
-So to fix the issue the offset of 4 would have to be used on big-endian 
-platforms only, or alternatively a 64-bit load from the 64-bit stack 
-slot location can be used across the board, as the subsequent 32-bit 
-store to the corresponding outgoing stack argument slot will correctly 
-truncate the value and cause no unpredictable result.  We already take 
-advantage of this architectural feature for the incoming arguments held 
-in $a6 and $a7 registers, since the o32 wrapper does not know how many 
-incoming arguments there are and consequently propagates incoming data 
-which may not be 32-bit.
+ Starting from commit 84a9582fd203 ("serial: core: Start managing serial 
+controllers to enable runtime PM") drivers for serial devices used with 
+the DEC platform have stopped working due to a null pointer dereference in 
+the serial core, which means a kernel crash at bootstrap if the relevant 
+driver has been enabled, as is usually the case for the system console.
 
-Since this code is generally supposed to be used with the stack located 
-in cached memory there is no extra overhead expected for 64-bit loads as 
-opposed to 32-bit ones, so pick this variant for code simplicity.
+ This patch series addresses the issue by switching the drivers away from 
+legacy probing to using platform devices.  A notable consequence of this 
+is the serial console is only switched from the bootconsole handler that 
+uses firmware calls over to our serial driver at the time the driver is 
+being properly brought up.  This causes messages to be produced to the 
+console between the device reset and console setup, which in turn causes 
+the firmware still being called via the bootconsole handler to loop 
+forever owing to the transmitter having been disabled.
 
-Fixes: 231a35d37293 ("[MIPS] RM: Collected changes")
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- arch/mips/fw/lib/call_o32.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Both drivers are affected and therefore introductory changes 04/10 and 
+05/10 are included to fix the issue by doing a rudimentary device setup 
+right after reset, using parameters compatible with those used by the 
+firmware (9600n8).  There are auxiliary changes 03/10 and 06/10 included 
+as well, that respectively prevent a message corruption regression from 
+happening at reset due to the change in timing of messages produced to the 
+console with the dz driver switch to the platform device, and simplify 
+reset handling in the zs driver by issuing a channel rather hardware 
+reset.  Then 07/10 and 08/10 actually switch the respective drivers to use 
+platform devices.
 
-linux-mips-call-o32-endian.diff
-Index: linux-macro/arch/mips/fw/lib/call_o32.S
-===================================================================
---- linux-macro.orig/arch/mips/fw/lib/call_o32.S
-+++ linux-macro/arch/mips/fw/lib/call_o32.S
-@@ -74,7 +74,7 @@ NESTED(call_o32, O32_FRAMESZ, ra)
- 		PTR_LA		t1,6*O32_SZREG(fp)
- 		li		t2,O32_ARGC-6
- 1:
--		lw		t3,(t0)
-+		ld		t3,(t0)
- 		REG_ADDU	t0,SZREG
- 		sw		t3,(t1)
- 		REG_SUBU	t2,1
+ A tiny update follows, 09/10, that enables modular build for the dz 
+driver, not to be backported as not a bug fix.
+
+ Finally 10/10 is a small cleanup for the existing RTC device, included in 
+the series and then last only, due to a mechanical dependency and neither 
+for backporting, as it only addresses a code quality issue for a failure 
+scenario that is not expected to trigger in reality.
+
+ See individual change descriptions for details.  Verified with a 5000/200 
+machine for the dz driver, and with 5000/150 and 5000/260 systems for the 
+zs driver.
+
+ Please apply.
+
+ Previous iterations:
+
+- v1 at: <https://lore.kernel.org/r/alpine.DEB.2.21.2604102250060.29980@angie.orcam.me.uk/>.
+
+  Maciej

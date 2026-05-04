@@ -1,29 +1,29 @@
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8DD286D57;
-	Mon,  4 May 2026 20:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF282F2914;
+	Mon,  4 May 2026 20:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777925643; cv=none; b=kSZ5hZwpkDroq78J9BeLpicZgIpEfqMe/26TWwzAH69LOIayufyqD9Ih6ajiqhoAMlao7afgKFkSBL6ujrg2zW+KXTTWDQ8hRVtOfzTtf9E3Ft/k2JzSeY8H7Lo4GTm8Ie2CQaSBqQxR6GwauYCt7bhdahjqRA6ijQf8yWHtP5U=
+	t=1777925651; cv=none; b=nL5dnppqqQUSI+7D32kZ34xhtQVuPOGGYIcjdCXRBU2vwVVRkMTGoNqMCOKf0S5OSpo1YlX5YJstwfI6iANzxBSJjemInkC+s18j7SouF+VD+dA/+lXCl++JJ1Lw3WC6SLUiyiX96KST7c3dErUtwG8U//oBPdCZryVDtzrdRQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777925643; c=relaxed/simple;
-	bh=BAnEYV6ua/2XNaJoeYD8lJHsuofJXEJOWqZqAEm546U=;
+	s=arc-20240116; t=1777925651; c=relaxed/simple;
+	bh=PRF5+fkdwIX87mEmUjo1mOwLXCyKvFfzttbdMHJLXQc=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=cjI1Q2zUP6kPGKifUvIhfPHSea3jQiLeoC3uPWBXs7aHlOfWB7D9d3ViApKQYyzVvbN0k1SySwU8sBFqKSxxjG06yMJlgOcib9P/9aSsIiY/ko55/rgFXqbSGvTFLMVXG5lbiPbziyuPGtg4J9CK2LY1fdu+U2EHK5GuG/ZrUZM=
+	 MIME-Version:Content-Type; b=TMKSzY6IhV4o8qqKofZW4xg2y1yVgLlyQjKl7RDvSzI2JWW3zDzKrG2S4kXB20pbn9VIwnG6jT1xoy6UFiNJNZwx/qoXtVI17GN2BVsqVAnWn7eexmOCtQslErWMfnz/2xPKy4BB/qKE7RpxtYlSt5+VQ9hm2PoPQ3qz4t2zm8Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 6470392009C; Mon,  4 May 2026 22:14:00 +0200 (CEST)
+	id 4DC6592009C; Mon,  4 May 2026 22:14:08 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 60E6292009B;
-	Mon,  4 May 2026 21:14:00 +0100 (BST)
-Date: Mon, 4 May 2026 21:14:00 +0100 (BST)
+	by angie.orcam.me.uk (Postfix) with ESMTP id 479D392009B;
+	Mon,  4 May 2026 21:14:08 +0100 (BST)
+Date: Mon, 4 May 2026 21:14:08 +0100 (BST)
 From: "Maciej W. Rozycki" <macro@orcam.me.uk>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] MIPS: DEC: Remove do_IRQ() call indirection
+Subject: [PATCH 3/3] MIPS: DEC: Fix prototypes for halt/reset handlers
 In-Reply-To: <alpine.DEB.2.21.2605042005080.46195@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2605042030580.46195@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2605042103140.46195@angie.orcam.me.uk>
 References: <alpine.DEB.2.21.2605042005080.46195@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
@@ -34,52 +34,88 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 
-As from commit 8f99a1626535 ("MIPS: Tracing: Add IRQENTRY_EXIT section 
-for MIPS") do_IRQ() is not a macro anymore and can be invoked directly 
-from assembly code, as a tail call.  Remove the dec_irq_dispatch() stub 
-then and the indirection previously introduced with commit 187933f23679 
-("[MIPS] do_IRQ cleanup"), improving performance by reducing the number 
-of control flow changes and the overall instruction count, while fixing 
-a compiler's complaint about a missing prototype for said stub:
+Remove a bunch of compilation warnings for halt/reset handlers:
 
-arch/mips/dec/setup.c:780:25: warning: no previous prototype for 'dec_irq_dispatch' [-Wmissing-prototypes]
-  780 | asmlinkage unsigned int dec_irq_dispatch(unsigned int irq)
-      |                         ^~~~~~~~~~~~~~~~
+arch/mips/dec/reset.c:22:17: warning: no previous prototype for 'dec_machine_restart' [-Wmissing-prototypes]
+   22 | void __noreturn dec_machine_restart(char *command)
+      |                 ^~~~~~~~~~~~~~~~~~~
+arch/mips/dec/reset.c:27:17: warning: no previous prototype for 'dec_machine_halt' [-Wmissing-prototypes]
+   27 | void __noreturn dec_machine_halt(void)
+      |                 ^~~~~~~~~~~~~~~~
+arch/mips/dec/reset.c:32:17: warning: no previous prototype for 'dec_machine_power_off' [-Wmissing-prototypes]
+   32 | void __noreturn dec_machine_power_off(void)
+      |                 ^~~~~~~~~~~~~~~~~~~~~
+arch/mips/dec/reset.c:38:13: warning: no previous prototype for 'dec_intr_halt'
+[-Wmissing-prototypes]
+   38 | irqreturn_t dec_intr_halt(int irq, void *dev_id)
+      |             ^~~~~~~~~~~~~
 
-(which gets promoted to a compilation error with CONFIG_WERROR).
+(which get promoted to compilation errors with CONFIG_WERROR), by moving 
+the local prototypes from arch/mips/dec/setup.c to a dedicated header 
+for arch/mips/dec/reset.c to use as well.  No functional change.
 
-Fixes: 8f99a1626535 ("MIPS: Tracing: Add IRQENTRY_EXIT section for MIPS")
 Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 ---
- arch/mips/dec/int-handler.S |    2 +-
- arch/mips/dec/setup.c       |    6 ------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ arch/mips/dec/reset.c             |    2 ++
+ arch/mips/dec/setup.c             |    6 +-----
+ arch/mips/include/asm/dec/reset.h |   19 +++++++++++++++++++
+ 3 files changed, 22 insertions(+), 5 deletions(-)
 
-linux-mips-dec-do-irq.diff
-Index: linux-macro/arch/mips/dec/int-handler.S
+linux-mips-dec-reset.diff
+Index: linux-macro/arch/mips/dec/reset.c
 ===================================================================
---- linux-macro.orig/arch/mips/dec/int-handler.S
-+++ linux-macro/arch/mips/dec/int-handler.S
-@@ -277,7 +277,7 @@
- 		 srlv	t3,t1,t2
+--- linux-macro.orig/arch/mips/dec/reset.c
++++ linux-macro/arch/mips/dec/reset.c
+@@ -10,6 +10,8 @@
  
- handle_it:
--		j	dec_irq_dispatch
-+		j	do_IRQ
- 		 nop
+ #include <asm/addrspace.h>
  
- #if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
++#include <asm/dec/reset.h>
++
+ typedef void __noreturn (* noret_func_t)(void);
+ 
+ static inline void __noreturn back_to_prom(void)
 Index: linux-macro/arch/mips/dec/setup.c
 ===================================================================
 --- linux-macro.orig/arch/mips/dec/setup.c
 +++ linux-macro/arch/mips/dec/setup.c
-@@ -776,9 +776,3 @@ void __init arch_init_irq(void)
- 			pr_err("Failed to register halt interrupt\n");
- 	}
- }
+@@ -48,14 +48,10 @@
+ #include <asm/dec/kn02ca.h>
+ #include <asm/dec/kn03.h>
+ #include <asm/dec/kn230.h>
++#include <asm/dec/reset.h>
+ #include <asm/dec/system.h>
+ 
+ 
+-extern void dec_machine_restart(char *command);
+-extern void dec_machine_halt(void);
+-extern void dec_machine_power_off(void);
+-extern irqreturn_t dec_intr_halt(int irq, void *dev_id);
 -
--asmlinkage unsigned int dec_irq_dispatch(unsigned int irq)
--{
--	do_IRQ(irq);
--	return 0;
--}
+ unsigned long dec_kn_slot_base, dec_kn_slot_size;
+ 
+ EXPORT_SYMBOL(dec_kn_slot_base);
+Index: linux-macro/arch/mips/include/asm/dec/reset.h
+===================================================================
+--- /dev/null
++++ linux-macro/arch/mips/include/asm/dec/reset.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ *	arch/mips/include/asm/dec/reset.h
++ *
++ *	DECstation/DECsystem halt/reset support.
++ *
++ *	Copyright (C) 2026  Maciej W. Rozycki
++ */
++#ifndef __ASM_DEC_RESET_H
++#define __ASM_DEC_RESET_H
++
++#include <linux/compiler_attributes.h>
++
++void __noreturn dec_machine_restart(char *command);
++void __noreturn dec_machine_halt(void);
++void __noreturn dec_machine_power_off(void);
++irqreturn_t dec_intr_halt(int irq, void *dev_id);
++
++#endif /* __ASM_DEC_RESET_H */

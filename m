@@ -1,117 +1,117 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E9E3A785E;
-	Tue,  5 May 2026 12:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777984328; cv=none; b=Xj+dDLsJhXtzKYkwfshj+qBnrsIPMIoM/+VRoYFLix1v+W/djjnAqtWA2UcpHcllDvKbFfDZuGJ5fU+6bJzhItzTBWKOsTKK0r1PtXkd0Yiv2R7bzfKvJnY1u1jMZhhCbDXGbCViPDxVLJR5wn1crHaRJWdE3Vp0ZL7ge2mgChM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777984328; c=relaxed/simple;
-	bh=ixrCirkHCWcbA3vA+OCiYapGYSGHNRT0+KBV081M154=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oeqa/fMK/+x9XAiwmEMkYWJhSrYjmyBqlj6P9yIlJgv2f1drxWKOGLJBJBSXHB15oJhIK7CU1pEw8hVlyHMxmVdpU1C1SendNqGI7hkofOV6seh72l922nStUHnNAG+LFyjHYWAxDa3+NWYFa94kgP+1KGLXccP1xx9AK8//3OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lM3sUzcO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AVCQ9Tjh; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744B847CC63
+	for <linux-mips@vger.kernel.org>; Tue,  5 May 2026 13:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777987905; cv=pass; b=q8NcoqXGzaZ1qsO4yU5YqEE+P9h51xppejVePUzaBq1d18Q//Nx6WrWrW3GQkvNjgNsxk5RShGDJ3GIPbi7JC6ApWKfiW6mg1ov+wfDIAhDQ70/cXZyeDBr523xQL0QTPZh8//JVc0x5Ci8DkzvAegzWauSX5D6c9Cg42pwv84Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777987905; c=relaxed/simple;
+	bh=8wyn0Ofwpqy6SU9O+WfUwbSmjX2YnG2tpyA8T4IqcZE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pJcMmYhYtpqMeBtLRS9v6juLD3wOz/BwrGPsIPubJDcRgKKHw8iYp0f5BfS/LfrnBbzWUd5xSMl+dwTIOXGWrVHiQ15Jdjj/qGrLX5VskjS3sbDUNQAxXr2YpLRg0NF5qcPGK+ra/gNKW7orF00Zo0ftxFiifvXq03lUP35wkJw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQsa9WyE; arc=pass smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lM3sUzcO";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AVCQ9Tjh"
-Date: Tue, 5 May 2026 14:32:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1777984325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHknitU2Jx05TiJG7B+qQQxESaR0TkmepU2IxA6SdBA=;
-	b=lM3sUzcOniGmy2QsJwR1VzZaYTS/em1RYhL68VuZwJluP7Hlc/SHyeZ9hCsJgLGkpiRefC
-	D6ICrMovAIoLte06jsFKFX5JeQMJSdWCjDOURJnbnl6etxuvOK0MJrKZI1457FvJFqr47C
-	oYFJm0jM0kA/nv7jqGQZp85VmzitBdNwXWAtGuRTjvG1h3AQ9cGnKvyTH6UimfSOnFUwVe
-	UkxFW9eVGrs7sjPtADpwy8ZXRfDTrifo3vU173R2MqFLej8miB8R8sLjpIpvl4FrYOMtt3
-	wz2J3Cn6KBhNnRBvTXtQ4Hy1HdptJ7c0vYyRgfpOM7JlvyUel+dYQ82kckZJ6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1777984325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHknitU2Jx05TiJG7B+qQQxESaR0TkmepU2IxA6SdBA=;
-	b=AVCQ9TjhC8Dal4v/JYxb66YPGbOcvWvIQ/Vd2l7Xg4dIJF4P/11bsf3c4n1FK6DQh/QZ/Y
-	f2ePpnpcMjnPLrBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: netdev@vger.kernel.org, linux-mips@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v2] declance: Remove IRQF_ONESHOT
-Message-ID: <20260505123203.jifiaxEL@linutronix.de>
-References: <20260127135334.qUEaYP9G@linutronix.de>
- <alpine.DEB.2.21.2601271508160.40317@angie.orcam.me.uk>
- <20260127165430.7ui_LGkg@linutronix.de>
- <alpine.DEB.2.21.2601271739250.40317@angie.orcam.me.uk>
- <alpine.DEB.2.21.2603292037020.60268@angie.orcam.me.uk>
- <alpine.DEB.2.21.2605042332070.46195@angie.orcam.me.uk>
- <20260505072954.Ov2t-FGt@linutronix.de>
- <alpine.DEB.2.21.2605051233210.46195@angie.orcam.me.uk>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQsa9WyE"
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-362bb3260f1so3862610a91.2
+        for <linux-mips@vger.kernel.org>; Tue, 05 May 2026 06:31:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777987903; cv=none;
+        d=google.com; s=arc-20240605;
+        b=TxeFyPoYfZGsPhbhle/stsbOSr2oXdteVby5lL4z/mIIx622+LDYiR/DqGhg8STDyi
+         Svbv1Qdug65J8up/7Wphcp/leapSFlmOZIc2d2XER3f2pLOnYialoBcC5zjdr/gTf7x0
+         VkyGl9TuX9L+uHbHFtDAPZ+kwrvacW3+V46xoNh13VzahUuMRlJbq0Xupt4I85yMBTst
+         IAu72zr7jSw3C6vbne6ewu1wwQKSIObWiXKxQttvryY0MhTIn507YKva2jBJiaANmqKa
+         4Yeoz7emsFhhie7Z4qnM2icIEiBzsDZvU7c4PyYitiLGoVYwDpeHlLZ2icF/dQZ+c7wh
+         MIfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=jjpUfORVM9bwi74VcEXUjDBp/dftjttC37XxZf40nUQ=;
+        fh=XeE9pDWSVzZM1o63qpibzVrKLGGJMxWM8r93CoPAdP4=;
+        b=FwpVporXi54rE7wH25odQus/b+tqs9kiCIKY15qx649u0ygbn+rybaV2gwbPbp+En4
+         mBwNjwJxZwzkk0vD6QOLe0ixeO/Cn8i95uFciOE5KHJwTxVmBEWlFpg6ZBKu+yA/HiL7
+         q+0CkSmgLcctF3f+XikBcGs0yFBV+wjBgr4ZgpmlOaSMUD3+vhZnardypnFHu8ns4d01
+         +JbmFswFDlEip8uIwv8RTlizELjw1y65a6Gs1RvDNvECdnvsE9834MaNG8POUXcszMRO
+         ++69OBWE3AkEkkIjUjaV3M5oqWcR99q2BOuYi59wb6CLAt+m/HRAiAbTA8t1f6prwbO1
+         ygIg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777987903; x=1778592703; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jjpUfORVM9bwi74VcEXUjDBp/dftjttC37XxZf40nUQ=;
+        b=XQsa9WyEhBMgkkfroQFjaGbLsAJBUhH3Rr9sS+3sZXg8WQWVfSfIRe7Y8Rie682wAK
+         KABGjAepK80sTVaIfPMPVG3eXOff4o3Efp16iuhA6pMRE173o7gII+z7q/KpPjD0CtOd
+         v7pJVchYH4qe6N2YAe7uOSmlQVokbSUWrhjJKalciCvxf5VdeNuQKk5GFwA34/C8N+43
+         oQUkgCPoxb37R2VRN++Y1h114TKSpzRBkYfx49ON9WtYMWn4VNbWm/IWEiTHGsswSu9J
+         2q3kbNDJuqcRymLEkZCnFlXQJWK+LDCs6M7lTw6Gy9ViIyd/+EqsPw3Z89ZX80QBTO50
+         9Kbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777987903; x=1778592703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=jjpUfORVM9bwi74VcEXUjDBp/dftjttC37XxZf40nUQ=;
+        b=O9U4Gjpc3Gpu4dTBQW6bitCQbM6OamoAE9JBlbLgk0dCp0FEkTXK6E6ZB9rjNhxhV4
+         ME7jJM2XbZYRFC3tMzyC+iCxBZ1G1bGE4xpyeJaWAIt6GEPYFjtwX8/1F0VE4Dn9Uank
+         sIii/FqwJSpsloN9Pe6qxhhm+FHh762pj8IATADxRRGhMu9fbnwU1gUdC8EGp7i0p8Ir
+         xsZmKgqZZAItWPB2nqnmKfVb+ZfiqKe6L6wMTg5Htpbpv7IpxW6983uwhZoZzmSZBC8e
+         UKThKaLsJF6FyPxt8wRO+ZAd/PAjQJQIxNrPGalubQj2UjAX+qQbfie/VbC8hUSTVXYR
+         SlTg==
+X-Forwarded-Encrypted: i=1; AFNElJ+tTYcdgMpfR7e7WsR1YmADiziCfuVSgBf+mLTi44/3MLUCnhM9Hg0idi1fT33i1eqqN9ueltzpGqP6@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0eRw6sXp3S5vdJPsCo1ze08zYGy32jh/L3WQr4ybBOKsMT3U8
+	t5FtGBUdGuwv6Owpi47jL/A1FDdxTrcDsdn1S2wkUzEn1UfvscWdrhra8dKuhQqiMYl0LiQc8/6
+	YMwCIAAP978wZjsdX10DXnwsH3n9dH2s=
+X-Gm-Gg: AeBDies/pv1ny74Yr3uLLSh9o2Zk2ghhnjXlf4NzAH18wHykEYlZai+2iyO/BJaOF2j
+	bxTeBLca6rE9ouxQY4YKKhcdp4pf8F7uhBAKoBZX1TkmP9qzSvH1Jegyeo2D3zpJLc4lDm+eFtU
+	R3/m5C2GfQvVY3npHx1VlrIw3eWU7X9NL2yAOTZPFVDQKcwA1/msKUJl4ph/OTerCpsarPvVpEy
+	W2UZHrTtU2cLUwDwXaU2d05wXa4dWQuZvX0Hn8HVived67KJ4T5GpdRy/yPuA/yB0Fv6aRmprYM
+	uQ9a729oYLuecsOanyhO46e0ruhQD+OdDWR9VE5L/lYHUaC2TwYO
+X-Received: by 2002:a17:90b:57e6:b0:35f:c5cd:cc5 with SMTP id
+ 98e67ed59e1d1-3650ceac42bmr13290094a91.24.1777987902669; Tue, 05 May 2026
+ 06:31:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2605051233210.46195@angie.orcam.me.uk>
+References: <20260505-gpio-swnode-alchemy-v2-0-cb208afc5b56@oss.qualcomm.com>
+In-Reply-To: <20260505-gpio-swnode-alchemy-v2-0-cb208afc5b56@oss.qualcomm.com>
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Date: Tue, 5 May 2026 15:31:06 +0200
+X-Gm-Features: AVHnY4II_1s890yTOuGHFMuESD1cokpVnHjPlv5ldMdFPLoza5WCBJYGhIVq2uA
+Message-ID: <CAOLZvyENGzU7NqedQCfT3dcchUJjxRr-WJWC4ubqViLD6yzTUg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] MIPS: alchemy: attach software nodes to GPIO
+ controllers and use properties
+To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	brgl@kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2026-05-05 13:02:16 [+0100], Maciej W. Rozycki wrote:
-> > With force-threading enabled, the interrupt handler is masked in the
-> > IRQ-chip until after the threaded-handler run. See the cond_unmask_irq()
-> > in handle_level_irq() or the mask_irq() & cond_unmask_eoi_irq() in
-> > handle_fasteoi_ack_irq(). That means the hw-IRQ is done, the thread is
-> > running with interrupts enabled but the hw-IRQ will not trigger again.
-> > The cited commit 5a4a4ad851dd8 ("MIPS: Mark cascade and low level
-> > interrupts IRQF_NO_THREAD") is different as it acts on cascading
-> > interrupts which is not what we have here.
-> 
->  Not with the current handle_fasteoi_irq() handler.
+Hello Bartosz,
 
-Why? There is a mask_irq() in the ONESHOT case.
+On Tue, May 5, 2026 at 11:09=E2=80=AFAM Bartosz Golaszewski
+<bartosz.golaszewski@oss.qualcomm.com> wrote:
+>
+> This series of patches updates board previously converted to use static
+> device properties/software nodes to attach and use nodes attached to the
+> respective gpiochip devices rather than simply defining unattached
+> software nodes with matching name. This is a requirement of newer
+> gpiolib code. Note that there is currently a workaround preserving the
+> lookup based on the software node name, but it will be removed soon.
+>
+> The additional 4 patches convert the remaining 2 boards to use software
+> nodes as well and fix some build warnings.
 
->  And actually not with handle_fasteoi_ack_irq() either, which doesn't call 
-> mask_irq() unless IRQF_ONESHOT has been requested (but ->irq_ack() could 
-> be repurposed to do masking), however handle_fasteoi_mask_irq() seems a 
-> matching candidate.  To use that handler the platform would have to select 
-> IRQ_DOMAIN_HIERARCHY and IRQ_FASTEOI_HIERARCHY_HANDLERS, although none of 
-> the stuff beyond just handle_fasteoi_mask_irq() appears relevant, so it 
-> seems like a waste of memory.  Note that the handlers are much more recent 
-> than the driver and back in the time IRQF_ONESHOT seemed a reasonable 
-> approach.
+I have run-tested this on the DB1300, without any issues.
+Tested-by: Manuel Lauss <manuel.lauss@gmail.com>
 
-If there is a chain and you have multiple controllers then the different
-low-lever handler might be the way to go.
-But IRQF_ONESHOT servers a different purpose. If you use request_irq()
-then there is no threaded-handler and as such IRQF_ONESHOT does nothing
-except avoiding force-threading the primary handler. But that is a
-side-effet. If you want to avoid to force-threading the irq-handler then
-IRQF_NO_THREAD would be the right flag.
-
->  The handle_level_irq() handler is irrelevant, because we do need to issue 
-> the EOI for deassertion.
-> 
-> > If you request a threaded interrupt you must either provide two handler
-> > and the primary must mask the interrupt so it does not fire again or you
-> > pass a flag such as IRQF_ONESHOT and which point the IRQ subsystem will
-> > mask the IRQ within the irqchip so it does not fire again.
-> 
->  Well, yes, but you've just removed the flag from this driver, so either 
-> the flag has to reinstated or the driver adjusted differently for the 
-> threaded case to be handled correctly.
-
-But there is a plain request_irq() so the handler is invoked directly in
-hardirq context with disabled interrupts. In forced-threaded context,
-such as on PREEMPT_RT, the IRQF_ONESHOT is added.
-
->   Maciej
-
-Sebastian
+Thanks a lot!
+      Manuel

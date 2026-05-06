@@ -1,60 +1,58 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31563939A4;
-	Wed,  6 May 2026 09:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAC13DFC89;
+	Wed,  6 May 2026 09:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778059177; cv=none; b=IWv2w0EB91+pouN5L2H97Uw5hxWSNNlbqKfVjSewVYp5AwRRM3Zbs8LnXMzpqgY6BdODU4tBoNrUq+IA4DT7NQTn1rlROYDJojj/nuitVotvjsKkie3BVLgzFBuR3q69YM5WofsZIChaZflQOzt8fXj8NOfnVWRQQ4RlKPL7QxQ=
+	t=1778059240; cv=none; b=speausJmQG8Zxrhe3iEc059YvK3pZLLHrw9Zs6WMmzxYIKJc7Md88g1o8ladEyBn2geseElPiuMyQtyGaekEoAbnAz+Cv+rucsdjv9GBDBWsmeeLK0povGhky6orbLgDNyeEGZNRaLSc70Xphp/01zZyRZCghvKkalNDQm5S7BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778059177; c=relaxed/simple;
-	bh=1ArkpAAU2TSJ71WyTkFjXp8NRqUze1bgxPwaYy6D+zw=;
+	s=arc-20240116; t=1778059240; c=relaxed/simple;
+	bh=2nmYkzEgFyquvOY/UOpIGlL98F95H2psHwqqIQ97t5k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XWb3KPwpcKA4xeiqYZ8YMJVSDtozGpylToWxqCx14GBR/Q0b/Ngq95ct8ZUDHwt66nQW0i6VbY0LUUs4K9w5lHsK2Lb38bMsAW7W5N1JwUPFPUWpJlEbsf9eMSr1QypEf/28I0b74jnmfmTuT6mZcjl8t8rrqQwYQGBPoRxISM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i1+xgBiD; arc=none smtp.client-ip=192.198.163.15
+	 Content-Type:Content-Disposition:In-Reply-To; b=iqy+WP8FUJVsqyYwkl3Z1oJB5tEiyN+bGR4a0YnKU/7iz3QGqoj8U/0aqUmBZPPUkfgvp3RTyIyrZuLlcOQ1zXpOZDCNwXrKnRO2B0/WuHoOK4cDz+EtZNwF0eBfvZ3X0gkscIVwTHtQEly2k4UN1acwB1agDGvAEuwo/2vSHd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I/u0lYev; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i1+xgBiD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I/u0lYev"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778059176; x=1809595176;
+  t=1778059240; x=1809595240;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=1ArkpAAU2TSJ71WyTkFjXp8NRqUze1bgxPwaYy6D+zw=;
-  b=i1+xgBiDHh8IsS6p06Myree7tDR2AGmzJ5lWPI80Wq4RoWCJpYrXUium
-   l2fx8Gi+YOkifmo70BOJ3tpzNO+JYidQwRMnNsl89uDUfHZfcmfHCacex
-   XMQtBpIytWmLLif/FMvniGq2rrl0IcmSCO+Etmwwo1VO8yRqcQxentLCR
-   +pQwdtFH3GUoRTMZC1vI0F0lkwc5zMavdzuxYGQ5j5sq9FvpAqXcEPRe7
-   TWFEr3WDkqUEiHut5CnFOWVCMw/lhMonouSQMpKN54diViXf2alpNTe0Y
-   Lhm2UK0wPNnprT1jdijU5JTYXhzOvZ8hztCme97MKL4X7xf0kR4UNQC8F
+  bh=2nmYkzEgFyquvOY/UOpIGlL98F95H2psHwqqIQ97t5k=;
+  b=I/u0lYevI+5J7b3KDggGemglohn+PalwlEPrAJxC1TgxFFUBoT22ZTLW
+   a9cSL+zn+T0HfNw7E/RG5OdEf2P/nbOLMnnnRVEY19FOwDPwjEStTo+xa
+   giXmnKb8xGWJSw2hfJZWulYYdBl5eRySroNh6htU7OtyByN2k9QLYJx7f
+   HPzM0iZ5Elwy59VE1FZHFcKHw8gjImWKJr4Qla4AhdnJDKs/2QqMIi4Pp
+   ozl3swpVY2SfIG+gfyemf8I/IXU9zy+spcsL9FheMe2U2pBUDeajq3CrJ
+   HkQgxUaJJYUD8Ae6cR7SMk6y5AlAIYWtjeJzcMSnJtieaFwaWur1kWuZ+
    Q==;
-X-CSE-ConnectionGUID: fOqNgW0aSo+NIwN8SSpZFA==
-X-CSE-MsgGUID: UnqoEMUaR8qEjdchMTUDKA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11777"; a="79091997"
+X-CSE-ConnectionGUID: VTGQQfsfTeGSewOy2/H+Ag==
+X-CSE-MsgGUID: Q8JRS0KtSYax3M8U7xCPfw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11777"; a="78698713"
 X-IronPort-AV: E=Sophos;i="6.23,219,1770624000"; 
-   d="scan'208";a="79091997"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2026 02:19:35 -0700
-X-CSE-ConnectionGUID: Owyl3fGDQ1K81nCaq87e/w==
-X-CSE-MsgGUID: NkCt24JaRZ6ebqREYVk8Fg==
+   d="scan'208";a="78698713"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2026 02:20:32 -0700
+X-CSE-ConnectionGUID: jZl8wJHNQmOEETf/0QqN3g==
+X-CSE-MsgGUID: xagBFZ7kQsinAS8XrxaKNA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,219,1770624000"; 
-   d="scan'208";a="233431397"
+   d="scan'208";a="235079258"
 Received: from abityuts-desk.ger.corp.intel.com (HELO localhost) ([10.245.244.183])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2026 02:19:33 -0700
-Date: Wed, 6 May 2026 12:19:30 +0300
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2026 02:20:30 -0700
+Date: Wed, 6 May 2026 12:20:27 +0300
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
 To: Felipe Ribeiro de Souza <felipers@ime.usp.br>
 Cc: andy@kernel.org, dlechner@baylibre.com, jic23@kernel.org,
-	nuno.sa@analog.com, paul@crapouillou.net,
-	Lucas Ivars Cadima Ciziks <lucas@ciziks.com>,
-	linux-iio@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] iio: adc: ingenic-adc: use guard()() and
- scoped_guard() to handle synchronisation
-Message-ID: <afsHoq_lm9bhZ92r@ashevche-desk.local>
+	nuno.sa@analog.com, paul@crapouillou.net, linux-iio@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] iio: adc: ingenic-adc: use guard()() to handle
+ synchronisation and refactor lock-held helpers
+Message-ID: <afsH24xuP1GF9jYz@ashevche-desk.local>
 References: <20260506022454.128169-1-felipers@ime.usp.br>
- <20260506022454.128169-4-felipers@ime.usp.br>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -63,46 +61,19 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260506022454.128169-4-felipers@ime.usp.br>
+In-Reply-To: <20260506022454.128169-1-felipers@ime.usp.br>
 Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
  krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-On Tue, May 05, 2026 at 11:24:30PM -0300, Felipe Ribeiro de Souza wrote:
-> Replace mutex_lock() and mutex_unlock() calls with guard()() in
-> functions ingenic_adc_set_adcmd(), ingenic_adc_set_config(),
-> ingenic_adc_enable(), ingenic_adc_capture(), and with scoped_guard()
-> in function ingenic_adc_read_chan_info_raw().
-> 
-> This removes the need to call the unlock function, as the lock is
-> automatically released when the function return or the scope exits
-> for any other case.
+On Tue, May 05, 2026 at 11:24:27PM -0300, Felipe Ribeiro de Souza wrote:
+> In drivers/iio/adc/ingenic-adc.c:
+> - Refactor ingenic_adc_read_chan_info_raw() and ingenic_adc_enable_unlocked()
+> - Replace mutex_lock() and mutex_unlock() calls with guard()()
 
-...
+This version LGTM,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
->  static void ingenic_adc_set_config(struct ingenic_adc *adc,
->  {
->  	uint32_t cfg;
-
-Side note: We use uXX types in the kernel (you can do a separate change
-if you want to).
-
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  
->  	cfg = readl(adc->base + JZ_ADC_REG_CFG) & ~mask;
->  	cfg |= val;
->  	writel(cfg, adc->base + JZ_ADC_REG_CFG);
-
-Side note (in case you want another patch): this is not so robust against
-arbitrary values. The traditional pattern of custom FIELD_MODIFY() is this
-
-	cfg = readl(adc->base + JZ_ADC_REG_CFG);
-	cfg = (cfg & ~mask) | (val & mask);
-	writel(cfg, adc->base + JZ_ADC_REG_CFG);
-
-> -	mutex_unlock(&adc->lock);
->  }
+In case you want to cook more cleanups, I provided a couple of side notes.
 
 -- 
 With Best Regards,

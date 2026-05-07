@@ -1,81 +1,65 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D983D812C;
-	Thu,  7 May 2026 11:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from mail-08.mail-europe.com (mail-08.mail-europe.com [57.129.93.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3422E7F25
+	for <linux-mips@vger.kernel.org>; Thu,  7 May 2026 12:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.129.93.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778154327; cv=none; b=t2aXhxx1h9trNdniZdeZgDnLch7rNp87T3Qd+b76Un8BT/KWEd1WPE22cTAKzvIyeugzCd3Gm3l8wNjRzDEVOrbGkTCSZhGvV46PE7CPCJfIUqeQQ6qgwqk5QU+f8BpNgoQN4ggEkzP//tJtKCJp/7S4voiAfGF581letJzwyOs=
+	t=1778156587; cv=none; b=N42zBSuzqhFL5fA8FzL6UxaVzr6mjQzPCRy8nvoym6CCxMPNsseU5W3ykd1LJV1UcrNRjuY6u9CgIM2n+ZEx2DoArh2lTz62jiW1KjpUwks/jddR28mf/LZKUy8yBppb5JsvXksJKIZavoossEbka9r4zIwv0/oMRL6qFpKHJpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778154327; c=relaxed/simple;
-	bh=y88ANMEB1Rz96O0OTRK0xxZCVFv7ypteibGlSq5EQks=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=brPyksKMI4bY2cU9XOxg+f37JW0U5BFBBwZGR9hUI6CEYcgdjcvq7PAQClPKfOdraV1KoEJ7HJcPf8xsts0WpJ2pwQ5Zmpca6ibjArgjri/Wmu61WIh5p9OvDugG4HWZFIp+TlJsd17tpXj8LNMp54kMPlcBRY8ZjzIVDJIvXNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 4E42692009C; Thu,  7 May 2026 13:45:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 4B0C192009B;
-	Thu,  7 May 2026 12:45:22 +0100 (BST)
-Date: Thu, 7 May 2026 12:45:22 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-cc: netdev@vger.kernel.org, linux-mips@vger.kernel.org, 
-    Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v2] declance: Remove IRQF_ONESHOT
-In-Reply-To: <20260507073427.atoJ5zsY@linutronix.de>
-Message-ID: <alpine.DEB.2.21.2605071211350.46195@angie.orcam.me.uk>
-References: <20260127165430.7ui_LGkg@linutronix.de> <alpine.DEB.2.21.2601271739250.40317@angie.orcam.me.uk> <alpine.DEB.2.21.2603292037020.60268@angie.orcam.me.uk> <alpine.DEB.2.21.2605042332070.46195@angie.orcam.me.uk> <20260505072954.Ov2t-FGt@linutronix.de>
- <alpine.DEB.2.21.2605051233210.46195@angie.orcam.me.uk> <20260505123203.jifiaxEL@linutronix.de> <alpine.DEB.2.21.2605051410280.46195@angie.orcam.me.uk> <20260505152450.1KYVS2pr@linutronix.de> <alpine.DEB.2.21.2605060040230.46195@angie.orcam.me.uk>
- <20260507073427.atoJ5zsY@linutronix.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1778156587; c=relaxed/simple;
+	bh=yXyy/1avikG//9PNJ0NYNRcQ/+6OhcdCpQSlhFY4bVQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EzQtafX/MG5ntjsztMu61IA9DrMNm8Hx0gpKObT/PBuTjvRFRmKeV7Y+ruZGDm68ewMHZKuQKKUfEeP1j0cDnkGtgO874Yqm5Eo3hhCqv6/sUX8my/TslGgrrxXzZJZbjVUyLroUQWdCS+qTBSYWrcmiRnOhlM3q5Q0WdVE5S68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=eE686EVL; arc=none smtp.client-ip=57.129.93.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="eE686EVL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=rf6dlxadgragpeknl2zvhwifqq.protonmail; t=1778156569; x=1778415769;
+	bh=yXyy/1avikG//9PNJ0NYNRcQ/+6OhcdCpQSlhFY4bVQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=eE686EVLPG9E3IvxDNMtZPAUgQnZvjYhBtGeYCeLsfCNrwyUOwDYNTExiom1wb1Vv
+	 qxf5nbN2AYwB+PjB6b4dqbRmwRB6HO9ooY5fYpYBLWpa0Jrj4sc5E1DnxJYfqEFebE
+	 pjq0qImRlNPXZuB/Kjwt4l0RDL2eqGnBDNaN2Fa6Zw9J60dvsjbk8K/SC9kyx70guD
+	 zRaMFJ8yT4aNrsf/KcU9MiDUzcCrQfOd+3neh79Rt+4WHcxEvs/Xro0+zBG7mfowTX
+	 HKw6d77yk6g1BGDajPKTBLEZHfo54YyENhNsf1cmjFijEBhEN7yZf+DNbhP37d96Ie
+	 XL4adMF90c2LQ==
+Date: Thu, 07 May 2026 12:22:42 +0000
+To: Thomas Zimmermann <tzimmermann@suse.de>
+From: Aditya Garg <gargaditya08@proton.me>
+Cc: mripard@kernel.org, maarten.lankhorst@linux.intel.com, airlied@redhat.com, airlied@gmail.com, simona@ffwll.ch, admin@kodeit.net, paul@crapouillou.net, zack.rusin@broadcom.com, bcm-kernel-feedback-list@broadcom.com, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org, linux-mips@vger.kernel.org, virtualization@lists.linux.dev
+Subject: Re: [PATCH 05/10] drm/appletbdrm: Allocate request/response buffers in begin_fb_access
+Message-ID: <G66ElwoYASE3O3RpWWuKm9V5LNUTUtjJ_lGUsDxN3EujU3wsp3vpT-KcXMsrFfYEZkBwq9TNaD3Pc2g4oaueu4B-JXN3PTCoNGY999s5WHU=@proton.me>
+In-Reply-To: <20260507075725.29738-6-tzimmermann@suse.de>
+References: <20260507075725.29738-1-tzimmermann@suse.de> <20260507075725.29738-6-tzimmermann@suse.de>
+Feedback-ID: 145777226:user:proton
+X-Pm-Message-ID: 809317f98a9202275d5c4ae88ce01ca05792218d
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 7 May 2026, Sebastian Andrzej Siewior wrote:
+On Thursday, May 7th, 2026 at 1:27 PM, Thomas Zimmermann <tzimmermann@suse.=
+de> wrote:
 
-> >  The interrupt is exceedingly rare, I've only seen it actually fire maybe 
-> > a dozen times across all my systems in 25+ years.  It happens when there 
-> > is a memory read error on DMA, such as an uncorrected ECC or parity error 
-> > (depending on the system variant), or a bus timeout.
-> 
-> I assumed you have other interrupts on that hw, cascaded/ operating the
-> same way. But otherwise…
+> In atomic_check, damage handling is not fully evaluated. Another
+> atomic_check helper could trigger a full modeset and thus invalidate
+> damage clips.
+>=20
+> Allocation of the request/response buffers in appletbdrm depends on
+> correct damage information. Otherwise it might allocate incorrectly
+> sized buffers. Allocate the buffers in the driver's begin_fb_access
+> helper. It runs early during the commit when damage clipping has been
+> fully evaluated.
+>=20
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 
- Hardware does have such stuff, but we don't make use of any other sources 
-right now.
-
- We don't use DMA with the SCC serial ports -- I've had plans to wire that 
-even for asynchronous operation, because with the 3-entry only input FIFO 
-it's quite easy for characters to get lost at higher baud rates; we have 
-no driver support for the synchronous modes with these systems although 
-hardware has all the necessary circuitry and external port connections.
-
- And the driver for the ESP SCSI interface was sadly lost in a conversion 
-many years ago when I got stuck due to a peculiarity with the hardware and 
-never completed it, which is a shame, but there you go -- I still hope to 
-do that one day, and that I consider much higher priority than DMA for the 
-SCC.
-
- Another system model, the Personal DECstation, also has ISDN and sound 
-interfaces wired for DMA, but no driver was ever written/ported for either 
-and no one running Linux seems to have a specimen available anymore.  I 
-think NetBSD guys have full support for that system.
-
- So yeah, right now it's only LANCE that makes use of any of the DMA IRQs, 
-and it's actually the least complext arrangement of all the devices: LANCE 
-makes use of 1 DMA IRQ, ESP makes use of 3 and the SCC ports make use of 4 
-each.  Each has one IRQ dedicated to memory read errors, and ESP and SCC 
-also have one each for overrun errors.  The remaining IRQs are for regular 
-DMA operation, i.e. buffer flipping, which LANCE does not do as it makes 
-use of the usual DMA descriptor ring arrangement instead.
-
-  Maciej
+Acked-by: Aditya Garg <gargaditya08@proton.me>

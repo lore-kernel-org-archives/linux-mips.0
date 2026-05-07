@@ -1,141 +1,111 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944AE204F8B;
-	Thu,  7 May 2026 01:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926AB32D441;
+	Thu,  7 May 2026 07:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778118197; cv=none; b=mg2BbZjAQRwCIhcCc6HpM6KPWhO2A217yZn0R5N2NDQtGwDZfh3oNbaZcyip4tmeCsvVv5dK8do49K+tyy386jVB8eay3uE7oRyD7lAaThKAz3r+8KYPROSBwsI+FiLn5q8OvLbfKUFbENUQoAq0hreZkRlJyaKozLi0QqU00HU=
+	t=1778139271; cv=none; b=jvX3q1HHpXVWAZIjstxa36EofSH5PTBBKN8l0mNI9u8OwzpJscof/h71hB4Z9Z6fSuDq/eNZtvVINmMEHW9obbMA/puQsayer4EsiHFnFMUXrUKFeoiZd+rlh/jjE8TNLLkWmJk0pLo+MeV5pAXQ8+eLz5ATSL/IZDlWUSDt8T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778118197; c=relaxed/simple;
-	bh=wfkzn5vEOdAO4CItueKY05cY1KoUngcW2ziIYm3VPMY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=RLNSmp2Nh1l0MQkKigGHxg8QWnei6PzW2LjVakV0grH2uDsLg4kiaHy22LT/sfjY7LGhIFUorKayY445do69QSubocATAq/a/dfRiPAMWmFoVZ69lIvPdXm69lj4g+XG1ddvfl532g0pXTUgbVaFm+k2Oln31Y97guWvYR3EqO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.62])
-	by gateway (Coremail) with SMTP id _____8Bx0eow7vtpG1UHAA--.24062S3;
-	Thu, 07 May 2026 09:43:12 +0800 (CST)
-Received: from [10.20.42.62] (unknown [10.20.42.62])
-	by front1 (Coremail) with SMTP id qMiowJBxacEo7vtpjfx7AA--.25500S3;
-	Thu, 07 May 2026 09:43:05 +0800 (CST)
-Subject: Re: [PATCH 1/5] KVM: arm64: Grab KVM MMU write lock in
- kvm_arch_flush_shadow_all()
-To: Sean Christopherson <seanjc@google.com>
-Cc: James Houghton <jthoughton@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oupton@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Gavin Shan <gshan@redhat.com>,
- Shaoqin Huang <shahuang@redhat.com>, Ricardo Koller <ricarkol@google.com>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
- James Hogan <jhogan@kernel.org>, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20260504224213.1049426-1-jthoughton@google.com>
- <20260504224213.1049426-2-jthoughton@google.com>
- <25838e74-01dd-d085-395b-676266dc9a9a@loongson.cn>
- <aftIbW9G4RfoTuXh@google.com>
-From: Bibo Mao <maobibo@loongson.cn>
-Message-ID: <833b7f62-5e9f-26e7-f60d-2ac1dd24c031@loongson.cn>
-Date: Thu, 7 May 2026 09:40:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1778139271; c=relaxed/simple;
+	bh=1BWhZEj5wjEI7Zr/301s1oCCVafsmJSbsyZyk7tgBVY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ICwJ73KkuQcllhpENonG/TVuUd2d6lgCnyesfhvYxpLlbukAv5uAsO7rp5HeRSQ1clwRnURvnWTgQzJMQgRb4xn92KTGbNjzyJC10nW6qEvYlhdzdtQjv7MqBNIEvF/XsKBd5m+yo1sy0p7xvnDywIKsNwOxJaJrdFMVH6mlk2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sEOC+Yt3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ht4P6rCC; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sEOC+Yt3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ht4P6rCC"
+Date: Thu, 7 May 2026 09:34:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1778139269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M3TFmwYRSkODm0VVYgNgy2av15i1ufVLpD3DudaLP68=;
+	b=sEOC+Yt3SWpyUKymT/rHCeyQseEYPHvMRgZmEYF7nDvQJr24oizHsPz8c+ZoW7tNFDB5++
+	76CiZA17dIJBZUSyXwl9YRjy4lmPmzAl2tHQ+p+62BGvijbzxZ1c2wdWbou+ldqLk1Kcis
+	o/DnUaLNNbk5XFdsYvldugno6Lxtys+qC+xd2xez5J02iCaaR3AH5oouPwYxRNf+jZAQei
+	wOSbvCqS7e3rNEkrpuIHlvHXYDNoIuybl8cFSOodNunYGDGX6wAm8RXKo1ahyAk8VdtOoQ
+	Xv7gDZai2y9pS88XDqEu3aiwDyW8lO8bNkCdtarQ1tz/XmsWfFCozKrF603eEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1778139269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M3TFmwYRSkODm0VVYgNgy2av15i1ufVLpD3DudaLP68=;
+	b=ht4P6rCCDd4KXzUXl3WNOk6Js8oA2jdpMMT7z/gSSj0NkVWvit3nZO6R07jMYiKzvKRQS+
+	nNC/9qyBm2az7RCQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: netdev@vger.kernel.org, linux-mips@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v2] declance: Remove IRQF_ONESHOT
+Message-ID: <20260507073427.atoJ5zsY@linutronix.de>
+References: <20260127165430.7ui_LGkg@linutronix.de>
+ <alpine.DEB.2.21.2601271739250.40317@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2603292037020.60268@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2605042332070.46195@angie.orcam.me.uk>
+ <20260505072954.Ov2t-FGt@linutronix.de>
+ <alpine.DEB.2.21.2605051233210.46195@angie.orcam.me.uk>
+ <20260505123203.jifiaxEL@linutronix.de>
+ <alpine.DEB.2.21.2605051410280.46195@angie.orcam.me.uk>
+ <20260505152450.1KYVS2pr@linutronix.de>
+ <alpine.DEB.2.21.2605060040230.46195@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <aftIbW9G4RfoTuXh@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJBxacEo7vtpjfx7AA--.25500S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZr1rJF1DJFWxtw1UKw43twc_yoW5GFyxpF
-	WUC3WqgrWDA340kw4kZ3WkWw1FyaykGr4UJw1Ygry5urs8Gwn3KF4SyFy0kFZ7ZrZ7GFWq
-	qF45tr95Zas8ZrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-	twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
-	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-	4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2-VyUUUUU
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <alpine.DEB.2.21.2605060040230.46195@angie.orcam.me.uk>
 
+On 2026-05-06 10:25:02 [+0100], Maciej W. Rozycki wrote:
+> On Tue, 5 May 2026, Sebastian Andrzej Siewior wrote:
+>=20
+> > I'm not if sure if you may need to change the primary handler if the
+> > interrupt flow is EOI and cascading based on what you wrote. If you have
+> > access to the HW then you it should be easy to test given the
+> > `threadirqs' argument should expose problems.
+>=20
+>  The interrupt is exceedingly rare, I've only seen it actually fire maybe=
+=20
+> a dozen times across all my systems in 25+ years.  It happens when there=
+=20
+> is a memory read error on DMA, such as an uncorrected ECC or parity error=
+=20
+> (depending on the system variant), or a bus timeout.
 
+I assumed you have other interrupts on that hw, cascaded/ operating the
+same way. But otherwise=E2=80=A6
 
-On 2026/5/6 下午9:55, Sean Christopherson wrote:
-> On Wed, May 06, 2026, Bibo Mao wrote:
->> On 2026/5/5 上午6:42, James Houghton wrote:
->>> kvm_arch_flush_shadow_all() may sometimes be called on the same `kvm`
->>> concurrently in the event that the KVM's `mm` is __mmput() at the
->>> same time that last reference to the KVM is being dropped.
->>>
->>> T1              T2
->>> KVM_CREATE_VM
->>>                   Get VM file from T1
->>> close VM
->>> exit_mm()       close VM
->>>
->>> T1: exit_mm() -> kvm_mmu_notifier_release() -> kvm_flush_shadow_all(),
->>>       with only the KVM srcu read lock held.
->>>
->>> T2: kvm_vm_release() ---> mmu_notifier_unregister() ->
->>>       kvm_mmu_notifier_release() -> kvm_flush_shadow_all(),
->>>       again, with only the KVM srcu read lock held.
->> By looking through the code, kvm_arch_destroy_vm() will free PGD page only,
->> page table walking is executing in deleting memslot or exit_mm().
->>
->> With normal code, life cycle of VM is something like this:
-> 
-> Not necessarily.  Abruptly closing the VM, as described below, is also "normal"
-> (though likely uncommon).
-> 
->>    KVM_CREATE_VM
->>      Create_VCPUs
->>      Create memslots
->>      Destroy_VCPUs
-> 
-> This is incorrect.  KVM doesn't provide any way for userspace to destroy vCPUs.
-> Userspace can fully release every vCPU fd, but the vCPU object within KVM stays
-> alive (and indirectly reachable) until the VM is destroyed.
-yes, that is so. For users, there is vCPU fd release interface. As for 
-vCPU object release, it is kind of internal implementation in KVM.
-> 
->>      Destroy memslots
->>    close VM
->>    exit_mm()
-> 
-> Note, exit_mm() may or may not be called.  E.g. there are VMMs that will destroy
-> a VM and start a new one (perhaps even the same conceptual virtual machine) in
-> the same process / mm_struct / address space.
-> 
->> And there is kvm_get_kvm()/kvm_put_kvm() function call with creating/destroy
->> vCPUs, however no such operations with memslot operation. Is it possible
->> that VM is destroyed without removing memslots, such as the following
->> operation.
->>    KVM_CREATE_VM
->>      Create memslots
->>    close VM
->>    exit_mm()
-> 
-> Yep.  KVM cannot make any assumptions when it comes to userspace-initiated
-> operations.  Even a VMM that super strictly follows the first approach may exit
-> abruptly, without destroying memslots, e.g. if it's OOM-killed.
-oh, I see. If so, the implementation about kvm_arch_destroy_vm() on 
-Loongarch is problematic, it needs consider this kind of abnormal VM 
-destroy, take page table walk and free page tables. I had thought that 
-memslots create/destroy should call kvm_get_kvm()/kvm_put_kvm() :(
+>  It should be possible to orchestrate it, such as by making the LANCE DMA=
+=20
+> pointer register refer an unpopulated location in the system address map;=
+=20
+> memory ECC errors can be induced too by the DRAM controller's diagnostic=
+=20
+> feature.  It seems enough hassle though I'd rather get things right by th=
+e=20
+> spec.
 
-Regards
-Bibo Mao
+Oh, yeah. That should do it.
 
+>  Thanks for the hint as to the `threadirqs' facility though, it may come=
+=20
+> up helpful sometime.
+
+:)
+
+>   Maciej
+
+Sebastian

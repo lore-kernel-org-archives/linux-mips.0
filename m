@@ -1,63 +1,50 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926AB32D441;
-	Thu,  7 May 2026 07:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6362334695;
+	Thu,  7 May 2026 07:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778139271; cv=none; b=jvX3q1HHpXVWAZIjstxa36EofSH5PTBBKN8l0mNI9u8OwzpJscof/h71hB4Z9Z6fSuDq/eNZtvVINmMEHW9obbMA/puQsayer4EsiHFnFMUXrUKFeoiZd+rlh/jjE8TNLLkWmJk0pLo+MeV5pAXQ8+eLz5ATSL/IZDlWUSDt8T4=
+	t=1778139449; cv=none; b=kvQed8NHfadMwDbZVNO0gZMmNIRvgs3ikHOsavcX8kQPH0TxTSXW2+TCOEU0xba6gQhtMWsosXmrB5dScfxJDYSMeKrE17vGr/ai8+yWCbnhTJr8AfS2PuoYAdDV7fqvaQFX4qE96LUuA7zxstJs6PNsV1mfyRshh5VVekoRPFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778139271; c=relaxed/simple;
-	bh=1BWhZEj5wjEI7Zr/301s1oCCVafsmJSbsyZyk7tgBVY=;
+	s=arc-20240116; t=1778139449; c=relaxed/simple;
+	bh=TRYPdbdQ7AEV3jQUZjl6mtYTKcLAI/I31T2cjc5KvBg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ICwJ73KkuQcllhpENonG/TVuUd2d6lgCnyesfhvYxpLlbukAv5uAsO7rp5HeRSQ1clwRnURvnWTgQzJMQgRb4xn92KTGbNjzyJC10nW6qEvYlhdzdtQjv7MqBNIEvF/XsKBd5m+yo1sy0p7xvnDywIKsNwOxJaJrdFMVH6mlk2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sEOC+Yt3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ht4P6rCC; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=J/uKpd1ouPo8lJteeK/SbulFWrTvT13jjLYvenb+GzypY9YAPZoTzaPS+a6PkCzQ/iActCYNcQxERKf7ugVE/C0feKGcwLAvyRqf/Px8dgRH1esgAJwPILe/Hzv/e60zFyL6PHzwNTNL5/b0S4v08JHuu0rcGgVxfxpFAdr8RKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dWS/GY2D; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+dAJREre; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sEOC+Yt3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ht4P6rCC"
-Date: Thu, 7 May 2026 09:34:27 +0200
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dWS/GY2D";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+dAJREre"
+Date: Thu, 7 May 2026 09:37:25 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1778139269;
+	s=2020; t=1778139446;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M3TFmwYRSkODm0VVYgNgy2av15i1ufVLpD3DudaLP68=;
-	b=sEOC+Yt3SWpyUKymT/rHCeyQseEYPHvMRgZmEYF7nDvQJr24oizHsPz8c+ZoW7tNFDB5++
-	76CiZA17dIJBZUSyXwl9YRjy4lmPmzAl2tHQ+p+62BGvijbzxZ1c2wdWbou+ldqLk1Kcis
-	o/DnUaLNNbk5XFdsYvldugno6Lxtys+qC+xd2xez5J02iCaaR3AH5oouPwYxRNf+jZAQei
-	wOSbvCqS7e3rNEkrpuIHlvHXYDNoIuybl8cFSOodNunYGDGX6wAm8RXKo1ahyAk8VdtOoQ
-	Xv7gDZai2y9pS88XDqEu3aiwDyW8lO8bNkCdtarQ1tz/XmsWfFCozKrF603eEA==
+	bh=jz+1MqT1MQrqTQro6mhqLqng63xA6szDDx+vMYI/l9I=;
+	b=dWS/GY2D6hL5gDXjk+M04rVEEH+NhbUYKc5kV5+8Q0T2hfMRXcWMy245UELbZ6jRV/MZY/
+	5JQnt6+xot7OCvyNK4p5tIbrJsvPUBZi7beg4SA9TQ17N9mvohq7k29VhkdiIlIQtPk3jd
+	1kWclQR/CTV3e6zFHatG9NVqHvXqJ6ReDMs/AilpTka6DVRm17Nxc/EO2L0wOAfIS3Em6d
+	45+s7RqbuveEJ2zdKn4wuU5q0HHStwo+fw3Iwx23+BSKMK3LH0vAtvdbjKHVLtWVhgWFTf
+	BYazj0gfmmIipMV2fAUcs3kmWh5G1Z00Xk/Re2d5JjNS9jeufxk7001UhxKDGQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1778139269;
+	s=2020e; t=1778139446;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M3TFmwYRSkODm0VVYgNgy2av15i1ufVLpD3DudaLP68=;
-	b=ht4P6rCCDd4KXzUXl3WNOk6Js8oA2jdpMMT7z/gSSj0NkVWvit3nZO6R07jMYiKzvKRQS+
-	nNC/9qyBm2az7RCQ==
+	bh=jz+1MqT1MQrqTQro6mhqLqng63xA6szDDx+vMYI/l9I=;
+	b=+dAJREre91cuYFtLntYlq+m0+OeAUM0bytmlzxFnyVwiSwOOJ2ZYovXxg0JXnh/nEaHcCw
+	xLHRRVSNc3mQxUDA==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: netdev@vger.kernel.org, linux-mips@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v2] declance: Remove IRQF_ONESHOT
-Message-ID: <20260507073427.atoJ5zsY@linutronix.de>
-References: <20260127165430.7ui_LGkg@linutronix.de>
- <alpine.DEB.2.21.2601271739250.40317@angie.orcam.me.uk>
- <alpine.DEB.2.21.2603292037020.60268@angie.orcam.me.uk>
- <alpine.DEB.2.21.2605042332070.46195@angie.orcam.me.uk>
- <20260505072954.Ov2t-FGt@linutronix.de>
- <alpine.DEB.2.21.2605051233210.46195@angie.orcam.me.uk>
- <20260505123203.jifiaxEL@linutronix.de>
- <alpine.DEB.2.21.2605051410280.46195@angie.orcam.me.uk>
- <20260505152450.1KYVS2pr@linutronix.de>
- <alpine.DEB.2.21.2605060040230.46195@angie.orcam.me.uk>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: DEC: Remove IRQF_ONESHOT reference for IOASIC DMA
+ error IRQs
+Message-ID: <20260507073725.86GqPgce@linutronix.de>
+References: <alpine.DEB.2.21.2605061142040.46195@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -66,46 +53,23 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <alpine.DEB.2.21.2605060040230.46195@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2605061142040.46195@angie.orcam.me.uk>
 
-On 2026-05-06 10:25:02 [+0100], Maciej W. Rozycki wrote:
-> On Tue, 5 May 2026, Sebastian Andrzej Siewior wrote:
->=20
-> > I'm not if sure if you may need to change the primary handler if the
-> > interrupt flow is EOI and cascading based on what you wrote. If you have
-> > access to the HW then you it should be easy to test given the
-> > `threadirqs' argument should expose problems.
->=20
->  The interrupt is exceedingly rare, I've only seen it actually fire maybe=
-=20
-> a dozen times across all my systems in 25+ years.  It happens when there=
-=20
-> is a memory read error on DMA, such as an uncorrected ECC or parity error=
-=20
-> (depending on the system variant), or a bus timeout.
+On 2026-05-06 12:15:21 [+0100], Maciej W. Rozycki wrote:
+> There is no need for IOASIC DMA error interrupts to use the IRQF_ONESHOT 
+> flag, because while they do need to have the source cleared only at the 
+> conclusion of handling, the action handler supplied is either run in the 
+> hardirq context with interrupts disabled at the CPU level or, where IRQ 
+> threading has been forced, the primary handler has the IRQF_ONESHOT flag 
+> implicitly added and therefore the original action handler, now run as 
+> the thread handler and with interrupts enabled in the CPU, is executed 
+> with the originating interrupt line masked.  Therefore no interrupt will 
+> retrigger regardless until the original request has been handled.
+> 
+> Link: https://lore.kernel.org/r/20260127135334.qUEaYP9G@linutronix.de/
+> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 
-I assumed you have other interrupts on that hw, cascaded/ operating the
-same way. But otherwise=E2=80=A6
-
->  It should be possible to orchestrate it, such as by making the LANCE DMA=
-=20
-> pointer register refer an unpopulated location in the system address map;=
-=20
-> memory ECC errors can be induced too by the DRAM controller's diagnostic=
-=20
-> feature.  It seems enough hassle though I'd rather get things right by th=
-e=20
-> spec.
-
-Oh, yeah. That should do it.
-
->  Thanks for the hint as to the `threadirqs' facility though, it may come=
-=20
-> up helpful sometime.
-
-:)
-
->   Maciej
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 Sebastian

@@ -1,104 +1,105 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A615E1D5CFB;
-	Fri,  8 May 2026 07:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1403D5673;
+	Fri,  8 May 2026 12:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778225074; cv=none; b=BiyhgJLCo4AaiABMGpapwoLwXsf4GBf9EQNfp+VsHWgXen510y906RwsXQtIxyHnVrrlN9lbF8OrfCUqCdZKQnd5HMQD84IgDTTuOx1aEH1dwANVqSlNEPjfDtXM1hrlS37gYEjFF6BNitzg867v4uSP3I2BiKzG4vfj3eKTTlg=
+	t=1778245166; cv=none; b=ZvA+lQfJs66ZSjslMTyCdAG5oajYWkuoJkf7l4qd3e8GAyghOkT8N1YhiPr9kcEWzBm38DufZdb4vn6FKcACXorrr/NBooW5PyuVDJZNBvKH5cqF1WGv5Pbbz940OR7nEPUl09yGUD9s4S0RmIbdrVRhT+iQunI5he59T4LW9mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778225074; c=relaxed/simple;
-	bh=TI90CHXwtptjDqV8T7my7F6jyD1/4mK2rWz8hwhRW3o=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=SZABRBiaID/6zmmSBVG3bwLK1urdEXlI1IeVGD5D9S8HTqvUFrYEsn5Ha+r6CFBq9iTqXKw4H2kX88Q0VBnCtjdxYAYufH4Yq4TpOEktoRr6xPgzmUmgRnqWih82ByIKriBuHHAttoF7K7g/vUL5So1jOopxxA8XJuIj6UNCfW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.62])
-	by gateway (Coremail) with SMTP id _____8BxT+qpj_1pis4HAA--.24411S3;
-	Fri, 08 May 2026 15:24:25 +0800 (CST)
-Received: from [10.20.42.62] (unknown [10.20.42.62])
-	by front1 (Coremail) with SMTP id qMiowJDxTMKoj_1pUcZ8AA--.38271S3;
-	Fri, 08 May 2026 15:24:24 +0800 (CST)
-Subject: Re: [PATCH 2/5] KVM: loongarch: Grab MMU lock in
- kvm_arch_flush_shadow_all()
-To: James Houghton <jthoughton@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oupton@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>,
- Zenghui Yu <yuzenghui@huawei.com>, Sean Christopherson <seanjc@google.com>,
- Gavin Shan <gshan@redhat.com>, Shaoqin Huang <shahuang@redhat.com>,
- Ricardo Koller <ricarkol@google.com>, Tianrui Zhao
- <zhaotianrui@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
- James Hogan <jhogan@kernel.org>, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20260504224213.1049426-1-jthoughton@google.com>
- <20260504224213.1049426-3-jthoughton@google.com>
-From: Bibo Mao <maobibo@loongson.cn>
-Message-ID: <f47ec704-813e-e6a2-687b-7076be465a1b@loongson.cn>
-Date: Fri, 8 May 2026 15:21:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1778245166; c=relaxed/simple;
+	bh=kEO3W2RtBvJpkOj//cj+gG001/vJAUHV8X4GqTFPJZU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=epc4QN7iWSN7mm+ozx4BVev99k1NLnBKlyYMUlESZ95idazzoMnkLOeWmVP4XsyXvYhnvt1jFTWCJt1l5anHpu9QpxcLL6CMTTkH/hiyKhobG6WvjhEIh9rz4YThnDZ7Di9+ZioVtmwzv2Ig2BHB3zD6EF8b9VvraUn5Jg7YUHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 4460C92009C; Fri,  8 May 2026 14:59:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 3E25992009B;
+	Fri,  8 May 2026 13:59:15 +0100 (BST)
+Date: Fri, 8 May 2026 13:59:15 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Rosen Penev <rosenp@gmail.com>
+cc: linux-mips@vger.kernel.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    Nathan Chancellor <nathan@kernel.org>, 
+    Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+    Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+    open list <linux-kernel@vger.kernel.org>, 
+    "open list:CLANG/LLVM BUILD SUPPORT:Keyword:b(?i:clang|llvm)b" <llvm@lists.linux.dev>
+Subject: Re: [PATCH] mips: cps: Assemble jr.hb with an R2 ISA level
+In-Reply-To: <20260507232323.489383-1-rosenp@gmail.com>
+Message-ID: <alpine.DEB.2.21.2605080101340.46195@angie.orcam.me.uk>
+References: <20260507232323.489383-1-rosenp@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20260504224213.1049426-3-jthoughton@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJDxTMKoj_1pUcZ8AA--.38271S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFWrCw1UZrW7Kw4rAr13Awc_yoWkCrc_AF
-	12yw10grWxJa93X3Wkt3W3tF9Iyw1rCFsavrn7Xr97J3s8t3sakr4jgan3Cr90grWxWFW3
-	ArWDZrZ5Zr4avosvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbqkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07joc_-UUU
-	UU=
+Content-Type: text/plain; charset=US-ASCII
 
+On Thu, 7 May 2026, Rosen Penev wrote:
 
+> diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+> index 2ae7034a3d5c..70413c816eb0 100644
+> --- a/arch/mips/kernel/cps-vec.S
+> +++ b/arch/mips/kernel/cps-vec.S
+> @@ -373,8 +373,11 @@ LEAF(mips_cps_boot_vpes)
+>  	.set	pop
+>  
+>  	PTR_LA	t1, 1f
+> +	.set	push
+> +	.set	MIPS_ISA_LEVEL_RAW
+>  	jr.hb	t1
+>  	 nop
+> +	.set	pop
+>  1:	mfc0	t1, CP0_MVPCONTROL
+>  	ori	t1, t1, MVPCONTROL_VPC
+>  	mtc0	t1, CP0_MVPCONTROL
+> @@ -487,8 +490,11 @@ LEAF(mips_cps_boot_vpes)
+>  	li	t0, TCHALT_H
+>  	mtc0	t0, CP0_TCHALT
+>  	PTR_LA	t0, 1f
+> +	.set	push
+> +	.set	MIPS_ISA_LEVEL_RAW
+>  1:	jr.hb	t0
+>  	 nop
+> +	.set	pop
+>  
+>  2:
+>  
 
-On 2026/5/5 上午6:42, James Houghton wrote:
-> kvm_arch_flush_shadow_all() may be called concurrently on the same
-> `kvm`. This could at least result in accounting mistakes (e.g.
-> underflows on `kvm->stat.*pages`).
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 752e2cd7b4fb ("LoongArch: KVM: Implement kvm mmu operations")
-> Signed-off-by: James Houghton <jthoughton@google.com>
-> ---
-> Note: This is compile-tested only!
-> 
->   arch/loongarch/kvm/mmu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
-> index a7fa458e3360..5dbce9b18e1c 100644
-> --- a/arch/loongarch/kvm/mmu.c
-> +++ b/arch/loongarch/kvm/mmu.c
-> @@ -486,7 +486,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->   
->   void kvm_arch_flush_shadow_all(struct kvm *kvm)
->   {
-> -	kvm_flush_range(kvm, 0, kvm->arch.gpa_size >> PAGE_SHIFT, 0);
-> +	kvm_flush_range(kvm, 0, kvm->arch.gpa_size >> PAGE_SHIFT, 1);
->   }
->   
->   void kvm_arch_flush_shadow_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> 
-Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+ This seems exceedingly pedantic to me at the cost of cluttering code with 
+these .set push/pop blocks.  Why not simply wrap the whole code block down 
+to the end of the CONFIG_MIPS_MT_SMP conditional instead, analogously to 
+how mips_cps_core_init() has been arranged?  The presence of MT implies R2 
+after all.
 
+ Ah, I can see we have MIPS_ISA_LEVEL_RAW always hardcoded to a 64-bit one 
+and commit 8dbc1864b74f ("MIPS: CPS: Fix MIPS_ISA_LEVEL_RAW fallout") 
+reporting the MOVE macro getting expanded to a 64-bit DADDU instruction on 
+64-bit ISAs, which is obviously not incorrect (you get what you asked 
+for), though also problematic in this use case.
+
+ This is actually no longer relevant however, as this was changed back in 
+2025 with binutils commit 40fc1451c63d ("[MIPS] Map 'move' to 'or'.") 
+targetting version 2.26, while our requirement nowadays is 2.30, according 
+to Documentation/process/changes.rst.  It is a fairly recent requirement 
+though, from Linux 6.16 only, and the previous one was 2.25, so backports 
+would be affected and it might be too early to rely on for a bug fix.
+
+ Still my guts' feeling is we should define MIPS_ISA_LEVEL_RAW and the 
+other such macros to a 32-bit or 64-bit ISA according to the machine word 
+size of the CPU/ISA chosen for the whole kernel build.  This would enable 
+the cleanup I suggested at the top with no reservation and remove the risk 
+of GAS choosing to produce 64-bit instructions where a 32-bit CPU/ISA has 
+been chosen in the configuration.
+
+ You are welcome to do that, however as it stands your patch is not 
+incorrect and fixes a real problem, so:
+
+Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
+
+  Maciej

@@ -1,164 +1,123 @@
-Received: from mail.ilvokhin.com (mail.ilvokhin.com [178.62.254.231])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E0B413244;
-	Thu, 14 May 2026 14:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.254.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7333E0730;
+	Thu, 14 May 2026 15:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778768026; cv=none; b=AJEsQnS5I3l1SZmBqh55RWxAPJFKrpEP5HcBLa/d56mtTss54OZmeG1Iq23GqJncL/4S2D6HlnXglxhhKiJKs4p5qEXIPQ5mhdqNh7anI+RKLjQW68dJXCFID1/OQmEg4ahOt1f0/tEJkFuEYPdyNop9XynL3XDq3sOhly5R1z8=
+	t=1778771639; cv=none; b=QF9vvGxLbt7Cv85QUhvXLXpTHgKE556P/QKFJirYE8cPry5TKC7DY2Roqbh1hZ1QN0hvtEeOFX1PPRDWUqUstAq1NZj7OKwhUgGtOuOgTYivR9TuYT20LmF+Aw9GByxlJ1nlS68dEpYf2OXsk28MSmXcHTE2xMoAINwhe0mY5bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778768026; c=relaxed/simple;
-	bh=RZ497f2MkBSfcDNRv07WOD93tdragrIfUhY+O1zJISk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D6tOOjD0e4enRTbotUhrnYmkwPnrB/amwbsn0WNVYGs0B7xM5Cg3eoiAe7JWW0c64wWRxf2Mx90Wob0nF2VcpNb7on+c3xiqNhAF/3ops8VoG9rM9ab9eQDmhJjONv/7VfdobyTymRw+OgxwtnQiemgUKPBEavWsNrMegbYZnO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com; spf=pass smtp.mailfrom=ilvokhin.com; dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b=2LqHdCq5; arc=none smtp.client-ip=178.62.254.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ilvokhin.com
+	s=arc-20240116; t=1778771639; c=relaxed/simple;
+	bh=waINsKFbSyXcxAqUAzgj9r8Ga8BceWjqseF36ALPBz8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dr9ZwFgKRbXQir0SsFRaEewQuNK4nbhTt6v0fF+YLtCfwi/a63SdEBqDAgMjOjOtxM4bzspMvi3cjpwnHspDALCv7066Tv5kg3LZW1wW4Q9tUhkbWmt2A7WiLqkutGNPvdGjk+9pM+MswAJo+DjRWAUs/uV3jDGnaCmPv7RhgOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=rC99kBpE; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b="2LqHdCq5"
-Received: from shell.ilvokhin.com (shell.ilvokhin.com [138.68.190.75])
-	(Authenticated sender: d@ilvokhin.com)
-	by mail.ilvokhin.com (Postfix) with ESMTPSA id 92774D0572;
-	Thu, 14 May 2026 14:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilvokhin.com;
-	s=mail; t=1778768016;
-	bh=CEtEQitvr5ZkBK9ei+U84T7UAt16YdxOYlqifuRSuCs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=2LqHdCq5tSBQ3BZqU0GmdOcvGsRqUa4wcPdAHu8hjvMz6CYEy0/FcUOv3IiSY6ajb
-	 LJ3OiABsNiurRx+c2LFTGtfo/wrG5XGj49b8jVqXLWLHz8oq3JNDQsDBaYJg6nMv4k
-	 SnM09PPyXc4AO4h3CaPUrJA/LHwqYctv2hZXMW48=
-Date: Thu, 14 May 2026 14:13:35 +0000
-From: Dmitry Ilvokhin <d@ilvokhin.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>, Boqun Feng <boqun@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Juergen Gross <jgross@suse.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Alexey Makhalov <alexey.makhalov@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	virtualization@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	kernel-team@meta.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v6 5/7] locking: Add contended_release tracepoint to
- qspinlock
-Message-ID: <agXYjw3GM15WtC-H@shell.ilvokhin.com>
-References: <cover.1777999826.git.d@ilvokhin.com>
- <5d7ea75ffe74a785e6b234ada9f23c6373d4b4c1.1777999826.git.d@ilvokhin.com>
- <20260513114102.50f4ca68@gandalf.local.home>
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="rC99kBpE"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8A12A3DE9FD;
+	Thu, 14 May 2026 17:13:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1778771619; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=IXgx7gfpsPR0kF8ck7MRUn7Q28yaC8th/9vky8kZIes=;
+	b=rC99kBpEKBGa64ABDuQPgBe81fMPPr6gfCljJMEdZ5GznYse2DToXnWL74StzfSuu3RU+H
+	Hv4CJ7RPv5blLgrh4mrM7qqVhvBHTcB/qHT07fAZy7AYk9OPP3XlBtQzW1Hcvqs4bzrJfU
+	yfILM5+CV9zgoYVEK7bzfMHE3YqFE0VBJiptVNZdOMetLiAbF4dNdeIQk2FZC57VmWTFKQ
+	WSUcjAJ2IxYtH3DMhQ0XVqeQY7U09FCYjLtt5jNAVWkYp2tvvHgchbbFGYjLIjAZHyQfkS
+	PL5dy0e9RS0K2QVdYPXQotyEAvqYBjXP0hhZRR/gpsvfHthsA5XqlGsp1FaEIQ==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-pci@vger.kernel.org
+Cc: linux-mips@vger.kernel.org,
+	naseefkm@gmail.com,
+	ryder.lee@mediatek.com,
+	helgaas@kernel.org,
+	lpieralisi@kernel.org,
+	kwilczynski@kernel.org,
+	mani@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	ansuelsmth@gmail.com,
+	linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb James DeLisle <cjd@cjdns.fr>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v7 1/2] dt-bindings: PCI: mediatek: Add support for EcoNet EN7528
+Date: Thu, 14 May 2026 15:13:17 +0000
+Message-Id: <20260514151318.3444959-2-cjd@cjdns.fr>
+In-Reply-To: <20260514151318.3444959-1-cjd@cjdns.fr>
+References: <20260514151318.3444959-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260513114102.50f4ca68@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, May 13, 2026 at 11:41:02AM -0400, Steven Rostedt wrote:
-> On Tue,  5 May 2026 17:09:34 +0000
-> Dmitry Ilvokhin <d@ilvokhin.com> wrote:
-> 
-> > Use the arch-overridable queued_spin_release(), introduced in the
-> > previous commit, to ensure the tracepoint works correctly across all
-> 
-> Remove the ", introduced in the previous commit," That's useless in git
-> change logs.
+Introduce EcoNet EN7528 SoC compatible in MediaTek PCIe controller
+binding.
 
-Thanks for the suggestion, will do here and in other places.
+EcoNet PCIe controller has the same configuration model as
+Mediatek v2 but is initialized more similarly to an MT7621
+PCIe.
 
-[...]
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/pci/mediatek-pcie.yaml           | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-> >  /**
-> >   * queued_spin_unlock - unlock a queued spinlock
-> >   * @lock : Pointer to queued spinlock structure
-> > + *
-> > + * Generic tracing wrapper around the arch-overridable
-> > + * queued_spin_release().
-> >   */
-> >  static __always_inline void queued_spin_unlock(struct qspinlock *lock)
-> >  {
-> > +	/*
-> > +	 * Trace and release are combined in queued_spin_release_traced() so
-> > +	 * the compiler does not need to preserve the lock pointer across the
-> > +	 * function call, avoiding callee-saved register save/restore on the
-> > +	 * hot path.
-> > +	 */
-> > +	if (tracepoint_enabled(contended_release)) {
-> > +		queued_spin_release_traced(lock);
-> > +		return;
-> 
-> Get rid of the "return;". What does it save you? It just makes it that you
-> need to duplicate the code. Even though it's a one liner, it can cause bugs
-> in the future if this changes. You could call the function:
-> 
->   do_trace_queued_spin_release_traced(lock);
-> 
-> 
-> > +	}
-> >  	queued_spin_release(lock);
-> >  }
-> >  
-> > diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-> > index af8d122bb649..649fdca69288 100644
-> > --- a/kernel/locking/qspinlock.c
-> > +++ b/kernel/locking/qspinlock.c
-> > @@ -104,6 +104,14 @@ static __always_inline u32  __pv_wait_head_or_lock(struct qspinlock *lock,
-> >  #define queued_spin_lock_slowpath	native_queued_spin_lock_slowpath
-> >  #endif
-> >  
-> > +void __lockfunc queued_spin_release_traced(struct qspinlock *lock)
-> > +{
-> > +	if (queued_spin_is_contended(lock))
-> > +		trace_call__contended_release(lock);
-> > +	queued_spin_release(lock);
-> 
-> And then remove the duplicate call of "queued_spin_release()" here.
+diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
+index 0b8c78ec4f91..c009a7a52bc6 100644
+--- a/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
+@@ -14,6 +14,7 @@ properties:
+     oneOf:
+       - enum:
+           - airoha,an7583-pcie
++          - econet,en7528-pcie
+           - mediatek,mt2712-pcie
+           - mediatek,mt7622-pcie
+           - mediatek,mt7629-pcie
+@@ -226,6 +227,31 @@ allOf:
+ 
+         mediatek,pbus-csr: false
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: econet,en7528-pcie
++    then:
++      properties:
++        clocks:
++          maxItems: 1
++
++        clock-names:
++          maxItems: 1
++
++        resets: false
++
++        reset-names: false
++
++        power-domains: false
++
++        mediatek,pbus-csr: false
++
++      required:
++        - phys
++        - phy-names
++
+ unevaluatedProperties: false
+ 
+ examples:
+-- 
+2.39.5
 
-This is the scenario the comment above the static branch describes.
-Here's what it looks like in practice on x86_64 (defconfig, compiled
-with GCC 11).
-
-Current design (trace + unlock combined, with return):
-  
-    endbr64
-    xchg %ax,%ax                     ; NOP (static branch)
-    movb $0x0,(%rdi)                 ; unlock
-    decl %gs:__preempt_count
-    je   preempt
-    jmp  __x86_return_thunk
-    call queued_spin_release_traced  ; cold
-    jmp  preempt_handling            ; cold
-    call __SCT__preempt_schedule
-    jmp  __x86_return_thunk
-
-With the trace-only function (no return, unlock after the call):
-  
-    endbr64
-    push %rbx                        ; saves callee-saved rbx (!)
-    mov  %rdi,%rbx                   ; preserve lock across call (!)
-    xchg %ax,%ax                     ; NOP (static branch)
-    movb $0x0,(%rbx)                 ; unlock
-    decl %gs:__preempt_count
-    je   preempt
-    pop  %rbx                        ; callee-saved restore (!)
-    jmp  __x86_return_thunk
-    call queued_spin_release_traced  ; cold
-    jmp  unlock                      ; cold
-    call __SCT__preempt_schedule
-    pop  %rbx
-    jmp  __x86_return_thunk
-
-Three extra instructions marked by "!" on the hot path (push, mov, pop),
-all wasted when the tracepoint is off. That's the main reason for
-combining trace and unlock in the same out-of-line function.

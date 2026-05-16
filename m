@@ -1,32 +1,30 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D62F328631;
-	Sat, 16 May 2026 18:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B58E1F30A4;
+	Sat, 16 May 2026 21:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778956027; cv=none; b=dsUGVlrE/t5ulGtSMfq1GvkqhL1m9A0CsX7AfOWWWW6VnAMagOVnx4g6MjYov3fYTkT7POm2YY+qJMS5oMuw9lPL4R0uD8YkZrAA+zj2u++Q+sF5kWuEsS45liyDMF75HE4scrdrNwnZgS3XHKH3ratKeyWkgVrqly3NAk1OY2A=
+	t=1778968650; cv=none; b=H691DYuVT5xfLoC8p/TZwOJ5+M6gCGicC16WUXjqubc+DYWesmQmKfglhmQ+XMGrJgb+x00VyanpuxBWouImUid/jIjUBR+Ecckh+rtWopCJMyTHwqeDwVI9ArH95ajV9+YkoBLmqqAWdZsJ7KyR6ptkdwdXAaTx0ZA2ziFGdPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778956027; c=relaxed/simple;
-	bh=gBGMI6S3o4+n+8pLpjBQ+nXTfkXL9j4qXfNkTwzvv5Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Csrig9weEV+DfSlfHwOHLoXo0dF6EBQnpATH9THHgVcXVti6sBuQBlIhYjBZ8dsTxPR/rRsySFW3CUCpGr61XTYRVco5xS5NyCq9aVt507FZ9qxFNV9ciMB3XsMA4j914GjBEvWtx5D40DUyC9tnCYx83jfUg9lnZ7JVUsB0ucs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=RCt5sJWL; arc=none smtp.client-ip=5.135.140.105
+	s=arc-20240116; t=1778968650; c=relaxed/simple;
+	bh=VgOGJRXlv/K3CBfC1DsWZ2UI7ACptVTWwxX2N7QJe+k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aPYhgtdZFb5pYL0e/TCCUR2jHBT6+fa094lRb+XR5Q0QZUULj8LueeY21xHtyh+re01nrOMBxrH/W87g+/zmsGs6pXz12SszhYNAduN1oSUlagt4ql++6T7K13MyCI+Q85AM1ALlscsm8mziXULRwjCppLUY13RtbWhOE0K3hEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=cSzh7U4D; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="RCt5sJWL"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8790E3F738F;
-	Sat, 16 May 2026 20:26:56 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="cSzh7U4D"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 237353FA109;
+	Sat, 16 May 2026 23:57:24 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1778956017; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=m+6v+hjQch8RJ+bE8KqFuX68S8nN6mY6vSXBtyBFUJQ=;
-	b=RCt5sJWLKHhMe6N5KcbmNv1JAThwTBq8QcrA/jqviI8f9YEw3m+2tbgkn43lQjMUMXPHjV
-	P0k/FVWKMRssCu74g10i7oDmzrNmOB+nZfhlvijF3ufrbQWS28tfhmY3aiOwLhYvSET6nR
-	p2tSGQRBB9Vl1EfHooKnUR3PKDRJI5qZFfs99q/gGEaLC+wvdjrlUbRgH3kIdmGu+iClf5
-	pTXiY7zmerm1ZREzuNCMMTh9Satgl2Awq62S1eSwh2emZmSg3erUzkPbCsf1LBrkoXMY7m
-	9JZfm8EPriVxvaCWUInKYdW18s0bsx80i3CBIcanJpjsmp6ATM3eO7itSmYoYA==
+	t=1778968646; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=/+A3JxfQ08H2sAreXGvOUI3Q1ChhXAgCuiOtdRCr8eM=;
+	b=cSzh7U4D+8wqnvsdcTsI3sLY8jslr3sGlqm9Wxzi68sC1EQg0MSiz3xsdFfzlRH1Z9ZVFn
+	ZMd0fmzqaTnttO+S9hK4+RurT4PzuC4AaPC/+Wjt3Rvc34Z7UjOKq9U4LdXf0TNEK/wTnS
+	DyYSkxYYMpDYJqfKWqlN+pT7rYAeCC+KQ6ka4u6N0DzaPuiepyoJKsWsdRBwaDoVAjbWp6
+	3n4LH4mijpPCyx0+8VKVIwH1qFufC+nL8AxJWTSqSkm5GNH3RYb9/vPUiXxL13DJATNRnO
+	4HN7EtHT9gZEzNdWEk+P7ZMTOzsnRpuQ2ZsIqn87kthAqRcQloM3rcutTv7gsg==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: conor+dt@kernel.org,
@@ -38,11 +36,9 @@ Cc: conor+dt@kernel.org,
 	robh@kernel.org,
 	tglx@kernel.org,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v3 3/4] clocksource/timer-econet-en751221: Disable IRQ until cevt registered
-Date: Sat, 16 May 2026 18:26:47 +0000
-Message-Id: <20260516182648.3987792-4-cjd@cjdns.fr>
-In-Reply-To: <20260516182648.3987792-1-cjd@cjdns.fr>
-References: <20260516182648.3987792-1-cjd@cjdns.fr>
+Subject: [PATCH v4 0/4] clocksource/timer-econet-en751221: Support irq number per timer
+Date: Sat, 16 May 2026 21:57:16 +0000
+Message-Id: <20260516215720.4160831-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -52,43 +48,44 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Eliminate a race condition where cevt_interrupt may trigger before
-clockevents_config_and_register has been called, and dev->event_handler
-is at that point NULL.
+Changes from v3:
+* off-by-one in out_irq_free
+* Gracefully fail if too many address resources are provided in the DT
+* Allow fewer actual timers than num_possible_cpus, as long as they
+never start
+* v3: https://lore.kernel.org/linux-mips/20260516182648.3987792-1-cjd@cjdns.fr
 
-Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
----
- drivers/clocksource/timer-econet-en751221.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+v3 note:
 
-diff --git a/drivers/clocksource/timer-econet-en751221.c b/drivers/clocksource/timer-econet-en751221.c
-index 155471f68e6f..ed750e39cc4f 100644
---- a/drivers/clocksource/timer-econet-en751221.c
-+++ b/drivers/clocksource/timer-econet-en751221.c
-@@ -104,12 +104,11 @@ static int cevt_init_cpu(uint cpu)
- 	reg = ioread32(reg_ctl(cpu)) | ctl_bit_enabled(cpu);
- 	iowrite32(reg, reg_ctl(cpu));
- 
--	enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
--
--	/* Do this last because it synchronously configures the timer */
- 	clockevents_config_and_register(cd, econet_timer.freq_hz,
- 					ECONET_MIN_DELTA, ECONET_MAX_DELTA);
- 
-+	enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
-+
- 	return 0;
- }
- 
-@@ -177,6 +176,8 @@ static int __init timer_init(struct device_node *np)
- 		goto out_membase;
- 	}
- 
-+	irq_set_status_flags(econet_timer.irq, IRQ_NOAUTOEN);
-+
- 	ret = request_percpu_irq(econet_timer.irq, cevt_interrupt, np->name,
- 				 &econet_timer_pcpu);
- 
+I decided to take this patchset in a slightly different direction from
+v2. There is a certain amount of initialization that once it has run,
+it cannot be reverted in case of error. The original driver init was a
+mixture of revertible and non-revertible code which made it too easy
+for code which is designed with best practices in mind to in fact
+introduce a bug. Therefore I start by making the init process more
+legible but without any business logic changes, then fix a race
+condition by keeping IRQ disabled until after cevt is setup, then
+finally add non-percpu IRQ support.
+
+* v2: https://lore.kernel.org/linux-mips/20260514000601.3430262-1-cjd@cjdns.fr
+
+Changes from v1:
+* Split changes over 3 refactoring patches + main patch
+* Remove driver discussion from dt commit message
+* v1: https://lore.kernel.org/linux-mips/20260416175101.958073-1-cjd@cjdns.fr/
+
+Caleb James DeLisle (4):
+  dt-bindings: timer: econet: Update EN751627 for multi-IRQ
+  clocksource/timer-econet-en751221: Init teardown on error if possible
+  clocksource/timer-econet-en751221: Disable IRQ until cevt registered
+  clocksource/timer-econet-en751221: Support EN751627 without percpu IRQ
+
+ .../bindings/timer/econet,en751221-timer.yaml |  23 ++-
+ drivers/clocksource/timer-econet-en751221.c   | 170 +++++++++++++-----
+ 2 files changed, 146 insertions(+), 47 deletions(-)
+
+
+base-commit: ff1c0c5d07028a84837950b619d30da623f8ddb2
 -- 
 2.39.5
 

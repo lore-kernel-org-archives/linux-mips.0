@@ -1,62 +1,71 @@
-Received: from server.a16n.net (server.a16n.net [82.67.174.37])
+Received: from helium.openadk.org (helium.openadk.org [89.238.66.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04CB3CAE73
-	for <linux-mips@vger.kernel.org>; Sun, 17 May 2026 18:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.67.174.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A5A3B636B
+	for <linux-mips@vger.kernel.org>; Sun, 17 May 2026 18:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.238.66.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779041337; cv=none; b=oI0MTefRsppM9Xmq6Cxb+cKccpcSbstjcddUqJcx1xm3VAeONIEbeym3GyujASRg6fzxZC0ZUO0piX9bAVLfpNH6rh+HvKrspMXZVoGQevWq/33jFvGaB1paJttH5fafb7ZCwH4oYUT3GWymGMpfkbWMKJqwUKNFlS4zRLfci6k=
+	t=1779042094; cv=none; b=uTs6aigL3ilHo1/+wWDXI43Lx0VeyglaHl5/xwxGK0y3iMvpn5zJ0NN3GKQzDPnJla4qraTHJ4TKppzIO7zx0ZFwaXvVVmHhM8lIYrVgYkj9r0OPX7jZr0TeBvkdRyJgNWZbE0b8gbWl0LV8jAqL2r8cDgJ/ILBwu+MNAotLTVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779041337; c=relaxed/simple;
-	bh=MJXINXhbbcG+78/iwyzkVdSDfjkqajL6UToNg5piSTE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rG8xQ1dWK47B2JwfJGlL24z7j9rUT+VoN4DSac6n0K60BPKg5MB0eyC5r2SYpWxqq5Efsv8OgSM+eFoKm96CPK0xkGvaBWFv5D4LBCgVDuxFHFet9oMGayzUWAcgLD2mNpRqKrrMMO9C73+9LtXvdL6/Tpb0k67Owh/190vqF3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=a16n.net; spf=pass smtp.mailfrom=a16n.net; dkim=pass (2048-bit key) header.d=a16n.net header.i=@a16n.net header.b=m8T2JsKc; arc=none smtp.client-ip=82.67.174.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=a16n.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=a16n.net
+	s=arc-20240116; t=1779042094; c=relaxed/simple;
+	bh=aYiy+CizZIxxrptUcu5vzCWpcjNJ+w6KPfwb8hPhh4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QHtLXyVeGRlDcJ36hJpD9+18+PltKRU8yKJJUADMjf7d5RwJ/ycpXiVKVycAs3mM5WmA53bVxPgBrZM5yD/NsC2bcrgaoAxU4OP/6LHhjKJZuZ38sVX4vxc0JjzSZcMAca7DIkBifHaVzRBbL4gH/SPchReGrq6wK8KtGn78iDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org; spf=pass smtp.mailfrom=openadk.org; dkim=fail (0-bit key) header.d=openadk.org header.i=@openadk.org header.b=GLFlN+bn reason="key not found in DNS"; arc=none smtp.client-ip=89.238.66.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openadk.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openadk.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=a16n.net header.i=@a16n.net header.b="m8T2JsKc"
-Received: from ws.localdomain (21.197.30.93.rev.sfr.net [93.30.197.21])
-	by server.a16n.net (Postfix) with ESMTPSA id 86F21640654;
-	Sun, 17 May 2026 20:02:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=a16n.net; s=a16n;
-	t=1779040943; bh=L8HkmV+E4rUdmPXeKy0rVqRnYxc+viZSx0OVQnZs9qc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=m8T2JsKcnJkfXbq//HgwonrIEPrq3jzZyeSBE9jl1RD2GU0RRMuZYSC7iEq3aHL98
-	 yVN0hVqV2NPrwJI9XBBqQnN6+QmFIO7fNjPGjvihujtMjL3n/mLpdwDGfkf8BBgO8z
-	 uGY+SL1ehd9XzZhlt6wy8CXuLuwHna/zsLh3u1EejBEelAYI5XxBLZI4+5BYdSQj1Q
-	 a6m1YuZuPdPPeUFwkP5JrJrR18s4M17GxgCRuMlJ06ghA/pW0DmcF9FqfoYdq435m2
-	 a9O7aQsybUABCY/BymVruWLeVB9BAgQKFj0GCDZ1uBSrWzUZ1OOg+hXDCLSjwt9gby
-	 GC7bk6WM3puaw==
-Received: by ws.localdomain (Postfix, from userid 1000)
-	id 84490306CBF; Sun, 17 May 2026 20:02:22 +0200 (CEST)
-From: =?utf-8?Q?Peter_M=C3=BCnster?= <pm@a16n.net>
-To: linux-mips@vger.kernel.org
-Cc: Waldemar Brodkorb <wbx@openadk.org>
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=openadk.org header.i=@openadk.org header.b="GLFlN+bn"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=openadk.org; s=2022;
+	t=1779041609; bh=aYiy+CizZIxxrptUcu5vzCWpcjNJ+w6KPfwb8hPhh4k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=GLFlN+bnOw0Zxe4qQB3OcNgSYwdQT1YiQvI6NPMNghCUdYyj7GrZ78fpM1LsfwS9x
+	 2sjs4fRSHzyIDXL2qjTIsJy840sO3tcUspPGPPWdkU2LXOYGBVugvasZA5EU14nOkB
+	 PW7iz/6X6IBnJl/DJvsJd/Y7DZo65tTr22fB9G0dPWvVWfXdkOF0qMG7VOnYNfiw27
+	 h4vfiEU4kW4sFIIehzcLlzT1xspgtZqupIoEnJ11p10PQJBFvmOA4ru/XqHUGlGebt
+	 sWAitmUAGfq9R4p5WeMd14cMXH5yRg4mHZZ77GPaco0K9UOFgBjczeBvDbw7VadRFq
+	 udHV05P6B0icw==
+Received: by helium.openadk.org (Postfix, from userid 1000)
+	id BFBD731E0CA9; Sun, 17 May 2026 20:13:29 +0200 (CEST)
+Date: Sun, 17 May 2026 20:13:29 +0200
+From: Waldemar Brodkorb <wbx@openadk.org>
+To: Peter =?utf-8?Q?M=C3=BCnster?= <pm@a16n.net>
+Cc: linux-mips@vger.kernel.org, Waldemar Brodkorb <wbx@openadk.org>
 Subject: Re: Asus WL500g Premium (BCM47XX) problem
-In-Reply-To: <aZ-Ldi2U-51z3tF5@waldemar-brodkorb.de>
+Message-ID: <agoFSZ8pdS_bt3C-@waldemar-brodkorb.de>
+Reply-To: Waldemar Brodkorb <mail@waldemar-brodkorb.de>
+Mail-Followup-To: Peter =?utf-8?Q?M=C3=BCnster?= <pm@a16n.net>,
+	linux-mips@vger.kernel.org, Waldemar Brodkorb <wbx@openadk.org>
 References: <aZ3NVrKLKgsflL1H@waldemar-brodkorb.de>
-	<aZ-Ldi2U-51z3tF5@waldemar-brodkorb.de>
-Date: Sun, 17 May 2026 20:02:22 +0200
-Message-ID: <87y0hhgbip.fsf@a16n.net>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+ <aZ-Ldi2U-51z3tF5@waldemar-brodkorb.de>
+ <87y0hhgbip.fsf@a16n.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y0hhgbip.fsf@a16n.net>
+X-Operating-System: Linux 6.12.85+deb13-amd64 x86_64
 
-On Thu, Feb 26 2026, Waldemar Brodkorb wrote:
+Hi Peter,
+Peter Münster wrote,
 
-> It seems this old patch is good to make the userland more stable.
+> On Thu, Feb 26 2026, Waldemar Brodkorb wrote:
+> 
+> > It seems this old patch is good to make the userland more stable.
+> 
+> Hi Waldemar,
+> 
+> Has it been integrated into the kernel, and if yes, in what version
+> please?
 
-Hi Waldemar,
+It is not integrated. You can find the patch which applies on latest
+6.18 kernel here:
+https://www.freewrt.de/trac/browser/freewrt/target/linux/brcm-6.18/patches/0002-bcm47xx-fix-for-oops-in-copy_page-on-BCM3300-CPU.patch
 
-Has it been integrated into the kernel, and if yes, in what version
-please?
-
-TIA and kind regards,
--- 
-           Peter
+best regards
+ Waldemar

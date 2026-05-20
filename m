@@ -1,78 +1,57 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD663FC5DA;
-	Wed, 20 May 2026 18:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070A33FCB10;
+	Wed, 20 May 2026 18:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779302340; cv=none; b=uSz+uL0b9KPh1Z7SqgP722Wncj2SFa1eh9BXp3hJ+FibtJP972zl5ONGrOwbIWQ+QkjyAKie9NS96GjoyMr8/pPwIUQ4wxD+WyaeciKSHKBR6xuyVjvojibP7gRiCBCMxwPKD0HTmcLyiapau6DLg4w2LPJDSq/Y5+cLtFl69q8=
+	t=1779302344; cv=none; b=Ct9RhRFr/jIrCouoW1GmZCp8Y7LkM4B/s9lFlKNpBcwx7Om6g/2fx1TGV4/yZhAFazUCOZbalPPBPlW9sab7ffGyPVfi8O8zxHyEgltWOsRRqz+fn4JNisgOPy+bqjJX6YVLmQo0PNRGebPh57Na8DYrli7nckaeqTeYWwPjKBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779302340; c=relaxed/simple;
-	bh=E3999r5PntjenilrrxvyJKJ6sUyiktWDefVKeKpvYFM=;
+	s=arc-20240116; t=1779302344; c=relaxed/simple;
+	bh=waINsKFbSyXcxAqUAzgj9r8Ga8BceWjqseF36ALPBz8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jl+yfH4xh4c5tlDON2RHu8vH2FIBNp/SyjRkFFVVbqhZQI1I6LpdLzaBrtQlGaJCoXuhfrJV6qiZkZOjGgGNN1y2jOPXHwk3v7tpnn8atfNxiOwv5jZ5l/JxgDzJDy/q9LGaTLTGlYvsBI9VN4a99gzS2iqBKWUhIp8+cW5pzu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gu3hqgNX; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=AtVKb5+Spxytff61/Kxb5/nRxzmAPpam6U0PO+b1udNvFlvo77iXPzqYeeIodNKZI3liZGFU1AksH3fMaLMijgU/I2em2FB4cCFKsWTjxWEBy2oRpUCHba1Fc/wc5gAHaatgT3dbrQ+JAMmaq9k1ca4rG49e2SHC4WNs7gJgCL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=gtH4ny7q; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gu3hqgNX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C5D1F00897;
-	Wed, 20 May 2026 18:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779302339;
-	bh=Auptu0K+asnu6CU+7KJoQdTihUUvVzhdRIPr56LBhZc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gu3hqgNXSSBWSAzl/z5ypBW6SYI9CfaDgDSK+ol9/yh3aXlQqypeyxw5U0WBnSPdp
-	 2iiS8Xhxq8S9lt0lcYHEfu5LP5ONnku5RNmA56DjbtuA9NEblnYvnKQPP+9ev+vn9p
-	 bUcoLs3Gx0/qfFzNGjiaz+szHCox6BJoGmac9lWtkK6jpILryIfbPFBRU7BS4PBCLg
-	 J81yFkxfiWCP+HCQaY1nrR9iqiguW6REipqVDMOOyry/Gt0/VcQ6teqSz7EfN4HIp1
-	 1n6VbeTwTsDVVJBTKewkiBwr7cG7zNyX2VwF7BF/+UJ/DnJbOQh46qHApQCUufqTrt
-	 51N8Flosokb+Q==
-From: Arnd Bergmann <arnd@kernel.org>
-To: linux-gpio@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christian Lamparter <chunkeey@googlemail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Andreas Kemnade <andreas@kemnade.info>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Roger Quadros <rogerq@kernel.org>,
-	Tony Lindgren <tony@atomide.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Lee Jones <lee@kernel.org>,
-	Pavel Machek <pavel@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jonas Gorski <jonas.gorski@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-wireless@vger.kernel.org,
-	linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-input@vger.kernel.org,
-	linux-leds@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 02/10] [v3] input: gpio-keys: make legacy gpiolib optional
-Date: Wed, 20 May 2026 20:38:07 +0200
-Message-Id: <20260520183815.2510387-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260520183815.2510387-1-arnd@kernel.org>
-References: <20260520183815.2510387-1-arnd@kernel.org>
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="gtH4ny7q"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CC5F443F6E7;
+	Wed, 20 May 2026 20:38:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1779302340; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=IXgx7gfpsPR0kF8ck7MRUn7Q28yaC8th/9vky8kZIes=;
+	b=gtH4ny7qs726XGUPG/HHffN9G5ztVqKI4iE5VzJ1eUBWavNKOmbrwglTgwB0+3SqQ0zmCc
+	5crYkRq79JU3M0U9Bjx1m7O0iy1322+wZZELS30+zraLWuryefrBvu45+PdrtiRbjM+6cj
+	bvgVJGsZ4hiQ2HDz6zFVuUhMdTCU48pAOUvyS7tkha4rUrMzv0qC4ehH07lQIRZSgXgaH8
+	iTex0icGE25k20wf3vZnCtnK8r9Dr+S82vZW2FP7b9f1n4NVILF6se0hv3gIa4lCAXhK0l
+	61sEZN23jcc/lhjYN2VTZd7e6bM5mllAAmVW2RxLcUInTenYTbI0KgXZu0W6uA==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-pci@vger.kernel.org
+Cc: linux-mips@vger.kernel.org,
+	naseefkm@gmail.com,
+	ryder.lee@mediatek.com,
+	helgaas@kernel.org,
+	lpieralisi@kernel.org,
+	kwilczynski@kernel.org,
+	mani@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	ansuelsmth@gmail.com,
+	linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb James DeLisle <cjd@cjdns.fr>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v8 2/3] dt-bindings: PCI: mediatek: Add support for EcoNet EN7528
+Date: Wed, 20 May 2026 18:38:26 +0000
+Message-Id: <20260520183827.908243-3-cjd@cjdns.fr>
+In-Reply-To: <20260520183827.908243-1-cjd@cjdns.fr>
+References: <20260520183827.908243-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -80,133 +59,65 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-From: Arnd Bergmann <arnd@arndb.de>
+Introduce EcoNet EN7528 SoC compatible in MediaTek PCIe controller
+binding.
 
-Most users of gpio-keys and gpio-keys-polled use modern gpiolib
-interfaces, but there are still number of ancient sh, arm32 and x86
-machines that have never been converted.
+EcoNet PCIe controller has the same configuration model as
+Mediatek v2 but is initialized more similarly to an MT7621
+PCIe.
 
-Add an #ifdef block for the parts of the driver that are only used on
-those legacy machines.
-
-The two Rohm PMIC drivers use a gpio-keys device without an actual GPIO,
-passing an IRQ number instead. In order to keep this working both with
-and with CONFIG_GPIOLIB_LEGACY, change the gpio-keys driver to ignore
-the gpio number if an IRQ is passed.
-
-Link: https://lore.kernel.org/all/b3c94552-c104-42e3-be15-7e8362e8039e@gmail.com/
-Link: https://lore.kernel.org/all/afJXG4_rtaj3l2Dk@google.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
-v3: resend
-v2: skip the fake GPIO number passing from mfd
+ .../bindings/pci/mediatek-pcie.yaml           | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-The removal of the arm platforms using this is not yet going to happen
-for 7.2, and Dmitry's changes for the Rohm drivers have not yet
-made it into linux-next as of 2026-05-20, so for the moment I
-would still like to see this patch get merged, even if we are
-closing in on completely removing the legacy gpio support in
-the gpio_keys driver, so we can make CONFIG_GPIOLIB_LEGACY
-default-disabled sooner.
----
- drivers/input/keyboard/gpio_keys.c        | 7 ++++---
- drivers/input/keyboard/gpio_keys_polled.c | 2 ++
- drivers/mfd/rohm-bd71828.c                | 1 -
- drivers/mfd/rohm-bd718x7.c                | 1 -
- include/linux/gpio_keys.h                 | 2 ++
- 5 files changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
-index e19617485679..d748a54dc51c 100644
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -528,7 +528,8 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 			 */
- 			bdata->gpiod = NULL;
- 		}
--	} else if (gpio_is_valid(button->gpio)) {
-+#ifdef CONFIG_GPIOLIB_LEGACY
-+	} else if (!button->irq && gpio_is_valid(button->gpio)) {
- 		/*
- 		 * Legacy GPIO number, so request the GPIO here and
- 		 * convert it to descriptor.
-@@ -546,6 +547,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
+index 0b8c78ec4f91..c009a7a52bc6 100644
+--- a/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/mediatek-pcie.yaml
+@@ -14,6 +14,7 @@ properties:
+     oneOf:
+       - enum:
+           - airoha,an7583-pcie
++          - econet,en7528-pcie
+           - mediatek,mt2712-pcie
+           - mediatek,mt7622-pcie
+           - mediatek,mt7629-pcie
+@@ -226,6 +227,31 @@ allOf:
  
- 		if (button->active_low ^ gpiod_is_active_low(bdata->gpiod))
- 			gpiod_toggle_active_low(bdata->gpiod);
-+#endif
- 	}
+         mediatek,pbus-csr: false
  
- 	if (bdata->gpiod) {
-@@ -583,8 +585,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 			if (irq < 0) {
- 				error = irq;
- 				dev_err_probe(dev, error,
--					      "Unable to get irq number for GPIO %d\n",
--					      button->gpio);
-+					      "Unable to get irq number for GPIO\n");
- 				return error;
- 			}
- 			bdata->irq = irq;
-diff --git a/drivers/input/keyboard/gpio_keys_polled.c b/drivers/input/keyboard/gpio_keys_polled.c
-index e6707d72210e..0ae0e53910ea 100644
---- a/drivers/input/keyboard/gpio_keys_polled.c
-+++ b/drivers/input/keyboard/gpio_keys_polled.c
-@@ -301,6 +301,7 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
- 				return dev_err_probe(dev, PTR_ERR(bdata->gpiod),
- 						     "failed to get gpio\n");
- 			}
-+#ifdef CONFIG_GPIOLIB_LEGACY
- 		} else if (gpio_is_valid(button->gpio)) {
- 			/*
- 			 * Legacy GPIO number so request the GPIO here and
-@@ -323,6 +324,7 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: econet,en7528-pcie
++    then:
++      properties:
++        clocks:
++          maxItems: 1
++
++        clock-names:
++          maxItems: 1
++
++        resets: false
++
++        reset-names: false
++
++        power-domains: false
++
++        mediatek,pbus-csr: false
++
++      required:
++        - phys
++        - phy-names
++
+ unevaluatedProperties: false
  
- 			if (button->active_low ^ gpiod_is_active_low(bdata->gpiod))
- 				gpiod_toggle_active_low(bdata->gpiod);
-+#endif
- 		}
- 
- 		bdata->last_state = -1;
-diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
-index a79f354bf5cb..df6dad762ec9 100644
---- a/drivers/mfd/rohm-bd71828.c
-+++ b/drivers/mfd/rohm-bd71828.c
-@@ -39,7 +39,6 @@
- 
- static struct gpio_keys_button button = {
- 	.code = KEY_POWER,
--	.gpio = -1,
- 	.type = EV_KEY,
- 	.wakeup = 1,
- };
-diff --git a/drivers/mfd/rohm-bd718x7.c b/drivers/mfd/rohm-bd718x7.c
-index ff714fd4f54d..dd774aa8828b 100644
---- a/drivers/mfd/rohm-bd718x7.c
-+++ b/drivers/mfd/rohm-bd718x7.c
-@@ -20,7 +20,6 @@
- 
- static struct gpio_keys_button button = {
- 	.code = KEY_POWER,
--	.gpio = -1,
- 	.type = EV_KEY,
- };
- 
-diff --git a/include/linux/gpio_keys.h b/include/linux/gpio_keys.h
-index 80fa930b04c6..e8d6dc290efb 100644
---- a/include/linux/gpio_keys.h
-+++ b/include/linux/gpio_keys.h
-@@ -25,7 +25,9 @@ struct device;
-  */
- struct gpio_keys_button {
- 	unsigned int code;
-+#ifdef CONFIG_GPIOLIB_LEGACY
- 	int gpio;
-+#endif
- 	int active_low;
- 	const char *desc;
- 	unsigned int type;
+ examples:
 -- 
 2.39.5
 

@@ -1,57 +1,78 @@
-Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3E2423A6C;
-	Wed, 20 May 2026 18:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD663FC5DA;
+	Wed, 20 May 2026 18:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779302339; cv=none; b=onne1VkS3D+VlhSyaFwDp853ADWK1jW4EnczETvMM/2bo6oCvpHaib10WLRwskDd8WCmb5zELoR44930t3ZtvDYPIzTv9yJNOFIY4SIT3PPMPlW2+M4KJgT5WKmvTw6zAE3KDwtEH3bu8Zg5sFKcAQhUPMu9zVGYj5+TWkBvT8M=
+	t=1779302340; cv=none; b=uSz+uL0b9KPh1Z7SqgP722Wncj2SFa1eh9BXp3hJ+FibtJP972zl5ONGrOwbIWQ+QkjyAKie9NS96GjoyMr8/pPwIUQ4wxD+WyaeciKSHKBR6xuyVjvojibP7gRiCBCMxwPKD0HTmcLyiapau6DLg4w2LPJDSq/Y5+cLtFl69q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779302339; c=relaxed/simple;
-	bh=+a3wGo8sRThJd6g5H5ApthN34xOnIrvwiId/Vy4N/UU=;
+	s=arc-20240116; t=1779302340; c=relaxed/simple;
+	bh=E3999r5PntjenilrrxvyJKJ6sUyiktWDefVKeKpvYFM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XfyCUFPTgPuqmR6hyEEsyJJd6VCIGjlQPNzNhDNUnM+XkZqnP/pCA172Zbzqelm/OfKUQOrPsgGgYmC+IuW668tj5Qus9GURe5ahgGpPv3X/V+93Zt/OC4ulumVk19d3HRbeJS2/Bfwf1mdaS423q/KJb5BMsKOi1WZK5XRPjuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=jgl9S/zb; arc=none smtp.client-ip=5.135.140.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+	 MIME-Version; b=jl+yfH4xh4c5tlDON2RHu8vH2FIBNp/SyjRkFFVVbqhZQI1I6LpdLzaBrtQlGaJCoXuhfrJV6qiZkZOjGgGNN1y2jOPXHwk3v7tpnn8atfNxiOwv5jZ5l/JxgDzJDy/q9LGaTLTGlYvsBI9VN4a99gzS2iqBKWUhIp8+cW5pzu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gu3hqgNX; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="jgl9S/zb"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 30568440E80;
-	Wed, 20 May 2026 20:38:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1779302334; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=JUupb00qUDRStdXnj1nJ2QrJYhHtRgXvfohXbm+8Fh4=;
-	b=jgl9S/zb02YvbpSWBGrl+UzPOWGyOoBohk4peKGufmcxTHyggdEy1yRZCk4BKbazxnb7Gr
-	7uOLRMgwlRGwOwyWbsydjwiFA3YI/mu66hxDPCws5iVU+iCQDhRRxR5szr4rzR/DnJ5Nki
-	1A4EuxAtn1ysJ8Y8gsIPEyLzzdH2nNRlBnajY966DKXHzBEm6RkiD4MBBSmlEMiIaKMOJz
-	02rTiSD6E99wZ3q5P5D+NYUfgC+nC8oe05bVfMtKjjJT/Qx0B2pXIUa2KoP9hM7bcas5+d
-	EVKHTtxU0AQ8oOItLNvUOOMcV791Me3UDlj55X4tO5QSbcb9y2HJQWuvewzJRQ==
-From: Caleb James DeLisle <cjd@cjdns.fr>
-To: linux-pci@vger.kernel.org
-Cc: linux-mips@vger.kernel.org,
-	naseefkm@gmail.com,
-	ryder.lee@mediatek.com,
-	helgaas@kernel.org,
-	lpieralisi@kernel.org,
-	kwilczynski@kernel.org,
-	mani@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	ansuelsmth@gmail.com,
-	linux-mediatek@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
-	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v8 1/3] PCI: mediatek: Use actual physical address instead of virt_to_phys()
-Date: Wed, 20 May 2026 18:38:25 +0000
-Message-Id: <20260520183827.908243-2-cjd@cjdns.fr>
-In-Reply-To: <20260520183827.908243-1-cjd@cjdns.fr>
-References: <20260520183827.908243-1-cjd@cjdns.fr>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gu3hqgNX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C5D1F00897;
+	Wed, 20 May 2026 18:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779302339;
+	bh=Auptu0K+asnu6CU+7KJoQdTihUUvVzhdRIPr56LBhZc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gu3hqgNXSSBWSAzl/z5ypBW6SYI9CfaDgDSK+ol9/yh3aXlQqypeyxw5U0WBnSPdp
+	 2iiS8Xhxq8S9lt0lcYHEfu5LP5ONnku5RNmA56DjbtuA9NEblnYvnKQPP+9ev+vn9p
+	 bUcoLs3Gx0/qfFzNGjiaz+szHCox6BJoGmac9lWtkK6jpILryIfbPFBRU7BS4PBCLg
+	 J81yFkxfiWCP+HCQaY1nrR9iqiguW6REipqVDMOOyry/Gt0/VcQ6teqSz7EfN4HIp1
+	 1n6VbeTwTsDVVJBTKewkiBwr7cG7zNyX2VwF7BF/+UJ/DnJbOQh46qHApQCUufqTrt
+	 51N8Flosokb+Q==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-gpio@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christian Lamparter <chunkeey@googlemail.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Andreas Kemnade <andreas@kemnade.info>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Roger Quadros <rogerq@kernel.org>,
+	Tony Lindgren <tony@atomide.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Lee Jones <lee@kernel.org>,
+	Pavel Machek <pavel@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Jonas Gorski <jonas.gorski@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-wireless@vger.kernel.org,
+	linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-leds@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 02/10] [v3] input: gpio-keys: make legacy gpiolib optional
+Date: Wed, 20 May 2026 20:38:07 +0200
+Message-Id: <20260520183815.2510387-3-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20260520183815.2510387-1-arnd@kernel.org>
+References: <20260520183815.2510387-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -59,88 +80,133 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-The driver previously used virt_to_phys() on the ioremapped register base
-(port->base) to compute the MSI message address. Using virt_to_phys() on an
-IO mapped address is incorrect because it expects a kernel virtual address.
+Most users of gpio-keys and gpio-keys-polled use modern gpiolib
+interfaces, but there are still number of ancient sh, arm32 and x86
+machines that have never been converted.
 
-To fix it, store the physical start of the I/O register region in
-mtk_pcie_port->phys_base and use it to build the MSI address. This replaces
-the incorrect virt_to_phys() usage and ensures MSI addresses are generated
-correctly.
+Add an #ifdef block for the parts of the driver that are only used on
+those legacy machines.
 
-Fixes: 43e6409db64d ("PCI: mediatek: Add MSI support for MT2712 and MT7622")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
+The two Rohm PMIC drivers use a gpio-keys device without an actual GPIO,
+passing an IRQ number instead. In order to keep this working both with
+and with CONFIG_GPIOLIB_LEGACY, change the gpio-keys driver to ignore
+the gpio number if an IRQ is passed.
+
+Link: https://lore.kernel.org/all/b3c94552-c104-42e3-be15-7e8362e8039e@gmail.com/
+Link: https://lore.kernel.org/all/afJXG4_rtaj3l2Dk@google.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/pci/controller/pcie-mediatek.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+v3: resend
+v2: skip the fake GPIO number passing from mfd
 
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index 75722524fe74..c503fbd774d0 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -175,6 +175,7 @@ struct mtk_pcie_soc {
- /**
-  * struct mtk_pcie_port - PCIe port information
-  * @base: IO mapped register base
-+ * @phys_base: Physical address of the I/O register base region
-  * @list: port list
-  * @pcie: pointer to PCIe host info
-  * @reset: pointer to port reset control
-@@ -196,6 +197,7 @@ struct mtk_pcie_soc {
+The removal of the arm platforms using this is not yet going to happen
+for 7.2, and Dmitry's changes for the Rohm drivers have not yet
+made it into linux-next as of 2026-05-20, so for the moment I
+would still like to see this patch get merged, even if we are
+closing in on completely removing the legacy gpio support in
+the gpio_keys driver, so we can make CONFIG_GPIOLIB_LEGACY
+default-disabled sooner.
+---
+ drivers/input/keyboard/gpio_keys.c        | 7 ++++---
+ drivers/input/keyboard/gpio_keys_polled.c | 2 ++
+ drivers/mfd/rohm-bd71828.c                | 1 -
+ drivers/mfd/rohm-bd718x7.c                | 1 -
+ include/linux/gpio_keys.h                 | 2 ++
+ 5 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
+index e19617485679..d748a54dc51c 100644
+--- a/drivers/input/keyboard/gpio_keys.c
++++ b/drivers/input/keyboard/gpio_keys.c
+@@ -528,7 +528,8 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 			 */
+ 			bdata->gpiod = NULL;
+ 		}
+-	} else if (gpio_is_valid(button->gpio)) {
++#ifdef CONFIG_GPIOLIB_LEGACY
++	} else if (!button->irq && gpio_is_valid(button->gpio)) {
+ 		/*
+ 		 * Legacy GPIO number, so request the GPIO here and
+ 		 * convert it to descriptor.
+@@ -546,6 +547,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 
+ 		if (button->active_low ^ gpiod_is_active_low(bdata->gpiod))
+ 			gpiod_toggle_active_low(bdata->gpiod);
++#endif
+ 	}
+ 
+ 	if (bdata->gpiod) {
+@@ -583,8 +585,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+ 			if (irq < 0) {
+ 				error = irq;
+ 				dev_err_probe(dev, error,
+-					      "Unable to get irq number for GPIO %d\n",
+-					      button->gpio);
++					      "Unable to get irq number for GPIO\n");
+ 				return error;
+ 			}
+ 			bdata->irq = irq;
+diff --git a/drivers/input/keyboard/gpio_keys_polled.c b/drivers/input/keyboard/gpio_keys_polled.c
+index e6707d72210e..0ae0e53910ea 100644
+--- a/drivers/input/keyboard/gpio_keys_polled.c
++++ b/drivers/input/keyboard/gpio_keys_polled.c
+@@ -301,6 +301,7 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
+ 				return dev_err_probe(dev, PTR_ERR(bdata->gpiod),
+ 						     "failed to get gpio\n");
+ 			}
++#ifdef CONFIG_GPIOLIB_LEGACY
+ 		} else if (gpio_is_valid(button->gpio)) {
+ 			/*
+ 			 * Legacy GPIO number so request the GPIO here and
+@@ -323,6 +324,7 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
+ 
+ 			if (button->active_low ^ gpiod_is_active_low(bdata->gpiod))
+ 				gpiod_toggle_active_low(bdata->gpiod);
++#endif
+ 		}
+ 
+ 		bdata->last_state = -1;
+diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
+index a79f354bf5cb..df6dad762ec9 100644
+--- a/drivers/mfd/rohm-bd71828.c
++++ b/drivers/mfd/rohm-bd71828.c
+@@ -39,7 +39,6 @@
+ 
+ static struct gpio_keys_button button = {
+ 	.code = KEY_POWER,
+-	.gpio = -1,
+ 	.type = EV_KEY,
+ 	.wakeup = 1,
+ };
+diff --git a/drivers/mfd/rohm-bd718x7.c b/drivers/mfd/rohm-bd718x7.c
+index ff714fd4f54d..dd774aa8828b 100644
+--- a/drivers/mfd/rohm-bd718x7.c
++++ b/drivers/mfd/rohm-bd718x7.c
+@@ -20,7 +20,6 @@
+ 
+ static struct gpio_keys_button button = {
+ 	.code = KEY_POWER,
+-	.gpio = -1,
+ 	.type = EV_KEY,
+ };
+ 
+diff --git a/include/linux/gpio_keys.h b/include/linux/gpio_keys.h
+index 80fa930b04c6..e8d6dc290efb 100644
+--- a/include/linux/gpio_keys.h
++++ b/include/linux/gpio_keys.h
+@@ -25,7 +25,9 @@ struct device;
   */
- struct mtk_pcie_port {
- 	void __iomem *base;
-+	phys_addr_t phys_base;
- 	struct list_head list;
- 	struct mtk_pcie *pcie;
- 	struct reset_control *reset;
-@@ -405,7 +407,7 @@ static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 	phys_addr_t addr;
- 
- 	/* MT2712/MT7622 only support 32-bit MSI addresses */
--	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
-+	addr = port->phys_base + PCIE_MSI_VECTOR;
- 	msg->address_hi = 0;
- 	msg->address_lo = lower_32_bits(addr);
- 
-@@ -520,7 +522,7 @@ static void mtk_pcie_enable_msi(struct mtk_pcie_port *port)
- 	u32 val;
- 	phys_addr_t msg_addr;
- 
--	msg_addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
-+	msg_addr = port->phys_base + PCIE_MSI_VECTOR;
- 	val = lower_32_bits(msg_addr);
- 	writel(val, port->base + PCIE_IMSI_ADDR);
- 
-@@ -953,6 +955,7 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
- 	struct mtk_pcie_port *port;
- 	struct device *dev = pcie->dev;
- 	struct platform_device *pdev = to_platform_device(dev);
-+	struct resource *res;
- 	char name[20];
- 	int err;
- 
-@@ -961,7 +964,14 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
- 		return -ENOMEM;
- 
- 	snprintf(name, sizeof(name), "port%d", slot);
--	port->base = devm_platform_ioremap_resource_byname(pdev, name);
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-+	if (!res) {
-+		dev_err(dev, "failed to get port%d base\n", slot);
-+		return -EINVAL;
-+	}
-+
-+	port->phys_base = res->start;
-+	port->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(port->base)) {
- 		dev_err(dev, "failed to map port%d base\n", slot);
- 		return PTR_ERR(port->base);
+ struct gpio_keys_button {
+ 	unsigned int code;
++#ifdef CONFIG_GPIOLIB_LEGACY
+ 	int gpio;
++#endif
+ 	int active_low;
+ 	const char *desc;
+ 	unsigned int type;
 -- 
 2.39.5
 

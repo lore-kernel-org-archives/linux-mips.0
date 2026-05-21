@@ -1,138 +1,146 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C52363C55;
-	Thu, 21 May 2026 09:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323FA37475B;
+	Thu, 21 May 2026 17:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779356692; cv=none; b=PStu+flMocwASBKo5jMsK05F0/5ljQfnJjJP38AcdVgQ7dqiNrvrc3vSMqvOh6+LZAyYVuSL53l5rJ6JXCtj9VvcbfJab0QKD02pDeGHDDg++xguu/rNl6rBtJdxlGhPVz00PLDRQE2TTsbC+CMp/XMt19GD4ko1eYbA9uREAxs=
+	t=1779384011; cv=none; b=bTjqIWWshfWGiZxEnoPjJr0A5pGXEKmQOGs1BLbLawJI+OA/dQXNnsyFo7/K66WL0ckz8+eyicHJkGmphmyfaav60gNGd6AtNJTZCQuIPZFnm31g3IM2jT4/mwe4W9AsMTtNrzqIaN0j+k/ykfjlBOHq3bsfQuWH/0jSIdjROvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779356692; c=relaxed/simple;
-	bh=2rSja1deBM1iWbRkxcvTnfwNvq3KSkNDXw0R+RFBDSE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SaTfbLKeYuNA1KGPBz0+RNetn7iL/zptkCgZKJuH8GS3eB1PD0YB74FRpGLPoXgwM1nsuJQpJt3/pqW2o7/JMOala7JNBRcyLaYyk13ZMYxZRlNMBPsKJAGFj81W77wmD0U+0XE53uhFOSqvr+NO1ismwlWxHN2MokdfSMNOe94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=V8bj1nfh; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1779384011; c=relaxed/simple;
+	bh=+a3wGo8sRThJd6g5H5ApthN34xOnIrvwiId/Vy4N/UU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=uCOO0VUlUJdD0QCHvOUC1TalBZvYLT/vbe6rGGYulUNRARHC0THkigrHlBnvvxqeE8dmV6cIH2NSqq/2jvTN0Tgwi1ZYVFdaYiMf7HFtfacZj+oKadTi7ed8b2QEWECe+gFj2KvJgV6PX4N1HRQzj9xG4fOKSlCeqCHLVQot4ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=htPWj3P4; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="V8bj1nfh"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F25A3D4F;
-	Thu, 21 May 2026 02:44:44 -0700 (PDT)
-Received: from [10.57.36.52] (unknown [10.57.36.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 339163F7B4;
-	Thu, 21 May 2026 02:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1779356689; bh=2rSja1deBM1iWbRkxcvTnfwNvq3KSkNDXw0R+RFBDSE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=V8bj1nfhEwDhWcowxYHmM7Xnhl5rgFZyeqahTQ0ZRV9mLcDf3Ozjm5MGzpI+c1910
-	 XJnMbe6wjO4t7P/70yn6macR20HahHT1WyAarLF6Wb7rYAgJ6Mt3h0WXN9SXMbK7F5
-	 uXAKXzo6njxuRMgh1oQmzIpBuzaBPmmeqI3TXRP8=
-Message-ID: <ddc7098e-5674-4f40-a46b-776c5334bda0@arm.com>
-Date: Thu, 21 May 2026 10:44:24 +0100
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="htPWj3P4"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 19C7045B38D;
+	Thu, 21 May 2026 19:20:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1779384007; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=JUupb00qUDRStdXnj1nJ2QrJYhHtRgXvfohXbm+8Fh4=;
+	b=htPWj3P4SepeKOd039P+AHbaIDwd4z7JhJf8csN7+QH/LcQJBt3sq+T6nRfv9/bXwbrgYv
+	De+6nS2LwB748PzZH0Kd5MC6mivwOaykykP5bygfUNYDDDuaicrEJyyfUupE53tKLJA+tb
+	p1QqWYn3NLMkVQhOAGLXKUPB+zaS5yZDX48M9TulOadQKsl7kh+e9tSQV/lc2jxGaRqAcN
+	NL9abXTJ/RZJL2rjiHEFC9J2+MNRc81PAvqnsjSpYr8HH9vEXDCIEwA/SevsJPzu5gO4la
+	Ti+3g+QvfCSmWEA1GcNxSXMr1ZcNrETVdG4tCwkt3OvmRsfGjJVozGZoyXX38w==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-pci@vger.kernel.org
+Cc: linux-mips@vger.kernel.org,
+	naseefkm@gmail.com,
+	ryder.lee@mediatek.com,
+	helgaas@kernel.org,
+	lpieralisi@kernel.org,
+	kwilczynski@kernel.org,
+	mani@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	ansuelsmth@gmail.com,
+	linux-mediatek@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>,
+	Caleb James DeLisle <cjd@cjdns.fr>
+Subject: [PATCH v9 1/3] PCI: mediatek: Use actual physical address instead of virt_to_phys()
+Date: Thu, 21 May 2026 17:19:49 +0000
+Message-Id: <20260521171951.1495781-2-cjd@cjdns.fr>
+In-Reply-To: <20260521171951.1495781-1-cjd@cjdns.fr>
+References: <20260521171951.1495781-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/23] iommu/fsl: use platform_device_set_of_node()
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
- Lee Jones <lee@kernel.org>, Mark Brown
- <broonie@opensource.wolfsonmicro.com>,
- Thierry Reding <thierry.reding@avionic-design.de>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Srinivas Kandagatla <srini@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vinod Koul <vkoul@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Danilo Krummrich <dakr@kernel.org>, Rob Herring <robh@kernel.org>,
- Saravana Kannan <saravanak@kernel.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- Andi Shyti <andi.shyti@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Doug Berger <opendmb@gmail.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Ulf Hansson <ulfh@kernel.org>,
- Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Matthew Brost <matthew.brost@intel.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Peter Chen <peter.chen@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Maximilian Luz <luzmaximilian@gmail.com>, Hans de Goede <hansg@kernel.org>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: brgl@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
- driver-core@lists.linux.dev, devicetree@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
- iommu@lists.linux.dev, linux-pm@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-usb@vger.kernel.org,
- linux-mips@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20260521-pdev-fwnode-ref-v1-0-88c324a1b8d2@oss.qualcomm.com>
- <20260521-pdev-fwnode-ref-v1-12-88c324a1b8d2@oss.qualcomm.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <20260521-pdev-fwnode-ref-v1-12-88c324a1b8d2@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On 2026-05-21 9:36 am, Bartosz Golaszewski wrote:
-> Ahead of reworking the reference counting logic for platform devices,
-> encapsulate the assignment of the OF node for dynamically allocated
-> platform devices with the provided helper.
+From: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
 
-FWIW,
+The driver previously used virt_to_phys() on the ioremapped register base
+(port->base) to compute the MSI message address. Using virt_to_phys() on an
+IO mapped address is incorrect because it expects a kernel virtual address.
 
-Acked-by: Robin Murphy <robin.murphy@arm.com>
+To fix it, store the physical start of the I/O register region in
+mtk_pcie_port->phys_base and use it to build the MSI address. This replaces
+the incorrect virt_to_phys() usage and ensures MSI addresses are generated
+correctly.
 
-Although I'm not sure the whole lot couldn't just be replaced with 
-of_platform_device_create(), but then frankly this driver is on life 
-support anyway as it only serves one very niche VFIO use-case and it's 
-not clear whether it has any real mainline users left.
+Fixes: 43e6409db64d ("PCI: mediatek: Add MSI support for MT2712 and MT7622")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
+---
+ drivers/pci/controller/pcie-mediatek.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> ---
->   drivers/iommu/fsl_pamu.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/fsl_pamu.c b/drivers/iommu/fsl_pamu.c
-> index 25aa477a95a95cb4fa4e132727cde0a936750ee2..012839fa0d8a27cafc6a441373f4f6da794388c1 100644
-> --- a/drivers/iommu/fsl_pamu.c
-> +++ b/drivers/iommu/fsl_pamu.c
-> @@ -973,7 +973,8 @@ static __init int fsl_pamu_init(void)
->   		ret = -ENOMEM;
->   		goto error_device_alloc;
->   	}
-> -	pdev->dev.of_node = of_node_get(np);
-> +
-> +	platform_device_set_of_node(pdev, np);
->   
->   	ret = pamu_domain_init();
->   	if (ret)
-> @@ -985,12 +986,10 @@ static __init int fsl_pamu_init(void)
->   		goto error_device_add;
->   	}
->   
-> +	of_node_put(np);
->   	return 0;
->   
->   error_device_add:
-> -	of_node_put(pdev->dev.of_node);
-> -	pdev->dev.of_node = NULL;
-> -
->   	platform_device_put(pdev);
->   
->   error_device_alloc:
-> 
+diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+index 75722524fe74..c503fbd774d0 100644
+--- a/drivers/pci/controller/pcie-mediatek.c
++++ b/drivers/pci/controller/pcie-mediatek.c
+@@ -175,6 +175,7 @@ struct mtk_pcie_soc {
+ /**
+  * struct mtk_pcie_port - PCIe port information
+  * @base: IO mapped register base
++ * @phys_base: Physical address of the I/O register base region
+  * @list: port list
+  * @pcie: pointer to PCIe host info
+  * @reset: pointer to port reset control
+@@ -196,6 +197,7 @@ struct mtk_pcie_soc {
+  */
+ struct mtk_pcie_port {
+ 	void __iomem *base;
++	phys_addr_t phys_base;
+ 	struct list_head list;
+ 	struct mtk_pcie *pcie;
+ 	struct reset_control *reset;
+@@ -405,7 +407,7 @@ static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+ 	phys_addr_t addr;
+ 
+ 	/* MT2712/MT7622 only support 32-bit MSI addresses */
+-	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
++	addr = port->phys_base + PCIE_MSI_VECTOR;
+ 	msg->address_hi = 0;
+ 	msg->address_lo = lower_32_bits(addr);
+ 
+@@ -520,7 +522,7 @@ static void mtk_pcie_enable_msi(struct mtk_pcie_port *port)
+ 	u32 val;
+ 	phys_addr_t msg_addr;
+ 
+-	msg_addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
++	msg_addr = port->phys_base + PCIE_MSI_VECTOR;
+ 	val = lower_32_bits(msg_addr);
+ 	writel(val, port->base + PCIE_IMSI_ADDR);
+ 
+@@ -953,6 +955,7 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
+ 	struct mtk_pcie_port *port;
+ 	struct device *dev = pcie->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
++	struct resource *res;
+ 	char name[20];
+ 	int err;
+ 
+@@ -961,7 +964,14 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
+ 		return -ENOMEM;
+ 
+ 	snprintf(name, sizeof(name), "port%d", slot);
+-	port->base = devm_platform_ioremap_resource_byname(pdev, name);
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
++	if (!res) {
++		dev_err(dev, "failed to get port%d base\n", slot);
++		return -EINVAL;
++	}
++
++	port->phys_base = res->start;
++	port->base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(port->base)) {
+ 		dev_err(dev, "failed to map port%d base\n", slot);
+ 		return PTR_ERR(port->base);
+-- 
+2.39.5
 

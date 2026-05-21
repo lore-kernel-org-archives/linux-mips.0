@@ -1,47 +1,47 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02D4395AEB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA13395AEA;
 	Thu, 21 May 2026 06:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779346405; cv=none; b=QF+QWKapj6CWmXzgj3MQQ+Aph++yMUPe6SdFR8ruxR3GYsBXuMEc9m9C7cLgF56sBeon1uZtPjq7RH1QEamJMygInx6KXNqaXO0yD37/WfJD5USON6HTX34UCWJHCXb4rfCYq56PGGX8OYrgMxP/PlPAJpWpCjAJWkyDy3qMnfY=
+	t=1779346406; cv=none; b=GT7gdk4HLLU18k7b5YlUC6Md1VQf0Jns/qo83P0JcI71RBWUezIGJGbUVeGdEtF0MBPR9nUXvkeG+k+oRrk9G6/g8QFzbEJREN603f3loWdd0a6hWew5naO6QNyNx+HbUxCEwWU8VlOy52tvV/xcT+sNN/6I8JiSrLCsDVZcJMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779346405; c=relaxed/simple;
-	bh=s9pAGY/eIOzEZ2CnnlmklgDRvVjcE7ayC9Y8a43CMZM=;
+	s=arc-20240116; t=1779346406; c=relaxed/simple;
+	bh=k5y6mhg47PkKW3NG3mli/fa0fpt+8vCI0NkWxuFN+Jc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WsK9WkyelsBnak1t4fXuJQM1sx6yJAVt7yO2CUiyVQheUWYdQCeR6Gpqf4Ex7ufNJhuMZIklR/bVVB9GPtcrmKKQr31wWBj6A6m8uk6ALyKIys6/ms/KAiOSjeipRszyyrY4p/WRM9nazitvTUnHAmcy8dC+yxInkYQvDAtZuig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jKENBybm; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TBcl2xPb; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=fIWF7drxu/m+1NhY4dioO3X0HToi4ajYnCIZewOYRdDG9cUAIR+k6jAmIOrBAL+ibu9iFk8grpJ7TvXipFoj6gIuW3fAXkH+AoXVePGzWv7vDEMPl/g7F7C3GniKQBpUad9XNI1WLxHcQWD+N9psoShlOSs1MBzU26DGulLfMaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=05dZLUbX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2FeQHdOE; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jKENBybm";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TBcl2xPb"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="05dZLUbX";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2FeQHdOE"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1779346402;
+	s=2020; t=1779346401;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7GuSCYZvVyqZH0xl580lwlvyKaoH6Mwa4WGhLxtj9eI=;
-	b=jKENBybmBjVsSBpJey/WKyvwv2/DQ0JdaLtZ1DUkY8MGOZkAHI2nZPcehnMCZ+oXS2gPgu
-	g9vmZM+H6ZwaO9cW3IQ90E/J6XoSJGGDC4gdmqgfhDwI/hKaUrjOQ2SFOgwWGQhiudvM13
-	Zv0V6P+Zt2ew/OhjYRA5PhkoBlK+O3LPgeDf01hlBkw4kECQ4Y7Kgq8CenzQswwRDz/NLj
-	JpjYvBW0i8Uz00pJ8EN6Jk1G/qFDLipLRyK5T0AsTEb9SmkXBSTPEW3z5IMngD7HojFbiw
-	YGIzybNUELpL6XpddPai3Kw1TNM95nvmHWNlgaIw6z6umbn7uY+P1245ykR/ag==
+	bh=Nf18gitBVQzFrXc+yGpE5m2ORwt5+KE3lHgDXrZnDvI=;
+	b=05dZLUbXDfNjQcb58/z04BHAZ35W6uScmEeHXYKYo3TpdBdbEQv6iUOUock338mKpul+MD
+	BlN10Q9dNXC5B8Z8z3NWpVvMKtk4InI2nkgiHeDbc0CJX6tjN7oONqXe5r6iRYSqPb/0TW
+	6SGkHW5YjFi2f2kHtB653oyNm4eHBa1zKSJUtEowdW4Eaz4EvJjWQA4k3+4L6fkaNea9l2
+	rdj8Xon/64XL4LQOBjXw3Dz+Q4taou5f6+DCT7Mh2y/sB0oOCVgzZJ9CsI+H6bc/LL0gIi
+	PfezzylK/eXmrqooxHtCG82doi2cFGC9MM/Kjtss7NTH5MP6u6hdYz0f3Huwjw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1779346402;
+	s=2020e; t=1779346401;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7GuSCYZvVyqZH0xl580lwlvyKaoH6Mwa4WGhLxtj9eI=;
-	b=TBcl2xPbWICwKVthfzn2uat++72JF/TjYcHJzpNX/D3lDm7qdQNiJP9YZ1IfLfRwgvmhCc
-	JXHHT/f3dFnsjYCA==
-Date: Thu, 21 May 2026 08:53:21 +0200
-Subject: [PATCH 7/9] MIPS: VDSO: Fold MIPS_DISABLE_VDSO into
- MIPS_GENERIC_GETTIMEOFDAY
+	bh=Nf18gitBVQzFrXc+yGpE5m2ORwt5+KE3lHgDXrZnDvI=;
+	b=2FeQHdOENNmtaPGpadOc6UG6KKuHGecy2zGtY0MspZTkPf8Gv0rwrqMtCfOrp7g4bFedCk
+	OBEKWsT7IpN68cAw==
+Date: Thu, 21 May 2026 08:53:19 +0200
+Subject: [PATCH 5/9] MIPS: csrc-r4k: Only use VDSO_CLOCKMODE_R4K when it is
+ a available
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -50,7 +50,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260521-vdso-mips-kconfig-v1-7-2f79dcd6c78f@linutronix.de>
+Message-Id: <20260521-vdso-mips-kconfig-v1-5-2f79dcd6c78f@linutronix.de>
 References: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
 In-Reply-To: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
@@ -60,107 +60,41 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=3201;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=1064;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=s9pAGY/eIOzEZ2CnnlmklgDRvVjcE7ayC9Y8a43CMZM=;
- b=Rfr45FUvI2CbS6/tcMHH97hJEfI+HXnBhznhNNYCW947ZpUENm8Gztm68i0fOsM4mxlMf1WmN
- 17Nd/9cK++gAE3iP07Yi7c34Si5shwL7IK13dQBs+7ABzh5RDCfH2hl
+ bh=k5y6mhg47PkKW3NG3mli/fa0fpt+8vCI0NkWxuFN+Jc=;
+ b=oLxSimcsSXVDwxxn3b/5fZ5B4bE8sgVcmfO8KAYDVqabYPzVWDCJ6VqZhsl2uON4MlXqrWsqS
+ luZJ+NBOAetC8PTu0cF7DbLKZVgI8Ih6OhutRvOR9pfdc/64bAHilwM
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-The currently used MIPS_DISABLE_VDSO will disable only the userspace
-bits of the time-related vDSO. The kernel part is still pointlessly
-built and running.
+VDSO_CLOCKMODE_R4K is only defined if CONFIG_GENERIC_GETTIMEOFDAY is
+enabled. Right now this is always the case, but it will change soon.
 
-Remove MIPS_DISABLE_VDSO and fold its usecase into
-MIPS_GENERIC_GETTIMEOFDAY, which works correctly.
+Prepare for the potential unavailability of VDSO_CLOCKMODE_R4K.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/mips/Kconfig         | 6 ++++--
- arch/mips/vdso/Kconfig    | 6 ------
- arch/mips/vdso/Makefile   | 7 ++-----
- arch/mips/vdso/vdso.lds.S | 2 +-
- 4 files changed, 7 insertions(+), 14 deletions(-)
+ arch/mips/kernel/csrc-r4k.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3a01cc85bd6a..8a3bd431b16a 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3172,6 +3172,10 @@ config MIPS_GENERIC_GETTIMEOFDAY
- 	select GENERIC_GETTIMEOFDAY
- 	select GENERIC_TIME_VSYSCALL
- 	select HAVE_GENERIC_VDSO
-+	# GCC (at least up to version 9.2) appears to emit function calls that make use
-+	# of the GOT when targeting microMIPS, which we can't use in the VDSO due to
-+	# the lack of relocations. As such, we disable the VDSO for microMIPS builds.
-+	depends on !CPU_MICROMIPS
- 
- menu "CPU Power Management"
- 
-@@ -3184,5 +3188,3 @@ source "drivers/cpuidle/Kconfig"
- endmenu
- 
- source "arch/mips/kvm/Kconfig"
--
--source "arch/mips/vdso/Kconfig"
-diff --git a/arch/mips/vdso/Kconfig b/arch/mips/vdso/Kconfig
-deleted file mode 100644
-index 70140248da72..000000000000
---- a/arch/mips/vdso/Kconfig
-+++ /dev/null
-@@ -1,6 +0,0 @@
--# GCC (at least up to version 9.2) appears to emit function calls that make use
--# of the GOT when targeting microMIPS, which we can't use in the VDSO due to
--# the lack of relocations. As such, we disable the VDSO for microMIPS builds.
--
--config MIPS_DISABLE_VDSO
--	def_bool CPU_MICROMIPS
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 69d4593f64fe..00d3ba2c482a 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -4,7 +4,7 @@
- # Include the generic Makefile to check the built vdso.
- include $(srctree)/lib/vdso/Makefile.include
- 
--obj-vdso-y := elf.o vgettimeofday.o sigreturn.o
-+obj-vdso-y := elf.o sigreturn.o
- 
- # Common compiler flags between ABIs.
- ccflags-vdso := \
-@@ -36,6 +36,7 @@ aflags-vdso := $(ccflags-vdso) \
- 	-D__ASSEMBLY__ -Wa,-gdwarf-2
- 
- ifneq ($(c-gettimeofday-y),)
-+obj-vdso-y += vgettimeofday.o
- CFLAGS_vgettimeofday.o = -include $(c-gettimeofday-y)
- 
- # config-n32-o32-env.c prepares the environment to build a 32bit vDSO
-@@ -47,10 +48,6 @@ endif
- 
- CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
- 
--ifdef CONFIG_MIPS_DISABLE_VDSO
--  obj-vdso-y := $(filter-out vgettimeofday.o, $(obj-vdso-y))
--endif
--
- # VDSO linker flags.
- ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
- 	$(filter -E%,$(KBUILD_CFLAGS)) -shared \
-diff --git a/arch/mips/vdso/vdso.lds.S b/arch/mips/vdso/vdso.lds.S
-index 5d08be3a6b85..fd263b05d3e7 100644
---- a/arch/mips/vdso/vdso.lds.S
-+++ b/arch/mips/vdso/vdso.lds.S
-@@ -94,7 +94,7 @@ PHDRS
- VERSION
- {
- 	LINUX_2.6 {
--#ifndef CONFIG_MIPS_DISABLE_VDSO
+diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
+index 59eca397f297..7c431119bb14 100644
+--- a/arch/mips/kernel/csrc-r4k.c
++++ b/arch/mips/kernel/csrc-r4k.c
+@@ -130,8 +130,11 @@ int __init init_r4k_clocksource(void)
+ 	 * R2 onwards makes the count accessible to user mode so it can be used
+ 	 * by the VDSO (HWREna is configured by configure_hwrena()).
+ 	 */
+-	if (cpu_has_mips_r2_r6 && rdhwr_count_usable())
++	if (cpu_has_mips_r2_r6 && rdhwr_count_usable()) {
 +#ifdef CONFIG_GENERIC_GETTIMEOFDAY
- 	global:
- 		__vdso_clock_gettime;
- #ifdef CONFIG_MIPS_CLOCK_VSYSCALL
+ 		clocksource_mips.vdso_clock_mode = VDSO_CLOCKMODE_R4K;
++#endif
++	}
+ 
+ 	clocksource_register_hz(&clocksource_mips, mips_hpt_frequency);
+ 
 
 -- 
 2.54.0

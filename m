@@ -1,46 +1,44 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD80D385D93;
-	Thu, 21 May 2026 06:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D55D2BE034;
+	Thu, 21 May 2026 06:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779346403; cv=none; b=RZW78nnxyQSSdzXmtOR/UHteOXN8xZloBlRME5Oc17NX/U+vqPb9MCpj4BysiWv1dKGf5iIYnnodYvUNNyJUNXISnqsNXwt4KknUGdex9nRkUNBBdlG1C2goDaJH8ZsFi8vaBD+8RrllsITdnCm3Uc1ZzH3vDubH33gok92n07o=
+	t=1779346403; cv=none; b=JBQL4rM7UBGwyE4jzIbL8iRvcUZXI6no0S86xjv8LHF3AYK9ccWSWrRsQzuoE7WxOIsTWsYwhws1reGQdGLZ70pqpLzzl7IjtHaY44dS4EcfKq7f42o+3t7xFdiN1pHebzM6cuMzpPBlhSed893vMVouz40Z2NuvQooCjl1sWbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779346403; c=relaxed/simple;
-	bh=2Rhl6KhXOzAWSyrFsPC5B2D8s8CUrLEMqaxta4InEX0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BMX18ZCljRAfv9u2x+hYRxpOyMGuExUbY4AdHbbLXEMzojeVYmt1/OQQQcp6dt+XrsNr1+kElOMEd1lbCr4UbAY2yYdoW/1vNwyF/n6ZOI99Ei4Zn/Wvn9IU98MadIsGk8osCU9ohugHq4qQ92YrMbPlQ3qYpS/fGokAJkt14iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wUrAzzdR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=z6b8T3PW; arc=none smtp.client-ip=193.142.43.55
+	bh=yTmG4kpTX3BSV2NvGKW4yDvxCLXU/0LeZ6467ssf/sI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qLj5P/q3WUYzKI0lwOdTDwtQ3qWho45d/GCGaic4+j4u0QCbLmhpfU5XxuGhCQrN25wKWA+4mseZ3ofONxXOYdHHpgFI5jVYCYNehennnnqNgX0pW+CrEi2fQOVNUyDhRi2YzBlWDQ82i4/G1HrXfSg+C9nxXRZe4RdfvDAhg1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fboL8oE6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=L5KQBoR7; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wUrAzzdR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="z6b8T3PW"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fboL8oE6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="L5KQBoR7"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1779346400;
+	s=2020; t=1779346399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Svw1+W0VEOuo1iCigxaI1rSxxspHZtHWaoeRgwTpz40=;
-	b=wUrAzzdRMLWPUmEGsoD+9Nu3durxRrIcYHa5Sxh6tvVvllTPUwgKtNN7jhBWtpF92n7Vii
-	4HMuh9LblippOU6dOvnM40c1ObNAzpaCWkMSD9dHDC0os4nHJ/QJIeAbPhy5X9leaUsTQ7
-	1623T9Gs/e1X6GARgd8CgG3ip/K5kooyzFowWoiyv+ADsxS5OLC6hJbT0yxfdpWAFbto2e
-	72jyS7gqNt+aMHEEN3sevSY0ZWdHHTDotb8Skh2FBtfz7nW3YD5a35qPw4kytFF0lYOEvn
-	/smqxDboygOmqgfuYvIXBVVuenmfkirR6gFUnaiDMnty/PoUj+drrfEkSuRGjg==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5JphOcis7jLuwvBLQATLEreR0iKin89W8Yeqx09Ok2A=;
+	b=fboL8oE64RQ/AwEQ11s/m3R7y9BAb2ntRhL1YAhNGbq/Ctl3F+i6SU7ODMB+W/K0QEDnQ1
+	OAK54O+6qIxkY8aMfSnhNdaNW2e/litgZK0arbTz0b4NB0Ym7Xr7O8h3A3kaXhXfh7va+O
+	+Z1k73NvtRJsh+2xgHGmTS9UAhTEBLMw/dmfGBj/8hYpqxPm9kJe1HNSM3DC/aDyR0OyzK
+	GBgR4o0cDvXYVkvmGxbMK8R9GWQWde/V4JO7Zk33oxdIwNmdXRubgzSNzJOTOsPjr0vsiB
+	AdlHKLlavDjllw05/5BJWLULlxQuLPEavLJFXfahM0bCCWVwUkoK11a5oXzYeA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1779346400;
+	s=2020e; t=1779346399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Svw1+W0VEOuo1iCigxaI1rSxxspHZtHWaoeRgwTpz40=;
-	b=z6b8T3PWxYjxsCCs+OWtkqhRm4eImnD+jD2TXra/+1+T+CCPEU4t+GpH5csS/IaS6++Wur
-	2OQQRTct9mK2NqDw==
-Date: Thu, 21 May 2026 08:53:17 +0200
-Subject: [PATCH 3/9] MIPS: Introduce Kconfig MIPS_GENERIC_GETTIMEOFDAY
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5JphOcis7jLuwvBLQATLEreR0iKin89W8Yeqx09Ok2A=;
+	b=L5KQBoR7uFhTyGCHus/UlGnYpUPoAPNVoanUcfMpsRDwlaoUG1sUOduWKkitCvB8O3C9FC
+	jLYHcTQlDEsPqYCg==
+Subject: [PATCH 0/9] MIPS: VDSO: Clean up vDSO Kconfig
+Date: Thu, 21 May 2026 08:53:14 +0200
+Message-Id: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,9 +47,10 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260521-vdso-mips-kconfig-v1-3-2f79dcd6c78f@linutronix.de>
-References: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
-In-Reply-To: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MSwqAMAwA0atI1gbqpyJeRVyoSTWIrTRQBPHuF
+ pdvMfOAchRWGIoHIidRCT6jKgtY99lvjELZUJu6M7bqMZEGPOVSPNbgnWxIRK3tm8W6hiF3V2Q
+ n9/8cp/f9ALCxeQVjAAAA
+X-Change-ID: 20260518-vdso-mips-kconfig-ddd4583b5f3e
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
  Daniel Lezcano <daniel.lezcano@kernel.org>, 
  Thomas Gleixner <tglx@kernel.org>, Andy Lutomirski <luto@kernel.org>, 
@@ -59,57 +58,52 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=1327;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=1924;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=2Rhl6KhXOzAWSyrFsPC5B2D8s8CUrLEMqaxta4InEX0=;
- b=jj1zCb1zeSR2FBJed73F5dnKJlFdAW8RRbh8qAvLUkHFwYFN+1e/Ki5Itxgy88g0oilWxsezw
- 1id0KswTVeDDlUaYYzngQRtNzOAq9n25TBnC7PJIWLVhe3H2rHMltvh
+ bh=yTmG4kpTX3BSV2NvGKW4yDvxCLXU/0LeZ6467ssf/sI=;
+ b=whDHl+wJiIEtykUeJITL8YWlssS5m7LcTZmT47Z6ARs/ZTFOtMG0iX7VnzQWiN4+r2PddoQCb
+ Vd4KteNiTT6DnMajLb3fj6niolJEYx8nu5O50Qv+H5HcJAn67UV7P8N
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-The logic to enable the generic vDSO Kconfig symbols is about to become
-more complex.
+MIPS contains multiple different, incomplete methods to disable the
+time-related vDSO bits. Unify them and make them work correctly.
 
-Introduce a new helper symbol to keep the configuration readable.
+This can go through either the vDSO or MIPS tree.
+There will be a conflict with one of my other serieses [0].
+It is trivial to resolve, remove all instances of GENERIC_TIME_VSYSCALL.
+
+[0] https://lore.kernel.org/lkml/20260519-vdso-generic_time_vsyscal-v1-0-5c2a5905d5f5@linutronix.de/
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/mips/Kconfig | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Thomas Weißschuh (9):
+      MAINTAINERS: Add include/linux/vdso_datastore.h to vDSO block
+      vdso/datastore: Always provide symbol declarations
+      MIPS: Introduce Kconfig MIPS_GENERIC_GETTIMEOFDAY
+      MIPS: VDSO: Only map the data pages when the vDSO is used
+      MIPS: csrc-r4k: Only use VDSO_CLOCKMODE_R4K when it is a available
+      clocksource/drivers/mips-gic-timer: Only use VDSO_CLOCKMODE_GIC when it is a available
+      MIPS: VDSO: Fold MIPS_DISABLE_VDSO into MIPS_GENERIC_GETTIMEOFDAY
+      MIPS: VDSO: Gate microMIPS restriction on GCC version
+      MIPS: VDSO: Fold MIPS_CLOCK_VSYSCALL into MIPS_GENERIC_GETTIMEOFDAY
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 4364f3dba688..af610af7ed08 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -38,7 +38,6 @@ config MIPS
- 	select GENERIC_BUILTIN_DTB if BUILTIN_DTB
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
--	select GENERIC_GETTIMEOFDAY
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_ISA_DMA if EISA
-@@ -51,7 +50,6 @@ config MIPS
- 	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_IDLE_POLL_SETUP
--	select GENERIC_TIME_VSYSCALL
- 	select GUP_GET_PXX_LOW_HIGH if CPU_MIPS32 && PHYS_ADDR_T_64BIT
- 	select HAS_IOPORT if !NO_IOPORT_MAP || ISA
- 	select HAVE_ARCH_COMPILER_H
-@@ -3170,6 +3168,11 @@ endmenu
- config MIPS_EXTERNAL_TIMER
- 	bool
- 
-+config MIPS_GENERIC_GETTIMEOFDAY
-+	def_bool y
-+	select GENERIC_GETTIMEOFDAY
-+	select GENERIC_TIME_VSYSCALL
-+
- menu "CPU Power Management"
- 
- if CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
+ MAINTAINERS                          |  1 +
+ arch/mips/Kconfig                    | 19 +++++++++++--------
+ arch/mips/kernel/csrc-r4k.c          |  5 ++++-
+ arch/mips/kernel/vdso.c              | 12 +++++++-----
+ arch/mips/vdso/Kconfig               |  6 ------
+ arch/mips/vdso/Makefile              |  7 ++-----
+ arch/mips/vdso/vdso.lds.S            |  4 +---
+ arch/mips/vdso/vgettimeofday.c       | 20 --------------------
+ drivers/clocksource/mips-gic-timer.c |  2 ++
+ include/linux/vdso_datastore.h       |  2 +-
+ 10 files changed, 29 insertions(+), 49 deletions(-)
+---
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+change-id: 20260518-vdso-mips-kconfig-ddd4583b5f3e
 
--- 
-2.54.0
+Best regards,
+--  
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 

@@ -1,47 +1,46 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA13395AEA;
-	Thu, 21 May 2026 06:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87667395AC4;
+	Thu, 21 May 2026 06:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779346406; cv=none; b=GT7gdk4HLLU18k7b5YlUC6Md1VQf0Jns/qo83P0JcI71RBWUezIGJGbUVeGdEtF0MBPR9nUXvkeG+k+oRrk9G6/g8QFzbEJREN603f3loWdd0a6hWew5naO6QNyNx+HbUxCEwWU8VlOy52tvV/xcT+sNN/6I8JiSrLCsDVZcJMo=
+	t=1779346406; cv=none; b=EkygCNCfjf0QY9jwbNr6A4CuRprxQtRCzNXU4TTFpZfn6P37/OKtT2g+E1cjS+ae3P7i75//4mnj5PEaYQ6z8+s3AeNr8SFIVpsWzfbX4pKN0J4uQ4aU3naHyqwTRpnYe54QdH+97bXy/iP+9GCu32yeIuXF9rp4ajizMx1XjfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779346406; c=relaxed/simple;
-	bh=k5y6mhg47PkKW3NG3mli/fa0fpt+8vCI0NkWxuFN+Jc=;
+	bh=IOgkgRMYHaQ3lfYPsXHLHKq0L7IMnU3l5oMD1rpCKr8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fIWF7drxu/m+1NhY4dioO3X0HToi4ajYnCIZewOYRdDG9cUAIR+k6jAmIOrBAL+ibu9iFk8grpJ7TvXipFoj6gIuW3fAXkH+AoXVePGzWv7vDEMPl/g7F7C3GniKQBpUad9XNI1WLxHcQWD+N9psoShlOSs1MBzU26DGulLfMaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=05dZLUbX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2FeQHdOE; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=EDwSF33ZaYngtsVezn5NZW+I+AfJGiZmBhZoe+yH94njwvKPKciiTWaie3Pi7KdmrcdcO237/vvOP2m3u/wOYJU+0CiznAQ2Kr0qvtO83/YHp7NhbuJ4mbKfG3+K37bMC5r4CYJ3GTOvkDbiapqTNHcEtgMdfs0YjFVp3mUKqqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QE1k7C8v; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=itZw1hpJ; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="05dZLUbX";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2FeQHdOE"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QE1k7C8v";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="itZw1hpJ"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1779346401;
+	s=2020; t=1779346403;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nf18gitBVQzFrXc+yGpE5m2ORwt5+KE3lHgDXrZnDvI=;
-	b=05dZLUbXDfNjQcb58/z04BHAZ35W6uScmEeHXYKYo3TpdBdbEQv6iUOUock338mKpul+MD
-	BlN10Q9dNXC5B8Z8z3NWpVvMKtk4InI2nkgiHeDbc0CJX6tjN7oONqXe5r6iRYSqPb/0TW
-	6SGkHW5YjFi2f2kHtB653oyNm4eHBa1zKSJUtEowdW4Eaz4EvJjWQA4k3+4L6fkaNea9l2
-	rdj8Xon/64XL4LQOBjXw3Dz+Q4taou5f6+DCT7Mh2y/sB0oOCVgzZJ9CsI+H6bc/LL0gIi
-	PfezzylK/eXmrqooxHtCG82doi2cFGC9MM/Kjtss7NTH5MP6u6hdYz0f3Huwjw==
+	bh=2cKrJiS3UcZSMKGxMeqts0l6bn/r7+nHO0AACNyvkoA=;
+	b=QE1k7C8v76QXwO1c9oghXScAsvRL1c2JqbN2K8PVPAQmRXCVjLRiWUk1Qtox5+kb83YmzO
+	4iDxM2xBlvN4QyAKXjAeumsNQp+1rA56BuH52IgUHGezMWdQ0VSWDIel2Ll0ZoKWae4BKI
+	Vdbpn/2SZARdZxIYn/Qmx+aCSDTMrlN2viCEdSIG7RLiPGe9yvZNfUPT7Z87yYjxddVaRV
+	umJ5MSD/KdNxOSFaYnYNEcTwOz0tJNxVN+kpc/n7KkMIbXlOwv7MfMnOIs2kW+FdNz1wAF
+	tL5DywTDN79Am7YqoD7aark2pFhi0yBziJWhmUI3AZNO5AJnj4IcOtbkCbHYiA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1779346401;
+	s=2020e; t=1779346403;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nf18gitBVQzFrXc+yGpE5m2ORwt5+KE3lHgDXrZnDvI=;
-	b=2FeQHdOENNmtaPGpadOc6UG6KKuHGecy2zGtY0MspZTkPf8Gv0rwrqMtCfOrp7g4bFedCk
-	OBEKWsT7IpN68cAw==
-Date: Thu, 21 May 2026 08:53:19 +0200
-Subject: [PATCH 5/9] MIPS: csrc-r4k: Only use VDSO_CLOCKMODE_R4K when it is
- a available
+	bh=2cKrJiS3UcZSMKGxMeqts0l6bn/r7+nHO0AACNyvkoA=;
+	b=itZw1hpJ0TfbdymjailfMQy+VZqr+PYC0cmCmKUuTErM1oLCdky1H9aytws18nomq8xWX/
+	kedVXbJ/+pXg6XDw==
+Date: Thu, 21 May 2026 08:53:22 +0200
+Subject: [PATCH 8/9] MIPS: VDSO: Gate microMIPS restriction on GCC version
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -50,7 +49,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260521-vdso-mips-kconfig-v1-5-2f79dcd6c78f@linutronix.de>
+Message-Id: <20260521-vdso-mips-kconfig-v1-8-2f79dcd6c78f@linutronix.de>
 References: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
 In-Reply-To: <20260521-vdso-mips-kconfig-v1-0-2f79dcd6c78f@linutronix.de>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
@@ -60,40 +59,36 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=1064;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779346397; l=890;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=k5y6mhg47PkKW3NG3mli/fa0fpt+8vCI0NkWxuFN+Jc=;
- b=oLxSimcsSXVDwxxn3b/5fZ5B4bE8sgVcmfO8KAYDVqabYPzVWDCJ6VqZhsl2uON4MlXqrWsqS
- luZJ+NBOAetC8PTu0cF7DbLKZVgI8Ih6OhutRvOR9pfdc/64bAHilwM
+ bh=IOgkgRMYHaQ3lfYPsXHLHKq0L7IMnU3l5oMD1rpCKr8=;
+ b=ExOkdlxiihnC2V3Gr87Mvwv4woXg/CRlccytT71HBPNhm1PnnHZMme9FrCzMUjJIoojD0D9l0
+ 1sgSJ2kEWXPCNTmDrhRxBAXT6mF10w0bPGpbuyHPZpI9FrxMS173OEj
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-VDSO_CLOCKMODE_R4K is only defined if CONFIG_GENERIC_GETTIMEOFDAY is
-enabled. Right now this is always the case, but it will change soon.
+As explained in the comment, the problematic GOT references are only
+emitted by old versions of GCC.
 
-Prepare for the potential unavailability of VDSO_CLOCKMODE_R4K.
+Limit the restriction to those compilers.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/mips/kernel/csrc-r4k.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
-index 59eca397f297..7c431119bb14 100644
---- a/arch/mips/kernel/csrc-r4k.c
-+++ b/arch/mips/kernel/csrc-r4k.c
-@@ -130,8 +130,11 @@ int __init init_r4k_clocksource(void)
- 	 * R2 onwards makes the count accessible to user mode so it can be used
- 	 * by the VDSO (HWREna is configured by configure_hwrena()).
- 	 */
--	if (cpu_has_mips_r2_r6 && rdhwr_count_usable())
-+	if (cpu_has_mips_r2_r6 && rdhwr_count_usable()) {
-+#ifdef CONFIG_GENERIC_GETTIMEOFDAY
- 		clocksource_mips.vdso_clock_mode = VDSO_CLOCKMODE_R4K;
-+#endif
-+	}
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 8a3bd431b16a..d545a50c4bd5 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -3175,7 +3175,7 @@ config MIPS_GENERIC_GETTIMEOFDAY
+ 	# GCC (at least up to version 9.2) appears to emit function calls that make use
+ 	# of the GOT when targeting microMIPS, which we can't use in the VDSO due to
+ 	# the lack of relocations. As such, we disable the VDSO for microMIPS builds.
+-	depends on !CPU_MICROMIPS
++	depends on !(CPU_MICROMIPS && CC_IS_GCC && GCC_VERSION < 90300)
  
- 	clocksource_register_hz(&clocksource_mips, mips_hpt_frequency);
+ menu "CPU Power Management"
  
 
 -- 

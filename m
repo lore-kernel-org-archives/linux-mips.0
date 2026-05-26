@@ -1,29 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52D33FFAC9;
-	Tue, 26 May 2026 14:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FAB4014B2;
+	Tue, 26 May 2026 14:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779807073; cv=none; b=cm9YNnyZFBVst48hkehHlZGGd+mw9909//YRq6sNrnDMLTilHWArvjQoV9Z8i7peTna0N/37cge+zsALosWXaT5UJzgeqFiN0t/KHCcpZmDVYOArDqJX0cxM3eTojpm/5SYk9MBxwyJISGkMcR9paVqoMv1Wll6PghdfTd60RAM=
+	t=1779807073; cv=none; b=EhuUDB4farqx9Drxy3azIXExtz3TxIYKv+Hgp7bquHgCw9hmD+q2fdCFFiFvOY9QZQf5cRZPiIx8ODfOKsSanFkbDH1GKg54flv4O3cSn+AuSsXj0KtWoeo1O8eJVGg9RQAM8ijX3Glecg3XcuiSYg1F8XiZ91AH57G8cnTnZXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779807073; c=relaxed/simple;
-	bh=BnM24aUmG4hUkWM1tGDWc1bPkuyqU4HNs4flfH0eTCk=;
+	bh=Ell3OK2oueJMjKWXnPrvfH7iafKJAjOOVp1waok2vZc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UDhtjQXZqW5L18ly+7cHrLVLpLRequL6ZzjAhidgAb/y5HDTOhubJR+AwFk6n7Sy2fAwS/xv9ki7cAEuhDjzmc4n+wQde/AuiDt4o/BgxUtUm7qHwxw3mxnIjTFBBDj2Ax9HFhp2juYL83vBSAgEorg7qtGTl3T06Cp9X+fFnIE=
+	 Content-Type:Content-Disposition:In-Reply-To; b=qAbES5e48H7FkhNQtJNIiTN2OhT0IMhLOkxc0Bnd4doBNvWxqP7sjG/H8/lgQgT02UNxeL2xyENex5u+7RSFhUsKSv/p3govmvSVOWJ8h8/4ssvByVvokPccg1RLMi0B/EVVGTGqGFBVcbQ36XKgx1fY+fnTSm4dx7fDctbFNVQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wRt7c-00015J-00; Tue, 26 May 2026 16:51:08 +0200
+	id 1wRt7c-00015D-00; Tue, 26 May 2026 16:51:08 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 9F760C064C; Tue, 26 May 2026 16:43:47 +0200 (CEST)
-Date: Tue, 26 May 2026 16:43:47 +0200
+	id 9A4FAC0154; Tue, 26 May 2026 16:42:15 +0200 (CEST)
+Date: Tue, 26 May 2026 16:42:15 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: brgl@kernel.org, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: RB532: serial: statify setup_serial_port()
-Message-ID: <ahWxo4OPnCtG970H@alpha.franken.de>
-References: <20260430112410.65986-1-bartosz.golaszewski@oss.qualcomm.com>
+To: Icenowy Zheng <zhengxingda@iscas.ac.cn>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Enable LPC interrupt controller on MIPS LS7A systems
+Message-ID: <ahWxR7sW7o06IDDX@alpha.franken.de>
+References: <20260411101744.4020216-1-zhengxingda@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,34 +34,29 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260430112410.65986-1-bartosz.golaszewski@oss.qualcomm.com>
+In-Reply-To: <20260411101744.4020216-1-zhengxingda@iscas.ac.cn>
 
-On Thu, Apr 30, 2026 at 01:24:10PM +0200, Bartosz Golaszewski wrote:
-> This function is not used outside of this compilation unit so make it
-> static.
+On Sat, Apr 11, 2026 at 06:17:42PM +0800, Icenowy Zheng wrote:
+> This patchset tries to enable support for LPC interrupts on MIPS-based
+> Loongson systems with Loongson 7A1000 PCH chip.
 > 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> ---
->  arch/mips/rb532/serial.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The corresponding irqchip support (along with the DT binding) is already
+> added to the tip tree.
 > 
-> diff --git a/arch/mips/rb532/serial.c b/arch/mips/rb532/serial.c
-> index 70482540b3dbc..228eff07e5e85 100644
-> --- a/arch/mips/rb532/serial.c
-> +++ b/arch/mips/rb532/serial.c
-> @@ -45,7 +45,7 @@ static struct uart_port rb532_uart = {
->  	.regshift = 2
->  };
->  
-> -int __init setup_serial_port(void)
-> +static int __init setup_serial_port(void)
->  {
->  	rb532_uart.uartclk = idt_cpu_freq;
->  
-> -- 
-> 2.47.3
+> Tested on a Haier Boyue G51 system with legacy i8042 keyboard/mouse as
+> integrated ones.
+> 
+> This patchset is splitted from the original patchset that contains both
+> driver part and DT part.
+> 
+> Icenowy Zheng (2):
+>   MIPS: Loongson64: dts: Sort nodes
+>   MIPS: Loongson64: dts: Add node for LS7A PCH LPC
+> 
+>  arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 
-applied to mips-next
+series applied to mips-next
 
 Thomas.
 

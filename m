@@ -1,87 +1,87 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C3B3D3333
-	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA473D5256
+	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779813663; cv=none; b=pmeKoXmmKPfliOEgNWra6e+nkCVFIwS/cfmROBBTXk0vnJwCZcsi9ehKbUKEhE9hod9DQd4r+iixap0hwnXU4OPzJ7HcTLsUutg8bxcP+pnIfTWlag+5ZjjgowaZg6Povg2723RmuFunqCk6p+Eql0b4zDHWvekLjkyjqW1nH/8=
+	t=1779813664; cv=none; b=QiPjxmZ3EyQjVQUpCbmCHBuUXbQo/SK8FKAL/O2BbtqB7jfyPp8/hKTESzadripHJHA4qFMmaXGacnqgkEz2xANjg0KGPRIL85hF3gxZLMbjGU1c8nxY/KXimOiXPxDRuNjjWptfhMXwn6hnhoADraRxjMwedMoDBfFFxxxE3To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779813663; c=relaxed/simple;
-	bh=N0RB6AQLNrwpLK7FtcX6JFIVcikEeNv9URuiabwhcEQ=;
+	s=arc-20240116; t=1779813664; c=relaxed/simple;
+	bh=QV6iWTbtK/OlzItS9ZezzpfmevMM+h3QUY2TV57FLa8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TTe7Q2V6wTVui9pg/Fe26drvOSlA3T+36CHSITn10QoA/g2lBk+lc5Ber6Jb/BlXnobDC51mZlvK/VlBSGRQO22kbpd7Y12Lobleo8dnM3t1KLxet9PQMzQjT/d7tWQNMUULmIaaRR6QXaXzoc7I5uzPbHU22ReJUGIgiHMk4o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=kNmjT9XO; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=EirfU01h; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:To:Cc; b=f/asXeOBYGxZfjirNHZDvHBeIa72QFuZ7BU6a0cU/fP5ldy3hHs5fUfCuOSr3TNRHT1kJKiNq0/O6z45tCWrEGAzmOAYb2c9OROCtkfQ+CIJFl9cQoqhMcs1dct7wDzqgEKEXbe56sE6ZHr4q5qlEbMvi7B2BjQEfI6HlXo5tSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=KHF83SmR; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=ACVb9oHg; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="kNmjT9XO";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="EirfU01h"
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64QGQUG93211328
-	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:40:58 GMT
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="KHF83SmR";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="ACVb9oHg"
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64QFlAJN2901597
+	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:41:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	msLy3/nz6/x8yP3I2lLtGY6/kXl77Iaf0aU/v5oIHQM=; b=kNmjT9XOlMGvQmw7
-	rhoQEMT4nTfiQW0F9q/RCoWGzkhlt5CxURCFIt/pj/yMBsxpzPBVc2TKm57bBJWu
-	M+l/k9Z5TdRVLFNdd4UgXvdMtCSbQuHg74J98eoztNZ+ImRZj8mupswrYiYDQZ7j
-	G56QP7yDcIEkcLWlptKiMDsIEog20FACdt+DFp744M/YHJifCGFRqiEEH24tqsRm
-	SGsTEdWkWWTalXEzxN5c1PPy7XUuaByiC0k3NunoF/24MO5P2QhgLJvp8ktsmIY2
-	ER//9/r3RqNNTI5GDDuMEhIXI4Hevl3p9n3VAFTEhsD5GS/iVEVnWLeUasXneT3I
-	XajqrQ==
+	RPvxYcqqdOnxNfCx92kNUoeDm6Vll5QJXfmp2uruwn4=; b=KHF83SmRbrCEphol
+	bHNmDt5Ed8BDN270hipl3mEE85tn/N+a8QVJd23d7wxhTnZ+hyLGirZshGWrx9HA
+	H5wx2FjzachJGVX+rz1NampeaCkfv2jiS1qQKiWYBxneBI4oa5LAmwHsw1ENXptF
+	nGgav5nqOm2Os/qkJJ+vnIDzkG5zInGiKqTcOUJ7m5SyZoy6g/eKtpP2mXOgZ30j
+	OG9hg+GGkx27Rv9xZfTbCgvTiZrs/mM3QOza1jrEap725MRrfutkcYgo4H+eIS9V
+	ZOpbpJGi/8A6Gn3VLCHCDO8qqE6OU6khs8pwv6MRxfnaCytOZJ1VCJGp0sNGzDaa
+	L4oTBw==
 Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4edf1j81te-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4edeff09hm-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:40:58 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-514cbe73d00so295476411cf.1
-        for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 09:40:58 -0700 (PDT)
+	for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 16:41:01 +0000 (GMT)
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-516d19f68acso98933121cf.2
+        for <linux-mips@vger.kernel.org>; Tue, 26 May 2026 09:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1779813658; x=1780418458; darn=vger.kernel.org;
+        d=oss.qualcomm.com; s=google; t=1779813661; x=1780418461; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=msLy3/nz6/x8yP3I2lLtGY6/kXl77Iaf0aU/v5oIHQM=;
-        b=EirfU01hMnKCd8GoPwNAj5mE4Mzz5waqkqgetTwYBBKaHSE8g+4MU0H3Wdrp8NR2kO
-         FjP76uTPs8GdFy+CCIgFGYwqSVPabL7dXmCdD7zSqabRIFcB9kiaPGjrO9Cq5aOxQi0x
-         mZCznAPiOHA6d7Vhenf+DD9hgv+Zqypx1L4sGNbmcy6i8a2A0B1ldF6C9ph+3m+i3D4a
-         nFWL4k6YKa3JrAgeloBe+5CnBlX1Su+8pZgRRBSBertD+dFl08l8/c7TLb/4OQt1AJUS
-         2EPWS5Am9FkFYB34UXFilHWa0u072hHr3OKpj9Eh8scPGm5AYuD+YXoXXDrCk5p5nDEh
-         vRog==
+        bh=RPvxYcqqdOnxNfCx92kNUoeDm6Vll5QJXfmp2uruwn4=;
+        b=ACVb9oHg6/FM7QhFNqlGPf0je6T9sFEfnqzJ5P9qof4eMGxfsBaU+mth7+brQ3UG9n
+         MivgoOOFj836SA+gujfOF4Uqbc2IY24HnzHbTV+kesHO1BxSZ15RPqcLFACtm3hKh9jX
+         gjh29sP6LdSmgQtJF1PutukunlROoTco61ha5zfR89GFHP98VJed1I6AqS6BP7cIVley
+         W33Bs4oigLBBwvVVSNFzbl1rESX8A/0cT2sHKxxphED0mLBR8Xpmg1snCe63MjLl39v5
+         MYGu02AE7ZdJmsqT3dDBiaKv8gtr5qF6upgF8IXtLZQm4RcwDroiIKdDMHGXXIO19NWL
+         hT0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779813658; x=1780418458;
+        d=1e100.net; s=20251104; t=1779813661; x=1780418461;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=msLy3/nz6/x8yP3I2lLtGY6/kXl77Iaf0aU/v5oIHQM=;
-        b=Sp8rFFYPBd9rfig6HHibYqeISeQPgrUINSFjnqaT1/RfmIwWhCkDRNY0A95U47JJJV
-         AdI4vvH9EKZ6zfeaixDvh5e4Su3+L3LGNIMRflW0lOOFMmszsfpS0QOuNw6wqmJQ1uJy
-         v6J/Yxb+KV6orOqXdq22fhsKm94rTjcc8EWx0bVRitfxDjaNXoro/pwxG4q3AlY6XV5K
-         WeVDqHyejKDtPFQD6fJrwNNV7PmoVH/rS/AP0g/B87FVDFIBj6jxvhnHNNZ8lGfKePl5
-         p5FNPzYY1XG8qQr+BXYPOza9z2o2nrgw7Cl1h6aIg4CT78nPebMZFHNArazU9AYJCNnp
-         ohxQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8Cq+cRjub+3NW8HYOz+gOhfEpUh3jvK+XGo8Hq+z0N1jFUw/80ucOtfZNuNGkRUVIozc20rHlzf7i8@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmR2+U3Y315Wfre467frq5mbPzkC5V7tj4AV4B3UKgPdeRGX0L
-	0TN2HTOz7gQeWFstT+MQUhcPoF6UHYkiEbU4ipXcgo5hTJEU43ox6uADiKnQieIXC9oFPJbgUSm
-	GD5y5ms0RHpyWNLKABMWJfA26UlbZDHmvrE37wOiPJavvUWnq4feXZp5uyRyVXotT
-X-Gm-Gg: Acq92OERHRN792dFtjjGGng47kUFkp/2wbADnOmj6F2iADZ/ZM7UAq8BUsKD54oMQL2
-	jNpqzMPs5aUB8+onsPMXziKs2pqdfTy+dtScrRQqk5sBm88Kx9jdl/ARbuyw+CrORQRFn4cExUj
-	VBcuQJ8+jOVrVk+NbGXTL+aw9D1rmZ6Y0BRsFNo06suhthHE13rEH5jZYX4C7jpS3MZKXepsDlB
-	7B4Vl6T4Dmm9lMwSfX3qAdl/eGSIX3rKH1BYhPeAxGahCLQI0yk2TklWiS7uDXoE47THAv+C4nB
-	Lbb6+6XEi/2zoUN/GVmgFEx62PpuJ7XM6RY32hjaD4d5vJMfkqf3McVEUhUJ48IhkvguLewa9uN
-	97qiFxeaSXVdOQs33pD8pFqYx80uLyoZohvd3p6hvYA5vFIa1g10=
-X-Received: by 2002:a05:622a:1103:b0:516:dc50:a019 with SMTP id d75a77b69052e-516dc50a4d3mr233838091cf.49.1779813657838;
-        Tue, 26 May 2026 09:40:57 -0700 (PDT)
-X-Received: by 2002:a05:622a:1103:b0:516:dc50:a019 with SMTP id d75a77b69052e-516dc50a4d3mr233837691cf.49.1779813657292;
-        Tue, 26 May 2026 09:40:57 -0700 (PDT)
+        bh=RPvxYcqqdOnxNfCx92kNUoeDm6Vll5QJXfmp2uruwn4=;
+        b=KRKAiErL0nRIIGRXZeh5sYv0omqFMD881DGfUjP+oJdNrxh6MMoHvfPX8cpPi1v3r1
+         VuFBwkHDb0HTY3cDCvjSZETqvCtJUydVpyjmVM8BbkcGdAuut3zskqV/hsBA2knN/3Cj
+         7iX/dC4bjckxZ0Qsv7clrRl6dNuYN3+ZIr0UOq8IjK+suIPK19KvNhTjGTbXyzRftFgz
+         TiqQTo735URRMApLNkYpJlMjrI/2WaHAWUQXr1BcxhwRqryubkGz7s1GXiO14QiL/rkr
+         YwGOua3rZWKtgp8H7AIeTHvGzvMlCtvH68HjEhsrAXNjBJPIECID4F2D8Kl11mbS02X1
+         1y1Q==
+X-Forwarded-Encrypted: i=1; AFNElJ/bnybCUyXW2OvN++yrN0TgSy4DHMWOG31pH3DEumCL0Qq/8FfagWoVKM0ax2FBgyAl5pGO6sDmSBsA@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIofVKH5R0tNP5ucyaoVjMpQFHfxT4nmYC6ns1LDYToZs7MFyg
+	/88EF2PsqRi4QS87uFn8FSnpmU+Is2w62ZlSA5WjFE8xa6jR/A9XgNwciIjR6weFmPwWQrhTPBN
+	tLkAL3IySbDPsKv8zwYTubF8F1Ezdw0ppg9aoLoja4i0iMNfjV0kraAGPW75WrGsN
+X-Gm-Gg: Acq92OEmoxKLPAMpCJW/xebfx5AXzBwq/TYaFRW6i54F8x+smwOiM+eG/RNV/KN9iJu
+	t/uVovihUJ1QX3/GUXk8G5wou9lzghh4+4LtLWcQWkpfPxSyxECUbziRvdm+wVkjmtItpPcxUeo
+	iCDMssEq+6ZuQxznorjSLYV7oMYupxf96h4hSJg72Z6KnVb4jObHeUCKEDQ3/R/1o5dMkfGNZAE
+	xnv6n/9j9TQelX/dFxaiKI3GShLSWN9jKP18SoEJasI7ETCA5auV9FA5f92EoiUzNRswjmZB9s7
+	S9Dth2oGmlEtvUkimcal+J73+5m6Wfo1H08Ow3SyQv38F1oaiZPTE9h65sv/KtzqydGlWgqr7Eo
+	eORk1iapdn3iqUHgVQoxTfxE95X9yHaXcZvlH0GER4G64Sc3JZME=
+X-Received: by 2002:ac8:5d04:0:b0:50d:770f:ad23 with SMTP id d75a77b69052e-516d42ea812mr273223641cf.26.1779813660618;
+        Tue, 26 May 2026 09:41:00 -0700 (PDT)
+X-Received: by 2002:ac8:5d04:0:b0:50d:770f:ad23 with SMTP id d75a77b69052e-516d42ea812mr273223051cf.26.1779813660041;
+        Tue, 26 May 2026 09:41:00 -0700 (PDT)
 Received: from brgl-qcom.local ([2a01:cb1d:dc:7e00:c518:e53b:f5c3:921d])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d48e23sm35605880f8f.20.2026.05.26.09.40.56
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d48e23sm35605880f8f.20.2026.05.26.09.40.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 09:40:56 -0700 (PDT)
+        Tue, 26 May 2026 09:40:59 -0700 (PDT)
 From: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Date: Tue, 26 May 2026 18:40:34 +0200
-Subject: [PATCH v3 3/6] MIPS: alchemy: mtx1: attach software nodes to GPIO
- chips
+Date: Tue, 26 May 2026 18:40:36 +0200
+Subject: [PATCH v3 5/6] MIPS: alchemy: gpr: switch to static device
+ properties
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -90,7 +90,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260526-gpio-swnode-alchemy-v3-3-2aaa1238ae4a@oss.qualcomm.com>
+Message-Id: <20260526-gpio-swnode-alchemy-v3-5-2aaa1238ae4a@oss.qualcomm.com>
 References: <20260526-gpio-swnode-alchemy-v3-0-2aaa1238ae4a@oss.qualcomm.com>
 In-Reply-To: <20260526-gpio-swnode-alchemy-v3-0-2aaa1238ae4a@oss.qualcomm.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -99,281 +99,240 @@ Cc: brgl@kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
         Manuel Lauss <manuel.lauss@gmail.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8471;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5709;
  i=bartosz.golaszewski@oss.qualcomm.com; h=from:subject:message-id;
- bh=rxJCAmLXHTqDKpPHsRfv0+TRB0eOgFoYLQ8w8SyxOfk=;
- b=owEBbQKS/ZANAwAKAQWdLsv/NoTDAcsmYgBqFc0NfcktmDnk7EFiQe3epXeUzk+iaEc5brBye
- fiz+Z8Yug+JAjMEAAEKAB0WIQSR5RMt5bVGHXuiZfwFnS7L/zaEwwUCahXNDQAKCRAFnS7L/zaE
- w0bREACS39pPJw8JujD5qO2TGqdfHzZSTDjF2D1mxfoYsfZXTy+qru/MqCbM9nJbtWG2pfSHhkN
- ODYiEkD2YglkGqi7+pW27HHmcpBcpbhfHGcp5xXYiTI/iYSyHB+zgC34Zagr7Wa7Nh9/kQM92cF
- 8UE0GeAXDdFJ+O0ROiGez30HaBUQr+6uGEP0IVXOuT+zu2p46P25H9u60OH7stIQuZZu9H5hB5Y
- Kj3W5oYuZ3sfgTi96A8X3QSMuuoZ6jQErKi3zVTaMpAsn9IVCqiavOVpcHxTx/YU43hVzUg5Qlj
- PEqJwauGLVDDtRDZkDUYbulwMAzxwIH+5X+7Ohqr/7IdCkaHVYmuCJD7YCEJ+FMTI905QdA/l5L
- wcYjrhZHJyGoyin+5yhq3ULsDczhy2Mt/HUJmdG6CvjTynay47eyEzcKkvag2nKLrKUXiJg9Fpt
- sQGhuwc7tOOsZmihHbTIU2m0xuQpR+7R0lzBJmdMCKeSNYzmqpWiqExBhLr/CJlrU2Mtmw2Zc9G
- VUZsjC7BftHfUnJsGVhZM8U9MJlp85L5l6qKsFvKsTvGlv/wr/rqVAHgvCQiMvDr6EvCeL0wHi/
- 17aIyLCy+waXCs/v+JOLnYf+xFo1y+vaHenloVMfXdYlDdXc4zKnK3N6uVobO2EZdbyj59oDfzC
- drwZ3/cbk2cnPGg==
+ bh=ZN/R2T6+8+Z80D9zim9qIxuHXKBST0XCUBKEL98Tu8Y=;
+ b=owEBbQKS/ZANAwAKAQWdLsv/NoTDAcsmYgBqFc0QlJlCTatO1T8pvp5wEAB8czKFlU3pvTWZX
+ 9BEqonHvCaJAjMEAAEKAB0WIQSR5RMt5bVGHXuiZfwFnS7L/zaEwwUCahXNEAAKCRAFnS7L/zaE
+ wwvPD/9jxAq99cK0GK/4h8PAgZXBl3c3Tu8y4D5RlqymPtSX4l/gLVZYXM1YJZ2gtsXzRn2adaJ
+ 9UphGR9Y980DZb+2CVf5wXNkRglLH1OBv7nyWQydM6J4fvpVOp011/LA9uFFLgN096ILVRHvLSN
+ 1PDYahwYcMOvGowzVIEJcDvgyqE4BGfFTHCHilUjPofdpVm5F+CLEL5ZWphtskLZ7moPVDKfHXF
+ WkEnudcaSNAR17Xp/XdGBcI5alyxvUBZ4U8Mr5TKb7Kwc3H/sMjst6dF//MTqbGxQBWnA/+JKgx
+ ajtzAoxdcACneGcvhGPL7BBEVBaVif/1m3UiPlkfv6tGhyQnbOwqhO2W0xavt5EaSHYjm5RgM9f
+ Exg5dnsExhVirHLkurzVZxB8Du43t91MbVq4YiggiMMCptOLbKlk1D1JN80WEhQB6Lw53xqNo09
+ BuAn8pmOkR3ikY6m+hUDizKdZ2CrrEZrZx1HymvuSJmxMTZCzNitM4oIZYn2OV/r8tGMfraPUHu
+ jg0WznzraWf51kJoUiq1vGXgGu1/ZdsO623DnfV2HhZpjevJxexE5UhMH4uCqs1/SOIjyn6Zpga
+ XlF9P8hB66IXd+PRw/QaKAvz8ykEF0XIhZuL/XPbrqpwRPGHQS3WKVd/9H8KfLDWWE2dZTHuyMk
+ hrsJdawS5DtLpzg==
 X-Developer-Key: i=bartosz.golaszewski@oss.qualcomm.com; a=openpgp;
  fpr=169DEB6C0BC3C46013D2C79F11A72EA01471D772
-X-Authority-Analysis: v=2.4 cv=ZNjnX37b c=1 sm=1 tr=0 ts=6a15cd1a cx=c_pps
+X-Authority-Analysis: v=2.4 cv=ONEXGyaB c=1 sm=1 tr=0 ts=6a15cd1d cx=c_pps
  a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
  a=NGcC8JguVDcA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22 a=pGLkceISAAAA:8
- a=EUspDBNiAAAA:8 a=tWZPv7H_HbOMA4K40sMA:9 a=QEXdDO2ut3YA:10
+ a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22 a=pGLkceISAAAA:8
+ a=EUspDBNiAAAA:8 a=G2kbB0RmGtoI0qVf8F8A:9 a=QEXdDO2ut3YA:10
  a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI2MDE0NCBTYWx0ZWRfXwSLyC/VyzBgO
- XVoYuh11Zf3+vWtrT+2J53dVII0/yS5Q4TqNndwmQUvPAzSayWDAm5p8wtSqicFo/z+3amTr5uE
- MYZJ9q7PbqGXd8GcHTynvD9Xgyd8lgmhE8u0CnbyM23PIyOn4TgVeLSqGWix6VeI3GA9HDPSnmE
- 31aUdsWi1dr6PsDY4XDi+H7xrXTpUF7YeSrQvrtDTSUBNCLA336oA2lTg1+iS770jF7g80oV1hU
- lw4MeqUhTrhxQZF1U19xbcvIoufLnYET10Hp2mHTsS+RVA4CdgGbl2ArNtnYMXUSogo7gjc9XhO
- tC+PxOgh6m6ixf/Ci9N8zGypFKq4Jf/O9gi7ev8H+lxHqMmURnq0MI7/q5kOxN7CyPvOrAEWLlE
- iUuWoR7+yljZhwKuZ7sKx97lwg0KWP4vMkYRKNyTUkspOdb0SDuz6ocowdcsqQK8Z8D67fREl/m
- H0qtzKtuWNyIWeKLcpA==
-X-Proofpoint-ORIG-GUID: BrSp3UjV-35IfkuqRET0eSk2w3zMb-Gc
-X-Proofpoint-GUID: BrSp3UjV-35IfkuqRET0eSk2w3zMb-Gc
+X-Proofpoint-ORIG-GUID: 6n2qKZLWZ4GgakiEoN10j1TVNfWk2PWB
+X-Proofpoint-GUID: 6n2qKZLWZ4GgakiEoN10j1TVNfWk2PWB
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI2MDE0NCBTYWx0ZWRfX861/H6ZUD4pZ
+ YfUZ0ME25+sFbo/mMuHdx7A12/jz3S/HgUbQdlpoToj0n9Hpjyltt027/1dFq4VpvkAEJTwLeLW
+ y8CksozJ2tn/xXSUwUosg2e2J/PeX3c+5dcANaVIDx3giOVT0ZbSQ1IkUDLU/D96fHIf9HnsEro
+ +E79v27EhsSifkunUveFNAAHF8hC16EsYL4T2b+N2dI3+E6lcb3m7Uro+A2s1Acr81+f2J0B9xF
+ FukrB4Pc49luR44riRxqkBEKa9Fd9zmjJa8/DMtCBNfJqncu/1XRsuoYUU0w3jbPb0RKejO00aG
+ BFXPxCQaTcG/IlROd7RFPnAvyaY1yHKksyjl8n6JUBm890OklgyJ/l6CLy5/ggwllF9l+XMo9+S
+ aTs85i1x6kXAJ4M7qO/6DM1qpBio5Rt6rjt1CDoAtw3j0ly5FN7VM4S9lOzQKPRXi18MqTu6apX
+ FNUZKrszqKgre38hv+w==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
  definitions=2026-05-26_04,2026-05-26_03,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1015
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605260144
+ phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2605130000
+ definitions=main-2605260144
 
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-GPIO subsystem is switching the way it locates GPIO chip instances for
-GPIO references in software nodes from matching on node names to
-identity matching, which necessitates assigning firmware nodes
-(software nodes) to GPIO chips.
-
-Move the node definitions for alchemy-gpio1 and alchemy-gpio2 to
-arch/misp/alchemy/common/gpiolib.c, register them there, and attach
-them to gpio_chip instances. Adjust MTX1 board file to use these nodes.
-
-Note that because nodes need to be registered before they can be used in
-PROPERTY_ENTRY_GPIO() we have to do the registration at
-postcore_initcall level, otherwise (due to the link order) MTX1 board
-initialization code will run first.
+Convert I2C-gpio device and GPIO-connected LEDs on GPR board to software
+nodes/properties, so that support for platform data can be removed from
+gpio-leds driver (which will rely purely on generic device properties
+for configuration).
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 [Bartosz: use platform_device_info::swnode]
 Tested-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 ---
- arch/mips/alchemy/board-mtx1.c                  | 34 +++++++++------------
- arch/mips/alchemy/common/gpiolib.c              | 39 ++++++++++++++++++++++++-
- arch/mips/include/asm/mach-au1x00/gpio-au1000.h |  5 ++++
- 3 files changed, 56 insertions(+), 22 deletions(-)
+ arch/mips/alchemy/board-gpr.c | 127 +++++++++++++++++++++++++-----------------
+ 1 file changed, 75 insertions(+), 52 deletions(-)
 
-diff --git a/arch/mips/alchemy/board-mtx1.c b/arch/mips/alchemy/board-mtx1.c
-index cb6be58808a08e667a401573d6ba515d70a58aa2..88c20c0ca96d4fc8511c214e3d6dd2c820c8eaaa 100644
---- a/arch/mips/alchemy/board-mtx1.c
-+++ b/arch/mips/alchemy/board-mtx1.c
-@@ -9,6 +9,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
+diff --git a/arch/mips/alchemy/board-gpr.c b/arch/mips/alchemy/board-gpr.c
+index f587c40b6d00a9ce5c25520f31e2b2ca60c80919..387252337a18517c49d37ee8e16116b87a2d39c9 100644
+--- a/arch/mips/alchemy/board-gpr.c
++++ b/arch/mips/alchemy/board-gpr.c
+@@ -13,11 +13,11 @@
+ #include <linux/pm.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+-#include <linux/leds.h>
+-#include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/platform_data/i2c-gpio.h>
  #include <linux/gpio/machine.h>
- #include <linux/gpio/property.h>
- #include <linux/input.h>
-@@ -78,17 +79,13 @@ void __init board_setup(void)
- 
- /******************************************************************************/
- 
--static const struct software_node mtx1_gpiochip_node = {
--	.name = "alchemy-gpio2",
--};
--
- static const struct software_node mtx1_gpio_keys_node = {
- 	.name = "mtx1-gpio-keys",
- };
- 
- static const struct property_entry mtx1_button_props[] = {
- 	PROPERTY_ENTRY_U32("linux,code", BTN_0),
--	PROPERTY_ENTRY_GPIO("gpios", &mtx1_gpiochip_node, 7, GPIO_ACTIVE_HIGH),
-+	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio2_node, 7, GPIO_ACTIVE_HIGH),
- 	PROPERTY_ENTRY_STRING("label", "System button"),
- 	{ }
- };
-@@ -98,7 +95,7 @@ static const struct software_node mtx1_button_node = {
- 	.properties = mtx1_button_props,
- };
- 
--static const struct software_node *mtx1_gpio_keys_swnodes[] __initconst = {
-+static const struct software_node * const mtx1_gpio_keys_swnodes[] __initconst = {
- 	&mtx1_gpio_keys_node,
- 	&mtx1_button_node,
- 	NULL
-@@ -127,13 +124,13 @@ static void __init mtx1_keys_init(void)
- 		pr_err("failed to create gpio-keys device: %d\n", err);
- }
- 
--/* Global number 215 is offset 15 on Alchemy GPIO 2 */
- static const struct property_entry mtx1_wdt_props[] = {
--	PROPERTY_ENTRY_GPIO("gpios", &mtx1_gpiochip_node, 15, GPIO_ACTIVE_HIGH),
-+	/* Global number 215 is offset 15 on Alchemy GPIO 2 */
-+	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio2_node, 15, GPIO_ACTIVE_HIGH),
- 	{ }
- };
- 
--static struct platform_device_info mtx1_wdt_info __initconst = {
-+static const struct platform_device_info mtx1_wdt_info __initconst = {
- 	.name = "mtx1-wdt",
- 	.id = 0,
- 	.properties = mtx1_wdt_props,
-@@ -147,7 +144,7 @@ static void __init mtx1_wdt_init(void)
- 	pd = platform_device_register_full(&mtx1_wdt_info);
- 	err = PTR_ERR_OR_ZERO(pd);
- 	if (err)
--		pr_err("failed to create gpio-keys device: %d\n", err);
-+		pr_err("failed to create watchdog device: %d\n", err);
- }
- 
- static const struct software_node mtx1_gpio_leds_node = {
-@@ -155,7 +152,7 @@ static const struct software_node mtx1_gpio_leds_node = {
- };
- 
- static const struct property_entry mtx1_green_led_props[] = {
--	PROPERTY_ENTRY_GPIO("gpios", &mtx1_gpiochip_node, 11, GPIO_ACTIVE_HIGH),
-+	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio2_node, 11, GPIO_ACTIVE_HIGH),
- 	{ }
- };
- 
-@@ -166,7 +163,7 @@ static const struct software_node mtx1_green_led_node = {
- };
- 
- static const struct property_entry mtx1_red_led_props[] = {
--	PROPERTY_ENTRY_GPIO("gpios", &mtx1_gpiochip_node, 12, GPIO_ACTIVE_HIGH),
-+	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio2_node, 12, GPIO_ACTIVE_HIGH),
- 	{ }
- };
- 
-@@ -176,7 +173,7 @@ static const struct software_node mtx1_red_led_node = {
- 	.properties = mtx1_red_led_props,
- };
- 
--static const struct software_node *mtx1_gpio_leds_swnodes[] = {
-+static const struct software_node * const mtx1_gpio_leds_swnodes[] __initconst = {
- 	&mtx1_gpio_leds_node,
- 	&mtx1_green_led_node,
- 	&mtx1_red_led_node,
-@@ -185,9 +182,10 @@ static const struct software_node *mtx1_gpio_leds_swnodes[] = {
- 
- static void __init mtx1_leds_init(void)
- {
--	struct platform_device_info led_info = {
-+	const struct platform_device_info pdevinfo = {
- 		.name	= "leds-gpio",
- 		.id	= PLATFORM_DEVID_NONE,
-+		.swnode = &mtx1_gpio_leds_node,
- 	};
- 	struct platform_device *led_dev;
- 	int err;
-@@ -198,9 +196,7 @@ static void __init mtx1_leds_init(void)
- 		return;
- 	}
- 
--	led_info.fwnode = software_node_fwnode(&mtx1_gpio_leds_node);
--
--	led_dev = platform_device_register_full(&led_info);
-+	led_dev = platform_device_register_full(&pdevinfo);
- 	err = PTR_ERR_OR_ZERO(led_dev);
- 	if (err)
- 		pr_err("failed to create LED device: %d\n", err);
-@@ -335,10 +331,6 @@ static int __init mtx1_register_devices(void)
- 
- 	au1xxx_override_eth_cfg(0, &mtx1_au1000_eth0_pdata);
- 
--	rc = software_node_register(&mtx1_gpiochip_node);
--	if (rc)
--		return rc;
--
- 	rc = platform_add_devices(mtx1_devs, ARRAY_SIZE(mtx1_devs));
- 	if (rc)
- 		return rc;
-diff --git a/arch/mips/alchemy/common/gpiolib.c b/arch/mips/alchemy/common/gpiolib.c
-index e79e26ffac99e6b12b430ab60df1cc7d42afd4a8..2141eae5ce4502aad920333cba1f7a6e08411f9e 100644
---- a/arch/mips/alchemy/common/gpiolib.c
-+++ b/arch/mips/alchemy/common/gpiolib.c
-@@ -30,6 +30,7 @@
- 
- #include <linux/init.h>
- #include <linux/kernel.h>
++#include <linux/gpio/property.h>
 +#include <linux/property.h>
- #include <linux/types.h>
- #include <linux/gpio/driver.h>
- #include <asm/mach-au1x00/gpio-au1000.h>
-@@ -95,7 +96,21 @@ static int gpio1_to_irq(struct gpio_chip *chip, unsigned offset)
- 	return alchemy_gpio1_to_irq(offset + ALCHEMY_GPIO1_BASE);
- }
+ #include <asm/bootinfo.h>
+ #include <asm/idle.h>
+ #include <asm/reboot.h>
+@@ -161,66 +161,90 @@ static struct platform_device gpr_mtd_device = {
+ /*
+  * LEDs
+  */
+-static const struct gpio_led gpr_gpio_leds[] = {
+-	{	/* green */
+-		.name			= "gpr:green",
+-		.gpio			= 4,
+-		.active_low		= 1,
+-	},
+-	{	/* red */
+-		.name			= "gpr:red",
+-		.gpio			= 5,
+-		.active_low		= 1,
+-	}
++static const struct software_node gpr_gpio_leds_node = {
++	.name = "gpr-leds",
+ };
  
--struct gpio_chip alchemy_gpio_chip[] = {
-+const struct software_node alchemy_gpio1_node = {
-+	.name = "alchemy-gpio1",
+-static struct gpio_led_platform_data gpr_led_data = {
+-	.num_leds = ARRAY_SIZE(gpr_gpio_leds),
+-	.leds = gpr_gpio_leds,
++static const struct property_entry gpr_green_led_props[] = {
++	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio1_node, 4, GPIO_ACTIVE_LOW),
++	{ }
+ };
+ 
+-static struct platform_device gpr_led_devices = {
+-	.name = "leds-gpio",
+-	.id = -1,
+-	.dev = {
+-		.platform_data = &gpr_led_data,
+-	}
++static const struct software_node gpr_green_led_node = {
++	.name = "gpr:green",
++	.parent = &gpr_gpio_leds_node,
++	.properties = gpr_green_led_props,
 +};
 +
-+const struct software_node alchemy_gpio2_node = {
-+	.name = "alchemy-gpio2",
++static const struct property_entry gpr_red_led_props[] = {
++	PROPERTY_ENTRY_GPIO("gpios", &alchemy_gpio1_node, 5, GPIO_ACTIVE_LOW),
++	{ }
+ };
+ 
++static const struct software_node gpr_red_led_node = {
++	.name = "gpr:red",
++	.parent = &gpr_gpio_leds_node,
++	.properties = gpr_red_led_props,
 +};
 +
-+static const struct software_node *alchemy_gpio_node_group[] = {
-+	&alchemy_gpio1_node,
-+	&alchemy_gpio2_node,
++static const struct software_node * const gpr_gpio_leds_swnodes[] __initconst = {
++	&gpr_gpio_leds_node,
++	&gpr_green_led_node,
++	&gpr_red_led_node,
 +	NULL
 +};
 +
-+static struct gpio_chip alchemy_gpio_chip[] = {
- 	[0] = {
- 		.label			= "alchemy-gpio1",
- 		.direction_input	= gpio1_direction_input,
-@@ -157,6 +172,28 @@ static struct gpio_chip au1300_gpiochip = {
- 	.ngpio			= AU1300_GPIO_NUM,
++static void __init gpr_leds_init(void)
++{
++	const struct platform_device_info pdevinfo = {
++		.name	= "leds-gpio",
++		.id	= PLATFORM_DEVID_NONE,
++		.swnode = &gpr_gpio_leds_node,
++	};
++	struct platform_device *pd;
++	int err;
++
++	err = software_node_register_node_group(gpr_gpio_leds_swnodes);
++	if (err) {
++		pr_err("failed to register LED software nodes: %d\n", err);
++		return;
++	}
++
++	pd = platform_device_register_full(&pdevinfo);
++	err = PTR_ERR_OR_ZERO(pd);
++	if (err)
++		pr_err("failed to create LED device: %d\n", err);
++}
++
+ /*
+  * I2C
+  */
+-static struct gpiod_lookup_table gpr_i2c_gpiod_table = {
+-	.dev_id = "i2c-gpio",
+-	.table = {
+-		/*
+-		 * This should be on "GPIO2" which has base at 200 so
+-		 * the global numbers 209 and 210 should correspond to
+-		 * local offsets 9 and 10.
+-		 */
+-		GPIO_LOOKUP_IDX("alchemy-gpio2", 9, NULL, 0,
+-				GPIO_ACTIVE_HIGH),
+-		GPIO_LOOKUP_IDX("alchemy-gpio2", 10, NULL, 1,
+-				GPIO_ACTIVE_HIGH),
+-	},
++static const struct property_entry gpr_i2c_props[] __initconst = {
++	PROPERTY_ENTRY_GPIO("sda-gpios", &alchemy_gpio2_node, 9, GPIO_ACTIVE_HIGH),
++	PROPERTY_ENTRY_GPIO("scl-gpios", &alchemy_gpio2_node, 10, GPIO_ACTIVE_HIGH),
++	PROPERTY_ENTRY_U32("i2c-gpio,delay-us", 2),	/* ~100 kHz */
++	PROPERTY_ENTRY_U32("i2c-gpio,timeout-ms", 1000),
++	PROPERTY_ENTRY_BOOL("i2c-gpio,sda-open-drain"),
++	PROPERTY_ENTRY_BOOL("i2c-gpio,scl-open-drain"),
++	{ }
  };
  
-+/*
-+ * Software nodes must be registered before board-specific code (that runs
-+ * at arch_initcall level) attempts to use them as GPIO targets or as fwnodes
-+ * for registered devices. We can not do registration in alchemy_gpiochip_init
-+ * because it also runs as arch_initcall and runs after board-specific code
-+ * because of the link order, and so we do it at postcore_initcall level.
-+ */
-+static int __init alchemy_gpio_nodes_init(void)
-+{
-+	int ret;
-+
-+	ret = software_node_register_node_group(alchemy_gpio_node_group);
-+	if (ret)
-+		return ret;
-+
-+	alchemy_gpio_chip[0].fwnode = software_node_fwnode(&alchemy_gpio1_node);
-+	alchemy_gpio_chip[1].fwnode = software_node_fwnode(&alchemy_gpio2_node);
-+
-+	return 0;
-+}
-+postcore_initcall(alchemy_gpio_nodes_init);
-+
- static int __init alchemy_gpiochip_init(void)
- {
- 	int ret = 0;
-diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-index e6306f6820e64e193b1be5e258211cca509edaa6..de7f857cb333a209c43fd6ca7198d2aa988c0bd7 100644
---- a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-+++ b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
-@@ -40,6 +40,11 @@
- #define AU1000_GPIO2_INTENABLE	0x10
- #define AU1000_GPIO2_ENABLE	0x14
+-static struct i2c_gpio_platform_data gpr_i2c_data = {
+-	/*
+-	 * The open drain mode is hardwired somewhere or an electrical
+-	 * property of the alchemy GPIO controller.
+-	 */
+-	.sda_is_open_drain	= 1,
+-	.scl_is_open_drain	= 1,
+-	.udelay			= 2,		/* ~100 kHz */
+-	.timeout		= HZ,
++static const struct platform_device_info gpr_i2c_pdev_info __initconst = {
++	.name		= "i2c-gpio",
++	.id		= PLATFORM_DEVID_NONE,
++	.properties	= gpr_i2c_props,
+ };
  
-+struct software_node;
+-static struct platform_device gpr_i2c_device = {
+-	.name			= "i2c-gpio",
+-	.id			= -1,
+-	.dev.platform_data	= &gpr_i2c_data,
+-};
++static void __init gpr_i2c_init(void)
++{
++	struct platform_device *pd;
++	int err;
 +
-+extern const struct software_node alchemy_gpio1_node;
-+extern const struct software_node alchemy_gpio2_node;
-+
- static inline int au1000_gpio1_to_irq(int gpio)
++	pd = platform_device_register_full(&gpr_i2c_pdev_info);
++	err = PTR_ERR_OR_ZERO(pd);
++	if (err)
++		pr_err("failed to create I2C device: %d\n", err);
++}
+ 
+ static struct i2c_board_info gpr_i2c_info[] __initdata = {
+ 	{
+@@ -270,8 +294,6 @@ static struct platform_device gpr_pci_host_dev = {
+ static struct platform_device *gpr_devices[] __initdata = {
+ 	&gpr_wdt_device,
+ 	&gpr_mtd_device,
+-	&gpr_i2c_device,
+-	&gpr_led_devices,
+ };
+ 
+ static int __init gpr_pci_init(void)
+@@ -284,8 +306,9 @@ arch_initcall(gpr_pci_init);
+ 
+ static int __init gpr_dev_init(void)
  {
- 	return MAKE_IRQ(1, gpio - ALCHEMY_GPIO1_BASE);
+-	gpiod_add_lookup_table(&gpr_i2c_gpiod_table);
+ 	i2c_register_board_info(0, gpr_i2c_info, ARRAY_SIZE(gpr_i2c_info));
++	gpr_i2c_init();
++	gpr_leds_init();
+ 
+ 	return platform_add_devices(gpr_devices, ARRAY_SIZE(gpr_devices));
+ }
 
 -- 
 2.47.3

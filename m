@@ -1,56 +1,56 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAC4405C5A;
-	Tue, 26 May 2026 15:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3526A378806;
+	Tue, 26 May 2026 15:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779808106; cv=none; b=M+7Q4HQ5OtuHvc6PSguw9tZq8PvEzBcTfgOxOffeUZoVPSr4VUysdBrNEA74YbmgMJuWFUCA4t8q/iw+xhLDerQLHIP0zPJ7dblZwklXBTbVmnaLcYAoES9gvx2IeJKNc3yp79SDzUb7S1jF1R/+ifpdgDUc+6WEbWNKCtvT4UQ=
+	t=1779809771; cv=none; b=icABxLFNtxmZnKgnHJNlZVPZMwtniH/mGUUtO2uQN/oHLIavD1zBerwIH8WfWg62VgBzOcXGQrNWwSi85HZgZ6jhhUW7bBLG4674FywrYcbdo4gXH+AGmPtABn5CQrftNIZCxGKUzJjDkw2LDe9QswAt4+4Bmu9EIMK9N246gS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779808106; c=relaxed/simple;
-	bh=18Ll05h93qLha5IN3xqHxu/pEtgz5qPO/pKnrGCMtuE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ZWsc1qGyJv0eEVQET1BK8755zL2lriVpCWIlyPdEOTYOfvL6TQuLZ0p87Ov6aOhUancht3YOz8PK5NzhopevKV++JHEsUAUfCdoPylptJyi2ysQpASkU2TStUfOeo3TIOdISmeKjF+1hz5H7QJxDQd5xmEvzBk1/J3tqalqnAYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 2C75292009D; Tue, 26 May 2026 17:08:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 2630192009B;
-	Tue, 26 May 2026 16:08:23 +0100 (BST)
-Date: Tue, 26 May 2026 16:08:23 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org, 
-    linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] MIPS: DEC: Fix serial device regressions + RTC
- cleanup
-In-Reply-To: <ahWyuPUMe7XQ9fZp@alpha.franken.de>
-Message-ID: <alpine.DEB.2.21.2605261604510.1450@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2605062240290.46195@angie.orcam.me.uk> <alpine.DEB.2.21.2605221609220.1450@angie.orcam.me.uk> <ahWyuPUMe7XQ9fZp@alpha.franken.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1779809771; c=relaxed/simple;
+	bh=FQRWY6AEKrfKqaq7BdmWUYjUT4ICHvNZnwYxHBU2XAk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t5koMV/gdeHkAJt2Yr/jUI1nT6SSohkUHP4SVZxxOKmcjrkJ7ZW5JTzcBGQZTxcq06XzmB259SpsyNOemZdUGdqp7Csbm2DRWt4YpDRv3BKutGgDPndVLDG3LbdUW8E/Ra+UX3UrSxZE9oeX89n7mj4XhVbrPBmt4HaR/h1qI18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1wRtp9-0003HS-00; Tue, 26 May 2026 17:36:07 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id E6B65C0522; Tue, 26 May 2026 16:53:56 +0200 (CEST)
+Date: Tue, 26 May 2026 16:53:56 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org, Lauri Kasanen <cand@gmx.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mips: n64: add __iomem for writel call
+Message-ID: <ahW0BDXCpPseQ4Sx@alpha.franken.de>
+References: <20260509035727.1016256-1-rosenp@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260509035727.1016256-1-rosenp@gmail.com>
 
-On Tue, 26 May 2026, Thomas Bogendoerfer wrote:
-
-> >  Will you be able to get these two changes merged sometime soon now that 
-> > Greg has queued changes 03/10 through 09/10, so that these prerequisites 
-> > land ahead and there's no 64-bit regression in mainline?
+On Fri, May 08, 2026 at 08:57:27PM -0700, Rosen Penev wrote:
+> sparse: incorrect type in argument 2 (different address spaces) @@
+> expected void volatile [noderef] __iomem *mem @@
+> got unsigned int [usertype] *
 > 
-> I've applied 01/10 and 02/10. 10/10 doesn't apply to my tree, because it
-> depends on the platform.c changes from dz/zs driver change not yet present
-> in my tree. So either Greg takes it via his tree or I'll pick it up in
-> a second pull request during the merge window
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202105261445.AcvPd2EE-lkp@intel.com/
+> Fixes: baec970aa5ba ("mips: Add N64 machine type")
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> ---
+>  arch/mips/n64/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
- Fine with me either way, thanks for taking care of this stuff!  I'm glad 
-I was able to find time and momentum to get these issues finally sorted, 
-as I was aware of them for quite a while now, but there's so much to pick 
-from.  More to come.
+applied to mips-next
 
-  Maciej
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

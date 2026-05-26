@@ -1,31 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2C8400E04;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D45B3FFAC5;
 	Tue, 26 May 2026 14:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779807071; cv=none; b=dUUola8paYi+bJJyyAgTDbdzcYbFUV7Ua12MUwigw4/EX3yzLaNieH1E4czLxYf0N7DBnb1FQ/M7becx9XTokBpEs97ChlJ9MlEjtH69XvKH2L/Kp9LFqDPXvKuKTo5yI6eBUCPWmiERL14Gei0VVga9qxaVSQvBlxZTln7SD5M=
+	t=1779807071; cv=none; b=WACaeMBVhd3CiydwP0eTrGmS8AERgro4/XYcLtmxt2x4pEr4uVEV8nUnRI8yVL9OsQak/gEwmA7JzkVTTjqXe7sRrGzA/NSihzp6X8LHZ1QWGQLYud/4Xhrma83w2jMOeZYMVFaoJ9aqgieGh3BNY+pj7ezlMmhajM9nxxJkJ8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779807071; c=relaxed/simple;
-	bh=5Zv1nv4v2mucxPM+Ait+cYaNpxCt/1/kYQ1ebH4yO9c=;
+	bh=kfOBwoOFH/b4dqg7LchyHycekFb8qRXlmijlHls2d8g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sps94ca7dUo73JyASH98KFkgPxwQl4BMZ4Em7pQMrLE9j+AyzjillNcn3Puw9Dnp4cqx50GbJkK4eyVCRidCaf0GFlMn+4MOLyywiJrS4ZVNVqfvieGCBm0T99FMFGwd3MCEKSs2pujuIOdsAtCV090eCwBMTLZ4MZQTSAvtZgo=
+	 Content-Type:Content-Disposition:In-Reply-To; b=rMk9Hsbwkpl+a6b/8fElB+Erid4Wn1ilzp045GKWUqrq0XDXiCaDhG8SsRY6F32FBBiON8HGYPV8LijLIZiPj8ZjMvvNtc9s8joIdOiWkYiq0YYlTtUyDkR5FSY/HBCRA3oHQXmh7J5zDms6LJQ3++2eVhrBUHuo9o8lmD4HZ7k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wRt7c-00015H-00; Tue, 26 May 2026 16:51:08 +0200
+	id 1wRt7c-000159-00; Tue, 26 May 2026 16:51:08 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 17C34C0637; Tue, 26 May 2026 16:43:34 +0200 (CEST)
-Date: Tue, 26 May 2026 16:43:34 +0200
+	id 23033C0A25; Tue, 26 May 2026 16:49:40 +0200 (CEST)
+Date: Tue, 26 May 2026 16:49:40 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Linus Walleij <linusw@kernel.org>, brgl@kernel.org,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: RB532: attach the software node to its target GPIO
- controller
-Message-ID: <ahWxlprtWVgS3Q9A@alpha.franken.de>
-References: <20260430-mips-rb532-gpio-v1-1-845a0c6206a5@oss.qualcomm.com>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 10/10] MIPS: DEC: Ensure RTC platform device
+ deregistration upon failure
+Message-ID: <ahWzBJR8bdsefXD-@alpha.franken.de>
+References: <alpine.DEB.2.21.2605062240290.46195@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,30 +35,59 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260430-mips-rb532-gpio-v1-1-845a0c6206a5@oss.qualcomm.com>
+In-Reply-To: <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
 
-On Thu, Apr 30, 2026 at 01:23:13PM +0200, Bartosz Golaszewski wrote:
-> GPIOLIB wants to remove the software node's name matching against GPIO
-> controller's label that is going on behind the scenes in software node
-> lookup. To that end, we need to convert all existing users to using
-> software nodes actually attached to the GPIO devices they represent.
+On Wed, May 06, 2026 at 11:43:00PM +0100, Maciej W. Rozycki wrote:
+> Switch RTC platform device registration from platform_device_register() 
+> to platform_add_devices() so as to make sure any failure will result in 
+> automatic device unregistration.
 > 
-> In order to use an attached software node with the GPIO controller on
-> rb532: convert the GPIO module into a real platform device, provide
-> platform device info for it in device.c and assign the software node
-> using its swnode field.
-> 
-> The software node will get inherited by the GPIO chip from the parent
-> platform device in devm_gpiochip_add_data() as we don't set the fwnode
-> using any other of the mechanisms.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> Fixes: fae67ad43114 ("arch/mips/dec: switch DECstation systems to rtc-cmos")
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 > ---
->  arch/mips/rb532/devices.c | 32 ++++++++++++++++++++++++++------
->  arch/mips/rb532/gpio.c    | 41 +++++++++++++++++++++--------------------
->  2 files changed, 47 insertions(+), 26 deletions(-)
+> Change from v2,
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2605012105320.11074@angie.orcam.me.uk/>:
+> 
+> - Fix a minor style issue in the commit description.
+> 
+> No change from v1 (8/8),
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2604110042130.29980@angie.orcam.me.uk/>.
+> ---
+>  arch/mips/dec/platform.c |    6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> linux-mips-dec-platform-rtc-unregister.diff
+> Index: linux-macro/arch/mips/dec/platform.c
+> ===================================================================
+> --- linux-macro.orig/arch/mips/dec/platform.c
+> +++ linux-macro/arch/mips/dec/platform.c
+> @@ -38,6 +38,10 @@ static struct platform_device dec_rtc_de
+>  	.num_resources = ARRAY_SIZE(dec_rtc_resources),
+>  };
+>  
+> +static struct platform_device *dec_rtc_devices[] __initdata = {
+> +	&dec_rtc_device,
+> +};
+> +
+>  static struct resource dec_dz_resources[] = {
+>  	{ .name = "dz", .flags = IORESOURCE_MEM, },
+>  	{ .name = "dz", .flags = IORESOURCE_IRQ, },
+> @@ -137,7 +141,7 @@ static int __init dec_add_devices(void)
+>  	}
+>  	num_zs = i;
+>  
+> -	ret1 = platform_device_register(&dec_rtc_device);
+> +	ret1 = platform_add_devices(dec_rtc_devices, 1);
+>  	ret2 = IS_ENABLED(CONFIG_32BIT) ?
+>  	       platform_add_devices(dec_dz_devices, num_dz) : 0;
+>  	ret3 = platform_add_devices(dec_zs_devices, num_zs);
 
-applied to mips-next
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+
+Greg,
+
+since this only applies with the DZ/ZS changes, could you take this patch
+via the serial tree ?
 
 Thomas.
 

@@ -1,145 +1,140 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28583D3491;
-	Thu, 28 May 2026 11:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B29726ED33;
+	Thu, 28 May 2026 14:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779967297; cv=none; b=CZ4nGyfyZ2NTyAMr1p/vAtyRgYMIRfGJzoQx/szoxpOzs4khnvEHUhb3gqaYIFn7zeO/HIEfCZnJODbrmaNjsoW1wl02+so3s/uWF/8X5EM/aWS3GgWxVBfHn8hLZd5VkKeuxntft+svktB6lNWj7447hsBD3GAcgQiUXW0IOww=
+	t=1779976866; cv=none; b=MqraaWROQ0AegY9weSdbRpQy03gUWAt3ifnO2ie5EHbp3a+Y0fV2WfuYdHmWshb7bCYoo0j9dtISRQOeMTJ99hMbVyPaTP76oX7OmK8kdYRQKbtQ88eRloRwk2XEh6k2c/cBm/lHXGB/aLeOhCj/fAuxv8Q6s67Id2mopmN4ip4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779967297; c=relaxed/simple;
-	bh=f/lIC4TgmEzyiBDPh2iBCW6oUeY6y5+TmWqzleJFfvY=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bTpRNi9xWi6NAZ9hg0k+E60lA2+4Htrx5oLqKfFJkL0Twj/PB0sg+4xXfYuOEmoHbkcJkie44RshfQQQIQQ0BMlOWdsmbVFcS/WcdIDrcqJ7gdHOwwEKjiK50eD40H/1qf53cbw0kYcCsHBKqRF2xK7IM7S8De1GClnT2ZFE7D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jVJ+Ngzp; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1779976866; c=relaxed/simple;
+	bh=Ze4Nv8y680E6FSf/un9hYJUthpJ2COzdxd+LB34Yb2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hWPk5uCobDs9W5Kg4G/c0/LB71GldI5kF+jZxSk4uy8odAOwlr6lsAvsobjyT40qEYXNobnva6IaLttbhVkGN+AEAZyHlg26l7FiC+VGMuUT+FXH3WZpEKYo+gcZQnnbhA028BQpEgPz0FAvKcF5tuY6+vVxcDyebHm3h+eokKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=e1mM2XZo; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jVJ+Ngzp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1779967296; x=1811503296;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=f/lIC4TgmEzyiBDPh2iBCW6oUeY6y5+TmWqzleJFfvY=;
-  b=jVJ+NgzpXSONr+RHbU6qtCCrztJa5bqPUWbPogVG670ahHdbLpztMlD2
-   LcExizHgnYSr5uusg/B++Rlg6iY3ewekxdkYBUusP2p7rfcVFPo11YkpY
-   +VPfeJRP2cxwEuYP9iJLhpTG/sB5AoyHqXNf9jJf/vAIxkdRz21sV/edC
-   S4SvSeeFKau7+FmX0jBDqNtAI+YBLoD+aJwH00RMhKjG2olrfHw7UVCXw
-   /K0rmUWzZ/RA5FHPZMUUHeyW6fnweYNoVRYL4PkZQznYCNLx+/O2zcC+6
-   bnY4ieUaHTgOJfFSZDlxPvBgnxsB6LKEZq69H+JmWQLRMLwJYD/qQfdsk
-   A==;
-X-CSE-ConnectionGUID: 81EPxlcyToqpjP3cFLSHKw==
-X-CSE-MsgGUID: sRzTGLwxS6OY/9ZIJEHWLg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11799"; a="103480346"
-X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
-   d="scan'208";a="103480346"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 04:21:34 -0700
-X-CSE-ConnectionGUID: NhorkxbETOO3yaxAYXvTkQ==
-X-CSE-MsgGUID: vXFsgfpXQNSWfwq2pTGuRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
-   d="scan'208";a="238337774"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.187])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 04:21:15 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 28 May 2026 14:21:11 +0300 (EEST)
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-cc: Lee Jones <lee@kernel.org>, 
-    Mark Brown <broonie@opensource.wolfsonmicro.com>, 
-    Thierry Reding <thierry.reding@avionic-design.de>, 
-    Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
-    Andrew Lunn <andrew+netdev@lunn.ch>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-    Paolo Abeni <pabeni@redhat.com>, Srinivas Kandagatla <srini@kernel.org>, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Vinod Koul <vkoul@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-    Danilo Krummrich <dakr@kernel.org>, Rob Herring <robh@kernel.org>, 
-    Saravana Kannan <saravanak@kernel.org>, 
-    Madhavan Srinivasan <maddy@linux.ibm.com>, 
-    Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-    "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-    Andi Shyti <andi.shyti@kernel.org>, 
-    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-    Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
-    Robin Murphy <robin.murphy@arm.com>, Doug Berger <opendmb@gmail.com>, 
-    Florian Fainelli <florian.fainelli@broadcom.com>, 
-    Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-    Ulf Hansson <ulfh@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
-    Sascha Hauer <s.hauer@pengutronix.de>, 
-    Pengutronix Kernel Team <kernel@pengutronix.de>, 
-    Fabio Estevam <festevam@gmail.com>, 
-    Matthew Brost <matthew.brost@intel.com>, 
-    =?ISO-8859-15?Q?Thomas_Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>, 
-    Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>, 
-    Simona Vetter <simona@ffwll.ch>, Peter Chen <peter.chen@kernel.org>, 
-    Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>, 
-    Philipp Zabel <p.zabel@pengutronix.de>, 
-    Maximilian Luz <luzmaximilian@gmail.com>, Hans de Goede <hansg@kernel.org>, 
-    Krzysztof Kozlowski <krzk@kernel.org>, 
-    Benjamin Herrenschmidt <benh@kernel.crashing.org>, brgl@kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, 
-    linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org, 
-    driver-core@lists.linux.dev, devicetree@vger.kernel.org, 
-    linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org, 
-    iommu@lists.linux.dev, linux-pm@vger.kernel.org, imx@lists.linux.dev, 
-    linux-arm-kernel@lists.infradead.org, intel-xe@lists.freedesktop.org, 
-    dri-devel@lists.freedesktop.org, linux-usb@vger.kernel.org, 
-    linux-mips@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 19/23] platform/surface: gpe: use
- platform_device_set_fwnode()
-In-Reply-To: <20260521-pdev-fwnode-ref-v1-19-88c324a1b8d2@oss.qualcomm.com>
-Message-ID: <bfdbc026-b3f9-971b-aaf0-0485434b8411@linux.intel.com>
-References: <20260521-pdev-fwnode-ref-v1-0-88c324a1b8d2@oss.qualcomm.com> <20260521-pdev-fwnode-ref-v1-19-88c324a1b8d2@oss.qualcomm.com>
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="e1mM2XZo"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 123B94B5F04;
+	Thu, 28 May 2026 16:00:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1779976858; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=X5WYmjC+W1XLRGqsI2xwQZ9HsjRo/iUHSgzYnXKRgcw=;
+	b=e1mM2XZop/xN+xoBJNW8OLgj37CZ/8LBCs+sl0Jm7YHWqYuw6RGeXmQ9FmCw34Xab4S5jW
+	mTtgsRV6THcAObIKLfUGYEY1dpDl1FNMERTlRbGHe1VOR+VAv3VfI6vH5nMe51j6qGIrSO
+	Wxhnc5enEX+W1tGf7TQKSbU237cYIxC2c3IzzG9g9dA7BqXUX9RxZf4u/C15qiQH0lQJKQ
+	NjnYuDFAqnLKJCY/5cLQhFR04fX/VhG+46xng4cC/3UtJhmXe+D8bvpTkylGn52dJSJdqb
+	OCXztsUtF85le/TIQmUq3jI3UXlqKLIJG85MGu/5xB9KsIFqM2zuOVcrizxbsA==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: conor+dt@kernel.org,
+	daniel.lezcano@kernel.org,
+	devicetree@vger.kernel.org,
+	krzk+dt@kernel.org,
+	linux-kernel@vger.kernel.org,
+	naseefkm@gmail.com,
+	robh@kernel.org,
+	tglx@kernel.org,
+	grandmaster@al2klimov.de,
+	Caleb James DeLisle <cjd@cjdns.fr>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v6 2/5] dt-bindings: timer: econet: Update EN751627 for multi-IRQ
+Date: Thu, 28 May 2026 14:00:43 +0000
+Message-Id: <20260528140046.2897674-3-cjd@cjdns.fr>
+In-Reply-To: <20260528140046.2897674-1-cjd@cjdns.fr>
+References: <20260528140046.2897674-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-947565217-1779967271=:1291"
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This hardware is found in the EN751221 SoC family as well as the
+EN751627. The former uses a percpu IRQ for all timers while the
+latter uses an individual IRQ number per timer.
 
---8323328-947565217-1779967271=:1291
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/timer/econet,en751221-timer.yaml | 31 ++++++++++++-------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-On Thu, 21 May 2026, Bartosz Golaszewski wrote:
+diff --git a/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+index c1e7c2b6afde..ac25785ecfdf 100644
+--- a/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
++++ b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+@@ -12,24 +12,23 @@ maintainers:
+ description:
+   The EcoNet High Precision Timer (HPT) is a timer peripheral found in various
+   EcoNet SoCs, including the EN751221 and EN751627 families. It provides per-VPE
+-  count/compare registers and a per-CPU control register, with a single interrupt
+-  line using a percpu-devid interrupt mechanism.
++  count/compare registers and a per-CPU control register. On EN751221 it uses a
++  single interrupt line using a percpu-devid interrupt mechanism, and on
++  EN751627 it uses an interrupt per VPE.
+ 
+ properties:
+   compatible:
+-    oneOf:
+-      - const: econet,en751221-timer
+-      - items:
+-          - const: econet,en751627-timer
+-          - const: econet,en751221-timer
++    enum:
++      - econet,en751221-timer
++      - econet,en751627-timer
+ 
+   reg:
+     minItems: 1
+     maxItems: 2
+ 
+   interrupts:
+-    maxItems: 1
+-    description: A percpu-devid timer interrupt shared across CPUs.
++    minItems: 1
++    maxItems: 4
+ 
+   clocks:
+     maxItems: 1
+@@ -52,21 +51,31 @@ allOf:
+           items:
+             - description: VPE timers 0 and 1
+             - description: VPE timers 2 and 3
++        interrupts:
++          description: An interrupt for each timer (one per VPE)
++          minItems: 4
+     else:
+       properties:
+         reg:
+           items:
+             - description: VPE timers 0 and 1
++        interrupts:
++          description: A percpu-devid timer interrupt shared across timers
++          maxItems: 1
+ 
+ additionalProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
+     timer@1fbf0400 {
+-        compatible = "econet,en751627-timer", "econet,en751221-timer";
++        compatible = "econet,en751627-timer";
+         reg = <0x1fbf0400 0x100>, <0x1fbe0000 0x100>;
+         interrupt-parent = <&intc>;
+-        interrupts = <30>;
++        interrupts = <GIC_SHARED 30 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 29 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 37 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 36 IRQ_TYPE_LEVEL_HIGH>;
+         clocks = <&hpt_clock>;
+     };
+   - |
+-- 
+2.39.5
 
-> Ahead of reworking the reference counting logic for platform devices,
-> encapsulate the assignment of the firmware node for dynamically allocated
-> platform devices with the provided helper.
->=20
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> ---
->  drivers/platform/surface/surface_gpe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/platform/surface/surface_gpe.c b/drivers/platform/su=
-rface/surface_gpe.c
-> index b359413903b13c4f8e8b284ef7ae6f6db3f47d72..40896a8544b0a4da4261ea881=
-b1eaed62d93b32b 100644
-> --- a/drivers/platform/surface/surface_gpe.c
-> +++ b/drivers/platform/surface/surface_gpe.c
-> @@ -317,7 +317,7 @@ static int __init surface_gpe_init(void)
->  =09=09goto err_alloc;
->  =09}
-> =20
-> -=09pdev->dev.fwnode =3D fwnode;
-> +=09platform_device_set_fwnode(pdev, fwnode);
-> =20
->  =09status =3D platform_device_add(pdev);
->  =09if (status)
->=20
->=20
-
-Acked-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-947565217-1779967271=:1291--

@@ -1,32 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F153B3EFFDD;
-	Thu, 28 May 2026 14:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591962D7D47;
+	Thu, 28 May 2026 14:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779976879; cv=none; b=IaK/HDXl5ko7hHhviBK+FFUnEGW1RFVuiueTL0irL7DUlsKPw7tcbciZxIfwl5BTenJrEFcQx4i2437VzZHAXJGkLYyybX8v2DkD0Tm1iigNo2pSpwLBLYAo4FEQ1L5X7L/ifJpMld7znJvKS0NCdMHYxKfyMMyT56USRfgxENA=
+	t=1779977271; cv=none; b=k4wlu+5HgkNVhDpXvlx4O0WOtqVnEa9brPPLoatSRLkPrguGS5aBoUrk+/85/TgfrYOUg/pAubMVr5oDL9KlOUvId7OoUoXqwFd8QbbkwRM25/C8s1XfRGtzBwQBiKZQqRX8903ko/pnPT0RHA2TVQurnY1+Nw+X27DtBAPITEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779976879; c=relaxed/simple;
-	bh=DU59HSNaB9phG8rCZl4dDJTjeDMq0KTL47w2Dyh4SlU=;
+	s=arc-20240116; t=1779977271; c=relaxed/simple;
+	bh=9cxKqRSzDI1k9DZMBIppT7I1D0ocQhPQ6p2OsQkLhW4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=swRFdrIUlNEUCbx6lWn/6A7DDfmONEbRtgr8P+ss9cfvjzHVd5gY9U6KMPBhNV13L5qqKELykX2FZdWisGx2tU15M0d0rfgIXKmeN4BZHl2Aki/rqaWb5QPPGm/2ovdb7WR4v+CTWlgKFCi53z4rX7pra4NF4vGW7ZEnmCKEdCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=b4bRE5bM; arc=none smtp.client-ip=5.135.140.105
+	 MIME-Version; b=fX9pZ8kn86YQ+pH7SN2jOIeZxcJAFY+H3pjm3CQ9bgBoCt0xGPqoMABAwHB0HWmPywu/4xsKNdvFNim//QnI0mall5spieWFjAClznm0pV5VcNEmJPvG82pzHHaQF/lcSsyR3kgdLGPfzy+x5SXesenYkTXf+Q75ux2S23II5kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=swSHffBB; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="b4bRE5bM"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 904B34B454A;
-	Thu, 28 May 2026 16:01:12 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="swSHffBB"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C1F064B4F67;
+	Thu, 28 May 2026 16:00:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1779976874; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1779976852; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=4og5/uHZUOe1X8csZf1Cd0lBdViJnSG21+7PRelLts0=;
-	b=b4bRE5bMkFlWolN9fWMOj+xjN3/sFc1dd0pKK2Cllghh7Fru1DHJM/POSIw8kl4SAb+3Fm
-	2YaKfnGlFR4D14vIZKnIGNRGo7Mk4i+QdCrFnHp0/0sHIN+uMV1Gmi8Q8iyfUDQFaS73E6
-	OgenM3gm120iG/s2FnsAyhxod89969duIpMwbrDG1GgZQ7vCm9obKnmZloJPIl2RFob/LZ
-	WtKMXQK5MsrzND050UvQiVepwp8QyfCtGJSltzQZbnSZCc6srVR6WPxscyT82wFV7lS+2W
-	s2em7s+c/Gqcdh7yY7TQ39tk5XqG/JV+e22k0b0drYZ8TO2KrdCFILiMGdiBKA==
+	bh=Q6cAAX9tCyXcIpCsb2E2vZSxmNLsA1iEdhH9bQm/us8=;
+	b=swSHffBBunY4eCmpsSnru5+9yku9EPJG4aGpkoYBpxoNt65Tdg9TKNnpUwRR/lIucRwbvq
+	fHXsG/GqJ4xvGalnwr176HONOll+eBb30lQmK+nf9I8XbPz490vTCD4yUKfNHhbS8hg1fT
+	gPsuWYkPjXTqtMfBQchBoWWBcwkW0pfujSgC585uDvLEaUPAiVAX8cJrWg3y3l3OXnoIEs
+	XYQQBtAT2hNgy2A2IMpvGMCCBeixE4FETSrfCoIOYlw4bNtrvixjaX85oWUlz/ciKS8F4l
+	VMQLXKrnBSnuR1tIK+me9mxnUa594ZN+pJQG/HaturMGPjK3jgAoQyPbcmLOlg==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: conor+dt@kernel.org,
@@ -39,9 +39,9 @@ Cc: conor+dt@kernel.org,
 	tglx@kernel.org,
 	grandmaster@al2klimov.de,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v6 5/5] clocksource/timer-econet-en751221: Support EN751627 without percpu IRQ
-Date: Thu, 28 May 2026 14:00:46 +0000
-Message-Id: <20260528140046.2897674-6-cjd@cjdns.fr>
+Subject: [PATCH v6 1/5] clocksource/timer-econet-en751221: fix refcount leak
+Date: Thu, 28 May 2026 14:00:42 +0000
+Message-Id: <20260528140046.2897674-2-cjd@cjdns.fr>
 In-Reply-To: <20260528140046.2897674-1-cjd@cjdns.fr>
 References: <20260528140046.2897674-1-cjd@cjdns.fr>
 Precedence: bulk
@@ -53,209 +53,30 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-EN751627 is based on the 1004Kc which uses a different interrupt number
-for each CPU timer. Support both this and the EN751221 which uses a
-single percpu interrupt.
+From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 
+Every value returned from of_clk_get() is supposed to be cleaned up
+via clk_put() once not needed anymore.
+
+Fixes: 3b4c33ac87d0 ("clocksource/drivers: Add EcoNet Timer HPT driver")
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
 ---
- drivers/clocksource/timer-econet-en751221.c | 122 ++++++++++++++++----
- 1 file changed, 99 insertions(+), 23 deletions(-)
+ drivers/clocksource/timer-econet-en751221.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/clocksource/timer-econet-en751221.c b/drivers/clocksource/timer-econet-en751221.c
-index f2c4c1ee0a56..040386ded132 100644
+index 4008076b1a21..1859335345b5 100644
 --- a/drivers/clocksource/timer-econet-en751221.c
 +++ b/drivers/clocksource/timer-econet-en751221.c
-@@ -21,10 +21,12 @@
- #define ECONET_MAX_DELTA		GENMASK(ECONET_BITS - 2, 0)
- /* 34Kc hardware has 1 block and 1004Kc has 2. */
- #define ECONET_NUM_BLOCKS		DIV_ROUND_UP(NR_CPUS, 2)
-+#define ECONET_NUM_IRQS			NR_CPUS
- 
- static struct {
- 	void __iomem	*membase[ECONET_NUM_BLOCKS];
--	int		irq;
-+	int		irqs[ECONET_NUM_IRQS];
-+	bool		is_percpu;
- 	u32		freq_hz;
- } econet_timer __ro_after_init;
- 
-@@ -102,6 +104,25 @@ static int cevt_init_cpu(uint cpu)
- 	struct clock_event_device *cd = &per_cpu(econet_timer_pcpu, cpu);
- 	u32 reg;
- 
-+	if (!reg_ctl(cpu)) {
-+		pr_err("%s: missing address resource for CPU %d\n", cd->name,
-+		       cpu);
-+		return -EINVAL;
-+	}
-+	if (cd->irq <= 0) {
-+		pr_err("%s: missing IRQ for CPU %d\n", cd->name, cpu);
-+		return -EINVAL;
-+	}
-+	if (!econet_timer.is_percpu) {
-+		int ret = irq_force_affinity(cd->irq, cpumask_of(cpu));
-+
-+		if (ret) {
-+			pr_err("%s: failed to set IRQ affinity to CPU %d: %pe\n",
-+			       cd->name, cpu, ERR_PTR(ret));
-+			return ret;
-+		}
-+	}
-+
- 	pr_debug("%s: Setting up clockevent for CPU %d\n", cd->name, cpu);
- 
- 	reg = ioread32(reg_ctl(cpu)) | ctl_bit_enabled(cpu);
-@@ -110,7 +131,10 @@ static int cevt_init_cpu(uint cpu)
- 	clockevents_config_and_register(cd, econet_timer.freq_hz,
- 					ECONET_MIN_DELTA, ECONET_MAX_DELTA);
- 
--	enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
-+	if (econet_timer.is_percpu)
-+		enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
-+	else
-+		enable_irq(cd->irq);
- 
- 	return 0;
- }
-@@ -141,19 +165,52 @@ static void __init cevt_init(struct device_node *np)
- 					  CLOCK_EVT_FEAT_C3STOP |
- 					  CLOCK_EVT_FEAT_PERCPU;
- 		cd->set_next_event	= cevt_set_next_event;
--		cd->irq			= econet_timer.irq;
-+
-+		if (econet_timer.is_percpu)
-+			cd->irq = econet_timer.irqs[0];
-+		else
-+			cd->irq = econet_timer.irqs[i];
-+
- 		cd->cpumask		= cpumask_of(i);
- 		cd->name		= np->name;
- 
--		cevt_dev_init(i);
-+		/*
-+		 * Tolerate CPUs that could exist but don't.
-+		 * Fail in cevt_init_cpu when they try to start.
-+		 */
-+		if (reg_ctl(i))
-+			cevt_dev_init(i);
+@@ -181,6 +181,7 @@ static int __init timer_init(struct device_node *np)
  	}
- }
  
- static int __init timer_init(struct device_node *np)
- {
--	int num_blocks = DIV_ROUND_UP(num_possible_cpus(), 2);
-+	int num_blocks = of_address_count(np);
-+	int num_irqs = of_irq_count(np);
- 	struct clk *clk;
--	int ret;
-+	int ret, i;
-+
-+	econet_timer.is_percpu = of_device_is_compatible(np, "econet,en751221-timer");
-+
-+	if (econet_timer.is_percpu && num_irqs != 1) {
-+		pr_err("%pOFn: EN751221 clock must have 1 IRQ not %d\n", np,
-+		       num_irqs);
-+		return -EINVAL;
-+	}
-+	if (num_irqs > ARRAY_SIZE(econet_timer.irqs)) {
-+		pr_err("%pOFn: Too many IRQs max %d got %d\n", np,
-+		       ARRAY_SIZE(econet_timer.irqs), num_irqs);
-+		return -EINVAL;
-+	}
-+	if (num_blocks > ARRAY_SIZE(econet_timer.membase)) {
-+		pr_err("%pOFn: Too many regs: max %d got %d\n", np,
-+		       ARRAY_SIZE(econet_timer.membase), num_blocks);
-+		return -EINVAL;
-+	}
-+	if (num_blocks == 0) {
-+		pr_err("%pOFn: At least one reg block must be provided\n", np);
-+		return -EINVAL;
-+	}
- 
- 	clk = of_clk_get(np, 0);
- 	if (IS_ERR(clk)) {
-@@ -164,7 +221,7 @@ static int __init timer_init(struct device_node *np)
  	econet_timer.freq_hz = clk_get_rate(clk);
- 	clk_put(clk);
++	clk_put(clk);
  
--	for (int i = 0; i < num_blocks; i++) {
-+	for (i = 0; i < num_blocks; i++) {
+ 	for (int i = 0; i < num_blocks; i++) {
  		econet_timer.membase[i] = of_iomap(np, i);
- 		if (!econet_timer.membase[i]) {
- 			pr_err("%pOFn: failed to map register [%d]\n", np, i);
-@@ -173,22 +230,32 @@ static int __init timer_init(struct device_node *np)
- 		}
- 	}
- 
--	econet_timer.irq = irq_of_parse_and_map(np, 0);
--	if (econet_timer.irq <= 0) {
--		pr_err("%pOFn: irq_of_parse_and_map failed\n", np);
--		ret = -EINVAL;
--		goto out_membase;
-+	for (i = 0; i < num_irqs; i++) {
-+		econet_timer.irqs[i] = irq_of_parse_and_map(np, i);
-+		if (econet_timer.irqs[i] <= 0) {
-+			pr_err("%pOFn: failed mapping irq %d\n", np, i);
-+			ret = -EINVAL;
-+			goto out_irq_mapping;
-+		}
- 	}
- 
--	irq_set_status_flags(econet_timer.irq, IRQ_NOAUTOEN);
--
--	ret = request_percpu_irq(econet_timer.irq, cevt_interrupt, np->name,
--				 &econet_timer_pcpu);
--
--	if (ret < 0) {
--		pr_err("%pOFn: IRQ %d setup failed (%d)\n", np,
--		       econet_timer.irq, ret);
--		goto out_irq_mapping;
-+	for (i = 0; i < num_irqs; i++) {
-+		irq_set_status_flags(econet_timer.irqs[i], IRQ_NOAUTOEN);
-+
-+		if (econet_timer.is_percpu)
-+			ret = request_percpu_irq(econet_timer.irqs[i],
-+						 cevt_interrupt, np->name,
-+						 &econet_timer_pcpu);
-+		else
-+			ret = request_irq(econet_timer.irqs[i], cevt_interrupt,
-+					  IRQF_TIMER | IRQF_NOBALANCING,
-+					  np->name, NULL);
-+
-+		if (ret < 0) {
-+			pr_err("%pOFn: IRQ %d setup failed: %pe\n", np,
-+			       i, ERR_PTR(ret));
-+			goto out_irq_free;
-+		}
- 	}
- 
- 	cevt_init(np);
-@@ -220,9 +287,17 @@ static int __init timer_init(struct device_node *np)
- 	return 0;
- 
- out_irq_free:
--	free_percpu_irq(econet_timer.irq, &econet_timer_pcpu);
-+	while (--i >= 0) {
-+		if (econet_timer.is_percpu)
-+			free_percpu_irq(econet_timer.irqs[i], &econet_timer_pcpu);
-+		else
-+			free_irq(econet_timer.irqs[i], NULL);
-+	}
- out_irq_mapping:
--	irq_dispose_mapping(econet_timer.irq);
-+	for (i = 0; i < num_irqs; i++) {
-+		if (econet_timer.irqs[i] > 0)
-+			irq_dispose_mapping(econet_timer.irqs[i]);
-+	}
- out_membase:
- 	for (int i = 0; i < ARRAY_SIZE(econet_timer.membase); i++) {
- 		if (econet_timer.membase[i]) {
-@@ -235,3 +310,4 @@ static int __init timer_init(struct device_node *np)
- }
- 
- TIMER_OF_DECLARE(econet_timer_hpt, "econet,en751221-timer", timer_init);
-+TIMER_OF_DECLARE(econet_timer_en751627, "econet,en751627-timer", timer_init);
 -- 
 2.39.5
 

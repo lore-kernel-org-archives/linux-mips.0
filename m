@@ -1,117 +1,55 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D423E2756;
-	Wed,  3 Jun 2026 17:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F94E38F25E;
+	Wed,  3 Jun 2026 21:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780507280; cv=none; b=g7pWtHhMf0O0iGNdd36VMpvNXdYZD2TBObJu+1s1FhyR7RR0FDqupRKr3xtIquVu0ZrsfUQt9a1IdEJznGmnHbQosoUZQEjZxxU9N8mLC2H2OZdZg7jgjzvT9To7Zc2hZOm4wlnOQYWnRoczOCzflaos4j5VaBXrToTHB8PlmoI=
+	t=1780521296; cv=none; b=OxfMRpJ6Ln0NZnCaGKDeGxRk4jYrtXNdLTSxwwUAANo8L5cShV27on18073YLmJcfkZ3bjQ/vO5GJGEr2iK5yZnvwuBK+ZhvRqpML8Shnj+qPIcaD4FDayXa2XRz97v4YThM5/drmw0qoc5sglgbwAH1a2GrxArootjz34JGtVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780507280; c=relaxed/simple;
-	bh=Gxx19LdDTz6T+j/ZXP+pzENHKb9KQ9gFUO3WnCcEAmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=feSZkWqT/TmUJbsOkZnDmJS1HsxQliCkldQqTYA/bcSk3sW0dn7jh+75XI4tjfKLqJvwgAiSzTX85m4XrQnqWyN+kxq8m6wCcXZSc0e8z8IoueqqNx+EDTpbhpu7pYV8VMdbdRuE89d5WGODkM3E4EvAHUBHRREJIVt1Zekpdzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c18sJ7aS; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c18sJ7aS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9B71F00893;
-	Wed,  3 Jun 2026 17:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780507278;
-	bh=Ig4zCGf7+4ptZbdZZMypwYARwR0YB1sgjeMspwVj9PE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=c18sJ7aSoq9r+i0IlOMIyM+kePG9Og4QNfkKdmvW9i9gHt/nkcyz7wt3X6sQ55+PN
-	 9FCuhhMNrZDZj6AiihMI5VZ5eSGx75aw2BHqp+z8eJPDKPiawLxyWYNdzegnzvTLP4
-	 SUK0v0AV8YpRWsaQN9Z7bVQvVxyvbFJIooaNjoNYh0o8y8mjZWNbqaH/2nGiGRSSjv
-	 yhGhdlantZDthW2N7NtTDXBDCNyfOloZ32O+IlYOTFWGg3Gt/jq7bLRmckBoFSWC6R
-	 Go6HqJDXVno0Uqebslcwu+6uFCc6/BDhadZDjKwxPxloA2uOX2Cy1qIxjyq10GIpqT
-	 8FjWPlNqvKQSg==
-Date: Wed, 3 Jun 2026 18:20:52 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Romain Gantois <romain.gantois@bootlin.com>, MyungJoo Ham
- <myungjoo.ham@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, Guenter
- Roeck <linux@roeck-us.net>, Peter Rosin <peda@axentia.se>, David Lechner
- <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
- Shevchenko <andy@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Michael
- Hennerich <Michael.Hennerich@analog.com>, Mariel Tinaco
- <Mariel.Tinaco@analog.com>, Kevin Tsai <ktsai@capellamicro.com>, Linus
- Walleij <linus.walleij@linaro.org>, Eugen Hristev
- <eugen.hristev@linaro.org>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay
- Abraham I <kishon@kernel.org>, Sebastian Reichel <sre@kernel.org>, Chen-Yu
- Tsai <wens@csie.org>, Hans de Goede <hansg@kernel.org>, Support Opensource
- <support.opensource@diasemi.com>, Paul Cercueil <paul@crapouillou.net>,
- Iskren Chernev <me@iskren.info>, Krzysztof Kozlowski <krzk@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Matheus Castello
- <matheus@castello.eng.br>, Saravanan Sekar <sravanhome@gmail.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Casey Connolly
- <casey.connolly@linaro.org>, Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, Amit
- Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, Lukasz Luba
- <lukasz.luba@arm.com>, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sylwester
- Nawrocki <s.nawrocki@samsung.com>, Olivier Moysan
- <olivier.moysan@foss.st.com>, Arnaud Pouliquen
- <arnaud.pouliquen@foss.st.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-input@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Sebastian Reichel <sebastian.reichel@collabora.com>, Andy Shevchenko
- <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH v2 2/2] iio: inkern: Use namespaced exports
-Message-ID: <20260603182052.7d23c067@jic23-huawei>
-In-Reply-To: <acBr-W2ILu9tnMyd@google.com>
-References: <20251209-iio-inkern-use-namespaced-exports-v2-0-9799a33c4b7f@bootlin.com>
-	<20251209-iio-inkern-use-namespaced-exports-v2-2-9799a33c4b7f@bootlin.com>
-	<acBr-W2ILu9tnMyd@google.com>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1780521296; c=relaxed/simple;
+	bh=+glWu5lyCbcRjkIT2bwJUQt8wBgDSFCHqvetEXTp3GU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=pMSs+yNFMyExinyw8Q6yVUJ4xROc6cRKzcAFu03Of7OQ/vQnOXOBhKzbC6/rH+NC39muv12nC7gwGjhX4t4ZJs8E9KqG2KQOAi/8AiremtxxuYtaaDejLRHUeiqhFHbTi3J9BnsWCHoiL/vc60bZsSa45juZ+aV77DofHGHHmlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3747A1F00893;
+	Wed,  3 Jun 2026 21:14:55 +0000 (UTC)
+Received: by venus (Postfix, from userid 1000)
+	id 1E38B181D83; Wed, 03 Jun 2026 23:14:53 +0200 (CEST)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Paul Cercueil <paul@crapouillou.net>, 
+ Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-pm@vger.kernel.org, Costa Shulyupin <costa.shul@redhat.com>
+Cc: linux-mips@vger.kernel.org
+In-Reply-To: <20260515185043.1523363-1-costa.shul@redhat.com>
+References: <20260515185043.1523363-1-costa.shul@redhat.com>
+Subject: Re: [PATCH v1] include: Remove unused jz4740-battery.h
+Message-Id: <178052129311.2671410.17383042434045118752.b4-ty@collabora.com>
+Date: Wed, 03 Jun 2026 23:14:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
 
-On Sun, 22 Mar 2026 15:24:21 -0700
-Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
 
-> On Tue, Dec 09, 2025 at 09:25:56AM +0100, Romain Gantois wrote:
-> > Use namespaced exports for IIO consumer API functions.
-> > 
-> > This will make it easier to manage the IIO export surface. Consumer drivers
-> > will only be provided access to a specific set of functions, thereby
-> > restricting usage of internal IIO functions by other parts of the kernel.
-> > 
-> > This change cannot be split into several parts without breaking
-> > bisectability, thus all of the affected drivers are modified at once.
-> > 
-> > Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com> # for power-supply
-> > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> > Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>  
+On Fri, 15 May 2026 21:50:41 +0300, Costa Shulyupin wrote:
+> The last user was removed in commit aea12071d6fc
+> ("power/supply: Drop obsolete JZ4740 driver") and replaced by
+> a self-contained IIO-based driver. No file includes this header.
 > 
-> For input:
-> 
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> 
-> Thanks.
 > 
 
-For anyone wondering what happened to this... I forgot to apply this at the
-beginning of the cycle and by the time I remembered we had too much queued up
-so it would have been messy to do an immutable branch.   Anyhow, I plan to
-sort this at start of next cycle.
+Applied, thanks!
 
-Jonathan
+[1/1] include: Remove unused jz4740-battery.h
+      commit: 0549c4c01338abe343a4ffaa4733475d0a85d38a
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
+

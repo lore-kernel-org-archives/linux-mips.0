@@ -1,39 +1,39 @@
 Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E66A47884E;
-	Wed,  3 Jun 2026 12:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8562264A7
+	for <linux-mips@vger.kernel.org>; Wed,  3 Jun 2026 12:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780488751; cv=none; b=hmTHCKl+1h+iZ+ZmdoblfGPfGwTOJ9mlm3+x+VrjuoxhBUbsfioI+oRJtYjkESR1rlejTMyfrPyBYsT5NX2Iob/CQKzZs4+pPY9+LRq2X4869dmuwlssvt0ETBC00/g2qRarp5kxGr7Pr53ZXyAw1y7afKosmzowhJANoh/bzM0=
+	t=1780489130; cv=none; b=ZMg0J1GMxMk2NlRBUA8BdARt8mCd1zaCu5m5QcOP/QdAqAblgQ1byTF6UvS7JB3V7ZyrY5frxz2eW0Guw11//G9jjYCL02IYEM7u0vYwnw4mF9eOlL6eN6YpxuC42/9HX2QQtbwdM6bsVQ+t9G/Oa+xw96o76sHZgujNUwUXEu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780488751; c=relaxed/simple;
-	bh=d3EykXjPdTOzofqzcPyCOaTQ0ATiB33JeyMELyx3OOM=;
+	s=arc-20240116; t=1780489130; c=relaxed/simple;
+	bh=cVsIIY8CxED8IOMY5ucOvvvxSDQam/aTs0S98YZ83H4=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fZSLXiLP5VCE1TuBKvtSbDFNk2QKzyAAixmx4s2dVko77z/njNpyLxZ08yByhFyKtyK0aIttg0NM2Tm0+OIfNJIvg+XcdQ/D/9S0+Wwa4VlG9EeMGViThLGHu0Db1WDyBL4KjySzIjVH0k1A/hsIZQ1dQldZ4L4vp+HCm7DJrOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WqS1SiX8; arc=none smtp.client-ip=185.246.84.56
+	 MIME-Version:Content-Type; b=YfNttlq6MLlFzeIE7JCE3j/Es60aP9M/kopfyeMkhkRRrTZcH4FByd+jtx+MS0RzcsjofGYQqpQlm9za4OSAlXGwsTHgXVHyxQ3xvul7sjRHH8ibcGtG8/lTGGwfF0iL9spmEqik2cKnXbTbADHD5ZERKhIRysYW3E13dTOpSFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=oDjwgWv0; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WqS1SiX8"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oDjwgWv0"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 195381A0108;
-	Wed,  3 Jun 2026 12:12:28 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id C5A6B1A010B;
+	Wed,  3 Jun 2026 12:18:45 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id DFA0C6073E;
-	Wed,  3 Jun 2026 12:12:27 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 48FB510888413;
-	Wed,  3 Jun 2026 14:11:48 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8A67C6073E;
+	Wed,  3 Jun 2026 12:18:45 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AA06610888413;
+	Wed,  3 Jun 2026 14:17:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1780488742; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1780489120; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=48ypl4N/Z9PEOrZi5s882vnkw+L0W6ufixnULaCX8wY=;
-	b=WqS1SiX8JxgfCWjKbfGrN6L6Q3QYEVKtX9eatJz9iVzPqdb59EF2wfORgl6E1oiCCYOL6h
-	61ETQH6hQR3Buc4PxFXV8xJT2J5xNuIRWeEXwCZRhaxs5XLVqNUthCgehn5gJAgDWr5D+V
-	EDn8WSCnJ0fr/3eDUJx++tiwrZ5WSI35nVYVUdYn3doe/iUdJ7p9DoQU59Ef1MvT6hoBjc
-	7jEjYscg5qvEtTKsFwWeeKNcZMVVM6zgOvZnXTK6b1ZDBo1eLL0VN631t+RjK9av9NXAVA
-	YYmM055EJj11NnypQXGQ/iJgKGei6RU0g5MfNttmfc+5/XNEQ2JJEvOyMVoU4Q==
-Date: Wed, 3 Jun 2026 14:11:47 +0200
+	bh=zFi/fGH5JDn5JO2RB9yxgU6c2Ow81xQ2uZUvm6i/E1g=;
+	b=oDjwgWv0v2GgyX3pUULcD12EPMMUfgyJz9dBcXuV+rHROoWzoTs8xUfKvHan7sDmS4CabP
+	L+IrQHrvnK0vVMlJcr6wVI29ruHN0LlRTpSAbksHJDQU4x6/AUscYD365MmPH4Ai9RHUD3
+	INZ8kgugtku7ob0NW+Ab7SNI9LVONJhSV2/Jk11qsbj+crVHJ9NJj1exILul60PuVPHkKS
+	HfTz8P9kfZEod84fwQjR8JESyd/TGvwRHW/nVKN9n20yx7yviIrbsYx2VG2qWDRMnUj3ZS
+	NEQxmhhJHdJjDyxCCsVL18Z9rUUNa16rIZrNpUha+f5Agkx9HJ0YQZpZ489vRg==
+Date: Wed, 3 Jun 2026 14:17:57 +0200
 From: Herve Codina <herve.codina@bootlin.com>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: "Alvin =?UTF-8?B?xaBpcHJhZ2E=?=" <alsi@bang-olufsen.dk>, "J.M.B.
@@ -103,12 +103,12 @@ Cc: "Alvin =?UTF-8?B?xaBpcHJhZ2E=?=" <alsi@bang-olufsen.dk>, "J.M.B.
  linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
  linux-riscv@lists.infradead.org, linux-sound@vger.kernel.org,
  spacemit@lists.linux.dev
-Subject: Re: [PATCH 03/83] ASoC: codecs: idt821034: don't use array if
- single pattarn
-Message-ID: <20260603141147.61943cf0@bootlin.com>
-In-Reply-To: <87y0h7hqxo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 04/83] ASoC: codecs: peb2466: don't use array if single
+ pattarn
+Message-ID: <20260603141757.451cad7b@bootlin.com>
+In-Reply-To: <87wlwrhqxf.wl-kuninori.morimoto.gx@renesas.com>
 References: <8733zfj5jj.wl-kuninori.morimoto.gx@renesas.com>
-	<87y0h7hqxo.wl-kuninori.morimoto.gx@renesas.com>
+	<87wlwrhqxf.wl-kuninori.morimoto.gx@renesas.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
 Precedence: bulk
@@ -123,7 +123,7 @@ X-Last-TLS-Session-Version: TLSv1.3
 
 Hi Kuninori,
 
-On Tue, 26 May 2026 01:58:59 +0000
+On Tue, 26 May 2026 01:59:08 +0000
 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 
 > Because it is confusable during debugging ASoC FW update, tidyup
@@ -131,36 +131,9 @@ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  sound/soc/codecs/idt821034.c | 9 ++++-----
+>  sound/soc/codecs/peb2466.c | 9 ++++-----
 >  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/idt821034.c b/sound/soc/codecs/idt821034.c
-> index 39bafefa6a186..084090ccef77a 100644
-> --- a/sound/soc/codecs/idt821034.c
-> +++ b/sound/soc/codecs/idt821034.c
-> @@ -860,18 +860,17 @@ static int idt821034_dai_startup(struct snd_pcm_substream *substream,
->  	return 0;
->  }
->  
-> -static const u64 idt821034_dai_formats[] = {
-> +static const u64 idt821034_dai_formats =
->  	SND_SOC_POSSIBLE_DAIFMT_DSP_A	|
-> -	SND_SOC_POSSIBLE_DAIFMT_DSP_B,
-> -};
-> +	SND_SOC_POSSIBLE_DAIFMT_DSP_B;
->  
->  static const struct snd_soc_dai_ops idt821034_dai_ops = {
->  	.startup      = idt821034_dai_startup,
->  	.hw_params    = idt821034_dai_hw_params,
->  	.set_tdm_slot = idt821034_dai_set_tdm_slot,
->  	.set_fmt      = idt821034_dai_set_fmt,
-> -	.auto_selectable_formats     = idt821034_dai_formats,
-> -	.num_auto_selectable_formats = ARRAY_SIZE(idt821034_dai_formats),
-> +	.auto_selectable_formats     = &idt821034_dai_formats,
-> +	.num_auto_selectable_formats = 1,
->  };
->  
->  static struct snd_soc_dai_driver idt821034_dai_driver = {
 
 Same typo in the commit title as in patch 2:
 s/pattarn/pattern/

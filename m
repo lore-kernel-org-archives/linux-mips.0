@@ -1,141 +1,105 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CCB3DD864;
-	Fri,  5 Jun 2026 14:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36AC1B6D1A
+	for <linux-mips@vger.kernel.org>; Mon,  8 Jun 2026 05:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780671269; cv=none; b=XURFfdMpC/md6jqHfwBOB9U8ftXfzpl1ZkqI/2XmO8AOsB7oKqDqMIS1JHgEzW3OI1dTGSiohkOeiWBBgIrSWNLN2eOja0JBVhLsu33ZKToXg9bJO0aB9yPfkYK2+XIv0Jqqh8C4FVizPvRM35QV9NIcK4WYTYdCXTNWWZH5iY4=
+	t=1780896743; cv=none; b=RonCGEQRdUmb8lqoWteOgDUgu508Ph0WiYhceDc1C8iQWOjD20JzqOY9v05VEzupIvSwmuquG4qvCq97ERyfK/+vLJXi2MCpdAh/w3/vBBs6+Kns35CiuFIbtgp2zNcb3/DV00KjJAedj4v78fv786OodMwFakQSH0raRKvS5h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780671269; c=relaxed/simple;
-	bh=4tMeiKXzH2reWHQd2Do3LiCn4ypOHk0Io4ayzbOXR2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uE69f7oEiRrURVD1baumey7QqDInL9iiWqiBfGrbP5jySeDDdkIWnvId4Zf4wiZOFUXt7Fyis0KDmSaGMqnDlbDIpCmY4fdq7H7yRTtig4qNyHktkoRtpRpFzScC1n7mwTj9WBhmpQ79TwXmcWmtMrlDOHt6uy4wEdK01J2e/nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ViCrIBCD; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1780896743; c=relaxed/simple;
+	bh=L36nlBpBnY281FzOJjX0G2x2ETccgVsQym4w89qq/L4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CSZiKfeUs0nX/yE2NnOVClFxf3Tf+LWokcur15icI4Mj/ZnVCTfVZjHnElt05OC3JLMyK2nZ+kIYCKcjyX3NV/RxRHeBGVicg46N8PxuNblGXi1k3okj1GBAPpw7XAz4C9gI1xl/03QKHpRh4L5aHwFSFGedSQmhZn6jJxHZ8/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQm2GqOt; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ViCrIBCD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780671269; x=1812207269;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4tMeiKXzH2reWHQd2Do3LiCn4ypOHk0Io4ayzbOXR2A=;
-  b=ViCrIBCD8lCv6XAbtpT81FQ631uftKlCzal7av3ErRIqeaKCKymlgqn6
-   AoZVkeupiO2Xg79jhTTe77rFaGCtOmmBblSg8R0tb2lR31byKp3B6Y335
-   GzHmCh/RAMtIxamW2Ot1DumW6coJAGxX3Vv2f6pQRwLXWS8yBRVHbJkNO
-   SvAu7aJAScvOVWTCSvnnIfXc42pEaCW2PeESJFwBerwUF2SaUh2QdynjL
-   KUhMC7j1zNE5snvNw7VYH2wqff3SV/h/qaLcJm79GCnPjGAIeIkytw/fO
-   rLX/Vk9j3d+uZk9UOSchtxYi9OaNPMkWQ0LMC21U27AagpVieYbzloWS5
-   Q==;
-X-CSE-ConnectionGUID: 9ou23hR/QfCF9CuA/UpSrQ==
-X-CSE-MsgGUID: liEgSng5SJaoz8YLlT4+Pw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11807"; a="81565442"
-X-IronPort-AV: E=Sophos;i="6.24,188,1774335600"; 
-   d="scan'208";a="81565442"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2026 07:54:28 -0700
-X-CSE-ConnectionGUID: h9Rk7ixqSzO/yh1S6oBceQ==
-X-CSE-MsgGUID: mgvGmj4gSWyogJmBey9GTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,188,1774335600"; 
-   d="scan'208";a="243768683"
-Received: from ettammin-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.178])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2026 07:54:14 -0700
-Date: Fri, 5 Jun 2026 17:54:11 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Johan Hovold <johan@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-	Lee Jones <lee@kernel.org>,
-	Mark Brown <broonie@opensource.wolfsonmicro.com>,
-	Thierry Reding <thierry.reding@avionic-design.de>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Srinivas Kandagatla <srini@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>, Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Doug Berger <opendmb@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ulf Hansson <ulfh@kernel.org>, Frank Li <Frank.Li@nxp.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Peter Chen <peter.chen@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, brgl@kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
-	driver-core@lists.linux.dev, devicetree@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
-	iommu@lists.linux.dev, linux-pm@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 22/23] reset: rzg2l: use
- platform_device_set_of_node_from_dev()
-Message-ID: <aiLjE0SLwrDytyw0@ashevche-desk.local>
-References: <20260521-pdev-fwnode-ref-v1-0-88c324a1b8d2@oss.qualcomm.com>
- <20260521-pdev-fwnode-ref-v1-22-88c324a1b8d2@oss.qualcomm.com>
- <6af284545729f03a60d06479339862a2f08c6b7e.camel@pengutronix.de>
- <ah9QtExF2rUUTMNo@ashevche-desk.local>
- <aiK-qZqpuC-OEigf@hovoldconsulting.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQm2GqOt"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-36bb3551f6eso3319578a91.1
+        for <linux-mips@vger.kernel.org>; Sun, 07 Jun 2026 22:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780896740; x=1781501540; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OigwQgbSy1UvoaAKfiepGyHvBWZutBpwSHyT2nj2TAs=;
+        b=WQm2GqOtcWhUQZAiaHuNHXWHHqwbxhG+1duHq8+pC/bAmBHn/Cu8Nmvt1FvGHhq7kl
+         spD4cuf4kxka4P3Xynx70zPIJA/gN6xaL/QLW3SATUvCnpBTx7PWJX2Q9jdfYBT9IgSE
+         3UchtAeZj59VOxWj60Z4U3hNubIIQE52nujaokf620Xc50oV7gb0mIogalnop56rYBIb
+         4IZbtCFDnxUulhUZDxq65hkGqlFhjZNuVyKS612+CEQY6h8fn1gZBzxiDBuUQg/czX8I
+         q+gM8gQ9qOpmdRWH2LvE8QHK7pEYYj5hZrgybT0gN3eps2X9A7KIwnYwmv9Y//xyMHzT
+         wS9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780896740; x=1781501540;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OigwQgbSy1UvoaAKfiepGyHvBWZutBpwSHyT2nj2TAs=;
+        b=Z1DfAH8sz7InXGXMiI+63HzjTnvka2VQB3g4KSo5rG7GXXZNaQxzpYSvWPbzVG2LUO
+         jCniC9bkobVPfBxNVlLGDTydK4d1KD33UklLL/8EIh1PeCV0asewSS5QbWomFjOkgL3b
+         Hck6iFaQsRWQPFScp3+CiEk41G95iZwHxxjH2hgSICZt8y3k14BC/rDzW0+Nuutw9cbl
+         SoY4EHAh2f8afDpNzaw0uLRuOikZIFFjRil66LkeMeVqsiJ1OE9m9eW+/mvIXLTwotH4
+         MUDe5CbXMmy7/MRsobBB4kM775fx2t+xR6CZbPali6AzLSwMhYKCCZH82o8pcizmix8d
+         /OTw==
+X-Gm-Message-State: AOJu0YzGcjnc/IzjB/raOXVjNy2Q/0diuMJGDYZSL8uc00XXT7H2vBQa
+	N5dW7SVsF49h99wxmoED711ybw1fB+SHzrVDxCmRnFUXnTSEWwQyWblRaqoSMhd1
+X-Gm-Gg: Acq92OHOmtsP7xQx5pjo82BaFcMuVUT+6NgM1m+epmG+etWr6tp6TL8uucCHcDwJRxA
+	hqAjs0bIfcQhOjhaEQIqdfculQftNtA5OPVSdjAjMhd4l7bzG75AHcNfw2KaLtPoIKvL596vDSI
+	sa1UiDqcTqbkDLmxh6HmpR5w9c6sM55BKO7Ni7RC1DIcdAtUKcJP58coEf1YvDDQmKTbvVuQW8H
+	3x5raP1M8mBZhftz86qYEwfr6cIj4Bf/ZnzeNKSontTNNF+IJcCNvP5fC1dmsL3EyDvBLqIAcLz
+	nLJV+xJkrm2HwWrv9LJTmJ12a+STfiuDitbFvZ+Hg+Suzc3Uu3wDKYPtcM1C2siAMG8eQ5pvVbW
+	cT7Azd88LroPgM7WkSSrO2ObgSqAlJdXI35DCYMK1ai0DCMqqYVolG+3xnr7BUTfBs6kluKdbtd
+	sodRQI6BSrjautfgAoF2WDizdUoty0zTyfc8U6rM+RAJ+kPPyu132Bh7MOir5iYjzzluvZ2M7/E
+	iMcrM8iENVpRhh9nCoCqyN+a8PdLZTuHfy1DrvZ2041TA==
+X-Received: by 2002:a17:90b:5345:b0:35c:30a8:330 with SMTP id 98e67ed59e1d1-370ebff342fmr14191018a91.0.1780896740281;
+        Sun, 07 Jun 2026 22:32:20 -0700 (PDT)
+Received: from ryzen ([2601:644:8000:5b5d:7285:c2ff:fe45:8a32])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84282918b8csm15867411b3a.57.2026.06.07.22.32.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jun 2026 22:32:19 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mips: dts: ar9132: fix wdt node name
+Date: Sun,  7 Jun 2026 22:32:02 -0700
+Message-ID: <20260608053202.12004-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aiK-qZqpuC-OEigf@hovoldconsulting.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jun 05, 2026 at 02:18:49PM +0200, Johan Hovold wrote:
-> On Wed, Jun 03, 2026 at 12:52:52AM +0300, Andy Shevchenko wrote:
-> > On Tue, Jun 02, 2026 at 10:24:41AM +0200, Philipp Zabel wrote:
-> > > On Do, 2026-05-21 at 10:36 +0200, Bartosz Golaszewski wrote:
+Fixes the following warning:
 
-...
+$nodename:0: 'wdt@18060008' does not match
+'^(timer|watchdog)(@.*|-([0-9]|[1-9][0-9]+))?$'
+from schema $id: http://devicetree.org/schemas/watchdog/qca,ar7130-wdt.yaml#
 
-> > > > -	device_set_of_node_from_dev(&vdev->dev, dev);
-> > > > +	platform_device_set_of_node_from_dev(vdev, dev);
-> > 
-> > Same Q here, why it uses inherited call? Cargo cult?
-> > 
-> > 'reused' flag is solely pin control (provider!) thingy as far as I remember.
-> 
-> No, it's needed for pin control *consumers*, which can be any device,
-> and potentially any other resource managed by driver core or bus code.
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ arch/mips/boot/dts/qca/ar9132.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Why don't we set it for every pin control consumer automatically?
-
+diff --git a/arch/mips/boot/dts/qca/ar9132.dtsi b/arch/mips/boot/dts/qca/ar9132.dtsi
+index 4d3c48a9f9fd..77225ed459cb 100644
+--- a/arch/mips/boot/dts/qca/ar9132.dtsi
++++ b/arch/mips/boot/dts/qca/ar9132.dtsi
+@@ -98,7 +98,7 @@ pll: pll-controller@18050000 {
+ 				clock-output-names = "cpu", "ddr", "ahb";
+ 			};
+ 
+-			wdt: wdt@18060008 {
++			wdt: watchdog@18060008 {
+ 				compatible = "qca,ar7130-wdt";
+ 				reg = <0x18060008 0x8>;
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.54.0
 

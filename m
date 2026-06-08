@@ -1,14 +1,14 @@
 Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56863F20E9;
-	Mon,  8 Jun 2026 14:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AA53F4859;
+	Mon,  8 Jun 2026 14:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929808; cv=none; b=p5bQGurYgZGEyF28XqpkSWJRoHwK7LC9CwwvXIeGJohkh7pDNY6/A7zoCrZk9LheXQu9PqSkItKCB4sb21SiXnoeA0Vy+i8hUtSX+SZHJZOMhMLwuxqWSwIrzz9rHj5nyNcsr11sPLTWYto2LjPuxaZa7Nfo15h6slSYxEtLlXc=
+	t=1780929809; cv=none; b=i61w7Nd0zshFcSwHDJICmEmsb6jJLh8T/ibZ7EfeocB1YrEYNfJQD+N6t2Dr2g5YUmzuD8TVlLszCtW9std1VD1ddFzRT4RGmi+c8wzJSTxHFK41j4ptaGAvt8mcOIIBz6Cps0RLkzb6Tt7rU2Jgxls0k5SHgt75caWSOEnf9bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780929808; c=relaxed/simple;
-	bh=wyg3CLEuRspMj18NL+RGWxAX5QENKg3H1zUIBYbL3U0=;
+	s=arc-20240116; t=1780929809; c=relaxed/simple;
+	bh=Le/G0vQ0/TnbqWe2dBxWLFgIozxJJ/jsvXKWfnBsbj8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TEaIiEkFNzgcbrT8Y2ftWG+MsRvWs3F8SoK/b5ryMnG7f6v0B9pr1WxhrTIyQOoc2Bb+Ab8RdTCqjcqvTYN4FJ6OP8QVAwzB6kyml6vB2gN6n+17pQ2cMRALRn2hEE/zL+p0sCeL5gaBm1aUHBxtaUMOFL4G00cuGPjnr9T0Aak=
+	 MIME-Version; b=MO+NdmJcdrh1VeNWgRF8IpjCaV1b2Buz7rF8n/X2tuu7LgVk1nLAs+yygS+Q4msqD4MI5kskR8y9j2TiJzFzMSp/i7x1tlHU+Z3SyUcDSFkeG6R6pe8sJAAojlupyJrfN9V6gP+ugQj56ZjYH7atuD7+PH5u1eLqJGKzStKYhLY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
@@ -16,8 +16,8 @@ Received: from io.home.8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 15AC22028BF;
-	Mon,  8 Jun 2026 16:43:11 +0200 (CEST)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 3F1722028C9;
+	Mon,  8 Jun 2026 16:43:13 +0200 (CEST)
 From: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
 To: Paolo Bonzini <pbonzini@redhat.com>,
 	Sean Christopherson <seanjc@google.com>
@@ -38,9 +38,9 @@ Cc: Tom Lendacky <thomas.lendacky@amd.com>,
 	x86@kernel.org,
 	coconut-svsm@lists.linux.dev,
 	joerg.roedel@amd.com
-Subject: [PATCH 28/60] kvm: Implement KVM_CAP_PLANES
-Date: Mon,  8 Jun 2026 16:42:20 +0200
-Message-ID: <20260608144252.351443-29-joro@8bytes.org>
+Subject: [PATCH 38/60] kvm: Make KVM_SIGNAL_MSI per plane
+Date: Mon,  8 Jun 2026 16:42:30 +0200
+Message-ID: <20260608144252.351443-39-joro@8bytes.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260608144252.351443-1-joro@8bytes.org>
 References: <20260608144252.351443-1-joro@8bytes.org>
@@ -54,165 +54,102 @@ Content-Transfer-Encoding: 8bit
 
 From: Paolo Bonzini <pbonzini@redhat.com>
 
-Introduce an architecture call-back to request the VM-specific maximum
-number of supported planes. Use that to implement the KVM_CAP_PLANES
-capability check.
+Allow the KVM_SIGNAL_MSI ioctl for every plane instead of per VM.
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Co-developed-by: Joerg Roedel <joerg.roedel@amd.com>
 Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
 ---
- arch/arm64/kvm/arm.c       | 5 +++++
- arch/loongarch/kvm/vm.c    | 5 +++++
- arch/mips/kvm/mips.c       | 5 +++++
- arch/powerpc/kvm/powerpc.c | 5 +++++
- arch/riscv/kvm/main.c      | 5 +++++
- arch/s390/kvm/kvm-s390.c   | 5 +++++
- arch/x86/kvm/x86.c         | 5 +++++
- include/linux/kvm_host.h   | 2 ++
- virt/kvm/kvm_main.c        | 4 ++++
- 9 files changed, 41 insertions(+)
+ include/linux/kvm_host.h |  2 +-
+ virt/kvm/irqchip.c       |  4 ++--
+ virt/kvm/kvm_main.c      | 25 ++++++++++++++-----------
+ 3 files changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 1e2f42134b74..7e6d2773fd39 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -200,6 +200,11 @@ static int kvm_arm_default_max_vcpus(void)
- 	return vgic_present ? kvm_vgic_get_max_vcpus() : KVM_MAX_VCPUS;
- }
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- /**
-  * kvm_arch_init_vm - initializes a VM data structure
-  * @kvm:	pointer to the KVM struct
-diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
-index 1317c718f896..14f1232c6e0c 100644
---- a/arch/loongarch/kvm/vm.c
-+++ b/arch/loongarch/kvm/vm.c
-@@ -109,6 +109,11 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- 	kvm->arch.phyid_map = NULL;
- }
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- {
- 	int r;
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 776aba0af096..60870452119d 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -115,6 +115,11 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
- 	return !!(vcpu->arch.pending_exceptions);
- }
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- {
- 	return false;
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 5d94e0f676ec..cfa40be20e00 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -499,6 +499,11 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- 	module_put(kvm->arch.kvm_ops->owner);
- }
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- {
- 	int r;
-diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
-index cb8a65273c1f..5adba3a455a3 100644
---- a/arch/riscv/kvm/main.c
-+++ b/arch/riscv/kvm/main.c
-@@ -17,6 +17,11 @@
- 
- DEFINE_STATIC_KEY_FALSE(kvm_riscv_vsstage_tlb_no_gpa);
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- static void kvm_riscv_setup_vendor_features(void)
- {
- 	/* Andes AX66: split two-stage TLBs */
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index e6fe83da172f..24f24ea95f86 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -3186,6 +3186,11 @@ static void sca_dispose(struct kvm *kvm)
- 	kvm->arch.sca = NULL;
- }
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- void kvm_arch_free_vm(struct kvm *kvm)
- {
- 	if (IS_ENABLED(CONFIG_VFIO_PCI_ZDEV_KVM))
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 50601ac2828f..25299c8c28e3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -482,6 +482,11 @@ static u32 msr_based_features[ARRAY_SIZE(msr_based_features_all_except_vmx) +
- 			      (KVM_LAST_EMULATED_VMX_MSR - KVM_FIRST_EMULATED_VMX_MSR + 1)];
- static unsigned int num_msr_based_features;
- 
-+unsigned kvm_arch_max_planes(struct kvm *kvm)
-+{
-+	return 1;
-+}
-+
- /*
-  * All feature MSRs except uCode revID, which tracks the currently loaded uCode
-  * patch, are immutable once the vCPU model is defined.
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 291bccce9b74..3ecd472c7cfa 100644
+index cfb6911d6771..05a10836d92d 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -1156,6 +1156,8 @@ void kvm_unlock_all_vcpus(struct kvm *kvm);
- void vcpu_load(struct kvm_vcpu *vcpu);
- void vcpu_put(struct kvm_vcpu *vcpu);
+@@ -2370,7 +2370,7 @@ static inline int kvm_init_irq_routing(struct kvm *kvm)
  
-+unsigned kvm_arch_max_planes(struct kvm *kvm);
-+
- #ifdef CONFIG_KVM_IOAPIC
- void kvm_arch_post_irq_ack_notifier_list_update(struct kvm *kvm);
- #else
+ #endif
+ 
+-int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi);
++int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi, unsigned plane_level);
+ 
+ void kvm_eventfd_init(struct kvm *kvm);
+ int kvm_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args);
+diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
+index 14480d1df4f9..a4fea7d8dde6 100644
+--- a/virt/kvm/irqchip.c
++++ b/virt/kvm/irqchip.c
+@@ -45,7 +45,7 @@ int kvm_irq_map_chip_pin(struct kvm *kvm, unsigned irqchip, unsigned pin)
+ 	return irq_rt->chip[irqchip][pin];
+ }
+ 
+-int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi)
++int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi, unsigned plane_level)
+ {
+ 	struct kvm_kernel_irq_routing_entry route;
+ 
+@@ -57,7 +57,7 @@ int kvm_send_userspace_msi(struct kvm *kvm, struct kvm_msi *msi)
+ 	route.msi.data = msi->data;
+ 	route.msi.flags = msi->flags;
+ 	route.msi.devid = msi->devid;
+-	route.msi.plane_level = 0;
++	route.msi.plane_level = plane_level;
+ 
+ 	return kvm_set_msi(&route, kvm, KVM_USERSPACE_IRQ_SOURCE_ID, 1, false);
+ }
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7a0b632e3ac0..5a0277e2ac7c 100644
+index a30123b77112..dc59f2f9d405 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -5079,6 +5079,10 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
- 	case KVM_CAP_GUEST_MEMFD_FLAGS:
- 		return kvm_gmem_get_supported_flags(kvm);
- #endif
-+	case KVM_CAP_PLANES:
-+		if (kvm)
-+			return kvm_arch_max_planes(kvm);
-+		return 1;
+@@ -4907,6 +4907,17 @@ static long __kvm_plane_ioctl(struct kvm_plane *plane, unsigned int ioctl, unsig
+ 	case KVM_CREATE_VCPU:
+ 		r = kvm_plane_ioctl_create_vcpu(plane, arg);
+ 		break;
++#ifdef CONFIG_HAVE_KVM_MSI
++	case KVM_SIGNAL_MSI: {
++		void __user *argp = (void __user *)arg;
++		struct kvm_msi msi;
++
++		if (copy_from_user(&msi, argp, sizeof(msi)))
++			return -EFAULT;
++		r = kvm_send_userspace_msi(plane->kvm, &msi, plane->level);
++		break;
++	}
++#endif
  	default:
+ 		r = -ENOTTY;
+ 	}
+@@ -5493,6 +5504,9 @@ static long kvm_vm_ioctl(struct file *filp,
+ 		r = kvm_vm_ioctl_create_plane(kvm, arg);
+ 		break;
+ 	case KVM_CREATE_VCPU:
++#ifdef CONFIG_HAVE_KVM_MSI
++	case KVM_SIGNAL_MSI:
++#endif
+ 		r = __kvm_plane_ioctl(kvm->planes[0], ioctl, arg);
+ 		break;
+ 	case KVM_ENABLE_CAP: {
+@@ -5597,17 +5611,6 @@ static long kvm_vm_ioctl(struct file *filp,
+ 		r = kvm_ioeventfd(kvm, &data);
  		break;
  	}
+-#ifdef CONFIG_HAVE_KVM_MSI
+-	case KVM_SIGNAL_MSI: {
+-		struct kvm_msi msi;
+-
+-		r = -EFAULT;
+-		if (copy_from_user(&msi, argp, sizeof(msi)))
+-			goto out;
+-		r = kvm_send_userspace_msi(kvm, &msi);
+-		break;
+-	}
+-#endif
+ #ifdef __KVM_HAVE_IRQ_LINE
+ 	case KVM_IRQ_LINE_STATUS:
+ 	case KVM_IRQ_LINE: {
 -- 
 2.53.0
 

@@ -1,99 +1,127 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D323B638
-	for <linux-mips@vger.kernel.org>; Mon,  8 Jun 2026 14:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B6D3CFF4C;
+	Mon,  8 Jun 2026 14:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929517; cv=none; b=WHRivTpEwaxcquERbDtrTV7yWruBlKwaeMQ+I9kKvqpTSyGLhzK4m9c/b8NAFXTC+hqsiE8YpLEWtDyXSeIX9L/yLgmVCp3DpyiXR6NJgpis+Q3o/oRn6LYchaB34yV8LtGqzJpx+tNGXUGZLFzuA4Xoj/wAeJwmzAQKfMjR84Y=
+	t=1780929793; cv=none; b=HZnIKklH4OVx5o6TcXbRJtkqVQg6ybxWGHrM+b2PiuAz9M0OaquB8Dkzx2PTZtiCJzR6TJJKrtDXNtlQoL2I5h5s3nFFyZ2OQlxOICGcvBDilfSIcV8bV2djSIUJQL4wc0ogXoLtdS5+re2vq7mzcJUlRgtmqFZAvSZ/sHH5+zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780929517; c=relaxed/simple;
-	bh=5IDQC0N9hLwKhzfVctSnD5d3tcGRpXZXrMdmybD+IeU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qAhxJVd0TP8POvcAbn7/Nc1i8FFg9oK74kEuO/weoTQ6lO+Bjt7Uk4a36Ff47K+82KWtJKy81920VBOGGcrussIvjHdWQVBwyDt80gxpHhZsHddoVACPm48g9dTFgFpertN+sKom1m1/4ye7GwiGqQ43BAE/zP+Vi2qWe5ggTH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c89AWtlL; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c89AWtlL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23AA01F00893;
-	Mon,  8 Jun 2026 14:38:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780929515;
-	bh=LDq+IZOdd0UHKtkjABkpSRlTlhPmfnpQIoaMXhvm7EM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=c89AWtlLwDYJe2spQ0FjraE4eERzvvBbjvTOzPgSnI28UPWIDJvfE2Xoauzf+r5Sw
-	 SMiMtREJcElxd0+eMnZ1zswe7cjppJurDxGN5ckE3G1Vmf9C/RQotknieu9rddEaxD
-	 lBNsYhm+YwuYCLE+VO1hVxBAAg/xWDKV3/37GdQ6E1LvY0c3uLBT9n0VCHDhYjQVPq
-	 ElliafXAcNfy67DPgpXxCoQH9Oy2jJolEL2caaiZQ5X3qmAhEdmF55Y/WHqFpunMiK
-	 XWo2RX3QKttTM8r1sP5merYtbvQrZprLLsEnefX+2fv5ShPrrOF7KWiS9kUCSadhyL
-	 n1EcrJH/+xKQg==
-From: Maxime Ripard <mripard@kernel.org>
-Date: Mon, 08 Jun 2026 16:36:30 +0200
-Subject: [PATCH v2 48/78] drm/ingenic: Switch to atomic_create_state
+	s=arc-20240116; t=1780929793; c=relaxed/simple;
+	bh=PD1QSHnexM19DYdYfEtEZMOHnc8LRZ/uBD0hQqHD0PE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ORycbK4GmxqRRww6b8tlguyocsakxPi6xEPSmksCReQX9B4s0UlUkGicQNAiO6OhjCd+z+fzWdbKZiOM33IXXeKvxOQcI+drSwp0xKZ3Yzb029tcKC3H2uTvyO9qwWVx5g34pr264orgH9yu8FIjcsUg/8pcJGv6jrdAUGKorAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from io.home.8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 41D042028A4;
+	Mon,  8 Jun 2026 16:43:05 +0200 (CEST)
+From: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+	ashish.kalra@amd.com,
+	michael.roth@amd.com,
+	nsaenz@amazon.com,
+	anelkz@amazon.de,
+	James.Bottomley@HansenPartnership.com,
+	Melody Wang <huibo.wang@amd.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm-riscv@lists.infradead.org,
+	x86@kernel.org,
+	coconut-svsm@lists.linux.dev,
+	joerg.roedel@amd.com
+Subject: [PATCH 01/60] x86/sev: Define the #HV doorbell page structure
+Date: Mon,  8 Jun 2026 16:41:53 +0200
+Message-ID: <20260608144252.351443-2-joro@8bytes.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260608144252.351443-1-joro@8bytes.org>
+References: <20260608144252.351443-1-joro@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260608-drm-no-more-bridge-reset-v2-48-0a91018bf886@kernel.org>
-References: <20260608-drm-no-more-bridge-reset-v2-0-0a91018bf886@kernel.org>
-In-Reply-To: <20260608-drm-no-more-bridge-reset-v2-0-0a91018bf886@kernel.org>
-To: Andrzej Hajda <andrzej.hajda@intel.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>
-Cc: Dmitry Baryshkov <lumag@kernel.org>, dri-devel@lists.freedesktop.org, 
- Maxime Ripard <mripard@kernel.org>, Paul Cercueil <paul@crapouillou.net>, 
- linux-mips@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1485; i=mripard@kernel.org;
- h=from:subject:message-id; bh=5IDQC0N9hLwKhzfVctSnD5d3tcGRpXZXrMdmybD+IeU=;
- b=owGbwMvMwCmsHn9OcpHtvjLG02pJDFlql6PSm6Z2zl0+K9Bgy6bCUo8FTZFRp0J0Nib+YTW3+
- SqgnGvXMZWFQZiTQVZMkeWJTNjp5e2LqxzsV/6AmcPKBDKEgYtTACaSsYSx4Uz9mTmy/jbx0uIV
- O+ZN1M3ZoFBz/vyJaRaGac6fp/z2lQwLEeNb7iz77cA1e+59k1cqMNZZfuYruqmVpWL6TfqCw3M
- WIdZrxyf0njMJWvbn+9s08zbZjXsjzs+7xHP3cHbcMx697VEA
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+Content-Transfer-Encoding: 8bit
 
-The drm_bridge_funcs.atomic_reset callback and its
-drm_atomic_helper_bridge_reset() helper are deprecated.
+From: Melody Wang <huibo.wang@amd.com>
 
-Switch to the atomic_create_state callback and its
-drm_atomic_helper_bridge_create_state() counterpart.
+Restricted injection is a feature which enforces additional interrupt and
+event injection security protections for a SEV-SNP guest. It disables all
+hypervisor-based interrupt queuing and event injection of all vectors except
+a new exception vector, #HV (28), which is reserved for SNP guest use, but
+never generated by hardware. #HV is only allowed to be injected into VMSAs
+that execute with Restricted Injection.
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
+The guests running with the SNP restricted injection feature active limit the
+host to ringing a doorbell with a #HV exception.
+
+Define two fields in the #HV doorbell page: a pending event field, and an EOI
+assist.
+
+Create the structure definition for the #HV doorbell page as per GHCB
+specification.
+
+Co-developed-by: Thomas Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Thomas Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Melody Wang <huibo.wang@amd.com>
+Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
 ---
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/svm.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 42c86f195c66..7e569af22391 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -1029,11 +1029,11 @@ static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs =
- static const struct drm_bridge_funcs ingenic_drm_bridge_funcs = {
- 	.attach			= ingenic_drm_bridge_attach,
- 	.atomic_enable		= ingenic_drm_bridge_atomic_enable,
- 	.atomic_disable		= ingenic_drm_bridge_atomic_disable,
- 	.atomic_check		= ingenic_drm_bridge_atomic_check,
--	.atomic_reset		= drm_atomic_helper_bridge_reset,
-+	.atomic_create_state		= drm_atomic_helper_bridge_create_state,
- 	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
- 	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
- 	.atomic_get_input_bus_fmts = ingenic_drm_bridge_atomic_get_input_bus_fmts,
- };
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index bcfeb5e7c0ed..9822b0b346ae 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -252,6 +252,39 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+ #define SVM_TSC_RATIO_MAX	0x000000ffffffffffULL
+ #define SVM_TSC_RATIO_DEFAULT	0x0100000000ULL
  
-
++/*
++ * Hypervisor doorbell page:
++ *
++ * Used when Restricted Injection is enabled for a VM. One page in size that
++ * is shared between the guest and hypervisor to communicate exception and
++ * interrupt events.
++ */
++struct hvdb_events {
++	/* First 64 bytes of HV doorbell page defined in GHCB specification */
++	union {
++		struct {
++			/* Non-maskable event indicators */
++			u16 vector:		8,
++			    nmi:		1,
++			    mce:		1,
++			    reserved2:		5,
++			    no_further_signal:	1;
++		};
++
++		u16 pending_events;
++	};
++
++	u8 no_eoi_required;
++
++	u8 reserved3[61];
++};
++
++struct hvdb {
++	struct hvdb_events events;
++
++	/* Remainder of the page is for software use */
++	u8 reserved[PAGE_SIZE - sizeof(struct hvdb_events)];
++};
+ 
+ /* AVIC */
+ #define AVIC_LOGICAL_ID_ENTRY_GUEST_PHYSICAL_ID_MASK	(0xFFULL)
 -- 
-2.54.0
+2.53.0
 

@@ -1,14 +1,14 @@
 Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684973D9DD9;
-	Mon,  8 Jun 2026 14:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF293F20E4;
+	Mon,  8 Jun 2026 14:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929808; cv=none; b=KtTN/dWxfo1E28kdxORyEG8qsnryklwMnWsynuf7RhEIKoK8ErH+iL/fWJVOBKZ+E5AR2zkwTPkmBf1OrKMfvGLLw5IpMa9ZzAAAfHENt1gXn5nHswGu8SNP5b8oO6slax2aC4+jY+Gzr1NObPBhYEOoGJVCn7Y2lGmWHb6OdQU=
+	t=1780929808; cv=none; b=Z4Ab0rFZXBBXo/GYXxj94ThT32UiIpGaVbTMf3e8dXIenAPllb641cExcxGu/yli6i0nRm9clMSWblEL8LvzDBjCPVzPJ4hvPEsHIGsv074+lH6QL2jCTRqfE2E/O+BYbOI4A+S6rkPFObrRDLIfCrYe+nHEUyp7WdA2zMVHA9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1780929808; c=relaxed/simple;
-	bh=eWpTCoZzUyM8LplF8Me7jkuNhwXVhyNCQZN7fpSl38I=;
+	bh=V/Ys57aOLGv6qIDnHGtiqpzoSHb4c8fN1Q0hv67K0O4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rDkqGJ26ELUq6Uy7kWtfYm5bz0sOwWl0s2JLUrXIBwL5cjwXStrIRnyhDl7kGgh/VsL97Ns1+8XxVFe03K0VWnJTsLWNvHfB/YDEtB2bXXfA7uAj/x3wYKB/F/5/+9zL1iK3bzFmlA9lyfnpBviS/wr/lHOZekujqnk5YrOcA9Q=
+	 MIME-Version; b=QiZ+KvtcRZ3h3L+Z0hNGvOFujF1fOsfxXlaQ24Kk6IPWTQKgpKZDH/OrSAVoJvMKSRvkgsJlosM3K1ubOvTjibzNwJTuVE5Bp4Mgzj2A7GffXOuu0mJGwJeChjYb10/LL8eIKr4P8h05TiKHIuAA1N5c+MyEwXTUsow145QeDN4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
@@ -16,8 +16,8 @@ Received: from io.home.8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 9229F2028C6;
-	Mon,  8 Jun 2026 16:43:12 +0200 (CEST)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 67A2E2028BC;
+	Mon,  8 Jun 2026 16:43:10 +0200 (CEST)
 From: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
 To: Paolo Bonzini <pbonzini@redhat.com>,
 	Sean Christopherson <seanjc@google.com>
@@ -38,9 +38,9 @@ Cc: Tom Lendacky <thomas.lendacky@amd.com>,
 	x86@kernel.org,
 	coconut-svsm@lists.linux.dev,
 	joerg.roedel@amd.com
-Subject: [PATCH 35/60] kvm: Add VCPU plane-scheduling state and helpers
-Date: Mon,  8 Jun 2026 16:42:27 +0200
-Message-ID: <20260608144252.351443-36-joro@8bytes.org>
+Subject: [PATCH 25/60] kvm: Move kvm_vcpu->dirty_ring to struct kvm_vcpu_common
+Date: Mon,  8 Jun 2026 16:42:17 +0200
+Message-ID: <20260608144252.351443-26-joro@8bytes.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260608144252.351443-1-joro@8bytes.org>
 References: <20260608144252.351443-1-joro@8bytes.org>
@@ -54,141 +54,134 @@ Content-Transfer-Encoding: 8bit
 
 From: Joerg Roedel <joerg.roedel@amd.com>
 
-The algorithm is to always run the lowest runnable plane. Plane
-switches are done by stopping the current plane and setting another
-runnable.
+The dirty tracking should happen across all planes of a given VCPU, so
+move the dirty_ring to struct kvm_vcpu_common.
 
 Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
 ---
- include/linux/kvm_host.h | 16 ++++++++++++++
- virt/kvm/kvm_main.c      | 45 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+ include/linux/kvm_host.h |  3 ++-
+ virt/kvm/dirty_ring.c    |  4 ++--
+ virt/kvm/kvm_main.c      | 22 ++++++++++------------
+ 3 files changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 5c3f9dfa15ea..e3611e6cc3e4 100644
+index f6e8a0b653b3..7d06459a06f3 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -168,6 +168,7 @@ static inline bool kvm_is_error_gpa(gpa_t gpa)
- #define KVM_REQ_VM_DEAD			(1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_UNBLOCK			2
- #define KVM_REQ_DIRTY_RING_SOFT_FULL	3
-+#define KVM_REQ_PLANE_RESCHED		4
- #define KVM_REQUEST_ARCH_BASE		8
- 
- /*
-@@ -324,6 +325,8 @@ struct kvm_mmio_fragment {
- 	unsigned int len;
+@@ -373,6 +373,8 @@ struct kvm_vcpu_common {
+ 	bool preempted;
+ 	bool ready;
+ 	bool scheduled_out;
++
++	struct kvm_dirty_ring dirty_ring;
  };
  
-+
-+
- struct kvm_vcpu_common {
- 	struct kvm *kvm;
- 
-@@ -381,6 +384,8 @@ struct kvm_vcpu_common {
- 
- 	struct kvm_dirty_ring dirty_ring;
- 
-+	bool plane_switch;
-+
- 	struct kvm_vcpu_arch_common arch;
- };
- 
-@@ -388,6 +393,12 @@ struct kvm_vcpu_common {
- 	for ((i) = 0; (i) < KVM_MAX_PLANES; ++(i))		\
- 		if (((v) = common->vcpus[(i)]) != NULL)
- 
-+/* Tracked per plane-VCPU - used for deciding which plane-vcpu to run */
-+enum kvm_vcpu_state {
-+	STOPPED,
-+	RUNNABLE,
-+};
-+
  struct kvm_vcpu {
- 	struct kvm *kvm;
- 	struct kvm_plane *plane;
-@@ -401,6 +412,7 @@ struct kvm_vcpu {
- 	struct kvm_run *run;
+@@ -413,7 +415,6 @@ struct kvm_vcpu {
+ 	struct kvm_vcpu_arch arch;
+ 	struct kvm_vcpu_stat stat;
+ 	char stats_id[KVM_STATS_NAME_SIZE];
+-	struct kvm_dirty_ring dirty_ring;
  
- 	u64 plane_requests;
-+	enum kvm_vcpu_state plane_state;
+ 	/*
+ 	 * The most recently used memslot by this vCPU and the slots generation
+diff --git a/virt/kvm/dirty_ring.c b/virt/kvm/dirty_ring.c
+index 572b854edf74..c6f46b93bddb 100644
+--- a/virt/kvm/dirty_ring.c
++++ b/virt/kvm/dirty_ring.c
+@@ -218,7 +218,7 @@ int kvm_dirty_ring_reset(struct kvm *kvm, struct kvm_dirty_ring *ring,
  
- 	/* S390 only */
- 	bool valid_wakeup;
-@@ -440,6 +452,10 @@ struct kvm_vcpu {
- 	unsigned plane_level;
- };
- 
-+void kvm_vcpu_set_plane_runnable(struct kvm_vcpu *vcpu);
-+void kvm_vcpu_set_plane_stopped(struct kvm_vcpu *vcpu);
-+struct kvm_vcpu *kvm_vcpu_select_plane(struct kvm_vcpu *vcpu);
-+
- static inline bool kvm_vcpu_wants_to_run(struct kvm_vcpu *vcpu)
+ void kvm_dirty_ring_push(struct kvm_vcpu *vcpu, u32 slot, u64 offset)
  {
- 	return vcpu->common->wants_to_run;
+-	struct kvm_dirty_ring *ring = &vcpu->dirty_ring;
++	struct kvm_dirty_ring *ring = &vcpu->common->dirty_ring;
+ 	struct kvm_dirty_gfn *entry;
+ 
+ 	/* It should never get full */
+@@ -250,7 +250,7 @@ bool kvm_dirty_ring_check_request(struct kvm_vcpu *vcpu)
+ 	 * the dirty ring is reset by userspace.
+ 	 */
+ 	if (kvm_check_request(KVM_REQ_DIRTY_RING_SOFT_FULL, vcpu) &&
+-	    kvm_dirty_ring_soft_full(&vcpu->dirty_ring)) {
++	    kvm_dirty_ring_soft_full(&vcpu->common->dirty_ring)) {
+ 		kvm_make_request(KVM_REQ_DIRTY_RING_SOFT_FULL, vcpu);
+ 		vcpu->run->exit_reason = KVM_EXIT_DIRTY_RING_FULL;
+ 		trace_kvm_dirty_ring_exit(vcpu);
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 9d30fd85ce5f..a30123b77112 100644
+index 24ff8748a317..f85ddb0fc781 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -4397,6 +4397,7 @@ static int kvm_plane_ioctl_create_vcpu(struct kvm_plane *plane, unsigned long id
- 	vcpu->vcpu_idx = vcpu->common->vcpu_idx;
- 	vcpu->plane = plane;
- 	vcpu->plane_level = plane->level;
-+	vcpu->plane_state = STOPPED;
- 	vcpu->run = vcpu->common->run;
+@@ -483,6 +483,13 @@ static int kvm_vcpu_init_common(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned
+ 	common->ready = false;
+ 	preempt_notifier_init(&common->preempt_notifier, &kvm_preempt_ops);
  
- 	kvm_vcpu_init(vcpu, kvm, id);
-@@ -4938,6 +4939,50 @@ static struct file_operations kvm_plane_fops = {
- 	KVM_COMPAT(kvm_plane_ioctl),
- };
- 
-+void kvm_vcpu_set_plane_runnable(struct kvm_vcpu *vcpu)
-+{
-+	vcpu->plane_state = RUNNABLE;
-+	vcpu->common->plane_switch = true;
-+	kvm_make_request(KVM_REQ_PLANE_RESCHED, vcpu);
-+}
-+EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_vcpu_set_plane_runnable);
-+
-+void kvm_vcpu_set_plane_stopped(struct kvm_vcpu *vcpu)
-+{
-+	vcpu->plane_state = STOPPED;
-+	kvm_make_request(KVM_REQ_PLANE_RESCHED, vcpu);
-+}
-+EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_vcpu_set_plane_stopped);
-+
-+struct kvm_vcpu *kvm_vcpu_select_plane(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_vcpu_common *common = vcpu->common;
-+	struct kvm_vcpu *ret = NULL;
-+	unsigned i;
-+
-+	for (i = 0; i < KVM_MAX_PLANES; i++) {
-+		if (common->vcpus[i] == NULL)
-+			continue;
-+
-+		if (common->vcpus[i]->plane_state == RUNNABLE) {
-+			ret = common->vcpus[i];
-+			break;
-+		}
++	if (kvm->dirty_ring_size) {
++		r = kvm_dirty_ring_alloc(kvm, &common->dirty_ring,
++					 id, kvm->dirty_ring_size);
++		if (r)
++			goto out_drop_counter;
 +	}
 +
-+	if (ret == NULL) {
-+		ret = common->vcpus[0];
-+		ret->plane_state = RUNNABLE;
-+	}
-+
-+	common->current_vcpu = ret;
-+
-+	common->plane_switch = false;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_vcpu_select_plane);
-+
- static int kvm_device_mmap(struct file *filp, struct vm_area_struct *vma)
- {
- 	struct kvm_device *dev = filp->private_data;
+ 	vcpu->common = no_free_ptr(common);
+ 
+ 	kvm_vcpu_set_in_spin_loop(vcpu, false);
+@@ -547,6 +554,7 @@ static void kvm_vcpu_common_destroy(struct kvm_vcpu *vcpu)
+ 	 * are already gone.
+ 	 */
+ 	put_pid(common->pid);
++	kvm_dirty_ring_free(&common->dirty_ring);
+ 	kfree(common);
+ }
+ 
+@@ -555,7 +563,6 @@ static void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	kvm_arch_vcpu_destroy(vcpu);
+ 
+ 	kvm_vcpu_common_destroy(vcpu);
+-	kvm_dirty_ring_free(&vcpu->dirty_ring);
+ 
+ 	free_page((unsigned long)vcpu->run);
+ 	kmem_cache_free(kvm_vcpu_cache, vcpu);
+@@ -4209,7 +4216,7 @@ static vm_fault_t kvm_vcpu_fault(struct vm_fault *vmf)
+ #endif
+ 	else if (kvm_page_in_dirty_ring(vcpu->kvm, vmf->pgoff))
+ 		page = kvm_dirty_ring_get_page(
+-		    &vcpu->dirty_ring,
++		    &vcpu->common->dirty_ring,
+ 		    vmf->pgoff - KVM_DIRTY_LOG_PAGE_OFFSET);
+ 	else
+ 		return kvm_arch_vcpu_fault(vcpu, vmf);
+@@ -4338,13 +4345,6 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, unsigned long id)
+ 	if (r)
+ 		goto vcpu_free_run_page;
+ 
+-	if (kvm->dirty_ring_size) {
+-		r = kvm_dirty_ring_alloc(kvm, &vcpu->dirty_ring,
+-					 id, kvm->dirty_ring_size);
+-		if (r)
+-			goto arch_vcpu_destroy;
+-	}
+-
+ 	mutex_lock(&kvm->lock);
+ 
+ 	if (kvm_get_vcpu_by_id(kvm, id)) {
+@@ -4385,8 +4385,6 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, unsigned long id)
+ 	xa_erase(&kvm->planes[0]->vcpu_array, vcpu->vcpu_idx);
+ unlock_vcpu_destroy:
+ 	mutex_unlock(&kvm->lock);
+-	kvm_dirty_ring_free(&vcpu->dirty_ring);
+-arch_vcpu_destroy:
+ 	kvm_arch_vcpu_destroy(vcpu);
+ vcpu_free_run_page:
+ 	free_page((unsigned long)vcpu->run);
+@@ -5120,7 +5118,7 @@ static int kvm_vm_ioctl_reset_dirty_pages(struct kvm *kvm)
+ 	mutex_lock(&kvm->slots_lock);
+ 
+ 	kvm_for_each_vcpu(i, vcpu, kvm) {
+-		r = kvm_dirty_ring_reset(vcpu->kvm, &vcpu->dirty_ring, &cleared);
++		r = kvm_dirty_ring_reset(vcpu->kvm, &vcpu->common->dirty_ring, &cleared);
+ 		if (r)
+ 			break;
+ 	}
 -- 
 2.53.0
 

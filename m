@@ -1,14 +1,14 @@
 Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEC23F166A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98FD03F1ADD;
 	Mon,  8 Jun 2026 14:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929805; cv=none; b=q6Z4Z/dzMXf8jmFRlCefvQyJxY+DjHIS9ShBp4gI2SB0CE/gFa0z9aG9jwT3puSFP2uG06SBClxPKqcMjCNRb1fdfNyEw5BX6iOWegOCthakhrq/A4VXLrIDy9AmSRMk2Qi0pz5kGblLXmPdQS7Y+3u6VJvoA5ffTf3+l0BSrDo=
+	t=1780929806; cv=none; b=NNdCm5jD+9ouwHUn/Vyl1fgNx71sUJj9yn/toXBo0oqokeM8FFZYsTRaNcFdvRun5NSMzqFLhrjVBuNo5omTI/E9ijw2yQnX+8Zc1vYKVnyTan52o8W4RDO63nI3Gcrd1B5zqCt4EjWTSilj/2CXNol81vjAEI/U2OHXKmZ3TPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780929805; c=relaxed/simple;
-	bh=75KxlGnkwC/kmi3XF4Qw6hXJxaPunEix++qeQB+dLBk=;
+	s=arc-20240116; t=1780929806; c=relaxed/simple;
+	bh=Kx6usmQZyoTepTASnVWuTPJCepDAX1PROg4KuGNUQGs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kXEDvBp/txXE7MjaH08ES7YmN8utEXmKvRRrzivTLBWDQXPpJNddZ0O+wj15NWQgGfMmJDu7xUzmVVmCmPmAi+p8uZPvJGIenWSBw9+q1wvlk2NT0V2X/HvK9DOINLKOw8azaKwg6tZQK5P0XsoeAUmzaFfFVynXwlxt7T5AydU=
+	 MIME-Version; b=tNKYvsRjkhBkEXX6xxFU3Ykna27FQb6M64ey7KeIRcZqM+r/h7F33i9f6hiJdfR+RaT61iftzzd5NSxV5SQU+k90UUWlGvVVYKLc43NJd6Qhxm9sJnLJRaiylmCErjTi1vO1Ef2s7JT0oEFop4z4lTLOTtb+Ai3tMKM/Emos94E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
@@ -16,8 +16,8 @@ Received: from io.home.8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 337162028BB;
-	Mon,  8 Jun 2026 16:43:10 +0200 (CEST)
+	by mail.8bytes.org (Postfix) with ESMTPSA id B53292028C2;
+	Mon,  8 Jun 2026 16:43:11 +0200 (CEST)
 From: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
 To: Paolo Bonzini <pbonzini@redhat.com>,
 	Sean Christopherson <seanjc@google.com>
@@ -38,9 +38,9 @@ Cc: Tom Lendacky <thomas.lendacky@amd.com>,
 	x86@kernel.org,
 	coconut-svsm@lists.linux.dev,
 	joerg.roedel@amd.com
-Subject: [PATCH 24/60] kvm: Move kvm_vcpu spinloop members to struct kvm_vcpu_common
-Date: Mon,  8 Jun 2026 16:42:16 +0200
-Message-ID: <20260608144252.351443-25-joro@8bytes.org>
+Subject: [PATCH 31/60] kvm: Allocate struct kvm_plane in architecture code
+Date: Mon,  8 Jun 2026 16:42:23 +0200
+Message-ID: <20260608144252.351443-32-joro@8bytes.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260608144252.351443-1-joro@8bytes.org>
 References: <20260608144252.351443-1-joro@8bytes.org>
@@ -54,214 +54,235 @@ Content-Transfer-Encoding: 8bit
 
 From: Joerg Roedel <joerg.roedel@amd.com>
 
-Onlyh one struct kvm_vcpu across all planes can be in a spin-loop.
-Move the state to struct kvm_vcpu_common to make detection independent
-of the active struct kvm_vcpu.
+Move plane allocation to architecture code so that per-arch
+implementations can embed the structure into another one for keeping
+additional data.
 
 Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
 ---
- include/linux/kvm_host.h | 32 +++++++++++++++----------------
- virt/kvm/kvm_main.c      | 41 ++++++++++++++++++++++------------------
- 2 files changed, 39 insertions(+), 34 deletions(-)
+ arch/arm64/kvm/arm.c       | 13 +++++++++++++
+ arch/loongarch/kvm/vm.c    | 13 +++++++++++++
+ arch/mips/kvm/mips.c       | 13 +++++++++++++
+ arch/powerpc/kvm/powerpc.c | 13 +++++++++++++
+ arch/riscv/kvm/main.c      | 13 +++++++++++++
+ arch/s390/kvm/kvm-s390.c   | 13 +++++++++++++
+ arch/x86/kvm/x86.c         | 13 +++++++++++++
+ include/linux/kvm_host.h   |  2 ++
+ virt/kvm/kvm_main.c        |  6 +++---
+ 9 files changed, 96 insertions(+), 3 deletions(-)
 
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 7e6d2773fd39..d7a4b9b239dc 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -205,6 +205,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ /**
+  * kvm_arch_init_vm - initializes a VM data structure
+  * @kvm:	pointer to the KVM struct
+diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
+index 14f1232c6e0c..e4d2814b717d 100644
+--- a/arch/loongarch/kvm/vm.c
++++ b/arch/loongarch/kvm/vm.c
+@@ -114,6 +114,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ {
+ 	int r;
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 60870452119d..e22d2a267e03 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -120,6 +120,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+ {
+ 	return false;
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index cfa40be20e00..35658cded0cb 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -504,6 +504,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ {
+ 	int r;
+diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
+index 5adba3a455a3..46834b2ddfae 100644
+--- a/arch/riscv/kvm/main.c
++++ b/arch/riscv/kvm/main.c
+@@ -22,6 +22,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ static void kvm_riscv_setup_vendor_features(void)
+ {
+ 	/* Andes AX66: split two-stage TLBs */
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 24f24ea95f86..94c40b2aa759 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3191,6 +3191,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ void kvm_arch_free_vm(struct kvm *kvm)
+ {
+ 	if (IS_ENABLED(CONFIG_VFIO_PCI_ZDEV_KVM))
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 25299c8c28e3..d6bf0425525c 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -487,6 +487,19 @@ unsigned kvm_arch_max_planes(struct kvm *kvm)
+ 	return 1;
+ }
+ 
++struct kvm_plane *kvm_alloc_plane(void)
++{
++	/* For better type checking, do not return kzalloc() value directly */
++	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++
++	return plane;
++}
++
++void kvm_free_plane(struct kvm_plane *plane)
++{
++	kfree(plane);
++}
++
+ /*
+  * All feature MSRs except uCode revID, which tracks the currently loaded uCode
+  * patch, are immutable once the vCPU model is defined.
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 9220c452aa3a..f6e8a0b653b3 100644
+index 90b97137840e..55e3e9046975 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -350,6 +350,20 @@ struct kvm_vcpu_common {
- 	rwlock_t pid_lock;
- 	int sigset_active;
- 	sigset_t sigset;
-+	unsigned int halt_poll_ns;
-+
-+#ifdef CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT
-+	/*
-+	 * Cpu relax intercept or pause loop exit optimization
-+	 * in_spin_loop: set when a vcpu does a pause loop exit
-+	 *  or cpu relax intercepted.
-+	 * dy_eligible: indicates whether vcpu is eligible for directed yield.
-+	 */
-+	struct {
-+		bool in_spin_loop;
-+		bool dy_eligible;
-+	} spin_loop;
-+#endif
+@@ -1157,6 +1157,8 @@ void vcpu_load(struct kvm_vcpu *vcpu);
+ void vcpu_put(struct kvm_vcpu *vcpu);
  
- 	/* Scheduling state */
- #ifdef CONFIG_PREEMPT_NOTIFIERS
-@@ -373,8 +387,6 @@ struct kvm_vcpu {
+ unsigned kvm_arch_max_planes(struct kvm *kvm);
++struct kvm_plane *kvm_alloc_plane(void);
++void kvm_free_plane(struct kvm_plane *plane);
  
- 	struct kvm_run *run;
- 
--	unsigned int halt_poll_ns;
--
- 	u64 plane_requests;
- 
- 	/* S390 only */
-@@ -398,18 +410,6 @@ struct kvm_vcpu {
- 	} async_pf;
- #endif
- 
--#ifdef CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT
--	/*
--	 * Cpu relax intercept or pause loop exit optimization
--	 * in_spin_loop: set when a vcpu does a pause loop exit
--	 *  or cpu relax intercepted.
--	 * dy_eligible: indicates whether vcpu is eligible for directed yield.
--	 */
--	struct {
--		bool in_spin_loop;
--		bool dy_eligible;
--	} spin_loop;
--#endif
- 	struct kvm_vcpu_arch arch;
- 	struct kvm_vcpu_stat stat;
- 	char stats_id[KVM_STATS_NAME_SIZE];
-@@ -2500,11 +2500,11 @@ extern struct kvm_device_ops kvm_arm_vgic_v5_ops;
- 
- static inline void kvm_vcpu_set_in_spin_loop(struct kvm_vcpu *vcpu, bool val)
- {
--	vcpu->spin_loop.in_spin_loop = val;
-+	vcpu->common->spin_loop.in_spin_loop = val;
- }
- static inline void kvm_vcpu_set_dy_eligible(struct kvm_vcpu *vcpu, bool val)
- {
--	vcpu->spin_loop.dy_eligible = val;
-+	vcpu->common->spin_loop.dy_eligible = val;
- }
- 
- #else /* !CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT */
+ #ifdef CONFIG_KVM_IOAPIC
+ void kvm_arch_post_irq_ack_notifier_list_update(struct kvm *kvm);
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 1858880ee3d3..24ff8748a317 100644
+index f0f78bb74e51..4f2c8f46a0d3 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -485,6 +485,9 @@ static int kvm_vcpu_init_common(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned
+@@ -1209,7 +1209,7 @@ static void kvm_disable_virtualization(void);
  
- 	vcpu->common = no_free_ptr(common);
- 
-+	kvm_vcpu_set_in_spin_loop(vcpu, false);
-+	kvm_vcpu_set_dy_eligible(vcpu, false);
-+
- 	return 0;
- 
- out_drop_counter:
-@@ -515,8 +518,6 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
- 	vcpu->vcpu_id = id;
- 	kvm_async_pf_vcpu_init(vcpu);
- 
--	kvm_vcpu_set_in_spin_loop(vcpu, false);
--	kvm_vcpu_set_dy_eligible(vcpu, false);
- 	vcpu->last_used_slot = NULL;
- 
- 	vcpu->plane_level = 0;
-@@ -3721,9 +3722,10 @@ void kvm_sigset_deactivate(struct kvm_vcpu *vcpu)
- 
- static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
+ static struct kvm_plane *kvm_create_plane(struct kvm *kvm, unsigned plane_level)
  {
-+	struct kvm_vcpu_common *common = vcpu->common;
- 	unsigned int old, val, grow, grow_start;
+-	struct kvm_plane *plane = kzalloc(sizeof(*plane), GFP_KERNEL_ACCOUNT);
++	struct kvm_plane *plane = kvm_alloc_plane();
  
--	old = val = vcpu->halt_poll_ns;
-+	old = val = common->halt_poll_ns;
- 	grow_start = READ_ONCE(halt_poll_ns_grow_start);
- 	grow = READ_ONCE(halt_poll_ns_grow);
- 	if (!grow)
-@@ -3733,16 +3735,17 @@ static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
- 	if (val < grow_start)
- 		val = grow_start;
+ 	if (!plane)
+ 		return NULL;
+@@ -1227,7 +1227,7 @@ static struct kvm_plane *kvm_create_plane(struct kvm *kvm, unsigned plane_level)
+ 	return plane;
  
--	vcpu->halt_poll_ns = val;
-+	common->halt_poll_ns = val;
- out:
- 	trace_kvm_halt_poll_ns_grow(vcpu->vcpu_id, val, old);
+ out_free_plane:
+-	kfree(plane);
++	kvm_free_plane(plane);
+ 
+ 	return NULL;
+ }
+@@ -1235,7 +1235,7 @@ static struct kvm_plane *kvm_create_plane(struct kvm *kvm, unsigned plane_level)
+ static void kvm_destroy_one_plane(struct kvm_plane *plane)
+ {
+ 	kvm_arch_plane_destroy(plane);
+-	kfree(plane);
++	kvm_free_plane(plane);
  }
  
- static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
- {
-+	struct kvm_vcpu_common *common = vcpu->common;
- 	unsigned int old, val, shrink, grow_start;
- 
--	old = val = vcpu->halt_poll_ns;
-+	old = val = common->halt_poll_ns;
- 	shrink = READ_ONCE(halt_poll_ns_shrink);
- 	grow_start = READ_ONCE(halt_poll_ns_grow_start);
- 	if (shrink == 0)
-@@ -3753,7 +3756,7 @@ static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
- 	if (val < grow_start)
- 		val = 0;
- 
--	vcpu->halt_poll_ns = val;
-+	common->halt_poll_ns = val;
- 	trace_kvm_halt_poll_ns_shrink(vcpu->vcpu_id, val, old);
- }
- 
-@@ -3864,19 +3867,20 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
- {
- 	unsigned int max_halt_poll_ns = kvm_vcpu_max_halt_poll_ns(vcpu);
- 	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
-+	struct kvm_vcpu_common *common = vcpu->common;
- 	ktime_t start, cur, poll_end;
- 	bool waited = false;
- 	bool do_halt_poll;
- 	u64 halt_ns;
- 
--	if (vcpu->halt_poll_ns > max_halt_poll_ns)
--		vcpu->halt_poll_ns = max_halt_poll_ns;
-+	if (common->halt_poll_ns > max_halt_poll_ns)
-+		common->halt_poll_ns = max_halt_poll_ns;
- 
--	do_halt_poll = halt_poll_allowed && vcpu->halt_poll_ns;
-+	do_halt_poll = halt_poll_allowed && common->halt_poll_ns;
- 
- 	start = cur = poll_end = ktime_get();
- 	if (do_halt_poll) {
--		ktime_t stop = ktime_add_ns(start, vcpu->halt_poll_ns);
-+		ktime_t stop = ktime_add_ns(start, common->halt_poll_ns);
- 
- 		do {
- 			if (kvm_vcpu_check_block(vcpu) < 0)
-@@ -3914,18 +3918,18 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
- 		if (!vcpu_valid_wakeup(vcpu)) {
- 			shrink_halt_poll_ns(vcpu);
- 		} else if (max_halt_poll_ns) {
--			if (halt_ns <= vcpu->halt_poll_ns)
-+			if (halt_ns <= common->halt_poll_ns)
- 				;
- 			/* we had a long block, shrink polling */
--			else if (vcpu->halt_poll_ns &&
-+			else if (common->halt_poll_ns &&
- 				 halt_ns > max_halt_poll_ns)
- 				shrink_halt_poll_ns(vcpu);
- 			/* we had a short halt and our poll time is too small */
--			else if (vcpu->halt_poll_ns < max_halt_poll_ns &&
-+			else if (common->halt_poll_ns < max_halt_poll_ns &&
- 				 halt_ns < max_halt_poll_ns)
- 				grow_halt_poll_ns(vcpu);
- 		} else {
--			vcpu->halt_poll_ns = 0;
-+			common->halt_poll_ns = 0;
- 		}
- 	}
- 
-@@ -4046,13 +4050,14 @@ EXPORT_SYMBOL_FOR_KVM_INTERNAL(kvm_vcpu_yield_to);
- static bool kvm_vcpu_eligible_for_directed_yield(struct kvm_vcpu *vcpu)
- {
- #ifdef CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT
-+	struct kvm_vcpu_common *common = vcpu->common;
- 	bool eligible;
- 
--	eligible = !vcpu->spin_loop.in_spin_loop ||
--		    vcpu->spin_loop.dy_eligible;
-+	eligible = !common->spin_loop.in_spin_loop ||
-+		    common->spin_loop.dy_eligible;
- 
--	if (vcpu->spin_loop.in_spin_loop)
--		kvm_vcpu_set_dy_eligible(vcpu, !vcpu->spin_loop.dy_eligible);
-+	if (common->spin_loop.in_spin_loop)
-+		kvm_vcpu_set_dy_eligible(vcpu, !common->spin_loop.dy_eligible);
- 
- 	return eligible;
- #else
+ static void kvm_destroy_planes(struct kvm *kvm)
 -- 
 2.53.0
 

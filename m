@@ -1,14 +1,14 @@
 Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F04D3F4110;
-	Mon,  8 Jun 2026 14:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56863F20E9;
+	Mon,  8 Jun 2026 14:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929808; cv=none; b=M7+sOMlNRu3j8vTx+sdjuvShQ+1+9lx5+uWrYT3Lv4+H/Rw+1BFZuAJLYam/ovUvhkiWV1O/CNopRZnrc12CbO8yNMc7DaqFB8IAKbkNIqsI5z7qPlDoyYeuGibXT5j9H+mkKp1569s8Hb8EFYou8Owxj8mXLJdqIY9/eq84N3A=
+	t=1780929808; cv=none; b=p5bQGurYgZGEyF28XqpkSWJRoHwK7LC9CwwvXIeGJohkh7pDNY6/A7zoCrZk9LheXQu9PqSkItKCB4sb21SiXnoeA0Vy+i8hUtSX+SZHJZOMhMLwuxqWSwIrzz9rHj5nyNcsr11sPLTWYto2LjPuxaZa7Nfo15h6slSYxEtLlXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1780929808; c=relaxed/simple;
-	bh=F02lYJzbyOlPLmx72TZVwtvZBBZwfMakGfpwggkLVQE=;
+	bh=wyg3CLEuRspMj18NL+RGWxAX5QENKg3H1zUIBYbL3U0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ro+W5nHPu3/eSZHhl1QxdQLqYG87LjtuEQZ0YVuWZSnoHE8bnYrqVbk/4R7r/00EbvlV4YyWIJpVLc3F6EOYIUarA2DnyWJ0/53zu16oFXBCG3f8GjhLPvpgTpPfeQEvPUo394W7R08Ssrv7JlUi7KCQyR5rAygnv41ut4gas0A=
+	 MIME-Version; b=TEaIiEkFNzgcbrT8Y2ftWG+MsRvWs3F8SoK/b5ryMnG7f6v0B9pr1WxhrTIyQOoc2Bb+Ab8RdTCqjcqvTYN4FJ6OP8QVAwzB6kyml6vB2gN6n+17pQ2cMRALRn2hEE/zL+p0sCeL5gaBm1aUHBxtaUMOFL4G00cuGPjnr9T0Aak=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
@@ -16,8 +16,8 @@ Received: from io.home.8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 0BE7C2028C8;
-	Mon,  8 Jun 2026 16:43:13 +0200 (CEST)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 15AC22028BF;
+	Mon,  8 Jun 2026 16:43:11 +0200 (CEST)
 From: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
 To: Paolo Bonzini <pbonzini@redhat.com>,
 	Sean Christopherson <seanjc@google.com>
@@ -38,9 +38,9 @@ Cc: Tom Lendacky <thomas.lendacky@amd.com>,
 	x86@kernel.org,
 	coconut-svsm@lists.linux.dev,
 	joerg.roedel@amd.com
-Subject: [PATCH 37/60] kvm: Pass plane_level to kvm_set_routing_entry()
-Date: Mon,  8 Jun 2026 16:42:29 +0200
-Message-ID: <20260608144252.351443-38-joro@8bytes.org>
+Subject: [PATCH 28/60] kvm: Implement KVM_CAP_PLANES
+Date: Mon,  8 Jun 2026 16:42:20 +0200
+Message-ID: <20260608144252.351443-29-joro@8bytes.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260608144252.351443-1-joro@8bytes.org>
 References: <20260608144252.351443-1-joro@8bytes.org>
@@ -52,197 +52,167 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Joerg Roedel <joerg.roedel@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-The plane_level is used to route MSI IRQs to the correct plane.
+Introduce an architecture call-back to request the VM-specific maximum
+number of supported planes. Use that to implement the KVM_CAP_PLANES
+capability check.
 
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Co-developed-by: Joerg Roedel <joerg.roedel@amd.com>
 Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
 ---
- arch/arm64/kvm/vgic/vgic-irqfd.c | 6 ++++--
- arch/loongarch/kvm/irqfd.c       | 6 ++++--
- arch/powerpc/kvm/mpic.c          | 5 +++--
- arch/riscv/kvm/vm.c              | 5 +++--
- arch/s390/kvm/interrupt.c        | 3 ++-
- arch/x86/kvm/irq.c               | 7 ++++---
- include/linux/kvm_host.h         | 3 ++-
- virt/kvm/irqchip.c               | 2 +-
- 8 files changed, 23 insertions(+), 14 deletions(-)
+ arch/arm64/kvm/arm.c       | 5 +++++
+ arch/loongarch/kvm/vm.c    | 5 +++++
+ arch/mips/kvm/mips.c       | 5 +++++
+ arch/powerpc/kvm/powerpc.c | 5 +++++
+ arch/riscv/kvm/main.c      | 5 +++++
+ arch/s390/kvm/kvm-s390.c   | 5 +++++
+ arch/x86/kvm/x86.c         | 5 +++++
+ include/linux/kvm_host.h   | 2 ++
+ virt/kvm/kvm_main.c        | 4 ++++
+ 9 files changed, 41 insertions(+)
 
-diff --git a/arch/arm64/kvm/vgic/vgic-irqfd.c b/arch/arm64/kvm/vgic/vgic-irqfd.c
-index 479b896c8954..53e5fcc591d7 100644
---- a/arch/arm64/kvm/vgic/vgic-irqfd.c
-+++ b/arch/arm64/kvm/vgic/vgic-irqfd.c
-@@ -33,11 +33,13 @@ static int vgic_irqfd_set_irq(struct kvm_kernel_irq_routing_entry *e,
-  * @kvm: the VM this entry is applied to
-  * @e: kvm kernel routing entry handle
-  * @ue: user api routing entry handle
-+ * @plane_level: target plane level
-  * return 0 on success, -EINVAL on errors.
-  */
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue)
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 1e2f42134b74..7e6d2773fd39 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -200,6 +200,11 @@ static int kvm_arm_default_max_vcpus(void)
+ 	return vgic_present ? kvm_vgic_get_max_vcpus() : KVM_MAX_VCPUS;
+ }
+ 
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ /**
+  * kvm_arch_init_vm - initializes a VM data structure
+  * @kvm:	pointer to the KVM struct
+diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
+index 1317c718f896..14f1232c6e0c 100644
+--- a/arch/loongarch/kvm/vm.c
++++ b/arch/loongarch/kvm/vm.c
+@@ -109,6 +109,11 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+ 	kvm->arch.phyid_map = NULL;
+ }
+ 
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
  {
- 	int r = -EINVAL;
+ 	int r;
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 776aba0af096..60870452119d 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -115,6 +115,11 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
+ 	return !!(vcpu->arch.pending_exceptions);
+ }
  
-@@ -57,7 +59,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 		e->msi.data = ue->u.msi.data;
- 		e->msi.flags = ue->flags;
- 		e->msi.devid = ue->u.msi.devid;
--		e->msi.plane_level = 0;
-+		e->msi.plane_level = plane_level;
- 		break;
- 	default:
- 		goto out;
-diff --git a/arch/loongarch/kvm/irqfd.c b/arch/loongarch/kvm/irqfd.c
-index 50f0c32df46c..a36a8a9d8a66 100644
---- a/arch/loongarch/kvm/irqfd.c
-+++ b/arch/loongarch/kvm/irqfd.c
-@@ -39,11 +39,13 @@ int kvm_set_msi(struct kvm_kernel_irq_routing_entry *e,
-  * @kvm: the VM this entry is applied to
-  * @e: kvm kernel routing entry handle
-  * @ue: user api routing entry handle
-+ * @plane_level: target plane level
-  * return 0 on success, -EINVAL on errors.
-  */
- int kvm_set_routing_entry(struct kvm *kvm,
- 			struct kvm_kernel_irq_routing_entry *e,
--			const struct kvm_irq_routing_entry *ue)
-+			const struct kvm_irq_routing_entry *ue,
-+			unsigned plane_level)
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
  {
- 	switch (ue->type) {
- 	case KVM_IRQ_ROUTING_IRQCHIP:
-@@ -60,7 +62,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 		e->msi.address_lo = ue->u.msi.address_lo;
- 		e->msi.address_hi = ue->u.msi.address_hi;
- 		e->msi.data = ue->u.msi.data;
--		e->msi.plane_level = 0;
-+		e->msi.plane_level = plane_level;
- 		return 0;
- 	default:
- 		return -EINVAL;
-diff --git a/arch/powerpc/kvm/mpic.c b/arch/powerpc/kvm/mpic.c
-index 0f568f5fff8b..6b6eba7fbf75 100644
---- a/arch/powerpc/kvm/mpic.c
-+++ b/arch/powerpc/kvm/mpic.c
-@@ -1824,7 +1824,8 @@ int kvm_set_msi(struct kvm_kernel_irq_routing_entry *e,
+ 	return false;
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index 5d94e0f676ec..cfa40be20e00 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -499,6 +499,11 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+ 	module_put(kvm->arch.kvm_ops->owner);
+ }
  
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue)
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level)
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
  {
- 	int r = -EINVAL;
+ 	int r;
+diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
+index cb8a65273c1f..5adba3a455a3 100644
+--- a/arch/riscv/kvm/main.c
++++ b/arch/riscv/kvm/main.c
+@@ -17,6 +17,11 @@
  
-@@ -1841,7 +1842,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 		e->msi.address_lo = ue->u.msi.address_lo;
- 		e->msi.address_hi = ue->u.msi.address_hi;
- 		e->msi.data = ue->u.msi.data;
--		e->msi.plane_level = 0;
-+		e->msi.plane_level = plane_level;
- 		break;
- 	default:
- 		goto out;
-diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
-index f518247e699b..6b3c8a0e74e2 100644
---- a/arch/riscv/kvm/vm.c
-+++ b/arch/riscv/kvm/vm.c
-@@ -118,7 +118,8 @@ bool kvm_arch_can_set_irq_routing(struct kvm *kvm)
+ DEFINE_STATIC_KEY_FALSE(kvm_riscv_vsstage_tlb_no_gpa);
  
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue)
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level)
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ static void kvm_riscv_setup_vendor_features(void)
  {
- 	int r = -EINVAL;
+ 	/* Andes AX66: split two-stage TLBs */
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index e6fe83da172f..24f24ea95f86 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3186,6 +3186,11 @@ static void sca_dispose(struct kvm *kvm)
+ 	kvm->arch.sca = NULL;
+ }
  
-@@ -138,7 +139,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 		e->msi.data = ue->u.msi.data;
- 		e->msi.flags = ue->flags;
- 		e->msi.devid = ue->u.msi.devid;
--		e->msi.plane_level = 0;
-+		e->msi.plane_level = plane_level;
- 		break;
- 	default:
- 		goto out;
-diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
-index 1d66ef9f7527..dbd6029773aa 100644
---- a/arch/s390/kvm/interrupt.c
-+++ b/arch/s390/kvm/interrupt.c
-@@ -2862,7 +2862,8 @@ void kvm_s390_reinject_machine_check(struct kvm_vcpu *vcpu,
- 
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue)
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level)
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ void kvm_arch_free_vm(struct kvm *kvm)
  {
- 	const struct kvm_irq_routing_s390_adapter *adapter;
- 	u64 uaddr_s, uaddr_i;
-diff --git a/arch/x86/kvm/irq.c b/arch/x86/kvm/irq.c
-index b7e08eddb765..d2ecfd54d57a 100644
---- a/arch/x86/kvm/irq.c
-+++ b/arch/x86/kvm/irq.c
-@@ -295,7 +295,8 @@ bool kvm_arch_can_set_irq_routing(struct kvm *kvm)
+ 	if (IS_ENABLED(CONFIG_VFIO_PCI_ZDEV_KVM))
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 50601ac2828f..25299c8c28e3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -482,6 +482,11 @@ static u32 msr_based_features[ARRAY_SIZE(msr_based_features_all_except_vmx) +
+ 			      (KVM_LAST_EMULATED_VMX_MSR - KVM_FIRST_EMULATED_VMX_MSR + 1)];
+ static unsigned int num_msr_based_features;
  
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue)
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level)
- {
- 	/* We can't check irqchip_in_kernel() here as some callers are
- 	 * currently initializing the irqchip. Other callers should therefore
-@@ -304,7 +305,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 	switch (ue->type) {
- #ifdef CONFIG_KVM_IOAPIC
- 	case KVM_IRQ_ROUTING_IRQCHIP:
--		if (irqchip_split(kvm))
-+		if (irqchip_split(kvm) || plane_level != 0)
- 			return -EINVAL;
- 		e->irqchip.pin = ue->u.irqchip.pin;
- 		switch (ue->u.irqchip.irqchip) {
-@@ -332,7 +333,7 @@ int kvm_set_routing_entry(struct kvm *kvm,
- 		e->msi.address_lo = ue->u.msi.address_lo;
- 		e->msi.address_hi = ue->u.msi.address_hi;
- 		e->msi.data = ue->u.msi.data;
--		e->msi.plane_level = 0;
-+		e->msi.plane_level = plane_level;
- 
- 		if (kvm_msi_route_invalid(kvm, e))
- 			return -EINVAL;
++unsigned kvm_arch_max_planes(struct kvm *kvm)
++{
++	return 1;
++}
++
+ /*
+  * All feature MSRs except uCode revID, which tracks the currently loaded uCode
+  * patch, are immutable once the vCPU model is defined.
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 16dcca3132d3..cfb6911d6771 100644
+index 291bccce9b74..3ecd472c7cfa 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -2355,7 +2355,8 @@ int kvm_set_irq_routing(struct kvm *kvm,
- int kvm_init_irq_routing(struct kvm *kvm);
- int kvm_set_routing_entry(struct kvm *kvm,
- 			  struct kvm_kernel_irq_routing_entry *e,
--			  const struct kvm_irq_routing_entry *ue);
-+			  const struct kvm_irq_routing_entry *ue,
-+			  unsigned plane_level);
- void kvm_free_irq_routing(struct kvm *kvm);
+@@ -1156,6 +1156,8 @@ void kvm_unlock_all_vcpus(struct kvm *kvm);
+ void vcpu_load(struct kvm_vcpu *vcpu);
+ void vcpu_put(struct kvm_vcpu *vcpu);
  
++unsigned kvm_arch_max_planes(struct kvm *kvm);
++
+ #ifdef CONFIG_KVM_IOAPIC
+ void kvm_arch_post_irq_ack_notifier_list_update(struct kvm *kvm);
  #else
-diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
-index ae47e56176f1..14480d1df4f9 100644
---- a/virt/kvm/irqchip.c
-+++ b/virt/kvm/irqchip.c
-@@ -146,7 +146,7 @@ static int setup_routing_entry(struct kvm *kvm,
- 
- 	e->gsi = gsi;
- 	e->type = ue->type;
--	r = kvm_set_routing_entry(kvm, e, ue);
-+	r = kvm_set_routing_entry(kvm, e, ue, 0);
- 	if (r)
- 		return r;
- 	if (e->type == KVM_IRQ_ROUTING_IRQCHIP)
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 7a0b632e3ac0..5a0277e2ac7c 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -5079,6 +5079,10 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+ 	case KVM_CAP_GUEST_MEMFD_FLAGS:
+ 		return kvm_gmem_get_supported_flags(kvm);
+ #endif
++	case KVM_CAP_PLANES:
++		if (kvm)
++			return kvm_arch_max_planes(kvm);
++		return 1;
+ 	default:
+ 		break;
+ 	}
 -- 
 2.53.0
 

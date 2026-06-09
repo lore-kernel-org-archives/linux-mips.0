@@ -1,113 +1,89 @@
-Received: from aposti.net (aposti.net [185.119.170.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D94342CB1
-	for <linux-mips@vger.kernel.org>; Tue,  9 Jun 2026 09:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B13B3FBEC6;
+	Tue,  9 Jun 2026 12:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780998908; cv=none; b=LcGb47QJAjJnPekWUO+xr5iJTcYL7KCU+tq3KN5BJPgRJk4H/SY0IUUAtUU0Xx4AwpmFFs+A8MD9XyTWYK+fj4YHtU1Gya7sYM37mDmgsLvSiB5VhqsIDBYgMlut5LRPE8YwX4vgPjMJt0wEn3o6iNF4d1yDJaEcQWlL/1h7df4=
+	t=1781008643; cv=none; b=RyMvJvH0v1HBQy7m1Kf2Kbi4cbqd+msKqrqWJYsk9UzXcVcIZYkXCDXgmf+/a4xI4SCUG8gO7puloW/5+XQFlKib/HGU0JwY/zZ94U+kArJLKXce/sWTGT9yC/1WGFJWQF/noAcnS6QfwS9gPemJeo0X2aWHd1jVyPL0A8am0JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780998908; c=relaxed/simple;
-	bh=jv/F1AaeWo0DoheXJQi0yrZH8IrIoceQeWossAeEYr0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F9n4fMyRz1aOmOcEHlhN6zNSgpV+pXLeIKtQpMgcZ93U5kbh8VoiuWrSik/n8iBlPrM3NIQ/qzOE16pKk1huuxlGdYOl/EfqnL+IAf6KeAPeF4YQERtiTMVTePAzkxPzcjgWEQ8iQcCFXzipPeEhVzUGEAl06y8KBg4wiEU5oCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=thP4M7h3; arc=none smtp.client-ip=185.119.170.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="thP4M7h3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crapouillou.net;
-	s=mail; t=1780998585;
-	bh=jv/F1AaeWo0DoheXJQi0yrZH8IrIoceQeWossAeEYr0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=thP4M7h3Dr0phauLNqIWgL5Qdv6NCuobMaPO+VrwslmbhIdkwymDspdIdW0Naq7o0
-	 JnvdBHlw0OlIW1T/sfojD2hlj5WdOB8P8ZjUQ28hOiTXRHzG2aVyqEyCVOzmvsQGQ3
-	 ahobuvnQptVQrsrIXeGrEQXTlmkiqh6wsYwQOQM4=
-Message-ID: <a529231db4b2c46d524ba6086b0868e60b179cbe.camel@crapouillou.net>
-Subject: Re: [PATCH v2 48/78] drm/ingenic: Switch to atomic_create_state
-From: Paul Cercueil <paul@crapouillou.net>
-To: Maxime Ripard <mripard@kernel.org>, Andrzej Hajda
- <andrzej.hajda@intel.com>,  Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Laurent Pinchart	
- <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>,  David Airlie <airlied@gmail.com>, Simona Vetter
- <simona@ffwll.ch>
-Cc: Dmitry Baryshkov <lumag@kernel.org>, dri-devel@lists.freedesktop.org, 
-	linux-mips@vger.kernel.org
-Date: Tue, 09 Jun 2026 11:49:42 +0200
-In-Reply-To: <20260608-drm-no-more-bridge-reset-v2-48-0a91018bf886@kernel.org>
-References: <20260608-drm-no-more-bridge-reset-v2-0-0a91018bf886@kernel.org>
-	 <20260608-drm-no-more-bridge-reset-v2-48-0a91018bf886@kernel.org>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
- LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
- FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
- z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
- +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
- 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
- 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
- 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
- dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
- 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
- rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
- lBwgAhlGy6nqP7O3u7q23hRU=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1781008643; c=relaxed/simple;
+	bh=I8MfV8LIRqFznA4MUdahkkVUm3dHQTaN2smmLgCT5qc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8F/vd/0DFBUsqrs65hHBJTZqOiis69Tgt6YBuqMgsen1uZrlzODxFkbdsGKcm6RB0AVNa8iHFjk9XQ3pFDddkTjGY9o7AjUH7pmcvEo416LhISDFd/8AQz9TYgVWs5b69ZUC2SUzF7sUp6jANovvOiYK4tQL8c3nqkEzhSxABE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe1d30.dip0.t-ipconnect.de [79.254.29.48])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 05F52222D65;
+	Tue,  9 Jun 2026 14:37:20 +0200 (CEST)
+Date: Tue, 9 Jun 2026 14:37:18 +0200
+From: =?utf-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, ashish.kalra@amd.com, michael.roth@amd.com, nsaenz@amazon.com, 
+	anelkz@amazon.de, James.Bottomley@hansenpartnership.com, 
+	Melody Wang <huibo.wang@amd.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kvmarm@lists.linux.dev, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, x86@kernel.org, 
+	coconut-svsm@lists.linux.dev, joerg.roedel@amd.com
+Subject: Re: [PATCH 35/60] kvm: Add VCPU plane-scheduling state and helpers
+Message-ID: <aigE2EvJyZlYDz0V@8bytes.org>
+References: <20260608144252.351443-1-joro@8bytes.org>
+ <20260608144252.351443-36-joro@8bytes.org>
+ <e7eb0dba-790a-4644-9895-5c9a7420d7fe@redhat.com>
+ <aib8n5lO6HKbLC4Y@8bytes.org>
+ <CABgObfbUsDeStnZF-7oyR-W-Bvd4qTMoeUwGizgn10UTdKtZ2A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABgObfbUsDeStnZF-7oyR-W-Bvd4qTMoeUwGizgn10UTdKtZ2A@mail.gmail.com>
 
-Hi Maxime,
+On Mon, Jun 08, 2026 at 07:58:43PM +0200, Paolo Bonzini wrote:
+> Related to this, let me know if you want me to pick up again the
+> common part, especially with Sashiko being hard at work on it.
 
-Le lundi 08 juin 2026 =C3=A0 16:36 +0200, Maxime Ripard a =C3=A9crit=C2=A0:
-> The drm_bridge_funcs.atomic_reset callback and its
-> drm_atomic_helper_bridge_reset() helper are deprecated.
->=20
-> Switch to the atomic_create_state callback and its
-> drm_atomic_helper_bridge_create_state() counterpart.
->=20
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+Yeah, that might be good, let me think a bit about it and discuss in tomorrows
+PUCK call.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+> The idea of the userspace scheduling was that you're not forced to use
+> it - the kernel can always choose to override it if it's using an
+> accelerated implementation of planes (and of plane switching). But it
+> also leaves some leeway to different accelerated implementations, each
+> of which can pick their own algorithm.
+> 
+> Conceptually I'd rather keep the possibility of userspace scheduling.
+> But maybe it doesn't add much.
 
-Cheers,
--Paul
+My preference is to keep plane scheduling at one place (in the kernel) to keep
+it simple. But if you see a need for user-mode to interact there as well (only
+really works for VSM), then I can add it.
 
-> ---
-> To: Paul Cercueil <paul@crapouillou.net>
-> Cc: linux-mips@vger.kernel.org
-> ---
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 42c86f195c66..7e569af22391 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -1029,11 +1029,11 @@ static const struct drm_encoder_helper_funcs
-> ingenic_drm_encoder_helper_funcs =3D
-> =C2=A0static const struct drm_bridge_funcs ingenic_drm_bridge_funcs =3D {
-> =C2=A0	.attach			=3D ingenic_drm_bridge_attach,
-> =C2=A0	.atomic_enable		=3D ingenic_drm_bridge_atomic_enable,
-> =C2=A0	.atomic_disable		=3D
-> ingenic_drm_bridge_atomic_disable,
-> =C2=A0	.atomic_check		=3D ingenic_drm_bridge_atomic_check,
-> -	.atomic_reset		=3D drm_atomic_helper_bridge_reset,
-> +	.atomic_create_state		=3D
-> drm_atomic_helper_bridge_create_state,
-> =C2=A0	.atomic_duplicate_state	=3D
-> drm_atomic_helper_bridge_duplicate_state,
-> =C2=A0	.atomic_destroy_state	=3D
-> drm_atomic_helper_bridge_destroy_state,
-> =C2=A0	.atomic_get_input_bus_fmts =3D
-> ingenic_drm_bridge_atomic_get_input_bus_fmts,
-> =C2=A0};
-> =C2=A0
+I read a bit more about VSM and it seems their prioritization of VTLs is a bit
+more complicated. VTL0 has the least privileges but boots first, then sets up
+VTL1. But VTL1 is only higher-privileged once it is locked by VTL0. Another way
+to look at it is that VTL0 de-prioritizes itself.
+
+The patches here are built around the assumption that plane0 is the highest
+privileged one and is always runnable. Running any lower-privilege plane must
+be triggered by the guest. This is clearly not sufficient for VSM, the question
+is how to solve that.
+
+The answer depends on how IRQ delivery affects VTL scheduling in VSM. If a
+VM has VTL0 (currently running), VTL1, and VTL2 (highest privilege), and an IRQ
+becomed pending for VTL1, does Hyper-V schedule VTL1 directly or does it switch
+to VTL2 (highest privilege) first to let it schedule VTL1?
+
+When VSM switches to VTL2 first, then planes could just use a marker for the
+highest-privilege plane (which can be non-zero). In the other case the solution
+is likely to make the direction in which the vcpu->common->vcpus[] array is
+traversed configurable.
+
+-Joerg
+

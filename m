@@ -1,138 +1,169 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657B334105B
-	for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2026 06:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95D4392822;
+	Wed, 10 Jun 2026 07:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781071537; cv=none; b=MgQNJ4J5Fg+EhuFMVz3QjimTyIFG+R5srp9OYj0NjvaZEQRNz+U00HW5p8nSfQH/klfIX/cE8cH7FQYreYzgIH9/4z351MbRFoAPWmYzf6wEkg00hHZFiq6P8IM9hH27WnSsEVzOybo4GmnklEvVKuYT0D1YdMVygsYePPFPsWw=
+	t=1781077513; cv=none; b=ZEzQ6tqpu9hBlGeO9P/8WBmyC5AdQX+2k56TJlaOJCPkrdRw8f690BoKOVvpR+Q4Q81+pe4cxzUSSyunfBT+hqH+W3f/s9GwXv4W6Bu0fIBsCW184bNBWhRYprvT5p/P3AQyeAwoAuJhkKkcmqs3+nFu+FgUypQu6cYdnX5L3Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781071537; c=relaxed/simple;
-	bh=y2wsVPelIEtMq3U3KX4WbY3IdmtftE3qpW7t6devt+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jocXwcVlARe9XgrPlsgwHrcsqPZw9FjrLs1tPvPREp38AHF77sBHC7LiWFVl0M0JVGAotOAQ0wRkwnRaTysxU4joX/YcsYqtaM/gFFiG+4Ki/FIWJS51qYM75JhaW5Az2hvd5i7GXsGlxK1VE4IxFXJYRDRGc1yR5d/qqXYszp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fpqNT5H0; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781077513; c=relaxed/simple;
+	bh=mrT72NpDyJ+EcW/kQxk9KXKE9VDzc9jsDSfXj0RwJnE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dtQWFuBXCYPoOKHjxoG7TCJ6OBcre/yVbaQ1wFqqWidXmGSx2TC+ZuhHrKHNrbF1guoc7kodEUEzHyJnzz3Hk7Bcx2y64SQze7196OSn0Q7my3q3L8FBBpGmkpV2oiFbnjaXrEwak48zWUimmjFxkeMXyF+bpNJ1wo2W0aBpPNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=beeRaj4J; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eqkyOY9b; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpqNT5H0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DE51F0089F
-	for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2026 06:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781071535;
-	bh=FTK5q5irjTJDtyh2inFzHi3DC2x4G3YrOl+FUqbTtH8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=fpqNT5H03zbQNgcEVq8Rf7kstpehLDgDtoQJMjmCbSdBf00/H1epyiItcyJpXohlQ
-	 Lx6AFszxQRQaQ/UVRHWpVyM3stQhrHWcYVEOOOYSjGozSjhMxhCBbeSGRNEVgxUKlH
-	 zGIFBMlgmQFaKFgwDmZxqjtl/Wz36hbwdLFEK0mFu+LWQubJIqWNgrlP4YQxmUVx2Z
-	 USuXQMM5zXrbjNAZAQ9l/7AVWWjR1WEpn4vBBqsiipqWP49mhnjvp9PZrfRX8cGsqI
-	 Kb0VbC97YQP2q/tuI2iQcszTRFbbYeeSrhNQ0pZCZ789R0zXHe76yCrGQCqRB8oyqJ
-	 Ak0vWUhyTAdhQ==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-68d23430690so12637931a12.3
-        for <linux-mips@vger.kernel.org>; Tue, 09 Jun 2026 23:05:35 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ8lN/2CaqX51Ye56XgxlY2eEWrrmkC/tHUjPFwB9v1I9U/RM4Mk6qEgbhUB0kYQfnnxO5AQDPg9JSo9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXWbAfvEQd6wCCUaJ4XylXvy4yYol0Y8FJ7NQFmSNTWp+JSvU1
-	s4jjVOoohFJ8rygKf00wKeUJvZSFnEkrDBaDS0/R4FDBeWqGqJBosbcijeRbe7qCqknYr4Wylgf
-	4v/VIx97ivUz+eCWsVql+/rWo1XRWR4Q=
-X-Received: by 2002:a05:6402:518c:b0:68c:627d:fc2b with SMTP id
- 4fb4d7f45d1cf-68fa5039e51mr10638713a12.16.1781071533743; Tue, 09 Jun 2026
- 23:05:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="beeRaj4J";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eqkyOY9b"
+Date: Wed, 10 Jun 2026 09:45:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1781077508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s1QHTAcGCZjoHAFnkUpH3vBVhfa+4JWG9ulZflyy3Bg=;
+	b=beeRaj4JB8POwuj28/8Rkq4pz+drf2oMpCKURsbTFhDnibcy5w6F4Ga8o34WZa2kYn5W1p
+	qx0t+0AwSgZnkU22XcGXh6dgWrBce+iqPVC98lpbnjtIAeQVK2+3ZdeaL8SSmiiMoiD56o
+	Xc0yblqFQOEyVKLeRtS1oeLHth8rbw7csvUk1+oCwBdc+LJ5DmcGRQv1I+ARInQwFCbmpw
+	1/1eEiN3zif3VGhcSbR5jJsIt7z8dvaeHooCla5+xfc6Nz3JoMtsVv4L50V2G8Q9MdikY6
+	H7XGJ4DIIo2GFaKD9HsFm/P/IBFBzwEhz6z/A1HooVNJwTYfzDoY8FHYJVDkgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1781077508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s1QHTAcGCZjoHAFnkUpH3vBVhfa+4JWG9ulZflyy3Bg=;
+	b=eqkyOY9biUNqNaJq8Xtppac2kfagVVNEz4/L5KA1SYRKasmi062UPa5ce03aLadbwW6u14
+	X4SgEXgptDSEV7Ag==
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Thomas Gleixner <tglx@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>
+Subject: Re: [PATCH] MIPS: VDSO: Avoid including .got in dynamic segment
+Message-ID: <20260610093311-dcb6efd5-6921-48a6-a97a-8739fe7d3417@linutronix.de>
+References: <20260609-mips-vdso-fix-section-layout-v1-1-0e80ffadf7c7@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260608093729.12111-1-jelonek.jonas@gmail.com>
-In-Reply-To: <20260608093729.12111-1-jelonek.jonas@gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Wed, 10 Jun 2026 14:05:56 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7vJ5YniUD8HhFWBbypNyWTo73M_vzw=Y-MZtR-b_RNfw@mail.gmail.com>
-X-Gm-Features: AVVi8CeBRd2PLLuFTXLO59EuacgjVdNmuBqSnRmL8jqW-pPNGJNNz_1TkdYV9Ms
-Message-ID: <CAAhV-H7vJ5YniUD8HhFWBbypNyWTo73M_vzw=Y-MZtR-b_RNfw@mail.gmail.com>
-Subject: Re: [PATCH v2] MIPS: smp: report dying CPU to RCU in stop_this_cpu()
-To: Jonas Jelonek <jelonek.jonas@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Jiayuan Chen <jiayuan.chen@linux.dev>, linux-rt-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260609-mips-vdso-fix-section-layout-v1-1-0e80ffadf7c7@kernel.org>
 
-Hi, Jonas,
+On Tue, Jun 09, 2026 at 06:31:21PM -0700, Nathan Chancellor wrote:
+> After commit 2db1ec80dfd5 ("MIPS: VDSO: Fold MIPS_DISABLE_VDSO into
+> MIPS_GENERIC_GETTIMEOFDAY"), building ARCH=mips allnoconfig with LLVM=1
+> shows some warnings from llvm-readelf while checking the VDSO for
+> dynamic relocations:
+> 
+>   llvm-readelf: warning: 'arch/mips/vdso/vdso.so.dbg.raw': invalid PT_DYNAMIC size (0xa4)
+>   llvm-readelf: warning: 'arch/mips/vdso/vdso.so.dbg.raw': PT_DYNAMIC dynamic table is invalid: SHT_DYNAMIC will be used
+> 
+> The blamed commit alters the link order of objects into vdso.so.raw,
+> placing vgettimeofday.o after sigreturn.o. This ultimately results in
+> the .text section shrinking slightly in size, which in turn changes the
+> offset of the .dynamic section.
+> 
+>   -  [ 9] .text             PROGBITS        000002f0 0002f0 000930 00  AX  0   0 16
+>   -  [10] .dynamic          DYNAMIC         00000c20 000c20 000090 08   A  5   0  4
+>   +  [ 9] .text             PROGBITS        000002f0 0002f0 000924 00  AX  0   0 16
+>   +  [10] .dynamic          DYNAMIC         00000c14 000c14 000090 08   A  5   0  4
+> 
+> Changing the offset of the .dynamic section causes the dynamic segment
+> size to grow by the same amount, which triggers a warning in
+> llvm-readelf because PT_DYNAMIC's p_filesz (0xa4) is no longer a
+> multiple of its sh_entsize (8):
+> 
+>   -  DYNAMIC        0x000c20 0x00000c20 0x00000c20 0x00098 0x00098 R   0x10
+>   +  DYNAMIC        0x000c14 0x00000c14 0x00000c14 0x000a4 0x000a4 R   0x10
+> 
+> The size of the dynamic segment was already incorrect before the blamed
+> comment, as it should be 0x90 like the .dynamic section above (18
+> entries at 8 bytes per entry); it just so happens that 0x98 % 8 is 0,
+> whereas 0xa4 % 8 is 4, so there was no warning.
+> 
+> Looking at the section to segment mapping of the dynamic segment reveals
+> that it includes the .got section, as it is implicitly placed after
+> .dynamic by ld.lld's orphan section heuristics and inherits its segments
+> from the linker script.
+> 
+>   [ 9] .text             PROGBITS        000002f0 0002f0 000924 00  AX  0   0 16
+>   [10] .dynamic          DYNAMIC         00000c14 000c14 000090 08   A  5   0  4
+>   [11] .got              PROGBITS        00000cb0 000cb0 000008 00 WAp  0   0 16
+> 
+>   Section to Segment mapping:
+>    Segment Sections...
+>     00     .mips_abiflags
+>     01     .reginfo
+>     02     .mips_abiflags .reginfo .hash .dynsym .dynstr .gnu.version .gnu.version_d .note .text .dynamic .got
+>     03     .dynamic .got
+>     04     .note
+> 
+> Explicitly describe the .got section in the MIPS VDSO linker script
+> after .rodata, which switches back to the default text segment,
+> resulting in a dynamic segment that is the exact size of the .dynamic
+> section as expected with no other layout changes.
+> 
+>   -  DYNAMIC        0x000c14 0x00000c14 0x00000c14 0x000a4 0x000a4 R   0x10
+>   +  DYNAMIC        0x000c14 0x00000c14 0x00000c14 0x00090 0x00090 R   0x4
+> 
+>   -   03     .dynamic .got
+>   +   03     .dynamic
+> 
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/2166
+> Fixes: 2db1ec80dfd5 ("MIPS: VDSO: Fold MIPS_DISABLE_VDSO into MIPS_GENERIC_GETTIMEOFDAY")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-On Mon, Jun 8, 2026 at 5:37=E2=80=AFPM Jonas Jelonek <jelonek.jonas@gmail.c=
-om> wrote:
->
-> smp_send_stop() parks all secondary CPUs in stop_this_cpu(). The function
-> marks the CPU offline for the scheduler via set_cpu_online(false) but
-> never informs RCU, so RCU keeps expecting a quiescent state from CPUs
-> that are now spinning forever with interrupts disabled.
->
-> As long as nothing waits for an RCU grace period after smp_send_stop()
-> this is harmless, which is why it went unnoticed. Since commit
-> 91840be8f710 ("irq_work: Fix use-after-free in irq_work_single() on PREEM=
-PT_RT")
-> however, irq_work_sync() calls synchronize_rcu() on architectures without
-> an irq_work self-IPI, i.e. where arch_irq_work_has_interrupt() returns
-> false. That is the asm-generic default used by MIPS. Any irq_work_sync()
-> issued in the reboot/shutdown path after smp_send_stop() then blocks on
-> a grace period that can never complete, hanging the reboot:
->
->   WARNING: CPU: 0 PID: 15 at kernel/irq_work.c:144 irq_work_queue_on
->   ...
->   rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
->   rcu: Offline CPU 1 blocking current GP.
->   rcu: Offline CPU 2 blocking current GP.
->   rcu: Offline CPU 3 blocking current GP.
-In theory LoongArch has the same problem, but I cannot reproduce,
-should I enable PREEMPT_RT? Or there are some special configurations?
+Reviewed-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
 
-Huacai
+> ---
+> The fixes tag feels a little strong since it seems like it has just been
+> luck up until this point that there has been no warning but I decided to
+> be conservative and include it regardless. Feel free to remove it if you
+> see fit.
 
->
-> This issue was noticed on several Realtek MIPS switch SoCs (MIPS
-> interAptiv) and came up during kernel bump downstream in OpenWrt from
-> 6.18.33 to 6.18.34, after the backport of the patch to the 6.18 stable
-> branch. The patch also has been backported all the way back to 6.1.
->
-> Call rcutree_report_cpu_dead() once interrupts are disabled, mirroring th=
-e
-> generic CPU-hotplug offline path, so RCU stops waiting on the parked CPUs
-> and grace periods can still complete. MIPS shuts down all CPUs here
-> without going through the CPU-hotplug mechanism, so this report is not
-> otherwise issued. Reporting a dying CPU to RCU outside the regular hotplu=
-g
-> offline path is not unprecedented: arm64 does the same in cpu_die_early()=
-.
-> There it is an exception for a CPU that was coming online and is aborting
-> bringup, rather than the default shutdown action as on MIPS.
->
-> Fixes: 91840be8f710 ("irq_work: Fix use-after-free in irq_work_single() o=
-n PREEMPT_RT")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Jonas Jelonek <jelonek.jonas@gmail.com>
->
-> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> index 4868e79f3b30..0f28b4a62e72 100644
-> --- a/arch/mips/kernel/smp.c
-> +++ b/arch/mips/kernel/smp.c
-> @@ -20,6 +20,7 @@
->  #include <linux/sched/mm.h>
->  #include <linux/cpumask.h>
->  #include <linux/cpu.h>
-> +#include <linux/rcupdate.h>
->  #include <linux/err.h>
->  #include <linux/ftrace.h>
->  #include <linux/irqdomain.h>
-> @@ -422,6 +423,7 @@ static void stop_this_cpu(void *dummy)
->         set_cpu_online(smp_processor_id(), false);
->         calculate_cpu_foreign_map();
->         local_irq_disable();
-> +       rcutree_report_cpu_dead();
->         while (1);
->  }
->
-> --
-> 2.51.0
->
->
+I have seen this issue independently from the commit blamed above.
+It occurs at least on commit 2b7a25df823d ("Merge tag 'mm-nonmm-stable-2026-02-18-19-56'
+of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm").
+If you want I can investigate more, but the Fixes above works for me, too.
+
+> I think this should go via timers/vdso with the blamed commit. I plan to
+> send a follow up series for 7.3 to add '--orphan-handling' to the MIPS
+> VDSO to avoid issues like this in the future but that can go via the
+> MIPS tree, as it is not really a fix and I will need to properly test
+> it.
+> ---
+>  arch/mips/vdso/vdso.lds.S | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/mips/vdso/vdso.lds.S b/arch/mips/vdso/vdso.lds.S
+> index 05badf3ae0ff..278ab6444e98 100644
+> --- a/arch/mips/vdso/vdso.lds.S
+> +++ b/arch/mips/vdso/vdso.lds.S
+> @@ -56,6 +56,7 @@ SECTIONS
+>  	.dynamic	: { *(.dynamic) }		:text :dynamic
+>  
+>  	.rodata		: { *(.rodata*) }		:text
+> +	.got		: { *(.got) }
+>  
+>  	_end = .;
+>  	PROVIDE(end = .);
+> 
+> ---
+> base-commit: 13f6218e6fe79dc64aed76d738b765b45f62492b
+> change-id: 20260608-mips-vdso-fix-section-layout-262bc18d0c29
+> 
+> Best regards,
+> --  
+> Cheers,
+> Nathan
+> 

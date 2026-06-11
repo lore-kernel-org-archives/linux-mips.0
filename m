@@ -1,78 +1,126 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC25E40D592;
-	Wed, 10 Jun 2026 22:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8990D3B3C11;
+	Thu, 11 Jun 2026 07:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781131676; cv=none; b=iGjCD4WOAnbX3iCjr7BDcePA1ObKXnzqB7QbGVJ/SfO5f/MA9JIaY+30uVYb+pHWLnrHrrfQo45RNyVeTUxUlw0uH+NFTHZZvGCOpm993OeYINNeuvKAfmK6KXijFZLiTJ8RUqhmX3YyANAtzdxSU8SF0Zkkkex0C4d4dYL9Kq8=
+	t=1781161939; cv=none; b=tYNb4B7M7BM1tD1TdVcL7UiWlHlou7E7dnMhuyXfaIiYsO00ItxJsu0KQFc7be8/o5HXFHX2b/6onkPv+lkKq8npJvKsMngUbEJFxdOkP1LZqE8C/MKl+tRyJe+Jy0xQnM7vd4JPVCTtCm705jiX0rx/nk08KViXDeQjVA2IA4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781131676; c=relaxed/simple;
-	bh=gLLCtpu1HW4y48WvsCoQTVPgxaeKpCOnu7uRUsWxsfY=;
+	s=arc-20240116; t=1781161939; c=relaxed/simple;
+	bh=EJEYQub8wlf0di/iU4ofyqbowmH56ypDX5pVy3n+lc0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KBnZoETdSBZoeFlyYR+ZKUtTjM1/nK1sICxso80ywVzN1S2JSgF2TW8tdwaImSLfQy8eB3Sv9K/Y5a2N/5oxfbWMO9gQwtaoQCiQ9yRtrcaB7P1GCy1HL05CA7WeF6dB/R0EIco3H+xHQS5vzwc7cv0lfxY3O69N8YycyIuWlrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpJZT38u; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=l2sZrbZi90MM+PvuVoLi+XBpZFyupNuHoLmgshrsdcg72lEdc2T+jGzwl5EZMJhmP8NaMXYSCUIjnrT1uXcWPdh47zJdDUzYvOPbwPV5bZoCRsji3m1QZxRA4WsYLY3he1TewUeKSnOte/w/aK5HqiJLmkx4L5j9JmtSoU7WODk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fiFBYq3P; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpJZT38u"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB4AA1F00893;
-	Wed, 10 Jun 2026 22:47:49 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fiFBYq3P"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6551F00893;
+	Thu, 11 Jun 2026 07:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781131675;
-	bh=GRvgTXlPZl11xkQBcRqK4OFLDdU04M2262Jxs4ZW4C4=;
+	s=k20260515; t=1781161938;
+	bh=cb1adLE4OteerCSBk+VBYHwOKwVKIC0OX9Sh5Jg4D0I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=gpJZT38uyfsTpqy3Gr+HepAiLDv+DSwP8ChARazi3xh01rFNGozsQmbelEOh3xDXC
-	 /4htzP9ffXXPqdLLnzPsShgEFi3hOianssEDcaVG8hRX4yICacLhA5ZntbhvD9+dZB
-	 rSl4pGs3qS9zFdINT7SXpB1/idWtIwIqofWRWsvH1UYFw/iJoWi9ijwFGtFeg4dyxz
-	 cm0qCW7trDQVzPSqJw6M9TsRwnKbJwZUEJoEhnImqQ5/vI01Xq2zY/BXFOzBvObcgL
-	 Vpmdiv0o7rHK3l/9Pi9UbbR8gCp+38+y1FyYc1ylkpQyFBo3Ew1jQC+miwSlW/7J6c
-	 EFLH4+mi/KUoA==
-Date: Wed, 10 Jun 2026 15:47:45 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
-Cc: Thomas Gleixner <tglx@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>
-Subject: Re: [PATCH] MIPS: VDSO: Avoid including .got in dynamic segment
-Message-ID: <20260610224745.GA2820589@ax162>
-References: <20260609-mips-vdso-fix-section-layout-v1-1-0e80ffadf7c7@kernel.org>
- <20260610093311-dcb6efd5-6921-48a6-a97a-8739fe7d3417@linutronix.de>
+	b=fiFBYq3PHbybtvQ0Ie7WxptQtEeUaCk6mxPymiXzx2z3zGvV4UAnunhiFpDcL+3ds
+	 8T2iILHFOT5A0QEZ7fBhoMFfMu7p5pdP443UE44k4Op87dski55918WHX+SvKCTWH3
+	 q+v+nE2/qmkjWRxh8ZAVFYaYRYvkSN6mmb8gnVGLWDqHg2r4kyfa74bFTSt+dKNj3Y
+	 ASPKu70fz3eU/2+djxAYm/9Yxva6fleJpBa5FfW0yLlD6mJ1CqrEpgJTmgSLDT+aeB
+	 8dP2VE/RzFF39igauJHUJwvKT1wdM6ivedxpLvfNDVSie0T1A1t0C/MU4X5FUZwHHm
+	 v+w9+NxVjIkpQ==
+Date: Thu, 11 Jun 2026 09:12:08 +0200
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Caleb James DeLisle <cjd@cjdns.fr>
+Cc: linux-pci@vger.kernel.org, linux-mips@vger.kernel.org, 
+	naseefkm@gmail.com, ryder.lee@mediatek.com, helgaas@kernel.org, 
+	lpieralisi@kernel.org, kwilczynski@kernel.org, robh@kernel.org, krzk+dt@kernel.org, 
+	conor+dt@kernel.org, matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com, 
+	ansuelsmth@gmail.com, linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 0/3] Add EcoNet EN7528 (and EN751221) PCIe support.
+Message-ID: <qwjq6jt3akjk6m4qp4s7xpqf2kzc3tyhsrmcoqhc3canknauxh@leu5dbmv5ngl>
+References: <20260521171951.1495781-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260610093311-dcb6efd5-6921-48a6-a97a-8739fe7d3417@linutronix.de>
+In-Reply-To: <20260521171951.1495781-1-cjd@cjdns.fr>
 
-On Wed, Jun 10, 2026 at 09:45:08AM +0200, Thomas Wei�schuh wrote:
-> On Tue, Jun 09, 2026 at 06:31:21PM -0700, Nathan Chancellor wrote:
-> > The fixes tag feels a little strong since it seems like it has just been
-> > luck up until this point that there has been no warning but I decided to
-> > be conservative and include it regardless. Feel free to remove it if you
-> > see fit.
+On Thu, May 21, 2026 at 05:19:48PM +0000, Caleb James DeLisle wrote:
+> Tested on TpLink Archer VR1200V-V2 (EN751221 with Gen2 device)
 > 
-> I have seen this issue independently from the commit blamed above.
-> It occurs at least on commit 2b7a25df823d ("Merge tag 'mm-nonmm-stable-2026-02-18-19-56'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm").
-> If you want I can investigate more, but the Fixes above works for me, too.
+> Changes since v8:
+> * guard(rwsem_read)(&pci_bus_sem); in mtk_pcie_retrain
+> * v8: https://lore.kernel.org/linux-mips/20260520183827.908243-1-cjd@cjdns.fr
+> 
+> Changes from v7:
+> * mtk_pcie_retrain retrain all root ports not just first
+> * Include fix from Manivannan Sadhasivam, wrong usage of virt_to_phys()
+> * v7: https://lore.kernel.org/linux-mips/20260514151318.3444959-1-cjd@cjdns.fr
+> 
+> Changes from v6:
+> * s/reset/resets/ in .yaml
+> * s/re-train/retrain/g
+> * s/Root bridge/Root port/
+> * If module not builtin, log at mtk_pcie_startup_port_en7528()
+> * Do not fail if error in mtk_pcie_retrain()
+> * v6: https://lore.kernel.org/linux-mips/20260513191652.3200607-1-cjd@cjdns.fr
+> 
+> Changes from v5:
+> * s/errno-base.h/errno.h/
+> * Breakout mtk_pcie_retrain() into a function
+> * Use for_each_pci_bridge() to find root bridge
+> * v5: https://lore.kernel.org/linux-mips/20260413140339.16238-1-cjd@cjdns.fr/
+> 
+> Changes from v4:
+> * Fixed missing Acked-by
+> * Rebased to commit 66672af7a095 ("Add linux-next specific files for 20260410")
+> * v4: https://lore.kernel.org/linux-mips/20260404182854.2183651-1-cjd@cjdns.fr/
+> 
+> Changes from v3:
+> * s/initiallized/initialized/
+> * Use PCIE_T_PVPERL_MS for sleep time
+> * Use PCI_PM_D3COLD_WAIT for startup wait time
+> * Clarify comment "Activate INTx interrupts"
+> * Add MTK_PCIE_RETRAIN quirk for devices which require link re-train
+> * Do not retrain *all* bridges, only root bridge
+> * Better comments and logging in retraining logic
+> * v3: https://lore.kernel.org/linux-mips/20260320094212.696671-1-cjd@cjdns.fr/
+> 
+> Changes from v2:
+> * mediatek-pcie.yaml -> s/power-domain/power-domains/ and drop example
+> * Patch 3 dropped as it has been applied (Thanks!)
+> * v2: https://lore.kernel.org/linux-mips/20260316155157.679533-1-cjd@cjdns.fr/
+> 
+> Changes from v1:
+> * mediatek-pcie.yaml slot0 needs device-type = "pci", fix dt_binding_check
+> Link: https://lore.kernel.org/linux-mips/177334026016.3889069.9474337544951486443.robh@kernel.org
+> * v1: https://lore.kernel.org/linux-mips/20260312165332.569772-1-cjd@cjdns.fr/
+> 
+> This was split from a larger PCIe patchset which crossed multiple
+> subsystems. I'm not labeling this a v3 because it's a new patchset, but
+> I'm keeping the historical record anyway.
+> 
+> Changes from econet-pcie v2:
+> * mediatek-pcie.yaml add missing constraints to PCI node properties
+> * econet-pcie v2: https://lore.kernel.org/linux-mips/20260309131818.74467-1-cjd@cjdns.fr
+> 
+> Changes from econet-pcie v1:
+> * pcie-mediatek.c Exclude pcie_retrain_link() when building as a module
+> * econet-pcie v1: https://lore.kernel.org/linux-mips/20260303190948.694783-1-cjd@cjdns.fr/
+> 
+> 
+> Caleb James DeLisle (2):
+>   dt-bindings: PCI: mediatek: Add support for EcoNet EN7528
+>   PCI: mediatek: Add support for EcoNet EN7528 SoC
 
-Maybe it would be better to blame the original vDSO commit then?
+Patch 3 doesn't apply cleanly. So I applied patches 1 and 2. Please rebase patch
+3 on top of pci/controller/mediatek branch and resend it.
 
-Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-
-I cannot build with LLVM back that far but something tells me that this
-could happen back then too just because .got is not described there. I
-don't have a strong opinion though, this does not appear to be a
-functional issue since llvm-readelf just falls back to using .dynamic
-directly IIUC. I guess tglx could make the call during application if he
-is okay with that?
+- Mani
 
 -- 
-Cheers,
-Nathan
+மணிவண்ணன் சதாசிவம்

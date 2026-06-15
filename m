@@ -1,69 +1,87 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F01533F5B2;
-	Mon, 15 Jun 2026 10:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F8F331EDE;
+	Mon, 15 Jun 2026 10:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781520227; cv=none; b=ISTtlf7WF2r58Pt539IKEuuX3t//elWBLp8IXWjbrRaVo7vzXDW/w9o9oT5A1AOyg5+c0CY74Tg2zCy2J/qhvW37HFw3/aH/s4S8ntive0JSwR316lm7DhMdKrNi7toOaF9ROqhVUQYm2WgbkWIEBVHlDvxwcWSOxtEdJ2+7jfk=
+	t=1781520230; cv=none; b=jpY0wBedDxlUUMLXGqOdcMtYDB/iA7FFT+CPuZNlO4VHhlxu4dGRu70BnD/5fL22YY6UYQ2IEqbYaHOUra42hZn0vcoKbsXgOkUzXs6yS5Ili//+DnE28zeq66/KjLfsuek4j8lCQ4czwGUnGgv06NKM59SimrKZ6gGR99R3tLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781520227; c=relaxed/simple;
-	bh=5Cjct7hkI4BKdoY536AkhtUr1habQlfODY6AGVdVDQU=;
+	s=arc-20240116; t=1781520230; c=relaxed/simple;
+	bh=PqxZeqhPQz+s55hdoC77x2kn+2U4fJ3s/UnM4RmaOlg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P2OzeeTRh6P+35X0SvSYmXNW6P8fdkhUxT6fPFj0EfarYimooP20GkIMm8iP2C4zI1wmlCZ+4VTd5JJ+iUJjkPd+4uyKnevJSzK448urNTUmH9BNztKuJxiUnsBdHQ7yZpjef4BzMCULaYvjVOJQnfJQcIdYht2Y38mYaKraKfo=
+	 Content-Type:Content-Disposition:In-Reply-To; b=DeJ54dHpz6BO3UEwvifVwroRymYQv4NKb8uO1Xhar16Doco4Pq5wIool0zroy3xF2SNuUvQMjITRNMySIZUqjvE7W8CCKG+cNOeIRX7Zih+8rZvhj7iORcJyhiGplYlWe6+p0VqOkiWNLaQWhEA9IOgJSAI0cb/cvKGF8sDCMCE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wZ4ey-0000JH-00; Mon, 15 Jun 2026 12:35:16 +0200
+	id 1wZ4ey-0000JF-00; Mon, 15 Jun 2026 12:35:16 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 0D050C0896; Mon, 15 Jun 2026 12:30:40 +0200 (CEST)
-Date: Mon, 15 Jun 2026 12:30:40 +0200
+	id 25EE2C084D; Mon, 15 Jun 2026 12:30:25 +0200 (CEST)
+Date: Mon, 15 Jun 2026 12:30:25 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Markus Elfring <Markus.Elfring@web.de>
 Cc: linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
 	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 4/4] MIPS: kernel: proc: Delete unnecessary braces in
+Subject: Re: [PATCH 3/4] MIPS: kernel: proc: Use seq_putc() calls in
  show_cpuinfo()
-Message-ID: <ai_UUB7ouRSE1KEw@alpha.franken.de>
+Message-ID: <ai_UQS6UvlqhhEqD@alpha.franken.de>
 References: <e9e46083-c250-4e12-8620-f590e9501a25@web.de>
- <7c7d97b0-37bb-4e7b-9b2e-49a7c10eb6c5@web.de>
+ <c2dcc1be-0f5e-4e51-ba67-235c178ce211@web.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7c7d97b0-37bb-4e7b-9b2e-49a7c10eb6c5@web.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c2dcc1be-0f5e-4e51-ba67-235c178ce211@web.de>
 
-On Thu, Jun 04, 2026 at 07:56:12PM +0200, Markus Elfring wrote:
+On Thu, Jun 04, 2026 at 07:54:08PM +0200, Markus Elfring wrote:
 > From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 4 Jun 2026 19:15:15 +0200
+> Date: Thu, 4 Jun 2026 19:12:11 +0200
 > 
-> Do not use curly brackets at one source code place
-> where a single statement should be sufficient.
+> Single characters should occasionally be put into a sequence.
+> Thus use the corresponding function “seq_putc”.
+> 
+> The source code was transformed by using the Coccinelle software.
 > 
 > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 > ---
->  arch/mips/kernel/proc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  arch/mips/kernel/proc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-> index 42430c7f0acf..2c50b0b53be1 100644
+> index 9e8b8f99b606..42430c7f0acf 100644
 > --- a/arch/mips/kernel/proc.c
 > +++ b/arch/mips/kernel/proc.c
-> @@ -151,10 +151,9 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+> @@ -79,7 +79,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>  		for (i = 0; i < cpu_data[n].watch_reg_count; i++)
+>  			seq_printf(m, "%s0x%04x", i ? ", " : "",
+>  				cpu_data[n].watch_reg_masks[i]);
+> -		seq_puts(m, "]");
+> +		seq_putc(m, ']');
+>  	}
+>  
+>  	seq_puts(m, "\nisa\t\t\t:");
+> @@ -149,7 +149,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>  		seq_puts(m, " loongson-ext");
+>  	if (cpu_has_loongson_ext2)
 >  		seq_puts(m, " loongson-ext2");
->  	seq_putc(m, '\n');
+> -	seq_puts(m, "\n");
+> +	seq_putc(m, '\n');
 >  
-> -	if (cpu_has_mmips) {
-> +	if (cpu_has_mmips)
+>  	if (cpu_has_mmips) {
 >  		seq_printf(m, "micromips kernel\t: %s\n",
->  		      str_yes_no(read_c0_config3() & MIPS_CONF3_ISA_OE));
-> -	}
+> @@ -298,7 +298,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>  	raw_notifier_call_chain(&proc_cpuinfo_chain, 0,
+>  				&proc_cpuinfo_notifier_args);
 >  
->  	seq_puts(m, "Options implemented\t:");
->  	if (cpu_has_tlb)
+> -	seq_puts(m, "\n");
+> +	seq_putc(m, '\n');
+>  
+>  	return 0;
+>  }
 > -- 
 > 2.54.0
 

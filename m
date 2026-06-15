@@ -1,57 +1,28 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68CB339708;
-	Mon, 15 Jun 2026 10:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F2833BBA2;
+	Mon, 15 Jun 2026 10:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781520233; cv=none; b=Wjx44uOUfGTiO/ScBM2daqEhP2iMZ4U8YWXHWYI//BwUKdeezdBwW8/d1cmpI7cdd8I69+KW6r79F1tfzm7Cp6IaFRBO+yHw3qks733VD6lwMqRu1CxR3GoIDtB00suL3z0HfyutBPnpeJ3NxKeYjmH64rUIxWRAiApUywcraBo=
+	t=1781520238; cv=none; b=BtpcSnJxhqYbvKAChKGXU3E2iMKGBwpgwgmAdh6mx7LRf/7uXupXJIZXmA3dxNRfxl7iP1Jy7bpOhV7TN73HBt0vfuBwHa03tgfoaPF0IOu/0TIw00+DPvUDIHGdaUaxbrdl8omXjWdcTujpQz44LWGV0Q6EvRA3q2Bus5FIhCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781520233; c=relaxed/simple;
-	bh=oVfd44ufR+op111XMW1UXh0Dk/Avy9DCMpoW+by1up8=;
+	s=arc-20240116; t=1781520238; c=relaxed/simple;
+	bh=og9kT3MhgU+ySTX3EJC8pVUZ3MbMvTJo6EbrPV+vAGk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a6zf9w9OuO0ugr/TjXFDSh5Y4SxKLIEX/GMLUaJEbqkkssPP0Llz++56hJTFP7yDlJWpfxshz4qShW/zG9shhgGixEb+48gGo4W6AzeDw6lLByT4Vzgxz4JmXXSrJJ33iJlUTmm859M9SfQKzZYUV9B+uecB/UN6xGQxZdlp55A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=EfA8YNdKs+HJrcJIxuCCK6ARGTFYcq5VVHNabRoZlyZ/37FhGAW0BhMqGEmKmQPQmpAPjb766gY9TcKnBisNOCjJFAdQGDlSH3QimvjD5aAG+g5lTlpsg1gpL6N7DAqkT8jSZV61dgltWyTQzVYYrRtB1vB137EGGvzmnFckMGQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wZ4ey-0000JJ-00; Mon, 15 Jun 2026 12:35:16 +0200
+	id 1wZ4ey-0000JR-00; Mon, 15 Jun 2026 12:35:16 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id C060CC084D; Mon, 15 Jun 2026 12:33:22 +0200 (CEST)
-Date: Mon, 15 Jun 2026 12:33:22 +0200
+	id 0A18BC0562; Mon, 15 Jun 2026 12:27:38 +0200 (CEST)
+Date: Mon, 15 Jun 2026 12:27:38 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christian Lamparter <chunkeey@googlemail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Andreas Kemnade <andreas@kemnade.info>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Lee Jones <lee@kernel.org>, Pavel Machek <pavel@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jonas Gorski <jonas.gorski@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-wireless@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-leds@vger.kernel.org, netdev@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Subject: Re: [PATCH 05/10] [v2] mips: select legacy gpiolib interfaces where
- used
-Message-ID: <ai_U8j3uOoIzoYrJ@alpha.franken.de>
-References: <20260520183815.2510387-1-arnd@kernel.org>
- <20260520183815.2510387-6-arnd@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: lib: Remove '.hidden' for local symbols
+Message-ID: <ai_Tmi-nlNNebn4o@alpha.franken.de>
+References: <20260608-mips-fix-binutils-visibility-warning-v1-1-3c809cfb5a9d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -60,40 +31,75 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260520183815.2510387-6-arnd@kernel.org>
+In-Reply-To: <20260608-mips-fix-binutils-visibility-warning-v1-1-3c809cfb5a9d@kernel.org>
 
-On Wed, May 20, 2026 at 08:38:10PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jun 08, 2026 at 08:36:25PM -0700, Nathan Chancellor wrote:
+> After a recent change in binutils that warns when local symbols have
+> non-default visibility [1], there are a couple instances when building
+> arch/mips:
 > 
-> A few old machines have not been converted away from the old-style
-> gpiolib interfaces. Make these select the new CONFIG_GPIOLIB_LEGACY
-> symbol so the code still works where it is needed but can be left
-> out otherwise.
+>   Assembler messages:
+>   {standard input}: Warning: local symbol `__memset' has non-default visibility
+>   Assembler messages:
+>   {standard input}: Warning: local symbol `__memcpy' has non-default visibility
 > 
-> This is the list of all gpio_request() calls in mips:
+> Remove the '.hidden' directives for these symbols to clear up the
+> warnings, as they are pointless with a local symbol, which is by
+> definition hidden. This results in no changes to these symbols in nm's
+> output when assembled with various copies of binutils.
 > 
->   arch/mips/alchemy/devboards/db1000.c:           gpio_request(19, "sd0_cd");
->   arch/mips/alchemy/devboards/db1000.c:           gpio_request(20, "sd1_cd");
->   arch/mips/alchemy/devboards/db1200.c:   gpio_request(215, "otg-vbus");
->   arch/mips/bcm47xx/workarounds.c:        err = gpio_request_one(usb_power, GPIOF_OUT_INIT_HIGH, "usb_power");
->   arch/mips/bcm63xx/boards/board_bcm963xx.c:              gpio_request_one(board.ephy_reset_gpio,
->   arch/mips/txx9/rbtx4927/setup.c:        gpio_request(15, "sio-dtr");
-> 
-> Most of these should be easy enough to change to modern gpio descriptors
-> or remove if they are no longer in use.
-> 
-> Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> Reviewed-by: Linus Walleij <linusw@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Closes: https://lore.kernel.org/20260509122517.GA1108596@ax162/
+> Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=c4150acbda1b3ce0602f79cbb7700b39e577be7e [1]
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
-> v2: no changes. There was no discussion on this, but the patch
->     has so far not made it into the linux-mips tree, so I'm including
->     it for completeness.
+>  arch/mips/lib/memcpy.S | 2 --
+>  arch/mips/lib/memset.S | 2 --
+>  2 files changed, 4 deletions(-)
+> 
+> diff --git a/arch/mips/lib/memcpy.S b/arch/mips/lib/memcpy.S
+> index a4b4e805ff13..84f85aba6f4b 100644
+> --- a/arch/mips/lib/memcpy.S
+> +++ b/arch/mips/lib/memcpy.S
+> @@ -274,7 +274,6 @@
+>  	/* initialize __memcpy if this the first time we execute this macro */
+>  	.ifnotdef __memcpy
+>  	.set __memcpy, 1
+> -	.hidden __memcpy /* make sure it does not leak */
+>  	.endif
+>  
+>  	/*
+> @@ -538,7 +537,6 @@
+>  	.if __memcpy == 1
+>  	END(memcpy)
+>  	.set __memcpy, 0
+> -	.hidden __memcpy
+>  	.endif
+>  
+>  .Ll_exc_copy\@:
+> diff --git a/arch/mips/lib/memset.S b/arch/mips/lib/memset.S
+> index 79405c32cc85..ab087406da66 100644
+> --- a/arch/mips/lib/memset.S
+> +++ b/arch/mips/lib/memset.S
+> @@ -89,7 +89,6 @@
+>  	/* Initialize __memset if this is the first time we call this macro */
+>  	.ifnotdef __memset
+>  	.set __memset, 1
+> -	.hidden __memset /* Make sure it does not leak */
+>  	.endif
+>  
+>  	sltiu		t0, a2, STORSIZE	/* very small region? */
+> @@ -231,7 +230,6 @@
+>  	.if __memset == 1
+>  	END(memset)
+>  	.set __memset, 0
+> -	.hidden __memset
+>  	.endif
+>  
+>  #ifdef CONFIG_CPU_NO_LOAD_STORE_LR
+> 
 > ---
->  arch/mips/Kconfig         | 5 +++++
->  arch/mips/alchemy/Kconfig | 1 -
->  arch/mips/txx9/Kconfig    | 1 +
->  3 files changed, 6 insertions(+), 1 deletion(-)
+> base-commit: 6d96cc123ce33cd74e799c5434440393ed022bb7
+> change-id: 20260608-mips-fix-binutils-visibility-warning-71e531e65f78
 
 applied to mips-next
 

@@ -1,43 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC8833F589;
-	Mon, 15 Jun 2026 10:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9308B33E35B;
+	Mon, 15 Jun 2026 10:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781520240; cv=none; b=hsLoJJixZ0Qgec613m6aC+7saPaE9ruA3KZRB0SUCQ0mIbXQgNZed5UhgGqunMqze6+T7xn1Jani8PNq42xeBq29yNBhbl240YXFQ9mVM0wNLTYltNFWC7R7MJVDdbJjBL+pHpgpiCq5OBbuRBdSZy8FqUTZW6CoqapObB0+Sn4=
+	t=1781520244; cv=none; b=amppFmIUsP2l16YXZ9QkPhm4ztxiQxNaU08hyDh5MDEXfaNfQDaNq+castPoSMYiHWldVZ5U69ihfNXGGu93uXP2D0cCXy4Jff7tsPRlblbRWl+GmEmMtsfFUA1vFNXowchoBkGPapgD4QFpQhSZg57U6uzVFyXnn35i/koxUQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781520240; c=relaxed/simple;
-	bh=CvHuvUq3VhVxKI+huI73tbZ5If/qKqZw9tNL5YxdXWI=;
+	s=arc-20240116; t=1781520244; c=relaxed/simple;
+	bh=sSTFhO2YnsKMCD/YvKWjIpD8RLkxXQ1D4msQjuxjj3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AD2s59sOipOQg6KFI8CbJoLb7eu1sVKunYNCuvibi8/M2rhNsBjACEdTaOOYlOp+jW7tqYnMtB1pOSuHZn3W40tJes1l16z6dGveLvwy4W9wN38w0ZoS+QStHeo4A6TkoxCHTApdAeqyx7dWbfc6vQk6KXPLoJaWgFmUkHOJrG4=
+	 Content-Type:Content-Disposition:In-Reply-To; b=dw9c8n1WruZfKNhtD5f5HLWsFfNhZBqJRLSv5mTktD9n+UD8F/w1NPFes+t+M/7VN+a68/b1C1YHf/noK/IDi2wrmPuOrp7IpFqUjVeC29tlKUdaAjBXvL9hHWNADAGjr9NM8kfzd+bE/rmkadtPbbMQfGAF9/rixtD7q1kkkt4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wZ4ey-0000JT-00; Mon, 15 Jun 2026 12:35:16 +0200
+	id 1wZ4ey-0000JX-00; Mon, 15 Jun 2026 12:35:16 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 66FD9C0650; Mon, 15 Jun 2026 12:28:02 +0200 (CEST)
-Date: Mon, 15 Jun 2026 12:28:02 +0200
+	id 53967C068C; Mon, 15 Jun 2026 12:28:29 +0200 (CEST)
+Date: Mon, 15 Jun 2026 12:28:29 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Catalin Iacob <iacobcatalin@gmail.com>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jens Axboe <axboe@kernel.dk>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] mips: Remove remaining defconfig references to
- the pktcdvd driver
-Message-ID: <ai_TsvPSc6dUt2-X@alpha.franken.de>
-References: <20260608-remove-pktcdvd-references-v4-0-72f88b04cc87@gmail.com>
- <20260608-remove-pktcdvd-references-v4-2-72f88b04cc87@gmail.com>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mips: dts: ar9132: fix wdt node name
+Message-ID: <ai_TzYPvnOU7Pgt1@alpha.franken.de>
+References: <20260608053202.12004-1-rosenp@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -46,25 +35,35 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260608-remove-pktcdvd-references-v4-2-72f88b04cc87@gmail.com>
+In-Reply-To: <20260608053202.12004-1-rosenp@gmail.com>
 
-On Mon, Jun 08, 2026 at 05:29:17PM +0300, Catalin Iacob wrote:
-> Commit 1cea5180f2f8 ("block: remove pktcdvd driver") left behind some
-> CONFIG_CONFIG_CDROM_PKTCDVD references in defconfigs. Remove them.
+On Sun, Jun 07, 2026 at 10:32:02PM -0700, Rosen Penev wrote:
+> Fixes the following warning:
 > 
-> Signed-off-by: Catalin Iacob <iacobcatalin@gmail.com>
+> $nodename:0: 'wdt@18060008' does not match
+> '^(timer|watchdog)(@.*|-([0-9]|[1-9][0-9]+))?$'
+> from schema $id: http://devicetree.org/schemas/watchdog/qca,ar7130-wdt.yaml#
+> 
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
 > ---
->  arch/mips/configs/fuloong2e_defconfig    | 1 -
->  arch/mips/configs/ip22_defconfig         | 1 -
->  arch/mips/configs/ip27_defconfig         | 1 -
->  arch/mips/configs/ip30_defconfig         | 1 -
->  arch/mips/configs/jazz_defconfig         | 1 -
->  arch/mips/configs/malta_defconfig        | 1 -
->  arch/mips/configs/malta_kvm_defconfig    | 1 -
->  arch/mips/configs/maltaup_xpa_defconfig  | 1 -
->  arch/mips/configs/rm200_defconfig        | 1 -
->  arch/mips/configs/sb1250_swarm_defconfig | 1 -
->  10 files changed, 10 deletions(-)
+>  arch/mips/boot/dts/qca/ar9132.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/boot/dts/qca/ar9132.dtsi b/arch/mips/boot/dts/qca/ar9132.dtsi
+> index 4d3c48a9f9fd..77225ed459cb 100644
+> --- a/arch/mips/boot/dts/qca/ar9132.dtsi
+> +++ b/arch/mips/boot/dts/qca/ar9132.dtsi
+> @@ -98,7 +98,7 @@ pll: pll-controller@18050000 {
+>  				clock-output-names = "cpu", "ddr", "ahb";
+>  			};
+>  
+> -			wdt: wdt@18060008 {
+> +			wdt: watchdog@18060008 {
+>  				compatible = "qca,ar7130-wdt";
+>  				reg = <0x18060008 0x8>;
+>  
+> -- 
+> 2.54.0
 
 applied to mips-next
 

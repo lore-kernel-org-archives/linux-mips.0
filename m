@@ -1,79 +1,35 @@
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86B4285CA2
-	for <linux-mips@vger.kernel.org>; Sun, 14 Jun 2026 16:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE7E26E710;
+	Mon, 15 Jun 2026 06:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781453759; cv=none; b=FFZTrB9OVq4sgnyUQfO1FH//KYKVAe1vgEgL0rZWMXNmRM3gdKfCEsCL1CyPVxAtWHGB9ZW5doZEWB/U1dLt0uoyMs6eI2C+PQ5u9N+ZPDDnwogkTsrr8/lha2S5+S6C8Y8Qmjgs0AV2qaOw4yo9rcGh1kL89pU/UR6O3A4vE1k=
+	t=1781505223; cv=none; b=tEgXfUZWMgU3HwknORYZIYNMqp4Yf0HABgaACVbd07zPTG9L22HzwYcwNtZAzZOI8bMLA89WXRBKchWH3VNjlLNLmqukcezAdzPouXAtG1FRVfAczUXQNoYCGdW0H2/xM9MBvpaeosObLbTdYRBUHzpdem2iZ2EyS7yxEHDdfB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781453759; c=relaxed/simple;
-	bh=ofwx4zf3yY/vPpZiXyWfjiOYKTW2xVZryZrU3kAs4eQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SPIXGh69p9+R2d8oNp9QgsDK41RSKKyO6GdpHlOXS3Sv+1LfYXlSxZ8+mA3JbRuujx/AB+euXEWJUKf2ERxZeSU8DQlJSku8SCBkMn1K6NWwU59D3KvCfj/nmRsP9OEADbh1K4B9RduxhzlwKnDRC6BbIWEyAk5cG4/RE0tlir0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e4/uXrgZ; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4/uXrgZ"
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-36b900f350fso2240528a91.0
-        for <linux-mips@vger.kernel.org>; Sun, 14 Jun 2026 09:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781453758; x=1782058558; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ch+S3rbykedr2z6bsw5Hh8zutORUt4eMMB5mYUulTJs=;
-        b=e4/uXrgZ2bzPriWGVb6S5iy/wtLOfz9B/JHjf72EFQ9wd3DdsVW/VYTm9pEcjsbFNs
-         5oMm/JEN7TOStzi9i45dEdJmOal3iQuR9p4olWejDtd8fvIM+CAHUbjpBJoH2GyZm83H
-         baRQENsxyvaILq/Ydeg854ULbHvw+XMSReoVn1fNSH3mmOwWAOOMY4LgwVFmmyCRC8ZP
-         6gmqo3VNkDdLc+1oZy8hRTt6dEQriiEXF8K/KnqM/Nl0lNgn5ern0WqY2EB4VRTqNgr/
-         fEar+HmUN0rG5dBkVBpgQ6/nS0hnmMFO78fhY6QzSaT6BoMlOh9tBYUuu/p4XucqQjsD
-         xrQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781453758; x=1782058558;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Ch+S3rbykedr2z6bsw5Hh8zutORUt4eMMB5mYUulTJs=;
-        b=lgp4T1ek1kVRGLoG9O5xOOAVS5x7svlWSFjl6Rv3kXBwNcczvettMH81faiZnOxKC/
-         f+pCO3+1sXwCEk6THMCzqSxMtrCDYSq8OWLfeQHlaMMEgTQjDuSbzn4h7JoNWUopkB07
-         Ce1WYqFvfP37g54gFYERnCpE9wBtS6zt1kS5d9pmRBP445JQ9aOMUiSUiD5LkmXuJs6L
-         xIim/0gO9JvDYD0NRdi9kjx80AdNDoMAnF1JeVGBoub4UM9+p1KLhde9EIxPaz7rDamI
-         UJNJRDCvA++9qfd2+Tfb+xTpvJS3dDxUo9Jmr/xj1QPxxyiOgjGUGNloncBTzfnxucKE
-         uYLw==
-X-Forwarded-Encrypted: i=1; AFNElJ86GGxFP/AWyQtTmQCHlpaaElt+EaIA2WdRU+r48S7+d+GdxFgTgZjcJZ/Mmhy1+43qjmg3JyRUSCc8@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9nZ2cLdIWjY+64hi7Yxn2gE/gjNEvfrYYyZkB0/oUBov3RL5y
-	Qd3QQ7jyJwsssqpYsUC0uJYhHL3ZIC9K17tvv91eMAQrqK+K9kASfhlf
-X-Gm-Gg: Acq92OGrL2yivK6hn26MM1vlEEHXHEex+kwaR/HHo2O4jKndYPwjpGhKeHHO909A0FO
-	71Rij0b3mOpH/0Iojo7Q+SRl3dxvizLG/ubTF2jncG7vk6ZL9F/DtYTvWSlQnStCTcad8cAQCk6
-	foQWezhj33rqbAwi4qsXPvuMcYmIPN9L2TpWhVsvcYNc05G9s49E4acrLMhtTD5EXxlCGhugCjd
-	2oqRJmUHl/ItvshLZ5+M1AjrFTgLcafBN0lYrMzyKuwEcQLQBxxlaa+F3+FazIIRDhUCvFUoV9t
-	u//PRQyxtLw0EZvt6zftFDp6M/eqiFArGbqFWxFW4kHNDDcIBf2IM2ZkT2hkxkcZQHQaT+oYKwB
-	VmTQShDUzgrFgyw6GpZYJQAlh387UWbsBA6s9AydVoULJOLK8qRYwgZUVfhq54t2PV9ggznKO2F
-	Li2Cgm1wGmlOw9foiv6Q==
-X-Received: by 2002:a17:90b:57ee:b0:36a:d51d:42ef with SMTP id 98e67ed59e1d1-37c2bd033b4mr7411267a91.13.1781453758174;
-        Sun, 14 Jun 2026 09:15:58 -0700 (PDT)
-Received: from ubuntu.. ([110.9.142.4])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c866325d1d3sm6505293a12.11.2026.06.14.09.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2026 09:15:57 -0700 (PDT)
-From: Sang-Heon Jeon <ekffu200098@gmail.com>
-To: Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: devicetree@vger.kernel.org,
-	loongarch@lists.linux.dev,
+	s=arc-20240116; t=1781505223; c=relaxed/simple;
+	bh=o1t21UpA2llGuzZ1+0n8A5xfFa9g7EzB1SnXLXlY4jY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=niSqwaZ1Jz/RgK8UakNbDpDJ7hu04oGDCUlhAEB0ZVNwsb13wMhjw+s3b8Z/o3SSkwyexMmLtx3wIoPFMRclc8TRVKxjOhA8DMcVSyTT6u/3xUvh8zv2bn+P/WpaHsGhUfygu1lCQUZP6kRMFMPzexiOP3jMIXCk51NCLyso8fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost.localdomain (unknown [111.196.245.140])
+	by APP-05 (Coremail) with SMTP id zQCowABHkcS+nC9q+3qTEw--.38990S2;
+	Mon, 15 Jun 2026 14:33:34 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Harvey Hunt <harveyhuntnexus@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mips@vger.kernel.org,
-	Sang-Heon Jeon <ekffu200098@gmail.com>
-Subject: [PATCH 3/3] MIPS: fix misleading elfcorehdr reservation success message
-Date: Mon, 15 Jun 2026 01:15:03 +0900
-Message-ID: <20260614161503.2219681-4-ekffu200098@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260614161503.2219681-1-ekffu200098@gmail.com>
-References: <20260614161503.2219681-1-ekffu200098@gmail.com>
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: pengpeng@iscas.ac.cn
+Subject: [PATCH] mtd: rawnand: ingenic: handle ECC clock enable failures
+Date: Mon, 15 Jun 2026 14:33:32 +0800
+Message-ID: <20260615063332.48127-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -81,39 +37,66 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowABHkcS+nC9q+3qTEw--.38990S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww43tr48ZryrCw18Gw1kGrg_yoW8GFWUpF
+	WUJayjkay8WF10kw47Ja1Uua45uw1Iv3yxuFy5A3Wv93Z5AF18ta48J34qvFs5Zw48C3W3
+	Jw17tF1rCryUAr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	tVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUL0edUUU
+	UU=
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 
-mips_reserve_vmcore() does not check the return value of
-memblock_reserve(), so a success message is falsely printed when the
-reservation fails.
+ingenic_ecc_get() obtains a provider device reference and then enables
+the ECC clock before returning the ECC handle.
 
-Reserve before printing the success message. Check the return value and
-warn on failure instead.
+The clk_prepare_enable() return value is currently ignored.  If enabling
+the clock fails, the function still returns the ECC handle and keeps the
+provider device reference even though the acquire operation did not
+complete.
 
-Signed-off-by: Sang-Heon Jeon <ekffu200098@gmail.com>
+Return the clock enable error and drop the provider device reference on
+that failure path.
+
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 ---
- arch/mips/kernel/setup.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 1ae6d0c0e1d6..c7769ed882e8 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -437,10 +437,13 @@ static void __init mips_reserve_vmcore(void)
- 		}
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+index 525c34c281b6..beb033705cf3 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+@@ -67,6 +67,7 @@ static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
+ {
+ 	struct platform_device *pdev;
+ 	struct ingenic_ecc *ecc;
++	int ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+ 	if (!pdev)
+@@ -78,7 +79,11 @@ static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
  	}
  
-+	if (memblock_reserve(elfcorehdr_addr, elfcorehdr_size)) {
-+		pr_warn("Failed to reserve memory for kdump\n");
-+		return;
+ 	ecc = platform_get_drvdata(pdev);
+-	clk_prepare_enable(ecc->clk);
++	ret = clk_prepare_enable(ecc->clk);
++	if (ret) {
++		put_device(&pdev->dev);
++		return ERR_PTR(ret);
 +	}
-+
- 	pr_info("Reserving %ldKB of memory at %ldKB for kdump\n",
- 		(unsigned long)elfcorehdr_size >> 10, (unsigned long)elfcorehdr_addr >> 10);
--
--	memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
- #endif
- }
  
+ 	return ecc;
+ }
 -- 
-2.43.0
+2.50.1 (Apple Git-155)
 

@@ -1,100 +1,102 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2051946DA;
-	Tue, 16 Jun 2026 00:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523E61A5B9E;
+	Tue, 16 Jun 2026 00:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781571338; cv=none; b=u30qXpvS4JhBY/SmztECIYw+AMg7vo+TDbDUaA7UvAJv2Ok6OmGMmTrd2CFzHFTCICzXG/uluIbj85kXmUTFtG2ciW7YtNir6QmEjSlAmmHVw/cVUJjg8zaPCl2/mffPjxcmd5jV4om8YiikvKcGp8vJ4Fqzqk41X3sronh+KAs=
+	t=1781571438; cv=none; b=W27IMpPi+RC/CU1KU5Bdew3gNN7F0mOmFQJqD3iekiLy3eSoJZf4xSjfOppB5F2hYfC195Pwt/NZyh9hrAwVMsAL+ca2QuJL9CBGz5sbDfkcsN2SuFBEWM79eR6ePQPOu/WHBJW/JEausWsVFUxXwnyOlZ+Xzffx5EdYnk8VN6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781571338; c=relaxed/simple;
-	bh=/BMQPdKy2mez2NWPXzQui/LvqSQYMnIqUUjhigjlpx0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BsI4DiwjRzO+c+PQQB0TW/AEs7PYYVufgTcnOJs/Ulf86Y92SIByt/ePeaAJGWwwDJ5GLWS8eBKhvfQIZqQHVDWsNZdQmIaIGZGSViyNB5laHgDWurVDPGpLGBJY98mDPasiLZmVLLfhqsMUAApGZOcUu8hcyo8oBbK7zOr8hbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TKZ5AFQI; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TKZ5AFQI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78A1E1F000E9;
-	Tue, 16 Jun 2026 00:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781571337;
-	bh=lskkInW4j+QflVmCtofwVhf2RQet1ZyLYb6x5LBakeI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=TKZ5AFQIoVK5NtSIBcKZ+XK4QNf3pRkYbRoMsoZ4iDboN3wkJk1jZTJ2kwEkojwK7
-	 56Er+BG+jd3/RoIUW9OY1xeprE5dYvsQL1SQ6eAS5vtjFyMGB1ovOkPQOJgcbnDvwK
-	 IDBFmXEP3upDgEU88CBoP68UJPtrnWeWEKyUHx9kaowOkG/8QRvagZ4QGNTGXS8CWI
-	 ex8JjIgvxHy/JHluGsl+c2NhPsbxVYSOUSDFitNKbpJ1P2CzQrLjPgbQ0NTazsuIDa
-	 shXnbiP1zAA9/68Ma1G129w2dlqiLw6AAA79KKtVgfdkclrrkwgVm7yaUqvNB+RqXl
-	 2r9jLauRxnyEQ==
-Date: Mon, 15 Jun 2026 17:55:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
- pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
- geert@linux-m68k.org, chleroy@kernel.org, npiggin@gmail.com,
- mpe@ellerman.id.au, maddy@linux.ibm.com, linux-mips@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH net-next 0/2] appletalk: move the protocol out of tree
-Message-ID: <20260615175535.5bc56cfc@kernel.org>
-In-Reply-To: <c3789160609a10e232ba3e27c4b13adbb170956c.camel@physik.fu-berlin.de>
-References: <20260615222935.947233-1-kuba@kernel.org>
-	<c3789160609a10e232ba3e27c4b13adbb170956c.camel@physik.fu-berlin.de>
+	s=arc-20240116; t=1781571438; c=relaxed/simple;
+	bh=jzXSw1NSRItsNgBN/BqZOzmE323y+m8y5t2GVlf/Cl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mXwF3fL9o/0h41xk9VvJVvz+vgzPaNDAA4XPHp1xTlq/t91fg8wB7lvplCGMj00dyeEFo/oRiDObqV0PD9pm881ecTggs7vh2JViqfdmQgHqgAGfW6YR11x2FeldRPwibDry2kJUe9Oh9gPRqRhUtpsjYt/rRRWJdcfBD1Q5smw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost.localdomain (unknown [111.196.245.140])
+	by APP-03 (Coremail) with SMTP id rQCowABnTONrnzBqZL3eFA--.5396S2;
+	Tue, 16 Jun 2026 08:57:15 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: [PATCH] memory: jz4780-nemc: publish drvdata before creating children
+Date: Tue, 16 Jun 2026 08:57:13 +0800
+Message-ID: <20260616005713.10474-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:rQCowABnTONrnzBqZL3eFA--.5396S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyDXF4UZry7AF4rAr4kCrg_yoW8WF4kpF
+	WxXayIkr4UWFy2kr1xtw1DZFy3A3WrA3y8tryfCa4ru343uFyvq3s5JFy8Aan8AFWxX3Wa
+	qF1Uta1xZaykZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F
+	4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+	7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AK
+	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
+	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8-
+	B_UUUUU
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 
-On Tue, 16 Jun 2026 01:34:06 +0200 John Paul Adrian Glaubitz wrote:
-> On Mon, 2026-06-15 at 15:29 -0700, Jakub Kicinski wrote:
-> > This tiny series moves appletalk out of tree, to:
-> > 
-> >   https://github.com/linux-netdev/mod-orphan
-> > 
-> > Core maintainainers are unable to keep up with the rate of security
-> > bug reports and fixes. Nobody seems to care about appletalk enough
-> > to review the patches.  
-> 
-> Why would fixing these vulnerabilities be relevant? No one is going to
-> expose an Apple Talk server to an untrusted network, are they? The same
-> applies to hamradio and AX.25, they are all used by hobbyists in DMZ
-> networks, so no one really cares about vulnerabilities in these protocols.
-> 
-> I find it sad that AI tools are basically used to shoot at the kernel
-> to kill off features as some people are apparently getting scared by
-> these AI reports and just nuke everything in a panic reaction as if it
-> wouldn't just be possible to disable these protocols at compile time
-> to reduce the attack surface.
-> 
-> > As Eric pointed out Mac OS dropped AppleTalk over a decade ago.  
-> 
-> That's not the point though. No one is going to use AppleTalk to network
-> a Linux box to a modern macOS machine. The usefulness lies in hooking up
-> a Linux box to a vintage Mac or other retro computer.
-> 
-> So far, one of the huge advantages of open source operating systems has
-> always been that even niche use cases were supported and people could make
-> use of old hardware by using open source operating systems over commercial
-> offerings such as Windows or macOS.
-> 
-> With the advent of AI security reports, these niche use cases are more and
-> more being killed off with the argument that a vulnerability in the harmradio
-> code could pose a threat to a large SAP database running on a Linux enterprise
-> distribution. However, if your enterprise distribution is enabling kernel
-> features their customers aren't using and therefore enlarging the attack surface,
-> it's more a problem of said enterprise distribution and not of these old and
-> obscure network protocols.
-> 
-> I am trying my best to save as many classic features in the kernel as possible
-> to enable retro computing but I am sometimes fearing that commercial interest
-> in the kernel is taking over too much making my efforts harder every day.
+The NEMC child drivers can call exported helpers that fetch the parent
+controller state with dev_get_drvdata(dev->parent).  jz4780_nemc_probe()
+currently creates child platform devices before storing the controller
+pointer in the parent drvdata, so a child that probes immediately can
+observe a NULL parent drvdata pointer.
 
-We can complain about the AI slop til the cows comes home.
-I don't like it, you don't like it. What difference does it make? 
+Store the controller pointer before creating child devices.  Also
+depopulate child devices during remove before disabling the controller
+clock so child teardown still runs while the parent resources are
+available.
 
-If y'all have real solutions please share. Complaining about
-"commercial interests" and "nuk[ing] everything in a panic reaction"
-is not helpful.
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+---
+ drivers/memory/jz4780-nemc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-nemc.c
+index 1a8161514d03..1c1d1d019f77 100644
+--- a/drivers/memory/jz4780-nemc.c
++++ b/drivers/memory/jz4780-nemc.c
+@@ -331,6 +331,8 @@ static int jz4780_nemc_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
++	platform_set_drvdata(pdev, nemc);
++
+ 	/*
+ 	 * Iterate over child devices, check that they do not conflict with
+ 	 * each other, and register child devices for them. If a child device
+@@ -379,7 +381,6 @@ static int jz4780_nemc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	platform_set_drvdata(pdev, nemc);
+ 	dev_info(dev, "JZ4780 NEMC initialised\n");
+ 	return 0;
+ }
+@@ -388,6 +389,7 @@ static void jz4780_nemc_remove(struct platform_device *pdev)
+ {
+ 	struct jz4780_nemc *nemc = platform_get_drvdata(pdev);
+ 
++	of_platform_depopulate(&pdev->dev);
+ 	clk_disable_unprepare(nemc->clk);
+ }
+ 
+-- 
+2.50.1 (Apple Git-155)
+

@@ -1,29 +1,45 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7362F8EB1
-	for <linux-mips@vger.kernel.org>; Tue, 16 Jun 2026 11:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6FE286405;
+	Tue, 16 Jun 2026 13:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781607853; cv=none; b=Z4RX+qy868FjXqFo6+DqA2j66L7C1PvH3DWdnQjhH+yfOzmne30f2DdZR0RUKLCdQUANSP/gj/6FRd6lbmLBhaRBfS9L2yEubxVy3DTJ4ENzoU+h1WCUwhnJDJOQa0LuLEuo+nZh5UnUi4QREpNe5+qYgP79Xr/bNc5sZGeb52c=
+	t=1781615989; cv=none; b=SRG6fxdWJ+yUjUq0BtJHf5rHWWUayuxjWrC7enEElNYQ96ckHVkwUpNH63cYGBQHdb6nIdrBluOWuoADNw3oF5xx4QpFROSnm1eCu+mHy0foFU/AhlBH+1DFhRDE3ptvAQcEapl6tsHJDy3N9+8wsJEGssMzx5ATTulX4R79OP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781607853; c=relaxed/simple;
-	bh=XlPIUwQWeqadeAZDmEp0GLBep1xi7s+pwmjoBlJkbXQ=;
+	s=arc-20240116; t=1781615989; c=relaxed/simple;
+	bh=7BHLCNepqc86m9p9uN+bQNkI4gdWOhDsVrKycNmA9QU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qfR+QYWhewZnCi25mUCvmD/RItwgdhm7NMXVFI22YpiEbacxQb9QtFdhR/Bdsl/fCl1kCYKLoc6ZBznYpG1XKuD1F8ATD1ryLCljVf72+Q8a3nYTY4WfvF35fw5PgzeONf53AUu52nSOKiQNzYVRqzP3v2QLfPMiHTy+tOKU1sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wZRaN-0007FY-00; Tue, 16 Jun 2026 13:04:03 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 08FFAC012A; Tue, 16 Jun 2026 13:01:36 +0200 (CEST)
-Date: Tue, 16 Jun 2026 13:01:36 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-Cc: linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: mm: remove comment referring to removed
- CONFIG_MIPS_CMP
-Message-ID: <ajEtEMekGrzaJeeG@alpha.franken.de>
-References: <20260610220124.97261-1-enelsonmoore@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YHy5PD5rUtRgPVLhrWW67sS2Rndqiib5/DoOoJ4ZuYdX9DWrJS3EUDpUA6RDQq6ZaYTOEk0QHc6myewN9Ds2xFHSvN7izsIhfEWuKo9nQHKstJkTQg1zpxJACqpr8lKoQYIEtNY/arp2WuffMe9d7qMnAfFDY41vCp0LtcVzlE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YrAOnaBp; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrAOnaBp"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6153A1F000E9;
+	Tue, 16 Jun 2026 13:19:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781615988;
+	bh=UMpsaENAnANEo2om+T4ZM6gO+4JEBCjIegzEiINmZ4w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=YrAOnaBpoR6jYRjXZTX7H39Gh/AawHXatxd4H8F3x/SULCMUpdYoA+3mg1MApkAEp
+	 3eCVfRaDjy8iPAXdlHPYG/6TylYvKuw4BxXjG/c6GbcDELnvzpWDCXD8d2GJdHBVla
+	 x3xYRN6wDXYotkoA5IEOolpzfw1s0Iwr52axO3iWqR6FPNo+WWNuUsCrkGMMDgL0BJ
+	 srEGJ1EoJkhOD2q4ajoUuhE1d4QYXCYD+HGwj0L5p4t/jyZOSFI2RhnGnGzaVzzRRz
+	 lUeuUsajp83OCBL6/yjzaWt3QQxg7bh+ym2LrVTvdDghVoU37WA91X7s71n9t6VGMZ
+	 GZS+q/6Wavk7g==
+Date: Tue, 16 Jun 2026 08:19:45 -0500
+From: Rob Herring <robh@kernel.org>
+To: Sang-Heon Jeon <ekffu200098@gmail.com>
+Cc: Saravana Kannan <saravanak@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	devicetree@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org
+Subject: Re: [PATCH 1/3] of/fdt: fix misleading elfcorehdr reservation
+ success message
+Message-ID: <20260616131945.GA2236977-robh@kernel.org>
+References: <20260614161503.2219681-1-ekffu200098@gmail.com>
+ <20260614161503.2219681-2-ekffu200098@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,44 +48,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260610220124.97261-1-enelsonmoore@gmail.com>
+In-Reply-To: <20260614161503.2219681-2-ekffu200098@gmail.com>
 
-On Wed, Jun 10, 2026 at 03:01:22PM -0700, Ethan Nelson-Moore wrote:
-> CMP support was removed in commit 7fb6f7b0af67 ("MIPS: Remove
-> deprecated CONFIG_MIPS_CMP"), but a comment referring to it remained in
-> arch/mips/mm/c-r4k.c. Remove it.
+On Mon, Jun 15, 2026 at 01:15:01AM +0900, Sang-Heon Jeon wrote:
+> fdt_reserve_elfcorehdr() does not check the return value of
+> memblock_reserve(), so a success message is falsely printed when the
+> reservation fails.
 > 
-> Discovered while searching for CONFIG_* symbols referenced in code but
-> not defined in any Kconfig file.
+> Check the return value and warn on failure instead.
 > 
-> Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+> Signed-off-by: Sang-Heon Jeon <ekffu200098@gmail.com>
 > ---
->  arch/mips/mm/c-r4k.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  drivers/of/fdt.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-> index 10413b6f6662..d8aadd3dc057 100644
-> --- a/arch/mips/mm/c-r4k.c
-> +++ b/arch/mips/mm/c-r4k.c
-> @@ -1757,11 +1757,6 @@ void r4k_cache_init(void)
->  	build_clear_page();
->  	build_copy_page();
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index 26f66046cc32..d985c07d7c5c 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -479,7 +479,10 @@ static void __init fdt_reserve_elfcorehdr(void)
+>  		return;
+>  	}
 >  
-> -	/*
-> -	 * We want to run CMP kernels on core with and without coherent
-> -	 * caches. Therefore, do not use CONFIG_MIPS_CMP to decide whether
-> -	 * or not to flush caches.
-> -	 */
->  	local_r4k___flush_cache_all(NULL);
->  
->  	coherency_setup();
-> -- 
-> 2.43.0
+> -	memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
+> +	if (memblock_reserve(elfcorehdr_addr, elfcorehdr_size)) {
+> +		pr_warn("Failed to reserve memory for elfcorehdr\n");
 
-applied to mips-next
+I would think memblock_reserve() should always succeed and if not it 
+should print a message rather than having every caller print a message.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Rob

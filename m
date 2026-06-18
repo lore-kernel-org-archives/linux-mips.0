@@ -1,90 +1,103 @@
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E233D75D3;
-	Thu, 18 Jun 2026 08:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7678369D4A
+	for <linux-mips@vger.kernel.org>; Thu, 18 Jun 2026 08:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781769738; cv=none; b=fb80ta8AuoOMUaorvl3CgCaqpQGQR2xKdM+or+02KsfhaRVh53ac2PiXOQdD4wvMzp6TxkwMj1vac6OCwN+sfEDV9SWIeDpT97SieGaJDfaNDkXtYKO43feXVY5f45kZm0ulnA6klhKHMegry2Ye4/J9Us0SAnpYZwKXMA0gQJg=
+	t=1781770739; cv=none; b=bwrhGE7rmi1wx71Ygurt7KKNg/+q1ecbSqTxepowe830xFAR4txJoMukMInZB8QA+7PhKuXcRYNFwDwB6x5lqH4y/PCJk+hdHnqlPnr/zEnzW+vH2X08wchTrs0DdKiP9GoLxfTHPXnSPH5O7OVBys5gW3vNO8jE0b0YrXQb1Qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781769738; c=relaxed/simple;
-	bh=xp4tTI3hQOkNRqkPW4jgw3L5Am7roxd8iEf0HQQr+Wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y+lVXfrM/xU0xy/eDzpn21PLba0buWqa6dRubcZDsh7aAEkX0MTUN4qaF54xhH6iQ4UmiwjZXM0TVscr4bLN0ztwwvNtkgqgTQaT4OivwMSMwUmD88u0ZDJ/wafiHMi50VGhv72h7n9uZCaHeb380KEa8xmxY4mlSVNrN6NcASA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=LW+ddLGK; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="LW+ddLGK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=2voqrgEApl3hIFJ06xFwhIwE/g8LBCEOl7qjySZCqms=; b=LW+ddLGKxdV1h2RvPd/Xsci0X0
-	rcoxdFyymM9ZM1FayKR1jQVo+V93Jdyx7IX/LxXuNlk5xaZ3M6IJnRXqF1OzYrrZoT4ZBuml2kxv6
-	InlbBdp22qDbCQEH3Lr7fff2Gl6N0CnqpIoEIBhNtfAwUFFQFV/a4ZAXlSQPGqAbQoUM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1wa7gx-008J4F-Gs; Thu, 18 Jun 2026 10:01:39 +0200
-Date: Thu, 18 Jun 2026 10:01:39 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Carsten Strotmann <carsten@strotmann.de>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Carsten Strotmann <cas@strotmann.de>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
-	pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
-	geert@linux-m68k.org, chleroy@kernel.org, npiggin@gmail.com,
-	mpe@ellerman.id.au, maddy@linux.ibm.com, linux-mips@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH net-next 0/2] appletalk: move the protocol out of tree
-Message-ID: <2791b2e3-bf58-4dce-9262-4f1d8d3241fb@lunn.ch>
-References: <20260616084901.3319d82e@kernel.org>
- <1781694488854.956546368.818588236@strotmann.de>
- <489024bc-b6e5-f601-3bce-444d75abbf5d@linux-m68k.org>
+	s=arc-20240116; t=1781770739; c=relaxed/simple;
+	bh=qT3TGQ4d0y9tUfJc/hPKLXqZe+/2KGNG6EH7xLEU0DU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lfPLt+ePQMoFEijfSsiUce90aZEmAshd7omEUTPCUksOghatCpGyCJafs65WzsSbOd7f4f9w9lw18I+OE8R2x2wp2on234A3zYbqdAsOXVpGcxraz6xVfrABS6FvyS5T6Fa1QOst7oPSrnTcXwxg6cIeKVWfe9Frzv5t4I0Ereg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-36d6bb38b44so294337a91.0
+        for <linux-mips@vger.kernel.org>; Thu, 18 Jun 2026 01:18:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781770736; x=1782375536;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CKAZNU0FmJW8v6thQLRjRHc5rQqn36zhhyWy7vfjOZ8=;
+        b=qNYV86pqRZ497Af/BIqmxRtntSUSy4/Yc2mxzbPmUSPoG1NjT1QdYd/66YflLGGMs1
+         PpUR9NpsXQ1j07cCsKC/tCs51oSPDOebVufsDfhCEcfDQ5MeAgy3rilBe64sXBU2dLTy
+         qMAKEfKvZpQKPGeTFdfdFmoosga47x88hWVmWuJAVwf/dFxVV3TodM1Su7zrTmxrckSq
+         QCH/cBYGH/1QM3uFJ4ynqxxoIIyO1Xl9bbpGcm5zI6F/IfVOULnLBtTjH//5nX6v65Gp
+         Se59tAlqTeFVPau5jV7reO4zvzdu/37JDQWPiyc8msyQRijmsUVdZPJFKpt3OFhYHm6Q
+         J2uw==
+X-Forwarded-Encrypted: i=1; AFNElJ8qb9acoRabKx3mHtv0ec50RM8ofhdpQAw2xzML1zvpzQBMM7jNqR5Au1CUh8wJiFjT2F/rEke1TRr0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYV0q8DVj4OcFnDq4jPSJClliqkw19atAdk9V+MzdjZntfaguy
+	a0GLNpakP5kP0cOpHnUCQDY0dxxYkSpjOiZ/gK11mufVgOzifcH0ekWw45VDVGpK
+X-Gm-Gg: AfdE7cnwC753rw3IFbx/z3s3bGs6XCSdOYMV9Evtlc45W/bL3FHQwfOAEFDKKVi/F2I
+	7zYKFbOE4HrnjBLDFkk6F/egElZw3p0ZkljELpNhSSVKvLie54u0GdILpejHq6FVR4YlwhvlTh7
+	zHGTOnbAfNKNbU3mGKDPTYwsqxgDo1Hj66tD6yn07k3RSTOFe70yY2aJdx6vYJiwKkSkfWukZrb
+	L5o3qV29xb+n6rfq0u+3yw91Bcsr7aLWYt0UlCAOnvRyPInttEhAnJaL7uERadwNDacPC6gkabp
+	kdKds0w7chRZDtSniUzCx9D8n50qLnHDpJeuUIYTbqQ2uUUWIut3pfSawRxLTLZ3do221AQsRKe
+	EGvnpPORQnUXp9iiIrRVrwDRNIskBHR4JE5IibdIO9m1mrv2i4539YqjxBVbmAl0dGfBW/q+NDu
+	9NxDHYOc9RfBwmg2lGMWRNQ47wWZT3IIIZ/OOjS+OvemSthB6K
+X-Received: by 2002:a17:90b:3847:b0:36d:df4f:ab2 with SMTP id 98e67ed59e1d1-37c9404fc44mr7865550a91.13.1781770735939;
+        Thu, 18 Jun 2026 01:18:55 -0700 (PDT)
+Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com. [74.125.82.51])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c8665186828sm15341532a12.21.2026.06.18.01.18.55
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jun 2026 01:18:55 -0700 (PDT)
+Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-1397e093f90so1892382c88.1
+        for <linux-mips@vger.kernel.org>; Thu, 18 Jun 2026 01:18:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+Xmyv3laCheyk+9+L14yCF35bC2qtggJY4bUyuZPW/LhfGiP09vlL+GBn9JNouPkwWpr1iu5KVKarr@vger.kernel.org
+X-Received: by 2002:a05:6102:1626:b0:634:92c:bdd0 with SMTP id
+ ada2fe7eead31-7245cec5b37mr3787588137.6.1781770401826; Thu, 18 Jun 2026
+ 01:13:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <489024bc-b6e5-f601-3bce-444d75abbf5d@linux-m68k.org>
+References: <20260616084901.3319d82e@kernel.org> <1781694488854.956546368.818588236@strotmann.de>
+ <489024bc-b6e5-f601-3bce-444d75abbf5d@linux-m68k.org> <2791b2e3-bf58-4dce-9262-4f1d8d3241fb@lunn.ch>
+In-Reply-To: <2791b2e3-bf58-4dce-9262-4f1d8d3241fb@lunn.ch>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 18 Jun 2026 10:13:08 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU0em2r-SixT_+EpWJnm4f0g8mReYKBXOw42=HGb_T8WQ@mail.gmail.com>
+X-Gm-Features: AVVi8CfLJ0ddT-LhKt0W0uHSh_81VvaoqDXBIXepEwXCQOI5G8FSGq0oRl6-8XI
+Message-ID: <CAMuHMdU0em2r-SixT_+EpWJnm4f0g8mReYKBXOw42=HGb_T8WQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/2] appletalk: move the protocol out of tree
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Finn Thain <fthain@linux-m68k.org>, Carsten Strotmann <carsten@strotmann.de>, 
+	Jakub Kicinski <kuba@kernel.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, davem@davemloft.net, 
+	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com, 
+	andrew+netdev@lunn.ch, horms@kernel.org, chleroy@kernel.org, 
+	npiggin@gmail.com, mpe@ellerman.id.au, maddy@linux.ibm.com, 
+	linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jun 18, 2026 at 10:55:54AM +1000, Finn Thain wrote:
-> 
-> On Wed, 17 Jun 2026, Carsten Strotmann wrote:
-> 
-> > > _Someone_ has to handle the reports and patches. And since nobody is 
-> > > doing that the code is going to GitHub, where it can continue to "just 
-> > > be left" or whatever, without racking up CVEs for the Linux kernel and 
-> > > leading to maintainer burn out :/
-> > > 
-> > 
-> > That's a good point. The large influx of reports is a problem, and burn 
-> > out of maintainers is a too high cost.
-> > 
-> 
-> Carsten, if, as a maintainer, you want to avoid burnout then
+Hi Andrew,
 
-It is not necessarily Carsten who is heading towards burnout.
-appletalk is just one of many many drivers where the listed
-Maintainers does not respond to patches, or there is no Maintainer at
-all. So a lot of work falls on the top level netdev Maintainers. In
-fact, a lot of the AI driven bug fixes tend to fall into this category
-of old drivers with no active Maintainers, since that tends to be
-where the poorer quality code is. So top level netdev Maintainers are
-having to do a lot more work, on old drivers which very few people
-care about. That is a poor use of their talent, when we actually want
-them working on drivers for modern hardware with a lot of users.
+On Thu, 18 Jun 2026 at 10:01, Andrew Lunn <andrew@lunn.ch> wrote:
+> If the appletalk community can take the workload off the top level
+> maintainers, respond to all patches within 2 to 3 days, give
+> Reviewed-by, or make change requests, it can probably stay in the
+> Mainline kernel. Otherwise it will move out of tree.
 
-If the appletalk community can take the workload off the top level
-maintainers, respond to all patches within 2 to 3 days, give
-Reviewed-by, or make change requests, it can probably stay in the
-Mainline kernel. Otherwise it will move out of tree.
+"2 or 3 days" is rather short.  If we would have to move all code
+maintained by people who cannot respond to all patches within 2 to
+3 days out of the mainline kernel, you'd end up with a networking
+subsystem without supporting OS ;-)
 
-     Andrew
+git grep three.*week -- Documentation/
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

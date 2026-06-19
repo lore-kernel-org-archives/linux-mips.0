@@ -1,100 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A83369234
-	for <linux-mips@vger.kernel.org>; Fri, 19 Jun 2026 12:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A54B18DF80
+	for <linux-mips@vger.kernel.org>; Fri, 19 Jun 2026 13:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781872017; cv=none; b=NLa9PMSefZdjTxQAIbYvT2bko+qX+ba5D6NXCafRvnU0a2KKUNgG16xx2AH70ooquP4FMDYMKMZgzxSnvRNjyfPpTepUij6skjWlNj8RgQUZHksb7FxsxYKwYQt1w2UJysy7qBKBFQFBLJ233EFMZwfdJx//wUuNdksFOj9rPlo=
+	t=1781877120; cv=none; b=NH2Z/HgyCQrOL8wrtPR2bmEz/V4bBrImbpEvmoA/cl2AZV4u7MDEGhBzLDmlvMH54bI9HHTKiesLazsxYtlsj+F1WvczE/9UQi9lrVlIC2qXUld/f2VpoYriIYoduUmf2Xc3RhUz+Td22fSd5xWcLOysoUg1VXTFFqInWfndtu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781872017; c=relaxed/simple;
-	bh=JNITGIcTu07r+TsHX3+zJn6YZqKMFIJ7oF8A90Gee38=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nQTFuPI+TpQqokoKXjeulJtL4AbyRXSd/U2BPZVveYSltLQkXI4aNbu6FUtaB/zyN2FlW6rg+rOcvpF4n+e0sSlNnn9UtoBfVYmOwYvUn1GhJ87rTd34iX32phO+Z3AlHE/c6ewah2TzE1z7QvmCl5d711B/zE9lhudYuDenbuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CSwjoSfe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781877120; c=relaxed/simple;
+	bh=17i6oa0M6UmVrMWmDG7cWGhbnxl14z0/BIWH4Fd9A3Y=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=onl6zuu0DsWDtpawyyHv4vCKUvXjh5eQg3UUBq+8c1dES+rnEzZaRbGlUr0GpxbAwONX48D0Jsafh4m+JT0wjqTy5+1Y7AHVIXllWJUhXouxmDzCcvRwUGjwY2Vexx2hJk0IQPRvgMrIvr2zSosbsNnzfyqdG+uOxTkfLC3DPI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=2OHXR1Qw; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CSwjoSfe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE8B1F000E9;
-	Fri, 19 Jun 2026 12:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781872016;
-	bh=dGOiXUsV0acv9dlkt8MJpGQo6X0nc2Zy0LGLX4azU9c=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=CSwjoSfeolORsYF+/MUNsZSiw2QqcVZ7gxaqPJoO0KD5ZIyBNx+h3n3SZFOqzkBm0
-	 jHHMBtyk9XUlYungpbhZ3FeqJyX8BmT9kA1HhYCrK5i3EsutarfE6eJIkKpuZKAnTq
-	 vJruzAnzeKsgv3C1a0Y8j2KupGvboxrc/zPsLuHyy9ThhuXvicSLQb04LNxUpVz1P6
-	 VWTHz7+WYRQTJZR83/PSWVfvFxUtvWfo5GRiCFZjKEmuenG8h5pTNs1K5CIyDZ3Zx9
-	 dmZcsrqO4KnNZOLaMYQ29xLfbtuuMPDsoiDIRe9ANhkuVouxc23iu60lJJr0LJcnSS
-	 60gO04Ao7d9Ug==
-From: Maxime Ripard <mripard@kernel.org>
-Date: Fri, 19 Jun 2026 14:24:53 +0200
-Subject: [PATCH v3 48/78] drm/ingenic: Switch to atomic_create_state
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="2OHXR1Qw"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 8B1B7C06CDC;
+	Fri, 19 Jun 2026 13:43:00 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id A0BA6601AD;
+	Fri, 19 Jun 2026 13:42:54 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E9861106C88A8;
+	Fri, 19 Jun 2026 15:42:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1781876571; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=17i6oa0M6UmVrMWmDG7cWGhbnxl14z0/BIWH4Fd9A3Y=;
+	b=2OHXR1QwtCE+m9KORcKStlkcA6ag+ntrhh38YC8FuWi4Ivanof2kMKZSiDIi8KDy/rJyOy
+	d9n5jfH4IyN51n8RfW5VcLV8ajZhRXvgOa5R+0d6jYOJlGpRQ8Ei+7ncYisPtX154p/itA
+	+FVS4408GK6t2mbJW4PGkgW8pjPtp0vASGX+Kfy16/0IwPEQZfEFJaECutzX09avkZUJFd
+	QP6TokojrSOrCy+kB+ysimzb7jkt7bgeZJOi91eLy/pgdjhtdRh6ocFi/X0UOYZD7EK78Z
+	Hch7VJW8YQWSdBwSR/Bp3d6ZAidfHERZnrYDFVzmEH+M4z5scGH6fREi9mAoVw==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260619-drm-no-more-bridge-reset-v3-48-ff399263111b@kernel.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 19 Jun 2026 15:42:30 +0200
+Message-Id: <DJD2IQSFENH4.337VSFOU7OJ29@bootlin.com>
+Subject: Re: [PATCH v3 00/78] drm/bridge: Convert all reset users to
+ create_state
+Cc: "Dmitry Baryshkov" <lumag@kernel.org>,
+ <dri-devel@lists.freedesktop.org>, "Laurent Pinchart"
+ <laurent.pinchart+renesas@ideasonboard.com>, "Jagan Teki"
+ <jagan@amarulasolutions.com>, "Liu Ying" <victor.liu@nxp.com>, "Frank Li"
+ <Frank.Li@nxp.com>, "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix
+ Kernel Team" <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>,
+ <imx@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>, "Andy Yan"
+ <andy.yan@rock-chips.com>, "Phong LE" <ple@baylibre.com>, "Douglas
+ Anderson" <dianders@chromium.org>, "Inki Dae" <inki.dae@samsung.com>,
+ "Marek Szyprowski" <m.szyprowski@samsung.com>, "Philipp Zabel"
+ <p.zabel@pengutronix.de>, "Paul Cercueil" <paul@crapouillou.net>,
+ <linux-mips@vger.kernel.org>, "AngeloGioacchino Del Regno"
+ <angelogioacchino.delregno@collabora.com>, "Chun-Kuang Hu"
+ <chunkuang.hu@kernel.org>, "Matthias Brugger" <matthias.bgg@gmail.com>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Kevin Hilman" <khilman@baylibre.com>, "Jerome Brunet"
+ <jbrunet@baylibre.com>, "Martin Blumenstingl"
+ <martin.blumenstingl@googlemail.com>, <linux-amlogic@lists.infradead.org>,
+ "Tomi Valkeinen" <tomi.valkeinen+renesas@ideasonboard.com>, "Geert
+ Uytterhoeven" <geert+renesas@glider.be>, "Magnus Damm"
+ <magnus.damm@gmail.com>, "Kieran Bingham"
+ <kieran.bingham+renesas@ideasonboard.com>,
+ <linux-renesas-soc@vger.kernel.org>, "Biju Das"
+ <biju.das.jz@bp.renesas.com>, "Heiko Stuebner" <heiko@sntech.de>, "Sandy
+ Huang" <hjc@rock-chips.com>, <linux-rockchip@lists.infradead.org>, "Yannick
+ Fertre" <yannick.fertre@foss.st.com>, "Raphael Gallais-Pou"
+ <raphael.gallais-pou@foss.st.com>, "Philippe Cornu"
+ <philippe.cornu@foss.st.com>, "Maxime Coquelin"
+ <mcoquelin.stm32@gmail.com>, "Alexandre Torgue"
+ <alexandre.torgue@foss.st.com>, <linux-stm32@st-md-mailman.stormreply.com>,
+ "Jyri Sarha" <jyri.sarha@iki.fi>, "Tomi Valkeinen"
+ <tomi.valkeinen@ideasonboard.com>, "Dave Stevenson"
+ <dave.stevenson@raspberrypi.com>, =?utf-8?q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, "Raspberry Pi Kernel Maintenance"
+ <kernel-list@raspberrypi.com>, "Icenowy Zheng" <zhengxingda@iscas.ac.cn>,
+ "Laurent Pinchart" <laurent.pinchart@ideasonboard.com>, "Michal Simek"
+ <michal.simek@amd.com>
+To: "Maxime Ripard" <mripard@kernel.org>, "Andrzej Hajda"
+ <andrzej.hajda@intel.com>, "Neil Armstrong" <neil.armstrong@linaro.org>,
+ "Robert Foss" <rfoss@kernel.org>, "Laurent Pinchart"
+ <Laurent.pinchart@ideasonboard.com>, "Jonas Karlman" <jonas@kwiboo.se>,
+ "Jernej Skrabec" <jernej.skrabec@gmail.com>, "Luca Ceresoli"
+ <luca.ceresoli@bootlin.com>, "Maarten Lankhorst"
+ <maarten.lankhorst@linux.intel.com>, "Thomas Zimmermann"
+ <tzimmermann@suse.de>, "David Airlie" <airlied@gmail.com>, "Simona Vetter"
+ <simona@ffwll.ch>
+From: "Luca Ceresoli" <luca.ceresoli@bootlin.com>
+X-Mailer: aerc 0.21.0
 References: <20260619-drm-no-more-bridge-reset-v3-0-ff399263111b@kernel.org>
 In-Reply-To: <20260619-drm-no-more-bridge-reset-v3-0-ff399263111b@kernel.org>
-To: Andrzej Hajda <andrzej.hajda@intel.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>
-Cc: Dmitry Baryshkov <lumag@kernel.org>, dri-devel@lists.freedesktop.org, 
- Maxime Ripard <mripard@kernel.org>, Paul Cercueil <paul@crapouillou.net>, 
- linux-mips@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1533; i=mripard@kernel.org;
- h=from:subject:message-id; bh=JNITGIcTu07r+TsHX3+zJn6YZqKMFIJ7oF8A90Gee38=;
- b=owGbwMvMwCmsHn9OcpHtvjLG02pJDFmmJv//LznKJfv33FKtjV8/buFddazw+yHegH2RHGpzY
- 5wvyee/65jKwiDMySArpsjyRCbs9PL2xVUO9it/wMxhZQIZwsDFKQAT+SXO2PDxZ/zk3jyNh7Wi
- XafnFPIc365U3OWTsO/c5/icbeculjKtNgyLnWcvpLgwp6ZtpeJdE8aG2ysWT407+eKLws6m7Sd
- TP1SYGpf3cwv+79y3dPt+a4Vrn0IuntS6PfuNqy7X9JjSowcNAA==
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-Last-TLS-Session-Version: TLSv1.3
 
-The drm_bridge_funcs.atomic_reset callback and its
-drm_atomic_helper_bridge_reset() helper are deprecated.
+On Fri Jun 19, 2026 at 2:24 PM CEST, Maxime Ripard wrote:
+> Hi,
+>
+> All the bridges use reset to create a blank state only and don't use it
+> to reset the hardware at all. This is what the new atomic_create_state
+> is exactly supposed to be doing, so we can convert all existing bridge
+> users to it, and remove the reset hook and helpers.
+>
+> Let me know what you think,
+> Maxime
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-Switch to the atomic_create_state callback and its
-drm_atomic_helper_bridge_create_state() counterpart.
+Whole series:
+Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 42c86f195c66..7e569af22391 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -1029,11 +1029,11 @@ static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs =
- static const struct drm_bridge_funcs ingenic_drm_bridge_funcs = {
- 	.attach			= ingenic_drm_bridge_attach,
- 	.atomic_enable		= ingenic_drm_bridge_atomic_enable,
- 	.atomic_disable		= ingenic_drm_bridge_atomic_disable,
- 	.atomic_check		= ingenic_drm_bridge_atomic_check,
--	.atomic_reset		= drm_atomic_helper_bridge_reset,
-+	.atomic_create_state		= drm_atomic_helper_bridge_create_state,
- 	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
- 	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
- 	.atomic_get_input_bus_fmts = ingenic_drm_bridge_atomic_get_input_bus_fmts,
- };
- 
-
--- 
-2.54.0
-
+--
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

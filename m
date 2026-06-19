@@ -1,81 +1,112 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2889340A6C;
-	Fri, 19 Jun 2026 07:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38BB1FA859
+	for <linux-mips@vger.kernel.org>; Fri, 19 Jun 2026 07:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781855008; cv=none; b=pps1gzGVbtBki1kAmDzebHvO3dvbmmSnLuWcESUfZE87OqV5hZYrL3dVjIgph5YL5G+ULRkzryZDoCM/YfcRngIlxFRmQ6fRJ/fmlF97df2yv2tAXrm/6MVLn3Ohwc+X5vh0BOFXzGKBeUDeyPxr0KJ/yrZXHtVyHKF7oH6g1QM=
+	t=1781855606; cv=none; b=PyIgNIbNkPCZBha53oYZUDN6gScH4aKWhkD6McbhLQvrJ1wqCyJT/Qq1JK2zX0v0dkwhJA1f/px4t46t8HQFXSO69v4wd5IZrp/wSBFtv76egRmpoGocG8bNBU0BPwlJEzHFncmte5cEJVddt0gB+TrRwtqnpG8Je5CKAR9zwpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781855008; c=relaxed/simple;
-	bh=iMrkouWV4Vkl5zyDFKwkEBcCpHxqGEkF4SfZCqIiz6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B891EIYBWRxLb96ZqKGIJb/ujEplANYYqDZswCAl6GK7tBSW92mbpgGgm+KN7WAeowCEYGOi4uAu/ft2bg3v5EEf2edcsDtlrko6OcfgKWy3XCfUZDr+Q6G8QwGMTjlQxBzjLpr/jXqdmt/N3lChdpd3FUGEovU1fr28NAHZINg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zSb2XjRC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7KO1kUXw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1781855606; c=relaxed/simple;
+	bh=pX91VZCWjtVn5XntwhIUKqRT2u2/AIqeQRmuIFxuWiE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rnt7VwG6DVAPNVmOyg+jDDSdao+k8LIrxuaGbNApHa94UV9Uu+GX0jb+pLCUlRQhvCewK/FwnWMEXuiyMqVHdkBRWtApv9a9sM9Qz2C1sF/sQ04LIVgT3s2zXKOjReQJ2CxGfhfXydNW/EDu5WJMuqCZ3x3kAcRkHLMA9qddz/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PkvNMFll; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zSb2XjRC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7KO1kUXw"
-Date: Fri, 19 Jun 2026 09:43:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1781855005;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iMrkouWV4Vkl5zyDFKwkEBcCpHxqGEkF4SfZCqIiz6c=;
-	b=zSb2XjRCgbH/Jvy1eAV3AaNMiMOMOq9MV/+YaZgDCddUMPYIYyC+2+qpKYhPp9Wjb4nY50
-	EbB3HkZIhMWa0/rXyfHjs8rySUW5Bx0NabApnV2t37hXdqFlBwrV47aN2kfTS1PdZcUHkh
-	4kMepEnFgTC2JCYvF2q/cqimoaHK5wmDutGQuBIchlKHlsV5c5Y2fZjJBSkfOBnmsP7bes
-	r5Uh8oXqynz7ckhCW0Dx+HABNhz2LCaGHHjO/Gx83eIX+mJTKpSvixKEGSi8xJluNElNBE
-	9nIYMAcrx613bo1pAcd6TkPNz2QZTtA4o4yxy/W9h8RF2bjR4MXI40w/bsL/NQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1781855005;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iMrkouWV4Vkl5zyDFKwkEBcCpHxqGEkF4SfZCqIiz6c=;
-	b=7KO1kUXwKqKRgLgQiQzVdKOoirGupUKLzI3yJv6pyDAwiJbgAaOXkJ4lmoSlpDdtTJZahB
-	3ugjQufabERtVNDQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jonas Jelonek <jelonek.jonas@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org, Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	linux-rt-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: smp: report dying CPU to RCU in stop_this_cpu()
-Message-ID: <20260619074323.IIq-0qan@linutronix.de>
-References: <20260608093729.12111-1-jelonek.jonas@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PkvNMFll"
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-4629d80fa08so1770385f8f.3
+        for <linux-mips@vger.kernel.org>; Fri, 19 Jun 2026 00:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781855604; x=1782460404; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pX91VZCWjtVn5XntwhIUKqRT2u2/AIqeQRmuIFxuWiE=;
+        b=PkvNMFllKGIedUb0Bm4nByFfWNXN+yPpPnOB5OBzqSj41TPUcJaRUjVD/BIu/IcAe4
+         M/am1Vm1FzjapfXqM/XhGZdpoEVJKgh00OihjuuU1bNsK6CKmLp/LO7zILR/RZL/bh+N
+         kz/GjVcWdYKyCDYWdwytS+3obKrsZhcbjhvjPO9TWUM6HN/SQITp2/ER/T1nMcL7oWYU
+         fqOTjX4GkBx3QxgM7t2w4kqXLdrYOw6cGqRHiMS3GH+kB8BsvkIXWZbKPxQet1jAev52
+         YvuPd0DlHSZnbxSMGkf9wZsGNHIljjPGFLTIHVU7fzVBR8qLsqDal6PAux3e4RJqSLpJ
+         MzRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781855604; x=1782460404;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pX91VZCWjtVn5XntwhIUKqRT2u2/AIqeQRmuIFxuWiE=;
+        b=DmAkmnk65wLpn4TOm2fSVIFZJVkl/H9TDmbtAMY6SYWl0gLjk9CWjappeh3HiTBsmB
+         CrCtmNriucmik9UZjXvlZjv2TjczPVlyMCHggWQEpaJvJ6Vk24AxAwAsDXfe1bVdd4pY
+         EVG3VlBRFQ6NzBp7J4OCEJSMckX8CeHyna1IzI40mAxF76s2mMDbsDmNMDF8Dn0tC8tP
+         VZpsUt4OXXJVDyGbGuoupaqnwX2dqckJvcjGXG0BesONlgHSV4vmrlR3AVdR7bkN4tx3
+         SUc1eiWIVVcDODwWi91MA7wLRVJermRg1Iem20hfu5u6WKvbNDbFDSRk5McO9DaehbJ+
+         v5zw==
+X-Forwarded-Encrypted: i=1; AFNElJ/6Elvif+shvF/WTgMk0betNZooB0txjabSW8R+jqFYAFheb4b/TYZNBKSQCI3KrFdxlMFb1I26TobC@vger.kernel.org
+X-Gm-Message-State: AOJu0Yza90bnL1H74f2BK/qhLakAEYzWn/UdI8gJSxz3k89RiH22VmK2
+	9OeSIXUct3SgKHqIfZYlg7UdxLJA23S/SUmU7eGr20jtBsId0fmTwww9
+X-Gm-Gg: AfdE7ckeCoKdhjRn0SeV6DvgbZXz+c1ItmUUyKwX0/W/1IGM+wroiFAXdZdqKlTNO2J
+	T//JZ3Rnhbg4w9RB1lYFiCgbCQ30ogjb8q+b3uGSJ6BHezjt4+rsBG6RXPTe3rsEyRNmw5W+F2y
+	dZJ3tGrz6XxQaM/Huc3pxHnjjs51YhVqh0B9xl5H48rGD8L/OqvgSHrGxBHwUqkjqkNR5bQFKzt
+	PrgQVs0QD89i5MINdIS7jGMMP3lmM8ijcYaKLMDu88/xJ/eRU277RLvKFtlaT7GgP+q/RL15hr9
+	v4DsF+SYrVDXWlLgRGc7QwQMeu/x5GJ4VCfta7v1AHRt30EzmZcLtBkIaTGlgMjjBPQFwDTc1sc
+	voTSTV7ACXEfTEsI+IWAEZWEvdr2r82DyBu057XUaiawJkNcBkSiwZXG7sgv+qTLAq1tvgAr4bl
+	vNsTDVYXT8r4l1c66hfe2krhuVHBRDolYwMGONiYQA1O0unpGi7LDYSKuTYOvNNAimCmo9V1IWk
+	cvixfapGfB1ofE=
+X-Received: by 2002:adf:e5d0:0:b0:460:6a8f:5d36 with SMTP id ffacd0b85a97d-465085353bfmr3214856f8f.22.1781855603755;
+        Fri, 19 Jun 2026 00:53:23 -0700 (PDT)
+Received: from ?IPV6:2001:9e8:f106:a001:409c:b132:5c19:42ef? ([2001:9e8:f106:a001:409c:b132:5c19:42ef])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-46508a04b55sm5915595f8f.5.2026.06.19.00.53.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2026 00:53:22 -0700 (PDT)
+Message-ID: <7130ff1c-7c6e-4a82-868b-7f6c60c98e7d@gmail.com>
+Date: Fri, 19 Jun 2026 09:53:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20260608093729.12111-1-jelonek.jonas@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] MIPS: smp: report dying CPU to RCU in stop_this_cpu()
+Content-Language: en-US
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org, Clark Williams <clrkwllms@kernel.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@kernel.org>,
+ Jiayuan Chen <jiayuan.chen@linux.dev>, linux-rt-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20260608093729.12111-1-jelonek.jonas@gmail.com>
+ <20260619074323.IIq-0qan@linutronix.de>
+From: Jonas Jelonek <jelonek.jonas@gmail.com>
+In-Reply-To: <20260619074323.IIq-0qan@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2026-06-08 09:37:29 [+0000], Jonas Jelonek wrote:
-> smp_send_stop() parks all secondary CPUs in stop_this_cpu(). The function
-> marks the CPU offline for the scheduler via set_cpu_online(false) but
-> never informs RCU, so RCU keeps expecting a quiescent state from CPUs
-> that are now spinning forever with interrupts disabled.
-=E2=80=A6
->=20
-> Fixes: 91840be8f710 ("irq_work: Fix use-after-free in irq_work_single() o=
-n PREEMPT_RT")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Jonas Jelonek <jelonek.jonas@gmail.com>
+Hi,
 
-Sorry for being late.
+On 19.06.26 09:43, Sebastian Andrzej Siewior wrote:
+> On 2026-06-08 09:37:29 [+0000], Jonas Jelonek wrote:
+>> smp_send_stop() parks all secondary CPUs in stop_this_cpu(). The function
+>> marks the CPU offline for the scheduler via set_cpu_online(false) but
+>> never informs RCU, so RCU keeps expecting a quiescent state from CPUs
+>> that are now spinning forever with interrupts disabled.
+> …
+>> Fixes: 91840be8f710 ("irq_work: Fix use-after-free in irq_work_single() on PREEMPT_RT")
+>> CC: stable@vger.kernel.org
+>> Signed-off-by: Jonas Jelonek <jelonek.jonas@gmail.com>
+> Sorry for being late.
+>
+> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>
+> Sebastian
 
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Thanks to both of you. The patch has been accepted and merged already
+(silently) [1]. But I appreciate your reviews a lot.
 
-Sebastian
+Best,
+Jonas
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/commit/?id=9f3f3bdc6d9dac1a5a8262ee7ad0f2ff1527a7e7

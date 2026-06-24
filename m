@@ -1,39 +1,58 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6751339B4BF;
-	Wed, 24 Jun 2026 12:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1DE3D9048;
+	Wed, 24 Jun 2026 15:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782303391; cv=none; b=cf5/Q1s79ALh7PuDTDhzIePwGd9+sgcjRiVp8c2J7GaNSa7FQmrmJSsPl4Qp8aJ9ZLSzSty+TpO5WrAxwpIhlROing4ov4dKKFyamvS4FL64nYDcFatBkHF8bfzQL/BHD8Ln8CpbooyRKNlgUVr/4hmH9dxqq1M7rNPSXOn+BkE=
+	t=1782313266; cv=none; b=OjfV73wOLuDDRp7Cucm35GKHdeKGVs/NEP72+8XDd2dQHIHV2jcKjhMMitOPcoLLj170c1jxXj6Jd8ZD5S7IOZ7WPu3t9+d9vvyClSuDb4s/gkxLnaNIy0KrpHRLF2npEcf0ouQBJO+d19xdOXvxOACcagFUbalUlskE9h4v7V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782303391; c=relaxed/simple;
-	bh=Z/koWp+0srdGdNiXIFLKjHjgQy8KF6fpx2CacNwS0Ao=;
+	s=arc-20240116; t=1782313266; c=relaxed/simple;
+	bh=2UJjZ8pRC2MR4ByhM0A1bX/sFowSIuXQKGolHyjIUkQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dIQLXM96qroADdeFXlq3FXGL1P4fy5+qZOesmLPyZEHNGgKTto/44gmi1s127D2DA0xPgVqv6XGd2S8cFHPI/TGbGbh+P5Kz8UmZcCFdJMy+3C/NPBX0LWnw5xN2z269I2w0biXL5zYATqilXXhyGzhjPynu0pItd0XxRBBjQeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AMxrkXFl; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=mgSin6/oDyc/D8tuTnh66Jo4ADadoUfxt+0a6yyccp1UJ74aRspR26C5SwulmaW4iwxr8mPiZ7cW+X4hFhbdlabl+Hgyf0WWA2yoWtaltHdTxdk2UGf2HZiZrzFx7t9GySslsGDLwYZc55jH3ghebsA3DlVGmq0buiFsbJKu2D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TPyy9zma; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AMxrkXFl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB2461F000E9;
-	Wed, 24 Jun 2026 12:16:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782303388;
-	bh=9z96Le6Wr6hAPTPEul1Uv+AT7vdYuxP94Kb+DjA8ebE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=AMxrkXFljXFj71xEXhEKjZUDvN/1XAMtwpN651XSVLB14l2PO3nPqdgfpG6ll4Cw1
-	 tee9eGxag7vSF4qpBfzOLw/BWz1LFiSHPMyZ5R4abHDBUEWu6NXt4moX/MVQI0CHqq
-	 K4/qOwjyUDmZ8gt9q3G80bP9wz7GChssjWXUVxilKjJM6HqTqIsFsKIv8ijEbLwKdb
-	 I6oO3E9C+wqxuAAip686M9CW0Mjd08umuSWVHD37ZZV+i3vDL8zJ1w9fORblxjRGDA
-	 lyCAxELWsh89rdQbrmgkskKa1p4/C15RDq4rnUyliEuLMP8bcohIkLGtypLR4AOdNj
-	 D7pZ1PIQzigiw==
-Date: Wed, 24 Jun 2026 13:16:16 +0100
-From: Will Deacon <will@kernel.org>
-To: Jinjie Ruan <ruanjinjie@huawei.com>
-Cc: catalin.marinas@arm.com, tsbogend@alpha.franken.de, tglx@kernel.org,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, peterz@infradead.org, kees@kernel.org,
-	nathan@kernel.org, linusw@kernel.org, ojeda@kernel.org,
-	david.kaplan@amd.com, lukas.bulwahn@redhat.com,
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TPyy9zma"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A5FB940E0140;
+	Wed, 24 Jun 2026 15:00:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id FUCDcAsTcbFn; Wed, 24 Jun 2026 15:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1782313237; bh=ixANeKyt6wrxouLZA6axnl4DzfjEV12z3GBkxlFaUhw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TPyy9zmaoOk93HRdbVBuaw0eyhfm3pcIRo3ulnBApi7YwlWpafnF3csPJdBiASsmc
+	 TUZPaTNjNX5dXi0gq9AB7OkFt5an6SO1pDA2+Q3vHrihQLbPYujtO4/YLRPKHRefpx
+	 6+rNjgax1zS7Pa3s+KeLdvYcC553vxP18PdfEE3e0y0m4+3ECI1A3yw54iVmQnFlZd
+	 lSj3jORK7ll6iQn64a5GBezIUurwfzo8Rzj28r7Gh806FVt5/d5zUVIX1NzmhdAsLV
+	 BHjaf3uxz2QZehXWkWGmXu2M3Kqk91YAbXZflWHhbLFYTWPwZcor3bzMsmbeTfk2Xl
+	 gColhiwQ96uZiFoWuxV3MgwKV08+cnfQO41LGvs1JxOl2LOxgRsIuHf5dG4mUDsWoK
+	 N7My+5ffBmunNTIKME9VyvoFGWQdt0RK5OxVtxb09xgScf78vi5U1vuBzxzmkNjiCq
+	 jM0y7G/Zeosnoz/EOPQHSPnR415zlHR2OkyJ1Vx1Zr7a/vFKzi2DeLAo9/KMmnNhCc
+	 6NxqAn6j6HyQ69T9bBgx6BvDmzKJAmU1G/FQK94tznkCXab3I9Ci/WZRFRf9btXira
+	 zev3TJnwR5tjnrQA8IIFKN7q9BOpRcBtpljkgyXCnX/y0FWhRWFzIhO/mIgckNpqZQ
+	 150Ye43Cvr8msP2TZaqPrkAk=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1a])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 037AE40E0031;
+	Wed, 24 Jun 2026 14:59:47 +0000 (UTC)
+Date: Wed, 24 Jun 2026 07:59:45 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Will Deacon <will@kernel.org>
+Cc: Jinjie Ruan <ruanjinjie@huawei.com>, catalin.marinas@arm.com,
+	tsbogend@alpha.franken.de, tglx@kernel.org, mingo@redhat.com,
+	dave.hansen@linux.intel.com, hpa@zytor.com, peterz@infradead.org,
+	kees@kernel.org, nathan@kernel.org, linusw@kernel.org,
+	ojeda@kernel.org, david.kaplan@amd.com, lukas.bulwahn@redhat.com,
 	ryan.roberts@arm.com, maz@kernel.org, timothy.hayes@arm.com,
 	lpieralisi@kernel.org, thuth@redhat.com, menglong8.dong@gmail.com,
 	oupton@kernel.org, yeoreum.yun@arm.com, miko.lenczewski@arm.com,
@@ -49,58 +68,30 @@ Cc: catalin.marinas@arm.com, tsbogend@alpha.franken.de, tglx@kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
 Subject: Re: [PATCH v3 00/12] arm64: Add HOTPLUG_PARALLEL support for
  secondary CPUs
-Message-ID: <ajvKkLw5bL-FT5JC@willie-the-truck>
+Message-ID: <20260624145945.GBajvw4cQVt845-se2@fat_crate.local>
 References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
+ <ajvKkLw5bL-FT5JC@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260624092537.2916971-1-ruanjinjie@huawei.com>
+In-Reply-To: <ajvKkLw5bL-FT5JC@willie-the-truck>
 
-On Wed, Jun 24, 2026 at 05:25:25PM +0800, Jinjie Ruan wrote:
-> Support for parallel secondary CPU bringup is already utilized by x86,
-> MIPS, and RISC-V. This patch brings this capability to the arm64
-> architecture.
-> 
-> Introduce CONFIG_HOTPLUG_PARALLEL_SMT to avoid primary SMT threads
-> to boot first constraint.
-> 
-> And add a 'cpu' parameter to update_cpu_boot_status() to allow updating
-> the boot status at a per-CPU granularity during parallel bringup.
-> 
-> Rework the global `secondary_data` and `__early_cpu_boot_status` accessed
-> during early boot into per-CPU arrays to allow secondary CPUs to boot
-> in parallel.
-> 
-> And reuse `__cpu_logical_map` array in the early boot code in head.S
-> to resolve each secondary CPU's logical ID concurrently.
-> 
-> This series includes a subset of the refactoring patches proposed
-> by Will Deacon, with further adjustments.
+On Wed, Jun 24, 2026 at 01:16:16PM +0100, Will Deacon wrote:
+> If you want to help out in the meantime, there are plenty of patches that
+> need reviewing...
 
-Sheesh, Jinjie, what are you doing?
+I would loooove it if git send-email speed and rate of sending mail is
+proportional to how many other patches the sender has really reviewed...
 
-I said yesterday that I would dust off the old series after the merge
-window:
+:-P :-P :-P
 
-  https://lore.kernel.org/all/ajqYaklhIyvaNLlk@willie-the-truck/
+-- 
+Regards/Gruss,
+    Boris.
 
-"Please just give me a week or so to rebase my changes and send them out
- for discussion"
-
-but instead, you've posted patches from me that are missing a bunch of
-fixes that need to be folded back in:
-
-  https://web.git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/commit/?h=cpu-hotplug&id=2d5b8df5d4e2bbc142e3b4f21cabbca96e3da79d
-
-so now you're asking people to review incomplete patches from somebody
-else.
-
-Please just give me the time I asked for. If you want to help out in the
-meantime, there are plenty of patches that need reviewing...
-
-Will
+https://people.kernel.org/tglx/notes-about-netiquette

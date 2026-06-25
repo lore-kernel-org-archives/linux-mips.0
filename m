@@ -1,177 +1,78 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C361D47AC;
-	Thu, 25 Jun 2026 06:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.221
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782368973; cv=pass; b=Njbl6vTLZgkbO6m2VITVCtFaiaALcL4yC0dYDfjEiMm3jGLUC0k2nQjjFGtWLxJJJu38RHjbs7QR51LQW5VBhDltzxJ6MouTKJiKavRBq6SH9BecytNi3mhL6QrAy7chFbKHc1XoOxftLif9X/ers1L4sL0+zwlxY4Y50Aog0XM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782368973; c=relaxed/simple;
-	bh=/XDAhT/gahcsgyGYK+KIom9cb93lEXn3KvPR/sYEQfk=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=hU0Pqq6ML5eNcLted1YAwASaKyj+PcM3YdmGHUWW8jymSLsntMg8D86P4qXRzZTFuzGDC0M6yEuhNnJ4Hv6CE2tyRSQa14HeBARXhzCCC+EF8k/tbgWFzg61r9pr05MSkjER2tDEcuurqRZlD4/MYTGfTrk19sRDMiyb2UlbDps=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com; spf=pass smtp.mailfrom=goldelico.com; dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=KZxdri/Z; dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=J3a7Yqk4; arc=pass smtp.client-ip=81.169.146.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="KZxdri/Z";
-	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="J3a7Yqk4"
-ARC-Seal: i=1; a=rsa-sha256; t=1782368948; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Xf6OALEkhFnG/cjpmgrAAiPi/iyswDeFmzoSXmUODWiT/Kwgyhm9I3WlzehYqV38Lw
-    JdEIUuuA8aMtpc99Qm8BTvk7B/Il49n4hKcXmRFIEt41abzzFsXUsCvgFUs6yj1y/D88
-    6L/bh2Cv64CgDFLtMqTSKhip/afD7z7wKymvtqIKx00Ls5fOjSqxA9VwW6plySfaaggO
-    y0MtR4djs+bdIzrfi6n+BtQNsPwbsslzkZZHNs4YoKVaEnadVv3GYwBRUfMEZ+t68WZB
-    IvCSJPSmDE+32f0IqDlI50ZHLqz4WcwU0PntgkRkvnk8ljXrcbZnuW0SXM9widVTyMdy
-    fh4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1782368948;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=pLkiWYJBXI+Ax9lK/VMWNvpSnRJFMN12OEU0EcCGTFg=;
-    b=d3n7rdEy2uk/MHhask6I63GRoWhUtU7PrkD75+srjej38g65YrFaYvUWaNLgMA4zyn
-    SfA2ROjNtEnmjnfpKuOLJUSd3gIn4FCef6FemwIgs8YSCnvBqZWIcQWeICmJQtdOIZZK
-    KZB5Sng2Gm+Haq02RWjDKJuce2WSbZWfZ9sWFmh4OCJuTK8y2dWa65FPN2aN8t5G6mlZ
-    vHsCp7aKZAk8AbxqkY/RSAJb4dY4fxZeaaJalPIH/29neyQR0Cm9G+CJw8D3ClMph5R5
-    zaUx6hLftDeMiiHwba/7vPDeGas6jeRYMMo9FnnsCP1eWUb1AMipTdMkqDPo/J7kVkCw
-    xNcw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1782368948;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=pLkiWYJBXI+Ax9lK/VMWNvpSnRJFMN12OEU0EcCGTFg=;
-    b=KZxdri/ZvMwVU6hHNqzdods9JDsE67TpcOI2fw514ELPFN1jN2476gifQgPgPpAs8V
-    OJeMKyp8s2QggPncu52gpoVcoejayUhS6aMIybozIepZ11uQmTsRNMq5m7Wd0pT1XUtY
-    VX1n5ti2OKKTSmL6+h+fCg7HPeGe4HFcYsogiZXcsE7u8JfEZa9T5HDpl8jdXKBVnVkg
-    mV9qFHnYUn4KykMFxmrsKcTSejaag59yLlAv6IOlw1hIkn5mA9K2eNdnsPhE4zyNep11
-    nMv5bbGoPGlOnqgwYVTa5gZUogouMi31ECGiLHExAa8M7xcf55e3O2zLKAvBBfPCU/K4
-    NXRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1782368948;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=pLkiWYJBXI+Ax9lK/VMWNvpSnRJFMN12OEU0EcCGTFg=;
-    b=J3a7Yqk4zy3v3l4WWYg+Zbk0SdX+48nyK4J4mGira9QrCc/ueV2Yu2LNf4+S8uPDgH
-    gwoum/Foj9s72xWWlqDw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQjZoMyciNdhuVwbfw/uRWQZfrUXlac42eV/fu"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Qcf97c25P6T84Tp
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Thu, 25 Jun 2026 08:29:08 +0200 (CEST)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953903DE44C;
+	Thu, 25 Jun 2026 12:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782389979; cv=none; b=jj0k3tD4apmiy7dg7721abo253ZaJylKg1Z9TuhoJN8IemCVIMFdDUbxzYBpjN38+HIM1wLLIY2eWxK9AEs7XJ8l/u3wAEQe9SxVQbqMInRveJvZpmrQKdbp7vt7zszGjONYz/mMjBl1Uk2C90TKyxhcDKKkVdO4G+w0aoXW9Zk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782389979; c=relaxed/simple;
+	bh=rSZuza9IN4f3rMWWjX7mw1XsrJeN0BE3IO0x4BMFRVk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q9ssVdFUJbPMNL1cBDyb3LQtxAZ6UkNCX7UdOe8Ow3IxAbc8NLz8A/WF3WozXU3L4oRukxUa28NMkHY4xnlVkzeJuQrX3LZO/9tMGkLrsxEmKvT2mqBqaaLkmapMuUCLZyVcJuFQpxdGLVUW3s3IeVCFmtNkbgs/txKOqkEGJAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F91F1F000E9;
+	Thu, 25 Jun 2026 12:19:36 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mips@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/9] MIPS: TXX9: Legacy GPIO interfaces cleanup
+Date: Thu, 25 Jun 2026 14:19:21 +0200
+Message-ID: <cover.1782389357.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.8\))
-Subject: Re: [RFC] pinctrl: ingenic: impossible MACH_* guards can drop OF
- match data
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20260625060959.17290-1-pengpeng@iscas.ac.cn>
-Date: Thu, 25 Jun 2026 08:28:57 +0200
-Cc: Paul Cercueil <paul@crapouillou.net>,
- Linus Walleij <linusw@kernel.org>,
- linux-mips@vger.kernel.org,
- linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DFFC2DF8-358D-4FA4-BCF1-9AF608940090@goldelico.com>
-References: <20260625060959.17290-1-pengpeng@iscas.ac.cn>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>
-X-Mailer: Apple Mail (2.3826.700.81.1.8)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi,
+	Hi all,
 
-Since I am just these days working to extend the ingenic-pinctrl driver =
-for x2600
-support, I can comment from a distribution kernel perspective.
+This patch series gets rid of legacy GPIO interface usage on the MIPS
+RBTX4927 development board, preceded and followed by some cleanups.
+No blinky LEDs were harmed during the production of this series.
 
-> Am 25.06.2026 um 08:09 schrieb Pengpeng Hou <pengpeng@iscas.ac.cn>:
->=20
-> Hi,
->=20
-> while auditing conditional data-provider paths, I noticed that
-> drivers/pinctrl/pinctrl-ingenic.c still derives some SoC descriptor =
-exposure
-> from IS_ENABLED(CONFIG_MACH_*) style conditions whose corresponding =
-Kconfig
-> symbols do not appear to exist in the current Ingenic Kconfig =
-universe.
->=20
-> This looks like a data-symbol legality issue rather than a simple =
-cleanup:
-> the OF match table .data entries carry SoC-specific pinctrl =
-descriptors.  If
+Thanks for your comments!
 
-The idea is that you can choose through CONFIG_MACH_* which records are
-included in the match table at all to be able to shrink the driver to a =
-bare
-minimum for embedded use (e.g. X1600 with just 32 MB RAM).
+Geert Uytterhoeven (9):
+  MIPS: TXX9: Remove tx4938_spi_init() and txx9_spi_init()
+  MIPS: TXX9: Remove txx9_7segled_*() forward declarations
+  MIPS: TXX9: rbtx4927: Use GPIO lookup table for SIO DTR
+  MIPS: TXX9: rbtx4927: Use GPIO lookup table for TXx9 LEDs
+  MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
+  MIPS: TXX9: Use GPIO lookup table for iocled LEDs
+  MIPS: TXX9: Drop GPIOLIB_LEGACY select
+  MIPS: TXX9: Convert gpio_txx9 to dynamic GPIO base allocation
+  MIPS: TXX9: Clean up txx9_iocled_init()
 
-Or have a full driver for a distribution kernel which supports all =
-options by a
-full driver (module).
+ arch/mips/include/asm/txx9/generic.h  |  9 +-----
+ arch/mips/include/asm/txx9/tx4938.h   |  1 -
+ arch/mips/include/asm/txx9pio.h       |  3 +-
+ arch/mips/kernel/gpio_txx9.c          |  5 ++-
+ arch/mips/txx9/Kconfig                |  1 -
+ arch/mips/txx9/generic/setup.c        | 45 ++++++++++-----------------
+ arch/mips/txx9/generic/setup_tx4938.c |  6 ----
+ arch/mips/txx9/rbtx4927/setup.c       | 36 ++++++++++++++++-----
+ 8 files changed, 49 insertions(+), 57 deletions(-)
 
-Currently we have in the LetuxOS kernel:
+-- 
+2.43.0
 
-grep -e "CONFIG_MACH_JZ" -e "CONFIG_MACH_X" .config
-CONFIG_MACH_JZ4725B=3Dy
-CONFIG_MACH_JZ4730=3Dy
-CONFIG_MACH_JZ4740=3Dy
-CONFIG_MACH_JZ4770=3Dy
-CONFIG_MACH_JZ4780=3Dy
-CONFIG_MACH_X1000=3Dy
-CONFIG_MACH_X1600=3Dy
-CONFIG_MACH_X1830=3Dy
-CONFIG_MACH_X2000=3Dy
-CONFIG_MACH_X2600=3Dy
+Gr{oetje,eeting}s,
 
-> the guard can never be true, a compatible string can lose the intended
-> descriptor provider even though the descriptor is still present in =
-source.
->=20
-> I am not sending a patch yet because the correct policy is not =
-obvious.  The
-> possible directions include:
->=20
-> 1. remove impossible MACH_* gates from the OF match data;
-> 2. restore current Kconfig symbols for the intended SoC families;
-> 3. split unsupported legacy SoCs from supported descriptor exposure; =
-or
-> 4. keep the gates and document that these descriptors are =
-intentionally not
->   exposed.
+						Geert
 
-5. keep it as is and wait until we can upstream some missing SoC =
-families.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-(BTW: can you list what you think is unsupported legacy or impossible =
-please?)
-
->=20
-> Could you confirm which direction matches the current Ingenic pinctrl =
-support
-> policy?
->=20
-> This is static source/Kconfig analysis only.  I have not tested the =
-affected
-> hardware.
->=20
-> Thanks,
-> Pengpeng
-
-Hope this helps the maintainers to decide.
-
-BR,
-Nikolaus
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds

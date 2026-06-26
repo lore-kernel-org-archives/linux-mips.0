@@ -1,105 +1,101 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7CF3E1696;
-	Fri, 26 Jun 2026 08:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EA03BB681
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 09:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782462114; cv=none; b=blBsEee2j92gRf+Uv7CeWnDVNFiT14GF5FTJ1P93O8+SIFCu3gm1QCZ0r5tn4EcV1YaR2l2CssfAOtNE3f0R8cwYVu23XtAvuvir44b+gTvLCjPTT+zYqP8lHg4tkkCYOfC2d3oVR9YpoWCRldg5cq6PkZNaQIUnOnGI1wY+OK4=
+	t=1782467235; cv=none; b=BNLXoAn82M4yDGKgoDUb8DYdKbGux8YZPHnbHty4Ugm8Usz8p6FH5x/ReF1t/gurjwzDg6NE/blxlZ7QeCZdjyzk0OxohjOOHbh1AaeHxfpnPPzypJ7WbqwR3u8efrwA8O9xMlNlbUrv4B4IOjqG1uIl8B6j05e4qZiwGRLfVlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782462114; c=relaxed/simple;
-	bh=/4mtzQsCbxNw+zby24mrqKFAWlXw3OO99jVq6qbqJHU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=X7UCXmfpqRRnQ0FV9n2VmXE+DT8iSoo+pQWTO50LFQh0QoAz9m+PpVsycnWRl0IiRRXQbXWlGHOSh6IM0wMaQZhg15tCS4pIU+SyyrMhBMX2xpyzQrhm4oJeOp2LkYfgPQjL8e7Lrmm/g0MwE6gjKiOr9KdRP9auSkiuBtOqTqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DLkaMOoe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782467235; c=relaxed/simple;
+	bh=JORIyGfUNTvACmKeU8PQXIshs3f+QZpUcfRRa11lOAk=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ei52pVnx3eIR0KzexcTAh5H5LpNkfAv9KOzWB3E9aXhbW/niaDsis11Uy13v+dnez+5g7JKJLliav647pHxTmRzYh49tL1t4oZrTvcpl6Uam121PsmptcuzX8JNeizBun/9DNsgac7S011De23WPVjntEEz+4dZXmHcl+9xWeH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xrlpubs6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DLkaMOoe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDAC1F00A3A;
-	Fri, 26 Jun 2026 08:21:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xrlpubs6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B7731F00A3D
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 09:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782462112;
-	bh=7N6xFs6HldNaJtHXB+1so7kMQ4CsatgFOfKvzUpfQ6c=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=DLkaMOoe7jjLq0zrWVM7g5T3weWBVn0GKvdUrsWL1NS6Qs/YGb/jSI/OCz0xvfzqS
-	 Qaym8bn+YQ7Yv3mFvqa3JZPMQyeTT1JkI61/DRV2mqoJOQ6RCZahCcrN/sZ0P41GxN
-	 lQMkVEyzffwbljfjI4cRAmJFH6TA/MXXocYqdJ0r2fyaFbY7MUFYbzOT2mQ1bO9ESQ
-	 aXENlZ4+KidZLyWpFEQCN/4TQ2SdvjPzYQw0gZqKyFHWnTN9MR5o7FqI9NLTieKhiJ
-	 eEE7hw/g70YQVjdOMlBaDUGyYwudw/LY4An0H/3ioGWkJoeS59H947CE7rYTKgUHWr
-	 baMoIKRFCt04w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 199D639389E8;
-	Fri, 26 Jun 2026 08:21:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20260515; t=1782467234;
+	bh=wHcula6AS66rDDmDjSHgXUf+8Nw6iJL+/3FJuqXZ76U=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc;
+	b=Xrlpubs6VEtfMFGO72dUfDMjiYgyMHJPHFOKMZ2Jj/DxqmAzQ/r4zRS/k0DVTXx/D
+	 7oDQGjEAyjlEqVd+GKJIqK/r7837yac/dQTKIZsXv4szix7593VJCmz5LgtaDxrali
+	 giJ9xVSZqRzANqhiRCFoEpOlqkQ/72C0x9EG1xEisbE4ZvsBmaYnL38djMVLDBPB/6
+	 dT7AZHR8yQ1Bt6eUMNYlFF5dovLb/lk7oJ/7yMBMizaFt+S6Fk9hVAj4xpkyGpsPAV
+	 jjMn5QX9tvpnqqbMuYOa3laGriPOoiOZ7XTwGfDa0iadWfqS0EOICO9K/34qo9NOih
+	 hlJJAOHw4o3OQ==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5ad5e719157so633943e87.2
+        for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 02:47:14 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyBLdo9EV2SgD+WT8yXhrEN4PBNZ5MQEuWqYOrgCA9HbDPhTyXS
+	viiObLoTFtj+aJay0FUGo5IdJCPRso1mCKGok1xPPYVJ6l1T+uz2DwKpTHpviI2egK+G1kQrJWx
+	5gQCCPMEU19e4iUEBKNdCqvOktf8pTn7oPcq15cQInQ==
+X-Received: by 2002:a05:6512:450a:b0:5ad:49c7:89ac with SMTP id
+ 2adb3069b0e04-5aea1f50fbdmr2002923e87.40.1782467233246; Fri, 26 Jun 2026
+ 02:47:13 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 26 Jun 2026 02:47:10 -0700
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 26 Jun 2026 02:47:10 -0700
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <cover.1782389357.git.geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 0/9] driver core: Fix some race conditions
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <178246209959.3816447.5329631417058038374.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Jun 2026 08:21:39 +0000
-References: <20260406232444.3117516-1-dianders@chromium.org>
-In-Reply-To: <20260406232444.3117516-1-dianders@chromium.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: linux-riscv@lists.infradead.org, gregkh@linuxfoundation.org,
- rafael@kernel.org, dakr@kernel.org, stern@rowland.harvard.edu, aik@ozlabs.ru,
- johan@kernel.org, edumazet@google.com, leon@kernel.org, hch@lst.de,
- robin.murphy@arm.com, maz@kernel.org, aleksander.lobakin@intel.com,
- saravanak@kernel.org, akpm@linux-foundation.org, Frank.Li@kernel.org,
- jgg@ziepe.ca, alex@ghiti.fr, alexander.stein@ew.tq-group.com,
- andre.przywara@arm.com, andrew@codeconstruct.com.au, andrew@lunn.ch,
- andriy.shevchenko@linux.intel.com, aou@eecs.berkeley.edu, ardb@kernel.org,
- astewart@tektelic.com, bhelgaas@google.com, brgl@kernel.org,
- broonie@kernel.org, catalin.marinas@arm.com, chleroy@kernel.org,
- davem@davemloft.net, david@kernel.org, devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org, driver-core@lists.linux.dev, gbatra@linux.ibm.com,
- gregory.clement@bootlin.com, hkallweit1@gmail.com, iommu@lists.linux.dev,
- jirislaby@kernel.org, joel@jms.id.au, joro@8bytes.org, kees@kernel.org,
- kevin.brodsky@arm.com, kuba@kernel.org, lenb@kernel.org, lgirdwood@gmail.com,
- linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-cxl@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-usb@vger.kernel.org,
- linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
- m.szyprowski@samsung.com, maddy@linux.ibm.com, mani@kernel.org,
- miko.lenczewski@arm.com, mpe@ellerman.id.au, netdev@vger.kernel.org,
- npiggin@gmail.com, osalvador@suse.de, oupton@kernel.org, pabeni@redhat.com,
- palmer@dabbelt.com, peter.ujfalusi@gmail.com, peterz@infradead.org,
- pjw@kernel.org, robh@kernel.org, sebastian.hesselbarth@gmail.com,
- tglx@kernel.org, tsbogend@alpha.franken.de, vgupta@kernel.org,
- vkoul@kernel.org, will@kernel.org, willy@infradead.org,
- yangyicong@hisilicon.com, yeoreum.yun@arm.com
+References: <cover.1782389357.git.geert@linux-m68k.org>
+Date: Fri, 26 Jun 2026 02:47:10 -0700
+X-Gmail-Original-Message-ID: <CAMRc=MeOCELMO7-JX1NVbMeymushdYJLXQ7ukg9X00QC=xs6BQ@mail.gmail.com>
+X-Gm-Features: AVVi8CeoAQ8sP43RZ84rcAi4SC2q6m5aXOPCG5l5PaTHlHUyzvjYZ9ghvsa3wTM
+Message-ID: <CAMRc=MeOCELMO7-JX1NVbMeymushdYJLXQ7ukg9X00QC=xs6BQ@mail.gmail.com>
+Subject: Re: [PATCH 0/9] MIPS: TXX9: Legacy GPIO interfaces cleanup
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Linus Walleij <linusw@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+On Thu, 25 Jun 2026 14:19:21 +0200, Geert Uytterhoeven
+<geert@linux-m68k.org> said:
+> 	Hi all,
+>
+> This patch series gets rid of legacy GPIO interface usage on the MIPS
+> RBTX4927 development board, preceded and followed by some cleanups.
+> No blinky LEDs were harmed during the production of this series.
+>
+> Thanks for your comments!
+>
+> Geert Uytterhoeven (9):
+>   MIPS: TXX9: Remove tx4938_spi_init() and txx9_spi_init()
+>   MIPS: TXX9: Remove txx9_7segled_*() forward declarations
+>   MIPS: TXX9: rbtx4927: Use GPIO lookup table for SIO DTR
+>   MIPS: TXX9: rbtx4927: Use GPIO lookup table for TXx9 LEDs
+>   MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
+>   MIPS: TXX9: Use GPIO lookup table for iocled LEDs
+>   MIPS: TXX9: Drop GPIOLIB_LEGACY select
+>   MIPS: TXX9: Convert gpio_txx9 to dynamic GPIO base allocation
+>   MIPS: TXX9: Clean up txx9_iocled_init()
+>
+>  arch/mips/include/asm/txx9/generic.h  |  9 +-----
+>  arch/mips/include/asm/txx9/tx4938.h   |  1 -
+>  arch/mips/include/asm/txx9pio.h       |  3 +-
+>  arch/mips/kernel/gpio_txx9.c          |  5 ++-
+>  arch/mips/txx9/Kconfig                |  1 -
+>  arch/mips/txx9/generic/setup.c        | 45 ++++++++++-----------------
+>  arch/mips/txx9/generic/setup_tx4938.c |  6 ----
+>  arch/mips/txx9/rbtx4927/setup.c       | 36 ++++++++++++++++-----
+>  8 files changed, 49 insertions(+), 57 deletions(-)
+>
+> --
 
-This patch was applied to riscv/linux.git (fixes)
-by Danilo Krummrich <dakr@kernel.org>:
+For the series:
 
-On Mon,  6 Apr 2026 16:22:53 -0700 you wrote:
-> The main goal of this series is to fix the observed bug talked about
-> in the first patch ("driver core: Don't let a device probe until it's
-> ready"). That patch fixes a problem that has been observed in the real
-> world and could land even if the rest of the patches are found
-> unacceptable or need to be spun.
-> 
-> That said, during patch review Danilo correctly pointed out that many
-> of the bitfield accesses in "struct device" are unsafe. I added a
-> bunch of patches in the series to address each one.
-> 
-> [...]
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
-Here is the summary with links:
-  - [v5,7/9] driver core: Replace dev->dma_coherent with dev_dma_coherent()
-    https://git.kernel.org/riscv/c/3e2c1e213ac2
+Sashiko sashikos as usual but it points out issues in error paths in legacy
+board files so we can safely ignore them.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Bart

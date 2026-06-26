@@ -1,133 +1,143 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BF23F54D9;
-	Fri, 26 Jun 2026 12:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691013F4DE4
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 12:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782478405; cv=none; b=FO8z6onzWDMoFdh61+N6pJHKlgZovChXpvtMGyC2cTpGyu7l5PVO4uK2GButeeUnFzkLuUDlDu5wtcEPZ2GlmVl+Z6eq8kZ+5RSj/tg8hpdrOmmnK8Tg6muq7ncTybXdKX8GMHMVCfS4i2LmjYXSYsgJLsDZfg9qyzBR2zhkdmM=
+	t=1782478695; cv=none; b=ssiDEG2kco+XZqDKsFk4xKOvE5kmElEbSaRk9kR3K1Wi1N+z4RZzGwgeci3w1pi81RdDJNRTMYo4dG4tSdH6HmsCitle/tC+mVjUNABxBMblrDq977oLrgiUYGtN8YIECoUwPmh6wRHH9PxxhssOGUEHbjsAUsx27LouiwbjYAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782478405; c=relaxed/simple;
-	bh=4vW/ykol/caEyEWxjwNOEBg0s6JIz+ZkHwDVW8nFj8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HxH9Akb66nFWnXQ8cBRRKMo2nxgtq3S4D52gjjdADDPQlj0Q0GK2Wz6I8KfzwWNz0nt8DwV0+2eiLUb3caUqy0uyeAETHBVz/pignQLjft59xhs/Rd74VSuQZAXBkvqDJYiyZjbDxnmakdmtfOEb3Ou77UAe6JTDAksYVViGKkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jA+1blRY; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782478695; c=relaxed/simple;
+	bh=Xsi4plSt004PdKbPEvPkJiAI1d81eNaS0IM9EFBxgy4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MjUUVzf94Ye7LYaBGViG65qk9vshHbFhihRJnDwa7VnSPKDq5Sz/NLYOnFGDScVm1A3D+SQmOI4SpxAjyXisO4h0rLZwApvP1pwKcQKDyqqTepoB2Miu4cEV3d612WnHffZhQ4yTMYFcWVPSwUL8BA5ng09fBG5Bpxc99t2JMYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=MB5rT5Db; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=fsAginrJ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jA+1blRY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12BC71F000E9;
-	Fri, 26 Jun 2026 12:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782478402;
-	bh=4vW/ykol/caEyEWxjwNOEBg0s6JIz+ZkHwDVW8nFj8o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=jA+1blRY/22zkn1IuV2vFG0t4ZR472agS+Rcx+5z16VdxoF71huJ1Hl8bsMp3pwie
-	 s3HtkJ3Tl3y1I0/1g6RacpyGU35B53xSHrcaW2t/QElscs05clIdKsmtyr19KKKovm
-	 j2vyJcgBgpzWNrcDG19JsgBHlP34lXUQWsnc+h2WSFpQYvkLvk59Qjivmjj2UMHGU9
-	 2DAUYqmMHyTPI+NuAt0myou2eD4nJXGhda3uP6TH4lDTBl4kKy1F3g2geT40+z506u
-	 Vnogil5g4ai7oWWmwQeBbyrByU0zgFU0TRYPzYi5U+cc1hPuhhDyMuLKxFHdF8pOoa
-	 rE4v4BY+yF7Ng==
-Date: Fri, 26 Jun 2026 14:53:20 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Albert Esteve <aesteve@redhat.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Luca Ceresoli <luca.ceresoli@bootlin.com>, Inki Dae <inki.dae@samsung.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>, Lucas Stach <l.stach@pengutronix.de>, 
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>, Marek Vasut <marex@denx.de>, 
-	Stefan Agner <stefan@agner.ch>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Sandy Huang <hjc@rock-chips.com>, 
-	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Andy Yan <andy.yan@rock-chips.com>, 
-	Yannick Fertre <yannick.fertre@foss.st.com>, Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
-	Philippe Cornu <philippe.cornu@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, 
-	Samuel Holland <samuel@sholland.org>, Jyri Sarha <jyri.sarha@iki.fi>, 
-	Jingoo Han <jingoohan1@gmail.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Alison Wang <alison.wang@nxp.com>, Paul Kocialkowski <paulk@sys-base.io>, 
-	Alain Volmat <alain.volmat@foss.st.com>, Raphael Gallais-Pou <rgallaispou@gmail.com>, 
-	Thierry Reding <thierry.reding@kernel.org>, Mikko Perttunen <mperttunen@nvidia.com>, 
-	Jonathan Hunter <jonathanh@nvidia.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, linux-samsung-soc@vger.kernel.org, 
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 4/5] drm/bridge: release panel reference on all lookup
- exit paths
-Message-ID: <20260626-manipulative-rainbow-rhino-d73b65@houat>
-References: <20260626-drm_refcount_wiring-v1-0-cca1a7b3bdef@redhat.com>
- <20260626-drm_refcount_wiring-v1-4-cca1a7b3bdef@redhat.com>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="MB5rT5Db";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="fsAginrJ"
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65QAeArl500583
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 12:58:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	FUo/RJ8kDLHbJCXRVEoIGLCHtsWiRsM9ovY5zCH6yac=; b=MB5rT5Dbn0XJH9Ql
+	9Ph9wMx2cbjYHILoxa747lVBrmhx7nx0Qd27m62rk32Ewt21RE/xeXN9TmdAa0Xa
+	Pg/kvduSy3wCh3wBybScM4/GiZ7wkCeOVSrAe/WBTD5PZ/z3G5P9dPhYuNBVN6hl
+	wb9JS4N+PHg/AM2udfClCKHfEbNdIqoTroEC55rdybqjHfdweQ25stv+Mk4oedBg
+	XFx/lVyxjBmmViAwtMAthzWR/X+iidkNmgJp04MbTWvEwqw7IXwafbGx174Dp1Tp
+	xHYoqjpHoGRZ7o9fS0fojDoDssM2GZN1G4L0l1+u+JomiiIZwt5Wy7qOZ6N3pi5z
+	+ZqSHQ==
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f1j1nj0gm-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 12:58:13 +0000 (GMT)
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-517c65e497eso15797131cf.2
+        for <linux-mips@vger.kernel.org>; Fri, 26 Jun 2026 05:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1782478693; x=1783083493; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FUo/RJ8kDLHbJCXRVEoIGLCHtsWiRsM9ovY5zCH6yac=;
+        b=fsAginrJeA2sSpRxhSGzbnIPaPrO5Zzj18wWXDcsYUF8dpnuJAGA85e8/D7LEsI2G8
+         rOdjxkn3bwOqrluBkM5Hi7OfFnUnM68tz9nMjtKVtyQoowqBoXCA2UijbpgSY3BYFSJy
+         l279RhQU1NThc+IRN/9HZ8tl3LikAP7js1WCaptkCSI6vfJaqXDNLhdoVnpV55XovcPI
+         WKEFIyguL6+E20kRUHD65Yn61ijqJBuN3IyswsvjkfgPWi3ayMaT15+s7FmnAOx+P2+t
+         ZtKpDKi7+LjQuyO6MZ4dUUauDNm/4XRo/JuzfjcrYAdZ735ON9HkVu7HIiKek4Lgx+Dc
+         Q4cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782478693; x=1783083493;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FUo/RJ8kDLHbJCXRVEoIGLCHtsWiRsM9ovY5zCH6yac=;
+        b=layGGTrMZQFpLFdwLeDkoMzBeJ8pyYSw+FZ2v8u8s64E5QTLf3JShRv+1dlJ9pvz3E
+         5VSG9C1VW5Dq/plt3y3WwajSkoaLLMvzMtSe3LQ3rAdEjNkqWEsHgjPENsaMAmNYMJKh
+         F+ru1vJy8omHhh5oAPuSifWLCUP/0F/NMUFMSR/eJij/LZn3QOTfvEl0kgNKmIQtLrNp
+         2EwcNiegpCOWw/48TdZmO80GwwNYGtKAVn9pQW5ae2CYgJdqzasRJPeVWg2dcjS79YWg
+         08Y1AharkKsRhvnFjtAZP57fT1j2h8HxXVRmxo5nW2/+7HMazJLocIZYqv+cfys+ry3c
+         Vj+Q==
+X-Gm-Message-State: AOJu0YyDO2bTDlzaK2Khuk7PRjwCwhzPyf5N3jCFd3OJ5iJRpvf7/O2U
+	SO5Z+RmrdDKWjCygGodn11+WC4waYN6DQM5/1GjbVCQCcTKGdH5ZpI5nnvUuJIwkad0HJdSLWAC
+	Blqthfvh4+N3TA3QB1yuZBOBtVMWUq8UcCvXfW4f5GDI8TwiMXDMBnCh7DzXKAlIB
+X-Gm-Gg: AfdE7ck+y55vho/K1gDgi9fa7Od84IcK4hlKm80TVQbuflEJsEoXgJ7GhrXMIQ/ihep
+	uvOEYzI4MWbMJR3I1BzCfLqgg6m8GqlfvJsrNjNJTzXKmHUhfSS6ZVjXqqrp2VQq2PuYElBKDyV
+	E1QZU9YXhpFsEclwV7Bbi0XI6dJfcEVvYi+KPiK9endKtbF/P3jidpRGa9pURccvQ9CRvYSb/t/
+	oEE2V2nhL2Cih7O5qhn70eMe1foe/n3kjHoCemIRhgT/rhlNw7dsdRc340eaoPCisDGX+mhF7Cz
+	xKu+NCXxcLdhgFKvN55Hz9DFa+J05mBhTDNGdAGtVhxJvQtoYb0i9Lkpt2GkL3gLLemf32mtBbm
+	ysKW61+0sn4whUtuSs0cOUBMZiuQS0ag5PdZPuvZjkIJRTTOzLmOvuxFN6WA+Lg==
+X-Received: by 2002:a05:622a:5c08:b0:51a:56d:1bec with SMTP id d75a77b69052e-51a8b09f1f1mr5862841cf.32.1782478692753;
+        Fri, 26 Jun 2026 05:58:12 -0700 (PDT)
+X-Received: by 2002:a05:622a:5c08:b0:51a:56d:1bec with SMTP id d75a77b69052e-51a8b09f1f1mr5862571cf.32.1782478692362;
+        Fri, 26 Jun 2026 05:58:12 -0700 (PDT)
+Received: from [192.168.69.212] (88-187-86-199.subs.proxad.net. [88.187.86.199])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51a51addb1csm95193201cf.23.2026.06.26.05.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Jun 2026 05:58:12 -0700 (PDT)
+Message-ID: <608ab482-c739-4767-bb13-e6a6cd96dd86@oss.qualcomm.com>
+Date: Fri, 26 Jun 2026 14:58:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="dvioag5mayzeljeh"
-Content-Disposition: inline
-In-Reply-To: <20260626-drm_refcount_wiring-v1-4-cca1a7b3bdef@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/9] MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linus Walleij <linusw@kernel.org>,
+        Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1782389357.git.geert@linux-m68k.org>
+ <77535cc848c89d339fc5efe9ce1a30e017164a18.1782389357.git.geert@linux-m68k.org>
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
+In-Reply-To: <77535cc848c89d339fc5efe9ce1a30e017164a18.1782389357.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: g1HwUdfLaFoXyQ4E5Efy47Fm3h-ISm2H
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjI2MDEwNSBTYWx0ZWRfXxnGI92p/+pzu
+ ITTxgGYmbd/hJFpL6hmQwMTOBtUmhnR/00uqJZIXdMAEuDmctfao48ni03SNzBxFOC0vVXaZobb
+ +miYG8J9L3TClAh7lLGawnX2uY+OsDxap/fwV/LLxTPGx+VFAK+FpwUWAYz0iioi2fij6aZaJ+E
+ s43grZL8+oVFpeJttCveMV+kgxCyzRd6CPZNeKhb/Qcr6TIIkhgJ3MVF/DO9rDEVzyS4uqAq6ut
+ mm51MlqNyTYmhewJ1D4FYOeUxkak3K71ONlIKdDeDBOhg0KPKM/nRNhXfhA+guyOXrimnBrhmVE
+ M4Ed5+IARGMb5h+tSWRDuxO87Poqay/kSgAsTUKLLxnJrz8kNa6HGJh0EdGE9l73/NhKZLi032u
+ C/DmZ1FHFUr8jydDkRaZBLGS6WQjTlc++OPLNCbMBhA6yV6Ew1lWB5r7s/weo91hVgtD7QU7EmZ
+ 42TonXWbmpTpbiwr1sA==
+X-Authority-Analysis: v=2.4 cv=W+cIkxWk c=1 sm=1 tr=0 ts=6a3e7765 cx=c_pps
+ a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=M51BFTxLslgA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=DJpcGTmdVt4CTyJn9g5Z:22
+ a=tBb2bbeoAAAA:8 a=EUspDBNiAAAA:8 a=1tSEMpTH9XP_W59IOagA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=dawVfQjAaf238kedN5IG:22 a=Oj-tNtZlA1e06AYgeCfH:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNjI2MDEwNSBTYWx0ZWRfXxCfv8CCqHy6U
+ yT0OsU/9YhVMeXbqOEBXvYf7apIUetqQ9f2frgXpNdQ9DdEhxrOFWGR/r2j6Ho5Tgm3CdvMg2Ni
+ NUqWWholMzvjzNcOG9JBc7NDvdEUum4=
+X-Proofpoint-ORIG-GUID: g1HwUdfLaFoXyQ4E5Efy47Fm3h-ISm2H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-26_03,2026-06-24_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2606260105
 
+On 25/6/26 14:19, Geert Uytterhoeven wrote:
+> The number of available GPIOs and LEDs on the TXx9 IOC FPGA depends on
+> the platform.  Since commit 455481fc9a807798 ("MIPS: Remove TX39XX
+> support"), the only remaining platform (rbtx4927) supports just three.
+> Hence reduce the maximum number, to reduce allocation size.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   arch/mips/txx9/generic/setup.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
---dvioag5mayzeljeh
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 4/5] drm/bridge: release panel reference on all lookup
- exit paths
-MIME-Version: 1.0
-
-On Fri, Jun 26, 2026 at 02:03:26PM +0200, Albert Esteve wrote:
-> of_drm_find_panel() and drm_of_find_panel_or_bridge() now return a
-> counted reference that the caller must release with drm_panel_put().
->=20
-> For bridge drivers that immediately wrap the panel in a panel_bridge
-> (which acquires its own reference), release the lookup reference right
-> after the bridge creation call.
->=20
-> For analogix-anx6345, which stores the panel for direct use, release
-> the reference in the i2c remove path.
->=20
-> For platform drivers using analogix_dp_core with a component lifecycle
-> (exynos_dp, rockchip analogix_dp), release the lookup reference in the
-> platform remove() function. The panel_bridge created during bind() holds
-> a separate reference that devm cleanup releases after remove() returns.
->=20
-> Also fix devm_drm_of_get_bridge() and drmm_of_get_bridge() in
-> bridge/panel.c itself: both call drm_of_find_panel_or_bridge() and
-> then pass the panel to devm/drmm_panel_bridge_add(), which acquires
-> its own reference via drm_panel_bridge_add_typed(). The lookup
-> reference was never released; add drm_panel_put() after each bridge
-> creation call.
->=20
-> Assisted-by: Claude:claude-opus-4-6
-> Signed-off-by: Albert Esteve <aesteve@redhat.com>
-
-I think this one should be either split into one patch per driver, or
-merged with the of_drm_find_panel patch. I'm still not quite sure which
-would be the best, maybe the latter?
-
-Maxime
-
---dvioag5mayzeljeh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCaj52PwAKCRAnX84Zoj2+
-dqkkAX416HMzwlmhKIK9kObtiXs7aRAKA/jKzZZr7wPHQO6/uyzY73TP2QyyShFE
-RjZRFDwBgJ2jRvQKam/G1wYDKDB/X9IryTeMbNEHvQrSIgH4XGYNKJ2sIqCmRRJm
-MAR2IQBH8A==
-=+EN8
------END PGP SIGNATURE-----
-
---dvioag5mayzeljeh--
+Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>

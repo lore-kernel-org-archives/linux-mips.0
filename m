@@ -1,32 +1,28 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4E53DC87A;
-	Mon, 29 Jun 2026 17:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCFFB3C76AF;
+	Mon, 29 Jun 2026 17:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782754802; cv=none; b=XW6usXvGXIXrlIOyGFI/xiw/IfNw6ovNMYJFTnePi/v1Wbr7qgVO2Q3krqK4ALVjblc93LRWGeroLw+Zzz2eO54YwB+uGffZoLA46BrdVbae4gsCp4oSwfJ4Bc9aYZl2p0GBL/ATu9RDSMJdkAg2DD76EGV6ZNWvjkoy7eXQKzg=
+	t=1782754805; cv=none; b=UpXlwZjntp/rU0V06yJJSi0KLLrFH4K7mNf9t4ISC+fygrd50PZxhWgc5lwc4vZgSPe7hEiCjWFLY98YB89b011WteaetQp+KVxep/CDHLzRhtDYvBX0U+CjrZUULEPm6+qFlsQeOZn93f2zCr8D3gD5gbBoMelQ9vjpmty8VkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782754802; c=relaxed/simple;
-	bh=t/aGxPjf/yxck7dxs7ciEjw4oVBgeDJj1ki9pJvPjRA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=esdqKgHMw9FXF1xPA7FLUhYvP9XWpK0Gqedq3quPWV6q0sGilSTSlfMVGzAC5LNRJTT3i8y0p6HYRXWSlyYQvb5vT2NSh0NAVeyF0dENtE1w8FhHXU2c7cEJWOrGRqHH7PoeGYk2T0boc1d4eZN9niI/haK2czNBY29RdE9Hpfs=
+	s=arc-20240116; t=1782754805; c=relaxed/simple;
+	bh=5Xp6Gna+QerBHHtTloQenMnRCJCRT4SCo+ZoZI5cseY=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQhbOYUIbHDFfKSsopZWEsBzcGIJ1HYi2QAyi3pMtUiTrBqwQGAtH9dA1alSAIbzY1i/ugF9MiacOUF/CtyV6UkKJbqP6Be9UFDOAmQea1smPngRTM3mIj0RI4xUefv3ObiqGyjvYYISMXCwt+bO8l73FdsBZpYheLGb44WavoY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1weFd2-0005iR-00; Mon, 29 Jun 2026 19:18:40 +0200
+	id 1weFd2-0005iT-00; Mon, 29 Jun 2026 19:18:40 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 0B423C00E8; Mon, 29 Jun 2026 19:12:02 +0200 (CEST)
-Date: Mon, 29 Jun 2026 19:12:02 +0200
+	id 16F44C012A; Mon, 29 Jun 2026 19:12:39 +0200 (CEST)
+Date: Mon, 29 Jun 2026 19:12:39 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 10/10] MIPS: DEC: Ensure RTC platform device
- deregistration upon failure
-Message-ID: <akKnYgr_oc67Tttp@alpha.franken.de>
-References: <alpine.DEB.2.21.2605062240290.46195@angie.orcam.me.uk>
- <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
+To: Bastian Blank <waldi@debian.org>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: Add build salt to the vDSO
+Message-ID: <akKnh5c2IIJRAg23@alpha.franken.de>
+References: <ajQY5adFB_yOfIl5@steamhammer.waldi.eu.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,52 +31,43 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
+In-Reply-To: <ajQY5adFB_yOfIl5@steamhammer.waldi.eu.org>
 
-On Wed, May 06, 2026 at 11:43:00PM +0100, Maciej W. Rozycki wrote:
-> Switch RTC platform device registration from platform_device_register() 
-> to platform_add_devices() so as to make sure any failure will result in 
-> automatic device unregistration.
+On Thu, Jun 18, 2026 at 06:12:21PM +0200, Bastian Blank wrote:
+> The vDSO needs to have a unique build id in a similar manner
+> to the kernel and modules. Use the build salt macro.
 > 
-> Fixes: fae67ad43114 ("arch/mips/dec: switch DECstation systems to rtc-cmos")
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Signed-off-by: Bastian Blank <waldi@debian.org>
 > ---
-> Change from v2,
-> <https://lore.kernel.org/r/alpine.DEB.2.21.2605012105320.11074@angie.orcam.me.uk/>:
+> I was not able to properly test this change, due to unavailable
+> toolchain.
 > 
-> - Fix a minor style issue in the commit description.
+>  arch/mips/vdso/elf.S | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> No change from v1 (8/8),
-> <https://lore.kernel.org/r/alpine.DEB.2.21.2604110042130.29980@angie.orcam.me.uk/>.
-> ---
->  arch/mips/dec/platform.c |    6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> linux-mips-dec-platform-rtc-unregister.diff
-> Index: linux-macro/arch/mips/dec/platform.c
-> ===================================================================
-> --- linux-macro.orig/arch/mips/dec/platform.c
-> +++ linux-macro/arch/mips/dec/platform.c
-> @@ -38,6 +38,10 @@ static struct platform_device dec_rtc_de
->  	.num_resources = ARRAY_SIZE(dec_rtc_resources),
->  };
+> diff --git a/arch/mips/vdso/elf.S b/arch/mips/vdso/elf.S
+> index a25cb147f1ca..821fcffe7655 100644
+> --- a/arch/mips/vdso/elf.S
+> +++ b/arch/mips/vdso/elf.S
+> @@ -8,6 +8,7 @@
 >  
-> +static struct platform_device *dec_rtc_devices[] __initdata = {
-> +	&dec_rtc_device,
-> +};
+>  #include <asm/isa-rev.h>
+>  
+> +#include <linux/build-salt.h>
+>  #include <linux/elfnote.h>
+>  #include <linux/version.h>
+>  
+> @@ -15,6 +16,8 @@ ELFNOTE_START(Linux, 0, "a")
+>  	.long LINUX_VERSION_CODE
+>  ELFNOTE_END
+>  
+> +BUILD_SALT
 > +
->  static struct resource dec_dz_resources[] = {
->  	{ .name = "dz", .flags = IORESOURCE_MEM, },
->  	{ .name = "dz", .flags = IORESOURCE_IRQ, },
-> @@ -137,7 +141,7 @@ static int __init dec_add_devices(void)
->  	}
->  	num_zs = i;
->  
-> -	ret1 = platform_device_register(&dec_rtc_device);
-> +	ret1 = platform_add_devices(dec_rtc_devices, 1);
->  	ret2 = IS_ENABLED(CONFIG_32BIT) ?
->  	       platform_add_devices(dec_dz_devices, num_dz) : 0;
->  	ret3 = platform_add_devices(dec_zs_devices, num_zs);
+>  /*
+>   * The .MIPS.abiflags section must be defined with the FP ABI flags set
+>   * to 'any' to be able to link with both old and new libraries.
+> -- 
+> 2.53.0
 
 applied to mips-fixes
 

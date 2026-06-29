@@ -1,31 +1,35 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE7C374E63;
-	Mon, 29 Jun 2026 17:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1673DA7CA;
+	Mon, 29 Jun 2026 17:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782754792; cv=none; b=Mq+5VJQkfXqTc0Z6TFXRb6VsTLm2X4wyEXQA79iFmddbT1iNQM5oKNnc1eCvxdwaujO6cdmxhUlnaMbJ0+GPHHXIC2B5CcW2Aryj78QD9xcjOnPlibdDhyG30QrOxumbv5ppr+KpVQFLl201MRgcaAmriAmBeOK3mRkSIh7qZ4c=
+	t=1782754797; cv=none; b=h7idcP9YiiKl8TV9zBfzFU8UqlSqWxZhfytAJ6m9EtwMTJ0VSfRjzm154SGw9ZhdnJBLn7G4lzcf/ps07mN9RhkRAxFocaI5wbvEZSF9qEIlcyPepTrwlC4GOv7xgiLdAmzBLkKsDToF6vydFa7I/oVjCeYX6MP7FMEZU4E8asY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782754792; c=relaxed/simple;
-	bh=Ej3rdP+msPj7ZdoJHeG5VaheOUmHRQHs9VfwmJSIK/c=;
+	s=arc-20240116; t=1782754797; c=relaxed/simple;
+	bh=nX2pdBsexUM5hf5OHrK8Sn34uutzOiniDpVtW0nTXNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mb0fuyFZDEjv49AU1MM8na9oIPQrfmOKtohhmQ7zMPTLvbH6U2b0jyV+vd2S07E0+DsKE50P6Hw9ZjABF4KpBDugz7l6fMVyEg4+CoTTZRkJa2Se84Uoul3eGbzr2dyeakaw2QzdcYtt/GGOXtbWniiNehQGeQSBk1CWeYjmDUw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=RJsWtZr/Q0iD0YwvlnRaRvjwWYadBfeiCBW6lO72RodciV3scE2B28X+sCdJNVsylstc1p7YlT13RDCM4tVqv4ATGsCSB2wdC1618CXVNLrEq/x3LQe5aFL1x2KVmEFcY0PqXkXn0hwsJZiifdDghtINiRllN2MBF3huLEIEOKI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1weFd2-0005id-00; Mon, 29 Jun 2026 19:18:40 +0200
+	id 1weFd2-0005iX-00; Mon, 29 Jun 2026 19:18:40 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 94EDFC013E; Mon, 29 Jun 2026 19:16:51 +0200 (CEST)
-Date: Mon, 29 Jun 2026 19:16:51 +0200
+	id B4A74C013E; Mon, 29 Jun 2026 19:14:22 +0200 (CEST)
+Date: Mon, 29 Jun 2026 19:14:22 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: raoxu <raoxu@uniontech.com>
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux-mips@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH net] net: sgi: ioc3-eth: fix split TX DMA mapping lengths
-Message-ID: <akKog7-ppsYUs7z0@alpha.franken.de>
-References: <4E1486BC4536407E+20260629080623.908426-1-raoxu@uniontech.com>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Mingcong Bai <jeffbai@aosc.io>, Henry Chen <chenx97@aosc.io>,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Clark Williams <clrkwllms@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH] MIPS: loongson64: add IRQ work based on self-IPI
+Message-ID: <akKn7hHZF3wi4OLC@alpha.franken.de>
+References: <20260623172728.191557-1-xry111@xry111.site>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,58 +38,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4E1486BC4536407E+20260629080623.908426-1-raoxu@uniontech.com>
+In-Reply-To: <20260623172728.191557-1-xry111@xry111.site>
 
-On Mon, Jun 29, 2026 at 04:06:23PM +0800, raoxu wrote:
-> From: Xu Rao <raoxu@uniontech.com>
+On Wed, Jun 24, 2026 at 01:27:21AM +0800, Xi Ruoyao wrote:
+> Since the commit 91840be8f710 ("irq_work: Fix use-after-free in
+> irq_work_single() on PREEMPT_RT"), we observed the performance of
+> execve() is significantly impacted on MIPS.
 > 
-> When a linear skb crosses a 16 KiB boundary, ioc3_start_xmit()
-> splits it into two buffers of lengths s1 and s2.  The descriptor
-> advertises those lengths through B1CNT and B2CNT.
+> While we are unsure how that commit caused the impact or how to improve
+> it (or even if it can be improved at all), implementing IRQ work with
+> self-IPI seems able to mitigate the impaction.
 > 
-> The first buffer is mapped with s1, but the second buffer is also
-> mapped with s1 even though the device is told to fetch s2 bytes from
-> it.  When the lengths differ, the DMA mapping does not cover the same
-> region as the second descriptor buffer, which can result in incorrect
-> cache maintenance or a DMA fault on implementations that enforce the
-> mapped range.
+> Perhaps this can/should be implemented for other MIPS architecture
+> processors as well, but we don't have the enough knowledge of them, nor
+> access to the hardware.  So only implement it for loongson64 here.
 > 
-> There is a separate mismatch in the error path.  If mapping the second
-> buffer fails, only d1 needs to be unmapped.  d1 was mapped for s1 bytes,
-> but the driver unmaps it using the full packet length.  Streaming DMA
-> mappings must be unmapped with the same size used for the corresponding
-> map operation.
-> 
-> Map the second buffer with s2 and unmap the first buffer with s1 when
-> the second mapping fails.
-> 
-> Fixes: ed870f6a7aa2 ("net: sgi: ioc3-eth: use dma-direct for dma allocations")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Xu Rao <raoxu@uniontech.com>
+> Link: https://lore.kernel.org/6be1cdd5f91dd7418a32ff372a6f3ae259b19195.camel@xry111.site/
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 > ---
->  drivers/net/ethernet/sgi/ioc3-eth.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-> index 3973106..261f2d3 100644
-> --- a/drivers/net/ethernet/sgi/ioc3-eth.c
-> +++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-> @@ -1061,9 +1061,9 @@ static netdev_tx_t ioc3_start_xmit(struct sk_buff *skb, struct net_device *dev)
->  		d1 = dma_map_single(ip->dma_dev, skb->data, s1, DMA_TO_DEVICE);
->  		if (dma_mapping_error(ip->dma_dev, d1))
->  			goto drop_packet;
-> -		d2 = dma_map_single(ip->dma_dev, (void *)b2, s1, DMA_TO_DEVICE);
-> +		d2 = dma_map_single(ip->dma_dev, (void *)b2, s2, DMA_TO_DEVICE);
->  		if (dma_mapping_error(ip->dma_dev, d2)) {
-> -			dma_unmap_single(ip->dma_dev, d1, len, DMA_TO_DEVICE);
-> +			dma_unmap_single(ip->dma_dev, d1, s1, DMA_TO_DEVICE);
->  			goto drop_packet;
->  		}
->  		desc->p1     = cpu_to_be64(ioc3_map(d1, PCI64_ATTR_PREF));
-> -- 
-> 2.47.3
+>  arch/mips/include/asm/irq_work.h |  9 +++++++++
+>  arch/mips/include/asm/smp.h      |  2 ++
+>  arch/mips/loongson64/smp.c       | 10 ++++++++++
+>  3 files changed, 21 insertions(+)
+>  create mode 100644 arch/mips/include/asm/irq_work.h
 
-Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+applied to mips-fixes
+
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

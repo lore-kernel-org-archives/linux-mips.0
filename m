@@ -1,35 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1673DA7CA;
-	Mon, 29 Jun 2026 17:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4E53DC87A;
+	Mon, 29 Jun 2026 17:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782754797; cv=none; b=h7idcP9YiiKl8TV9zBfzFU8UqlSqWxZhfytAJ6m9EtwMTJ0VSfRjzm154SGw9ZhdnJBLn7G4lzcf/ps07mN9RhkRAxFocaI5wbvEZSF9qEIlcyPepTrwlC4GOv7xgiLdAmzBLkKsDToF6vydFa7I/oVjCeYX6MP7FMEZU4E8asY=
+	t=1782754802; cv=none; b=XW6usXvGXIXrlIOyGFI/xiw/IfNw6ovNMYJFTnePi/v1Wbr7qgVO2Q3krqK4ALVjblc93LRWGeroLw+Zzz2eO54YwB+uGffZoLA46BrdVbae4gsCp4oSwfJ4Bc9aYZl2p0GBL/ATu9RDSMJdkAg2DD76EGV6ZNWvjkoy7eXQKzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782754797; c=relaxed/simple;
-	bh=nX2pdBsexUM5hf5OHrK8Sn34uutzOiniDpVtW0nTXNg=;
+	s=arc-20240116; t=1782754802; c=relaxed/simple;
+	bh=t/aGxPjf/yxck7dxs7ciEjw4oVBgeDJj1ki9pJvPjRA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RJsWtZr/Q0iD0YwvlnRaRvjwWYadBfeiCBW6lO72RodciV3scE2B28X+sCdJNVsylstc1p7YlT13RDCM4tVqv4ATGsCSB2wdC1618CXVNLrEq/x3LQe5aFL1x2KVmEFcY0PqXkXn0hwsJZiifdDghtINiRllN2MBF3huLEIEOKI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=esdqKgHMw9FXF1xPA7FLUhYvP9XWpK0Gqedq3quPWV6q0sGilSTSlfMVGzAC5LNRJTT3i8y0p6HYRXWSlyYQvb5vT2NSh0NAVeyF0dENtE1w8FhHXU2c7cEJWOrGRqHH7PoeGYk2T0boc1d4eZN9niI/haK2czNBY29RdE9Hpfs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1weFd2-0005iX-00; Mon, 29 Jun 2026 19:18:40 +0200
+	id 1weFd2-0005iR-00; Mon, 29 Jun 2026 19:18:40 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id B4A74C013E; Mon, 29 Jun 2026 19:14:22 +0200 (CEST)
-Date: Mon, 29 Jun 2026 19:14:22 +0200
+	id 0B423C00E8; Mon, 29 Jun 2026 19:12:02 +0200 (CEST)
+Date: Mon, 29 Jun 2026 19:12:02 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Xi Ruoyao <xry111@xry111.site>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Mingcong Bai <jeffbai@aosc.io>, Henry Chen <chenx97@aosc.io>,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH] MIPS: loongson64: add IRQ work based on self-IPI
-Message-ID: <akKn7hHZF3wi4OLC@alpha.franken.de>
-References: <20260623172728.191557-1-xry111@xry111.site>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 10/10] MIPS: DEC: Ensure RTC platform device
+ deregistration upon failure
+Message-ID: <akKnYgr_oc67Tttp@alpha.franken.de>
+References: <alpine.DEB.2.21.2605062240290.46195@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -38,29 +35,52 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260623172728.191557-1-xry111@xry111.site>
+In-Reply-To: <alpine.DEB.2.21.2605062333190.46195@angie.orcam.me.uk>
 
-On Wed, Jun 24, 2026 at 01:27:21AM +0800, Xi Ruoyao wrote:
-> Since the commit 91840be8f710 ("irq_work: Fix use-after-free in
-> irq_work_single() on PREEMPT_RT"), we observed the performance of
-> execve() is significantly impacted on MIPS.
+On Wed, May 06, 2026 at 11:43:00PM +0100, Maciej W. Rozycki wrote:
+> Switch RTC platform device registration from platform_device_register() 
+> to platform_add_devices() so as to make sure any failure will result in 
+> automatic device unregistration.
 > 
-> While we are unsure how that commit caused the impact or how to improve
-> it (or even if it can be improved at all), implementing IRQ work with
-> self-IPI seems able to mitigate the impaction.
-> 
-> Perhaps this can/should be implemented for other MIPS architecture
-> processors as well, but we don't have the enough knowledge of them, nor
-> access to the hardware.  So only implement it for loongson64 here.
-> 
-> Link: https://lore.kernel.org/6be1cdd5f91dd7418a32ff372a6f3ae259b19195.camel@xry111.site/
-> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+> Fixes: fae67ad43114 ("arch/mips/dec: switch DECstation systems to rtc-cmos")
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
 > ---
->  arch/mips/include/asm/irq_work.h |  9 +++++++++
->  arch/mips/include/asm/smp.h      |  2 ++
->  arch/mips/loongson64/smp.c       | 10 ++++++++++
->  3 files changed, 21 insertions(+)
->  create mode 100644 arch/mips/include/asm/irq_work.h
+> Change from v2,
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2605012105320.11074@angie.orcam.me.uk/>:
+> 
+> - Fix a minor style issue in the commit description.
+> 
+> No change from v1 (8/8),
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2604110042130.29980@angie.orcam.me.uk/>.
+> ---
+>  arch/mips/dec/platform.c |    6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> linux-mips-dec-platform-rtc-unregister.diff
+> Index: linux-macro/arch/mips/dec/platform.c
+> ===================================================================
+> --- linux-macro.orig/arch/mips/dec/platform.c
+> +++ linux-macro/arch/mips/dec/platform.c
+> @@ -38,6 +38,10 @@ static struct platform_device dec_rtc_de
+>  	.num_resources = ARRAY_SIZE(dec_rtc_resources),
+>  };
+>  
+> +static struct platform_device *dec_rtc_devices[] __initdata = {
+> +	&dec_rtc_device,
+> +};
+> +
+>  static struct resource dec_dz_resources[] = {
+>  	{ .name = "dz", .flags = IORESOURCE_MEM, },
+>  	{ .name = "dz", .flags = IORESOURCE_IRQ, },
+> @@ -137,7 +141,7 @@ static int __init dec_add_devices(void)
+>  	}
+>  	num_zs = i;
+>  
+> -	ret1 = platform_device_register(&dec_rtc_device);
+> +	ret1 = platform_add_devices(dec_rtc_devices, 1);
+>  	ret2 = IS_ENABLED(CONFIG_32BIT) ?
+>  	       platform_add_devices(dec_dz_devices, num_dz) : 0;
+>  	ret3 = platform_add_devices(dec_zs_devices, num_zs);
 
 applied to mips-fixes
 

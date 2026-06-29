@@ -1,149 +1,92 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BA4466B68
-	for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 16:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE7C374E63;
+	Mon, 29 Jun 2026 17:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782752060; cv=none; b=Kp+raS/G9PIQ1yCG7ajDcR2JmwrL3EZTkAIHQ/Cp03MyLMvbZq7kxWgdNp+OfMtZAZZK7oKdpCco3JNkxxIqOlSHQws9ubPm6KkrxxeL3u/q8GieH0Ph5mxD0nhecxdRtj0p7N0SmEcnVcGsRWv1PJ6yAGASRjwjNXfLz/uizS8=
+	t=1782754792; cv=none; b=Mq+5VJQkfXqTc0Z6TFXRb6VsTLm2X4wyEXQA79iFmddbT1iNQM5oKNnc1eCvxdwaujO6cdmxhUlnaMbJ0+GPHHXIC2B5CcW2Aryj78QD9xcjOnPlibdDhyG30QrOxumbv5ppr+KpVQFLl201MRgcaAmriAmBeOK3mRkSIh7qZ4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782752060; c=relaxed/simple;
-	bh=eE8NJJlLWJmGLS8Mjp0uHMgdO7h8J7DYtf3wXUf3DU0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F0s6hLBjX9g4lfjq8jMPSngTqMPQWXpECkPU9SSfFx16OqlkVwaiDXEBOR/n2J7nklAL+yaIGu40G74aV5q5RcoNL8twKXs/NNi+g2dbObxjlTsQuOEjV3IHUtv5qlHsY4rc/WUHpI5y7Eipegv+scCINMV8KwVpV4EUtA9ZJhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UtH5gwa+; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UtH5gwa+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FCA91F0155C
-	for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 16:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782752058;
-	bh=nrtvzAHL3u6/v5L5E9Co3P0QE5xowtwOQFIomSwMWjk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=UtH5gwa+U1zvJ6MiDKihq7fz1abrI92vBGcYoq95X9rWwvz5W22oGlu4vG8sTBX+v
-	 lZvuZzP6DS79zjdwBazFvkl6XvoQbUodjizsh/Y5t56PyS2oiOkfYCx7wkLk7cdr+q
-	 2NhTOPmDU9hdWHEJWT+FaK8smDYBGn2B+2GOFurQSd53ujUwxlBKe0UjPhBCgGA3QX
-	 k22qz2Jmw2cBhPjOS+8yx0ottM8TY6XGd5Ka/4VbWDj5PV4d5a2kNIQXOJuCPPFOrx
-	 MdEVXZTxj/5NUCsyS7s46Ae8fQuMQf8DXRbIUUrciT9U9mcW4df21f2qy+RvS22A4/
-	 JmKSNxfAR6eag==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-39977ab0562so30894521fa.1
-        for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 09:54:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrKiHmWOb+KVdcGKkY2d82MqilhE3yjiTUWU2UYGcBnDm8mpLy9n156pWYTUm21mkMnIxHIdSvleSrz@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/fIr5NA/noZX+bfbx9Kv8w36hargIr8XMTn7QcI0Ih/vFLl5c
-	b2m1NZKJ5wTCLtZ4tm3iEaCTLlIKwaqG0WMo1MrPMc7TN35Qo6Mlnhqu24tQQPvhJ+/OUeqQtov
-	eBIY+Hp0HnLN53qfNKP3X4TdZ6lLV5H3Py5uCGVX91g==
-X-Received: by 2002:a05:6512:3d19:b0:5ae:b97b:f75a with SMTP id
- 2adb3069b0e04-5aebdbbc205mr24885e87.55.1782752056582; Mon, 29 Jun 2026
- 09:54:16 -0700 (PDT)
+	s=arc-20240116; t=1782754792; c=relaxed/simple;
+	bh=Ej3rdP+msPj7ZdoJHeG5VaheOUmHRQHs9VfwmJSIK/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mb0fuyFZDEjv49AU1MM8na9oIPQrfmOKtohhmQ7zMPTLvbH6U2b0jyV+vd2S07E0+DsKE50P6Hw9ZjABF4KpBDugz7l6fMVyEg4+CoTTZRkJa2Se84Uoul3eGbzr2dyeakaw2QzdcYtt/GGOXtbWniiNehQGeQSBk1CWeYjmDUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1weFd2-0005id-00; Mon, 29 Jun 2026 19:18:40 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 94EDFC013E; Mon, 29 Jun 2026 19:16:51 +0200 (CEST)
+Date: Mon, 29 Jun 2026 19:16:51 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: raoxu <raoxu@uniontech.com>
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, linux-mips@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH net] net: sgi: ioc3-eth: fix split TX DMA mapping lengths
+Message-ID: <akKog7-ppsYUs7z0@alpha.franken.de>
+References: <4E1486BC4536407E+20260629080623.908426-1-raoxu@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260629-qcom-sa8255p-emac-v11-0-1b7fb95b51f9@oss.qualcomm.com>
- <20260629-qcom-sa8255p-emac-v11-1-1b7fb95b51f9@oss.qualcomm.com>
- <CAMuHMdXen+E-Ai51aWBa_KV9W8Fz2cQPpT-FG_kQ7akhrrYa_A@mail.gmail.com>
- <CAMRc=Me3jaZXiXa1sFXr=8Do4sCd+XN1pKTcWC8-0j78SjCkKA@mail.gmail.com> <CAMuHMdVUBgG0EFB16OxHisbxx-sBvDKvBPNZdpyDnmBrnX4ptQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVUBgG0EFB16OxHisbxx-sBvDKvBPNZdpyDnmBrnX4ptQ@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@kernel.org>
-Date: Mon, 29 Jun 2026 18:54:04 +0200
-X-Gmail-Original-Message-ID: <CAMRc=Meb58KCuLXkNSJwUq6KJUzZv0u49FBA2L4C8Vd3NVo8Cg@mail.gmail.com>
-X-Gm-Features: AVVi8CdXDDErrbJGCmrBnsO12t_UfV9Z0jI02dBWCQjihPCNNCZY7ROJGiFNTUI
-Message-ID: <CAMRc=Meb58KCuLXkNSJwUq6KJUzZv0u49FBA2L4C8Vd3NVo8Cg@mail.gmail.com>
-Subject: Re: [PATCH net-next v11 1/7] dt-bindings: phy: document the serdes
- PHY on sa8255p
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Vinod Koul <vkoul@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
-	Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Fabio Estevam <festevam@gmail.com>, Jan Petrous <jan.petrous@oss.nxp.com>, s32@nxp.com, 
-	Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>, Romain Gantois <romain.gantois@bootlin.com>, 
-	Magnus Damm <magnus.damm@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Christophe Roullier <christophe.roullier@foss.st.com>, Radu Rendec <rrendec@redhat.com>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, Drew Fustini <dfustini@tenstorrent.com>, 
-	linux-sunxi@lists.linux.dev, linux-amlogic@lists.infradead.org, 
-	linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	sophgo@lists.linux.dev, linux-riscv@lists.infradead.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4E1486BC4536407E+20260629080623.908426-1-raoxu@uniontech.com>
 
-On Mon, Jun 29, 2026 at 4:58=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Bartosz,
->
-> On Mon, 29 Jun 2026 at 16:07, Bartosz Golaszewski <brgl@kernel.org> wrote=
-:
-> > On Mon, 29 Jun 2026 15:51:31 +0200, Geert Uytterhoeven
-> > <geert@linux-m68k.org> said:
-> > > On Mon, 29 Jun 2026 at 13:29, Bartosz Golaszewski
-> > > <bartosz.golaszewski@oss.qualcomm.com> wrote:
-> > >> Describe the SGMII/SerDes PHY present on the Qualcomm sa8255p platfo=
-rms.
-> > >> This is essentially the same hardware as sa8775p rev3 but the PHY is
-> > >> managed by firmware over SCMI.
-> > >
-> > > So why can't it be reuse the DT bindings, and be compatible with
-> > > qcom,sa8775p-dwmac-sgmii-phy?
-> > >
-> > >> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm=
-.com>
-> > >
-> > >> --- /dev/null
-> > >> +++ b/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii=
--phy.yaml
-> > >
-> > >> +  power-domains:
-> > >> +    maxItems: 1
-> > >> +
-> > >> +  power-domain-names:
-> > >> +    items:
-> > >> +      - const: serdes
-> > >
-> > >> +examples:
-> > >> +  - |
-> > >> +    phy@8901000 {
-> > >> +        compatible =3D "qcom,sa8255p-dwmac-sgmii-phy";
-> > >> +        reg =3D <0x08901000 0xe10>;
-> > >> +        #phy-cells =3D <0>;
-> > >> +        power-domains =3D <&scmi7_dvfs 0>;
-> > >> +        power-domain-names =3D "serdes";
-> > >
-> > > Ah, this uses power-domains, while the existing bindings for
-> > > qcom,sa8775p-dwmac-sgmii-phy use a clock.
-> > > I guess the clock is the correct hardware description?
-> > >
-> > > Adding to my list of examples for backing a hardware-to-SCMI remappin=
-g
-> > > driver...
-> > >
-> >
-> > Russell King asked me to put the PHY logic for SCMI pm domains into the=
- PHY
-> > driver instead of the MAC driver where it was previously. Instead of cr=
-amming
-> > both HLOS and firmware handling into the same driver, I figured it make=
-s more
-> > sense to have a dedicated, cleaner driver as the two share very little =
-code (if
-> > any).
->
-> I think you are mixing up DT bindings and driver implementation?
->
+On Mon, Jun 29, 2026 at 04:06:23PM +0800, raoxu wrote:
+> From: Xu Rao <raoxu@uniontech.com>
+> 
+> When a linear skb crosses a 16 KiB boundary, ioc3_start_xmit()
+> splits it into two buffers of lengths s1 and s2.  The descriptor
+> advertises those lengths through B1CNT and B2CNT.
+> 
+> The first buffer is mapped with s1, but the second buffer is also
+> mapped with s1 even though the device is told to fetch s2 bytes from
+> it.  When the lengths differ, the DMA mapping does not cover the same
+> region as the second descriptor buffer, which can result in incorrect
+> cache maintenance or a DMA fault on implementations that enforce the
+> mapped range.
+> 
+> There is a separate mismatch in the error path.  If mapping the second
+> buffer fails, only d1 needs to be unmapped.  d1 was mapped for s1 bytes,
+> but the driver unmaps it using the full packet length.  Streaming DMA
+> mappings must be unmapped with the same size used for the corresponding
+> map operation.
+> 
+> Map the second buffer with s2 and unmap the first buffer with s1 when
+> the second mapping fails.
+> 
+> Fixes: ed870f6a7aa2 ("net: sgi: ioc3-eth: use dma-direct for dma allocations")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xu Rao <raoxu@uniontech.com>
+> ---
+>  drivers/net/ethernet/sgi/ioc3-eth.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
+> index 3973106..261f2d3 100644
+> --- a/drivers/net/ethernet/sgi/ioc3-eth.c
+> +++ b/drivers/net/ethernet/sgi/ioc3-eth.c
+> @@ -1061,9 +1061,9 @@ static netdev_tx_t ioc3_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>  		d1 = dma_map_single(ip->dma_dev, skb->data, s1, DMA_TO_DEVICE);
+>  		if (dma_mapping_error(ip->dma_dev, d1))
+>  			goto drop_packet;
+> -		d2 = dma_map_single(ip->dma_dev, (void *)b2, s1, DMA_TO_DEVICE);
+> +		d2 = dma_map_single(ip->dma_dev, (void *)b2, s2, DMA_TO_DEVICE);
+>  		if (dma_mapping_error(ip->dma_dev, d2)) {
+> -			dma_unmap_single(ip->dma_dev, d1, len, DMA_TO_DEVICE);
+> +			dma_unmap_single(ip->dma_dev, d1, s1, DMA_TO_DEVICE);
+>  			goto drop_packet;
+>  		}
+>  		desc->p1     = cpu_to_be64(ioc3_map(d1, PCI64_ATTR_PREF));
+> -- 
+> 2.47.3
 
-Ah indeed, but the bindings don't share a lot of content either.
+Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Bartosz
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

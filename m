@@ -1,398 +1,301 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559B7401A3C
-	for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 11:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3D0405852;
+	Mon, 29 Jun 2026 13:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782732579; cv=none; b=CQ+FgOWLDSOKm2iHgJL7dGHwH5iSUOIcLCYkTCWH1mmhSl69G4A0mPyP6Pycb6X54PLZk5OIDKhpPAXLmMGWY5fvw8AEbE9rcKie3v7cS5ers4V1uX6v5LOLahNFplJiujYDrqPV58++3l0Npz5KmW//pZIXDVAeYWezooOoX6o=
+	t=1782738406; cv=none; b=RoQHUwcg1xIr8Bj709qESInM49ECavI7IUZ9oUUlylHrwvDOsrXqCdKBApAF69UnYYtErTI8/fUE6OlsXI4WU7hECtDfUwrn0yXreyl/Oi83Kihvhqrc6ubfD3/HUlZpG26SghO4M4TF1C0JZMCAZGUAm/FTJfE4JOHbj8/VLI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782732579; c=relaxed/simple;
-	bh=o5XoyX1coHzwS5MK4Nao0YTpRLZfe0Qwh6ArwM+K5eE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qv800uAOv5oMLC+9D5K+eN/Yn6bPyV1I23b3sNgfim0zMXBJ0+sb9CthyuD9rZFuKNs/5ALYCFXhJ+aakO4YigvtJAjcbBCjHKOJOtCCUYhqE3kEPqSiw/du77A76oBzEllk2NeP6+X7LwwUbsdZLIcjmTWTedujH8jk/GEGg1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=O2a8aA/h; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=Uruk1hT2; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	s=arc-20240116; t=1782738406; c=relaxed/simple;
+	bh=E6yBxDsbIobiV3mkcGtI8sYUBhVKNigngpQ0IiMQ7RU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mq+NIyJq8jyPyz+06Fgx5vVz8djGWUwH99tA9csbTAdbO7bJW91Sz8fUxGmgcDWXXjQwK2CEYVlXicB9tr7Khg7d2mwGp6pW+EkMyY3CEeebAAdnGNIqi2HK2Q9kLHBLiLmhq+j5MYWA9MMa7FixUuGRQVazJQjHDI2oXY5alg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=ggJG6jKI; arc=none smtp.client-ip=113.46.200.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="O2a8aA/h";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="Uruk1hT2"
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 65TATK6N2656156
-	for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 11:29:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	cyAtb4Z5AA87tJM4aAbz48OZuPpDfL6rZEVyCzADtro=; b=O2a8aA/h4nhMHkFW
-	vsknL2Ick1SFdK2BsJ6bMWbfm11nyrFBnRzojmxlHak4ZBdI7UKqsi4RoySF4e9H
-	SqkURymOu0zI9tSec1PWxPZxeUu2GJZ3faf+hdI31bwIUMgaUVv6eM1s6ObX4haa
-	jzgJTnmXNoJ+o/PN8XBkTwytIxJxKM/1s5cq4jwMMG1nQjra1HyJpjMXRogC5Q/i
-	6DHyPs5S/30q9qTRdY1D2j+y2Xt7TUsRPipZFyUcDV1rJkBU9Z8eSIYgBGKOzDxv
-	yJjWCJ8/rz31w+5Y6MHKfIaE9TT4cV5AzNKRvLwMfb3JWqC/wqYneARhCw4ICY4h
-	bbED0Q==
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f3np7gj37-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 11:29:34 +0000 (GMT)
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-92af3d5e85aso685446785a.0
-        for <linux-mips@vger.kernel.org>; Mon, 29 Jun 2026 04:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1782732574; x=1783337374; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cyAtb4Z5AA87tJM4aAbz48OZuPpDfL6rZEVyCzADtro=;
-        b=Uruk1hT2eVWTAMi03xHHY3mf1OhQqiPe99y3iW7yjGkPg6wBwGrrBpPS+aGB44mgd/
-         j6ASM+pZK4XZcTB2iYMDqjOWCpPeZIhT8GitEfPgRvPxYTj8JwNNSMalrDJqcljrVodX
-         KjpqLMqqtnua6wRWFrbJ0q8qZMVVaf2DUjwGwomupDyqccVeOD/legtRu+NCRBOJHRTX
-         nhDSl3ZXBCkqOvmRRIdAY2kHSOAIBG+yP5er/3C+h6LmVq9LUG6K/g1Z4o7ZR3f+qW9B
-         Mz7Atk9S1VEI0014HBu93KKWflw2TCPasxRpJ6dYi0FW4N+Hm4ky1SG5PzwSPPXL7YpY
-         t26g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782732574; x=1783337374;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cyAtb4Z5AA87tJM4aAbz48OZuPpDfL6rZEVyCzADtro=;
-        b=oKn/+Y9hCp20qeqwGommNRbDq3pXDoXrHS49EpwMDBUtU/w42QtNQkuSQm6NW64pAU
-         CPZdkGCv2ogbLDvX3/dqIrkzwnkOQgA/qdJp9K9i279VFLhnW/CO+wE/nHnNQyEuftRD
-         pBer2nvboy1r7AI7mjyE4WaBk8oVucGGITUEhmlT3th/yQQ2wQQBwjYLyxJvkp2BAn3H
-         8SNMxPJPwmu6XJAsP9Qj3odff4Wt7hVALOzOBbMRIWtdbUwOKubaxN4VH9lYpG1gezHl
-         YpeSWJ15OTqXyWkyg5MkwgAlasBNHWU8qcYtQCiKOi/m0as2rzFmLrfrVNGQzTNQAaW3
-         vjxQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/HRRax2qLRwrr4DXbyj8fGDbCnr1drHj3RThja7VN0FGg2a7mUpZZTJtUOQ6Bm5Ehya4s4T/lLg1z/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOwSzRmejmYcv2Mi+LOl1+D+WhTflJnSNq6e/0kCk2kwg10HzG
-	q+vBTXoMaiyUtDiwJrZpi13nj6lJt5WB4eiYfJbf0YX9075OgL9kMhCfKV8H2aT4e4QuIEpmF+1
-	OSYoaxcFmCp4rkM8QZJUnEsZ6YqXLPfU8cPW0EqX/nDQxND8A6gvdb7cVzPBMAENq
-X-Gm-Gg: AfdE7cmci3lRu3olWWErN2FRqyQPaJfCeGbYVwTRt4Fjt8bqXeNaJATG0A1f6hTdszO
-	+/8NQxhKNfmVsCqyr5nY/cNR001je9APJ8qfdDLVPHMjnPFP3NM3axZKD8UirHvvnXfx5ufs0ZE
-	uX/cKICMBCp74UnpGUed+2voLfxfrKnKPsHJfVZUm2CqraCZJCRnteVkBWmt50p6+rdA9yIfnev
-	irtTW/ktwVBMiisvBvWSGzN6uQNZDW092UqQxJ0bMpYqpbfTnwnCbUQog3lQ5HPJz8VjUJLHjz4
-	gVwgiBF+Is4rTI3UO6kuYEAbbQiB+NhUfJ9ASRsfuR+NjQNlx1iO2tEzkInxpK5MO9eNo8R/T+l
-	aQ0w0BkPGqZ5u8QTwiy8Y5OzetWVC+JJEFfBty2/0
-X-Received: by 2002:a05:620a:45aa:b0:92e:4e45:dea6 with SMTP id af79cd13be357-92e4e45e5c3mr483927285a.52.1782732572222;
-        Mon, 29 Jun 2026 04:29:32 -0700 (PDT)
-X-Received: by 2002:a05:620a:45aa:b0:92e:4e45:dea6 with SMTP id af79cd13be357-92e4e45e5c3mr483911785a.52.1782732570816;
-        Mon, 29 Jun 2026 04:29:30 -0700 (PDT)
-Received: from brgl-qcom.local ([2a01:cb1d:dc:7e00:4640:d76a:6126:9b65])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-46d86960983sm41936351f8f.4.2026.06.29.04.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2026 04:29:30 -0700 (PDT)
-From: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Date: Mon, 29 Jun 2026 13:28:52 +0200
-Subject: [PATCH net-next v11 6/7] net: stmmac: qcom-ethqos: factor out
- linux-level setup into a separate function
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="ggJG6jKI"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=oqt98KNiCfytd9je3A0RWaDEub1SoEsJvKXmHYAhpA0=;
+	b=ggJG6jKIceMr3g60Z1K5gohGiSNMQdcy54004MjW9vQDl4Z3N88jP9qlz2LyqYwtKjt2Ro2Ql
+	dcS+ZZElKSN+dQa6pVya75IHqaTPhjRhLpAzzwdE7tX8hwohhA97kSbBzrXBXKbFMyW3jMU6zI0
+	YF/YokD8vYpNatFoteOUTNw=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4gpmXc04PFzcbRd;
+	Mon, 29 Jun 2026 20:57:51 +0800 (CST)
+Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
+	by mail.maildlp.com (Postfix) with ESMTPS id EC0DF40579;
+	Mon, 29 Jun 2026 21:06:38 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpemf500011.china.huawei.com
+ (7.185.36.131) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 29 Jun
+ 2026 21:06:34 +0800
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+To: <oleg@redhat.com>, <richard.henderson@linaro.org>, <mattst88@gmail.com>,
+	<linmag7@gmail.com>, <linux@armlinux.org.uk>, <catalin.marinas@arm.com>,
+	<will@kernel.org>, <kees@kernel.org>, <guoren@kernel.org>,
+	<chenhuacai@kernel.org>, <kernel@xen0n.name>, <geert@linux-m68k.org>,
+	<tsbogend@alpha.franken.de>, <James.Bottomley@HansenPartnership.com>,
+	<deller@gmx.de>, <maddy@linux.ibm.com>, <mpe@ellerman.id.au>,
+	<npiggin@gmail.com>, <chleroy@kernel.org>, <pjw@kernel.org>,
+	<palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <alex@ghiti.fr>,
+	<hca@linux.ibm.com>, <gor@linux.ibm.com>, <agordeev@linux.ibm.com>,
+	<borntraeger@linux.ibm.com>, <svens@linux.ibm.com>,
+	<ysato@users.sourceforge.jp>, <dalias@libc.org>,
+	<glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
+	<anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
+	<luto@kernel.org>, <tglx@kernel.org>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>, <hpa@zytor.com>, <chris@zankel.net>,
+	<jcmvbkbc@gmail.com>, <peterz@infradead.org>, <wad@chromium.org>,
+	<ruanjinjie@huawei.com>, <thuth@redhat.com>, <mark.rutland@arm.com>,
+	<ada.coupriediaz@arm.com>, <kevin.brodsky@arm.com>, <linusw@kernel.org>,
+	<yeoreum.yun@arm.com>, <song@kernel.org>, <james.morse@arm.com>,
+	<anshuman.khandual@arm.com>, <broonie@kernel.org>, <liqiang01@kylinos.cn>,
+	<pengcan@kylinos.cn>, <ryan.roberts@arm.com>, <yangtiezhu@loongson.cn>,
+	<sshegde@linux.ibm.com>, <mchauras@linux.ibm.com>, <austin.kim@lge.com>,
+	<jchrist@linux.ibm.com>, <arnd@arndb.de>, <thomas.weissschuh@linutronix.de>,
+	<sohil.mehta@intel.com>, <andrew.cooper3@citrix.com>, <jgross@suse.com>,
+	<kas@kernel.org>, <x86@kernel.org>, <linux-alpha@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mm@kvack.org>, <linux-csky@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-m68k@lists.linux-m68k.org>,
+	<linux-mips@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+	<linux-s390@vger.kernel.org>, <linux-sh@vger.kernel.org>,
+	<linux-um@lists.infradead.org>
+Subject: [PATCH v16 00/18] arm64: entry: Convert to Generic Entry
+Date: Mon, 29 Jun 2026 21:05:58 +0800
+Message-ID: <20260629130616.642022-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260629-qcom-sa8255p-emac-v11-6-1b7fb95b51f9@oss.qualcomm.com>
-References: <20260629-qcom-sa8255p-emac-v11-0-1b7fb95b51f9@oss.qualcomm.com>
-In-Reply-To: <20260629-qcom-sa8255p-emac-v11-0-1b7fb95b51f9@oss.qualcomm.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew+netdev@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>, Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jan Petrous <jan.petrous@oss.nxp.com>, s32@nxp.com,
-        Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>,
-        Romain Gantois <romain.gantois@bootlin.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Christophe Roullier <christophe.roullier@foss.st.com>,
-        Bartosz Golaszewski <brgl@kernel.org>,
-        Radu Rendec <rrendec@redhat.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Drew Fustini <dfustini@tenstorrent.com>, linux-sunxi@lists.linux.dev,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        imx@lists.linux.dev, linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, sophgo@lists.linux.dev,
-        linux-riscv@lists.infradead.org, brgl@kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7477;
- i=bartosz.golaszewski@oss.qualcomm.com; h=from:subject:message-id;
- bh=o5XoyX1coHzwS5MK4Nao0YTpRLZfe0Qwh6ArwM+K5eE=;
- b=owEBbQKS/ZANAwAKAQWdLsv/NoTDAcsmYgBqQlcDTAon0X83/cuVf2FonlyDJldJI+jtgKRNr
- qw94YCFiE+JAjMEAAEKAB0WIQSR5RMt5bVGHXuiZfwFnS7L/zaEwwUCakJXAwAKCRAFnS7L/zaE
- w/hYD/4l+Si6QWsD7+ZZxmaH96VzTsVjckV/wXRff5CAaOIfjpJvFKCtXTaM3YdcF42IaaYN1Hx
- 2HNWSLGg1VdwPzcYScIC3MEokznjNOhfTT4g49+bvYwDDlBCtNLiMDc7s3VDTKgVOCHHFu283rb
- ON/ZxL8rsLPQLMe1Zovv0J6E+Ha0QbrbOXCWEIPZMx8Xzef+f5NZWiloH5IDGoztVm2s4V1FDp+
- jXYSCwHCYXpMig7U0ZbGkNwW2VtIZfNOEUQswnoFnP7cxQltjaCJfKxJZwZ3KCzbm5lxjV+KLfr
- /dzqZZl7Ng9OAZSzksTPGeIZTtNkUxIi3UOwtYF8PRk5x+k4ElPxQy/0uVUsmB6Gtpko6JAIL2A
- PtOTpmcE6CbyKI/0xOfhl8+lW4lZRcSGYLpQCbzX/8Z37/3i6S/irGyzB45DjYpLPICGaaBGYU6
- Jsb8gWfgQkeD8rfrBYi4d1eElYfYUFdRemSeg2vS/u4NMaEhOtG2NmwMuLd9vlyr790vRPN/hso
- VwTMBS+A81ha8yuYxdFxURpA4kaZ0pfJrQmpCHbm2xBYkQIZlaM6dH9umSmVRftI83uTfFZ2x27
- L6qtp7zKI00038b7/0ZEgI7Z95MYowxHtqkMs30AHeR47uZq9EOncyUC2xbyr6s4mqqPTwLsyWT
- MpjfoP9Wuse2kYw==
-X-Developer-Key: i=bartosz.golaszewski@oss.qualcomm.com; a=openpgp;
- fpr=169DEB6C0BC3C46013D2C79F11A72EA01471D772
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjI5MDA5NCBTYWx0ZWRfX77Pqp6i1DNzJ
- tRmqMkRqybUd0qrHXREq1nzcZzAenHQoW69J+Q3nXaA23wyKNc3vKzyHpWTSj89AY/nHmiCR4pj
- u1uElNYeYubqwuoJigvNDn837f55OcC34ary7BlrLX15HEhXUpe2P/r32FGNmRHK85MTx374hax
- /2sNAXyBu1qXd7kUwQVCyVo4MXpzIHMMHYo3lGBPi7iQdzDEHhlmk9kJZHJYO0QVJu8b0JzAeOH
- I+bythx7xII7KpJNl+I39DW3qAM4iYE9RD+bIN6Va2+TnllhNbskyr0w2AaP7lzBMi5gQPf/R4o
- E+kvjkLxv6IrcMQTMhJrZSqChz0TVt9BDUq771ZoGCc2s06eQZZ7yXRpVIGprgUhlR/qjnCwVZe
- xvhoh+9MhGHWxjKksnxLseJDCa9K3PJJzJBdJhWkEHgQ19COnQTrSPz1/fSwIJ+SljITzZFfVZr
- LJJFiCF3eF5FxD6XaQw==
-X-Proofpoint-GUID: gAcgMUWDtRKxTJJQ3WCFIkGYKT71byM-
-X-Proofpoint-ORIG-GUID: gAcgMUWDtRKxTJJQ3WCFIkGYKT71byM-
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNjI5MDA5NCBTYWx0ZWRfX2ckQmJCPdO1j
- fsFIhJ9T19+O7KQcHTZtaRBOPMxrVIzQIyKmpZ/Me1YLUwA9eVid81FftZ/rvqVATEFoIwdGvGI
- VhWtna28DeQc35lfPBacPMzrLzmAQp0=
-X-Authority-Analysis: v=2.4 cv=OcWoyBTY c=1 sm=1 tr=0 ts=6a42571e cx=c_pps
- a=HLyN3IcIa5EE8TELMZ618Q==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=FelO9ux0wxsA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=u7WPNUs3qKkmUXheDGA7:22 a=_glEPmIy2e8OvE2BGh3C:22 a=EUspDBNiAAAA:8
- a=dj4JEN0qHmgdNMwDfcEA:9 a=QEXdDO2ut3YA:10 a=bTQJ7kPSJx9SKPbeHEYW:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-29_03,2026-06-26_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 adultscore=0 spamscore=0 clxscore=1015 phishscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2606290094
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500011.china.huawei.com (7.185.36.131)
 
-Ahead of adding support for firmware-controlled EMAC variants, extend
-the ethqos_emac_driver_data structure with a setup() callback, implement
-it for the existing models and move all operations not required in SCMI
-mode into it.
+This is the 16th iteration of the patch series. I would like to express
+my sincere gratitude to everyone who has contributed to the reviews
+and testing across the previous versions, which helped significantly
+refine this work.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
----
- .../ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c    | 99 +++++++++++++++-------
- 1 file changed, 68 insertions(+), 31 deletions(-)
+Currently, architectures such as x86, Riscv, Loongarch use the Generic
+Entry, which significantly eases maintenance burden and improves
+code elegance. Given that arm64 has already successfully adopted
+the Generic IRQ Entry in commit b3cf07851b6c ("arm64: entry: Switch to
+generic IRQ entry"), it is now the right time to completely convert arm64
+to the Generic Entry infrastructure.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index fa3447b90315672d706d5ce7d710bdec6214e4e6..f379570f80680e96f027873cda6a6bca398e22dc 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -5,6 +5,7 @@
- #include <linux/of.h>
- #include <linux/of_net.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_domain.h>
- #include <linux/phy.h>
- #include <linux/phy/phy.h>
- 
-@@ -81,6 +82,8 @@
- 
- #define SGMII_10M_RX_CLK_DVDR			0x31
- 
-+struct qcom_ethqos;
-+
- struct ethqos_emac_por {
- 	unsigned int offset;
- 	unsigned int value;
-@@ -95,6 +98,8 @@ struct ethqos_emac_driver_data {
- 	const char *link_clk_name;
- 	struct dwmac4_addrs dwmac4_addrs;
- 	bool needs_sgmii_loopback;
-+	int (*setup)(struct qcom_ethqos *ethqos,
-+		     struct plat_stmmacenet_data *plat_dat);
- };
- 
- struct qcom_ethqos {
-@@ -199,6 +204,9 @@ static void ethqos_set_func_clk_en(struct qcom_ethqos *ethqos)
- 	rgmii_setmask(ethqos, RGMII_CONFIG_FUNC_CLK_EN, RGMII_IO_MACRO_CONFIG);
- }
- 
-+static int ethqos_hlos_setup(struct qcom_ethqos *ethqos,
-+			     struct plat_stmmacenet_data *plat_dat);
-+
- static const struct ethqos_emac_por emac_v2_3_0_por[] = {
- 	{ .offset = RGMII_IO_MACRO_CONFIG,	.value = 0x00C01343 },
- 	{ .offset = SDCC_HC_REG_DLL_CONFIG,	.value = 0x2004642C },
-@@ -213,6 +221,7 @@ static const struct ethqos_emac_driver_data emac_v2_3_0_data = {
- 	.num_rgmii_por = ARRAY_SIZE(emac_v2_3_0_por),
- 	.rgmii_config_loopback_en = true,
- 	.has_emac_ge_3 = false,
-+	.setup = ethqos_hlos_setup,
- };
- 
- static const struct ethqos_emac_por emac_v2_1_0_por[] = {
-@@ -229,6 +238,7 @@ static const struct ethqos_emac_driver_data emac_v2_1_0_data = {
- 	.num_rgmii_por = ARRAY_SIZE(emac_v2_1_0_por),
- 	.rgmii_config_loopback_en = false,
- 	.has_emac_ge_3 = false,
-+	.setup = ethqos_hlos_setup,
- };
- 
- static const struct ethqos_emac_por emac_v3_0_0_por[] = {
-@@ -261,6 +271,7 @@ static const struct ethqos_emac_driver_data emac_v3_0_0_data = {
- 		.mtl_low_cred = 0x00008024,
- 		.mtl_low_cred_offset = 0x1000,
- 	},
-+	.setup = ethqos_hlos_setup,
- };
- 
- static const struct ethqos_emac_por emac_v4_0_0_por[] = {
-@@ -296,6 +307,7 @@ static const struct ethqos_emac_driver_data emac_v4_0_0_data = {
- 		.mtl_low_cred = 0x00008024,
- 		.mtl_low_cred_offset = 0x1000,
- 	},
-+	.setup = ethqos_hlos_setup,
- };
- 
- static int ethqos_dll_configure(struct qcom_ethqos *ethqos)
-@@ -685,6 +697,58 @@ static void ethqos_ptp_clk_freq_config(struct stmmac_priv *priv)
- 	netdev_dbg(priv->dev, "PTP rate %lu\n", plat_dat->clk_ptp_rate);
- }
- 
-+static int ethqos_hlos_setup(struct qcom_ethqos *ethqos,
-+			     struct plat_stmmacenet_data *plat_dat)
-+{
-+	struct platform_device *pdev = ethqos->pdev;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	ethqos->rgmii_base = devm_platform_ioremap_resource_byname(pdev, "rgmii");
-+	if (IS_ERR(ethqos->rgmii_base))
-+		return dev_err_probe(dev, PTR_ERR(ethqos->rgmii_base),
-+				     "Failed to map rgmii resource\n");
-+
-+	ethqos->link_clk = devm_clk_get(dev, ethqos->data->link_clk_name ?: "rgmii");
-+	if (IS_ERR(ethqos->link_clk))
-+		return dev_err_probe(dev, PTR_ERR(ethqos->link_clk),
-+				     "Failed to get link_clk\n");
-+
-+	plat_dat->clks_config = ethqos_clks_config;
-+
-+	ret = ethqos_clks_config(ethqos, true);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(dev, ethqos_clks_disable, ethqos);
-+	if (ret)
-+		return ret;
-+
-+	ethqos_set_clk_tx_rate(ethqos, NULL, plat_dat->phy_interface, SPEED_1000);
-+	qcom_ethqos_set_sgmii_loopback(ethqos, true);
-+	ethqos_set_func_clk_en(ethqos);
-+
-+	switch (ethqos->phy_mode) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		plat_dat->fix_mac_speed = ethqos_fix_mac_speed_rgmii;
-+		break;
-+	case PHY_INTERFACE_MODE_2500BASEX:
-+	case PHY_INTERFACE_MODE_SGMII:
-+		plat_dat->fix_mac_speed = ethqos_fix_mac_speed_sgmii;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	plat_dat->set_clk_tx_rate = ethqos_set_clk_tx_rate;
-+	plat_dat->dump_debug_regs = rgmii_dump;
-+
-+	return 0;
-+}
-+
- static int qcom_ethqos_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -706,23 +770,20 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 				     "dt configuration failed\n");
- 	}
- 
--	plat_dat->clks_config = ethqos_clks_config;
--
- 	ethqos = devm_kzalloc(dev, sizeof(*ethqos), GFP_KERNEL);
- 	if (!ethqos)
- 		return -ENOMEM;
- 
- 	ethqos->phy_mode = plat_dat->phy_interface;
-+
- 	switch (ethqos->phy_mode) {
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
- 	case PHY_INTERFACE_MODE_RGMII_RXID:
- 	case PHY_INTERFACE_MODE_RGMII_TXID:
--		plat_dat->fix_mac_speed = ethqos_fix_mac_speed_rgmii;
- 		break;
- 	case PHY_INTERFACE_MODE_2500BASEX:
- 	case PHY_INTERFACE_MODE_SGMII:
--		plat_dat->fix_mac_speed = ethqos_fix_mac_speed_sgmii;
- 		plat_dat->mac_finish = ethqos_mac_finish_serdes;
- 		break;
- 	default:
-@@ -732,24 +793,13 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	}
- 
- 	ethqos->pdev = pdev;
--	ethqos->rgmii_base = devm_platform_ioremap_resource_byname(pdev, "rgmii");
--	if (IS_ERR(ethqos->rgmii_base))
--		return dev_err_probe(dev, PTR_ERR(ethqos->rgmii_base),
--				     "Failed to map rgmii resource\n");
--
- 	data = of_device_get_match_data(dev);
- 	ethqos->data = data;
- 
--	ethqos->link_clk = devm_clk_get(dev, data->link_clk_name ?: "rgmii");
--	if (IS_ERR(ethqos->link_clk))
--		return dev_err_probe(dev, PTR_ERR(ethqos->link_clk),
--				     "Failed to get link_clk\n");
--
--	ret = ethqos_clks_config(ethqos, true);
--	if (ret)
--		return ret;
-+	if (WARN_ON(!data->setup))
-+		return -EINVAL;
- 
--	ret = devm_add_action_or_reset(dev, ethqos_clks_disable, ethqos);
-+	ret = data->setup(ethqos, plat_dat);
- 	if (ret)
- 		return ret;
- 
-@@ -758,21 +808,8 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 		return dev_err_probe(dev, PTR_ERR(ethqos->serdes_phy),
- 				     "Failed to get serdes phy\n");
- 
--	ethqos_set_clk_tx_rate(ethqos, NULL, plat_dat->phy_interface,
--			       SPEED_1000);
--
--	qcom_ethqos_set_sgmii_loopback(ethqos, true);
--	ethqos_set_func_clk_en(ethqos);
--
--	/* The clocks are controlled by firmware, so we don't know for certain
--	 * what clock rate is being used. Hardware documentation mentions that
--	 * the AHB slave clock will be in the range of 50 to 100MHz, which
--	 * equates to a MDC between 1.19 and 2.38MHz.
--	 */
- 	plat_dat->clk_csr = STMMAC_CSR_60_100M;
- 	plat_dat->bsp_priv = ethqos;
--	plat_dat->set_clk_tx_rate = ethqos_set_clk_tx_rate;
--	plat_dat->dump_debug_regs = rgmii_dump;
- 	plat_dat->ptp_clk_freq_config = ethqos_ptp_clk_freq_config;
- 	plat_dat->core_type = DWMAC_CORE_GMAC4;
- 	if (data->has_emac_ge_3)
+The objective of this series is to bring arm64 in line with other major
+architectures, reducing duplicated boilerplate code and simplifying the
+sharing of future improvements in entry/exit paths, such as "Syscall User
+Dispatch" and "rseq time slice extension" optimizations.
+
+This patch set is rebased on v7.2-rc1. It contains the foundational
+updates required for arm64. Following the suggestion from Linus Walleij,
+these patches are being submitted separately for inclusion via
+the arm64 tree.
+
+Performance benchmarks were conducted on a "Kunpeng HIP09" platform with
+kernel auditing enabled. The results are detailed below:
+
+1. perf bench syscall usec/op (-ve is improvement)
+
+        | Syscall | Base        | Generic Entry | change % |
+        | ------- | ----------- | ------------- | -------- |
+        | basic   | 0.223       | 0.218         | -2.25    |
+        | execve  | 799.564     | 787.849       | -1.47    |
+        | fork    | 1088.503    | 1096.920      | +0.77    |
+        | getpgid | 0.218       |  0.122        | -0.47    |
+
+2. perf bench syscall ops/sec (+ve is improvement)
+
+        | Syscall | Base     | Generic Entry| change % |
+        | ------- | -------- | ------------ | -------- |
+        | basic   | 4475386  | 4578820      | +2.31    |
+        | execve  | 1250     | 1269         | +1.54    |
+        | fork    | 918      | 911          | -0.74    |
+        | getpgid | 4587781  | 4607488      | +0.43    |
+
+Overall, the syscall performance remains largely neutral, with minor
+variations ranging from a 0.8% regression to a 2.3% improvement, which
+is within normal measurement tolerance.
+
+Tested successfully on "Kunpeng HIP09" using the following test cases:
+ - stress-ng: CPU, Virtual Memory, Syscall, and Interrupt stress tests.
+ - hackbench: Evaluated in both thread and pipe modes.
+ - kselftests (ptrace): get_syscall_info, set_syscall_info, peeksiginfo.
+ - kselftests (breakpoints): breakpoint_test_arm64.
+ - kselftests (arm64/abi): syscall-abi and ptrace.
+ - kselftests (arm64/fp): fp-ptrace, sve-ptrace, and za-ptrace.
+ - kselftests (vDSO): vdso_test_getrandom.
+ - Ptrace stress test: tracing stress-ng system calls under load.
+ - Pseudo-NMI load test using perf.
+
+Changes in v16:
+- Rebased on v7.2-rc1.
+- Convert __secure_computing() to return boolean as Thomas suggested.
+- Introduce a weak vesion for arch_syscall_is_vdso_sigreturn()
+  to simplify the code.
+- Split out the implementation of arch_syscall_is_vdso_sigreturn()
+  into a separate patch to facilitate reviewing.
+- Break down the syscall_exit_to_user_mode_work() refactoring into
+  5 smaller, bite-sized patches for easier review and justification.
+- Update the comment and commit message as Ada suggeted.
+- Clarify patch titles and align title prefixes for consistency.
+- Collect Reviewed-by and Tesed-by.
+- Link to v15: https://lore.kernel.org/all/20260511092103.1974980-1-ruanjinjie@huawei.com/
+
+Changes in v15:
+- Rebased on v7.1-rc1 and Mark's fix patch in [1].
+- Solve issues Sashiko AI pointed out, "Fix potential syscall truncation
+  in syscall_trace_enter()".
+- Make syscall_exit_to_user_mode_work() __always_inline to keep
+  the fast-path performance as Sashiko pointed out.
+
+Changes in v14:
+- Initialize ret = 0 in syscall_trace_enter().
+- Split into two patch sets as Linus Walleij suggested, so this patch set
+  can be applied separately to the arm64 tree.
+- Rebased on arm64 for-next/core branch.
+- Collect Reviewed-by and Acked-by.
+- Link to v13 resend: https://lore.kernel.org/all/20260317082020.737779-15-ruanjinjie@huawei.com/
+
+Changes in v13 resend:
+- Fix exit_to_user_mode_prepare_legacy() issues.
+- Also move TIF_SINGLESTEP to generic TIF infrastructure for loongarch.
+- Use generic TIF bits for arm64 and moving TIF_SINGLESTEP to
+  generic TIF for related architectures separately.
+- Refactor syscall_trace_enter/exit() to accept flags and Use
+  syscall_get_nr() helper separately.
+- Tested with slice_test for rseq optimizations.
+- Add acked-by.
+- Link to v13: https://lore.kernel.org/all/20260313094738.3985794-1-ruanjinjie@huawei.com/
+
+Changes in v13:
+- Rebased on v7.0-rc3, so drop the firt applied arm64 patch.
+- Use generic TIF bits to enables RSEQ optimization.
+- Update most of the commit message to make it more clear.
+- Link to v12: https://lore.kernel.org/all/20260203133728.848283-1-ruanjinjie@huawei.com/
+
+Changes in v12:
+- Rebased on "sched/core", so remove the four generic entry patches.
+- Move "Expand secure_computing() in place" and
+  "Use syscall_get_arguments() helper" patch forward, which will group all
+  non-functional cleanups at the front.
+- Adjust the explanation for moving rseq_syscall() before
+  audit_syscall_exit().
+- Link to v11: https://lore.kernel.org/all/20260128031934.3906955-1-ruanjinjie@huawei.com/
+
+Changes in v11:
+- Remove unused syscall in syscall_trace_enter().
+- Update and provide a detailed explanation of the differences after
+  moving rseq_syscall() before audit_syscall_exit().
+- Rebased on arm64 (for-next/entry), and remove the first applied 3 patchs.
+- syscall_exit_to_user_mode_work() for arch reuse instead of adding
+  new syscall_exit_to_user_mode_work_prepare() helper.
+- Link to v10: https://lore.kernel.org/all/20251222114737.1334364-1-ruanjinjie@huawei.com/
+
+Changes in v10:
+- Rebased on v6.19-rc1, rename syscall_exit_to_user_mode_prepare() to
+  syscall_exit_to_user_mode_work_prepare() to avoid conflict.
+- Also inline syscall_trace_enter().
+- Support aarch64 for sud_benchmark.
+- Update and correct the commit message.
+- Add Reviewed-by.
+- Link to v9: https://lore.kernel.org/all/20251204082123.2792067-1-ruanjinjie@huawei.com/
+
+Changes in v9:
+- Move "Return early for ptrace_report_syscall_entry() error" patch ahead
+  to make it not introduce a regression.
+- Not check _TIF_SECCOMP/SYSCALL_EMU for syscall_exit_work() in
+  a separate patch.
+- Do not report_syscall_exit() for PTRACE_SYSEMU_SINGLESTEP in a separate
+  patch.
+- Add two performance patch to improve the arm64 performance.
+- Add Reviewed-by.
+- Link to v8: https://lore.kernel.org/all/20251126071446.3234218-1-ruanjinjie@huawei.com/
+
+Changes in v8:
+- Rename "report_syscall_enter()" to "report_syscall_entry()".
+- Add ptrace_save_reg() to avoid duplication.
+- Remove unused _TIF_WORK_MASK in a standalone patch.
+- Align syscall_trace_enter() return value with the generic version.
+- Use "scno" instead of regs->syscallno in el0_svc_common().
+- Move rseq_syscall() ahead in a standalone patch to clarify it clearly.
+- Rename "syscall_trace_exit()" to "syscall_exit_work()".
+- Keep the goto in el0_svc_common().
+- No argument was passed to __secure_computing() and check -1 not -1L.
+- Remove "Add has_syscall_work() helper" patch.
+- Move "Add syscall_exit_to_user_mode_prepare() helper" patch later.
+- Add miss header for asm/entry-common.h.
+- Update the implementation of arch_syscall_is_vdso_sigreturn().
+- Add "ARCH_SYSCALL_WORK_EXIT" to be defined as "SECCOMP | SYSCALL_EMU"
+  to keep the behaviour unchanged.
+- Add more testcases test.
+- Add Reviewed-by.
+- Update the commit message.
+- Link to v7: https://lore.kernel.org/all/20251117133048.53182-1-ruanjinjie@huawei.com/
+
+Jinjie Ruan (18):
+  seccomp: Convert __secure_computing() to return boolean
+  syscall_user_dispatch: Introduce a weak fallback for
+    arch_syscall_is_vdso_sigreturn()
+  arm64: ptrace: Pass thread flags to syscall_trace_enter/exit()
+  arm64: ptrace: Use syscall_get_nr() helper for syscall_trace_enter()
+  arm64: ptrace: Expand secure_computing() in place
+  arm64: ptrace: Use syscall_get_arguments() helper for audit
+  arm64: ptrace: Protect rseq_syscall() from tracer PC modifications
+  arm64: ptrace: Rename syscall_trace_exit() to syscall_exit_work()
+  arm64: syscall: Rework the syscall exit path in el0_svc_common()
+  arm64: ptrace: Extract syscall_exit_to_user_mode_work() helper
+  arm64: ptrace: Align syscall exit work semantics with generic entry
+  arm64: syscall: Use exit-specific flags check in el0_svc_common()
+  arm64: syscall: Simplify el0_svc_common() syscall exit path
+  arm64: syscall: Simplify syscall exit path in el0_svc_common()
+  arm64: ptrace: Skip syscall exit reporting for
+    PTRACE_SYSEMU_SINGLESTEP
+  arm64: entry: Convert to generic entry
+  arm64: Inline el0_svc_common()
+  arm64: vdso: Expose sigreturn address on vdso to the kernel
+
+ arch/alpha/kernel/ptrace.c            |   2 +-
+ arch/arm/kernel/ptrace.c              |   2 +-
+ arch/arm64/Kconfig                    |   2 +-
+ arch/arm64/include/asm/elf.h          |   1 +
+ arch/arm64/include/asm/entry-common.h |  76 +++++++++++++++++
+ arch/arm64/include/asm/syscall.h      |   4 +-
+ arch/arm64/include/asm/thread_info.h  |  16 +---
+ arch/arm64/kernel/debug-monitors.c    |   8 ++
+ arch/arm64/kernel/ptrace.c            | 115 --------------------------
+ arch/arm64/kernel/signal.c            |   2 +-
+ arch/arm64/kernel/syscall.c           |  30 ++-----
+ arch/arm64/kernel/vdso.c              |  16 ++++
+ arch/csky/kernel/ptrace.c             |   2 +-
+ arch/loongarch/include/asm/syscall.h  |   5 --
+ arch/m68k/kernel/ptrace.c             |   2 +-
+ arch/mips/kernel/ptrace.c             |   2 +-
+ arch/parisc/kernel/ptrace.c           |   2 +-
+ arch/powerpc/include/asm/syscall.h    |   5 --
+ arch/riscv/include/asm/syscall.h      |   5 --
+ arch/s390/include/asm/syscall.h       |   5 --
+ arch/sh/kernel/ptrace_32.c            |   2 +-
+ arch/um/kernel/skas/syscall.c         |   2 +-
+ arch/x86/entry/vsyscall/vsyscall_64.c |   2 +-
+ arch/xtensa/kernel/ptrace.c           |   3 +-
+ include/linux/entry-common.h          |   7 +-
+ include/linux/seccomp.h               |  10 +--
+ include/linux/syscall_user_dispatch.h |   1 +
+ kernel/entry/syscall_user_dispatch.c  |   5 ++
+ kernel/seccomp.c                      |  34 ++++----
+ 29 files changed, 154 insertions(+), 214 deletions(-)
 
 -- 
-2.47.3
+2.34.1
 

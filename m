@@ -1,171 +1,148 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F4339023F
-	for <linux-mips@vger.kernel.org>; Wed,  1 Jul 2026 17:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F103911A2
+	for <linux-mips@vger.kernel.org>; Thu,  2 Jul 2026 07:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782926367; cv=none; b=SecBXgLDmIIQy4pkxMjnvMfO8enAotu56dHXnJG9hkoQfB8eFgb9EArQrLHfm4WzJspnYq7ANjwfpn1Z1j9Px/yKGy8ATqaUA8f3MEtKzF5tHxsox9r1cAgr/nsxFK9l2BWNwcrrEEb22WkaFZ+Kpm4dgEM3lc6bKeZlGaul3bU=
+	t=1782977298; cv=none; b=RrsknLne3hBqcnHZhvoPoT575zxBKT5VQ0drTxEBe5UZBJFL/m5ZqGMTYGJ5y9SV4pYBsp9ylppIGMwyi7MRnmhRW1H/tLuimQeVBfWNAUWCX1ZDCIA9Dwhc6V8EnMBoNIpTjmAwiKAsvIeO9Iyyr4rd6LwVtK5f1vYkxud6ir8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782926367; c=relaxed/simple;
-	bh=5bhvD+nRcVIb8srILoT2JhrwKmYl6bpoUDx5N2ye8hE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uzPFb5F+KYYg8De/SQNCjiaXYqkVL4xwZcimoRF1bbXEh7DZO8aImhIMNWRWHRtyY3/xlxnS0e5TUd5RwhwMfz4VM+JYNaUXreXfa+AR87jIdmyW+52GH6+CNEmKsgzqWrfxgkjPSL2cO6IlcfyPjIsZQU/7aUZfABGHrooVI00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qD4CTrmn; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782977298; c=relaxed/simple;
+	bh=cdXAMvaGTLXZ4tRHqX+15mFjqPO5NJv7/lbzInUeZeM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=txEvYEp/MFAPB+orGP4WZyvRhkW4KHI2eLK1ryGm5Y7N7G71o5fFE+AkYWTTZpM8Th6kPmho0EzdHqmOxGns+afb9ITfUSpRpUqv8shRipmtKB80+smfAbF6ds1lhJUayl9SiSvPCNkr2KZ3aIv7NXx4RSTdJqzpIy8b8q87a/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UUw36nfQ; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qD4CTrmn"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-847a52edeb2so576943b3a.0
-        for <linux-mips@vger.kernel.org>; Wed, 01 Jul 2026 10:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782926366; x=1783531166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tj4zAkM97ykSNm2NxrzOr6EmDioqKrT1a10snYm0euI=;
-        b=qD4CTrmnKdKQ8e7YbnPbMttj2+NW66kyAZlUMZDTxXaacbJDNFs4lNd56CjR0def25
-         pCNDBf7UbjG2A+bXFywKDRIGKFcV3Xwv1UAVvJqQxxowdoalL0QGj14PZKx/wz0MYFfM
-         Qomu06GXqnDW2Cx7NGT1nz4M23lCui3Eo8ZLYMEto3VFLSYn8Bo/Xm8M41JeLNZAou5b
-         WPAnxAMvPsuq/y3V7KzMQOSvzsAakZrq51Dyhu+Q1VphE3ltMv9J4awRv6TcT/4eDcep
-         0K+LRmPWT9k7TvF6fFDYOQakQ2YmQLbCK3QhP/DVVLOWKzPLSd+8cQYN2E6/rslv66+/
-         PiSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782926366; x=1783531166;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tj4zAkM97ykSNm2NxrzOr6EmDioqKrT1a10snYm0euI=;
-        b=IXdYE2ZsHDvPtLOCq/G4Okf6OC9jH/frLdmqQ0OvFYMBoWgNXgWGtUA/WuufZdRtMl
-         6OPc09K2zMabF5mgUIvCktgK4432Q0SQRFbAtjBq+//TzGYAhUyoizpEfPAqJAU5Lk3Z
-         NJ0lhcW77V8uNehwTUFWfSx/HOI5DzX80HSDEkUH4EB+ETOMXG4dIuKLu9ma3VBDmaOZ
-         N4mvLZcOcsrU7ChlgtdMG6ft9JNsSzkyCTC4LTPF7aaEeQ2cFA80LOHE1S/o1IgBFfh6
-         B772FVSOfWEZI/qwG3wroQM4PmzaogmWC2Ei7qeTCJvUQNVOPc5QjYXAxlU08bjBsYvw
-         zwUg==
-X-Forwarded-Encrypted: i=1; AFNElJ+2rtOEF5r9jAk0HWVJIshilR5xbRvAp7fvaFdm9tEl0GcKwgQ7YQJjwBJfe1tyF5Y3s2Tj3WDlV639@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMeJPw+tYy67yznE1Mj+C9QnQKQ/nwgpUI4HWbcSOZO4Ju76d5
-	A6zzcAX8jUCk3/SzH5I0N/jpIl8CkJ7D8ewoz7YhhSRk1vzq6dolHTfY
-X-Gm-Gg: AfdE7cmjNNQNUeMhvnZMWoYrFq0MOejN6JlHG6yw93cAc3Z4NTOf3Jj8fgT7tMkZnGZ
-	8ti4T9D8fWx80r5D3LgO6VyLIOft0LWvepxryk/vM1we8OLnlaeXe8iyOiyjUDtcTBezouEkn3N
-	bGP5BoC7ku4EEpYMcbP7qjcGaqk7m+dsiM7GRpIc/l99jm2zVt+eQVpzKAx/WJOzenJ+Bjjl+Yz
-	jZn9jo4sUda5M24qeYaWrcEOjmEt6CqYljhWAG2gdqKBrDysRo+q0dTOTtiiz8MoEGZXi/CXaeT
-	NubFzhcLVs7GKDasVKNfPQgXRTnzCeqTq9LO9LVOoUtuD2f8YNNIyUGR9JzPEvX3Bn9W7WcWNkU
-	hg103PuvR9qecXsNXEhzk9jEkQw3+rkfRq4c3fbEwh3qhGBtehsgWRlvmu9bPs68VUC88CVZ9Om
-	2qYR51+G8a3sQNforQOasPPpVewcMqzQ==
-X-Received: by 2002:a05:6a21:116:b0:3bf:b4ed:5579 with SMTP id adf61e73a8af0-3bfed571ba3mr2768071637.59.1782926365419;
-        Wed, 01 Jul 2026 10:19:25 -0700 (PDT)
-Received: from inhnjlux1020.ls.ege.ds ([49.204.164.94])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30ee2f5c4c3sm22724178eec.2.2026.07.01.10.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2026 10:19:24 -0700 (PDT)
-From: Udaya Kiran Challa <challauday369@gmail.com>
-To: tsbogend@alpha.franken.de,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org
-Cc: skhan@linuxfoundation.org,
-	me@brighamcampbell.com,
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UUw36nfQ"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782977290;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cdXAMvaGTLXZ4tRHqX+15mFjqPO5NJv7/lbzInUeZeM=;
+	b=UUw36nfQUDO4ek5W5MoGxv/bQdNbTQycY1qQKAEoJymjql+ZXc8a2FUo9eNrafl6xDrEni
+	1302Z8Y+Ma+0qxdUDhBISoxry5nus7uGAN8fTkB0ZcU/zUf+14Ol9iIljWhjg5Yh/mt933
+	8BhSh84bNWygA1To4TaXOltx56F5hgs=
+From: Lance Yang <lance.yang@linux.dev>
+To: ljs@kernel.org
+Cc: akpm@linux-foundation.org,
+	tsbogend@alpha.franken.de,
+	maddy@linux.ibm.com,
+	mpe@ellerman.id.au,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	simona@ffwll.ch,
+	l.stach@pengutronix.de,
+	inki.dae@samsung.com,
+	sw0312.kim@samsung.com,
+	kyungmin.park@samsung.com,
+	krzk@kernel.org,
+	peter.griffin@linaro.org,
+	jani.nikula@linux.intel.com,
+	joonas.lahtinen@linux.intel.com,
+	rodrigo.vivi@intel.com,
+	tursulin@ursulin.net,
+	robin.clark@oss.qualcomm.com,
+	lumag@kernel.org,
+	lyude@redhat.com,
+	dakr@kernel.org,
+	tomi.valkeinen@ideasonboard.com,
+	hjc@rock-chips.com,
+	heiko@sntech.de,
+	andy.yan@rock-chips.com,
+	thierry.reding@kernel.org,
+	mperttunen@nvidia.com,
+	jonathanh@nvidia.com,
+	kraxel@redhat.com,
+	dmitry.osipenko@collabora.com,
+	zack.rusin@broadcom.com,
+	matthew.brost@intel.com,
+	thomas.hellstrom@linux.intel.com,
+	oleksandr_andrushchenko@epam.com,
+	deller@gmx.de,
+	bcrl@kvack.org,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	muchun.song@linux.dev,
+	osalvador@suse.de,
+	david@kernel.org,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	liam@infradead.org,
+	npache@redhat.com,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	baohua@kernel.org,
+	lance.yang@linux.dev,
+	hughd@google.com,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	jannh@google.com,
+	pfalcato@suse.de,
+	kees@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
 	linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Udaya Kiran Challa <challauday369@gmail.com>
-Subject: [PATCH] dt-bindings: watchdog: microchip,pic32mzda-dmt: Convert to DT schema
-Date: Wed,  1 Jul 2026 22:49:17 +0530
-Message-Id: <20260701171917.263050-1-challauday369@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	linuxppc-dev@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org,
+	etnaviv@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org,
+	nouveau@lists.freedesktop.org,
+	linux-rockchip@lists.infradead.org,
+	linux-tegra@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	intel-xe@lists.freedesktop.org,
+	xen-devel@lists.xenproject.org,
+	linux-fbdev@vger.kernel.org,
+	linux-aio@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH 01/13] mm: introduce vma_flags_can_grow() and vma_can_grow()
+Date: Thu,  2 Jul 2026 15:27:50 +0800
+Message-Id: <20260702072750.45641-1-lance.yang@linux.dev>
+In-Reply-To: <f2e8c32515d328db62279cc8bab8398ea278d74f.1782760670.git.ljs@kernel.org>
+References: <f2e8c32515d328db62279cc8bab8398ea278d74f.1782760670.git.ljs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Convert Microchip PIC32 Deadman Timer devicetree binding
-from legacy text format to DT schema.
 
-Signed-off-by: Udaya Kiran Challa <challauday369@gmail.com>
----
- .../bindings/watchdog/microchip,pic32-dmt.txt | 19 --------
- .../watchdog/microchip,pic32mzda-dmt.yaml     | 45 +++++++++++++++++++
- 2 files changed, 45 insertions(+), 19 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/watchdog/microchip,pic32-dmt.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/microchip,pic32mzda-dmt.yaml
+On Mon, Jun 29, 2026 at 08:25:24PM +0100, Lorenzo Stoakes wrote:
+>These test whether the VMA has stack sematics, i.e. is able to grow upwards
+>or downwards depending on the architecture.
+>
+>In order to account for arches which do not support upward-growing stacks,
+>introduce VMA_GROWSUP whose definition depends on the architecture
+>supporting it, and use vma_flags_test_single_mask() in vma_flags_can_grow()
+>to account for this.
+>
+>Update the VMA userland tests to reflect the changes
+>
+>No functional change intended.
+>
+>Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
+>---
 
-diff --git a/Documentation/devicetree/bindings/watchdog/microchip,pic32-dmt.txt b/Documentation/devicetree/bindings/watchdog/microchip,pic32-dmt.txt
-deleted file mode 100644
-index 49485f831373..000000000000
---- a/Documentation/devicetree/bindings/watchdog/microchip,pic32-dmt.txt
-+++ /dev/null
-@@ -1,19 +0,0 @@
--* Microchip PIC32 Deadman Timer
--
--The deadman timer is used to reset the processor in the event of a software
--malfunction. It is a free-running instruction fetch timer, which is clocked
--whenever an instruction fetch occurs until a count match occurs.
--
--Required properties:
--- compatible: must be "microchip,pic32mzda-dmt".
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- clocks: phandle of source clk. Should be <&rootclk PB7CLK>.
--
--Example:
--
--	watchdog@1f800a00 {
--		compatible = "microchip,pic32mzda-dmt";
--		reg = <0x1f800a00 0x80>;
--		clocks = <&rootclk PB7CLK>;
--	};
-diff --git a/Documentation/devicetree/bindings/watchdog/microchip,pic32mzda-dmt.yaml b/Documentation/devicetree/bindings/watchdog/microchip,pic32mzda-dmt.yaml
-new file mode 100644
-index 000000000000..01638624e334
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/microchip,pic32mzda-dmt.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/microchip,pic32mzda-dmt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip PIC32MZDA Deadman Timer
-+
-+maintainers:
-+  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-+
-+description: |
-+  The deadman timer is used to reset the processor in the event of a software
-+  malfunction. It is a free-running instruction fetch timer, which is clocked
-+  whenever an instruction fetch occurs until a count match occurs.
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+properties:
-+  compatible:
-+    const: microchip,pic32mzda-dmt
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/microchip,pic32-clock.h>
-+
-+    watchdog@1f800a00 {
-+        compatible = "microchip,pic32mzda-dmt";
-+        reg = <0x1f800a00 0x80>;
-+        clocks = <&rootclk PB7CLK>;
-+       };
--- 
-2.34.1
+Nice cleanup! Feel free to add:
 
+Reviewed-by: Lance Yang <lance.yang@linux.dev>

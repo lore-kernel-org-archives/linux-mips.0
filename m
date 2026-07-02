@@ -1,148 +1,179 @@
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F103911A2
-	for <linux-mips@vger.kernel.org>; Thu,  2 Jul 2026 07:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092121EFFA1;
+	Thu,  2 Jul 2026 08:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782977298; cv=none; b=RrsknLne3hBqcnHZhvoPoT575zxBKT5VQ0drTxEBe5UZBJFL/m5ZqGMTYGJ5y9SV4pYBsp9ylppIGMwyi7MRnmhRW1H/tLuimQeVBfWNAUWCX1ZDCIA9Dwhc6V8EnMBoNIpTjmAwiKAsvIeO9Iyyr4rd6LwVtK5f1vYkxud6ir8=
+	t=1782980493; cv=none; b=b4AP0nWKtWVkmxcdCHQSl6pkoBzXEOicofN7Zd5fxlSaeLzpiqLjh8mQzfJx/Hv7JVu2dUmjdId1exYUB5zIA6Mk7f0aG/KaZvPJ5qn8Lw6Jv1BkrjKqVJfC7AOJM1z4pubYkWxvNVkEWDxz8FmIZuO6RsYVhhYCFn4cpH4GyX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782977298; c=relaxed/simple;
-	bh=cdXAMvaGTLXZ4tRHqX+15mFjqPO5NJv7/lbzInUeZeM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=txEvYEp/MFAPB+orGP4WZyvRhkW4KHI2eLK1ryGm5Y7N7G71o5fFE+AkYWTTZpM8Th6kPmho0EzdHqmOxGns+afb9ITfUSpRpUqv8shRipmtKB80+smfAbF6ds1lhJUayl9SiSvPCNkr2KZ3aIv7NXx4RSTdJqzpIy8b8q87a/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UUw36nfQ; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1782980493; c=relaxed/simple;
+	bh=MR/1oQsubIswpQ1T7czms/mRrVaRqITHlz2n6JTUpl4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=O26hkKSvBhee3op0Vgxnlqb0671KZjNZJcn6hw7EQ8KAAsd7dIrG3ATvYOO5K3a1QfZJggAtOB/Qvsl76hO7Ve4EtX9/1fxwFE04jrSQOYu1ZYcx/3L/+9fTEaDJJ2AxZKqFsCnK3t0zWRM+W9nw1xe0ajBfZWBBX3mNTxAZ+S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=of+N59Ha; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uN9Hdc83; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UUw36nfQ"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782977290;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="of+N59Ha";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uN9Hdc83"
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1782980489;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cdXAMvaGTLXZ4tRHqX+15mFjqPO5NJv7/lbzInUeZeM=;
-	b=UUw36nfQUDO4ek5W5MoGxv/bQdNbTQycY1qQKAEoJymjql+ZXc8a2FUo9eNrafl6xDrEni
-	1302Z8Y+Ma+0qxdUDhBISoxry5nus7uGAN8fTkB0ZcU/zUf+14Ol9iIljWhjg5Yh/mt933
-	8BhSh84bNWygA1To4TaXOltx56F5hgs=
-From: Lance Yang <lance.yang@linux.dev>
-To: ljs@kernel.org
-Cc: akpm@linux-foundation.org,
-	tsbogend@alpha.franken.de,
-	maddy@linux.ibm.com,
-	mpe@ellerman.id.au,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	simona@ffwll.ch,
-	l.stach@pengutronix.de,
-	inki.dae@samsung.com,
-	sw0312.kim@samsung.com,
-	kyungmin.park@samsung.com,
-	krzk@kernel.org,
-	peter.griffin@linaro.org,
-	jani.nikula@linux.intel.com,
-	joonas.lahtinen@linux.intel.com,
-	rodrigo.vivi@intel.com,
-	tursulin@ursulin.net,
-	robin.clark@oss.qualcomm.com,
-	lumag@kernel.org,
-	lyude@redhat.com,
-	dakr@kernel.org,
-	tomi.valkeinen@ideasonboard.com,
-	hjc@rock-chips.com,
-	heiko@sntech.de,
-	andy.yan@rock-chips.com,
-	thierry.reding@kernel.org,
-	mperttunen@nvidia.com,
-	jonathanh@nvidia.com,
-	kraxel@redhat.com,
-	dmitry.osipenko@collabora.com,
-	zack.rusin@broadcom.com,
-	matthew.brost@intel.com,
-	thomas.hellstrom@linux.intel.com,
-	oleksandr_andrushchenko@epam.com,
-	deller@gmx.de,
-	bcrl@kvack.org,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	muchun.song@linux.dev,
-	osalvador@suse.de,
-	david@kernel.org,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	liam@infradead.org,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	baohua@kernel.org,
-	lance.yang@linux.dev,
-	hughd@google.com,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	jannh@google.com,
-	pfalcato@suse.de,
-	kees@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org,
-	etnaviv@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org,
-	linux-rockchip@lists.infradead.org,
-	linux-tegra@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	intel-xe@lists.freedesktop.org,
-	xen-devel@lists.xenproject.org,
-	linux-fbdev@vger.kernel.org,
-	linux-aio@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH 01/13] mm: introduce vma_flags_can_grow() and vma_can_grow()
-Date: Thu,  2 Jul 2026 15:27:50 +0800
-Message-Id: <20260702072750.45641-1-lance.yang@linux.dev>
-In-Reply-To: <f2e8c32515d328db62279cc8bab8398ea278d74f.1782760670.git.ljs@kernel.org>
-References: <f2e8c32515d328db62279cc8bab8398ea278d74f.1782760670.git.ljs@kernel.org>
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mJSzPYcuu70d1v2EawqMn7TqthwcQ1ssQg57IVhDWI4=;
+	b=of+N59HaFTcbezAeOk+/17hY+A9dAUMSL0R9JbFEMZlA+nby5ylWi5WlxMj2cbxVgqtoX6
+	3ROYEFfYafIQYkmKGJb3YKKBa8oT7It8ES1jGDuDnHZJg6BLs8TOAxVlYtOUje+4JN5zUh
+	6rlS5LGUaV411jwX0tZLB2y1sqG3lcNLRh+9913Yt+jc2oHHKtciVLG5TH2EiEqdQyI9iT
+	uGULIJoJUlBFYcyCwNWA0mQgbR8IdI8+L8xAOlesgBKm/lm+v/HWEO9qNkt66NrD7OTPU7
+	VsVL0vpxTO7Xh55obb8zzMh8t1KQ+g4ycfp6un1P5BGtR3J5X8ButatRWQK55w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1782980489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mJSzPYcuu70d1v2EawqMn7TqthwcQ1ssQg57IVhDWI4=;
+	b=uN9Hdc83IPYWMSKfkIs/YtSKjNdtWXYIe8rXO0da85TsqVeJfAaNeJbY+tm0TW1LYRA9+j
+	B/4b13cGjW5KHSCQ==
+Subject: [PATCH v3 0/9] vDSO: Respect COMPAT_32BIT_TIME
+Date: Thu, 02 Jul 2026 10:21:24 +0200
+Message-Id: <20260702-vdso-compat_32bit_time-v3-0-db9f36d8d432@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3XNwQoCIRDG8VcJzxk6lm6deo+IcNepBkoXNdmIf
+ ffc7RAEHf8fzG9eLGEkTGy3eLGIhRIFX0MtF6y7Wn9BTq42AwFaSKl4cSnwLtx7m08KWsqnTHf
+ k2IjGaIVboy2rx33EMw0zfDjWvlLKIT7nP0VO64cEMP/IIrng6iyg0da0tlP7G/lHjsHTsHLIJ
+ rbAl9JK/KWgUhsQTm7Xei2c+6XGcXwD1i+6ywsBAAA=
+X-Change-ID: 20260113-vdso-compat_32bit_time-e808763e976a
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>, Russell King <linux@armlinux.org.uk>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+ John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>
+Cc: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, 
+ Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org, 
+ sparclinux@vger.kernel.org, 
+ =?utf-8?q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1782980489; l=4251;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=MR/1oQsubIswpQ1T7czms/mRrVaRqITHlz2n6JTUpl4=;
+ b=IAPP7P7TT/qjpqsC8+BNXtHg/cnx42xojUXsQ9R2Hz9jbgOm2ACYHF+sMsfHVfS0U/4lV37Yl
+ zsUyVwUeFmFBYzA4OF5fifGvug2xcpYakRt7qN14FxkhZlDROdgH2hq
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
+If CONFIG_COMPAT_32BIT_TIME is disabled then the vDSO should not
+provide any 32-bit time related functionality. This is the intended
+effect of the kconfig option and also the fallback system calls would
+also not be implemented.
 
-On Mon, Jun 29, 2026 at 08:25:24PM +0100, Lorenzo Stoakes wrote:
->These test whether the VMA has stack sematics, i.e. is able to grow upwards
->or downwards depending on the architecture.
->
->In order to account for arches which do not support upward-growing stacks,
->introduce VMA_GROWSUP whose definition depends on the architecture
->supporting it, and use vma_flags_test_single_mask() in vma_flags_can_grow()
->to account for this.
->
->Update the VMA userland tests to reflect the changes
->
->No functional change intended.
->
->Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
->---
+I also tried to introduce some helpers to avoid much of the ifdeffery,
+but due to the high variance in the architecture-specific glue code
+these would need to handle, they ended up being worse than the current
+proposal.
 
-Nice cleanup! Feel free to add:
+As a side-effect this will make the self-tests more reliable,
+as there is now always a matching syscall available for each vDSO function.
 
-Reviewed-by: Lance Yang <lance.yang@linux.dev>
+clock_getres_time64() was only introduced in v6.19, so libc implementations
+are likely not using it yet.
+
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+Changes in v3:
+- Pick up tags.
+- Fix incorrect references gettimeofday() in per-arch commit messages.
+- Test for CONFIG_COMPAT_32BIT_TIME over __WANT_OLD_TIME_TYPE_SYSCALL in compat_settimeofday()
+- Link to v2: https://patch.msgid.link/20260630-vdso-compat_32bit_time-v2-0-520d194640dd@linutronix.de
+
+Changes in v2:
+- Also handle SPARC.
+- Drop MIPS cleanup patches.
+- Also handle gettimeofday().
+- Add more static validations.
+- Rebase on v7.2-rc1.
+- Link to v1: https://lore.kernel.org/r/20260227-vdso-compat_32bit_time-v1-0-3f0286a7bac3@linutronix.de
+
+To: Andy Lutomirski <luto@kernel.org>
+To: Thomas Gleixner <tglx@kernel.org>
+To: Ingo Molnar <mingo@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+To: x86@kernel.org
+To: H. Peter Anvin <hpa@zytor.com>
+To: Russell King <linux@armlinux.org.uk>
+To: Catalin Marinas <catalin.marinas@arm.com>
+To: Will Deacon <will@kernel.org>
+To: Madhavan Srinivasan <maddy@linux.ibm.com>
+To: Michael Ellerman <mpe@ellerman.id.au>
+To: Nicholas Piggin <npiggin@gmail.com>
+To: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Vincenzo Frascino <vincenzo.frascino@arm.com>
+To: John Stultz <jstultz@google.com>
+To: Stephen Boyd <sboyd@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-mips@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-api@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
+
+---
+Thomas Weißschuh (9):
+      time: Respect COMPAT_32BIT_TIME for old time type functions
+      vdso/gettimeofday: Validate system call existence for time() and gettimeofday()
+      x86/vdso: Respect COMPAT_32BIT_TIME
+      arm64: vdso32: Respect COMPAT_32BIT_TIME
+      ARM: VDSO: Respect COMPAT_32BIT_TIME
+      powerpc/vdso: Respect COMPAT_32BIT_TIME
+      MIPS: VDSO: Respect COMPAT_32BIT_TIME
+      sparc: vdso: Respect COMPAT_32BIT_TIME
+      vdso/gettimeofday: Verify COMPAT_32BIT_TIME interactions
+
+ arch/arm/vdso/vdso.lds.S                    |  2 ++
+ arch/arm/vdso/vgettimeofday.c               | 14 ++++++++------
+ arch/arm64/kernel/vdso32/vdso.lds.S         |  2 ++
+ arch/arm64/kernel/vdso32/vgettimeofday.c    | 14 ++++++++------
+ arch/mips/vdso/vdso.lds.S                   |  2 ++
+ arch/mips/vdso/vgettimeofday.c              |  3 +++
+ arch/powerpc/kernel/vdso/gettimeofday.S     |  8 ++++++++
+ arch/powerpc/kernel/vdso/vdso32.lds.S       |  8 +++++---
+ arch/powerpc/kernel/vdso/vgettimeofday.c    | 16 ++++++++++------
+ arch/sparc/vdso/vclock_gettime.c            |  4 ++++
+ arch/sparc/vdso/vdso32/vdso32.lds.S         |  6 ++++--
+ arch/x86/entry/vdso/common/vclock_gettime.c | 20 ++++++++++++--------
+ arch/x86/entry/vdso/vdso32/vdso32.lds.S     |  2 ++
+ kernel/sys_ni.c                             |  4 ++++
+ kernel/time/time.c                          | 24 ++++++++++++++++++++----
+ lib/vdso/gettimeofday.c                     | 20 ++++++++++++++++++++
+ 16 files changed, 114 insertions(+), 35 deletions(-)
+---
+base-commit: e6da2429169af9b33f3629b69905d89bb5ee9e64
+change-id: 20260113-vdso-compat_32bit_time-e808763e976a
+
+Best regards,
+--  
+Thomas Weißschuh (Schneider Electric) <thomas.weissschuh@linutronix.de>
+

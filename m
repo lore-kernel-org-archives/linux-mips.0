@@ -1,133 +1,117 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43AA2288B8;
-	Sun,  5 Jul 2026 01:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4C51D5160
+	for <linux-mips@vger.kernel.org>; Sun,  5 Jul 2026 05:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783213692; cv=none; b=BYEgfV6F9Kq1hjmWKdaW234gDnWqhjhECztYcW/bxlMHSWLhhPN3BWtWpe3iE8DOl0ypWOauf9zyrEOG4IzBWLm0gLZ5x0g091G2Da70ahe2sqjkNpMXt3E3iRBh2bl1egSpprPHd8uTYdH2N6eCmcrR0VcFte32Qj66wLH2N+w=
+	t=1783229118; cv=none; b=ZVF3TJoT5sPhf9I6JznJ6/92/Ds1H46mFqwKSCsgQpdfD1jVfmXkthVkx/Hij9HPdjBlK6owYPANjdo5b/x/8ZXlY6O0/Mi5ZzmuDIlYOHzeQJG9fE743iFNc8JysJeeGisQkywQvm5NeHaMMstoGHRJkag/+hA9KIWfx+JzUNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783213692; c=relaxed/simple;
-	bh=awuH/XulbEDqs59Vh0utt3MvxPA6suHkTxBELRtA09I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tF4uzpFTD985dSIxGFi5YmZ8XEGIf4E8jPtpsQ4opIR5ZlIrfzltVVUfuzrtSfMaaDKP+ScrpF0gYs8Pw2pNVRTCpyrVKmwdc+HvCT+uiJ+cl4gELQjhj3pD+Q2UyzjiXWoBd/bG8hfeJ4Ebc39IVUF0P+kxYI8zwuJLidr41mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBkPSMZz; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783229118; c=relaxed/simple;
+	bh=O1+ENlUHG2dVn+CM9CHkYU8RJDakTHxXXVRv0M1G5dE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=D9hQmBGsntA3pLE5tNc42WwecuJVB0Ks3Vfh376uFAk7JUxQ36xkmXBWriPi01+l2dOtrU98iU5lrytlsQyUf6obzPp1mmQLEQJ30+Cwl9DFiIMs/Y67QUkjZyh5eK8Bz2F/Gn8RxRCNVNzEbjsiZieGKUxKdUcJF0CPemBEyRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JGmJj32G; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBkPSMZz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F2BF1F000E9;
-	Sun,  5 Jul 2026 01:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783213690;
-	bh=3duzwyHdi6RgshCaFz1ynAPla1JdMO1NFXgABI7Eh3s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=RBkPSMZz/BRsU6kDJgLsvltCHl/7nmfEQhY9exVykMN2oKxRiBkjx0bffH+fLPUYH
-	 2ck3iltRsWHYzSENjgVtJrOJreGEUuUNSVj3Lw6/17RResfLk3hMjVq8SFBY9BhwDf
-	 sKGEtqWnoWO1tu5pP6nXAc6xmwVh8UNIja+d2sdcRPZaulrROXaGk/79+rxatMNbsr
-	 c2v95I5UOD7pAE9DXeaUhAJJOM+Z8Ue+In01tEjX7ZGwWogIhtIPwhvb1sf0fVcC/Q
-	 IwJtuFvlG/z8wx2ctp0O4Cx1DHR5NHBJURe7Lg72aFRhuLvN9Mldzb+6xKPfPOkOCm
-	 T0vQCQ2/MHtEg==
-Date: Sun, 5 Jul 2026 02:07:58 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Romain Gantois <romain.gantois@bootlin.com>, MyungJoo Ham
- <myungjoo.ham@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, Guenter
- Roeck <linux@roeck-us.net>, Peter Rosin <peda@axentia.se>, David Lechner
- <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
- Shevchenko <andy@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Michael
- Hennerich <Michael.Hennerich@analog.com>, Mariel Tinaco
- <Mariel.Tinaco@analog.com>, Kevin Tsai <ktsai@capellamicro.com>, Linus
- Walleij <linus.walleij@linaro.org>, Eugen Hristev
- <eugen.hristev@linaro.org>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay
- Abraham I <kishon@kernel.org>, Sebastian Reichel <sre@kernel.org>, Chen-Yu
- Tsai <wens@csie.org>, Hans de Goede <hansg@kernel.org>, Support Opensource
- <support.opensource@diasemi.com>, Paul Cercueil <paul@crapouillou.net>,
- Iskren Chernev <me@iskren.info>, Krzysztof Kozlowski <krzk@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Matheus Castello
- <matheus@castello.eng.br>, Saravanan Sekar <sravanhome@gmail.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Casey Connolly
- <casey.connolly@linaro.org>, Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, Amit
- Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, Lukasz Luba
- <lukasz.luba@arm.com>, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sylwester
- Nawrocki <s.nawrocki@samsung.com>, Olivier Moysan
- <olivier.moysan@foss.st.com>, Arnaud Pouliquen
- <arnaud.pouliquen@foss.st.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-input@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Sebastian Reichel <sebastian.reichel@collabora.com>, Andy Shevchenko
- <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH v2 2/2] iio: inkern: Use namespaced exports
-Message-ID: <20260705020758.011f4f3c@jic23-huawei>
-In-Reply-To: <20260603182052.7d23c067@jic23-huawei>
-References: <20251209-iio-inkern-use-namespaced-exports-v2-0-9799a33c4b7f@bootlin.com>
-	<20251209-iio-inkern-use-namespaced-exports-v2-2-9799a33c4b7f@bootlin.com>
-	<acBr-W2ILu9tnMyd@google.com>
-	<20260603182052.7d23c067@jic23-huawei>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JGmJj32G"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-383cb94f742so695176a91.3
+        for <linux-mips@vger.kernel.org>; Sat, 04 Jul 2026 22:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783229115; x=1783833915; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5E91OTPvV+ZJz4uFncOkjNOPReoSP8zzTh43d9B2oQ=;
+        b=JGmJj32GFu6WjNkqj9ff3szaicd+3vZipe4ZKeRw0Z3mHtOm3CK7wZZElGVNK+pqfX
+         3oPneuZ6s6NoJ7eykRmXbBubp0AOPpA/8sm9hAjga41Z00OBdIyQyHbRkSznXFO28sRe
+         3eGVspTRpbkovEj7XFUBTV9wpXSqZFy8gvzUwp9aR2Y/DIL9IOaupw8GsjYJJEh8Jcqn
+         ztYFHBWFsscpYv0FYUW2TnmBm747AVNym9lZReaQfKQ2MeCU1ysR0SYvg0M9bUYA/XGY
+         kwyJZ8tysBtM1KvT7IAGo9/wi2dKSeTN5ln2axTOgZEFtHg7m7rjKL/9NJfD139HOHwZ
+         Nz3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783229115; x=1783833915;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q5E91OTPvV+ZJz4uFncOkjNOPReoSP8zzTh43d9B2oQ=;
+        b=CwyWBbUW9owQIW04swjnZ5j+VKMbgmK3EOhqa/pletcQMf6AG/8vieViHf0MIbNXX4
+         eadR5TKL7gvlDOkh6eBy0K7Bk4QUj3izr8l0CAjqzEhuTEUgPI0AspWWmmRyWYNTpQME
+         RGYqhkf11z88wgBZuROct6WHXXsupJBLN5it8YiuhGjcVS0045XI8UEaxPeH+8U+F+u3
+         qY+nvliNhELJe4EguQtvfienuskotIMBdcfip0vDj/aiGQEEpa7edrvPziQNyEyj3xp9
+         u6EFMNAkrbLtaFD28vKFYKBqUpsdoognEl4WF9M/b8wrfJCUOFM9oRK3pKYi/TWdUO21
+         xKIQ==
+X-Forwarded-Encrypted: i=1; AHgh+RpNkPWehlxs/P64WCl3ybTOBLZXHysv7b1tfel0zueUqQOajVECX5Nk3vFQlqDtrSb67WnyAZ/CditZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywg3+EJtcopvVCILqgd/hxzhC9I7o0yfkcijCYFrJuAp+MhIuQm
+	HBNqCisNQ7a8UXtYZ7S02OAZ7b7+fGzcStM5LJymA447epouTtVymL8V
+X-Gm-Gg: AfdE7ckF602hqBElbXY0DXlkWMpV7r/2lX7H/NYM/M4XBfdjP4TBuho+OmsOSmVBKWp
+	9YYU8EvxdNVZ8nKJXkoQhYaCxokotwJRUPK2ZNdc5VC1HQkKNRqSLjJCo29Qs8lHwB9KP5Veksq
+	ClOrRMPesie7wVRGfakC6UydSx9ovQnJJS7i/y6eLucktTdXkY3fpKrNvulmoMNlt6m0iYvyfgM
+	50bOhXC4gpOtk2tzkrVwHUo2buE70BNOuwzlWKfOkpU/m1GsoFDKMNv/jb9GFcUDF9RUU4YZO7/
+	bCjJ4EkbnrmjZU5MWrFz2y1yoYLQCLVJ01PPCgplo1kU3K+XB6/V69Wh9u/lAXvvSnJh9IU7Wlx
+	RHc7GLN+82U/CJjZ4tOE9dOItyLWNdwODOLNfhMLa1aRbCzctxQgvNxpAmIp9ue0yMSi4vVxONH
+	vw5hbKbzDzLKcJ/5+3Y7DKYGjt+uioGqK5VIEjlaFC6WGdRINDYFAKFWxCV5cLC2Lwi8NNIiOY6
+	T0l
+X-Received: by 2002:a17:90b:4cca:b0:37f:fda5:8d9a with SMTP id 98e67ed59e1d1-3829f001825mr5075022a91.25.1783229115290;
+        Sat, 04 Jul 2026 22:25:15 -0700 (PDT)
+Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:4560:aa1b:b33a:15b8])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30f0b7b9a1bsm39035329eec.3.2026.07.04.22.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Jul 2026 22:25:14 -0700 (PDT)
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 0/3] MIPS: BCM47XX: convert buttons to software nodes
+Date: Sat, 04 Jul 2026 22:25:07 -0700
+Message-Id: <20260704-b4-bcm47xx-swnode-v1-0-730d59340237@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALPqSWoC/yXMSQ6DMAxA0asgr7EEKZjhKqgLEtzWSAQUd4iEu
+ Dtpu3yL/3dQDsIKfbZD4LeorD6hzDNwj9HfGWVKBlMYKsg0aCu0bqmaGFE/fp0Yu669ENe1KYk
+ gdVvgm8Tfc7j+rS87s3t+R3AcJ0DAQhh1AAAA
+X-Change-ID: 20260627-b4-bcm47xx-swnode-99836e552166
+To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Michael Buesch <m@bues.ch>, Hauke Mehrtens <hauke@hauke-m.de>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org
+X-Mailer: b4 0.16-dev-b242f
 
-On Wed, 3 Jun 2026 18:20:52 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+This series converts the legacy gpio-keys platform device on BCM47XX
+boards to use software nodes and static properties.
 
-> On Sun, 22 Mar 2026 15:24:21 -0700
-> Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
-> 
-> > On Tue, Dec 09, 2025 at 09:25:56AM +0100, Romain Gantois wrote:  
-> > > Use namespaced exports for IIO consumer API functions.
-> > > 
-> > > This will make it easier to manage the IIO export surface. Consumer drivers
-> > > will only be provided access to a specific set of functions, thereby
-> > > restricting usage of internal IIO functions by other parts of the kernel.
-> > > 
-> > > This change cannot be split into several parts without breaking
-> > > bisectability, thus all of the affected drivers are modified at once.
-> > > 
-> > > Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com> # for power-supply
-> > > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> > > Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>    
-> > 
-> > For input:
-> > 
-> > Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > 
-> > Thanks.
-> >   
-> 
-> For anyone wondering what happened to this... I forgot to apply this at the
-> beginning of the cycle and by the time I remembered we had too much queued up
-> so it would have been messy to do an immutable branch.   Anyhow, I plan to
-> sort this at start of next cycle.
+To do this properly without relying on legacy name-based matching
+(which is being removed from gpiolib), we introduce and register
+software nodes for the underlying GPIO controllers (BCMA and SSB)
+and reference them in the button properties.
 
-Immutable branch created as: iio-inkern-namespace-ib based on v7.2-rc1
-on https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+The first two patches add the software nodes to bcma-gpio and
+ssb-gpio respectively. The third patch performs the conversion
+for the BCM47XX buttons.
 
-I've merged it into the testing branch of iio.git so if anyone else does
-need to merge this to avoid conflicts, perhaps wait a day or two until
-I've pushed it out as togreg for linux-next to pick up.
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+Dmitry Torokhov (3):
+      bcma: gpio: Add and register software node for GPIO controller
+      ssb: gpio: Add and register software node for GPIO controller
+      MIPS: BCM47XX: Convert buttons to software nodes
 
-Thanks,
+ arch/mips/bcm47xx/buttons.c | 434 +++++++++++++++++++++++++-------------------
+ drivers/bcma/driver_gpio.c  |  17 +-
+ drivers/ssb/driver_gpio.c   |  27 ++-
+ include/linux/bcma/bcma.h   |   3 +
+ include/linux/ssb/ssb.h     |   3 +
+ 5 files changed, 293 insertions(+), 191 deletions(-)
+---
+base-commit: 2b763db0c2763d6bf73d7d3e69665222d1f377cf
+change-id: 20260627-b4-bcm47xx-swnode-99836e552166
 
-Jonathan
-> 
-> Jonathan
+Thanks.
+
+-- 
+Dmitry
 

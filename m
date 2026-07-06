@@ -1,137 +1,99 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905F03AA4E7;
-	Mon,  6 Jul 2026 17:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1745D3AF64F;
+	Mon,  6 Jul 2026 17:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783358805; cv=none; b=Lkfg0e9cfwdYTczR+onuEotRl/oeq2oKiR/bzAIU2C3uEJfs19tCBBUVvZwJ/z6xHmOY4Z9b8vCtq79Y9Fng84yda0pcwOzD1qfD917/bY3a8RF3oMfp4jGQ19ILY7Ud9RZ3RYz8wSpZfmeJHxY7C/JVh4MeRIa7wC8RbYIBABY=
+	t=1783359557; cv=none; b=EF0Xwp1kuCaaFWNb/q3B4z7NPjon0qkt9PuWdZ3c7ixeKSZRv67lCfZP5wd18Tbqp1mhjMEMfMboz4szJaAG5gNE7HFIUHb4q9qiUkSfe4mLUOVkRZ3q7sBZBCO33r8g2GjpDK7bt1mYWld6SSzlk6QmDHBF7iONMHDPRTmuWJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783358805; c=relaxed/simple;
-	bh=7IM4zAo6wp30fIKOD7ytq7OyqjlyWEMupcdMTPpFk2c=;
+	s=arc-20240116; t=1783359557; c=relaxed/simple;
+	bh=H/Va+ebdSGHBBF2RGwj3JdDN32oronCCPHyUBp8idDM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dgVPf43xcAN5wHmAYmQGcLYzttDmEYxOQwX55SFSZwIYNZaesgjZo8WJf/U4wKrPyQaFZeNRap/jzwDmAyy5UpSUhc1u9Cr9R5UYR6B7IwRklz2IOUhuW00j9swVhTlqSlL9daBjrlhJArvLxmC+0KMzoGLc0eJt1MTZNVB4RYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCLYqWUv; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=l5ys6+/BmC4258nxgrXFUDyUnRbqjidGb1YOpRdpqHIXv7QYTL2qyLqL7+ZJr5+LaO33+2+2N3dUsoPl6Ie4qYYRL5pKCKtH0K6cAdJMKiWItwS+vsRr0HwIhLYeLIKxcujO1WJxEAuelluBx/SgCr1fL0o2zDgdn99tAwgdJpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2725Cv2; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCLYqWUv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 160F11F000E9;
-	Mon,  6 Jul 2026 17:26:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2725Cv2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 193131F000E9;
+	Mon,  6 Jul 2026 17:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783358804;
-	bh=6Q0tvr2GvB7IdKSisCRev74pEI09lUCKAJRHUpFa0u0=;
+	s=k20260515; t=1783359555;
+	bh=Xy8ZAHUZN1wDyXUZpqHr7pd7Qxsxq2dcB4YVK2d78UM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=nCLYqWUvGJM2k6XDnnND9naY7BS0FeW4Fu5CyITqesk4/FYtYFs2v+CdsAT/O073Y
-	 GtZ8t7rZu7alxOIECS486DbL4kafAvJYppDKfefXQcxPJWSm50Z5xEB87XflCdnqI0
-	 dI9I5Vp+VbNytWapWIsBYtTNmQpIQ3PSkrb5u0vxywEuxj1U2BwNjyu/B89xGJdNtD
-	 G/Odw4daeVaAAUZb5GsfrnhN7yZ/7dsR9qtpRXxY65g9kYlYkQBfw49iWquOtCkMjk
-	 tJfNZXyAVgeg0oDBCZxb/20tfctRWrUO672g92oAd9zuNBOetu0kFzrqAf+966bE2y
-	 VRCYCAEaqRrlQ==
-Date: Mon, 6 Jul 2026 18:26:30 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Manuel Ebner <manuelebner@mailbox.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-	Lee Jones <lee@kernel.org>,
-	Thierry Reding <thierry.reding@avionic-design.de>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Srinivas Kandagatla <srini@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>, Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Doug Berger <opendmb@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ulf Hansson <ulfh@kernel.org>, Frank Li <Frank.Li@nxp.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Peter Chen <peter.chen@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, brgl@kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
-	driver-core@lists.linux.dev, devicetree@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
-	iommu@lists.linux.dev, linux-pm@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org, mfd@lists.linux.dev
-Subject: Re: [PATCH v3 02/20] driver core: platform: provide
- platform_device_set_of_node()
-Message-ID: <e40d0bd0-0e3d-4c01-bffc-8e0075213c45@sirena.org.uk>
-References: <20260706-pdev-fwnode-ref-v3-0-1ff028e33779@oss.qualcomm.com>
- <20260706-pdev-fwnode-ref-v3-2-1ff028e33779@oss.qualcomm.com>
- <fbc50f89e0c3bb148656a3b8d96974f591576dec.camel@mailbox.org>
- <akvOo2EeERLYPh72@ashevche-desk.local>
+	b=d2725Cv2SbkjroOwXMCQ90Zndp1LCuuP+oxD7Hh1kJOXd4cBLnMayT8qAJelXWBI8
+	 wxwtlzFw59VLpTzpvISqrJp7o8+KHZg2XbWqJtSV2ePjsrcZMQM9+7wxE1AtoN8lhP
+	 oOEZaDxRF15LYlsQQ3CJIiEW6aiz2tpMHHO1reqpVuHFtdyTssr3YAJLHHuxNYl7x0
+	 9CtYw7IRPgP8iZr/D26YVgqq17gzEp8bdc9vcEPf4+W1tivITxsqzgFgkIgsVj1a9a
+	 EbMcEECvf7SpMo9X7E8VDwa04ifSCb2J8VD32DgfuB+EDAm3wNAzgeb+YwhbE4ooAB
+	 HblcgOXbvch/g==
+Date: Mon, 6 Jul 2026 18:39:03 +0100
+From: Will Deacon <will@kernel.org>
+To: Jinjie Ruan <ruanjinjie@huawei.com>
+Cc: catalin.marinas@arm.com, tsbogend@alpha.franken.de, tglx@kernel.org,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	hpa@zytor.com, peterz@infradead.org, kees@kernel.org,
+	nathan@kernel.org, linusw@kernel.org, ojeda@kernel.org,
+	david.kaplan@amd.com, lukas.bulwahn@redhat.com,
+	ryan.roberts@arm.com, maz@kernel.org, timothy.hayes@arm.com,
+	lpieralisi@kernel.org, thuth@redhat.com, menglong8.dong@gmail.com,
+	oupton@kernel.org, yeoreum.yun@arm.com, miko.lenczewski@arm.com,
+	broonie@kernel.org, kevin.brodsky@arm.com, james.clark@linaro.org,
+	yangyicong@hisilicon.com, tabba@google.com, osandov@fb.com,
+	arnd@arndb.de, anshuman.khandual@arm.com, david@kernel.org,
+	akpm@linux-foundation.org, ljs@kernel.org, dev.jain@arm.com,
+	yang@os.amperecomputing.com, chaitanyas.prakash@arm.com,
+	kprateek.nayak@amd.com, chenl311@chinatelecom.cn,
+	sshegde@linux.ibm.com, thorsten.blum@linux.dev,
+	chang.seok.bae@intel.com, tim.c.chen@linux.intel.com,
+	x86@kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 00/12] arm64: Add HOTPLUG_PARALLEL support for
+ secondary CPUs
+Message-ID: <akvoN5vvQaW3MdmI@willie-the-truck>
+References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
+ <ajvKkLw5bL-FT5JC@willie-the-truck>
+ <32d41a67-cf37-4079-8218-bed2b73bbf14@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FWksib/oYWGW6VVm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <akvOo2EeERLYPh72@ashevche-desk.local>
-X-Cookie: Did I do an INCORRECT THING??
+In-Reply-To: <32d41a67-cf37-4079-8218-bed2b73bbf14@huawei.com>
 
+Hi Jinjie,
 
---FWksib/oYWGW6VVm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jun 25, 2026 at 09:34:36AM +0800, Jinjie Ruan wrote:
+> On 6/24/2026 8:16 PM, Will Deacon wrote:
+> > Please just give me the time I asked for. If you want to help out in the
+> > meantime, there are plenty of patches that need reviewing...
+> 
+> It was a mistake on my part, and I sincerely apologize for wasting
+> community review resources and disrupting your schedule.
+> 
+> I will absolutely back off now and wait for your official series. Lesson
+> learned. Thanks for your patience and for calling me out on this.
 
-On Mon, Jul 06, 2026 at 06:49:55PM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 06, 2026 at 04:39:00PM +0200, Manuel Ebner wrote:
-> > On Mon, 2026-07-06 at 14:44 +0200, Bartosz Golaszewski wrote:
+So I've mostly got the old series back on its feet:
 
-> > I removed Mark Brown <broonie@opensource.wolfsonmicro.com> from recipie=
-nts because:
-> > =E2=80=9CRCPT TO <broonie@opensource.wolfsonmicro.com> failed:
-> > <broonie@opensource.wolfsonmicro.com>: Recipient address rejected: Doma=
-in not found=E2=80=9D.
+  https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=cpu-hotplug
 
-> Perhaps he needs to send a patch to update .mailmap?
-> Cc'ed to Mark.
+but there are still two issues left to resolve:
 
-If it's for something that old I can't imagine I actually care.  If it's
-important enough I'm sure someone can work out how to get hold of me.
+  1. The printing that can happen before RCU has started. Although I've
+     reduced this somewhat, there are still error paths in e.g.
+     verify_local_cpu_capabilities() that print a message before dying.
 
---FWksib/oYWGW6VVm
-Content-Type: application/pgp-signature; name="signature.asc"
+  2. check_local_cpu_capabilities() can mutate the system capability
+     state via update_cpu_capabilities(), so it's really dodgy running
+     that prior to synchronisation.
 
------BEGIN PGP SIGNATURE-----
+Since you've added patches in this series that try to tackle these
+problems, I'll reply on those two so we can figure out how we would like
+to proceed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpL5UUACgkQJNaLcl1U
-h9D67gf9GIugTh4PUXTgcv4IEO00hqfPt914zzGolWrW61nvCfBK/txok59PvoKw
-vaWiJIxtHNcqLXDHoH9/3oPWkqxrKq0RGWEX19nr124zN/T2SihiMa5RjzAr4UAG
-G9JAS2GOF29xF1Ml9KH8x5l5WduP6RUHVJqKK9vuJFpCloREcnnpMQVxJVgKEKpI
-TrKQpiKRZtTm5InBsTccxeXVDL2+bhnLHZaD4LbIziWok/tCyYnCw9VEJ/iUb7PJ
-bFLwu3JxUS7p7Kr/hStWapPyxi5fyw+V/ZQ8u+J5GE8g493f9A3rBarS4fJCZi8e
-cIRN6GhgNtdUL6L3p77EqAzlsDTheA==
-=WSwF
------END PGP SIGNATURE-----
+Cheers,
 
---FWksib/oYWGW6VVm--
+Will

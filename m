@@ -1,40 +1,40 @@
-Received: from canpmsgout11.his.huawei.com (canpmsgout11.his.huawei.com [113.46.200.226])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA0213B293;
-	Tue,  7 Jul 2026 03:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0E125A2DD;
+	Tue,  7 Jul 2026 03:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783393370; cv=none; b=jeVr+9KwJhHGt8XhRBOcjXEGBrzzA4szy8+OTRQZS2hX4L4anMJWqPjinKDfFLXCqyWMuf2CejLGL9yV3dOIa3AZylUhbodm1gj48GTyiHCEd03ZfuIP92bkpZFVwzLjj9qQPNLnAk24bKOVjR37HLumfWXUcFEFOjf4p2exRIg=
+	t=1783394684; cv=none; b=Ngaq/5qSUdbde+ZLFnbhgcSKU37TLWA0vsPuWnrAQ+NsZA6iUttqBnAY7e7ks88+Oqan9kCHuJly2FX0Wf6QOFWWwyyKmKRNY07tbVXC+RkbR0vjMPNm5mAFiFfGZ5Z164zRMiCD5I/IbjfbGYGyw1+jlx/pOBbuS0cO9ZNes3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783393370; c=relaxed/simple;
-	bh=jzEzSBYAnImlOyMHNej43RqyT7Dvy3QB55NeJr4VqH8=;
+	s=arc-20240116; t=1783394684; c=relaxed/simple;
+	bh=YQTGgv2QyLW3c0j1o/hG6wa0H3t2c7p4Vk5dGgZ2Z9E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JsgAyZAc6KjbLPajMa/gV8Q7cPXCBtSxB0Q2APexHGJR/x2vH/25aW3oE7yD+A+Ces88ykv7Kh3A3UI4ZJUczhaznCPn/nbhll90dNWRpdwiXcLdzwgLRgRWVP4YQxG3rVYPVA0c+JUdQsWjhvAm/RbaXdZfrJCCZHacaKTbwvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=RdrZkx6I; arc=none smtp.client-ip=113.46.200.226
+	 In-Reply-To:Content-Type; b=Do5MAKJdLyNtDyVSxnDrWHDGUCnmXkdJmSlmp+GrAvoXAmguaSzFMI87quHnvFUkOUVAtv3a2u2HkTcs2X5Sxl/Yn72UHpdnqVXKDUDMkIou6OddzdGFkZlGlIYFIK4BTzSanc5ptfWd3MDgO/GaCnMpFDl5ZiWC0oyU7OeYyKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=A72vJeMQ; arc=none smtp.client-ip=113.46.200.219
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="RdrZkx6I"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="A72vJeMQ"
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=EXqyHBs1kBtCPhYjI0EwQemI55P4LRleAN6bdVwX2cs=;
-	b=RdrZkx6I/RpcC4QwldmkROMcQcdlP6D9E+UpBI643BBQKOMjsWQHmCBCBXwTKYzoNi6q93vdA
-	d739jgKEfUa8EgxZlpMphkHOoCYR23asyh9OZo8RTo8VTuc5Q6wjCdvqPcmMaovwaNvjOdItCVc
-	hnbkdDYC4RRVTApzctXQxms=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
-	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4gvQlP0rwdzKm5j;
-	Tue,  7 Jul 2026 10:53:21 +0800 (CST)
+	bh=NjvgHK+G0r4/mvCQ9MN1WfW1ce01kaSxTrYU8mERSnc=;
+	b=A72vJeMQMW9HloQLkhuJIPwWH24vuFemiwkIkj9V71URNM0KUux4vDUG/CPODyN8UuiVLGHUk
+	Z3SMYB4vf5XK4tcZAcIPGMESXgbbBz9lWv61BaNDE5QuQxWOhXTpHRiosr9h/GucbvXR+Pnneau
+	fgfymoJvVlveakYsPTMFS9U=
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4gvRDn6V4Bz1prq6;
+	Tue,  7 Jul 2026 11:15:21 +0800 (CST)
 Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
-	by mail.maildlp.com (Postfix) with ESMTPS id D4ED540565;
-	Tue,  7 Jul 2026 11:02:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 299154058C;
+	Tue,  7 Jul 2026 11:24:37 +0800 (CST)
 Received: from [10.67.109.254] (10.67.109.254) by
  dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 7 Jul 2026 11:02:34 +0800
-Message-ID: <58a9fd8b-387c-41c6-91a2-48ec885870d5@huawei.com>
-Date: Tue, 7 Jul 2026 11:02:32 +0800
+ 15.2.1544.11; Tue, 7 Jul 2026 11:24:34 +0800
+Message-ID: <6a388036-e3ce-4cf3-a413-c78ec6c0a012@huawei.com>
+Date: Tue, 7 Jul 2026 11:24:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -42,8 +42,8 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/12] arm64: smp: Defer RCU registration during
- secondary CPU bringup
+Subject: Re: [PATCH v3 09/12] arm64: cpufeature: Ensure atomic updates to
+ system_cpucaps bitmap
 To: Will Deacon <will@kernel.org>
 CC: <catalin.marinas@arm.com>, <tsbogend@alpha.franken.de>, <tglx@kernel.org>,
 	<mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
@@ -64,89 +64,93 @@ CC: <catalin.marinas@arm.com>, <tsbogend@alpha.franken.de>, <tglx@kernel.org>,
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-mips@vger.kernel.org>
 References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
- <20260624092537.2916971-6-ruanjinjie@huawei.com>
- <akvoVCNFwDorQg6y@willie-the-truck>
+ <20260624092537.2916971-10-ruanjinjie@huawei.com>
+ <akvooksAvkmG971U@willie-the-truck>
 From: Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <akvoVCNFwDorQg6y@willie-the-truck>
+In-Reply-To: <akvooksAvkmG971U@willie-the-truck>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
  dggpemf500011.china.huawei.com (7.185.36.131)
 
 
 
-On 7/7/2026 1:39 AM, Will Deacon wrote:
-> On Wed, Jun 24, 2026 at 05:25:30PM +0800, Jinjie Ruan wrote:
->> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
->> index c14b179c595d..87f92cf9ffa8 100644
->> --- a/arch/arm64/kernel/smp.c
->> +++ b/arch/arm64/kernel/smp.c
->> @@ -35,6 +35,7 @@
->>  #include <linux/kgdb.h>
->>  #include <linux/kvm_host.h>
->>  #include <linux/nmi.h>
->> +#include <linux/lockdep.h>
+On 7/7/2026 1:40 AM, Will Deacon wrote:
+> On Wed, Jun 24, 2026 at 05:25:34PM +0800, Jinjie Ruan wrote:
+>> Parallel CPU bringup allows multiple secondary CPUs to concurrently
+>> execute update_cpu_capabilities() during early boot.
+>>
+>> The current non-atomic __set_bit() and __clear_bit() helpers perform
+>> unserialized updates on the shared global bitmap, risking data races
+>> and feature flag erasure.
+>>
+>> Upgrade these operations to set_bit() and clear_bit() to ensure all
+>> concurrent modifications are properly serialized via arm64 atomics.
+>>
+>> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+>> ---
+>>  arch/arm64/kernel/cpufeature.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>> index be75e60d56ca..a1a13f3e01ed 100644
+>> --- a/arch/arm64/kernel/cpufeature.c
+>> +++ b/arch/arm64/kernel/cpufeature.c
+>> @@ -3548,7 +3548,7 @@ static void update_cpu_capabilities(u16 scope_mask)
 >>  
->>  #include <asm/alternative.h>
->>  #include <asm/atomic.h>
->> @@ -215,15 +216,23 @@ asmlinkage notrace void secondary_start_kernel(void)
->>  	if (system_uses_irq_prio_masking())
->>  		init_gic_priority_masking();
+>>  		if (!caps->matches(caps, cpucap_default_scope(caps))) {
+>>  			if (match_all)
+>> -				__clear_bit(caps->capability, system_cpucaps);
+>> +				clear_bit(caps->capability, system_cpucaps);
+>>  			continue;
+>>  		}
 >>  
->> -	rcutree_report_cpu_starting(cpu);
->> -	trace_hardirqs_off();
->> +	lockdep_hardirqs_off(CALLER_ADDR0);
+>> @@ -3559,7 +3559,7 @@ static void update_cpu_capabilities(u16 scope_mask)
+>>  		if (!match_all && caps->desc && !caps->cpus)
+>>  			pr_info("detected: %s\n", caps->desc);
 >>  
->> +	/*
->> +	 * Since RCU is still offline on this CPU, any nested native printk
->> +	 * or lock acquisition would normally trigger a false-positive
->> +	 * "suspicious RCU usage" lockdep splat.
->> +	 */
->> +	lockdep_off();
+>> -		__set_bit(caps->capability, system_cpucaps);
+>> +		set_bit(caps->capability, system_cpucaps);
+>>  
+>>  		if (boot_cpu && (caps->type & SCOPE_BOOT_CPU))
+>>  			set_bit(caps->capability, boot_cpucaps);
 > 
-> On the flip side, should we really be taking locks at this point? I'm
-> actually quite sympathetic to lockdep here and I worry that disabling
-> it briefly is going to hide real problems down the line.
+> I don't think this is sufficient. Even if we use atomic updates for the
+> low-level bits, the logic here which tries to avoid re-probing features
+> that have already been detected isn't going to work correctly if it's
+> running concurrently with itself.
+> 
+> I think the best bet is probably to move update_cpu_capabilities() out
+> of check_local_cpu_capabilities() and call it after cpuhp_ap_sync_alive()
+> when the system capabilities are not yet finalised. WDYT? That means
 
 Hi Will,
 
-I fully share your concern. Disabling lockdep globally or even across a
-large function like check_local_cpu_capabilities() is risky — it would
-suppress *all* lock validation in that path, not just the harmless
-early-boot warnings.
+I have also considered this direction, and I fully agree that it is a
+much more robust solution than merely making the bit operations atomic.
 
-> 
-> ce3d31ad3cac ("arm64/smp: Move rcu_cpu_starting() earlier") was to
-> handle the useless print in cpuinfo_detect_icache_policy(), but I've
-> decided just to remove that one. So I think the remaining prints we have
-> to worry about in this early boot code are from error paths in the
-> CPU feature detection logic (check_local_cpu_capabilities()).
-> 
-> Given that those error paths should all be fatal, perhaps we could
-> rework cpu_die_early() and cpu_panic_kernel() as macros that take a
-> string argument and either call printk_deferred() (similarly to what you
-> suggested in a previous version of your series [1]) or do the
-> lockdep_off() there before a pr_crit().
-> 
-> What do you think?
+- Concurrency is eliminated completely: After moving
+update_cpu_capabilities() to after cpuhp_ap_sync_alive(), the subsequent
+CPU state transitions (e.g., from the AP synchronization phase to the
+final online state) are strictly serialised by the cpuhp state machine.
+This means system_cpucaps will no longer be modified concurrently. The
+original race condition simply disappears.
 
-That is an excellent point. Reworking cpu_die_early() and
-cpu_panic_kernel() to uniformly use printk_deferred() based on the
-specific error type or the string argument is a much cleaner approach.
+- No dead-wait on the boot CPU: I also verified that
+update_cpu_capabilities() never calls cpu_die_early() — it only updates
+system-wide capability bitmaps and does not trigger any error path that
+would cause a secondary CPU to fail or die. Therefore, moving its
+invocation to a later point (after the sync point) will not introduce
+any risk of the boot CPU waiting indefinitely for a secondary CPU that
+might have panicked or got stuck.
 
-This makes perfect sense because these paths are inherently fatal, and
-switching to deferred printing avoids the risky lock-taking and RCU
-runtime constraints during early boot entirely. It cleanly resolves the
-diagnostic noise without broadly blinding lockdep or hiding potential
-locking issues down the line.
-
-I fully agree with this approach.
+Thus, I think your suggestion is the correct way forward.
 
 Best regards,
 Jinjie
 
+> we'd have something akin to setup_boot_cpu_features() for the secondary
+> CPUs.
 > 
 > Will
-> 
-> [1] https://lore.kernel.org/all/20260618092444.1316336-4-ruanjinjie@huawei.com/
 

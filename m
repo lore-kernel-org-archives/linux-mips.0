@@ -1,203 +1,81 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59A030100E;
-	Tue,  7 Jul 2026 08:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94E32EDD7D;
+	Tue,  7 Jul 2026 08:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783412059; cv=none; b=j+xMuaxboobZsClxaEs6Y3iNKLyTbx/ivDSByVOb8F1WYzlhMySbidtATzJw/H3Q1U4ogJ9+vQIo5LdOX6CdEL5VjM2vdYkjyyyOxkKZB5/OCfFO1fKVZfbM80Trg4WLU06GSrTEoxz+OuncONGB+9Ad/kAm/YoYE7bbMI1PAvk=
+	t=1783412349; cv=none; b=qrcE5MnJj856NBB2v0PCRNWgCn+H5XQ/hJ4utoanEFS7QtbXvMr1wooT67iuBEHXns/NzbPJNBw7r86gtdbYJ72iYRKIdEB7LPuCeFaNwfi8kC1GNx1Z6NaENHvT7R19Oe/Id6v8sMumqM6xY1Qqc+wxiblRu+IsNw/s7w9g1F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783412059; c=relaxed/simple;
-	bh=vEm6rkxrMcjupt2WUoJ7vGYydxNzQTOwrk0yGLPhdAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eZbUz9DpGLZMc8O2KBZ+WG1/ORnJOn3Z1Rq2gsCAcoDQ46+/6IWOmW1zL2AXCD5KsYpL4MtOzqgtPB05XUKBlLq35iDWhECh63kg8L5zXfVeT4JkPS3oGhQm34Dpr+z1/yT6NCoNe96HJXi0psQB3ZKvx2Ubwnd2JmzJL2x8Iv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=IzNCTzrr; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1783412349; c=relaxed/simple;
+	bh=5QLkLIV6dWz+yM8AXGu8lDkyyoQEzGcB9XsMrlJbli4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ArGHk9YyEaDqMtCHuk0aTbLIQOhU8IlA3241XHp38hcBER2IouNjv219o6bXRBgiGBqV5QVWOQbiqGBQRfz4vPQnB0E8y/NshtnJD6fol9MrzF7CU6xwhDN13OeeLryhk2fsgBTOeI+Trbon23mp03h6QDk5OqwNRkbI4TPdrlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=permerror header.from=sipsolutions.net; spf=none smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=vwx7+Pw7; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=sipsolutions.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="IzNCTzrr"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=MNiAUryehkfQt6EHtDjlZ3Arn5sC2Et5x7DQMPHkElY=;
-	b=IzNCTzrrKdBLrX7rMyWwqfn0aluESgDkkbgVAl9USu/Eiplc+ZDOa923SydtGIy8c6mVPkoRB
-	TR/KlQvD+ta7qIvWJL0ifOV7Ag45Tunv2OaksgUIkkxKUyFZ5b1PHSJUfpZcDX6V7qUNfD0duF5
-	AXERuZ3T8JbJ74BCXSuNbtU=
-Received: from mail.maildlp.com (unknown [172.19.162.197])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4gvYfv453xz1prq7;
-	Tue,  7 Jul 2026 16:04:55 +0800 (CST)
-Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
-	by mail.maildlp.com (Postfix) with ESMTPS id E57C040579;
-	Tue,  7 Jul 2026 16:14:10 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 7 Jul 2026 16:14:07 +0800
-Message-ID: <3bf910b8-c7e8-4a22-8e1d-fa701694369f@huawei.com>
-Date: Tue, 7 Jul 2026 16:14:06 +0800
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="vwx7+Pw7"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=j9g61QJ16IaAdUYswmT5n+XykLyw2Vj431tO+JQ6hDY=;
+	t=1783412347; x=1784621947; b=vwx7+Pw7842ZAm0GYZOHB0iGTxDD974PSM3jIz4CNVa1QlY
+	0pUtm7sa0hhsX4mHIhL4KY3vblQUwvkAxW7WBXiDwqJEl2dZO2q/alASrDM7ltalILWou8eWwOfn6
+	DJ4ZEfN1MIr+cIkYVA4rJYwAdagb1FcgIfsMBQUq3snKhZ33fY1g3JcVIWdGTcv5ikXSsFcpUhCFY
+	dFo6pH1FFBvOjORd5VyGjSdayAp0U3uESj/H+PS3M590OJr5n9bKoR+5jHCdDXjVsqRs9OJu+/pTP
+	b7Cw4LkdCeUe9BnV8lbUZEx4S4eSSrNWZnCod+6Ods4TZf7zzxR3Y1zBMrg0mEUQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wh11D-0000000HRe4-0mFW;
+	Tue, 07 Jul 2026 10:19:03 +0200
+Message-ID: <2d0a7285a8e90ee2de658b564b739ed735fb3fd1.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/3] MIPS: BCM47XX: convert buttons to software nodes
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=	 <zajec5@gmail.com>, Michael Buesch
+ <m@bues.ch>, Hauke Mehrtens <hauke@hauke-m.de>,  Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>
+Cc: Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org
+Date: Tue, 07 Jul 2026 10:19:02 +0200
+In-Reply-To: <20260704-b4-bcm47xx-swnode-v1-0-730d59340237@gmail.com>
+References: <20260704-b4-bcm47xx-swnode-v1-0-730d59340237@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/12] arm64: Add HOTPLUG_PARALLEL support for
- secondary CPUs
-To: Will Deacon <will@kernel.org>
-CC: <catalin.marinas@arm.com>, <tsbogend@alpha.franken.de>, <tglx@kernel.org>,
-	<mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-	<hpa@zytor.com>, <peterz@infradead.org>, <kees@kernel.org>,
-	<nathan@kernel.org>, <linusw@kernel.org>, <ojeda@kernel.org>,
-	<david.kaplan@amd.com>, <lukas.bulwahn@redhat.com>, <ryan.roberts@arm.com>,
-	<maz@kernel.org>, <timothy.hayes@arm.com>, <lpieralisi@kernel.org>,
-	<thuth@redhat.com>, <menglong8.dong@gmail.com>, <oupton@kernel.org>,
-	<yeoreum.yun@arm.com>, <miko.lenczewski@arm.com>, <broonie@kernel.org>,
-	<kevin.brodsky@arm.com>, <james.clark@linaro.org>,
-	<yangyicong@hisilicon.com>, <tabba@google.com>, <osandov@fb.com>,
-	<arnd@arndb.de>, <anshuman.khandual@arm.com>, <david@kernel.org>,
-	<akpm@linux-foundation.org>, <ljs@kernel.org>, <dev.jain@arm.com>,
-	<yang@os.amperecomputing.com>, <chaitanyas.prakash@arm.com>,
-	<kprateek.nayak@amd.com>, <chenl311@chinatelecom.cn>,
-	<sshegde@linux.ibm.com>, <thorsten.blum@linux.dev>,
-	<chang.seok.bae@intel.com>, <tim.c.chen@linux.intel.com>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mips@vger.kernel.org>
-References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
- <ajvKkLw5bL-FT5JC@willie-the-truck>
- <32d41a67-cf37-4079-8218-bed2b73bbf14@huawei.com>
- <akvoN5vvQaW3MdmI@willie-the-truck>
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <akvoN5vvQaW3MdmI@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- dggpemf500011.china.huawei.com (7.185.36.131)
+X-malware-bazaar: not-scanned
 
+On Sat, 2026-07-04 at 22:25 -0700, Dmitry Torokhov wrote:
+> This series converts the legacy gpio-keys platform device on BCM47XX
+> boards to use software nodes and static properties.
+>=20
+> To do this properly without relying on legacy name-based matching
+> (which is being removed from gpiolib), we introduce and register
+> software nodes for the underlying GPIO controllers (BCMA and SSB)
+> and reference them in the button properties.
+>=20
+> The first two patches add the software nodes to bcma-gpio and
+> ssb-gpio respectively. The third patch performs the conversion
+> for the BCM47XX buttons.
+>=20
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+> Dmitry Torokhov (3):
+>       bcma: gpio: Add and register software node for GPIO controller
+>       ssb: gpio: Add and register software node for GPIO controller
+>       MIPS: BCM47XX: Convert buttons to software nodes
 
+Seems like most of the change in in MIPS and it should all go through
+that tree. For the record, that's OK with wireless regarding bcma/ssb.
 
-On 7/7/2026 1:39 AM, Will Deacon wrote:
-> Hi Jinjie,
-> 
-> On Thu, Jun 25, 2026 at 09:34:36AM +0800, Jinjie Ruan wrote:
->> On 6/24/2026 8:16 PM, Will Deacon wrote:
->>> Please just give me the time I asked for. If you want to help out in the
->>> meantime, there are plenty of patches that need reviewing...
->>
->> It was a mistake on my part, and I sincerely apologize for wasting
->> community review resources and disrupting your schedule.
->>
->> I will absolutely back off now and wait for your official series. Lesson
->> learned. Thanks for your patience and for calling me out on this.
-> 
-> So I've mostly got the old series back on its feet:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=cpu-hotplug
-
-Hi Will,
-
-I tested the above-mentioned latest patch on v7.2-rc1 with error inject
-on QEMU, which constructed the following errors:
-
-1、CPU4 does not support 52-bit VA
-
-2、CPU6 does not support 4K granule
-
-3、CPU16 and CPU17 call cpu_die_early() early in check_early_cpu_features().
-
-4、CPU18 call cpu_panic_kernel() early in check_early_cpu_features().
-
-The error output is not correct especially for CPU4, CPU6, and CPU18 as
-below, it seems that some error messages are overlapping on the same
-CPU, and some errors are causing the CPU to be misidentified.:
-
-(This leaves another blind spot where the 'failed to report alive state'
-message is skipped for CPU16 and CPU17, as pointed out in
-https://lore.kernel.org/all/bddf7a68-7789-4ec2-819c-aaaee8173c70@huawei.com/):
-
-[    0.594323] CPU16: will not boot
-[    0.605818] CPU17: will not boot
-
-...
-
-[   11.052387] CPU4 failed to report alive state
-[   11.059799] Parallel CPU bringup failed; consider passing
-"cpuhp.parallel=off" for a more accurate diagnosis.
-[   11.060179] CPU4 detected lack of support for 52-bit VAs
-[   11.060426] CPU4 detected lack of support for 4K granules
-
-[   11.061103] Kernel panic - not syncing: CPU4 detected unsupported
-configuration
-[   11.061534] CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted
-7.2.0-rc1-00019-g52296829d92b #305 PREEMPT
-[   11.062052] Hardware name: linux,dummy-virt (DT)
-[   11.062230] Call trace:
-[   11.062339]  show_stack+0x18/0x24 (C)
-[   11.062528]  dump_stack_lvl+0x11c/0x168
-[   11.062684]  dump_stack+0x18/0x24
-[   11.062818]  vpanic+0x568/0x574
-[   11.062947]  do_panic_on_target_cpu+0x0/0x1c
-[   11.063111]  secondary_start_kernel+0x0/0x188
-[   11.063276]  cpuhp_bringup_ap+0x244/0x254
-[   11.063430]  cpuhp_invoke_callback+0x168/0x2ac
-[   11.063594]  __cpuhp_invoke_callback_range+0x90/0x118
-[   11.063776]  _cpu_up+0xec/0x1b8
-[   11.063905]  cpu_up+0xcc/0x158
-[   11.064032]  cpuhp_bringup_mask+0x9c/0xe0
-[   11.064189]  bringup_nonboot_cpus+0x12c/0x14c
-[   11.064352]  smp_init+0x30/0x8c
-[   11.064481]  kernel_init_freeable+0x18c/0x40c
-[   11.064645]  kernel_init+0x24/0x1dc
-[   11.064785]  ret_from_fork+0x10/0x20
-[   11.066612] SMP: stopping secondary CPUs
-[   11.068198] ---[ end Kernel panic - not syncing: CPU4 detected
-unsupported configuration ]---
-
-The expected output is as below:
-
-        CPU4 failed to report alive state
-        CPU4: is stuck in kernel
-        CPU4: does not support 52-bit VAs
-
-        CPU6 failed to report alive state
-        CPU6: is stuck in kernel
-        CPU6: does not support 4K granule
-
-        GICv3: CPU8: found redistributor 8 region 0:0x00000000081a0000
-        GICv3: CPU8: using allocated LPI pending table @0x0000000100360000
-        CPU8: Booted secondary processor 0x0000000008 [0x410fd034]
-        ...
-        CPU16 failed to report alive state
-        psci: CPU16 killed (polled 0 ms)
-        CPU16: died during early boot
-
-        CPU17: will not boot
-        CPU17 failed to report alive state
-        psci: CPU17 killed (polled 0 ms)
-        CPU17: died during early boot
-
-        CPU18 failed to report alive state
-        Kernel panic - not syncing: CPU18 detected unsupported configuration
-
-Best regards,
-Jinjie
-
-> 
-> but there are still two issues left to resolve:
-> 
->   1. The printing that can happen before RCU has started. Although I've
->      reduced this somewhat, there are still error paths in e.g.
->      verify_local_cpu_capabilities() that print a message before dying.
-> 
->   2. check_local_cpu_capabilities() can mutate the system capability
->      state via update_cpu_capabilities(), so it's really dodgy running
->      that prior to synchronisation.
-> 
-> Since you've added patches in this series that try to tackle these
-> problems, I'll reply on those two so we can figure out how we would like
-> to proceed.
-> 
-> Cheers,
-> 
-> Will
-
+johannes

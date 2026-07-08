@@ -1,194 +1,139 @@
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8156E386559;
-	Wed,  8 Jul 2026 10:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D02E3BFAD1;
+	Wed,  8 Jul 2026 11:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783504884; cv=none; b=KHyC+JyGxNC0AmfzYgUen3RCpQ9e7xTSbDBu8ZkEnbF8whKwD0POd3JJHWOJGu/+ydM//8GCVeQ4ZlmkR5oJwojNbf2tL03xdxjkt7S98GBydha8tS2aISCGhgnOed7ZVimYaANl2MnEmnfVekw40nLe3rn5C3oC7WDJJrkebEE=
+	t=1783509136; cv=none; b=jPykNzg+2BHAzKfffm4/r4V0kBaDeYODapjHybpZlQc/EQGBctMxgxXGcxzmW1U5RWKXbNi9nZb/N+q272A+1rf161mh/5l6dBV3ty1I2W6icrSzxM38hML9437kp5xQaugwCRsg8PoPvD2SZhDTzulUBDFlOlk+quSYhm0diQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783504884; c=relaxed/simple;
-	bh=v3KJtBo5Xem/p/SeBQj6Qhc8hgb1AUIW8ixeXUi+7/Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pFWs2ZQDbtEtKpyzBrsLDBevobu+V4URdvO77gaOkoMCjXwkLTLe5AUVMvIqgJuh+HyhgclU4PwW2XU6vLE9Bhkdfk5c5zOQJXT30DXz9t8v0Q3UvWSMxcEXFDDUrGJkoDH1xPOfkB4yzxDWY2zxXZg3hKzESXsU3bb1/ZppbgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=tomzzafw; arc=none smtp.client-ip=113.46.200.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1783509136; c=relaxed/simple;
+	bh=dXbZA1E6z2cbPpn5lXVwUbC3y8RJZe9PuV/6K4qA1zI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BiF3qR7rJBWbNmlFriBx6WniD58XQNt58kyh0Zl5TMaCh8AK6D9gKK7Jy9JLhDW1doGywyM1Q2jE3uZXVl3dxr7KLHFTiwqROst+wcS4IiNial7Vxvx7N5A16lXhOPP8xDX5PX/K0Igub6V6+d7tbDOcI6EHjY1pLqR7mThKQ/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NKaLLLgY; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="tomzzafw"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=VJ+P1FAy8PcQIRUquHStGYnLrQlgAn0eWhkNpUoI/wA=;
-	b=tomzzafwsssd0sSDomrfOJwELNtTFSNuiVO5enkxvs+RDcaw7dnogCNwwB0OisQ6rmlp4MR1e
-	LaFynzUOTFHZpsULsEv32JVlmVZOibMtZJ3S6Aj0oXPpCQNmBXfS21gp2HTpBsIA5cFULT5lyhz
-	cE8fI+QRaFv77GKUEf8nLvk=
-Received: from mail.maildlp.com (unknown [172.19.163.15])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gwD0d4P6nznTVZ;
-	Wed,  8 Jul 2026 17:52:33 +0800 (CST)
-Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9995F40578;
-	Wed,  8 Jul 2026 18:01:09 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 8 Jul 2026 18:01:05 +0800
-Message-ID: <3501828e-7dd4-4587-b29a-71eabcc05ab8@huawei.com>
-Date: Wed, 8 Jul 2026 18:01:04 +0800
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NKaLLLgY"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1783509135; x=1815045135;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dXbZA1E6z2cbPpn5lXVwUbC3y8RJZe9PuV/6K4qA1zI=;
+  b=NKaLLLgYSGwRbFEUPZ4WXfWAkQLZfXhRPviQaSCCWKxzP1Hwd/RZVyI5
+   qhXuK+dXM700naBdhd5VjHzf3fB68yRX1rwFVdBb5K4tRooC+h47nZN0b
+   HqlzRyvi3i/kegVxXwlN1Q9bFbd81z5OdScYJJbrEMHBh9n2zirrfivj3
+   BLmv97jfpG4CZUhQ06zO8jXEDpEWV04IHrUTpZ4Y4IibitKa+7JaNke2V
+   eeZ2GZkWMVMW7okGFl4bSqx3udTAk2pzQVKxjuOZ7hAoPkOtFqIPD9PMt
+   rUuZBYfnUwPvVhb5PmwwjRrhP3ahd79YDWKu/qN+x7cMdQsrVi6vnYScE
+   A==;
+X-CSE-ConnectionGUID: y2pZuRN5R/a+RXZU4b1NyA==
+X-CSE-MsgGUID: e/wLbpAFT1aFeVdEaqouAA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11840"; a="84025163"
+X-IronPort-AV: E=Sophos;i="6.25,153,1779174000"; 
+   d="scan'208";a="84025163"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2026 04:12:14 -0700
+X-CSE-ConnectionGUID: xnTXU7N2RFKFpJyFUzPznA==
+X-CSE-MsgGUID: WXa6o+4tR/u+kKLX2b+3mA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,153,1779174000"; 
+   d="scan'208";a="252523743"
+Received: from klitkey1-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.100])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2026 04:12:00 -0700
+Date: Wed, 8 Jul 2026 14:11:58 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@kernel.org>
+Cc: Lee Jones <lee@kernel.org>,
+	Mark Brown <broonie@opensource.wolfsonmicro.com>,
+	Thierry Reding <thierry.reding@avionic-design.de>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Srinivas Kandagatla <srini@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Danilo Krummrich <dakr@kernel.org>, Rob Herring <robh@kernel.org>,
+	Saravana Kannan <saravanak@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Doug Berger <opendmb@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ulf Hansson <ulfh@kernel.org>, Frank Li <Frank.Li@nxp.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Peter Chen <peter.chen@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
+	driver-core@lists.linux.dev, devicetree@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+	iommu@lists.linux.dev, linux-pm@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org, mfd@lists.linux.dev,
+	Manuel Ebner <manuelebner@mailbox.org>,
+	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Subject: Re: [PATCH v3 05/20] driver core: update kerneldoc for
+ platform_device_alloc()
+Message-ID: <ak4wfuYxO2serrQt@ashevche-desk.local>
+References: <20260706-pdev-fwnode-ref-v3-0-1ff028e33779@oss.qualcomm.com>
+ <20260706-pdev-fwnode-ref-v3-5-1ff028e33779@oss.qualcomm.com>
+ <ak0jyUbNonSRiP_g@ashevche-desk.local>
+ <CAMRc=Md7-XMBKpdPuZ4=epfTn6F-PXKJBZNPGuz5xbVy58BHsg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/12] arm64: cpufeature: Ensure atomic updates to
- system_cpucaps bitmap
-To: Will Deacon <will@kernel.org>
-CC: <catalin.marinas@arm.com>, <tsbogend@alpha.franken.de>, <tglx@kernel.org>,
-	<mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-	<hpa@zytor.com>, <peterz@infradead.org>, <kees@kernel.org>,
-	<nathan@kernel.org>, <linusw@kernel.org>, <ojeda@kernel.org>,
-	<david.kaplan@amd.com>, <lukas.bulwahn@redhat.com>, <ryan.roberts@arm.com>,
-	<maz@kernel.org>, <timothy.hayes@arm.com>, <lpieralisi@kernel.org>,
-	<thuth@redhat.com>, <menglong8.dong@gmail.com>, <oupton@kernel.org>,
-	<yeoreum.yun@arm.com>, <miko.lenczewski@arm.com>, <broonie@kernel.org>,
-	<kevin.brodsky@arm.com>, <james.clark@linaro.org>,
-	<yangyicong@hisilicon.com>, <tabba@google.com>, <osandov@fb.com>,
-	<arnd@arndb.de>, <anshuman.khandual@arm.com>, <david@kernel.org>,
-	<akpm@linux-foundation.org>, <ljs@kernel.org>, <dev.jain@arm.com>,
-	<yang@os.amperecomputing.com>, <chaitanyas.prakash@arm.com>,
-	<kprateek.nayak@amd.com>, <chenl311@chinatelecom.cn>,
-	<sshegde@linux.ibm.com>, <thorsten.blum@linux.dev>,
-	<chang.seok.bae@intel.com>, <tim.c.chen@linux.intel.com>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mips@vger.kernel.org>
-References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
- <20260624092537.2916971-10-ruanjinjie@huawei.com>
- <akvooksAvkmG971U@willie-the-truck>
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <akvooksAvkmG971U@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- dggpemf500011.china.huawei.com (7.185.36.131)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=Md7-XMBKpdPuZ4=epfTn6F-PXKJBZNPGuz5xbVy58BHsg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-
-
-On 7/7/2026 1:40 AM, Will Deacon wrote:
-> On Wed, Jun 24, 2026 at 05:25:34PM +0800, Jinjie Ruan wrote:
->> Parallel CPU bringup allows multiple secondary CPUs to concurrently
->> execute update_cpu_capabilities() during early boot.
->>
->> The current non-atomic __set_bit() and __clear_bit() helpers perform
->> unserialized updates on the shared global bitmap, risking data races
->> and feature flag erasure.
->>
->> Upgrade these operations to set_bit() and clear_bit() to ensure all
->> concurrent modifications are properly serialized via arm64 atomics.
->>
->> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
->> ---
->>  arch/arm64/kernel/cpufeature.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->> index be75e60d56ca..a1a13f3e01ed 100644
->> --- a/arch/arm64/kernel/cpufeature.c
->> +++ b/arch/arm64/kernel/cpufeature.c
->> @@ -3548,7 +3548,7 @@ static void update_cpu_capabilities(u16 scope_mask)
->>  
->>  		if (!caps->matches(caps, cpucap_default_scope(caps))) {
->>  			if (match_all)
->> -				__clear_bit(caps->capability, system_cpucaps);
->> +				clear_bit(caps->capability, system_cpucaps);
->>  			continue;
->>  		}
->>  
->> @@ -3559,7 +3559,7 @@ static void update_cpu_capabilities(u16 scope_mask)
->>  		if (!match_all && caps->desc && !caps->cpus)
->>  			pr_info("detected: %s\n", caps->desc);
->>  
->> -		__set_bit(caps->capability, system_cpucaps);
->> +		set_bit(caps->capability, system_cpucaps);
->>  
->>  		if (boot_cpu && (caps->type & SCOPE_BOOT_CPU))
->>  			set_bit(caps->capability, boot_cpucaps);
+On Wed, Jul 08, 2026 at 12:42:58AM -0700, Bartosz Golaszewski wrote:
+> On Tue, 7 Jul 2026 18:05:29 +0200, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> said:
+> > On Mon, Jul 06, 2026 at 02:44:17PM +0200, Bartosz Golaszewski wrote:
+> >> Users of platform_device_alloc() + platform_device_add() must not modify
+> >> certain fields of the dynamically created platform device object. Update
+> >> the kernel doc to say which fields are affected and which functions to
+> >> use.
+> >
+> > Consider using __private checker attribute for them as well. It will make
+> > sparse scream.
 > 
-> I don't think this is sufficient. Even if we use atomic updates for the
-> low-level bits, the logic here which tries to avoid re-probing features
-> that have already been detected isn't going to work correctly if it's
-> running concurrently with itself.
-> 
-> I think the best bet is probably to move update_cpu_capabilities() out
-> of check_local_cpu_capabilities() and call it after cpuhp_ap_sync_alive()
-> when the system capabilities are not yet finalised. WDYT? That means
-> we'd have something akin to setup_boot_cpu_features() for the secondary
-> CPUs.
+> Sure but let's leave it for another series.
 
-This approach most thoroughly avoids concurrency issues, as after
-cpuhp_ap_sync_alive(), the secondary CPUs are woken up serially by the
-boot CPU.
+Sure, just a side note comment that you know that we have some facilities for
+that type of problems.
 
-It also eliminates the problem of boot CPUs being stuck in deadlock wait
-for the secondary CPUs, because update_cpu_capabilities() does not call
-cpu_die_early() or cpu_panic_kernel().
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Is it similar to the following code?
-
-diff --git a/arch/arm64/include/asm/cpufeature.h
-b/arch/arm64/include/asm/cpufeature.h
-index 6c95227032b0..33185527aea9 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -651,6 +651,7 @@ void __init setup_system_features(void);
- void __init setup_user_features(void);
-
- void check_local_cpu_capabilities(void);
-+void setup_secondary_cpu_capabilities(void);
-
- u64 read_sanitised_ftr_reg(u32 id);
- u64 __read_sysreg_by_encoding(u32 sys_id);
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index e3110a572bc8..4d106d90adb0 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -3859,6 +3859,12 @@ void check_local_cpu_capabilities(void)
-         */
-        check_early_cpu_features();
-
-+       if (system_capabilities_finalized())
-+               verify_local_cpu_capabilities();
-+}
-+
-+void setup_secondary_cpu_capabilities(void)
-+{
-        /*
-         * If we haven't finalised the system capabilities, this CPU gets
-         * a chance to update the errata work arounds and local features.
-@@ -3867,8 +3873,6 @@ void check_local_cpu_capabilities(void)
-         */
-        if (!system_capabilities_finalized())
-                update_cpu_capabilities(SCOPE_LOCAL_CPU);
--       else
--               verify_local_cpu_capabilities();
- }
-
- bool this_cpu_has_cap(unsigned int n)
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index fd824b96ab19..7d4c369fa090 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -243,6 +243,7 @@ asmlinkage notrace void secondary_start_kernel(void)
-         * we made it into the kernel. We're still not 'online'.
-         */
-        cpuhp_ap_sync_alive();
-+       setup_secondary_cpu_capabilities();
-
-        update_cpu_features(cpu);
-        store_cpu_topology(cpu);
-
-
-> 
-> Will
 

@@ -1,33 +1,33 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694503ED5C3;
-	Thu,  9 Jul 2026 09:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C593ED3CC;
+	Thu,  9 Jul 2026 09:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783589476; cv=none; b=eSgz+zPYM7kLZEuuqBfkxVhRWdoQ0zq5H0s1wc8I85iHUWwzWerPFlXBHXqv2Jd7g08sHUOJQ8OUoaZqY+4mhxxQo4qHV6jbpDgQGCH+p4+oHamsJSQFKmRA8Zempsalp12BIAAsYyCkN7KUQBqm2oNlVF6/tJMHiHNp+bzvDXI=
+	t=1783589501; cv=none; b=j4XXYJsxzUl/bEGZj3eLjmzeHjf9eqs5x4XX32/x2WWuIqWuGYeTlhmTDHhYtaqFPtxbqGYrPXH49VqfoujdwMQvBpzhuXJ/UI2uHKrS/YKnAgWthUhyevmBjiyL0nl2i99o8m6HXtsN0k/FcD+AawEGOYGyGPDQX7dpmGrvswA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783589476; c=relaxed/simple;
-	bh=pjvcfavqalzFYYPXfiF/j8SiY/GjCZduXhZF6KK0QsY=;
+	s=arc-20240116; t=1783589501; c=relaxed/simple;
+	bh=4+jQ2Dw+9RQI+s61ahoULhDyeHov5rQIKt6POx0qbHE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=si/bSDfl/Kl7qp6I1I+v3KVFSF5z/W7BYjYgICPxxDLB5hDooxRL+1mkjXbomDc1NO35dnM7BKFY7J2XYAz10bdZRsBzUZm6bERY0OCULqa1qDdvNAUBtN6whkrkY3uyrs2yAxi6PPiXwIIagHTL8HtW1JC/WEuVoBN7jWT9H6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=sb5VQIcG; arc=none smtp.client-ip=217.140.110.172
+	 In-Reply-To:Content-Type; b=MHTbYuzoHji2ETUwoGneHBNaE/yOUFUWJNWPcXWFCtiY6YtFTAHaWUqA9KIjq3ZvVCk4k95TVQWm/Y3l0b9VbQUXia33GezeKEsaU1b94/leJ8RVffyL6nzXLV4bbbaL4kIvCI9weEvCz5twYhaUZettD6fOkKoCFVzRjftJO7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=EA0xZtNU; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="sb5VQIcG"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="EA0xZtNU"
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6BF2357B;
-	Thu,  9 Jul 2026 02:31:10 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 653C1357B;
+	Thu,  9 Jul 2026 02:31:35 -0700 (PDT)
 Received: from [10.2.200.62] (e119884-lin.cambridge.arm.com [10.2.200.62])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EA793F66F;
-	Thu,  9 Jul 2026 02:31:14 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F39563F66F;
+	Thu,  9 Jul 2026 02:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1783589475; bh=pjvcfavqalzFYYPXfiF/j8SiY/GjCZduXhZF6KK0QsY=;
+	t=1783589499; bh=4+jQ2Dw+9RQI+s61ahoULhDyeHov5rQIKt6POx0qbHE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sb5VQIcG+RDKFFkyaNxgvITC2Nqu+OxY4Q5PYwhzsRSczmWOa3n54gzOqXKzNjYTH
-	 XgdiANQMXBJhWESzymRVOgoF1VXuA/+obQfN1QVr7ewp+Id6MGhfaf+RkvCGP69Dn2
-	 4tsAP36DXBURUoIOVo/1GW7opSXfIn+u5JBsgPaM=
-Message-ID: <1b52abeb-39db-4341-87ef-fbc33fe80791@arm.com>
-Date: Thu, 9 Jul 2026 10:31:12 +0100
+	b=EA0xZtNU2pGs6PCBjMispRAG7lQ7s5nHt4zffj2HquwHk0ELhjuLYnp46a+Z990mO
+	 JvTz6BebrnRPSu2453rNLlCWm6C9ZhtHqKOSzKPsyE5494Nvgp/u8CXbEWV7d9YDrm
+	 SMztMxXuWPrfBCK/1EAZjFv61Qp9gukl1gesJKfQ=
+Message-ID: <6ef864e5-bfbc-4444-a00d-843d7fb3e3e2@arm.com>
+Date: Thu, 9 Jul 2026 10:31:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,140 +35,153 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] vDSO: Drop HAVE_GENERIC_VDSO from architecture
- kconfig files
+Subject: Re: [PATCH 6/6] vDSO: Rename HAVE_GENERIC_VDSO to VDSO_DATASTORE
 To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
  Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
 References: <20260709-vdso-have_generic_vdso-v1-0-d2e1061f268b@linutronix.de>
- <20260709-vdso-have_generic_vdso-v1-5-d2e1061f268b@linutronix.de>
+ <20260709-vdso-have_generic_vdso-v1-6-d2e1061f268b@linutronix.de>
 Content-Language: en-US
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-In-Reply-To: <20260709-vdso-have_generic_vdso-v1-5-d2e1061f268b@linutronix.de>
+In-Reply-To: <20260709-vdso-have_generic_vdso-v1-6-d2e1061f268b@linutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 
 
 On 09/07/2026 08:28, Thomas Weißschuh wrote:
-> Now that GENERIC_GETTIMEOFDAY and VDSO_GETRANDOM enable
-> HAVE_GENERIC_VDSO automatically, the architecture specific kconfig files
-> do not need to do so anymore.
+> Over time the meaning of HAVE_GENERIC_VDSO has become off.
+> Today it only controls the availability of the vDSO datastore.
 > 
-> Remove the corresponding lines.
-> 
-> Keep them for riscv, loongarch and powerpc as those have their own
-> explicit usage of the vDSO datastore provided by HAVE_GENERIC_VDSO.
+> Rename the symbol to match its function.
 > 
 > Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
 Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
 > ---
->  arch/arm/mm/Kconfig | 1 -
->  arch/arm64/Kconfig  | 1 -
->  arch/mips/Kconfig   | 1 -
->  arch/riscv/Kconfig  | 4 ++--
->  arch/s390/Kconfig   | 1 -
->  arch/sparc/Kconfig  | 1 -
->  arch/x86/Kconfig    | 1 -
->  7 files changed, 2 insertions(+), 8 deletions(-)
+>  arch/loongarch/Kconfig         | 2 +-
+>  arch/powerpc/Kconfig           | 2 +-
+>  arch/riscv/Kconfig             | 2 +-
+>  include/linux/vdso_datastore.h | 6 +++---
+>  lib/vdso/Kconfig               | 6 +++---
+>  lib/vdso/Makefile              | 2 +-
+>  6 files changed, 10 insertions(+), 10 deletions(-)
 > 
-> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-> index 871bd58d2ccc..f7bea397a201 100644
-> --- a/arch/arm/mm/Kconfig
-> +++ b/arch/arm/mm/Kconfig
-> @@ -924,7 +924,6 @@ config VDSO
->  	bool "Enable VDSO for acceleration of some system calls"
->  	depends on AEABI && MMU && CPU_V7
->  	default y if ARM_ARCH_TIMER
-> -	select HAVE_GENERIC_VDSO
->  	select GENERIC_GETTIMEOFDAY
->  	help
->  	  Place in the process address space an ELF shared object
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index b3afe0688919..11e733b6a3cf 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -229,7 +229,6 @@ config ARM64
->  	select HAVE_SYSCALL_TRACEPOINTS
->  	select HAVE_KPROBES
->  	select HAVE_KRETPROBES
-> -	select HAVE_GENERIC_VDSO
->  	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
->  	select HOTPLUG_SMT if HOTPLUG_CPU
->  	select IRQ_DOMAIN
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 8555bbf47c63..a06f24317306 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -3163,7 +3163,6 @@ config MIPS_EXTERNAL_TIMER
->  config MIPS_GENERIC_GETTIMEOFDAY
->  	def_bool y
->  	select GENERIC_GETTIMEOFDAY
-> -	select HAVE_GENERIC_VDSO
->  	depends on CSRC_R4K || CLKSRC_MIPS_GIC
->  	# GCC (at least up to version 9.2) appears to emit function calls that make use
->  	# of the GOT when targeting microMIPS, which we can't use in the VDSO due to
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 353cbfcff783..9aa8c4df0cd8 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -110,7 +110,7 @@ config RISCV
->  	select GENERIC_CPU_VULNERABILITIES
->  	select GENERIC_EARLY_IOREMAP
->  	select GENERIC_ENTRY
-> -	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO && 64BIT
-> +	select GENERIC_GETTIMEOFDAY if MMU && 64BIT
->  	select GENERIC_IDLE_POLL_SETUP
->  	select GENERIC_IOREMAP if MMU
->  	select HAVE_IOREMAP_PROT if MMU
-> @@ -227,7 +227,7 @@ config RISCV
->  	select THREAD_INFO_IN_TASK
->  	select TRACE_IRQFLAGS_SUPPORT
->  	select UACCESS_MEMCPY if !MMU
-> -	select VDSO_GETRANDOM if HAVE_GENERIC_VDSO && 64BIT
-> +	select VDSO_GETRANDOM if MMU && 64BIT
->  	select USER_STACKTRACE_SUPPORT
->  	select ZONE_DMA32 if 64BIT
->  
-> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-> index 84404e6778d5..c9c55e3ddf1d 100644
-> --- a/arch/s390/Kconfig
-> +++ b/arch/s390/Kconfig
-> @@ -215,7 +215,6 @@ config S390
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index d8d252325017..41ed648fcec9 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -153,7 +153,6 @@ config LOONGARCH
 >  	select HAVE_FUNCTION_GRAPH_TRACER
 >  	select HAVE_FUNCTION_TRACER
 >  	select HAVE_GCC_PLUGINS
 > -	select HAVE_GENERIC_VDSO
->  	select HAVE_IOREMAP_PROT if PCI
->  	select HAVE_KERNEL_BZIP2
->  	select HAVE_KERNEL_GZIP
-> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-> index 0e9c906c4b5d..4dd79311133f 100644
-> --- a/arch/sparc/Kconfig
-> +++ b/arch/sparc/Kconfig
-> @@ -113,7 +113,6 @@ config SPARC64
->  	select ARCH_SUPPORTS_SCHED_SMT if SMP
->  	select ARCH_SUPPORTS_SCHED_MC  if SMP
->  	select ARCH_HAS_LAZY_MMU_MODE
-> -	select HAVE_GENERIC_VDSO
->  	select GENERIC_GETTIMEOFDAY
+>  	select HAVE_HW_BREAKPOINT if PERF_EVENTS
+>  	select HAVE_IOREMAP_PROT
+>  	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+> @@ -213,6 +212,7 @@ config LOONGARCH
+>  	select TRACE_IRQFLAGS_SUPPORT
+>  	select USE_PERCPU_NUMA_NODE_ID
+>  	select USER_STACKTRACE_SUPPORT
+> +	select VDSO_DATASTORE
+>  	select VDSO_GETRANDOM
+>  	select ZONE_DMA32 if 64BIT
 >  
->  config ARCH_PROC_KCORE_TEXT
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index bdad90f210e4..2f4a78024a96 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -302,7 +302,6 @@ config X86
->  	select HAVE_UNSTABLE_SCHED_CLOCK
->  	select HAVE_UNWIND_USER_FP		if X86_64
->  	select HAVE_USER_RETURN_NOTIFIER
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index f7ce5fff81f0..c6bc2cd6cc83 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -256,7 +256,6 @@ config PPC
+>  	select HAVE_FUNCTION_GRAPH_TRACER
+>  	select HAVE_FUNCTION_TRACER		if !COMPILE_TEST && (PPC64 || (PPC32 && CC_IS_GCC))
+>  	select HAVE_GCC_PLUGINS
 > -	select HAVE_GENERIC_VDSO
->  	select VDSO_GETRANDOM			if X86_64
->  	select HOTPLUG_PARALLEL			if SMP && X86_64
->  	select HOTPLUG_SMT			if SMP
+>  	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
+>  	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI
+>  	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+> @@ -328,6 +327,7 @@ config PPC
+>  	select SYSCTL_EXCEPTION_TRACE
+>  	select THREAD_INFO_IN_TASK
+>  	select TRACE_IRQFLAGS_SUPPORT
+> +	select VDSO_DATASTORE
+>  	select VDSO_GETRANDOM
+>  	#
+>  	# Please keep this list sorted alphabetically.
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 9aa8c4df0cd8..019fb4799943 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -171,7 +171,6 @@ config RISCV
+>  	select HAVE_FUNCTION_ARG_ACCESS_API
+>  	select HAVE_FUNCTION_ERROR_INJECTION
+>  	select HAVE_GCC_PLUGINS
+> -	select HAVE_GENERIC_VDSO if MMU
+>  	select HAVE_IRQ_TIME_ACCOUNTING
+>  	select HAVE_KERNEL_BZIP2 if !EFI_ZBOOT
+>  	select HAVE_KERNEL_GZIP if !EFI_ZBOOT
+> @@ -227,6 +226,7 @@ config RISCV
+>  	select THREAD_INFO_IN_TASK
+>  	select TRACE_IRQFLAGS_SUPPORT
+>  	select UACCESS_MEMCPY if !MMU
+> +	select VDSO_DATASTORE if MMU
+>  	select VDSO_GETRANDOM if MMU && 64BIT
+>  	select USER_STACKTRACE_SUPPORT
+>  	select ZONE_DMA32 if 64BIT
+> diff --git a/include/linux/vdso_datastore.h b/include/linux/vdso_datastore.h
+> index 3dfba9502d78..13b01baf3497 100644
+> --- a/include/linux/vdso_datastore.h
+> +++ b/include/linux/vdso_datastore.h
+> @@ -7,10 +7,10 @@
+>  extern const struct vm_special_mapping vdso_vvar_mapping;
+>  struct vm_area_struct *vdso_install_vvar_mapping(struct mm_struct *mm, unsigned long addr);
+>  
+> -#ifdef CONFIG_HAVE_GENERIC_VDSO
+> +#ifdef CONFIG_VDSO_DATASTORE
+>  void __init vdso_setup_data_pages(void);
+> -#else /* !CONFIG_HAVE_GENERIC_VDSO */
+> +#else /* !CONFIG_VDSO_DATASTORE */
+>  static inline void vdso_setup_data_pages(void) { }
+> -#endif /* CONFIG_HAVE_GENERIC_VDSO */
+> +#endif /* CONFIG_VDSO_DATASTORE */
+>  
+>  #endif /* _LINUX_VDSO_DATASTORE_H */
+> diff --git a/lib/vdso/Kconfig b/lib/vdso/Kconfig
+> index eedb04974fd5..597f5f0f9681 100644
+> --- a/lib/vdso/Kconfig
+> +++ b/lib/vdso/Kconfig
+> @@ -1,11 +1,11 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> -config HAVE_GENERIC_VDSO
+> +config VDSO_DATASTORE
+>  	bool
+>  
+>  config GENERIC_GETTIMEOFDAY
+>  	bool
+> -	select HAVE_GENERIC_VDSO
+> +	select VDSO_DATASTORE
+>  	help
+>  	  This is a generic implementation of gettimeofday vdso.
+>  	  Each architecture that enables this feature has to
+> @@ -20,6 +20,6 @@ config GENERIC_VDSO_OVERFLOW_PROTECT
+>  
+>  config VDSO_GETRANDOM
+>  	bool
+> -	select HAVE_GENERIC_VDSO
+> +	select VDSO_DATASTORE
+>  	help
+>  	  Selected by architectures that support vDSO getrandom().
+> diff --git a/lib/vdso/Makefile b/lib/vdso/Makefile
+> index 405f743253d7..ac304def42d6 100644
+> --- a/lib/vdso/Makefile
+> +++ b/lib/vdso/Makefile
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  
+> -obj-$(CONFIG_HAVE_GENERIC_VDSO) += datastore.o
+> +obj-$(CONFIG_VDSO_DATASTORE) += datastore.o
 > 
 
 -- 

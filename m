@@ -1,109 +1,128 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682BE42188B;
-	Thu,  9 Jul 2026 11:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0503A6B81;
+	Thu,  9 Jul 2026 11:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783596768; cv=none; b=f49IWJ2vo33vcTz5l09hbF/q6gJ0x5jbSSyxeI4dbUGaNsl7a/Gmvb1yA3ET2JII3hhH4B0vTJXSL7f9RGT3/4zq6mw8lENhmDlTlooXnwQzVnvlWpzULvqlIiVH0LgLc2YxX6HdbnahCUQ++Lt75ZyKKb5q+0dTSqmgT2JDuGQ=
+	t=1783597535; cv=none; b=HVuTsTM1LRkxylhE6glKqQBoQXoF55LGI/yPbJ4VuuEdYeqRB+cDgeB4tFHbTNoEbOr39k9CNRo+IvrgoViDO8YotuQ1elbmH8BElVcxoPAZUEdPYbg1EQWr/0LC3HcIOGnKuxqp2sfz2BaRnk1HqBb47XJtwhw3ZEmxl3mBKCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783596768; c=relaxed/simple;
-	bh=HBDbLxQ/mmLThuSCavhDFNuAv2+3px29VTHQ8QYWw1w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sZwUZ9dxpXyIKTJ6+yK3WRsmsGWW6EBYEkRY746C2LAEkZRkJWu1/VLGdZwW8yJoJTV4OMLkMNvUvjRkksN4RYSj1LUNI9twu5RGP3GjV6j45vGDoMgetdyGHRwm+7p4Zu8CztZyI3oQnZHuXFxISKOGbEbssdpt5RV2apIh+KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xLBBBBbh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OgMhKys2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1783597535; c=relaxed/simple;
+	bh=Un7xW4dX6fSnZGMFLW1+u2BOgsRj0P0BXsUMvJxUHA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QXgRFMPcSEe0cQv34eehp7N+lm8qUHkDzK9iP54He4JyfC23iEFqy/FB1N7DKD5sR1A9Oss/FKlVm5i7DMOEG6Y8CWE+dT1YgFY5W8IWFQ5+SeRY1VR5f0quWJffnDCg5mAu13b8LMTt8v0qaWj3jZW0LXpHvbUjF8JNmbJqSH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=MAVuwFKe; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xLBBBBbh";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OgMhKys2"
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1783596761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ukFASTVcwJCA9KHs65XStV/NanPY9+t/aJWekQ6IKw=;
-	b=xLBBBBbh4/VWO9XnxdBWWEUvqzn9mmxKtghNmN65V+Cf4har8MzUX9hyoH+gOUFNJ0QDZH
-	mhrQzKul8EzypjUmmlpwnx86X/j6mp+M74+44prDPC5Lb8pQqlkpFANr1hPoiweBhjIMvL
-	IJQ6MiL3Yuyh11sCsUB/qGlCV3fC2EXReRUTsEgy1o+ZC4hqFkeSEsi0TIZ4voWO+rfnY1
-	Dv8Px5LpQHM/R1zjHRBtez08FAjNDJgYULJlhWKa/IrL6yP6/p/2kOaw2JHAzOmlqglsU6
-	/03UR9MkVzy/rbOrYQVZ342ujoRW8Tk7nPvjQmW03SqWiWzVIxa6VuNOlviODw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1783596761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ukFASTVcwJCA9KHs65XStV/NanPY9+t/aJWekQ6IKw=;
-	b=OgMhKys2yLyiiIrzt/ebS8mgwv4WAKvLSUlGBZDOz+da0ok2x1dai57gPiCFIfoQeTZIiC
-	uHk5AT5qmEA4l1Dg==
-Date: Thu, 09 Jul 2026 13:32:41 +0200
-Subject: [PATCH 5/7] clocksource/drivers/arm_arch_timer: Replace
- CONFIG_GENERIC_GETTIMEOFDAY ifdeffery with IS_ENABLED()
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="MAVuwFKe"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=auENchSQYPPK/iId01P0BNzV/jUSAPLGspoIqRFWkr0=;
+	b=MAVuwFKesjoVK8nwyL9hjaTQK/AmChmdC+pC1jM2XPRG2r9DkpW7J8LudAKbOAyOOVJKwGesP
+	fnLIBYKj6d2P3HavsKgAaNCMNvgC+1MS3lwaywLzI4DA8prq+81/QKctwv9CBy0kjeq6qGcgPy5
+	4NLrZyru8O6sAjH7EZqwYn4=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4gwtFm4cg3z1prLD;
+	Thu,  9 Jul 2026 19:36:12 +0800 (CST)
+Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
+	by mail.maildlp.com (Postfix) with ESMTPS id 53E0B40575;
+	Thu,  9 Jul 2026 19:45:29 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 9 Jul 2026 19:45:26 +0800
+Message-ID: <be58c2a9-e9cd-4f23-ac05-273c20c3d975@huawei.com>
+Date: Thu, 9 Jul 2026 19:45:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/12] arm64: Add HOTPLUG_PARALLEL support for
+ secondary CPUs
+To: Will Deacon <will@kernel.org>
+CC: <catalin.marinas@arm.com>, <tsbogend@alpha.franken.de>, <tglx@kernel.org>,
+	<mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+	<hpa@zytor.com>, <peterz@infradead.org>, <kees@kernel.org>,
+	<nathan@kernel.org>, <linusw@kernel.org>, <ojeda@kernel.org>,
+	<david.kaplan@amd.com>, <lukas.bulwahn@redhat.com>, <ryan.roberts@arm.com>,
+	<maz@kernel.org>, <timothy.hayes@arm.com>, <lpieralisi@kernel.org>,
+	<thuth@redhat.com>, <menglong8.dong@gmail.com>, <oupton@kernel.org>,
+	<yeoreum.yun@arm.com>, <miko.lenczewski@arm.com>, <broonie@kernel.org>,
+	<kevin.brodsky@arm.com>, <james.clark@linaro.org>,
+	<yangyicong@hisilicon.com>, <tabba@google.com>, <osandov@fb.com>,
+	<arnd@arndb.de>, <anshuman.khandual@arm.com>, <david@kernel.org>,
+	<akpm@linux-foundation.org>, <ljs@kernel.org>, <dev.jain@arm.com>,
+	<yang@os.amperecomputing.com>, <chaitanyas.prakash@arm.com>,
+	<kprateek.nayak@amd.com>, <chenl311@chinatelecom.cn>,
+	<sshegde@linux.ibm.com>, <thorsten.blum@linux.dev>,
+	<chang.seok.bae@intel.com>, <tim.c.chen@linux.intel.com>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mips@vger.kernel.org>
+References: <20260624092537.2916971-1-ruanjinjie@huawei.com>
+ <ajvKkLw5bL-FT5JC@willie-the-truck>
+ <32d41a67-cf37-4079-8218-bed2b73bbf14@huawei.com>
+ <akvoN5vvQaW3MdmI@willie-the-truck>
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+In-Reply-To: <akvoN5vvQaW3MdmI@willie-the-truck>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260709-vdso-arch-clockmodes-v1-5-3fd780bbf851@linutronix.de>
-References: <20260709-vdso-arch-clockmodes-v1-0-3fd780bbf851@linutronix.de>
-In-Reply-To: <20260709-vdso-arch-clockmodes-v1-0-3fd780bbf851@linutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>, 
- Thomas Gleixner <tglx@kernel.org>, 
- Vincenzo Frascino <vincenzo.frascino@arm.com>, 
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Daniel Lezcano <daniel.lezcano@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kbuild@vger.kernel.org, linux-mips@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
- loongarch@lists.linux.dev, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783596759; l=1366;
- i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=HBDbLxQ/mmLThuSCavhDFNuAv2+3px29VTHQ8QYWw1w=;
- b=/EvHsm6ydzGcPsxrNvqkQUB75XQjGIMB3dJQHMvHaYcR1e6vOjowSLWMYmBC9iC39j5MyPR+r
- GKnBIHG7yBIC0ZzIDI8rObHsO7fQLB+a+bRP7h1extXlNquFlV9wR/m
-X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
- pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500011.china.huawei.com (7.185.36.131)
 
-Now that there is a dummy declaration of VDSO_CLOCKMODE_ARCHTIMER,
-even if no vDSO is built, the ugly ifdeffery can be replaced with
-a cleaner IS_ENABLED() check.
 
-Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
----
- drivers/clocksource/arm_arch_timer.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 4adf756423de..d67125a8730a 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -56,11 +56,8 @@ static struct clock_event_device __percpu *arch_timer_evt;
- static enum arch_timer_ppi_nr arch_timer_uses_ppi __ro_after_init = ARCH_TIMER_VIRT_PPI;
- static bool arch_timer_c3stop __ro_after_init;
- static bool arch_counter_suspend_stop __ro_after_init;
--#ifdef CONFIG_GENERIC_GETTIMEOFDAY
--static enum vdso_clock_mode vdso_default = VDSO_CLOCKMODE_ARCHTIMER;
--#else
--static enum vdso_clock_mode vdso_default = VDSO_CLOCKMODE_NONE;
--#endif /* CONFIG_GENERIC_GETTIMEOFDAY */
-+static enum vdso_clock_mode vdso_default = IS_ENABLED(CONFIG_GENERIC_GETTIMEOFDAY) ?
-+	VDSO_CLOCKMODE_ARCHTIMER : VDSO_CLOCKMODE_NONE;
- 
- static cpumask_t evtstrm_available = CPU_MASK_NONE;
- static bool evtstrm_enable __ro_after_init = IS_ENABLED(CONFIG_ARM_ARCH_TIMER_EVTSTREAM);
+On 7/7/2026 1:39 AM, Will Deacon wrote:
+> Hi Jinjie,
+> 
+> On Thu, Jun 25, 2026 at 09:34:36AM +0800, Jinjie Ruan wrote:
+>> On 6/24/2026 8:16 PM, Will Deacon wrote:
+>>> Please just give me the time I asked for. If you want to help out in the
+>>> meantime, there are plenty of patches that need reviewing...
+>>
+>> It was a mistake on my part, and I sincerely apologize for wasting
+>> community review resources and disrupting your schedule.
+>>
+>> I will absolutely back off now and wait for your official series. Lesson
+>> learned. Thanks for your patience and for calling me out on this.
+> 
+> So I've mostly got the old series back on its feet:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=cpu-hotplug
 
--- 
-2.55.0
+Hi Will,
+
+I tested the boot time on the HIP12 hardware based on your patch, as the
+other two boards with 32 cores and 64 cores can only be booted using the
+5.10 kernel，but the patches are greatly different, and the adaptation is
+complex.
+
+Bringup Time Comparison on real hardware (ms, lower is better):
+
+ |     Platform             | Baseline|   P=0   |   P=1   | Delta(%)|
+ | -------------------------| ------- | ------- | ------- | ------- |
+ | 288-core server(HIP12)   | 21989.6 | 21989.7 | 12915.3 | 41.3%   |
+
+> 
+> but there are still two issues left to resolve:
+> 
+>   1. The printing that can happen before RCU has started. Although I've
+>      reduced this somewhat, there are still error paths in e.g.
+>      verify_local_cpu_capabilities() that print a message before dying.
+> 
+>   2. check_local_cpu_capabilities() can mutate the system capability
+>      state via update_cpu_capabilities(), so it's really dodgy running
+>      that prior to synchronisation.
+> 
+> Since you've added patches in this series that try to tackle these
+> problems, I'll reply on those two so we can figure out how we would like
+> to proceed.
+> 
+> Cheers,
+> 
+> Will
 

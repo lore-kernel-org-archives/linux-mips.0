@@ -1,96 +1,148 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F59F408624;
-	Fri, 10 Jul 2026 12:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA194426D3F
+	for <linux-mips@vger.kernel.org>; Fri, 10 Jul 2026 12:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783686913; cv=none; b=laqMGxAz9XsDv68NEnOVQE54M+CWnhW0jBfBgPQBEy3YKHpcU6rhKyxYppFTF8i7iWtwff3VYugp2Vr04bPueK7UYm1eXrdsj21qij78qScmL+ABSDaF05pdL0aRWEUAbKw2vmuocfuPQH+PoCKDjuHWvjJ0zphSvxFZi9nKQB4=
+	t=1783688070; cv=none; b=JaIIx2h56Qen8vON4BDdaKhL4Y6nTxqa/AY795oqVNqTDXScezTrWb3v6lXP/MvhQ3qQSSi2sXVsZVjrMM360O5spKP3S+CdC/PvUxV00FZjT0nKv4sPIBTlDLeUfANawW+mXyATxOWdpJPanQxL3hAe2OJOrNi1gLNgtYdsrwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783686913; c=relaxed/simple;
-	bh=PDjmw8awt2votmGhlvXDI/eRek6m+eCHuXWEHwR/8K0=;
+	s=arc-20240116; t=1783688070; c=relaxed/simple;
+	bh=sxv6a13OPgrK6TOsUQ/kBJYeYtA4hSsjpL/QVUw8MJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EkOWMtkq4Grq/np0+OlCGA0hQVqE+XMDNdjlPKSoVYDh2XTBIkadl+jhyPVFJsH/a2XcJ0VmgLRzguCWjW2o2k79W0k3lCtL+7s5TymRugGj1qB4EGrqm4M5LHDIF0u/YgdjP5kHqPzuDc0V3eNOCvxHOYrpkoXt11WCJQ+tZaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wiARS-0005Rr-00; Fri, 10 Jul 2026 14:34:54 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 937DBC00E8; Fri, 10 Jul 2026 14:34:45 +0200 (CEST)
-Date: Fri, 10 Jul 2026 14:34:45 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Renzo Davoli <renzo@cs.unibo.it>, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>, Alexey Gladkov <legion@kernel.org>,
-	Eugene Syromyatnikov <evgsyr@gmail.com>,
-	Davide Berardi <berardi.dav@gmail.com>,
-	strace-devel@lists.strace.io, "Dmitry V . Levin" <ldv@strace.io>,
-	"open list:MIPS" <linux-mips@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] ptrace: PTRACE_SET_SYSCALL_INFO syscall skipping
- support
-Message-ID: <alDm5TUIIlGLSRdn@alpha.franken.de>
-References: <20260704142643.692754-1-renzo@cs.unibo.it>
- <20260704142643.692754-2-renzo@cs.unibo.it>
- <akn8g3ya85YFqcjV@cs.unibo.it>
- <akpsTT20F6M2QWND@redhat.com>
- <ak0MykKEi4b6AHRV@cs.unibo.it>
- <ak0jqCyrtFg7azDM@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kd8cK9tyfj9uMcoNiP6L1U+lbK8M5FfsS+RepXFGcfP0E7Ph4cVjNd+E39gF1YZMnmy6YM2NvkNkIR9D2u0ZtAbA+2H7OfN0wzydvGSQsNYCMS+RumhlvaS/9bucKYpQlZwb7m+YDLFAt2hMlP4gdUp0DuYYEJQal1WJ1zWqTts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N/y7Bwyk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N/y7Bwyk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1783688067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XTxMckJ71iKdcnC625lbZ9WJQgTp+gyXuVTaxsSZYeA=;
+	b=N/y7BwykZYq1G+GFKH8L5ofuNBuDQoBUYObf2JoEgUM4UrF8zXUbHwNwLZbSTjyQySzDCy
+	XSI/bZlYFTugtM26DUf4R+5T8+EkGjvYOjUU4lko/MyqWmYff7AontBg0ToB0zD0tIzeMg
+	/ax+fV3Myt4SCwt6Q7Nal5d98b0rbCE=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-640-duefXCb_NOaqJcpTJsNlCw-1; Fri,
+ 10 Jul 2026 08:53:17 -0400
+X-MC-Unique: duefXCb_NOaqJcpTJsNlCw-1
+X-Mimecast-MFC-AGG-ID: duefXCb_NOaqJcpTJsNlCw_1783687991
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AAE061801379;
+	Fri, 10 Jul 2026 12:53:07 +0000 (UTC)
+Received: from fedora (unknown [10.44.49.164])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8AEF2180029C;
+	Fri, 10 Jul 2026 12:52:47 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 10 Jul 2026 14:53:07 +0200 (CEST)
+Date: Fri, 10 Jul 2026 14:52:40 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org,
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Richard Weinberger <richard@nod.at>,
+	Chris Zankel <chris@zankel.net>,
+	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
+Message-ID: <alDrGBMdTuoLcVyy@redhat.com>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.338083894@kernel.org>
+ <ak5ySpil83TNWxeq@kunlun.suse.cz>
+ <87se5tqkyp.ffs@fw13>
+ <alDQ7isUKJFl8Va4@kunlun.suse.cz>
+ <alDaOw8t-e3rxIPm@redhat.com>
+ <alDmTcgzMlKiio9H@kunlun.suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ak0jqCyrtFg7azDM@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alDmTcgzMlKiio9H@kunlun.suse.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On Tue, Jul 07, 2026 at 06:04:56PM +0200, Oleg Nesterov wrote:
-> On 07/07, Renzo Davoli wrote:
+On 07/10, Michal Suchánek wrote:
+>
+> On Fri, Jul 10, 2026 at 01:40:43PM +0200, Oleg Nesterov wrote:
 > >
-> > On Sun, Jul 05, 2026 at 04:38:05PM +0200, Oleg Nesterov wrote:
-> > > OK, lets only allow the _SECCOMP -> _EXIT transition for now.
-> > done in v3.
-> > > But will it work on MIPS?
+> > I can only say that ptrace users do want to skip the syscall and set the
+> > return value on entry.
 > >
-> > IMHO yes, it will (would).
-> 
-> Agreed, it is not that I think it won't... but it would be nice to have an ACK
-> from arch/mips maintainers. syscall_trace_enter() is called from MIPS asm code
-> which I obviously can't understand.
+> > See
+> > 	[PATCH v5 1/2] ptrace: add PTRACE_SET_SYSCALL_INFO syscall skipping support
+> > 	https://lore.kernel.org/all/20260709100949.94345-2-renzo@cs.unibo.it/
+> >
+> > The changelog explains that currently this doesn't work because
+> > among the arches which define HAVE_ARCH_TRACEHOOK (at least) arch/mips is
+> > broken in this regard.
+>
+> Or it could be documented that setting the return value has to be done
+> in the exit trace, and that would than work on any architecture AFAICT.
 
-current code works for SECCOMP and with below untested change it should
-work for PTRACE_SYSCALL, too.
+Well, ptrace users know the problem. And this what they have to do
+currently.
 
-Thomas.
+> With ppc and s390 using the same register for the syscall number and
+> syscall return value it's very much impossible to poke the return value
+> on entry into a register using the generic register access function. As
+> of now there is no place to store the value ot of the return value
+> outside of the registers, either.
 
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 3f4c94c88124..87102a03b6ea 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -1321,8 +1321,12 @@ long arch_ptrace(struct task_struct *child, long request,
-  */
- asmlinkage long syscall_trace_enter(struct pt_regs *regs)
- {
-+	long syscall;
-+
- 	user_exit();
- 
-+	syscall = current_thread_info()->syscall;
-+
- 	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
- 		if (ptrace_report_syscall_entry(regs))
- 			return -1;
-@@ -1342,7 +1346,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs)
- 	 * Negative syscall numbers are mistaken for rejected syscalls, but
- 	 * won't have had the return value set appropriately, so we do so now.
- 	 */
--	if (current_thread_info()->syscall < 0)
-+	if (syscall < 0)
- 		syscall_set_return_value(current, regs, -ENOSYS, 0);
- 	return current_thread_info()->syscall;
- }
+I know nothing about ppc and s390. Can't comment right now.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> And the current PTRACE_SET_SYSCALL_INFO indeed sets the syscall nr and
+> arguments on entry and the syscall return value on exit, that
+> disctincion is implemented.
+>
+> Not sure how the patchset you point out is relevant, it only adds
+> changes in the exit case.
+
+No. It allows to skip-and-set-retval on PTRACE_EVENT_SECCOMP.
+
+But ENTRY -> EXIT transition is not yet allowed due to the problems
+above.
+
+Oleg.
+

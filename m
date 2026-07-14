@@ -1,61 +1,61 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.50])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFAF33120A;
-	Tue, 14 Jul 2026 13:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FD43264CB;
+	Tue, 14 Jul 2026 13:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784035578; cv=none; b=Y9fo261Zg2+ljF2l9VZRBYF44zCG1h6o1wRSIBoZZIYBKDrG4Sq+HW+agA0Ga4B6I0cLOEZ13SoRChHoSkFye8ci8Aur1AQld5EHPBpTSlgM0EIwyYhH0wUrYZd8pnfVDSCaRcPSShVM/joTxFNPbnHvHPDDdXqN4NV1vsEY038=
+	t=1784035634; cv=none; b=K6yNPCeFzU3sa7Ns2hpjGZ8jsKEvOgp+VpDThN83/O0iUGu+kMBm7MbYZ+hN36NTDO/pqIdx7+3n+aAwq0bhUKLBHd5kl2xca5U1QfRY4fJfA1ET36+hAiq+DT5Zh3a2VSE780gnEHNBuG0GhX4fEWGAOf29KqXKj9+TZvOm4Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784035578; c=relaxed/simple;
-	bh=CDP6p4GWGlX1bN/th8UfrvLvMGYTonsXHB5UwdMc6f0=;
+	s=arc-20240116; t=1784035634; c=relaxed/simple;
+	bh=xIsHOWUKxadvtIEGip6zrjNf+E29BkcfX0rRZGqm9l4=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=b0ijK3/V5pmZlL/MyIJ6a5oeZoZyVY5FuUbC6svSEXq0amZC0nMgnZqBpw6za2K4ZQpoO+m4GTdqOWrPrfZs5x14jnYzsByxfeLLqCOrviinqxpL1/TmQLPx4+cWpDizNYA94vdyxYVPEi9/f4Ybd2vGVLFkcO9tDdplpara1BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ybu7UOwG; arc=none smtp.client-ip=43.163.128.50
+	 MIME-Version; b=eauGmOftiZh0v2fNDvBEQbwgwlksiWJw54Qa99PV6bkazUBBiqxkE8v4jXzRk4FW3QyhU8pOYTuSVxIKWxVuOMLNz4d8L9kySTlsRJATVCcvvqnnA30HGEZBCsjLT/A7d/x2z+lqe5MZm4DyoophyKEhvN0MASQA412v+fllkzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=fcGv2ri+; arc=none smtp.client-ip=43.163.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ybu7UOwG"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fcGv2ri+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1784035566; bh=aAu4/HgDFwYKCuJy0DbrcEfjWWZCGQSrhyOiOkE1P2U=;
+	t=1784035629; bh=Bkr7bUSX+wY2/1NqyzOVaFukQQvVCQWr1/e9kn3/gj4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ybu7UOwG0ECZguxzaUJLdCitFrVaXH3plDxp8GahfXVY7Cvm4Gp/YV/lun9MuhH9w
-	 0FNdgRoihxLoFJv6PI5zBDWdd/akNEyp5Cvjji99NyGzjBwus65xo+Grkcvm2POa5z
-	 zL7Rlb/8H02VsHJVggWCnHRENnartGsrTiVCuh9g=
+	b=fcGv2ri+92wtIn1H4eplLFtOuLvJY+jx6d9NPjwOJ219TuIpLK+RFpNcjrK+K+9jn
+	 PWCwdUvxfQKtpZ5gTSqCiycor/25Lr/oSl+HPYfQ9tDKDED+0kTOAaNKT7XBO4EJOA
+	 L95yI1gtjxR1v5kRQYkxuEXmQjEOvAlV2gx6Umlk=
 Received: from localhost.localdomain ([116.128.244.169])
-	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
-	id 683A6032; Tue, 14 Jul 2026 21:26:03 +0800
-X-QQ-mid: xmsmtpt1784035563ta33l4h8r
-Message-ID: <tencent_4839362F248901E45E50D9AEF6823DFA4007@qq.com>
-X-QQ-XMAILINFO: MmXTV/GPeIxT3cmTG7NxYxAJWaDmtqNDgbe/zxgRXEqLMh7QsP1dKYEaH+liHP
-	 U5LHB1uKWw1Y19ErzdgDsiVInjfcvdleVzcddnE9ZnxLTFLfp68Y/WKS4nNTEK797+I2YMh7E40M
-	 daqYBiucrrwqN+2vYiHjoP+ikLv380TWhGxjaBwKdDi1M/4gSMSJUM4fb2KAdQJdXGR7mUy9CK0Q
-	 akX0iidAUXQu19hhG8tPhj/RVr9ZL7qCnVDTrCD7BZQvlauz90oev63zzzOGKt170giB/hFIVb0T
-	 LZpqlgqY1i9qJchQVCmaLgKt71QALfHXHSVn8bLpux+mCoTKwiqoPjX5nET32qO7Ibl0LixQIpVw
-	 2cwHpGIVfX8upeMhp22+1n794c13Dg1Yecnw5HLoWMzoBVF9jSCLII1XcdDsMX20Ne5pCTZbYUxk
-	 YzQE9/uCutFhGV8C+k5NiH9hTwLelMGeogUcP1i+PIwQdsHI0gdWfdmfDI4hsBfhfQ5LmmhvLAeM
-	 pDjskIpB2yfwwpzlYS0lwyPUng5kpv0dLKSZUwncZvcFeTeTmaXRC/wbTVV/p723Nv8QwSyPAdng
-	 gF08iKNsHmDOMmliZTV7nda/6QAjIjFiqx25PqNMxusTQj9V3AE0UlRqAyOwr1NsD2pwAFHDZbuX
-	 /yo0ZCEx4aXLoKMD1npH5k8iCY5kLPzyukxMjMRiMINtxsdhNpKcW/v/nim6RVGUFKLbCv7c/dH6
-	 FVa15WkcSdWSgPcwu4v8s2RIoRWT4fEUmQ1fg3EoG/9WiHN+RQt3fKnf3R8a4pZmeeFTrgHWoKPS
-	 JbPkMrPotdyfoaZnks8MfBVNUJRZEfhLel0OrM9JUoxQw+ChNt8huV8iHGHKMWiWBUtDIUnbSOwV
-	 +6HrIEMb7BBxBJlh9V3tNg77rwQFKPNzgZLESmlTGc2cjZ9/zTfRPuY8GjCpjuTED8Y9SWW2sA2b
-	 ViqxCWkxHAn4z8TbFkw8u0+fvFrertWDvs0klHB0PDy0tNheKhIn570DOjrj2NhhaQHUNh+GnH9G
-	 BwpgcVAHAb1NPCV25Bqk8GOC7SL1U=
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+	by newxmesmtplogicsvrsza73-0.qq.com (NewEsmtp) with SMTP
+	id 6C79CE09; Tue, 14 Jul 2026 21:27:07 +0800
+X-QQ-mid: xmsmtpt1784035627tfwpedvel
+Message-ID: <tencent_BE6F86AC74FBD69E73A00D9B3552D1C06A06@qq.com>
+X-QQ-XMAILINFO: Mp62enUr7azuxsrGGvCPIOOWBS+l4ebWGw+VzhZrAlIVtHfPAORLYL2viIis5L
+	 JTAKVeS1LSN0ZY0qg0OOYbuvs0T/SAyj7evdpa9ukbGVzowWYFygADl2bCBiuedd/US+zUFSImd0
+	 LNUo+WxOha6EZ8FkM18+ZbLcO8GfIelpkS6aEgYlirWVP208B3Wv79PYg7qUW9gCeT1v9K7z6v5c
+	 TxNmZCTQmmoHcgyY5/RpgE36+ldE0AMG09/kF+jeJNaG/xq/xtSzWmGC3NSBjQ8XS+NZ1v+a+79o
+	 wFkRbn6Ft6QPjbq0vlmuqyRLBwKq5gHJAFgL39hWgQYswNpHzmfegLJR4C7ttWUC0ymI1bWd8zTx
+	 zuv/8R4Ri0go/nnKwkyn/uYCVP/uEJHg810xfVeiOLo4ldA3iZvKr57Mm8dgmCI8Nlq6TiWJrVPE
+	 S0I3P10Pcsz9byiihVkK/MWybE3d51aM2d7m+xe+YEpwPI0z91I4Et3ZPGhLokkKfIoMo3ERr702
+	 304V2HE+c1BfE19VFL4U7/0YQD5RoxL8dyl3pVyHJLE/ZI1ioSm8YBBbSA+AfO4Ux/9r93QRZv7S
+	 bFFZ46EK+qj2M3nVGcsYHUThyAJUHZcoeOS1SS/rSMmlQN5FIZO4Q48UPxGiW80DUvq9Y9j1SlK6
+	 ZWBY05abY/hBsrgtUqe1ntgrafrTred+4QaSVvyMgU5aMUqFCknO0wRrJsShsdXF1J0CQCeFT+Ls
+	 BAQrAyPATRDZFiCEEtX6EDpb876j2lOslmtIygP1FJidYewTTBKzNu8ZE89ciYqAsyRYllcFWWbv
+	 Gd/Ys9lZdgDmUvY6UJMfqJva4nwcn6oD3hXAUNEj5WSPwpJVlK7qjkgAC/WTsnRr5InH47EXF4zd
+	 ZokIeb/2YhHWW9a6HMAPRZ0vknkVqYyd3+Y+J7jCCK7yXTcqvm3GMCPFGiYgWlvBvCGlsaIS7GCj
+	 zEoIjPjlI8oUf2fmNxwR1HNV/qtZqg5H0UEsyYdEQYkpDfXIPz3P0Jm4EFHAxrIxCF8CuKd08NwW
+	 DmkAOAiBA66CRoS7fEfO7mf9BrLaowOUCoiyM1ClAAhlsCiOMPwldOt0ZJ/3ZPywx5mmo4HKuAjt
+	 k0RCN6
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
 From: Haofeng Li <920484857@qq.com>
 To: tglx@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Haofeng Li <13266079573@163.com>,
 	Haofeng Li <lihaofeng@kylinos.cn>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Kevin Cernekee <cernekee@gmail.com>,
-	linux-mips@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 05/16] irqchip/bcm7038-l1: clean up init failure paths
-Date: Tue, 14 Jul 2026 21:24:41 +0800
-X-OQ-MSGID: <20260714132453.3302672-3-920484857@qq.com>
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Marc Zyngier <maz@kernel.org>,
+	Paul Burton <paulburton@kernel.org>,
+	linux-mips@vger.kernel.org
+Subject: [PATCH 07/16] irqchip/mips-gic: clean up IRQ domain creation failure
+Date: Tue, 14 Jul 2026 21:24:43 +0800
+X-OQ-MSGID: <20260714132453.3302672-5-920484857@qq.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20260714132453.3302672-1-920484857@qq.com>
 References: <20260714122351.3274006-1-lihaofeng@kylinos.cn>
@@ -70,96 +70,73 @@ Content-Transfer-Encoding: 8bit
 
 From: Haofeng Li <lihaofeng@kylinos.cn>
 
-bcm7038_l1_init_one() stores the allocated CPU object in
-intc->cpus[idx] before mapping its registers and parent interrupt.
-Failures after that allocation leak the CPU object and possibly its
-MMIO mapping.
+After mapping the register base, irq_domain_create_simple() failure
+returns without unmapping it.
 
-A later IRQ domain allocation failure also frees intc while leaving
-parent mappings and chained handlers installed for CPUs initialized
-successfully. Those handlers retain intc as their data and can access
-freed memory.
+The CPU chained or VEIC handler is also installed before either IRQ
+domain is ready. Unmapping the registers while that handler remains
+published would leave a path to unmapped MMIO, and a later IPI domain
+failure would expose a half-initialized controller.
 
-Free the current CPU object on local failures. Remember every parent
-IRQ so the common error path can disable wake when it was enabled,
-remove the chained handler, dispose the mapping, unmap the registers,
-and free the CPU object before freeing intc.
+Unmap and clear the register base when primary domain creation fails,
+and publish the CPU interrupt handler only after both domains have
+been created successfully.
 
-Fixes: 5f7f0317ed28 ("IRQCHIP: Add new driver for BCM7038-style level 1 interrupt controllers")
+Fixes: fbea754123ae ("irqchip: mips-gic: Inline __gic_init()")
 
 Signed-off-by: Haofeng Li <lihaofeng@kylinos.cn>
 ---
- drivers/irqchip/irq-bcm7038-l1.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-mips-gic.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
-index 54a8557ef557..b42c4f4df6bf 100644
---- a/drivers/irqchip/irq-bcm7038-l1.c
-+++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -49,6 +49,8 @@ struct bcm7038_l1_chip {
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 19a57c5e2b2e..85fe0d8a34c5 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -956,23 +956,14 @@ static int __init gic_of_init(struct device_node *node,
+ 	gic_shared_intrs = FIELD_GET(GIC_CONFIG_NUMINTERRUPTS, gicconfig);
+ 	gic_shared_intrs = (gic_shared_intrs + 1) * 8;
  
- struct bcm7038_l1_cpu {
- 	void __iomem		*map_base;
-+	unsigned int		parent_irq;
-+	bool			wake_enabled;
- 	u32			mask_cache[];
- };
+-	if (cpu_has_veic) {
+-		/* Always use vector 1 in EIC mode */
+-		gic_cpu_pin = 0;
+-		set_vi_handler(gic_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
+-			       __gic_irq_dispatch);
+-	} else {
+-		gic_cpu_pin = cpu_vec - GIC_CPU_PIN_OFFSET;
+-		irq_set_chained_handler(MIPS_CPU_IRQ_BASE + cpu_vec,
+-					gic_irq_dispatch);
+-	}
+-
+ 	gic_irq_domain = irq_domain_create_simple(of_fwnode_handle(node),
+ 						  GIC_NUM_LOCAL_INTRS +
+ 						  gic_shared_intrs, 0,
+ 						  &gic_irq_domain_ops, NULL);
+ 	if (!gic_irq_domain) {
+ 		pr_err("Failed to add IRQ domain");
++		iounmap(mips_gic_base);
++		mips_gic_base = NULL;
+ 		return -ENXIO;
+ 	}
  
-@@ -247,8 +249,11 @@ static int bcm7038_l1_init_one(struct device_node *dn, unsigned int idx,
- 		return -ENOMEM;
+@@ -980,6 +971,17 @@ static int __init gic_of_init(struct device_node *node,
+ 	if (ret)
+ 		return ret;
  
- 	cpu->map_base = ioremap(res.start, sz);
--	if (!cpu->map_base)
-+	if (!cpu->map_base) {
-+		kfree(cpu);
-+		intc->cpus[idx] = NULL;
- 		return -ENOMEM;
++	if (cpu_has_veic) {
++		/* Always use vector 1 in EIC mode */
++		gic_cpu_pin = 0;
++		set_vi_handler(gic_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
++			       __gic_irq_dispatch);
++	} else {
++		gic_cpu_pin = cpu_vec - GIC_CPU_PIN_OFFSET;
++		irq_set_chained_handler(MIPS_CPU_IRQ_BASE + cpu_vec,
++					gic_irq_dispatch);
 +	}
++
+ 	board_bind_eic_interrupt = &gic_bind_eic_interrupt;
  
- 	for (i = 0; i < n_words; i++) {
- 		l1_writel(~intc->irq_fwd_mask[i],
-@@ -261,12 +266,17 @@ static int bcm7038_l1_init_one(struct device_node *dn, unsigned int idx,
- 	parent_irq = irq_of_parse_and_map(dn, idx);
- 	if (!parent_irq) {
- 		pr_err("failed to map parent interrupt %d\n", parent_irq);
-+		iounmap(cpu->map_base);
-+		kfree(cpu);
-+		intc->cpus[idx] = NULL;
- 		return -EINVAL;
- 	}
- 
--	if (of_property_read_bool(dn, "brcm,irq-can-wake"))
--		enable_irq_wake(parent_irq);
-+	if (of_property_read_bool(dn, "brcm,irq-can-wake") &&
-+	    !enable_irq_wake(parent_irq))
-+		cpu->wake_enabled = true;
- 
-+	cpu->parent_irq = parent_irq;
- 	irq_set_chained_handler_and_data(parent_irq, bcm7038_l1_irq_handle,
- 					 intc);
- 
-@@ -408,7 +418,7 @@ static int bcm7038_l1_probe(struct platform_device *pdev, struct device_node *pa
- 			if (idx)
- 				break;
- 			pr_err("failed to remap intc L1 registers\n");
--			goto out_free;
-+			goto out_unmap;
- 		}
- 	}
- 
-@@ -440,6 +450,12 @@ static int bcm7038_l1_probe(struct platform_device *pdev, struct device_node *pa
- 		struct bcm7038_l1_cpu *cpu = intc->cpus[idx];
- 
- 		if (cpu) {
-+			if (cpu->parent_irq) {
-+				if (cpu->wake_enabled)
-+					disable_irq_wake(cpu->parent_irq);
-+				irq_set_chained_handler_and_data(cpu->parent_irq, NULL, NULL);
-+				irq_dispose_mapping(cpu->parent_irq);
-+			}
- 			if (cpu->map_base)
- 				iounmap(cpu->map_base);
- 			kfree(cpu);
+ 	/*
 -- 
 2.25.1
 

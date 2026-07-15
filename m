@@ -1,215 +1,108 @@
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD653112DA
-	for <linux-mips@vger.kernel.org>; Wed, 15 Jul 2026 07:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C683C872C;
+	Wed, 15 Jul 2026 08:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784102317; cv=none; b=jrAIwEmRdzDTm9s6oPTomXAFDOvDOPg1gHOW/C3ZZk8PK0GKc0Ijo0K8pHINTVLwWy90UfllwnAe/WdGY9BPTiFl7fR/7brSd4RCSnTnKvXofU6ZKU6OoS3bMMB9TgApGDeqy8At968NtX8ubHgacQrDcr5hhsgwpZgEadN+z9k=
+	t=1784103925; cv=none; b=cj89LpiWU5W3gH4y5bV8J4EmZPQhUkarie03Bu6RENyGTWNDWhsWp2XYgYeDF50iLG95duAH73HGIgnzUvtqZDitwkV6G+DLpHIV18qoK60oxBVQVRxXSuDM9BbVdCg7ths0gBlfguOSP7wxCOwBIWRx65Img1jPLAxYqBv3eeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784102317; c=relaxed/simple;
-	bh=u8cicfkmRrJrH6XZK18EpfmqX98dxO0lsa0zsnA4eZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ULLccTxdj+ht2DidVoC6SoTrm9W5Mo5qU9f/jhScTB4g/FM1iNfTEbdCrBLk83GDysCL80HZJA3Rj6QAkO5FlgOhSqujQjpzH6pod0taNBRlMqFdlg42UHSWyyamC0tKQdqz7cxN2DkazbfSKh3hd/623T5D0KqBphtM1T6xxT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2cad4170e8eso63602505ad.3
-        for <linux-mips@vger.kernel.org>; Wed, 15 Jul 2026 00:58:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784102315; x=1784707115;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=hqKDqOfd26TqLmXrf6Sno+8+vAQxzNMwBOFafeUJRw4=;
-        b=KC5qUmiV04I2alBvnWoDsOPJGu55RYHuWndz0Qd1KTUzh0LLM+dvxbQZo/iw2PlxiX
-         dXCa/OcP8e1UCoSD6MdWMQ/cPLNSHT+dsrgcxq7zYCwv3OtiwELcXsJUuxoVagTbVR7I
-         l0+UksxrbiEKYGIPvBOPkPgbHAAZGnNJAf9JxRoQ3rxQ0UyrEVSb7dAi0hL2TGuSj8KI
-         qQEMtV+H5N5esJUTLSJW0Ke5ernTQ6eRwufqxaSkYMxuGLwqda1s9KViBb+4nuN6XyWA
-         pfmfhsMXPjBxSAosDtPvr8CMvqyvohYmUooucpMRGru6i3LGYHf6dwZ3dhV6bhAp4kl5
-         I1RA==
-X-Forwarded-Encrypted: i=1; AHgh+Rp0AwpP5lg8CHQfFi+MjVGm8UXNxxULGdNsgqyP4aen7ciDlbUQ1CO/3ZVBkRFH+EZa1gbL+0x0SjqB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxwcn0zBVnuXFNEQxcWqmUlXoaclZUML++4VHl1VIR58viPabzY
-	yblEX+YsI5BDRarRatjv3etYYAnzIHpsHDKoU6IG7rl3J6bP+FsJO7gemFP2eowVpcg=
-X-Gm-Gg: AfdE7ckhBj0HvRPLxyGD/N06oZPDJTHnk9iQawhRIwtgKeUK8UW+40KuqLQDDHsgbvN
-	8cTypMtpmSJ8nSbnQxOfLcbJL6j0/vM8IgS4tNoV6igcNyqhpeldgXRnocEIof4bea0PSF0chY4
-	Zd8/ekL2OmRZbai6xkK6Gby2Kahtvc7+cGbCzDFSFqp8NP9LISy3KXlRa4EChlSS4xyeugu5iLh
-	GPjXbGUd7hHMKNJxBmBN6BZdFj0rZO5Y36Kvf9yoAlE/ZucjXDr74Onvrh1kvQ/gCNjAtjoX2UA
-	fRB3G3H3L3uH3q3d/l2w0rJNJOAyYAlq7SWwEFmOZU5zZ1s4GwfQuaIOIUWdtYjlBIzVwg+RGma
-	cf6PID0fnL9fqhmRSad1QHPYdsse0JjW+gg5AbfWjnudDlZSe5idCX1YZKSOkeRfhTmeSOriW7/
-	UvEtkWNBoq+LJJJ+tlyhpReC069FX+iZutjafJx3xjPJQ1WekAfpx4EQ==
-X-Received: by 2002:a05:690e:458a:20b0:667:5e15:5728 with SMTP id 956f58d0204a3-66807717d51mr2758277d50.28.1784101907957;
-        Wed, 15 Jul 2026 00:51:47 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-667877a2db1sm18366131d50.6.2026.07.15.00.51.47
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2026 00:51:47 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-81e9f7491ffso55548537b3.0
-        for <linux-mips@vger.kernel.org>; Wed, 15 Jul 2026 00:51:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrgVRfdyCRZm5k56SASXXRE5hUedCcmAd/m38hJFVxC4bkWYroIipajrhcNHxlZbBYwjRgyz7XqsMgT@vger.kernel.org
-X-Received: by 2002:a05:6102:6891:b0:73e:9fae:584c with SMTP id
- ada2fe7eead31-745875199aemr2922337137.19.1784101517020; Wed, 15 Jul 2026
- 00:45:17 -0700 (PDT)
+	s=arc-20240116; t=1784103925; c=relaxed/simple;
+	bh=lVF9lbxS7tFgfFU9drM3n5HiYK58TwN29718xw7myew=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EWHZkExlovxtVuSzNiwSGw/srA16352GAHtrO3fY9p/8sAayUk294YfLXwdKxLNI1FlkCS+8NZU3t2S+mZ9jzOljhv837VpZHqYcSWktrA6c7TpSHYFEfswI14ZHwc2Xe7Ch/adRlaoDrXFZtC3bwWDsajH8troTuOIUWTDlDcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1Pb9WQu; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1Pb9WQu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4271F000E9;
+	Wed, 15 Jul 2026 08:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784103924;
+	bh=0hWGr6yIYZ3hmyl+qH6n3K7Fm452o43E71VabCLMJ2s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=M1Pb9WQu0IhR3P6JRYVgpOzljOTuLBL5n6r0R+i3T6Cj6Pfq/BbEAeyvAAd6q+GwU
+	 yoh16hddpke8YRXj4bfC0BlqZXoh2oOxkxxfr/ZZ4LtH1IwctkRUOsAZ2DTsl5MwXL
+	 OgwbU2Z0EXRTi2suwmOEdZwMcMw1UwD4qnCb2U0UIGMxWSKqmkI4rJV0fOaz7frsyp
+	 2UgeFb3NExlZX58pouMZoZOq3U2RBWV9ghRcw3YrJThQyIqJBrSR5X77jMSfD+Yh9P
+	 Vqa0sNn/IVBkbkj+87yT6Eh8x08MbkvvvCwenfxyZ52gn69bWZbYdUyMpeOjJGr8Vu
+	 P097FVeUHn00g==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Arnd Bergmann
+ <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>, Vincenzo Frascino
+ <vincenzo.frascino@arm.com>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nsc@kernel.org>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, Paul
+ Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
+ loongarch@lists.linux.dev, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
+ <thomas.weissschuh@linutronix.de>
+Subject: Re: [PATCH 3/7] MIPS: csrc-r4k: Replace CONFIG_GENERIC_GETTIMEOFDAY
+ ifdeffery with IS_ENABLED()
+In-Reply-To: <20260709-vdso-arch-clockmodes-v1-3-3fd780bbf851@linutronix.de>
+References: <20260709-vdso-arch-clockmodes-v1-0-3fd780bbf851@linutronix.de>
+ <20260709-vdso-arch-clockmodes-v1-3-3fd780bbf851@linutronix.de>
+Date: Wed, 15 Jul 2026 10:25:19 +0200
+Message-ID: <87wluwoe1c.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6007625e-c3f9-4ad6-99a8-61396bccbcec@kernel.org>
- <32d459d1-ad19-4baf-bbb1-0565458001d2@intel.com> <3ea30f8a-bb29-4bf5-8400-1c4840d46a88@kernel.org>
- <7e84b200-25eb-43a6-b5e2-5f27f2d82a77@intel.com> <31988089-095a-4eed-b5e2-c677c70f79f6@kernel.org>
- <14e250db-1641-4085-8d13-02f819657d5f@intel.com> <d83c76b3-ea4d-4c41-b4c5-f5ae558ace55@kernel.org>
- <alYgMxKqRnF6_X0A@e129823.arm.com> <6df814c9-405c-48d8-96ea-929c4b28949b@intel.com>
- <alZe-Cu7yQw9qRXU@e129823.arm.com> <alZo9feSrSB_StfO@e129823.arm.com>
-In-Reply-To: <alZo9feSrSB_StfO@e129823.arm.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 15 Jul 2026 09:45:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUqL=vJFAzYgcRVNbD_VWWwhehwTuhTfwLt_yRR8c+B0g@mail.gmail.com>
-X-Gm-Features: AUfX_mwGugbyQZ1JX8fgK_JNKs5rGnucGlnBlUaIc_V2N3HkDTrdgggdZ_cY0do
-Message-ID: <CAMuHMdUqL=vJFAzYgcRVNbD_VWWwhehwTuhTfwLt_yRR8c+B0g@mail.gmail.com>
-Subject: Re: [RFC PATCH 10/34] x86: mm: carve out the generic compile-time
- folded pgtable case in effective_prot()
-To: Yeoreum Yun <yeoreum.yun@arm.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, "David Hildenbrand (Arm)" <david@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-arch@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org, 
-	kasan-dev@googlegroups.com, linux-csky@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux@armlinux.org.uk, akpm@linux-foundation.org, ankur.a.arora@oracle.com, 
-	rppt@kernel.org, linmag7@gmail.com, chleroy@kernel.org, klarasmodin@gmail.com, 
-	chenhuacai@kernel.org, kernel@xen0n.name, kas@kernel.org, 
-	zhangtianyang@loongson.cn, wangyuli@aosc.io, tsbogend@alpha.franken.de, 
-	ljs@kernel.org, jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, ryan.roberts@arm.com, pasha.tatashin@soleen.com, 
-	rmclure@linux.ibm.com, baolin.wang@linux.alibaba.com, tj@kernel.org, 
-	kevin.brodsky@arm.com, anup@brainfault.org, atish.patra@linux.dev, 
-	pjw@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, 
-	dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org, 
-	tglx@kernel.org, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, 
-	hannes@cmpxchg.org, mhocko@kernel.org, qi.zheng@linux.dev, 
-	shakeel.butt@linux.dev, kasong@tencent.com, baohua@kernel.org, 
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
-	ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, 
-	dvyukov@google.com, vincenzo.frascino@arm.com, anshuman.khandual@arm.com, 
-	yang@os.amperecomputing.com, chaitanyas.prakash@arm.com, ardb@kernel.org, 
-	guoren@kernel.org, yang.li85200@gmail.com, viro@zeniv.linux.org.uk, 
-	dinguyen@kernel.org, schuster.simon@siemens-energy.com, 
-	wangruikang@iscas.ac.cn, junhui.liu@pigmoral.tech, muchun.song@linux.dev, 
-	vishal.moola@gmail.com, namcao@linutronix.de, pavel@kernel.org, 
-	djbw@kernel.org, yu-cheng.yu@intel.com, baolu.lu@linux.intel.com, 
-	Jonathan.Cameron@huawei.com, coxu@redhat.com, andreas@gaisler.com, 
-	liam@infradead.org, vbabka@kernel.org, surenb@google.com, mhocko@suse.com, 
-	shorne@gmail.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Yeoreum,
+On Thu, Jul 09 2026 at 13:32, Thomas Wei=C3=9Fschuh wrote:
+> Now that there is a dummy declaration of VDSO_CLOCKMODE_R4K, even if no
+> vDSO is built, the ugly ifdeffery can be replaced with a cleaner
+> IS_ENABLED() check.
 
-On Tue, 14 Jul 2026 at 18:51, Yeoreum Yun <yeoreum.yun@arm.com> wrote:
-> On Tue, Jul 14, 2026 at 05:08:24PM +0100, Yeoreum Yun wrote:
-> > On Tue, Jul 14, 2026 at 07:35:19AM -0700, Dave Hansen wrote:
-> > > On 7/14/26 04:40, Yeoreum Yun wrote:
-> > > > @@ -254,22 +255,8 @@ static void effective_prot(struct ptdump_state *pt_st, int level, u64 val)
-> > > >         struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
-> > > >         pgprotval_t prot = val & PTE_FLAGS_MASK;
-> > > >         pgprotval_t effective;
-> > > > -       bool first_level = false;
-> > > >
-> > > > -       /* Ignore folded levels ... */
-> > > > -       if (((level == 0) && mm_p4d_folded(st->mm)) ||
-> > > > -           ((level == 1) && mm_pud_folded(st->mm)) ||
-> > > > -           ((level == 2) && mm_pmd_folded(st->mm)))
-> > > > -               return;
-> > > > -
-> > > > -       /* ... and make the actual first level remember the protection. */
-> > > > -       if (((level == 0)) ||
-> > > > -           ((level == 1) && mm_p4d_folded(st->mm)) ||
-> > > > -           ((level == 2) && mm_pud_folded(st->mm)) ||
-> > > > -           ((level == 3) && mm_pmd_folded(st->mm)))
-> > > > -               first_level = true;
-> > > > -
-> > > > -       if (!first_level) {
-> > > > +       if (first_level > st->first_level) {
-> > > >                 pgprotval_t higher_prot = st->prot_levels[level - 1];
-> > > >
-> > > >                 effective = (higher_prot & prot & (_PAGE_USER | _PAGE_RW)) |
-> > > > @@ -471,6 +458,15 @@ bool ptdump_walk_pgd_level_core(struct seq_file *m,
-> > > >                 .seq            = m
-> > > >         };
-> > > >
-> > > > +       if (mm_pmd_folded (mm))
-> > > > +               st->first_level = 3;
-> > > > +       else if (mm_pud_folded (mm))
-> > > > +               st->first_level = 2;
-> > > > +       else if (mm_p4d_folded (mm))
-> > > > +               st->first_level = 1;
-> > > > +       else
-> > > > +               st->first_level = 0;
-> > > > +
-> > > >         ptdump_walk_pgd(&st.ptdump, mm, pgd);
-> > >
-> > > This is indeed an improvement and a step in the right direction! Thanks
-> > > for looking at this.
-> > >
-> > > But one of my test for whether it's good x86 code is whether there's any
-> > > actually x86-specific logic in it. Isn't this basically a translation
-> > > between the integer level number and whether it is folded?
-> > >
-> > > That seems like a common helper that more than one arch could use. Could
-> > > this be stuck in a helper so that all arch/x86 has to do is:
-> > >
-> > >     if (mm_pt_level_folded(mm, level))
-> > >             return;
-> >
-> > Yes. at least the level semantic in ptdump (pgd is level 0,
-> > p4d is level 1, ...) is same to all archs where use ptdump.
-> > So It seems reasonable to add this common helper in ptdump.c
-> >
->
-> Furthermore, the effective_prot() need to require to identify whether
-> it's the first pgtable to prevent the inheriting from dummy value.
-> So I think it seems to make a ptdump_pt_level_first() like:
->
-> diff --git a/mm/ptdump.c b/mm/ptdump.c
-> index 973020000096c..2ec5700e4be5e 100644
-> --- a/mm/ptdump.c
-> +++ b/mm/ptdump.c
-> @@ -190,6 +190,23 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
->         st->note_page_flush(st);
->  }
->
-> +bool pdtump_pt_level_first(struct mm_struct *mm, int level)
-> +{
-> +       if (!mm || level > CONFIG_PGTABLE_LEVELS)
-> +               return false;
-> +
-> +       if (mm_pmd_folded(mm) && level == 3)
-> +               return true;
-> +       if (mm_pud_folded(mm) && level == 2)
-> +               return true;
-> +       if (mm_p4d_folded(mm) && level == 1)
-> +               return true;
+Duh. This stuff is really obfuscated. I just realized that the previous
+one actually expands the architecture defines to non-defined integer
+variable declarations.
 
-Is this order (... && level == ...) the optimal order?
-On arm64, mm_pud_folded() and mm_p4d_folded() perform several checks.
+Smart, but seriously?
 
-> +       if (level == 0)
-> +               return true;
-> +
-> +       return false;
-> +}
->
+I just double checked and it turns out that none of this ifdeffery is
+required. If CONFIG_GENERIC_GETTIMEOFDAY is disabled, then it does not
+matter at all whether the actual ARCH_CLOCK_VDSO_MODE is set in
+clocksource::vdso_mode or not.
 
-Gr{oetje,eeting}s,
+Nothing uses the vdso mode field outside of update_vsyscall and that's
+compiled out when CONFIG_GENERIC_GETTIMEOFDAY=3Dn.
 
-                        Geert
+So all what's required is:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--- a/include/vdso/clocksource.h
++++ b/include/vdso/clocksource.h
+@@ -3,14 +3,11 @@
+ #define __VDSO_CLOCKSOURCE_H
+=20
+ #include <vdso/limits.h>
+-
+-#ifdef CONFIG_GENERIC_GETTIMEOFDAY
+ #include <asm/vdso/clocksource.h>
+-#endif /* CONFIG_GENERIC_GETTIMEOFDAY */
+=20
+ enum vdso_clock_mode {
+ 	VDSO_CLOCKMODE_NONE,
+-#ifdef CONFIG_GENERIC_GETTIMEOFDAY
++#ifdef VDSO_ARCH_CLOCKMODES
+ 	VDSO_ARCH_CLOCKMODES,
+ #endif
+ 	VDSO_CLOCKMODE_MAX,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+and then you can just unconditionally set clocksource::vdso_clock_mode
+in all drivers.
+
+No?
+
+Thanks,
+
+        tglx

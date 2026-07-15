@@ -1,85 +1,388 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [185.119.170.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0ED3921E6;
-	Wed, 15 Jul 2026 22:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F7643F0A3
+	for <linux-mips@vger.kernel.org>; Wed, 15 Jul 2026 22:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784153276; cv=none; b=SDqBfPj3NDaxnHDDJZrd8ru7Kz/q2V9QGPbojRrX230yEN9H3TeUQPDOl6JH+Nhh1DdtW8VjB8ynXH4GO+DNMDxrAn/J+Aro1qadp5yK00/mI/ASRCBD8NAcQl5xgSdsNdXGFS/9K9i6kx4nrhpVnp18LciEhNZwi/Hw6gwkRMA=
+	t=1784153322; cv=none; b=FMxoqZ9g0GaRC9nm4P4pR7cFX7Zrk54J0DIHHj42ZrTs+ECcxBMbSX+uOdBtz4KYp+r4ft3w2Lz9YFl/BU3JjRrHf5kRlA5/ZzpjSKg7XOrsD+Mfj9NvR0XyVO2whb6HSItbUCzPGLBIW+AiLk+tNQxNTVYnlXycwRJs0RB2qjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784153276; c=relaxed/simple;
-	bh=UM5YmNqawtdJxKYSNHIPkObRJsglOJFxe9cAFfr8yXw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CPi2zSazNQEaP6tFoJxwGoiWyKV4hVpK0j0mk57+Egjnr1hArAVm0+z0eHvHfRVCs5jycHml4BEVjo0XyePisF/Fwo5A248D6zMfrnhtfPkcm29TL8MwEYcIrTi3Td2Vw8fRTfvKcKMCFM6613TDbR3uDZh9/lbCjuc7QzUtszY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BOSHirvf; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784153322; c=relaxed/simple;
+	bh=iyqFBKpEcM69SF5aDYXRi/En6GJa9MOiBmk7o5wmHhc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CjeiY9kwZmMXtitKbYqDaDKVFjyflz/hhsNb5UhFLL63oA0hvvO2Un611fDKisFN2HteFG2Rcf9bpeU5+PAfNUfoC7pCp7zUoCUZMWGZKEpQ8MsLBR1Lr0oV+axMXaw1kZaB5eviHSpzsGhUaKckA2lRFtnDsfRd4UfAEgMxtqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=HyiILIAp; arc=none smtp.client-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BOSHirvf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6953E1F000E9;
-	Wed, 15 Jul 2026 22:07:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784153275;
-	bh=XZ8j5ko3SBMcOhTx5nY5j6POZAkn3H5+I4qObTvU8XE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=BOSHirvft5AohynF+aPFvID2k4C+dXQHRxmBeJZFFJqF0AVF33UToIQX9gNJplXiK
-	 /DXoJtAgCjZAVBQZXSa1IOqnJE0XjTGf73KFPbd/HabhaMHYvRKH3pzlUPnlnB1OOy
-	 Rz1/JDuvU2+uOjRwqQE+Vy9l4xk0XZJ2a6aKVI3BDCID7/TqT0NoK7ty/R7hcjZfxQ
-	 87ZBhKitW6UgGUY96Y94rwd61Dvo5sOTpPZIk4JdE+pWYwOHF9BtXAkVcli1dhbATA
-	 +zKyIndP2nu0GngK0nzohhmTIfjqHtaEewm2H7jnypcaIvepDppnsViWyOxYfEGYsW
-	 irRnB2bb7cvOw==
-Date: Thu, 16 Jul 2026 00:07:52 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org, 
-	stable@vger.kernel.org
-Subject: Re: [PATCH] i2c: jz4780: Cache clock rate at probe to prevent CCF
- prepare_lock deadlock
-Message-ID: <alf7rSWaLBO8WBkR@zenone.zhora.eu>
-References: <c69ca6511780aa4759a428cb7fb70de43ee5211b.1783666715.git.hns@goldelico.com>
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="HyiILIAp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crapouillou.net;
+	s=mail; t=1784153311;
+	bh=iyqFBKpEcM69SF5aDYXRi/En6GJa9MOiBmk7o5wmHhc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=HyiILIAp5RMVqNiDuJbHZlQEZgSkwk0krqr4l720wzwGPuNqezbHG9jZe8pWUVywP
+	 U8ITYUbiHpPACQRKC81xZni8WzrGUs6dt32Pr5FSVxiu+ylGm6WjALui8br6wrh38T
+	 3tB6dyBwvaMaYGqbRXtq4NIt6y2Ot/fwukzBcrrU=
+Message-ID: <ee161e6969a3f9f0b445a534a086a91cd8786128.camel@crapouillou.net>
+Subject: Re: [PATCH 19/60] drm/ingenic: Convert to atomic_create_state
+From: Paul Cercueil <paul@crapouillou.net>
+To: Maxime Ripard <mripard@kernel.org>, Maarten Lankhorst	
+ <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>,  David Airlie <airlied@gmail.com>, Simona Vetter
+ <simona@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org
+Date: Thu, 16 Jul 2026 00:08:25 +0200
+In-Reply-To: <20260709-drm-no-more-plane-reset-v1-19-302d986fe5f0@kernel.org>
+References: <20260709-drm-no-more-plane-reset-v1-0-302d986fe5f0@kernel.org>
+	 <20260709-drm-no-more-plane-reset-v1-19-302d986fe5f0@kernel.org>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c69ca6511780aa4759a428cb7fb70de43ee5211b.1783666715.git.hns@goldelico.com>
 
-Hi Nikolaus,
+Hi Maxime,
 
-On Fri, Jul 10, 2026 at 08:58:35AM +0200, H. Nikolaus Schaller wrote:
-> Fix a severe AB/BA deadlock between the Common Clock Framework (CCF)
-> and the I2C adapter lock, which triggers when an I2C-controlled clock
-> generator (like the Si5351) is registered or modified under the CCF.
-> 
-> During a clock frequency change, the CCF acquires its global 'prepare_lock'
-> mutex and calls i2c_transfer() to update the chip registers, stalling
-> for the adapter's I2C bus lock.
+Le jeudi 09 juillet 2026 =C3=A0 13:50 +0200, Maxime Ripard a =C3=A9crit=C2=
+=A0:
+> The plane only initializes a pristine state in its reset hook
+> using drm_atomic_helper_plane_reset(), which is equivalent to what
+> atomic_create_state expects. Convert to it.
+>=20
+> The conversion was done using the following Coccinelle semantic
+> patch:
+>=20
+> @@
+> identifier funcs;
+> symbol drm_atomic_helper_plane_reset;
+> symbol drm_atomic_helper_plane_create_state;
+> @@
+>=20
+> struct drm_plane_funcs funcs =3D {
+> =C2=A0 ...,
+> - .reset =3D drm_atomic_helper_plane_reset,
+> + .atomic_create_state =3D drm_atomic_helper_plane_create_state,
+> =C2=A0 ...,
+> };
+>=20
+> @match_struct_reset@
+> identifier funcs, reset_func;
+> @@
+> struct drm_plane_funcs funcs =3D {
+> =C2=A0=C2=A0=C2=A0 ...,
+> =C2=A0=C2=A0=C2=A0 .reset =3D reset_func,
+> =C2=A0=C2=A0=C2=A0 ...,
+> };
+>=20
+> @reset_uses_helpers depends on match_struct_reset@
+> identifier match_struct_reset.reset_func;
+> @@
+>=20
+> =C2=A0void reset_func(...)
+> =C2=A0{
+> =C2=A0	<+...
+> (
+> =C2=A0	__drm_atomic_helper_plane_reset(...);
+> >=20
+> 	__drm_gem_reset_shadow_plane(...);
+> )
+> =C2=A0	...+>
+> =C2=A0}
+>=20
+> @match_struct_destroy@
+> identifier funcs, destroy_func;
+> @@
+> struct drm_plane_funcs funcs =3D {
+> =C2=A0=C2=A0=C2=A0 ...,
+> =C2=A0=C2=A0=C2=A0 .atomic_destroy_state =3D destroy_func,
+> =C2=A0=C2=A0=C2=A0 ...,
+> };
+>=20
+> @script:python renamed_func@
+> old_name << match_struct_reset.reset_func;
+> new_name;
+> @@
+> if old_name.endswith("_reset"):
+> =C2=A0=C2=A0=C2=A0 coccinelle.new_name =3D old_name.replace("_reset", "_c=
+reate_state")
+> else:
+> =C2=A0=C2=A0=C2=A0 coccinelle.new_name =3D old_name
+>=20
+> @update_struct depends on match_struct_reset && reset_uses_helpers@
+> identifier match_struct_reset.funcs, match_struct_reset.reset_func;
+> identifier renamed_func.new_name;
+> @@
+> struct drm_plane_funcs funcs =3D {
+> =C2=A0=C2=A0=C2=A0 ...,
+> -=C2=A0=C2=A0 .reset =3D reset_func,
+> +=C2=A0=C2=A0 .atomic_create_state =3D new_name,
+> =C2=A0=C2=A0=C2=A0 ...,
+> };
+>=20
+> @drop_destroy depends on update_struct && match_struct_destroy@
+> identifier match_struct_reset.reset_func;
+> identifier match_struct_destroy.destroy_func;
+> identifier container_func;
+> identifier P;
+> symbol drm_atomic_helper_plane_destroy_state;
+> symbol __drm_atomic_helper_plane_destroy_state;
+> @@
+>=20
+> =C2=A0void reset_func(struct drm_plane *P)
+> =C2=A0{
+> =C2=A0	...
+> (
+> -	if (P->state) {
+> -=C2=A0		<+...
+> (
+> -		drm_atomic_helper_plane_destroy_state(P, P->state);
+> >=20
+> -		__drm_atomic_helper_plane_destroy_state(P->state);
+> >=20
+> -		P->funcs->atomic_destroy_state(P, P->state);
+> >=20
+> -		destroy_func(P, P->state);
+> )
+> -=C2=A0		...+>
+> -=C2=A0	}
+> >=20
+> -	drm_WARN_ON_ONCE(P->dev, P->state);
+> >=20
+> -	WARN_ON(P->state);
+> )
+> =C2=A0	...
+> (
+> -	kfree(P->state);
+> >=20
+> -	kfree(container_func(P->state));
+> >=20
+> =C2=A0	// kfree is optional
+> )
+> (
+> -	P->state =3D NULL;
+> >=20
+> =C2=A0	// plane->state clearing is optional
+> )
+> =C2=A0	...
+> =C2=A0}
+>=20
+> @drop_destroy_mtk depends on update_struct@
+> identifier P;
+> symbol __drm_atomic_helper_plane_destroy_state;
+> symbol to_mtk_plane_state;
+> @@
+>=20
+> =C2=A0void mtk_plane_reset(struct drm_plane *P)
+> =C2=A0{
+> =C2=A0	...
+> -	if (P->state) {
+> -		__drm_atomic_helper_plane_destroy_state(P->state);
+> -		...
+> -	} else {
+> =C2=A0		...
+> -	}
+> =C2=A0	...
+> =C2=A0}
+>=20
+> @transform_nv50_wndw depends on update_struct@
+> identifier S;
+> @@
+>=20
+> =C2=A0void nv50_wndw_reset(...)
+> =C2=A0{
+> =C2=A0	...
+> -	if (WARN_ON(!(S =3D kzalloc_obj(*S))))
+> +	S =3D kzalloc_obj(*S);
+> +	if (WARN_ON(!S))
+> =C2=A0		return;
+> =C2=A0	...
+> =C2=A0}
+>=20
+> @transform_kzalloc depends on update_struct@
+> identifier match_struct_reset.reset_func;
+> identifier P, S;
+> statement ST;
+> statement list STL;
+> @@
+>=20
+> =C2=A0void reset_func(struct drm_plane *P)
+> =C2=A0{
+> =C2=A0	<...
+> =C2=A0	S =3D kzalloc_obj(*S);
+> (
+> -	if (S)
+> -	{
+> -		STL
+> -	}
+> +	if (!S) return;
+> +
+> +	STL
+> >=20
+> -	if (S) ST
+> +	if (!S) return;
+> +
+> +	ST
+> )
+> 	...>
+> =C2=A0}
+>=20
+> @transform_body depends on update_struct@
+> identifier match_struct_reset.reset_func;
+> identifier renamed_func.new_name;
+> identifier S, P;
+> expression PS;
+> @@
+> - void reset_func(struct drm_plane *P)
+> + struct drm_plane_state *new_name(struct drm_plane *P)
+> {
+> 	...
+> =C2=A0	S =3D kzalloc_obj(*S);
+> 	...
+> (
+> =C2=A0	if (!S) {
+> 		...
+> -		return;
+> +		return ERR_PTR(-ENOMEM);
+> =C2=A0	}
+> >=20
+> =C2=A0	if (WARN_ON(!S)) {
+> 		...
+> -		return;
+> +		return ERR_PTR(-ENOMEM);
+> =C2=A0	}
+> >=20
+> =C2=A0	if (S =3D=3D NULL) {
+> =C2=A0		...
+> -		return;
+> +		return ERR_PTR(-ENOMEM);
+> =C2=A0	}
+> )
+> 	...
+> (
+> -	__drm_atomic_helper_plane_reset(P, PS);
+> +	__drm_atomic_helper_plane_state_init(PS, P);
+> >=20
+> -	__drm_gem_reset_shadow_plane(P, PS);
+> +	__drm_gem_shadow_plane_state_init(P, PS);
+> )
+> 	...
+> }
+>=20
+> @update_early_return depends on update_struct@
+> identifier match_struct_reset.reset_func;
+> identifier renamed_func.new_name;
+> identifier P;
+> expression PS;
+> @@
+> =C2=A0struct drm_plane_state *new_name(struct drm_plane *P)
+> {
+> 	<+...
+> -	return;
+> +	return ERR_PTR(-EINVAL);
+> 	...+>
+> }
+>=20
+> @update_return_plane depends on update_struct@
+> identifier match_struct_reset.reset_func;
+> identifier renamed_func.new_name;
+> identifier P;
+> expression PS;
+> @@
+> =C2=A0struct drm_plane_state *new_name(struct drm_plane *P)
+> {
+> 	...
+> =C2=A0	__drm_atomic_helper_plane_state_init(PS, P);
+> 	...
+> +
+> +	return PS;
+> }
+>=20
+> @update_return_shadow depends on update_struct@
+> identifier renamed_func.new_name;
+> identifier P;
+> expression PS;
+> @@
+> =C2=A0struct drm_plane_state *new_name(struct drm_plane *P)
+> {
+> 	...
+> =C2=A0	__drm_gem_shadow_plane_state_init(P, PS);
+> 	...
+> +
+> +	return &PS->base;
+> }
+>=20
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-I don't think caching the clock rate once at probe is safe.
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 
-If the controller clock rate changes afterwards,
-jz4780_i2c_set_speed() will keep using the stale cached value and
-calculate incorrect bus timings.
+Cheers,
+-Paul
 
-Andi
-
-> Concurrently, a parallel transfer on the same bus (e.g., a GPIO expander
-> handling LEDs) can hold the I2C adapter lock. Inside the transfer path,
-> jz4780_i2c_set_speed() calls clk_get_rate() to dynamically calculate
-> timings. This call attempts to acquire the blocked CCF 'prepare_lock',
-> creating a circular dependency that freezes the system or at least
-> the involved processes and workers.
-> 
-> Eliminate the synchronous clk_get_rate() call from the active transfer
-> path by caching the peripheral clock rate once - inside the private
-> jz4780_i2c structure during jz4780_i2c_probe(). Update
-> jz4780_i2c_set_speed() to use this cached value, decoupling active I2C
-> transactions from the CCF internal locks.
-> 
-> Assisted-by web based Google AI.
-> 
-> Fixes: ba92222ed63a12 ("i2c: jz4780: Add i2c bus controller driver for Ingenic JZ4780")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+> Cc: linux-mips@vger.kernel.org
+> Cc: paul@crapouillou.net
+> ---
+> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
+> =C2=A0drivers/gpu/drm/ingenic/ingenic-ipu.c=C2=A0=C2=A0=C2=A0=C2=A0 | 2 +=
+-
+> =C2=A02 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 7e569af22391..396b812568a4 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -985,11 +985,11 @@ static const struct drm_driver
+> ingenic_drm_driver_data =3D {
+> =C2=A0};
+> =C2=A0
+> =C2=A0static const struct drm_plane_funcs ingenic_drm_primary_plane_funcs
+> =3D {
+> =C2=A0	.update_plane		=3D drm_atomic_helper_update_plane,
+> =C2=A0	.disable_plane		=3D drm_atomic_helper_disable_plane,
+> -	.reset			=3D drm_atomic_helper_plane_reset,
+> +	.atomic_create_state =3D drm_atomic_helper_plane_create_state,
+> =C2=A0	.destroy		=3D drm_plane_cleanup,
+> =C2=A0
+> =C2=A0	.atomic_duplicate_state	=3D
+> drm_atomic_helper_plane_duplicate_state,
+> =C2=A0	.atomic_destroy_state	=3D
+> drm_atomic_helper_plane_destroy_state,
+> =C2=A0};
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> index 56143a191f36..bf24882e8d9f 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> @@ -716,11 +716,11 @@ ingenic_ipu_plane_atomic_set_property(struct
+> drm_plane *plane,
+> =C2=A0}
+> =C2=A0
+> =C2=A0static const struct drm_plane_funcs ingenic_ipu_plane_funcs =3D {
+> =C2=A0	.update_plane		=3D drm_atomic_helper_update_plane,
+> =C2=A0	.disable_plane		=3D drm_atomic_helper_disable_plane,
+> -	.reset			=3D drm_atomic_helper_plane_reset,
+> +	.atomic_create_state =3D drm_atomic_helper_plane_create_state,
+> =C2=A0	.destroy		=3D drm_plane_cleanup,
+> =C2=A0
+> =C2=A0	.atomic_duplicate_state	=3D
+> drm_atomic_helper_plane_duplicate_state,
+> =C2=A0	.atomic_destroy_state	=3D
+> drm_atomic_helper_plane_destroy_state,
+> =C2=A0

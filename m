@@ -1,33 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1AB3E51E4;
-	Fri, 17 Jul 2026 11:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379963E16A0;
+	Fri, 17 Jul 2026 11:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784286317; cv=none; b=tdVf6vTxn44nxrJdeObBgwMDKujzRN/ZqdZLmabBxEgGepQ86hRsAtAWbNabN8daEAYEfyWzpmmKjpuDAirAME+k8sfEY5/teq70cnYTCDpUJvtA7DHaMthZOpof2YEIAt5lwrof2oXk8WH8n+bU49O02hAwCiNSWOBlHf5mSv0=
+	t=1784286317; cv=none; b=U1iBCuV1tqENs7lCsTeKFx6G/myixbrP2wVQbMxDMVN+dJIuzT3AjTEKfrakpMtPRBT/FlXmd4WaHX4Q/sXO5/GIu8gho6Sz2m/M0DLofOP3svkwUmFQZLytkxJPlqIviGB5yHFoLosnLdjQet6W+MMWu1cbgarvQRSW8fjn6HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784286317; c=relaxed/simple;
-	bh=E3zagQ1VPPHx9utwGBl41PFwkcodmwi72CHGYgkk19c=;
+	bh=UlqPhdmESGWkKI9Ma+dfK3fztnRUwOF8AgL3P5ZuS3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s5s3UjQgoG3erKgnwFNrRoX5NGDAqNLtmjRgBwbRmuuJ7Sq9QNMVadK5YfaDq4cX/pxl+ycA2zIXYtFFfXzo9lafgo5KDuv+uxMlrm/R2AlkoJs2UthyhTRk/coZ6i3i+lY5/ZsS5uGHFVsSMNIoSQ0ifxCdesfCnT9PndUQPWM=
+	 Content-Type:Content-Disposition:In-Reply-To; b=ucFhgf7DmOcSzmPu1DgWMAKhzKymvPITLEPSSOcBe0OAllpbfUraKgqxKUelIhl3KrluyUk9oWvFF6wGhJg3YrVZxt3iJ02GcQwOLyitlzEYaMMsN9sKxMMXOfWuJxO6ijelld5g/9XORiMf60YNjBewbdRmDso9ztyD9aPdYfw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wkgNH-0007DR-00; Fri, 17 Jul 2026 13:04:59 +0200
+	id 1wkgNH-0007DV-00; Fri, 17 Jul 2026 13:04:59 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id E4FEDC00E8; Fri, 17 Jul 2026 13:00:57 +0200 (CEST)
-Date: Fri, 17 Jul 2026 13:00:57 +0200
+	id 43CF3C0138; Fri, 17 Jul 2026 13:02:04 +0200 (CEST)
+Date: Fri, 17 Jul 2026 13:02:04 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-	Michael Buesch <m@bues.ch>, Hauke Mehrtens <hauke@hauke-m.de>,
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Walleij <linusw@kernel.org>,
 	Bartosz Golaszewski <brgl@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Subject: Re: [PATCH v2 0/3] MIPS: BCM47XX: convert buttons to software nodes
-Message-ID: <aloLacyVuBqP-5TT@alpha.franken.de>
-References: <20260713-b4-bcm47xx-swnode-v2-0-2b879f0c193c@gmail.com>
+	Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] MIPS: TXX9: Legacy GPIO interfaces cleanup
+Message-ID: <aloLrG5NUntdMt0t@alpha.franken.de>
+References: <cover.1782900491.git.geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -36,40 +34,44 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260713-b4-bcm47xx-swnode-v2-0-2b879f0c193c@gmail.com>
+In-Reply-To: <cover.1782900491.git.geert@linux-m68k.org>
 
-On Mon, Jul 13, 2026 at 02:58:21PM -0700, Dmitry Torokhov wrote:
-> This series converts the legacy gpio-keys platform device on BCM47XX
-> boards to use software nodes and static properties.
+On Wed, Jul 01, 2026 at 12:11:35PM +0200, Geert Uytterhoeven wrote:
+> 	Hi all,
 > 
-> To do this properly without relying on legacy name-based matching
-> (which is being removed from gpiolib), we introduce and register
-> software nodes for the underlying GPIO controllers (BCMA and SSB)
-> and reference them in the button properties.
+> This patch series gets rid of legacy GPIO interface usage on the MIPS
+> RBTX4927 development board, preceded and followed by some cleanups.
+> No blinky LEDs were harmed during the production of this series.
 > 
-> The first two patches add the software nodes to bcma-gpio and
-> ssb-gpio respectively. The third patch performs the conversion
-> for the BCM47XX buttons.
+> Changes compared to v1[1]:
+>   - Add Reviewed-by,
+>   - Return early on platform_device_add() failure.
 > 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
-> As Johannes mentioned on v1 this best should go through MIPS tree.
+> Thanks for your comments!
 > 
-> Changes in v2:
-> - Restrict software node registration to host SoC devices in both ssb
->   and bcma drivers to avoid conflicts when secondary buses (e.g. PCI
->   wireless cards) are present
-> - Fix dangling pointer panic in buttons driver by allocating software
->   node references on the heap instead of stack
-> - Link to v1: https://patch.msgid.link/20260704-b4-bcm47xx-swnode-v1-0-730d59340237@gmail.com
+> [1] "[PATCH 0/9] MIPS: TXX9: Legacy GPIO interfaces cleanup"
+>     https://lore.kernel.org/cover.1782389357.git.geert@linux-m68k.org
 > 
-> ---
-> Dmitry Torokhov (3):
->       bcma: gpio: Add and register software node for GPIO controller
->       ssb: gpio: Add and register software node for GPIO controller
->       MIPS: BCM47XX: Convert buttons to software nodes
+> Geert Uytterhoeven (9):
+>   MIPS: TXX9: Remove tx4938_spi_init() and txx9_spi_init()
+>   MIPS: TXX9: Remove txx9_7segled_*() forward declarations
+>   MIPS: TXX9: rbtx4927: Use GPIO lookup table for SIO DTR
+>   MIPS: TXX9: rbtx4927: Use GPIO lookup table for TXx9 LEDs
+>   MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
+>   MIPS: TXX9: Use GPIO lookup table for iocled LEDs
+>   MIPS: TXX9: Drop GPIOLIB_LEGACY select
+>   MIPS: TXX9: Convert gpio_txx9 to dynamic GPIO base allocation
+>   MIPS: TXX9: Clean up txx9_iocled_init()
 > 
->  arch/mips/bcm47xx/buttons.c | 442 +++++++++++++++++++++++++-------------------
+>  arch/mips/include/asm/txx9/generic.h  |  9 +-----
+>  arch/mips/include/asm/txx9/tx4938.h   |  1 -
+>  arch/mips/include/asm/txx9pio.h       |  3 +-
+>  arch/mips/kernel/gpio_txx9.c          |  5 ++-
+>  arch/mips/txx9/Kconfig                |  1 -
+>  arch/mips/txx9/generic/setup.c        | 45 ++++++++++-----------------
+>  arch/mips/txx9/generic/setup_tx4938.c |  6 ----
+>  arch/mips/txx9/rbtx4927/setup.c       | 41 ++++++++++++++++++------
+>  8 files changed, 53 insertions(+), 58 deletions(-)
 
 series applied to mips-next
 

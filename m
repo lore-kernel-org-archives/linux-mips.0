@@ -1,46 +1,47 @@
 Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8115B153BE9;
-	Sun, 19 Jul 2026 12:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81F4153BE9;
+	Sun, 19 Jul 2026 12:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784465634; cv=none; b=j/oj8B9h/qT34uIA71DoIvCJH626uyc8aWaMuSF76RduCnirfxVsggPWutjFyn0XKgKC7ktKimEpWkcFbm0DAkxC+5o/EKcwtRjTWf/TJa6wf4gSo4QD8s1rvXago5P/d3JOfIsZstyB5MOp6MGmqSKuKOhZPhKoQb3cau6CnTI=
+	t=1784465713; cv=none; b=ASHezExJILtw2irlrE4voDmZLWWAdT1Sl5XoNFL/fNZlFxfthKfIqtj0qIe6qmnBurWXHZRj5zftTPl4hQpewMTQpcGIDJMa843y3dLY+G5yLuyLUqVKmfxbQJzuV4bBLLy/rUGTxjh9IUB2fJ+c1nNNQSnil6opjQ5cleEdLGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784465634; c=relaxed/simple;
-	bh=8U389L9n9leu3mtmI0AqAenATf38Tlkc+LIYUnR8gHg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H10Ac8ariu5we0TZt1WFAeN6q5jXqzWEUBUi0EFX80l41fLfi6RWorzS3aZm35cWnZh0iMJkub+sgitu7SQuB7cWeAavtzFActslIsJTtfqakeY5EDCjUnYAnkTSAF0gkxcvZX6DcofhoQSb4DrDWgf4ELwATmFBIzvzr+N1H/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=dpIE2mGf; arc=none smtp.client-ip=185.119.170.32
+	s=arc-20240116; t=1784465713; c=relaxed/simple;
+	bh=gEhWSVkmaiCRRHw/wZCbCrw1IuLU51WzeuYRKtzSQY4=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HqTQIeM2qA9kyAORYzlB57jChhwvmXJKfIngkJBFBbkkysyuEOyBa2BYuvQkm9/T2jZodvKIZa0zaxGjBFhNeHWoeJGniOeLlJ1wBDU5sN1nhiVC7JeEz6LnHxlUEZfClF6L59dD6ligUoA/wqI0EQRFmctKEyELOJjZI4p7nHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=z63wrtdR; arc=none smtp.client-ip=185.119.170.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="dpIE2mGf"
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="z63wrtdR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crapouillou.net;
-	s=mail; t=1784465624;
-	bh=8U389L9n9leu3mtmI0AqAenATf38Tlkc+LIYUnR8gHg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=dpIE2mGfQV9bihoNl/00WHenYCV9d6GZviFv9QUh24KUdpt9o7NP88Lpu6rr//lRl
-	 +mEIzjuixRQGA28wNlREe32ae7gXyfuVBSq9mak9r/x5G8fMJ5WZjm7cPGgFL8ZabW
-	 8fu5A+jb92fIJjxpigpK6x0W2Tz9y5KG4CSn5jlM=
-Message-ID: <d869fc2e2fe6eec530a65a2e93b642fad1fd9903.camel@crapouillou.net>
-Subject: Re: [PATCH] i2c: jz4780: Cache clock rate at probe to prevent CCF
- prepare_lock deadlock
+	s=mail; t=1784465709;
+	bh=gEhWSVkmaiCRRHw/wZCbCrw1IuLU51WzeuYRKtzSQY4=;
+	h=Subject:From:To:Date:In-Reply-To:References:From;
+	b=z63wrtdRW4T1uLwNAZv5/g3vU404MEwJYWT09pHMfbx2DJaEOlmj7VspONMYXCsqI
+	 R8REf49NPFrMSzR/OvMiDVruqKaWbGSUB1ottcguFk+1m56L3Y6lDofIiE791ilBX1
+	 XVQPwBGP8UXIEgxTyAcFXsbd0BrMi37v97Pc/sgU=
+Message-ID: <0cb39a3e2f2fc0efeed2b1bd5847655f7c8edbcf.camel@crapouillou.net>
+Subject: Re: [PATCH] remoteproc: Remove redundant dev_err()/dev_err_probe()
 From: Paul Cercueil <paul@crapouillou.net>
-To: Andi Shyti <andi.shyti@kernel.org>, "H. Nikolaus Schaller"
-	 <hns@goldelico.com>
-Cc: linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org, 
-	stable@vger.kernel.org
-Date: Sun, 19 Jul 2026 14:53:39 +0200
-In-Reply-To: <aljCGkhZEQHzZVSW@zenone.zhora.eu>
-References: 
-	<c69ca6511780aa4759a428cb7fb70de43ee5211b.1783666715.git.hns@goldelico.com>
-	 <alf7rSWaLBO8WBkR@zenone.zhora.eu>
-	 <36148F30-156F-4E74-8765-D718F6FE7E76@goldelico.com>
-	 <aliLbNJ51Ns0dIHX@zenone.zhora.eu>
-	 <9421BB47-EFC8-4D82-989F-82A84FE46749@goldelico.com>
-	 <aljCGkhZEQHzZVSW@zenone.zhora.eu>
+To: Pan Chuang <panchuang@vivo.com>, Bjorn Andersson <andersson@kernel.org>,
+  Mathieu Poirier <mathieu.poirier@linaro.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>,  Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, "open list:REMOTE PROCESSOR (REMOTEPROC)
+ SUBSYSTEM"	 <linux-remoteproc@vger.kernel.org>, open list
+ <linux-kernel@vger.kernel.org>,  "open list:INGENIC JZ47xx SoCs"	
+ <linux-mips@vger.kernel.org>, "moderated list:ARM/Mediatek SoC support"	
+ <linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/Mediatek SoC
+ support" <linux-mediatek@lists.infradead.org>, "open list:ARM/QUALCOMM
+ MAILING LIST"	 <linux-arm-msm@vger.kernel.org>, "moderated list:ARM/STM32
+ ARCHITECTURE"	 <linux-stm32@st-md-mailman.stormreply.com>
+Date: Sun, 19 Jul 2026 14:55:05 +0200
+In-Reply-To: <20260717065224.600593-1-panchuang@vivo.com>
+References: <20260717065224.600593-1-panchuang@vivo.com>
 Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
  keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
  LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
@@ -63,97 +64,266 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Hi Andi, Nikolaus,
+Hi,
 
-Le jeudi 16 juillet 2026 =C3=A0 13:41 +0200, Andi Shyti a =C3=A9crit=C2=A0:
-> On Thu, Jul 16, 2026 at 10:33:56AM +0200, H. Nikolaus Schaller wrote:
-> > > Am 16.07.2026 um 09:43 schrieb Andi Shyti
-> > > <andi.shyti@kernel.org>:
-> > > On Thu, Jul 16, 2026 at 07:44:20AM +0200, H. Nikolaus Schaller
-> > > wrote:
-> > > > > Am 16.07.2026 um 00:07 schrieb Andi Shyti
-> > > > > <andi.shyti@kernel.org>:
-> > > > > On Fri, Jul 10, 2026 at 08:58:35AM +0200, H. Nikolaus
-> > > > > Schaller wrote:
-> > > > > > Fix a severe AB/BA deadlock between the Common Clock
-> > > > > > Framework (CCF)
-> > > > > > and the I2C adapter lock, which triggers when an I2C-
-> > > > > > controlled clock
-> > > > > > generator (like the Si5351) is registered or modified under
-> > > > > > the CCF.
-> > > > > >=20
-> > > > > > During a clock frequency change, the CCF acquires its
-> > > > > > global 'prepare_lock'
-> > > > > > mutex and calls i2c_transfer() to update the chip
-> > > > > > registers, stalling
-> > > > > > for the adapter's I2C bus lock.
-> > > > >=20
-> > > > > I don't think caching the clock rate once at probe is safe.
-> > > >=20
-> > > > Ok, valid point to discuss.
-> > > >=20
-> > > >=20
-> > > > > If the controller clock rate changes afterwards,
-> > > > > jz4780_i2c_set_speed() will keep using the stale cached value
-> > > > > and
-> > > > > calculate incorrect bus timings.
-> > > >=20
-> > > > But: is clock rate ever changed during operation? Usually it is
-> > > > defined
-> > > > by the device tree constant.
-> > >=20
-> > > That's what you are saying in your commit message.
-> >=20
-> > The Si5351 clock generator driver is connected through this i2c
-> > bus. And that
-> > is referred to by "when an I2C-controlled clock generator (like the
-> > Si5351) is=20
-> > registered or modified under the CCF".
-> >=20
-> > Only then, this bug faces surface. Because that driver changes it's
-> > clock through
-> > sending i2c commands which also ask for the lock.
+Le vendredi 17 juillet 2026 =C3=A0 14:52 +0800, Pan Chuang a =C3=A9crit=C2=
+=A0:
+> Since commit 55b48e23f5c4 ("genirq/devres: Add error handling in
+> devm_request_*_irq()"), devm_request_irq() and
+> devm_request_threaded_irq()
+> automatically log detailed error messages on failure. Remove the
+> now-redundant driver-specific dev_err() and dev_err_probe() calls.
 >=20
-> If you make a claim in the commit message, I expect the code to
-> support it.
->=20
-> You say that the clock rate can change, but then you store it
-> only once at probe time. That immediately suggests that later
-> rate changes will be ignored by the transfer path.
+> Signed-off-by: Pan Chuang <panchuang@vivo.com>
 
-I think there's a misunderstanding.
-
-The JZ4780 I2C host's parent clock rate does not change here, so
-caching its rate should be fine.
-
-The clock rate that can change in this setup is the one of the Si5351
-clock *generator* that is a I2C device.
-
->=20
-> > But again: how would you solve this?
-
-I believe you have this problem because your Si5351's clocks are
-parented to the I2C host's clock, am I right?
-
-So when you try to change a Si5351 clock rate, it will get the clock's
-lock and the clock parent's lock, aka. the I2C host clock's lock. Then
-trying to send a I2C command will indirectly trigger clk_get_rate() on
-the I2C host's clock to be called, causing a lockup.
-
-I think the solution would be, and CLK people can correct me here, to
-just drop the relation to the I2C host lock. Your Si5351 clocks are not
-derived in any way from the clock used by the I2C hardware in the JZ
-SoC (unless they are?), so I think they should just not have any
-parent.
-
-> It's not my role to give you a solution. I'm just commenting on
-> what I see.
->=20
-> Besides that, is that an issue you have encountered yourself? Is
-> it a frequent issue?
->=20
-> Thanks,
-> Andi
+For Ingenic:
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 
 Cheers,
 -Paul
+
+> ---
+> =C2=A0drivers/remoteproc/da8xx_remoteproc.c=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +=
+-
+> =C2=A0drivers/remoteproc/ingenic_rproc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 4 +---
+> =C2=A0drivers/remoteproc/keystone_remoteproc.c |=C2=A0 4 ++--
+> =C2=A0drivers/remoteproc/mtk_scp.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +---
+> =C2=A0drivers/remoteproc/qcom_q6v5.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 20 +++++---------------
+> =C2=A0drivers/remoteproc/qcom_sysmon.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 2 --
+> =C2=A0drivers/remoteproc/qcom_wcnss.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +---
+> =C2=A0drivers/remoteproc/stm32_rproc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 3 +--
+> =C2=A08 files changed, 12 insertions(+), 31 deletions(-)
+>=20
+> diff --git a/drivers/remoteproc/da8xx_remoteproc.c
+> b/drivers/remoteproc/da8xx_remoteproc.c
+> index 23fca7176539..006fa7b56727 100644
+> --- a/drivers/remoteproc/da8xx_remoteproc.c
+> +++ b/drivers/remoteproc/da8xx_remoteproc.c
+> @@ -298,7 +298,7 @@ static int da8xx_rproc_probe(struct
+> platform_device *pdev)
+> =C2=A0					handle_event, 0, "da8xx-
+> remoteproc",
+> =C2=A0					rproc);
+> =C2=A0	if (ret)
+> -		return dev_err_probe(dev, ret,
+> "devm_request_threaded_irq error\n");
+> +		return ret;
+> =C2=A0
+> =C2=A0	/*
+> =C2=A0	 * rproc_add() can end up enabling the DSP's clk with the
+> DSP
+> diff --git a/drivers/remoteproc/ingenic_rproc.c
+> b/drivers/remoteproc/ingenic_rproc.c
+> index 1b78d8ddeacf..252519f48964 100644
+> --- a/drivers/remoteproc/ingenic_rproc.c
+> +++ b/drivers/remoteproc/ingenic_rproc.c
+> @@ -219,10 +219,8 @@ static int ingenic_rproc_probe(struct
+> platform_device *pdev)
+> =C2=A0
+> =C2=A0	ret =3D devm_request_irq(dev, vpu->irq, vpu_interrupt,
+> IRQF_NO_AUTOEN,
+> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "VPU", rproc);
+> -	if (ret < 0) {
+> -		dev_err(dev, "Failed to request IRQ\n");
+> +	if (ret < 0)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	ret =3D devm_rproc_add(dev, rproc);
+> =C2=A0	if (ret) {
+> diff --git a/drivers/remoteproc/keystone_remoteproc.c
+> b/drivers/remoteproc/keystone_remoteproc.c
+> index 83763d640c4e..407d6034f748 100644
+> --- a/drivers/remoteproc/keystone_remoteproc.c
+> +++ b/drivers/remoteproc/keystone_remoteproc.c
+> @@ -411,7 +411,7 @@ static int keystone_rproc_probe(struct
+> platform_device *pdev)
+> =C2=A0	ret =3D devm_request_irq(dev, ksproc->irq_ring,
+> keystone_rproc_vring_interrupt,
+> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 IRQF_NO_AUTOEN, dev_name(de=
+v),
+> ksproc);
+> =C2=A0	if (ret)
+> -		return dev_err_probe(dev, ret, "failed to request
+> vring interrupt\n");
+> +		return ret;
+> =C2=A0
+> =C2=A0	ksproc->irq_fault =3D platform_get_irq_byname(pdev,
+> "exception");
+> =C2=A0	if (ksproc->irq_fault < 0)
+> @@ -419,7 +419,7 @@ static int keystone_rproc_probe(struct
+> platform_device *pdev)
+> =C2=A0	ret =3D devm_request_irq(dev, ksproc->irq_fault,
+> keystone_rproc_exception_interrupt,
+> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 IRQF_NO_AUTOEN, dev_name(de=
+v),
+> ksproc);
+> =C2=A0	if (ret)
+> -		return dev_err_probe(dev, ret, "failed to enable
+> exception interrupt\n");
+> +		return ret;
+> =C2=A0
+> =C2=A0	ksproc->kick_gpio =3D devm_gpiod_get(dev, "kick", GPIOD_ASIS);
+> =C2=A0	ret =3D PTR_ERR_OR_ZERO(ksproc->kick_gpio);
+> diff --git a/drivers/remoteproc/mtk_scp.c
+> b/drivers/remoteproc/mtk_scp.c
+> index 436656bdfa8b..9751acc2bf83 100644
+> --- a/drivers/remoteproc/mtk_scp.c
+> +++ b/drivers/remoteproc/mtk_scp.c
+> @@ -1246,10 +1246,8 @@ static struct mtk_scp *scp_rproc_init(struct
+> platform_device *pdev,
+> =C2=A0					scp_irq_handler,
+> IRQF_ONESHOT,
+> =C2=A0					pdev->name, scp);
+> =C2=A0
+> -	if (ret) {
+> -		dev_err(dev, "failed to request irq\n");
+> +	if (ret)
+> =C2=A0		goto remove_subdev;
+> -	}
+> =C2=A0
+> =C2=A0	return scp;
+> =C2=A0
+> diff --git a/drivers/remoteproc/qcom_q6v5.c
+> b/drivers/remoteproc/qcom_q6v5.c
+> index 0206a4a19254..1075ef4027b7 100644
+> --- a/drivers/remoteproc/qcom_q6v5.c
+> +++ b/drivers/remoteproc/qcom_q6v5.c
+> @@ -302,10 +302,8 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5,
+> struct platform_device *pdev,
+> =C2=A0					NULL, q6v5_wdog_interrupt,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT,
+> =C2=A0					"q6v5 wdog", q6v5);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "failed to acquire wdog IRQ\n");
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	q6v5->fatal_irq =3D platform_get_irq_byname(pdev, "fatal");
+> =C2=A0	if (q6v5->fatal_irq < 0)
+> @@ -315,10 +313,8 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5,
+> struct platform_device *pdev,
+> =C2=A0					NULL, q6v5_fatal_interrupt,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT,
+> =C2=A0					"q6v5 fatal", q6v5);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "failed to acquire fatal
+> IRQ\n");
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	q6v5->ready_irq =3D platform_get_irq_byname(pdev, "ready");
+> =C2=A0	if (q6v5->ready_irq < 0)
+> @@ -328,10 +324,8 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5,
+> struct platform_device *pdev,
+> =C2=A0					NULL, q6v5_ready_interrupt,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT,
+> =C2=A0					"q6v5 ready", q6v5);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "failed to acquire ready
+> IRQ\n");
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	q6v5->handover_irq =3D platform_get_irq_byname(pdev,
+> "handover");
+> =C2=A0	if (q6v5->handover_irq < 0)
+> @@ -342,10 +336,8 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5,
+> struct platform_device *pdev,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT |
+> =C2=A0					IRQF_NO_AUTOEN,
+> =C2=A0					"q6v5 handover", q6v5);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "failed to acquire handover
+> IRQ\n");
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	q6v5->stop_irq =3D platform_get_irq_byname(pdev, "stop-ack");
+> =C2=A0	if (q6v5->stop_irq < 0)
+> @@ -355,10 +347,8 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5,
+> struct platform_device *pdev,
+> =C2=A0					NULL, q6v5_stop_interrupt,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT,
+> =C2=A0					"q6v5 stop", q6v5);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "failed to acquire stop-ack
+> IRQ\n");
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	q6v5->state =3D devm_qcom_smem_state_get(&pdev->dev, "stop",
+> &q6v5->stop_bit);
+> =C2=A0	if (IS_ERR(q6v5->state)) {
+> diff --git a/drivers/remoteproc/qcom_sysmon.c
+> b/drivers/remoteproc/qcom_sysmon.c
+> index a0830a48b1f4..61e1038328e8 100644
+> --- a/drivers/remoteproc/qcom_sysmon.c
+> +++ b/drivers/remoteproc/qcom_sysmon.c
+> @@ -662,8 +662,6 @@ struct qcom_sysmon *qcom_add_sysmon_subdev(struct
+> rproc *rproc,
+> =C2=A0						IRQF_TRIGGER_RISING
+> | IRQF_ONESHOT,
+> =C2=A0						"q6v5 shutdown-ack",
+> sysmon);
+> =C2=A0		if (ret) {
+> -			dev_err(sysmon->dev,
+> -				"failed to acquire shutdown-ack
+> IRQ\n");
+> =C2=A0			kfree(sysmon);
+> =C2=A0			return ERR_PTR(ret);
+> =C2=A0		}
+> diff --git a/drivers/remoteproc/qcom_wcnss.c
+> b/drivers/remoteproc/qcom_wcnss.c
+> index 3392c9380202..e9a00efe97f6 100644
+> --- a/drivers/remoteproc/qcom_wcnss.c
+> +++ b/drivers/remoteproc/qcom_wcnss.c
+> @@ -521,10 +521,8 @@ static int wcnss_request_irq(struct qcom_wcnss
+> *wcnss,
+> =C2=A0					NULL, thread_fn,
+> =C2=A0					IRQF_TRIGGER_RISING |
+> IRQF_ONESHOT,
+> =C2=A0					"wcnss", wcnss);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "request %s IRQ failed\n",
+> name);
+> +	if (ret)
+> =C2=A0		return ret;
+> -	}
+> =C2=A0
+> =C2=A0	/* Return the IRQ number if the IRQ was successfully
+> acquired */
+> =C2=A0	return irq_number;
+> diff --git a/drivers/remoteproc/stm32_rproc.c
+> b/drivers/remoteproc/stm32_rproc.c
+> index 0e5d64fbe52c..1fe4cdc0a13a 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -682,8 +682,7 @@ static int stm32_rproc_parse_dt(struct
+> platform_device *pdev,
+> =C2=A0		err =3D devm_request_irq(dev, irq, stm32_rproc_wdg, 0,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_name(dev), pdev);
+> =C2=A0		if (err)
+> -			return dev_err_probe(dev, err,
+> -					=C2=A0=C2=A0=C2=A0=C2=A0 "failed to request wdg
+> irq\n");
+> +			return err;
+> =C2=A0
+> =C2=A0		ddata->wdg_irq =3D irq;
+> =C2=A0

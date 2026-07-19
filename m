@@ -1,112 +1,179 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253B03D9022
-	for <linux-mips@vger.kernel.org>; Sat, 18 Jul 2026 15:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784388219; cv=none; b=i23xjePRncv1+ytDi0o58htOWPZxLuRVj1LO+HXc8ZK+5NkCGElSzTeCRorYRoGKW9m7ROQjdVDgGLbXcZa1PM8emBmDNqldXVMQZ4TAQpP1cVEch2uLXvEnnMk9s8aD1jzJbBTvc4y0LgotxDBvCXEjtGhkFXGm74l+nah3CgU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784388219; c=relaxed/simple;
-	bh=BxOc+P2cYz1TULPiWVbhGaT/Tfs/xqhjzztbQD5tN+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZVreToNjgKCMD2JaaoDtErgvPNai7Pyjn2ZEbd4u6AO3xyhfxtLknVzFDfhGmAOPZlWtMCA3ECdaKbY8c16XHtL8IYqEJQOVhW84IBhWAKWY2TrACnMujl/s3VBoyYVB18tr36NlWeVAOBZkNOYh+KxmDtTXDWCMXi3o/o8SCjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NuUfnxQi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD0A38D3E6
+	for <linux-mips@vger.kernel.org>; Sun, 19 Jul 2026 11:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784460348; cv=pass; b=H5oI7ugjPCKyHv1CP3WHpKCinAW7cNJ562cPGxrBknOUVUxoNFDzkBfjwJQ4BAW3rD2OvRQifJkazCoB98plwgMf4b2ysNiz/8dyGFPdUwlUoFaKb6yCak2wY0rDvGAewRX22n58ww5I3OC02uig5PiGzeQcxQNJl/FSL9dKTZg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784460348; c=relaxed/simple;
+	bh=rgcqbxa6lEmJgPeR85dLIKFK2p9ERX+2iKovNt7jIVY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p42pLyVXVmc2VsgK9DaKXMYbx08500bb/HwkWc8RFe6X71+eQ64C10FjC1VzUMLy4SEOcEtGkHR+qCOnav4VGv+yp/tgf7Tdow9wJrhfnFEt5lFUgYmYR1Q7pALgH9Y71nmFKfeeXQqlT2JMf+oKUoxPEFolCu0WR82hYojQkvo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D9Eg2uDU; arc=pass smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NuUfnxQi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1784388213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xAGhW0qGGS6bImxALSIlIu+AR7DBr6ToCi1mFcVfN94=;
-	b=NuUfnxQiCodZrWb9VnyrrXH74ve+xlHzKo+qH3CLMx6Ru4YI43oefJPRTSLiap6ov2gTBl
-	XUHBdxTA4uxBUEfTvVkbPkaQhCE/yNrLcQU+PvhEXn5KVFwsOoBR37sVI+iLuqrJH0OTIJ
-	c1ZquX77Mh2CQb6tB7Lfo9qgqnkt6Jg=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-297-cJjFiycHPOSw4TwFrGvGcA-1; Sat,
- 18 Jul 2026 11:23:27 -0400
-X-MC-Unique: cJjFiycHPOSw4TwFrGvGcA-1
-X-Mimecast-MFC-AGG-ID: cJjFiycHPOSw4TwFrGvGcA_1784388206
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3BECE1955D8E;
-	Sat, 18 Jul 2026 15:23:26 +0000 (UTC)
-Received: from fedora (unknown [10.44.49.164])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 0F8571954221;
-	Sat, 18 Jul 2026 15:23:23 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 18 Jul 2026 17:23:25 +0200 (CEST)
-Date: Sat, 18 Jul 2026 17:23:22 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: James Hogan <jhogan@kernel.org>, Kees Cook <kees@kernel.org>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ptrace: Fix syscall skipping via PTRACE_SYSCALL
-Message-ID: <aluaasodc1tSCxtl@redhat.com>
-References: <20260717112731.59254-1-tsbogend@alpha.franken.de>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9Eg2uDU"
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-69c1220bd51so9916146a12.3
+        for <linux-mips@vger.kernel.org>; Sun, 19 Jul 2026 04:25:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1784460345; cv=none;
+        d=google.com; s=arc-20260327;
+        b=UX45m+eeAiGhH3nhRPyDzU/8i9ViledwUjhtmL76wtjbG22dt5NlbP26ov2QuN46xP
+         4F8AAn/p7me8p2f0QY2nHTjpPotUgqfF3Ab3w/sVmL9S/ubon/MAUNIf3cRIfH/PXEj5
+         6pn2u4CtEvHEV1aVdMZsL8hHskwIOghx4fTsJGsZrYO+YucmMNlzWE8wP+5GKgzeUTXO
+         tGlOW2uVnIDMEaB4BOPlkTaVYZQw98aYwewrxddP4coYVbBmNLfyopD2HGqvXg1fb7uO
+         zFS/TDTteZBa/C4+oKjPQZ91iuUJU2mXYkvvTKF4o77H9HsOD8Izkz/gilGf7YD2ZXVp
+         7W4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
+        fh=JIn0Fgn1ypj8WO+ZN+nRR1vJ3A5PMkg7aqcCYmLN5j0=;
+        b=siO0GMGr5YIZegRCmApfP/4czU5oeBk2RGUfbCoVUqpCd2jv7vKe2aQtPnZMKRGNm4
+         gIBDEf8dx5AA8Fm1z+UmtLz+XuZwegEif7Xcim6pZY5o2FPPeRqxt0ATfryhzjRPDGpw
+         +0bpVzt0i12UfPi4sgJn5QaLLHTgpnFYh7W26evDlpT9QKhhtEqIyXT2V5xm2YeL4vvM
+         PVTfcLCuC5Ay1qAsIXEUYjTRycxRdUZPpdH1QQ5saYzXFkIrwpbU3Nfp2wO1Tiy8PR0F
+         HofnuO+nWoHVw2RUgCZ9qqaX+LYahWdCypx/xMtKfq2bMv5Az23+k8U2Hm+l724wPOmP
+         aKIg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784460345; x=1785065145; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
+        b=D9Eg2uDUSi1x0Y0zg7fYRwtO/ea3ND5A/4nTPUeApKtSEYiUynlMiE59GblVd3IOrl
+         oWFLcCJp25Ys4PA6xy84FzRAl40+EnzjzRCpSvwGo7RHBsGsYMluu61eRFOFojQND+uf
+         lNJOO3g5JejU7GJi6tHzDEvpZzKFqs8qHKpdvXxbKlewQ6qiZ+CA5RKcpH/KLcFJLheA
+         g2ExVRjhJfMz7jIq0+v0kblCXJOFmPxGPhyEutQjLJ+4HNvh68qQ5hZaqeUXlD5xjERu
+         lUwCLdeswboAyC7uRJFB1Xc36fvUf6TDNx+P0LVWtrX9LSsJKKKRbJx1t2fLrOwcBBgd
+         7OEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784460345; x=1785065145;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
+        b=Lv2IImJxDcWcgPNRGnyMtpkel+NJ6RaNp4qtz9XZgFYTEeiPoddnXrPVwYr0lJu9g9
+         NgI1kj4r9guxpHJ/7S7chWRkyCzXCZeUMpLpMXb1ORd+wCisgy88DRwtjy52A6Vx9BGu
+         PhyirwNxPZtCUbiRXWXVMPsGHGGs1oOjetPlPG7XRtzeUKM0lZaUzgsdwugkHRoSDIlb
+         I3uca+ly7C2bEUmZLEjghJubBjIYb61i6zlOpuJ+5FW7GTUIYI3C+tN1D8NeZLF+AIf/
+         AVAhXBAyqzJ1lRfY+VhXavkWMajAhhiAH2h92lUNTjMFCNKKzKxXUTj4ii+/8XRvUmT/
+         rcfg==
+X-Forwarded-Encrypted: i=1; AHgh+Rpb1nKqe9hEBAdJrZp43I8XExzab6nT5GnPmgaEbPwH2cCRFHejgW4STBRzlrKwSnlQ6Jil+xdS+kkG@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywl8ADgFlevhfrCgzf2oiikpyTbg8oFK1tDjrZ88ZoMnKeaeYEw
+	BvlSxwkrliNjEm22+a9cVUJq4MLPGwP48yMk7KC3trWJCKudaVwGUwTc6s1JW8kHO9mDV0vDYq2
+	XCdvYNZKKRie3wRvadfWQJDlY/pDdWMk=
+X-Gm-Gg: AfdE7clFjRQOYPFuaC2R1RuylHKoifWvHZkwxCod1W3HvsDHSmxqsDFnSkPXkCX1rux
+	I4q145GhwjSrQOqn8ekyjKwNqEvJxnQDGm8BxM0dv4bxpti64xO+K08dmkedo3lQPuD8y6flpHz
+	Ub1gzPZ2/abnU4K1ocxILAxvRu9WE6HLuMKXnHm9ZL1cek29qN0G4AuQcsLShuOlM1Roc9ecZHx
+	Kny36VEoAJHxufaMVGEcMec1vLRZRvVlZZq5H3qVx5fiJlPGxu0vOcQUUqdnSWS/Ajp3lJZgP20
+	9Wf8NPS9M2LOie1w+oRHixtxEoMyxI36zvQkq0Ed8g==
+X-Received: by 2002:a05:6402:34d5:b0:698:3b7b:e48a with SMTP id
+ 4fb4d7f45d1cf-69e652f908dmr3652615a12.32.1784460344585; Sun, 19 Jul 2026
+ 04:25:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260717112731.59254-1-tsbogend@alpha.franken.de>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <20260707181957.433213175@kernel.org>
+In-Reply-To: <20260707181957.433213175@kernel.org>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Sun, 19 Jul 2026 13:25:32 +0200
+X-Gm-Features: AUfX_mzTzrHRlu_CZJHA0P1GUw_Z2tfq0CbfsG-DFTqsEJDFIQx7LWbdfB3YWqk
+Message-ID: <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
+	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
+	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-arch@vger.kernel.org, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-I obviously can't ack the mips-specific change, but it looks good to me.
-
-Thomas, thanks again.
-
-Oleg.
-
-On 07/17, Thomas Bogendoerfer wrote:
 >
-> If tracer wanted to skip a syscall return value was always
-> overwritten with -ENOSYS. Fix this by checking against original
-> syscall number and only return -ENOSYS, if it is negative.
-> 
-> Fixes: b6318a903d06 ("MIPS/ptrace: Pick up ptrace/seccomp changed syscalls")
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/kernel/ptrace.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-> index 3f4c94c88124..87102a03b6ea 100644
-> --- a/arch/mips/kernel/ptrace.c
-> +++ b/arch/mips/kernel/ptrace.c
-> @@ -1321,8 +1321,12 @@ long arch_ptrace(struct task_struct *child, long request,
->   */
->  asmlinkage long syscall_trace_enter(struct pt_regs *regs)
->  {
-> +	long syscall;
-> +
->  	user_exit();
->  
-> +	syscall = current_thread_info()->syscall;
-> +
->  	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
->  		if (ptrace_report_syscall_entry(regs))
->  			return -1;
-> @@ -1342,7 +1346,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs)
->  	 * Negative syscall numbers are mistaken for rejected syscalls, but
->  	 * won't have had the return value set appropriately, so we do so now.
->  	 */
-> -	if (current_thread_info()->syscall < 0)
-> +	if (syscall < 0)
->  		syscall_set_return_value(current, regs, -ENOSYS, 0);
->  	return current_thread_info()->syscall;
->  }
-> -- 
-> 2.51.0
-> 
+> With that all architectures using the generic syscall entry code follow the
+> same scheme, apply stack randomization at the correct and earliest possible
+> place and skip syscall processing depending on the boolean return value of
+> syscall_enter_from_user_mode[_work]().
+>
+> There should be no functional changes, at least there are none intended.
+>
+> The resulting text size for the syscall entry code on x8664 is slightly
+> smaller than before these changes.
+>
+> Testing syscall heavy workloads and micro benchmarks shows a small
+> performance gain for the general rework, but the last patch, which changes
+> the logic to be more understandable has no measurable impact in either
+> direction.
+>
+> The series applies on Linus tree and is also available from git:
+>
+>         git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-rework-v1
+>
 
+Hi Thomas,
+
+I did another round of testing of this series on Alpha, this time with my
+Alpha GENERIC_ENTRY conversion rebased on top of this series.
+
+For this test I also manually applied the seccomp fixup discussed earlier in
+this thread, i.e. fixing the recheck-after-trace logic in
+__seccomp_filter() along the lines suggested by Jinjie/Oleg.
+
+With that in place, the kernel boots on Alpha and I do not see any
+regressions in the seccomp_bpf kernel selftest or in the strace testsuite.
+
+One note: the seccomp_bpf selftest run on Alpha uses this not-yet-upstream
+Alpha selftest enablement patch:
+
+https://lore.kernel.org/linux-alpha/20260203063357.14320-1-linmag7@gmail.com/
+
+One Alpha-specific wrinkle I hit while rebasing the GENERIC_ENTRY patch is
+that Alpha cannot unconditionally pre-seed the normal -ENOSYS return state
+before calling into the generic entry code: syscall_set_return_value() also
+updates r19/a3, which is still syscall argument 4 on the normal entry path.
+Doing that too early broke early userspace mmap() during boot.
+
+The Alpha conversion therefore handles this on the no-dispatch path instead:
+after the generic entry helper returns, if the syscall is not to be invoked
+or the resulting syscall number is invalid, Alpha skips the call, preserves
+any ptrace/seccomp/BPF-provided return value, and only synthesizes -ENOSYS if
+the return state was otherwise unchanged. That was needed for the
+TRACE_syscall.ptrace.syscall_faked and syscall_errno seccomp_bpf cases to
+pass.
+
+So from the Alpha side, with the seccomp fixup applied:
+
+Tested-by: Magnus Lindholm linmag7@gmail.com
+
+Are you planning to send a v2 with the seccomp recheck fix and any other
+review fixups folded in? Is the intention to route this upstream
+during the next merge window?
+
+Thanks,
+Magnus

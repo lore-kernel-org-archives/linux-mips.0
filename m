@@ -1,179 +1,159 @@
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD0A38D3E6
-	for <linux-mips@vger.kernel.org>; Sun, 19 Jul 2026 11:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784460348; cv=pass; b=H5oI7ugjPCKyHv1CP3WHpKCinAW7cNJ562cPGxrBknOUVUxoNFDzkBfjwJQ4BAW3rD2OvRQifJkazCoB98plwgMf4b2ysNiz/8dyGFPdUwlUoFaKb6yCak2wY0rDvGAewRX22n58ww5I3OC02uig5PiGzeQcxQNJl/FSL9dKTZg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784460348; c=relaxed/simple;
-	bh=rgcqbxa6lEmJgPeR85dLIKFK2p9ERX+2iKovNt7jIVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p42pLyVXVmc2VsgK9DaKXMYbx08500bb/HwkWc8RFe6X71+eQ64C10FjC1VzUMLy4SEOcEtGkHR+qCOnav4VGv+yp/tgf7Tdow9wJrhfnFEt5lFUgYmYR1Q7pALgH9Y71nmFKfeeXQqlT2JMf+oKUoxPEFolCu0WR82hYojQkvo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D9Eg2uDU; arc=pass smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8115B153BE9;
+	Sun, 19 Jul 2026 12:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784465634; cv=none; b=j/oj8B9h/qT34uIA71DoIvCJH626uyc8aWaMuSF76RduCnirfxVsggPWutjFyn0XKgKC7ktKimEpWkcFbm0DAkxC+5o/EKcwtRjTWf/TJa6wf4gSo4QD8s1rvXago5P/d3JOfIsZstyB5MOp6MGmqSKuKOhZPhKoQb3cau6CnTI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784465634; c=relaxed/simple;
+	bh=8U389L9n9leu3mtmI0AqAenATf38Tlkc+LIYUnR8gHg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=H10Ac8ariu5we0TZt1WFAeN6q5jXqzWEUBUi0EFX80l41fLfi6RWorzS3aZm35cWnZh0iMJkub+sgitu7SQuB7cWeAavtzFActslIsJTtfqakeY5EDCjUnYAnkTSAF0gkxcvZX6DcofhoQSb4DrDWgf4ELwATmFBIzvzr+N1H/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=dpIE2mGf; arc=none smtp.client-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9Eg2uDU"
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-69c1220bd51so9916146a12.3
-        for <linux-mips@vger.kernel.org>; Sun, 19 Jul 2026 04:25:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1784460345; cv=none;
-        d=google.com; s=arc-20260327;
-        b=UX45m+eeAiGhH3nhRPyDzU/8i9ViledwUjhtmL76wtjbG22dt5NlbP26ov2QuN46xP
-         4F8AAn/p7me8p2f0QY2nHTjpPotUgqfF3Ab3w/sVmL9S/ubon/MAUNIf3cRIfH/PXEj5
-         6pn2u4CtEvHEV1aVdMZsL8hHskwIOghx4fTsJGsZrYO+YucmMNlzWE8wP+5GKgzeUTXO
-         tGlOW2uVnIDMEaB4BOPlkTaVYZQw98aYwewrxddP4coYVbBmNLfyopD2HGqvXg1fb7uO
-         zFS/TDTteZBa/C4+oKjPQZ91iuUJU2mXYkvvTKF4o77H9HsOD8Izkz/gilGf7YD2ZXVp
-         7W4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
-        fh=JIn0Fgn1ypj8WO+ZN+nRR1vJ3A5PMkg7aqcCYmLN5j0=;
-        b=siO0GMGr5YIZegRCmApfP/4czU5oeBk2RGUfbCoVUqpCd2jv7vKe2aQtPnZMKRGNm4
-         gIBDEf8dx5AA8Fm1z+UmtLz+XuZwegEif7Xcim6pZY5o2FPPeRqxt0ATfryhzjRPDGpw
-         +0bpVzt0i12UfPi4sgJn5QaLLHTgpnFYh7W26evDlpT9QKhhtEqIyXT2V5xm2YeL4vvM
-         PVTfcLCuC5Ay1qAsIXEUYjTRycxRdUZPpdH1QQ5saYzXFkIrwpbU3Nfp2wO1Tiy8PR0F
-         HofnuO+nWoHVw2RUgCZ9qqaX+LYahWdCypx/xMtKfq2bMv5Az23+k8U2Hm+l724wPOmP
-         aKIg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784460345; x=1785065145; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
-        b=D9Eg2uDUSi1x0Y0zg7fYRwtO/ea3ND5A/4nTPUeApKtSEYiUynlMiE59GblVd3IOrl
-         oWFLcCJp25Ys4PA6xy84FzRAl40+EnzjzRCpSvwGo7RHBsGsYMluu61eRFOFojQND+uf
-         lNJOO3g5JejU7GJi6tHzDEvpZzKFqs8qHKpdvXxbKlewQ6qiZ+CA5RKcpH/KLcFJLheA
-         g2ExVRjhJfMz7jIq0+v0kblCXJOFmPxGPhyEutQjLJ+4HNvh68qQ5hZaqeUXlD5xjERu
-         lUwCLdeswboAyC7uRJFB1Xc36fvUf6TDNx+P0LVWtrX9LSsJKKKRbJx1t2fLrOwcBBgd
-         7OEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784460345; x=1785065145;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=HjwBEg56Cr9vHNVIU01sUWrlM5gmQ+vCUXpN04JdIto=;
-        b=Lv2IImJxDcWcgPNRGnyMtpkel+NJ6RaNp4qtz9XZgFYTEeiPoddnXrPVwYr0lJu9g9
-         NgI1kj4r9guxpHJ/7S7chWRkyCzXCZeUMpLpMXb1ORd+wCisgy88DRwtjy52A6Vx9BGu
-         PhyirwNxPZtCUbiRXWXVMPsGHGGs1oOjetPlPG7XRtzeUKM0lZaUzgsdwugkHRoSDIlb
-         I3uca+ly7C2bEUmZLEjghJubBjIYb61i6zlOpuJ+5FW7GTUIYI3C+tN1D8NeZLF+AIf/
-         AVAhXBAyqzJ1lRfY+VhXavkWMajAhhiAH2h92lUNTjMFCNKKzKxXUTj4ii+/8XRvUmT/
-         rcfg==
-X-Forwarded-Encrypted: i=1; AHgh+Rpb1nKqe9hEBAdJrZp43I8XExzab6nT5GnPmgaEbPwH2cCRFHejgW4STBRzlrKwSnlQ6Jil+xdS+kkG@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywl8ADgFlevhfrCgzf2oiikpyTbg8oFK1tDjrZ88ZoMnKeaeYEw
-	BvlSxwkrliNjEm22+a9cVUJq4MLPGwP48yMk7KC3trWJCKudaVwGUwTc6s1JW8kHO9mDV0vDYq2
-	XCdvYNZKKRie3wRvadfWQJDlY/pDdWMk=
-X-Gm-Gg: AfdE7clFjRQOYPFuaC2R1RuylHKoifWvHZkwxCod1W3HvsDHSmxqsDFnSkPXkCX1rux
-	I4q145GhwjSrQOqn8ekyjKwNqEvJxnQDGm8BxM0dv4bxpti64xO+K08dmkedo3lQPuD8y6flpHz
-	Ub1gzPZ2/abnU4K1ocxILAxvRu9WE6HLuMKXnHm9ZL1cek29qN0G4AuQcsLShuOlM1Roc9ecZHx
-	Kny36VEoAJHxufaMVGEcMec1vLRZRvVlZZq5H3qVx5fiJlPGxu0vOcQUUqdnSWS/Ajp3lJZgP20
-	9Wf8NPS9M2LOie1w+oRHixtxEoMyxI36zvQkq0Ed8g==
-X-Received: by 2002:a05:6402:34d5:b0:698:3b7b:e48a with SMTP id
- 4fb4d7f45d1cf-69e652f908dmr3652615a12.32.1784460344585; Sun, 19 Jul 2026
- 04:25:44 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="dpIE2mGf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crapouillou.net;
+	s=mail; t=1784465624;
+	bh=8U389L9n9leu3mtmI0AqAenATf38Tlkc+LIYUnR8gHg=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=dpIE2mGfQV9bihoNl/00WHenYCV9d6GZviFv9QUh24KUdpt9o7NP88Lpu6rr//lRl
+	 +mEIzjuixRQGA28wNlREe32ae7gXyfuVBSq9mak9r/x5G8fMJ5WZjm7cPGgFL8ZabW
+	 8fu5A+jb92fIJjxpigpK6x0W2Tz9y5KG4CSn5jlM=
+Message-ID: <d869fc2e2fe6eec530a65a2e93b642fad1fd9903.camel@crapouillou.net>
+Subject: Re: [PATCH] i2c: jz4780: Cache clock rate at probe to prevent CCF
+ prepare_lock deadlock
+From: Paul Cercueil <paul@crapouillou.net>
+To: Andi Shyti <andi.shyti@kernel.org>, "H. Nikolaus Schaller"
+	 <hns@goldelico.com>
+Cc: linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org, 
+	stable@vger.kernel.org
+Date: Sun, 19 Jul 2026 14:53:39 +0200
+In-Reply-To: <aljCGkhZEQHzZVSW@zenone.zhora.eu>
+References: 
+	<c69ca6511780aa4759a428cb7fb70de43ee5211b.1783666715.git.hns@goldelico.com>
+	 <alf7rSWaLBO8WBkR@zenone.zhora.eu>
+	 <36148F30-156F-4E74-8765-D718F6FE7E76@goldelico.com>
+	 <aliLbNJ51Ns0dIHX@zenone.zhora.eu>
+	 <9421BB47-EFC8-4D82-989F-82A84FE46749@goldelico.com>
+	 <aljCGkhZEQHzZVSW@zenone.zhora.eu>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260707181957.433213175@kernel.org>
-In-Reply-To: <20260707181957.433213175@kernel.org>
-From: Magnus Lindholm <linmag7@gmail.com>
-Date: Sun, 19 Jul 2026 13:25:32 +0200
-X-Gm-Features: AUfX_mzTzrHRlu_CZJHA0P1GUw_Z2tfq0CbfsG-DFTqsEJDFIQx7LWbdfB3YWqk
-Message-ID: <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
-Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
-	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
-	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-arch@vger.kernel.org, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
->
-> With that all architectures using the generic syscall entry code follow the
-> same scheme, apply stack randomization at the correct and earliest possible
-> place and skip syscall processing depending on the boolean return value of
-> syscall_enter_from_user_mode[_work]().
->
-> There should be no functional changes, at least there are none intended.
->
-> The resulting text size for the syscall entry code on x8664 is slightly
-> smaller than before these changes.
->
-> Testing syscall heavy workloads and micro benchmarks shows a small
-> performance gain for the general rework, but the last patch, which changes
-> the logic to be more understandable has no measurable impact in either
-> direction.
->
-> The series applies on Linus tree and is also available from git:
->
->         git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-rework-v1
->
+Hi Andi, Nikolaus,
 
-Hi Thomas,
+Le jeudi 16 juillet 2026 =C3=A0 13:41 +0200, Andi Shyti a =C3=A9crit=C2=A0:
+> On Thu, Jul 16, 2026 at 10:33:56AM +0200, H. Nikolaus Schaller wrote:
+> > > Am 16.07.2026 um 09:43 schrieb Andi Shyti
+> > > <andi.shyti@kernel.org>:
+> > > On Thu, Jul 16, 2026 at 07:44:20AM +0200, H. Nikolaus Schaller
+> > > wrote:
+> > > > > Am 16.07.2026 um 00:07 schrieb Andi Shyti
+> > > > > <andi.shyti@kernel.org>:
+> > > > > On Fri, Jul 10, 2026 at 08:58:35AM +0200, H. Nikolaus
+> > > > > Schaller wrote:
+> > > > > > Fix a severe AB/BA deadlock between the Common Clock
+> > > > > > Framework (CCF)
+> > > > > > and the I2C adapter lock, which triggers when an I2C-
+> > > > > > controlled clock
+> > > > > > generator (like the Si5351) is registered or modified under
+> > > > > > the CCF.
+> > > > > >=20
+> > > > > > During a clock frequency change, the CCF acquires its
+> > > > > > global 'prepare_lock'
+> > > > > > mutex and calls i2c_transfer() to update the chip
+> > > > > > registers, stalling
+> > > > > > for the adapter's I2C bus lock.
+> > > > >=20
+> > > > > I don't think caching the clock rate once at probe is safe.
+> > > >=20
+> > > > Ok, valid point to discuss.
+> > > >=20
+> > > >=20
+> > > > > If the controller clock rate changes afterwards,
+> > > > > jz4780_i2c_set_speed() will keep using the stale cached value
+> > > > > and
+> > > > > calculate incorrect bus timings.
+> > > >=20
+> > > > But: is clock rate ever changed during operation? Usually it is
+> > > > defined
+> > > > by the device tree constant.
+> > >=20
+> > > That's what you are saying in your commit message.
+> >=20
+> > The Si5351 clock generator driver is connected through this i2c
+> > bus. And that
+> > is referred to by "when an I2C-controlled clock generator (like the
+> > Si5351) is=20
+> > registered or modified under the CCF".
+> >=20
+> > Only then, this bug faces surface. Because that driver changes it's
+> > clock through
+> > sending i2c commands which also ask for the lock.
+>=20
+> If you make a claim in the commit message, I expect the code to
+> support it.
+>=20
+> You say that the clock rate can change, but then you store it
+> only once at probe time. That immediately suggests that later
+> rate changes will be ignored by the transfer path.
 
-I did another round of testing of this series on Alpha, this time with my
-Alpha GENERIC_ENTRY conversion rebased on top of this series.
+I think there's a misunderstanding.
 
-For this test I also manually applied the seccomp fixup discussed earlier in
-this thread, i.e. fixing the recheck-after-trace logic in
-__seccomp_filter() along the lines suggested by Jinjie/Oleg.
+The JZ4780 I2C host's parent clock rate does not change here, so
+caching its rate should be fine.
 
-With that in place, the kernel boots on Alpha and I do not see any
-regressions in the seccomp_bpf kernel selftest or in the strace testsuite.
+The clock rate that can change in this setup is the one of the Si5351
+clock *generator* that is a I2C device.
 
-One note: the seccomp_bpf selftest run on Alpha uses this not-yet-upstream
-Alpha selftest enablement patch:
+>=20
+> > But again: how would you solve this?
 
-https://lore.kernel.org/linux-alpha/20260203063357.14320-1-linmag7@gmail.com/
+I believe you have this problem because your Si5351's clocks are
+parented to the I2C host's clock, am I right?
 
-One Alpha-specific wrinkle I hit while rebasing the GENERIC_ENTRY patch is
-that Alpha cannot unconditionally pre-seed the normal -ENOSYS return state
-before calling into the generic entry code: syscall_set_return_value() also
-updates r19/a3, which is still syscall argument 4 on the normal entry path.
-Doing that too early broke early userspace mmap() during boot.
+So when you try to change a Si5351 clock rate, it will get the clock's
+lock and the clock parent's lock, aka. the I2C host clock's lock. Then
+trying to send a I2C command will indirectly trigger clk_get_rate() on
+the I2C host's clock to be called, causing a lockup.
 
-The Alpha conversion therefore handles this on the no-dispatch path instead:
-after the generic entry helper returns, if the syscall is not to be invoked
-or the resulting syscall number is invalid, Alpha skips the call, preserves
-any ptrace/seccomp/BPF-provided return value, and only synthesizes -ENOSYS if
-the return state was otherwise unchanged. That was needed for the
-TRACE_syscall.ptrace.syscall_faked and syscall_errno seccomp_bpf cases to
-pass.
+I think the solution would be, and CLK people can correct me here, to
+just drop the relation to the I2C host lock. Your Si5351 clocks are not
+derived in any way from the clock used by the I2C hardware in the JZ
+SoC (unless they are?), so I think they should just not have any
+parent.
 
-So from the Alpha side, with the seccomp fixup applied:
+> It's not my role to give you a solution. I'm just commenting on
+> what I see.
+>=20
+> Besides that, is that an issue you have encountered yourself? Is
+> it a frequent issue?
+>=20
+> Thanks,
+> Andi
 
-Tested-by: Magnus Lindholm linmag7@gmail.com
-
-Are you planning to send a v2 with the seccomp recheck fix and any other
-review fixups folded in? Is the intention to route this upstream
-during the next merge window?
-
-Thanks,
-Magnus
+Cheers,
+-Paul

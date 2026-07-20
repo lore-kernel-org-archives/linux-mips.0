@@ -1,150 +1,127 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from polaris.svanheule.net (polaris.svanheule.net [84.16.241.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317E639936B
-	for <linux-mips@vger.kernel.org>; Mon, 20 Jul 2026 14:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150B9314B8C
+	for <linux-mips@vger.kernel.org>; Mon, 20 Jul 2026 16:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.241.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784558470; cv=none; b=tjsSERhd70VQPDZIXkuaT+mrDnU6Dbxry7Hh0we9PWsEztv5otmISBxIAIUQB0+UPPS77rC8hqRX0RGgy57Ae8i9JrS085VUUfGokmxVY6ZJW4/gmvf7lygZnkD2StHyBwGCqoXTNR/XCBSra3fxlYNrFFI3tDcPvOGfl8RZ8XM=
+	t=1784565476; cv=none; b=f5qDpt4SbaOIXXghUH5jqd62R51F3Z5J5HRUaZN4LtCdC6+8Qi9DwtlA/0QUBVpxvRYGEla3E2IiXWHfyKRUkPseD1Pdpn1FP/3FHEFpVR6HPZYXTC0sh8O+UdE0xfdBV0P/hc1cSnGqGnz65T/rEUwG6yGRQ4iAoHwnL91pBNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784558470; c=relaxed/simple;
-	bh=X+l4s5oACxDuUjszfwq3bjz2V3p8Vmp5HNSG3+GMkjw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j9X+qlM7sf4urOa6WVmuAXtDRGin/NORt4n/zcUquHan8cT9se/T6KWmnTTX7mWOzk/YNVHmY+uJhb+fEygbHL3XrlJaDSc/pVdXh4LnfE/aiehNUroiC4KX3/+Fg1zrtplVDUXVSNGCSgDrKC4BwSiYgVrGN2iXTUwSnL80niE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Pqo2xgJ5; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1784565476; c=relaxed/simple;
+	bh=YnuQNcBLsku2RqqyPvzUj2NQkTZrrDNgZjXga6bomuI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VD3pATaDn0N9MzFI9WXQIXtuIXsyxgRvcv7ZomndZ06tlM1ZEdJ46TOwfLO/IajDmW+Y0nfOjqpHKRzPEjiAXT0iW4QDZTB/cvpRXrvEtz/+0495uGDe+LapeB7YR+clO6icRZO4FYzpYiRWCe4cxhNEv/1z/ijo3ldRhnAJb5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svanheule.net; spf=pass smtp.mailfrom=svanheule.net; dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b=7TdHjpg6; arc=none smtp.client-ip=84.16.241.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=svanheule.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=svanheule.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Pqo2xgJ5"
-Date: Mon, 20 Jul 2026 22:40:43 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784558454;
+	dkim=pass (2048-bit key) header.d=svanheule.net header.i=@svanheule.net header.b="7TdHjpg6"
+Received: from [IPv6:2a02:1812:162d:3d00:c381:7255:a866:916d] (2a02-1812-162d-3d00-c381-7255-a866-916d.ip6.access.telenet.be [IPv6:2a02:1812:162d:3d00:c381:7255:a866:916d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sander@svanheule.net)
+	by polaris.svanheule.net (Postfix) with ESMTPSA id 975567CD01F;
+	Mon, 20 Jul 2026 18:32:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+	s=mail1707; t=1784565135;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Z4gSt9cswUv2DtOGtLXPRqtGUR2VcGmgfvQCElRP9mg=;
-	b=Pqo2xgJ5RDdj6NXs/jgeISfkdIg7i7qMUGkyZrTO/p1VM+BbXJW/RIUSk3umeDw8GfcuOR
-	BQyPX9vHf6jSgJDsYezil7V5AOtFS0ol0tf8WF9flnT6iDNrezuc4gIkTJvqvd/XeVKzlm
-	rjkJqxcCecDN47qIrUxa/KE9LXp2OPA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Baoquan He <baoquan.he@linux.dev>
-To: Mike Rapoport <rppt@kernel.org>, Pnina Feder <pnina.feder@mobileye.com>
-Cc: Simon Horman <horms@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Dave Young <ruirui.yang@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>, Alexandre Ghiti <alex@ghiti.fr>,
-	kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH 0/4] vmcore-tasks: export per-task metadata to vmcoreinfo
-Message-ID: <al4yeHrkDHFoo6A0@MiWiFi-R3L-srv>
-References: <20260622211430.4008899-1-pnina.feder@mobileye.com>
- <akybBoCAm-kJbfHL@kernel.org>
- <20260720091927.GA1736709@horms.kernel.org>
- <al4X300UObXawEIJ@kernel.org>
+	bh=YLBHhEtJn4x4evy40Rf5cBK7ReLHFgmUUBlihEY+rH8=;
+	b=7TdHjpg6GlcLG78L8tAG6lMqifgP1k60g7MwM2f1yAc4N32ot2wvVUebfVBuI1mmY33ibc
+	0x80GcGkR0mfwFPxjwD0Pij+L9h1ZbOQhL8mdUrIDvaswtrTT9oNJ3D4Pn4LN+kC+kJGPg
+	fRTATSKXXQays/c6ayqg/972ZRfb0CkCWQHYPxmwYX6xA0aj+CsO2vW5ArtluUcBmUCgUI
+	jgMFJmHqUlDpKYAfs8OhkW3+nHVrTyVOouF1ggy6i10T8rItCxuBtla1zYrY0+Pfqn7YN7
+	ehxCeLIwurxxYu1n+RExFpElvS/C/fU90de6OOuNejPwJrmKRFuCWrQI3SUK5A==
+Message-ID: <d27c366d6e28a5f50ddcdfe456bf844cbaab9d0a.camel@svanheule.net>
+Subject: Re: [PATCH 1/2] gpio: realtek-otto: use __raw_readl/writel in
+ realtek_gpio_update_line_imr()
+From: Sander Vanheule <sander@svanheule.net>
+To: Rustam Adilov <adilov@disroot.org>, Linus Walleij <linusw@kernel.org>, 
+ Bartosz Golaszewski	 <brgl@kernel.org>, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-mips@vger.kernel.org
+Cc: linux-watchdog@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, 
+	markus.stockhausen@gmx.de, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Thomas Gleixner <tglx@kernel.org>
+Date: Mon, 20 Jul 2026 18:32:14 +0200
+In-Reply-To: <20260710183439.996923-2-adilov@disroot.org>
+References: <20260710183439.996923-1-adilov@disroot.org>
+	 <20260710183439.996923-2-adilov@disroot.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-1.fc44) 
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <al4X300UObXawEIJ@kernel.org>
-X-Migadu-Flow: FLOW_OUT
 
-On 07/20/26 at 03:43pm, Mike Rapoport wrote:
-> Hi Simon,
-> 
-> On Mon, Jul 20, 2026 at 10:19:27AM +0100, Simon Horman wrote:
-> > On Tue, Jul 07, 2026 at 09:21:58AM +0300, Mike Rapoport wrote:
-> > > On Tue, Jun 23, 2026 at 12:14:26AM +0300, Pnina Feder wrote:
-> > > > This series extends vmcoreinfo with struct offsets and sizes needed by
-> > > > the vmcore-tasks userspace tool to extract per-task state from a vmcore
-> > > > dump without requiring kernel debug symbols (DWARF/BTF).
-> > > > 
-> > > > The vmcore-tasks tool reads /proc/vmcore (or a saved vmcore file) and
-> > > > reconstructs, for each task:
-> > > >   - task name, pid, state, flags
-> > > >   - VMA list (start, end, flags, backing file)
-> > > >   - user register state (saved on the kernel stack at kernel entry)
-> > > >   - user-space backtrace with VMA/filename mapping
-> > > >   - kernel dmesg buffer
-> > > > 
-> > > > This provides a lightweight post-mortem crash analysis capability for
-> > > > production environments where full debug info (DWARF/BTF) is not
-> > > > available.
-> > > > 
-> > > > The companion userspace tool is submitted to kexec-tools:
-> > > >   https://lore.kernel.org/all/20260622205550.1087163-1-pnina.feder@mobileye.com/
-> > > 
-> > > Sorry for the delay, this fell between the cracks somehow.
-> > > 
-> > > The kernel side looks fine overall, but to merge it there should be an
-> > > agreement from the userspace side maintainers that vmcore-tasks is
-> > > something they are wishing to accept.
-> > 
-> > Hi Mike, all,
-> > 
-> > Sorry for the extended delay.
-> > 
-> > I will send some minor feedback to the user-space tool patchset
-> > but overall, yes, this is something I would be happy to accept.
-> > 
-> > I don't want to create a chicken-and-egg type problem here.
-> > But it's probably worth mentioning that usually features
-> > hit the kernel before the corresponding code is accepted
-> > into kexec-tools.
-> 
-> Sorry if I wasn't clear. 
-> 
-> I didn't mean that the feature should be merged into kexec-tools before
-> merging the kernel bits. I just wanted to make sure there's no fundamental
-> issue from kexec-tools perspective.
-> 
-> > Let me know how you would like to proceed.
-> 
-> I'm going to wait for Baoquan's review and once that's done I'll pick up
-> the kernel bits.
+Hi,
 
-Oh, sorry, I just noticed this series, but a quick look give me a hint
-of 'No, I don't like it.' We have had Crash utility, Drgn, now a new one
-comes up. I have some concerns to Pnina:
+Adding linux-mips as SWAP_IO_SPACE is mostly a MIPS thing, and some lists/p=
+eople
+for your other pending patches.
 
-1. Exporting maple tree internals (maple_node, maple_range_64,
-   maple_arange_64, maple_metadata) as vmcoreinfo ABI is problematic.
-   These are private implementation details, not stable structures like
-   task_struct. Any refactoring of the maple tree will silently break
-   the userspace tool. 
+On Fri, 2026-07-10 at 23:34 +0500, Rustam Adilov wrote:
+> In preparation for upcoming changes to how bank reads and writes
+> are defined in this driver, change the ioread32 and iowrite32 to
+> their __raw variants. The realtek_gpio_update_line_imr() function
+> is used by all devices regardless of GPIO_PORTS_REVERSED flag and
+> thus this is the only place where there shouldn't be any byte
+> swapping whether SWAP_IO_SPACE config is enabled or not and that
+> is only possible with __raw_readl and __raw_writel.
+>=20
+> Signed-off-by: Rustam Adilov <adilov@disroot.org>
+> ---
+> =C2=A0drivers/gpio/gpio-realtek-otto.c | 4 ++--
+> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpio/gpio-realtek-otto.c b/drivers/gpio/gpio-realtek=
+-
+> otto.c
+> index 4a606bad5848..491fde846d46 100644
+> --- a/drivers/gpio/gpio-realtek-otto.c
+> +++ b/drivers/gpio/gpio-realtek-otto.c
+> @@ -176,10 +176,10 @@ static void realtek_gpio_update_line_imr(struct
+> realtek_gpio_ctrl *ctrl, unsigne
+> =C2=A0	u32 reg_val;
+> =C2=A0
+> =C2=A0	reg +=3D 4 * (line_shift / 32);
+> -	reg_val =3D ioread32(reg);
+> +	reg_val =3D __raw_readl(reg);
+> =C2=A0	reg_val &=3D ~(REALTEK_GPIO_IMR_LINE_MASK << shift);
+> =C2=A0	reg_val |=3D (irq_type & irq_mask & REALTEK_GPIO_IMR_LINE_MASK) <<
+> shift;
+> -	iowrite32(reg_val, reg);
+> +	__raw_writel(reg_val, reg);
+> =C2=A0}
+> =C2=A0
+> =C2=A0static void realtek_gpio_irq_ack(struct irq_data *data)
 
-2. Without DWARF/BTF, the debugging scope is inherently limited — no
-   kernel stack backtrace, no symbol resolution, no variable access.
-   That's essentially "ps + /proc/PID/maps" from a vmcore. Have you
-   considered enabling CONFIG_DEBUG_INFO_BTF on your platforms instead?
-   BTF is compact (typically < 1 MB) and would give drgn full access
-   without needing vmlinux debug packages. That seems like a better
-   return-on-investment than maintaining ~40 new vmcoreinfo exports.
+As per my earlier message on your watchdog patch [1], I'm still not convinc=
+ed
+converting all existing drivers [2, 3] to work around an issue with the USB
+framework is the right thing to do. You claim the required USB changes are =
+not
+upstreamable, but I have not seen you make an attempt at doing so.
 
-3. Beyond the technical concerns, I wonder about adoption. vmcore-tasks
-   targets a fairly narrow use case — platforms without DWARF/BTF, where
-   you still have vmcore but can't ship vmlinux. Is Mobileye currently
-   the only consumer? Are you guys already using it widely and fully?
-   If this lands but doesn't see broader uptake, the ~40 exports risk
-   becoming dead weight in vmcoreinfo — nobody actively uses them, but
-   kernel changes still need to keep them consistent, or they silently
-   rot and give users wrong results. 
+Can the people from linux-mips shine their light on whether using __raw_*()=
+ to
+work around the effects of SWAP_IO_SPACE is reasonable? My gut feeling is t=
+his
+indicates SWAP_IO_SPACE shouldn't be enabled. Markus has apparently made th=
+e
+same remark [4].
 
-Regards,
-Baoquan
+[1] https://lore.kernel.org/all/ebdcb8c5563ceff723f3e4a3c4fdfe9bf87d42fa.ca=
+mel@svanheule.net/
+[2] https://lore.kernel.org/linux-watchdog/20260710074316.46643-1-adilov@di=
+sroot.org/
+[3] https://lore.kernel.org/all/20260511131520.98420-1-adilov@disroot.org/
+[4] https://lore.kernel.org/all/016d01dce49a$36b7bd60$a4273820$@gmx.de/
 
-
-
-
-
+Best,
+Sander

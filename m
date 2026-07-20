@@ -1,165 +1,150 @@
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B8F3E4C64
-	for <linux-mips@vger.kernel.org>; Mon, 20 Jul 2026 14:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317E639936B
+	for <linux-mips@vger.kernel.org>; Mon, 20 Jul 2026 14:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784557548; cv=none; b=Gj3xjuyAI0GT78K7mX5UdMjRFbF60ghdyFmddpPoHj+3wzYnbI64wG6LNWpV70ezDubPGwX+U7oWIeow3itHkp6USXBk8AdgxUTJQMwDz1vMRkafjlG/xg67ND10mVnCMEJNnWLkkbu6SxeBs2zrqbrx82MwVWdbj9V3RIQOMJc=
+	t=1784558470; cv=none; b=tjsSERhd70VQPDZIXkuaT+mrDnU6Dbxry7Hh0we9PWsEztv5otmISBxIAIUQB0+UPPS77rC8hqRX0RGgy57Ae8i9JrS085VUUfGokmxVY6ZJW4/gmvf7lygZnkD2StHyBwGCqoXTNR/XCBSra3fxlYNrFFI3tDcPvOGfl8RZ8XM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784557548; c=relaxed/simple;
-	bh=/RfTADsW12Id5ZIFtR4N+8sBBIRRaNwpklsrtw2m+Vw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EMfay2eJwGKl6usL2VIT35FITwQVGjaGnZYT0Mgb9i7ip6LsiGqK4S58lNblsWymTL6Tc0CJSrqz4Ivxwbpraz7zcZQhx0gy3Z8pVkTOYznAcliK9Z8G5dRRqyh9xUcR1sCNEshmNheARpuMxks8qS9/orj06jlobVkTzBZZUqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dZUWAcCD; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1784558470; c=relaxed/simple;
+	bh=X+l4s5oACxDuUjszfwq3bjz2V3p8Vmp5HNSG3+GMkjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j9X+qlM7sf4urOa6WVmuAXtDRGin/NORt4n/zcUquHan8cT9se/T6KWmnTTX7mWOzk/YNVHmY+uJhb+fEygbHL3XrlJaDSc/pVdXh4LnfE/aiehNUroiC4KX3/+Fg1zrtplVDUXVSNGCSgDrKC4BwSiYgVrGN2iXTUwSnL80niE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Pqo2xgJ5; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dZUWAcCD"
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4955de8797cso6394005e9.3
-        for <linux-mips@vger.kernel.org>; Mon, 20 Jul 2026 07:25:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784557545; x=1785162345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=6RW4TYKmMYXfGYOoT15J2gseVEyM5W49p7Cq6vVyAMU=;
-        b=dZUWAcCDWq3bidtBDwRTmUg2ANYp0tZAIh3/gMAtFqWuxWW14sPlfjz3nzR751+vAx
-         ehSK6yvd+UNhPkBOMP8P4HUAy5jJeSezUYIl77A+EfpZXOcFgOzONGS240CbXtD0uufH
-         IH0YE6zyWb4fiBIHnbqoL2E4zLymFf4xuLeZBX1zgklMcMRxahRs+VhUtTnzRNalnSVr
-         aW6ZqGAeeGQTapkXsSQHEXCMKYbBQ/TTCOqXQZ4xQbJsC/ihOcZeeUUcFS7Yq+PAKeoT
-         0olapTOQ6T97gLI5hIat8+Ps2aWir98IYIWl8UGyAtbP7ZrsxQkW/BDcB2EnGN0KMHny
-         FBHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784557545; x=1785162345;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6RW4TYKmMYXfGYOoT15J2gseVEyM5W49p7Cq6vVyAMU=;
-        b=QiyIXpXgaSFjAIqjVzrreJT6lDEwPsKgKAfMxPKgdI+KlQqHn2fjnYU3jQvvSb5Mbo
-         eoRSC92Dk+u+I+A9wkkuzf4JLA3C5csC5hSIWQd0G9Mscy1wkbfm82rlejY3VNJ7a8Nx
-         ItL++idNsqkcJstT32PbZSvUCjOUV7o2xIJNSv8CBAmO7QaTnr/USYUMDwqY07r8P/pt
-         X9Y49a+ajAWHSF8EVVlzBxvVZhqD6JW3iPN57xq1nr5ICPZbVEYwmrzwRDeSTFI6DEM+
-         Vsb2+ULoAlakzScm9/86k8KXoOEfIMjM/Vn2G4lVzM6V40ZyRCMe/aBSyc5513bt0tiY
-         DelQ==
-X-Forwarded-Encrypted: i=1; AHgh+RpnYX9p6Z+X3z86lvKI5r9z2FcQRSHpQqUKAD0X+UNp1QC5h+W/I4vTWSHuJY9N/j4m0ijfg2/5wzYt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIkh2+giMdLJRvLIe+7VPNu6sAhcOwdQspy/lukP411YovS6ys
-	pV2SsmGZmY2+d08rS8LqzYo/fpHiZ+3bd61hhXjTkzsluub1iaGiM9TQag9L2w==
-X-Gm-Gg: AfdE7cldb517VKDL7V/Vw4tyjCD6UbHb6CexSyjBQCQ3q/+8dM4HElOKpX7bzg3yQ8I
-	ze0LrZPtoJ7SVHndw/qKmmdanC9mNUvRyllu0fjHjVzwm6ufn31eTjNeHr2bIByvbtFWWBYv87h
-	k0fsA5ofPbPdgrqjMqMZeC+n1O+aJMXC6HyL/L2ZtNTCN7gNNATfjqdJM5UkipcR1wc4lRPrBex
-	4c1ir+uMk1RRnQZfIzx8dF06h9L/JZBzW7RWb/kw/im86CqFhSkXcRaoahYpOw2iFyCDc57hs87
-	2oimiBuWiqAGKiONWdjgWflZIMoBkdW7OR2Zr8tSI3RtkCMsCaKVu3CwL3t4tW9g9/9/8CeJdBg
-	MKerRI4vZ3iUXwnMX7v8d/axbODPD9J3xNKLitMUnasp2NX/F/57WoVGD48iLDgELKsqT/s7/Ii
-	EzVCaWk3x3frSv4Ueq9ieFo6w=
-X-Received: by 2002:a05:600c:a010:b0:495:5365:c0d2 with SMTP id 5b1f17b1804b1-4955365c1d0mr110673245e9.14.1784557545214;
-        Mon, 20 Jul 2026 07:25:45 -0700 (PDT)
-Received: from localhost.localdomain ([72.255.58.127])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49548e0fcdbsm242840465e9.2.2026.07.20.07.25.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2026 07:25:44 -0700 (PDT)
-From: Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
-To: Keguang Zhang <keguang.zhang@gmail.com>,
-	Vinod Koul <vkoul@kernel.org>
-Cc: Frank Li <Frank.Li@kernel.org>,
-	linux-mips@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
-Subject: [PATCH] dmaengine: loongson1-apb-dma: fix residue calculation for queued descriptors
-Date: Mon, 20 Jul 2026 14:25:38 +0000
-Message-ID: <20260720142538.2766-1-mahad.ibrahim.dev@gmail.com>
-X-Mailer: git-send-email 2.54.0
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Pqo2xgJ5"
+Date: Mon, 20 Jul 2026 22:40:43 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1784558454;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z4gSt9cswUv2DtOGtLXPRqtGUR2VcGmgfvQCElRP9mg=;
+	b=Pqo2xgJ5RDdj6NXs/jgeISfkdIg7i7qMUGkyZrTO/p1VM+BbXJW/RIUSk3umeDw8GfcuOR
+	BQyPX9vHf6jSgJDsYezil7V5AOtFS0ol0tf8WF9flnT6iDNrezuc4gIkTJvqvd/XeVKzlm
+	rjkJqxcCecDN47qIrUxa/KE9LXp2OPA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Baoquan He <baoquan.he@linux.dev>
+To: Mike Rapoport <rppt@kernel.org>, Pnina Feder <pnina.feder@mobileye.com>
+Cc: Simon Horman <horms@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Dave Young <ruirui.yang@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>, Alexandre Ghiti <alex@ghiti.fr>,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH 0/4] vmcore-tasks: export per-task metadata to vmcoreinfo
+Message-ID: <al4yeHrkDHFoo6A0@MiWiFi-R3L-srv>
+References: <20260622211430.4008899-1-pnina.feder@mobileye.com>
+ <akybBoCAm-kJbfHL@kernel.org>
+ <20260720091927.GA1736709@horms.kernel.org>
+ <al4X300UObXawEIJ@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <al4X300UObXawEIJ@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-ls1x_dma_tx_status() locates the descriptor actively being processed by
-walking the LLI list and comparing the hardware reported next descriptor
-pointer against each element's next-descriptor pointer.
+On 07/20/26 at 03:43pm, Mike Rapoport wrote:
+> Hi Simon,
+> 
+> On Mon, Jul 20, 2026 at 10:19:27AM +0100, Simon Horman wrote:
+> > On Tue, Jul 07, 2026 at 09:21:58AM +0300, Mike Rapoport wrote:
+> > > On Tue, Jun 23, 2026 at 12:14:26AM +0300, Pnina Feder wrote:
+> > > > This series extends vmcoreinfo with struct offsets and sizes needed by
+> > > > the vmcore-tasks userspace tool to extract per-task state from a vmcore
+> > > > dump without requiring kernel debug symbols (DWARF/BTF).
+> > > > 
+> > > > The vmcore-tasks tool reads /proc/vmcore (or a saved vmcore file) and
+> > > > reconstructs, for each task:
+> > > >   - task name, pid, state, flags
+> > > >   - VMA list (start, end, flags, backing file)
+> > > >   - user register state (saved on the kernel stack at kernel entry)
+> > > >   - user-space backtrace with VMA/filename mapping
+> > > >   - kernel dmesg buffer
+> > > > 
+> > > > This provides a lightweight post-mortem crash analysis capability for
+> > > > production environments where full debug info (DWARF/BTF) is not
+> > > > available.
+> > > > 
+> > > > The companion userspace tool is submitted to kexec-tools:
+> > > >   https://lore.kernel.org/all/20260622205550.1087163-1-pnina.feder@mobileye.com/
+> > > 
+> > > Sorry for the delay, this fell between the cracks somehow.
+> > > 
+> > > The kernel side looks fine overall, but to merge it there should be an
+> > > agreement from the userspace side maintainers that vmcore-tasks is
+> > > something they are wishing to accept.
+> > 
+> > Hi Mike, all,
+> > 
+> > Sorry for the extended delay.
+> > 
+> > I will send some minor feedback to the user-space tool patchset
+> > but overall, yes, this is something I would be happy to accept.
+> > 
+> > I don't want to create a chicken-and-egg type problem here.
+> > But it's probably worth mentioning that usually features
+> > hit the kernel before the corresponding code is accepted
+> > into kexec-tools.
+> 
+> Sorry if I wasn't clear. 
+> 
+> I didn't mean that the feature should be merged into kexec-tools before
+> merging the kernel bits. I just wanted to make sure there's no fundamental
+> issue from kexec-tools perspective.
+> 
+> > Let me know how you would like to proceed.
+> 
+> I'm going to wait for Baoquan's review and once that's done I'll pick up
+> the kernel bits.
 
-A list_for_each_entry macro is used in the comparison phase, which
-internally expands to the container_of macro to find the current
-ls1x_dma_lli's next-descriptor pointer to compare against. However a
-problem occurs when the loop reaches the final lli list element and wraps
-around to the head. The head is a different struct ls1x_dma_desc. It goes
-down to the offset the node member would be at in ls1x_dma_lli inside of
-ls1x_dma_desc.
+Oh, sorry, I just noticed this series, but a quick look give me a hint
+of 'No, I don't like it.' We have had Crash utility, Drgn, now a new one
+comes up. I have some concerns to Pnina:
 
-This leaves the lli pointer somewhere inside of ls1x_dma_desc at the end
-of the loop. The subsequent phys debug value read therefore would print
-garbage as a valid phys address.
+1. Exporting maple tree internals (maple_node, maple_range_64,
+   maple_arange_64, maple_metadata) as vmcoreinfo ABI is problematic.
+   These are private implementation details, not stable structures like
+   task_struct. Any refactoring of the maple tree will silently break
+   the userspace tool. 
 
-The primary bug occurs in the residue calculation list_for_each_entry_from
-macro. The lli pointer still points to somewhere inside of ls1x_dma_desc,
-when the list_for_each_entry_from performs the same wrong offset
-calculation on ls1x_dma_desc to determine the stop condition of the loop,
-it lands at the same offset that lli pointer is on, and the loop
-immediately stops.
+2. Without DWARF/BTF, the debugging scope is inherently limited — no
+   kernel stack backtrace, no symbol resolution, no variable access.
+   That's essentially "ps + /proc/PID/maps" from a vmcore. Have you
+   considered enabling CONFIG_DEBUG_INFO_BTF on your platforms instead?
+   BTF is compact (typically < 1 MB) and would give drgn full access
+   without needing vmlinux debug packages. That seems like a better
+   return-on-investment than maintaining ~40 new vmcoreinfo exports.
 
-This produces a 0 residue value, while it should be the entire length of
-the lli list chain. The driver advertises DMA_RESIDUE_GRANULARITY_SEGMENT,
-so a 0 residue would mean the transfer has completed.
+3. Beyond the technical concerns, I wonder about adoption. vmcore-tasks
+   targets a fairly narrow use case — platforms without DWARF/BTF, where
+   you still have vmcore but can't ship vmlinux. Is Mobileye currently
+   the only consumer? Are you guys already using it widely and fully?
+   If this lands but doesn't see broader uptake, the ~40 exports risk
+   becoming dead weight in vmcoreinfo — nobody actively uses them, but
+   kernel changes still need to keep them consistent, or they silently
+   rot and give users wrong results. 
 
-Found by the following Coccinelle check:
+Regards,
+Baoquan
 
-  scripts/coccinelle/iterators/use_after_iter.cocci
 
-  drivers/dma/loongson/loongson1-apb-dma.c:461:6-9: ERROR: invalid
-  reference to the index variable of the iterator on line 450
 
-Note the check still reports this line after the fix; the remaining use
-is safe (the cursor is only dereferenced on the match path, or reset to
-the first entry otherwise).
 
-I did not see a bug upstream detailing this error, nor do I have the
-hardware to confirm this bug or error, all this is from a pure code
-examination.
-
-As I do not possess the hardware, I cannot test the patch. Compile tested
-only with mips64-linux-gnu-gcc.
-
-Signed-off-by: Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
----
- drivers/dma/loongson/loongson1-apb-dma.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/dma/loongson/loongson1-apb-dma.c b/drivers/dma/loongson/loongson1-apb-dma.c
-index 89786cbd20ab..8bb6e6e5719d 100644
---- a/drivers/dma/loongson/loongson1-apb-dma.c
-+++ b/drivers/dma/loongson/loongson1-apb-dma.c
-@@ -439,6 +439,7 @@ static enum dma_status ls1x_dma_tx_status(struct dma_chan *dchan,
- 			struct ls1x_dma_desc *desc = to_ls1x_dma_desc(vd);
- 			struct ls1x_dma_lli *lli;
- 			dma_addr_t next_phys;
-+			bool found = false;
- 
- 			/* get the current lli */
- 			if (ls1x_dma_query(chan, &chan->curr_lli->phys))
-@@ -447,11 +448,17 @@ static enum dma_status ls1x_dma_tx_status(struct dma_chan *dchan,
- 			/* locate the current lli */
- 			next_phys = chan->curr_lli->hw[LS1X_DMADESC_NEXT];
- 			list_for_each_entry(lli, &desc->lli_list, node)
--				if (lli->hw[LS1X_DMADESC_NEXT] == next_phys)
-+				if (lli->hw[LS1X_DMADESC_NEXT] == next_phys) {
-+					found = true;
- 					break;
--
--			dev_dbg(chan2dev(dchan), "current lli_phys=%pad",
--				&lli->phys);
-+				}
-+
-+			if (!found)
-+				lli = list_first_entry(&desc->lli_list,
-+						       struct ls1x_dma_lli, node);
-+			else
-+				dev_dbg(chan2dev(dchan), "current lli_phys=%pad",
-+					&lli->phys);
- 
- 			/* count the residues */
- 			list_for_each_entry_from(lli, &desc->lli_list, node)
--- 
-2.54.0
 

@@ -1,140 +1,156 @@
-Received: from layka.disroot.org (layka.disroot.org [178.21.23.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060D740096A;
-	Tue, 21 Jul 2026 17:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.21.23.139
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DF0446839;
+	Tue, 21 Jul 2026 17:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784654196; cv=none; b=Qwaoy76zGosa5VjIGVugoe4gDSlPW19taK5NZ231pmujdnBz+R90H8S5ksP8NcreizdIGCBtFyR4AMt74afCpQhd+sVzcImI9fca6rwVDAVB2r8rDKP6FwyNCj+lA+hgdy3zovn/9VwLBSi9bFnRjyOIIQwmKmdRMm7s/9RK5GM=
+	t=1784655934; cv=none; b=mFltk9SDfXxUeSpwI4r+sPIOU7dJqwqtU80dtxjIvHH80V6fHzDpngiGSfVqpqn70mNOw3F7NNLUvPbA7MJ38odv3X7p3Ts3lXDS8lwX+F+vrPnt6S9bB3lQdfyWcXplBtOX7pNLqVYc64n1bx6YwzdOKcnTGWOlogu1nNyxlSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784654196; c=relaxed/simple;
-	bh=F4G0/DcjYcXxAIfyxGrK2b4rNPlszrnq2Mg/2VCQxI0=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=nHtpqKdgxAUDGPByD/DSF8bxWv3nl91ws6D8/Mfgj0nMfkBbzRUGrOsk5oT43U2N3Jdb5uSjw2zQ9cYFcdz1Aeg0MmlKQ8PVke6Q5aCGP2ObFS0vosK6JKnc+5EEE+gLM6ecSZBVpHkiG7bNYVq27G9h1i8Fnb5WQzgrNwNJu/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=dA8y3DTW; arc=none smtp.client-ip=178.21.23.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=disroot.org
+	s=arc-20240116; t=1784655934; c=relaxed/simple;
+	bh=hrYivZRwvgo4Jln4t+vd90e0saYnNKOsQL0oUJ6U/zA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KFXcj5FseyKjibD5GbSei3SmDveV8umTN3/vz5yQ8FxotUxgtkCItWovZgjTiQ3V2V6MXGP+RgBdaTckoGsk/reC4xrttA75Siyk5TdTPsjoixJMuM+M3mgVpLpFRaAYq5mAaCm2awE9rsyP6vbvTPXA9Ud7i1gFdVO6ayLvb8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=YcdJ0SMk; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="dA8y3DTW"
-Received: from mail01.layka.lan (localhost [127.0.0.1])
-	by disroot.org (Postfix) with ESMTP id 0BE4A84C10;
-	Tue, 21 Jul 2026 19:16:24 +0200 (CEST)
-X-Virus-Scanned: SPAM Filter at disroot.org
-Received: from layka.disroot.org ([127.0.0.1])
- by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id JEfM8_paFuoM; Tue, 21 Jul 2026 19:16:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
-	t=1784654183; bh=F4G0/DcjYcXxAIfyxGrK2b4rNPlszrnq2Mg/2VCQxI0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=dA8y3DTWW63S7eMVVDM/RJ3DJwsJCHF7V3CE4W8rHuG78H8cI5k9Yjy1v7emeklRR
-	 pGLvaXwxjMml54uLpEStcnpsSeeUvn10VGDCh4pvJrxTwN9nE4avCXLcK5K6JHEcse
-	 yyoDQ4+VfgqgTA2EUlr6KZRtJCsqz6lH59ql97GVlaMLBiuK/L9Gj2pecwDrx+4v7B
-	 zfp5sDNAQU3XB6F7awLu2sYQcx3852klVeLvY5uT5gDKNQTy5MDAPFwzzsd0IZdHRY
-	 Iwfx5gsEOrqdGjD4ItQmU6ad7pUtk2r3Zz0Ikj9lPTD419saXL1u3ckzFTXAEPs03K
-	 BMz0fowU4Or4Q==
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="YcdJ0SMk"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD47A1AC1;
+	Tue, 21 Jul 2026 10:45:27 -0700 (PDT)
+Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 873643F58B;
+	Tue, 21 Jul 2026 10:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1784655931; bh=hrYivZRwvgo4Jln4t+vd90e0saYnNKOsQL0oUJ6U/zA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YcdJ0SMkJGlBA6zcU5v7DCrlzSEWCTP6ZWedBSSkSSjm8uzBucCY02WFFlppbTou0
+	 7Vtk7Wne8hYcoyIusG8mtsWATS11C/0DiJBcsPsfedbFHDz9wkKju5sMGuQL/9I8hl
+	 uF20WzjU/fp1spnK9FfiincvEjVknHZCmFNVhFQs=
+Date: Tue, 21 Jul 2026 18:45:17 +0100
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Dave Hansen <dave.hansen@intel.com>, Yeoreum Yun <yeoreum.yun@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-arch@vger.kernel.org, kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org,
+	kasan-dev@googlegroups.com, linux-csky@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+	linux@armlinux.org.uk, akpm@linux-foundation.org,
+	ankur.a.arora@oracle.com, rppt@kernel.org, linmag7@gmail.com,
+	chleroy@kernel.org, klarasmodin@gmail.com, chenhuacai@kernel.org,
+	kernel@xen0n.name, kas@kernel.org, zhangtianyang@loongson.cn,
+	wangyuli@aosc.io, tsbogend@alpha.franken.de, ljs@kernel.org,
+	jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, ryan.roberts@arm.com, pasha.tatashin@soleen.com,
+	rmclure@linux.ibm.com, baolin.wang@linux.alibaba.com, tj@kernel.org,
+	kevin.brodsky@arm.com, anup@brainfault.org, atish.patra@linux.dev,
+	pjw@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	alex@ghiti.fr, dave.hansen@linux.intel.com, luto@kernel.org,
+	peterz@infradead.org, tglx@kernel.org, mingo@redhat.com,
+	bp@alien8.de, hpa@zytor.com, hannes@cmpxchg.org, mhocko@kernel.org,
+	qi.zheng@linux.dev, shakeel.butt@linux.dev, kasong@tencent.com,
+	baohua@kernel.org, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, ryabinin.a.a@gmail.com, glider@google.com,
+	andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com,
+	anshuman.khandual@arm.com, yang@os.amperecomputing.com,
+	chaitanyas.prakash@arm.com, ardb@kernel.org, guoren@kernel.org,
+	yang.li85200@gmail.com, viro@zeniv.linux.org.uk,
+	dinguyen@kernel.org, schuster.simon@siemens-energy.com,
+	wangruikang@iscas.ac.cn, junhui.liu@pigmoral.tech,
+	muchun.song@linux.dev, vishal.moola@gmail.com, namcao@linutronix.de,
+	pavel@kernel.org, djbw@kernel.org, yu-cheng.yu@intel.com,
+	baolu.lu@linux.intel.com, Jonathan.Cameron@huawei.com,
+	coxu@redhat.com, andreas@gaisler.com, liam@infradead.org,
+	vbabka@kernel.org, surenb@google.com, mhocko@suse.com,
+	geert@linux-m68k.org, shorne@gmail.com, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi
+Subject: Re: [RFC PATCH 10/34] x86: mm: carve out the generic compile-time
+ folded pgtable case in effective_prot()
+Message-ID: <al-wLXp0tAv7hNv-@e129823.arm.com>
+References: <ac365196-8ccc-4d8b-83d7-28fec763e75c@kernel.org>
+ <710b7eb0-8e0c-4f07-991c-2285c77e1beb@intel.com>
+ <6007625e-c3f9-4ad6-99a8-61396bccbcec@kernel.org>
+ <32d459d1-ad19-4baf-bbb1-0565458001d2@intel.com>
+ <3ea30f8a-bb29-4bf5-8400-1c4840d46a88@kernel.org>
+ <7e84b200-25eb-43a6-b5e2-5f27f2d82a77@intel.com>
+ <31988089-095a-4eed-b5e2-c677c70f79f6@kernel.org>
+ <14e250db-1641-4085-8d13-02f819657d5f@intel.com>
+ <d83c76b3-ea4d-4c41-b4c5-f5ae558ace55@kernel.org>
+ <alYgMxKqRnF6_X0A@e129823.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 21 Jul 2026 17:16:22 +0000
-From: Rustam Adilov <adilov@disroot.org>
-To: Sander Vanheule <sander@svanheule.net>
-Cc: Linus Walleij <linusw@kernel.org>, Bartosz Golaszewski
- <brgl@kernel.org>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org, Guenter Roeck
- <linux@roeck-us.net>, markus.stockhausen@gmx.de, Daniel Lezcano
- <daniel.lezcano@kernel.org>, Thomas Gleixner <tglx@kernel.org>
-Subject: Re: [PATCH 1/2] gpio: realtek-otto: use __raw_readl/writel in
- realtek_gpio_update_line_imr()
-In-Reply-To: <d27c366d6e28a5f50ddcdfe456bf844cbaab9d0a.camel@svanheule.net>
-References: <20260710183439.996923-1-adilov@disroot.org>
- <20260710183439.996923-2-adilov@disroot.org>
- <d27c366d6e28a5f50ddcdfe456bf844cbaab9d0a.camel@svanheule.net>
-Message-ID: <67b04e0f531c3d7a295cc5fc37b62a21@disroot.org>
-X-Sender: adilov@disroot.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alYgMxKqRnF6_X0A@e129823.arm.com>
 
-Hello,
-On 2026-07-20 16:32, Sander Vanheule wrote:
-> Hi,
-> 
-> Adding linux-mips as SWAP_IO_SPACE is mostly a MIPS thing, and some lists/people
-> for your other pending patches.
+Hi,
 
-I think linux-mips would have been enough but that's fine.
+> > On 7/13/26 23:40, Dave Hansen wrote:
+> > > On 7/13/26 14:17, David Hildenbrand (Arm) wrote:
+> > >>> To me, the double READ_ONCE() is a non-issue.
+> > >> To other arch maintainers, it is!
+> > > 
+> > > Ahh, so it seems like Christophe in ppc32 land was looking at this more
+> > > like a regression that needed to get fixed.
+> > 
+> > Yes, exactly. :)
+> > 
+> > And I agree that it is something we should be optimizing.
+> > 
+> > > 
+> > > Christophe, just out of curiosity, was this something that was causing
+> > > you practical problems like measurable performance regressions, or was
+> > > it really just insane code generation that seems unacceptably suboptimal?
+> > 
+> > I'd be curious about that as well. I mean, looking at the generated code
+> > it's clear that it is suboptimal.
+> > 
+> > 
+> > The solution space I see:
+> > 
+> > 
+> > (1) Pass the result from e.g., pgdp_get() into p4d_get(), so it can just return 
+> >     the value with folded p4ds.
+> > 
+> > That requires extreme amounts of churn in core-mm AFAIKS, so I don't see that as feasible.
+> > 
+> > 
+> > (2) Rewrite folding code to make p4d_present() be a dummy instead of 
+> >     pgd_present(), and make p4dp_get() return a dummy value.
+> > 
+> > ... a lot of churn across architectures. I'm sure we'll learn soon why it was done 
+> > ike the way it is today in the first place. Something interesting to look at,
+> > certainly, but a bit of a stretch just to optimize reads.
+> > 
+> > 
+> > (3) Make folded pgdp_get() use an ordinary read instead of a READ_ONCE / dummy.
+> > 
+> > I don't like that, because we couldn't catch easily if the value is then
+> > actually used some old/new code.
+> > 
+> > If pgd_present() etc are supposed to ignore the value, I'd rather have a mechanism
+> > that enforces that the values are actually ignore in pgd_offset() etc as well.
+> > 
+> > 
+> > (4) What we do in this series, but instead of forbidding set_pgd(), make it only 
+> >     complain when we are passing in a dummy value.
+> > 
+> > The expectation is that it would avoid touching most architecture code in patch
+> > 12 -> 27 and still prevent mistakes in the future.
+> > 
+> > @Yeoreum can you play with that and see what the end result would be?
 
-> On Fri, 2026-07-10 at 23:34 +0500, Rustam Adilov wrote:
->> In preparation for upcoming changes to how bank reads and writes
->> are defined in this driver, change the ioread32 and iowrite32 to
->> their __raw variants. The realtek_gpio_update_line_imr() function
->> is used by all devices regardless of GPIO_PORTS_REVERSED flag and
->> thus this is the only place where there shouldn't be any byte
->> swapping whether SWAP_IO_SPACE config is enabled or not and that
->> is only possible with __raw_readl and __raw_writel.
->> 
->> Signed-off-by: Rustam Adilov <adilov@disroot.org>
->> ---
->>  drivers/gpio/gpio-realtek-otto.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/gpio/gpio-realtek-otto.c b/drivers/gpio/gpio-realtek-
->> otto.c
->> index 4a606bad5848..491fde846d46 100644
->> --- a/drivers/gpio/gpio-realtek-otto.c
->> +++ b/drivers/gpio/gpio-realtek-otto.c
->> @@ -176,10 +176,10 @@ static void realtek_gpio_update_line_imr(struct
->> realtek_gpio_ctrl *ctrl, unsigne
->>  	u32 reg_val;
->>  
->>  	reg += 4 * (line_shift / 32);
->> -	reg_val = ioread32(reg);
->> +	reg_val = __raw_readl(reg);
->>  	reg_val &= ~(REALTEK_GPIO_IMR_LINE_MASK << shift);
->>  	reg_val |= (irq_type & irq_mask & REALTEK_GPIO_IMR_LINE_MASK) <<
->> shift;
->> -	iowrite32(reg_val, reg);
->> +	__raw_writel(reg_val, reg);
->>  }
->>  
->>  static void realtek_gpio_irq_ack(struct irq_data *data)
-> 
-> As per my earlier message on your watchdog patch [1], I'm still not convinced
-> converting all existing drivers [2, 3] to work around an issue with the USB
-> framework is the right thing to do. You claim the required USB changes are not
-> upstreamable, but I have not seen you make an attempt at doing so.
+If there's no comment anymore for (4), Could I post next version on tomorrow?
 
-Yes, i did claim it and the lack of attempt is my fault which i should have done
-right away when i sent out the patches to phy-rtk-usb2.c [5] back in March.
-I've just set the expectations that to me seem very logical but didn't get to
-check them in practice. Though really my reasoning comes down to "We are trying
-to recreate what readl() and writel() should supposedly do and SWAP_IO_SPACE is
-only way to make them work".
+Thanks.
 
-I don't think it is necessary specific to USB as the same would have happened if
-some other peripheral were to be in "little endian" mode. That is because our
-realtek chips are big endian MIPS and kernel has an interesting ways of going
-about their io.
+[...]
 
-There is however an ongoing patch series in linux-usb [6] that could be of use
-if SWAP_IO_SPACE turns out to be a wrong approach after all.
-
-[5] https://lore.kernel.org/linux-phy/20260326193419.48419-1-adilov@disroot.org/
-[6] https://lore.kernel.org/linux-usb/20260713122205.1350933-1-daniel@thingy.jp/
-
-> Can the people from linux-mips shine their light on whether using __raw_*() to
-> work around the effects of SWAP_IO_SPACE is reasonable? My gut feeling is this
-> indicates SWAP_IO_SPACE shouldn't be enabled. Markus has apparently made the
-> same remark [4].
-> 
-> [1] https://lore.kernel.org/all/ebdcb8c5563ceff723f3e4a3c4fdfe9bf87d42fa.camel@svanheule.net/
-> [2] https://lore.kernel.org/linux-watchdog/20260710074316.46643-1-adilov@disroot.org/
-> [3] https://lore.kernel.org/all/20260511131520.98420-1-adilov@disroot.org/
-> [4] https://lore.kernel.org/all/016d01dce49a$36b7bd60$a4273820$@gmx.de/
-> Best,
-> Sander
-
-Best,
-Rustam
+-- 
+Sincerely,
+Yeoreum Yun

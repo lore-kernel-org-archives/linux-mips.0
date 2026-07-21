@@ -1,95 +1,119 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC8E2FB97D;
-	Tue, 21 Jul 2026 08:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA42836A34E;
+	Tue, 21 Jul 2026 11:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784621873; cv=none; b=ob0Stmd0x47dR9Be8LsZDkmj0NMKTPkUZbC1+bgbZr9GQ3aNJQ72HSKePVv/e4ep3hq8xBmkCZr/UY9P1azV9Dge8Q3tgf0utUNpO0FeqmXqaNKS68nYRs+f5CHfODc6Tzh2OwdapzK5adTRijJQg8yYng5xLk6mZNa4eC7Q05c=
+	t=1784632416; cv=none; b=hjmb08nlhVgewob1/ze9QCU5tPStV0coHK9yu5sPkZExcR4/Hv535GpXkHzJeW7RodDveLdCtDl8UsrLB8jmd5sr2pZBnTcvXAIvhrHkaEbiOXgv/9xrIITv61shTkX2MUNmV6l8HGS2coGlbfhrv6o9UOuVuRIuZ6Ga4mYIo1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784621873; c=relaxed/simple;
-	bh=Un4kruJR9OSZ5yVJVOk6XAfzBtg4S1W3/ssotgwdLao=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YvbU1Id+tS+oU896G7h/j0HUYUBt37Kn8YFDwSmOKwccOeSwDObzTRYI8HsAUSHK4f8v/YS/D9VAiMcjLQv+S3/6rvyI8bKQL98WpFUyjLjU92ukOTlYHVla+e2Uf5x+xmJcpJ8yPlGXRYc8Qc411yj6OukRnqFyI/i8/yKH6iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzjjESdF; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784632416; c=relaxed/simple;
+	bh=hVMFgW7GFpsFn+27vHqJFVJodoLBHMreceKvyVqTWgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hyLiknYUpy/kEw5EydU+5QS6oAFiTDuxon5kIthFk9/gj6FhkFcJ2zzASZ4M/RIRJ0RT2vVTOiFR/7aC9c4/jwPxlo5JkG+5KOZSTW0ryM3aTcPnL77BCKMETEeM3DvOpVvy2J3Bk82txImcvQKuF20G2m/wlZLYa83eCUcsf6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhpYzzM/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzjjESdF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7485D1F000E9;
-	Tue, 21 Jul 2026 08:17:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhpYzzM/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954BC1F000E9;
+	Tue, 21 Jul 2026 11:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784621872;
-	bh=T6g9AHg6Msysl37eYnjnLtQmEqUs+OTtZKGs9WFjvSk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=gzjjESdF8CyzkjGgzLW39bNILuphzcta3sLi1URSjyAFzJLipC3UmTrXu3jFFA61P
-	 pi0PV5sSxroT5MC4vSB4irmB8zkSTQpTKtCfEXUbyhmwF4wWaIQ7lbNCZq0H7DmKFK
-	 8I7OxSO8hwMcqfwnwS7791wWvgudq6KYGJc2fT4Fg1b9+hIgTc7vYx2BwdLm81gs4i
-	 wUS79qiWoSovsixtK4st1zKQHQc+AVAWsjP8+JuFDiWzJmzXtUEBmK6h+qeN8XDX1T
-	 q37KCU+p9yvcznsgWiTAyqiGmNVH8Q7lJHO4++M0Slhqh7kAciZtfiGRWhaqAlyvHz
-	 9t2nZgwHDG8hg==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Magnus Lindholm <linmag7@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
-In-Reply-To: <CA+=Fv5Sd5+-K3-MOiEc2N8z_5CoLQPVPUwjiugSj3u8cBWJXXQ@mail.gmail.com>
-References: <20260707181957.433213175@kernel.org>
- <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
- <87wluplb6k.ffs@fw13>
- <CA+=Fv5Sd5+-K3-MOiEc2N8z_5CoLQPVPUwjiugSj3u8cBWJXXQ@mail.gmail.com>
-Date: Tue, 21 Jul 2026 10:17:49 +0200
-Message-ID: <87ecgwlpsi.ffs@fw13>
+	s=k20260515; t=1784632415;
+	bh=OJ9YfaBFSXj+Hk6UH0eG4jUTBf/umVD52Blq68hhcTs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=HhpYzzM/oimKKYM+22iuflbObTtTZTtdDQiTiyxYtxAy56bVm2RUMe/378V24lMCy
+	 N9e8S8m+u3CgY8ts4zAtzzn/7vOUZMXBdf24qhCZv9/TwkwwqyROndhV2evLOQdqu8
+	 HBoTX5g3VolANyAmdxRBf+OKSdf8wzTD4gVePThB5rnLNMi21tyuQah/hjS+xzmi6O
+	 +V6KY+DG0MFNy6G9jhnjGbGb6gjRw/JJMT1JAVLM8HYueumFcgncpSyOhJzG/H7zL+
+	 pCiAXWPO74jZeBAiR5ITzdAOIhaTIq1nFewaleXIqgld/by6+2YLS8eesfYNZWbUK3
+	 W+mvBX/jSsBVg==
+Date: Tue, 21 Jul 2026 12:13:30 +0100
+From: Simon Horman <horms@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Pnina Feder <pnina.feder@mobileye.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Baoquan He <baoquan.he@linux.dev>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Dave Young <ruirui.yang@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>, Alexandre Ghiti <alex@ghiti.fr>,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH 0/4] vmcore-tasks: export per-task metadata to vmcoreinfo
+Message-ID: <20260721111330.GA1768252@horms.kernel.org>
+References: <20260622211430.4008899-1-pnina.feder@mobileye.com>
+ <akybBoCAm-kJbfHL@kernel.org>
+ <20260720091927.GA1736709@horms.kernel.org>
+ <al4X300UObXawEIJ@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <al4X300UObXawEIJ@kernel.org>
 
-Magnus!
+On Mon, Jul 20, 2026 at 03:43:11PM +0300, Mike Rapoport wrote:
+> Hi Simon,
+> 
+> On Mon, Jul 20, 2026 at 10:19:27AM +0100, Simon Horman wrote:
+> > On Tue, Jul 07, 2026 at 09:21:58AM +0300, Mike Rapoport wrote:
+> > > On Tue, Jun 23, 2026 at 12:14:26AM +0300, Pnina Feder wrote:
+> > > > This series extends vmcoreinfo with struct offsets and sizes needed by
+> > > > the vmcore-tasks userspace tool to extract per-task state from a vmcore
+> > > > dump without requiring kernel debug symbols (DWARF/BTF).
+> > > > 
+> > > > The vmcore-tasks tool reads /proc/vmcore (or a saved vmcore file) and
+> > > > reconstructs, for each task:
+> > > >   - task name, pid, state, flags
+> > > >   - VMA list (start, end, flags, backing file)
+> > > >   - user register state (saved on the kernel stack at kernel entry)
+> > > >   - user-space backtrace with VMA/filename mapping
+> > > >   - kernel dmesg buffer
+> > > > 
+> > > > This provides a lightweight post-mortem crash analysis capability for
+> > > > production environments where full debug info (DWARF/BTF) is not
+> > > > available.
+> > > > 
+> > > > The companion userspace tool is submitted to kexec-tools:
+> > > >   https://lore.kernel.org/all/20260622205550.1087163-1-pnina.feder@mobileye.com/
+> > > 
+> > > Sorry for the delay, this fell between the cracks somehow.
+> > > 
+> > > The kernel side looks fine overall, but to merge it there should be an
+> > > agreement from the userspace side maintainers that vmcore-tasks is
+> > > something they are wishing to accept.
+> > 
+> > Hi Mike, all,
+> > 
+> > Sorry for the extended delay.
+> > 
+> > I will send some minor feedback to the user-space tool patchset
+> > but overall, yes, this is something I would be happy to accept.
+> > 
+> > I don't want to create a chicken-and-egg type problem here.
+> > But it's probably worth mentioning that usually features
+> > hit the kernel before the corresponding code is accepted
+> > into kexec-tools.
+> 
+> Sorry if I wasn't clear. 
+> 
+> I didn't mean that the feature should be merged into kexec-tools before
+> merging the kernel bits. I just wanted to make sure there's no fundamental
+> issue from kexec-tools perspective.
 
-On Tue, Jul 21 2026 at 00:01, Magnus Lindholm wrote:
-> On Mon, Jul 20, 2026 at 9:21=E2=80=AFPM Thomas Gleixner <tglx@kernel.org>=
- wrote:
->> If you want to base your stuff on that for 7.3, I can add a tag which
->> makes it immutable so it can be pulled into the alpha tree.
->
-> Yes, please. There is still some ongoing testing/review of my Alpha
-> GENERIC_ENTRY series, but assuming it is ready in time for the 7.3 merge
-> window, an immutable tag would be very helpful.
+Thanks, it is clear :)
 
-Here you go:
+> > Let me know how you would like to proceed.
+> 
+> I'm going to wait for Baoquan's review and once that's done I'll pick up
+> the kernel bits.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-entry-for=
--arch-07-21-26
+I see that conversation is now active.
 
-Thanks,
-
-        tglx
+Thanks to all.

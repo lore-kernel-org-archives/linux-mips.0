@@ -1,86 +1,62 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56753793D3
-	for <linux-mips@vger.kernel.org>; Tue, 21 Jul 2026 14:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D82023ED5E
+	for <linux-mips@vger.kernel.org>; Tue, 21 Jul 2026 14:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784645430; cv=none; b=FGB1EtBdf3p1TPhDBMvYn4Or6ZtlBpj81DTEWHRWmDuHFdX3kOBBwoU9ecQ5Sh5QTPq7Tnf/4APZF30pWzx06f91ZkVy4+8uHjfBxsRoxHBsI7z+TCSG7RXME+irj3LsEPn9O2ulIEQYGEg+KyqDV9BPHIAdyOjlWhCSJC0empA=
+	t=1784645765; cv=none; b=Jbmgxp81tftSean/f9SS/sJPgSt1bgyeCiN8ytFLFmzZboRusXLWdrsn8tgoKo3gMW6o3nI76e7etqZmuXbiQS+PonDxYsQx1INbSauAcBEeemRVz97wmaMElQS+Ou2i+EWmOG3UhhGd5vTH2cwPsw3dIuXT2kyFQpH+Ho6obD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784645430; c=relaxed/simple;
-	bh=VdzjbCqpOCc/wxAkcZBMdXE2lZLa455cPk+XT0ctYp4=;
+	s=arc-20240116; t=1784645765; c=relaxed/simple;
+	bh=kK4xZfxTA95byE5oO02tItnvWaXmK9lwzoGxrWKyo30=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ePrHOVcrw4vE0k0sulKiiYraZauE/wx5HRlu6cpbwBO0cnye3zI29inKlJxvuCK7tPSdAx3q1u6hPjDCc13tg8DwiadP7mwM+rS+2654ojrRzrOw41AVOJp81fuUczubd2mebRFPlVoV9a96SH0hlR3lljndrB33iFG2PDcZmME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=F/6S49bv; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=JDX2t/Jv; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	 In-Reply-To:Content-Type; b=cXuko0OUZf2dCEMHL2zJDpTO6UmKroRKzXJCo2/CWEJsgST80x2zUN0ptrLoIferJt1gy8DOS9pSoThjFoOMzrAqpqc4Dl39IGRmtXI3A9psjPDhkqcygX36/eOiy8FBB3IBbtYnGbJ6cEH9gvTA8id5kg7Wi9J2YVJqOlwaOLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=N3KVdkaD; arc=none smtp.client-ip=66.163.191.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="F/6S49bv";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="JDX2t/Jv"
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66LDfubi1912510
-	for <linux-mips@vger.kernel.org>; Tue, 21 Jul 2026 14:50:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	yAKVXKkluIoVT2T7N4XQAHdKs/hPq5A0t8zyTSkrPJ4=; b=F/6S49bvvnH4yYT9
-	N+GBwPl0pMXFrT3pq65+0jKTDv/V3cYvChvxXWLepEqK0bGH/TUH45/KeB+8sggf
-	kpNV0o5mz/Z3F3Z2p1KEj4s5Tz+rDUyRrFSmBtFhrNMMHaYUn4sdQoetmXT/bwDA
-	kvudWlVyWpcNNcaDeSs2SkiYuuadyZAvXfxzMRr/7aKVEenaZIeOd4/fUSH+JF4H
-	DVzsJizbgilarL2UsrfJYvD1va5bIELaI1v+2SGgpzZbYQb7vTb0idRl4m44iyWE
-	c8jEIimIOqcSHZ+wvnQcpfR9OjyeMW+OQSayMgpq4GWEQ9RWoK2EewGc407nQHMw
-	JlVwCA==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fj1dujy93-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-mips@vger.kernel.org>; Tue, 21 Jul 2026 14:50:27 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-51c19493ac2so10811111cf.1
-        for <linux-mips@vger.kernel.org>; Tue, 21 Jul 2026 07:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1784645427; x=1785250227; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=yAKVXKkluIoVT2T7N4XQAHdKs/hPq5A0t8zyTSkrPJ4=;
-        b=JDX2t/Jvht8ZnRUlrY0Mc82Dk3Hv2qneW6DSoHUV6akxjBL8ijSNhoQhHlaPE68Djt
-         L8UyDT/Deg4EgW1OIhptR/8Cd3m3OpvDhudR216Bm6hDDiduqI88HP0/d6ORxOS32VUB
-         /NuZum2KbxsJVc7MTaCRB4aK/HBEze+jPkvjR3mYIb0pQiZ34A5hFY29oMxpXQvViAxG
-         qn/cli+a3ZT0FvmD+eG1u8Q15qyE6oWOO13poiW2jyMPQYXEJeeY21F9UrjvQfSXCG6e
-         z52yjq1xFiL+1rreKjKTOicVbLL8+xLCStSD6A+UsIFZ6pnnSwzj1CgwV1JM1xFr71NI
-         NXrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784645427; x=1785250227;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=yAKVXKkluIoVT2T7N4XQAHdKs/hPq5A0t8zyTSkrPJ4=;
-        b=ZcjRSVr0pL+CH8jauauRRMBGj8/RWjI5f+wL0COHLguESa+LWPkAhWMQjZx9wirus7
-         9lznzkKyUsqDduyERpMrTFFdFzEhT5VtxpUVBGLujFYX4IO6aJDwnuWlq7WjkW3k5SjU
-         OB96Imf4p0Y6ovI2x1qYIprjiGEhs3Uruo7fX2z0BokffQwfkGj9LREnNmLioDP85NlT
-         WJDy01lYlTeVOZqHg9TaDDhSdCAqb1ENhfpvAgVo7FEskOcpFt2aHW+VZQY+iOI5cTeG
-         iVoCCqP+Q/rj/mzBldkJlXn7S6r39SKzjEbp56i28SaFPStav3PwyczbNOMzBW3ll53i
-         uKnA==
-X-Forwarded-Encrypted: i=1; AHgh+Rr2XbWzLjYw+Xv+4Vh2a+zl4jG7hnBogIODvc9v7i9g8CCyVk3e8OxrA/BDwAkwoudiOjlVrjzFa2nN@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwiMUqrr+m3pUQ40ilaYToQ/Q7JkyfxJhSE/YUGdPX6oVmpKXl
-	HMgScDRAmxLPXcKosmaSfnfrI2wVDuveaYJ1rUD2qDypV94yNp5DFjUOdZW1HFhLX5vF64KwMLx
-	0q2GoW6EtYvrD1Ii50/SpHp0R2rXzMljpqZGVYTcD7b9RB/Mc92ujPoiEr0HJPDRH
-X-Gm-Gg: AfdE7clMYTb6KFo9WQ+KTcG52XS8wHxF564eShlF9w4OMJoyQFAObap2cnBIRZcuj28
-	OtFv6TJ6tqNZlaB/nqtpBI3hKAji2KSDFZRywtb2ya1Zlpupcu6D9d4r6Mv9QSpk/G/wJ9Wrrzh
-	WIT++J0OMEwaWSUZ0xfdwT3eE2hgbMDy6hc53pP1CagBsNkO3E4+AbkyDwgNWYwHVUIiUSGyBpu
-	GAtuibpRLjV2/0Fst1suB7cVILDvppgMxAWwmvxgjCpmofoVw5r+vJsFUTHRzlwdS6EYesEWsTQ
-	w/BlWW7IQWcHaqGtcXcIn2QJcEhSNY0auwwrSLFZeQTzs6Z5GBoU538qR1Mn/EBH/B7UkiZyDnK
-	xnTuKYXziTUnj+ea1YShMP5aui5DKgM0I7VS5ja2Z5kaygQLLgD0=
-X-Received: by 2002:a05:622a:834d:b0:527:7112:a5bd with SMTP id d75a77b69052e-5277112a701mr7780741cf.78.1784645426896;
-        Tue, 21 Jul 2026 07:50:26 -0700 (PDT)
-X-Received: by 2002:a05:622a:834d:b0:527:7112:a5bd with SMTP id d75a77b69052e-5277112a701mr7780241cf.78.1784645426283;
-        Tue, 21 Jul 2026 07:50:26 -0700 (PDT)
-Received: from [10.131.142.220] (220.171.88.92.rev.sfr.net. [92.88.171.220])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4956546de4fsm77753335e9.1.2026.07.21.07.50.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2026 07:50:25 -0700 (PDT)
-Message-ID: <4c78319b-9816-4d01-acc9-fda1a68de3ec@oss.qualcomm.com>
-Date: Tue, 21 Jul 2026 16:50:21 +0200
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="N3KVdkaD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1784645761; bh=SbPpHK7n/PLGXejt2HugMFabKMLNU4zpNq+7HXxGf/I=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=N3KVdkaDcFQDcaejQpQsvBhWs6aloVGhd6kEfsaPn89PaIssd1V1qlhqD103Lf7vpTneFTyleoUWxZPld/w2W1LWu26HBF6/+CmK3eoDui8+P8AiMb67D2AMSbs3YPvM6kY/i5ph9QvqZlGYpL02DiWKXrMwKgGWYi+JcNaCs6XZMbP47hlY5xPHVEeE9FTCWB+9a+JKuTo21qjEmIiyzfehVgiel6dWMhmfvn5S94oiCwJ9Rt7Oad76kFIIDuza//UvzzQv9WZx29pJRAcKXiVljoKyfulZ2EzRzAdeAsg2MS9Ui7d3yaw0JDf39YGdRQf38O7PlaDFt1YxWBMwNg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1784645761; bh=PIgxcMK2sIRWv4va2JtAORGgRRaTt22It+apJftFA/G=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Zk+addYC6Afb8Z3Xm9xEV44mkiZ4cWyr+IhO1h1YWwk09q3XoRGUcNrbB6wNDiGdlfF5cgo9+Ij+UvZgCHoWgmessKEOEWBd61mRQ3dO+O7VfXAQk01nQRHx2SrWiGXGqChzXQZ0gDusxrueOxk/bXBknL5QfReNs/QdK8QNhdGXyMOO+AUjKPIC/p9Q9Hm/72eJijlrofAuJpkb4IJAOUe4ZuikXNNqfVnlPQR1B20QtWboSDYKq4tmqZ1YzoeDfY804jqWs6OyjAu8fIrCR20a8w43s8AB/taqxxxuCvrOq2oxMnETHjScwcd17ANNEdgoghIKYCxD0vZhyCME8A==
+X-YMail-OSG: nylUabwVM1kfcHWxuI7upd9oeXlJFLh1VNr9j0.4ViNHwOTwAj1rAXG0GK3Q2gs
+ 6KU6VqN2GUhBWBfFNPyaKsqjmdCJJ5bRf3.RYBd5M7UG38Sn63UGuO5hupWIkdUH.PRV9CMsFYrr
+ sz_MX3hfhft2XAMmD8xCuVMkoEgkeHh4veMyAxcb5EuVanYOOVB4FQIohJjnX0CCMhRo.kdfu6DK
+ 0KgyotKodBpx4HE2mEGsiEWsewzp.Ov4pbSF3HaUKUmMZZZgW8Mg9htzOMF.8Hc6xNWS4czTCYrC
+ 9tu77XuVsdbo91CRywdeXvkLhgwuxUp5T09IwhJG02fz8meFJcMbJFTIec8b1V13YvPwwlQOG3o6
+ h8vqDypdfe_of7ikfZGr.mZepqjIIRdJOrKe5bdqUA1wDtk5olUMt61r806s5zVX7vyj9fnpy8Xg
+ wq.0rj4HlDrjiiBYzjf565ZhZ4u2ATlmfK6Mok.LDnFuBBO9JWGWy9JP5qdNm7Szf3a0Qa2hHQfx
+ wfv2xfGCKaCYXGM6ZzNekhmwQmFm5F3s08eGjnUVcXRNBKqSnE1Si.DPfHWW4H.UfXwdJ9CB5yVr
+ PnVYs9vfdWXkY4u1MGAw7mDdr5_BAvj7k5wiJSn5BPAfPMIBL_YW99NdWqu8mOgnSlUOELzN.gTB
+ Im_6a7gEnuHKAQEtbdzTrR767f3GbdOaQpqN1NjeFfx_LhqUu_TRV4rspo3eEf7B.ck6RwCBHN8l
+ zMyQ0cTLelA.aQb9S9LEjAVfs4EutneWQz.G29HO6nGzvGSbA6uyzNCgLp7pteODY0s4h6mr1pUI
+ 8WmEPqy_IJA.5jXoKqAo1kVvaH7TuE0Ma5e.F2.qAYoWjapbS.4cT6kB2UgWkYLQdASMPZpOVphE
+ eQI4Qx3IAovQ0xXvfrD5kuhe5VY7OIXc995cwsqNhZFcSg5NNEqt_9PgDnCa1tSXSgsVE3hWg5xx
+ qRb.LWEzzBr0tB60gQT6biHVZ_M1MAf7Js1Q7VCWrWqeTtz3DqZh4Nkp0edKlLnEGpoW._hfq7.d
+ t7r4KPRPFZGqX__NpaNOGo6zyz8fGfDm37D5H65MpSr3ZVqT9.FBi.E9AOO3DHibmLdu7N14w0QN
+ gB2nq0Q4t4hHbXv73Rikje0TTqlrfjOkaKd780YQFb4OsSEY4eYwPt7ldGLt2mUzQXRgiw93kxPx
+ zPrZ6AyG60dO59oRjp2J.3o8Rb_W4s0DJaOtHssc5S.q0fJJp424P4j_DSzF6KIGCgmQI3vzeHMX
+ jeDCxer_SUE64_bKkkBsgw4ObvLRGP2AJ4KA5hkk3TA6u.V3Y5hEYM6GgFhvcteywj0bdhzTOt14
+ bnm1OShUkI3g05ZetQa7TB0mYgvZX8myNvDea4CYtpOC71QzKXBVoJc3po7HnhjO1uPEjA5epR.E
+ IpGa1K9TomirP2T5E2eZXmcHwz1vlgqgADcFjv7px5QJ8m36mMzba9cWwVBN8IMtIOaWuvjKyins
+ Ihfai6vynSOK5P87mIsmv8_BIBMs3vuyJe4_4oxYu4MFTRCqgI_Qoj8IZ9vQix0kFF7AaWwhqdfH
+ 3dtghM_cIMnVhmcsT4KVDn8p6kjFD8k.u30v5a.G14pf07JRJygQ7R_DTZlIfirWBYXrc7Y06O1L
+ .vQy8iAfK_e2Rj9lub9Q6vGHEKQdD9EC__6o.SG2.fywcnRfKrFee9eu6IgUENl4kDdkiPojtjNO
+ N3MLx_tGraZAL1qeBgR0xyEcAyRdv_TVpgiDRKGzuabWsdpbk8BcqOExjayDgu9j9TYcrM6FVRG3
+ dDSZMip2Akb79R_EETlzwzhJ2asVxOldkc5d5QJqXOa8xdm92BR3eieEXGw6t1tN4WBETMJ_PmMO
+ 10JsOCgoCMZ5Ps.DzK5GLKghNqjkfofuaR4G35P_bEFXSdEsZUgevAO77MQREdI.b0Bd.1CVFuZa
+ 5CsDWnict8oiwiDdy01SOFEDjbv.1QvabUqqkXH3oUakW.QlSz6IWJ.BmwSkQeVqGXybpQGbS.Ht
+ yXcjqvHQQDfgIdXsklMx8k0TYna6hMpHhALya0ErZcbChLLr1Jxnx4Znn0iPbfEu2eNYCKHF1RhA
+ MlKVNUzrOJVIy6nFZCNkaTPZLynY61anzbuY0G_wOEYnKcUQ6_5ZqeX.xoCTiZf6sEvcKTDd.HB4
+ XLWYb2BARP5jLpyT0lCemqaUcM0ROgE4ncYi3HrQ.i_3JjzH3Pz7WsfTI7GNJDwmWRtGJcyVP4M_
+ IazLj1xWdOETFnE2A7oGPy_NuK_uiHXtbAuEbqLPfdXkf93vHaRCPIwAkxm9.gRT47WOQQ.XayA-
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 91e39c91-1502-4a88-a976-9785d0a2bcae
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Jul 2026 14:56:01 +0000
+Received: by hermes--production-gq1-6dc558886b-f759z (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 61ac3cc839425aafa5e490c9d3b7301b;
+          Tue, 21 Jul 2026 14:45:44 +0000 (UTC)
+Message-ID: <31679bf5-a0cb-41b6-bc1d-7833c4fc9744@schaufler-ca.com>
+Date: Tue, 21 Jul 2026 07:45:41 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -88,184 +64,348 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf, mips: Add support for BPF_SDIV and BPF_SMOD
- in the mips JIT
+Subject: Re: [PATCH v4] security: Expand task_setscheduler LSM hook
+To: Aaron Tomlin <atomlin@atomlin.com>, tsbogend@alpha.franken.de,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ stephen.smalley.work@gmail.com, longman@redhat.com, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: chenridong@huaweicloud.com, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, kprateek.nayak@amd.com, omosnace@redhat.com,
+ kees@kernel.org, neelx@suse.com, sean@ashe.io, chjohnst@gmail.com,
+ steve@abita.co, mproche@gmail.com, nick.lange@gmail.com,
+ cgroups@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20260720014156.459386-1-atomlin@atomlin.com>
 Content-Language: en-US
-To: Nicholas Dudar <main.kalliope@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
-        memxor@gmail.com, tsbogend@alpha.franken.de,
-        johan.almbladh@anyfinetworks.com, paulburton@kernel.org
-Cc: bpf@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, visitorckw@gmail.com
-References: <20260716211055.2569433-1-main.kalliope@gmail.com>
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
-In-Reply-To: <20260716211055.2569433-1-main.kalliope@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20260720014156.459386-1-atomlin@atomlin.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: SkXL107d7guUlZtiivPZ576vcGKM6h3n
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzIxMDE1NiBTYWx0ZWRfX57TtteKDdrIr
- CaYe5X6rBOsLad+HPknqTr6I6qzL2OF795mgLgB48ngAACYaxBn1BrkU5yTr7iUoZ1ur0c0Dq7G
- UY5KvjOTGfPaPRl55sHFiUAhkrw0kkleRYeJHGHvDkq4VkshuhyWToos20neWw2tYqzx7RowIUh
- EgBAtLxOvBM0VEZu+K6weG2vi8TvdWD4g+ZECyCBTpIcZ4QAQ+4hwOnxcdUPuX81Ih/1xnZXcFx
- o+PGWWVJc9FAZCoAFcip0s6DwvR8IrGqVY3B+l3fbMnVGc0iTsKe6/FK/HudfXV1kZlzalC6DTr
- mDSFgxY8mdLH8FLtpLKbAsyj7iYiSb07GFXFhqFQSEPP3FxGR9h/mPP+QDQlOqHp3j1TBcRnYhb
- WDZJIF6lRByHa83CQKFEujG/3xcA14pO/eg5XjGhfwKsgJ09lNmAs17oW8MGyr9XoGG52gjJe5l
- 683HTF2um0+7aVrSQwA==
-X-Authority-Analysis: v=2.4 cv=I9JVgtgg c=1 sm=1 tr=0 ts=6a5f8733 cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=HvFMDRKYglX6yPpWI6gtsw==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=M51BFTxLslgA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=gowsoOTTUOVcmtlkKump:22
- a=pGLkceISAAAA:8 a=c_zzUmBBnj_Mq94Nlw0A:9 a=QEXdDO2ut3YA:10
- a=dawVfQjAaf238kedN5IG:22
-X-Proofpoint-GUID: SkXL107d7guUlZtiivPZ576vcGKM6h3n
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzIxMDE1NiBTYWx0ZWRfX6p3IT3bU0mhU
- k5R2dHSfdEqYrObkcpUt8GBuSXrJtu0orlWxfUA07l1K/5bf0jv5ILcbp7qECctHpnYeab2OMmb
- BLjOILmDfO+NjwjpKQpk73VcAEB0CRA=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-21_03,2026-07-20_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 adultscore=0 spamscore=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607210156
+X-Mailer: WebService/1.1.26180 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Hi Nicholas,
-
-On 16/7/26 23:10, Nicholas Dudar wrote:
-> build_insn() picks the div/mod opcode by ALU width alone and never
-> reads insn->off, so the mips32 and mips64 JITs do not implement signed
-> BPF_SDIV and BPF_SMOD (off == 1). Signed div/mod get an unsigned
-> quotient and remainder rather than the signed result the verifier and
-> interpreter produce for negative operands. Neither JIT has a signed
-> divide opcode or C helper.
-> 
-> Add the signed path alongside the unsigned one:
-> 
-> - uasm gains div/ddiv/mod/dmod emitters (and their R6 forms) next to
->    the existing divu/ddivu/modu/dmodu. This is shared MIPS assembler
->    infrastructure, so it lives with the unsigned emitters it mirrors,
->    not in the JIT.
-> - The 32-bit and 64-bit JITs thread an is_signed flag (from
->    insn->off == 1) through emit_alu_r()/emit_alu_r64() and pick the
->    signed opcode. On 32-bit MIPS, ALU64 runs through a C helper, so
->    add div64_s64() and a signed remainder helper beside the existing
->    div64_u64()/jit_mod64().
-> - valid_alu_i() drops the divide-by-power-of-two strength reduction
->    (/ (1<<n) -> >> n, % (1<<n) -> & mask) for the signed case. An
->    arithmetic shift rounds toward negative infinity and a mask drops
->    the sign, so the signed K-form falls through to the register path.
-> 
-> The K-form rejects imm == 0 at verify time, and MIPS div/ddiv, like
-> divu/ddivu, does not trap on S32_MIN/-1 or S64_MIN/-1. The ALU32
-> result is zero-extended after each div/mod, for the signed and
-> unsigned cases.
-> 
-> Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
-> Assisted-by: Claude:claude-opus-4-8
+On 7/19/2026 6:41 PM, Aaron Tomlin wrote:
+> At present, the task_setscheduler LSM hook provides security modules
+> with the opportunity to mediate changes to a task's scheduling policy by
+> inspecting the requested sched_attr. However, when invoked via
+> sched_setaffinity(), the hook lacks visibility into the actual CPU
+> affinity mask being requested. Consequently, security modules are
+> entirely blind to the target CPUs and cannot make granular access
+> control decisions based on spatial isolation.
+>
+> In modern multi-tenant and real-time environments, CPU isolation is a
+> critical boundary. The inability to audit or restrict specific CPU
+> pinning requests limits the effectiveness of security policies,
+> particularly when attempting to shield isolated or cryptographic cores
+> from unprivileged or compromised tasks.
+>
+> This patch expands the security_task_setscheduler() hook signature to
+> include a pointer to the requested cpumask alongside the existing
+> sched_attr. Because this is a shared hook used for multiple scheduling
+> attribute changes, call sites that do not modify CPU affinity are
+> updated to safely pass NULL for the mask. To protect against unverified
+> dereferences, the parameter is annotated with __nullable in the LSM hook
+> definition, ensuring the BPF verifier mandates explicit NULL checks for
+> attached eBPF programs.
+>
+> Historically, SELinux has governed all scheduling alterations under a
+> single, monolithic PROCESS__SETSCHED access vector. However, by
+> inspecting fields such as attr->sched_policy or attr->sched_priority, a
+> security module can introduce granular access controls. For instance,
+> differentiating between standard time-sharing policies and
+> latency-sensitive real-time policies.
+>
+> This change updates all in-tree security modules (SELinux and Smack) to
+> accommodate the new parameter mechanically, while providing LSMs with
+> the necessary context to enforce strict affinity policies.
+>
+> Signed-off-by: Aaron Tomlin <atomlin@atomlin.com>
 > ---
->   arch/mips/include/asm/uasm.h   |  6 ++++
->   arch/mips/mm/uasm-mips.c       | 10 ++++++
->   arch/mips/mm/uasm.c            | 15 ++++++---
->   arch/mips/net/bpf_jit_comp.c   | 47 ++++++++++++++++++++++------
->   arch/mips/net/bpf_jit_comp.h   |  4 +--
->   arch/mips/net/bpf_jit_comp32.c | 28 +++++++++++------
->   arch/mips/net/bpf_jit_comp64.c | 57 ++++++++++++++++++++++------------
->   7 files changed, 122 insertions(+), 45 deletions(-)
+> Changes since v3:
+>
+>  - Expanded the task_setscheduler LSM hook to accept the 'sched_attr'
+>    payload, enabling BPF and other LSMs to inspect scheduling attributes
+>    (Peter Zijlstra)
+>
+>  - Updated all call sites for security_task_setscheduler() to correctly
+>    pass the attr structure when available, or NULL otherwise
+>    (Peter Zijlstra)
+>
+>  - Added the necessary forward declaration for struct sched_attr to
+>    include/linux/security.h
+>
+>  - Linked to v3: https://lore.kernel.org/lkml/20260526142838.774711-1-atomlin@atomlin.com/
+>
+> Changes since v2:
+>
+>  - Dropped patch 1. This is to be addressed by the cgroup cpuset
+>    maintainer (Waiman Long)
+>
+>  - Dropped patch 3. Will be submitted as a separate patch (Paul Moore)
+>
+>  - Linked to v2: https://lore.kernel.org/lkml/20260509213803.968464-1-atomlin@atomlin.com/
+>
+> Changes since v1:
+>
+>  - Reordered the allocation and user-copy of new_mask in the MIPS
+>    architecture's mipsmt_sys_sched_setaffinity() to occur before the
+>    LSM hook is invoked. This ensures the security modules evaluate a fully
+>    populated mask rather than uninitialised memory, while cleanly handling
+>    error unwinding
+>
+>  - Updated cpuset_can_fork() to pass the destination cpuset's effective CPU
+>    mask instead of NULL
+>
+>  - Linked to v1: https://lore.kernel.org/lkml/20260509164847.939294-1-atomlin@atomlin.com/
+>
+> Signed-off-by: Aaron Tomlin <atomlin@atomlin.com>
 
+For the (trivial) Smack changes:
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 
-> diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
-> index 6ee4abe6a1f7..504daea4aac2 100644
-> --- a/arch/mips/net/bpf_jit_comp.c
-> +++ b/arch/mips/net/bpf_jit_comp.c
-> @@ -208,7 +208,7 @@ void emit_mov_r(struct jit_context *ctx, u8 dst, u8 src)
->   }
->   
->   /* Validate ALU immediate range */
-> -bool valid_alu_i(u8 op, s32 imm)
-> +bool valid_alu_i(u8 op, s32 imm, bool is_signed)
->   {
->   	switch (BPF_OP(op)) {
->   	case BPF_NEG:
-> @@ -237,6 +237,15 @@ bool valid_alu_i(u8 op, s32 imm)
->   		return imm == 0 || (imm > 0 && is_power_of_2(imm));
->   	case BPF_DIV:
->   	case BPF_MOD:
-> +		/*
-> +		 * The rewrite to a shift/mask below is an unsigned-only
-> +		 * optimization: arithmetic right shift rounds toward
-> +		 * negative infinity rather than zero, and masking does not
-> +		 * reproduce a negative dividend's sign. Force the signed
-> +		 * case through the general register path instead.
-> +		 */
-> +		if (is_signed)
-> +			return false;
->   		/* imm must be an 17-bit power of two */
->   		return (u32)imm <= 0x10000 && is_power_of_2((u32)imm);
->   	}
-> @@ -339,7 +348,7 @@ void emit_alu_i(struct jit_context *ctx, u8 dst, s32 imm, u8 op)
->   }
->   
->   /* ALU register operation (32-bit) */
-> -void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
-> +void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op, bool is_signed)
->   {
->   	switch (BPF_OP(op)) {
->   	/* dst = dst & src */
-> @@ -385,20 +394,38 @@ void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
->   		break;
->   	/* dst = dst / src */
->   	case BPF_DIV:
-> -		if (cpu_has_mips32r6) {
-> -			emit(ctx, divu_r6, dst, dst, src);
-> +		if (is_signed) {
-> +			if (cpu_has_mips32r6) {
-> +				emit(ctx, div_r6, dst, dst, src);
-> +			} else {
-> +				emit(ctx, div, dst, src);
-> +				emit(ctx, mflo, dst);
-> +			}
->   		} else {
-> -			emit(ctx, divu, dst, src);
-> -			emit(ctx, mflo, dst);
-> +			if (cpu_has_mips32r6) {
-> +				emit(ctx, divu_r6, dst, dst, src);
-> +			} else {
-> +				emit(ctx, divu, dst, src);
-> +				emit(ctx, mflo, dst);
-> +			}
->   		}
->   		break;
->   	/* dst = dst % src */
->   	case BPF_MOD:
-> -		if (cpu_has_mips32r6) {
-> -			emit(ctx, modu, dst, dst, src);
-> +		if (is_signed) {
-> +			if (cpu_has_mips32r6) {
-> +				emit(ctx, mod, dst, dst, src);
-> +			} else {
-> +				emit(ctx, div, dst, src);
-> +				emit(ctx, mfhi, dst);
-> +			}
->   		} else {
-> -			emit(ctx, divu, dst, src);
-> -			emit(ctx, mfhi, dst);
-> +			if (cpu_has_mips32r6) {
-> +				emit(ctx, modu, dst, dst, src);
-> +			} else {
-> +				emit(ctx, divu, dst, src);
-> +				emit(ctx, mfhi, dst);
-> +			}
->   		}
->   		break;
->   	}
-Your patch would be clearer if you extract a pair of emit_div()
-and emit_mod() helpers in a preliminary patch, then include the
-32r6 support (this patch).
-
-My 2 cents anyway.
-
-Regards,
-
-Phil.
+> ---
+>  arch/mips/kernel/mips-mt-fpaff.c |  2 +-
+>  fs/proc/base.c                   |  2 +-
+>  include/linux/lsm_hook_defs.h    |  4 +++-
+>  include/linux/security.h         | 15 +++++++++++----
+>  kernel/cgroup/cpuset.c           |  4 ++--
+>  kernel/sched/syscalls.c          |  4 ++--
+>  security/commoncap.c             |  9 +++++++--
+>  security/security.c              | 14 +++++++++-----
+>  security/selinux/hooks.c         |  4 +++-
+>  security/smack/smack_lsm.c       | 13 +++++++++++--
+>  10 files changed, 50 insertions(+), 21 deletions(-)
+>
+> diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fpaff.c
+> index 4fead87d2f43..c7a5d55cf7ca 100644
+> --- a/arch/mips/kernel/mips-mt-fpaff.c
+> +++ b/arch/mips/kernel/mips-mt-fpaff.c
+> @@ -110,7 +110,7 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid, unsigned int len,
+>  		goto out_unlock;
+>  	}
+>  
+> -	retval = security_task_setscheduler(p);
+> +	retval = security_task_setscheduler(p, NULL, new_mask);
+>  	if (retval)
+>  		goto out_unlock;
+>  
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 780f81259052..b14401030e5c 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -2589,7 +2589,7 @@ static ssize_t timerslack_ns_write(struct file *file, const char __user *buf,
+>  		}
+>  		rcu_read_unlock();
+>  
+> -		err = security_task_setscheduler(p);
+> +		err = security_task_setscheduler(p, NULL, NULL);
+>  		if (err) {
+>  			count = err;
+>  			goto out;
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 65c9609ec207..80ca02879620 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -255,7 +255,9 @@ LSM_HOOK(int, 0, task_prlimit, const struct cred *cred,
+>  	 const struct cred *tcred, unsigned int flags)
+>  LSM_HOOK(int, 0, task_setrlimit, struct task_struct *p, unsigned int resource,
+>  	 struct rlimit *new_rlim)
+> -LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p)
+> +LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p,
+> +	 const struct sched_attr *attr__nullable,
+> +	 const struct cpumask *in_mask__nullable)
+>  LSM_HOOK(int, 0, task_getscheduler, struct task_struct *p)
+>  LSM_HOOK(int, 0, task_movememory, struct task_struct *p)
+>  LSM_HOOK(int, 0, task_kill, struct task_struct *p, struct kernel_siginfo *info,
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 153e9043058f..82dfe4e3f8d1 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -82,6 +82,7 @@ struct ctl_table;
+>  struct audit_krule;
+>  struct user_namespace;
+>  struct timezone;
+> +struct sched_attr;
+>  
+>  enum lsm_event {
+>  	LSM_POLICY_CHANGE,
+> @@ -196,7 +197,9 @@ extern int cap_mmap_addr(unsigned long addr);
+>  extern int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags);
+>  extern int cap_task_prctl(int option, unsigned long arg2, unsigned long arg3,
+>  			  unsigned long arg4, unsigned long arg5);
+> -extern int cap_task_setscheduler(struct task_struct *p);
+> +extern int cap_task_setscheduler(struct task_struct *p,
+> +				 const struct sched_attr *attr,
+> +				 const struct cpumask *in_mask);
+>  extern int cap_task_setioprio(struct task_struct *p, int ioprio);
+>  extern int cap_task_setnice(struct task_struct *p, int nice);
+>  extern int cap_vm_enough_memory(struct mm_struct *mm, long pages);
+> @@ -531,7 +534,9 @@ int security_task_prlimit(const struct cred *cred, const struct cred *tcred,
+>  			  unsigned int flags);
+>  int security_task_setrlimit(struct task_struct *p, unsigned int resource,
+>  		struct rlimit *new_rlim);
+> -int security_task_setscheduler(struct task_struct *p);
+> +int security_task_setscheduler(struct task_struct *p,
+> +			       const struct sched_attr *attr,
+> +			       const struct cpumask *in_mask);
+>  int security_task_getscheduler(struct task_struct *p);
+>  int security_task_movememory(struct task_struct *p);
+>  int security_task_kill(struct task_struct *p, struct kernel_siginfo *info,
+> @@ -1393,9 +1398,11 @@ static inline int security_task_setrlimit(struct task_struct *p,
+>  	return 0;
+>  }
+>  
+> -static inline int security_task_setscheduler(struct task_struct *p)
+> +static inline int security_task_setscheduler(struct task_struct *p,
+> +					     const struct sched_attr *attr,
+> +					     const struct cpumask *in_mask)
+>  {
+> -	return cap_task_setscheduler(p);
+> +	return cap_task_setscheduler(p, attr, in_mask);
+>  }
+>  
+>  static inline int security_task_getscheduler(struct task_struct *p)
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 45944b3e31ca..6ab47cf5582b 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3042,7 +3042,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+>  			goto out_unlock;
+>  
+>  		if (setsched_check) {
+> -			ret = security_task_setscheduler(task);
+> +			ret = security_task_setscheduler(task, NULL, cs->effective_cpus);
+>  			if (ret)
+>  				goto out_unlock;
+>  		}
+> @@ -3600,7 +3600,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
+>  	if (ret)
+>  		goto out_unlock;
+>  
+> -	ret = security_task_setscheduler(task);
+> +	ret = security_task_setscheduler(task, NULL, cs->effective_cpus);
+>  	if (ret)
+>  		goto out_unlock;
+>  
+> diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
+> index b215b0ead9a6..86490035e815 100644
+> --- a/kernel/sched/syscalls.c
+> +++ b/kernel/sched/syscalls.c
+> @@ -540,7 +540,7 @@ int __sched_setscheduler(struct task_struct *p,
+>  		if (attr->sched_flags & SCHED_FLAG_SUGOV)
+>  			return -EINVAL;
+>  
+> -		retval = security_task_setscheduler(p);
+> +		retval = security_task_setscheduler(p, attr, NULL);
+>  		if (retval)
+>  			return retval;
+>  	}
+> @@ -1213,7 +1213,7 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
+>  			return -EPERM;
+>  	}
+>  
+> -	retval = security_task_setscheduler(p);
+> +	retval = security_task_setscheduler(p, NULL, in_mask);
+>  	if (retval)
+>  		return retval;
+>  
+> diff --git a/security/commoncap.c b/security/commoncap.c
+> index 3399535808fe..d83eee0459fe 100644
+> --- a/security/commoncap.c
+> +++ b/security/commoncap.c
+> @@ -1222,13 +1222,18 @@ static int cap_safe_nice(struct task_struct *p)
+>  /**
+>   * cap_task_setscheduler - Determine if scheduler policy change is permitted
+>   * @p: The task to affect
+> + * @attr: Requested scheduling attributes (ignored)
+> + * @in_mask: Requested CPU affinity mask (ignored)
+>   *
+>   * Determine if the requested scheduler policy change is permitted for the
+> - * specified task.
+> + * specified task. The capabilities security module does not evaluate the
+> + * @attr or @in_mask parameters, relying solely on cap_safe_nice().
+>   *
+>   * Return: 0 if permission is granted, -ve if denied.
+>   */
+> -int cap_task_setscheduler(struct task_struct *p)
+> +int cap_task_setscheduler(struct task_struct *p,
+> +			  const struct sched_attr *attr __always_unused,
+> +			  const struct cpumask *in_mask __always_unused)
+>  {
+>  	return cap_safe_nice(p);
+>  }
+> diff --git a/security/security.c b/security/security.c
+> index 71aea8fdf014..a6725dddc34f 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -3240,17 +3240,21 @@ int security_task_setrlimit(struct task_struct *p, unsigned int resource,
+>  }
+>  
+>  /**
+> - * security_task_setscheduler() - Check if setting sched policy/param is allowed
+> + * security_task_setscheduler() - Check if setting sched policy/param/affinity is allowed
+>   * @p: target task
+> + * @attr: requested scheduling attributes, or NULL if not changing parameters
+> + * @in_mask: requested CPU affinity mask, or NULL if not changing affinity
+>   *
+> - * Check permission before setting scheduling policy and/or parameters of
+> - * process @p.
+> + * Check permission before setting the scheduling policy, parameters, and/or
+> + * CPU affinity of process @p.
+>   *
+>   * Return: Returns 0 if permission is granted.
+>   */
+> -int security_task_setscheduler(struct task_struct *p)
+> +int security_task_setscheduler(struct task_struct *p,
+> +			       const struct sched_attr *attr,
+> +			       const struct cpumask *in_mask)
+>  {
+> -	return call_int_hook(task_setscheduler, p);
+> +	return call_int_hook(task_setscheduler, p, attr, in_mask);
+>  }
+>  
+>  /**
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 8d6945edae7a..d77a8d5c364c 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -4559,7 +4559,9 @@ static int selinux_task_setrlimit(struct task_struct *p, unsigned int resource,
+>  	return 0;
+>  }
+>  
+> -static int selinux_task_setscheduler(struct task_struct *p)
+> +static int selinux_task_setscheduler(struct task_struct *p,
+> +				     const struct sched_attr *attr __always_unused,
+> +				     const struct cpumask *in_mask __always_unused)
+>  {
+>  	return avc_has_perm(current_sid(), task_sid_obj(p), SECCLASS_PROCESS,
+>  			    PROCESS__SETSCHED, NULL);
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index ff115068c5c0..cf28ccc28b80 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -2338,10 +2338,19 @@ static int smack_task_getioprio(struct task_struct *p)
+>  /**
+>   * smack_task_setscheduler - Smack check on setting scheduler
+>   * @p: the task object
+> + * @attr: Requested scheduling attributes (ignored)
+> + * @in_mask: Requested CPU affinity mask (ignored)
+>   *
+> - * Return 0 if read access is permitted
+> + * Evaluate whether the current task has write access to the target task @p
+> + * to change its scheduling policy. The Smack security module relies
+> + * strictly on label-based access control and does not evaluate CPU
+> + * affinity masks or scheduling attributes.
+> + *
+> + * Return: 0 if write access is permitted
+>   */
+> -static int smack_task_setscheduler(struct task_struct *p)
+> +static int smack_task_setscheduler(struct task_struct *p,
+> +				   const struct sched_attr *attr __always_unused,
+> +				   const struct cpumask *in_mask __always_unused)
+>  {
+>  	return smk_curacc_on_task(p, MAY_WRITE, __func__);
+>  }

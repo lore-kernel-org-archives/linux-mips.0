@@ -1,109 +1,104 @@
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74D49421243
-	for <linux-mips@vger.kernel.org>; Thu, 23 Jul 2026 10:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47C7431E4A;
+	Thu, 23 Jul 2026 11:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784803781; cv=none; b=Lt9juFcl5yaB/Nn+wLOcJwSfYDFGgSSRA4A+HPWvqGDx5uKZm4gNNHk6oqDtXlol+GsyqRcBoaVV3U2AbnQPgvXDvj/pAmoW8QNLZvWP9QFudBXJtfk/TVjmdTshC0w4BxzN7N4QcA8uIBJ8QfUOidTZPWFB66v5ms8K9hrKFow=
+	t=1784805510; cv=none; b=Efrczu/JM2wHB+21eFQQoEXzJbwj3odxaIrX4jmHp7P92FPQdgyNoVe+LwLVGvv2pFonaSi9uzA0Ka5WIKFnOrKm1FQVYINAWcY33Vmxa+lwEzX0r2YrWvqPMJtO+rerSfU3I2pxbAc3wxB367YlbK/cQ3h+Y5Sb7uRxUT3LCM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784803781; c=relaxed/simple;
-	bh=xdY9uPn6KgVkJWuYZ6OKP54dCrjsguen+gKS6ZDco7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c9u8TuHD+0oQrQeSjtrEr3YxJ05/ly28vFNHY/OYoNpOvLQBKctigNk28FZFEevXHPuswIJxrBvR5oruxfkyV5p9rQfnAJT7JjVcP4rq/FuA/ekXixhlWiSlV4+Izh2hG43MJahonBI9RQF0Ikj32eowDwZd8pDcL0hc0UYtI5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZJMKY+hq; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1784805510; c=relaxed/simple;
+	bh=E4Gw6L78ji0gZE4XGzfLnbX9DBdo/ZkgQjwopcQPSbU=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=DIyWoG3+aHVqHcYMfVeKlyb/hdcl2A2aH+YPdfnEpI0D2ESD+4ttG5uGvxdgRJZy53KyuPGXPh3rBle+hcc9rarguSm+IXEfoA5Ta2Zkvf0B13GxldiyK6z5M0pHL7CptjmN4fOojjzBspxtMfPg29YVcFAET2390E0vS/DmF2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=yDVSRscb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RdLkfRSe; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJMKY+hq"
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4953e04ef16so5482715e9.2
-        for <linux-mips@vger.kernel.org>; Thu, 23 Jul 2026 03:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784803777; x=1785408577; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=0gVEEMjUM3d7EKZMW8/9jfYshOHGsQzhiEZK5vx8SoI=;
-        b=ZJMKY+hq9bFCsnDMfnO9sWKFaxC3e06+COswXu2E0rpv6a0+f63ZjUY7GqY0Y6ilao
-         qkO+Byoi0Xgz/3eKsm0CqvpC5SCpNxitjEPon4hJyNuyKv3llA6vI85JH+COB3OX5j1L
-         VZPCjODBApFxOLEwIBA6F9X9/yaeCI0llFay0vovDoJFcID8l5cwH0LN44cTGhR1CNEj
-         nS9oZPatHLTOCMmQoGjRpG5diEB0aPexqaixAMB2X+U1kc8a1WVo9zMkK2CqTukriF7f
-         gwPRbiXmPabOUhEJ9EwEZgjhAGOvXhSYc5u+nS34oRUWCjTcBEh1HZCg0upDUhCLNUYE
-         OI/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784803777; x=1785408577;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=0gVEEMjUM3d7EKZMW8/9jfYshOHGsQzhiEZK5vx8SoI=;
-        b=NzyaW9vggIAC1k7ang/2ecYbH+J7Vp817IJexnsHVUWRg6D7kAXbZQlv4tXz9WEZ1Z
-         FyNDQJqotQXJSsPMXnoR9lwyNTLkubmMgK2G2yR3H5BPwuu1E36ELjoIDiaqSHLK0rBD
-         UCKAO1aXSg2MeTvkc5ufcTBULZrqI4PLRrybBnhmWTRAAUlbPAXnVCPgTz4seso6Bljk
-         3+kbaz6mvDLhqXsmAJTCQrgtVnNDl85Ub47PzMIkK0U3AlWgpKpktk8dZ/cdzJ6zbKR2
-         ULGSGXGPanpLGoNYYGvDOfJYFyzlX9gZPhE3Z6sVYFbY6TmsQwwQ5lwm+q7r4siXHl2Q
-         8+sQ==
-X-Forwarded-Encrypted: i=1; AHgh+RrZ1rdoIRrKl5H6XbcQsdeTw158hc3egbSOfqHJVJFJdHFLpMblLrmp2v62rRMLlHzgwQsNswWXeWtz@vger.kernel.org
-X-Gm-Message-State: AOJu0YxshxQETb44nCCxahjAQcLwk4o5QmDG2YPw7zL7AbMb1bpdbMY5
-	mlmwdR/JYAlfFYyb+P5LkdLeNcEh49sDOii9bb/G6bsY3OsEXP3YulEl
-X-Gm-Gg: AR+sD10xi9h2jNrCt4jrFHJyuKo31t/BtUdHWnf1+Z0HFHDsPV81r8oTjzTj3gOiL16
-	4dopVbj8Yjfft4ak2sbIbzcTx0JyqAT9GmuqhLvIqp9i3U4xC1SZrAQ3r/wWeb7atx/LJeKW5Pl
-	WUT8MgGAzgJ5uP3Kii1DiZNVSu6jVMxzpYO8iNQdBH8bSaIpW6gBjE2sse3uwpvSKfRF3qxgyeP
-	iOPc1lHS/8W6JdTDTKG33LnI2JkIIjrS5dEqs9UOm80cQ1HemqkUrNFWJScFq24Hv7YwlZ3+Fy7
-	jSPr9oQOtaJTEkKt5Y4hn/h5Tp3glm3saexkHk9X5ZtAshiAGizCyS5p3lb2ACJfd8sWDEFhBtP
-	r2EHUy6Un6z/+UmjcoifKy54zSDoouOS9wpdmfT+uMSkf1T7E24wYK2y7l4nkYalV+Du6RFaWPR
-	bnWke9AHgeZBm2UwlXQr6zq9+nH920HPa21YJBEQwoY3RspTr2j48=
-X-Received: by 2002:a05:600c:474e:b0:493:ee2b:c876 with SMTP id 5b1f17b1804b1-49573d22ee7mr33257775e9.35.1784803776968;
-        Thu, 23 Jul 2026 03:49:36 -0700 (PDT)
-Received: from nixos-office ([2001:8a0:e962:d100:8c8c:cf0f:2d1c:7c50])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f85b9a596sm15089545f8f.4.2026.07.23.03.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2026 03:49:36 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From: Julian Braha <julianbraha@gmail.com>
-To: tsbogend@alpha.franken.de
-Cc: arnd@arndb.de,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Julian Braha <julianbraha@gmail.com>
-Subject: [PATCH] mips: remove dead select
-Date: Thu, 23 Jul 2026 11:49:33 +0100
-Message-ID: <20260723104933.117413-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.54.0
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="yDVSRscb";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RdLkfRSe"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id DA533EC00BE;
+	Thu, 23 Jul 2026 07:18:23 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Thu, 23 Jul 2026 07:18:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1784805503;
+	 x=1784891903; bh=E4Gw6L78ji0gZE4XGzfLnbX9DBdo/ZkgQjwopcQPSbU=; b=
+	yDVSRscb8fCvdrvRFyF0ujAcrE3Dtq5LPZl1bZzvlLs/gEz47ro9LlO0e8iXG4jZ
+	iu4+9GxQWWK1B5Q51Nw+hd/Nsjph39ETNN5geayQtA9rhEvHLYbrPuOEr6yt6WtA
+	nFQWKzTgeqd0EbM8OEEiTdNsCV95q8Aqnn5j0FInWxxR2fCiTRRgMHgkKtxo7v/I
+	9jnG3NoorVasgudBVcIOrcFiK++5R0xE/zPkEY9wMHWE6cN+DjEby/sW1DsH9AtQ
+	11jwniaiPx1vWCzcV3XqHOV16oGNWz6rPc9j9+ldQtm9QZVtnLV/PIRQgU0g7tD9
+	uQFUceqQJyxBVU/uCqYsYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1784805503; x=
+	1784891903; bh=E4Gw6L78ji0gZE4XGzfLnbX9DBdo/ZkgQjwopcQPSbU=; b=R
+	dLkfRSe9oVwll51Wy5jyggF5pD2H5V19Evf1NnQB1LOV7Fjhpa5gFiMuke1FvNfR
+	OqFRDPPU+pSdBVd/HsznYwgiKPzy+H3NMQC4jmFmw98kVYD8OluG98/VkiHVLg4b
+	iAYjag2uzpdXf1llGsTNTWTiGbKt3v3ehh5QqJKAVX5PunAUaSVUD41E//V5TJVo
+	7ULM+CfopLOropuea0+ZOWM4Y8tCwWsvjF9xIInAKJamvdPu02wNsLwhOG88RO/+
+	mNpinNizX6tnTNpwyCuPmvgZ+XUSqLCXDtp22i1Y76mIAD0xCmvvUoBaeDkTiDb5
+	eKjOuMpHYhDesDIlzoTFQ==
+X-ME-Sender: <xms:f_hhagLPunOs4sYOIPEx7AA8irDuIo9KtdGY0PcmJO0m4d5jKFbLmA>
+    <xme:f_hhaq_D7Iney3yKkudhD5ThQE-17I3xS1FCjDgPoEHgNeU1T8eUxVL5Uw6uPVxp1
+    Y-yp9w_Ery03ndMQFVzsEJ3Oxbb1nQXpJgq-sOx7Z0H1KqjI1eS5w>
+X-ME-Proxy-Cause: dmFkZTGNesZXNvqamxgx+HeR6KJd8wPCXWeiyZ7rsj7Zi7phJLmdLeC46UaGlbE1LHMW4z
+    TACsa+o9MRtrYjbKC3PjPpAbvQB0ZGi9I8BJXfCodP4hxgK+x2F2M8WJEeKOnLf/ws7x7K
+    f8j78B5+mKdhI5FpK/8IhL98JWZUwWWy9MAFDdUE6DcFItjT0sJ3ZBKwXjYWTN9lcFgnLi
+    EfJFP5lU5exNN0GA0+f++5NtqJXbHHyUG0+1ufONGO5yJ9Tl1xSJao7TwYQHPTzmeQFovP
+    VXmOYUb5l7x16/6xvCd/v5VeC1KzCrWUthZ2yw4YUq2aKrMedKW8nSIsPqUjryDj6ghZVy
+    +rXUGqTv+4dnPTL6x30ERPQf5QTkTNu8vqS8aQwgAHqABLWOkN5o9A2oJR1BUZq5YG+3hI
+    Mfs6VjOWmHERv0ijd8g1MP6NiXV8jVnJKiH5Sf8vaiymDV10ly10j67fRRhh9u2og3pYts
+    NYgHN6Zkhr/aKxSYUYGm06Cbya6CJsnxauQ6nAswa32OFIwypQ/La9C2lJdQJ6GLmuioQp
+    3DeYliZHMJwn4+vGWZdEqy+mPaiTUt1faaQhTVB7xcLjDtdvLSADzbp435Cp0kGdEytBTV
+    e2jKvDmYn+efJlIG872Aen9h8DaSPZyZ+Z/4LgCNrV/Ajuh3v41bo8OneD8Q
+X-ME-Proxy: <xmx:f_hhap2ScCFh52xVOl23VuXBWtfh1PqrK_C5ZQoXVCu-XIR3R31Fug>
+    <xmx:f_hham9hkMq3ln8BjTQYXC-CCnQnsOx5-vP-zEUFljyC239WUKYmQw>
+    <xmx:f_hhaiPJaa5-xSlX51AykgiLdH1PkGwanayGrwgzAx9qTAFSunaVfg>
+    <xmx:f_hhaidApZluYDmo1N_FmEQlgSO47i89QX-7RuNEh_nm-Cl4RCNmMg>
+    <xmx:f_hhaqP--L8pCkx4V2jgbVWSzux3qEr5PJV3lIlgHADS0qIKP0HPLhzu>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 29C7D1820082; Thu, 23 Jul 2026 07:18:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: A-PqwUqgqKgZ
+Date: Thu, 23 Jul 2026 13:16:18 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Julian Braha" <julianbraha@gmail.com>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <8736edd1-7f7a-4c91-90b7-66f6ea5417c9@app.fastmail.com>
+In-Reply-To: <20260723104933.117413-1-julianbraha@gmail.com>
+References: <20260723104933.117413-1-julianbraha@gmail.com>
+Subject: Re: [PATCH] mips: remove dead select
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-'select' does not work on config options in a 'choice', so the current
-'select CPU_BIG_ENDIAN' does nothing (dead code).
+On Thu, Jul 23, 2026, at 12:49, Julian Braha wrote:
+> 'select' does not work on config options in a 'choice', so the current
+> 'select CPU_BIG_ENDIAN' does nothing (dead code).
+>
+> However, ECONET already also selects SYS_SUPPORTS_BIG_ENDIAN so this
+> means that CPU_BIG_ENDIAN will always be set.
+>
+> Let's remove the unnecessary 'select CPU_BIG_ENDIAN'.
+>
+> This dead select was found by kconfirm, a static analysis tool for
+> Kconfig.
+>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 
-However, ECONET already also selects SYS_SUPPORTS_BIG_ENDIAN so this
-means that CPU_BIG_ENDIAN will always be set.
-
-Let's remove the unnecessary 'select CPU_BIG_ENDIAN'.
-
-This dead select was found by kconfirm, a static analysis tool for
-Kconfig.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- arch/mips/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index a06f24317306..e2eb9627bd14 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -395,7 +395,6 @@ config MACH_DECSTATION
- config ECONET
- 	bool "EcoNet MIPS family"
- 	select BOOT_RAW
--	select CPU_BIG_ENDIAN
- 	select DEBUG_ZBOOT if DEBUG_KERNEL
- 	select EARLY_PRINTK_8250
- 	select ECONET_EN751221_TIMER
--- 
-2.54.0
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>

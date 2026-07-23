@@ -1,104 +1,266 @@
-Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4113A2C11CA;
-	Thu, 23 Jul 2026 01:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CFE233938;
+	Thu, 23 Jul 2026 08:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784769001; cv=none; b=bDd8HZwOnKG8awGpNI60m7rnMV7iyr8kbppuO75D/upcXhww7mwSVLpWeuCfUnZz+4PJF1ESqRUMa3gSR6o07RnQsaDpzVlXTHNnbngSxLAyPSTK1OXO+BWQt1bEwMg74B8BpTM8PAopaHVrFHfCerXMSYlS98T0wZGaReJ9WYE=
+	t=1784794246; cv=none; b=E6qfBaaRc9IX9hZH20RuL4kMMSUGWpFygPq8+utDTvsDFOZU2jngZjchs6QTR7IDkaUdWqrtTwCtA/R6W3flLD4SqDl0WuMW8F6t6/Wtpb0BnD+Ez1wAh6fAFLLWcLB8ocRBAnZZxeV3v6TQ+5VGhJZrv+hyTH/HQAciBqGOPmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784769001; c=relaxed/simple;
-	bh=3e0OXuLP10kVZpL6TBceoaQOowYfgH5M46K/xPqU0rg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b0oBu/Qqr/03axg33rIa5HIxHc0y7TglUiaUIwrXLvrZTe+VN4Dylv5DsSRpkdok3qRTwcpscO5zWY1GtS9s5XW/DNUx0n3qiTdlOnbXVjNrcq62aoBCpYoGo0MNCNbOf6L2eaDePrHMXbv0PSzHUUvdHjlpDPnaTgwQuAVaDtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=hBqXt0Bh; arc=none smtp.client-ip=5.135.140.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
+	s=arc-20240116; t=1784794246; c=relaxed/simple;
+	bh=VwswH8JhWrZQe5Rh/s4NWY+0YHgxDEZK0fxwcE3tmC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tZHE5TfqbCSul5iJlAl0wpe0j3Jzfk5Xkyq0Z6hhStfcNLb/p3rqrr95X56NceMlyRISWxLzV1Mgq1L9FhtwHa2+9wG2wiTM8NHAb/jamHVVYK0A1JUDRcRRGoLXjbTvLmCMf1bN9A+1cbxZQBzN2Wm8K3o1zyHIF6oQv1KtwWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=ZsKSCke4; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="hBqXt0Bh"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BA35541191;
-	Thu, 23 Jul 2026 03:09:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1784768988; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=RYHgZ5W/7cRGW53gN8/LTD+3Yndd0KY178wo1ydfFQg=;
-	b=hBqXt0BhNYYPwQL2JwELR4SIEZT4S/3MV2VOGQZLwaVw2194Ukvm+Q0NR8EDInjY7F1IoY
-	nM6yxzQjbYVU8VXd0uhqXQvBF+NoxeROElgsK86yD5UtGTUaJw9cx9N/PO4P0dr0y/8tXC
-	f8gNpW1fjrVnS98S/h5XTyWWW7hqxllLHjV0/kTW+bZ9IOsGm+LvEmvBI2WcCwekNCBBwX
-	r29CwLqC7jvFWD7t22vez5XsWpDQycPuw1eLC2Dt22nEnpRcAWRhNqOnvfkbNAFQZsmdap
-	zyQgAzYe0mYc4CbLaguIdKxOixeSEK489b6If/Zz6CRLejfbziyiu8Rpr3CbOA==
-Message-ID: <05b6aa37-dad4-4b72-a999-dc06e9582e54@cjdns.fr>
-Date: Thu, 23 Jul 2026 03:09:41 +0200
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="ZsKSCke4"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD4851477;
+	Thu, 23 Jul 2026 01:10:38 -0700 (PDT)
+Received: from e129823.cambridge.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E3A113F86F;
+	Thu, 23 Jul 2026 01:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1784794242; bh=VwswH8JhWrZQe5Rh/s4NWY+0YHgxDEZK0fxwcE3tmC4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZsKSCke41l+piIezCdsjVMCTycpwyBxBfv7cVpgUUcClGAM9ujUfUEk2EpanfRxZJ
+	 acXhRw1TtHmQygGi/rOp++vlaGKB/odW5HbrUODJQ29zMZJuEBsamNuoJFYZmPvDIo
+	 2Cs26OmAVBZMccc0uflFY2F7f+U0rPR2u2lp9iGQ=
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+To: David.Hildenbrand@arm.com,
+	david@kernel.rog
+Cc: yeoruem.yun@arm.com,
+	Yeoreum Yun <yeoreum.yun@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-openrisc@vger.kernel.org
+Subject: [INTERNAL REVIEW] [RFC PATCH v3 01/20] mm: change behavior of pXdp_get()/pXd_page() in compile-time folded pgtable
+Date: Thu, 23 Jul 2026 09:10:16 +0100
+Message-ID: <20260723081036.1461495-2-yeoreum.yun@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260723081036.1461495-1-yeoreum.yun@arm.com>
+References: <20260723081036.1461495-1-yeoreum.yun@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH 09/16] irqchip/econet: clean up VEIC initialization
-To: Haofeng Li <920484857@qq.com>, tglx@kernel.org
-Cc: linux-kernel@vger.kernel.org, Haofeng Li <13266079573@163.com>,
- Haofeng Li <lihaofeng@kylinos.cn>, linux-mips@vger.kernel.org
-References: <20260714122351.3274006-1-lihaofeng@kylinos.cn>
- <20260714132453.3302672-1-920484857@qq.com>
- <tencent_880FD85090AE06087ABB6451DAE1F77A0309@qq.com>
-Content-Language: en-US
-From: Caleb James DeLisle <cjd@cjdns.fr>
-In-Reply-To: <tencent_880FD85090AE06087ABB6451DAE1F77A0309@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
+Using ptep_get() and its counterparts in common code is suboptimal on
+kernel configurations with generic compile-time folded page tables.
+By default, ptep_get() and its friends expands to READ_ONCE(),
+forcing the compiler to emit a load even when the value is not used afterwards.
 
-On 14/07/2026 15:24, Haofeng Li wrote:
-> From: Haofeng Li <lihaofeng@kylinos.cn>
->
-> When cpu_has_veic is set, econet_cpu_init() failure returns without
-> tearing down the already created IRQ domain, ioremap, memory region,
-> or parent IRQ mapping. The parent interrupt-controller node obtained
-> while finding the IPI domain also retains an OF node reference on both
-> success and failure.
->
-> Drop the parent node reference after the domain lookup and route VEIC
-> initialization failures through the existing resource cleanup labels
-> after removing the IRQ domain.
->
-> Fixes: 2ee2a685ee83 ("irqchip/econet-en751221: Support MIPS 34Kc VEIC mode")
->
-> Signed-off-by: Haofeng Li <lihaofeng@kylinos.cn>
-Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
-> ---
->   drivers/irqchip/irq-econet-en751221.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-econet-en751221.c b/drivers/irqchip/irq-econet-en751221.c
-> index 2ca5d901866f..f6f890b3f881 100644
-> --- a/drivers/irqchip/irq-econet-en751221.c
-> +++ b/drivers/irqchip/irq-econet-en751221.c
-> @@ -378,6 +378,7 @@ static int __init econet_cpu_init(struct device_node *node)
->   	}
->   
->   	econet_intc.ipi_domain = irq_find_matching_host(parent_intc, DOMAIN_BUS_IPI);
-> +	of_node_put(parent_intc);
->   	if (!econet_intc.ipi_domain) {
->   		pr_err("%pOF: Failed to find parent %s\n", node, "IPI domain");
->   		return -ENODEV;
-> @@ -459,7 +460,7 @@ static int __init econet_intc_of_init(struct device_node *node, struct device_no
->   		ret = econet_cpu_init(node);
->   
->   		if (ret)
-> -			return ret;
-> +			goto err_remove_domain;
->   	} else {
->   		irq_set_chained_handler_and_data(irq, econet_intc_from_parent, domain);
->   	}
-> @@ -468,6 +469,8 @@ static int __init econet_intc_of_init(struct device_node *node, struct device_no
->   
->   	return 0;
->   
-> +err_remove_domain:
-> +	irq_domain_remove(domain);
->   err_unmap:
->   	iounmap(econet_intc.membase);
->   err_release:
+This issue was recently reported by Christophe Leroy [1] for ppc32
+preventing futher code conversion to ptep_get()/pmdp_get()/... helper
+and the same behavior can also be observed on arm64 when built with
+2- or 3-level page tables
+
+e.g) perf_get_page_size() in arm64 with CONFIG_PGTABLE_LEVEL=3:
+
+00000000000052a0 <perf_get_page_size>:
+    ...
+    52dc: d53b4234     	mrs	x20, DAIF
+    52e0: d50343df     	msr	DAIFSet, #0x3
+    ...
+    52fc: d35e9a69     	ubfx	x9, x19, #30, #9        /* pud_offset_lockless() */
+    5300: f9403508     	ldr	x8, [x8, #0x68]
+    5304: f869790a     	ldr	x10, [x8, x9, lsl #3]   /* pudp_get() */
+    5308: f90007ea     	str	x10, [sp, #0x8]
+    530c: f8697908     	ldr	x8, [x8, x9, lsl #3]    /* pudp_get() */
+    ...
+    5360: 90000009     	adrp	x9, 0x5000 <perf_prepare_sample+0x548>
+    5364: 92746908     	and	x8, x8, #0x7ffffff000
+    5368: d3557675     	ubfx	x21, x19, #21, #9       /* pmd_offset_lockless() */
+    ...
+    5394: f8757ac8     	ldr	x8, [x22, x21, lsl #3]  /* pmdp_get() */
+
+Though PGTABLE_LEVEL=3, since the pudp_get() still remain with
+READ_ONCE(), there's redundant load for the pud which is folded.
+
+To prevent generating suboptimal code, make pXdp_get() return a dummy
+entry for compile-time folded page tables and prohibit calls to
+pXd_page() in pgtable-nopXd.h.
+
+Also make the helpers in pgtable-nopXd.h, such as pXd_offset_lockless(),
+validate dummy entries at compile time to catch the wrong usage.
+
+As the pXdp_get() can return *dummy* entry, some of code using
+the stack value where saves the pXdp_get() could be a problematic:
+
+  1. Passing address of stack value where saves the pXdp_get() result
+     to pXd_offset() for example:
+
+       pud_t *pudp, pud;
+       pmd_t *pmdp;
+
+       pud = pudp_get(pudp, address);
+       pmdp = pmd_offset(&pud, pud, address);
+
+     (e.g. host_pfn_mapping_level() in loongarch).
+
+  2. Using the pXdp_get() result to use as argument of pXd_val() and
+     to check prot without checking pgtable is folded.
+     for example, x86's effective_prot().
+
+  3. Using set_pXd() with pXdp_get() will set problematic dummy entry
+     in folded page table like:
+
+       set_pXd(pxdp, pXdp_get(pxdp_k));
+
+  4. Using pgd_page_vaddr() to get the first-level pgtable.
+     passing dummy pxdp_get() for pgd_page_vaddr() will return wrong
+     address. Therefore, make pgd_page_vaddr() and pXd_pgtable() to
+     trigger the error for improper usage with folded dummy entry in the
+     generic compile-time folded pgtable.
+
+Thanksfully, above cases are rare since (1) most of usage using
+pXd_offset() with result of upper pXd_offset(), (2) it's extreamely
+rare to use pXd_val() for non-leaf entry in the kernel,
+(3) is to handle the vmalloc_fault or set the first level of page table
+and (4) to setup early page table and etc.
+
+Therefore, convert this kind of problematic rare pattern properly.
+
+Furthermore, passing the ptep_get() (or its counterparts) as argument
+directly to pte_present() and related helpers can generate suboptimal code,
+in arm64 as the current macro implementation may evaluate its argument
+more than once like:
+
+  !pte_val(READ_ONCE(*pte) || pte_present_invalid(READ_ONCE(*pte))
+
+resulting in redundant loads.
+
+A typical example is pud_free_pmd_page(), where the expansion of
+pmd_present() generates:
+    ...
+    /* pmd_present() (x20 = pmdp) */
+    1b88: f9400288     ldr	x8, [x20]        // read pmdp.
+    1b8c: f9000fa8     str	x8, [x29, #0x18]
+    1b90: 3707fec8     tbnz	w8, #0x0, 0x1b68 <pud_free_pmd_page+0xd0>
+    1b94: f9400288     ldr	x8, [x20]        // redundant read of pmdp.
+    1b98: 8a170109     and	x9, x8, x23
+    1b9c: f9000fa8     str	x8, [x29, #0x18]
+    1ba0: f120013f     cmp	x9, #0x800
+    1ba4: 54fffe20     b.eq	0x1b68 <pud_free_pmd_page+0xd0>
+    1ba8: 17fffff4     b	0x1b78 <pud_free_pmd_page+0xe0>
+    ...
+
+To address this in arm64, convert pte_present() macro and its friends
+to static inline function.
+
+This patch is based on mm-unstable.
+
+Future work
+===========
+ - print_bad_page_map() and show_pte() still prints dummy values
+   instead of printing the same content for all generic compile-time
+   folded page tables. We might want to skip printing dummy values later.
+
+ - We currently catch abuse of dummy values on the stack at compile-time by
+   relying on constant propagation by the compiler. Usama's work [3] on using
+   distinct types for sw vs. hw PTEs could help here as well."
+
+Patch History
+=============
+from v2 to v3:
+  - repasre commit message
+  - move ptdump_pgtable_first_level() into pgalloc.h
+  - skip the huge pud operation when CONFIG_X86_DIRECT_GBPAGES is
+    disabled
+  - https://lore.kernel.org/all/20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com/
+
+from v1 to v2:
+  - Restore slient fallback to next pXd in set_pXd() and pXd_pgtable()
+    and add check whether they're called with dummy entry.
+  - Add some comment for returning first entry of pgd in arm with
+    2 pgtable-level
+  - https://lore.kernel.org/all/20260713135614.1618183-1-yeoreum.yun@arm.com/
+
+To: Russell King <linux@armlinux.org.uk>
+To: Huacai Chen <chenhuacai@kernel.org>
+To: WANG Xuerui <kernel@xen0n.name>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Catalin Marinas <catalin.marinas@arm.com>
+To: Will Deacon <will@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+To: Kairui Song <kasong@tencent.com>
+To: Qi Zheng <qi.zheng@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+To: Barry Song <baohua@kernel.org>
+To: Axel Rasmussen <axelrasmussen@google.com>
+To: Yuanchu Xie <yuanchu@google.com>
+To: Wei Xu <weixugc@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+To: David Hildenbrand <david@kernel.org>
+To: Michal Hocko <mhocko@kernel.org>
+To: Lorenzo Stoakes <ljs@kernel.org>
+To: Tianrui Zhao <zhaotianrui@loongson.cn>
+To: Bibo Mao <maobibo@loongson.cn>
+To: Anup Patel <anup@brainfault.org>
+To: Atish Patra <atish.patra@linux.dev>
+To: Paul Walmsley <pjw@kernel.org>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+To: Albert Ou <aou@eecs.berkeley.edu>
+To: Alexandre Ghiti <alex@ghiti.fr>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+To: Andy Lutomirski <luto@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Thomas Gleixner <tglx@kernel.org>
+To: Ingo Molnar <mingo@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+To: x86@kernel.org
+To: H. Peter Anvin <hpa@zytor.com>
+To: Liam R. Howlett <liam@infradead.org>
+To: Vlastimil Babka <vbabka@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+To: Michal Hocko <mhocko@suse.com>
+To: Jonas Bonn <jonas@southpole.se>
+To: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+To: Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-mips@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: kvm@vger.kernel.org
+Cc: kvm-riscv@lists.infradead.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-openrisc@vger.kernel.org
+Link: [1] https://lore.kernel.org/all/0019d675-ce3d-4a5c-89ed-f126c45145c9@kernel.org/
+Link: [2] https://lore.kernel.org/all/20251113014656.2605447-1-samuel.holland@sifive.com/
+Link: [3] https://lore.kernel.org/r/74182e50-b54f-4d2d-a27f-3a59a538d6bc@arm.com
+
+--- b4-submit-tracking ---
+# This section is used internally by b4 prep for tracking purposes.
+{
+  "series": {
+    "revision": 3,
+    "change-id": "20260722-dummy_ptxp3-3741d78cc70f",
+    "prefixes": [
+      "RFC"
+    ],
+    "history": {
+      "v2": [
+        "20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com"
+      ]
+    }
+  }
+}
+
+Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
+-- 
+LEVI:{C3F47F37-75D8-414A-A8BA-3980EC8A46D7}
+

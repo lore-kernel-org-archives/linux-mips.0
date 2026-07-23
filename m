@@ -1,57 +1,72 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F121A43B3D2;
-	Thu, 23 Jul 2026 14:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC0731E84F;
+	Thu, 23 Jul 2026 14:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784815487; cv=none; b=gXVeJqVY4REMXYoDM/y6y+4B9TZK41/DTquzH9JJMOs50QVEsAq53ePzffe+Ica58XM2ylfT3S3y+4JIXNWIszGDIdUsrvOCrbD7ax4Q1m2ILsRWDHcd3xuttCRTOnhmuCT/RqywRYyKBfgHHkBexweqUMW3VyrsKxOo8Gah4UU=
+	t=1784815874; cv=none; b=FrO8iI7AXGTMHVG2AadPvDHR4vCOEHWmxVcLgLWT6Omk84lkQNlC3YfAiuczjwvOCYfz4+VP/CI4ol3eO/3xnWqtYun8s3rzrQbTKuNNmRqfKSOkWeZi5CYoPnrKIQPfpT5bqVlmWfgPI6jSsvtl7zlUqJqAFi9qhWmCQwVmJYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784815487; c=relaxed/simple;
-	bh=QONQuC+cHsosjfdLXXq/A1Qe14XsjnKSP95qF/wt4Ro=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MG8U8zdSVcTVlutIRTGjJff6/OM2MLxM8RD2guRqhk21K1h0ig96KEO0hmBBSMhmTmpOfVwp/yuREkMhleY2DNVLo6rI7qhYOkZCODCT+xN9CmfzUOs75Byio1VQlTBriWP8ihX8q5xFio7emMwZlFtAzSalL7aI0m8s2pzMA7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8028B1F000E9;
-	Thu, 23 Jul 2026 14:04:40 +0000 (UTC)
-Date: Thu, 23 Jul 2026 07:04:38 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, davem@davemloft.net, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
- <linux@armlinux.org.uk>, Heiner Kallweit <hkallweit1@gmail.com>, Alexis
- =?UTF-8?B?TG90aG9yw6k=?= <alexis.lothore@bootlin.com>, Jan Petrous
- <jan.petrous@oss.nxp.com>, Heiko Stuebner <heiko@sntech.de>, Nobuhiro
- Iwamatsu <nobuhiro.iwamatsu.x90@mail.toshiba>, Keguang Zhang
- <keguang.zhang@gmail.com>, Yao Zi <me@ziyao.cc>, Mohd Ayaan Anwar
- <mohd.anwar@oss.qualcomm.com>, Romain Gantois <romain.gantois@bootlin.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, Drew Fustini
- <fustini@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei
- <wefu@redhat.com>, Inochi Amaoto <inochiama@gmail.com>, Emil Renner
- Berthing <kernel@esmil.dk>, Minda Chen <minda.chen@starfivetech.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
- linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-rockchip@lists.infradead.org, linux-mips@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
- s32@nxp.com
-Subject: Re: [PATCH net] MAINTAINERS: Add myself for stmmac ethernet driver
- maintainance
-Message-ID: <20260723070438.69c158ba@kernel.org>
-In-Reply-To: <20260722142125.1767689-1-maxime.chevallier@bootlin.com>
-References: <20260722142125.1767689-1-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1784815874; c=relaxed/simple;
+	bh=kkUaG4OFaUNA299yNPxExiBz3WfDvNfkwclMbXs/w5g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=QgDvqhgc3TpHNJRG8uhDPU940rlhehgOteIyPpMbbPG1fX7cSAPZDHvlKF7l6AbjESsyEAK8DHuO8LeM6xrLnxJhGrodiXKnuy5ZcZjV7ef90lXw7BnpIoK9sCawggXUAmSdIWoN3pk0wX9FQLIsWOYMvNCMvMLRk/zDLZJefhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BYAfUYKn; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BYAfUYKn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F32D11F00AC4;
+	Thu, 23 Jul 2026 14:10:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784815857;
+	bh=e+PZO5MkosxONDiakds6k+hycWBv6dw3oVvlvWJ9PxU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=BYAfUYKnB9zZMQiniXXveziNH9msnKl5+9uwI2FszSUut+ElyBtMAyLM8AzqH2s0n
+	 eMNoEQc4jDZOC54Sk4GmdDBJjcLTyMesf42dG1sA8YiMI9g06rkxNkaWTYlqIIsl4z
+	 4iUkgquUqOCpF7oWVq/jLPq35vN8Qqg5rpSrVayKcQwn2bdPj4m2A+LbLuNrI/dTkN
+	 gNiKOmEamPi8uocRKl91WeuPe0TtYRA5aiKsgxW5bloJZSdo6sDkQEHVs50RahDJ4r
+	 Jll8ci/SOCKKJKkPrnRuBzI8vmSCujWd980i9Up8WA/Uftel1vXjIgnb3Zv3UxExwx
+	 JQVB9A1W332Fg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 56B45380CFD4;
+	Thu, 23 Jul 2026 14:10:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] MAINTAINERS: Add myself for stmmac ethernet driver
+ maintainance
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178481582490.2248593.7494746739447898895.git-patchwork-notify@kernel.org>
+Date: Thu, 23 Jul 2026 14:10:24 +0000
+References: <20260722142125.1767689-1-maxime.chevallier@bootlin.com>
+In-Reply-To: <20260722142125.1767689-1-maxime.chevallier@bootlin.com>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, linux@armlinux.org.uk,
+ hkallweit1@gmail.com, alexis.lothore@bootlin.com, jan.petrous@oss.nxp.com,
+ heiko@sntech.de, nobuhiro.iwamatsu.x90@mail.toshiba, keguang.zhang@gmail.com,
+ me@ziyao.cc, mohd.anwar@oss.qualcomm.com, romain.gantois@bootlin.com,
+ prabhakar.mahadev-lad.rj@bp.renesas.com, fustini@kernel.org,
+ guoren@kernel.org, wefu@redhat.com, inochiama@gmail.com, kernel@esmil.dk,
+ minda.chen@starfivetech.com, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
+ linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, s32@nxp.com
 
-On Wed, 22 Jul 2026 16:21:24 +0200 Maxime Chevallier wrote:
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 22 Jul 2026 16:21:24 +0200 you wrote:
 > The stmmac driver based on Synopsys' dwmac IP is used in a very wide
 > variety of SoCs and is currently very actively used and contributed to.
 > 
@@ -59,15 +74,15 @@ On Wed, 22 Jul 2026 16:21:24 +0200 Maxime Chevallier wrote:
 > became inactive, but Russell King was providing very valuable reviews
 > and fixes for the driver at that point.
 > 
-> Now we're seeing more and more activity on the driver, but are lacking
-> people to test and review contributions to both glue drivers as well as
-> core stmmac code.
-> 
-> I have access to some variety of stmmac-based platforms such as socfpga
-> CycloneV, imx8mp, some Allwinner SoCs and stm32mp1xx boards that I can
-> run regression tests on, and I'm offering to step-up as a maintainer for
-> driver, for the time being at least.
-> 
-> Let's hope other people will eventually join this effort.
+> [...]
 
-Thanks a lot for taking this on :)
+Here is the summary with links:
+  - [net] MAINTAINERS: Add myself for stmmac ethernet driver maintainance
+    https://git.kernel.org/netdev/net/c/4a05269bb723
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+

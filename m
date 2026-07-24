@@ -1,85 +1,135 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A67B35E930
-	for <linux-mips@vger.kernel.org>; Fri, 24 Jul 2026 21:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D77474250;
+	Fri, 24 Jul 2026 22:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784929275; cv=none; b=t36uzDOqASDceVqmmtw5+ImHBhYUbqfEqMN6nbTIE7B1PpLVerYP0zsdiMC7xwkB5RHCbQWoGF6D7fiRbkB6mOrzj75xsSDqhDrC3xAmYIhnTYDc9vBUqMUaSkzXqY98ke7Ut7iKlAMPSCVLDR0hUHIxgJ0512kKnAUji+ySDD0=
+	t=1784933166; cv=none; b=aDWiun7La8ORsztu+fP9L5kzqggsaUqV2Je0NTnZUPaX6h8AoG8MTOBNgOTGF4XpkvE9hcfnMh5RhUywn3bLEHmJD30meQQQS9EI+WzSzaVj/WPglobfJnAT4hG50g/+3KtrI9+kKdAyWqibwYh5fVyOeWe24CTKXysLo+f5Me8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784929275; c=relaxed/simple;
-	bh=eLmtuzNiJN/NtKa2kUTnWgeyP7l+US/ugXSovTsy5mc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cfpXqQUHAV7MeStyAUbGkcPixatQTJQ2GId6OETpqTfKJmaDxY2vmdMu8YCEryohaO8GJsPg2sv5ISWVJpoOr4xqGb0OzcJqqrsL7EEYMD9e60dTAUH0VUI9aggTuc1UxmQR6pN8ou34lB3xxmZ5po9I6PrCFJAlP9xqHDqhZWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knpEx5vt; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784933166; c=relaxed/simple;
+	bh=e4Q33RAXNj4uJS5ISuZOeLCNZsLtSpbzoOGnqL3oT+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZjzU32uJFAqnHdZs6rxpxCnAOc3PsyvvqkRTK9cC3i5I4B4B3VntR4c2PZKDZ+MgtGNfLmCoki81i6KGOp+ZjUj2ijeR23BnJAFRZpmyuC1yVxx6IF+fTzArbkyP+9QcHvc30UGHSjP2tVneaJyJ56+itNiYja8GdMM6C30NcXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezEc5WAt; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knpEx5vt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36DB01F0155A
-	for <linux-mips@vger.kernel.org>; Fri, 24 Jul 2026 21:41:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezEc5WAt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE7801F000E9;
+	Fri, 24 Jul 2026 22:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784929274;
-	bh=eLmtuzNiJN/NtKa2kUTnWgeyP7l+US/ugXSovTsy5mc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=knpEx5vtRJ3MDi4n/T0WX5+WX2WN+Zwj6kXGPxVh5wOH3ZeVCovQskbtzoSjQdsK8
-	 7hhjtf6Ba4GV9lCE63dlFDsHLvZkU++GIpTULvKQsFlnPDhJAxsVrCnTkOjE/F+jRv
-	 Pn/qUFD1g8I/Qen/F1yNcnzkk7XuE0G8FWlCEfZB4D7BzdGK4kkknBhDwU1VSmKoHb
-	 AGaFRHvSgLBHwOThscZ2bgFO7pgcmfse3HNfyjZw0reTkVRT9nGwRRzDBaUdUhOYjx
-	 g1CV0/EI43bUSDBPWxHlTkSTcU1ZObZ8YYClertTrg9oLWAOwkkJhgrpvCwuc26NcG
-	 HAPrQsKqE539A==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5b011edaf7dso942419e87.2
-        for <linux-mips@vger.kernel.org>; Fri, 24 Jul 2026 14:41:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rp4xCJ+vDz58Cyv3nzuoRKLVJl+KXtsuWXNYkNynEC4xcE0cV5fQwsEEdlOaK1IS3sPntycUOJq6U5F@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW/A/Y3kx+9IVhkovZ66thAMUENp3M3+Qm96BYAYeYhg0fpra4
-	ja0+fpqY4RxpIZuRRjurTI5DFEwnO6lDxSWa7VNaxwLN/LqBe45tCaEyUJcjrtJD733CtI22+7s
-	rjWysNlbmGIjQeySAbFVN9CiFKJuaco8=
-X-Received: by 2002:a05:6512:2310:b0:5ae:bf46:2acc with SMTP id
- 2adb3069b0e04-5b2b2f86804mr1934146e87.63.1784929272904; Fri, 24 Jul 2026
- 14:41:12 -0700 (PDT)
+	s=k20260515; t=1784933155;
+	bh=+Js/I4/QcWnb0zbX3gJ/7hcd5ufvSHyxR3nJSzCYliA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ezEc5WAtQmjF1QNZEepG+PeGNUSM1i0ETfgxrcmRp2dFbxVSIBg5Ug2rt2jfXSA/J
+	 /BJ8Q7Q8fJGb/Fy06yCqKiRQD6fukqeCaNl+KEz+xTWvMe74o/PDAZ1cOPXC2klD1l
+	 CdT2J1YMHvMXMZovWR/n65Im1ZcZLRVhAL52YiF55A8NElc5hGew7qh1bcT/QdhDYC
+	 8JConp1P0raofTTt2KatNTEbDBNoUctVg2yhjzeIDngIzInOwIGh7DAleTGovW1TFH
+	 VWi+Ae3CHAb/7wh4nSQnZkyyC4s2uq4Zv0pO0d6folIFc8CXTpntfDy+CznQO/i3SV
+	 k/19l+KNqw3Jg==
+From: Jakub Kicinski <kuba@kernel.org>
+To: bartosz.golaszewski@oss.qualcomm.com
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	andersson@kernel.org,
+	konradybcio@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	vkoul@kernel.org,
+	peppe.cavallaro@st.com,
+	wens@kernel.org,
+	jernej.skrabec@gmail.com,
+	neil.armstrong@linaro.org,
+	khilman@baylibre.com,
+	jbrunet@baylibre.com,
+	shawnguo@kernel.org,
+	festevam@gmail.com,
+	jan.petrous@oss.nxp.com,
+	s32@nxp.com,
+	mohd.anwar@oss.qualcomm.com,
+	romain.gantois@bootlin.com,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	mripard@kernel.org,
+	christophe.roullier@foss.st.com,
+	brgl@kernel.org,
+	radu@rendec.net,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	dfustini@tenstorrent.com,
+	linux-sunxi@lists.linux.dev,
+	linux-amlogic@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	sophgo@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	bartosz.golaszewski@linaro.org
+Subject: Re: [PATCH net-next v13 02/10] dt-bindings: phy: document the serdes PHY on sa8255p
+Date: Fri, 24 Jul 2026 15:45:48 -0700
+Message-ID: <20260724224548.1648931-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260713-qcom-sa8255p-emac-v13-2-119f8699ef8e@oss.qualcomm.com>
+References: <20260713-qcom-sa8255p-emac-v13-2-119f8699ef8e@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260715185112.1323510-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20260715185112.1323510-1-andriy.shevchenko@linux.intel.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Fri, 24 Jul 2026 23:40:59 +0200
-X-Gmail-Original-Message-ID: <CAD++jL=prd1KDZQawqsRmW3qp1-cJ=18-yhp861CQirOOjE5Ag@mail.gmail.com>
-X-Gm-Features: AUfX_mz6ZxVMzIVDlYKzRcjHd5uCb1mkXfd8xMBGPfxdB1J27bvJ-Aw2H_fn9Og
-Message-ID: <CAD++jL=prd1KDZQawqsRmW3qp1-cJ=18-yhp861CQirOOjE5Ag@mail.gmail.com>
-Subject: Re: [PATCH v1 0/7] gpiolib: kill gpio_request_one()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	linux-media@vger.kernel.org, Bartosz Golaszewski <brgl@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, 
-	Robert Jarzmik <robert.jarzmik@free.fr>, Russell King <linux@armlinux.org.uk>, 
-	Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 15, 2026 at 8:51=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+---
+dt-bindings: phy: document the serdes PHY on sa8255p
 
-> This is the finilazation of the work announced in the commit 61e1fd2abca4
-> ("gpiolib: legacy: Make sure we kill gpio_request_one() first"). With thi=
-s
-> small series we kill gpio_request_one() and leave only two legacy calls
-> devm_gpio_request_one() and gpio_request(), where the managed one has onl=
-y
-> a few users and high chances to be killed soon as well.
->
-> The series is supposed to go via GPIO tree (due to nature of the last pat=
-ch)
-> with possible immutable branch for others. Please, ack.
+This patch adds a YAML binding describing the SGMII/SerDes PHY present on
+Qualcomm sa8255p platforms, where the same hardware as on sa8775p rev3 is
+managed by firmware over SCMI.
 
-The kernel is clearly a better place after these patches than before it, so=
-:
-Reviewed-by: Linus Walleij <linusw@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml
+> new file mode 100644
+> index 000000000000..9e846e381555
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml
+> @@ -0,0 +1,50 @@
 
-Yours,
-Linus Walleij
+[ ... ]
+
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  power-domain-names:
+> +    maxItems: 1
+
+[Low]
+This isn't a bug, but would it be worth tightening the power-domain-names
+schema to constrain the actual string value, along the lines of:
+
+  power-domain-names:
+    items:
+      - const: serdes
+
+As written, only the number of entries is constrained and any arbitrary
+string would pass validation, whereas the example uses "serdes":
+
+    power-domains = <&scmi7_dvfs 0>;
+    power-domain-names = "serdes";
+
+Would matching the example with a const also help keep naming consistent
+across DTs using this binding?
+
+[ ... ]
+-- 
+pw-bot: cr

@@ -1,107 +1,94 @@
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE924314BC
-	for <linux-mips@vger.kernel.org>; Mon, 27 Jul 2026 20:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793F942903B;
+	Mon, 27 Jul 2026 20:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785184837; cv=none; b=aVKXnbEFABdzn1lDAsQPkMk5lmmVGzsXxF9CsSRgEG2LXMnQ6qfVnlqFK7cIb593OBkhv53WG/2l+zj8rM3lZk/ZWDYl8JXx9PsvwUSYHpNeJSno668xlAhpCX23t441PUSfI9urQMm8INvJxmrsBtR0DHuM42wXiG90urjn080=
+	t=1785185997; cv=none; b=WM756h91taUxAYpQIBO7Y3nKKYZ33FcZQRzdHxq3kAPf/rbk3/xl2tEy+uelJ5zv9kLJNLxPNmQWumqHIGnVJadEMagUVw7OSLx8qoqNJ0omi+B0ycBNZjcZMsQwnwi4KBK00lhD4Orb7JuEsTKl2ZrmfPAzL3+vFDj295WEC/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785184837; c=relaxed/simple;
-	bh=N8WuSkHIr8cpGRFmrHSddr/VxgFAmae/TguOVqZaqVo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n7Gkrz0TMcFzuwfdUFbYbxNijZKK2DhbuJ23Zsw/OJSXv+mCb7H4BtOxzsGxT7KhGW6FVjV6ZgBoz3el4M7ku9BY7zoWgQwK75Lymj8n1X4r3YWnd4UoXnmjfLVRmE2PwjuBtP5ibPC2J8IW7NzojCVvGgPi/hiRDHFX4U0544w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=La2jJY29; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1785185997; c=relaxed/simple;
+	bh=yeTBjCtcRprg5WepPxqF5sroGINv0iSKe1nwkluM1LI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bLq5rdI5OToIjKiAA+N5hARRnAW250Iqd7TYFi9mISdf5qsJCxRYmwGHzJUjvxtsDbNBdwXv1o9p7KmtWjArqma9t+MYLyWIY1mSdhDH6fltJ6hONuiDQQooh1YH0/JmrbkWTgmnsiI4K9kHAWGOhXFQeCeV0NcVcHm7e2YUuLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IYg3x19G; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="La2jJY29"
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-8484f229529so2132208b3a.2
-        for <linux-mips@vger.kernel.org>; Mon, 27 Jul 2026 13:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785184835; x=1785789635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=k5gaDUFMjFsf2p7Cgms6fENCmHCCMnNOp2lQps8mOFU=;
-        b=La2jJY294CoP+34Ab8vO1bp+YFnGKA4IIcSurpajvcx6l30dl7c272fe/eimhJB20y
-         MnwvR5n6FTmHckTI/5F97t9PbzobVuVgiGFyNk3wTD4/aUdDMzPxm5OqZRVIHjstK8VP
-         uxJrjgSEb6XIb7oUNfHby4dbQhHxevow2rwaPC4svMYtMZ9y7cLjBf56Zoh3wzA9lGXY
-         ZzDucaZ4lc5rneG+sOEL33SgbE7cOEnquhKRvGH9wVRso3kVjyVzftZ76rxYa7nXOEN3
-         LTlVYzaHM4CghKaAXTBq+JVITGgJG1LQk1LZpgPo3UtXlepg8iDA8XcvXq0cIUCqz8hr
-         K6bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785184835; x=1785789635;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=k5gaDUFMjFsf2p7Cgms6fENCmHCCMnNOp2lQps8mOFU=;
-        b=g33MTkaAVLDBesH9klnITjXKsHxD/w7R59PEb57dpHXFAi0N7frX92qTxYMm4OGsUX
-         GjC6cOCPZY2zTUTHumgU/7unPvFX4yqLjExGsuD0sxIZl9TBhPJydAqpbRAJHfdxGTpE
-         VUMbGr4sJIoWtPyyukbvsnGpGLl55+LMXSUAfWSJkPs+kZYJNCv1Iy6xIhhaIDCnO4CE
-         Ii6p1kZtkdLy7zDnpH/1FW1Hr7w9J7RILmAtJcsZNwWa4V9YJxpjvB+MqwEwJlhAVSuX
-         8O4jLZw4ZIeGG7f7mzwwkdqI6Vd995ZByBBlNsI76pJHC/vA6RZ+ZtHA7QMSWRphQqS2
-         WEsw==
-X-Forwarded-Encrypted: i=1; AHgh+RoX+Y/ILp9a2rJWA9x6aBJhdjysweBKk+aj4xlAXIH0CX9BYcZ+qeXNwtRL1AzC7uqayWG8e7WmtvAQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2x04tRuiXojrk/LFBm+K4AivUQvgnpr9orMhpviylLdogbVkM
-	FRPWdpUKmLluz5jdQsQ6+dohxDYD6ZJUR7zf2jA3PY1SrdW6J9SwjIfb
-X-Gm-Gg: AR+sD129URhAN/EoS4fTx8iGdsi/atdAmIJ3LzjtF/I34t3GyYm0xKWPVKMm3noEzA+
-	cHQ7ZlAKrEMaD0rw5kPTVbEtN/vHomssS5huZdV1XLCbuTjdZvLSiAI74FTGEFjGbUN/ibAMo6U
-	zvL/qcYBcC6MY885W1SS3ptpXOfvIXRfs1fYxQOVWjPXu4FEweCqAusc78HmtFSF8H9d3D0PcFb
-	C4MmLpZK4c5enJBLZ+ej+uQQHu3v+5NZjoOHiIncdYfHjLQV9j5Uu4J+o78hCtnWbO2DNjplmxk
-	gMDCzCLc4oMQt3cDDBtVcZvL3G5wI7p5udh0XFQbRUiQWklYWb69mBrXVrKswjUP6F69yTJfB8z
-	tJei4oks9D8wAxbmZ9RLWZ7xMBe9na4yw5mlh6s3QoSk5iHcrNaG7qYW/c0CYIYJnGOMGIvsyF5
-	nZWs72
-X-Received: by 2002:a05:6a00:22c5:b0:848:2f74:d8d7 with SMTP id d2e1a72fcca58-84e595d7b61mr7910310b3a.72.1785184835278;
-        Mon, 27 Jul 2026 13:40:35 -0700 (PDT)
-Received: from cryptic.lan ([2001:569:7fab:e200:3789:64f9:8855:c0af])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84e533d1351sm3583338b3a.39.2026.07.27.13.40.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2026 13:40:34 -0700 (PDT)
-From: Allen Pais <allen.lkml@gmail.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Frank Li <Frank.Li@kernel.org>
-Cc: Allen Pais <allen.lkml@gmail.com>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <kees@kernel.org>,
-	Keguang Zhang <keguang.zhang@gmail.com>,
-	linux-mips@vger.kernel.org
-Subject: [PATCH v2 47/64] dmaengine: loongson1-apb: kill vchan BH on teardown
-Date: Mon, 27 Jul 2026 13:39:09 -0700
-Message-ID: <22694524f7cc07a687d0f1ff7957af97fa51beb4.1785183549.git.allen.lkml@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1785183549.git.allen.lkml@gmail.com>
-References: <20260108080332.2341725-1-allen.lkml@gmail.com> <cover.1785183549.git.allen.lkml@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IYg3x19G"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC251F00A3E;
+	Mon, 27 Jul 2026 20:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785185996;
+	bh=aaBgis3qtdrlzFxJhP9EiyfEffuF2wJyLIrF4U8tTE4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=IYg3x19G9DTmDhuE1lTpB8VI6TlwzJZoJ2LqLBbInQYpQE9WvjnKURbktuthf5T8b
+	 70CAluturJW1yu6kwHxeoCe1P4RBEFjmGlEoYYf3JuGDyBFe5OXO1yua0GHTYg+3xd
+	 Sv1ncYWicPwf/E61M5tI+GeZcCDWUzWYUnVPCnakDlJWxoM8tjE14ZljI/8f5Fpm7O
+	 xEwB3fY2ebPu/3aLMZIc7WVHMhdNuqY0A9Jct4ei9MpVlwSudUq5tVvQmnd8JNhEHQ
+	 FiT2cBW2o/XJa+nnS8QFGHHtb+XmNzZKTWPzb1N9yKHEPc8fBQRXRFhFnDv9kLZjJ3
+	 uHpC0Nz0sgy6A==
+Date: Mon, 27 Jul 2026 22:59:50 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc: Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org, 
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: jz4780: Cache host clock rate at probe to
+ prevent CCF prepare_lock deadlock
+Message-ID: <amfGZudmo_oNgf04@zenone.zhora.eu>
+References: <2db6fd233aceb7238474e4833f4d25ca681c3ffb.1784492382.git.hns@goldelico.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2db6fd233aceb7238474e4833f4d25ca681c3ffb.1784492382.git.hns@goldelico.com>
 
-Use dma_chan_kill_bh() for virt-dma cleanup.
+Hi Nikolaus,
 
-Signed-off-by: Allen Pais <allen.lkml@gmail.com>
----
- drivers/dma/loongson/loongson1-apb-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Jul 19, 2026 at 10:19:43PM +0200, H. Nikolaus Schaller wrote:
+> Fix a severe AB/BA deadlock between the Common Clock Framework (CCF)
+> and the I2C adapter lock, which triggers when an I2C-controlled clock
+> generator client (like the Si5351) is registered or modified under the CCF.
+> 
+> During an i2c client clock (generator) frequency change, the CCF acquires its global
+> 'prepare_lock' mutex and the driver calls i2c_transfer() to update the client's
+> chip registers, stalling for the adapter's I2C bus lock.
+> 
+> Concurrently, an independent, parallel transfer on the same bus (e.g., a GPIO
+> expander handling LEDs) can hold the I2C adapter lock. Inside this parallel
+> transfer path, jz4780_i2c_set_speed() calls clk_get_rate() on the host
+> controller's input clock to calculate bus timings. This call attempts to acquire
+> the blocked CCF 'prepare_lock', creating a circular dependency that freezes
+> the system.
+> 
+> The jz4780 host controller clock itself is static and never changes at runtime.
+> 
+> However, calling clk_get_rate() inside the active transfer path introduces
+> an unnecessary dependency on the CCF internal locks.
+> 
+> Eliminate this synchronous clk_get_rate() call from the active transfer
+> path by caching the static host peripheral clock rate once - inside the private
+> jz4780_i2c structure during jz4780_i2c_probe(). Update jz4780_i2c_set_speed()
+> to use this cached value, safely decoupling active I2C transactions from the
+> CCF internal locks without any risk of stale timings.
+> 
+> Assisted-by web based Google AI (pinpointing the bug and writing the message).
+> 
+> Fixes: ba92222ed63a12 ("i2c: jz4780: Add i2c bus controller driver for Ingenic JZ4780")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 
-diff --git a/drivers/dma/loongson/loongson1-apb-dma.c b/drivers/dma/loongson/loongson1-apb-dma.c
-index 89786cbd20ab..7fc77d8e6db3 100644
---- a/drivers/dma/loongson/loongson1-apb-dma.c
-+++ b/drivers/dma/loongson/loongson1-apb-dma.c
-@@ -552,7 +552,7 @@ static void ls1x_dma_chan_remove(struct ls1x_dma *dma)
- 
- 		if (chan->vc.chan.device == &dma->ddev) {
- 			list_del(&chan->vc.chan.device_node);
--			tasklet_kill(&chan->vc.task);
-+			dma_chan_kill_bh(&chan->vc.chan);
- 		}
- 	}
- }
--- 
-2.43.0
+To be clear, I wasn't against the patch itself, I just didn't
+like the commit log and I raised questions coming just from
+reading the log.
 
+In this v2 you are missing the changelog, please, don't forget
+next time to add it.
+
+I merged your patch in i2c/i2c-fixes.
+
+Thanks,
+Andi

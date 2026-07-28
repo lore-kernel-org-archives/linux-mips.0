@@ -1,32 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E4546C4CD;
-	Tue, 28 Jul 2026 18:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2288D470424;
+	Tue, 28 Jul 2026 18:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785264639; cv=none; b=GlImNrHwRTpEd0Dgr1WDbeFRLoOKsONrNXSTZcra67Z5mX+gb1bUTL/2wQ72QyGSEZpme4AfoSduXGWsmj8hOQetmpIf2ZJYVeRFUV2cRQgVgp9lt+21jDvDEpKfEdIiP6B8/3c+qG0ltIM/wGXK3C1pljWlrDN5sEzwnIU/lyg=
+	t=1785264641; cv=none; b=DyiIsaFlhtYBytKdmDUsbH4zLUFJAq7pLGeoqC+8nGY/Ylc2hxEbVGyO+qy9yHVvOulWAzpNMTorLotiipMdo1X/LOTvWx4FtrCTIMD0d6NF50+HMjtG8VbJcUaQFeUjwYikvBfOWIjW0+GA+ln/migpj2slT++1S2orCqAfhRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785264639; c=relaxed/simple;
-	bh=mYzzqAz0rA4xOxm9bVHtoBrhE2FXjSZMKOfXDOb5HpQ=;
+	s=arc-20240116; t=1785264641; c=relaxed/simple;
+	bh=YT+86nJwEOUECHQB896RvkvYStj32QHHatM+YTInQEM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RFDfFTqve+EQ8gjPwF6XktfrQk4JaA2P3Ey2EWxzlDTxn3ugJxAWOhdx6lZk3SIEUj2MCftKS8tZYwWgZWnswAPnK43OFIwWSaE5iTOl3/dZm5YgqDLriIxqXotw/HoZGJ7yi7Tsf4/xt7GfSkLW22glRokXbJweWN3fAfK1A1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=RdqqTEdi; arc=none smtp.client-ip=5.135.140.105
+	 MIME-Version; b=SI0dneDjDtddiGZrBaX2j2jB8Ndw8H47xBRW2Mi97fBY4pvmO0SyVT8NuIGpoUK+UDTB4rV/Tzqo3TCt4pQLW84FpgsAsUPepa4Su4ucPnGc46Hygjg+pChJhb/Z1e+e6h6B5uqqURF5+AsGtF4B/m07EpXgbpq3z/67GEMxD2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=I9w5szzu; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="RdqqTEdi"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C374D6EE6E;
-	Tue, 28 Jul 2026 20:50:28 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="I9w5szzu"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0D9C58818E;
+	Tue, 28 Jul 2026 20:50:29 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1785264629; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1785264631; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=C4uX6lAGTyfn1zlcL3+ssTDJWnqcvyHgcJ8FZn74VXM=;
-	b=RdqqTEdieJPRHSwPcw4sNastkU5Of9+eeSaV2V8T/46BAS0vGiOubr7NLxJiOOcaz/Tirj
-	7bYXZRUQlxLY9Yi3TIwfgplPksddjNavimFcWigN4sas2eZuxlbMffcfi9tLjTBQlzqiLr
-	ZwtVYqa2Bo423FME3Vl2kQIMPTsMwVcuhA+3uz4u/nQKQV7h6L6P+5UIDHd7ItHp+lfpd+
-	/RMHfax8MVsQ+ln8YDm2JhGnpZrkXjoPsyp/Dvwh86FvuWAg6axEN6gg4OhpDEj+ujgBif
-	1BbxkcfkaB1FRJtZPBheJejmU2JTokkYoILaYCQzjfZn96kTxVOJDdYpGFpGUA==
+	bh=krUX8qWX7+YYev2kAywivXQtRbDed2gudF3aBPSpIu4=;
+	b=I9w5szzu0dST5LY4HQBekjaK4yNgFqsIC1z3UTWhIq3oZ7ZJKs3redi0p+W87JpT5Altwz
+	UtEJsVGP96p7iDzeG4KnnPuLeKik6kjGp8ygnt1YWTjaz4ir+PBbYPNioe7EMXL7T6vbPp
+	mpJ8hmOADBb7R4pQmlY2SsgBBYS87JvrCjk1QRS44UnNJE/+ipxM1UEG1A5/qKMx5mBPY2
+	ji64/jMuSaUaE72j2lbMnBpoDmwVDchN799O99DgkLFcvgOL/h7BKBxHQ59KRGQ+vmw74T
+	qo5JbgkfzmMQkEME/wXQQOYtew+DJePkQLaALfHHUp1MnAmaHkOvHRbCFyGO5g==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -36,9 +36,9 @@ Cc: linux-kernel@vger.kernel.org,
 	tsbogend@alpha.franken.de,
 	devicetree@vger.kernel.org,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH 1/2] mips: econet: add multi-vpe capability to EN751221
-Date: Tue, 28 Jul 2026 18:49:58 +0000
-Message-Id: <20260728184959.102441-2-cjd@cjdns.fr>
+Subject: [PATCH 2/2] mips: dts: econet: Describe dual-VPE 34Kc processor
+Date: Tue, 28 Jul 2026 18:49:59 +0000
+Message-Id: <20260728184959.102441-3-cjd@cjdns.fr>
 In-Reply-To: <20260728184959.102441-1-cjd@cjdns.fr>
 References: <20260728184959.102441-1-cjd@cjdns.fr>
 Precedence: bulk
@@ -50,99 +50,40 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-EN751221 is a 34Kc so it has two VPEs (threads) but MIPS_SMP_MT
-requires VEIC to be enabled in the interrupt controller, which only
-became supported in
-commit 2ee2a685ee83 ("irqchip/econet-en751221: Support MIPS 34Kc VEIC mode")
-
-Register SMP_MT on startup and override init_secondary with CPU
-interrupt unmasking as required by the EN751221 VEIC intc hardware.
+The 34Kc processor has two VPEs (threads) and the interrupt controller
+on the EN751221 re-routes (in hardware) the software interrupt pins
+zero and one to numbers 7 and 8 in the flat VEIC interrupt domain.
 
 Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
 ---
- arch/mips/econet/Kconfig |  4 +---
- arch/mips/econet/init.c  | 42 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 42 insertions(+), 4 deletions(-)
+ arch/mips/boot/dts/econet/en751221.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/mips/econet/Kconfig b/arch/mips/econet/Kconfig
-index b37b9d25d5a4..579fb5b01532 100644
---- a/arch/mips/econet/Kconfig
-+++ b/arch/mips/econet/Kconfig
-@@ -16,9 +16,7 @@ choice
- 		select HAVE_PCI
- 		select IRQ_MIPS_CPU
- 		select PCI_DRIVERS_GENERIC
--		select SMP
--		select SMP_UP
--		select SYS_SUPPORTS_SMP
-+		select SYS_SUPPORTS_MULTITHREADING
- 		help
- 		  The EN751221 family includes EN7512, RN7513, EN7521, EN7526.
- 		  They are based on single core MIPS 34Kc processors. To boot
-diff --git a/arch/mips/econet/init.c b/arch/mips/econet/init.c
-index 6f43ffb209cb..ae45b8788504 100644
---- a/arch/mips/econet/init.c
-+++ b/arch/mips/econet/init.c
-@@ -28,6 +28,41 @@ static void hw_reset(char *command)
- 	iowrite32(RESET, CR_AHB_RSTCR);
- }
+diff --git a/arch/mips/boot/dts/econet/en751221.dtsi b/arch/mips/boot/dts/econet/en751221.dtsi
+index 72cb65654c34..57ae84a8a9f8 100644
+--- a/arch/mips/boot/dts/econet/en751221.dtsi
++++ b/arch/mips/boot/dts/econet/en751221.dtsi
+@@ -23,6 +23,12 @@ cpu@0 {
+ 			compatible = "mips,mips34Kc";
+ 			reg = <0>;
+ 		};
++
++		cpu@1 {
++			device_type = "cpu";
++			compatible = "mips,mips34Kc";
++			reg = <1>;
++		};
+ 	};
  
-+/*
-+ * vsmp_init_secondary expects either GIC or cascading interrupt configuration.
-+ * The EN751221 is a 34Kc with VEIC, but not GIC compatible. The cascading
-+ * configuration enables lines 6 and 7 for performance counters, but when this
-+ * is done on the EN751221 intc with VEIC enabled, it causes the whole intc to
-+ * stop sending interrupts.
-+ * Only unmask lines 0 and 1 (software interrupts) in init_secondary.
-+ */
-+#ifdef CONFIG_MIPS_MT_SMP
-+extern const struct plat_smp_ops vsmp_smp_ops;
-+static struct plat_smp_ops en75_smp_ops __ro_after_init;
-+
-+static void en751221_init_secondary(void)
-+{
-+	write_c0_status((read_c0_status() & ~ST0_IM) |
-+		(STATUSF_IP0 | STATUSF_IP1));
-+}
-+
-+static int __init en751221_register_vsmp_smp_ops(void)
-+{
-+	if (!cpu_has_mipsmt)
-+		return -ENODEV;
-+
-+	en75_smp_ops = vsmp_smp_ops;
-+	en75_smp_ops.init_secondary = en751221_init_secondary;
-+	register_smp_ops(&en75_smp_ops);
-+	return 0;
-+}
-+#else
-+static int __init en751221_register_vsmp_smp_ops(void)
-+{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_MIPS_MT_SMP */
-+
- /* 1. Bring up early printk. */
- void __init prom_init(void)
- {
-@@ -51,11 +86,16 @@ void __init plat_mem_setup(void)
- 	early_init_dt_scan_memory();
- }
+ 	cpuintc: interrupt-controller {
+@@ -65,6 +71,7 @@ intc: interrupt-controller@1fb40000 {
+ 		interrupt-controller;
+ 		#interrupt-cells = <1>;
+ 		econet,shadow-interrupts = <7 2>, <8 3>, <13 12>, <30 29>;
++		econet,cpu-interrupt-map = <7 0>, <8 1>;
+ 	};
  
--/* 3. Overload __weak device_tree_init(), add SMP_UP ops */
-+/* 3. Overload __weak device_tree_init(), add SMP ops */
- void __init device_tree_init(void)
- {
- 	unflatten_and_copy_device_tree();
- 
-+	/* EN751221 dual-vpe */
-+	if (!en751221_register_vsmp_smp_ops())
-+		return;
-+
-+	/* EN751221 with MT_SMP disabled */
- 	register_up_smp_ops();
- }
- 
+ 	pciecfg: pciecfg@1fb80000 {
 -- 
 2.39.5
 

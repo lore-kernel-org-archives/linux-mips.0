@@ -1,408 +1,153 @@
-Received: from mail.ilvokhin.com (mail.ilvokhin.com [178.62.254.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D902241B8F8;
-	Tue, 28 Jul 2026 11:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.254.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DB43321B1
+	for <linux-mips@vger.kernel.org>; Tue, 28 Jul 2026 15:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785237421; cv=none; b=bGgkTHk4irp/UUWCke1kQqau26mZE8LXXkhu2m6wkudrifJ2uJOdSb2mA6jhhHfLe6y7utkiCg7fFehKP8enivTYIQ0ebGJJD4EzB1zu/Ky2UVDfgkM4nLETDB6wmnGrQc2lwCsYQHoNwCToiZdOJpcQf/Mv1DDwfsMqw0auyhs=
+	t=1785254230; cv=none; b=ecop2Fuo+UZdE8XNgHqmPbEJGMYfBLSqul0D50BbVKptK0EEKn+VYKasNCywndmeddfUbnH4qkDOekA43Lj1Niy3uZ/2ieluSutH8g/EuJaxc/6ANAauHfiVTztmZrGPOeyBzPYqnanK5L/Qk7vJ0ctJDlhfAzPL7kU1Oelobw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785237421; c=relaxed/simple;
-	bh=Z7Qc2NcYtYt9kXB+gy+Ybj9A1mFMRthRE15p9KsYA2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k/DAhAck/93F9Bed+cjNxeT3fZ0zC4EQlFSrnv566budW7ShLUIvpM+bsOVaiMhcZpzm4PQArUXZsNeJ0XpVXvWe1Y9+bvE4NcNnbCQvlI2YG+D1PVNz4myqzL9qm2xRdYo9kAIkrl420FkZq+8hDyOuhUCLFN8ywL+KQKJIr48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com; spf=pass smtp.mailfrom=ilvokhin.com; dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b=acCvhA+D; arc=none smtp.client-ip=178.62.254.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ilvokhin.com
+	s=arc-20240116; t=1785254230; c=relaxed/simple;
+	bh=GKljBHDRRmg07Rca8fkUIg/4A4pmQuHDBT1Nd6497uw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gR3sUSFPv+lXBBTtPPikNVZvsJkJeU8XKDQTAUagnpRQZzGJTTz5qb2VEmBcB23VtjY/U0Re9EmLZQXirDlxte8CbzSuvDIbvTX1u4o1/nPiBisKhHCAQn4xCpd9H2Glv3ii6zgL87JzhEwabfbM2Vq32aa93Q3QzZNl7tNeMPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=f2cRSkjV; arc=none smtp.client-ip=209.85.214.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ilvokhin.com header.i=@ilvokhin.com header.b="acCvhA+D"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilvokhin.com;
-	s=mail; t=1785236901;
-	bh=TY0hPq1DZRY+oQjDvxLhEtkwszNy4loaKqn689w042k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=acCvhA+DUH9/IL5BtyczwSZ+lRbF0mTHcTf5yZzehWwcl/UKF3uCkKJprUAJooRsL
-	 +E1MSkaxPjbSFUUfsOARQxxS0I79jSNWZtvypMpYo2doS9wRsfiyFfOB+Ry25zmPID
-	 M3l4nDoOMtWc7/suDwSDxfVQ4mGy9wHcsFjPykMg=
-Received: from shell.ilvokhin.com (shell.ilvokhin.com [138.68.190.75])
-	(Authenticated sender: d@ilvokhin.com)
-	by mail.ilvokhin.com (Postfix) with ESMTPSA id 43E20E13B2;
-	Tue, 28 Jul 2026 11:08:21 +0000 (UTC)
-Date: Tue, 28 Jul 2026 11:08:17 +0000
-From: Dmitry Ilvokhin <d@ilvokhin.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun@kernel.org>, Waiman Long <longman@redhat.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Juergen Gross <jgross@suse.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Alexey Makhalov <alexey.makhalov@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	virtualization@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	kernel-team@meta.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v6 5/7] locking: Add contended_release tracepoint to
- qspinlock
-Message-ID: <amiNocZ8olirlihI@shell.ilvokhin.com>
-References: <cover.1777999826.git.d@ilvokhin.com>
- <5d7ea75ffe74a785e6b234ada9f23c6373d4b4c1.1777999826.git.d@ilvokhin.com>
- <20260513193342.GB2545104@noisy.programming.kicks-ass.net>
- <agXBb0ga_6HJrrnm@shell.ilvokhin.com>
- <20260603120811.GW3493090@noisy.programming.kicks-ass.net>
- <aiA3dzjKVq2_cpSY@shell.ilvokhin.com>
- <20260603142659.GW3102624@noisy.programming.kicks-ass.net>
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="f2cRSkjV"
+Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2ceae1ed204so543205ad.0
+        for <linux-mips@vger.kernel.org>; Tue, 28 Jul 2026 08:57:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785254228; x=1785859028;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:dkim-signature:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=eEcBT0DqDFqRvEXW/LVtISbv9SdiNpotZ+Mcrmq9BAs=;
+        b=FjjiUUND2IrwcsGJYzTYu7iK7WQbw4MyaPTDcCZa0a5AJeNvno2z4oTEPcs2s4FxEe
+         30Qyfl1OCgAOIztJFZOwFoWBvZkZhZRAOPUQFzBw6kEyx6K2WDdyagXG/8eg2vI9bmjo
+         8Z/Ix/dY72BoM6aQFoARTcERA595StsJdSSvDTBKZBqP3KuJanc3+elTKd2piWdsGE0J
+         Y+gveNPZg0s7lyWo7Rb0O0Trr5InF+RpNIuv31Q+/pfJyzighXh9LfMMZR9Ovv/LZ/ym
+         TMKmB0hiud6NKSq6k90JGFGNiaC0xUCjRxN5GUnplxc3Yl6Cg6+JEWplPSoR6nsFFi+I
+         dZ8Q==
+X-Forwarded-Encrypted: i=1; AHgh+RrwnBKSQsXng5wcZqBLVUKBS5y+TPd5KxB39RYBUtPkmY08UysSZRE22r/sbg6KDTp7VfCB6eWOaYNP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzm6/EbzgD4Cd4ZsoFhn2ZwSwF2B5fbUeC7LJONFJ32sXQHl3F0
+	IP5X7iNKn6srMzTaT2VLhOkcnw7ZnuTLNyKqgVIoMonNlZzt4uxO1e7VJt3OTtO6NMB1sMCiGvL
+	nOAktfzqDSujt6u15U9nEbkk7caAazDLflxjlE6nucfM4BNdnepGq4KAFX0qDiHdC+AiaUfgyAs
+	69i9RfH3Z+KW1kib6FVecLPJf6pT1HVZ8X+6qS1scfaoEfhG1zxQYGXre3UNdI2drMMFClkf00b
+	nTzZbYS7/bNwkm6kfRA/w==
+X-Gm-Gg: AR+sD10edbLQW3H37ZTYsSUjGyC4Tpr+xlD+CgyBNQPBV89LfvfDXugPMF+VkJBqqky
+	A5kcAQY5lOgYBfarMM/fEAO94zVGWHOnf9xEvLS4RG6fxh/lYugwJxgDs25GTp1t8mWxqrjIYlF
+	lN/lTI4dSyeQRo/1ZzibZn+9cTx99R+jQuJJ9K2O3II1wgMmlNZdgLhEsbsDiC270cq7JdrxOy4
+	Hc3MJy/m34zAGp47xLgelGOsSIYNjpoCGZu99NUo+9djGqiBwO0bEv7e5L8RyYwGIXFFry3j3at
+	LmY8MUzdg4QKmITL6qrNyv+odJdCh/+oYqxLtZsNzQHghj94BVQ8u9shEeOHbkWFZ4KbzBvx0Zw
+	gYe03O0jjNMGnD7XSaHt7d1xnQ8LsHM2+SxQiKh6SJoUkmT+Pb2Ogylx+PdSUCnWcO5xgZnNtoO
+	uZZtTde4fnGOqxlGNBNqGH+sc6prYKix29WV6ZE5OS
+X-Received: by 2002:a17:903:1b24:b0:2c6:a981:b591 with SMTP id d9443c01a7336-2d015c8768emr36813795ad.30.1785254228233;
+        Tue, 28 Jul 2026 08:57:08 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-25.dlp.protect.broadcom.com. [144.49.247.25])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2cfde7c2b6csm10492605ad.50.2026.07.28.08.57.07
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Jul 2026 08:57:08 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-51c21c01cf3so69241491cf.2
+        for <linux-mips@vger.kernel.org>; Tue, 28 Jul 2026 08:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1785254227; x=1785859027; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=eEcBT0DqDFqRvEXW/LVtISbv9SdiNpotZ+Mcrmq9BAs=;
+        b=f2cRSkjVIgUvSJdzgqBp6cmkNC93D7xC6F0/TsHp1JxnvndCaRapHLLeAPyobqhIFf
+         xHu4WhgBek2Mw8pB0Ej5L++6PWef80YyOxieeIylHNLlGUjnR1YarYEo1h7ZfGOai2au
+         TkPIesuWjerz/67Z5o6oExVzCtltTYPkB2qds=
+X-Forwarded-Encrypted: i=1; AHgh+RpS99Ri00aIwMzeb+oVwhOVAI3PcR71C2Y8VBHe6ohyyo3oLkUgsj6Fp3LAT0Qx4AxanzZIpe5Qz2u+@vger.kernel.org
+X-Received: by 2002:ac8:7f48:0:b0:51e:47a4:4851 with SMTP id d75a77b69052e-529d7056a7dmr29635781cf.8.1785254226836;
+        Tue, 28 Jul 2026 08:57:06 -0700 (PDT)
+X-Received: by 2002:ac8:7f48:0:b0:51e:47a4:4851 with SMTP id d75a77b69052e-529d7056a7dmr29635321cf.8.1785254226245;
+        Tue, 28 Jul 2026 08:57:06 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-529e2db86dasm596251cf.20.2026.07.28.08.57.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jul 2026 08:57:05 -0700 (PDT)
+Message-ID: <d6d9b8b9-ec15-4305-9072-235e119cf46d@broadcom.com>
+Date: Tue, 28 Jul 2026 08:57:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260603142659.GW3102624@noisy.programming.kicks-ass.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 16/16] irqchip/bcm7120-l2: fix parent IRQ count error
+ handling
+To: Haofeng Li <920484857@qq.com>, tglx@kernel.org
+Cc: linux-kernel@vger.kernel.org, Haofeng Li <13266079573@163.com>,
+ Haofeng Li <lihaofeng@kylinos.cn>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Marc Zyngier <maz@kernel.org>,
+ linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20260714122351.3274006-1-lihaofeng@kylinos.cn>
+ <20260714132453.3302672-1-920484857@qq.com>
+ <tencent_C245DB15F66403C1D9EA90BC06987A016509@qq.com>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <tencent_C245DB15F66403C1D9EA90BC06987A016509@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-On Wed, Jun 03, 2026 at 04:26:59PM +0200, Peter Zijlstra wrote:
-> On Wed, Jun 03, 2026 at 02:17:27PM +0000, Dmitry Ilvokhin wrote:
+On 7/14/26 06:24, Haofeng Li wrote:
+> From: Haofeng Li <lihaofeng@kylinos.cn>
 > 
-> > > Something a little like so, which is completely untested, except to
-> > > build kernel/locking/spinlock.o (with clang-23).
-> > 
-> > Thanks a lot for taking a look, Peter.
-> > 
-> > I like the static_call idea. It's truly zero cost on x86 (and, as you
-> > note, even a byte smaller). The one caveat is that it relies on
-> > HAVE_STATIC_CALL_INLINE to stay free. 
-> > 
-> > So my plan would be: static_call where HAVE_STATIC_CALL_INLINE is
-> > available (x86), and a static branch fallback elsewhere, gated behind a
-> > default-off config so it imposes nothing on arches/kernels that don't
-> > opt in. I'm mostly interested in x86, but would like arm64 to work too,
-> > which would use the fallback.
+> When platform_irq_count() fails or returns zero, probe reported -ENOMEM
+> even though no memory allocation failed. Negative values such as
+> -EPROBE_DEFER were also discarded, which breaks deferred probe.
 > 
-> (i386 doesn't have STATIC_CALL_INLINE, but nobody cares about the
-> performance on that target, so anything goes really ;-)
+> Propagate negative errno from platform_irq_count(), and return -EINVAL
+> only for a zero parent interrupt count.
 > 
-> > 
-> > Concretely:
-> > 
-> > 1. Split the sleepable-lock patches out and send them separately.
-> >    They're independent of the static call work and look far less
-> >    controversial.
-> > 
-> > 2. Convert the paravirt spinlock unlock to a static_call, as the
-> >    foundation for the unlock tracepoint. I'm happy to take a stab at it.
-> >    Let me know if you'd rather do it yourself.
-> 
-> Yeah, I think that patch as-is *should* work, but like said, I haven't
-> even tried it, so it could be terribly broken :-)
+> Fixes: 3ac268d5ed22 ("irqchip/irq-bcm7120-l2: Switch to IRQCHIP_PLATFORM_DRIVER")
+> Signed-off-by: Haofeng Li <lihaofeng@kylinos.cn>
 
-Hello Peter,
-
-I picked up your static_call() paravirt-spinlock draft and fixed it up
-to where it boots. I think it stands on its own as a cleanup,
-independent of the contended_release tracepoint it was meant to enable,
-so I'd like to submit it for wider review.
-
-On top of your draft:
-
-- Fix the CONFIG_PARAVIRT_SPINLOCKS=n build.
-
-- Pass @lock to the callee-save unlock. Without it the boot hungs under
-  CONFIG_CALL_DEPTH_TRACKING.
-
-- Teach __static_call_validate() about the inline unlock insn so the
-  site can be re-validated after it's patched to the movb.
-
-- Make the slowpath site module-safe: static_call_mod() +
-  EXPORT_STATIC_CALL_TRAMP().
-
-Boot tested native and as a KVM PV guest.
-
-One important thing missing is your Signed-off-by. Is there any chance
-you could provide one if you're happy with the result?
-
-Let me know if you'd like to submit this patch yourself.
-
-From b6a114c9cd7698115c78812115199087a6cd8276 Mon Sep 17 00:00:00 2001
-From: Dmitry Ilvokhin <d@ilvokhin.com>
-Date: Mon, 29 Jun 2026 09:46:05 -0700
-Subject: [PATCH] x86/paravirt: Use static_call() for the paravirt spinlock ops
-
-From: Peter Zijlstra <peterz@infradead.org>
-
-queued_spin_lock_slowpath() and queued_spin_unlock() are dispatched
-through pv_ops_lock via the paravirt-ops ALTERNATIVE machinery, which
-picks the target (native inline store / hypervisor call) once at boot
-and cannot change at runtime.
-
-Convert both to static_call(). The site becomes a direct call patched in
-place (one byte smaller), and on native the unlock still collapses to
-the inline "movb $0, (%rdi)" store, so the fast path is unchanged.
-
-Unlike the ALTERNATIVE mechanism, a static_call() target can also be
-updated at runtime via static_call_update(). This is a prerequisite for
-the contended_release tracepoint, which has to swap in a traced unlock
-while the system is running.
-
-Drop the now-unused
-pv_ops_lock.{queued_spin_lock_slowpath,queued_spin_unlock} members and
-the X86_FEATURE_PVUNLOCK feature bit. KVM, Xen and Hyper-V install their
-backends with static_call_update(), and pv_is_native_spin_unlock() reads
-the current target with static_call_query(). The native unlock is
-emitted inline at the call site from __static_call_transform(),
-mirroring the existing __static_call_return0 and __WARN_trap special
-cases.
-
-[ ilvokhin: fix PARAVIRT_SPINLOCKS=n build; teach
-  __static_call_validate() about the inline unlock insn; make the
-  slowpath site module-safe: static_call_mod() +
-  EXPORT_STATIC_CALL_TRAMP(); pass @lock to the callee-save unlock,
-  fixing a boot hang under CALL_DEPTH_TRACKING. Boot tested native + KVM
-  PV guest. ]
-
-Link: https://lore.kernel.org/all/20260603120811.GW3493090@noisy.programming.kicks-ass.net/
-Co-developed-by: Dmitry Ilvokhin <d@ilvokhin.com>
-Signed-off-by: Dmitry Ilvokhin <d@ilvokhin.com>
----
- arch/x86/hyperv/hv_spinlock.c            |  4 ++--
- arch/x86/include/asm/cpufeatures.h       |  1 -
- arch/x86/include/asm/paravirt-spinlock.h | 19 +++++++++++------
- arch/x86/kernel/kvm.c                    |  5 ++---
- arch/x86/kernel/paravirt-spinlocks.c     | 12 +++++------
- arch/x86/kernel/static_call.c            | 27 ++++++++++++++++++++++++
- arch/x86/xen/spinlock.c                  |  5 ++---
- tools/arch/x86/include/asm/cpufeatures.h |  1 -
- 8 files changed, 51 insertions(+), 23 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
-index 210b494e4de0..6b4bdea18218 100644
---- a/arch/x86/hyperv/hv_spinlock.c
-+++ b/arch/x86/hyperv/hv_spinlock.c
-@@ -78,8 +78,8 @@ void __init hv_init_spinlocks(void)
- 	pr_info("PV spinlocks enabled\n");
- 
- 	__pv_init_lock_hash();
--	pv_ops_lock.queued_spin_lock_slowpath = __pv_queued_spin_lock_slowpath;
--	pv_ops_lock.queued_spin_unlock = PV_CALLEE_SAVE(__pv_queued_spin_unlock);
-+	static_call_update(queued_spin_lock_slowpath, __pv_queued_spin_lock_slowpath);
-+	static_call_update(queued_spin_unlock, __raw_callee_save___pv_queued_spin_unlock);
- 	pv_ops_lock.wait = hv_qlock_wait;
- 	pv_ops_lock.kick = hv_qlock_kick;
- 	pv_ops_lock.vcpu_is_preempted = PV_CALLEE_SAVE(hv_vcpu_is_preempted);
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 1b4a48bff18f..e41fe5c24841 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -225,7 +225,6 @@
- #define X86_FEATURE_EPT_AD		( 8*32+17) /* "ept_ad" Intel Extended Page Table access-dirty bit */
- #define X86_FEATURE_VMCALL		( 8*32+18) /* Hypervisor supports the VMCALL instruction */
- #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* VMware prefers VMMCALL hypercall instruction */
--#define X86_FEATURE_PVUNLOCK		( 8*32+20) /* PV unlock function */
- #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* PV vcpu_is_preempted function */
- #define X86_FEATURE_TDX_GUEST		( 8*32+22) /* "tdx_guest" Intel Trust Domain Extensions Guest */
- 
-diff --git a/arch/x86/include/asm/paravirt-spinlock.h b/arch/x86/include/asm/paravirt-spinlock.h
-index 7beffcb08ed6..ff735830de4a 100644
---- a/arch/x86/include/asm/paravirt-spinlock.h
-+++ b/arch/x86/include/asm/paravirt-spinlock.h
-@@ -3,6 +3,7 @@
- #define _ASM_X86_PARAVIRT_SPINLOCK_H
- 
- #include <asm/paravirt_types.h>
-+#include <linux/static_call_types.h>
- 
- #ifdef CONFIG_SMP
- #include <asm/spinlock_types.h>
-@@ -11,9 +12,6 @@
- struct qspinlock;
- 
- struct pv_lock_ops {
--	void (*queued_spin_lock_slowpath)(struct qspinlock *lock, u32 val);
--	struct paravirt_callee_save queued_spin_unlock;
--
- 	void (*wait)(u8 *ptr, u8 val);
- 	void (*kick)(int cpu);
- 
-@@ -26,20 +24,27 @@ extern struct pv_lock_ops pv_ops_lock;
- extern void native_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
- extern void __pv_init_lock_hash(void);
- extern void __pv_queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
-+extern void __raw_callee_save___native_queued_spin_unlock(struct qspinlock *lock);
- extern void __raw_callee_save___pv_queued_spin_unlock(struct qspinlock *lock);
- extern bool nopvspin;
- 
-+DECLARE_STATIC_CALL(queued_spin_lock_slowpath, native_queued_spin_lock_slowpath);
-+DECLARE_STATIC_CALL(queued_spin_unlock, __raw_callee_save___native_queued_spin_unlock);
-+
- static __always_inline void pv_queued_spin_lock_slowpath(struct qspinlock *lock,
- 							 u32 val)
- {
--	PVOP_VCALL2(pv_ops_lock, queued_spin_lock_slowpath, lock, val);
-+	static_call_mod(queued_spin_lock_slowpath)(lock, val);
- }
- 
- static __always_inline void pv_queued_spin_unlock(struct qspinlock *lock)
- {
--	PVOP_ALT_VCALLEE1(pv_ops_lock, queued_spin_unlock, lock,
--			  "movb $0, (%%" _ASM_ARG1 ")",
--			  ALT_NOT(X86_FEATURE_PVUNLOCK));
-+	PVOP_CALL_ARGS;
-+	__STATIC_CALL_MOD_ADDRESSABLE(queued_spin_unlock);
-+	asm volatile ("call " STATIC_CALL_TRAMP_STR(queued_spin_unlock)
-+		      : PVOP_VCALLEE_CLOBBERS, ASM_CALL_CONSTRAINT
-+		      : PVOP_CALL_ARG1(lock)
-+		      : "memory", "cc");
- }
- 
- static __always_inline bool pv_vcpu_is_preempted(long cpu)
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index dcef84da304b..253c159c4abe 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -1136,9 +1136,8 @@ void __init kvm_spinlock_init(void)
- 	pr_info("PV spinlocks enabled\n");
- 
- 	__pv_init_lock_hash();
--	pv_ops_lock.queued_spin_lock_slowpath = __pv_queued_spin_lock_slowpath;
--	pv_ops_lock.queued_spin_unlock =
--		PV_CALLEE_SAVE(__pv_queued_spin_unlock);
-+	static_call_update(queued_spin_lock_slowpath, __pv_queued_spin_lock_slowpath);
-+	static_call_update(queued_spin_unlock, __raw_callee_save___pv_queued_spin_unlock);
- 	pv_ops_lock.wait = kvm_wait;
- 	pv_ops_lock.kick = kvm_kick_cpu;
- 
-diff --git a/arch/x86/kernel/paravirt-spinlocks.c b/arch/x86/kernel/paravirt-spinlocks.c
-index 95452444868f..ddc19dc28ba1 100644
---- a/arch/x86/kernel/paravirt-spinlocks.c
-+++ b/arch/x86/kernel/paravirt-spinlocks.c
-@@ -25,9 +25,14 @@ __visible void __native_queued_spin_unlock(struct qspinlock *lock)
- }
- PV_CALLEE_SAVE_REGS_THUNK(__native_queued_spin_unlock);
- 
-+DEFINE_STATIC_CALL(queued_spin_lock_slowpath, native_queued_spin_lock_slowpath);
-+EXPORT_STATIC_CALL_TRAMP(queued_spin_lock_slowpath);
-+DEFINE_STATIC_CALL(queued_spin_unlock, __raw_callee_save___native_queued_spin_unlock);
-+EXPORT_STATIC_CALL_TRAMP(queued_spin_unlock);
-+
- bool pv_is_native_spin_unlock(void)
- {
--	return pv_ops_lock.queued_spin_unlock.func ==
-+	return static_call_query(queued_spin_unlock) ==
- 		__raw_callee_save___native_queued_spin_unlock;
- }
- 
-@@ -45,16 +50,11 @@ bool pv_is_native_vcpu_is_preempted(void)
- 
- void __init paravirt_set_cap(void)
- {
--	if (!pv_is_native_spin_unlock())
--		setup_force_cpu_cap(X86_FEATURE_PVUNLOCK);
--
- 	if (!pv_is_native_vcpu_is_preempted())
- 		setup_force_cpu_cap(X86_FEATURE_VCPUPREEMPT);
- }
- 
- struct pv_lock_ops pv_ops_lock = {
--	.queued_spin_lock_slowpath	= native_queued_spin_lock_slowpath,
--	.queued_spin_unlock		= PV_CALLEE_SAVE(__native_queued_spin_unlock),
- 	.wait				= paravirt_nop,
- 	.kick				= paravirt_nop,
- 	.vcpu_is_preempted		= PV_CALLEE_SAVE(__native_vcpu_is_preempted),
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index 61592e41a6b1..bab9406e6d6a 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -4,6 +4,12 @@
- #include <linux/bug.h>
- #include <asm/text-patching.h>
- 
-+/* Declared locally to avoid pulling asm/paravirt-spinlock.h header. */
-+#ifdef CONFIG_PARAVIRT_SPINLOCKS
-+struct qspinlock;
-+void __raw_callee_save___native_queued_spin_unlock(struct qspinlock *lock);
-+#endif
-+
- enum insn_type {
- 	CALL = 0, /* site call */
- 	NOP = 1,  /* site cond-call */
-@@ -31,6 +37,17 @@ static const u8 retinsn[] = { RET_INSN_OPCODE, 0xcc, 0xcc, 0xcc, 0xcc };
-  */
- static const u8 warninsn[] = { 0x67, 0x48, 0x0f, 0xb9, 0x3a };
- 
-+#ifdef CONFIG_PARAVIRT_SPINLOCKS
-+/*
-+ * ds ds movb $0, (_ASM_ARG1)
-+ */
-+#ifdef CONFIG_64BIT
-+static const u8 unlockinsn[] = { 0x3e, 0x3e, 0xc6, 0x07, 0x00 };
-+#else
-+static const u8 unlockinsn[] = { 0x3e, 0x3e, 0xc6, 0x00, 0x00 };
-+#endif
-+#endif
-+
- static u8 __is_Jcc(u8 *insn) /* Jcc.d32 */
- {
- 	u8 ret = 0;
-@@ -78,6 +95,12 @@ static void __ref __static_call_transform(void *insn, enum insn_type type,
- 			emulate = code;
- 			code = &warninsn;
- 		}
-+#ifdef CONFIG_PARAVIRT_SPINLOCKS
-+		if (func == &__raw_callee_save___native_queued_spin_unlock) {
-+			emulate = code;
-+			code = &unlockinsn;
-+		}
-+#endif
- 		break;
- 
- 	case NOP:
-@@ -139,6 +162,10 @@ static void __static_call_validate(u8 *insn, bool tail, bool tramp)
- 		    !memcmp(insn, xor5rax, 5) ||
- 		    !memcmp(insn, warninsn, 5))
- 			return;
-+#ifdef CONFIG_PARAVIRT_SPINLOCKS
-+		if (!memcmp(insn, unlockinsn, 5))
-+			return;
-+#endif
- 	}
- 
- 	/*
-diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
-index 83ac24ead289..f718e535ea7c 100644
---- a/arch/x86/xen/spinlock.c
-+++ b/arch/x86/xen/spinlock.c
-@@ -134,9 +134,8 @@ void __init xen_init_spinlocks(void)
- 	printk(KERN_DEBUG "xen: PV spinlocks enabled\n");
- 
- 	__pv_init_lock_hash();
--	pv_ops_lock.queued_spin_lock_slowpath = __pv_queued_spin_lock_slowpath;
--	pv_ops_lock.queued_spin_unlock =
--		PV_CALLEE_SAVE(__pv_queued_spin_unlock);
-+	static_call_update(queued_spin_lock_slowpath, __pv_queued_spin_lock_slowpath);
-+	static_call_update(queued_spin_unlock, __raw_callee_save___pv_queued_spin_unlock);
- 	pv_ops_lock.wait = xen_qlock_wait;
- 	pv_ops_lock.kick = xen_qlock_kick;
- 	pv_ops_lock.vcpu_is_preempted = PV_CALLEE_SAVE(xen_vcpu_stolen);
-diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
-index 86d17b195e79..61541f042f74 100644
---- a/tools/arch/x86/include/asm/cpufeatures.h
-+++ b/tools/arch/x86/include/asm/cpufeatures.h
-@@ -225,7 +225,6 @@
- #define X86_FEATURE_EPT_AD		( 8*32+17) /* "ept_ad" Intel Extended Page Table access-dirty bit */
- #define X86_FEATURE_VMCALL		( 8*32+18) /* Hypervisor supports the VMCALL instruction */
- #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* VMware prefers VMMCALL hypercall instruction */
--#define X86_FEATURE_PVUNLOCK		( 8*32+20) /* PV unlock function */
- #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* PV vcpu_is_preempted function */
- #define X86_FEATURE_TDX_GUEST		( 8*32+22) /* "tdx_guest" Intel Trust Domain Extensions Guest */
- 
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.53.0-Meta
+Florian
 

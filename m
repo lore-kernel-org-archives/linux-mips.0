@@ -1,138 +1,107 @@
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A8E442FD8
-	for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785513247; cv=pass; b=pBYjsM7RGrRMbmUjabydO4zSutZB4YW3Pxey6ZcFBcO3bPnLn/aQluNN/tD752SdYfueukgf1WtCsXko9tPXTnkJ1qKj+o5ZVlkAQtH5XmFHyB66PAEtZAqv/rMyjVrE9cPiuuWFDrtmzupBjT64uShjRPIPDn5UaVj/FKwcs4k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785513247; c=relaxed/simple;
-	bh=NdjZUpmzPZnbev3nErg8Ah5yqfjCOeg4X4X3Z2k7pW8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsYTyMx/Edlhnh6gi83fh9mx9/UW/v8wK48gO/7uapQa+gsyouYchLb5n4mM4yPea/NBE9IkWlCG9W+5ho9X04Be2uSv8Ex5NAzvOTFawSdxbepoSOMipHhofSDYYhXPfx8cqzgFbnxNWrl+WhClk4ECz/qjGKevL2yaFRRNl0o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ovj9T6dv; arc=pass smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C284457A9
+	for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785520081; cv=none; b=hxnVRMm3AYc1ydsjJczNw3l1GbN7PbzMcMkoU2oFTqf02/4+/d5ygyLZApEglNj3dnFHdBWRQRI3Y1neTevnLLnGgxMtatHTxSiwhH+rab1p0CH4HVWQk5NzymcOFhq3VXCVhqccbOOHK090Zf4CzFQVFmdj1vf23ioG6b094No=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785520081; c=relaxed/simple;
+	bh=0yNn6UCEpfxiasWFtsI4EcNwcryZJo4lBKG5Svutmh8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jknN22dyaVvc3lFZhhuN6GdJ71vcYhOFLyDzuh91p+OXY9bhTt8u2jLAtUohumsBBP755nTR3/Fr5qscYBhhDOmnnFpW4HeDAeKHdpHhbNkoYBLDx7d/BPoe1DHGD7pROVNuigdrZeSZFBn8EWB9+KJHxqal8HJoijEvgv3II3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UtmjwvRR; arc=none smtp.client-ip=209.85.160.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ovj9T6dv"
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-c167aa9500dso149665266b.3
-        for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 08:54:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1785513245; cv=none;
-        d=google.com; s=arc-20260327;
-        b=WYp8Ys7GsJ1LERKR4OH1mtcdhFVhVQhgV6qLPKZmHrN7SEaJkd56ZTSj5i7/okDy6y
-         OrLE6g1gFdIb24NibFNjRB1IKRK1v3qaIcSN4aOOymWDqZWdDbgbzPHPFaEkWZwZHzDW
-         VqSvu5tIm2YVmAEWbfJiAds8/r06xV37mSFdswF+bPE7JS1ZI25DXYWVDUPD9D3ufHTa
-         wt4xmS1Xyi3Vo5R8+t9x/NZSnrHXSLzmMdwd66xe35obpFqjMuXYhacAJQMX+fyrHpIF
-         wDKUq5+n8mH3Rsz56sXX5ZDKpRHQUc6Lhqh19jfYhp2trNvVEtNQ07p2S4Pwqr+JbMII
-         6xSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=AUMtluikfNRsC8Z97PB9sPGKAI0yWhOSoIYDn0tGlXs=;
-        fh=e0d5c9LpMnwuyKubsu9xQskc7aSMWwyt97gjPpA2bNo=;
-        b=er7xQEuwb3H1BiSFHDkqX2gTlJQQUMArIkTQVCEtxkTPGTh9arO9kOupmpz+zxC3wN
-         Yh3Ls+IFDMqSlqGj/PsttBg1QnHlGfnyeysyJQQ70sNf2rFV+aM9/L2jUCnzcyhJw+EZ
-         MNjqDTAqJWsRPm205IvSu8AaKAdXmlHrZCQjgdOPOjjIr/KtKOP8IT/iNloyU0oKxhGo
-         CueDMGeukoMMxyvpk9/gMGXzVWdxaTMR2y0cIqg/fvDV9DFkxbcfPU/FJhInh8F887Qs
-         vZM5OLVSeRi7bYlkzPq2zr6yqvoRzxAiYOTt2MOhP83fxnWvh8h2fOPQv7aK5o9SA+3t
-         CPEw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UtmjwvRR"
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-45691990234so897171fac.3
+        for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 10:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785513245; x=1786118045; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=AUMtluikfNRsC8Z97PB9sPGKAI0yWhOSoIYDn0tGlXs=;
-        b=Ovj9T6dvfrqi7Fjb6LI7ewOrAsaXe1PQul4uGXl7vrX59UKJrY7IImsY3Ou/2kYZVH
-         n/ABKgdR92URlX4tZeFFC7TtS7i3wwmsKXhraKBBZB0PYZAYJdmXn8+XiiulrgW1Vpbs
-         aA00gvHZNYXDwadmNdzKi0TFB4IY/Zy2kSuGeVpkRzRuufM65kE7V80qY6HsvV4OAqPn
-         z5xqQb4/9PvNyrmP4FbEvSUwL9ldeYALje9JkEwX0hip2aXreIjdg4BSTQG9kXjoTMig
-         ppORU5DLmiICruySbckr6nlqvxqMZ92sBTnEBWwgPaqtt5nEMeYa5sk3xXTNkz7fiERx
-         2Dfg==
+        d=gmail.com; s=20251104; t=1785520078; x=1786124878; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=N+XQUCg6wdOzJjQ9gmJVOhDWO1BvviUjv32Kg81AE2k=;
+        b=UtmjwvRR8LdBz7N0kMvgX+0sCkqj/LASGn/vSjM4zLcpLwz8fC98Ox6oTFfaqKTZyd
+         WqLqg6tqukuLU+ESQIGllfW75q67A9gHd667yHAgCp20n196FCFHieuXudJ9gXSKIsTj
+         x4ZGwnBsMu4QBgprdxgninsxTbulmhOkMm9Z8MtUs/vINQVT5D9jYt1BqUbF+zR1wg5R
+         eCoiBqhxS27cidcnTwNF7vywkO3MvL6XU9nbF7QBhbNEahulhXWOy5VVhVUM3b54jt4x
+         ANHM3wrvEP5ZFdxDxOto0jVOLRDxqqGuefsNPTwTF3FErcmV30exfTR8EuXwDU6ToFZB
+         UnUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785513245; x=1786118045;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=AUMtluikfNRsC8Z97PB9sPGKAI0yWhOSoIYDn0tGlXs=;
-        b=Z+qZpeRHOROKIUcUiNULB6A+kysYK6iTGPmg/v1P5xXRMSN1PdHWuFgTZwgPvZtuBk
-         9MIdiaGpJzqeBewryzu5NXv+EZG7RPG76430zz0ZZNNgBgAj2JY7UUv5a86O0zmfKrfD
-         BuT/9AbNdqsp0XwBHlkQ5TW3CTQVdd6xA9BeM2rQ+Dmp07MWxLWLVsYvAuoseUO4CbB0
-         b8XRPtxtBT9fAEq9g9fD3Tx8BZteMZn38qsJXszLgH0oI/zpS7l1p9vvz754X+bQFzsj
-         cY9kofIx/N5SM678HP88dqp7enNX4VcJ5ocXfWQ1WgSTXqRkxUA6I6/FhSQqPpEq/o/0
-         T+yQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoCpe/g79R+zraLozpe2Rtfghv+Dg4g1BfNAZFqtJN8xi/OYIIVAzLYwTGE3JPiMVfEZjwfOkVBViFt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhZGPYbNLf/0rkfQcbeGvxZbsZxG8vbR+QLzgtQzK2e1HCsTtP
-	faNEwy84n2NrPYdButs4eESKeyIp0TH3I1zrYIDGKVVF3ohMZV9k2y4X4TuLjqnt+3PfwGBac3t
-	tbIXdhHKjh7UC53MnmESA6ovvJoGPIC8=
-X-Gm-Gg: AR+sD12Vty/6fQKxtDNny90uW+M6Fq7C8km/rX4JYEqmFT9v7Oft46IceR80Mlr9WRn
-	cahN/q6j7fuuM0s6/BIib6It3K5lRyjWFDnpcfkFjWZuil2fizKXzDF5SW86fvX6bZ6PkGnaIC2
-	VpZzomA0jV8Tobc45MbPRAvLUvtZLWEcFpHI73b+6bpGzSIbBF7NB9ZiXmXwFvS/xqe4DVOZRJ0
-	FuIcHi6SgPDZy3DFfPloQDtZoBmYWI/RkRYKi6epmOvEHAvpyYrDMyOEXpTQKXnrNElWfzpGZ3V
-	9mXd1L+R/p7g8dSFtiLW+yyLe9h6axjYslqbCmzYnbLiIg==
-X-Received: by 2002:a17:907:e1cd:20b0:c19:80cf:4c75 with SMTP id
- a640c23a62f3a-c1fe7f3c548mr8494566b.20.1785513244463; Fri, 31 Jul 2026
- 08:54:04 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1785520078; x=1786124878;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=N+XQUCg6wdOzJjQ9gmJVOhDWO1BvviUjv32Kg81AE2k=;
+        b=BeqGiJmEDlSCNfddYNSsnxXdA6vZak8gRlX1ZMHbiNFHcifVm0U4o9It90orOF7+Wk
+         DQFGu2nks/uWpkD8m7xRjx8QvkkhuIicloDngC/oFdgUQ8eNoYjNmp+o7MIyBnl+g2ZK
+         Dw8oERSEKb+2GwhmwOHvvZP6PdkIpgjhbal79FLWaRimumLOP9aAx5GedwQuLO9RgFSN
+         45/hoS093vdZ1x7VUNPVnrvwgsFRuMh3zKMCPGAFI3IrelKXjCectPfnvRevVthmsON6
+         3UcSgmEvAa8L5fp4E18NCsD1qgvKkuCD1laakk2+0NZEwX0bm1d1Iet1fZslFWZ6Q1zt
+         kekA==
+X-Forwarded-Encrypted: i=1; AHgh+RpHUrcvB3oJYyI5A/aNVxghKBB+IxuUlrGbvZYdk9OUbY7RkqR5OT1BeZG6u+s5C/WZKuH4o5fC21Db@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3kJmIpUL4HFR7PP9Az/5+gReX8S1CtQuhAs43+mtZ8f1KHQYj
+	RVSzb3OLWCC8ExUYJHjOO85TIAG45gHagFHRPL0QqVqVaNEgl8j21Oct
+X-Gm-Gg: AR+sD10B4wCdSLzpQSK7pi/+RT7Rd8V7zqYKhIkJ2rQhbtJbwpSxlNSm6wcg2pBEteq
+	WSSSb97CsTEJGGZUCb69rpuN2+Oxai2fFFF1KYXRCvlknL+/8XLUkKH7/LFEKBEswAYLxD44nhT
+	/jraUqg7gLCW6ipT3FM0TVP4AtP3guFjDjeSGX/2nlEIvs+K6dgUajZOQEo0a2oBe2KwOzjOqAO
+	z6qMPVsLLRAPi2UKnyEMhMWjBzjeiolxSQih4N9JlFcHD7vHaj3sJCqTpH52gGUz17Sd1FPPwH7
+	+bPdG5Ieq2BIxpDhByehYkMU9HmDuQjIkfNiGYUX1OQLKgoMqpyWee6E8eQwNdmGgNU+0XxTQO9
+	2aPudCQptDcSpVp2o0cXn7uTbtuJ+hYR6mPFRa+Am7CpO6AWoq+8LJSCWPkE8s0jaKB0he+xdNm
+	1J7yPh93Pj06puiVI9zNjuccA9L/ssIJaOFYRgh06oMoGqRlJv2NZVk/9kyM8q5kzeHyE+B4jjs
+	JBCnf2tCa8vasgpcQ==
+X-Received: by 2002:a05:6870:c228:b0:448:a3d6:c2d2 with SMTP id 586e51a60fabf-459059caa56mr2000761fac.10.1785520078354;
+        Fri, 31 Jul 2026 10:47:58 -0700 (PDT)
+Received: from inhnjlux1020.ls.ege.ds ([49.204.164.242])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-458f664d812sm1845122fac.9.2026.07.31.10.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jul 2026 10:47:58 -0700 (PDT)
+From: Udaya Kiran Challa <challauday369@gmail.com>
+To: tsbogend@alpha.franken.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org
+Cc: skhan@linuxfoundation.org,
+	me@brighamcampbell.com,
+	linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Udaya Kiran Challa <challauday369@gmail.com>
+Subject: [PATCH v5 2/2] mips: dts: pic32: pic32mzda: Remove unused address-cells, size-cells property
+Date: Fri, 31 Jul 2026 23:17:51 +0530
+Message-Id: <20260731174751.86819-1-challauday369@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260729162931.2369353-1-main.kalliope@gmail.com>
- <20260729162931.2369353-3-main.kalliope@gmail.com> <CAM1=_QS79dDBfaaNQXnWd61AqHd1M4o9aDMMiftnoJveNr=FZg@mail.gmail.com>
-In-Reply-To: <CAM1=_QS79dDBfaaNQXnWd61AqHd1M4o9aDMMiftnoJveNr=FZg@mail.gmail.com>
-From: Nicholas Dudar <main.kalliope@gmail.com>
-Date: Fri, 31 Jul 2026 11:53:52 -0400
-X-Gm-Features: AUfX_myt_kB7E8Gv4Te28D81GXbe5vzIGv6mSlzfyJbuG7pj3zf6QT86W9HaaAw
-Message-ID: <CAJZwKkgXoHhaej_hkBfytY_6N0PdpwfGMt+GUcHJGyaH0+e7RA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, mips: Add support for BPF_SDIV and BPF_SMOD
-To: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	memxor@gmail.com, tsbogend@alpha.franken.de, paulburton@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
-	philmd@oss.qualcomm.com, visitorckw@gmail.com, bpf@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Johan,
+The #address-cells and #size-cells properties are not strictly
+needed since the child nodes don't have reg properties
 
-Thanks for having a look.
+Suggested-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Udaya Kiran Challa <challauday369@gmail.com>
+---
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi | 2 --
+ 1 file changed, 2 deletions(-)
 
-> Let me know if you are already working on the remaining v4 support,
-> otherwise I could look into it.
+diff --git a/arch/mips/boot/dts/pic32/pic32mzda.dtsi b/arch/mips/boot/dts/pic32/pic32mzda.dtsi
+index feca35ba56a4..433dff3cf14f 100644
+--- a/arch/mips/boot/dts/pic32/pic32mzda.dtsi
++++ b/arch/mips/boot/dts/pic32/pic32mzda.dtsi
+@@ -76,8 +76,6 @@ evic: interrupt-controller@1f810000 {
+ 	};
+ 
+ 	pic32_pinctrl: pinctrl@1f801400 {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+ 		compatible = "microchip,pic32mzda-pinctrl";
+ 		reg = <0x1f801400 0x400>;
+ 		clocks = <&rootclk PB1CLK>;
+-- 
+2.34.1
 
-I'm working on separate MOVSX and MEMSX patches. Would you be willing to
-take BSWAP and JMP32_JA? If you've already started with a different split,
-let me know.
-
-> Consider making the uasm additions a separate patch.
-
-Agreed. I plan to structure v3 as:
-  1. Factor the existing DIV/MOD emission into helpers.
-  2. Add the signed DIV/MOD uasm emitters separately.
-  3. Add SDIV/SMOD support in the MIPS BPF JITs.
-
-> Should not "quot" be s64?
-
-Yes. I will make quot s64 so the remainder calculation stays in signed
-arithmetic.
-
-> Please propagate the raw offset value and do the interpretation in the
-> div/mod helpers instead.
-
-I'll pass the raw s16 off value through immediate validation and
-register emission, and interpret off == 1 only in DIV/MOD-specific paths.
-That leaves MOVSX free to interpret off as its source width.
-
-I will validate each series boundary on MIPS32r2, MIPS64r2, MIPS32r6, and
-MIPS64r6, and build the complete v3 together with the MOVSX and MEMSX
-candidates before posting it.
-
-Does that sound ok?
-
-Thanks,
-Nicholas

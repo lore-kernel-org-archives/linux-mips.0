@@ -1,30 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB9341D633;
-	Fri, 31 Jul 2026 12:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E909423E98;
+	Fri, 31 Jul 2026 12:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785499387; cv=none; b=UasYWE/TyRdnptMJjiqAwY6hSSaBgkZAwOL2rFcWbf5+VMGl078gVOpmOWdIZ4g+CPbZgqsXdotv20JsaFjfwtPjt1pmZFwViEAG+Km7fKrt59aK0kQqfk9JK4bB1s0B+KMPTj29xZvfAGSU/yGdHr8+4ofmyvn/U9XWARbf7E8=
+	t=1785499388; cv=none; b=ABWMO9TceG8RKqCKL7mWrGxYOcWbHGFB3oEWylThvEiD8ZFXLEbeO1Nce9LYwhrvhnnUJQWaYdQOaHzTY/p8sdPvtULUtJEX2VjVjVByn+TNN4KFZ/tFesdljN04hwkbDQtOgJ0OJGvhzMOvwZtg1ffY0HQUqyw3mpSn/cQqsBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785499387; c=relaxed/simple;
-	bh=xNaZeiPFlSdRWL2F61KGoKs8oj9Gs/W/njM/6+afD/M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fw4j4iCSFYiNE/VFn0PFLs6zKhqTbCvNGmF89FIXS7szhDpWq+WqU3ZeSowjlU+xdhcs1+ACwkvHKfYiZvh749TC7QACgErJR+L/VrnMtSglOxkGAgnPvZT52vAT2e+r0+LnekqedEZk1llgH1l9tXKM4vmrIuhXycxnmWBxbmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=cL4dxrkq; arc=none smtp.client-ip=5.135.140.105
+	s=arc-20240116; t=1785499388; c=relaxed/simple;
+	bh=Ze4Nv8y680E6FSf/un9hYJUthpJ2COzdxd+LB34Yb2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Z3JxEYO+NZwjfXY/Igo0qDQKU88bx0pf3TNU30du84BZVPhm0eJjTS/DiSfssty7/I4zxNC1EjKZq9GU1xenRHnqR2hBUv0a2gliA2CX+38I2v8dXWASPVP8ikJiHDxEGt5fpY0uRqxCSLxmMxkvMXMjGnMeKqrHJZN0yp0OxJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=HLVhojJ2; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="cL4dxrkq"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 02C8C11FB16;
-	Fri, 31 Jul 2026 14:02:49 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="HLVhojJ2"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A320611D969;
+	Fri, 31 Jul 2026 14:03:00 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1785499376; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=KhylFLxnrNbE0730AWRi4WzqyXx6+yLmFoVpwVVN3No=;
-	b=cL4dxrkqyedrHCOF95MQxgeXGZ70MJUl5DQo1+UfrkH+VDWCb4lwlmpyXuyPTlUcKiBXnS
-	m6x6cIpawpBJIm1OU5MtcQ1L5u6MHsTcjEwGzMpP3hG/WDSSqDXpeD2oJiPsRsZXsoxUG2
-	lJ6lZ9VAQ6SfYV8dQVjLzRBWe/olidW93hkiT6rG3V/kd55Vb9NYYxcMbFEzLZPiqAXmaD
-	X92rA3rmKvj2Gm0ToV/VAXYgUBf7i3Thn5suErlML980qpHGD4yRL6LdyRJozOD/xjg9UQ
-	9rt73EaExWzsDwsWgCZxd95eya35ARmqaXyyDwiywW3+ob6wf/LSDQnAHMYyUQ==
+	t=1785499383; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=X5WYmjC+W1XLRGqsI2xwQZ9HsjRo/iUHSgzYnXKRgcw=;
+	b=HLVhojJ2RRdAQYHV6upLlCPKbKwyLzLZH8wcYrSl01Q7v1G2XqLqxHUCFkcbXmO4xGkV+A
+	sOoKKh8rufcU+uQq5FWa3ZblR25Z5vCl7LRtEquaSZ8T/rViCNNzZIIJaJk2+1BimWr2RP
+	zu+l4MbrYfpM9Yq7F7L3fozuNYBVCmMWYjEo048oF4Ggedq5Cbi0VXeOtLb/IlvBz/N+K+
+	+OInMHOMS62v6fQRJn1BDWMc1lJRRb8YWnqP95mpc6FyQLLeJ30pZrT9axcrMcl5ODQNeD
+	b7HSt6F2ToZTQku7BJNbq2m6bJ7ADBHzcTxMC9qTTUWCLa/+EExYVUNMPQMjuQ==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: conor+dt@kernel.org,
@@ -36,10 +38,13 @@ Cc: conor+dt@kernel.org,
 	robh@kernel.org,
 	tglx@kernel.org,
 	grandmaster@al2klimov.de,
-	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v7 0/5] clocksource/timer-econet-en751221: Support irq number per timer
-Date: Fri, 31 Jul 2026 12:02:41 +0000
-Message-Id: <20260731120246.1296955-1-cjd@cjdns.fr>
+	Caleb James DeLisle <cjd@cjdns.fr>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v7 2/5] dt-bindings: timer: econet: Update EN751627 for multi-IRQ
+Date: Fri, 31 Jul 2026 12:02:43 +0000
+Message-Id: <20260731120246.1296955-3-cjd@cjdns.fr>
+In-Reply-To: <20260731120246.1296955-1-cjd@cjdns.fr>
+References: <20260731120246.1296955-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,72 +54,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-This timer appears on both the EcoNet EN751221 (34Kc) and on the
-EN751627 / EN7528 (1004Kc) SoCs. On the 34Kc the interrupt controller
-uses a percpu interrupt while on the others it uses an individual
-IRQ number for each CPU timer. Add support for EN751627 and EN7528.
-Add support for IRQ number for each CPU timer under the
-econet,en751627-timer compatible.
+This hardware is found in the EN751221 SoC family as well as the
+EN751627. The former uses a percpu IRQ for all timers while the
+latter uses an individual IRQ number per timer.
 
-Changes since v6:
-* Rebase to tip/timers/core (base-commit below)
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/timer/econet,en751221-timer.yaml | 31 ++++++++++++-------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-Changes since v5:
-* Integrate patch fix refcount leak from:
-Link: https://lore.kernel.org/linux-mips/20260526184105.18962-3-grandmaster@al2klimov.de/
-* NULL econet_timer.membase after unmapping
-* NULL check dev->event_handler in case clockevents_config_and_register
-  failed to fully register.
-* v5: https://lore.kernel.org/linux-mips/20260516233943.49502-1-cjd@cjdns.fr/
-
-Changes from v4:
-* Fixed incorrect compatible in DT schema
-* Bracing in out_irq_free if statement
-* I did not move cpuhp_setup_state past the point of no return
-* v4: https://lore.kernel.org/linux-mips/20260516215720.4160831-1-cjd@cjdns.fr
-
-Changes from v3:
-* off-by-one in out_irq_free
-* Gracefully fail if too many address resources are provided in the DT
-* Allow fewer actual timers than num_possible_cpus, as long as they
-never start
-* v3: https://lore.kernel.org/linux-mips/20260516182648.3987792-1-cjd@cjdns.fr
-
-v3 note:
-
-I decided to take this patchset in a slightly different direction from
-v2. There is a certain amount of initialization that once it has run,
-it cannot be reverted in case of error. The original driver init was a
-mixture of revertible and non-revertible code which made it too easy
-for code which is designed with best practices in mind to in fact
-introduce a bug. Therefore I start by making the init process more
-legible but without any business logic changes, then fix a race
-condition by keeping IRQ disabled until after cevt is setup, then
-finally add non-percpu IRQ support.
-
-* v2: https://lore.kernel.org/linux-mips/20260514000601.3430262-1-cjd@cjdns.fr
-
-Changes from v1:
-* Split changes over 3 refactoring patches + main patch
-* Remove driver discussion from dt commit message
-* v1: https://lore.kernel.org/linux-mips/20260416175101.958073-1-cjd@cjdns.fr/
-
-
-Alexander A. Klimov (1):
-  clocksource/timer-econet-en751221: fix refcount leak
-
-Caleb James DeLisle (4):
-  dt-bindings: timer: econet: Update EN751627 for multi-IRQ
-  clocksource/timer-econet-en751221: Init teardown on error if possible
-  clocksource/timer-econet-en751221: Disable IRQ until cevt registered
-  clocksource/timer-econet-en751221: Support EN751627 without percpu IRQ
-
- .../bindings/timer/econet,en751221-timer.yaml |  31 +--
- drivers/clocksource/timer-econet-en751221.c   | 181 ++++++++++++++----
- 2 files changed, 159 insertions(+), 53 deletions(-)
-
-
-base-commit: ecc330e3096173f433659aa64ab3674d0d48440e
+diff --git a/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+index c1e7c2b6afde..ac25785ecfdf 100644
+--- a/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
++++ b/Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+@@ -12,24 +12,23 @@ maintainers:
+ description:
+   The EcoNet High Precision Timer (HPT) is a timer peripheral found in various
+   EcoNet SoCs, including the EN751221 and EN751627 families. It provides per-VPE
+-  count/compare registers and a per-CPU control register, with a single interrupt
+-  line using a percpu-devid interrupt mechanism.
++  count/compare registers and a per-CPU control register. On EN751221 it uses a
++  single interrupt line using a percpu-devid interrupt mechanism, and on
++  EN751627 it uses an interrupt per VPE.
+ 
+ properties:
+   compatible:
+-    oneOf:
+-      - const: econet,en751221-timer
+-      - items:
+-          - const: econet,en751627-timer
+-          - const: econet,en751221-timer
++    enum:
++      - econet,en751221-timer
++      - econet,en751627-timer
+ 
+   reg:
+     minItems: 1
+     maxItems: 2
+ 
+   interrupts:
+-    maxItems: 1
+-    description: A percpu-devid timer interrupt shared across CPUs.
++    minItems: 1
++    maxItems: 4
+ 
+   clocks:
+     maxItems: 1
+@@ -52,21 +51,31 @@ allOf:
+           items:
+             - description: VPE timers 0 and 1
+             - description: VPE timers 2 and 3
++        interrupts:
++          description: An interrupt for each timer (one per VPE)
++          minItems: 4
+     else:
+       properties:
+         reg:
+           items:
+             - description: VPE timers 0 and 1
++        interrupts:
++          description: A percpu-devid timer interrupt shared across timers
++          maxItems: 1
+ 
+ additionalProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
+     timer@1fbf0400 {
+-        compatible = "econet,en751627-timer", "econet,en751221-timer";
++        compatible = "econet,en751627-timer";
+         reg = <0x1fbf0400 0x100>, <0x1fbe0000 0x100>;
+         interrupt-parent = <&intc>;
+-        interrupts = <30>;
++        interrupts = <GIC_SHARED 30 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 29 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 37 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 36 IRQ_TYPE_LEVEL_HIGH>;
+         clocks = <&hpt_clock>;
+     };
+   - |
 -- 
 2.39.5
 

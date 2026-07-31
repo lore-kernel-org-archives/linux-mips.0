@@ -1,141 +1,148 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8A6357CEB;
-	Fri, 31 Jul 2026 06:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D533E49CB
+	for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 11:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.171
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785477922; cv=pass; b=SqLAFGO1zmzwqRct+4S5Kc2GtktnMT02+WOH3YwrVkw+qAaQqaM2uXmkpotrMmrhURvgchfkXfv38EXJnDlXC9kYm5BYnTDUMZypQ74iZmwl4yeCHHtxBzq3vtaj27+mTlRN3rP7F1E0NPA3Cqn6uNLwmreJGfGqxy9P31dDpxE=
+	t=1785496323; cv=pass; b=m4XPEmYcwXHVwfk3Ap07tCF4OO4iyN8ERZj7eEUqsesr8FO6k+gEyFht3qBk4iCwEy7ZZusscd/o11wVV6rFmj/wntl+mewmemjPJwQc/KhVhp/N2iHaKM0HF2/U7SqPNlAz91niebG11UmVdW0UBCw+7Rf65su0XDceENLGuvc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785477922; c=relaxed/simple;
-	bh=FZPuiNPLColRGuD2p0o4n07puVxWjsu8hBU/ZFNjAL4=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=H1tP0NqXc6TU71FQjRz0NMXhDBdRqmcX8tr3Jhg3ncbWzwo0qBU0LO2wsGpA965TrpSPf/k3+APNuBXbSs80aObLnqcLv7Z4oQrpel+1fdWuFX8xTtkgl+SQ1lPz2zSiZjyTIUvkr0oNc4m7MYLYb0/L3ZOGOMqHFJwg7fZmYQ0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com; spf=pass smtp.mailfrom=goldelico.com; dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=WzeMwm4I; dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=xjQm0LrB; arc=pass smtp.client-ip=85.215.255.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	s=arc-20240116; t=1785496323; c=relaxed/simple;
+	bh=GaDzXFtfihQ/z5HATF8t67Y3zZbev/3uNuuYK2MsaUA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ookg06fNknL4KoBVE91XIwVtVdJTMM1lZDrMU+eCFExmRPje1Ur/hAFnz7IUhWVM6L8j8UT7d9U+4b+A53DcEKMIyEimMmqPYvk2iMslxOgxoh/DP5fxNmlx1ucJf29Gs/wmbxwcdmiUBBkS74b2Fd1Z75KIyJqH7kztA96kZBU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b=LzI354A9; arc=pass smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="WzeMwm4I";
-	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="xjQm0LrB"
-ARC-Seal: i=1; a=rsa-sha256; t=1785477896; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=cn54T8Pph86GPd3iNW60mFsdTv+cVok/7GC4P9/PJupPumyf58wt1gXGrs8+XH/cv/
-    TCOD7YpgoqbIUhBHlTAGg6XawUucbqXJNZVVEEE8mAkRX8Cvd12CLyBNTjhBdHA57QZr
-    foqe83lzKyvG0YFNqoQfZZC9bjU9K9QXzzPMBDqhQh/vSVQpnObDEMjuSP2DR3i46Ozo
-    l38axfV9nphoWrYRXkpzhZDvPDyH82IFCrZXYct1W4HJ0e9sLZT0SIX6kIqRSKJiyxwF
-    QRNUCKXG9G03nxfYH5MrOsJZbFYjbEmzN32giuLZD9lLCtewVOiJU54uhD1vGh0D3sKu
-    9+yQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1785477896;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=uuXJa+xDFktqYPmqVdoF+1ivi4iMQpzMIO1q+Wq+kPE=;
-    b=gUVM0PmmF6d0UJDyOy1MGi6jSWjyiJlioYUcRjHCfJSQ4fz+t+n/KkypEzBbZHmn1d
-    b8kZ57Spi8h88rrtDaYYAWTTL/FfJ9KE1fVO4d0DYwkZTy/k7M7BMgl1ZvaI1mqzOnDE
-    JIy8dwesmO/mxbnB6be4r/+DjMd80q66Qs7hUVfzNNJSHrZkOvREpRMolICXSEyC3RYj
-    13Tzq9oecEP0pKhuPFPFOSMhscg/ld2AIq++x7hQhzg0MD3S2mhoLr0uCaezebPgnR9S
-    DqcIG0vtRSGtJM6A5dmG7sCi1BUO0tPeOflDcydogCFjKVXXEeu11VVKF6RCTkl5ltSi
-    CFDg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1785477896;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=uuXJa+xDFktqYPmqVdoF+1ivi4iMQpzMIO1q+Wq+kPE=;
-    b=WzeMwm4IU75d9jmlhS2VGKBwsQ80aoylCPr9pBY15I4q/x4sVOGQjbnb/3m2GGnUaE
-    RcgPxYBsZr73qaetTsyX9fTVD+L0xd0cRQwAdJR0YHGhiAC9vBDgp9xbrWCnY9sjrt4b
-    ACbdYqRd0cYosLuNUKz7w3i+AK5FeKD82MgWlEt4UNqC2I4eP9g2HX1y/w9b3oSqn/u3
-    BwTuA3QVDVgkn3eEqMLnw3BIdQ0FUfTqbl0ab1lfW+mvZhEgyb5ctDc9Vy8PFkZMZlXb
-    NtO1ybgOGxxekD96SpHfp5q+7A072OEgJ9iyiCxh+p9VaKBG9//p+SykB41MHMiDyq88
-    TmvA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1785477896;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=uuXJa+xDFktqYPmqVdoF+1ivi4iMQpzMIO1q+Wq+kPE=;
-    b=xjQm0LrBPvtT9sc2Xfppam9927IebyDYOLywkDEs/gDNZ71vZbEFdg1DhwCA31NXXi
-    w6G0Ohffz8gQcwHGLzDQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQ3poGy8iN5FQZqiT/KMInHXoNih5eIi83vL33"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.5.6 AUTH)
-    with ESMTPSA id Q58eac26V64u62v
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Fri, 31 Jul 2026 08:04:56 +0200 (CEST)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b="LzI354A9"
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5c375a9e76cso516942e0c.0
+        for <linux-mips@vger.kernel.org>; Fri, 31 Jul 2026 04:12:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1785496321; cv=none;
+        d=google.com; s=arc-20260327;
+        b=FeHzMJCMoal7rYdmkszhXA3Ac6F24EAR6l83fsvhG2HpHjJ4hBfsjNXO6IQQVtJhtK
+         QEH1aQR1thvSzhT2MQItiXvEw0LeQ+VjDhX7OL/x0wNnwJBHvpvZV6ZNNoV6QoxNeSfz
+         B8ZJPMBdciaO1CUvmCEL9U2S/tGJZsuGbm8XI+9tfK11wGJVw07J84mxCba9UXqq7F9l
+         k+oW45FV1WTPZMPClz52DrTKKZfp5avn3mgR/24WcAhZ7gtLbBjfV9rjAYqzloGXdXkG
+         osEF4vWYUEvYg5abCPeFZcZuUory2jin03RyWI1FdvjfC6Gx1HbjXWkTLlrHPQ4Jq/L1
+         Ecxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=ej9GV30+BCqZMeRlC3tn+HUH0chPghFY3P2/QiZciOA=;
+        fh=mnk3oU9vpi6wHTC2Y5vjfUfj+CQCtINFk58VfUbowSc=;
+        b=mby2vLzssH091QFKa0q+i7BvF4us8WSJbTEHKzUT3PTxX1snEOQUWcl8LJZxIhkEsy
+         gjzsWMk+4mlNY69/MrGPm455axRQ1/XQMvJ3/kgphOCkGj507hUmARObhHdf6K6ju0df
+         G22v8HFxfJiiNNT53Bni33o2ACHSI9Q00NVdXZmFrZ9SlfRkeAc3oFh/jOgLDwzI4WlG
+         C34ngnWzHye1qOvvpnsR+11En6eU0GWdmhsdIhvFexlRHZ7t0BOHY42d/cwW6waaio5D
+         MonF0kQWle6pJh1wEBRuSkYS8MBpvpvwNjAAVHES6oK7XmZnmkbL0/4t/N0P/QUb0hgM
+         awAg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20251104.gappssmtp.com; s=20251104; t=1785496321; x=1786101121; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=ej9GV30+BCqZMeRlC3tn+HUH0chPghFY3P2/QiZciOA=;
+        b=LzI354A9GhQyR2BYAKtnZcFbAXdvQRUnQCMm6Wq7wUki5HtFKFyMRLR3C1wnBuCzId
+         a4H1/pNnSzQyCd8TtHxobQXsEMDhGF9d4DiCpUAiIoB1P+Yc+bSF9AWNIpSpwG8RYKIP
+         jnsvHzq3lB2BSmo/Kq6m1YbO69j5mudUMv0R7erRjvgDksgOVH3G7D9uaVlPILY+kbBh
+         IOYZ0MzFqYbl2yCA6uJiyU7maYBCX6UXC2zuCC4UDy6DbMuXDG1e9vEoH+KzvSIktMfG
+         m1ds6Yi3wWJDdZ/Qj/yMrw9oMwsjz+BwcXGr8boHgNkdzwtl17itFG4mmaN8+6JnKBp3
+         x/ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785496321; x=1786101121;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=ej9GV30+BCqZMeRlC3tn+HUH0chPghFY3P2/QiZciOA=;
+        b=O/WhJ2aKUsU3qal4HJnyx9x/lO7tB4MzlrrWbhQREGYOv+/cm0EIts8Z86byV7B3WR
+         4rnOFBAAxUEektcUfORBiwSI0q297XI1iuzn+xIQPgMlP0dffHTXWs7CxLJ4/IsD9/8P
+         uRcz0f4cTug8IOBeR3oIELnXW/vPmUzfFGdH5bks/4yV2ieuQAz5mCHopTQLVlNARvsE
+         FzN4cAZxuz5US/0IQLPEF9GUoYmMIZ/ne0X0as3c3hJTMFWBvYZ3UehHzpO8S5ISVM3s
+         6jaeOQyN5eTxYtoo0nL3cvrIVNen0WAYeqq3MtZkKeKXT//6uJzZBH9A6pZ7yLMwRfmI
+         egDQ==
+X-Forwarded-Encrypted: i=1; AHgh+RoLMEGfPxb/u3eKjIGi2/YV+b/Wk1AyMuoaxYswk7MHb/x+ulwTJpYWmWvK2NmAW9fMhVNkBhlXjjC0@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyle0szI+M7ktGFwS/TZ6XhP6A4+NLEEPiDJRGrEld2JQQre+As
+	NKNaZ9k4MZMYtElbNk08Q9Zhv0Dnj4n4Hu0TDPLMMBW7NtvoNRQVRqZ0fUoS4jzT73Z0ztzJRcv
+	Xh1HjHYFMXFaH/go+/VbKuSK7hs7wKT0BADH8wJZVhQ==
+X-Gm-Gg: AR+sD10CEpoKpTjtJprgUbDHnQqgacir2aTHWGgx9PTi8ZajU4GBU7TlGKvyDO48BWT
+	YUqExv55Z2de5gFRzlmCg26jSeeFzws14KyScs0SgRc1iVnAPaNFram2fWP2v8X4VT8pqfnBzAX
+	XSTK7jM3uFG6zf+mbpv+hrbKF/Ahj76iJs0uEdxLQJ/B21wgszi0YTn0D5ueOG9807pZ00XHCbl
+	TyEzlkhvHmVwXUrD8p39NgJHX0w84y0jPe9tM5mWpnSc6pD7psK2FL4vL15+kfY8jDnl7qs5KO2
+	sh+140rfulYhOc0icaCzCQbQkQnoSsP/fwag95Pr5+nR
+X-Received: by 2002:a05:6102:3ed0:b0:739:a2d:9621 with SMTP id
+ ada2fe7eead31-758fd904565mr729008137.13.1785496320808; Fri, 31 Jul 2026
+ 04:12:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.8\))
-Subject: Re: [PATCH v2] i2c: jz4780: Cache host clock rate at probe to prevent
- CCF prepare_lock deadlock
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <amfGZudmo_oNgf04@zenone.zhora.eu>
-Date: Fri, 31 Jul 2026 08:04:45 +0200
-Cc: Paul Cercueil <paul@crapouillou.net>,
- linux-mips@vger.kernel.org,
- linux-i2c@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- letux-kernel@openphoenux.org,
- stable@vger.kernel.org
+MIME-Version: 1.0
+References: <20260729162931.2369353-1-main.kalliope@gmail.com> <20260729162931.2369353-3-main.kalliope@gmail.com>
+In-Reply-To: <20260729162931.2369353-3-main.kalliope@gmail.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date: Fri, 31 Jul 2026 13:11:48 +0200
+X-Gm-Features: AUfX_mxGN1QiilF-Xg5FxW-6pbW5ca66fBUh4YARL74VZrPibHZ8mVvz9mZTewE
+Message-ID: <CAM1=_QS79dDBfaaNQXnWd61AqHd1M4o9aDMMiftnoJveNr=FZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, mips: Add support for BPF_SDIV and BPF_SMOD
+To: Nicholas Dudar <main.kalliope@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, tsbogend@alpha.franken.de, paulburton@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
+	philmd@oss.qualcomm.com, visitorckw@gmail.com, bpf@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <D3C4DA12-B486-48F6-85D3-E11648EBE8C2@goldelico.com>
-References: <2db6fd233aceb7238474e4833f4d25ca681c3ffb.1784492382.git.hns@goldelico.com>
- <amfGZudmo_oNgf04@zenone.zhora.eu>
-To: Andi Shyti <andi.shyti@kernel.org>
-X-Mailer: Apple Mail (2.3826.700.81.1.8)
 
-Hi Andi,
+On Wed, Jul 29, 2026 at 6:30=E2=80=AFPM Nicholas Dudar <main.kalliope@gmail=
+.com> wrote:
+>
+> The MIPS JITs handle BPF_DIV and BPF_MOD without inspecting
+> insn->off, which distinguishes BPF_SDIV and BPF_SMOD. Signed
+> operations therefore use unsigned instructions, or unsigned helpers
+> for ALU64 on 32-bit MIPS, and produce unsigned results for negative
+> operands.
 
-> Am 27.07.2026 um 22:59 schrieb Andi Shyti <andi.shyti@kernel.org>:
->=20
-> Hi Nikolaus,
->=20
->> Fixes: ba92222ed63a12 ("i2c: jz4780: Add i2c bus controller driver =
-for Ingenic JZ4780")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->=20
-> To be clear, I wasn't against the patch itself, I just didn't
-> like the commit log and I raised questions coming just from
-> reading the log.
+Thanks for the patch! In addition to your SDIV/SMOD fixes, I would
+like to bring the MIPS JIT to full v4 compliance. All the tests in
+test_bpf should be jit'ed and pass. Let me know if you are already
+working on the remaining v4 support, otherwise I could look into it.
 
-Sorry that I did not get this because I could not see a question.
+> arch/mips/include/asm/uasm.h   |  6 ++++
+> arch/mips/mm/uasm-mips.c       | 10 ++++++
+> arch/mips/mm/uasm.c            | 20 ++++++++----
 
-> In this v2 you are missing the changelog, please, don't forget
-> next time to add it.
+Consider making the uasm additions a separate patch. It would be more clear=
+ IMO.
 
-That is the downside of too much automation on our side. It did
-not properly catch the case of a single patch without cover letter.
-So the changelog is in the suppressed cover letter...
+> +static s64 jit_smod64(s64 a, s64 b)
+> +{
+> +       u64 quot =3D div64_s64(a, b);
+> +
+> +       return a - quot * b;
 
-Here for the records:
+Should not "quot" be s64? It would be more clear to not rely on
+implicit signed/unsigned promotions.
 
-PATCH V2 2026-07-19 22:19:42:
-Changes:
-1)  improved the commit message to clearly separate between i2c host =
-clock rate
-    and the clock rate of the clock generator which is controlled =
-through i2c
-    Suggested-by: andi.shyti@kernel.org
-2a) changed to clk_rate_khz (and moved the division by 1000 to probe)
-2b) fixed the variable type and name definition (wrong spacing/tabs)
-    Suggested-by: paul@crapouillou.net
+> @@ -650,6 +665,7 @@ int build_insn(const struct bpf_insn *insn, struct ji=
+t_context *ctx)
+>         u8 code =3D insn->code;
+>         s16 off =3D insn->off;
+>         s32 imm =3D insn->imm;
+> +       bool is_signed =3D off =3D=3D 1;
 
-PATCH V1 2026-07-10 08:58:35:
-initial version.
+The interpretation of the offset field is opcode-specific. The
+SDIV/SMOD instructions are encoded as DIV/MOD with off =3D 1. MOVSX
+instead use off to encode the width of the load.
 
->=20
-> I merged your patch in i2c/i2c-fixes.
+Please propagate the raw offset value and do the interpretation in the
+div/mod helpers instead. This also makes it easier to add the
+remaining v4 instructions later.
 
-Thank you very much.
-
-BR,
-Nikolaus
-
+Thanks,
+Johan

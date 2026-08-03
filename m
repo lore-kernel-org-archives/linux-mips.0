@@ -1,30 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C273F313531;
-	Mon,  3 Aug 2026 13:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415C740DFBD;
+	Mon,  3 Aug 2026 13:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785762949; cv=none; b=C0Y4EKB0aWulDNFIv8GOMK2kr7121JouJV8qE6zRjLmncXfiZ/b2oXv2YTcxmesvs4FAiba9GvV3FUzTrtAsM0l3230PjjxSZcmigLVmxLwjuY6D9HQN6b4/e60YUjQFr5HwzDvYmOLZcbXX8Ec0brkgJSJhb9Qh741NWljeRrk=
+	t=1785762950; cv=none; b=SVnItAvESWvAMvVDHUvM5jE3vrRZBxH4HQAePkWj1TFPZ98jhRdRdRcUBaM/snUlQzxP8ROaAyF/YHxlJWtOd2VR16oRqf3lrGK/1CsBX5TCbdT96eJWSNGuO6QGHkAE+oUye+qwlmveCDBdiGtm99syJqfLoMfuRgVl52WnsCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785762949; c=relaxed/simple;
-	bh=T/vGjWzQuh08DtM/tEEgQ4fO2d2Df/FoXussaiYzm2w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OWr9B1xh1D7CmjBMSHNoFds5Mb7S33cZggYJElU4EV8gB0fUcSPuLoxvQgWA/GztYq/zxpXZNNFoczGZ4peG6COMVZdRsBiqvKelIQboj8InJ9i23GOeoV8ViKzn6i301cf2ohRK4fMJUV8HWrHS0qZDNe+NcaeJJl9r6IYpVds=
+	s=arc-20240116; t=1785762950; c=relaxed/simple;
+	bh=dEoQ5g69d9PextxhfJTgvDxOBYt4mQ+NSzdrh9skUQ4=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NPo2ayPNf8OrUKkJ8+MD7+qKliRtXIrmUZDjx9AO41kLg1t+x9tHT52e8ZHrmDuAoMwJbE45TMVtuJIs22TKaxPe526XZ4PKBJDr4G/fzWOMenphnSFFhqWO3vRzldIVr3L5kuG5/zdUAxXepQ+8RkCmse+WYVzlw0ITDVIz5Os=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wqsW1-0002bv-00; Mon, 03 Aug 2026 15:15:37 +0200
+	id 1wqsW1-0002bx-00; Mon, 03 Aug 2026 15:15:37 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 86667C0110; Mon,  3 Aug 2026 15:14:41 +0200 (CEST)
-Date: Mon, 3 Aug 2026 15:14:41 +0200
+	id 6363EC02DA; Mon,  3 Aug 2026 15:15:00 +0200 (CEST)
+Date: Mon, 3 Aug 2026 15:15:00 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Caleb James DeLisle <cjd@cjdns.fr>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/2] mips: econet: add multi-vpe capability to EN751221
-Message-ID: <anCUQbjVYwg9SKWY@alpha.franken.de>
-References: <20260728184959.102441-1-cjd@cjdns.fr>
+To: Oleg Nesterov <oleg@redhat.com>, James Hogan <jhogan@kernel.org>,
+	Kees Cook <kees@kernel.org>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ptrace: Fix syscall skipping via PTRACE_SYSCALL
+Message-ID: <anCUVDXlRLPspx11@alpha.franken.de>
+References: <20260717112731.59254-1-tsbogend@alpha.franken.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -33,27 +32,49 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260728184959.102441-1-cjd@cjdns.fr>
+In-Reply-To: <20260717112731.59254-1-tsbogend@alpha.franken.de>
 
-On Tue, Jul 28, 2026 at 06:49:57PM +0000, Caleb James DeLisle wrote:
-> The EN751221 is a MIPS 34Kc so it supports MIPS_SMP_MT, but until now
-> this was disabled because to enable it requires the interrupt
-> controller to be in VEIC mode and previously only cascading mode was
-> supported by the interrupt controller driver. Since
-> commit 2ee2a685ee83 ("irqchip/econet-en751221: Support MIPS 34Kc VEIC mode")
-> the intc driver now supports VEIC mode. Add SMP_MT to init.c and
-> update the Device Tree to recognize dual VPE.
+On Fri, Jul 17, 2026 at 01:27:31PM +0200, Thomas Bogendoerfer wrote:
+> If tracer wanted to skip a syscall return value was always
+> overwritten with -ENOSYS. Fix this by checking against original
+> syscall number and only return -ENOSYS, if it is negative.
 > 
-> Caleb James DeLisle (2):
->   mips: econet: add multi-vpe capability to EN751221
->   mips: dts: econet: Describe dual-VPE 34Kc processor
+> Fixes: b6318a903d06 ("MIPS/ptrace: Pick up ptrace/seccomp changed syscalls")
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  arch/mips/kernel/ptrace.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
->  arch/mips/boot/dts/econet/en751221.dtsi |  7 +++++
->  arch/mips/econet/Kconfig                |  4 +--
->  arch/mips/econet/init.c                 | 42 ++++++++++++++++++++++++-
->  3 files changed, 49 insertions(+), 4 deletions(-)
+> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+> index 3f4c94c88124..87102a03b6ea 100644
+> --- a/arch/mips/kernel/ptrace.c
+> +++ b/arch/mips/kernel/ptrace.c
+> @@ -1321,8 +1321,12 @@ long arch_ptrace(struct task_struct *child, long request,
+>   */
+>  asmlinkage long syscall_trace_enter(struct pt_regs *regs)
+>  {
+> +	long syscall;
+> +
+>  	user_exit();
+>  
+> +	syscall = current_thread_info()->syscall;
+> +
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
+>  		if (ptrace_report_syscall_entry(regs))
+>  			return -1;
+> @@ -1342,7 +1346,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs)
+>  	 * Negative syscall numbers are mistaken for rejected syscalls, but
+>  	 * won't have had the return value set appropriately, so we do so now.
+>  	 */
+> -	if (current_thread_info()->syscall < 0)
+> +	if (syscall < 0)
+>  		syscall_set_return_value(current, regs, -ENOSYS, 0);
+>  	return current_thread_info()->syscall;
+>  }
+> -- 
+> 2.51.0
 
-series applied to mips-next
+applied to mips-next
 
 Thomas.
 

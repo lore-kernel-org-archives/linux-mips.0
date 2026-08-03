@@ -1,29 +1,28 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415C740DFBD;
-	Mon,  3 Aug 2026 13:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DA21DFFB;
+	Mon,  3 Aug 2026 14:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785762950; cv=none; b=SVnItAvESWvAMvVDHUvM5jE3vrRZBxH4HQAePkWj1TFPZ98jhRdRdRcUBaM/snUlQzxP8ROaAyF/YHxlJWtOd2VR16oRqf3lrGK/1CsBX5TCbdT96eJWSNGuO6QGHkAE+oUye+qwlmveCDBdiGtm99syJqfLoMfuRgVl52WnsCE=
+	t=1785766368; cv=none; b=T1T3wrdrS3MFA8Amx3lZ47+Wc499Y+DfBgTqN2XWXJkA+o7QIuKfzrUdgfJcGtB1+BYoCw7caZ2lOw/ZoINqXocndCkyKIEZHC0EsnOuBMgkgWa2Z2IZPRkRNoU7RKLcOUZUMacDJVK6RYsS6uMeeY+NlUatKKe3GBJRj9bI+LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785762950; c=relaxed/simple;
-	bh=dEoQ5g69d9PextxhfJTgvDxOBYt4mQ+NSzdrh9skUQ4=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NPo2ayPNf8OrUKkJ8+MD7+qKliRtXIrmUZDjx9AO41kLg1t+x9tHT52e8ZHrmDuAoMwJbE45TMVtuJIs22TKaxPe526XZ4PKBJDr4G/fzWOMenphnSFFhqWO3vRzldIVr3L5kuG5/zdUAxXepQ+8RkCmse+WYVzlw0ITDVIz5Os=
+	s=arc-20240116; t=1785766368; c=relaxed/simple;
+	bh=Vef+Fe3GMP0LZW76gWmW69lUJOq1/jYSWoAB3+f1wns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eCje43TFsNrHxqRCVr50YHNFq2aMX9HUnFKJQvsuVcXV+tJdJyIUu9iu/9cRtsrwYOV0P3LX282Etq6uQFXHY2VZNQsD8NrsqtK92HkmlCxKOSsW/+lLoSbprySwKAIaHIGPhFYZd3zZY4MlAp1aoIwS4F3296/xTHnPpR0Qeys=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wqsW1-0002bx-00; Mon, 03 Aug 2026 15:15:37 +0200
+	id 1wqsTP-0002aA-00; Mon, 03 Aug 2026 15:12:55 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 6363EC02DA; Mon,  3 Aug 2026 15:15:00 +0200 (CEST)
-Date: Mon, 3 Aug 2026 15:15:00 +0200
+	id 44D9CC0110; Mon,  3 Aug 2026 15:09:09 +0200 (CEST)
+Date: Mon, 3 Aug 2026 15:09:09 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Oleg Nesterov <oleg@redhat.com>, James Hogan <jhogan@kernel.org>,
-	Kees Cook <kees@kernel.org>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ptrace: Fix syscall skipping via PTRACE_SYSCALL
-Message-ID: <anCUVDXlRLPspx11@alpha.franken.de>
-References: <20260717112731.59254-1-tsbogend@alpha.franken.de>
+To: Julian Braha <julianbraha@gmail.com>
+Cc: arnd@arndb.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: remove dead select
+Message-ID: <anCS9XmWol2V9wY4@alpha.franken.de>
+References: <20260723104933.117413-1-julianbraha@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,47 +31,39 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260717112731.59254-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20260723104933.117413-1-julianbraha@gmail.com>
 
-On Fri, Jul 17, 2026 at 01:27:31PM +0200, Thomas Bogendoerfer wrote:
-> If tracer wanted to skip a syscall return value was always
-> overwritten with -ENOSYS. Fix this by checking against original
-> syscall number and only return -ENOSYS, if it is negative.
+On Thu, Jul 23, 2026 at 11:49:33AM +0100, Julian Braha wrote:
+> 'select' does not work on config options in a 'choice', so the current
+> 'select CPU_BIG_ENDIAN' does nothing (dead code).
 > 
-> Fixes: b6318a903d06 ("MIPS/ptrace: Pick up ptrace/seccomp changed syscalls")
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> However, ECONET already also selects SYS_SUPPORTS_BIG_ENDIAN so this
+> means that CPU_BIG_ENDIAN will always be set.
+> 
+> Let's remove the unnecessary 'select CPU_BIG_ENDIAN'.
+> 
+> This dead select was found by kconfirm, a static analysis tool for
+> Kconfig.
+> 
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 > ---
->  arch/mips/kernel/ptrace.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  arch/mips/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-> index 3f4c94c88124..87102a03b6ea 100644
-> --- a/arch/mips/kernel/ptrace.c
-> +++ b/arch/mips/kernel/ptrace.c
-> @@ -1321,8 +1321,12 @@ long arch_ptrace(struct task_struct *child, long request,
->   */
->  asmlinkage long syscall_trace_enter(struct pt_regs *regs)
->  {
-> +	long syscall;
-> +
->  	user_exit();
->  
-> +	syscall = current_thread_info()->syscall;
-> +
->  	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
->  		if (ptrace_report_syscall_entry(regs))
->  			return -1;
-> @@ -1342,7 +1346,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs)
->  	 * Negative syscall numbers are mistaken for rejected syscalls, but
->  	 * won't have had the return value set appropriately, so we do so now.
->  	 */
-> -	if (current_thread_info()->syscall < 0)
-> +	if (syscall < 0)
->  		syscall_set_return_value(current, regs, -ENOSYS, 0);
->  	return current_thread_info()->syscall;
->  }
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index a06f24317306..e2eb9627bd14 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -395,7 +395,6 @@ config MACH_DECSTATION
+>  config ECONET
+>  	bool "EcoNet MIPS family"
+>  	select BOOT_RAW
+> -	select CPU_BIG_ENDIAN
+>  	select DEBUG_ZBOOT if DEBUG_KERNEL
+>  	select EARLY_PRINTK_8250
+>  	select ECONET_EN751221_TIMER
 > -- 
-> 2.51.0
+> 2.54.0
 
 applied to mips-next
 

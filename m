@@ -1,96 +1,124 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF48D41F5D4;
-	Thu,  6 Aug 2026 10:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252EC480DC9;
+	Thu,  6 Aug 2026 17:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786013689; cv=none; b=TH72bnVhVwFiFZYy83oRqC3jWloN97ljutLpBdfPx8cj16QGn1DLunVg9QrhJHhKPAuQKvFIcGCZ2g9W8413RknGO5La3ACKeYMfjhyZFyOwEUFvzHp2NmNYeJrh9xmmsYddGlWUz0sSuyNzm74Y4P2qqT/Xx0BOASfq+BcQApg=
+	t=1786036362; cv=none; b=k3hNH6uozU3WXLcvJCvIgfCTQZbTU4GfFZ9ksBfYoBIP77I/b4m/5T5hcacN/FSb45XDqkuaaNAQisZfS9bbHdXXUFAlfbLGMLL7Kfl41z2I3NPHSbIQBgE5sxDO6CPQHyg2bsFHZmYkfSavXh32KthmT/9e3VeCOD0YGC9LjX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786013689; c=relaxed/simple;
-	bh=aYNTk2DyqmjHoaJWEdG8hZUEWF+Ex8IU0dNQqNCeytU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=OFVVywtxXk+2l6zPikflDa1evunPcy+FVjbmtwV1tCJ0/fzTr+jwA/aCjLkkTwwbBS4aD04TM1l7UJIPM3zXwbQBZHBI/BLgTmCdWvjJWtmeOXGpIFAdQ+Tx9WC6svnc9SB6kq4ybaMx5o3MJ5C7uNztzGVTHSoULuuyGy4U23E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id A0D7492009C; Thu,  6 Aug 2026 12:54:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 9A7DF92009B;
-	Thu,  6 Aug 2026 11:54:46 +0100 (BST)
-Date: Thu, 6 Aug 2026 11:54:46 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Jiri Slaby <jirislaby@kernel.org>, 
-    Elena Reshetova <elena.reshetova@intel.com>, 
-    David Windsor <dwindsor@gmail.com>, Kees Cook <kees@kernel.org>, 
-    Hans Liljestrand <ishkamiel@gmail.com>, linux-mips@vger.kernel.org, 
-    linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] serial: sb1250-duart: Convert to use a platform
- device
-In-Reply-To: <2026071045-turmoil-daytime-f8f8@gregkh>
-Message-ID: <alpine.DEB.2.21.2608020045050.55540@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2605241602220.1450@angie.orcam.me.uk> <alpine.DEB.2.21.2605241625180.1450@angie.orcam.me.uk> <2026071045-turmoil-daytime-f8f8@gregkh>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1786036362; c=relaxed/simple;
+	bh=0CVtiwf8Rea49LMoUx7r0FaUR1c1SczGdyIe/liq/ho=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KSHeGfzwUKXjUCWMgNJtBp2TqrjSZCORBSoqkbNJhuUhzZXm/Wq/3RqfBG4aBUkuZg/7uPYdmnjjPZfVB59/naMc83YCtUCYa8sp2fw3gBwPMSf1Dge9egcQIdo0bC8aQcPcZK7ybc0Y9ONzUTGGGbZDjyTR5InyyFXfZd4JAwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8OYpXn/; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8OYpXn/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14BA71F000E9;
+	Thu,  6 Aug 2026 17:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786036361;
+	bh=i2yjrrVc+H/dOZF8X/JCAszDBzatuRJpY6enVbVkXDU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=c8OYpXn/lbymZWYNNGPbBk8+3HfighE8u/aLjR6Id3SpcMlVswuIxuoFT6i8+sJVG
+	 33bgpDZK07lgJdRnLMQQM5x5OHdfGvrUlwrg07n1Vrb5Uhrfcf7XF85qEDFGTpmbzJ
+	 qifqGwAx2bDkh0NXTIgleM+IkLM3PHw2BFHX6yZMbeRqljFQbSRqJcqKkhvmOKwx4y
+	 8hBZqfwDXrrUJpo3Surfw1/jC6G5IUWLTS95IreVfJCJJxrzmp1dOhdDQ+kcloC6rE
+	 eCHWu6iyOrudRbovBNdMtzXkfpZdjrLsc4CWBTA/u9nkgylUVc+I/jIl/BOLL8csMs
+	 892czlr7RY3TA==
+From: Will Deacon <will@kernel.org>
+To: Russell King <linux@armlinux.org.uk>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kairui Song <kasong@tencent.com>,
+	Qi Zheng <qi.zheng@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Barry Song <baohua@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	David Hildenbrand <david@kernel.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atish.patra@linux.dev>,
+	Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>,
+	Yeoreum Yun <yeoreum.yun@arm.com>
+Cc: kernel-team@android.com,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-openrisc@vger.kernel.org
+Subject: Re: [PATCH RFC v2 00/20] mm: optimize unnecessary loads due to ptep_get() and friends out
+Date: Thu,  6 Aug 2026 18:11:50 +0100
+Message-ID: <178601690203.388302.5785771709606318463.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com>
+References: <20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 10 Jul 2026, Greg Kroah-Hartman wrote:
-
-> > Conversely only starting the console port so late lets the reset code
-> > fully utilise our delay handlers, so switch from udelay() to fsleep()
-> > for transmitter draining so as to avoid busy-waiting for an excessive
-> > amount of time.
+On Wed, 22 Jul 2026 16:30:08 +0100, Yeoreum Yun wrote:
+> Using ptep_get() and its counterparts in common code is suboptimal on
+> kernel configurations with generic compile-time folded page tables.
+> By default, ptep_get() and its friends expands to READ_ONCE(),
+> forcing the compiler to emit a load even when the value is not used afterwards.
 > 
-> That's a different thing than "convert to a platform device" why are you
-> mixing this up?
-
- With the move of this code to execute past the initialisation of the time 
-subsystem (a consequence of converting to a platform device) retaining 
-udelay() would introduce a functional bug where this busy loop would hold 
-onto the CPU rather than making it available to the scheduler.  The bug 
-would then have to be fixed with a separate change.  Perhaps I didn't make 
-it clear enough in the change description.
-
- That said I investigated this situation further and I think this should 
-have been implemented differently in 1/6, because pre-3/6 this code is 
-executed early enough that even udelay() does not work correctly, since 
-BogoMIPS haven't been calculated yet, and consequently line corruption 
-remains.  Conversely when this code is executed late, such as in the 
-non-console or even modular case, using udelay() is the very same 
-functional bug.
-
- So with the rewrite in v3 I've come up with two variants, one for the 
-early-boot case and the other for the late execution case, and then with 
-the conversion to a platform device the early-boot case becomes dead code, 
-the removal of which hopefully will raise no controversy.
-
- NB a similar approach should have been taken with commit ca904f4b4235 
-("serial: dz: Fix bootconsole message clobbering at chip reset").
-
-> > Since there is one way only remaining to reach sbd_init_port() now, drop 
-> > the port initialisation marker as no longer needed and go through the 
-> > channel resets unconditionally.
-> > 
-> > Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-> > Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> > Cc: stable@vger.kernel.org # needs to use .remove_new for <= 6.10
+> This issue was recently reported by Christophe Leroy [1] for ppc32
+> preventing futher code conversion to ptep_get()/pmdp_get()/... helper
+> and the same behavior can also be observed on arm64 when built with
+> 2- or 3-level page tables
 > 
-> The first 3 patches in this series are cc: stable, the rest not, which
-> is a mix I don't really know how to handle.  Please break things up into
-> series that can go for this release, and those that can wait for the
-> next onen (i.e. fsleep() stuff).
+> [...]
 
- I gather this is because you merge via different trees depending on 
-whether a change is to be backported or not, right?  In any case I guess 
-the other fix from the set can wait a couple of months until this has 
-propagated.  And I'll post the MAINTAINERS update right away.
+Applied the arm64 patch on the end to arm64 (for-next/mm), thanks!
 
- Thank you for your review.
+[20/20] arm64: pgtable: convert pte_present() from macro to static inline
+        https://git.kernel.org/arm64/c/3b56ebafecc4
 
-  Maciej
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev

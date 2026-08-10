@@ -1,37 +1,85 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D68C1E9B1A;
-	Mon, 10 Aug 2026 00:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69BB282F27
+	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 03:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786321679; cv=none; b=t105+jtoAe+JlzyG9n/PKaUffRNtGXXg7GDugu5nnRZD9UaVbfIWIok3Q/u6Lf2cvY0lVC+jIN72oI7LA7qYvYwRECLhvByiDXKPlQpQ03yRif0LFfMfjlBYS7VyV+uoTFcW/8sQhKDl9KzsXqQlA6gUR7xZtn+OV3oIkX1vQ+I=
+	t=1786331663; cv=none; b=TSzeLUEcVAkzpd1ZFHUvPBQIzWzA/+a0gORX7BvKhO/U64pL9EftgHLbeFkPRxCWKiIKr9FE/fdkFg6y9N+xhor/CT9xTVjvgO+4Ull0mcdeKqFg0mx6fg+90RviXJyM8B+iQj008GK6oM+RxjFJypiFytS19uDsDlooMxCzC2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786321679; c=relaxed/simple;
-	bh=Q4eb5bKoBQAAYzYqc5KCTu288g8vyAAErjRANkA0DTY=;
+	s=arc-20240116; t=1786331663; c=relaxed/simple;
+	bh=hJVZGjdzMszsM5bjwrmT88RtUDhCOhiCTzcuewL63EY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=syMrx9ccD71F89Fe1e/fbh9cHElWqsDbdtLhgTTCoybsruaanMMxaH9SsX/XvWV6Gjd/u+rwwegviXO6zMZfZQquDSUyrkTYEHveGMpvDJ8xEhDRJOvkk2txmDUoldQbestL1UEKKlYx9KVXgXPWEOdhcuuOU0k0hZ3uTTWsZAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=o5PTjKFK; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	 In-Reply-To:Content-Type; b=XpQwMBfcH3HrIrTcmNtLBf6+LamdmXq3PLA0YvCxSC+BRQD+95Dpb2AEO0arEsytW4oHDrov7aqcBzVtxk9yhXRPpZGOrhlzD7GXLMxwvQCTEgrOIK3wcTxQiKwxBHMV19y7EZtQ0Ank39YRdQvMEsXxFfhniioF6MmlOzEAQtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=PCjKCX5O; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=YXSUJvB/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o5PTjKFK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=gmPoxasTLea96f4ua9762tSSsel1x7XFrUfRV2Jz9/o=; b=o5PTjKFKU3A2+jZVJbxctqOdHd
-	MXyGcg2FNgfbCxYAfo+52FjneAcQq79A1LwfzY5f/p7+f1FqQ4pdh2ZpgP1dA/los/H44VG0jFS9/
-	HJo7ACGFz+v5BszorIiEc6Qb5SFM2jrj519DwfeeyM4NsjMc8Fd4dUSRa1scHh5SAVu9WEPyF0UcP
-	5SvYl8LmCL7s/gT+NL+B3DWkWHciojhoe7hm7clIqpuaX+0fAqGu4Y11vtz4KVWWSwKH1xd4dp2HR
-	tURoNoJp5nZsf2Er5gmZC3hthl5jSYRM7vGLdkU4aLfA1htSpbTF1xnUjZonQNxPyOdUCdceF2nnh
-	KekmAD0g==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtDrt-0000000Ar4N-37gI;
-	Mon, 10 Aug 2026 00:27:53 +0000
-Message-ID: <e0488e93-eb19-42d4-a7c0-64657141b398@infradead.org>
-Date: Sun, 9 Aug 2026 17:27:53 -0700
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="PCjKCX5O";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="YXSUJvB/"
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 679LT09W3772196
+	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 03:14:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	c20YFg7R+aIz/hgdPzYueBJ9BwfxuVTOpY3oG8UMOr0=; b=PCjKCX5Ofd+7t3oH
+	jGFoKUF1nRrglUXU2SIReN7qrYQ2HncGc+x/56ijyhXfXyjosTfaopA13lvnBFuz
+	QSLuwioIX7ZQuYffzZ00RcWHsu3ykXYxz5T/Zj6u7UcmPPbANFV57YUz3vqryp7o
+	e/egEF6jIhNZFEQ90cE3Av1v6gaEu6T7Ee3xZfPuly/xRuxLqBAHbDtIC9406HqA
+	sObhoyFKPKGqsyo3OxOhgPJgoi9Gh+cRj4aNWFWEQEbReqBw8EXCpmIkWT28/gNj
+	SDQRAJg6DDBUH4EMkYWsPamzAI9j5r66VcA1tdswOZXpZ1W000R80/jMf9S3YyFW
+	H/w1oA==
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fwush47h3-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 03:14:20 +0000 (GMT)
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-51bfe3fa93bso12787501cf.2
+        for <linux-mips@vger.kernel.org>; Sun, 09 Aug 2026 20:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1786331655; x=1786936455; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=c20YFg7R+aIz/hgdPzYueBJ9BwfxuVTOpY3oG8UMOr0=;
+        b=YXSUJvB/LR639BRMr16COatmxzLXQOvVp9KA+Ss09ZbvcrKjEAEvuud+wGCy0f6tsz
+         uFlCeDHLKuWF7xrC37B4UOxc6uwU9a9oHohGbvkxHQxcWsLVGx5B9TGlNAHS7iOF5EO0
+         SEv6khmT+nOEPE5TOzRjLtQr8oNbAIJQFLlMaEp6q6il8qITc8IxFikpBh452GmGk2JR
+         bFOnbKk4PUCuBRO94gNtJij2nmG4XLEeVdIsRrcdO7ThgsKGoApcX34ZeChQTbwtOiXk
+         9ld/kC3MGEyJPZplvtx04fhQiUBasg168+s/qvH8lcU9vF64PUQCvS0qn1G6AQKFgi+b
+         gAoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786331655; x=1786936455;
+        h=content-transfer-encoding:content-type:in-reply-to:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=c20YFg7R+aIz/hgdPzYueBJ9BwfxuVTOpY3oG8UMOr0=;
+        b=isvUaXrfi3w6R4ud73rS1dLcGPJEXQW//LSGNGtvatE82T+AF3fdgNfSnBgenk0WfC
+         QMZbNJALth8HVq+3+UFRGLw8MLYpjVzB05EO2ksCgoC9PCPOuUJODrQRlpC18bbnzn/6
+         b5flXV2dqhd6v+kWO/yVUhmVmctikagII00M4Vss2xSzR3YK7uwWDeF0QDWE1rLpnlwT
+         B/Pb8lssTMyrch8S9AvRlAaQovD2n4GVmmKDwchqkaGitmln9rfkyhfXnQtTAqVVSvTM
+         qvkLCKPWpDPfZsib/Z1h8M2iOt9i6ZWKjy7pYVkKmZNpI2iENpx7630U6QFkeiJwCVJe
+         5GRw==
+X-Gm-Message-State: AOJu0Yyfn409ZTOUWRuOJ4wmrXfGlfr7yNeqZIKqVY8pqDxafrb+NbXw
+	WmwfxMbdR060JgwaBr2FP+64kJ1TGok1CaFapCs+sbUlvutWvuxxJJQh+ClnNC0xtL1sHaIIhbR
+	MoXP5vwTuAE4Z7G/QXWZ8OSDqXHivmjI6usDFjzk2DyEE06IIf9PrijHCItlj2Eu4
+X-Gm-Gg: AR+sD11Rh7uJfqlwnlp2jaJLzxaYWn9lcxw4MY8yktUGgHT8rEt5EJRWhoFoZzUwUbO
+	A+pne5VijYZ1FIvRfK3TMEPhWoRopRF12pFV5lQvei7X0FshPytOg+If2yYf/JVhLCr3wqm1R/A
+	YK8WiBKAYvWOZflTYWwb3uHwoa7/CBejOmaSdTc2RFza/QqOt0/4cUnCVdt9dBRVDChSfiw/W3b
+	FjEOfTitNo5kEivoSHGaj5xL0yPXA/QBTcEHrLqewln+GMVwvSs2PKhJ6XCPIO25RFYJ8QyMy0m
+	A4uE9jkzU02pTO+CT4gT65qgoo6KWnNWrSyLGot+w5BCq7EfNLgyCMKgjwt8SC79fqLdUbTB2TQ
+	sQ8mozlgjFGqt2ALRr9Y4ry+3VapsqaBe040=
+X-Received: by 2002:ac8:58ce:0:b0:528:162e:29d3 with SMTP id d75a77b69052e-52ce614ba88mr400898801cf.32.1786331654631;
+        Sun, 09 Aug 2026 20:14:14 -0700 (PDT)
+X-Received: by 2002:ac8:58ce:0:b0:528:162e:29d3 with SMTP id d75a77b69052e-52ce614ba88mr400898361cf.32.1786331654128;
+        Sun, 09 Aug 2026 20:14:14 -0700 (PDT)
+Received: from [192.168.69.229] (pmd666.hd.free.fr. [88.187.86.199])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-480021501bcsm29134102f8f.9.2026.08.09.20.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 09 Aug 2026 20:14:13 -0700 (PDT)
+Message-ID: <f1067d27-6b39-433f-b1e2-ad753e54153d@oss.qualcomm.com>
+Date: Mon, 10 Aug 2026 05:14:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -39,115 +87,102 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] fbdev: maxinefb: fix build issues
-To: sashiko-reviews@lists.linux.dev
-Cc: dri-devel@lists.freedesktop.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
- Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
- linux-mips@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <20260809234810.982500-1-rdunlap@infradead.org>
- <20260810000251.55AD61F000E9@smtp.kernel.org>
+Subject: Re: [PATCH v3 2/3] serial: sb1250-duart: Fix bootconsole handover
+ lockup
 Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20260810000251.55AD61F000E9@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2608060322360.55540@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2608060359330.55540@angie.orcam.me.uk>
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
+In-Reply-To: <alpine.DEB.2.21.2608060359330.55540@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: 08a38UOc0TdfQzuGQ9EfiyclhZh4v2_A
+X-Authority-Analysis: v=2.4 cv=GvpyPE1C c=1 sm=1 tr=0 ts=6a79420c cx=c_pps
+ a=JbAStetqSzwMeJznSMzCyw==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
+ a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10 a=M51BFTxLslgA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
+ a=VwQbUJbxAAAA:8 a=BcPKCTjPAAAA:8 a=EUspDBNiAAAA:8 a=_xeo5rayHQ2-IrAwGUsA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=uxP6HrT_eTzRwkO_Te1X:22
+ a=MNXww67FyIVnWKX2fotq:22
+X-Proofpoint-ORIG-GUID: 08a38UOc0TdfQzuGQ9EfiyclhZh4v2_A
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODEwMDAyNCBTYWx0ZWRfX7uNK3CNsiXSU
+ /9Htif8SXlUe7BB0RHArqhKHH//paXLHLfGVywvrxPKY898174WtxHgbN701dxrY0mS6fnRYiJi
+ WAJh1ug+btHM0sM8Xw45+uSRFILLTMqvLNkfCApUXmuuVr1yjWZ2WvttTbWURoKF3WZfbB4D5mX
+ vJ0uzn7Iu8jDW8swAqmd4cO7y9FRxvXqf7QcW4QK835VqFhiNp3WfhNTgnuVwc3Vp3wi+MrcwOb
+ a02IpYix7j5y4KUhg4/T6uJtuSABH/3ozkmJyEnswPcgSRpYJ6nyimYt0g8BhignSMh/M4C5zeM
+ t6feWa9ZOl+aJE5T4lJqkY5OZ6yIc1h5eGzIlVJQx6K68iGYr2QxlTq/z/iE4Ts2qrpeEaApOc5
+ 9iduh0XtMSIzG4b86FtKp9WG6mR6oK/2rzBo0FgFOK54PVc/mJpyG1N9qeqejlHFlJSBqujCxWg
+ ZCmPzZy3oAg6fuoDeqQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODEwMDAyNCBTYWx0ZWRfX31ShKs3n7Ea6
+ 34VpfgVgqALX3fs/IEzEj5XjzRcB+xO9ujQg8yFBUIz60DweSbD0jW0olR5ZxssNZmmQBEBVtP3
+ KqtCf0iYoeD2Yu9jwAoX8S985osPXfE=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-09_07,2026-08-07_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 impostorscore=0 priorityscore=1501 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608100024
 
-[adding Cc:s]
-
-On 8/9/26 5:02 PM, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
+On 6/8/26 12:54, Maciej W. Rozycki wrote:
+> Calling sbd_init_port() in the course of setting up the serial device
+> causes line parameters to be messed up and the transmitter disabled.
+> We've been lucky in that no message is usually produced to the kernel
+> log between this call and the later call to uart_set_options() in the
+> course of console setup done by sbd_serial_console_init(), or the system
+> would hang as the console output handler in CFE tried to access a port
+> whose transmitter has been disabled and line parameters messed up.
 > 
-> Pre-existing issues:
-> - [High] Initialization function returns positive value `1` on failure, breaking module load semantics and causing subsequent `registered_fb` array corruption on unload.
-> - [High] `maxinefb_fix.smem_start` is initialized with a virtual address (`CKSEG1ADDR`) instead of the hardware physical address, breaking user-space `mmap()`.
-> --
+> It'll change with the next change to the driver, so fix sbd_init_port()
+> such that line parameters are set for 115200n8 console operation as with
+> the CFE firmware and the transmitter re-enabled after reset.
 > 
-> --- Patch [1]: [RFC PATCH] fbdev: maxinefb: fix build issues ---
-> commit e391418fa2f21f8c420eccb513c031674ef184c6
-> Author: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v6.5+
+> ---
+> No change from v2 (2/3),
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2605241623110.1450@angie.orcam.me.uk/>.
 > 
-> fbdev: maxinefb: fix build issues
+> Changes from v1 (2/4),
+> <https://lore.kernel.org/r/alpine.DEB.2.21.2604130338210.29980@angie.orcam.me.uk/>:
 > 
-> This commit fixes build errors and warnings for the maxinefb driver on
-> 32-bit and 64-bit MACH_DECSTATION. It updates KSEG1ADDR to CKSEG1ADDR and
-> adds the static keyword to missing prototypes.
+> - Sanitise the change heading.
+> ---
+>   drivers/tty/serial/sb1250-duart.c |    7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
->> diff --git a/drivers/video/fbdev/maxinefb.c b/drivers/video/fbdev/maxinefb.c
->> index 52528eb4dfb41..8aa1389e2d4c8 100644
->> --- a/drivers/video/fbdev/maxinefb.c
->> +++ b/drivers/video/fbdev/maxinefb.c
-> [ ... ]
->> @@ -111,7 +98,7 @@ static const struct fb_ops maxinefb_ops = {
->>  	.fb_setcolreg	= maxinefb_setcolreg,
->>  };
->>  
->> -int __init maxinefb_init(void)
->> +static int __init maxinefb_init(void)
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does returning 1 on failure in this function
-> cause issues with module load semantics?
-> 
-> In maxinefb_init():
-> 
->         if (register_framebuffer(&fb_info) < 0)
->                 return 1;
-> 
-> If register_framebuffer() fails, returning a positive integer causes the kernel
-> to treat the module as successfully loaded because the module init framework
-> expects negative error codes for failure.
-
-Ack. I'll change that.
-
-> Later, when the module is unloaded, maxinefb_exit() calls
-> unregister_framebuffer() on the unregistered fb_info. Since it was never
-> successfully registered, its node field is 0.
-> 
-> Does this cause the generic do_unregister_framebuffer() to blindly execute
-> registered_fb[0] = NULL, corrupting the kernel's framebuffer state by deleting
-> the reference to whatever valid framebuffer occupied node 0?
-> 
->> diff --git a/include/video/maxinefb.h b/include/video/maxinefb.h
->> index 6aeb4acca2bdb..2b66b32f355cf 100644
->> --- a/include/video/maxinefb.h
->> +++ b/include/video/maxinefb.h
-> [ ... ]
->> @@ -13,13 +13,13 @@
->>  /*
->>   * IMS332 video controller register base address
->>   */
->> -#define MAXINEFB_IMS332_ADDRESS		KSEG1ADDR(0x1c140000)
->> +#define MAXINEFB_IMS332_ADDRESS		CKSEG1ADDR(0x1c140000)
->>  
->>  /*
->>   * Begin of DECstation 5000/xx onboard framebuffer memory, default resolution
->>   * is 1024x768x8
->>   */
->> -#define DS5000_xx_ONBOARD_FBMEM_START	KSEG1ADDR(0x0a000000)
->> +#define DS5000_xx_ONBOARD_FBMEM_START	CKSEG1ADDR(0x0a000000)
-
-Maciej or anyone:
-can you comment of this, please?
-
-> [Severity: High]
-> This is a pre-existing issue, but does assigning a virtual address to
-> maxinefb_fix.smem_start break user-space mmap()?
-> 
-> In maxinefb_init():
-> 
->         fb_start = DS5000_xx_ONBOARD_FBMEM_START;
->         ...
->         maxinefb_fix.smem_start = fb_start;
-> 
-> The smem_start field is passed to vm_iomap_memory() by the generic framebuffer
-> mmap handler (fb_mmap()). Because vm_iomap_memory() strictly expects a physical
-> address, does passing a KSEG1 virtual address set up user-space page tables
-> pointing to an invalid physical address?
-> 
-> This could trigger an invalid physical memory access and a kernel panic when
-> user-space accesses the mapped memory.
-> 
-
--- 
-~Randy
-
+> linux-serial-sb1250-duart-prom-console.diff
+> Index: linux-macro/drivers/tty/serial/sb1250-duart.c
+> ===================================================================
+> --- linux-macro.orig/drivers/tty/serial/sb1250-duart.c
+> +++ linux-macro/drivers/tty/serial/sb1250-duart.c
+> @@ -542,14 +542,19 @@ static void sbd_init_port(struct sbd_por
+>   	/* There is no DUART reset feature, so just set some sane defaults.  */
+>   	write_sbdchn(sport, R_DUART_CMD, V_DUART_MISC_CMD_RESET_TX);
+>   	write_sbdchn(sport, R_DUART_CMD, V_DUART_MISC_CMD_RESET_RX);
+> -	write_sbdchn(sport, R_DUART_MODE_REG_1, V_DUART_BITS_PER_CHAR_8);
+> +	write_sbdchn(sport, R_DUART_MODE_REG_1,
+> +		     V_DUART_PARITY_MODE_NONE | V_DUART_BITS_PER_CHAR_8);
+>   	write_sbdchn(sport, R_DUART_MODE_REG_2, 0);
+> +	write_sbdchn(sport, R_DUART_CLK_SEL, V_DUART_BAUD_RATE(115200));
+>   	write_sbdchn(sport, R_DUART_FULL_CTL,
+>   		     V_DUART_INT_TIME(0) | V_DUART_SIG_FULL(15));
+>   	write_sbdchn(sport, R_DUART_OPCR_X, 0);
+>   	write_sbdchn(sport, R_DUART_AUXCTL_X, 0);
+>   	write_sbdshr(sport, R_DUART_IMRREG((uport->line) % 2), 0);
+>   
+> +	/* Re-enable transmission for the initial PROM-based console.  */
+> +	write_sbdchn(sport, R_DUART_CMD, M_DUART_TX_EN);
+> +
+>   	sport->initialised = 1;
+>   }
+>   
+Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>

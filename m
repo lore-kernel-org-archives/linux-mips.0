@@ -1,205 +1,168 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D4C276038;
-	Mon, 10 Aug 2026 03:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E8D3E0732
+	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 14:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786332576; cv=none; b=lenBfe64llf5N85+0zgZOtnT9UD8ylzLbYpl0CGoBtX2SxsuXpT4RuhGTnoz75H3UCPQ1HE4AlS8a0Vszb2RWmujUuueLgnj2/ffcNqkBG5eupey63aTBN3WQhZaold6iyleuWKdQBaWVn4Rkv30pWS5g5yFqaeu/hZOVzfwvy4=
+	t=1786371961; cv=none; b=ZKYUuCXZm0SaTvdWEhZ8B6uN+RMeqN5r2YVKOo9tBihG8ZR+jZg3R3M4GoivZA68TEVd0FTB8mlzVFWUNBfKrBarCxXqk0Rjft1KW5F9rCg0BPfcsnSYA3mGZDJKnkyG8G4p+cWQuWGmzvkibNmisby+DkhT++Ge5pXV/LL4ti8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786332576; c=relaxed/simple;
-	bh=NXzUDuKA+/uw7lgZLuhWJ2T0behu8TLnFwR3fxD2ofc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TNVJFAzIBTVLC7sVcDhREJhbpn55t653itq7JBWHqjTDFrf0d2EqxexBo2W+Wka2sZDp1SgdxGonmzckREoyrU4cUFjHuIcB9cmu5/uUj0DmPhqWUlbblxWOpAhZOqFak3dOMe8uWTTNfONKfn/dtePwjzsrNIUamYtWICLaB5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yZsLOpa/; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1786371961; c=relaxed/simple;
+	bh=3zMe/VKWsHxK00hk/Fvk5zxFICYNM/JV6Q1G2q4ltMc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KAtrxdtSlxdzysubTDatIqtKJiY/3G8J4Gy91ywlruTKCvlR3tlZC9v2DS9TbvXyLaed7jpg9P/aD5NtyLEnHJw6aQKGUR5Yc32b5XVGMazncy7VPZLl2cXs4o6MnLRkLuYZFh5e/AhzFHysDXWjIOCw+AnUUHc5RS9GBibgf4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=zPCgC5Gr; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yZsLOpa/"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=2mXr+36gQcVouoMzQ7KrVvAve6jSBWSK45dYP1ruE3s=; b=yZsLOpa/KvV6fqnglFbg4wE62d
-	JivkRFHRaWx4c8tMMJP9+EJGS7ZBhgc4s68xyOZUThN5X5gJ4qNaW0PZ5okCAd6VnnP7THswjZbqG
-	kJvQQMfFlQFZ8T08UiWTIHLqWu6lJn6MZGq6EbvXQWoU5CDoKRNmmBGWD1g3lMyxCUB40SFgANEIY
-	Qxg6YVY/lG40FtEb1EdTT1eXTLL48T4bShBrSXWe6/cRzm+tttAJBFtS7g804bPCBDV+7S+OxaLDP
-	bOdOPURaUXpW8DtrqW8w0D1QhUuP9Dwobnedbz8zQARptC3PG2GZXv0s8m3AuSEdhyDH5GCQpkxG1
-	IK3h95Yw==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtGhf-0000000AxV3-3S7w;
-	Mon, 10 Aug 2026 03:29:31 +0000
-Message-ID: <7282ae0f-3bf5-4eb8-9585-04635de0084a@infradead.org>
-Date: Sun, 9 Aug 2026 20:29:31 -0700
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="zPCgC5Gr"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 4313C1A153A;
+	Mon, 10 Aug 2026 14:25:57 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0D8BF6033B;
+	Mon, 10 Aug 2026 14:25:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 875C511C4A8B8;
+	Mon, 10 Aug 2026 16:25:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1786371951; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=6xmWhu7HASEbbn1U8iY/ETKHwPymlz8B7fyG7NG1ouk=;
+	b=zPCgC5GrU8/h6dzjR+VEsjUbvxAFytJJoD0tmzzuxrhi0kXnXTw5n4dDjApwRvlwzD4UVI
+	qSyHCyG9uDNs2MLKETldAkc68c/kVlJybwaykg2oFY5VfHOJytGJHpf7ZMO2O1DWBxXXkd
+	Lr3FQ5EXGDIkx7QklxzxrjPLq86vBizOkASXFpZta0l8xEMtgWh+QDhVhRFHfcw0VDoqEk
+	U/YLPayjsuKfABx1UtnlrFNqFWicmw4Dk/PovKHOacHxBdFGjKzrtma+9bJkEEYnJY3gcV
+	xHfMspMMMVatjokaeANgs0e1U25wlsaAw/qrzW5iG0Ifpmp0USwmj5zhSwb9bA==
+From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+Subject: [PATCH v2 0/5] MIPS: GIC clocksource/irqchip improvements and
+ fixes for multi-cluster systems
+Date: Mon, 10 Aug 2026 16:25:37 +0200
+Message-Id: <20260810-sync-gic-counters-v2-0-dfe8b2c376b0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] fbdev: maxinefb: fix build issues
-To: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>,
- linux-kernel@vger.kernel.org
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, Helge Deller <deller@gmx.de>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
-References: <20260809234810.982500-1-rdunlap@infradead.org>
- <8ce99afa-1162-4910-92a4-6cb2973ea977@oss.qualcomm.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <8ce99afa-1162-4910-92a4-6cb2973ea977@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAGHfeWoC/22NQQ6CMBBFr0K6tqatBNSV9zAs6DCFMdqSTiESw
+ t0FdOnyJe+/PwvGSMjims0i4khMwa9gDpmArvYtSmpWFkaZQpW6lDx5kC2BhDD4hJGlhqawubK
+ X4oxi3fURHb335r36Mg/2gZC20GZ0xCnEaT8d9eb9+ib/0x+11LKuTe4a5U7KupsNIT3JHyG8R
+ LUsywe9mHhuxgAAAA==
+X-Change-ID: 20260717-sync-gic-counters-1cd6b40b968e
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Daniel Lezcano <daniel.lezcano@kernel.org>, 
+ Thomas Gleixner <tglx@kernel.org>, 
+ Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>, 
+ Chao-ying Fu <cfu@wavecomp.com>, Aleksandar Rikalo <arikalo@gmail.com>, 
+ Paul Burton <paulburton@kernel.org>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+X-Mailer: b4 0.15.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi,
+This series addresses multi-cluster MIPS GIC handling: it fixes a few
+cross-cluster and lock bugs, and allows the GIC timer to be used as a
+fast local clocksource on multi-cluster systems by synchronizing the
+per-cluster counters.
 
-On 8/9/26 8:24 PM, Philippe Mathieu-Daudé wrote:
-> Hi Randy,
-> 
-> On 10/8/26 01:48, Randy Dunlap wrote:
->> This is all ancient source code from the beginning of git time.
->> Now builds cleanly on 32-bit and 64-bit MACH_DECSTATION.
->>
->> Fixes these build errors/warnings:
->>
->> ../drivers/video/fbdev/maxinefb.c:64:6: warning: no previous prototype for 'maxinefb_ims332_write_register' [-Wmissing-prototypes]
->>     64 | void maxinefb_ims332_write_register(int regno, register unsigned int val)
->>        |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> In file included from ../drivers/video/fbdev/maxinefb.c:34:
->> ../drivers/video/fbdev/maxinefb.c: In function 'maxinefb_ims332_write_register':
->> ../include/video/maxinefb.h:16:41: error: implicit declaration of function 'KSEG1ADDR'; did you mean 'CKSEG1ADDR'? [-Wimplicit-function-declaration]
->>     16 | #define MAXINEFB_IMS332_ADDRESS         KSEG1ADDR(0x1c140000)
->>        |                                         ^~~~~~~~~
->> ../drivers/video/fbdev/maxinefb.c:66:49: note: in expansion of macro 'MAXINEFB_IMS332_ADDRESS'
->>     66 |         register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->>        |                                                 ^~~~~~~~~~~~~~~~~~~~~~~
->> ../drivers/video/fbdev/maxinefb.c:66:40: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
->>     66 |         register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->>        |                                        ^
->> ../drivers/video/fbdev/maxinefb.c: At top level:
->> ../drivers/video/fbdev/maxinefb.c:74:14: warning: no previous prototype for 'maxinefb_ims332_read_register' [-Wmissing-prototypes]
->>     74 | unsigned int maxinefb_ims332_read_register(int regno)
->>        |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> ../drivers/video/fbdev/maxinefb.c: At top level:
->> ../drivers/video/fbdev/maxinefb.c:74:21: warning: 'maxinefb_ims332_read_register' defined but not used [-Wunused-function]
->>     74 | static unsigned int maxinefb_ims332_read_register(int regno)
->>        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> ../drivers/video/fbdev/maxinefb.c: In function 'maxinefb_ims332_read_register':
->> ../drivers/video/fbdev/maxinefb.c:76:40: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
->>     76 |         register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->>        |                                        ^
->> ../drivers/video/fbdev/maxinefb.c: At top level:
->> ../drivers/video/fbdev/maxinefb.c:114:12: warning: no previous prototype for 'maxinefb_init' [-Wmissing-prototypes]
->>    114 | int __init maxinefb_init(void)
->>        |            ^~~~~~~~~~~~~
->> In file included from ../drivers/video/fbdev/maxinefb.c:34:
->> ../drivers/video/fbdev/maxinefb.c: In function 'maxinefb_init':
->> ../include/video/maxinefb.h:22:41: error: implicit declaration of function 'KSEG1ADDR'; did you mean 'CKSEG1ADDR'? [-Wimplicit-function-declaration]
->>     22 | #define DS5000_xx_ONBOARD_FBMEM_START   KSEG1ADDR(0x0a000000)
->>        |                                         ^~~~~~~~~
->> ../drivers/video/fbdev/maxinefb.c:119:20: note: in expansion of macro 'DS5000_xx_ONBOARD_FBMEM_START'
->>    119 |         fb_start = DS5000_xx_ONBOARD_FBMEM_START;
->>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Suggested-by: "Maciej W. Rozycki" <macro@orcam.me.uk> # for s/KSEG1ADDR/CKSEG1ADDR/
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> ---
->> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
->> Cc: Helge Deller <deller@gmx.de>
->> Cc: linux-fbdev@vger.kernel.org
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->> Cc: linux-mips@vger.kernel.org
->>
->>   drivers/video/fbdev/maxinefb.c |   17 ++---------------
->>   include/video/maxinefb.h       |    4 ++--
->>   2 files changed, 4 insertions(+), 17 deletions(-)
->>
->> --- linux-next-20260807.orig/drivers/video/fbdev/maxinefb.c
->> +++ linux-next-20260807/drivers/video/fbdev/maxinefb.c
->> @@ -61,7 +61,7 @@ static struct fb_fix_screeninfo maxinefb
->>     /* Handle the funny Inmos RamDAC/video controller ... */
->>   -void maxinefb_ims332_write_register(int regno, register unsigned int val)
->> +static void maxinefb_ims332_write_register(int regno, register unsigned int val)
->>   {
->>       register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->>       unsigned char *wptr;
->> @@ -71,19 +71,6 @@ void maxinefb_ims332_write_register(int
->>       *((volatile unsigned short *) (wptr)) = val;
->>   }
->>   -unsigned int maxinefb_ims332_read_register(int regno)
->> -{
->> -    register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->> -    unsigned char *rptr;
->> -    register unsigned int j, k;
->> -
->> -    rptr = regs + 0x80000 + (regno << 4);
->> -    j = *((volatile unsigned short *) rptr);
->> -    k = *((volatile unsigned short *) regs);
->> -
->> -    return (j & 0xffff) | ((k & 0xff00) << 8);
->> -}
->> -
->>   /* Set the palette */
->>   static int maxinefb_setcolreg(unsigned regno, unsigned red, unsigned green,
->>                     unsigned blue, unsigned transp, struct fb_info *info)
->> @@ -111,7 +98,7 @@ static const struct fb_ops maxinefb_ops
->>       .fb_setcolreg    = maxinefb_setcolreg,
->>   };
->>   -int __init maxinefb_init(void)
->> +static int __init maxinefb_init(void)
->>   {
->>       unsigned long fboff;
->>       unsigned long fb_start;
->> --- linux-next-20260807.orig/include/video/maxinefb.h
->> +++ linux-next-20260807/include/video/maxinefb.h
->> @@ -13,13 +13,13 @@
->>   /*
->>    * IMS332 video controller register base address
->>    */
->> -#define MAXINEFB_IMS332_ADDRESS        KSEG1ADDR(0x1c140000)
->> +#define MAXINEFB_IMS332_ADDRESS        CKSEG1ADDR(0x1c140000)
->>     /*
->>    * Begin of DECstation 5000/xx onboard framebuffer memory, default resolution
->>    * is 1024x768x8
->>    */
->> -#define DS5000_xx_ONBOARD_FBMEM_START    KSEG1ADDR(0x0a000000)
->> +#define DS5000_xx_ONBOARD_FBMEM_START    CKSEG1ADDR(0x0a000000)
-> 
-> The change looks correct, but clearly this has never been tested
-> on a 64-bit DECstation, so I'm not sure having this code being
-> now built is an improvement.
-> 
-> What about:
-> 
-> -- >8 --
-> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> index ac9ac4287c6a..ff17afe6b8b3 100644
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -1436,7 +1436,7 @@ config FB_PMAGB_B
-> 
->  config FB_MAXINE
->         bool "Maxine (Personal DECstation) onboard framebuffer support"
-> -       depends on (FB = y) && MACH_DECSTATION
-> +       depends on (FB = y) && MACH_DECSTATION && 32BIT
->         select FB_IOMEM_HELPERS
->         help
->           Support for the onboard framebuffer (1024x768x8) in the Personal
-> ---
-> 
-> ?
+If you are wondering how a single patch in version one turned into a
+five-patch series in version two, the answser is PROVE_LOCKING which
+found some issues that this series addresses.
 
-I guess I'm OK with that. I'm even OK with removing the driver completely.
+The first three patches are for the irq-mips-gic irqchip driver.
 
-Maciej did say in https://lore.kernel.org/all/alpine.DEB.2.21.2308152255080.8596@angie.orcam.me.uk/
-that: "the proper way would be by using `ioremap' really.  I'll make a patch."
-[That was 15.Aug.2023.]
+The first patch fixes the for_each_online_cpu_gic() macro which
+was releasing an unheld per-CPU cm_core_lock on every invocation
+on multi-cluster hardware. Move both the acquire and release into
+__gic_with_next_online_cpu() so they stay balanced and the for_each
+macro accesses all VP on a multi-cluster system.
 
+The second patch fixes a recursive acquisition of gic_lock in
+gic_set_affinity() when moving interrupt SMP affinity across clusters,
+caused by a call to gic_set_type(). Split out a gic_set_type_locked()
+helper to resolve the issue.
 
--- 
-~Randy
+The third patch enables the interrupt when moving affinity across
+clusters. The interrupt mask is per-cluster, so after a cross-cluster
+affinity change the interrupt was left disabled in the destination
+cluster. Handle the mask explicitly on both the old and the new side.
+
+The last two patches are for the mips-gic-timer clocksource driver.
+
+The fourth patch sets next GIC event on the correct VP. On multi-cluster
+systems the VO window redirected by write_gic_vl_other() belongs to the
+local GIC, so write_gic_vo_compare() hit the wrong GIC. Redirect the
+core-other region to the target CPU with mips_cm_lock_other_cpu() instead.
+
+The last patch is the main functional change, carried over from v1. It
+synchronizes each secondary cluster's GIC counter to cluster 0's counter
+as its CPUs come online, and once every cluster is in sync, promote the
+clocksource back from the slow cross-cluster gic_hpt_read_multicluster()
+path to the fast local gic_hpt_read(), also re-enabling the GIC
+VDSO clock mode. On the dual-cluster Mobileye EyeQ6H SoC this makes
+clock_gettime(CLOCK_MONOTONIC) about four times faster on the secondary
+cluster and replaces the jiffies-based sched_clock with the high-precision
+GIC counter.
+
+This series was tested on Mobileye SoCs with different cluster
+configurations:
+* The EyeQ5 with two clusters but only one is equipped with VP
+  (VP topology {2,2,2,2},{} total 8).
+* The EyeQ6Lplus which is strictly single cluster
+  (VP topology {4,4} total 8).
+* The EyeQ6H with two identical clusters
+  (VP topology {4,4,4,4},{4,4,4,4} total 32).
+
+Although I am posting this as a single series since the patches
+are all related to the GIC, the changes to the irqchip driver and
+to the clocksource driver are independent from each other and can be
+merged in different trees. I can split the series in two if it helps
+reviewing/merging.
+
+Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
+---
+Changes in v2:
+- Four new patches described above fixing multi-cluster
+  handling in the GIC irqchip and clocksource drivers.
+- In the last patch, gic_clocksource_promote() is now deferred via a
+  workqueue instead of a CPUHP ONLINE callback, to avoid a lockdep
+  issue on clocksource_mutex.
+- Link to v1: https://patch.msgid.link/20260724-sync-gic-counters-v1-1-aa24fd0f30bf@bootlin.com
+
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Thomas Gleixner <tglx@kernel.org>
+To: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
+To: Chao-ying Fu <cfu@wavecomp.com>
+To: Aleksandar Rikalo <arikalo@gmail.com>
+To: Paul Burton <paulburton@kernel.org>
+To: Daniel Lezcano <daniel.lezcano@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+---
+Benoît Monin (5):
+      irqchip/mips-gic: Fix unbalanced cm_core_lock in for_each_online_cpu_gic()
+      irqchip/mips-gic: Fix recursive acquisition of gic_lock in gic_set_affinity()
+      irqchip/mips-gic: Enable interrupt when moving affinity across clusters
+      clocksource: mips-gic-timer: Set next GIC event on the correct VP
+      clocksource: mips-gic-timer: Use local counter on synced multi-cluster systems
+
+ drivers/clocksource/mips-gic-timer.c | 120 +++++++++++++++++++++++++++++++++--
+ drivers/irqchip/irq-mips-gic.c       |  51 ++++++++-------
+ 2 files changed, 143 insertions(+), 28 deletions(-)
+---
+base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
+change-id: 20260717-sync-gic-counters-1cd6b40b968e
+
+Best regards,
+--  
+Benoît Monin, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 

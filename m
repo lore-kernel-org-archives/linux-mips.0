@@ -1,64 +1,63 @@
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D567A442138
-	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 19:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8541443A94
+	for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 19:42:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786390957; cv=none; b=CMgdY7d/piFxbVzbM/BPK4svRz1a6wbFDXkAaGsQt3jgFSxsDhk+f/8Tlkf4PEjMQ1r2czYmr5twtK4nQ7IhkAvcEIFcINwzoxaAnCX/54gwuEkHlXuSP0Kc3LoqFpxlunHNPLlFjOasZGSX3s4DUNIRXkzLSG0byP5ee5lKhBs=
+	t=1786390968; cv=none; b=JQT3GACdZy2kCI078bUmvn3yRHRXsDrV2WNsyQ4sLAFuWRTI9oOfNRVIPQxeFbJ+fXwVHmtt94stU3Xi3R+8zn6EH8vEJbOxw+Q4O/LzsE8m/YhpLwKR6fzCyrLSbCtKduH9ULnY2WbTFRQhukPfF6ETcS0XsHDgCzcLIynHQxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786390957; c=relaxed/simple;
-	bh=mBGGbUnHaBPZ8pdYtaa0x1Q6F4i0OojXHM/laGEULY4=;
+	s=arc-20240116; t=1786390968; c=relaxed/simple;
+	bh=W485Ps4F9bQqeQYrJN3IRGl+zarYhizxFCivRtuP0Xo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qg5fZMyhYUizvTZ9T4PtfPyyolKNK9Xd6xnYjkn1zicTgm9Txel1pG2liaQwCSgZVsgpBvLNeUmu7XUdiSPszmRe/QRaBxpNJSEFK4WRdi6NhnjS9H3YwtQwOC0bSzm2HY7kIRQZzHRUDimi3Ymvm8m8TphaFQ7NMv5Roe680lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mv6/rtyw; arc=none smtp.client-ip=209.85.218.50
+	 MIME-Version; b=D56V9HoUZ8pHA+I4jXdEzT2YG8QxR9fIXrN/fzz9JpbfDEvlq8tCXfr4wfIA7izJLt1mZpO7RS3ZozEjKSWvYJBXe06DE1DgwKk0r6fnaW2NxBSjefkQkLTkZk0Wg5rV9Cnz3trbKaOePpu6w48PVfgXszXlOayCb7ca+k9ebzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jfx4Ymtk; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mv6/rtyw"
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-c167aa9500dso3222966b.3
-        for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 12:42:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jfx4Ymtk"
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-c1671ec8692so273869166b.0
+        for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 12:42:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786390947; x=1786995747; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=Lkr1vFJIkyhno/UkUAQp7w4u73WRJzZ2tehGeX/lslo=;
-        b=mv6/rtywV8CHhPJWdfIkU61GxZiieDRmhXBdzKm7Vqe7/yHkac8cGsaVwMlrk1DOPE
-         Avjxj+T4Nt8dYatYMW+kUFp5w81k0eLU7zchoMHINfCYuKAIng/SdYM/peu5rytG02m4
-         CSEaFIq+cwLE3Uq3WfjkLH3KlxgR18RtAZ5TV39MyQVOUhov3+Mgppc8AAI/n8z34CCi
-         Yye57AibjBRuRnUN8dAXJmzTLJbZYkFBthtCkL8+yL/EfHGZc3PxtGm3dLWsq1+vMwVc
-         EHILb9sHt0Sja8G56f691E/NBlAOPY4wkSCnaaAVe38jll00KDW9FKMLwQZq1ou5BVVk
-         gdDg==
+        d=gmail.com; s=20251104; t=1786390952; x=1786995752; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=gNL8jc0H9XgLIgF8wMon/ay6lTwqg54F4SvS6jfnRF0=;
+        b=Jfx4YmtkEgC/z5PA8rGdI+2vGhrxjXmqaElM4a4d8T7CnXPfCbBDHko5HHO52Mwm5Y
+         qAhH67ZFQeQiMLXceVd0+dEv6gpFRH9bc2bMWyfyq20YGNw5L25AnZsLhrg9MhB9Slwl
+         H65Rr9tdQ0lJddkA6SbXybZl8sYVYcFPAVsvCg2noSllBfmRYlwhQQuLzAe/a51AXJOB
+         l6LnS2TGMNlYMkglOkfM6/GKAFX1rHxydwhpDpd6M6DCDudkDOd/LymyHAgLs5YS+yoB
+         UPcRoPKCNw9z5g46nExGrTgkyawtxFLw7jln/rzKbun4EXkLM7U5YbwaXl5EMtEE2dgF
+         u00w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786390947; x=1786995747;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Lkr1vFJIkyhno/UkUAQp7w4u73WRJzZ2tehGeX/lslo=;
-        b=T1Kg1luXR25BXJNLn/30HxDhuUJ16rtwNsL+mYChHmURe6uTN9UGAOM7cU+phdKXoe
-         p04ujjUUNlW+woE5+yB+D/jPzZ5L4Kd6tYNN/jXgQ9Q/jNKkc0sMyBs3eIRrSnO/yNe7
-         RqvNsZR2Mcsw2Y03Zm1CMKAlUlgaG43DZ2XYfTR37z45IELUlzhdTrWPAIl6RuOcOcih
-         akKrNEbnI4onjE2/WkePxjrDWsnm0AjhYN1RWtDZuFrXeLlxlPvYqYwKNN8Q6vynvAUL
-         +X2K8R3840V0sZcMnSWbSV+jtR8R1XjdO9brFQU8v+1ZMBZZzQfcLIObEb+lfIV2DCc9
-         q+tA==
-X-Forwarded-Encrypted: i=1; AHgh+Rq7wRVTCdnBejxoy6kqnn2ei7/4x1xdlXLRo8H+1nGQUnnejOa52tnLhyPfFp/sCE+9CQ2DG6gKJgkr@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ7jy9USU8DUQ9aK0sDOqbdk28mTRUdJsAnGstWiBGu1LHw8Uq
-	W23AAVIVa34vq9k2VNCq3A8nXd0BuBFZhuqFiyrECdQC7qG4wIfA6vJL
-X-Gm-Gg: AR+sD10jX4Dvug0o6gQt/MQIsfk4XNp0BKYnXh2lifvsvmNXBGF2W1s11v/k5lM0npH
-	ubpF5MN+CK5YhXrGlOgdgwNicBIGXfzRxFjz48B4CW3eIeqtpFQhhq0A3El7HeDYJJojUdVhIrN
-	MuukcmTbNqs6lYzOVmBw8eHGaLe0LgfL8eJm0gR7U79Bg3bqgshDi7d5AlOqGjChLB4RYIh9Ur1
-	PUWhb0Z/BlP+wpD10fRqm94ADAHIHAtFV9CblMNEgQEG8ohFDP3b/mnNFLmOrKzq2be8FVr/Es3
-	ICFL+yJAvuxdlR0KkJY1sNQgsgkirvUUXdNkmGVhJjmO+pYuvTWm1q6PNdsp9fHRSyaqz0IbJH9
-	aDTWiBur5PaBJw1WJA2D02cUAHtnxmfM+iO9sV2/QG6sCxgQo7bot/3fRpjPDV4yf1Cv3x513mA
-	G2HwFs6+u00EX1DDBmPghyRbaXX7FwM/FVh80ee/re/p1lV4ivU/WVhZ5T9usX3JAx
-X-Received: by 2002:a17:907:1ca7:b0:c1c:4adc:31a9 with SMTP id a640c23a62f3a-c2039e3fe56mr2139790766b.28.1786390947146;
-        Mon, 10 Aug 2026 12:42:27 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1786390952; x=1786995752;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=gNL8jc0H9XgLIgF8wMon/ay6lTwqg54F4SvS6jfnRF0=;
+        b=pcLvWzr+lS70btXfy927FIAcKVux7+QTnE/WksAJFLJxL4tIm83P1TTFgf4TGpIPdj
+         UhPPYLT/9P7VaZ4zW2ZFdB1A7xHtEmyMYtjpYNzmVL2AGuoUo8QM9YWZ1qVGN6TPab09
+         6NvvXu/oJ5R7z7+rdZmwPaXBjS83OikN+p4yTXXXYbqL5NH3FHEC1xgNCRNnBAXrPTi/
+         /zcbadjeULg6Qhj3ZxF9B9JScuSpfIiaCf15tzDc7d3wSLWenb/k5/biHFH1gVAGsRlE
+         yO1mdmenu9WAdERsn/fCMVZCUZMtgERskO2WrI0MEGIi5puGUN/7LIe4FKKjjD9gQ8sP
+         g6dA==
+X-Forwarded-Encrypted: i=1; AHgh+RoxCQePV+hFpfuUIiA41twvDiesbak1QxefBs/TnIYmjZWlMOEFLx/DufqGvsfl8trlXmXfnywwrcSi@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6qzeH1n9idS3LXHUE8nqNKIcVnwvulRuq2yWkXQeHYFzKPVld
+	haazp53a36Z6BzmFODD25e7XVMPDjNYpeTJya3SHcEltqK/y5GlhIaot
+X-Gm-Gg: AR+sD10kmKPEXvwEmfeuls6zF38BluISdZky6X6nfDqfV6AAEaS7370rPhXHPBycS24
+	O6TwedHLEFXDVIWsglP2rgmOw5xeZPe7dMdBL0crnb3TGYfYhZ8+spfB/acZf53kQUUh+kfvUi1
+	jd3hdTWptig/Y2iVoV0PiXjS7l1/+wqryUd2wUgyGNb/qfdIbPqN3XyRXlIR8JtGF/xwPIOqtzk
+	9z0be3XNNXdXOiS6uhKxT33pTVthuV3CsvhqxxFc29eM1CG45LLT0I0B+yguqPRujBd/vjmSait
+	MdRsvij20gNKjib8uD2RrRX1N54WBJYnxuAg319Tv9ZxaxP/OCyc5f5DA+BWW/P5WHNQ1zUriP6
+	z1xo4B7TrIudn/RHSGVhIHDVMAjpGzV3GroW9fk0asFAnLXr1PfOg5xM85+g2Jy1SlgQD6iL31H
+	6AK3FXuV6OCgEKhz00zSksUY2E0rbWMMW55auopvlQEpMz5g/43uNczs/fN0L4GSI4
+X-Received: by 2002:a17:907:3c86:b0:c12:7f25:cc59 with SMTP id a640c23a62f3a-c20c68e5809mr218216066b.16.1786390951475;
+        Mon, 10 Aug 2026 12:42:31 -0700 (PDT)
 Received: from TurinLinux.. ([187.15.140.84])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c2080a6f414sm430309066b.17.2026.08.10.12.42.24
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c2080a6f414sm430309066b.17.2026.08.10.12.42.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2026 12:42:26 -0700 (PDT)
+        Mon, 10 Aug 2026 12:42:31 -0700 (PDT)
 From: Nicholas Dudar <main.kalliope@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -78,9 +77,9 @@ Cc: martin.lau@linux.dev,
 	bpf@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 1/3] bpf, mips: Factor out div/mod emission helpers
-Date: Mon, 10 Aug 2026 15:42:13 -0400
-Message-Id: <20260810194215.3754591-2-main.kalliope@gmail.com>
+Subject: [PATCH bpf-next v3 2/3] MIPS: uasm: Add signed div/mod emitters
+Date: Mon, 10 Aug 2026 15:42:14 -0400
+Message-Id: <20260810194215.3754591-3-main.kalliope@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260810194215.3754591-1-main.kalliope@gmail.com>
 References: <20260810194215.3754591-1-main.kalliope@gmail.com>
@@ -90,135 +89,151 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Factor MIPS32 and MIPS64 division and modulo emission out of
-emit_alu_r() and emit_alu_r64(). This prepares the JITs to select signed
-or unsigned opcodes without duplicating the R6 and pre-R6 handling.
+Add uasm emitters for the signed DIV, MOD, DDIV, and DMOD
+instructions. Provide both pre-R6 and R6 division forms so users can
+select the instruction appropriate for the target ISA.
 
-No functional change intended.
-
-Suggested-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
 Assisted-by: Codex:gpt-5.6-sol
+Link: https://lore.kernel.org/bpf/CAM1=_QS79dDBfaaNQXnWd61AqHd1M4o9aDMMiftnoJveNr=FZg@mail.gmail.com/
 Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
 ---
- arch/mips/net/bpf_jit_comp.c   | 36 ++++++++++++++++++++++------------
- arch/mips/net/bpf_jit_comp64.c | 36 ++++++++++++++++++++++------------
- 2 files changed, 48 insertions(+), 24 deletions(-)
+ arch/mips/include/asm/uasm.h |  6 ++++++
+ arch/mips/mm/uasm-mips.c     | 10 ++++++++++
+ arch/mips/mm/uasm.c          | 20 ++++++++++++++------
+ 3 files changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
-index 6ee4abe6a1f7..320180330fb3 100644
---- a/arch/mips/net/bpf_jit_comp.c
-+++ b/arch/mips/net/bpf_jit_comp.c
-@@ -338,6 +338,28 @@ void emit_alu_i(struct jit_context *ctx, u8 dst, s32 imm, u8 op)
- 	clobber_reg(ctx, dst);
- }
- 
-+/* ALU division operation (32-bit) */
-+static void emit_div(struct jit_context *ctx, u8 dst, u8 src)
-+{
-+	if (cpu_has_mips32r6) {
-+		emit(ctx, divu_r6, dst, dst, src);
-+	} else {
-+		emit(ctx, divu, dst, src);
-+		emit(ctx, mflo, dst);
-+	}
-+}
-+
-+/* ALU modulo operation (32-bit) */
-+static void emit_mod(struct jit_context *ctx, u8 dst, u8 src)
-+{
-+	if (cpu_has_mips32r6) {
-+		emit(ctx, modu, dst, dst, src);
-+	} else {
-+		emit(ctx, divu, dst, src);
-+		emit(ctx, mfhi, dst);
-+	}
-+}
-+
- /* ALU register operation (32-bit) */
- void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
- {
-@@ -385,21 +407,11 @@ void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
- 		break;
- 	/* dst = dst / src */
- 	case BPF_DIV:
--		if (cpu_has_mips32r6) {
--			emit(ctx, divu_r6, dst, dst, src);
--		} else {
--			emit(ctx, divu, dst, src);
--			emit(ctx, mflo, dst);
--		}
-+		emit_div(ctx, dst, src);
- 		break;
- 	/* dst = dst % src */
- 	case BPF_MOD:
--		if (cpu_has_mips32r6) {
--			emit(ctx, modu, dst, dst, src);
--		} else {
--			emit(ctx, divu, dst, src);
--			emit(ctx, mfhi, dst);
--		}
-+		emit_mod(ctx, dst, src);
- 		break;
- 	}
- 	clobber_reg(ctx, dst);
-diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
-index fa7e9aa37f49..2520e1db7ab7 100644
---- a/arch/mips/net/bpf_jit_comp64.c
-+++ b/arch/mips/net/bpf_jit_comp64.c
-@@ -197,6 +197,28 @@ static void emit_alu_i64(struct jit_context *ctx, u8 dst, s32 imm, u8 op)
- 	clobber_reg(ctx, dst);
- }
- 
-+/* ALU division operation (64-bit) */
-+static void emit_div64(struct jit_context *ctx, u8 dst, u8 src)
-+{
-+	if (cpu_has_mips64r6) {
-+		emit(ctx, ddivu_r6, dst, dst, src);
-+	} else {
-+		emit(ctx, ddivu, dst, src);
-+		emit(ctx, mflo, dst);
-+	}
-+}
-+
-+/* ALU modulo operation (64-bit) */
-+static void emit_mod64(struct jit_context *ctx, u8 dst, u8 src)
-+{
-+	if (cpu_has_mips64r6) {
-+		emit(ctx, dmodu, dst, dst, src);
-+	} else {
-+		emit(ctx, ddivu, dst, src);
-+		emit(ctx, mfhi, dst);
-+	}
-+}
-+
- /* ALU register operation (64-bit) */
- static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
- {
-@@ -235,21 +257,11 @@ static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
- 		break;
- 	/* dst = dst / src */
- 	case BPF_DIV:
--		if (cpu_has_mips64r6) {
--			emit(ctx, ddivu_r6, dst, dst, src);
--		} else {
--			emit(ctx, ddivu, dst, src);
--			emit(ctx, mflo, dst);
--		}
-+		emit_div64(ctx, dst, src);
- 		break;
- 	/* dst = dst % src */
- 	case BPF_MOD:
--		if (cpu_has_mips64r6) {
--			emit(ctx, dmodu, dst, dst, src);
--		} else {
--			emit(ctx, ddivu, dst, src);
--			emit(ctx, mfhi, dst);
--		}
-+		emit_mod64(ctx, dst, src);
- 		break;
- 	default:
- 		/* Width-generic operations */
+diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
+index b43bfd445252..9d3edb59efc0 100644
+--- a/arch/mips/include/asm/uasm.h
++++ b/arch/mips/include/asm/uasm.h
+@@ -85,15 +85,20 @@ Ip_u1u2(_ctc1);
+ Ip_u2u1(_ctcmsa);
+ Ip_u2u1s3(_daddiu);
+ Ip_u3u1u2(_daddu);
++Ip_u1u2(_ddiv);
++Ip_u3u1u2(_ddiv_r6);
+ Ip_u1u2(_ddivu);
+ Ip_u3u1u2(_ddivu_r6);
+ Ip_u1(_di);
+ Ip_u2u1msbu3(_dins);
+ Ip_u2u1msbu3(_dinsm);
+ Ip_u2u1msbu3(_dinsu);
++Ip_u1u2(_div);
++Ip_u3u1u2(_div_r6);
+ Ip_u1u2(_divu);
+ Ip_u3u1u2(_divu_r6);
+ Ip_u1u2u3(_dmfc0);
++Ip_u3u1u2(_dmod);
+ Ip_u3u1u2(_dmodu);
+ Ip_u1u2u3(_dmtc0);
+ Ip_u1u2(_dmultu);
+@@ -135,6 +140,7 @@ Ip_u1u2u3(_mfc0);
+ Ip_u1u2u3(_mfhc0);
+ Ip_u1(_mfhi);
+ Ip_u1(_mflo);
++Ip_u3u1u2(_mod);
+ Ip_u3u1u2(_modu);
+ Ip_u3u1u2(_movn);
+ Ip_u3u1u2(_movz);
+diff --git a/arch/mips/mm/uasm-mips.c b/arch/mips/mm/uasm-mips.c
+index e15c6700cd08..ef1a2b040070 100644
+--- a/arch/mips/mm/uasm-mips.c
++++ b/arch/mips/mm/uasm-mips.c
+@@ -75,6 +75,9 @@ static const struct insn insn_table[insn_invalid] = {
+ 	[insn_ctcmsa]	= {M(msa_op, 0, msa_ctc_op, 0, 0, msa_elm_op), RD | RE},
+ 	[insn_daddiu]	= {M(daddiu_op, 0, 0, 0, 0, 0), RS | RT | SIMM},
+ 	[insn_daddu]	= {M(spec_op, 0, 0, 0, 0, daddu_op), RS | RT | RD},
++	[insn_ddiv]	= {M(spec_op, 0, 0, 0, 0, ddiv_op), RS | RT},
++	[insn_ddiv_r6]	= {M(spec_op, 0, 0, 0, ddiv_ddiv6_op, ddiv_op),
++				RS | RT | RD},
+ 	[insn_ddivu]	= {M(spec_op, 0, 0, 0, 0, ddivu_op), RS | RT},
+ 	[insn_ddivu_r6]	= {M(spec_op, 0, 0, 0, ddivu_ddivu6_op, ddivu_op),
+ 				RS | RT | RD},
+@@ -82,10 +85,15 @@ static const struct insn insn_table[insn_invalid] = {
+ 	[insn_dins]	= {M(spec3_op, 0, 0, 0, 0, dins_op), RS | RT | RD | RE},
+ 	[insn_dinsm]	= {M(spec3_op, 0, 0, 0, 0, dinsm_op), RS | RT | RD | RE},
+ 	[insn_dinsu]	= {M(spec3_op, 0, 0, 0, 0, dinsu_op), RS | RT | RD | RE},
++	[insn_div]	= {M(spec_op, 0, 0, 0, 0, div_op), RS | RT},
++	[insn_div_r6]	= {M(spec_op, 0, 0, 0, div_div6_op, div_op),
++				RS | RT | RD},
+ 	[insn_divu]	= {M(spec_op, 0, 0, 0, 0, divu_op), RS | RT},
+ 	[insn_divu_r6]	= {M(spec_op, 0, 0, 0, divu_divu6_op, divu_op),
+ 				RS | RT | RD},
+ 	[insn_dmfc0]	= {M(cop0_op, dmfc_op, 0, 0, 0, 0), RT | RD | SET},
++	[insn_dmod]	= {M(spec_op, 0, 0, 0, ddiv_dmod_op, ddiv_op),
++				RS | RT | RD},
+ 	[insn_dmodu]	= {M(spec_op, 0, 0, 0, ddivu_dmodu_op, ddivu_op),
+ 				RS | RT | RD},
+ 	[insn_dmtc0]	= {M(cop0_op, dmtc_op, 0, 0, 0, 0), RT | RD | SET},
+@@ -140,6 +148,8 @@ static const struct insn insn_table[insn_invalid] = {
+ 	[insn_mfhc0]	= {M(cop0_op, mfhc0_op, 0, 0, 0, 0),  RT | RD | SET},
+ 	[insn_mfhi]	= {M(spec_op, 0, 0, 0, 0, mfhi_op), RD},
+ 	[insn_mflo]	= {M(spec_op, 0, 0, 0, 0, mflo_op), RD},
++	[insn_mod]	= {M(spec_op, 0, 0, 0, div_mod_op, div_op),
++				RS | RT | RD},
+ 	[insn_modu]	= {M(spec_op, 0, 0, 0, divu_modu_op, divu_op),
+ 				RS | RT | RD},
+ 	[insn_movn]	= {M(spec_op, 0, 0, 0, 0, movn_op), RS | RT | RD},
+diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
+index 125140979d62..06d722665451 100644
+--- a/arch/mips/mm/uasm.c
++++ b/arch/mips/mm/uasm.c
+@@ -49,18 +49,20 @@ enum opcode {
+ 	insn_addiu, insn_addu, insn_and, insn_andi, insn_bbit0, insn_bbit1,
+ 	insn_beq, insn_beql, insn_bgez, insn_bgezl, insn_bgtz, insn_blez,
+ 	insn_bltz, insn_bltzl, insn_bne, insn_break, insn_cache, insn_cfc1,
+-	insn_cfcmsa, insn_ctc1, insn_ctcmsa, insn_daddiu, insn_daddu, insn_ddivu,
+-	insn_ddivu_r6, insn_di, insn_dins, insn_dinsm, insn_dinsu, insn_divu,
+-	insn_divu_r6, insn_dmfc0, insn_dmodu, insn_dmtc0, insn_dmultu,
++	insn_cfcmsa, insn_ctc1, insn_ctcmsa, insn_daddiu, insn_daddu, insn_ddiv,
++	insn_ddiv_r6, insn_ddivu, insn_ddivu_r6, insn_di, insn_dins, insn_dinsm,
++	insn_dinsu, insn_div, insn_div_r6, insn_divu, insn_divu_r6, insn_dmfc0,
++	insn_dmod, insn_dmodu, insn_dmtc0, insn_dmultu,
+ 	insn_dmulu, insn_drotr, insn_drotr32, insn_dsbh, insn_dshd, insn_dsll,
+ 	insn_dsll32, insn_dsllv, insn_dsra, insn_dsra32, insn_dsrav, insn_dsrl,
+ 	insn_dsrl32, insn_dsrlv, insn_dsubu, insn_eret, insn_ext, insn_ins,
+ 	insn_j, insn_jal, insn_jalr, insn_jr, insn_lb, insn_lbu, insn_ld,
+ 	insn_lddir, insn_ldpte, insn_ldx, insn_lh, insn_lhu, insn_ll, insn_lld,
+ 	insn_lui, insn_lw, insn_lwu, insn_lwx, insn_mfc0, insn_mfhc0, insn_mfhi,
+-	insn_mflo, insn_modu, insn_movn, insn_movz, insn_mtc0, insn_mthc0,
+-	insn_mthi, insn_mtlo, insn_mul, insn_multu, insn_mulu, insn_muhu, insn_nor,
+-	insn_or, insn_ori, insn_pref, insn_rfe, insn_rotr, insn_sb, insn_sc,
++	insn_mflo, insn_mod, insn_modu, insn_movn, insn_movz, insn_mtc0,
++	insn_mthc0, insn_mthi, insn_mtlo, insn_mul, insn_multu, insn_mulu,
++	insn_muhu, insn_nor, insn_or, insn_ori, insn_pref, insn_rfe, insn_rotr,
++	insn_sb, insn_sc,
+ 	insn_scd, insn_seleqz, insn_selnez, insn_sd, insn_sh, insn_sll,
+ 	insn_sllv, insn_slt, insn_slti, insn_sltiu, insn_sltu, insn_sra,
+ 	insn_srav, insn_srl, insn_srlv, insn_subu, insn_sw, insn_sync,
+@@ -287,9 +289,12 @@ I_u1u2(_cfc1)
+ I_u2u1(_cfcmsa)
+ I_u1u2(_ctc1)
+ I_u2u1(_ctcmsa)
++I_u1u2(_ddiv)
++I_u3u1u2(_ddiv_r6)
+ I_u1u2(_ddivu)
+ I_u3u1u2(_ddivu_r6)
+ I_u1u2u3(_dmfc0)
++I_u3u1u2(_dmod)
+ I_u3u1u2(_dmodu)
+ I_u1u2u3(_dmtc0)
+ I_u1u2(_dmultu)
+@@ -297,6 +302,8 @@ I_u3u1u2(_dmulu)
+ I_u2u1s3(_daddiu)
+ I_u3u1u2(_daddu)
+ I_u1(_di);
++I_u1u2(_div)
++I_u3u1u2(_div_r6)
+ I_u1u2(_divu)
+ I_u3u1u2(_divu_r6)
+ I_u2u1(_dsbh);
+@@ -332,6 +339,7 @@ I_u2s3u1(_lw)
+ I_u2s3u1(_lwu)
+ I_u1u2u3(_mfc0)
+ I_u1u2u3(_mfhc0)
++I_u3u1u2(_mod)
+ I_u3u1u2(_modu)
+ I_u3u1u2(_movn)
+ I_u3u1u2(_movz)

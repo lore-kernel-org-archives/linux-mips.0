@@ -1,92 +1,113 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7970643F091;
-	Mon, 10 Aug 2026 21:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786395919; cv=none; b=evFEjyvfTqXg1ZZueapMiF2mVfm4dcgWuVufINf0d0gpmnHKX+P0Y7tx+Y0jdGMnd5HaA3FcOkEAauMCWUoS3FwBOE2O0vh5O8r1Inmw2wprhcc9oGG7MMBuNv0YM1reN7HnyaukPBpvZd2aw26wZLVeLYP0lP1JheZ1fLa2mOM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786395919; c=relaxed/simple;
-	bh=it1EKwnKeCRvEio5ssY4N9RO2q3hwVoeDVOCQfKLVB8=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=G1YR/8FMH12ryDJq0sZFiCl40Bc2caZEy8D0Uc9w+hHNtMBDhKKKQ3QhU2S3KjmEUJ6hUqtfGrMT/9xefen52SUpsM/UGRsqR8tdNbO/ClEQcXQJ4G8MOsUVdlN1UFCcKwqy5r+b/HbVn3kd/7otmD3MXo/OTMM3xkC8Po/kS0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7T4sYlk; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B70025B0A4
+	for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2026 00:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786408506; cv=pass; b=JkS7+MgE2OqWXuvdz1GXhbtiqiA6WZU2EjbwoWaz4JBJGr5PsBicE9gaSIHiq5/xiN73kwT/bWYoelGu6o6N6NmxDxQUBasN1xXxw988TSgSQNB6bPMrGUtAST+uwW5Pm1k1WBsMWDeaGIj1tsdy9446KFFJr9FHiV/AkV2j9Fs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786408506; c=relaxed/simple;
+	bh=nEg+7kwJ1/E5QyhnpflWWqKv61gl3ZAE/pOg5Jf9yIw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QYNV8s/V9kJyaliMeWVB5g17ErZsSDjAoUmlMrqum357u3RTlr/zhIdPGNQzqJLVEzH//rLkUGjfcAT2UPYkln8Bc7GlWpUJYb5rNuLLjdG9UFaSdq3A5TlrDyVP6zZ4meViQsj6pOwTfvxcDsx9F/WI/nQFKTlrrkIJ0G8eQ/s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jMN8KgKx; arc=pass smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7T4sYlk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1444F1F000E9;
-	Mon, 10 Aug 2026 21:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786395918;
-	bh=18dzxLZ7jA6XeVHBjBY/ZNrRMBq/1lDCtDHH3C8d4N4=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=W7T4sYlkcZlBiWu2dYzx7Y7ycTLECSaIlZrEMBcZnQ9VfQu+ED3pZNVC7RYgU9n/a
-	 SIKn0U8ex2hIiTrDbxjxfRLOtcbEFUb51ECj+iOa2zDA1gngCDjNtkZGtrS51tn4Ya
-	 TE+WZnjhW6Sh9+SH1+4wPs8lHhxTfhKSBHT7ZLLV4KeOdqrZIv52uDuQWHzcObpdBT
-	 NiaDku37MVL8ypx69tjcAS2wNdtDSuu9L7wzGoVUo/hwbuo0i6tt3vfvkLwEe2fhMl
-	 OM6lk/PV34hkKW+JrXOhAatdSfeINl8ucV10DFwS+7phH/HjHMFEWb2T2GOoWpkHWZ
-	 aX8r/0IA+LDAw==
-Content-Type: multipart/mixed; boundary="===============1828966171191452426=="
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jMN8KgKx"
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-c1671ec8692so304666666b.0
+        for <linux-mips@vger.kernel.org>; Mon, 10 Aug 2026 17:35:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786408504; cv=none;
+        d=google.com; s=arc-20260327;
+        b=kX+PjF3G2mrdVb+ZoJsyl0vs9EXRIUY5RjVPWZCnqevEKfd4N5U1IG98A8pUswQxgk
+         1dCqbLnzrdk+Eb/XJFlDR4sKytZWW7vLHl+a7oZnp+zWikIezW61G7xdXZejxTljsXuK
+         Ng7z8bp03kfhP9UuznCGtFXffNPdS/B7iDfvWhFh1WOeZbfPTiTioNQUCOQF7ySIvFqY
+         Tk95Xr2g7pNxqAlWqjCN9C/6UpZqKzEOR7z+f1DXgqy3KkpQm1Y5ThZsWDWs7DUpBw+p
+         P2gu2kdgXHihoT+32Truq2jzM3eo1An5lKs4HkB6bfNoKyAUwcg3JphivbfuCRjwaKuX
+         K2aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=nEg+7kwJ1/E5QyhnpflWWqKv61gl3ZAE/pOg5Jf9yIw=;
+        fh=e7IFm3ghdZnIiMH/asaw55Er6JABikG9UoCHfUjiMYY=;
+        b=D4Eal190QkQ7RNsSYd9OyZdIsSJee2j0JTGc+Da9+CoJEDbx1wNfYiulM2bjmhi7tA
+         s7Y1WXCakjpMtJeBfEOO6gAYlvZEdkzH8jZF5UPCAISniXXiJglc8hYUloh5rGkP6PcM
+         VqnQdbRH1BDA+lIUdbxlvez5kLRY3PqyjSi+R/uyCsieK3Z+snEPIkZ/DP2Q8wgvlUql
+         WwiqGI0FqIj6MEkpH0lDR0x7Ab+yVLT7ftGuxNzQ9hpIwsskdzSIflokVV98KjJAhF3S
+         En4deM2pMJ+rmPknbRjby83hmSEBbsZre0q/ZSAdsFXS1Ao3zuCFV5n8GZG3Or9AZzD3
+         nqgQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786408504; x=1787013304; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=nEg+7kwJ1/E5QyhnpflWWqKv61gl3ZAE/pOg5Jf9yIw=;
+        b=jMN8KgKxkv6ZLl+cfX0CXk6qCoz7KT8j1q2b3c7yHKcjjxUQj8r3hHj8vGRVw3sRsd
+         7L3kTK8FXs3+A3pN4wflRd3tbHW2y/sxrLdlwS2/FysZyfxJu4C+dztWDOCog/TgWqoD
+         I1yJ3k4Sadiymfi3JGccnKxp6+XOYf3GubvY6sgCBYhQvUmT3X18SzlVMJTaI2MmTRGe
+         fwIEdcXe9ezucieiO4Ut+OB4DHeDQfEHMYE06QmNaP/RpkAyeIgFBUSNk4Wq5QhV1n5a
+         QPBSONpLeSUiPq/8+fThKPirog4qKuqkawv+gd6e9jCARqqBIBw8WsnYzI42we1bsGPF
+         bdhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786408504; x=1787013304;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=nEg+7kwJ1/E5QyhnpflWWqKv61gl3ZAE/pOg5Jf9yIw=;
+        b=MynNgYfc4oRS66HxUNjb4shSUNXj/MQorcDOcEY5t41SBPF7JA0py7I7TsV04kbXJd
+         JyBgEcpG2Xaqo0T4b1pguN3/qxmmbObO2mcHf+5hClo21pVEQoQs2xlKSvQHeoIf6Jm4
+         aEOd408oXUHQ9DqzZ2fCkaC4Pj5lGajJf8T7KQkN8NwpyGF+6OUkDO9ZId9LkJHu/ifQ
+         zKu5PCwyuJsNQ/iYXtiHivA+I97uIz98Zp9UA21XQlArYUM7xyIFoxkgyK8h2ycKRyIv
+         AiGTKSjZDsVHip2TSJVsNaB1jDWDphEjqe0rbGvOhn20e3Tt3PcYohH2ef54ho5CkjgD
+         JAUg==
+X-Forwarded-Encrypted: i=1; AHgh+RoHBigjc4WigyXjRO8o3ou+F9rJ50esIvnqqMr2FpoaTkhuNlB+c7FOAgq5b0cf3TdIHZz152GF0+SZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6d1NBEy67dt+Rsqu58uJ3IlQcHfk5c0ubFEtwEPZuXiADVJmr
+	yrrV7JSJfHRRPBxiJlcxAT4LhhqEiW/8n1L4FPjVMAA5/SJv5w/KtirZlLVYBk082PIs0IiHW1o
+	89BMuDNsKEnWgBGSBnMc4S5dkph9xvu4=
+X-Gm-Gg: AR+sD10MqSScUbMep4AHDizlKTSEy7DORoNH8Znj76bqQX7YvxvOQ+Js0u7H17ftaC8
+	I7IL5MOa9YHBJkERPhFr98kSmptZqA0eQNqbJkgjIClv3+uji5N9PrATSQGxiZQO1RcMA9Fli5t
+	Nc7xoWmXEgn4yr2zXCzzfq8CY9DF9zsA9+mX2HqsBRa6tXgQPMWEGKimf382Esr3vtRuX12VY0J
+	ikmsrGUhVXiOzeeY5vpYwjfXLwQiQdHlPlN5UfDjEUJJ3iEWScDG6H9XEFh+6H58hcqI92qsfUr
+	TQ2XvtPl5oqqSR0PqMZdlqghSs+UchzbmkNRY+GF5HwL
+X-Received: by 2002:a17:907:b04b:20b0:c20:d90b:2cb1 with SMTP id
+ a640c23a62f3a-c20d90b5305mr59494266b.0.1786408503619; Mon, 10 Aug 2026
+ 17:35:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a0a3e37e41b717349aa88e1216d9e821ed47a60a3780f2b0fc2844ec3d1bf1a3@mail.kernel.org>
-In-Reply-To: <20260810194215.3754591-3-main.kalliope@gmail.com>
-References: <20260810194215.3754591-3-main.kalliope@gmail.com>
+References: <20260810194215.3754591-3-main.kalliope@gmail.com> <a0a3e37e41b717349aa88e1216d9e821ed47a60a3780f2b0fc2844ec3d1bf1a3@mail.kernel.org>
+In-Reply-To: <a0a3e37e41b717349aa88e1216d9e821ed47a60a3780f2b0fc2844ec3d1bf1a3@mail.kernel.org>
+From: Nicholas Dudar <main.kalliope@gmail.com>
+Date: Mon, 10 Aug 2026 20:34:51 -0400
+X-Gm-Features: AUfX_mwlA5WcONpnezH1uyYNSfUbdkPm5xzpFyRq0hYCnNdnJG-g64jwliLc-Jo
+Message-ID: <CAJZwKkhTTWq2uPSWEMYz6zAPVMtbyGfAyHd97Uv98rYj1YCvFg@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v3 2/3] MIPS: uasm: Add signed div/mod emitters
-From: bot+bpf-ci@kernel.org
-To: main.kalliope@gmail.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com,tsbogend@alpha.franken.de,johan.almbladh@anyfinetworks.com,paulburton@kernel.org
-Cc: martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,philmd@oss.qualcomm.com,bpf@vger.kernel.org,linux-mips@vger.kernel.org,linux-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 10 Aug 2026 21:05:17 +0000 (UTC)
+To: bot+bpf-ci@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, tsbogend@alpha.franken.de, johan.almbladh@anyfinetworks.com, 
+	paulburton@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, jolsa@kernel.org, emil@etsalapatis.com, 
+	ihor.solodrai@linux.dev, philmd@oss.qualcomm.com, bpf@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@kernel.org, clm@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
---===============1828966171191452426==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Mon, Aug 10, 2026 at 09:05:17PM +0000, bot+bpf-ci@kernel.org wrote:
+> This isn't a bug, but the rewrap of the enum opcode list leaves two lines
+> considerably shorter than the surrounding ones. Would carrying the
+> reflow through to maintain consistent line density help keep the diff
+> tighter?
 
-> diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-> index 125140979d62..06d722665451 100644
-> --- a/arch/mips/mm/uasm.c
-> +++ b/arch/mips/mm/uasm.c
-> @@ -49,18 +49,20 @@ enum opcode {
->  	insn_addiu, insn_addu, insn_and, insn_andi, insn_bbit0, insn_bbit1,
->  	insn_beq, insn_beql, insn_bgez, insn_bgezl, insn_bgtz, insn_blez,
->  	insn_bltz, insn_bltzl, insn_bne, insn_break, insn_cache, insn_cfc1,
-> -	insn_cfcmsa, insn_ctc1, insn_ctcmsa, insn_daddiu, insn_daddu, insn_ddivu,
-> -	insn_ddivu_r6, insn_di, insn_dins, insn_dinsm, insn_dinsu, insn_divu,
-> -	insn_divu_r6, insn_dmfc0, insn_dmodu, insn_dmtc0, insn_dmultu,
-> +	insn_cfcmsa, insn_ctc1, insn_ctcmsa, insn_daddiu, insn_daddu, insn_ddiv,
-> +	insn_ddiv_r6, insn_ddivu, insn_ddivu_r6, insn_di, insn_dins, insn_dinsm,
-> +	insn_dinsu, insn_div, insn_div_r6, insn_divu, insn_divu_r6, insn_dmfc0,
-> +	insn_dmod, insn_dmodu, insn_dmtc0, insn_dmultu,
->  	insn_dmulu, insn_drotr, insn_drotr32, insn_dsbh, insn_dshd, insn_dsll,
->  	insn_dsll32, insn_dsllv, insn_dsra, insn_dsra32, insn_dsrav, insn_dsrl,
->  	insn_dsrl32, insn_dsrlv, insn_dsubu, insn_eret, insn_ext, insn_ins,
->  	insn_j, insn_jal, insn_jalr, insn_jr, insn_lb, insn_lbu, insn_ld,
->  	insn_lddir, insn_ldpte, insn_ldx, insn_lh, insn_lhu, insn_ll, insn_lld,
->  	insn_lui, insn_lw, insn_lwu, insn_lwx, insn_mfc0, insn_mfhc0, insn_mfhi,
-> -	insn_mflo, insn_modu, insn_movn, insn_movz, insn_mtc0, insn_mthc0,
-> -	insn_mthi, insn_mtlo, insn_mul, insn_multu, insn_mulu, insn_muhu, insn_nor,
-> -	insn_or, insn_ori, insn_pref, insn_rfe, insn_rotr, insn_sb, insn_sc,
-> +	insn_mflo, insn_mod, insn_modu, insn_movn, insn_movz, insn_mtc0,
-> +	insn_mthc0, insn_mthi, insn_mtlo, insn_mul, insn_multu, insn_mulu,
-> +	insn_muhu, insn_nor, insn_or, insn_ori, insn_pref, insn_rfe, insn_rotr,
-> +	insn_sb, insn_sc,
+The short lines are where the insertion-induced reflow stops. Filling them
+would move otherwise unchanged enum entries onto earlier lines and carry the
+diff farther into the list. Since the resulting lines remain within 80
+columns, I prefer to keep the reflow bounded to the new opcode additions.
 
-This isn't a bug, but the rewrap of the enum opcode list leaves two lines
-considerably shorter than the surrounding ones. The line starting with
-insn_dmod ends at 55 columns and the line starting with insn_sb ends at
-25 columns, while most neighbouring lines in the same enum are packed to
-70-80 columns. Would carrying the reflow through to maintain consistent
-line density help keep the diff tighter?
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/31428094680
---===============1828966171191452426==--
+Thanks,
+Nicholas

@@ -1,162 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55ACA2773E4;
-	Wed, 12 Aug 2026 11:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786534403; cv=none; b=dGuls35+gftsEDxcNwTQPWKRW9cu77+37YZu46/Rbxf0fnBVA/LN/YJDqc02OJ0abSvXbQfnGO52H2fG5RN2XxJRWq3a8+yrwpy+OjYNynfIjLu1iYIobQbSHM3kNggqK4lCmuNvd80D+ZPHu6wxA2Rd/v1Dr0JBuMt8/nj0kwE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786534403; c=relaxed/simple;
-	bh=fvos1C9cOJcwwmel6uc8oHCYP87iaCD4jeFmR7XXDQM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u1VfwpRovi7hL7GPCXeNSkm9Syvw6Fs2XNL15vrMKJePqf6fY6/D+TSMH+KI48ZakfyF+r+e4w+to2Cvhwv8gq/+EvmkptdJPkvE36AgfJpxml/+QrB6amscVbqWLUuxF2ktVLs7Qek0WDct6hi6yD4tdjNhmGbMp+og2x8mAKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WAfmOkkk; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E236844A3F2
+	for <linux-mips@vger.kernel.org>; Wed, 12 Aug 2026 13:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.177
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786540373; cv=pass; b=UasQADSd5mcSLNBrC/7mW/DGr7IanR2T7SZjMaKRQCAsnTE7IIP4tqk/pujvhFKIp/33q26k/BkzJvhDn4uM20bJKccaR1IRpjFH/His03ghxN90QGEwOctN78S5ix0qSwUhWKD9VNcCInWyeWT8INN1UA107pWyhnBrGbei2vc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786540373; c=relaxed/simple;
+	bh=dc6rbVeNm4QyL/3V2XIAHuNy7OAGezNGW5gOE7R8CLA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fP7v17/97vPuWtnWuU7WqrYDLb2R1yHSWq8Si1xk5MVGkJXDE4AZW/nO4kdsERbu79+1jigLSbbXF/KS7g1JckYKVTO4BdKh99yTE4+4SeVwafC+3wHuVtJ3dKtCj/EwfFNrE2F1gZYFoCeF3nXkTjwOXaU+bCwDP95NSb4IpcI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NfW7qdMd; arc=pass smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WAfmOkkk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A4B1F000E9;
-	Wed, 12 Aug 2026 11:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786534402;
-	bh=KYWG47sp8qKZimjrJ8C8fF2yBpjkop0LZO2aPuIaAlo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=WAfmOkkk8L6CsdaEyBcNrtXtVZNzObzW4S7aHcGWWKcuSHhZgMshz38NRWFsMIuro
-	 iQNzIOLVcCtVng/Y3s/5/8QQm7aRpslgEDM4EaOx+RrrhQu2QK6SJf1mYWLf0u+bIk
-	 mHgiI8kvImWzfFTKqNN3Q3uzw8gwmf2aEibx251l3EhnWebAqUXVi2yCauOG2EpYpk
-	 qT55BhQsRkzxVJJnOePDFfawyaPzcJ7biVmiXgaHLbICFQsgUR8tlkUIpE02A31EaL
-	 b2GxECR3H98e20PTqvhqig2eBGcYR+8QrQPpKISBdK8go4PyjRDC3+9XMOlZC8fnyy
-	 vp3RCZx1qSNlA==
-Message-ID: <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
-Date: Wed, 12 Aug 2026 13:33:14 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NfW7qdMd"
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-81e8fa1b8d6so11352057b3.1
+        for <linux-mips@vger.kernel.org>; Wed, 12 Aug 2026 06:12:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786540371; cv=none;
+        d=google.com; s=arc-20260327;
+        b=ErytQF/zvIsO86jZFdG16h/IMEqeN83WA2kzqAb6cLdL7/CvmZwikeXflDc0s9n09T
+         9ZHE5paHNz9WY5/26T+FEC0VNnnPfz3fXMCeor68xK4WK8w3U2sWs5+32FJQ5OKBotAt
+         jJEjf+pPCYMKSGNCOnY0f/8fw0slIfz88AZYnUbgUzx8WOCxwFmmpI2kcveqyu/p6OYg
+         gjTh4C3V2HrhkdBIC6HBMZBEpm/+gZMoqljsaUEsNmNevBdX+vXfbEKxdNdRFFLO1vVX
+         OppaOROLi9UY3GT0DPyS8RcKUozmNi1Wvp8EVG9k7utURbTqE43cH6GCILnxFaS7GuXk
+         Vs4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Fi38d1Z8508AImQRjqHp2NM+8Y+VGSxOJGHio2DOJyQ=;
+        fh=zQEnIZgpSb2IhTkCmKTa6UjuDXPUbKC1zgBkwPudo+8=;
+        b=I2CS0jukQlIckELDpaqI7IpFliNmQAcpmV7uROci4Gm9O+EJAubouZsoxM6Pb6opYv
+         5hsw4p3qUC4CZVrkJatmQ8CcxcNx2MFt28RlBoieILvj0lWasmkBdB6wbAos+ZYmakvB
+         LDiVuI08BtbMcPDcOg9EfnD7nQzwuBoAX6EtoHFHYG3L7ztmMyOafw5hhvJSauT7g8pi
+         icTzSk84ElrElqYwRXsvDBG4XbI94qFNgdKtUBul6K/WAatWBO7SUl4z/GfTi9uoMJtJ
+         u/6ApI8frzdnHdP1XTAhixOKxMGGabBwyTZW9sgVJImOtqrEM5SGAUNRT4VVJLFkL23T
+         jUUg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786540371; x=1787145171; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=Fi38d1Z8508AImQRjqHp2NM+8Y+VGSxOJGHio2DOJyQ=;
+        b=NfW7qdMdRDqtxqzz3UGcx6KNF8tfCGFWgG4VJJMB5l4IZBq8ioWeGKki6pe/3Ss0XA
+         iGiErjB+3BjYeB2mJ2EPwx0wYAfiZz7NgnRmPZKZQXIponjVVJwRqQ5T+UcoSVxF7tnq
+         CJ5CblSwk15yqhVbDZbVW/wO/nIX7xKyd6EI2ze0/VIf+b9lpd5a52Xq2Di25gmMdxCv
+         +6RzJsjyuWVDdNtobzQiZUgeG4uUTsTcf6kG0tX0UqnlXaCSSEu3BdepDTlbOd1iKx8T
+         IbVe8t9QZnlyUUm7g6VT0kRI3bQFENFFfOI7h1hWJLeh9+zgqbbnlesVZfobXQLQOCDe
+         H+Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786540371; x=1787145171;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Fi38d1Z8508AImQRjqHp2NM+8Y+VGSxOJGHio2DOJyQ=;
+        b=DciR3FQZUT3ZPjY4q4VyMY8k9Mx1uogYBNqrvt79LSA8z1dmdCUU92ibB1T/q8eiOL
+         HyuaRuRxYM93IsRwlmABC7gJaEkQ5h39Q5x82ruJW2jfhf2SjJCGg3gWmnpEgcKx82wd
+         3Tu9jIb0ekifg+yztYSRFTcsGYEw9Blp1b4Pt3HzH5/ZwfCuAEmZm06ZylVCajVw0mUq
+         CD+qiEZ7dIxTTPAT12Qn6vvNw6/TbgP/V38c6nPJWKGC4KPrlXL9Zusr0hKKJ9jEb+pd
+         vb7NOou6BZmRuFHYAB8Y2YQj6NsGOhbfxwakeGHWTVVt1RjDozSkiK4oYHDoSzbWq5Om
+         jwWw==
+X-Forwarded-Encrypted: i=1; AHgh+Rpv4z5xfCeMpVBrbdx0Oe4iY5ShOAqLHnqlvno7PImy/FRQcVP3aCT+PbOZ9lqlfs6yHRlAOzfLwIwS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz04DNqGG6HOuT56XdLUYhcC6nDdHOOKQutO1YQm/UnPzVbJ7g4
+	JX0/DwcUlSI/wOQTOTvpSzWtRdAgtV4NZB5mCgMS6k99AEsEBvsLvEgE2DEAx6Vr+BdREE83uBP
+	tGdu9ppwqB0tmDhi+U4d0bDG7F6aG0OI=
+X-Gm-Gg: AR+sD1158tbIAQphmQReeXq2GCMr/6kPW73ygOZ3PyGARxdW18tot6Pav3Fh+LItDZo
+	JS421mYLAiCyckm9+R3XGMs1zkEtxFE3aGvJmtCEmoBDVz5q7XxcnV1iCWsFCuFx6EKtPZPmZh3
+	zOwP7ABdRpPkM102C+9IQmuhs6uEryEPj8/kz1G9I3Kceg5JWuPnzzEZyUzaYZU0u2B1vR3LEpy
+	hfNmhvYezKibSppZI5mzafeLdBDGF+wNszk+cd/US3/mjOYsPBS2XgQYxxcLFGpVaOlJyteq61w
+	IK3u2CTLi7EnXsjsSl9+g/rxS70aQBOZSPFYx27F5mkTKUZUzNFDUnqLWbsMlos/czNP3VLxtJ0
+	ex4H81KjgmINFIXnY8S5gzP4JU10r0K7nZe1UKOOMv/i0hh4GSMVFYcVPcZt78VA9ZkrJqaN4uJ
+	2mESkFV1qK
+X-Received: by 2002:a05:690c:eca:b0:814:7238:390f with SMTP id
+ 00721157ae682-83104f89849mr26062767b3.10.1786540370632; Wed, 12 Aug 2026
+ 06:12:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 6/6] mm: Drop pxd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
- akpm@linux-foundation.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-7-anshuman.khandual@arm.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260811042119.3652929-7-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260812032622.1759569-1-rdunlap@infradead.org>
+In-Reply-To: <20260812032622.1759569-1-rdunlap@infradead.org>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Wed, 12 Aug 2026 15:12:39 +0200
+X-Gm-Features: AUfX_mzz_iX0krNhMwyAevf1l2T7b4mndqwqCvalRtUjOeTmgKJbdTH_wy5uMNM
+Message-ID: <CAOiHx=mrJh0szu2B8NWideUH8RqUaM7S4OV9J4wN6p93-quW4Q@mail.gmail.com>
+Subject: Re: [PATCH] mips: econet: fulfill unmet kconfig dependencies
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Caleb James DeLisle <cjd@cjdns.fr>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/11/26 06:21, Anshuman Khandual wrote:
-> pxd_ERROR() has been used in generic mm just to print the page table entry
-> in pxd_clear_bad() before clearing those out with pxd_clear() later. These
-> pxd_ERROR() macros have been provided by all platforms which basically did
-> the same thing.
-> 
-> Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
-> page table entries thus completely dropping dependency on platform provided
-> pxd_ERROR() macros which can then be dropped off. First move all required
-> helpers in core MM into a header file which could then be used else where.
-> 
+Hi,
 
-It might make sense to split this patch further up to ease review:
+On Wed, Aug 12, 2026 at 5:27=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+> ECONET selects SERIAL_8250 even though its TTY dependency is not met.
+> ECONET selects SERIAL_OF_PLATFORM even though its TTY dependency is not
+> met.
+> ECONET selects EARLY_PRINTK_8250 even though its EARLY_PRINTK dependency
+> is not met.
+>
+> Fix these kconfig warnings by adding selects for TTY and EARLY_PRINTK.
+>
+> WARNING: unmet direct dependencies detected for SERIAL_8250
+>   Depends on [n]: TTY [=3Dn] && HAS_IOMEM [=3Dy] && !S390
+>   Selected by [y]:
+>   - ECONET [=3Dy]
+>
+> WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
+>   Depends on [n]: TTY [=3Dn] && HAS_IOMEM [=3Dy] && SERIAL_8250 [=3Dy] &&=
+ OF [=3Dy]
+>   Selected by [y]:
+>   - ECONET [=3Dy]
+>
+> WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
+>   Depends on [n]: EARLY_PRINTK [=3Dn] && USE_GENERIC_EARLY_PRINTK_8250 [=
+=3Dy]
+>   Selected by [y]:
+>   - ECONET [=3Dy]
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+> Cc: Caleb James DeLisle <cjd@cjdns.fr>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+>
+>  arch/mips/Kconfig |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> --- linux-next-20260810.orig/arch/mips/Kconfig
+> +++ linux-next-20260810/arch/mips/Kconfig
+> @@ -396,6 +396,7 @@ config ECONET
+>         bool "EcoNet MIPS family"
+>         select BOOT_RAW
+>         select DEBUG_ZBOOT if DEBUG_KERNEL
+> +       select EARLY_PRINTK
+>         select EARLY_PRINTK_8250
 
-Patch 1) provide ptval_to_str() a header.
+I think the correct solution here is to drop EARLY_PRINTK_8250 instead.
 
-Patch 2) Stop using pxd_ERROR() and friends in common code, converting to
-pteval_to_str()
+ECONET already selects SYS_HAS_EARLY_PRINTK and
+USE_GENERIC_EARLY_PRINTK_8250. EARLY_PRINTK defaults to y if
+SYS_HAS_EARLY_PRINTK is y (unless EXPERT is enabled), and
+EARLY_PRINTK_8250 defaults to y if both EARLY_PRINTK and
+USE_GENERIC_EARLY_PRINTK_8250 are y.
 
-Patch 3) Remove now unused pxd_ERROR() and friends from arch code.
+That way users can actually disable EARLY_PRINTK if they wish.
 
-...
-> +static inline void
-> +ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
-> +{
-> +	if (WARN_ON_ONCE(buf_size < entry_size * 2 + 1)) {
-> +		snprintf(buf, buf_size, "overflow");
-> +		return;
-> +	}
-> +
-> +	switch (entry_size) {
-> +	case sizeof(u32):
-> +		snprintf(buf, buf_size, "%08x", *(const u32 *)entry);
-> +		break;
-> +	case sizeof(u64):
-> +		snprintf(buf, buf_size, "%016llx", *(const u64 *)entry);
-> +		break;
-> +#if defined(__SIZEOF_INT128__)
-> +	case sizeof(u128):
-> +		snprintf(buf, buf_size, "%016llx%016llx",
-> +			 (unsigned long long)(*(const u128 *)entry >> 64),
-> +			 (unsigned long long)*(const u128 *)entry);
-> +		break;
-> +#endif
-> +	default:
-> +		snprintf(buf, buf_size, "unsupported");
-> +		break;
-> +	}
-> +}
+>         select ECONET_EN751221_TIMER
+>         select SERIAL_8250
+> @@ -407,6 +408,7 @@ config ECONET
+>         select SYS_SUPPORTS_32BIT_KERNEL
+>         select SYS_SUPPORTS_MIPS16
+>         select SYS_SUPPORTS_ZBOOT_UART16550
+> +       select TTY
 
-Why not leave ptval_bytes_to_hex_str() in the C file for less churn for now?
+Here I don't know. ECONET seems to be the only platform (treewide)
+that selects SERIAL_OF_PLATFORM and SERIAL_8250. Everyone else just
+enables these via their defconfigs. No hard feelings one way or the
+other, just noticed ECONET is the exception here.
 
--- 
-Cheers,
+>         select USE_GENERIC_EARLY_PRINTK_8250
+>         select USE_OF
+>         help
+>
 
-David
+Best regards,
+Jonas

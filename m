@@ -1,107 +1,123 @@
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C46390239
-	for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2026 18:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385321E5B70
+	for <linux-mips@vger.kernel.org>; Wed, 12 Aug 2026 01:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786473327; cv=none; b=pWQAGRMmII/UIa8ozj/IqZrxuhjy6++U/aSvLuHYWbv1IrZkofZvzuOuYSEEMXd2vZUlEQhlWO6EB1Ip2VtIUU8kr+f15XRtiWoL1O9URQZsDFazGZ7KvC/PJShox2yEo542nEWiQXbO6ow9LHsuJ9AKSdDNu0YLX2wPvpAzO80=
+	t=1786498445; cv=none; b=l5wGGhxQg9BLyrB1GiO1qIUunxoyTJ76I1PM2PIlZcrKsHB2iSj9DL/9ElbeOPrLxG4CVx677815ivabj0soqRJvsNku0WuUqKW3fIA1o+r4ciGg6OBEnGATtXZUJIhc9Fn6bvoB4PAbZ89Kg1cqoAYQefJ8bhIFMoUGepxsJQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786473327; c=relaxed/simple;
-	bh=czq7FfVUSRkxS+OESlYfd9yCb+96ZaQvZPYD4R28OCM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IWbk2wpOyDrmi+LOLIt+MtJ+M1bpNjeL5ggXkWBlhwoBIn9FrR452a/y4+NfrKTFD/Cw9083LnEbKE2ZbEneAfPXwJNHmX9e7VU7xdr7wdvl6n5A7P4Q4bQ5XWG3t6mAkZ0swJF39nxFKb96pzHdQsheROmaXcFrlxaE05KjvNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TK8WS2Pz; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1786498445; c=relaxed/simple;
+	bh=egqUZklBG/dbZooRB/6a7a7Apq9jgQjgUa0tbMIE3X0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WZMCq/TCDI3R52mz8OXEGW2HQhE3twKjqpm3bV1JG0suhq8VmNemkd0TVq8i8GknkCSimbVaSK6/ZuGeUjpx6zXDzqwHp5iyncrglv8Num+dzkOZ5Gf36r8XJxFqkV4IrU5osrO3wG2p5LxTKvyjGhtXMb3q80NboB+fDoXLkRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Z2CsWjvQ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TK8WS2Pz"
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-6ae5baaef5dso161912eaf.1
-        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2026 11:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786473324; x=1787078124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=QhrxK6mb7Z5yPAVrc9D74/LH8+fdUBZIJUQyCqIeBbs=;
-        b=TK8WS2PzpsLgof15PB9NBeEGBEDucx/CpOx/SJehbo+8hiQZ+qrdM45LjVPmBAd351
-         mWJCwhmdjZrkTs5ML0ayiSwE1lZgYMqFHPFA9eAkSjR/kOS8iqHm8xVYwBIVdjWC9ebT
-         N2ipQUjGxbT+DznwAAcIWk5BF+KACRIxBO9EJQbw0v4ysmuTOaeUAO+gURJH1m4UFxP4
-         6M7Li4uEEcAQsTVX7jTe4ow2L9FJ1gInu6DrnF6xzuUwzy6CoXsrJGT4y+yOeCNC5A17
-         czef7b4oB8QaiCiDZ/t7HWTOnAkn/KdrCFM/8YYS1g1Xlld19koSRdROQ8zQGDPoOsDr
-         2XrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786473324; x=1787078124;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=QhrxK6mb7Z5yPAVrc9D74/LH8+fdUBZIJUQyCqIeBbs=;
-        b=hC8e7GKxdwfJH5WUfQtRKkS9vb42Y7PlimA8pYz6awSUYfP1bltbyTn5B39TpFPCDP
-         uDHX0mEhqAORhrI0qUSlUls39Q6pc89Sryhb/hbFJ6blBZoT3m8c09t0SID1akjbzQs6
-         dSUqNKd3d0p7s2/JDhpyLOXqdNYm6HhtAsfeeHG5ZSfEW6LSIOaA/FWA+E7rdEwXYRs6
-         L7e74vN1jXFet/p5/ZO3k+Qni012J+ScAQ1Cfxm204LsbNC1QSoRGOI5XReb1Me8nt/e
-         i6G6q2eIWLMlcoAQutN6JuG/dqpaD/+Lv6V1AsmcbhH/4W1TlJAEw02wjTjfANLGuMzB
-         RGMw==
-X-Gm-Message-State: AOJu0YxNFF56qjJ5ziA3/rD+9IA3N9hBnuhK6GgJwGJBjKY8BDWWNOhd
-	jwc56nEaPsVPVZ7q8UZAO4P0z1eSR+eDCHnTLfjq7wSMl4+bJDfKckYGq8qGzw==
-X-Gm-Gg: AR+sD114EkCwsRc1UeO2ajyZHI8OA5uQusoXj0eF4xxtgH15j0TePU6JJ5y5Cr/VVrQ
-	gR3xVB7nlCXEMVE4cURC4pvcDjjmmwkUzHKi8GXRo/6cmosOUSvLd4LVM9+XBIaYyC1GqFgoh9q
-	GgzX5VV5YBYa4sQjHU2K4wdfNmB7nm4bGNnag6j1BuAUEvJIXukPi1JkLXum1tEDlCRmIjXlJcg
-	bfK7SxBsKemsbviPmq3T1qG0stMZY1STp2cEpP+7h81yUwnT3ZkYUoJqjIZKUcFQLIr4FxrFsz+
-	tFnVRQScx+ft/e0QiHGzB/osWClKbot3pNprLgoJDdq5ks6etQci1kIZzF0ShS/phBzbIvr1vYH
-	uJ1VtGj3U1JtIgkm36xZf+ZKTD/xmL0ZOJUS5nJ180uloOPP8RMGAh+GJI6KgsZbjAAgC9lmE7+
-	ncijmTQ5fqksyM7fEHHrNCPTtIf5rqkpAPKJIxa9uzVkamlaq19WmKTZ0kbWNCAruXrKkU4Kl72
-	rxIPMRUO1XEp0erEuPfkhUwfRacjHkjscU5I5U3rQvRL5JYxc28jmv8bIwFPFAT6DXu+18/SHYu
-	LOaAmFIHZUdKn8uFn2/hzQTNB1cmXWtDAGE5yNKjdRo=
-X-Received: by 2002:a4a:ee19:0:b0:6aa:1bc8:ae0d with SMTP id 006d021491bc7-6b0abcd8148mr1566180eaf.4.1786473319875;
-        Tue, 11 Aug 2026 11:35:19 -0700 (PDT)
-Received: from ryzen.lan ([2601:644:8000:7a86::e35])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-45e355aae71sm230090fac.10.2026.08.11.11.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2026 11:35:18 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mips: rb532: use devm_platform_ioremap_resource in gpio probe
-Date: Tue, 11 Aug 2026 11:35:15 -0700
-Message-ID: <20260811183515.24596-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.55.0
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z2CsWjvQ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=PzxXTvug+TaoaNWVZrThgEJjDorynKj7tqJFmRRAX1E=; b=Z2CsWjvQRyKj6IfVU6XyBpqmfa
+	pqZVHbP2Rz4fP3chpurC07vTEBT4nEx29uhnmsQ8cGn0u3J/4Sbk8/PlFaSTu1Igh2BK7604cs8Nm
+	FNQFdYRJaIyA+d0K1wKWp5Mo8KenPHSNaqMEhN1E1KOZf2vG8wpo3p+Z7Dp/8MOrwhs58yCWP59iP
+	7hszmN1Snwe3BncHAX3RGyANH4XQJyHa1Prt52n0AbvB+9NxHSBUa2qrxEdswABK2IAWD9bdezn23
+	YiKrYJ0qboAGsgkzEJ3IHqCAzgozp6oQRQNguV4js0Eg4d7yISPD83NGwWWM3KFeRWYEv0qArygM0
+	VWwjsEAA==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wtxqu-0000000FD2u-3abc;
+	Wed, 12 Aug 2026 01:33:57 +0000
+Message-ID: <206694af-a47d-421f-ad14-969a677aa5e2@infradead.org>
+Date: Tue, 11 Aug 2026 18:33:30 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: mips randconfig builds?
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <85609635-09af-4aa2-82ae-f022ee20264d@infradead.org>
+ <alpine.DEB.2.21.2608111241300.48788@angie.orcam.me.uk>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <alpine.DEB.2.21.2608111241300.48788@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Replace the platform_get_resource()/devm_ioremap_resource() pair with
-the devm_platform_ioremap_resource() helper and drop the now-unused
-struct resource pointer and NULL check.
 
-Assisted-by: opencode:deepseek-v4-flash-free
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- arch/mips/rb532/gpio.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+On 8/11/26 5:47 AM, Maciej W. Rozycki wrote:
+> On Wed, 5 Aug 2026, Randy Dunlap wrote:
+> 
+>> I do lots of randconfig builds but I don't have a reliable way to
+>> specify mips 32BIT or mips 64BIT builds.
+> 
+>  How is the MIPS port different from other dual-wordsize ones, such as 
+> RISC-V?
 
-diff --git a/arch/mips/rb532/gpio.c b/arch/mips/rb532/gpio.c
-index 49e1a15a3827..458895a9fb25 100644
---- a/arch/mips/rb532/gpio.c
-+++ b/arch/mips/rb532/gpio.c
-@@ -192,13 +192,8 @@ EXPORT_SYMBOL(rb532_gpio_set_func);
- static int rb532_gpio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct resource *res;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res)
--		return -EINVAL;
--
--	rb532_gpio_chip->regbase = devm_ioremap_resource(dev, res);
-+	rb532_gpio_chip->regbase = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(rb532_gpio_chip->regbase))
- 		return PTR_ERR(rb532_gpio_chip->regbase);
- 
+To me it's the dependencies of the 32BIT and 64BIT symbols:
+
+config 32BIT
+	bool "32-bit kernel"
+	depends on CPU_SUPPORTS_32BIT_KERNEL && SYS_SUPPORTS_32BIT_KERNEL
+	select TRAD_SIGNALS
+	help
+	  Select this option if you want to build a 32-bit kernel.
+
+config 64BIT
+	bool "64-bit kernel"
+	depends on CPU_SUPPORTS_64BIT_KERNEL && SYS_SUPPORTS_64BIT_KERNEL
+
+For RISC-V (after s/32BIT/RV32I/ and s/64BIT/RV64I/), it's:
+
+config ARCH_RV32I
+	bool "RV32I"
+	depends on NONPORTABLE
+	select 32BIT
+	select GENERIC_LIB_UCMPDI2
+
+config ARCH_RV64I
+	bool "RV64I"
+	select 64BIT
+	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
+	select SWIOTLB if MMU
+
+and the NONPORTABLE part of RV32I is easily handled in
+arch/riscv/configs/32-bit.config.
+
+Most of the other ARCHes -- if they have any 32/64BIT dependencies --
+are easily handled via a mini.config file.
+
+> Can you just grep .config resulting for 32BIT/64BIT and assign the build > accordingly?
+
+That will still depend on the other dependencies listed above.
+And since they have dependencies, it's probably not reliable.
+And I'm looking for something that is scriptable.
+
+In the end, what I'm looking for is something similar to what
+arch/powerpc/ and arch/riscv/ have for randconfig targets:
+  ppc32_randconfig
+  ppc64_randconfig
+  rv32_randconfig
+  rv64_randconfig
+
+I'll play around with setting {CPU,SYS}_SUPPORTS_32BIT_KERNEL for 32-bit
+and {CPU,SYS}_SUPPORTS_64BIT_KERNEL for 64-bit [done via mini.config files]
+to see if that will help me make some progress.
+
+>  One target toolchain will handle both, so there is no need to know that 
+> in advance of `make randconfig' invocation (one advantage of not linking 
+> libgcc.a or any other target libraries is there's no need for multilibs).
+
+OK. That might be useful info.
+
+thanks.
 -- 
-2.55.0
+~Randy
 

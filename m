@@ -1,161 +1,154 @@
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EEF481A92;
-	Wed, 12 Aug 2026 17:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5080330D35;
+	Wed, 12 Aug 2026 18:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786556380; cv=none; b=FJtfl1IEUqyKnzMTeTF3Tflgly4OK06bQrF8SKVsiDfjkwPO47CcnU3MjsXHnmWIonztNAkF1HZcv9IG9UFBmEhhH+Jb+k+gL0uDh0QMU2VpudcpQKqLg3O+pk8an/1kxPCVQTO1v+8ru4F2CiHluyvN3sWO8fCCowQ5FmUOvhI=
+	t=1786560816; cv=none; b=u4MSgbYhHuIj2FkZwYV2N/+gpDNgpidYErng4GDTEmx3rrb+NPFUatE2BB9nef31TtkvnfXxj/fEJZoZx0SgK1qkXVY0/C2SVSva8PfkGPHPss7wxFULDyZ8B2mENhk2dusIc4tWqMPWm2viqJ6Jd8i90qPRzyOpONod5F78bJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786556380; c=relaxed/simple;
-	bh=T2C2IQIC8AENMabj+b1Yh+MlqE8tkw02mH6onEU6zqE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=uFwesvZqTy7t2vhBByzEhzKsT2E4qtTy0uZgZDjewTa2aZSNipodO8umwdNOaPS7HASQoNcnKOzLHx49Y3xOuQRZ+ahVOnsr5ZT2D20uSDJRItVtp6VYfJYTNYLhdbxLWmtehf/tqKNRtm5Kkq7QWCSrkW3VPB2MmDYj2piS1kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=JP3/SjcW; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+	s=arc-20240116; t=1786560816; c=relaxed/simple;
+	bh=oRTrSW6JKuLNU5+Yt1muP/d5JJvqnIq8p0x1jZNSbW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WdBfYod2p9peq21TZcu4U1MlFPLUYnkpX47pzWVcDtqgUrxbQflSfGvQsdIP0zWsNGlPhxIqbyeOdFQfUJvMtx6IPXSJoNglYfISnk9IjzSX2enugnWXzAfUhx6nezO6mq8353mZkEby8RowP0PVJ5fcfKwirMPXlx1/JWmkjRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xIah+Ye+; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="JP3/SjcW"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Cc:To:Message-Id:Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Subject:Date:From:From:Reply-To;
-	bh=xw7jIcOsSg0tBd7gNAqEYhzUy1bQIgWLTtkuMdy3GPA=; b=JP3/SjcW4cYIiHFvmK39FYekco
-	BFV5gnZDe1H68KsQRgJCoy6+n1+XRiteVypBEdMePoev1w1TlXPKUg+66AOI0A5JapTk9c82qn2aB
-	lAP09cksFDK4OFjb0HZu5243s/sRJZzE7an339IC39SxIH4AxXwKOcZ78fXtdbtfoy6DwWEI++drJ
-	3rVAvcjqaqCJoucjUb2md8KaAsvGjpK5jerzNQ03wknc1C2Ne9wlhOig6URP5WCyp90F4rrG59KTi
-	redlI1duW7V7pEOikC3Qk0weyBSmoNoAZ2SemZJcjScwSgeEFV9CmQ5IKbA+44OGG/0l8yASFLRYq
-	vYA19Q/Q==;
-Received: from [177.139.22.20] (helo=[192.168.15.100])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1wuCvP-000FR2-6K; Wed, 12 Aug 2026 19:39:35 +0200
-From: =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Date: Wed, 12 Aug 2026 14:38:44 -0300
-Subject: [PATCH v5 13/13] alpha: Use the common syscall table
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xIah+Ye+"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=Pv/u2xPJH1XukE1LarUoQpLIMQffe+riEYBa3PeQ47M=; b=xIah+Ye+x8TI7veEqpEV8OZEeH
+	/i3xy+vz0f1HjcuYRTz/S6cOfAH0SxSgU+Q+omQzxslmC17fDnqjgAm5dOj2zEeoADG1o8veI7WcK
+	s2i3h1M99Argl01XRhkEOQ/fjYyh7C6V04u3fAdX6lB/+yKLvHc38pewhk160ADIIQT3yKIAjl8Em
+	BUhTLWGfvk6nyHfpmSI65xn22JGQFSG/8NT0Lgbc8yHDE+MitN7L+umEz3mO4X44z0o2QOLsXssIB
+	s3HfwCyfoRQkcUgtf+dCYQEvm0NiCJpNSz6b5oBQWteIYIGd9roma4FamNwXwJJIm+OqcK0z5Rb93
+	OmkN2Z5Q==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wuE4y-0000000GptW-4C7r;
+	Wed, 12 Aug 2026 18:53:33 +0000
+Message-ID: <73b3e387-7365-46a8-af56-2386064d82bd@infradead.org>
+Date: Wed, 12 Aug 2026 11:53:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mips: econet: fulfill unmet kconfig dependencies
+To: Caleb James DeLisle <cjd@cjdns.fr>, Jonas Gorski <jonas.gorski@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
+References: <20260812032622.1759569-1-rdunlap@infradead.org>
+ <CAOiHx=mrJh0szu2B8NWideUH8RqUaM7S4OV9J4wN6p93-quW4Q@mail.gmail.com>
+ <486033fb-a846-4b41-9814-3ccf88e6d169@infradead.org>
+ <CAOiHx=kxibbnfXCKwOfaVgNp2N87q0fY++Evh=VNKf+kJg5wPw@mail.gmail.com>
+ <4fec0e7a-939e-4b29-bf0b-f8c7523281fa@cjdns.fr>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <4fec0e7a-939e-4b29-bf0b-f8c7523281fa@cjdns.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260812-tonyk-syscall_table-v5-13-3d383927c609@igalia.com>
-References: <20260812-tonyk-syscall_table-v5-0-3d383927c609@igalia.com>
-In-Reply-To: <20260812-tonyk-syscall_table-v5-0-3d383927c609@igalia.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmanon <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
- kernel-dev@igalia.com, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev, 
- linux-mips@vger.kernel.org, parclinux@vger.kernel.org, 
- =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-X-Mailer: b4 0.15.2
 
-Remove some of the duplicated code by using the common syscall number
-table.
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
----
- arch/alpha/kernel/syscalls/Makefile    | 10 +++++--
- arch/alpha/kernel/syscalls/syscall.tbl | 48 ----------------------------------
- arch/alpha/kernel/systbls.S            |  1 +
- 3 files changed, 9 insertions(+), 50 deletions(-)
 
-diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
-index b265e4bc16c2..18682418327b 100644
---- a/arch/alpha/kernel/syscalls/Makefile
-+++ b/arch/alpha/kernel/syscalls/Makefile
-@@ -7,12 +7,18 @@ $(shell mkdir -p $(uapi) $(kapi))
- syscall := $(src)/syscall.tbl
- syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
-+systbl_common := $(srctree)/scripts/syscall_common.tbl
-+abis := common,__clone3
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr \
-+		   --common-tbl $(systbl_common) --common-offset 110 \
-+		   --abis $(abis) $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) \
-+		   --common-tbl $(systbl_common) --common-offset 110 \
-+		   --abis $(abis) $< $@
- 
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index 34151d1653d6..7066a3920899 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -463,51 +463,3 @@
- 532	common	getppid				sys_getppid
- # all other architectures have common numbers for new syscall, alpha
- # is the exception.
--534	common	pidfd_send_signal		sys_pidfd_send_signal
--535	common	io_uring_setup			sys_io_uring_setup
--536	common	io_uring_enter			sys_io_uring_enter
--537	common	io_uring_register		sys_io_uring_register
--538	common	open_tree			sys_open_tree
--539	common	move_mount			sys_move_mount
--540	common	fsopen				sys_fsopen
--541	common	fsconfig			sys_fsconfig
--542	common	fsmount				sys_fsmount
--543	common	fspick				sys_fspick
--544	common	pidfd_open			sys_pidfd_open
--545	common	clone3				__clone3
--546	common	close_range			sys_close_range
--547	common	openat2				sys_openat2
--548	common	pidfd_getfd			sys_pidfd_getfd
--549	common	faccessat2			sys_faccessat2
--550	common	process_madvise			sys_process_madvise
--551	common	epoll_pwait2			sys_epoll_pwait2
--552	common	mount_setattr			sys_mount_setattr
--553	common	quotactl_fd			sys_quotactl_fd
--554	common	landlock_create_ruleset		sys_landlock_create_ruleset
--555	common	landlock_add_rule		sys_landlock_add_rule
--556	common	landlock_restrict_self		sys_landlock_restrict_self
--# 557 reserved for memfd_secret
--558	common	process_mrelease		sys_process_mrelease
--559	common  futex_waitv                     sys_futex_waitv
--560	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
--561	common	cachestat			sys_cachestat
--562	common	fchmodat2			sys_fchmodat2
--563	common	map_shadow_stack		sys_map_shadow_stack
--564	common	futex_wake			sys_futex_wake
--565	common	futex_wait			sys_futex_wait
--566	common	futex_requeue			sys_futex_requeue
--567	common	statmount			sys_statmount
--568	common	listmount			sys_listmount
--569	common	lsm_get_self_attr		sys_lsm_get_self_attr
--570	common	lsm_set_self_attr		sys_lsm_set_self_attr
--571	common	lsm_list_modules		sys_lsm_list_modules
--572	common  mseal				sys_mseal
--573	common	setxattrat			sys_setxattrat
--574	common	getxattrat			sys_getxattrat
--575	common	listxattrat			sys_listxattrat
--576	common	removexattrat			sys_removexattrat
--577	common	open_tree_attr			sys_open_tree_attr
--578	common	file_getattr			sys_file_getattr
--579	common	file_setattr			sys_file_setattr
--580	common	listns				sys_listns
--581	common	rseq_slice_yield		sys_rseq_slice_yield
-diff --git a/arch/alpha/kernel/systbls.S b/arch/alpha/kernel/systbls.S
-index 68f3e4f329eb..9a67d29f7818 100644
---- a/arch/alpha/kernel/systbls.S
-+++ b/arch/alpha/kernel/systbls.S
-@@ -7,6 +7,7 @@
- 
- #include <asm/unistd.h>
- 
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)        __SYSCALL(nr, native)
- #define __SYSCALL(nr, entry) .quad entry
- 	.data
- 	.align 3
+On 8/12/26 11:50 AM, Caleb James DeLisle wrote:
+> 
+> On 12/08/2026 19:32, Jonas Gorski wrote:
+>> On Wed, Aug 12, 2026 at 5:19 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>> Hui,
+>>>
+>>> On 8/12/26 6:12 AM, Jonas Gorski wrote:
+>>>> Hi,
+>>>>
+>>>> On Wed, Aug 12, 2026 at 5:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>> ECONET selects SERIAL_8250 even though its TTY dependency is not met.
+>>>>> ECONET selects SERIAL_OF_PLATFORM even though its TTY dependency is not
+>>>>> met.
+>>>>> ECONET selects EARLY_PRINTK_8250 even though its EARLY_PRINTK dependency
+>>>>> is not met.
+>>>>>
+>>>>> Fix these kconfig warnings by adding selects for TTY and EARLY_PRINTK.
+>>>>>
+>>>>> WARNING: unmet direct dependencies detected for SERIAL_8250
+>>>>>    Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && !S390
+>>>>>    Selected by [y]:
+>>>>>    - ECONET [=y]
+>>>>>
+>>>>> WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
+>>>>>    Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=y] && OF [=y]
+>>>>>    Selected by [y]:
+>>>>>    - ECONET [=y]
+>>>>>
+>>>>> WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
+>>>>>    Depends on [n]: EARLY_PRINTK [=n] && USE_GENERIC_EARLY_PRINTK_8250 [=y]
+>>>>>    Selected by [y]:
+>>>>>    - ECONET [=y]
+>>>>>
+>>>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>>>> ---
+>>>>> Cc: Caleb James DeLisle <cjd@cjdns.fr>
+>>>>> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+>>>>> Cc: linux-mips@vger.kernel.org
+>>>>>
+>>>>>   arch/mips/Kconfig |    2 ++
+>>>>>   1 file changed, 2 insertions(+)
+>>>>>
+>>>>> --- linux-next-20260810.orig/arch/mips/Kconfig
+>>>>> +++ linux-next-20260810/arch/mips/Kconfig
+>>>>> @@ -396,6 +396,7 @@ config ECONET
+>>>>>          bool "EcoNet MIPS family"
+>>>>>          select BOOT_RAW
+>>>>>          select DEBUG_ZBOOT if DEBUG_KERNEL
+>>>>> +       select EARLY_PRINTK
+>>>>>          select EARLY_PRINTK_8250
+>>>> I think the correct solution here is to drop EARLY_PRINTK_8250 instead.
+>>>>
+>>> Gladly.
+>>>
+>>>> ECONET already selects SYS_HAS_EARLY_PRINTK and
+>>>> USE_GENERIC_EARLY_PRINTK_8250. EARLY_PRINTK defaults to y if
+>>>> SYS_HAS_EARLY_PRINTK is y (unless EXPERT is enabled), and
+>>>> EARLY_PRINTK_8250 defaults to y if both EARLY_PRINTK and
+>>>> USE_GENERIC_EARLY_PRINTK_8250 are y.
+>>>>
+>>>> That way users can actually disable EARLY_PRINTK if they wish.
+>>>>
+>>>>>          select ECONET_EN751221_TIMER
+>>>>>          select SERIAL_8250
+>>>>> @@ -407,6 +408,7 @@ config ECONET
+>>>>>          select SYS_SUPPORTS_32BIT_KERNEL
+>>>>>          select SYS_SUPPORTS_MIPS16
+>>>>>          select SYS_SUPPORTS_ZBOOT_UART16550
+>>>>> +       select TTY
+>>>> Here I don't know. ECONET seems to be the only platform (treewide)
+>>>> that selects SERIAL_OF_PLATFORM and SERIAL_8250. Everyone else just
+>>>> enables these via their defconfigs. No hard feelings one way or the
+>>>> other, just noticed ECONET is the exception here.
+>>> I don't prefer using "select" - it just went along with the rest of the
+>>> Kconfig file. IOW, I would prefer using "depends on TTY".
+>>> But you are saying that it could go into some (non-existing) defconfig file?
+>> More like I grepped through the whole tree and ECONET was the only one
+>> selecting these symbols, and all other occurrences where in
+>> defconfigs.
+>>
+>> But as you correctly pointed out, there is no defconfig for econet, so
+>> I guess as a quick fix selecting TTY is okay, and once a defconfig
+>> exists we can drop it.
+>>
+>> Caleb, could you maybe add one?
+> 
+> 
+> The use of select was not for any particular reason, when I implemented this I was still figuring out the platform and the best practices. I'll be happy to send a patch to normalize this in the next couple of days.
+
+Great. I'll drop my patch and look forward to seeing yours.
+
+Thanks.
 
 -- 
-2.55.0
+~Randy
 

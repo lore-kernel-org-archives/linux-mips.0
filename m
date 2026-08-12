@@ -1,123 +1,99 @@
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385321E5B70
-	for <linux-mips@vger.kernel.org>; Wed, 12 Aug 2026 01:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C0F25771;
+	Wed, 12 Aug 2026 03:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786498445; cv=none; b=l5wGGhxQg9BLyrB1GiO1qIUunxoyTJ76I1PM2PIlZcrKsHB2iSj9DL/9ElbeOPrLxG4CVx677815ivabj0soqRJvsNku0WuUqKW3fIA1o+r4ciGg6OBEnGATtXZUJIhc9Fn6bvoB4PAbZ89Kg1cqoAYQefJ8bhIFMoUGepxsJQo=
+	t=1786505186; cv=none; b=YwMG1V6vgx5k7RxW6PYk7HYmj9aLj40xEv+Q9Y94UuXAjxUDQcCFaZZG31SYBCTwTei2g+E/nbd43Db57mh05N3eVUcH2c1uVwP+uvAijY9T1SpKmari5bVuHwNzO/3TbCiQ8CuGq4sTQj74Reg5rKpNNkNsNnLcr//Gg6gtizg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786498445; c=relaxed/simple;
-	bh=egqUZklBG/dbZooRB/6a7a7Apq9jgQjgUa0tbMIE3X0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WZMCq/TCDI3R52mz8OXEGW2HQhE3twKjqpm3bV1JG0suhq8VmNemkd0TVq8i8GknkCSimbVaSK6/ZuGeUjpx6zXDzqwHp5iyncrglv8Num+dzkOZ5Gf36r8XJxFqkV4IrU5osrO3wG2p5LxTKvyjGhtXMb3q80NboB+fDoXLkRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Z2CsWjvQ; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1786505186; c=relaxed/simple;
+	bh=JJQU31eH0NTEZNq7GvIpbb7SYaJdW/ehYzeLmx+YrQM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pxBgahnXY0qQkX+TMhTG0W/bLkSdB4scIuF3/wStplQWHl45Q4lxpmJU7UsJqt3Tus9bC7lUua4jcwXxWXmwB5wtyMjRQ+stoKQ2B/06TYo6dzguLu9IxNZ0AKWF60nGDZttCXzCcDnCIPBsqU+TjMW/Yp57iQr7fWpTKGp1Puw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=S6fPSWTF; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z2CsWjvQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="S6fPSWTF"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=PzxXTvug+TaoaNWVZrThgEJjDorynKj7tqJFmRRAX1E=; b=Z2CsWjvQRyKj6IfVU6XyBpqmfa
-	pqZVHbP2Rz4fP3chpurC07vTEBT4nEx29uhnmsQ8cGn0u3J/4Sbk8/PlFaSTu1Igh2BK7604cs8Nm
-	FNQFdYRJaIyA+d0K1wKWp5Mo8KenPHSNaqMEhN1E1KOZf2vG8wpo3p+Z7Dp/8MOrwhs58yCWP59iP
-	7hszmN1Snwe3BncHAX3RGyANH4XQJyHa1Prt52n0AbvB+9NxHSBUa2qrxEdswABK2IAWD9bdezn23
-	YiKrYJ0qboAGsgkzEJ3IHqCAzgozp6oQRQNguV4js0Eg4d7yISPD83NGwWWM3KFeRWYEv0qArygM0
-	VWwjsEAA==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=0c4p8sz2/7WjEaSSQv8Y3xlTkwaBR7hNlJxddSpTdnM=; b=S6fPSWTFr1jFcGFPsm/tSSdD92
+	WCYIYe7RtSCUDq08SZkVo2xpN4lIwTi9Ym2C/BUh77HV5NNqhJe+gqD2ciBWh4Z0JzcFOMUcYZDsN
+	2LfzYHoLpYBUCkEJNq9Thf3W5NyvClXNOYRZqSoM8IzDnBp3fVwgXs1FCKnvk+cpqh0VrEMulKJ8t
+	1oHWberl308SC9eEKiIcqYHfJYdcx1ASV638+vl6q76wFcyfObm55ZSJj0uxXr4wzufToHRx5IWof
+	T2MDEzITjng+RpuLOuD1ysAAmkfrrf2K3QtRsx9ba6halYoEX0Oyt6jEZ2KWSZgygRJuSGIMPWIaX
+	evffYZNA==;
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wtxqu-0000000FD2u-3abc;
-	Wed, 12 Aug 2026 01:33:57 +0000
-Message-ID: <206694af-a47d-421f-ad14-969a677aa5e2@infradead.org>
-Date: Tue, 11 Aug 2026 18:33:30 -0700
+	id 1wtzbi-0000000FLr6-38x8;
+	Wed, 12 Aug 2026 03:26:22 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Caleb James DeLisle <cjd@cjdns.fr>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org
+Subject: [PATCH] mips: econet: fulfill unmet kconfig dependencies
+Date: Tue, 11 Aug 2026 20:26:22 -0700
+Message-ID: <20260812032622.1759569-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mips randconfig builds?
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <85609635-09af-4aa2-82ae-f022ee20264d@infradead.org>
- <alpine.DEB.2.21.2608111241300.48788@angie.orcam.me.uk>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <alpine.DEB.2.21.2608111241300.48788@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+ECONET selects SERIAL_8250 even though its TTY dependency is not met.
+ECONET selects SERIAL_OF_PLATFORM even though its TTY dependency is not
+met.
+ECONET selects EARLY_PRINTK_8250 even though its EARLY_PRINTK dependency
+is not met.
 
-On 8/11/26 5:47 AM, Maciej W. Rozycki wrote:
-> On Wed, 5 Aug 2026, Randy Dunlap wrote:
-> 
->> I do lots of randconfig builds but I don't have a reliable way to
->> specify mips 32BIT or mips 64BIT builds.
-> 
->  How is the MIPS port different from other dual-wordsize ones, such as 
-> RISC-V?
+Fix these kconfig warnings by adding selects for TTY and EARLY_PRINTK.
 
-To me it's the dependencies of the 32BIT and 64BIT symbols:
+WARNING: unmet direct dependencies detected for SERIAL_8250
+  Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && !S390
+  Selected by [y]:
+  - ECONET [=y]
 
-config 32BIT
-	bool "32-bit kernel"
-	depends on CPU_SUPPORTS_32BIT_KERNEL && SYS_SUPPORTS_32BIT_KERNEL
-	select TRAD_SIGNALS
-	help
-	  Select this option if you want to build a 32-bit kernel.
+WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
+  Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=y] && OF [=y]
+  Selected by [y]:
+  - ECONET [=y]
 
-config 64BIT
-	bool "64-bit kernel"
-	depends on CPU_SUPPORTS_64BIT_KERNEL && SYS_SUPPORTS_64BIT_KERNEL
+WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
+  Depends on [n]: EARLY_PRINTK [=n] && USE_GENERIC_EARLY_PRINTK_8250 [=y]
+  Selected by [y]:
+  - ECONET [=y]
 
-For RISC-V (after s/32BIT/RV32I/ and s/64BIT/RV64I/), it's:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+Cc: Caleb James DeLisle <cjd@cjdns.fr>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 
-config ARCH_RV32I
-	bool "RV32I"
-	depends on NONPORTABLE
-	select 32BIT
-	select GENERIC_LIB_UCMPDI2
+ arch/mips/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
 
-config ARCH_RV64I
-	bool "RV64I"
-	select 64BIT
-	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
-	select SWIOTLB if MMU
-
-and the NONPORTABLE part of RV32I is easily handled in
-arch/riscv/configs/32-bit.config.
-
-Most of the other ARCHes -- if they have any 32/64BIT dependencies --
-are easily handled via a mini.config file.
-
-> Can you just grep .config resulting for 32BIT/64BIT and assign the build > accordingly?
-
-That will still depend on the other dependencies listed above.
-And since they have dependencies, it's probably not reliable.
-And I'm looking for something that is scriptable.
-
-In the end, what I'm looking for is something similar to what
-arch/powerpc/ and arch/riscv/ have for randconfig targets:
-  ppc32_randconfig
-  ppc64_randconfig
-  rv32_randconfig
-  rv64_randconfig
-
-I'll play around with setting {CPU,SYS}_SUPPORTS_32BIT_KERNEL for 32-bit
-and {CPU,SYS}_SUPPORTS_64BIT_KERNEL for 64-bit [done via mini.config files]
-to see if that will help me make some progress.
-
->  One target toolchain will handle both, so there is no need to know that 
-> in advance of `make randconfig' invocation (one advantage of not linking 
-> libgcc.a or any other target libraries is there's no need for multilibs).
-
-OK. That might be useful info.
-
-thanks.
--- 
-~Randy
-
+--- linux-next-20260810.orig/arch/mips/Kconfig
++++ linux-next-20260810/arch/mips/Kconfig
+@@ -396,6 +396,7 @@ config ECONET
+ 	bool "EcoNet MIPS family"
+ 	select BOOT_RAW
+ 	select DEBUG_ZBOOT if DEBUG_KERNEL
++	select EARLY_PRINTK
+ 	select EARLY_PRINTK_8250
+ 	select ECONET_EN751221_TIMER
+ 	select SERIAL_8250
+@@ -407,6 +408,7 @@ config ECONET
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_MIPS16
+ 	select SYS_SUPPORTS_ZBOOT_UART16550
++	select TTY
+ 	select USE_GENERIC_EARLY_PRINTK_8250
+ 	select USE_OF
+ 	help

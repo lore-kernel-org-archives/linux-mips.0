@@ -1,107 +1,119 @@
-Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D38248F72;
-	Thu, 13 Aug 2026 17:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=204.191.154.188
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0513876BB;
+	Thu, 13 Aug 2026 17:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786642265; cv=none; b=FiCghJzGPHCC6yij3NODRcChNsXb9OhaxNvHEiFGGquxu2hQ2PZblhitRdbwziGamW3ZsUx6HurP4Gv0/hcRjhy+cLr5wcQGfKquxDcYbmUs8BHmZdCZDZpqZlyL48+IiHPwyTaW8jW6+PF22Hujd5ptHE/ptH7HJP+FSdn33Q0=
+	t=1786642322; cv=none; b=pfHCic1YH5jnSecxkjuQwrsQltSAf3WBZe0voGi+EGSm2zd3WWETKpdd4yPSNInH4JohgZqV0/v+Njyznn0aG3/THN3+4hgkjeGups2nEHr4eq2zmR6mXmvhjUpDkrdqT8WBWjouvajUuLu9m2LIEDxzwz8FKImWIfZcCw+KzJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786642265; c=relaxed/simple;
-	bh=mjiOVMOMk2a1S5jj4W+hcPd085Qe5oN/ZdhhlcJBzic=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Subject; b=jakgAmupEGEnXk0vJE8ielw437MWzy5EQd9WzmanzSab/CotD+AQzPnLgCYmnkF5QnLYnLP+jInKXuUyTnITKjucv7wOT/3nLtelU/2glv2cXdU4OS4kiCyylCuAOdO9mk0uadRjsDtL1TltLlZKysTsZcq9EJWKjwSw9y62qz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com; spf=pass smtp.mailfrom=deltatee.com; dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b=BrKU/2d1; arc=none smtp.client-ip=204.191.154.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deltatee.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b="BrKU/2d1"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
-	MIME-Version:Date:Message-ID:content-disposition;
-	bh=9kz+jvI32wPERrbL870TVMeN4G7K9bL5RJ1JKWoZA1Q=; b=BrKU/2d1rri5u9vmgacwHn1MUI
-	ZHpp0GTxVHpY8teh3yMHnFNG1J2YK/+OR2P641SXEh/9xOhAsGzmWrdPYKr1TyHQFIAWs8Wv0N2z4
-	PdKTylS+hQFqrZkg8asEh4M5ashON/XmnNl3rnu/VxcIUxQkFTqqC50w+6+fbUD/kR3FUxDrRVze8
-	+NXhu0EYOxSfpxfHKSK4Hs32KJU17r+EfCUMrZdbbEk9UTCDQFIXpFsA5GBAPaEXKyL3iqJArWxou
-	L80v7g3Nno34JxU/Z3I3NRZC8FY1yzGCY6QIUaoc9DR8OQb+YptrrqBpfwBY4INCvEpebpD8r0wej
-	18FOpRvw==;
-Received: from s0106ac1f6bb1ecac.cg.shawcable.net ([96.51.150.74] helo=[10.0.33.8])
-	by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <logang@deltatee.com>)
-	id 1wuZGC-00000002RFD-3NzV;
-	Thu, 13 Aug 2026 11:30:33 -0600
-Message-ID: <11f666ce-ea7f-48c7-8219-baeb04498654@deltatee.com>
-Date: Thu, 13 Aug 2026 11:28:43 -0600
+	s=arc-20240116; t=1786642322; c=relaxed/simple;
+	bh=f1n0BmojRQVNi1iwF7OD2jqYeZdLmWSy3m78MdpnP0A=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=sy3Ffk4nJ5uIjHFcU/2j0vo854fwPrL3/A7Ux/yt6ybFQWhtIL3D6CNjXP4KnXvFUxPR06l2tvCAl+61lAoiDDGUBBwW8Lwgmyfa8drXPAnFCckaPI+esJb6AjTuvVJrl66MIyB9zZX1+fGjXEY7PppI0/tp8q2Lq+zwF+3uRsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 1026692009C; Thu, 13 Aug 2026 19:31:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 0B8BE92009B;
+	Thu, 13 Aug 2026 18:31:51 +0100 (BST)
+Date: Thu, 13 Aug 2026 18:31:50 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Randy Dunlap <rdunlap@infradead.org>
+cc: linux-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>, 
+    linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    linux-mips@vger.kernel.org
+Subject: Re: [RFC PATCH] fbdev: maxinefb: fix build issues
+In-Reply-To: <20260809234810.982500-1-rdunlap@infradead.org>
+Message-ID: <alpine.DEB.2.21.2608131801340.48788@angie.orcam.me.uk>
+References: <20260809234810.982500-1-rdunlap@infradead.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Frank.Li@oss.nxp.com, Jacky Huang <ychuang3@nuvoton.com>,
- Shan-Chun Hung <schung@nuvoton.com>, Vinod Koul <vkoul@kernel.org>,
- Frank Li <Frank.Li@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Binbin Zhou <zhoubinbin@loongson.cn>,
- Patrice Chotard <patrice.chotard@foss.st.com>,
- =?UTF-8?Q?Am=C3=A9lie_Delaunay?= <amelie.delaunay@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Thierry Reding <thierry.reding@kernel.org>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Viresh Kumar <vireshk@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- Manivannan Sadhasivam <mani@kernel.org>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Chen-Yu Tsai <wens@kernel.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Kelvin Cao <kelvin.cao@microchip.com>,
- Laxman Dewangan <ldewangan@nvidia.com>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev,
- imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
-References: <20260812-dma-chan_dev-rename-v1-0-a67131f7d5c2@nxp.com>
- <20260812-dma-chan_dev-rename-v1-1-a67131f7d5c2@nxp.com>
-Content-Language: en-CA
-From: Logan Gunthorpe <logang@deltatee.com>
-In-Reply-To: <20260812-dma-chan_dev-rename-v1-1-a67131f7d5c2@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 96.51.150.74
-X-SA-Exim-Rcpt-To: Frank.Li@oss.nxp.com, ychuang3@nuvoton.com, schung@nuvoton.com, vkoul@kernel.org, Frank.Li@kernel.org, paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com, zhoubinbin@loongson.cn, patrice.chotard@foss.st.com, amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, thierry.reding@kernel.org, jonathanh@nvidia.com, ludovic.desroches@microchip.com, vireshk@kernel.org, keguang.zhang@gmail.com, afaerber@suse.de, mani@kernel.org, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, wens@kernel.org, jernej.skrabec@gmail.com, samuel@sholland.org, kelvin.cao@microchip.com, ldewangan@nvidia.com, vigneshr@ti.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev, imx@lists.linux.dev, Frank.Li@nxp.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Level: 
-Subject: Re: [PATCH 1/2] dmaengine: use dma_chan_name() helper to get
- per-channel device name
-X-SA-Exim-Version: 4.2.1 (built Sun, 23 Feb 2025 07:57:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=US-ASCII
 
+On Sun, 9 Aug 2026, Randy Dunlap wrote:
 
+> This is all ancient source code from the beginning of git time.
 
-On 2026-08-12 3:24 p.m., Frank.Li@oss.nxp.com wrote:
-> From: Frank Li <Frank.Li@nxp.com>
-> 
-> Use the existing dma_chan_name() helper to obtain the per-channel device
-> name instead of open-coding: dev_name(chan->dev->device) /
-> dev_name(chan2dev())
-> 
-> Simplify the code and improve consistency.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+ I can dig out any further details you may need from the old LMO git tree.  
+Eventually it's planned to be put back online, but resources.
 
-Makes sense to me.
+> Now builds cleanly on 32-bit and 64-bit MACH_DECSTATION.
 
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+ Thanks for doing this work.
 
+> Suggested-by: "Maciej W. Rozycki" <macro@orcam.me.uk> # for s/KSEG1ADDR/CKSEG1ADDR/
 
+ Eventually this code should be converted to a platform device, so such 
+hacks won't be necessary.  Sadly I declined an offer back in 2009 and I 
+have been chasing a specimen for a while now.  And since it's an onboard 
+device unlike all the TURBOchannel framebuffers, there's no alternative.
+
+> --- linux-next-20260807.orig/drivers/video/fbdev/maxinefb.c
+> +++ linux-next-20260807/drivers/video/fbdev/maxinefb.c
+> @@ -71,19 +71,6 @@ void maxinefb_ims332_write_register(int
+>  	*((volatile unsigned short *) (wptr)) = val;
+>  }
+>  
+> -unsigned int maxinefb_ims332_read_register(int regno)
+> -{
+> -	register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
+> -	unsigned char *rptr;
+> -	register unsigned int j, k;
+> -
+> -	rptr = regs + 0x80000 + (regno << 4);
+> -	j = *((volatile unsigned short *) rptr);
+> -	k = *((volatile unsigned short *) regs);
+> -
+> -	return (j & 0xffff) | ((k & 0xff00) << 8);
+> -}
+> -
+>  /* Set the palette */
+>  static int maxinefb_setcolreg(unsigned regno, unsigned red, unsigned green,
+>  			      unsigned blue, unsigned transp, struct fb_info *info)
+
+ It might be worth mentioning in the change description that this is dead 
+code (and overall provide a summary as to making functions static, etc.).  
+Though I'm not entirely convinced as to the removal since this function 
+documents the hardware interface, which must have been the intent to put 
+it there.  Perhaps #if 0?
+
+> --- linux-next-20260807.orig/include/video/maxinefb.h
+> +++ linux-next-20260807/include/video/maxinefb.h
+> @@ -13,13 +13,13 @@
+>  /*
+>   * IMS332 video controller register base address
+>   */
+> -#define MAXINEFB_IMS332_ADDRESS		KSEG1ADDR(0x1c140000)
+> +#define MAXINEFB_IMS332_ADDRESS		CKSEG1ADDR(0x1c140000)
+>  
+>  /*
+>   * Begin of DECstation 5000/xx onboard framebuffer memory, default resolution
+>   * is 1024x768x8
+>   */
+> -#define DS5000_xx_ONBOARD_FBMEM_START	KSEG1ADDR(0x0a000000)
+> +#define DS5000_xx_ONBOARD_FBMEM_START	CKSEG1ADDR(0x0a000000)
+>  
+>  /*
+>   *      The IMS 332 video controller used in the DECstation 5000/xx series
+
+ This would probably best be a separate change, especially as it's not 
+needed for 32BIT.
+
+ I'm not sure how the actual maintainers see it (I should probably list 
+myself for all the scattered DECstation stuff), but I think this would 
+best be a patch series of 3 for each of the individual classes of fixes.  
+And since this borders on the obvious I wouldn't be too concerned as to 
+the change descriptions; just one sentence plus the relevant error message 
+quoted will do.  And your introduction should suffice as the cover letter.
+
+ Let me know if this works for you and if you post such a series, I'll ack 
+it right away.
+
+  Maciej

@@ -1,47 +1,47 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96B9499F2D
-	for <linux-mips@vger.kernel.org>; Thu, 13 Aug 2026 17:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC824A1399
+	for <linux-mips@vger.kernel.org>; Thu, 13 Aug 2026 17:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786640776; cv=none; b=DKakmNVyyIByo8Q1ct8tP/6EBQd05H4ilTd3eExFoPrZsGQg/GB0maKXKnUrUGgZThrVEHNI/kjM5dvAH4XJxaBIOU9UqVul4w4f6t/BdUAx5to8Uh4Ok9/+L30e/8LbPSrQX9Npqc58t6j6RFBazBYbAhVFy7mWVSW7m36mwsY=
+	t=1786640792; cv=none; b=lrqLXXKcwuUe9R79JS1P9o5GeUX+tCgP68tlEdNGWOUN8jmeYiI7CVunY01hg3PH7c6vbCvtkj0XEAUhGZ5JfKNxQRRHNC2CA/dKSOyV7XXu8GuSOErxoOGMNrQY7wjwfCFKrbIXxMqOW37AEwhYgF0xthc3Vecp07fEEBkgYS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786640776; c=relaxed/simple;
-	bh=w0jbd1lgYBWjloNI+GXG0PPjt/OCDX0+pwpLokZvL6I=;
+	s=arc-20240116; t=1786640792; c=relaxed/simple;
+	bh=NpNfO1oxWkx5Q2CNwypUnwKHU6qaSbdW69UUIfjLVL4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZqDZoCdzQwCFJhQjqBJ5aK34mU44rSHUhkTVGL1/olixpTzkbhtHvYmqlwvaeDQRsalyKti3IsHCoORCadAAU5pye/nfCrAtK/XUAi5OweYYPlEjbern9ZXexLNV0LuzWbZPGGauuyBhyhHliERy15MtAWWXXpVQd1CPemHkuCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ODCXjiS1; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=hYe5MXA3w/vO7KtGdBmKPs9gUpCkzE/jjxhVl76qoRGj5xTEbLQI4+t8TJxjTXriKww/KloRQJt6Zmyy9WtXedH2HoOqdEfsBU1ZABPo4EpVy2D6pi5CGCA6dq6pXOfgzH0XWu3PXQJpM9hPUc1SPQTdPHq0a45d79/A1cmX7Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ObbHwkI5; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ODCXjiS1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ObbHwkI5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1786640773;
+	s=mimecast20190719; t=1786640789;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jpaakGs2Tf7xeoHHoL80KxzX2+hb3XlzydpXYC2fGY4=;
-	b=ODCXjiS12sc6EZtSeLBwzmOVHAibo31rdCKU/M1qsQlP9keQU7j1oafNDYDlDo09ypcsAA
-	L1ETFXVDd85di0u/GRq48treBUTy9bB7oumUjzExXGOp6lrhOdi8J8A4KN3ChiCVFZjaoS
-	bhGrSt0ww4/8+6iWSnpm2nJpWpndB3Q=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=0X07In1qldTGybmdx53x+y5tR/aR+S5pQLXMdfQFUQ4=;
+	b=ObbHwkI5CrPwNB/1zamLfkTVWtfafJ8mbL463moH/FXocHSboJ2lM2vr965WSMXeIww9ak
+	Hmf8NDP6V/XPdSpZk0zZdgXfnUUVEydGpuBTZFEuQdATS7/idVQNesY2RNr0w63iSs8xHH
+	wwf7XcVIVrpntD42CCoSl8cPFjvUFTc=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-689-wBrpiqygOMm-ilyseSAiJg-1; Thu,
- 13 Aug 2026 13:06:10 -0400
-X-MC-Unique: wBrpiqygOMm-ilyseSAiJg-1
-X-Mimecast-MFC-AGG-ID: wBrpiqygOMm-ilyseSAiJg_1786640766
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-537-HbeFCVHqOGGW_1hh13qClQ-1; Thu,
+ 13 Aug 2026 13:06:23 -0400
+X-MC-Unique: HbeFCVHqOGGW_1hh13qClQ-1
+X-Mimecast-MFC-AGG-ID: HbeFCVHqOGGW_1hh13qClQ_1786640778
 Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EA6521955F3F;
-	Thu, 13 Aug 2026 17:06:05 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B963618001E6;
+	Thu, 13 Aug 2026 17:06:18 +0000 (UTC)
 Received: from wsxc.redhat.com (unknown [10.96.134.24])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 375D4195608A;
-	Thu, 13 Aug 2026 17:05:53 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7586A195608A;
+	Thu, 13 Aug 2026 17:06:06 +0000 (UTC)
 From: Ricardo Robaina <rrobaina@redhat.com>
 To: audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -87,9 +87,9 @@ Cc: paul@paul-moore.com,
 	peterz@infradead.org,
 	luto@kernel.org,
 	Ricardo Robaina <rrobaina@redhat.com>
-Subject: [PATCH 11/13] sparc64: pass all six syscall args to audit_syscall_entry()
-Date: Thu, 13 Aug 2026 14:03:01 -0300
-Message-ID: <fc2810a850a8bf343b7ad7ae9caf3da57e1f41ec.1786626275.git.rrobaina@redhat.com>
+Subject: [PATCH 12/13] um: pass all six syscall args to audit_syscall_entry()
+Date: Thu, 13 Aug 2026 14:03:02 -0300
+Message-ID: <c4118be04a7247aca96de49950dd5d866aa352b8.1786626275.git.rrobaina@redhat.com>
 In-Reply-To: <cover.1786626275.git.rrobaina@redhat.com>
 References: <cover.1786626275.git.rrobaina@redhat.com>
 Precedence: bulk
@@ -102,28 +102,29 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
 Update the audit_syscall_entry() call to forward the 5th and 6th
-syscall arguments (UREG_I4, UREG_I5) now that the audit core logs
-all six.
+syscall arguments (UPT_SYSCALL_ARG5, UPT_SYSCALL_ARG6) now that
+the audit core logs all six.
 
 Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
 ---
- arch/sparc/kernel/ptrace_64.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/ptrace.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/sparc/kernel/ptrace_64.c b/arch/sparc/kernel/ptrace_64.c
-index 9fc67fa9336f..d0ad3200d789 100644
---- a/arch/sparc/kernel/ptrace_64.c
-+++ b/arch/sparc/kernel/ptrace_64.c
-@@ -1100,7 +1100,8 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index fdbb37b5c399..c597a368592d 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -127,7 +127,9 @@ int syscall_trace_enter(struct pt_regs *regs)
+ 			    UPT_SYSCALL_ARG1(&regs->regs),
+ 			    UPT_SYSCALL_ARG2(&regs->regs),
+ 			    UPT_SYSCALL_ARG3(&regs->regs),
+-			    UPT_SYSCALL_ARG4(&regs->regs));
++			    UPT_SYSCALL_ARG4(&regs->regs),
++			    UPT_SYSCALL_ARG5(&regs->regs),
++			    UPT_SYSCALL_ARG6(&regs->regs));
  
- 	audit_syscall_entry(regs->u_regs[UREG_G1], regs->u_regs[UREG_I0],
- 			    regs->u_regs[UREG_I1], regs->u_regs[UREG_I2],
--			    regs->u_regs[UREG_I3]);
-+			    regs->u_regs[UREG_I3], regs->u_regs[UREG_I4],
-+			    regs->u_regs[UREG_I5]);
- 
- 	return ret;
- }
+ 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, UPT_SYSCALL_NR(&regs->regs));
 -- 
 2.55.0
 

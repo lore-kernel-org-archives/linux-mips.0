@@ -1,123 +1,115 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC84345729;
-	Thu, 13 Aug 2026 06:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786601010; cv=none; b=sFi4as8gDs9Dwbpk5z35S1jTs1KjDqpb2yanIsR2rqigbPNniTELKYSwByiZTaQhHs/XQgxNEuA+brdg/OfhakttnLyNuW+SEFq6VdW8LlcxTAZf41AuBvu5g47ig2u27YIp6G84tEvauidZNFbMogxFSLCFAWL/UjBUqUYN/EU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786601010; c=relaxed/simple;
-	bh=urvzQP14xjouAFJaMxm1KkmF2FK+YkPxtlg+0tmM3dk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=josgcMyVJCiFQo2Vi0TZCwPnaMEE1TiaaVxLcBEZVhjjBL3W7+XwuP26hbNx9hpD4r+tzEfUMwH6dLn/Zn5MbVYEr5sbJ1mH4TZNlnZVIu9T32BwLP6Bhu3VaxxCIuILh4VnqHwgLjcO57eNGKZJQ1es+jWMKD7V8CbBhH9QiEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=FCmrH71a; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB6141DDE4
+	for <linux-mips@vger.kernel.org>; Thu, 13 Aug 2026 06:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786603112; cv=pass; b=k+NwSZ6Kj4xN+5cd/pzcqAbKXs5uAxSkjLVYjdMA2WAW/b2xbUDjK75+9drmAajmHU+LljwYR+pHpqQjiehGPTnebShjSbvN27bHMmRMDL10pD9gwXCG82+vktLyJNKngvF3DV3yfz3HjYlqlA86wu5+/GXnBGAWsbt2Rfd1IEo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786603112; c=relaxed/simple;
+	bh=+A24NtONRwnbr6r3D7xaRVes2nGA+7zLWQBwcOligMI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bYsNA4tRxV5OQIdhoS2mR//T5Gf34khqGXjZXBeUA5IOnNoELrVCZTDPdBEw1/N8WlkdQ6kfv5MN7Mp9fo2VxasuVomwmzeejGuFwHD7/rC3dfpfKqKfPWNhmswV7EOEeF84mf7Cv5enzHrtd82VifZt0tT8Wqs+U2gS0cZmRxg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b=seICwRt/; arc=pass smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="FCmrH71a"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27767153B;
-	Wed, 12 Aug 2026 23:03:23 -0700 (PDT)
-Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B05F3F632;
-	Wed, 12 Aug 2026 23:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1786601007; bh=urvzQP14xjouAFJaMxm1KkmF2FK+YkPxtlg+0tmM3dk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FCmrH71a8GibDaT/4TzLpR5i+19TJkV8Y7yUEveP9J/tnpZ41lNWsq0jvpmBepdWh
-	 3M9emmtusN3STsiD2oIUPfk8jrriw7cyAgWrBFzUsYOHmzUnSzzBNBDES9ShVkwlc0
-	 +Kv5zwJCzOVfLHIcWwsl8hCWFk4UC3OStKBDaUuE=
-Date: Thu, 13 Aug 2026 11:33:23 +0530
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC V2 6/6] mm: Drop pxd_ERROR()
-Message-ID: <2ys7apbnfuj3ugfoqgbptgej3jjcyfpmdgbv6qbxupmwg6mefc@h5p33ua2nzlu>
-References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-7-anshuman.khandual@arm.com>
- <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
+	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b="seICwRt/"
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-5c38568d9e1so699279e0c.3
+        for <linux-mips@vger.kernel.org>; Wed, 12 Aug 2026 23:38:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786603110; cv=none;
+        d=google.com; s=arc-20260327;
+        b=mP4xkULz9qIkDIMLXLHm6Rmj2bc7Z7vWf0GBFVGiu6/VdS/4ZwCxglQ6pDzZZNcCWf
+         ylWUcXHITcfYdl/RwlXlG5K/CL779mh3T3tqzslqoyiAidil+aj2mv6utekzclrcSX2+
+         G6WEPh9uxgpG4sPLXoJvcgKMSDD/4HJ3VuobFpk+KgiJXzRcFkotbTL1B6sKB5gNmoSn
+         C+7xu6OGUnma+2a0sMGpGZZKHdwQU8uowhtZGx3QUqduw/H6O5dvVDEizyAcCEv2p2QV
+         DwW6OdpcWJbSG3MLBfJK1+oOxYPOo+PWLAxZVLoXnAHWpv6/cdf2vrBUkZqcTY08iTtW
+         /kDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=+A24NtONRwnbr6r3D7xaRVes2nGA+7zLWQBwcOligMI=;
+        fh=BEt9+NbzmpWlsfpKBi+35GGXcXn5JjCx1fkFYSXtK8c=;
+        b=jcAT+GCqogAEVk7Py/DyReKd3jsSDUy3mpXlBYT+VN4QbuBB8nvvxEUekUlOYOQV2V
+         nqyNjYWqhNYJzPdAvKVmgqgWbtY21DBASv3FisCqwwfMtWuuhA3QIKm4yLE6KYM6Gnik
+         ZGA7+JvR3Nv7500OrfltqWwUv2b2ze1XsfS4EGEVNGDuag3qUR7DOd3dyDngruBJwKvB
+         vlvT3IzLzSiFZ1xoB+oIcyYdXWZ57b6N5ZaFVIHWx9Bvw0xn0SCtqBVaP4RNi2LaSjHi
+         XNeV8lC9twcZWLwNyHYzk7IQoEWrqP40B60DgSntJ7z0fpZ1s/H1yNqWwz6kFIw6aYdn
+         pzpw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20251104.gappssmtp.com; s=20251104; t=1786603110; x=1787207910; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=+A24NtONRwnbr6r3D7xaRVes2nGA+7zLWQBwcOligMI=;
+        b=seICwRt/JeBBzfHlC41orlrh+jIQOO9ErSfHMZyRvAxm4pRcjwaWrEaL7Hh4NBL5vG
+         RKtODZQ8PL8KQVZU9Cz6GEaVQl5KJ9OcUBxu902VsyLMt+UnFEzTq1k3LNwKQcZ8iGbF
+         kLekaE/Bk0W1BHFsljuhWBOTgGRq5gQEnYnxnX0QKuRBIdvTzVG02d+CjqRe9Gont2a+
+         AW+bBC0nyo/NcGPHfo5BDdHCGuWWaMcMsbVyaK4F2uB8C9GmqAYXRlbu/0sdAgGdjQCW
+         27yv2xvTQokDu2HkvNdFuAJLaaqiU9sKYXxDWPvykMtKSps9vBhjM5hiqW+74f3OWgJL
+         ACZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786603110; x=1787207910;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=+A24NtONRwnbr6r3D7xaRVes2nGA+7zLWQBwcOligMI=;
+        b=g6TPaXXpMgDDfM/NVLZr7hOY1yz0PYApbykiPGd3EcYOzCEQAril/zoaxPWybgyTRy
+         gKfITEod9CFBsXrHc5fF4iKvxYBSMdl3p1ouZTq1pyf2m9IDxVaR7lCLcDTO9Tm2xtHA
+         kWLfj1q5xeExtRj+GX523XO35EGu/Bci8s4fblFrAyxyJQvpbtkzxav3VoswNnpBIE4d
+         pN0EmVHy2xb73/eXAerIatz2Lovn1af7jK8lU6l+z8idVfvhXn4QY/h9JFZOCjoocOKJ
+         HDH3Iv+SyV4+rb228wtIv2IlvFliupxae251NhL2TykikQXP+sXvm/vHxrqljvjLsVpz
+         QxSg==
+X-Forwarded-Encrypted: i=1; AHgh+RqD9JGpu/eHj/2MGOyjJSxfpD0B7elNFa8ybcS8esLftrQMNoWCaiAmOhcC2INftt/Oq8rJvOwWwx8W@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGi/OS53+pLM3y5V78sFyE1bwAf5xLw/poUeQunSH5R489ylqA
+	HO2wSR6qiXTpOWB1odea52uJvnbOyKvEPdEldpk3Fju9FyGvOCO8MZH0qyn5YvspQHyGjUQHKoW
+	Tc7BmW1n+b+1VmvcdRxXGhfmK9WDv3K8uPXLE/irvgBSXxNAkrrlVKzc=
+X-Gm-Gg: AR+sD12035p84ovJH9yCIZ/juMbm81cqjFxSx0O7OsJL0y4NWWqBtcgnxHQ+CT4BNt5
+	uJRZUEjCFJtRYFGZ83ucV4vhw8qVY4lHaHNmq1ND1FeLQcVcfusYPXXZ4jMls1QGIHNAZweX1FF
+	mA7NZa6ReIcw4v8RAIhn4RDGM1DvKhLQLZH4dQaZ9QtQo+lzKjpRuEvbwF5YkBVbqNn/ooqsMD8
+	9fRTZg6DZkfx0jH3euP74vQ1ewAl7ExNkUUMflgeWzenYyYVjCYRgkb5qXmnaHnrFn5kOG6ngC9
+	0lg+dcap+KXfPKBIVJjPvlBVPDB7s998MKOEz75aB3KsxRXB5n98fw==
+X-Received: by 2002:a05:6122:e24f:b0:5c1:2150:9de7 with SMTP id
+ 71dfb90a1353d-5c579cef23amr400695e0c.12.1786603109953; Wed, 12 Aug 2026
+ 23:38:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
+References: <20260810194215.3754591-1-main.kalliope@gmail.com>
+In-Reply-To: <20260810194215.3754591-1-main.kalliope@gmail.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date: Thu, 13 Aug 2026 08:38:18 +0200
+X-Gm-Features: AUfX_mxnVKFrhzMvzU9GpBsrmWTwP-e51VBkRweV7y8XFEVr_QVxGwultt7UhUU
+Message-ID: <CAM1=_QTvdWzBpSGnoLV7wiW0dsn_nc04V8KnYuntptQ5mF9Pyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] bpf, mips: Add signed div/mod support
+To: Nicholas Dudar <main.kalliope@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, tsbogend@alpha.franken.de, paulburton@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
+	philmd@oss.qualcomm.com, bpf@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Aug 12, 2026 at 01:33:14PM +0200, David Hildenbrand (Arm) wrote:
-> On 8/11/26 06:21, Anshuman Khandual wrote:
-> > pxd_ERROR() has been used in generic mm just to print the page table entry
-> > in pxd_clear_bad() before clearing those out with pxd_clear() later. These
-> > pxd_ERROR() macros have been provided by all platforms which basically did
-> > the same thing.
-> > 
-> > Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
-> > page table entries thus completely dropping dependency on platform provided
-> > pxd_ERROR() macros which can then be dropped off. First move all required
-> > helpers in core MM into a header file which could then be used else where.
-> > 
-> 
-> It might make sense to split this patch further up to ease review:
-> 
-> Patch 1) provide ptval_to_str() a header.
-> 
-> Patch 2) Stop using pxd_ERROR() and friends in common code, converting to
-> pteval_to_str()
-> 
-> Patch 3) Remove now unused pxd_ERROR() and friends from arch code.
+Hi Nicholas,
 
-Sure but the intiial platform changes which now use ptval_to_str() as well
-will probably come after the Patch (2) but before the Patch (3).
+Thanks for the v3 series. It looks good.
 
-> 
-> ...
-> > +static inline void
-> > +ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
-> > +{
-> > +	if (WARN_ON_ONCE(buf_size < entry_size * 2 + 1)) {
-> > +		snprintf(buf, buf_size, "overflow");
-> > +		return;
-> > +	}
-> > +
-> > +	switch (entry_size) {
-> > +	case sizeof(u32):
-> > +		snprintf(buf, buf_size, "%08x", *(const u32 *)entry);
-> > +		break;
-> > +	case sizeof(u64):
-> > +		snprintf(buf, buf_size, "%016llx", *(const u64 *)entry);
-> > +		break;
-> > +#if defined(__SIZEOF_INT128__)
-> > +	case sizeof(u128):
-> > +		snprintf(buf, buf_size, "%016llx%016llx",
-> > +			 (unsigned long long)(*(const u128 *)entry >> 64),
-> > +			 (unsigned long long)*(const u128 *)entry);
-> > +		break;
-> > +#endif
-> > +	default:
-> > +		snprintf(buf, buf_size, "unsupported");
-> > +		break;
-> > +	}
-> > +}
-> 
-> Why not leave ptval_bytes_to_hex_str() in the C file for less churn for now?
+However, i am currently on holiday and do not have access to my full
+QEMU test rig right now. I have verified your changes with the
+test_bpf selftests on mips32 with QEMU on my laptop, but the remaining
+arch variants will have to wait until I am back in about 12 days. I
+would like to do that before giving my final approval.
 
-Agreed - will change.
+Please proceed with the remaining opcodes in the meantime. I will do
+the same on my part as we discussed, and then we can wrap up this
+whole v4 compliance work when I am back.
 
-> 
-> -- 
-> Cheers,
-> 
-> David
-
-Thanks for the review.
+Thanks,
+Johan

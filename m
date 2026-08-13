@@ -1,116 +1,96 @@
-Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4FE38E8B9;
-	Thu, 13 Aug 2026 17:34:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=204.191.154.188
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4353D9552;
+	Thu, 13 Aug 2026 18:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786642487; cv=none; b=I5fDH9en1N2hb3piaXQ3qNHDhdZ+09O7ZlqKYb8ZPm25uZ0sQ/wOvpWELFc7QVu1vS8Nl1jQo5Lyq/bA9HGZGvbB9rhUNs1nljcxqc+QozUUvi6cehxETsA+bFAEl8w+CS8dqdH1ods0vsP79meqx6Ix/rV8RQyFsErlkfHQgIs=
+	t=1786644862; cv=none; b=LRJLAgeZBXozNjp2YU/HeHurjQvvahm4qiOdEm3qnwesAbMvebBL9WjqznJV5/INdnyxcsyhQCXi3X3rocBGSB2NffThZHPRxkXet5moijn2hhCKYegx4TaOf2S1mCgk66k7MrFLwJ/FagdKiPcLDExSbn4ww181VgvnQetH2PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786642487; c=relaxed/simple;
-	bh=N1Hjk9riHLlq/h7iFL323EOWWDmlwzDwCifp8K79TiY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Subject; b=eO5dZypTlSi9YnWHrl0SVcFniOwpby5q74hUuVUqSglmaqlc1w1v3yW7oXwOsH7IYPAJWbM2PDeKX1FMZm4UzYFxbPRp+PsL4IN3R8lzMW5lQAdn2wF2Eh6R6GDOgdYZJwfpsqztuRHJPSY//3Pz3Wes5w6x3Z84d9cfFEq0T5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com; spf=pass smtp.mailfrom=deltatee.com; dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b=L5+ZsqOt; arc=none smtp.client-ip=204.191.154.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deltatee.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b="L5+ZsqOt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
-	MIME-Version:Date:Message-ID:content-disposition;
-	bh=XFj6VBuvNlnLerahn+Ew2ADvQ1GLzQ4tJ+S+S2qSCZ0=; b=L5+ZsqOtNkaXdXhMeUmtDlxXCG
-	4+nWgHrJ/6YJ7a7wgq9ZARZicz03xxQhv5a2V1xFjOPSAstssr5ix0VfMjKwL/MfYk69qSVdYKa8V
-	7EIhycg37CLe4uJq27WaATd/QsdIRjTdsbnIXr9jGYu25sgB50xhxmWVTIlFhp1xha4mAHmrQ9ioR
-	In/HlwNTgm+4Tm3c68Xl5hpr7vZPzq6XUCRoM84rgn8q+bD/2msGM9FUqy43Xu708/xoa9lTnNDfV
-	AZ/h2VOCknwxnLug35RZsU//sokoMiM5WhtQv5m7s7DHnjngbdfaHNASnF1F2SsosrLxUXDsFByBY
-	ePAS7V1A==;
-Received: from s0106ac1f6bb1ecac.cg.shawcable.net ([96.51.150.74] helo=[10.0.33.8])
-	by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <logang@deltatee.com>)
-	id 1wuZK6-00000002RIj-2N9e;
-	Thu, 13 Aug 2026 11:34:35 -0600
-Message-ID: <9bdb074f-da65-41a9-b7bc-790ecab27e60@deltatee.com>
-Date: Thu, 13 Aug 2026 11:33:22 -0600
+	s=arc-20240116; t=1786644862; c=relaxed/simple;
+	bh=W9OpoNU/nwpBDGRmavTwz9kzt3bCa99i+KErOB8aKGo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MYkeouvoUtqFy0RNn1eMwhBU2hS1ogCpJgBpTJYDKEn8wSo0WP4YO39uEtZ0iyaM5hLHSU5I/motZo7v5FfDvrPDLy9TtG5rrTBlOKMNrV4wkC7car7/5ugL17kexVWlQCebpqrhVONeGZ3AncQ0HYmiWxdQkkm9m7TONQ/C+GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 1FD6A92009D; Thu, 13 Aug 2026 20:14:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 1AE0892009C;
+	Thu, 13 Aug 2026 19:14:17 +0100 (BST)
+Date: Thu, 13 Aug 2026 19:14:17 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Randy Dunlap <rdunlap@infradead.org>
+cc: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>, 
+    linux-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>, 
+    linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    linux-mips@vger.kernel.org
+Subject: Re: [RFC PATCH] fbdev: maxinefb: fix build issues
+In-Reply-To: <7282ae0f-3bf5-4eb8-9585-04635de0084a@infradead.org>
+Message-ID: <alpine.DEB.2.21.2608131908450.48788@angie.orcam.me.uk>
+References: <20260809234810.982500-1-rdunlap@infradead.org> <8ce99afa-1162-4910-92a4-6cb2973ea977@oss.qualcomm.com> <7282ae0f-3bf5-4eb8-9585-04635de0084a@infradead.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Frank.Li@oss.nxp.com, Jacky Huang <ychuang3@nuvoton.com>,
- Shan-Chun Hung <schung@nuvoton.com>, Vinod Koul <vkoul@kernel.org>,
- Frank Li <Frank.Li@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Binbin Zhou <zhoubinbin@loongson.cn>,
- Patrice Chotard <patrice.chotard@foss.st.com>,
- =?UTF-8?Q?Am=C3=A9lie_Delaunay?= <amelie.delaunay@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Thierry Reding <thierry.reding@kernel.org>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Viresh Kumar <vireshk@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- Manivannan Sadhasivam <mani@kernel.org>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Chen-Yu Tsai <wens@kernel.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Kelvin Cao <kelvin.cao@microchip.com>,
- Laxman Dewangan <ldewangan@nvidia.com>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev,
- imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
-References: <20260812-dma-chan_dev-rename-v1-0-a67131f7d5c2@nxp.com>
- <20260812-dma-chan_dev-rename-v1-2-a67131f7d5c2@nxp.com>
-Content-Language: en-CA
-From: Logan Gunthorpe <logang@deltatee.com>
-In-Reply-To: <20260812-dma-chan_dev-rename-v1-2-a67131f7d5c2@nxp.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 96.51.150.74
-X-SA-Exim-Rcpt-To: Frank.Li@oss.nxp.com, ychuang3@nuvoton.com, schung@nuvoton.com, vkoul@kernel.org, Frank.Li@kernel.org, paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com, zhoubinbin@loongson.cn, patrice.chotard@foss.st.com, amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, thierry.reding@kernel.org, jonathanh@nvidia.com, ludovic.desroches@microchip.com, vireshk@kernel.org, keguang.zhang@gmail.com, afaerber@suse.de, mani@kernel.org, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, wens@kernel.org, jernej.skrabec@gmail.com, samuel@sholland.org, kelvin.cao@microchip.com, ldewangan@nvidia.com, vigneshr@ti.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev, imx@lists.linux.dev, Frank.Li@nxp.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Level: 
-Subject: Re: [PATCH 2/2] dmaengine: add union chan_dev for dma_chan::dev for
- clarity
-X-SA-Exim-Version: 4.2.1 (built Sun, 23 Feb 2025 07:57:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 8BIT
 
+On Sun, 9 Aug 2026, Randy Dunlap wrote:
 
+> >> --- linux-next-20260807.orig/include/video/maxinefb.h
+> >> +++ linux-next-20260807/include/video/maxinefb.h
+> >> @@ -13,13 +13,13 @@
+> >>   /*
+> >>    * IMS332 video controller register base address
+> >>    */
+> >> -#define MAXINEFB_IMS332_ADDRESS        KSEG1ADDR(0x1c140000)
+> >> +#define MAXINEFB_IMS332_ADDRESS        CKSEG1ADDR(0x1c140000)
+> >>     /*
+> >>    * Begin of DECstation 5000/xx onboard framebuffer memory, default resolution
+> >>    * is 1024x768x8
+> >>    */
+> >> -#define DS5000_xx_ONBOARD_FBMEM_START    KSEG1ADDR(0x0a000000)
+> >> +#define DS5000_xx_ONBOARD_FBMEM_START    CKSEG1ADDR(0x0a000000)
+> > 
+> > The change looks correct, but clearly this has never been tested
+> > on a 64-bit DECstation, so I'm not sure having this code being
+> > now built is an improvement.
 
-On 2026-08-12 3:24 p.m., Frank.Li@oss.nxp.com wrote:
-> From: Frank Li <Frank.Li@nxp.com>
-> 
-> The current dma_chan structure contains both "device" and "dev". So
-> 
-> chan->device->dev refers to the DMA engine device.
-> chan->dev->device refers to the per-channel device instance.
-> 
-> Their similar naming makes the distinction unclear and increases reader
-> confusion.
-> 
-> Add union dma_chan::chan_dev to make its purpose explicit and clearly
-> identify it as the per-channel device. After all user switch to chan_dev,
-> union and dma_chan::dev will be removed.
-> 
-> Update the kernel-doc accordingly. Besides its sysfs usage, the per-channel
-> device is also used by some DMA engine drivers for IOMMU mapping and
-> therefore deserves a more accurate description.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+ I don't expect any issues and FWIW the Maxine does support a 64-bit CPU 
+module.
 
-Thanks, I've often been confused by this myself. I'm glad you're
-cleaning it up and making progress.
+> > diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+> > index ac9ac4287c6a..ff17afe6b8b3 100644
+> > --- a/drivers/video/fbdev/Kconfig
+> > +++ b/drivers/video/fbdev/Kconfig
+> > @@ -1436,7 +1436,7 @@ config FB_PMAGB_B
+> > 
+> >  config FB_MAXINE
+> >         bool "Maxine (Personal DECstation) onboard framebuffer support"
+> > -       depends on (FB = y) && MACH_DECSTATION
+> > +       depends on (FB = y) && MACH_DECSTATION && 32BIT
+> >         select FB_IOMEM_HELPERS
+> >         help
+> >           Support for the onboard framebuffer (1024x768x8) in the Personal
+> > ---
+> > 
+> > ?
+> 
+> I guess I'm OK with that. I'm even OK with removing the driver completely.
 
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+ No need to limit the driver to 32BIT and as I suggest in the other reply 
+fixing 64BIT will best be a separate change.
+
+> Maciej did say in https://lore.kernel.org/all/alpine.DEB.2.21.2308152255080.8596@angie.orcam.me.uk/
+> that: "the proper way would be by using `ioremap' really.  I'll make a patch."
+> [That was 15.Aug.2023.]
+
+ Even more properly this will best be converted to a platform device and 
+then resource handling will DTRT.  I do hope to get a specimen eventually, 
+so I think there's no need to rush making changes on paper.
+
+  Maciej

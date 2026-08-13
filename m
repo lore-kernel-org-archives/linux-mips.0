@@ -1,129 +1,107 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD964A1382
-	for <linux-mips@vger.kernel.org>; Thu, 13 Aug 2026 17:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D38248F72;
+	Thu, 13 Aug 2026 17:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=204.191.154.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786640806; cv=none; b=GlYrWei8AUImnxRE/HyAtXP+e5nKf5IYl4BAouYTYzbMX+UaR34VtGmCDY5WJwMVmuETyfvAxRLngrzayxo1BSia4MMYf0pPDB4t/fTNYBn8k8aRCF7vnpNeERJCAUB9NkGG6yzruQgwecNOr5PGf2yI8D5+XKiApIi3lGQ+O1A=
+	t=1786642265; cv=none; b=FiCghJzGPHCC6yij3NODRcChNsXb9OhaxNvHEiFGGquxu2hQ2PZblhitRdbwziGamW3ZsUx6HurP4Gv0/hcRjhy+cLr5wcQGfKquxDcYbmUs8BHmZdCZDZpqZlyL48+IiHPwyTaW8jW6+PF22Hujd5ptHE/ptH7HJP+FSdn33Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786640806; c=relaxed/simple;
-	bh=lR8qSzQmvWmaB4RQMK4RGGNQKS1QaeJDt2mblFTguaY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JkecWvNgxft+FaMsTpP3e8XELD4JmPtIt8A6jeYVInpCdp7AhSyzVkPRMBcGgNus22t+9aypfrAyfAqk5IoErY+j47qylmPH1rPnZBOn75Bjs/61uZB3s8NLWCfEJLn3Ot0+LYnNa8ihvG2FuEWCavd4kX76hsjmQFeC5aDin5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ScCqsmFM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1786642265; c=relaxed/simple;
+	bh=mjiOVMOMk2a1S5jj4W+hcPd085Qe5oN/ZdhhlcJBzic=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Subject; b=jakgAmupEGEnXk0vJE8ielw437MWzy5EQd9WzmanzSab/CotD+AQzPnLgCYmnkF5QnLYnLP+jInKXuUyTnITKjucv7wOT/3nLtelU/2glv2cXdU4OS4kiCyylCuAOdO9mk0uadRjsDtL1TltLlZKysTsZcq9EJWKjwSw9y62qz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com; spf=pass smtp.mailfrom=deltatee.com; dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b=BrKU/2d1; arc=none smtp.client-ip=204.191.154.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deltatee.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ScCqsmFM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1786640804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9TxFFtT5q6hhEXv1kvzuRF0i2wkqVQa93JW+RoA9mS8=;
-	b=ScCqsmFMhs+8XgYwH9O2yOnQNU2S4N0YHy75DXg5pcHv2RwrlAwcmcQlXsyIKWNb1Tr69S
-	iy74TBD+koLf1r8STfLcXI30D5pCj9rUjhNpdynZk+djBDgQQI3E+fJ5Y0TZ02IAc9Cybd
-	/ly3/9PnuqRO5XGoCPNPGlcMA8T5OTI=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-448-kZvjQ2dNO5aDefn4CIGjPA-1; Thu,
- 13 Aug 2026 13:06:37 -0400
-X-MC-Unique: kZvjQ2dNO5aDefn4CIGjPA-1
-X-Mimecast-MFC-AGG-ID: kZvjQ2dNO5aDefn4CIGjPA_1786640791
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0777C18002C4;
-	Thu, 13 Aug 2026 17:06:31 +0000 (UTC)
-Received: from wsxc.redhat.com (unknown [10.96.134.24])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3411D195608A;
-	Thu, 13 Aug 2026 17:06:18 +0000 (UTC)
-From: Ricardo Robaina <rrobaina@redhat.com>
-To: audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	bpf@vger.kernel.org
-Cc: paul@paul-moore.com,
-	eparis@redhat.com,
-	sgrubb@redhat.com,
-	oleg@redhat.com,
-	richard.henderson@linaro.org,
-	mattst88@gmail.com,
-	linmag7@gmail.com,
-	linux@armlinux.org.uk,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	guoren@kernel.org,
-	monstr@monstr.eu,
-	tsbogend@alpha.franken.de,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	ysato@users.sourceforge.jp,
-	dalias@libc.org,
-	glaubitz@physik.fu-berlin.de,
-	davem@davemloft.net,
-	andreas@gaisler.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	chris@zankel.net,
-	jcmvbkbc@gmail.com,
-	tglx@kernel.org,
-	peterz@infradead.org,
-	luto@kernel.org,
-	Ricardo Robaina <rrobaina@redhat.com>
-Subject: [PATCH 13/13] xtensa: pass all six syscall args to audit_syscall_entry()
-Date: Thu, 13 Aug 2026 14:03:03 -0300
-Message-ID: <0c7aa94c05b08d959d885b3b0434646a6b2fcfd0.1786626275.git.rrobaina@redhat.com>
-In-Reply-To: <cover.1786626275.git.rrobaina@redhat.com>
-References: <cover.1786626275.git.rrobaina@redhat.com>
+	dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b="BrKU/2d1"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:content-disposition;
+	bh=9kz+jvI32wPERrbL870TVMeN4G7K9bL5RJ1JKWoZA1Q=; b=BrKU/2d1rri5u9vmgacwHn1MUI
+	ZHpp0GTxVHpY8teh3yMHnFNG1J2YK/+OR2P641SXEh/9xOhAsGzmWrdPYKr1TyHQFIAWs8Wv0N2z4
+	PdKTylS+hQFqrZkg8asEh4M5ashON/XmnNl3rnu/VxcIUxQkFTqqC50w+6+fbUD/kR3FUxDrRVze8
+	+NXhu0EYOxSfpxfHKSK4Hs32KJU17r+EfCUMrZdbbEk9UTCDQFIXpFsA5GBAPaEXKyL3iqJArWxou
+	L80v7g3Nno34JxU/Z3I3NRZC8FY1yzGCY6QIUaoc9DR8OQb+YptrrqBpfwBY4INCvEpebpD8r0wej
+	18FOpRvw==;
+Received: from s0106ac1f6bb1ecac.cg.shawcable.net ([96.51.150.74] helo=[10.0.33.8])
+	by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.2)
+	(envelope-from <logang@deltatee.com>)
+	id 1wuZGC-00000002RFD-3NzV;
+	Thu, 13 Aug 2026 11:30:33 -0600
+Message-ID: <11f666ce-ea7f-48c7-8219-baeb04498654@deltatee.com>
+Date: Thu, 13 Aug 2026 11:28:43 -0600
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+User-Agent: Mozilla Thunderbird
+To: Frank.Li@oss.nxp.com, Jacky Huang <ychuang3@nuvoton.com>,
+ Shan-Chun Hung <schung@nuvoton.com>, Vinod Koul <vkoul@kernel.org>,
+ Frank Li <Frank.Li@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Binbin Zhou <zhoubinbin@loongson.cn>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ =?UTF-8?Q?Am=C3=A9lie_Delaunay?= <amelie.delaunay@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Thierry Reding <thierry.reding@kernel.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Viresh Kumar <vireshk@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Chen-Yu Tsai <wens@kernel.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Kelvin Cao <kelvin.cao@microchip.com>,
+ Laxman Dewangan <ldewangan@nvidia.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
+References: <20260812-dma-chan_dev-rename-v1-0-a67131f7d5c2@nxp.com>
+ <20260812-dma-chan_dev-rename-v1-1-a67131f7d5c2@nxp.com>
+Content-Language: en-CA
+From: Logan Gunthorpe <logang@deltatee.com>
+In-Reply-To: <20260812-dma-chan_dev-rename-v1-1-a67131f7d5c2@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 96.51.150.74
+X-SA-Exim-Rcpt-To: Frank.Li@oss.nxp.com, ychuang3@nuvoton.com, schung@nuvoton.com, vkoul@kernel.org, Frank.Li@kernel.org, paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com, zhoubinbin@loongson.cn, patrice.chotard@foss.st.com, amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, thierry.reding@kernel.org, jonathanh@nvidia.com, ludovic.desroches@microchip.com, vireshk@kernel.org, keguang.zhang@gmail.com, afaerber@suse.de, mani@kernel.org, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, wens@kernel.org, jernej.skrabec@gmail.com, samuel@sholland.org, kelvin.cao@microchip.com, ldewangan@nvidia.com, vigneshr@ti.com, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev, imx@lists.linux.dev, Frank.Li@nxp.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Level: 
+Subject: Re: [PATCH 1/2] dmaengine: use dma_chan_name() helper to get
+ per-channel device name
+X-SA-Exim-Version: 4.2.1 (built Sun, 23 Feb 2025 07:57:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 
-Update the audit_syscall_entry() call to forward the 5th and 6th
-syscall arguments (areg[8], areg[9]) now that the audit core logs
-all six.
 
-Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
----
- arch/xtensa/kernel/ptrace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
-index b80d54b2ea34..122a6ffc0757 100644
---- a/arch/xtensa/kernel/ptrace.c
-+++ b/arch/xtensa/kernel/ptrace.c
-@@ -564,7 +564,8 @@ int do_syscall_trace_enter(struct pt_regs *regs)
- 
- 	audit_syscall_entry(regs->syscall, regs->areg[6],
- 			    regs->areg[3], regs->areg[4],
--			    regs->areg[5]);
-+			    regs->areg[5], regs->areg[8],
-+			    regs->areg[9]);
- 	return 1;
- }
- 
--- 
-2.55.0
+On 2026-08-12 3:24 p.m., Frank.Li@oss.nxp.com wrote:
+> From: Frank Li <Frank.Li@nxp.com>
+> 
+> Use the existing dma_chan_name() helper to obtain the per-channel device
+> name instead of open-coding: dev_name(chan->dev->device) /
+> dev_name(chan2dev())
+> 
+> Simplify the code and improve consistency.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+Makes sense to me.
+
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+
 

@@ -1,37 +1,37 @@
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782C43E49EA;
-	Thu, 13 Aug 2026 21:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AD21C84A2;
+	Fri, 14 Aug 2026 02:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786657612; cv=none; b=G270/XcArkexlKR037wO3vT8mBammpZlFbKVck/cSVWYhawb6xDhqSQ7vX4lNi9Rg4f2QS8L94npLqAYbtpHz5dj7zkmULkgICMzJi5bgFxOi16a4mL1QJN/rEh1VP3vfJWsNzJwEmm2iDvVPOafxKzq9aFMind2seUvk29Bh5E=
+	t=1786675631; cv=none; b=iB6UvJgBtMoSWpCCH4o8LNKdZIXzuiNj1+wJwF6TthCNLDeyx6hUlbJoDLlGiNmbXb8huUldMKUD3Do+fP6bplC806pK5vofJQzZeN7oiuqb2J6O08rYS2OhZ54LsuYA6VMIoy+VXHNPxcV2+kjDt9EWK4r9ne5BEnDHsepgAZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786657612; c=relaxed/simple;
-	bh=iUN335zGwtmrC+oT4qwJ+JmNnEq3wRjGxmDaDslyR/8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BzZmTE5VBZvvm4IsHJnnbvVX5gesf35nor00x5P2PFmOIh2D9X7i3yyzwb8BkF0RnP43amCHha2LRsvrbK4JBQt7bk35zAptDEJXSn1WyRXxOtEKarHrB5IHUeOZR0V7W7/qV4k/w+sOyq5gytmmHVAFrlUirZeXtzrymdAJahM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JvxAYEJt; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1786675631; c=relaxed/simple;
+	bh=OBs7spVAqp61lolc2/N2LLJtXywiYLgQ7b22BineEqU=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=uHqidEsjfLOYzHAr3lLMpNHqUQXoBKHqT72Ef0Hfor54Nginh+ArCkPkP31PdsmaItS5SSUuDqWQL2MxEu5stiz8akFN/MVkWe7PvU6zG8oAO0HjyqBL37ktAy+SubTYv2RLkRR/u2ZGCEzyVqaXhoMosaj6sjbABJrbu1+HQUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ErY2++rI; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JvxAYEJt"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ErY2++rI"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=VrJjpnquoKirxGoQwEIqgJUFcxrud7TWyOeE6LNnY0Q=; b=JvxAYEJtdLMHwgdvuUhzatZqEv
-	TO8AR+ev5z/sbSYaWyG/9mDVob8nZu8hxDpwe1ZTTE9ppynXUAWzrFJP9osq77Di79oNqugpWMpSX
-	32nipipgxb50ZbL0JNas+c04bW0Tvtkb48rSg5h/BEJDf5196dwavEsFs/FpqcKFfvIEvNFIDN5ba
-	MZW0Ld9MqPZ+eYo/U4JdPCL2+WlqGIXIXRClY3T2aHTEYK1MshnaCtDsGCfMWMxCdRVYJzFWBGqCT
-	LLFkumO8P+csYLhx5S9aVdnPCDttb5FgaAFpZoXD36NxixsKqaojkczxAaWpfDGQTykVEyXTehRdf
-	wAuFLFqw==;
+	bh=IjbqGBh5OA/8x0Qxv8wHfpIOWZltvzeMbsgtQ5FZn6c=; b=ErY2++rIlq4hFGYFf5NKErYUKm
+	d+eaxrk+iTXxK7bFLG19jmmd8QcjLNYkU+InoqDkxUkALpPV3/FQHn5j/W5R3mR9h/6ZKfhxBbM7M
+	aLv7uSJGu3y5tpB9SpiETgvEwu4/XayBvY29NGMz8L7gapfSLVS+6pjG/2a9VcOKeVxMOWVVbc/Eh
+	jnDP76SSY/dd7eXV79jMrMW4P2B5wG116pXWcyDik9P70UxSSnwjcqOsjWerRDLmKIaS+PGfE2Vzm
+	V4pJSH5EgPNEQCM4J4EHRDMM07s+h0OlcDUElj/Jz1pKBM1QxGzUsGrM/Lzg9Di2D9cYhyx18PJuD
+	1WfXoBmg==;
 Received: from [50.53.43.113] (helo=[192.168.254.34])
 	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wudG4-00000001fHQ-0JCi;
-	Thu, 13 Aug 2026 21:46:40 +0000
-Message-ID: <e4b67f1e-4afa-4d8b-bd28-28e8e991dfa4@infradead.org>
-Date: Thu, 13 Aug 2026 14:46:38 -0700
+	id 1wuhwm-00000001sUm-1vPi;
+	Fri, 14 Aug 2026 02:47:04 +0000
+Message-ID: <6cd9df3f-4fec-451b-a3f0-d23b435802fd@infradead.org>
+Date: Thu, 13 Aug 2026 19:46:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,101 +40,71 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH] fbdev: maxinefb: fix build issues
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: linux-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
-References: <20260809234810.982500-1-rdunlap@infradead.org>
- <alpine.DEB.2.21.2608131801340.48788@angie.orcam.me.uk>
-Content-Language: en-US
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <alpine.DEB.2.21.2608131801340.48788@angie.orcam.me.uk>
+To: sashiko-reviews@lists.linux.dev
+Cc: dri-devel@lists.freedesktop.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+ linux-mips@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20260809234810.982500-1-rdunlap@infradead.org>
+ <20260810000251.55AD61F000E9@smtp.kernel.org>
+ <e0488e93-eb19-42d4-a7c0-64657141b398@infradead.org>
+Content-Language: en-US
+In-Reply-To: <e0488e93-eb19-42d4-a7c0-64657141b398@infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 8/13/26 10:31 AM, Maciej W. Rozycki wrote:
-> On Sun, 9 Aug 2026, Randy Dunlap wrote:
+On 8/9/26 5:27 PM, Randy Dunlap wrote:
+> [adding Cc:s]
 > 
->> This is all ancient source code from the beginning of git time.
+> On 8/9/26 5:02 PM, sashiko-bot@kernel.org wrote:
+>> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
+>>
+>> Pre-existing issues:
+>> - [High] Initialization function returns positive value `1` on failure, breaking module load semantics and causing subsequent `registered_fb` array corruption on unload.
+>> - [High] `maxinefb_fix.smem_start` is initialized with a virtual address (`CKSEG1ADDR`) instead of the hardware physical address, breaking user-space `mmap()`.
+>> --
+>>
+>> --- Patch [1]: [RFC PATCH] fbdev: maxinefb: fix build issues ---
+>> commit e391418fa2f21f8c420eccb513c031674ef184c6
+>> Author: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> fbdev: maxinefb: fix build issues
+>>
+>> This commit fixes build errors and warnings for the maxinefb driver on
+>> 32-bit and 64-bit MACH_DECSTATION. It updates KSEG1ADDR to CKSEG1ADDR and
+>> adds the static keyword to missing prototypes.
+>>
+>>> diff --git a/drivers/video/fbdev/maxinefb.c b/drivers/video/fbdev/maxinefb.c
+>>> index 52528eb4dfb41..8aa1389e2d4c8 100644
+>>> --- a/drivers/video/fbdev/maxinefb.c
+>>> +++ b/drivers/video/fbdev/maxinefb.c
+>> [ ... ]
+>>> @@ -111,7 +98,7 @@ static const struct fb_ops maxinefb_ops = {
+>>>  	.fb_setcolreg	= maxinefb_setcolreg,
+>>>  };
+>>>  
+>>> -int __init maxinefb_init(void)
+>>> +static int __init maxinefb_init(void)
+>>
+>> [Severity: High]
+>> This is a pre-existing issue, but does returning 1 on failure in this function
+>> cause issues with module load semantics?
+>>
+>> In maxinefb_init():
+>>
+>>         if (register_framebuffer(&fb_info) < 0)
+>>                 return 1;
+>>
+>> If register_framebuffer() fails, returning a positive integer causes the kernel
+>> to treat the module as successfully loaded because the module init framework
+>> expects negative error codes for failure.
 > 
->  I can dig out any further details you may need from the old LMO git tree.  
-> Eventually it's planned to be put back online, but resources.
-> 
->> Now builds cleanly on 32-bit and 64-bit MACH_DECSTATION.
-> 
->  Thanks for doing this work.
-> 
->> Suggested-by: "Maciej W. Rozycki" <macro@orcam.me.uk> # for s/KSEG1ADDR/CKSEG1ADDR/
-> 
->  Eventually this code should be converted to a platform device, so such 
-> hacks won't be necessary.  Sadly I declined an offer back in 2009 and I 
-> have been chasing a specimen for a while now.  And since it's an onboard 
-> device unlike all the TURBOchannel framebuffers, there's no alternative.
-> 
->> --- linux-next-20260807.orig/drivers/video/fbdev/maxinefb.c
->> +++ linux-next-20260807/drivers/video/fbdev/maxinefb.c
->> @@ -71,19 +71,6 @@ void maxinefb_ims332_write_register(int
->>  	*((volatile unsigned short *) (wptr)) = val;
->>  }
->>  
->> -unsigned int maxinefb_ims332_read_register(int regno)
->> -{
->> -	register unsigned char *regs = (char *) MAXINEFB_IMS332_ADDRESS;
->> -	unsigned char *rptr;
->> -	register unsigned int j, k;
->> -
->> -	rptr = regs + 0x80000 + (regno << 4);
->> -	j = *((volatile unsigned short *) rptr);
->> -	k = *((volatile unsigned short *) regs);
->> -
->> -	return (j & 0xffff) | ((k & 0xff00) << 8);
->> -}
->> -
->>  /* Set the palette */
->>  static int maxinefb_setcolreg(unsigned regno, unsigned red, unsigned green,
->>  			      unsigned blue, unsigned transp, struct fb_info *info)
-> 
->  It might be worth mentioning in the change description that this is dead 
-> code (and overall provide a summary as to making functions static, etc.).  
-> Though I'm not entirely convinced as to the removal since this function 
-> documents the hardware interface, which must have been the intent to put 
-> it there.  Perhaps #if 0?
-> 
->> --- linux-next-20260807.orig/include/video/maxinefb.h
->> +++ linux-next-20260807/include/video/maxinefb.h
->> @@ -13,13 +13,13 @@
->>  /*
->>   * IMS332 video controller register base address
->>   */
->> -#define MAXINEFB_IMS332_ADDRESS		KSEG1ADDR(0x1c140000)
->> +#define MAXINEFB_IMS332_ADDRESS		CKSEG1ADDR(0x1c140000)
->>  
->>  /*
->>   * Begin of DECstation 5000/xx onboard framebuffer memory, default resolution
->>   * is 1024x768x8
->>   */
->> -#define DS5000_xx_ONBOARD_FBMEM_START	KSEG1ADDR(0x0a000000)
->> +#define DS5000_xx_ONBOARD_FBMEM_START	CKSEG1ADDR(0x0a000000)
->>  
->>  /*
->>   *      The IMS 332 video controller used in the DECstation 5000/xx series
-> 
->  This would probably best be a separate change, especially as it's not 
-> needed for 32BIT.
-> 
->  I'm not sure how the actual maintainers see it (I should probably list 
-> myself for all the scattered DECstation stuff), but I think this would 
-> best be a patch series of 3 for each of the individual classes of fixes.  
-> And since this borders on the obvious I wouldn't be too concerned as to 
-> the change descriptions; just one sentence plus the relevant error message 
-> quoted will do.  And your introduction should suffice as the cover letter.
-> 
->  Let me know if this works for you and if you post such a series, I'll ack 
-> it right away.
+> Ack. I'll change that.
 
-OK, I'll work on that.
+I had this fixed locally and then forgot about it in the 3-patch series.
+I'll add it as patch 04/04.
 
 -- 
 ~Randy

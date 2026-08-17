@@ -1,180 +1,192 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BD31A6823;
-	Mon, 17 Aug 2026 02:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE8D41D116;
+	Mon, 17 Aug 2026 12:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786932501; cv=none; b=cLvSJtIsweNmjl3veXs9sxbCXuc7Y0cG2gUfxpJ7MAQIR4mEszmvB3glzMO/sovV3XQtZKq68AjdEGUlqMw5ZN1A4IEY+bt506iKc5uO/o8MbbmGAqjMT2vjQ3pOPSLs6TTssomX3lwhFOrU6RkR/G3ynCJ/QVbkUugfEwTGdvQ=
+	t=1786970474; cv=none; b=WZ2Jpvwfk2vVyqnMwGwiLUrRXHVTA+t5rGUbzOrHQMtJx+WTRR+8npkfFS7eCK8Jw0T27wbg3S6RGy1EWgtTqWgCLuW0fVQJsX6lquikrO3cK7Md6jXZZ+pU7ASH4/Od0C480RxDggAVvvFlL8dAJGljrBF4Wadr7JbCFaxlQhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786932501; c=relaxed/simple;
-	bh=cUHXnEFb0DPT0cP8sQAYf526pNBm/FM6F6+YWEZkqWE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YfF8D31rQI0g7Wji1SP84CXoeaG0sEm3egdFZBjZIxaHtrI5CWBAfU9ypSGa/xyaPGi0LrS8Mu14MHqTJnlcl6cI+tzgbNZ6bAxccFwLTFJPXYPfY6hzdhHX2O4mSQTfB8ao4qBdjaEYvoDc15pPebVoysZfyj5zNR4a1kVd+kE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [223.64.68.87])
-	by gateway (Coremail) with SMTP id _____8CxQNEDbYJqnbYBAA--.5127S3;
-	Mon, 17 Aug 2026 10:08:04 +0800 (CST)
-Received: from [10.161.0.102] (unknown [223.64.68.87])
-	by front1 (Coremail) with SMTP id qMiowJAx2c3_bIJqU28HAA--.48469S2;
-	Mon, 17 Aug 2026 10:08:02 +0800 (CST)
-Message-ID: <735044e7-07e8-462e-b94f-4fea1b5b1838@loongson.cn>
-Date: Mon, 17 Aug 2026 10:07:59 +0800
+	s=arc-20240116; t=1786970474; c=relaxed/simple;
+	bh=7X4st2dfy1l8lT+fjQAQC0tAfIF/QQdIXAwtTks4e/k=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CPMPSitB42OLM42uVW9v+5+VmQ5NPqZq1EEsNyStM6KWBwkAQYdDbQZsTitUEIY1v/GA2MCB6slUzAyZrEJqkm3D+R5w0Ix9Fpg7mA4+Qel3w8dDRzzg5AVS9QSZvsOeX5O9f1rZoAa48mijIR9W7xQcx5D+08rrgIJN2gzL74A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aoCANBg2; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aoCANBg2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1786970471; x=1818506471;
+  h=from:to:subject:in-reply-to:references:date:message-id:
+   mime-version;
+  bh=7X4st2dfy1l8lT+fjQAQC0tAfIF/QQdIXAwtTks4e/k=;
+  b=aoCANBg23f6hM++EUWX5525byy5v5c6zWGrwg/KiAVFSp/WghxX3Ar3m
+   /6zwcHjA/VxbxfPx6xfEoGl3eis8ImmuA7sz7utu+t6IpCOXy8InG0CSM
+   T0yqDPiqXnCnC9nLrr0cBEA/RTaiVY3IaPbr+FUpghBU+ZYyUvP+RgkQV
+   4f/ei+2e4YH7ftlpbzZyPf5UyU7PYOiwv8OmQB8sWtKxDOw8auU2eWZi5
+   6k9ow65XPdSkFxNrWZWEGerJkJjZC1VxXb2x3V2wRpN9VzK6hqYS+uzoz
+   UpG0wwIKwRWP9tDRzfv1i+flskA5/w0Pm/gjeLH8rxGStuKtc/dZnLe9f
+   Q==;
+X-CSE-ConnectionGUID: nqskxE+2STilEaTWKs8ZOw==
+X-CSE-MsgGUID: v6Fq7FuYQFqJWjjSJzZMMg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11877"; a="98598084"
+X-IronPort-AV: E=Sophos;i="6.25,228,1779174000"; 
+   d="scan'208";a="98598084"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 05:41:10 -0700
+X-CSE-ConnectionGUID: kO9/n7EERguTo2l7wfOCtw==
+X-CSE-MsgGUID: 7ox5dl61Tw6To4e/rrOiGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,228,1779174000"; 
+   d="scan'208";a="266887598"
+Received: from abityuts-desk1.ger.corp.intel.com (HELO localhost) ([10.245.245.110])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 05:41:05 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, freedreno@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, nouveau@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-samsung-soc@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, intel-gfx@lists.freedesktop.org,
+ linux-aspeed@lists.ozlabs.org, linux-rockchip@lists.infradead.org,
+ linux-tegra@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-mips@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ spice-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+ imx@lists.linux.dev
+Subject: Re: [PATCH 0/5] drm/vblank: Enforce all-or-nothing vblank support
+In-Reply-To: <20260814203542.1405135-1-lyude@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
+ 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
+References: <20260814203542.1405135-1-lyude@redhat.com>
+Date: Mon, 17 Aug 2026 15:41:02 +0300
+Message-ID: <5f06e91a5ff0e5bb887b72e4ff9077c45cd9216e@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dmaengine: loongson1-apb-dma: avoid using iterator
- variable after list_for_each_entry()
-To: Frank Li <Frank.li@oss.nxp.com>,
- Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
-Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
- Frank Li <Frank.Li@kernel.org>, linux-mips@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260720142538.2766-1-mahad.ibrahim.dev@gmail.com>
- <20260729143247.6111-1-mahad.ibrahim.dev@gmail.com>
- <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
-From: Binbin Zhou <zhoubinbin@loongson.cn>
-In-Reply-To: <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:qMiowJAx2c3_bIJqU28HAA--.48469S2
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/1tbiAgECCGqBKnQHswAAsI
-X-Coremail-Antispam: 1Uk129KBj93XoWxGrW5XrWkZw1DGr1UWw48AFc_yoWrGrWkpF
-	WfG3ZFka1kJF4av3ZFgw1FyFs0yFZ7Gry7urZIgw1xuryqyryqvw17Ga4rWF9rAa93X3WS
-	qay0ga43CF4UAacCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
-	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	kF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-	MxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-	0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
-	JVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcTKZDUUUU
+Content-Type: text/plain
 
-Hi Frank:
+On Fri, 14 Aug 2026, Lyude Paul <lyude@redhat.com> wrote:
+> One of the oddities with DRM that is leftover from the old days is how
+> vblank support is implemented by drivers. This has caused some minor
+> issues for the rust bindings for KMS which could be worked around.
+> However, it seems like a much better idea to fix this on the C side.
+> Those oddities are mainly:
+>
+> * There's nothing in the vblank core that actually ensures that all
+>   CRTCs implement vblank support if one of them do. On Rust's side, we
+>   can't have this and have to ensure either the whole device has vblank
+>   support or not - otherwise it would be quite painful ensuring we don't
+>   expose vblank methods to drivers that can't use them.
+>   This additionally means such a situation would lead to UB.
+> * There is a second variable for keeping track of the number of CRTCs
+>   and it's kind of broken and confusing. Even worse, we currently allow
+>   the vblank API to allow a driver to specify a different number of
+>   CRTCs then it actually has.
+>
+> So, let's just go ahead and fix this across the whole tree, and enforce
+> that a driver must either implement hardware vblank support for all
+> CRTCs or no CRTCs.
 
-Sorry for the late reply.
+For i915, the relevant init order is currently:
 
-On 2026/8/15 03:33, Frank Li wrote:
-> On Wed, Jul 29, 2026 at 02:32:47PM +0000, Mahad Ibrahim wrote:
->> ls1x_dma_tx_status() locates the descriptor actively being processed by
->> walking the LLI list and comparing the hardware reported next descriptor
->> pointer against each element's next-descriptor pointer.
->>
->> A list_for_each_entry macro is used in the comparison phase. Which at
->> the end of the loop leaves the lli pointer at the currently executing LLI.
->> However this also subsequently runs for a non-match lli, in which it
->> points at the head. This causes a type confusion bug which treats the
->> head, which is a ls1x_dma_desc, as a ls1x_dma_lli object. Additionally it
->> goes forwards and prints garbage via the dev_dbg.
->>
->> Fix the type confusion bug by only allowing matched LLI descriptor chains
->> to print the current LLI and residue calculation, as failing to match
->> should be treated as an unexpected condition.
->>
->> Found by the following Coccinelle check:
->>
->>    scripts/coccinelle/iterators/use_after_iter.cocci
->>
->>    drivers/dma/loongson/loongson1-apb-dma.c:461:6-9: ERROR: invalid
->>    reference to the index variable of the iterator on line 450
->>
->> I did not see a bug upstream detailing this error, nor do I have the
->> hardware to confirm this bug or error, all this is from a pure code
->> examination.
->>
->> As I do not possess the hardware, I cannot test the patch. Compile tested
->> only with mips64-linux-gnu-gcc.
-> 
-> Avoid post new patch on old email thread.
-> 
-> Just simple said
-> 
-> Compile test only.
-> 
->>
->> Signed-off-by: Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
->> ---
->>
->> v2:
->> - encapsulate residue calculation and dev_dbg inside the
->>    list_for_each_entry() macro. Treat non-matching LLI as an unexpected
->>    case.
->>
->>
->>   drivers/dma/loongson/loongson1-apb-dma.c | 27 ++++++++++++++----------
->>   1 file changed, 16 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/dma/loongson/loongson1-apb-dma.c b/drivers/dma/loongson/loongson1-apb-dma.c
->> index 89786cbd20ab..8658d5377795 100644
->> --- a/drivers/dma/loongson/loongson1-apb-dma.c
->> +++ b/drivers/dma/loongson/loongson1-apb-dma.c
->> @@ -446,22 +446,27 @@ static enum dma_status ls1x_dma_tx_status(struct dma_chan *dchan,
->>
->>   			/* locate the current lli */
->>   			next_phys = chan->curr_lli->hw[LS1X_DMADESC_NEXT];
->> -			list_for_each_entry(lli, &desc->lli_list, node)
->> -				if (lli->hw[LS1X_DMADESC_NEXT] == next_phys)
->> -					break;
->> +			list_for_each_entry(lli, &desc->lli_list, node) {
->> +				if (lli->hw[LS1X_DMADESC_NEXT] != next_phys)
->> +					continue;
->>
->> -			dev_dbg(chan2dev(dchan), "current lli_phys=%pad",
->> -				&lli->phys);
->> +				dev_dbg(chan2dev(dchan), "current lli_phys=%pad\n",
->> +					&lli->phys);
->>
->> -			/* count the residues */
->> -			list_for_each_entry_from(lli, &desc->lli_list, node)
->> -				bytes += lli->hw[LS1X_DMADESC_LENGTH] *
->> -					 chan->bus_width;
->> +				/* count the residues */
->> +				list_for_each_entry_from(lli, &desc->lli_list, node)
->> +					bytes += lli->hw[LS1X_DMADESC_LENGTH] *
->> +						 chan->bus_width;
->> +
->> +				dma_set_residue(state, bytes);
->> +				return status;
->> +			}
->> +
->> +			dev_warn(chan2dev(dchan),
->> +				 "unable to locate current lli.\n");
-> 
-> most likely logic is correct, it is not obvious, hope some one who have
-> hardware help test it.
-> 
-> Binbin Zhou just add add this driver recently, he should have hardware to
-> test it.
+- drm_vblank_init()
+- drm_mode_config_init()
+- drm_crtc_init_with_planes() for each CRTC
 
-Emm, sorry, I don't have any test equipment available right now. As far 
-as I know, Keguang is the maintainer of this driver, and he has the 
-necessary test equipment.
-> 
-> Frank
->>   		}
->>   	}
->>
->> -	dma_set_residue(state, bytes);
->> -
->>   	return status;
->>   }
->>
->> --
->> 2.54.0
->>
+For the patch series to work, drm_vblank_init() would have to happen
+after mode config and CRTC init. Off-hand, I couldn't say if there are
+dependencies that make this change difficult.
+
+I'd be surprised if i915 were the only driver like this.
+
+
+BR,
+Jani.
+
+>
+> Lyude Paul (5):
+>   drm/vblank: Add drm_device.has_hw_vblank
+>   drm/vblank: Remove drm->num_crtcs
+>   drm/vblank: Remove num_crtcs argument from drm_vblank_init()
+>   drm/vblank: Use drm_for_each_crtc() in drm_vblank_init()
+>   drm/vblank: Require all CRTCs implement vblank support in
+>     drm_vblank_init()
+>
+>  drivers/gpu/drm/adp/adp_drv.c                 |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c      |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  2 +-
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  2 +-
+>  .../gpu/drm/arm/display/komeda/komeda_kms.c   |  2 +-
+>  drivers/gpu/drm/arm/hdlcd_drv.c               |  2 +-
+>  drivers/gpu/drm/arm/malidp_drv.c              |  2 +-
+>  drivers/gpu/drm/armada/armada_drv.c           |  2 +-
+>  drivers/gpu/drm/aspeed/aspeed_gfx_drv.c       |  2 +-
+>  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  |  2 +-
+>  drivers/gpu/drm/drm_vblank.c                  | 60 ++++++++++++-------
+>  drivers/gpu/drm/exynos/exynos_drm_drv.c       |  2 +-
+>  drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c     |  2 +-
+>  drivers/gpu/drm/gma500/psb_drv.c              |  2 +-
+>  drivers/gpu/drm/gma500/psb_irq.c              |  4 +-
+>  .../gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c   |  2 +-
+>  .../gpu/drm/hisilicon/kirin/kirin_drm_drv.c   |  2 +-
+>  drivers/gpu/drm/hyperv/hyperv_drm_modeset.c   |  2 +-
+>  .../drm/i915/display/intel_display_driver.c   |  3 +-
+>  drivers/gpu/drm/imx/dc/dc-kms.c               |  2 +-
+>  drivers/gpu/drm/imx/dcss/dcss-kms.c           |  2 +-
+>  drivers/gpu/drm/imx/ipuv3/imx-drm-core.c      |  2 +-
+>  drivers/gpu/drm/imx/lcdc/imx-lcdc.c           |  2 +-
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  2 +-
+>  drivers/gpu/drm/kmb/kmb_drv.c                 |  2 +-
+>  drivers/gpu/drm/logicvc/logicvc_mode.c        |  2 +-
+>  drivers/gpu/drm/loongson/lsdc_drv.c           |  2 +-
+>  drivers/gpu/drm/mcde/mcde_drv.c               |  2 +-
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  2 +-
+>  drivers/gpu/drm/meson/meson_drv.c             |  2 +-
+>  drivers/gpu/drm/msm/msm_kms.c                 |  2 +-
+>  drivers/gpu/drm/mxsfb/lcdif_drv.c             |  2 +-
+>  drivers/gpu/drm/mxsfb/mxsfb_drv.c             |  2 +-
+>  drivers/gpu/drm/nouveau/nouveau_display.c     |  2 +-
+>  drivers/gpu/drm/omapdrm/omap_drv.c            |  2 +-
+>  drivers/gpu/drm/pl111/pl111_drv.c             |  2 +-
+>  drivers/gpu/drm/qxl/qxl_display.c             |  2 +-
+>  drivers/gpu/drm/radeon/atombios_crtc.c        |  4 +-
+>  drivers/gpu/drm/radeon/radeon_irq_kms.c       |  2 +-
+>  drivers/gpu/drm/radeon/radeon_legacy_crtc.c   |  4 +-
+>  drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c |  2 +-
+>  drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.c  |  2 +-
+>  .../gpu/drm/renesas/shmobile/shmob_drm_drv.c  |  2 +-
+>  drivers/gpu/drm/rockchip/rockchip_drm_drv.c   |  2 +-
+>  drivers/gpu/drm/sprd/sprd_drm.c               |  2 +-
+>  drivers/gpu/drm/sti/sti_compositor.c          |  2 +-
+>  drivers/gpu/drm/stm/ltdc.c                    |  2 +-
+>  drivers/gpu/drm/sun4i/sun4i_drv.c             |  2 +-
+>  drivers/gpu/drm/tegra/drm.c                   |  2 +-
+>  drivers/gpu/drm/tidss/tidss_kms.c             |  2 +-
+>  drivers/gpu/drm/tilcdc/tilcdc_drv.c           |  2 +-
+>  drivers/gpu/drm/tiny/bochs.c                  |  2 +-
+>  drivers/gpu/drm/tiny/cirrus-qemu.c            |  2 +-
+>  drivers/gpu/drm/tve200/tve200_drv.c           |  2 +-
+>  drivers/gpu/drm/vc4/vc4_kms.c                 |  6 +-
+>  drivers/gpu/drm/verisilicon/vs_drm.c          |  2 +-
+>  drivers/gpu/drm/virtio/virtgpu_display.c      |  2 +-
+>  drivers/gpu/drm/vkms/vkms_drv.c               |  3 +-
+>  drivers/gpu/drm/vmwgfx/vmwgfx_vkms.c          |  2 +-
+>  drivers/gpu/drm/xlnx/zynqmp_kms.c             |  2 +-
+>  include/drm/drm_device.h                      | 10 +++-
+>  include/drm/drm_vblank.h                      |  2 +-
+>  64 files changed, 114 insertions(+), 92 deletions(-)
+>
+>
+> base-commit: 568d4cb5dcc5ec4e22975699b6ea67a30806884c
 
 -- 
-Thanks.
-Binbin
-
+Jani Nikula, Intel

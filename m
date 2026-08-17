@@ -1,192 +1,349 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE8D41D116;
-	Mon, 17 Aug 2026 12:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E1E4B0497;
+	Mon, 17 Aug 2026 19:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786970474; cv=none; b=WZ2Jpvwfk2vVyqnMwGwiLUrRXHVTA+t5rGUbzOrHQMtJx+WTRR+8npkfFS7eCK8Jw0T27wbg3S6RGy1EWgtTqWgCLuW0fVQJsX6lquikrO3cK7Md6jXZZ+pU7ASH4/Od0C480RxDggAVvvFlL8dAJGljrBF4Wadr7JbCFaxlQhI=
+	t=1786995805; cv=none; b=adX+TMjweeHUnsijIA+j5GM22CoU+gbgXPt0FrAeLjQTtIia0OKMbpuku7KaCsRM90K+qsr4SmqG6K2rw2q7CCXe7DTZFVuF0hwMc393MTB4rLo15yq4iFXMec0LlpyDt3zlJOTmciTH0/DiCTuvY9CGWxWaLUi3peG7sxU460k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786970474; c=relaxed/simple;
-	bh=7X4st2dfy1l8lT+fjQAQC0tAfIF/QQdIXAwtTks4e/k=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CPMPSitB42OLM42uVW9v+5+VmQ5NPqZq1EEsNyStM6KWBwkAQYdDbQZsTitUEIY1v/GA2MCB6slUzAyZrEJqkm3D+R5w0Ix9Fpg7mA4+Qel3w8dDRzzg5AVS9QSZvsOeX5O9f1rZoAa48mijIR9W7xQcx5D+08rrgIJN2gzL74A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aoCANBg2; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1786995805; c=relaxed/simple;
+	bh=8yOLTxAZNOfjlvztMUi5qSF0f0yvutaxJC6s8NwRKUk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jQ4LU+6nHFbVpp8dNedLKgD02/uh2lxcr8z2HIxFh2FEU0BjA2UUI1bpWXxsBG0ef8zVlJfUS5cChTA/oYyfcqx9ptF2NuszCS77+WPT46sXItQT2b2qnTWd91CahTFX0BMO06D9LwcPsm1zDWDpThLjp9+wHC78+cs5jLuEa34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=dxv5IIwB; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aoCANBg2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1786970471; x=1818506471;
-  h=from:to:subject:in-reply-to:references:date:message-id:
-   mime-version;
-  bh=7X4st2dfy1l8lT+fjQAQC0tAfIF/QQdIXAwtTks4e/k=;
-  b=aoCANBg23f6hM++EUWX5525byy5v5c6zWGrwg/KiAVFSp/WghxX3Ar3m
-   /6zwcHjA/VxbxfPx6xfEoGl3eis8ImmuA7sz7utu+t6IpCOXy8InG0CSM
-   T0yqDPiqXnCnC9nLrr0cBEA/RTaiVY3IaPbr+FUpghBU+ZYyUvP+RgkQV
-   4f/ei+2e4YH7ftlpbzZyPf5UyU7PYOiwv8OmQB8sWtKxDOw8auU2eWZi5
-   6k9ow65XPdSkFxNrWZWEGerJkJjZC1VxXb2x3V2wRpN9VzK6hqYS+uzoz
-   UpG0wwIKwRWP9tDRzfv1i+flskA5/w0Pm/gjeLH8rxGStuKtc/dZnLe9f
-   Q==;
-X-CSE-ConnectionGUID: nqskxE+2STilEaTWKs8ZOw==
-X-CSE-MsgGUID: v6Fq7FuYQFqJWjjSJzZMMg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11877"; a="98598084"
-X-IronPort-AV: E=Sophos;i="6.25,228,1779174000"; 
-   d="scan'208";a="98598084"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 05:41:10 -0700
-X-CSE-ConnectionGUID: kO9/n7EERguTo2l7wfOCtw==
-X-CSE-MsgGUID: 7ox5dl61Tw6To4e/rrOiGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,228,1779174000"; 
-   d="scan'208";a="266887598"
-Received: from abityuts-desk1.ger.corp.intel.com (HELO localhost) ([10.245.245.110])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 05:41:05 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, freedreno@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, nouveau@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-samsung-soc@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-mediatek@lists.infradead.org, intel-gfx@lists.freedesktop.org,
- linux-aspeed@lists.ozlabs.org, linux-rockchip@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-mips@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- spice-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
- imx@lists.linux.dev
-Subject: Re: [PATCH 0/5] drm/vblank: Enforce all-or-nothing vblank support
-In-Reply-To: <20260814203542.1405135-1-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
- 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
-References: <20260814203542.1405135-1-lyude@redhat.com>
-Date: Mon, 17 Aug 2026 15:41:02 +0300
-Message-ID: <5f06e91a5ff0e5bb887b72e4ff9077c45cd9216e@intel.com>
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="dxv5IIwB"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AF06935AC67;
+	Mon, 17 Aug 2026 21:43:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1786995794; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=sb/G9ZpQ2osGEU3AqJOVllPPVUr9sR2qUoGXPiB+89A=;
+	b=dxv5IIwB09ds77fMaKTVkZTiWfveIjr3w8GDf9vrosOrBQGChW642liK/CQE6riMO7g5bD
+	lFNJlnePMwYQK9FwMViIuN5QCP59VZVz+4XwpE/DXR/zAuSnPXIVpOO1ICTYkTGSBbup3e
+	8HRsgZpHu4q2kVxJ+701lbFfNdZAMJSjlMjHA7czpjx3OStyrkAm8ii/MrWI50zW7W73sB
+	RAfIpe0+KABfrPWPpL5WJHqjROKBRtIVsWS6kHkIf9UZp2UlYVOhVg5FLYWUzzxyipCRS2
+	FRz0o9ujMg2xxAQbVNNyOaPywFVOmxVKWWnJgyPhjkgeRY8GiOcKoHMo+Sc4DQ==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: tsbogend@alpha.franken.de,
+	linux-kernel@vger.kernel.org,
+	rdunlap@infradead.org,
+	jonas.gorski@gmail.com,
+	julianbraha@gmail.com,
+	Caleb James DeLisle <cjd@cjdns.fr>
+Subject: [PATCH] MIPS: config: Add EcoNet EN751221 defconfig
+Date: Mon, 17 Aug 2026 19:43:08 +0000
+Message-Id: <20260817194308.2847096-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Fri, 14 Aug 2026, Lyude Paul <lyude@redhat.com> wrote:
-> One of the oddities with DRM that is leftover from the old days is how
-> vblank support is implemented by drivers. This has caused some minor
-> issues for the rust bindings for KMS which could be worked around.
-> However, it seems like a much better idea to fix this on the C side.
-> Those oddities are mainly:
->
-> * There's nothing in the vblank core that actually ensures that all
->   CRTCs implement vblank support if one of them do. On Rust's side, we
->   can't have this and have to ensure either the whole device has vblank
->   support or not - otherwise it would be quite painful ensuring we don't
->   expose vblank methods to drivers that can't use them.
->   This additionally means such a situation would lead to UB.
-> * There is a second variable for keeping track of the number of CRTCs
->   and it's kind of broken and confusing. Even worse, we currently allow
->   the vblank API to allow a driver to specify a different number of
->   CRTCs then it actually has.
->
-> So, let's just go ahead and fix this across the whole tree, and enforce
-> that a driver must either implement hardware vblank support for all
-> CRTCs or no CRTCs.
+Add config based on OpenWrt for EN751221 boards.
+Of note: EcoNet bootloader has a 7.2MB kernel size limit so
+ZBOOT is assumed to be needed in all cases.
 
-For i915, the relevant init order is currently:
+Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+---
+ MAINTAINERS                                 |   1 +
+ arch/mips/configs/econet_en751221_defconfig | 267 ++++++++++++++++++++
+ 2 files changed, 268 insertions(+)
+ create mode 100644 arch/mips/configs/econet_en751221_defconfig
 
-- drm_vblank_init()
-- drm_mode_config_init()
-- drm_crtc_init_with_planes() for each CRTC
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 806bd2d80d15..9e2a6dc48f62 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9245,6 +9245,7 @@ F:	Documentation/devicetree/bindings/interrupt-controller/econet,en751221-intc.y
+ F:	Documentation/devicetree/bindings/mips/econet.yaml
+ F:	Documentation/devicetree/bindings/timer/econet,en751221-timer.yaml
+ F:	arch/mips/boot/dts/econet/
++F:	arch/mips/configs/econet_en751221_defconfig
+ F:	arch/mips/econet/
+ F:	drivers/clocksource/timer-econet-en751221.c
+ F:	drivers/irqchip/irq-econet-en751221.c
+diff --git a/arch/mips/configs/econet_en751221_defconfig b/arch/mips/configs/econet_en751221_defconfig
+new file mode 100644
+index 000000000000..5af597759f68
+--- /dev/null
++++ b/arch/mips/configs/econet_en751221_defconfig
+@@ -0,0 +1,267 @@
++# CONFIG_LOCALVERSION_AUTO is not set
++CONFIG_KERNEL_XZ=y
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++# CONFIG_CROSS_MEMORY_ATTACH is not set
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_BPF_JIT=y
++CONFIG_PREEMPT=y
++CONFIG_CGROUPS=y
++CONFIG_MEMCG=y
++CONFIG_BLK_CGROUP=y
++CONFIG_CGROUP_SCHED=y
++CONFIG_CFS_BANDWIDTH=y
++CONFIG_RT_GROUP_SCHED=y
++CONFIG_CGROUP_PIDS=y
++CONFIG_CGROUP_RDMA=y
++CONFIG_CPUSETS=y
++CONFIG_CGROUP_CPUACCT=y
++CONFIG_CGROUP_BPF=y
++CONFIG_NAMESPACES=y
++# CONFIG_TIME_NS is not set
++CONFIG_USER_NS=y
++CONFIG_BLK_DEV_INITRD=y
++# CONFIG_RD_GZIP is not set
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++# CONFIG_RD_ZSTD is not set
++# CONFIG_INITRAMFS_PRESERVE_MTIME is not set
++CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
++CONFIG_EXPERT=y
++# CONFIG_SGETMASK_SYSCALL is not set
++# CONFIG_IO_URING is not set
++# CONFIG_RSEQ is not set
++# CONFIG_CACHESTAT_SYSCALL is not set
++CONFIG_ECONET=y
++CONFIG_CPU_MIPS32_R2=y
++CONFIG_ZBOOT_LOAD_ADDRESS=0x80020000
++CONFIG_ARCH_FORCE_MAX_ORDER=11
++# CONFIG_MIPS_FP_SUPPORT is not set
++CONFIG_NR_CPUS=2
++CONFIG_HZ_100=y
++CONFIG_MIPS_RAW_APPENDED_DTB=y
++# CONFIG_SCHED_SMT is not set
++CONFIG_JUMP_LABEL=y
++# CONFIG_STACKPROTECTOR_STRONG is not set
++# CONFIG_GCC_PLUGINS is not set
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++# CONFIG_BLOCK_LEGACY_AUTOLOAD is not set
++CONFIG_BLK_DEV_THROTTLING=y
++# CONFIG_BLK_DEBUG_FS is not set
++CONFIG_PARTITION_ADVANCED=y
++CONFIG_OF_PARTITION=y
++# CONFIG_MQ_IOSCHED_DEADLINE is not set
++# CONFIG_MQ_IOSCHED_KYBER is not set
++# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
++CONFIG_SLAB_FREELIST_RANDOM=y
++CONFIG_SLAB_FREELIST_HARDENED=y
++# CONFIG_COMPAT_BRK is not set
++CONFIG_LRU_GEN=y
++CONFIG_LRU_GEN_ENABLED=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_IP_MULTIPLE_TABLES=y
++CONFIG_IP_ROUTE_MULTIPATH=y
++CONFIG_IP_ROUTE_VERBOSE=y
++CONFIG_IP_MROUTE=y
++CONFIG_IP_MROUTE_MULTIPLE_TABLES=y
++CONFIG_IP_PIMSM_V1=y
++CONFIG_IP_PIMSM_V2=y
++CONFIG_SYN_COOKIES=y
++# CONFIG_INET_DIAG is not set
++CONFIG_TCP_CONG_ADVANCED=y
++# CONFIG_TCP_CONG_BIC is not set
++# CONFIG_TCP_CONG_WESTWOOD is not set
++# CONFIG_TCP_CONG_HTCP is not set
++# CONFIG_IPV6_SIT is not set
++CONFIG_IPV6_SUBTREES=y
++CONFIG_IPV6_MROUTE=y
++CONFIG_IPV6_MROUTE_MULTIPLE_TABLES=y
++CONFIG_IPV6_PIMSM_V2=y
++CONFIG_IPV6_SEG6_LWTUNNEL=y
++CONFIG_MPTCP=y
++CONFIG_NETFILTER=y
++# CONFIG_NETFILTER_EGRESS is not set
++CONFIG_NF_CONNTRACK=m
++CONFIG_NF_CONNTRACK_MARK=y
++CONFIG_NF_CONNTRACK_ZONES=y
++CONFIG_NF_CONNTRACK_PROCFS=y
++CONFIG_NF_CONNTRACK_TIMEOUT=y
++# CONFIG_NF_CT_PROTO_SCTP is not set
++CONFIG_NF_TABLES=m
++CONFIG_NF_TABLES_INET=y
++CONFIG_NF_TABLES_NETDEV=y
++CONFIG_NFT_NUMGEN=m
++CONFIG_NFT_CT=m
++CONFIG_NFT_FLOW_OFFLOAD=m
++CONFIG_NFT_LOG=m
++CONFIG_NFT_LIMIT=m
++CONFIG_NFT_MASQ=m
++CONFIG_NFT_REDIR=m
++CONFIG_NFT_NAT=m
++CONFIG_NFT_QUOTA=m
++CONFIG_NFT_REJECT=m
++CONFIG_NFT_HASH=m
++CONFIG_NFT_FIB_INET=m
++CONFIG_NF_FLOW_TABLE_INET=m
++CONFIG_NF_FLOW_TABLE=m
++CONFIG_NFT_FIB_IPV4=m
++CONFIG_NF_TABLES_ARP=y
++CONFIG_NF_LOG_IPV4=m
++CONFIG_NFT_FIB_IPV6=m
++CONFIG_NF_LOG_IPV6=m
++CONFIG_NF_TABLES_BRIDGE=m
++CONFIG_BRIDGE=y
++CONFIG_BRIDGE_VLAN_FILTERING=y
++CONFIG_VLAN_8021Q=y
++CONFIG_NET_SCHED=y
++CONFIG_NET_SCH_FQ_CODEL=y
++CONFIG_NET_SCH_DEFAULT=y
++CONFIG_DEFAULT_FQ_CODEL=y
++CONFIG_NET_SWITCHDEV=y
++CONFIG_NET_L3_MASTER_DEV=y
++CONFIG_RFKILL=y
++# CONFIG_LWTUNNEL_BPF is not set
++CONFIG_PCI=y
++CONFIG_PCIEPORTBUS=y
++CONFIG_PCIEAER=y
++# CONFIG_PCIEASPM is not set
++CONFIG_PCI_MSI=y
++# CONFIG_VGA_ARB is not set
++CONFIG_PCIE_MEDIATEK=y
++CONFIG_MTD=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_CFI=y
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_COMPLEX_MAPPINGS=y
++CONFIG_MTD_SPI_NAND=y
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_BEB_LIMIT=13
++CONFIG_MTD_UBI_BLOCK=y
++CONFIG_NETDEVICES=y
++# CONFIG_NET_VENDOR_ASIX is not set
++# CONFIG_NET_VENDOR_ENGLEDER is not set
++# CONFIG_NET_VENDOR_FUNGIBLE is not set
++# CONFIG_NET_VENDOR_LITEX is not set
++# CONFIG_NET_VENDOR_MICROSOFT is not set
++# CONFIG_NET_VENDOR_VERTEXCOM is not set
++# CONFIG_NET_VENDOR_WANGXUN is not set
++CONFIG_PPP=m
++CONFIG_PPP_FILTER=y
++CONFIG_PPP_MULTILINK=y
++CONFIG_PPPOE=m
++CONFIG_PPP_ASYNC=m
++# CONFIG_WLAN_VENDOR_ADMTEK is not set
++# CONFIG_WLAN_VENDOR_ATH is not set
++# CONFIG_WLAN_VENDOR_ATMEL is not set
++# CONFIG_WLAN_VENDOR_BROADCOM is not set
++# CONFIG_WLAN_VENDOR_INTEL is not set
++# CONFIG_WLAN_VENDOR_INTERSIL is not set
++# CONFIG_WLAN_VENDOR_MARVELL is not set
++# CONFIG_WLAN_VENDOR_MEDIATEK is not set
++# CONFIG_WLAN_VENDOR_MICROCHIP is not set
++# CONFIG_WLAN_VENDOR_PURELIFI is not set
++# CONFIG_WLAN_VENDOR_RALINK is not set
++# CONFIG_WLAN_VENDOR_REALTEK is not set
++# CONFIG_WLAN_VENDOR_RSI is not set
++# CONFIG_WLAN_VENDOR_SILABS is not set
++# CONFIG_WLAN_VENDOR_ST is not set
++# CONFIG_WLAN_VENDOR_TI is not set
++# CONFIG_WLAN_VENDOR_ZYDAS is not set
++# CONFIG_WLAN_VENDOR_QUANTENNA is not set
++# CONFIG_INPUT is not set
++# CONFIG_SERIO is not set
++# CONFIG_VT is not set
++# CONFIG_LEGACY_PTYS is not set
++# CONFIG_LEGACY_TIOCSTI is not set
++CONFIG_SERIAL_8250_CONSOLE=y
++# CONFIG_SERIAL_8250_PCI is not set
++# CONFIG_SERIAL_8250_EXAR is not set
++CONFIG_SERIAL_8250_NR_UARTS=2
++CONFIG_SERIAL_8250_RUNTIME_UARTS=2
++# CONFIG_SERIAL_8250_PERICOM is not set
++# CONFIG_HW_RANDOM is not set
++# CONFIG_DEVMEM is not set
++CONFIG_SPI=y
++# CONFIG_PTP_1588_CLOCK is not set
++CONFIG_GPIOLIB=y
++# CONFIG_HWMON is not set
++CONFIG_WATCHDOG=y
++CONFIG_MFD_SYSCON=y
++# CONFIG_USB_PCI is not set
++CONFIG_NEW_LEDS=y
++CONFIG_LEDS_CLASS=y
++CONFIG_LEDS_CLASS_MULTICOLOR=y
++CONFIG_LEDS_GPIO=m
++CONFIG_LEDS_TRIGGERS=y
++CONFIG_LEDS_TRIGGER_TIMER=y
++CONFIG_LEDS_TRIGGER_HEARTBEAT=y
++CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
++CONFIG_LEDS_TRIGGER_NETDEV=y
++CONFIG_STAGING=y
++# CONFIG_MIPS_PLATFORM_DEVICES is not set
++CONFIG_COMMON_CLK_EN7523=y
++# CONFIG_IOMMU_SUPPORT is not set
++CONFIG_RESET_CONTROLLER=y
++CONFIG_PHY_ECONET_PCIE=y
++# CONFIG_DNOTIFY is not set
++CONFIG_FANOTIFY=y
++CONFIG_OVERLAY_FS=y
++# CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW is not set
++# CONFIG_PROC_PAGE_MONITOR is not set
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_SUMMARY=y
++CONFIG_JFFS2_FS_XATTR=y
++CONFIG_JFFS2_COMPRESSION_OPTIONS=y
++CONFIG_UBIFS_FS=y
++CONFIG_SQUASHFS=y
++CONFIG_SQUASHFS_FILE_DIRECT=y
++CONFIG_SQUASHFS_COMPILE_DECOMP_MULTI_PERCPU=y
++# CONFIG_SQUASHFS_ZLIB is not set
++CONFIG_SQUASHFS_XZ=y
++CONFIG_SQUASHFS_EMBEDDED=y
++CONFIG_KEYS=y
++CONFIG_INIT_STACK_NONE=y
++CONFIG_FORTIFY_SOURCE=y
++CONFIG_HARDENED_USERCOPY=y
++CONFIG_LIST_HARDENED=y
++CONFIG_CRYPTO_NULL=y
++CONFIG_CRYPTO_AES=y
++CONFIG_CRYPTO_CCM=y
++CONFIG_CRYPTO_GCM=y
++# CONFIG_CRYPTO_HW is not set
++# CONFIG_XZ_DEC_X86 is not set
++# CONFIG_XZ_DEC_POWERPC is not set
++# CONFIG_XZ_DEC_ARM is not set
++# CONFIG_XZ_DEC_ARMTHUMB is not set
++# CONFIG_XZ_DEC_ARM64 is not set
++# CONFIG_XZ_DEC_SPARC is not set
++# CONFIG_XZ_DEC_RISCV is not set
++CONFIG_PRINTK_TIME=y
++# CONFIG_DEBUG_MISC is not set
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_DEBUG_INFO_REDUCED=y
++CONFIG_FRAME_WARN=1024
++CONFIG_STRIP_ASM_SYMS=y
++CONFIG_MAGIC_SYSRQ=y
++# CONFIG_MAGIC_SYSRQ_SERIAL is not set
++CONFIG_DEBUG_FS=y
++# CONFIG_SLUB_DEBUG is not set
++CONFIG_SCHED_STACK_END_CHECK=y
++CONFIG_PANIC_ON_OOPS=y
++CONFIG_PANIC_TIMEOUT=1
++CONFIG_RCU_CPU_STALL_TIMEOUT=60
++# CONFIG_RCU_TRACE is not set
++# CONFIG_FTRACE is not set
 
-For the patch series to work, drm_vblank_init() would have to happen
-after mode config and CRTC init. Off-hand, I couldn't say if there are
-dependencies that make this change difficult.
-
-I'd be surprised if i915 were the only driver like this.
-
-
-BR,
-Jani.
-
->
-> Lyude Paul (5):
->   drm/vblank: Add drm_device.has_hw_vblank
->   drm/vblank: Remove drm->num_crtcs
->   drm/vblank: Remove num_crtcs argument from drm_vblank_init()
->   drm/vblank: Use drm_for_each_crtc() in drm_vblank_init()
->   drm/vblank: Require all CRTCs implement vblank support in
->     drm_vblank_init()
->
->  drivers/gpu/drm/adp/adp_drv.c                 |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c      |  2 +-
->  drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  2 +-
->  drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  2 +-
->  drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  2 +-
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  2 +-
->  .../gpu/drm/arm/display/komeda/komeda_kms.c   |  2 +-
->  drivers/gpu/drm/arm/hdlcd_drv.c               |  2 +-
->  drivers/gpu/drm/arm/malidp_drv.c              |  2 +-
->  drivers/gpu/drm/armada/armada_drv.c           |  2 +-
->  drivers/gpu/drm/aspeed/aspeed_gfx_drv.c       |  2 +-
->  drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  |  2 +-
->  drivers/gpu/drm/drm_vblank.c                  | 60 ++++++++++++-------
->  drivers/gpu/drm/exynos/exynos_drm_drv.c       |  2 +-
->  drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c     |  2 +-
->  drivers/gpu/drm/gma500/psb_drv.c              |  2 +-
->  drivers/gpu/drm/gma500/psb_irq.c              |  4 +-
->  .../gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c   |  2 +-
->  .../gpu/drm/hisilicon/kirin/kirin_drm_drv.c   |  2 +-
->  drivers/gpu/drm/hyperv/hyperv_drm_modeset.c   |  2 +-
->  .../drm/i915/display/intel_display_driver.c   |  3 +-
->  drivers/gpu/drm/imx/dc/dc-kms.c               |  2 +-
->  drivers/gpu/drm/imx/dcss/dcss-kms.c           |  2 +-
->  drivers/gpu/drm/imx/ipuv3/imx-drm-core.c      |  2 +-
->  drivers/gpu/drm/imx/lcdc/imx-lcdc.c           |  2 +-
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  2 +-
->  drivers/gpu/drm/kmb/kmb_drv.c                 |  2 +-
->  drivers/gpu/drm/logicvc/logicvc_mode.c        |  2 +-
->  drivers/gpu/drm/loongson/lsdc_drv.c           |  2 +-
->  drivers/gpu/drm/mcde/mcde_drv.c               |  2 +-
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  2 +-
->  drivers/gpu/drm/meson/meson_drv.c             |  2 +-
->  drivers/gpu/drm/msm/msm_kms.c                 |  2 +-
->  drivers/gpu/drm/mxsfb/lcdif_drv.c             |  2 +-
->  drivers/gpu/drm/mxsfb/mxsfb_drv.c             |  2 +-
->  drivers/gpu/drm/nouveau/nouveau_display.c     |  2 +-
->  drivers/gpu/drm/omapdrm/omap_drv.c            |  2 +-
->  drivers/gpu/drm/pl111/pl111_drv.c             |  2 +-
->  drivers/gpu/drm/qxl/qxl_display.c             |  2 +-
->  drivers/gpu/drm/radeon/atombios_crtc.c        |  4 +-
->  drivers/gpu/drm/radeon/radeon_irq_kms.c       |  2 +-
->  drivers/gpu/drm/radeon/radeon_legacy_crtc.c   |  4 +-
->  drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c |  2 +-
->  drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.c  |  2 +-
->  .../gpu/drm/renesas/shmobile/shmob_drm_drv.c  |  2 +-
->  drivers/gpu/drm/rockchip/rockchip_drm_drv.c   |  2 +-
->  drivers/gpu/drm/sprd/sprd_drm.c               |  2 +-
->  drivers/gpu/drm/sti/sti_compositor.c          |  2 +-
->  drivers/gpu/drm/stm/ltdc.c                    |  2 +-
->  drivers/gpu/drm/sun4i/sun4i_drv.c             |  2 +-
->  drivers/gpu/drm/tegra/drm.c                   |  2 +-
->  drivers/gpu/drm/tidss/tidss_kms.c             |  2 +-
->  drivers/gpu/drm/tilcdc/tilcdc_drv.c           |  2 +-
->  drivers/gpu/drm/tiny/bochs.c                  |  2 +-
->  drivers/gpu/drm/tiny/cirrus-qemu.c            |  2 +-
->  drivers/gpu/drm/tve200/tve200_drv.c           |  2 +-
->  drivers/gpu/drm/vc4/vc4_kms.c                 |  6 +-
->  drivers/gpu/drm/verisilicon/vs_drm.c          |  2 +-
->  drivers/gpu/drm/virtio/virtgpu_display.c      |  2 +-
->  drivers/gpu/drm/vkms/vkms_drv.c               |  3 +-
->  drivers/gpu/drm/vmwgfx/vmwgfx_vkms.c          |  2 +-
->  drivers/gpu/drm/xlnx/zynqmp_kms.c             |  2 +-
->  include/drm/drm_device.h                      | 10 +++-
->  include/drm/drm_vblank.h                      |  2 +-
->  64 files changed, 114 insertions(+), 92 deletions(-)
->
->
-> base-commit: 568d4cb5dcc5ec4e22975699b6ea67a30806884c
-
+base-commit: 3b7711be02612845e44b5e9ef7c0b9f203cf29b6
+prerequisite-patch-id: 0f044e47a76450ebb4fe52dc60a6b2f79625bbff
 -- 
-Jani Nikula, Intel
+2.39.5
+

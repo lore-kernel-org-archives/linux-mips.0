@@ -1,30 +1,30 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E1E4B0497;
-	Mon, 17 Aug 2026 19:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D1B3B14B7;
+	Mon, 17 Aug 2026 22:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786995805; cv=none; b=adX+TMjweeHUnsijIA+j5GM22CoU+gbgXPt0FrAeLjQTtIia0OKMbpuku7KaCsRM90K+qsr4SmqG6K2rw2q7CCXe7DTZFVuF0hwMc393MTB4rLo15yq4iFXMec0LlpyDt3zlJOTmciTH0/DiCTuvY9CGWxWaLUi3peG7sxU460k=
+	t=1787004239; cv=none; b=ASv0CN86TlVxzm4xQlZK2GIH35w3mBIsYs1V6CXehuqmkeOoe4MrL7cSgrb2aLDZ2h7wF+znOhZ5gO/LuVkIGNrdFGc3L2MUqSpgmlZym8BOiJ7JEPBp0pbvmgZqGMyXEPqP7tyPW6xD4tZgV4US8bukg0YFtiChNqBx/xjAt4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786995805; c=relaxed/simple;
-	bh=8yOLTxAZNOfjlvztMUi5qSF0f0yvutaxJC6s8NwRKUk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jQ4LU+6nHFbVpp8dNedLKgD02/uh2lxcr8z2HIxFh2FEU0BjA2UUI1bpWXxsBG0ef8zVlJfUS5cChTA/oYyfcqx9ptF2NuszCS77+WPT46sXItQT2b2qnTWd91CahTFX0BMO06D9LwcPsm1zDWDpThLjp9+wHC78+cs5jLuEa34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=pass smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=dxv5IIwB; arc=none smtp.client-ip=5.135.140.105
+	s=arc-20240116; t=1787004239; c=relaxed/simple;
+	bh=+NoLPYfBQz43H9aS6QX9pSPnvO33IWDm0zdl1hU5WTg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OLohoGKbzI90AOqxR9B3UomxWiZhLZ0TUWCrMihANJ5pxTM1pqgIebmBjZMTVCw8T9SrveoB4ZuiGyVaVqLCE6BF2KRzz0FtT9SwkWH+g3UagzHylZvSOlU7tsY3BXDuj2pDK5/EBzkAr72Cm/xsbS7s0nZ0aSWSBNUjX1k4Y4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=uecAmOHS; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="dxv5IIwB"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AF06935AC67;
-	Mon, 17 Aug 2026 21:43:11 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="uecAmOHS"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BF5BE35BA36;
+	Tue, 18 Aug 2026 00:03:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1786995794; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=sb/G9ZpQ2osGEU3AqJOVllPPVUr9sR2qUoGXPiB+89A=;
-	b=dxv5IIwB09ds77fMaKTVkZTiWfveIjr3w8GDf9vrosOrBQGChW642liK/CQE6riMO7g5bD
-	lFNJlnePMwYQK9FwMViIuN5QCP59VZVz+4XwpE/DXR/zAuSnPXIVpOO1ICTYkTGSBbup3e
-	8HRsgZpHu4q2kVxJ+701lbFfNdZAMJSjlMjHA7czpjx3OStyrkAm8ii/MrWI50zW7W73sB
-	RAfIpe0+KABfrPWPpL5WJHqjROKBRtIVsWS6kHkIf9UZp2UlYVOhVg5FLYWUzzxyipCRS2
-	FRz0o9ujMg2xxAQbVNNyOaPywFVOmxVKWWnJgyPhjkgeRY8GiOcKoHMo+Sc4DQ==
+	t=1787004234; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=/njSXmgGbmOIF2M/QSn80Hr5FDl7PkL45oNpmawAUhI=;
+	b=uecAmOHS29rTqu25/OyAPct/CgGSeFZzIddpKJ+qITkfZ4ePsbpHIdN+uPFdkYOhu3GqZ8
+	KDSilTHElslsK8FVY7vByilzkfR76AXuy/PTvrMHKjgmFY3rnbfbWvDdgGSWCy6OT+PA0m
+	MlzfQgioRFYwO1+1qgHAtDUJEaibcRnvqQtTWEjB4EQXGtHp/t5JwNGvw4VEn5aUKr0T31
+	/jAKH1apRW6T0SOAUKQH8/JfFpBLtlvrtru7bBJKHIOGKn1fkrHZEhZR0VLV7BPs2P96qz
+	mfrA8TGEXt0rvIkIVFA/JCDe2TSOIePNDu+uOiyz9TB7h7Zu/wMhnIw8jFFpTw==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: tsbogend@alpha.franken.de,
@@ -33,9 +33,9 @@ Cc: tsbogend@alpha.franken.de,
 	jonas.gorski@gmail.com,
 	julianbraha@gmail.com,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH] MIPS: config: Add EcoNet EN751221 defconfig
-Date: Mon, 17 Aug 2026 19:43:08 +0000
-Message-Id: <20260817194308.2847096-1-cjd@cjdns.fr>
+Subject: [PATCH v2] MIPS: config: Add EcoNet EN751221 defconfig
+Date: Mon, 17 Aug 2026 22:03:44 +0000
+Message-Id: <20260817220344.2931634-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -51,9 +51,13 @@ ZBOOT is assumed to be needed in all cases.
 
 Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
 ---
+Updated to work after SERIAL_8250 and SERIAL_OF_PLATFORM removed
+from Kconfig.
+Link: https://lore.kernel.org/linux-mips/20260815235109.666268-1-julianbraha@gmail.com/
+---
  MAINTAINERS                                 |   1 +
- arch/mips/configs/econet_en751221_defconfig | 267 ++++++++++++++++++++
- 2 files changed, 268 insertions(+)
+ arch/mips/configs/econet_en751221_defconfig | 264 ++++++++++++++++++++
+ 2 files changed, 265 insertions(+)
  create mode 100644 arch/mips/configs/econet_en751221_defconfig
 
 diff --git a/MAINTAINERS b/MAINTAINERS
@@ -70,10 +74,10 @@ index 806bd2d80d15..9e2a6dc48f62 100644
  F:	drivers/irqchip/irq-econet-en751221.c
 diff --git a/arch/mips/configs/econet_en751221_defconfig b/arch/mips/configs/econet_en751221_defconfig
 new file mode 100644
-index 000000000000..5af597759f68
+index 000000000000..b35d33fe4044
 --- /dev/null
 +++ b/arch/mips/configs/econet_en751221_defconfig
-@@ -0,0 +1,267 @@
+@@ -0,0 +1,264 @@
 +# CONFIG_LOCALVERSION_AUTO is not set
 +CONFIG_KERNEL_XZ=y
 +CONFIG_SYSVIPC=y
@@ -260,12 +264,9 @@ index 000000000000..5af597759f68
 +# CONFIG_VT is not set
 +# CONFIG_LEGACY_PTYS is not set
 +# CONFIG_LEGACY_TIOCSTI is not set
++CONFIG_SERIAL_8250=y
 +CONFIG_SERIAL_8250_CONSOLE=y
-+# CONFIG_SERIAL_8250_PCI is not set
-+# CONFIG_SERIAL_8250_EXAR is not set
-+CONFIG_SERIAL_8250_NR_UARTS=2
-+CONFIG_SERIAL_8250_RUNTIME_UARTS=2
-+# CONFIG_SERIAL_8250_PERICOM is not set
++CONFIG_SERIAL_OF_PLATFORM=y
 +# CONFIG_HW_RANDOM is not set
 +# CONFIG_DEVMEM is not set
 +CONFIG_SPI=y
@@ -344,6 +345,7 @@ index 000000000000..5af597759f68
 
 base-commit: 3b7711be02612845e44b5e9ef7c0b9f203cf29b6
 prerequisite-patch-id: 0f044e47a76450ebb4fe52dc60a6b2f79625bbff
+prerequisite-patch-id: 6380783b9da35b966b64c237b0ef50c31c7425d6
 -- 
 2.39.5
 

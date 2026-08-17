@@ -1,137 +1,180 @@
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718201A8F84
-	for <linux-mips@vger.kernel.org>; Sat, 15 Aug 2026 23:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BD31A6823;
+	Mon, 17 Aug 2026 02:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786837877; cv=none; b=iAzh/o3W6qh1RbRFtRbpSRiB5a0zo4+Dds38tEjYU9HasNff20VyAamPTNT15LiCpxE2t8klEFmz9zM6BojOK9oy7+catQq5txJVkFl0AbXQrdYRZcnThRiJXyvd5hZWV/CqJ4blkpScaPDXi2ktpttKRGbDqdR7E2aYjnMx3H8=
+	t=1786932501; cv=none; b=cLvSJtIsweNmjl3veXs9sxbCXuc7Y0cG2gUfxpJ7MAQIR4mEszmvB3glzMO/sovV3XQtZKq68AjdEGUlqMw5ZN1A4IEY+bt506iKc5uO/o8MbbmGAqjMT2vjQ3pOPSLs6TTssomX3lwhFOrU6RkR/G3ynCJ/QVbkUugfEwTGdvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786837877; c=relaxed/simple;
-	bh=cMpjkUrbci0tPuyHSAN4O3i9+OrP0VUO/+kj5yqxhI0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CyvUStt2j67GZiDkuLJexRnaOqBROfyG9Cir/D7Yelp38IzIxxm5WGs4CvlGQxd+07ipKQrnR0jdXLwNk/DU4VSq1l8QsjqoCBhx1tjy6TyFJhfkU9LIwNuv13vaz6UEzq3qZpvvQnSGTIstXkSpaaT2pzmoFXexOXC/z/k8oCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qR8EAsj+; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qR8EAsj+"
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-47f3b39f2a1so1977169f8f.2
-        for <linux-mips@vger.kernel.org>; Sat, 15 Aug 2026 16:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786837874; x=1787442674; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=UsB4ezfj3vXRiBMkAsGOHcRnSFydlij3MADQkKJEvoo=;
-        b=qR8EAsj+VSWq2fffuFUjdwh/khl8yqYtPPt8yyiA0PSq0FvsvQyEESltSgHm953DE4
-         yvGLVrPAP0hWu+zQwK6wckz9mtXsP0wBEkY4hG2ZieXQvo+CSisUDqdKsEOcAEeWt77A
-         rxsXkpbFiEsnew52zRBKDvJvDrwqPAVFz+OX+H7uITi98jQSsBb+EyzwDTkISN8BGrBm
-         KEY0GZ0f7vyBpmPfZgn7DLoftoeB/sI/UKmNQMPWBFlKd8WKtjhc7j4svb57Gh5GIG7g
-         g5+42x+LQ7XDBNIQwGFOv0mGl+lt3cdrD64AS5HAnoPuTlIyrqTfkYq+bcHJgE6NfbRk
-         Sdsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786837874; x=1787442674;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=UsB4ezfj3vXRiBMkAsGOHcRnSFydlij3MADQkKJEvoo=;
-        b=nLSTwaom2PWr1+W3CJkJteoy2JeYyx77UYMvsJwJScEqPl4Hs+tY2hL1Nh6GF9Au7S
-         tebVuLt9QohFLzQyZdBlRU90mcpTQJeGX5XiFtNDPJmvXSgWg1NxQDngo+6D1gEiMWet
-         9bd+QbQxiHnPWbZUn5T8nVFNDAk2peBG46QHCmrUpNiLyoB1P9mH9C9LHTMycOUr6Z/E
-         XRiMyg4XVmb60wnlU62sOy7GgZg0ZUAkWd2mDoL+D1REtGj1Qz9/Iq6PR93mWCY5AjNf
-         8AFpuahaZQiWDUuV+6kfisHMCag2HthE4K02heuvsJqgEQRXFYz4BpKbh1Fsc490+0yi
-         qUKw==
-X-Forwarded-Encrypted: i=1; AHgh+RqsP8es2P5qFacIhYTFqc0g/nL926Io0+hPtgWSieLkak74f91JZ8qFvpS3iOC0hBU0m7oF+2G/+tZ4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8LyjkEnGvqzsFjDfHkwDU3lAPp6bVkhF3onaQ5yp0xWGQ2vJm
-	hyHSIlyBxlyE2fWp5d/H22d3234kKXnGswBjhzJdLmQVPJtjHjEHOrBm
-X-Gm-Gg: AR+sD13ksDOIVkqJoewMy6pQXAiM5lpTylNtVRbHuaCy5iPTSdRh88ZZLcbBhJssoqC
-	DuhOaQ785nFeRrH8G4iAGPJi8jp/RY2jyO5oY+6q0+kg0Xx217e+d6JADeSGXl62cmfjVWEqq9s
-	lZ7mDCcR5v3oMULMvXBWKpv++G1cMH1PAkZdB5gpwiO2wtCM4YHCUAiaYuJRRzJW057l5ILkZiA
-	9kbPsrhX1A6O5qeEfEbOBzt5DJloCl3E8YxLBesCkaOa4TXw67GXWPuzlDQAAAm3N68Lo1uedpj
-	MtETQLuOvRnxoabEQvO1DKjMPbDfTRG98cvoTRUwiT2euHPN7ihEYeuWcCwewJuovGpnl+1FeUL
-	NpBDPcMCWh2LPBSRT3aSRv3T+EqcxSolcNW57ws6jQciARO/Ndvuqy1LdEgfooCmL+mkPgtQlEh
-	5vE60lU7iN4ynImHxTfouirc2JJLhfkKwy3Ux/Qt4RY0TRX2sobptVzAYPzqlLNuM4NoVXktJtz
-	gLbmvh9O6Z975s/OxDHXMs99rJiqLQR4sk/cLquuLjy07rk5UJY
-X-Received: by 2002:adf:e19d:0:b0:47f:fb2e:f63d with SMTP id ffacd0b85a97d-48160715bf8mr25613979f8f.9.1786837873384;
-        Sat, 15 Aug 2026 16:51:13 -0700 (PDT)
-Received: from nixos-office (195-23-151-163.net.novis.pt. [195.23.151.163])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4815f2b1fc2sm20691376f8f.20.2026.08.15.16.51.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2026 16:51:12 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From: Julian Braha <julianbraha@gmail.com>
-To: tsbogend@alpha.franken.de
-Cc: arnd@arndb.de,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	cjd@cjdns.fr,
-	Julian Braha <julianbraha@gmail.com>
-Subject: [PATCH v2] mips: econet: fix unmet dependencies for ECONET
-Date: Sun, 16 Aug 2026 00:51:09 +0100
-Message-ID: <20260815235109.666268-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.55.0
+	s=arc-20240116; t=1786932501; c=relaxed/simple;
+	bh=cUHXnEFb0DPT0cP8sQAYf526pNBm/FM6F6+YWEZkqWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YfF8D31rQI0g7Wji1SP84CXoeaG0sEm3egdFZBjZIxaHtrI5CWBAfU9ypSGa/xyaPGi0LrS8Mu14MHqTJnlcl6cI+tzgbNZ6bAxccFwLTFJPXYPfY6hzdhHX2O4mSQTfB8ao4qBdjaEYvoDc15pPebVoysZfyj5zNR4a1kVd+kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [223.64.68.87])
+	by gateway (Coremail) with SMTP id _____8CxQNEDbYJqnbYBAA--.5127S3;
+	Mon, 17 Aug 2026 10:08:04 +0800 (CST)
+Received: from [10.161.0.102] (unknown [223.64.68.87])
+	by front1 (Coremail) with SMTP id qMiowJAx2c3_bIJqU28HAA--.48469S2;
+	Mon, 17 Aug 2026 10:08:02 +0800 (CST)
+Message-ID: <735044e7-07e8-462e-b94f-4fea1b5b1838@loongson.cn>
+Date: Mon, 17 Aug 2026 10:07:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dmaengine: loongson1-apb-dma: avoid using iterator
+ variable after list_for_each_entry()
+To: Frank Li <Frank.li@oss.nxp.com>,
+ Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
+Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
+ Frank Li <Frank.Li@kernel.org>, linux-mips@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260720142538.2766-1-mahad.ibrahim.dev@gmail.com>
+ <20260729143247.6111-1-mahad.ibrahim.dev@gmail.com>
+ <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+In-Reply-To: <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:qMiowJAx2c3_bIJqU28HAA--.48469S2
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/1tbiAgECCGqBKnQHswAAsI
+X-Coremail-Antispam: 1Uk129KBj93XoWxGrW5XrWkZw1DGr1UWw48AFc_yoWrGrWkpF
+	WfG3ZFka1kJF4av3ZFgw1FyFs0yFZ7Gry7urZIgw1xuryqyryqvw17Ga4rWF9rAa93X3WS
+	qay0ga43CF4UAacCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+	kF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
+	MxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+	0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
+	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
+	JVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcTKZDUUUU
 
-ECONET selects EARLY_PRINTK_8250, SERIAL_OF_PLATFORM, and SERIAL_8250
-without ensuring their dependencies, EARLY_PRINTK and TTY are met. This
-causes unmet dependencies:
+Hi Frank:
 
-WARNING: unmet direct dependencies detected for SERIAL_8250
-  Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && !S390
-  Selected by [y]:
-  - ECONET [=y]
+Sorry for the late reply.
 
-WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
-  Depends on [n]: EARLY_PRINTK [=n] && USE_GENERIC_EARLY_PRINTK_8250 [=y]
-  Selected by [y]:
-  - ECONET [=y]
+On 2026/8/15 03:33, Frank Li wrote:
+> On Wed, Jul 29, 2026 at 02:32:47PM +0000, Mahad Ibrahim wrote:
+>> ls1x_dma_tx_status() locates the descriptor actively being processed by
+>> walking the LLI list and comparing the hardware reported next descriptor
+>> pointer against each element's next-descriptor pointer.
+>>
+>> A list_for_each_entry macro is used in the comparison phase. Which at
+>> the end of the loop leaves the lli pointer at the currently executing LLI.
+>> However this also subsequently runs for a non-match lli, in which it
+>> points at the head. This causes a type confusion bug which treats the
+>> head, which is a ls1x_dma_desc, as a ls1x_dma_lli object. Additionally it
+>> goes forwards and prints garbage via the dev_dbg.
+>>
+>> Fix the type confusion bug by only allowing matched LLI descriptor chains
+>> to print the current LLI and residue calculation, as failing to match
+>> should be treated as an unexpected condition.
+>>
+>> Found by the following Coccinelle check:
+>>
+>>    scripts/coccinelle/iterators/use_after_iter.cocci
+>>
+>>    drivers/dma/loongson/loongson1-apb-dma.c:461:6-9: ERROR: invalid
+>>    reference to the index variable of the iterator on line 450
+>>
+>> I did not see a bug upstream detailing this error, nor do I have the
+>> hardware to confirm this bug or error, all this is from a pure code
+>> examination.
+>>
+>> As I do not possess the hardware, I cannot test the patch. Compile tested
+>> only with mips64-linux-gnu-gcc.
+> 
+> Avoid post new patch on old email thread.
+> 
+> Just simple said
+> 
+> Compile test only.
+> 
+>>
+>> Signed-off-by: Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>
+>> ---
+>>
+>> v2:
+>> - encapsulate residue calculation and dev_dbg inside the
+>>    list_for_each_entry() macro. Treat non-matching LLI as an unexpected
+>>    case.
+>>
+>>
+>>   drivers/dma/loongson/loongson1-apb-dma.c | 27 ++++++++++++++----------
+>>   1 file changed, 16 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/dma/loongson/loongson1-apb-dma.c b/drivers/dma/loongson/loongson1-apb-dma.c
+>> index 89786cbd20ab..8658d5377795 100644
+>> --- a/drivers/dma/loongson/loongson1-apb-dma.c
+>> +++ b/drivers/dma/loongson/loongson1-apb-dma.c
+>> @@ -446,22 +446,27 @@ static enum dma_status ls1x_dma_tx_status(struct dma_chan *dchan,
+>>
+>>   			/* locate the current lli */
+>>   			next_phys = chan->curr_lli->hw[LS1X_DMADESC_NEXT];
+>> -			list_for_each_entry(lli, &desc->lli_list, node)
+>> -				if (lli->hw[LS1X_DMADESC_NEXT] == next_phys)
+>> -					break;
+>> +			list_for_each_entry(lli, &desc->lli_list, node) {
+>> +				if (lli->hw[LS1X_DMADESC_NEXT] != next_phys)
+>> +					continue;
+>>
+>> -			dev_dbg(chan2dev(dchan), "current lli_phys=%pad",
+>> -				&lli->phys);
+>> +				dev_dbg(chan2dev(dchan), "current lli_phys=%pad\n",
+>> +					&lli->phys);
+>>
+>> -			/* count the residues */
+>> -			list_for_each_entry_from(lli, &desc->lli_list, node)
+>> -				bytes += lli->hw[LS1X_DMADESC_LENGTH] *
+>> -					 chan->bus_width;
+>> +				/* count the residues */
+>> +				list_for_each_entry_from(lli, &desc->lli_list, node)
+>> +					bytes += lli->hw[LS1X_DMADESC_LENGTH] *
+>> +						 chan->bus_width;
+>> +
+>> +				dma_set_residue(state, bytes);
+>> +				return status;
+>> +			}
+>> +
+>> +			dev_warn(chan2dev(dchan),
+>> +				 "unable to locate current lli.\n");
+> 
+> most likely logic is correct, it is not obvious, hope some one who have
+> hardware help test it.
+> 
+> Binbin Zhou just add add this driver recently, he should have hardware to
+> test it.
 
-WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
-  Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=y] && OF [=y]
-  Selected by [y]:
-  - ECONET [=y]
+Emm, sorry, I don't have any test equipment available right now. As far 
+as I know, Keguang is the maintainer of this driver, and he has the 
+necessary test equipment.
+> 
+> Frank
+>>   		}
+>>   	}
+>>
+>> -	dma_set_residue(state, bytes);
+>> -
+>>   	return status;
+>>   }
+>>
+>> --
+>> 2.54.0
+>>
 
-However, in the discussion of v1 of this patch, Arnd pointed out that these
-selects don't belong here in the first place. [1]
-Let's remove them to resolve the unmet dependencies.
-
-These unmet dependencies were found by kconfirm, a static analysis tool for
-Kconfig.
-
-Fixes: 79ee1d20e37c ("mips: econet: Fix incorrect Kconfig dependencies")
-Fixes: 35fb26f94dfa ("mips: Add EcoNet MIPS platform support")
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
-Link: https://lore.kernel.org/all/59c5582d-6fc1-48d0-a5df-b3b6f58aa227@app.fastmail.com/ [1]
-
-Changes since v1: remove the selects, instead of selecting more
-Link to v1: https://lore.kernel.org/all/20260802161555.491549-1-julianbraha@gmail.com/
----
- arch/mips/Kconfig | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e2eb9627bd14..c3f69def2008 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -396,10 +396,7 @@ config ECONET
- 	bool "EcoNet MIPS family"
- 	select BOOT_RAW
- 	select DEBUG_ZBOOT if DEBUG_KERNEL
--	select EARLY_PRINTK_8250
- 	select ECONET_EN751221_TIMER
--	select SERIAL_8250
--	select SERIAL_OF_PLATFORM
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
 -- 
-2.55.0
+Thanks.
+Binbin
 

@@ -1,92 +1,120 @@
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406D34756D7;
-	Tue, 18 Aug 2026 12:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787056900; cv=none; b=Xx2UcJxvi7gORFlPjQFzD9Dsx3HVxzvDN33fwTsnAk1LpKW/lm1SOh6z/BVXVrclBdqxXTWPEA2viNAyvDl2MieVNwuM02Bz/74o21xIHlFyfCHV9wGfp94LRgUYfj5qhPvjAenJABJZ3lm2njLuQuheTtGJRei2z0LV/uq+oUg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787056900; c=relaxed/simple;
-	bh=K72c90pN7/By0X7h4ct4vCn51FFYOARRU3WPD8WzNFc=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=H3CVBhQqle19MhqrM11cc72+LAvGl3jxZu/q6gzr+BGeawCnb/sU9XpdUjKcvM1o6t22GKtFHL8O6l4q5CMiO6uGI6waCOFzOJvxwG5i1aEY6yuc3v6JUqVYiLJXqBCO9M6ueIFoay6gs2Q4RIZ/cy1vOuhMDVeUVnyS8RoY9iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=k3xoBKCj; arc=none smtp.client-ip=203.205.221.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A51466B5E
+	for <linux-mips@vger.kernel.org>; Tue, 18 Aug 2026 13:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787058669; cv=pass; b=f5Y48ih/4qB9GrqEtIdAB6qmKAhDOsS+S1ZcsFrp6fygA5ljaSAWJRSHkcjEzx8XckBUJskZk5+Fkp1VBFqtUhFGUcg3pKmYE1nxDHWY/GWq54B7uRIZZd5KMloXJvKq70n8B89+E1c8QQjcp7JAI9mxZRC1HCIZRiSIajO+YjM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787058669; c=relaxed/simple;
+	bh=c36X0NWMKu7+KHbODZSDBkET192+cMQSiS2WCjFChvA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LAWlIUSCKYYK/0u5TwY91ph2iE41Q6poyGKss//xOXio/7v2GCe8ZEKu9vT4eChxnE6yFJ2KKsiL3dNCWx63Qnz5ZVUcgIuqke9fLbG41GJIQ6ynZtHWZEO+sh32P+lWsYYCnQwH+bZdOy64dWb/+GHc7lRapgw2hGAAdbwiN5c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UlZ7nbyx; arc=pass smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="k3xoBKCj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1787056895; bh=KDheSNGdrOpJRRl/5TKzJCcwqMBTUzRBmu6g0kUgW9E=;
-	h=From:To:Cc:Subject:Date;
-	b=k3xoBKCjfvl982hYGFWwwYMobEnGEGKEt5oz5K/GKcHIrOPFCM2ZdEOqQwoHMspEo
-	 AUmd7Mk9wi4o7xMik/083vzMoyCzATowwFnMZQAFAExSYXmUTg2NS9DSTn+9p/5zI1
-	 XfR/gOO7VApI3Q6PKJqr4NjNrfrPym5Rl71Zv2Js=
-Received: from ws006419.mbzu.ae ([5.195.0.150])
-	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
-	id A60396D7; Tue, 18 Aug 2026 20:41:32 +0800
-X-QQ-mid: xmsmtpt1787056892tu7hznmus
-Message-ID: <tencent_BE00B17EBF2A95EADD8B80203B745B9C7609@qq.com>
-X-QQ-XMAILINFO: MTEKjEyAppcs5kHBZsuQVkpQmp0kvd+zO15Ue5hERsjlr+kTSyLqejk0Co8CPZ
-	 EeVUv6pcSZWErp7S2hrw5Kx7Bs6LsLeM8cUA78eXe8qIFMPojl6Pfi7AMwzGnRLQWaw18DkLF8Wd
-	 Tzd7VwibTpO59hM57Pf6q2Gbyj2BSQisom7Uww0yGzy8DbXsYp/ZWXhsI+m1beu/4ikDmmG26p+0
-	 X84Ltsa5IOyY7dMSsW4iRupWDYTR97Ehh/j9fVSJhrdeM04MJKWQsMs//g/vdk0dNVemeOlyXAqj
-	 /evFHWUME7CMu2uapaYTxgcRI9nmIkwv+hXIxWbySpn5f8GxqE4PPpPiIsqxMaIhNcwy/Wk2XAzM
-	 4xVmRajpHBTPZMZG8Cu2E57voZh9ypb9EQLM82DQYcQsJjZgeUHBHvY7QQix8iqSF5pHP0jVFqmh
-	 SblUAB0e8E0KIeRRvssqWVfI8+4EqS1wRzDo+eMEkfFGGpDjOS6Fo86CNyKRHe0v9cPsjrNyQBXD
-	 oXJz4iH4hQsQ5SH/gyfc3DEn2DsldPKv2FNpLKs2yTkT2nPOZc3dxOYwe7Qvl6AH46duOWPpZTgD
-	 9XzOFMPJJNBlm7Q3yQYGWXELoWoouctWXbjstoRj6YRTuVleIql2PKPvAVtNSD0SnteXRKU178BM
-	 wuERnrc51Eay6tJ62WGmG3B0u8OjZhvDpU8/jAm5OcJHBYGI5H0ouAKbFG10a2E0k0LPWmRlh2Sc
-	 pECiWjhVUmDnIZZQhx5S4icn5Wt4mRt1t0UCdsde0X53BfuGdwIQ+OZj1Hv6trm7s94sUgm6untV
-	 DICyj6kMc+tNTgDMbxepZSYkCCMoZroOnSf8rEI97g3M5WqtzKU2bmS6pvsvLVU2AhSsfW+gkilw
-	 iQtAPQN0iPLPT53PaRbeEBjkl8fGQuUq15fCrZ/XqBlEp7sUQjs4YtDRK7bsQ+9hOAVuJ2yVFIg5
-	 bBBORsCPTrLvQ0Hm4CSf0i9cDWVah2blaX5WuDGTFOVs6CLaILw9gWIqEgr8m/PQofQf9M+1Ug4q
-	 vA21U55e3v1awdx+ymDVhtFEeegvWQlt/MvA1W5N6VQxzLNNaR8C53UyTOiqoETFcxnOM+SSrF72
-	 nJvgkI0bq4it6Rl+fBMrTCKYXImHd9yVvMDBGG
-X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
-From: Jiawen Liu <1298662399@qq.com>
-To: Paul Cercueil <paul@crapouillou.net>,
-	Vinod Koul <vkoul@kernel.org>,
-	linux-mips@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Frank Li <Frank.Li@kernel.org>,
-	jiawen <1298662399@qq.com>
-Subject: [PATCH] dma: jz4780: handle clk_prepare_enable() failure in probe
-Date: Tue, 18 Aug 2026 16:41:31 +0400
-X-OQ-MSGID: <20260818124131.247058-1-1298662399@qq.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UlZ7nbyx"
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-c15ba3a2b4bso583556966b.1
+        for <linux-mips@vger.kernel.org>; Tue, 18 Aug 2026 06:11:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787058666; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Fy2wRvFiabGUTSQYgVdeUEAESVxJb7YXIswjvIogXsH3G8JV3iXPVZVcGE5Zl79Hi+
+         iqge1Tvc0sr/bpmWAlxiCdjwWrXpYcA/7MdIAB188dIm/nOmXCLpr6m0DrAcPqR+nUsO
+         MD4qfNPydMDWcDpZXGZQlrVJnC/MZlVtz9+ml1kzuWxZ+mP4nrhB+o3oVjJHmAvAsIZX
+         +ba58dSmEM5PhLlm7tF0D6QobyWpO4n9CB+1araQ+iT593onCk8ApfvFB5Ak6oEeVrPW
+         8oDxrLwoVDlQBRNsvkAFSkJduiFIDLvDghpW/5L1NcXiNPgkoM9N4vugsoXwOGYdWCGX
+         8Bgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=c36X0NWMKu7+KHbODZSDBkET192+cMQSiS2WCjFChvA=;
+        fh=/tkdtVuagaMAW2GOcUIdFsjXTGLHcDBFWxMSTD/6yGY=;
+        b=dlo58/SfvtfO3QjblZh/2C6HEjom5UFoSDKWUsRop4u7BF7jJcTmsOXV3aD5hIfpvy
+         xqAuKe8xJqe9O6VkfUej5mFGkDpU2lg/3XedOsbDOPBc7gly64yKF+QgkwOq0MY1fHmB
+         8B0S49BQsXmaw5UpfN5ebQgiUp/M4f/MuH5rgCfNoVDUYg7Bh0HY9j/fdlTt2aoZ4S4c
+         imNwkNT1pHRb9ZWOSML2UyHDfwz7eWE4BWmNqDTZdk3qsXSGYmSvXQDkwd+Wrt67PLPa
+         ejfw2g2q4Iu7xjoti5s4xxgTZZwCVA/sMty7bMR2jQTcdtcfSvgwbYKuk72wj4rm+uaI
+         L+FA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787058666; x=1787663466; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=c36X0NWMKu7+KHbODZSDBkET192+cMQSiS2WCjFChvA=;
+        b=UlZ7nbyxE2cpDdszld1I8iXmRozRpoALnW557wzwZkR/G/sg+1+fHba0b/XGARll/G
+         oww7v4yKLi6TbuBatJ2gVBRE8zfLRzRdd5lbo+aUw05sj1//augFZ2Z/ywFnRpYp0Ra1
+         e88XTeHTUJu3tV0S+HqyLDGA4jIRens7Lom63CXrgGQWBMXd/VOCz4I5cUvRVOKtlQcO
+         gyQsySW5vDcvhSNpGdcGKgjZc3ZJVZJa7u/gWVWgbzC6CSVbwGKa2BxrsX1Gcm8L/WcN
+         Xde8FIMEQD5Ih+L7HZrCFLEY3kJiMIIf2RstDIvzM1ALuoUkjv/9qUA7beUya20FofZh
+         DdHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787058666; x=1787663466;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=c36X0NWMKu7+KHbODZSDBkET192+cMQSiS2WCjFChvA=;
+        b=R/21RlalwOZTJX2T5jLqhQM9TcVWByPoKnbFM+uzRWFuYv+KEq8b+jKos+mqon/4K8
+         e/wwYD1QB4RtuzX5Dq3GjwgnDHZyD6IkK87iu0YltUoo7fjghC0oPsLQdcaCgWGlWyo3
+         WCkiNCCuysSNeqjmQu73gwZ8u70BysKLB6TTTqPIkssuhogcOVJ/10vV95unLxtS8y6b
+         YxXcVi85RwpC/7wDHAuYAUNX4ew835G4ovwczL502d0Dy5XAB9pRAijRRdwf76TCnlqU
+         8jnd8P6SEnB32vuYKZY0pp6Vdt4mWWev73+MeqYHDbfXautZLjP4Lzv9tz/i025XWykm
+         tPSA==
+X-Forwarded-Encrypted: i=1; AHgh+Rqkv4pzBLR/a+iGmZ45WZ+6On+bG9kv5bPaA5icTxKGavYdLeeWHTPlPs8ASmo3wiTPnJeix4FIW7pB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8qvlVv+tnO44/FVjWpEztH7Nra3A73Z880QxaSBaoMPJ9Oiw0
+	huucmvphThSDq00trEictQjieolwtcJ+IPy5ybvZRbzogF2oimo/dfu/PioceIZfaWE9jRAO+MH
+	E8CPuGQhO71vUETZRa/OSYfwoRnkW/9I=
+X-Gm-Gg: AR+sD11Ugs+AnNyZoQtf4ukObtSR76B0rq3Bt7pZ8D+jVJ8hTzWMjIkFWOyCBQWzzXP
+	8QHzVh9KQYbkPT0ENKv/LpUs8QfdTpssn8Bcq7qr9KSMm/rMJJ2teJY65QVaqQ0evMevg1KWEIJ
+	gFwqBdA6UnTNlRIaxvtPmMOaXvC6KHXCrOuGobtiOLzf5SrjIPuAsv/iiYHOQqplNWfS2RlRGq8
+	kIj5ZkHA5FauYy32dmj8Ti2jJlh6spHogFi515xlUdlQb0ypqij4PMDq7un93/7PQuqz6k1BXJo
+	DMVxItm6OrXWXL2c2ziyPkCHo2ipOrglhsxw1mM1XehWuA==
+X-Received: by 2002:a17:907:9814:b0:c19:45df:1856 with SMTP id
+ a640c23a62f3a-c2188a9c1dcmr527333466b.17.1787058665803; Tue, 18 Aug 2026
+ 06:11:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260810194215.3754591-1-main.kalliope@gmail.com> <CAM1=_QTvdWzBpSGnoLV7wiW0dsn_nc04V8KnYuntptQ5mF9Pyg@mail.gmail.com>
+In-Reply-To: <CAM1=_QTvdWzBpSGnoLV7wiW0dsn_nc04V8KnYuntptQ5mF9Pyg@mail.gmail.com>
+From: Nicholas Dudar <main.kalliope@gmail.com>
+Date: Tue, 18 Aug 2026 09:10:53 -0400
+X-Gm-Features: AcwNN1XHCMx74YekEORVzWx4CGffmWW6Q4DUtR82Aia7lWjSu0IKoMhZW4rDKTg
+Message-ID: <CAJZwKkis=3NGw9At0WfiZaRYEoMPbQfqJKN0e+vtRDvp4VY5Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] bpf, mips: Add signed div/mod support
+To: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, tsbogend@alpha.franken.de, paulburton@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
+	philmd@oss.qualcomm.com, bpf@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: jiawen <1298662399@qq.com>
+> Please proceed with the remaining opcodes in the meantime. I will do
+> the same on my part as we discussed, and then we can wrap up this
+> whole v4 compliance work when I am back.
 
-jz4780_dma_probe() ignores the return value of clk_prepare_enable(). If
-the clock fails to enable, the driver continues and may later attempt to
-disable an unprepared clock on error paths, leading to unbalanced clock
-operations.
+Sorry to bother you while you're away, I hope the holiday is going well.
+No rush on this, but one ordering dependency fell out of my testing.
+MOVSX and SDIV/SMOD need to land before MEMSX, BSWAP, or JMP32_JA.
 
-Check the return value and propagate the error immediately, avoiding the
-erroneous cleanup.
+MEMSX, BSWAP, and JMP32_JA are currently unhandled, so any program
+containing one causes the MIPS JIT to abandon compilation. Adding support
+for one removes the fallback, so a mixed program can reach the existing
+MOV or DIV/MOD paths before their off encodings are supported and be
+miscompiled.
 
-Signed-off-by: jiawen <1298662399@qq.com>
----
-diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
---- a/drivers/dma/dma-jz4780.c
-+++ b/drivers/dma/dma-jz4780.c
-@@ -903,7 +903,9 @@
- 		return ret;
- 	}
- 
--	clk_prepare_enable(jzdma->clk);
-+	ret = clk_prepare_enable(jzdma->clk);
-+	if (ret)
-+		return ret;
- 
- 	/* Property is optional, if it doesn't exist the value will remain 0. */
- 	of_property_read_u32_index(dev->of_node, "ingenic,reserved-channels",
+I plan to post MOVSX today. For MEMSX, I will base it after MOVSX and
+SDIV/SMOD and call out the dependency in the commit message. This avoids
+carrying a temporary fail-closed check. Does that ordering work for BSWAP
+and JMP32_JA?
 
+Thanks,
+Nick

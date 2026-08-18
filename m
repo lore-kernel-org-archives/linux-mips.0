@@ -1,110 +1,188 @@
-Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006D33D565B;
-	Mon, 17 Aug 2026 22:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39CA3AFB18;
+	Tue, 18 Aug 2026 04:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787004482; cv=none; b=f6aoTghOEw2QsTF3KfqH2I6l3V/NbXRBIXMesSJjZBg4JUyiZRTi3ukP0cy0TA9lDP7J0fvHjHOtQlTUjBWnn9oT0jiRbOd7h2q/b2SesG71mTkEyLabOy8VCBJRtXvK2VDo3X0tx/u0zabfHxf1esFoxCS5ZUa7Dvw+ROWbW2Q=
+	t=1787025650; cv=none; b=Fib8xTYK3kGT1yqSalNS96kXUfDw1tP65gmiqhYdg4xRE7Eg9Pd7TO2+Rx0YwAWezpKLwu5Ian+lI460/j6tehk+xJZvFLV4+twn31DrEnL6uFqCTp/e8xxX76QSlFR6Iq+pSG2scj8Be0JIKcczaihftow72Z0irUbY4fQWcYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787004482; c=relaxed/simple;
-	bh=/pNhYh21CvM9TkTNpexI6W0Y/dNpQVuZPxhxNQHeC2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L8EY2t/wUug1/0IPTIo9ArIWocLz9pYSsuhpYY87t9y9GRQHxLh21KiQzbYz3q+v2R3YA6OGxLA9FNaX1ZiMg/xPfbHtRXx59Ek7HzNFF4svLoAP/4XizGh3kdcBw+byzInxJv1GnESg6BimUCxRMEpy2LVFc8DXb72n8BpSWfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=v1K2OUmI; arc=none smtp.client-ip=5.135.140.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
+	s=arc-20240116; t=1787025650; c=relaxed/simple;
+	bh=LRR2JW96qzLG8uXgU1+MfoOsPimHhtCsmfw/iXX8kB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E7BrJZ0DGKPsvdoknoe78OSNsuI3shVTMV/bj1XDXzkMOXRFLjVver7CwxlosaOQMTZwyni6M3DBER51LBhgQx/L20fhYN4joNAtdmPwPPCZfpYaXE1k321+U633VlHrOwlb6tIodRA/N3idWpR/Qw/kV3V+hF+gI298NbMEd9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=NtFRXij4; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="v1K2OUmI"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4F76735DE3C;
-	Tue, 18 Aug 2026 00:07:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1787004478; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=BgiEfIgJB7G6tmZiEolKtAFAjC/e7O/txSbmVdcgihc=;
-	b=v1K2OUmI1KEvEvC/vSV/Y3aXFX+GoOOHLiQzgtsB7cArotb8FM14LPgJJnsLmmo6T5TLMX
-	FNC21brH79AV/BHrlFy7goTdlK6mG1GF9hHTLMauJBAz+RRtfKtNIWtYKGG5sZoz7fb/SP
-	QLvTZ3XkexLll6yrYbnxAKYGOfIZZAnTDO+rf8dC7/xB8nes+ssGryz7MWe/HSTZyrLqB8
-	xcf3KZGk6LshkFqf1xucrWSUVM0ogegLydeZRrN+oKV9hcPiDjuDmC1QyTfJPAGjAiHBMV
-	o/b1S7F8lErhLyD0RxrY4UibJY4pyXW63xdlkdOG6ogaEGdfTcSzw6FXQyC1GA==
-Message-ID: <e53ff826-c4c3-4979-af5b-bb1a2c28767f@cjdns.fr>
-Date: Tue, 18 Aug 2026 00:07:55 +0200
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="NtFRXij4"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46004153B;
+	Mon, 17 Aug 2026 21:00:41 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E5453F66F;
+	Mon, 17 Aug 2026 21:00:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1787025645; bh=LRR2JW96qzLG8uXgU1+MfoOsPimHhtCsmfw/iXX8kB4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NtFRXij4Uhwnlv72AF85fJYzj/aymvsPMmb1FV54uYlLFKg3t/C+cIPPz6W0jsHV1
+	 9J4gARXAWELXnskJwPs+BnDvgT6ZNx/a8ZwzPVKYIGTlZF5fGPZRP4qKo2lnT7Fr1w
+	 ur0UrDi2dMsXj4xyEnxA47CkAD4o6o2g2lJDsONI=
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	david@kernel.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC V3 0/8] mm: Drop pxd_ERROR()
+Date: Tue, 18 Aug 2026 09:30:33 +0530
+Message-ID: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v2] mips: econet: fix unmet dependencies for ECONET
-To: Julian Braha <julianbraha@gmail.com>, tsbogend@alpha.franken.de
-Cc: arnd@arndb.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260815235109.666268-1-julianbraha@gmail.com>
-Content-Language: en-US
-From: Caleb James DeLisle <cjd@cjdns.fr>
-In-Reply-To: <20260815235109.666268-1-julianbraha@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
+pxd_ERROR() macros have been provided by all platforms, which are very much
+identical and can be dropped off completely if these pgtable printing could
+be moved to callers in generic MM aka all pxd_clear_bad().
 
-On 16/08/2026 01:51, Julian Braha wrote:
-> ECONET selects EARLY_PRINTK_8250, SERIAL_OF_PLATFORM, and SERIAL_8250
-> without ensuring their dependencies, EARLY_PRINTK and TTY are met. This
-> causes unmet dependencies:
->
-> WARNING: unmet direct dependencies detected for SERIAL_8250
->    Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && !S390
->    Selected by [y]:
->    - ECONET [=y]
->
-> WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
->    Depends on [n]: EARLY_PRINTK [=n] && USE_GENERIC_EARLY_PRINTK_8250 [=y]
->    Selected by [y]:
->    - ECONET [=y]
->
-> WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
->    Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=y] && OF [=y]
->    Selected by [y]:
->    - ECONET [=y]
->
-> However, in the discussion of v1 of this patch, Arnd pointed out that these
-> selects don't belong here in the first place. [1]
-> Let's remove them to resolve the unmet dependencies.
->
-> These unmet dependencies were found by kconfirm, a static analysis tool for
-> Kconfig.
->
-> Fixes: 79ee1d20e37c ("mips: econet: Fix incorrect Kconfig dependencies")
-> Fixes: 35fb26f94dfa ("mips: Add EcoNet MIPS platform support")
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+But first cleanups and re-organizations are required in some platforms that
+are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
+macros have been completely dropped from the entire tree.
 
+This series is based on v7.2 after the following patch and has also been
+built tested on multiple platforms.
 
-Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
+https://lore.kernel.org/all/20260709044334.1741263-1-anshuman.khandual@arm.com/
 
+Changes in RFC V3:
 
-> ---
-> Link: https://lore.kernel.org/all/59c5582d-6fc1-48d0-a5df-b3b6f58aa227@app.fastmail.com/ [1]
->
-> Changes since v1: remove the selects, instead of selecting more
-> Link to v1: https://lore.kernel.org/all/20260802161555.491549-1-julianbraha@gmail.com/
-> ---
->   arch/mips/Kconfig | 3 ---
->   1 file changed, 3 deletions(-)
->
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index e2eb9627bd14..c3f69def2008 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -396,10 +396,7 @@ config ECONET
->   	bool "EcoNet MIPS family"
->   	select BOOT_RAW
->   	select DEBUG_ZBOOT if DEBUG_KERNEL
-> -	select EARLY_PRINTK_8250
->   	select ECONET_EN751221_TIMER
-> -	select SERIAL_8250
-> -	select SERIAL_OF_PLATFORM
->   	select SYS_SUPPORTS_BIG_ENDIAN
->   	select SYS_HAS_CPU_MIPS32_R1
->   	select SYS_HAS_CPU_MIPS32_R2
+- Moved ptrval_to_str() as header in a separate patch
+- Stopped using pxd_ERROR() in generic MM in a separate patch
+- Dropped pxd_ERRO() macros from all platforms in a separate patch
+- Dropped print_bad_pte() and also cleaned up set_pte_phys()
+- Added some pr_error() messages in __get_pte_phys()
+- Cleaned up error messages and used ptrval_to_str() in platforms
+
+Changes in RFC V2:
+
+https://lore.kernel.org/all/20260811042119.3652929-1-anshuman.khandual@arm.com/
+
+- Added clean up patches for platforms with existing pxd_ERROR() usage
+- Dropped __FILE__ and __LINE__ from all print sections per David
+
+Changes in RFC V1:
+
+https://lore.kernel.org/all/20260806080639.1916749-1-anshuman.khandual@arm.com/
+
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (8):
+  mm: Make ptrval_to_str() generally available
+  mm: Stop using pxd_ERROR()
+  loongarch/mm: Stop using pte_ERROR()
+  parisc/mm: Directly use generic [pmd|pgd]_clear_bad()
+  sh/mm: Stop using pte_ERROR()
+  sh/mm: Stop using [p4d|pud|pmd]_ERROR()
+  sh/mm: Stop using pgd_ERROR()
+  mm: Drop pxd_ERROR()
+
+ arch/alpha/include/asm/pgtable.h              |  7 -------
+ arch/arc/include/asm/pgtable-levels.h         | 11 ----------
+ arch/arm/include/asm/pgtable.h                |  7 -------
+ arch/arm/kernel/traps.c                       | 17 ---------------
+ arch/arm64/include/asm/pgtable.h              | 15 -------------
+ arch/csky/include/asm/pgtable.h               |  4 ----
+ arch/hexagon/include/asm/pgtable.h            |  3 ---
+ arch/loongarch/include/asm/pgtable.h          | 13 ------------
+ arch/loongarch/mm/init.c                      |  4 +++-
+ arch/m68k/include/asm/mcf_pgtable.h           |  6 ------
+ arch/m68k/include/asm/motorola_pgtable.h      |  8 -------
+ arch/m68k/include/asm/sun3_pgtable.h          |  7 -------
+ arch/microblaze/include/asm/pgtable.h         |  7 -------
+ arch/mips/include/asm/pgtable-32.h            | 10 ---------
+ arch/mips/include/asm/pgtable-64.h            | 13 ------------
+ arch/nios2/include/asm/pgtable.h              |  7 -------
+ arch/openrisc/include/asm/pgtable.h           |  7 -------
+ arch/parisc/include/asm/pgtable.h             |  9 --------
+ arch/parisc/kernel/pci-dma.c                  |  6 ++----
+ arch/powerpc/include/asm/book3s/32/pgtable.h  |  2 --
+ arch/powerpc/include/asm/book3s/64/pgtable.h  |  7 -------
+ arch/powerpc/include/asm/nohash/32/pgtable.h  |  2 --
+ .../include/asm/nohash/64/pgtable-4k.h        |  3 ---
+ arch/powerpc/include/asm/nohash/64/pgtable.h  |  5 -----
+ arch/riscv/include/asm/pgtable-64.h           |  9 --------
+ arch/riscv/include/asm/pgtable.h              |  4 ----
+ arch/s390/include/asm/pgtable.h               | 11 ----------
+ arch/sh/include/asm/pgtable-3level.h          |  3 ---
+ arch/sh/include/asm/pgtable_32.h              | 13 ------------
+ arch/sh/mm/init.c                             | 16 +++++++-------
+ arch/sparc/include/asm/pgtable_32.h           |  3 ---
+ arch/sparc/include/asm/pgtable_64.h           | 10 ---------
+ arch/um/include/asm/pgtable-2level.h          |  7 -------
+ arch/um/include/asm/pgtable-4level.h          | 13 ------------
+ arch/x86/include/asm/pgtable-2level.h         |  5 -----
+ arch/x86/include/asm/pgtable-3level.h         | 11 ----------
+ arch/x86/include/asm/pgtable_64.h             | 18 ----------------
+ arch/xtensa/include/asm/pgtable.h             |  4 ----
+ include/asm-generic/pgtable-nop4d.h           |  1 -
+ include/asm-generic/pgtable-nopmd.h           |  1 -
+ include/asm-generic/pgtable-nopud.h           |  1 -
+ include/linux/mm_types.h                      | 15 +++++++++++++
+ mm/memory.c                                   | 16 ++------------
+ mm/pgtable-generic.c                          | 21 +++++++++++++++----
+ 44 files changed, 48 insertions(+), 314 deletions(-)
+
+-- 
+2.43.0
+

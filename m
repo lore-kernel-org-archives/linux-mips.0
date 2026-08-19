@@ -1,187 +1,131 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011EA483BF5;
-	Tue, 18 Aug 2026 17:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2ED78F26
+	for <linux-mips@vger.kernel.org>; Wed, 19 Aug 2026 01:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787074029; cv=none; b=JTEVvatSRrsW+nC77eeE7NEkIDy0ThLKHhRucdThHNvrLVlgyMz8a7/LinhRzSTqYm+c7sdQDtG7maS5+BnuwiZ8t4qgR1jhuflsJVCijFzEPfPlg1shJqFUf5CGe95WTUzrttfhTvgid9hgjI2EdV8xXvAq4sL/9I8zb235Qqo=
+	t=1787101534; cv=none; b=RAxdJiaV+1TNwyBuDuedP5kVlDq1fkv8IUBHhNamtisbmjnS8/jkbsFgMFUGm5SgBd5GHyVUL4dg1Yx4mLTaIGz0PQ5yJK/pYOYmRuIRPYlPBIXW/OJnYKLz27/b3bzaJhX5uxKu5waRLCcGxTUm9Oqtf0x+UWNzgzKmFGWsAuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787074029; c=relaxed/simple;
-	bh=ADdZVB3ByJto7NgE22xYJIHOTd2Yg2CZV0DZSFKDutc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oOFxmy9rcrzM78/tdnP8Y6OUPP0scEFFEywXlw7c13lCEJWG+fJ/9J6ISpl6eZGeMQ/aeDdbx+LCM4CrOWbG1dNRLWo04Kzo2lKTbFoDV7en2Ih56v+SQw/yRJaNenPeNfTKSSa2jX4idH8K1CmGzi1Qsx4CfgiTxWrRU/ZJ6vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IX3g7lrc; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787101534; c=relaxed/simple;
+	bh=90FGMOqfaMwKFE3m6MrCWpsXGFOlRbBwVWKfP0t4P9I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kSGZhwjVCMaaEa8l6gJnIond7pbn/qPVPIgOL86PPp+iH8Hv8Js2SE62j/oZvxyGKD/UN8B5ab8aUcIxCiPXFMoncT8BXQgU2LJyoUU0t1T9pLN8hFjQcNJVbD15hKf7d4BuZg+4lSGe2L6Hnctq1UL3+PQh01IPn2RDHDs+wxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sR7gQRHe; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IX3g7lrc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560D11F000E9;
-	Tue, 18 Aug 2026 17:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787074027;
-	bh=VnOXB31TFV10yD9eNFs0pSKT5jxzeJrBcCejudXWSng=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=IX3g7lrcY8W40oZx6xy7VceZESyT61w2bcCyl5mnyM4dcit3F79B4nqlvS3XopeYe
-	 wwjpkiXjgv/2grbz+ismIemK/11JHNrhpreVuh3HFooB9fz07R5Dv6NoceUR3W0Jd1
-	 JnFgHrMSpLXBArEe4FsgM1Bp9kQW031ZiVuuAdPSVapdwjpC19+mWTIkyY2QgnUUmN
-	 MOIE+mRqqLYTMpNo+dH2+aOet0tP5ooHQZ3uJAVOm3Pv5j1WH7xoLaQIHKvy9wH+yu
-	 1UHbwwY7+hQT6hA18ZENP54Kj8N3ScPe3FgKQu68lYN1RuKJnHkEXbu+6dIEd+7gm6
-	 ULsBlzyIcm3tA==
-Message-ID: <276c385a-371f-4971-b50d-520d3faf5364@kernel.org>
-Date: Tue, 18 Aug 2026 19:26:57 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sR7gQRHe"
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-90a80860d35so6293596d6.2
+        for <linux-mips@vger.kernel.org>; Tue, 18 Aug 2026 18:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787101532; x=1787706332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=K00Qxp5YCwypDmxrz55eJ7p4e8/W3wjazUln9Bb9aCA=;
+        b=sR7gQRHew4Ja6zfND6k99kVnqqNB6w5oKTiLDqrdcWhh0ntxwHmGhjn8IbJ+qMk1NS
+         pXCRj9TEjyPkbhOreuOXae3WOnBx8f6KaX015RiVIP0wbUkWGKCzLV8gSta19MxlgcCL
+         Ad8XPbB/IGj7DroJ2G652P+Suj2pVrH09VVoRz3Y40G2/q2Udb8ovEL9ie0wY86uXp8J
+         Tn3Tq1Lk/ADeDWzuEZ3wd0kDq7YjUy5hViLUjjrZ1PZ4ua/OJ9odrcgbBBz+iXUdnpRf
+         ArV3LftkODFTyoaKNdf4QN1g6fom+xjM8KvY3smzJyJNZXeaAeFhNrWc24Pr6DT21gsj
+         nAmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787101532; x=1787706332;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=K00Qxp5YCwypDmxrz55eJ7p4e8/W3wjazUln9Bb9aCA=;
+        b=LC/G6MgBReI9Mn3HF0Drz6TzEOHvwFeb2KiM1VU4yHLbD9j+eewbMoc+Uetm6B9lm8
+         LOMnAG02XO+2KdVyO5fo0ID+Y/zmrnggfFCkBNSyIFsfphxGKVDnhhctnxhA/pHpjnEw
+         TqUj07Ul4jyQHRQvQXm2sGZcw8apyDApwC6B9HwLbJGHqd0oLPHA0WFCd9jKv4xO/VYk
+         H8ZX+p1pmU4y3pKUaAgIZNzuC42+Ka1VHXyMchfnB33bX2XFK9dBK+6HTk6YzCexR+d+
+         TfirXwQ5gJLfIvSXOFf5WP+zxdRrGyU3FuBPfYh8F9d16+/VYXxcH0GJE/C+faUPtVIG
+         G2yg==
+X-Forwarded-Encrypted: i=1; AHgh+RqmzrM7HAMzhMJz820DkSHoiXm+vpj8CaUCliuVAkdmvwV5DHuxXxjG6vlvFNM4qyT7yKeQur9CCcHk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1Sl9hDpnDxNE0fCT/E0eqanGDQvrBlmYsaCqYns+gdxyuhgBw
+	Xxa9vDTQhA8OjgRPF6g8gk3HtS8UkD71m3k549AO/+gA3Jds73WI50/B
+X-Gm-Gg: AR+sD12yq1yRzH4iycBdx5XmnkBmlqVP26ISSf1M6E1IH/bFdDhvgr8+CvXycLIqFiY
+	unvwjssD4xPhCyZliMgKorsR0E/6QgRoWzBBZ8JlXEPleo50VgGeaga4gQLhEaWBPKGEGkZazBK
+	7v+brxeuxY9ZTSmsqTjZH4L8TXdH7T6nPdKvj9OPsoxfadqZYlSxy5TkR7Zs9ZiQxAJjOw2qZ2m
+	VjBzE2ALSaY3ClXyx1QnEiozsQgO/YSzSSecVTsRPmlPKU3Nsdvzm1JNqQcmZ3WACUP7Ujq/hMK
+	Taotac0qG4e1YB31Tii3e9Eo93vVORdOO1bvzijeUIqSle9UYi+9Afo1RgQCLdORGYi0+X6OaI6
+	y+55gSmsa9Pq8+shPR5oyZMrWupYdK5BLofygrd67sjX49QfOZ9FGHEK7SVamNiWH0yBlhbYBLw
+	58NXQM51wHN5IopkxXc6lUNkwSPK2/eRbTpSRZdjdoTsCuWDEvCxzrAOErsA==
+X-Received: by 2002:a05:6214:2c0e:b0:90c:4d5e:d8dc with SMTP id 6a1803df08f44-90c5eb40218mr9560686d6.28.1787101532058;
+        Tue, 18 Aug 2026 18:05:32 -0700 (PDT)
+Received: from Turin ([187.15.143.241])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-90c5f29065bsm2398716d6.24.2026.08.18.18.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2026 18:05:31 -0700 (PDT)
+From: Nicholas Dudar <main.kalliope@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	jolsa@kernel.org,
+	emil@etsalapatis.com,
+	ihor.solodrai@linux.dev,
+	johan.almbladh@anyfinetworks.com,
+	paulburton@kernel.org,
+	tsbogend@alpha.franken.de,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC bpf-next 0/2] bpf, mips: Add BPF_MOVSX support to the JITs
+Date: Tue, 18 Aug 2026 21:05:21 -0400
+Message-ID: <20260819010523.1057789-1-main.kalliope@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 8/8] mm: Drop pxd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
- akpm@linux-foundation.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
- <20260818040041.1891769-9-anshuman.khandual@arm.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzS5EYXZpZCBIaWxk
- ZW5icmFuZCAoQ3VycmVudCkgPGRhdmlkQGtlcm5lbC5vcmc+wsGQBBMBCAA6AhsDBQkmWAik
- AgsJBBUKCQgCFgICHgUCF4AWIQQb2cqtc1xMOkYN/MpN3hD3AP+DWgUCaYJt/AIZAQAKCRBN
- 3hD3AP+DWriiD/9BLGEKG+N8L2AXhikJg6YmXom9ytRwPqDgpHpVg2xdhopoWdMRXjzOrIKD
- g4LSnFaKneQD0hZhoArEeamG5tyo32xoRsPwkbpIzL0OKSZ8G6mVbFGpjmyDLQCAxteXCLXz
- ZI0VbsuJKelYnKcXWOIndOrNRvE5eoOfTt2XfBnAapxMYY2IsV+qaUXlO63GgfIOg8RBaj7x
- 3NxkI3rV0SHhI4GU9K6jCvGghxeS1QX6L/XI9mfAYaIwGy5B68kF26piAVYv/QZDEVIpo3t7
- /fjSpxKT8plJH6rhhR0epy8dWRHk3qT5tk2P85twasdloWtkMZ7FsCJRKWscm1BLpsDn6EQ4
- jeMHECiY9kGKKi8dQpv3FRyo2QApZ49NNDbwcR0ZndK0XFo15iH708H5Qja/8TuXCwnPWAcJ
- DQoNIDFyaxe26Rx3ZwUkRALa3iPcVjE0//TrQ4KnFf+lMBSrS33xDDBfevW9+Dk6IISmDH1R
- HFq2jpkN+FX/PE8eVhV68B2DsAPZ5rUwyCKUXPTJ/irrCCmAAb5Jpv11S7hUSpqtM/6oVESC
- 3z/7CzrVtRODzLtNgV4r5EI+wAv/3PgJLlMwgJM90Fb3CB2IgbxhjvmB1WNdvXACVydx55V7
- LPPKodSTF29rlnQAf9HLgCphuuSrrPn5VQDaYZl4N/7zc2wcWM7BTQRVy5+RARAA59fefSDR
- 9nMGCb9LbMX+TFAoIQo/wgP5XPyzLYakO+94GrgfZjfhdaxPXMsl2+o8jhp/hlIzG56taNdt
- VZtPp3ih1AgbR8rHgXw1xwOpuAd5lE1qNd54ndHuADO9a9A0vPimIes78Hi1/yy+ZEEvRkHk
- /kDa6F3AtTc1m4rbbOk2fiKzzsE9YXweFjQvl9p+AMw6qd/iC4lUk9g0+FQXNdRs+o4o6Qvy
- iOQJfGQ4UcBuOy1IrkJrd8qq5jet1fcM2j4QvsW8CLDWZS1L7kZ5gT5EycMKxUWb8LuRjxzZ
- 3QY1aQH2kkzn6acigU3HLtgFyV1gBNV44ehjgvJpRY2cC8VhanTx0dZ9mj1YKIky5N+C0f21
- zvntBqcxV0+3p8MrxRRcgEtDZNav+xAoT3G0W4SahAaUTWXpsZoOecwtxi74CyneQNPTDjNg
- azHmvpdBVEfj7k3p4dmJp5i0U66Onmf6mMFpArvBRSMOKU9DlAzMi4IvhiNWjKVaIE2Se9BY
- FdKVAJaZq85P2y20ZBd08ILnKcj7XKZkLU5FkoA0udEBvQ0f9QLNyyy3DZMCQWcwRuj1m73D
- sq8DEFBdZ5eEkj1dCyx+t/ga6x2rHyc8Sl86oK1tvAkwBNsfKou3v+jP/l14a7DGBvrmlYjO
- 59o3t6inu6H7pt7OL6u6BQj7DoMAEQEAAcLBfAQYAQgAJgIbDBYhBBvZyq1zXEw6Rg38yk3e
- EPcA/4NaBQJonNqrBQkmWAihAAoJEE3eEPcA/4NaKtMQALAJ8PzprBEXbXcEXwDKQu+P/vts
- IfUb1UNMfMV76BicGa5NCZnJNQASDP/+bFg6O3gx5NbhHHPeaWz/VxlOmYHokHodOvtL0WCC
- 8A5PEP8tOk6029Z+J+xUcMrJClNVFpzVvOpb1lCbhjwAV465Hy+NUSbbUiRxdzNQtLtgZzOV
- Zw7jxUCs4UUZLQTCuBpFgb15bBxYZ/BL9MbzxPxvfUQIPbnzQMcqtpUs21CMK2PdfCh5c4gS
- sDci6D5/ZIBw94UQWmGpM/O1ilGXde2ZzzGYl64glmccD8e87OnEgKnH3FbnJnT4iJchtSvx
- yJNi1+t0+qDti4m88+/9IuPqCKb6Stl+s2dnLtJNrjXBGJtsQG/sRpqsJz5x1/2nPJSRMsx9
- 5YfqbdrJSOFXDzZ8/r82HgQEtUvlSXNaXCa95ez0UkOG7+bDm2b3s0XahBQeLVCH0mw3RAQg
- r7xDAYKIrAwfHHmMTnBQDPJwVqxJjVNr7yBic4yfzVWGCGNE4DnOW0vcIeoyhy9vnIa3w1uZ
- 3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
- CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
- qIws/H2t
-In-Reply-To: <20260818040041.1891769-9-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 8/18/26 06:00, Anshuman Khandual wrote:
-> There are no more users left for any pxd_ERROR() either in generic MM or in
-> the platform MM. Hence all these platform macros along with their generic
-> fallback could be dropped across the tree.
-> 
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: loongarch@lists.linux.dev
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-openrisc@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in RFC V3
-> 
-> - Moved ptrval_to_str() as header in a [PATCH 1/8]
-> - Stopped using pxd_ERROR() in generic MM in [PATCH 2/8]
-> - Dropped pxd_ERRO() macros from all platforms in this patch
-> 
->  arch/alpha/include/asm/pgtable.h               |  7 -------
->  arch/arc/include/asm/pgtable-levels.h          | 11 -----------
->  arch/arm/include/asm/pgtable.h                 |  7 -------
->  arch/arm/kernel/traps.c                        | 17 -----------------
->  arch/arm64/include/asm/pgtable.h               | 15 ---------------
->  arch/csky/include/asm/pgtable.h                |  4 ----
->  arch/hexagon/include/asm/pgtable.h             |  3 ---
->  arch/loongarch/include/asm/pgtable.h           | 11 -----------
->  arch/m68k/include/asm/mcf_pgtable.h            |  6 ------
->  arch/m68k/include/asm/motorola_pgtable.h       |  8 --------
->  arch/m68k/include/asm/sun3_pgtable.h           |  7 -------
->  arch/microblaze/include/asm/pgtable.h          |  7 -------
->  arch/mips/include/asm/pgtable-32.h             | 10 ----------
->  arch/mips/include/asm/pgtable-64.h             | 13 -------------
->  arch/nios2/include/asm/pgtable.h               |  7 -------
->  arch/openrisc/include/asm/pgtable.h            |  7 -------
->  arch/parisc/include/asm/pgtable.h              |  9 ---------
->  arch/powerpc/include/asm/book3s/32/pgtable.h   |  2 --
->  arch/powerpc/include/asm/book3s/64/pgtable.h   |  7 -------
->  arch/powerpc/include/asm/nohash/32/pgtable.h   |  2 --
->  .../powerpc/include/asm/nohash/64/pgtable-4k.h |  3 ---
->  arch/powerpc/include/asm/nohash/64/pgtable.h   |  5 -----
->  arch/riscv/include/asm/pgtable-64.h            |  9 ---------
->  arch/riscv/include/asm/pgtable.h               |  4 ----
->  arch/s390/include/asm/pgtable.h                | 11 -----------
->  arch/sh/include/asm/pgtable-3level.h           |  3 ---
->  arch/sh/include/asm/pgtable_32.h               |  8 --------
->  arch/sparc/include/asm/pgtable_32.h            |  3 ---
->  arch/sparc/include/asm/pgtable_64.h            | 10 ----------
->  arch/um/include/asm/pgtable-2level.h           |  7 -------
->  arch/um/include/asm/pgtable-4level.h           | 13 -------------
->  arch/x86/include/asm/pgtable-2level.h          |  5 -----
->  arch/x86/include/asm/pgtable-3level.h          | 11 -----------
->  arch/x86/include/asm/pgtable_64.h              | 18 ------------------
->  arch/xtensa/include/asm/pgtable.h              |  4 ----
->  include/asm-generic/pgtable-nop4d.h            |  1 -
->  include/asm-generic/pgtable-nopmd.h            |  1 -
->  include/asm-generic/pgtable-nopud.h            |  1 -
->  38 files changed, 277 deletions(-)
+bpf-next is closed for the merge window, so I am sending this for
+review. I plan to post this series after it reopens.
 
-Nice
+The MIPS32 and MIPS64 JITs lower register BPF_MOVSX as an ordinary
+move because their register-move paths do not interpret insn->off.
+Negative low-width values therefore retain incorrect upper bits.
 
-Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+First factor ordinary register moves into backend-local 32- and 64-bit
+helpers. Then handle the BPF-defined MOVSX widths from insn->off in
+those helpers. This keeps the verifier-inserted ALU32 zero extension on
+its existing path and preserves the MIPS32 register-pair handling. The
+implementation uses shift sequences rather than the R2+ seb/seh
+instructions so it also works on base MIPS32.
 
--- 
-Cheers,
+MOVSX can be applied before or after the in-flight SDIV/SMOD series.
+Both must precede MEMSX (yet to be sent). The ordering discussion is
+here:
 
-David
+Link: https://lore.kernel.org/bpf/CAJZwKkis=3NGw9At0WfiZaRYEoMPbQfqJKN0e+vtRDvp4VY5Ng@mail.gmail.com/
+
+Patch 1 did not change any test_bpf result. On the four little-endian
+profiles where the complete suite was run at each boundary, patch 2
+fixed the ALU32 byte and halfword MOVSX cases and the ALU64 byte,
+halfword, and word cases. The 32-bit totals moved from 1031 passes and
+31 failures to 1036 passes and 26 failures; the 64-bit totals moved
+from 1030 passes and 31 failures to 1035 passes and 26 failures. Patch
+2 did not change any other test result. Ordinary MOV and zero-extension
+controls passed at each boundary.
+
+Selector-focused QEMU testing covered MIPS32 base, R2, and R6 plus
+pre-R6 MIPS64, each in big- and little-endian configurations. No
+physical MIPS hardware was tested.
+
+Nicholas Dudar (2):
+  bpf, mips: Factor register moves into helpers
+  bpf, mips: Add support for BPF_MOVSX in the JITs
+
+ arch/mips/net/bpf_jit_comp32.c | 54 +++++++++++++++++++++++++++++++---
+ arch/mips/net/bpf_jit_comp64.c | 48 ++++++++++++++++++++++++++++--
+ 2 files changed, 95 insertions(+), 7 deletions(-)
+
+
+base-commit: 6655c409707ec8ce9ce0850ffe4fe02331fd4d9c

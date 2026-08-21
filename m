@@ -1,194 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC55845A2AD;
-	Fri, 21 Aug 2026 09:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DEF3DA5DC;
+	Fri, 21 Aug 2026 09:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787303154; cv=none; b=oV+v08feGlhzxBevHr108s1OgTEz+iLP3/iWFRb5ZL1+K3K5ZgrKcVUGB/MXIehHAM7hzTatP1fOMMfNve7gKrB6BY4PaqVfjORXBsGZjVbRLgzO0jBPPimA9D0bacJZdNWQcPSopcBACE367D5ROrj93u2GRn/RowYcu5GHkhg=
+	t=1787305271; cv=none; b=NY2ssc8UYyrbw8TGEXtB4qqJ9l5t4yqanPLLcXR9sGzPhcaNS+jNeTOoeL06X+TlD3/CSmuGLdNqygqY9DlpnipBRBjZbBSNfq9P0LNToeODSdYTRHCD836fZLcJztLniLGaHAstXwPkmDi3WD3oqhmSSgc3WcO3Qh75SZTCrdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787303154; c=relaxed/simple;
-	bh=BoVDFLjm3qmryxpWKKtPiB9xGLwmcZ8bdHtjqA34dYQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rRL7+mmiS5ceIHiEQj9rH6TOU9bd11/V60QxzEudxf56JRbvrevGpPPTGv04UTpfQp6Ys7FXrP/6cJObGZef9SI/MxYQmhdGoW30/R6cMMuChh0cMyE4nfwROb3do3mtvksGHAC4or+4Zmu8vheT2QqyUiRtWn3Xi+3txLCZwgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5598F1F000E9;
-	Fri, 21 Aug 2026 09:05:30 +0000 (UTC)
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Ryan Chen <ryan_chen@aspeedtech.com>,
-	Joel Stanley <joel@jms.id.au>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Billy Tsai <billy_tsai@aspeedtech.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Taichi Sugaya <sugaya.taichi@socionext.com>,
-	Takao Orito <orito.takao@socionext.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Avi Fishman <avifishman70@gmail.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Tali Perry <tali.perry1@gmail.com>,
-	Patrick Venture <venture@google.com>,
-	Nancy Yuen <yuenn@google.com>,
-	Benjamin Fair <benjaminfair@google.com>,
-	Sudeep Holla <sudeep.holla@kernel.org>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	David Lechner <david@lechnology.com>,
-	Abel Vesa <abelvesa@kernel.org>,
-	Peng Fan <peng.fan@nxp.com>,
-	Frank Li <Frank.Li@nxp.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	=?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>,
-	Chen-Yu Tsai <wens@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Prashant Gaikwad <pgaikwad@nvidia.com>,
-	Thierry Reding <thierry.reding@kernel.org>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Ulf Hansson <ulfh@kernel.org>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-clk@vger.kernel.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org,
-	arm-scmi@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	soc@lists.linux.dev,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 45/45] clk: zynqmp: Make sure clk_init_data is fully initialized
-Date: Fri, 21 Aug 2026 10:53:55 +0200
-Message-ID: <ca5b863571e9e21d123ab95cd5667b19f0d14d96.1787239813.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1787239813.git.geert+renesas@glider.be>
-References: <cover.1787239813.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1787305271; c=relaxed/simple;
+	bh=GjsU8qyiZS6YeZ0SAgy+sWk4jgL17Ks+5kXu9jCXGd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OLw0QgHhAzow/8EC2adW1F+nN4qD+sAx/PPMcd9Zypmpk1ZlK4E7Wb4iwPPieI+dKC66OofXOnbIwO8Q9yrsql0g8+SB85gLKQ73zKj5s3EaIKeRD8WlpZNqoA/WtK02cdeHl+jc51Nl9FwB3baartSxbnBP9Izmns7QOjrKGoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1wxL21-0008Fk-00; Fri, 21 Aug 2026 10:55:21 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 6C6BBC0110; Fri, 21 Aug 2026 10:55:13 +0200 (CEST)
+Date: Fri, 21 Aug 2026 10:55:13 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: torvalds@linux-foundation.org
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS changes for v7.3
+Message-ID: <aogScROchrBsk812@alpha.franken.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-The clk_init_data structure contains several mutually-exclusive members
-for different methods to specify the possible parents of a clock,
-prompting drivers to initialize only the members they need.  However,
-not initializing all members may cause subtle issues, which are only
-exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
-enabled.
+The following changes since commit a13c140cc289c0b7b3770bce5b3ad42ab35074aa:
 
-Make sure all members are fully initialized, to avoid such bugs, and to
-prevent future breakage when converting drivers to a different method
-for specifying the parents.
+  Linux 7.2-rc3 (2026-07-12 14:16:39 -0700)
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Compile-tested only.
----
- drivers/clk/zynqmp/clk-gate-zynqmp.c | 2 +-
- drivers/clk/zynqmp/clk-mux-zynqmp.c  | 2 +-
- drivers/clk/zynqmp/divider.c         | 2 +-
- drivers/clk/zynqmp/pll.c             | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+are available in the Git repository at:
 
-diff --git a/drivers/clk/zynqmp/clk-gate-zynqmp.c b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-index db10eb69f3fe01a5..1a462af7b8ea3efa 100644
---- a/drivers/clk/zynqmp/clk-gate-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-@@ -109,10 +109,10 @@ struct clk_hw *zynqmp_clk_register_gate(const char *name, u32 clk_id,
- 					u8 num_parents,
- 					const struct clock_topology *nodes)
- {
-+	struct clk_init_data init = {};
- 	struct zynqmp_clk_gate *gate;
- 	struct clk_hw *hw;
- 	int ret;
--	struct clk_init_data init;
- 
- 	/* allocate the gate */
- 	gate = kzalloc_obj(*gate);
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-index e37bd3516974c1ee..79509e387b51fe40 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -133,9 +133,9 @@ struct clk_hw *zynqmp_clk_register_mux(const char *name, u32 clk_id,
- 				       u8 num_parents,
- 				       const struct clock_topology *nodes)
- {
-+	struct clk_init_data init = {};
- 	struct zynqmp_clk_mux *mux;
- 	struct clk_hw *hw;
--	struct clk_init_data init;
- 	int ret;
- 
- 	mux = kzalloc_obj(*mux);
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index 4075f6ecf076a8e6..3eabd1cf211ddba3 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -278,9 +278,9 @@ struct clk_hw *zynqmp_clk_register_divider(const char *name,
- 					   u8 num_parents,
- 					   const struct clock_topology *nodes)
- {
-+	struct clk_init_data init = {};
- 	struct zynqmp_clk_divider *div;
- 	struct clk_hw *hw;
--	struct clk_init_data init;
- 	int ret;
- 
- 	/* allocate the divider */
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index 6463787cf57b6018..6158386ca743d1f8 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -313,9 +313,9 @@ struct clk_hw *zynqmp_clk_register_pll(const char *name, u32 clk_id,
- 				       u8 num_parents,
- 				       const struct clock_topology *nodes)
- {
-+	struct clk_init_data init = {};
- 	struct zynqmp_pll *pll;
- 	struct clk_hw *hw;
--	struct clk_init_data init;
- 	int ret;
- 
- 	init.name = name;
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_7.3
+
+for you to fetch changes up to 3b7711be02612845e44b5e9ef7c0b9f203cf29b6:
+
+  mips: dts: econet: Describe dual-VPE 34Kc processor (2026-08-03 15:14:05 +0200)
+
+----------------------------------------------------------------
+- switch gpio code to use swnodes
+- rework of TXX9 gpio code
+- enable multi-vpe for econet
+- cleanups and fixes
+
+----------------------------------------------------------------
+Caleb James DeLisle (2):
+      mips: econet: add multi-vpe capability to EN751221
+      mips: dts: econet: Describe dual-VPE 34Kc processor
+
+Dmitry Torokhov (3):
+      bcma: gpio: Add and register software node for GPIO controller
+      ssb: gpio: Add and register software node for GPIO controller
+      MIPS: BCM47XX: Convert buttons to software nodes
+
+Geert Uytterhoeven (9):
+      MIPS: TXX9: Remove tx4938_spi_init() and txx9_spi_init()
+      MIPS: TXX9: Remove txx9_7segled_*() forward declarations
+      MIPS: TXX9: rbtx4927: Use GPIO lookup table for SIO DTR
+      MIPS: TXX9: rbtx4927: Use GPIO lookup table for TXx9 LEDs
+      MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
+      MIPS: TXX9: Use GPIO lookup table for iocled LEDs
+      MIPS: TXX9: Drop GPIOLIB_LEGACY select
+      MIPS: TXX9: Convert gpio_txx9 to dynamic GPIO base allocation
+      MIPS: TXX9: Clean up txx9_iocled_init()
+
+Julian Braha (1):
+      mips: remove dead select
+
+Markus Elfring (1):
+      MIPS: kernel: proc: Use two seq_putc() calls in show_cpuinfo()
+
+Thomas Bogendoerfer (1):
+      MIPS: ptrace: Fix syscall skipping via PTRACE_SYSCALL
+
+Uwe Kleine-König (The Capable Hub) (1):
+      MIPS: ip22-gio: Drop #include of <linux/mod_devicetable.h>
+
+ arch/mips/Kconfig                       |   1 -
+ arch/mips/bcm47xx/buttons.c             | 442 ++++++++++++++++++--------------
+ arch/mips/boot/dts/econet/en751221.dtsi |   7 +
+ arch/mips/econet/Kconfig                |   4 +-
+ arch/mips/econet/init.c                 |  42 ++-
+ arch/mips/include/asm/gio_device.h      |   1 -
+ arch/mips/include/asm/txx9/generic.h    |   9 +-
+ arch/mips/include/asm/txx9/tx4938.h     |   1 -
+ arch/mips/include/asm/txx9pio.h         |   3 +-
+ arch/mips/kernel/gpio_txx9.c            |   5 +-
+ arch/mips/kernel/proc.c                 |   4 +-
+ arch/mips/kernel/ptrace.c               |   6 +-
+ arch/mips/txx9/Kconfig                  |   1 -
+ arch/mips/txx9/generic/setup.c          |  45 ++--
+ arch/mips/txx9/generic/setup_tx4938.c   |   6 -
+ arch/mips/txx9/rbtx4927/setup.c         |  41 ++-
+ drivers/bcma/driver_gpio.c              |  43 +++-
+ drivers/ssb/driver_gpio.c               |  48 +++-
+ include/linux/bcma/bcma.h               |   2 +
+ include/linux/ssb/ssb.h                 |   2 +
+ 20 files changed, 446 insertions(+), 267 deletions(-)
+
 -- 
-2.43.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -1,110 +1,107 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DEF3DA5DC;
-	Fri, 21 Aug 2026 09:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DC544C4FF;
+	Fri, 21 Aug 2026 10:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787305271; cv=none; b=NY2ssc8UYyrbw8TGEXtB4qqJ9l5t4yqanPLLcXR9sGzPhcaNS+jNeTOoeL06X+TlD3/CSmuGLdNqygqY9DlpnipBRBjZbBSNfq9P0LNToeODSdYTRHCD836fZLcJztLniLGaHAstXwPkmDi3WD3oqhmSSgc3WcO3Qh75SZTCrdY=
+	t=1787306730; cv=none; b=TLdkEGYQgyflLxXXuQ1yKtfR8a8cIUD6OBnJrLGscITEdEqjqyFV6Db9fASHQbq9ywOEOQoNHmx5QBVn9D2Uod3clQ4EJ71bj8AM/q1xCF827DtFWMkqk+GmyNsxUOKqjt/b20coelPef3sGOyZ93//FCocU+wXOGJe4Sl/4i6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787305271; c=relaxed/simple;
-	bh=GjsU8qyiZS6YeZ0SAgy+sWk4jgL17Ks+5kXu9jCXGd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OLw0QgHhAzow/8EC2adW1F+nN4qD+sAx/PPMcd9Zypmpk1ZlK4E7Wb4iwPPieI+dKC66OofXOnbIwO8Q9yrsql0g8+SB85gLKQ73zKj5s3EaIKeRD8WlpZNqoA/WtK02cdeHl+jc51Nl9FwB3baartSxbnBP9Izmns7QOjrKGoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1wxL21-0008Fk-00; Fri, 21 Aug 2026 10:55:21 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 6C6BBC0110; Fri, 21 Aug 2026 10:55:13 +0200 (CEST)
-Date: Fri, 21 Aug 2026 10:55:13 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: torvalds@linux-foundation.org
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS changes for v7.3
-Message-ID: <aogScROchrBsk812@alpha.franken.de>
+	s=arc-20240116; t=1787306730; c=relaxed/simple;
+	bh=JXbRXNW+nzT+G1mWEFJpN2bsZuiPKU8aSyiCtUNt3V0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZURF0UKe8SQ88aLecDpD0c8vjYwMDV/Lv7Uj4W0qjWMteCPDM1NOoAemAjLmqavzjHaviTkNLhTondi0N3BDeyM1TAc4dzoSyh0GkBxyQgJb8MZlVzrV/ySEC+h/L/hZ26vHzLX69D+xEwN3hGAhDDss2SuxCGM3aW9yMJbBARk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56CD61F000E9;
+	Fri, 21 Aug 2026 10:05:18 +0000 (UTC)
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] MIPS: Alchemy: clock: Make sure clk_init_data is fully initialized
+Date: Fri, 21 Aug 2026 12:05:15 +0200
+Message-ID: <3610b51df642abb1fbb39f5bd93fddea43f8f164.1787240060.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-The following changes since commit a13c140cc289c0b7b3770bce5b3ad42ab35074aa:
+The clk_init_data structure contains several mutually-exclusive members
+for different methods to specify the possible parents of a clock,
+prompting drivers to initialize only the members they need.  However,
+not initializing all members may cause subtle issues, which are only
+exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
+enabled.
 
-  Linux 7.2-rc3 (2026-07-12 14:16:39 -0700)
+Make sure all members are fully initialized, to avoid such bugs, and to
+prevent future breakage when converting drivers to a different method
+for specifying the parents.
 
-are available in the Git repository at:
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Compile-tested only.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_7.3
+Part One[1] fixed all cases that I identified to be real bugs, in
+response to a crash I saw on BeagleBone Black.
 
-for you to fetch changes up to 3b7711be02612845e44b5e9ef7c0b9f203cf29b6:
+This patch is the MIPS subpart of Part Two, which fixes remaining cases
+that are currently harmless.  These are still fragile, and may cause
+future breakage when converting drivers to a different method for
+specifying the parents.
 
-  mips: dts: econet: Describe dual-VPE 34Kc processor (2026-08-03 15:14:05 +0200)
+[1] "[PATCH treewide 0/5] clk: Make sure clk_init_data is fully
+     initialized (part 1)"
+    https://lore.kernel.org/cover.1787165329.git.geert+renesas@glider.be
+---
+ arch/mips/alchemy/common/clock.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-----------------------------------------------------------------
-- switch gpio code to use swnodes
-- rework of TXX9 gpio code
-- enable multi-vpe for econet
-- cleanups and fixes
-
-----------------------------------------------------------------
-Caleb James DeLisle (2):
-      mips: econet: add multi-vpe capability to EN751221
-      mips: dts: econet: Describe dual-VPE 34Kc processor
-
-Dmitry Torokhov (3):
-      bcma: gpio: Add and register software node for GPIO controller
-      ssb: gpio: Add and register software node for GPIO controller
-      MIPS: BCM47XX: Convert buttons to software nodes
-
-Geert Uytterhoeven (9):
-      MIPS: TXX9: Remove tx4938_spi_init() and txx9_spi_init()
-      MIPS: TXX9: Remove txx9_7segled_*() forward declarations
-      MIPS: TXX9: rbtx4927: Use GPIO lookup table for SIO DTR
-      MIPS: TXX9: rbtx4927: Use GPIO lookup table for TXx9 LEDs
-      MIPS: TXX9: Reduce TXX9_IOCLED_MAXLEDS to 3
-      MIPS: TXX9: Use GPIO lookup table for iocled LEDs
-      MIPS: TXX9: Drop GPIOLIB_LEGACY select
-      MIPS: TXX9: Convert gpio_txx9 to dynamic GPIO base allocation
-      MIPS: TXX9: Clean up txx9_iocled_init()
-
-Julian Braha (1):
-      mips: remove dead select
-
-Markus Elfring (1):
-      MIPS: kernel: proc: Use two seq_putc() calls in show_cpuinfo()
-
-Thomas Bogendoerfer (1):
-      MIPS: ptrace: Fix syscall skipping via PTRACE_SYSCALL
-
-Uwe Kleine-König (The Capable Hub) (1):
-      MIPS: ip22-gio: Drop #include of <linux/mod_devicetable.h>
-
- arch/mips/Kconfig                       |   1 -
- arch/mips/bcm47xx/buttons.c             | 442 ++++++++++++++++++--------------
- arch/mips/boot/dts/econet/en751221.dtsi |   7 +
- arch/mips/econet/Kconfig                |   4 +-
- arch/mips/econet/init.c                 |  42 ++-
- arch/mips/include/asm/gio_device.h      |   1 -
- arch/mips/include/asm/txx9/generic.h    |   9 +-
- arch/mips/include/asm/txx9/tx4938.h     |   1 -
- arch/mips/include/asm/txx9pio.h         |   3 +-
- arch/mips/kernel/gpio_txx9.c            |   5 +-
- arch/mips/kernel/proc.c                 |   4 +-
- arch/mips/kernel/ptrace.c               |   6 +-
- arch/mips/txx9/Kconfig                  |   1 -
- arch/mips/txx9/generic/setup.c          |  45 ++--
- arch/mips/txx9/generic/setup_tx4938.c   |   6 -
- arch/mips/txx9/rbtx4927/setup.c         |  41 ++-
- drivers/bcma/driver_gpio.c              |  43 +++-
- drivers/ssb/driver_gpio.c               |  48 +++-
- include/linux/bcma/bcma.h               |   2 +
- include/linux/ssb/ssb.h                 |   2 +
- 20 files changed, 446 insertions(+), 267 deletions(-)
-
+diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
+index 62a7304ff35f6190..b5d2cbb7c69ec475 100644
+--- a/arch/mips/alchemy/common/clock.c
++++ b/arch/mips/alchemy/common/clock.c
+@@ -150,7 +150,7 @@ static const struct clk_ops alchemy_clkops_cpu = {
+ static struct clk __init *alchemy_clk_setup_cpu(const char *parent_name,
+ 						int ctype)
+ {
+-	struct clk_init_data id;
++	struct clk_init_data id = {};
+ 	struct clk_hw *h;
+ 	struct clk *clk;
+ 
+@@ -245,7 +245,7 @@ static struct clk __init *alchemy_clk_setup_aux(const char *parent_name,
+ 						char *name, int maxmult,
+ 						unsigned long reg)
+ {
+-	struct clk_init_data id;
++	struct clk_init_data id = {};
+ 	struct clk *c;
+ 	struct alchemy_auxpll_clk *a;
+ 
+@@ -754,7 +754,7 @@ static const char * const alchemy_clk_fgen_names[] = {
+ static int __init alchemy_clk_init_fgens(int ctype)
+ {
+ 	struct clk *c;
+-	struct clk_init_data id;
++	struct clk_init_data id = {};
+ 	struct alchemy_fgcs_clk *a;
+ 	unsigned long v;
+ 	int i, ret;
+@@ -959,9 +959,9 @@ static int alchemy_csrc_dt2[] = { 1, 4, 3, 2 };	/* Au1300 */
+ 
+ static int __init alchemy_clk_setup_imux(int ctype)
+ {
++	struct clk_init_data id = {};
+ 	struct alchemy_fgcs_clk *a;
+ 	const char * const *names;
+-	struct clk_init_data id;
+ 	unsigned long v;
+ 	int i, ret, *dt;
+ 	struct clk *c;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.43.0
+

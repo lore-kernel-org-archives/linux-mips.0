@@ -1,94 +1,166 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774552DB780
-	for <linux-mips@vger.kernel.org>; Sat, 22 Aug 2026 00:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787359262; cv=none; b=lUc8zWkdXS5x0+v1FRiHBF5CCsNw7h/JldGMCpGB3k182fhggC7CYjiTVU36tLonR7OcfBWgA80isfwLiyZVn8hjhqOHpQ/qUolzlCVtF0vv1vCkLfj+UnAOTZnGSDowyd+2GWeVBAzL3bcTK5WU/kElllH66GbEbKFhZT1qyLU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787359262; c=relaxed/simple;
-	bh=VX0jDR+WpnV3BHXzSyTsEDfjtkYWQukygm7cD0iSRQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TfGE6+Agh87FhhaG4UNHSpCsnKyFezzaS+iUgAFuFwPRoYCWU4I89e4IqXgL9zq56O8YnCCzHPsmfumLuB7l0YmPpoNSAhp+VU8efG2M75wLshAwJ+HaH8DKw4vm9H3oBbA0OIgGYuVNgfAIYnFIDjC0d6HYu5po9YI63XXLYxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DfULZihE; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7D218A93F;
+	Sun, 23 Aug 2026 09:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787477768; cv=pass; b=aKRhwKjyiqaQ/f4z9Tzjmq050gB5j43MqiRnvv3NEHgBYb2NA38r/8OgTtBodz1aJTTeQgjxytVXru/p9gKivEw+jUc4uQfaPjSvXFO/DY6fm9aUFeKJpBTnHqt2/0lYysLckShAYrE+XVW/cTP6MTpOEabuU3rPPcLCYhrfV+4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787477768; c=relaxed/simple;
+	bh=66SEFEfjhYil5CHVMTD9XOV4KPuqVrQl3ukW+9UnnNY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZYGtE6KX3kfnHMaLZZyrEvaXhldXlPHJOHuP7KiUVdIRo/hOSH/wS/VuvOW6ygdnr5+VCDpJPhP12NkFcqNvlQOHlMeMBql/nD7AxLfkp5e0O3ApMbxFnpKy7KHSuLY9JoARp1xvbmM2uAjaMHXZ3JrFvRiWi7Ad5niMKab6zHg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com; spf=pass smtp.mailfrom=goldelico.com; dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=U0Z5a6PU; dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=2EzpCXhj; arc=pass smtp.client-ip=85.215.255.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DfULZihE"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-c966b9ee9cbso1153679a12.1
-        for <linux-mips@vger.kernel.org>; Fri, 21 Aug 2026 17:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787359261; x=1787964061; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=3y6ksGY7ml8u0XMNQ7kuYAl6QEhnB2wP1GOsjIamDQs=;
-        b=DfULZihE1raftrTWMe4paR8fh+WDtOzaC0hA7HioiuM8tTZK2KVCjg31rq4dWdKfu2
-         IYAc0Ug9Fq6n2iO7wtmWv/yUrUGjjaRqJ111mcRUBz5lA3XsF2/bpHtdMmHz56LIYtlr
-         uHa2jR8Asvb0luX5528Y3z6SmkArdIqu3bfCqGCOqufSsu5YkHheJmE9kkxR9lfbA+SV
-         pOQXeHji27NQpX6NlvPv1nX2SVyemlMRhzxMJBNfXm622xrZCUejBsbrZ2kfvQqeZg4L
-         2NSfwlTLgVTKs+qqzZEQCeMUhp4jcmIIO0mqClPFX9JKq7XWzxQWLNrPlpPiDpCv/xT6
-         b/ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787359261; x=1787964061;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=3y6ksGY7ml8u0XMNQ7kuYAl6QEhnB2wP1GOsjIamDQs=;
-        b=e12IwKQzsmNcDAwyW1FIjzN9Dgxqst5RDO98OSiwJ9SRKrWIAjqxVQEv38GbMEJlEC
-         3MsgFjfE/Y/APyU9Gc2lISz0RXEUQZP2WyvfXuhNhhCoqyR6vX2f9Eq+2CP6mtfwKiyC
-         ym7pDt6AIIeWV2D5oCCypE9i0rdSO0wAsHzAgve8Vtmf27dvL9LZdnLb3kHcVKCJeUpH
-         0Hxyq1/5y/Ql5seDwlCS3HC4KPqiDbUQx11pG3vpCeaFpntNdo9yKizIVRSVEAIsyJGT
-         txlPFJ6Z0W31hG6EJrVzsZv30lC5iFnH3/+HsbDGiBBVqRnzHesOSDBWUjfkcddGcSez
-         /9Cw==
-X-Gm-Message-State: AFuF++mbrk2WvPULDl/HDR0mSj02t6CohLWQPl6fcNBFcWIVkQXXtVTB
-	Cr2BlZAFaI3M0L/Euv1oYNR2fjAvEBOHUbfyVHKrCRozbfEA+q8gzVpN8zAF9gp/B+g=
-X-Gm-Gg: AR+sD13Jfhw9IkJIFdiKbdvbBbjg1/of1rcGsMdLDlApxtpSBOj23agyyGJpg3uLdz4
-	Ch+FZzoWlDlqafgjy7iENmRpyJfkn/DgL3lXWz/Z28ucw1HZGZ3jMP+iqP+OKy3zYFiQGm6pqFn
-	o92O3ULZPqDM2gw4vszImARvT3vAicPWdwkqvqtllqWwuvv86zeuQr6F2G7x7Jjghdrkk5riV0Q
-	ZVNPTH+YirtJm9SVphZx07f73zG/lOwe/Dd2L9KLP8bfQ4/BIP44D3rCZOvWnZJI5qMrOsm+HUm
-	XbtP5Qz1SYC4vHmr687NSJeeTIyb1sTzGuhzegdMo2Pm0dPPGGEsweNf23sqttX19gfDM6mNoi3
-	SqSRBUmzBNnQRaf7NepRz7sv91eizNeRMq/+9bMMTvkzvan/T34wzqaiX2ZfQXf80QcFKKR2jCq
-	M3SPaPArdL4PvWkE5wzKYIuF3H3td8CsmG376zdkE/0hPpOKWTcd4c3Rr4ZHO9BgtqVLOOosrFG
-	goX6ykyAncuiBxzPGEPWCPkASgzB1PI6YaBK1cOoya8mXiHBzW1jvsMvzUum/ix
-X-Received: by 2002:a05:6a00:4c13:b0:851:8bde:7873 with SMTP id d2e1a72fcca58-8520b98be69mr3733240b3a.8.1787359260704;
-        Fri, 21 Aug 2026 17:41:00 -0700 (PDT)
-Received: from [127.0.1.1] (ec2-99-79-140-187.ca-central-1.compute.amazonaws.com. [99.79.140.187])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8520f161701sm127279b3a.53.2026.08.21.17.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2026 17:41:00 -0700 (PDT)
-Date: Fri, 21 Aug 2026 17:41:00 -0700 (PDT)
-From: hanzhijian <hanzhijian1991@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: OCTEON: pcie: fix kernel-doc comments
-Message-ID: <178735925266.2386114.4269326939882098876@gmail.com>
-In-Reply-To: <20260822002256.2380061-1-hanzhijian@zepp.com>
-References: <20260822002256.2380061-1-hanzhijian@zepp.com>
- <20260822002543.2381024-1-hanzhijian1991@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="U0Z5a6PU";
+	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="2EzpCXhj"
+ARC-Seal: i=1; a=rsa-sha256; t=1787477398; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=m0bpjBXTbSVHO1hEMMSMtGbwHuvMNhU5pRR78iUumhS2wIcQqT6kEf0tI5KyZHJkp6
+    SDd+bB+QjD+NcnCnze7DvJ1smopg7eKENu/dZyefLYsXaUfWuT2/D5/8AuRDMde7gi1i
+    qR91TEB4/CYYFxl2M/l+w/pNzIZbUSze6qYAhJMmKs/zBG+SY9zhoMs1Xkbxn84PoBRp
+    yqsEdDno9xx7RCCpKkX+UAQNMX6HmHdtVAgHeZD/lSAODEuv98flS6xtHPYNH6kr+g9L
+    lxjs62p4YdMXI7DjY9LU8akz4ZrfCVtheBMkBE+9lWGg/Raj+IEHpYLSDRB8KH8DhNKt
+    qc1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787477398;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=GCILg7d45RMRE8YNTXah1jL4z2iDWGmWYyDATUxfxUM=;
+    b=hQyDg8pk2Yte6uzBGT0YZrLlYQ79N5S9B+ZoWSyH2fbVuFFSrMUSq0QOUuGcN8zpSN
+    qSRCHLBHS32IiEYE/7pOjiwo1T33K3ssBc9hOvc46OSIVrNu46L4mY7voaAj44NFq5wo
+    xo/6etHIeHvuaRsPYkWKj2nxANXX1VAd+G9zvIUJ+gjQQoOwl4p0qeHGsJkAlPw7WF8Q
+    H+hoFkOAypUYMCvoa1/IIdQ0DKaOIKaaA+pCzV8L3hV7xWsOy4DwDI9ki+JbSN7vCsMV
+    DyxkplvYyrbf2capfl/Ln3KSI31jW0J4gPcERlXGO6qC11CWInJFi1eTz/dk2drBX1s7
+    hi8w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787477398;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=GCILg7d45RMRE8YNTXah1jL4z2iDWGmWYyDATUxfxUM=;
+    b=U0Z5a6PUJjxOBIgpA39Y3LAx7CtpughSEDUmCWg+A/4nojG4BDoZiS2LVGVTffy4AM
+    Lm3sdXCInY69tGI3CSPAbhr/cBejLZj8SAX78aw5RLNprwKt8GPp3o7IHQmzNrgLNcdL
+    wT814e2CAsZDRy2s9xbE9FwTUORIhVjAy4TFYAWjRDxEmbG+FfK1wXcbW5rwOlRueS++
+    Fo392ObBkn3pfoOKnKGhyMTRPs6H9ofQudiPW0wAyBGRpeT1KRd9ySaYmz2MWNoR7Pex
+    tY5ouKbwbUN/ZUaaFmtmitT0G2HqJOE4tYo7zRQzCW6+U1ZLoDvgpOckJvBndkVyS1Pn
+    xeEg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787477398;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=GCILg7d45RMRE8YNTXah1jL4z2iDWGmWYyDATUxfxUM=;
+    b=2EzpCXhjEVVD0OalOGWZ1y2gHfTOkJvzzHQJ2tYb7GM1kFZ/MHHojZcthEwjhf048f
+    zStus1B0UvHFlTwwPCDw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQ25oKnciHHK5OAyYE8yLD5e6WBWpu+g6xSmk="
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id Qfefb327N9TvWi2
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Sun, 23 Aug 2026 11:29:57 +0200 (CEST)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>
+Cc: linux-mips@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	letux-kernel@openphoenux.org,
+	wbx@openadk.org,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] drm/ingenic: fix bridge allocation
+Date: Sun, 23 Aug 2026 11:29:52 +0200
+Message-ID: <400ba2fe0d4f76484e929d2efaa32f67a940163a.1787477392.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-To clarify the confusion in this thread:
+Bridge allocation API has changed and ingenic/drm was broken
+leading to
 
-1. <20260822002256.2380061-1-hanzhijian@zepp.com> (the first patch) is valid.=
- Despite what the
-   Message-ID looks like, its From: address is my correct kernel
-   contribution address (hanzhijian1991@gmail.com), so the first
-   retraction below was mistaken.
+[   54.997593] dw-hdmi-ingenic 10180000.hdmi: Detected HDMI \X controller v1.31a with HDCP (DWC HDMI 3D TX PHY)
+[   55.491338] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI I2C bus driver
+[   55.899132] [drm] DRM bridge corrupted or not allocated by devm_drm_bridge_alloc()
+[   55.904136] ------------[ cut here ]------------
+[   55.908753] WARNING: lib/refcount.c:25 at drm_bridge_get+0x58/0x6c [drm], CPU#0: kworker/u4:2/36
+[   55.917538] refcount_t: addition on 0; use-after-free.
+...
+[   56.354928] [<c04898b8>] drm_bridge_attach+0x80/0x208 [drm]
+...
 
-2. <20260822002543.2381024-1-hanzhijian1991@gmail.com> (the second patch) is =
-a duplicate of the first and
-   should be ignored.
+Fixes: 9347f2fbb0183b0 ("drm/bridge: add warning for bridges using neither devm_drm_bridge_alloc() nor drm_bridge_add()")
+Tested-by: Waldemar Brodkorb <wbx@openadk.org> (on CI20 with HDMI)
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Waldemar Brodkorb <wbx@openadk.org>
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 24 +++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-Please review the first patch. Sorry for the noise.
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 42c86f195c66b3..0a284502b0d3fe 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -122,7 +122,7 @@ struct ingenic_drm {
+ 
+ struct ingenic_drm_bridge {
+ 	struct drm_encoder encoder;
+-	struct drm_bridge bridge, *next_bridge;
++	struct drm_bridge *bridge, *next_bridge;
+ 
+ 	struct drm_bus_cfg bus_cfg;
+ };
+@@ -802,7 +802,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
+ 	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
+ 
+ 	return drm_bridge_attach(encoder, ib->next_bridge,
+-				 &ib->bridge, flags);
++				 bridge, flags);
+ }
+ 
+ static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
+@@ -1314,10 +1314,26 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 
+ 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
+ 
+-		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
++		ib->bridge = devm_drm_bridge_alloc(priv->dev, struct drm_bridge,
++						   base, &ingenic_drm_bridge_funcs);
++		if (IS_ERR(ib->bridge)) {
++			ret = PTR_ERR(ib->bridge);
++			goto err_drvdata;
++		}
++
++		ib->bridge->of_node = priv->dev->of_node;
+ 		ib->next_bridge = bridge;
+ 
+-		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
++		ib->bridge->ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT;
++		ib->bridge->interlace_allowed = true;
++
++		ret = devm_drm_bridge_add(priv->dev, ib->bridge);
++		if (ret) {
++			dev_err(dev, "Failed to register DRM bridge: %d\n", ret);
++			goto err_drvdata;
++		}
++
++		ret = drm_bridge_attach(encoder, ib->bridge, NULL,
+ 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 		if (ret) {
+ 			dev_err(dev, "Unable to attach bridge\n");
+-- 
+2.55.0
 
-Han

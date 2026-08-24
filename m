@@ -1,153 +1,91 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE72368D62
-	for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 15:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B10E33D4F0
+	for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 15:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787584463; cv=none; b=PnPfU0PpCC593YvQGyi60H8SAXDTK5lCN3dXFPOOK9j0VvG2+LJQMLE8OFdjVArSNRuZBJaDmkJkT9lhOHwBsi8+JtZjrUH4qA0nVMK1Hj+lCpY2KUEvEjuZdgUdd19hSYjigrKsOxnKi7yNPiHFlMusNel1FCUv/vcZmmIbi/Q=
+	t=1787584819; cv=none; b=MzOxQ4gXt86Axa8uJUAM0wcHBS9fA/xRj3981aaPgQJm/PnldtW7MKq4VN7mEmp2p59CypufFSFgJKaeFMJc6t7xfcYfNlDmaOjm/oEIEBUN3h7/+Dk2qJZN9XPRexiBMV1l7CsheOJWwUNgHXQ/nHNDLLbApj1nSddSA2NZFrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787584463; c=relaxed/simple;
-	bh=PMHzlusqnjEcUolJb6Rj0ihhVcm0EmxTzAkLKIuEEmA=;
+	s=arc-20240116; t=1787584819; c=relaxed/simple;
+	bh=fW26xNzRxiiLGaMaDgIpohlVSlfHRiHoa+AAfU3wNUI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fjEUbvA5mRR0Sbq6IqGohvjAHWL4ZjEArBlWbvY45HktxaOXmaxl1RBDg5XJsRpWL4GVxwTvWbD/JF+yY5b2t5LC5LZ29Rt71O1EsjaZEtq+JBBhaqOYiib4y0ehq2XKc4QY4t4Ho6MW7pg38ZpPLKe1pO35J2dZ3CypqjNd4AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=arEZlnlg; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oF6MRzeN; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rov1CcO4Cxxe60m5p7mFagYHwL1ZNnfga59ekVZZ8BQd6BQDGa3WN8cgOF/zIoO6oA8M/de3TLHzhx/EraJ2fzF8Dw949KZvckL0QYwtHg+GQom1WJXErjp6+KJAhmMP5KjHcJid7V3kwNZmsVzxmtHiZRKkLP2sKUmOOb74PyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WDVANHN7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ja7W31df; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="arEZlnlg";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oF6MRzeN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WDVANHN7";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ja7W31df"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1787584459;
+	s=mimecast20190719; t=1787584817;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=r9JEBxETCpjKOyzPxUj8DiK5Y8iV5A7DhykNYlgKppA=;
-	b=arEZlnlg4W2uN8jNuObPdV7XEADzujjJXwvcZ0jsYyOs1GpgplUEFL8fS3dR8trvvObtIj
-	bogtbd+W7m+xsHUVN4Gk5Ma9VphbXjVZO5f8hcrXCgQVPh7THWyq/OlM+xHXE2aDqP4kZc
-	OzOCr0NnyCMMjqrNBjxYsN60anza9lc=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=i/thhCQwmqZWbgnvAoBPlN/ap50I780TmnPlwXGod7Y=;
+	b=WDVANHN7HoctBHFTEq47W5CQ84Ziky9mAijKEJ/WHtBnKZabopQ5+OxZGkjkCmVRomfnW/
+	3ENDZeTFUbaELQViK5rz12K2BvdPvEv7NQ3rUIr2pUCt4RshGl3TzikBtBisrADy3rgyWJ
+	UIpJ5HPk/GjkPPnXmVJLntfhXGtQCXY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-j_AMxOQ6Ml-trr5yQSUODw-1; Mon, 24 Aug 2026 11:14:18 -0400
-X-MC-Unique: j_AMxOQ6Ml-trr5yQSUODw-1
-X-Mimecast-MFC-AGG-ID: j_AMxOQ6Ml-trr5yQSUODw_1787584458
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-52769fc3f2eso51300451cf.0
-        for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 08:14:18 -0700 (PDT)
+ us-mta-448-1Os9NLdbNyaAnhM2BDr_CQ-1; Mon, 24 Aug 2026 11:20:16 -0400
+X-MC-Unique: 1Os9NLdbNyaAnhM2BDr_CQ-1
+X-Mimecast-MFC-AGG-ID: 1Os9NLdbNyaAnhM2BDr_CQ_1787584815
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-92e62e3459fso364412285a.0
+        for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 08:20:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1787584458; x=1788189258; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1787584815; x=1788189615; darn=vger.kernel.org;
         h=user-agent:in-reply-to:content-disposition:content-type
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=r9JEBxETCpjKOyzPxUj8DiK5Y8iV5A7DhykNYlgKppA=;
-        b=oF6MRzeN395dZjNy8pcRfe5CseOWW92MPrDY1ThpTRLMzvYYjy+3PRbvAawPZ1pjT7
-         nickfnFlfw7zqdwMreayuFSWA/BdXPnKQ5ur7Vt2LNdGqWec7csfG7C+KW5I5YTTbvnJ
-         wnsQo0brNyHpLtnN2NhkhmM7waHE0ALk+ph5o6+IMVKir/hWxQmyrJ3/EU5R/1ksogl/
-         zZRGmDxWcU0WEK3Djou89HObMtmnXGU44+jqUqTaYrd3kC9yiwIVlYYDFDIFiZiG5tc0
-         li6ZkXoL47J7oMQzXguZWOtZeQzuAKjO2opkYBLpMT+pIRP7RD+MXE0ZE1jZZCp2f/8x
-         sSJg==
+        bh=i/thhCQwmqZWbgnvAoBPlN/ap50I780TmnPlwXGod7Y=;
+        b=ja7W31dfEltW3udxdo/bTbGYJX4hlAsR7Bn2PEXhwzMcv+w8ty2Ry5bNjpV27KAltx
+         izzFpNLMmoEmuwDINprRaFkUFgUMtivwUhlGn/3+J2xHVoQ2cESoEOLi8xONPWWCcDxL
+         ZYiW1mNyvSv6l7rFNAPxiqEJBtU8d7rAg97yCrR9u2NyyIU/KjbrcPTAi7AxS2sB6K2b
+         q5lfQ9vpMUeAhvcJjIazVqIAQp4HCtuh0KtZtvOWPX+EgP4Iw/n2AcJ95btPMTPE7YQ1
+         tYEpdiskhlyAQxLe0bJ5YsANE8PG9DEq3TQOmrAKaanOPTRe9wHJHk0zmdTYeCw27dJr
+         GUWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787584458; x=1788189258;
+        d=1e100.net; s=20251104; t=1787584815; x=1788189615;
         h=user-agent:in-reply-to:content-disposition:content-type
          :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=r9JEBxETCpjKOyzPxUj8DiK5Y8iV5A7DhykNYlgKppA=;
-        b=U1hkInPlBgapUNh+e+j+g1dPB6YGQiF9Ag/OSABkKhAq1j1PZbp6Rae/Z+Db86bZ7u
-         oGvV+yIobQ5rJQWcMx6lMpsnkKSPSRldzjpddUurNWH7o8n16/cG/BDVV8Hx9kvAT8ax
-         TZOBs1sq6cdfutOIiNe+vkRXyB4H/+AqHzcOUliu9z86sTBQP+TdMfT7CosFumm7qEd8
-         PAO0dVomNGd0ZMF35Wq6BRgq2D50DgD82X8JZOo7n0EQrTFshWMGHDHQwLTNvswUeXKw
-         TiqIkXvM0XZNnq4mJwTQPUku/Voiieg48CLp7JVSuoSygwdi5NNgTPlS/S58sbMYtigq
-         oEWA==
-X-Forwarded-Encrypted: i=1; AHgh+RrW7dVu5PPJjZF4bPjFyHzUrHctnrfog2RZPQEvyUIA1+7OWsKiBZ1pqSBKm2SpWB9fCuLtSbPczld1@vger.kernel.org
-X-Gm-Message-State: AFuF++mWEefEXtCWZ0yerJuvCDbqZvfI6F2yAcNCALhJ5niDu+cVdErg
-	/vheJIpzTESOZ3ysl2/UflyWnJoLtGdowR/YcOZMLjn/qRPXR81OG17N8CLPiuQKE86QUgd/884
-	5UuVR5D6fhL7wR/q0OpGntzegp2robPFN7U/wGM8thvTxnGU91biXzoEP7p5GpWc=
-X-Gm-Gg: AR+sD130f0FfvOmWKZBtOEvNyHFEYgRi34uEM3jzLJD+dkizRQWj6CgaUT4UOTdFyIQ
-	pjI/lEIBKl0RwMYdq6LRoZYZNci6y+yjRTD/QG+C80xAAJ7cCheINq6AMl7WAKMJ0G3xSKfdnVY
-	YwPYXffKlli2SdnG7YpeCorv1gY/kWhLVZyOk80Lnbll4fof/aUAuE9gBZmHF0RRPR7uODPtHJO
-	3DC95Z+X7931JfgMJgmSBeV3/Z9KKRX82SPctaA8/xDiQcPLkD+OEazJlKaXjPiJu7zTqhrLpO/
-	Z9zyWqGhQilo4d8URoqoRlMpSvZWQzoDZvmpMnsNlZQWj3VvqwKfPUAcl2AI0GiRWPvcqbTYS+x
-	MAAFuyXNYQ8E10oqs76zErsp0eKYs6UFs/aI=
-X-Received: by 2002:a05:6214:2a49:b0:8f1:440c:7f81 with SMTP id 6a1803df08f44-90c80942e22mr260846676d6.4.1787584457497;
-        Mon, 24 Aug 2026 08:14:17 -0700 (PDT)
-X-Received: by 2002:a05:6214:2a49:b0:8f1:440c:7f81 with SMTP id 6a1803df08f44-90c80942e22mr260845166d6.4.1787584456812;
-        Mon, 24 Aug 2026 08:14:16 -0700 (PDT)
+        bh=i/thhCQwmqZWbgnvAoBPlN/ap50I780TmnPlwXGod7Y=;
+        b=qMdvOP1GO/5fa0nYqjoBX5LKtxd+vyWFvKcqns0vJT1sAD+mTtVTmowrOGIukFUTpt
+         0evU/2Y1rDP00tswdegUkDZrQeApZ0znIGkod8FsqggZxI66JWyf8d/m+a/m+9QflU9V
+         MI/0V+np4qEUgMzeL6cG7KvkbnfZscuRj/CG6GfAxK0gQsIOJaY7AafY1ZSme0wpFjaH
+         CB8mGXGx7DewA+4QrynuvykNvst+mgHnGcHnQgvObUgrNtyX090/Owxhrq1rpc2/4PpR
+         F0fOFZ6VNKS2kL3Q5ZxOeTrcHzDFfrGevNVfBmhb3VRe8dWpOr4LkugZkb4qYzdsy9lH
+         pZyQ==
+X-Forwarded-Encrypted: i=1; AHgh+RoA7e6+9bLcLW3++fOG4rxrtNp1VqTvV76//Re7Dv97un3BfPye44qBoDTZuXm+mg4Twytf5p+EpDUq@vger.kernel.org
+X-Gm-Message-State: AFuF++m/06VO7OVD45bR3DLw35O4it4LeWxas1l25GKVL9vzV++2Dk5x
+	yDxXky96lyhFGnU3jeyT5WzfZ/2Z9Paj5f8tdDdcHWr7D6eKSt9Ll2Nzf0xWb9xdlBaxiKDR7Pm
+	GNXPtxOqKG65pY4B64UQXRWWjEqtwIMrqw/cin8znquFI5PnPZeYIojqkvivW3oU=
+X-Gm-Gg: AR+sD132f5DHkQJkZUJducvT6Bl/Jsmlnlf4OK6vEoBlnrOyVUwRGy7utBpD1ilRjom
+	CHFEXZPaFJznaLAxmh4Aji3T3UEsg8AXngqqjzlYNFbnvSWmsEEnkYhPIMLwcw/dBTjGQqUkdLc
+	OJtxcPy+SWGljMPdFhAhJJPRsaX3LEtdMjWhLGdJ2ge/3YxovIi2HCel3sFmsZpXXPkAso6Ww97
+	o6lSQ5XfNFsVbdde8Ls/LDEKOu11WsYRCkHWzXuQPgOS0URX3tqMDG1LsxBFasl4of/dpzcMj7j
+	Ziy8EypUjeVL/PaJishZPKRWI/sZDeoySd6LPNJ7vvYVdC8fKqEoQgifHjgPe/UM5wLEiEntbtP
+	lbRXYEF03D+BNsD7iMfloIHdthnomPIu0XGk=
+X-Received: by 2002:a05:620a:28c1:b0:937:2443:341c with SMTP id af79cd13be357-937469ad942mr1885619485a.41.1787584815189;
+        Mon, 24 Aug 2026 08:20:15 -0700 (PDT)
+X-Received: by 2002:a05:620a:28c1:b0:937:2443:341c with SMTP id af79cd13be357-937469ad942mr1885610685a.41.1787584814629;
+        Mon, 24 Aug 2026 08:20:14 -0700 (PDT)
 Received: from redhat.com (c-73-183-53-213.hsd1.pa.comcast.net. [73.183.53.213])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-90c93a82554sm64013126d6.45.2026.08.24.08.14.12
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-93749abe86esm519441585a.4.2026.08.24.08.20.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2026 08:14:15 -0700 (PDT)
-Date: Mon, 24 Aug 2026 11:14:11 -0400
+        Mon, 24 Aug 2026 08:20:14 -0700 (PDT)
+Date: Mon, 24 Aug 2026 11:20:13 -0400
 From: Brian Masney <bmasney@redhat.com>
 To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Ryan Chen <ryan_chen@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Billy Tsai <billy_tsai@aspeedtech.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Taichi Sugaya <sugaya.taichi@socionext.com>,
-	Takao Orito <orito.takao@socionext.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Avi Fishman <avifishman70@gmail.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Tali Perry <tali.perry1@gmail.com>,
-	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
-	Benjamin Fair <benjaminfair@google.com>,
-	Sudeep Holla <sudeep.holla@kernel.org>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	David Lechner <david@lechnology.com>,
-	Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>, Heiko Stuebner <heiko@sntech.de>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
-	Chen-Yu Tsai <wens@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Prashant Gaikwad <pgaikwad@nvidia.com>,
-	Thierry Reding <thierry.reding@kernel.org>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Ulf Hansson <ulfh@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	linux-clk@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org, arm-scmi@vger.kernel.org,
-	imx@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 00/45] clk: Make sure clk_init_data is fully initialized
- (part two)
-Message-ID: <aoxfwycOmEzLzhEU@redhat.com>
-References: <cover.1787239813.git.geert+renesas@glider.be>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Alchemy: clock: Make sure clk_init_data is fully
+ initialized
+Message-ID: <aoxhLUxzlLBFyVG_@redhat.com>
+References: <3610b51df642abb1fbb39f5bd93fddea43f8f164.1787240060.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -156,12 +94,10 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1787239813.git.geert+renesas@glider.be>
+In-Reply-To: <3610b51df642abb1fbb39f5bd93fddea43f8f164.1787240060.git.geert+renesas@glider.be>
 User-Agent: Mutt/2.4.0 (2026-06-19)
 
-On Fri, Aug 21, 2026 at 10:53:10AM +0200, Geert Uytterhoeven wrote:
-> 	Hi all,
-> 
+On Fri, Aug 21, 2026 at 12:05:15PM +0200, Geert Uytterhoeven wrote:
 > The clk_init_data structure contains several mutually-exclusive members
 > for different methods to specify the possible parents of a clock,
 > prompting drivers to initialize only the members they need.  However,
@@ -169,25 +105,11 @@ On Fri, Aug 21, 2026 at 10:53:10AM +0200, Geert Uytterhoeven wrote:
 > exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
 > enabled.
 > 
-> Hence this series aims to make sure all members are fully initialized,
-> to avoid such bugs, and to prevent future breakage when converting
-> drivers to a different method for specifying the parents.
+> Make sure all members are fully initialized, to avoid such bugs, and to
+> prevent future breakage when converting drivers to a different method
+> for specifying the parents.
 > 
-> Part One[1] fixed all cases that I identified to be real bugs, in
-> response to a crash I saw on BeagleBone Black.
-> 
-> This series is the clock subpart of Part Two, which fixes remaining
-> cases that are currently harmless.  These are still fragile, and may
-> cause future breakage when converting drivers to a different method for
-> specifying the parents.
-> 
-> Thanks for your comments!
-> 
-> [1] "[PATCH treewide 0/5] clk: Make sure clk_init_data is fully
->      initialized (part 1)"
->     https://lore.kernel.org/cover.1787165329.git.geert+renesas@glider.be
-
-Thanks for cleaning this all up! For the series:
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Reviewed-by: Brian Masney <bmasney@redhat.com>
 

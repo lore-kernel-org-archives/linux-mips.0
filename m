@@ -1,204 +1,113 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B790C37E5F6;
-	Mon, 24 Aug 2026 17:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.165
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787593618; cv=pass; b=N0dc/ibLUkAwPOJHkDTF97fZvWbHOQe8vZi77WGcRzT/zO4S7QKl2rFe4nxJdK2zDShoTiyd/FmpYnWHVeGSj9inOJPcmg+NrZRKYlEPC6GpaPbDRdvswMJyb2X6Qct5AwcmmuXBj2tRx1PmI5drHAE7PnKiWw8VKkvMFr2HWSA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787593618; c=relaxed/simple;
-	bh=8nZxBamknf/OFOioSsACX4ODxiHurXZyiTxkHcvf674=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iX1WBEC61PV/Wo0EMhkbFTU6SlvxyVdtTy453gXQMY+N4oJYdxqMFFz0J1uivFB0HkfUJS0dmSf8Bqv+c9xT9w9We+vAkFRp5NoefKRGkiy1CZZIZx3NbrOkW4vYso5SpjUFS2IualYDniTcbxRyXrlVjLJYGTTU2MN5jaIOPRA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com; spf=pass smtp.mailfrom=goldelico.com; dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=AY4ZHYWh; dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=+s0V0IZ7; arc=pass smtp.client-ip=81.169.146.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317E538F253
+	for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 20:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787603980; cv=none; b=XJCUUyAlI7jRaVutnQtsEtDztDfqSwdrBEoIzJFGeyyh0GCJCatUqGYzCC/eNw+9Fw46Hkd50h5WRzBU6oLTUH7X5DwVljD267MrOvAjgYnXcQGnMMewkRDhrO0eh872OFEhEFs3Ul/xh5Aip02ZVbPXhOWLdcV9QmKSocW0fpE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787603980; c=relaxed/simple;
+	bh=EVUwDkr+aRcYVofgEibvAtJX7CxRusSErPl1ti71pZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g0t7sv3C7zUUXe+jZa6LIyYucVwCHObip8qgU/PwhLJRZgMlwTgrDUfYcvSNwPo6qiL1feALL7LS9oVDs3V6idpC0CDur0tQ7VKtoSBIxWf+AVVb5xMDmAJDH6Ve+GKtoVp+pzsPvHVIhwHbsX5aHA1dbTGvsOiIA29CLH6JaAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=op1PqS0Z; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="AY4ZHYWh";
-	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="+s0V0IZ7"
-ARC-Seal: i=1; a=rsa-sha256; t=1787593590; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=hksTicEBzUtDdUH4l4tvdtyyLHT4Bg0gCPsCXND5tyNU44WOPeqMeLGHZzo4txXBdI
-    73NwOpRuWIHZuXmRVST7GSV+5pGCwPbqwmbImiRcRTp+KtlUEm8ygm7TaEU1MFpQugtG
-    WdMPaNx2YGPbk8m5620l+KlXAiBbEZOqIP7AV8VU2QGYW06sjWkN8pjjnwjyTqu4nbKa
-    jp26YPOHpsxPXZDM9dfwL/HbJyLT2CwirH5ZJaTixjCK6nMvPcDZVz81m+twn1Bg9XI2
-    dMekEj1K8Kh0texQlXe9g1KKIEBs7Gk8Ts9MpatBHaqEN1sIRRwK6vVzqJtRy4uzafnD
-    RYdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787593590;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
-    b=VeYlbgp4WmRBARgZEV9+DN+CMLqJvaSZDh+Zr5WONtfIM7ivWTMomBhPkcd1JfCOZv
-    VxLXkfUyX/o+tYpTaxBmXMJ2ReD+LtjZNwg7jb3Z3VkiUHnsku8uHK6E6r7ctS8lB+L+
-    Ob7LfU4dUtFcBbkavhwd0m0PZR8KpUZzgmhIW7H9N39ZGMdZlu4lcUZQU+1Dp9GcaiGn
-    A9GNK0PPjVvWl8XdwuL3fvA/1Qwm7QHhNRydhV5RQCSAS9ZUPKtaR20twrriP5FOU0Np
-    5IR2LtdFKfNoW1+K8i3fAZKux8hbDS5Y2X4IChtcrtq7goAPXZh5k669jsQ2BJfWaVLu
-    iS/A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787593590;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
-    b=AY4ZHYWhJF+tjwlERGlDHYaSQxWmeP+WS/j7vNfp+/9qgLFGpmQGkjSejVj9AMGJnf
-    BuroFYVYiCUXHcC7SIsuboTTUP5I4w2ML6tr3y4CWSZekV2vwJhmj0R8ogGG6qLQ54AC
-    h+rn32Ore5k0jcEBksUNaSY6jog0O5JNhEp+WCVtI+qaAmiq82ukLdokZtUmgiZvTBdU
-    AWHbu3QloB1QiD2P1QGzY/tm3/tojvQYD4VM8Wv7DcqmvWJ8PqmLLDQuhnckYlyzsS4f
-    cdCjJT6rJO+P3r+nwNvxNJSi7mXG4ah1Czy+j7DW5H9dxPX57IPZZvIdKh9chwAyg3O+
-    MW7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787593590;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
-    b=+s0V0IZ7xxpljPTbIy39vXPODqmpkVz9mxdovQDRyPFU5tD2zliJjp8w4Q7172xoF2
-    AqxiQCIwTLj46bpS+SCg==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQipoOy8iN9EQCaJvpc3APUCy9LxWOnfZGxS9c"
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id Qfefb327OHkTbu0
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 24 Aug 2026 19:46:29 +0200 (CEST)
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-To: Paul Cercueil <paul@crapouillou.net>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>
-Cc: linux-mips@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	letux-kernel@openphoenux.org,
-	wbx@openadk.org,
-	kernel@pyra-handheld.com,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v5] drm/ingenic: fix bridge allocation
-Date: Mon, 24 Aug 2026 19:46:26 +0200
-Message-ID: <f77ed4e1547e452668a6549e3966471a6b638a6b.1787593585.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.55.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="op1PqS0Z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E611F00ACF
+	for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 20:39:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787603977;
+	bh=LEMIXlW7UB4hHdDf5XWpYKY9mKhf7DDvl0I5DYYVcWI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=op1PqS0ZcwJX9065pz+7n7Mhcirj6eX3k7xLqlZ+ppKs9SUQjaRYatOf7zFET/tfn
+	 ul80C8GWnGTALvbcy587qsJUwsDqASYiSFMYfHcPITUgCg3TZF48GkIuTKGWZKFR9M
+	 4KN8Sznl1jMlE46rBL1TjVyK3aAD3CngSTThQG0+P9d0RdhdZTKci8rg+oXU2+Knhy
+	 NbhSdxhVqpnJaSio1FP0K7pN0IwaOCStdR+sCf1wtsi2SseznQCBLMUxP19S9nO/9Q
+	 MUef/TEDW6ujepu5thZa0JHNFheaGU558HmIHS4lCPCIS/Hkxb7SN9fJwNlrWxn60U
+	 rLdy0en7BtOBg==
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-45eb2e6402aso2458854fac.0
+        for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 13:39:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rr+n9lAhnbSso8Lg2jBFBFDtZgQqjp+iPHQyPiTWshMpTEgvn6tEfeMiZxAMSdRDro/h7C8UlNVfFyD@vger.kernel.org
+X-Gm-Message-State: AFuF++n9K9b03APp9h+IY1AUf/9HsXKW3jTV/f7dGVeO1MOPHgg226D7
+	XXjRiimwUGvEnd+Ro6bme54F5XiJmBHxj/uz6THJwCsZI7BNCbKkKcIKqrgfMun+C/5OH7fp7Yh
+	PvObawBAVoaRXrnFgcW/1NpJeilb1X0s=
+X-Received: by 2002:a05:6871:331c:b0:457:ed1a:9da3 with SMTP id
+ 586e51a60fabf-4644af0a69cmr1563335fac.17.1787603975698; Mon, 24 Aug 2026
+ 13:39:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+References: <cover.1787239813.git.geert+renesas@glider.be> <33f8a87834a75b6677894f1993c90f00eb6a2547.1787239813.git.geert+renesas@glider.be>
+In-Reply-To: <33f8a87834a75b6677894f1993c90f00eb6a2547.1787239813.git.geert+renesas@glider.be>
+From: Linus Walleij <linusw@kernel.org>
+Date: Mon, 24 Aug 2026 22:39:20 +0200
+X-Gmail-Original-Message-ID: <CAD++jLnWF5Y+=Dz4XxFyHqrxuOtGucvYLaqMGDNH4XoR1S+rrQ@mail.gmail.com>
+X-Gm-Features: AcwNN1XmhR7K3AKRJKXT4Sd3qYlnwrUuNbhbfYVIv-485OoNG4okiQZloSgYvOE
+Message-ID: <CAD++jLnWF5Y+=Dz4XxFyHqrxuOtGucvYLaqMGDNH4XoR1S+rrQ@mail.gmail.com>
+Subject: Re: [PATCH 10/45] clk: gemini: Make sure clk_init_data is fully initialized
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Ryan Chen <ryan_chen@aspeedtech.com>, Joel Stanley <joel@jms.id.au>, 
+	Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
+	Jerome Brunet <jbrunet+clk@baylibre.com>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
+	Billy Tsai <billy_tsai@aspeedtech.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	Taichi Sugaya <sugaya.taichi@socionext.com>, Takao Orito <orito.takao@socionext.com>, 
+	Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>, 
+	Tali Perry <tali.perry1@gmail.com>, Patrick Venture <venture@google.com>, 
+	Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, 
+	Sudeep Holla <sudeep.holla@kernel.org>, Cristian Marussi <cristian.marussi@arm.com>, 
+	David Lechner <david@lechnology.com>, Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>, 
+	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Santosh Shilimkar <ssantosh@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+	Gregory Clement <gregory.clement@bootlin.com>, 
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Sylwester Nawrocki <s.nawrocki@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
+	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Viresh Kumar <vireshk@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	=?UTF-8?Q?Emilio_L=C3=B3pez?= <emilio@elopez.com.ar>, 
+	Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, Prashant Gaikwad <pgaikwad@nvidia.com>, 
+	Thierry Reding <thierry.reding@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Ulf Hansson <ulfh@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Michal Simek <michal.simek@amd.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, linux-clk@vger.kernel.org, 
+	linux-aspeed@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org, 
+	arm-scmi@vger.kernel.org, imx@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Bridge allocation API has changed and ingenic/drm was broken
-leading to
+On Fri, Aug 21, 2026 at 10:53=E2=80=AFAM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 
-[   54.997593] dw-hdmi-ingenic 10180000.hdmi: Detected HDMI \X controller v1.31a with HDCP (DWC HDMI 3D TX PHY)
-[   55.491338] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI I2C bus driver
-[   55.899132] [drm] DRM bridge corrupted or not allocated by devm_drm_bridge_alloc()
-[   55.904136] ------------[ cut here ]------------
-[   55.908753] WARNING: lib/refcount.c:25 at drm_bridge_get+0x58/0x6c [drm], CPU#0: kworker/u4:2/36
-[   55.917538] refcount_t: addition on 0; use-after-free.
-...
-[   56.354928] [<c04898b8>] drm_bridge_attach+0x80/0x208 [drm]
-...
+> The clk_init_data structure contains several mutually-exclusive members
+> for different methods to specify the possible parents of a clock,
+> prompting drivers to initialize only the members they need.  However,
+> not initializing all members may cause subtle issues, which are only
+> exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
+> enabled.
+>
+> Make sure all members are fully initialized, to avoid such bugs, and to
+> prevent future breakage when converting drivers to a different method
+> for specifying the parents.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Fixes: 9347f2fbb0183b0 ("drm/bridge: add warning for bridges using neither devm_drm_bridge_alloc() nor drm_bridge_add()")
-Tested-by: Waldemar Brodkorb <wbx@openadk.org> (on CI20 with HDMI)
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Cc: Waldemar Brodkorb <wbx@openadk.org>
-Cc: stable@vger.kernel.org
----
+Acked-by: Linus Walleij <linusw@kernel.org>
 
-Notes:
-    v5: fixed a potential issue with directly allocating struct drm_bridge and
-        depending on its internal structure. Solve by allocating a stable
-        driver-specific container struct ingenic_drm_bridge_alloc that embeds
-        a struct drm_bridge.
-        Also revisit and adjust object lifecycle by doing drm_bridge_add() before
-        drm_bridge_attach().
-        Suggested by Sashiko-reviews:
-        https://sashiko.dev/#/patchset/1630a544a26fac0b87187885374ebe59fc92df3b.1787575203.git.hns@goldelico.com?part=1
-    
-    v4: remove setting interlaced mode (would be new feature and not a fix)
-        as suggested by paul@crapouillou.net
-    
-    v3: fixed a malformed diff in v2
-    
-    v2: removed ib->bridge->ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT
-        as suggested by Sashiko-reviews:
-        https://sashiko.dev/#/patchset/400ba2fe0d4f76484e929d2efaa32f67a940163a.1787477392.git.hns@goldelico.com?part=1
-
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 27 +++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 42c86f195c66b3..1eeee9d29b6abb 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -122,11 +122,15 @@ struct ingenic_drm {
- 
- struct ingenic_drm_bridge {
- 	struct drm_encoder encoder;
--	struct drm_bridge bridge, *next_bridge;
-+	struct drm_bridge *bridge, *next_bridge;
- 
- 	struct drm_bus_cfg bus_cfg;
- };
- 
-+struct ingenic_drm_bridge_alloc {
-+	struct drm_bridge bridge;
-+};
-+
- static inline struct ingenic_drm_bridge *
- to_ingenic_drm_bridge(struct drm_encoder *encoder)
- {
-@@ -802,7 +806,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
- 	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
- 
- 	return drm_bridge_attach(encoder, ib->next_bridge,
--				 &ib->bridge, flags);
-+				 bridge, flags);
- }
- 
- static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
-@@ -1107,6 +1111,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	struct clk *parent_clk;
- 	struct drm_plane *primary;
- 	struct drm_bridge *bridge;
-+	struct ingenic_drm_bridge_alloc *bridge_alloc;
- 	struct drm_panel *panel;
- 	struct drm_connector *connector;
- 	struct drm_encoder *encoder;
-@@ -1314,13 +1319,27 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 
- 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
- 
--		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
-+		bridge_alloc = devm_drm_bridge_alloc(priv->dev,
-+						     struct ingenic_drm_bridge_alloc,
-+						     bridge,
-+						     &ingenic_drm_bridge_funcs);
-+		if (IS_ERR(bridge_alloc)) {
-+			ret = PTR_ERR(bridge_alloc);
-+			goto err_drvdata;
-+		}
-+
-+		ib->bridge = &bridge_alloc->bridge;
-+		ib->bridge->of_node = priv->dev->of_node;
-+
- 		ib->next_bridge = bridge;
- 
--		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
-+		drm_bridge_add(ib->bridge);
-+
-+		ret = drm_bridge_attach(encoder, ib->bridge, NULL,
- 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 		if (ret) {
- 			dev_err(dev, "Unable to attach bridge\n");
-+			drm_bridge_remove(ib->bridge);
- 			goto err_drvdata;
- 		}
- 
--- 
-2.55.0
-
+Yours,
+Linus Walleij

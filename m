@@ -1,184 +1,204 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C05456280
-	for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 15:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787586646; cv=none; b=tcBmdKhyMa4/DdQiLIbf4R11kCcPEWGDuRSZ5Ry+pN7J08CcCrapIUepbwcF5KlA4RrMut2Vp8B6tbKpa9s6GJU3KUf7ib2A1d0poBYjwkZZP8TrISBrX1TLAbroswFjytiFC6dBDN++8fPD2GXUqf8FQwD2M4acMvTZNfgMmUM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787586646; c=relaxed/simple;
-	bh=O+UlH1d73+sx98gD+jonoek56k6WXXcHy6glAIcE6hw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k612vyzOwgJordgkEcOA6LACUsC3DFSinpmh2gLjiged14WKTByJ2AKXOkGdwjdVWeCymdtco7wBm0OIw3BrqpkeCTtGOuNi+M11nmTg+OXRR2BqBvh0ZzmNhN5nswK22dh3bl5qAelpbbo/tvVb7/xwPfDUZnUOBVO9RbRRX0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=gzpY5h5W; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B790C37E5F6;
+	Mon, 24 Aug 2026 17:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.165
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787593618; cv=pass; b=N0dc/ibLUkAwPOJHkDTF97fZvWbHOQe8vZi77WGcRzT/zO4S7QKl2rFe4nxJdK2zDShoTiyd/FmpYnWHVeGSj9inOJPcmg+NrZRKYlEPC6GpaPbDRdvswMJyb2X6Qct5AwcmmuXBj2tRx1PmI5drHAE7PnKiWw8VKkvMFr2HWSA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787593618; c=relaxed/simple;
+	bh=8nZxBamknf/OFOioSsACX4ODxiHurXZyiTxkHcvf674=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iX1WBEC61PV/Wo0EMhkbFTU6SlvxyVdtTy453gXQMY+N4oJYdxqMFFz0J1uivFB0HkfUJS0dmSf8Bqv+c9xT9w9We+vAkFRp5NoefKRGkiy1CZZIZx3NbrOkW4vYso5SpjUFS2IualYDniTcbxRyXrlVjLJYGTTU2MN5jaIOPRA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com; spf=pass smtp.mailfrom=goldelico.com; dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=AY4ZHYWh; dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b=+s0V0IZ7; arc=pass smtp.client-ip=81.169.146.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="gzpY5h5W"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-84e04df8c46so4831359b3a.2
-        for <linux-mips@vger.kernel.org>; Mon, 24 Aug 2026 08:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1787586639; x=1788191439; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8n2sUFyNkTeeyJ480adWKOU51gCub2/F4WE3r3BRNf0=;
-        b=gzpY5h5WE22LnAQ59IZ1aQ4RvBrfX1TLQn3SeYIVWwfWG6YEj9tCVYFWrUXI5/d3Fk
-         ILuo5xbw0dVb1q+vkio3LO2q1/7BYar7Kd5kiSrhH/zpU1K6ai1dgXhfcC2bU4BUgpP7
-         Q0N6hK6rjCO+W1AsSr1BhsqykjtQISFsHVj6HskgrREPOVxF0BlSLr54YV62XFF35Fe4
-         rHfJtt2Pm+mN20xIIEFapc1pnvYItHz7b3meyYbyZAgGU5QRDNt0yIj93oWX9aeRV0yW
-         v8tyoX1WzdbToiE2o68NzxuqsIcwGG6oMLnng9z/nrOw6AUsqUwGBuNpHV94z+vHBfbN
-         EZpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787586639; x=1788191439;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=8n2sUFyNkTeeyJ480adWKOU51gCub2/F4WE3r3BRNf0=;
-        b=n9Uvfy6JMgrqAYTmuTuQC3ZXcrr75XhMYPE5MCR8xYhzSehOAnrwdZ3V7p0buykfVm
-         D5mGXgVNG4GpCxUPS8SB5tOxzS7A9nzqQDOHreIVpzi7+z4Sm1cmTxALCf9FMgvRJK86
-         bh1K9P4RAeL+lrpC7brRthzC40AUza+nRRNDxEfGsVwCuP4r3NmZVAoyKIjw6ltXNLaA
-         hXjDvl5Ls2btZepqfFu/2gkdRTHJJuVPSIY7mupRKSK/Nh+pJ0214EvEZrW5WRX6pEo1
-         5Rz/idYmKuVZ8x//hUlXpkt5/1dRjfWm5uaeWjKE1D8oc4AlRx0ncGzJFDIN9GuY/URo
-         wVzw==
-X-Forwarded-Encrypted: i=1; AHgh+Ro49/IqP6wIxJQOlr+rkp+vXOAStngjybh6cAWK0Se41RmUuyOnWzqKdmprEMJmvRmZ6cjnbjfboAPn@vger.kernel.org
-X-Gm-Message-State: AFuF++nZBc2rMKD9ikNWCl9DmxdwotIuCAe7dnbLK5CvuDbPCE9jJVAq
-	8xwDszOTbSy3DYVb7B2YyMj9ruOoybor6JwySDjvYcGBgqRwMJYR2CaMpVUkV73o8U0=
-X-Gm-Gg: AR+sD11j5cwD1v+4BGc1N+TnC9KRPCE6zXiqloWPQSFoltXdpGVUb38SphADsC1Mm3n
-	KsJwxrHZms5YVOEJg9k//GUOvAXyTZ4ZnLdibbg3XkCYzSXRxnUuBxA6XRjt20VgOFS48BJX+iE
-	Gs971zGFnbjCvrFEu7EAPFxKIkYnDD1AMYuCqHwKSZ9kJeSm2aR85ptSTnyC6feook2citXHRte
-	bEjf4q43raKhuoV7cJtpa45oVx4zk2gE7lmB1JCqOYjUnnCjorV38Hi3UntiveFPZ7FTpwX86gD
-	Ff0Zt5w88Rc2pHJv6Dz/dOrwBhTiWxFpoToP2/R+xpDQu0rHp82s/K/27E5S+ydBaU+GT0FpgG4
-	RFojlJGqTsis4UsUHeECzPkjyG4C4226CuE0P+7Duzym0c0JXjsyCdtLAsK3N9qQ2pZnfSsYbFa
-	YONwK7j3SJOP1XRTaJk3kWvFv8eeVTJ7KaCrbWVt7N4K29PmveMQwp6BkpbiPl03kS
-X-Received: by 2002:a05:6a00:10d1:b0:848:5540:2377 with SMTP id d2e1a72fcca58-851fa070c14mr40910400b3a.17.1787586639434;
-        Mon, 24 Aug 2026 08:50:39 -0700 (PDT)
-Received: from [100.64.0.1] ([165.225.242.163])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8520ef36048sm2219670b3a.26.2026.08.24.08.50.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2026 08:50:38 -0700 (PDT)
-Message-ID: <6dae9cae-9665-4dc8-9a49-d6e5acda221b@sifive.com>
-Date: Mon, 24 Aug 2026 10:50:37 -0500
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="AY4ZHYWh";
+	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="+s0V0IZ7"
+ARC-Seal: i=1; a=rsa-sha256; t=1787593590; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=hksTicEBzUtDdUH4l4tvdtyyLHT4Bg0gCPsCXND5tyNU44WOPeqMeLGHZzo4txXBdI
+    73NwOpRuWIHZuXmRVST7GSV+5pGCwPbqwmbImiRcRTp+KtlUEm8ygm7TaEU1MFpQugtG
+    WdMPaNx2YGPbk8m5620l+KlXAiBbEZOqIP7AV8VU2QGYW06sjWkN8pjjnwjyTqu4nbKa
+    jp26YPOHpsxPXZDM9dfwL/HbJyLT2CwirH5ZJaTixjCK6nMvPcDZVz81m+twn1Bg9XI2
+    dMekEj1K8Kh0texQlXe9g1KKIEBs7Gk8Ts9MpatBHaqEN1sIRRwK6vVzqJtRy4uzafnD
+    RYdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787593590;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
+    b=VeYlbgp4WmRBARgZEV9+DN+CMLqJvaSZDh+Zr5WONtfIM7ivWTMomBhPkcd1JfCOZv
+    VxLXkfUyX/o+tYpTaxBmXMJ2ReD+LtjZNwg7jb3Z3VkiUHnsku8uHK6E6r7ctS8lB+L+
+    Ob7LfU4dUtFcBbkavhwd0m0PZR8KpUZzgmhIW7H9N39ZGMdZlu4lcUZQU+1Dp9GcaiGn
+    A9GNK0PPjVvWl8XdwuL3fvA/1Qwm7QHhNRydhV5RQCSAS9ZUPKtaR20twrriP5FOU0Np
+    5IR2LtdFKfNoW1+K8i3fAZKux8hbDS5Y2X4IChtcrtq7goAPXZh5k669jsQ2BJfWaVLu
+    iS/A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787593590;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
+    b=AY4ZHYWhJF+tjwlERGlDHYaSQxWmeP+WS/j7vNfp+/9qgLFGpmQGkjSejVj9AMGJnf
+    BuroFYVYiCUXHcC7SIsuboTTUP5I4w2ML6tr3y4CWSZekV2vwJhmj0R8ogGG6qLQ54AC
+    h+rn32Ore5k0jcEBksUNaSY6jog0O5JNhEp+WCVtI+qaAmiq82ukLdokZtUmgiZvTBdU
+    AWHbu3QloB1QiD2P1QGzY/tm3/tojvQYD4VM8Wv7DcqmvWJ8PqmLLDQuhnckYlyzsS4f
+    cdCjJT6rJO+P3r+nwNvxNJSi7mXG4ah1Czy+j7DW5H9dxPX57IPZZvIdKh9chwAyg3O+
+    MW7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787593590;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=lmIPS2M+ohVUGOXc3DV05sJ1OsGWycb6IquOKMK8x6U=;
+    b=+s0V0IZ7xxpljPTbIy39vXPODqmpkVz9mxdovQDRyPFU5tD2zliJjp8w4Q7172xoF2
+    AqxiQCIwTLj46bpS+SCg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQipoOy8iN9EQCaJvpc3APUCy9LxWOnfZGxS9c"
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id Qfefb327OHkTbu0
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 24 Aug 2026 19:46:29 +0200 (CEST)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>
+Cc: linux-mips@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	letux-kernel@openphoenux.org,
+	wbx@openadk.org,
+	kernel@pyra-handheld.com,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v5] drm/ingenic: fix bridge allocation
+Date: Mon, 24 Aug 2026 19:46:26 +0200
+Message-ID: <f77ed4e1547e452668a6549e3966471a6b638a6b.1787593585.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 8/8] mm: Drop pxd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-mm@kvack.org, akpm@linux-foundation.org, david@kernel.org
-References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
- <20260818040041.1891769-9-anshuman.khandual@arm.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-Content-Language: en-US
-In-Reply-To: <20260818040041.1891769-9-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-On 2026-08-17 11:00 PM, Anshuman Khandual wrote:
-> There are no more users left for any pxd_ERROR() either in generic MM or in
-> the platform MM. Hence all these platform macros along with their generic
-> fallback could be dropped across the tree.
-> 
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: loongarch@lists.linux.dev
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-openrisc@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in RFC V3
-> 
-> - Moved ptrval_to_str() as header in a [PATCH 1/8]
-> - Stopped using pxd_ERROR() in generic MM in [PATCH 2/8]
-> - Dropped pxd_ERRO() macros from all platforms in this patch
-> 
->  arch/alpha/include/asm/pgtable.h               |  7 -------
->  arch/arc/include/asm/pgtable-levels.h          | 11 -----------
->  arch/arm/include/asm/pgtable.h                 |  7 -------
->  arch/arm/kernel/traps.c                        | 17 -----------------
->  arch/arm64/include/asm/pgtable.h               | 15 ---------------
->  arch/csky/include/asm/pgtable.h                |  4 ----
->  arch/hexagon/include/asm/pgtable.h             |  3 ---
->  arch/loongarch/include/asm/pgtable.h           | 11 -----------
->  arch/m68k/include/asm/mcf_pgtable.h            |  6 ------
->  arch/m68k/include/asm/motorola_pgtable.h       |  8 --------
->  arch/m68k/include/asm/sun3_pgtable.h           |  7 -------
->  arch/microblaze/include/asm/pgtable.h          |  7 -------
->  arch/mips/include/asm/pgtable-32.h             | 10 ----------
->  arch/mips/include/asm/pgtable-64.h             | 13 -------------
->  arch/nios2/include/asm/pgtable.h               |  7 -------
->  arch/openrisc/include/asm/pgtable.h            |  7 -------
->  arch/parisc/include/asm/pgtable.h              |  9 ---------
->  arch/powerpc/include/asm/book3s/32/pgtable.h   |  2 --
->  arch/powerpc/include/asm/book3s/64/pgtable.h   |  7 -------
->  arch/powerpc/include/asm/nohash/32/pgtable.h   |  2 --
->  .../powerpc/include/asm/nohash/64/pgtable-4k.h |  3 ---
->  arch/powerpc/include/asm/nohash/64/pgtable.h   |  5 -----
->  arch/riscv/include/asm/pgtable-64.h            |  9 ---------
->  arch/riscv/include/asm/pgtable.h               |  4 ----
->  arch/s390/include/asm/pgtable.h                | 11 -----------
->  arch/sh/include/asm/pgtable-3level.h           |  3 ---
->  arch/sh/include/asm/pgtable_32.h               |  8 --------
->  arch/sparc/include/asm/pgtable_32.h            |  3 ---
->  arch/sparc/include/asm/pgtable_64.h            | 10 ----------
->  arch/um/include/asm/pgtable-2level.h           |  7 -------
->  arch/um/include/asm/pgtable-4level.h           | 13 -------------
->  arch/x86/include/asm/pgtable-2level.h          |  5 -----
->  arch/x86/include/asm/pgtable-3level.h          | 11 -----------
->  arch/x86/include/asm/pgtable_64.h              | 18 ------------------
->  arch/xtensa/include/asm/pgtable.h              |  4 ----
->  include/asm-generic/pgtable-nop4d.h            |  1 -
->  include/asm-generic/pgtable-nopmd.h            |  1 -
->  include/asm-generic/pgtable-nopud.h            |  1 -
->  38 files changed, 277 deletions(-)
-> ...
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 5d5756bda82e..993a6505eb8f 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -559,10 +559,6 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
->  	return __pte((pte_val(pte) & _PAGE_CHG_MASK) | newprot_val);
->  }
->  
-> -#define pgd_ERROR(e) \
-> -	pr_err("%s:%d: bad pgd " PTE_FMT ".\n", __FILE__, __LINE__, pgd_val(e))
+Bridge allocation API has changed and ingenic/drm was broken
+leading to
 
-We can drop the PTE_FMT macro now too.
+[   54.997593] dw-hdmi-ingenic 10180000.hdmi: Detected HDMI \X controller v1.31a with HDCP (DWC HDMI 3D TX PHY)
+[   55.491338] dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI I2C bus driver
+[   55.899132] [drm] DRM bridge corrupted or not allocated by devm_drm_bridge_alloc()
+[   55.904136] ------------[ cut here ]------------
+[   55.908753] WARNING: lib/refcount.c:25 at drm_bridge_get+0x58/0x6c [drm], CPU#0: kworker/u4:2/36
+[   55.917538] refcount_t: addition on 0; use-after-free.
+...
+[   56.354928] [<c04898b8>] drm_bridge_attach+0x80/0x208 [drm]
+...
 
-Regards,
-Samuel
+Fixes: 9347f2fbb0183b0 ("drm/bridge: add warning for bridges using neither devm_drm_bridge_alloc() nor drm_bridge_add()")
+Tested-by: Waldemar Brodkorb <wbx@openadk.org> (on CI20 with HDMI)
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Waldemar Brodkorb <wbx@openadk.org>
+Cc: stable@vger.kernel.org
+---
+
+Notes:
+    v5: fixed a potential issue with directly allocating struct drm_bridge and
+        depending on its internal structure. Solve by allocating a stable
+        driver-specific container struct ingenic_drm_bridge_alloc that embeds
+        a struct drm_bridge.
+        Also revisit and adjust object lifecycle by doing drm_bridge_add() before
+        drm_bridge_attach().
+        Suggested by Sashiko-reviews:
+        https://sashiko.dev/#/patchset/1630a544a26fac0b87187885374ebe59fc92df3b.1787575203.git.hns@goldelico.com?part=1
+    
+    v4: remove setting interlaced mode (would be new feature and not a fix)
+        as suggested by paul@crapouillou.net
+    
+    v3: fixed a malformed diff in v2
+    
+    v2: removed ib->bridge->ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_DETECT
+        as suggested by Sashiko-reviews:
+        https://sashiko.dev/#/patchset/400ba2fe0d4f76484e929d2efaa32f67a940163a.1787477392.git.hns@goldelico.com?part=1
+
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 27 +++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 42c86f195c66b3..1eeee9d29b6abb 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -122,11 +122,15 @@ struct ingenic_drm {
+ 
+ struct ingenic_drm_bridge {
+ 	struct drm_encoder encoder;
+-	struct drm_bridge bridge, *next_bridge;
++	struct drm_bridge *bridge, *next_bridge;
+ 
+ 	struct drm_bus_cfg bus_cfg;
+ };
+ 
++struct ingenic_drm_bridge_alloc {
++	struct drm_bridge bridge;
++};
++
+ static inline struct ingenic_drm_bridge *
+ to_ingenic_drm_bridge(struct drm_encoder *encoder)
+ {
+@@ -802,7 +806,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
+ 	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
+ 
+ 	return drm_bridge_attach(encoder, ib->next_bridge,
+-				 &ib->bridge, flags);
++				 bridge, flags);
+ }
+ 
+ static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
+@@ -1107,6 +1111,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	struct clk *parent_clk;
+ 	struct drm_plane *primary;
+ 	struct drm_bridge *bridge;
++	struct ingenic_drm_bridge_alloc *bridge_alloc;
+ 	struct drm_panel *panel;
+ 	struct drm_connector *connector;
+ 	struct drm_encoder *encoder;
+@@ -1314,13 +1319,27 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 
+ 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
+ 
+-		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
++		bridge_alloc = devm_drm_bridge_alloc(priv->dev,
++						     struct ingenic_drm_bridge_alloc,
++						     bridge,
++						     &ingenic_drm_bridge_funcs);
++		if (IS_ERR(bridge_alloc)) {
++			ret = PTR_ERR(bridge_alloc);
++			goto err_drvdata;
++		}
++
++		ib->bridge = &bridge_alloc->bridge;
++		ib->bridge->of_node = priv->dev->of_node;
++
+ 		ib->next_bridge = bridge;
+ 
+-		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
++		drm_bridge_add(ib->bridge);
++
++		ret = drm_bridge_attach(encoder, ib->bridge, NULL,
+ 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 		if (ret) {
+ 			dev_err(dev, "Unable to attach bridge\n");
++			drm_bridge_remove(ib->bridge);
+ 			goto err_drvdata;
+ 		}
+ 
+-- 
+2.55.0
 

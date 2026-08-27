@@ -1,39 +1,37 @@
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D5C36B92B;
-	Thu, 27 Aug 2026 22:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3EA3F1065;
+	Thu, 27 Aug 2026 23:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787871051; cv=none; b=uDPTU1K8LnIHB0ZH1ceDWgRHJ6PRov4LgNLifb47KSS1HrXkuPuzag/Gf0cWQasWXlb97ZLm4GkJlvekCkI/ck7yfvny10aYlnGNMJfyyTju5+DfrJJtdeptncnWkltqiJRrvO5GkDz2OcI1OECwL7QdgkVrZ1eUIXF4jpP1gIc=
+	t=1787874497; cv=none; b=kPaim/bRJnEXbVdIBpdHMEhcAb383iv5ao3lFMgHH7UsStJVocXHy9BC3akQUQ/zK0U8RcswGmKXatXjlmD6690+hEZoGotWcOE4oAQF4PF+2/eUvKUjnMcIan1loB8Tlth9EvkavT3JuXvcotlCxQCsFl2ZIY3yJYfimsRawh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787871051; c=relaxed/simple;
-	bh=oVpn3Y3xe4yNSLPISH532HiWMGCaPXfViMVpomdHH3k=;
+	s=arc-20240116; t=1787874497; c=relaxed/simple;
+	bh=79Ppe89qsYq40c+DjqrR7Kiv7DFxwdoetJ9eL0V6bD4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pIfSA6qgSEAwqzJZJ4t+0qFTutk8n50r0czjVO03hiWGFha/Ag/jz7uSejyo9GvhWUzE4Sa1YNsmxUi0aiu5Pcc/h69dcCDQ+mIei1wHuxC+/31h1OwDxg5nV8dO6HF3U7z/4jnuIAjA4VxqQjKB5pwqkfj+UC1DPw0qvM393Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=GymOd4Rk; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+	 In-Reply-To:Content-Type; b=tWPRjxKA/b2RO2YG1zDpCjLvKfZhXAjnV8hvVPU77IJukD0yZdqm5YIHJOfiPdRO5e4TfgrgZVphsuBk5C1nYGuMlMU8Vp2mN8wkTGbq6prPeXFyxr1wEgQhozlVMm5+nTSlcuUhs8ets6vCeKDJbD7pmNUCKE4O6opOf3CsCRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sOiEYcWR; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="GymOd4Rk"
-Received: from [IPV6:2601:646:8081:8d71:8c93:dacb:e5fa:49aa] ([IPv6:2601:646:8081:8d71:8c93:dacb:e5fa:49aa])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 67RMl4Qn1836438
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 27 Aug 2026 15:47:04 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 67RMl4Qn1836438
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026072801; t=1787870834;
-	bh=EXQuytFudEdgp91C+uFz8aeu/WW15G7DgPzpxtGKF4M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GymOd4RkxGi8njVCQCfisvKP39Bb44ZVOGqd2ZqhsM67DzFyYn8S/jMXCU8Rma33W
-	 PEelxL7L8kBY+qk5qAEjpsMwfkxEwjrDmJEsL+fSa6zkpR+h5d+MOwPtTLVMwwm0lZ
-	 bCPemLIjQYuVaQEQRjl132J4YP0xzX54ej4JFh90v2xhqZFikkHSFSnGkczichDoFv
-	 sZK/qGKEclFkhvxq+v2kMkmJ4o1BjYqiHVTd5aGLm7HyH0fkUCbFxhX7p3xCNzPfY0
-	 gzR1rveeuo2MbtEx3KqfD+thNsEFw5il2Dad3o6axDhdFmbVxxjrh2OwAc/diiyN8G
-	 nWKtXnX6xx8pw==
-Message-ID: <995a61ef-ce8c-4c8b-bea8-77f375076a39@zytor.com>
-Date: Thu, 27 Aug 2026 15:46:58 -0700
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sOiEYcWR"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=WbrA5H4Yvk57EOsBNWlV0ekpieSDSLCMYYWZTClSrEA=; b=sOiEYcWRvCSxRASVuNIzInC47i
+	zNErCUzEMfXUGe0/SHQHaSCS6dB+wMNihofRUzgJpMfPm1xlgGmlDApET+ujz9oKz0qr0Lm0e65fv
+	gJuIGjg6P8vAREnZELW3c7qIs4vS5iQ8YP1ix6Fy6TS4S8SzWVziYYpfbw3W+YfkjIQk1i0AwDByL
+	mngleurW924PpzgIEnqId4llZUwhECm8TP4gIVKxO10MQ2a4qE2UkUjRPGJXlEDZczTRzCTA4mscp
+	tPFUGksNR5nn/tVEHedLSjEk2tR5tSxNXqCZzVckNM7s/VPY7WJMLucXfA8261xYtmynDIor2bjm9
+	TaSgwyMA==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wzjpL-00000004vYb-1Jb0;
+	Thu, 27 Aug 2026 23:48:11 +0000
+Message-ID: <6bd84489-88e4-4b72-b1f8-af5e1866a37e@infradead.org>
+Date: Thu, 27 Aug 2026 16:48:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -41,103 +39,46 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [patch 03/18] entry: Provide
- [syscall_]enter_from_user_mode_randomize_stack()
-To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller
- <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-        Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-        Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-References: <20260707181957.433213175@kernel.org>
- <20260707190253.816918647@kernel.org>
-Content-Language: en-US, sv-SE
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20260707190253.816918647@kernel.org>
+Subject: Re: [PATCH v2] MIPS: config: Add EcoNet EN751221 defconfig
+To: Caleb James DeLisle <cjd@cjdns.fr>, linux-mips@vger.kernel.org
+Cc: tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
+ jonas.gorski@gmail.com, julianbraha@gmail.com
+References: <20260817220344.2931634-1-cjd@cjdns.fr>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20260817220344.2931634-1-cjd@cjdns.fr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2026-07-07 12:06, Thomas Gleixner wrote:
-> Randomizing the syscall stack can only happen after state is established
-> via enter_from_user_mode() or syscall_enter_from_user_mode(). The earlier
-> it happens the better.
+
+
+On 8/17/26 3:03 PM, Caleb James DeLisle wrote:
+> Add config based on OpenWrt for EN751221 boards.
+> Of note: EcoNet bootloader has a 7.2MB kernel size limit so
+> ZBOOT is assumed to be needed in all cases.
 > 
-> Provide two new macros to consolidate that:
+> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
+> ---
+> Updated to work after SERIAL_8250 and SERIAL_OF_PLATFORM removed
+> from Kconfig.
+> Link: https://lore.kernel.org/linux-mips/20260815235109.666268-1-julianbraha@gmail.com/
+> ---
+>  MAINTAINERS                                 |   1 +
+>  arch/mips/configs/econet_en751221_defconfig | 264 ++++++++++++++++++++
+>  2 files changed, 265 insertions(+)
+>  create mode 100644 arch/mips/configs/econet_en751221_defconfig
 > 
->   - enter_from_user_mode_randomize_stack()
-> 	enter_from_user_mode();
-> 	add_random_kstack_offset_irqsoff();
+...
 > 
->   - syscall_enter_from_user_mode_randomize_stack()
-> 	enter_from_user_mode_randomize_stack();
-> 	syscall_enter_from_user_mode_work();
->     
-> to reduce boiler plate code.
-> 
-> Those are macros and not inline functions as the latter would limit the
-> stack randomization scope to the inline function itself.
-> 
-Not directly related to this patchset, but still:
+> base-commit: 3b7711be02612845e44b5e9ef7c0b9f203cf29b6
+> prerequisite-patch-id: 0f044e47a76450ebb4fe52dc60a6b2f79625bbff
+> prerequisite-patch-id: 6380783b9da35b966b64c237b0ef50c31c7425d6
 
-Can anyone *please* find out what the actual security requirements are for the
-syscall randomization offset?
+Hi,
+Can you identify these 2 prerequisite patches?
+They are not in linux-next so I can't test this patch.
 
-The original checkin, 39218ff4c625 ("stack: Optionally randomize kernel stack
-offset each syscall") indicates that it is fundamental that the stack offset
-is applied *after* pt_regs pushing, but that isn't documented anywhere in the
-kernel sources as far as I can tell.
-
-However, I have also come to understand that there are further, undocumented
-constraints; at least at one point I was told that "the offset should not be
-stored in memory while running in the kernel", which seems more than a bit odd.
-
-This matters, because it creates a data dependency on exit. The original
-checkin does call out that RDTSC timing is inappropriate if the user could
-control it, but using a hardware CSPRNG like RDRAND (or its equivalent for
-other architectures) would be feasible if it isn't in the critical path. If an
-RDRAND - store sequence can be executed on entry, *after* the stack
-adjustment, then the high latency of RDRAND can hopefully be very effectively
-hidden by an OO CPU.
-
-Incidentally, in case you are wondering "why doesn't each core get a dedicated
-CSPRNG and hardware randomness generator, to avoid high latency", the answer
-is pretty simple: a hardware random number source, regardless of the specifics
-of the design, almost by definition violates the hardware design rules of any
-digital design; after all, the design rules are designed to *eliminate* noise
-(making the circuit behave as closely as physically possible to a realization
-of the abstract digital circuit), whereas the very goal of a HWRNG source is
-to *extract and amplify* quantum thermal noise. This means that considerable
-chip area is consumed by a "keep-out zone", a designated "no man's land"
-keeping the digital logic away from the noise source. This keep-out zone is
-typically much, much larger than the noise source itself.
-
-	-hpa
+thanks.
+-- 
+~Randy
 

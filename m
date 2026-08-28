@@ -1,137 +1,214 @@
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0D444606D;
-	Fri, 28 Aug 2026 11:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB32627A47F;
+	Fri, 28 Aug 2026 14:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787917217; cv=none; b=OKy5FHjbyLgHjfnh0TqPdtUicdBlVtet4mQ0jeROKIXlxyi+h3yn1s0sR9lLTOgGXKgnshVctq0KUsT5HrERPpPxUQrqfHhZkqh+wytufNI5hVqe1+/bp4tYQPtuGY4Aeou4ejUO1zkEGLEK2nOPlZsiJgPd2q28iGwfGWFbmig=
+	t=1787926076; cv=none; b=tGPcFc2xEjmEYiKL/Br8ND/lq5fkjkzPsb+YweDhzpcexwUFlwexbuMOqThnB6jfZbU2jMWhCFO2EFXN+vSBwUuIIHJ2dUgLIY3OFYNM4m3XIVwxH9lyjIuZ0A6t+Tdn22W4kFrjkU5acLNMpwRHTkNAoFOmD4NUIapyFPugH6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787917217; c=relaxed/simple;
-	bh=71g3aqqIcF1avrw3tcUEMFL/FKmR3Ecm0PZTd53NSWI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hLgJTrRcP8yAiOl99VE7h63Vu7JtNqTw5phc9HAi9LTGsxH7H4L0nDq94adMghSaA7PVJpoj8KYTOtiZ/yIThejpjiXkP9EhOfcB73LKUyC9YPvse/Db1jqyG4zNvTal2AbCuvDz0K9FC4/HHHmlHNwMCezNX94xPbapr1sZkwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [111.196.241.250])
-	by APP-01 (Coremail) with SMTP id qwCowACnfPA6cpFqpPm9Bg--.43118S8;
-	Fri, 28 Aug 2026 19:34:19 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Paul Cercueil <paul@crapouillou.net>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-mips@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/20] ASoC: jz4740: Propagate codec wake-up errors
-Date: Fri, 28 Aug 2026 19:34:01 +0800
-Message-ID: <20260828113416.47061-7-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20260828113416.47061-1-pengpeng@iscas.ac.cn>
-References: <20260828113416.47061-1-pengpeng@iscas.ac.cn>
+	s=arc-20240116; t=1787926076; c=relaxed/simple;
+	bh=TBH83RWzbPi3hPQhZL8SsrLTL7ByIAO3rQTk5wzs14g=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Dny9JWtjDTikaQxWU/OWMnRLXIrptS+pZNKKv0lOc5lk1pakV2++Jws7NnFbi9D732qUpRzSu1V9L1ZEkIVVsPn2ezXfUZyxjCIbkpXVfO7E0/Z2KGGius68kPqz/dG6OVgt6Uah0GmOaooFEHVuwPEZNbElpISc2fRu5kgU5MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QIY+qGWg; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QIY+qGWg"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 351CD4E41404;
+	Fri, 28 Aug 2026 14:07:51 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id F3D3360537;
+	Fri, 28 Aug 2026 14:07:50 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EE66011C781A7;
+	Fri, 28 Aug 2026 16:07:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1787926066; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=MzRL6iatWiMUl1WDoUNGb9uivqjfifE5/OyTjMxiP0o=;
+	b=QIY+qGWgooTFrFCwGPBcxL03vPh6RlrDZ9RtufOUQqJQAwMN9AM2g7AKzAomR8kCKkI5A5
+	cIB/1dVCWmwn/iTab4/gsSIcalZcbamok4k07nLteIOmKFv0JX2j30Xncd4x3XbJqfoXTl
+	1tT7RAwRwpoALX4GdtAfyN2RQdKd3Eq2jNHrl76yfLKVNKIhWbfrze7bEsGrYyphfzcflU
+	KMXR4fzaR0dxFnPWK9dj+EvSjXBj2HKG8jMjQ8hEm6qaixLmS8JPSd0USFZlh5NVNyu/3M
+	mRzcAAlA1g7zpNdDQcAEq2/rd4ekPPAIAZc7huu9xU2DZQiR88GJYOFOk6cg5g==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Fri, 28 Aug 2026 16:07:33 +0200
+Subject: [PATCH] mips: select CONFIG_WEAK_REORDERING_BEYOND_LLSC from
+ CONFIG_EYEQ
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowACnfPA6cpFqpPm9Bg--.43118S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr4DKF1fZFyUur4rKF1rJFb_yoW5GrWDpF
-	s7uFWFgr1rXF1rur4rtr4kZ3WYgryfKF4fZayIy3y8uw1ayry7ur45tF98ZFZ7CFy7tFsr
-	WF17Zr4UCa1rK3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
-	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r1q6r
-	43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-	0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
-	JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMI
-	IF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUeLvNUUUU
-	U
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+Message-Id: <20260828-eyeq-reordering-llsc-v1-1-0c5a69fc5124@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQ6CQAxG4auQrm0CDRlHr2JcyPCLNWTQVg2Gc
+ HdHXX6L9xZymMJpXy1keKnrlAuaTUXpcsoDWPtiklpCHSUy3rizYbK+hHngcfTEIYVGdrETtFs
+ q6c1w1vm3PRz/9md3RXp8X7SuH95mw7N4AAAA
+X-Change-ID: 20260828-eyeq-reordering-llsc-6c61298b2e47
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.15.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-The JZ4740 codec can only leave its suspend state through
-jz4740_codec_wakeup().  The helper ignores failures while asserting
-reset, clearing suspend/reset and replaying the dirty register cache,
-then the bias callback continues with later register writes.
+On I6500 CPU cores, lld and scd give no ordering guarantees (same as all
+other instructions). To respect the assumption that arch_cmpxchg() is
+fully ordered, we must inject sync instructions above and below our
+lld/scd loops using the already in place WEAK_REORDERING_BEYOND_LLSC
+infrastructure.
 
-Return the first error from all three operations and stop the
-OFF-to-STANDBY transition when wake-up restoration fails.
+Otherwise, bad things can happen:
 
-The issue was identified via static analysis and manually reviewed.
+[   34.054496] CPU 3 Unable to handle kernel paging request at virtual address 0000000000000000, epc == a80000080838e01c, ra == a80000080838dfc4
+[   34.054559] Oops[#1]:
+[   34.069561] CPU: 3 UID: 0 PID: 170 Comm: pipe_race Not tainted 7.2.0-rc6-01553-gb73c35220968-dirty #103 VOLUNTARY
+[   34.079932] Hardware name: Mobile EyeQ5 MP5 Evaluation board
+[   34.085592] $ 0   : 0000000000000000 0000000000000001 0000000000000000 0000000000000000
+[   34.093616] $ 4   : a800000808ee2618 000000000b7a879d 0000000000001000 0000000000000000
+[   34.101638] $ 8   : 0000000000e3f2c9 0000000000000000 a800000808a2a9f8 0000000000000000
+[   34.109660] $12   : a8000008139ffcd8 ffffffff84080018 a80000080837fae0 7878787878787878
+[   34.117682] $16   : a800000807e82940 0000000000001000 0000000000000000 0000000000000000
+[   34.125704] $20   : a800000802920e00 a8000008139ffdf8 a800000802649400 0000000000e3f2c9
+[   34.133726] $24   : 0000000000000006 00000001200406e0
+[   34.141783] $28   : a8000008139fc000 a8000008139ffd10 0000000000e3f2c8 a80000080838dfc4
+[   34.149837] epc   : a80000080838e01c anon_pipe_read+0xd4/0x428
+[   34.155697] ra    : a80000080838dfc4 anon_pipe_read+0x7c/0x428
+[   34.161549] Status: 140000e3  KX SX UX KERNEL EXL IE
+[   34.166551] Cause : 40800408 (ExcCode 02)
+[   34.170574] BadVA : 0000000000000000
+[   34.174161] PrId  : 0001b028 (MIPS I6500)
+[   34.178183] Process pipe_race (pid: 170, threadinfo=000000005ca35720, task=00000000e1013890, tls=000000014ebbb780)
+[   34.188568] Stack : a800000802649400 0000000000000000 0000000000000000 a8000008139ffdd0
+[   34.196623]	 0000000000000fba a800000808ee0000 0000000000000001 a8000008130c3e80
+[   34.204676]	 a8000008080d1280 a8000008139ffd58 a8000008139ffd58 1dbd2b22ea1dd500
+[   34.212729]	 a800000802649400 a800000808ee0000 ffffffffffffffea 0000000000000001
+[   34.220783]	 0000000000001000 0000000000000000 00000001200ae518 ffffffffffffffff
+[   34.228836]	 000000fffbe0e530 a80000080837edf4 000000fffbe0e530 0000000000000000
+[   34.236890]	 0000000000000000 0000000000000000 000000014ebb55a0 0000000000001000
+[   34.244943]	 0000000000000001 a800000802649400 0000000000000000 0000000000000000
+[   34.252996]	 0000000000000000 0000400400000000 0000000000000000 1dbd2b22ea1dd500
+[   34.261049]	 00000000140000e3 a800000802649400 a800000802649400 a800000808ee0000
+[   34.269103]	 ...
+[   34.271568] Call Trace:
+[   34.274026] [<a80000080838e01c>] anon_pipe_read+0xd4/0x428
+[   34.279533] [<a80000080837edf4>] vfs_read+0x25c/0x318
+[   34.284607] [<a80000080837faac>] ksys_read+0x104/0x138
+[   34.289763] [<a80000080802b9cc>] syscall_common+0x44/0x68
+[   34.295187]
+[   34.296689] Code: f84000cf  02209825  de020010 <dc420000> d8400004  02002825  0040f809  02802025  f84000c3
+[   34.306504]
+[   34.308099] ---[ end trace 0000000000000000 ]---
 
-Fixes: 3b097d64eafa ("ASoC: Add JZ4740 codec driver")
+My initial reproducer was the xdp-tools test suite. A standalone
+reproducer would be an lld/scd loop that, when the read is reordered by
+the CPU, triggers a fault. We can achieve this from userspace by
+stressing an anonymous pipe, which uses a mutex. Program used:
 
-Assisted-by: LLM
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+	// SPDX-License-Identifier: GPL-2.0
+	// pipe_race.c - reproducer for MIPS LL/SC reordering vs fs/pipe.c
+	//
+	// Two userspace processes on an anonymous pipe:
+	//   parent  = writer: tight write() loop
+	//   child   = reader: tight read() loop
+
+	#define _GNU_SOURCE
+	#include <assert.h>
+	#include <errno.h>
+	#include <sched.h>
+	#include <signal.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <sys/types.h>
+	#include <sys/wait.h>
+	#include <time.h>
+	#include <unistd.h>
+
+	int main(void)
+	{
+		long wrsize = 70;	// bytes per write()
+		long rdsize = 4096;	// bytes per read()
+		int pfd[2];
+		char *buf;
+		pid_t pid;
+		int ret;
+
+		ret = pipe(pfd);
+		assert(!ret);
+
+		pid = fork();
+		assert(pid >= 0);
+
+		if (pid == 0) {			/* reader */
+			close(pfd[1]);
+			buf = malloc(rdsize);
+			assert(buf);
+			for (;;) {
+				ssize_t n = read(pfd[0], buf, rdsize);
+
+				if (n < 0 && errno == EINTR)
+					continue;
+				if (n <= 0)
+					_exit(n < 0 ? 1 : 0);
+			}
+		}
+
+		close(pfd[0]);			/* writer */
+		buf = malloc(wrsize);
+		assert(buf);
+		memset(buf, 'x', wrsize);
+
+		for (;;) {
+			ssize_t n = write(pfd[1], buf, wrsize);
+
+			if (n < 0 && errno == EINTR)
+				continue;
+			if (n != wrsize)
+				break;
+		}
+
+		kill(pid, SIGKILL);
+		wait(NULL);
+		return 0;
+	}
+
+Fixes: fbe0fae601b7 ("MIPS: mobileye: Add EyeQ6H support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- sound/soc/codecs/jz4740.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index d3d801d850a1..efb3f8295e98 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -217,15 +217,22 @@ static struct snd_soc_dai_driver jz4740_codec_dai = {
- 	.symmetric_rate = 1,
- };
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e2eb9627bd14..5713a7e325dc 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -661,6 +661,7 @@ config EYEQ
+ 	select USB_UHCI_BIG_ENDIAN_MMIO if CPU_BIG_ENDIAN
+ 	select USE_OF
+ 	select HOTPLUG_PARALLEL if HOTPLUG_CPU
++	select WEAK_REORDERING_BEYOND_LLSC
+ 	help
+ 	  Select this to build a kernel supporting EyeQ SoC from Mobileye.
  
--static void jz4740_codec_wakeup(struct regmap *regmap)
-+static int jz4740_codec_wakeup(struct regmap *regmap)
- {
--	regmap_set_bits(regmap, JZ4740_REG_CODEC_1, JZ4740_CODEC_1_RESET);
-+	int ret;
-+
-+	ret = regmap_set_bits(regmap, JZ4740_REG_CODEC_1, JZ4740_CODEC_1_RESET);
-+	if (ret)
-+		return ret;
-+
- 	udelay(2);
- 
--	regmap_clear_bits(regmap, JZ4740_REG_CODEC_1,
--			  JZ4740_CODEC_1_SUSPEND | JZ4740_CODEC_1_RESET);
-+	ret = regmap_clear_bits(regmap, JZ4740_REG_CODEC_1,
-+				JZ4740_CODEC_1_SUSPEND | JZ4740_CODEC_1_RESET);
-+	if (ret)
-+		return ret;
- 
--	regcache_sync(regmap);
-+	return regcache_sync(regmap);
- }
- 
- static int jz4740_codec_set_bias_level(struct snd_soc_component *component,
-@@ -235,6 +242,7 @@ static int jz4740_codec_set_bias_level(struct snd_soc_component *component,
- 	struct jz4740_codec *jz4740_codec = snd_soc_component_get_drvdata(component);
- 	struct regmap *regmap = jz4740_codec->regmap;
- 	unsigned int mask;
-+	int ret;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -248,8 +256,11 @@ static int jz4740_codec_set_bias_level(struct snd_soc_component *component,
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
- 		/* The only way to clear the suspend flag is to reset the codec */
--		if (snd_soc_dapm_get_bias_level(dapm) == SND_SOC_BIAS_OFF)
--			jz4740_codec_wakeup(regmap);
-+		if (snd_soc_dapm_get_bias_level(dapm) == SND_SOC_BIAS_OFF) {
-+			ret = jz4740_codec_wakeup(regmap);
-+			if (ret)
-+				return ret;
-+		}
- 
- 		mask = JZ4740_CODEC_1_VREF_DISABLE |
- 			JZ4740_CODEC_1_VREF_AMP_DISABLE |
--- 
-2.43.0
+
+---
+base-commit: 1b78070aaef63512688aebfbc82365ef9d6660f1
+change-id: 20260828-eyeq-reordering-llsc-6c61298b2e47
+
+Best regards,
+--  
+Théo Lebrun <theo.lebrun@bootlin.com>
 

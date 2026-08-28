@@ -1,84 +1,195 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3EA3F1065;
-	Thu, 27 Aug 2026 23:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787874497; cv=none; b=kPaim/bRJnEXbVdIBpdHMEhcAb383iv5ao3lFMgHH7UsStJVocXHy9BC3akQUQ/zK0U8RcswGmKXatXjlmD6690+hEZoGotWcOE4oAQF4PF+2/eUvKUjnMcIan1loB8Tlth9EvkavT3JuXvcotlCxQCsFl2ZIY3yJYfimsRawh8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787874497; c=relaxed/simple;
-	bh=79Ppe89qsYq40c+DjqrR7Kiv7DFxwdoetJ9eL0V6bD4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tWPRjxKA/b2RO2YG1zDpCjLvKfZhXAjnV8hvVPU77IJukD0yZdqm5YIHJOfiPdRO5e4TfgrgZVphsuBk5C1nYGuMlMU8Vp2mN8wkTGbq6prPeXFyxr1wEgQhozlVMm5+nTSlcuUhs8ets6vCeKDJbD7pmNUCKE4O6opOf3CsCRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sOiEYcWR; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F8340B36D
+	for <linux-mips@vger.kernel.org>; Fri, 28 Aug 2026 10:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.170
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787912192; cv=pass; b=ofvMHstpH3WyZjLPGu5F4klSDOAjiAavUF8PTKmCqXARGJImkNonLR667WBxlZMSw8D2f1MwxJhwjhzyxdubVqF13y9hJ5oZnivbOfINA3g2RwSAbwUeBGoqOifQRBpuxm7MZyKgq02rpHf/356gdo33sZJx8kg42MnRaub77Cc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787912192; c=relaxed/simple;
+	bh=9nPb6ofpYX8RiPQ7x2iuJEPkGK91/1J8FKtfNZIcC5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HV09VSq8hXott3hWYZUiqatRtcBGuIv8U6i7EoQDIi8hhlU/4FH8TYZO91KVvglqbtMzQNP7XFc52tA4FuQq3QBwIwlk3dhJkQPMKtGbITE0qnsn9EiogOKYPp0L2NBoi3vVgvBQv7a4ctBl7fG+ZZSgLPaePOH303rQEO9lAgE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b=eDi1EAHE; arc=pass smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sOiEYcWR"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=WbrA5H4Yvk57EOsBNWlV0ekpieSDSLCMYYWZTClSrEA=; b=sOiEYcWRvCSxRASVuNIzInC47i
-	zNErCUzEMfXUGe0/SHQHaSCS6dB+wMNihofRUzgJpMfPm1xlgGmlDApET+ujz9oKz0qr0Lm0e65fv
-	gJuIGjg6P8vAREnZELW3c7qIs4vS5iQ8YP1ix6Fy6TS4S8SzWVziYYpfbw3W+YfkjIQk1i0AwDByL
-	mngleurW924PpzgIEnqId4llZUwhECm8TP4gIVKxO10MQ2a4qE2UkUjRPGJXlEDZczTRzCTA4mscp
-	tPFUGksNR5nn/tVEHedLSjEk2tR5tSxNXqCZzVckNM7s/VPY7WJMLucXfA8261xYtmynDIor2bjm9
-	TaSgwyMA==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wzjpL-00000004vYb-1Jb0;
-	Thu, 27 Aug 2026 23:48:11 +0000
-Message-ID: <6bd84489-88e4-4b72-b1f8-af5e1866a37e@infradead.org>
-Date: Thu, 27 Aug 2026 16:48:10 -0700
+	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b="eDi1EAHE"
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-5bf959b820cso773780e0c.3
+        for <linux-mips@vger.kernel.org>; Fri, 28 Aug 2026 03:16:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787912189; cv=none;
+        d=google.com; s=arc-20260327;
+        b=j+c4pTs92N4AdrAvU54035Dkl3rLJXSefBRWhaCuMZ/C9d/A7qnGaxYz5rqCnp7IFw
+         jk6zrJyRx+qR9GMqK+DHD8iFUM6oB5nA6EXT6NYKhwcSovaPKkxodg+bweh5IsPSnqnp
+         0UWJRPZUG5go5X96qjvCL5jM/QP2FlD61E4ZfE70QbPCjDX3blUIS5p+bZFd3BwPDTbI
+         iwk5vVT9B2LT1o/1o4tfcZuWGuYzxra6LGtaYUJ986GhP1rMFw4ZfPUgFVr50jtVORGp
+         O92iD27lhC+q6fp5yo5Y+Mjp9jmipn9O8yjQnMx/+DsaYshzITD2M8K0i2IpkWt8/LeR
+         mOgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=6GcVt68ylb4fqLmficxbeoWwxWTUsNtsQKfhwJMCoe4=;
+        fh=ANDTVUM1vreaWSJU0f6f4wfCUG27CxUP7NfHBcUPdII=;
+        b=S4csyvpJAiRoiSWef2bf+dJIh2AeWJcKEZUsbsBU7L2qWMWowgNbNw2wzFP4wH94cd
+         mlf58t+g7iSFxsBhxVNcVhHn/4PCv9jwHYQP5bZmfogz8AO6tGOIB38n2aNeXeTfplRt
+         IBeOvcprqM5beeNaZEWa+sRGYLV5xgI3us00CkP411GCLTtT3qcncbnRJHvzRcahZxPo
+         fn24vuGojKxpby/QBR2WBqegmTk2IsowJk6YybP3Rawhzl3mssGVRqgjPbqVmZQF5l2e
+         ImYtifCBQfPVR1Au9wHmrvW8c10ofkfopFsPzG/Vf9Ru7bIP3rzBNv6c8h+8n4fPukM8
+         5q6A==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20251104.gappssmtp.com; s=20251104; t=1787912189; x=1788516989; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=6GcVt68ylb4fqLmficxbeoWwxWTUsNtsQKfhwJMCoe4=;
+        b=eDi1EAHEZnV8UO/NrhF4uzDO53/ZiBqe/Kv6LlPMTl1AifjnJFoy3N7vl8W54G2rrA
+         2xGtcLViQ6E6TajV3LATlqLSrIK4+DtympTvOkkbRVZHCDB6RacvwJ7CPPDE/wW6YeTX
+         uxrK98gVIaDpR9GKb/hPnm7ODAtM3r4KvfBlgB+Aug+U+k7whdR2Uk3otkCkkG2RdjhJ
+         nmF7fSrrOry1e4Pw+qwkM/VDMvXTfwBkp1Vbp8rgAT1II2Ot4WBQQuwaeJJJdvgtIyHA
+         O+WwqciUVopEQTvIDGa450fP5ZMTIxqTR/P7LYQuYSlteI3ge31ORyszsMnD/HsiSfya
+         g/OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787912189; x=1788516989;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=6GcVt68ylb4fqLmficxbeoWwxWTUsNtsQKfhwJMCoe4=;
+        b=mdsBcB8WdW7nrXRpTWTr5IlSK2YCiiZV4ghkJHuTe37M5IdYOWLYUDcgzPRfydMO/B
+         q6H7ilwDtHvpvRWGJN8DyDybShx9NNSmHFYw+Q4wB9wnRWO3lzjJNaqk0E+3xB22oe60
+         PzgnFOD4c7hSnB2r/WuwHUGb/GEbMAYhGW1UYC1DoBb/P1aHX6TkP1+A1hvwOthEziVn
+         7y/iylPXu8D/De+OyMA30jnrx8g6mUw6K3jj1xNOgUKTszIbNb/ZrN/860CD5/Q/eSC+
+         BzfrwXZJbJ538HEWSv8xbniaiX42oJtTitL8DYe1l8F9mdWgWZ/em7t2njgoxy1gFSq8
+         7t6g==
+X-Forwarded-Encrypted: i=1; AHgh+Rpob+WVvtcQ2W2vSr6VtlWFDUmoIw5kr3WnhTFrcu04ZWo2pBrusWe2bWjTuJNyXC+xfbLFtjB9CwlC@vger.kernel.org
+X-Gm-Message-State: AFuF++l3xdqF5AensTUJaR83ZH70BwlsyZDFn/XYem50yKuza2P++3ZO
+	LbHNX09YtL/QTYq940Y2KT99iYTFsUDMa5tBQdYRrzw0NTCK2+Jm/UjYfkSOIuykmZ0dfGAUPt+
+	uuTWzcGwccupNWza9B6a70O8R/EsBUdaggDAfqA+s1A==
+X-Gm-Gg: AR+sD13ZhfGA7BVgAD3XXe5LX8x6P6zmd8nmVKZoQCf/MKZ5Co/jxrflB7LnHXezVoG
+	B4ct/DMDKWJ5MP69MhgNMpfbsA4zHNC6cNmsqDs0XsP7iNOvHZo6OLdkm3H/3US8pWqJFQfOhhh
+	Qa5qcAaEiroRGk7Eu5bh6EqduP5vFiznWFUBja02zyxkEQ4sKCP7UAa2fsTGx/MFdxYrI2JsxoA
+	NUxo/0B3b8KFjRaolL3RQCedC3ojPIqPfs9MQYmdA1TDPVSS8VSvoAVjh0CQF9NxnEURWKKPe9x
+	cDjANQZnWu9Bwx8SkvSKDxmb4fYg8t4cOf910OlnjEn8
+X-Received: by 2002:a05:6122:88a:b0:5bd:8c84:59aa with SMTP id
+ 71dfb90a1353d-5c681777357mr2723173e0c.8.1787912188834; Fri, 28 Aug 2026
+ 03:16:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] MIPS: config: Add EcoNet EN751221 defconfig
-To: Caleb James DeLisle <cjd@cjdns.fr>, linux-mips@vger.kernel.org
-Cc: tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
- jonas.gorski@gmail.com, julianbraha@gmail.com
-References: <20260817220344.2931634-1-cjd@cjdns.fr>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20260817220344.2931634-1-cjd@cjdns.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260819010523.1057789-1-main.kalliope@gmail.com> <20260819010523.1057789-3-main.kalliope@gmail.com>
+In-Reply-To: <20260819010523.1057789-3-main.kalliope@gmail.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date: Fri, 28 Aug 2026 12:16:17 +0200
+X-Gm-Features: AcwNN1UufzODx6ajZ2Cvlnuoud8Jym1z7VvkRIkj38LXxzb7tykFlkvxDcgn1Wc
+Message-ID: <CAM1=_QTDhirxjCmXUqvPqTqXMY=uVVcPXE0H=qHH_B+7XFrnpQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 2/2] bpf, mips: Add support for BPF_MOVSX in the JITs
+To: Nicholas Dudar <main.kalliope@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com, martin.lau@linux.dev, 
+	song@kernel.org, yonghong.song@linux.dev, jolsa@kernel.org, 
+	emil@etsalapatis.com, ihor.solodrai@linux.dev, paulburton@kernel.org, 
+	tsbogend@alpha.franken.de, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Nicholas,
 
+The MOV/MOVSX structure looks good in general. Some remarks on the
+implementation of individual emittor functions.
 
-On 8/17/26 3:03 PM, Caleb James DeLisle wrote:
-> Add config based on OpenWrt for EN751221 boards.
-> Of note: EcoNet bootloader has a 7.2MB kernel size limit so
-> ZBOOT is assumed to be needed in all cases.
-> 
-> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
-> ---
-> Updated to work after SERIAL_8250 and SERIAL_OF_PLATFORM removed
-> from Kconfig.
-> Link: https://lore.kernel.org/linux-mips/20260815235109.666268-1-julianbraha@gmail.com/
-> ---
->  MAINTAINERS                                 |   1 +
->  arch/mips/configs/econet_en751221_defconfig | 264 ++++++++++++++++++++
->  2 files changed, 265 insertions(+)
->  create mode 100644 arch/mips/configs/econet_en751221_defconfig
-> 
-...
-> 
-> base-commit: 3b7711be02612845e44b5e9ef7c0b9f203cf29b6
-> prerequisite-patch-id: 0f044e47a76450ebb4fe52dc60a6b2f79625bbff
-> prerequisite-patch-id: 6380783b9da35b966b64c237b0ef50c31c7425d6
+> +/* Register move operation (32-bit), optionally with sign extension */
+>  static void emit_mov_r32(struct jit_context *ctx, const u8 dst[],
+> -                        const u8 src[])
+> +                        const u8 src[], s16 off)
+>  {
+> -       emit_mov_r(ctx, lo(dst), lo(src));
+> +       switch (off) {
+> +       case 8:
+> +               emit(ctx, sll, lo(dst), lo(src), 24);
+> +               emit(ctx, sra, lo(dst), lo(dst), 24);
+> +               clobber_reg(ctx, lo(dst));
+> +               break;
+> +       case 16:
+> +               emit(ctx, sll, lo(dst), lo(src), 16);
+> +               emit(ctx, sra, lo(dst), lo(dst), 16);
+> +               clobber_reg(ctx, lo(dst));
+> +               break;
+> +       default:
+> +               emit_mov_r(ctx, lo(dst), lo(src));
+> +               break;
+> +       }
+>         emit_zext_ver(ctx, dst);
+>  }
 
-Hi,
-Can you identify these 2 prerequisite patches?
-They are not in linux-next so I can't test this patch.
+I would move the clobber marker to the end to reduce code duplication.
+That is the pattern used in other places in the jit. Also consider
+collapsing the cases off=8 and off=16 into one, with the shift
+argument computed as 32 - off. That would parameterize the shift logic
+instead of duplicating it.
 
-thanks.
--- 
-~Randy
+The above applies to all four variants of the mov emittor.
 
+> +/* Register move operation (64-bit), optionally with sign extension */
+>  static void emit_mov_r64(struct jit_context *ctx, const u8 dst[],
+> -                        const u8 src[])
+> +                        const u8 src[], s16 off)
+>  {
+> -       emit_mov_r(ctx, lo(dst), lo(src));
+> -       emit_mov_r(ctx, hi(dst), hi(src));
+> +       switch (off) {
+> +       case 8:
+> +               emit(ctx, sll, lo(dst), lo(src), 24);
+> +               emit(ctx, sra, lo(dst), lo(dst), 24);
+> +               break;
+> +       case 16:
+> +               emit(ctx, sll, lo(dst), lo(src), 16);
+> +               emit(ctx, sra, lo(dst), lo(dst), 16);
+> +               break;
+> +       case 32:
+> +               emit(ctx, move, lo(dst), lo(src));
+> +               break;
+> +       default:
+> +               emit_mov_r(ctx, lo(dst), lo(src));
+> +               emit_mov_r(ctx, hi(dst), hi(src));
+> +               return;
+> +       }
+> +       clobber_reg(ctx, lo(dst));
+> +       emit(ctx, sra, hi(dst), lo(dst), 31);
+> +       clobber_reg(ctx, hi(dst));
+>  }
+
+I have tried to avoid returns in the middle like this. If you combine
+cases 8 and 16 as suggested, you can put the sra sign extension into
+cases 8/16 and 32, and get rid of the return in the default case.
+
+> -static void emit_mov_r64(struct jit_context *ctx, u8 dst, u8 src)
+> +/* Register move operation (64-bit), optionally with sign extension */
+> +static void emit_mov_r64(struct jit_context *ctx, u8 dst, u8 src, s16 off)
+>  {
+> -       emit_mov_r(ctx, dst, src);
+> +       switch (off) {
+> +       case 8:
+> +               emit(ctx, dsll32, dst, src, 24);
+> +               emit(ctx, dsra32, dst, dst, 24);
+> +               break;
+> +       case 16:
+> +               emit(ctx, dsll32, dst, src, 16);
+> +               emit(ctx, dsra32, dst, dst, 16);
+> +               break;
+> +       case 32:
+> +               emit(ctx, sll, dst, src, 0);
+> +               break;
+> +       default:
+> +               emit_mov_r(ctx, dst, src);
+> +               return;
+
+This return is not needed. Replace with break. Consider using the
+emit_sext helper instead of raw sll to b better convey intent.
+
+Thanks,
+Johan

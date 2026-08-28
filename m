@@ -1,159 +1,154 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [185.119.170.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D629371897;
-	Fri, 28 Aug 2026 15:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF8F37E5DB;
+	Fri, 28 Aug 2026 16:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.119.170.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787932618; cv=none; b=sKdYC+y49uYM+gmrkxuGIns9cC9+/Ia1xDoTBvgEuTIBpSnyhonuO1S2YTLpHBxDi1Oom5Iwb2WrlsSQfj1FL9Yp1sTneWr1Z1R/CDCPqu8I9dN/eUThGD8Uk7FJDodE/6m/ugF9WSAXisxgFE9JBR8kTofFTpMPW0lFe4suOGQ=
+	t=1787933693; cv=none; b=iR2R3eQHIHNqRekeRLCAzJJrexPCjv0Mr+xbcBtTb/7dUPxr+KZtQrmfkjbZWH+yPaJRb9gdzImjD3qiwKcz9GS4+oLWOxQU6MLlX6ocE6asgdbjTfZLOg+4I2gK6dEcG9ORgJQeMv7nd+23YKMMyuVeDpxZN+aYICCJiqzHFzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787932618; c=relaxed/simple;
-	bh=L4RZrkXTn1pqqgK29ejDgfk3W0S/BNKjkOPGuto+7LA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=Gspjb+tgsq5mfnkD4M3gObWU9fCcLf5CZjGPk2XWodqFJ6BJA+mITOqrg8ZFgIj1K8aouFlmi+I8kUChYRIz9Tc70GcRx9aRnRRKvywfxw7ezhsaOjSV0y1tWdhIABR91LOugbcDy+j8ONflxSAAObs+vQfUpspzQz7pjm9KiCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=a69KlABD; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1787933693; c=relaxed/simple;
+	bh=kE54F3Lbt3A8eautvIO0KDgVXR+u+uk0pH0/T6kgIcw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YuXrRZvwFct2GaCByqXemdphuVHwfLSdHyOsPFwma50jTx2tpD5iqYjx1tzdWgwrggFnRIY78Ahqsx1tG/ZLrDWLZXuMENn0rnyNxMw4PvnFQpeTZ2/aBl1VgzQ784aJWiL57vIRATw0eAZSOPJYeHN1mCJ2DteDe4e8b+SG/bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=wvzAwGxm; arc=none smtp.client-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="a69KlABD"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id DCCF11A18A5;
-	Fri, 28 Aug 2026 15:56:53 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AEBD260537;
-	Fri, 28 Aug 2026 15:56:53 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6F68911C782FD;
-	Fri, 28 Aug 2026 17:56:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1787932608; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=yN9kxwcFABA4u74vZVBHnK4I0Q7juc3vT40/SKtK+L8=;
-	b=a69KlABDqBSHKSqRfCRxFy6SVnuuXNUYh2De7jRQ4L+MGZyQNG50KH7z4yADPr+YnmejX3
-	KQ/Scv08/POudvbOVTATG+DkHR32KEs0bbgwIOS9F63qCzk9HlsMllg28zWnBL+BHsEZ80
-	7+p8yWQRv8QVpOrhpXGgE+a+l4KGaxa58HPSZLYSO3yXUU+EZNAd0t8PX3Nzol0PLXyLtP
-	f6VMLxPj5O0kR73PE9qmI77H2t1FMI0OcSL7ClcLGtMvfXE/3vKIcROxvuFBWM04oa/EsX
-	nGZ/N3W37PYQrFUwpCQgEwkbR5H35k+tXEa8aNaKVhXoqytmx1wUWeWhX6t3KQ==
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="wvzAwGxm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crapouillou.net;
+	s=mail; t=1787933682;
+	bh=kE54F3Lbt3A8eautvIO0KDgVXR+u+uk0pH0/T6kgIcw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=wvzAwGxmK3yxYmt/Dva4AWzw5nITFr2+ZGKoQIkkpA7N9TSijSljClAqh6T3c0RAP
+	 ehi6oWonB/5M8RouaOzAe4KmCiRJfTqa8t8wEswzD0D4FMlf5onC/Ey+I3ckFJiB+U
+	 O4XWmEyXEBssaW0V0+hUcyDh3Hyl2r/Yi39EUmG8=
+Message-ID: <a47a41fad88026d9f2eea3f01102948e5f44c926.camel@crapouillou.net>
+Subject: Re: [PATCH 06/20] ASoC: jz4740: Propagate codec wake-up errors
+From: Paul Cercueil <paul@crapouillou.net>
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+ linux-sound@vger.kernel.org, 	linux-kernel@vger.kernel.org
+Date: Fri, 28 Aug 2026 18:14:38 +0200
+In-Reply-To: <20260828113416.47061-7-pengpeng@iscas.ac.cn>
+References: <20260828113416.47061-1-pengpeng@iscas.ac.cn>
+	 <20260828113416.47061-7-pengpeng@iscas.ac.cn>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 28 Aug 2026 17:56:44 +0200
-Message-Id: <DL0P7NCKVU0I.ARBMN6GAMMBS@bootlin.com>
-Cc: <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Vladimir
- Kondratiev" <vladimir.kondratiev@mobileye.com>,
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, <stable@vger.kernel.org>,
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "David S.
- Miller" <davem@davemloft.net>, "Jakub Kicinski" <kuba@kernel.org>, "Jesper
- Dangaard Brouer" <hawk@kernel.org>, "John Fastabend"
- <john.fastabend@gmail.com>, "Stanislav Fomichev" <sdf@fomichev.me>, "Jiaxun
- Yang" <jiaxun.yang@flygoat.com>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH] mips: select CONFIG_WEAK_REORDERING_BEYOND_LLSC from
- CONFIG_EYEQ
-X-Mailer: aerc 0.21.0-0-g5549850facc2
-References: <20260828-eyeq-reordering-llsc-v1-1-0c5a69fc5124@bootlin.com>
-In-Reply-To: <20260828-eyeq-reordering-llsc-v1-1-0c5a69fc5124@bootlin.com>
-X-Last-TLS-Session-Version: TLSv1.3
+MIME-Version: 1.0
 
-First off, sorry to net maintainers for being in Cc of this patch.
-get_maintainer.pl added you and the MLs because the commit message
-containing "xdp". I deleted the MLs in Cc but forgot the individuals.
+Hi Pengpeng Hou,
 
-On Fri Aug 28, 2026 at 4:07 PM CEST, Th=C3=A9o Lebrun wrote:
-> On I6500 CPU cores, lld and scd give no ordering guarantees (same as all
-> other instructions). To respect the assumption that arch_cmpxchg() is
-> fully ordered, we must inject sync instructions above and below our
-> lld/scd loops using the already in place WEAK_REORDERING_BEYOND_LLSC
-> infrastructure.
->
-> Otherwise, bad things can happen:
->
-> [   34.054496] CPU 3 Unable to handle kernel paging request at virtual ad=
-dress 0000000000000000, epc =3D=3D a80000080838e01c, ra =3D=3D a80000080838=
-dfc4
-> [   34.054559] Oops[#1]:
-> [   34.069561] CPU: 3 UID: 0 PID: 170 Comm: pipe_race Not tainted 7.2.0-r=
-c6-01553-gb73c35220968-dirty #103 VOLUNTARY
-> [   34.079932] Hardware name: Mobile EyeQ5 MP5 Evaluation board
-> [   34.085592] $ 0   : 0000000000000000 0000000000000001 0000000000000000=
- 0000000000000000
-> [   34.093616] $ 4   : a800000808ee2618 000000000b7a879d 0000000000001000=
- 0000000000000000
-> [   34.101638] $ 8   : 0000000000e3f2c9 0000000000000000 a800000808a2a9f8=
- 0000000000000000
-> [   34.109660] $12   : a8000008139ffcd8 ffffffff84080018 a80000080837fae0=
- 7878787878787878
-> [   34.117682] $16   : a800000807e82940 0000000000001000 0000000000000000=
- 0000000000000000
-> [   34.125704] $20   : a800000802920e00 a8000008139ffdf8 a800000802649400=
- 0000000000e3f2c9
-> [   34.133726] $24   : 0000000000000006 00000001200406e0
-> [   34.141783] $28   : a8000008139fc000 a8000008139ffd10 0000000000e3f2c8=
- a80000080838dfc4
-> [   34.149837] epc   : a80000080838e01c anon_pipe_read+0xd4/0x428
-> [   34.155697] ra    : a80000080838dfc4 anon_pipe_read+0x7c/0x428
-> [   34.161549] Status: 140000e3  KX SX UX KERNEL EXL IE
-> [   34.166551] Cause : 40800408 (ExcCode 02)
-> [   34.170574] BadVA : 0000000000000000
-> [   34.174161] PrId  : 0001b028 (MIPS I6500)
-> [   34.178183] Process pipe_race (pid: 170, threadinfo=3D000000005ca35720=
-, task=3D00000000e1013890, tls=3D000000014ebbb780)
-> [   34.188568] Stack : a800000802649400 0000000000000000 0000000000000000=
- a8000008139ffdd0
-> [   34.196623]	 0000000000000fba a800000808ee0000 0000000000000001 a80000=
-08130c3e80
-> [   34.204676]	 a8000008080d1280 a8000008139ffd58 a8000008139ffd58 1dbd2b=
-22ea1dd500
-> [   34.212729]	 a800000802649400 a800000808ee0000 ffffffffffffffea 000000=
-0000000001
-> [   34.220783]	 0000000000001000 0000000000000000 00000001200ae518 ffffff=
-ffffffffff
-> [   34.228836]	 000000fffbe0e530 a80000080837edf4 000000fffbe0e530 000000=
-0000000000
-> [   34.236890]	 0000000000000000 0000000000000000 000000014ebb55a0 000000=
-0000001000
-> [   34.244943]	 0000000000000001 a800000802649400 0000000000000000 000000=
-0000000000
-> [   34.252996]	 0000000000000000 0000400400000000 0000000000000000 1dbd2b=
-22ea1dd500
-> [   34.261049]	 00000000140000e3 a800000802649400 a800000802649400 a80000=
-0808ee0000
-> [   34.269103]	 ...
-> [   34.271568] Call Trace:
-> [   34.274026] [<a80000080838e01c>] anon_pipe_read+0xd4/0x428
-> [   34.279533] [<a80000080837edf4>] vfs_read+0x25c/0x318
-> [   34.284607] [<a80000080837faac>] ksys_read+0x104/0x138
-> [   34.289763] [<a80000080802b9cc>] syscall_common+0x44/0x68
-> [   34.295187]
-> [   34.296689] Code: f84000cf  02209825  de020010 <dc420000> d8400004  02=
-002825  0040f809  02802025  f84000c3
-> [   34.306504]
-> [   34.308099] ---[ end trace 0000000000000000 ]---
->
-> My initial reproducer was the xdp-tools test suite. A standalone
-> reproducer would be an lld/scd loop that, when the read is reordered by
-> the CPU, triggers a fault. We can achieve this from userspace by
-> stressing an anonymous pipe, which uses a mutex. Program used:
+Le vendredi 28 ao=C3=BBt 2026 =C3=A0 19:34 +0800, Pengpeng Hou a =C3=A9crit=
+=C2=A0:
+> The JZ4740 codec can only leave its suspend state through
+> jz4740_codec_wakeup().=C2=A0 The helper ignores failures while asserting
+> reset, clearing suspend/reset and replaying the dirty register cache,
+> then the bias callback continues with later register writes.
+>=20
+> Return the first error from all three operations and stop the
+> OFF-to-STANDBY transition when wake-up restoration fails.
+>=20
+> The issue was identified via static analysis and manually reviewed.
+>=20
+> Fixes: 3b097d64eafa ("ASoC: Add JZ4740 codec driver")
+>=20
+> Assisted-by: LLM
+> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-Simpler reproducer than the C program given initially. It takes a few
-seconds to trigger.
+I'll leave it to Mark to decide, but IMHO the code is fine without the
+patch. We're using regmap-mmio here, with settings so basic that these
+calls will never fail, and that's why there was no error-checking.
 
-   dd if=3D/dev/zero ibs=3D20M obs=3D70 | dd bs=3D4096 > /dev/null
+Cheers,
+-Paul
 
-Goal is to spam write(2) on one side and read(2) on the other.
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> ---
+> =C2=A0sound/soc/codecs/jz4740.c | 25 ++++++++++++++++++-------
+> =C2=A01 file changed, 18 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+> index d3d801d850a1..efb3f8295e98 100644
+> --- a/sound/soc/codecs/jz4740.c
+> +++ b/sound/soc/codecs/jz4740.c
+> @@ -217,15 +217,22 @@ static struct snd_soc_dai_driver
+> jz4740_codec_dai =3D {
+> =C2=A0	.symmetric_rate =3D 1,
+> =C2=A0};
+> =C2=A0
+> -static void jz4740_codec_wakeup(struct regmap *regmap)
+> +static int jz4740_codec_wakeup(struct regmap *regmap)
+> =C2=A0{
+> -	regmap_set_bits(regmap, JZ4740_REG_CODEC_1,
+> JZ4740_CODEC_1_RESET);
+> +	int ret;
+> +
+> +	ret =3D regmap_set_bits(regmap, JZ4740_REG_CODEC_1,
+> JZ4740_CODEC_1_RESET);
+> +	if (ret)
+> +		return ret;
+> +
+> =C2=A0	udelay(2);
+> =C2=A0
+> -	regmap_clear_bits(regmap, JZ4740_REG_CODEC_1,
+> -			=C2=A0 JZ4740_CODEC_1_SUSPEND |
+> JZ4740_CODEC_1_RESET);
+> +	ret =3D regmap_clear_bits(regmap, JZ4740_REG_CODEC_1,
+> +				JZ4740_CODEC_1_SUSPEND |
+> JZ4740_CODEC_1_RESET);
+> +	if (ret)
+> +		return ret;
+> =C2=A0
+> -	regcache_sync(regmap);
+> +	return regcache_sync(regmap);
+> =C2=A0}
+> =C2=A0
+> =C2=A0static int jz4740_codec_set_bias_level(struct snd_soc_component
+> *component,
+> @@ -235,6 +242,7 @@ static int jz4740_codec_set_bias_level(struct
+> snd_soc_component *component,
+> =C2=A0	struct jz4740_codec *jz4740_codec =3D
+> snd_soc_component_get_drvdata(component);
+> =C2=A0	struct regmap *regmap =3D jz4740_codec->regmap;
+> =C2=A0	unsigned int mask;
+> +	int ret;
+> =C2=A0
+> =C2=A0	switch (level) {
+> =C2=A0	case SND_SOC_BIAS_ON:
+> @@ -248,8 +256,11 @@ static int jz4740_codec_set_bias_level(struct
+> snd_soc_component *component,
+> =C2=A0		break;
+> =C2=A0	case SND_SOC_BIAS_STANDBY:
+> =C2=A0		/* The only way to clear the suspend flag is to
+> reset the codec */
+> -		if (snd_soc_dapm_get_bias_level(dapm) =3D=3D
+> SND_SOC_BIAS_OFF)
+> -			jz4740_codec_wakeup(regmap);
+> +		if (snd_soc_dapm_get_bias_level(dapm) =3D=3D
+> SND_SOC_BIAS_OFF) {
+> +			ret =3D jz4740_codec_wakeup(regmap);
+> +			if (ret)
+> +				return ret;
+> +		}
+> =C2=A0
+> =C2=A0		mask =3D JZ4740_CODEC_1_VREF_DISABLE |
+> =C2=A0			JZ4740_CODEC_1_VREF_AMP_DISABLE |

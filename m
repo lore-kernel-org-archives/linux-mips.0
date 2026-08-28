@@ -1,99 +1,164 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50B635F161;
-	Fri, 28 Aug 2026 17:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAF9305699;
+	Fri, 28 Aug 2026 23:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787938427; cv=none; b=plIkGlCOpVTCbZLUSbrJvMEgSaxg4Jkqk1mUiGaCZjbrIxMAoReue+y01RUVhNSv1hwoIvOv6raad8hu72ZBOq5t1CxDSVKtxDbC+DaRtBuLmm0dGzsx6cJIJcJDGhyQkgTRO5tHu7/tbvN1TB5NVoWorhULgmLc5/Yk1FbOmig=
+	t=1787959195; cv=none; b=d0MM8XTzJsVQ5Dvqs1PXBYcDhoRnIGV3nmPQqEVTcJCvnwYtkNiFvl/7use6l9AZdBBKz+BRe05F7T6E0B92gbOURAXZ//3CJWsaFPAWX0GIzDG1DnD6IMGSjVUUPxXtncQEELYOUn7pSY3USn0zCAADNgPpQ6XbOoDV5Nx+YPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787938427; c=relaxed/simple;
-	bh=mCP5z2EYKH6RZrswaAf5Kzi/if3nVqtD02Wm/RwH704=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KIw12S1ow0b+IkmwWNHlNBcOlRqShvqQj3c92Nelhe9klAVEGZXMn7wXrKTyMxbXVtbKxqygFVMrbv7ow5pGGGkfemszXG27nkHxHHX6XZuXuHUs23Eix+3TsfpeOZvEm63rtTvkWZBG/nr7anlisRwW1Aasyn3QeZdNT8bY44Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EV/TMhbs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1787959195; c=relaxed/simple;
+	bh=mCmFhyvB3CiDIQFueNr3U4X4g7jmuLEAwOL4s3m6sKQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=OCcQ/HQPKdjMUj1mAfhoRhyLqiEPXuRNf1tFQarevsedxkM7m+E6p7CnSRYx6OHYmCnwfMH/y7J7TFaS/SJ/Aa/DBYHTUIwmG7tnNFRrJsH8e3o0RDpNUNHRtSCmp30A7tKfjWZYyJr7tULd7+87dY4CpMwiXZrV77ILU7YUS4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=AFBr+8MF; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EV/TMhbs"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=l1QGqAfCbQ6LXbtkAiDHF6nGrW0REnethuzg6QBfuNs=; b=EV/TMhbs1o2y5TC2BaZC6+Rojv
-	lwjHzk6kXPn04dyfldojwi07VUxvAeEmO4vU/X6KLiEclTHEUP54gCNrYUhdzCJMfD36BNqj2g0ls
-	nl7JZrVDdjUeAlO6TWgnFDTogj+zM83aQ+3nd2vEGeAQ2Pzv3RCnpnntFZMM2EUIFfatnkjmqLQPr
-	Mp2s/cVEtPNibIwiHyq5Zd04XjJ4C0J9dXq8dkEAFZoTgMF2H2hTMhcLIlbx2m2WqtINIGzxruHqi
-	inYQMmufap2g8dB7o2jUsDhjD46skAVT6RHfP2I/BGJLzZKr5oNn9P7s7ooA0bf/byloyaSEpLMHH
-	YqJzyovA==;
-Received: from [50.53.43.113] (helo=[192.168.254.34])
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x00SP-00000006GhR-2vgD;
-	Fri, 28 Aug 2026 17:33:37 +0000
-Message-ID: <a5dc8c42-232c-45f8-8ec4-2d7c5b68f01b@infradead.org>
-Date: Fri, 28 Aug 2026 10:33:37 -0700
+	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="AFBr+8MF"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:From:Reply-To;
+	bh=3lS8Pe52E15AsSTbFDf2Q8tOnEgRxl/Bw8+tn4QAZ3Q=; b=AFBr+8MF6Vo2i6RVnqs6KlfZGV
+	MqMzbqDgglqnFphc/cnp9EsC5M1YMlCCa8uuHY82nTwytw0vgNMyHDHGwexSVgELFlkEj36oG5H8/
+	fqvxBpUdG7QMdriCtgNoTTLJU8jeZHfvE64QQJITv/uP+DgdJCeuhOp0aG12Z++AbA0QHqB1IjVtf
+	9xVemXIycIb/pvCosC495IjxXXO01gZjV+hF1isHqoD/O4Y9/9GmyMjdY/gWK2VXp0yuWg4MLxnn2
+	aV8w51KZdz8AR29jCkajERX+bxfEmlnltDqEOEGYexi9CZ8hOR2XgRjSpQAIBenxVLPKrox169wKa
+	BHvhK/Jg==;
+Received: from [187.57.78.212] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1x05rI-00B3sF-KD; Sat, 29 Aug 2026 01:19:40 +0200
+From: =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v6 00/13] syscalls: Add a shared table for all archs
+Date: Fri, 28 Aug 2026 20:19:27 -0300
+Message-Id: <20260828-tonyk-syscall_table-v6-0-fdd358456cf1@igalia.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] MIPS: config: Add EcoNet EN751221 defconfig
-To: Caleb James DeLisle <cjd@cjdns.fr>, linux-mips@vger.kernel.org
-Cc: tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
- jonas.gorski@gmail.com, julianbraha@gmail.com
-References: <20260817220344.2931634-1-cjd@cjdns.fr>
- <6bd84489-88e4-4b72-b1f8-af5e1866a37e@infradead.org>
- <3b55f50b-ec0a-4f93-9ccb-ba0e828ba32b@cjdns.fr>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <3b55f50b-ec0a-4f93-9ccb-ba0e828ba32b@cjdns.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/43NTU7DMBQE4KtUXmNkP9uxzYp7VBXyz0trCAmKQ
+ 0RU5e7YZUFRCmI50sw3Z5JxTJjJw+5MRpxTTkNfQnO3I+Hk+iPSFEsmwKBhGiSdhn55oXnJwXX
+ d0+R8h9SC8d5zD433pCzfRmzTx0XdH75yfvfPGKZK1cYp5WkYl8vtzGvv74eZU0ZtUIIbI0FE9
+ 5iOrkvuPgyvpF7McI3o2whUREXZckSpebtBxDdi2C+IKIgOUjkQQTGvNoi8QjjcRmRFpIkMwLo
+ o2QZR/0BUQUQURljQoWH2B7Ku6yfn2gP73QEAAA==
+X-Change-ID: 20260724-tonyk-syscall_table-928bbb1b26bb
+To: Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmanon <arnd@arndb.de>
+Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-kbuild@vger.kernel.org, kernel-dev@igalia.com, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev, 
+ linux-mips@vger.kernel.org, sparclinux@vger.kernel.org, 
+ =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+X-Mailer: b4 0.15.2
 
+While implementing a new syscall, we need to wire up it's number to the arch
+table. Since syscall number 403, all architectures are on sync regarding the
+number (except alpha), which make things a lot easier but more repetitive as
+well. Have a look at commit b36d4b6aa88 ("arch: hookup listns() system call"),
+with 15 lines of mostly:
 
+  +470    common  listns                          sys_listns
 
-On 8/28/26 3:40 AM, Caleb James DeLisle wrote:
-> 
-> On 28/08/2026 01:48, Randy Dunlap wrote:
->>
->> On 8/17/26 3:03 PM, Caleb James DeLisle wrote:
->>> Add config based on OpenWrt for EN751221 boards.
->>> Of note: EcoNet bootloader has a 7.2MB kernel size limit so
->>> ZBOOT is assumed to be needed in all cases.
->>>
->>> Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
->>> ---
->>> Updated to work after SERIAL_8250 and SERIAL_OF_PLATFORM removed
->>> from Kconfig.
->>> Link: https://lore.kernel.org/linux-mips/20260815235109.666268-1-julianbraha@gmail.com/
->>> ---
->>>   MAINTAINERS                                 |   1 +
->>>   arch/mips/configs/econet_en751221_defconfig | 264 ++++++++++++++++++++
->>>   2 files changed, 265 insertions(+)
->>>   create mode 100644 arch/mips/configs/econet_en751221_defconfig
->>>
->> ...
->>> base-commit: 3b7711be02612845e44b5e9ef7c0b9f203cf29b6
->>> prerequisite-patch-id: 0f044e47a76450ebb4fe52dc60a6b2f79625bbff
->>> prerequisite-patch-id: 6380783b9da35b966b64c237b0ef50c31c7425d6
->> Hi,
->> Can you identify these 2 prerequisite patches?
->> They are not in linux-next so I can't test this patch.
-> 
-> 
-> Ahh, I'm sorry for not being clearer about this in the message.
-> 
-> The first (0f044e47a76450ebb4fe52dc60a6b2f79625bbff) is 2077ccb9baa2cbbbccf5f0d8c2196dd9d5e43399, i.e. https://patch.msgid.link/20260702150704.265282-1-cjd@cjdns.fr which is in (at least) next-20260827 but not in mips-next. I included it so I could verify PCIe works on the device.
-> 
-> 6380783b9da35b966b64c237b0ef50c31c7425d6 is the patch I mentioned: https://lore.kernel.org/linux-mips/20260815235109.666268-1-julianbraha@gmail.com/ which I applied to verify it works without needing the symbols that the goal was to remove.
-> 
-> That said, this should definitely build without either of these patches which is why I neglected to explain them in any more detail.
+There's already a "common" table shared with a bunch of archs at
+`scripts/syscall.tbl`, but due to historical reasons some archs will never be
+able to move to this table and share all the numbers.
 
-Ah, right you are. Thanks.
+The generic table starts from 403 (clock_gettime64), the first common syscall.
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+I've compile tested for arm32, arm64, s390, mips, sparc and alpha by comparing
+the syscalls_*.h and unistd_*.h files generated before and after this patchset.
+For most of cases the files are identical, for the few cases that they are not,
+there's a note in the commit explaining why they are equivalent.
 
--- 
-~Randy
+Thanks!
+	André
+
+Changes in v6:
+- Rebased on top of 7.3-rc0: new syscall fchroot()
+- Fix compliance with POSIX shells
+- Add $(syscalltbl_common) to the prereq build files, so the build is triggered
+if the common table changes
+- v5: https://patch.msgid.link/20260812-tonyk-syscall_table-v5-0-3d383927c609@igalia.com
+
+Changes in v5:
+- Add archs lists to Cc
+- alpha: Change custom alpha_syscall to __syscall
+- mips: Use "common" for all ABI tables
+- mips: Kept it as a single table for n32/n64
+- Fix bug introduced by mixing --offset and --compat-offset
+- v4: https://patch.msgid.link/20260812-tonyk-syscall_table-v4-0-748d0229ad40@igalia.com
+
+Changes in v4:
+- Replace cln3 with clone3 in the ABIs
+- mips: Get rid of custom mips ABIs (o32, n32, n64) and use 32 and 64
+- mips: Unify n32 and n64 tables
+- Add alpha to the syscall party, along with it's adaptations
+- Remove --no-compat option and define SYSCALL_WITH_COMPAT() macro for archs
+that need it
+- v3: https://patch.msgid.link/20260807-tonyk-syscall_table-v3-0-7c45a23c50b5@igalia.com
+
+Changes in v3:
+- Removed x86 for now, let's wait till x32 is dropped
+- Added much more archs
+- v2: https://patch.msgid.link/20260727-tonyk-syscall_table-v2-0-95d4f1ee471f@igalia.com
+
+Changes in v2:
+- Managed to move to the real first common syscall: 403 (clock_gettime64)
+- Added -no-compat option to be used with x86_64
+- v1: https://patch.msgid.link/20260724-tonyk-syscall_table-v1-0-9c53188423da@igalia.com
+
+---
+André Almeida (13):
+      syscalls: Make --abis parsing more robust
+      syscalls: Create unified partial table for all archs
+      scripts/syscall.tbl: Use the common table
+      arm: Use the common syscall table
+      s390: Use the common syscall table
+      sparc: Use the common syscall table
+      mips: Remove duplicated syscallnr.sh
+      mips: Get rid of custom mips ABIs for syscall tables
+      mips: Use the common syscall table
+      syscalls: Add an option for offsetting the common table
+      alpha: Define entry point for set_mempolicy_home_node syscall
+      alpha: Remove alpha_ prefix from custom syscall entries
+      alpha: Use the common syscall table
+
+ arch/alpha/kernel/entry.S                 |   8 +-
+ arch/alpha/kernel/syscalls/Makefile       |  14 +-
+ arch/alpha/kernel/syscalls/syscall.tbl    |  55 +-
+ arch/alpha/kernel/systbls.S               |   1 +
+ arch/arm/tools/Makefile                   |  14 +-
+ arch/arm/tools/syscall.tbl                |  69 ---
+ arch/arm64/tools/syscall_32.tbl           |  69 ---
+ arch/mips/kernel/scall64-n32.S            |   1 +
+ arch/mips/kernel/scall64-n64.S            |   2 +
+ arch/mips/kernel/syscalls/Makefile        |  30 +-
+ arch/mips/kernel/syscalls/syscall_n.tbl   | 464 +++++++++++++++++
+ arch/mips/kernel/syscalls/syscall_n32.tbl | 413 ---------------
+ arch/mips/kernel/syscalls/syscall_n64.tbl | 389 --------------
+ arch/mips/kernel/syscalls/syscall_o32.tbl | 827 ++++++++++++++----------------
+ arch/mips/kernel/syscalls/syscallnr.sh    |  26 -
+ arch/s390/kernel/syscall.c                |   2 +
+ arch/s390/kernel/syscalls/Makefile        |  12 +-
+ arch/s390/kernel/syscalls/syscall.tbl     |  49 --
+ arch/sparc/kernel/syscalls/Makefile       |  12 +-
+ arch/sparc/kernel/syscalls/syscall.tbl    |  69 ---
+ scripts/Makefile.asm-headers              |  15 +-
+ scripts/syscall.tbl                       |  69 ---
+ scripts/syscall_common.tbl                |  84 +++
+ scripts/syscallhdr.sh                     |  83 ++-
+ scripts/syscalltbl.sh                     |  50 +-
+ 25 files changed, 1111 insertions(+), 1716 deletions(-)
+---
+base-commit: 548e7bcd0c5460ddcbca9600cea603ebeebf4da7
+change-id: 20260724-tonyk-syscall_table-928bbb1b26bb
+
+Best regards,
+--  
+André Almeida <andrealmeid@igalia.com>
+

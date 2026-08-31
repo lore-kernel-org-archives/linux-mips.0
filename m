@@ -1,143 +1,96 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B220D3D332A;
-	Mon, 31 Aug 2026 08:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990203E714C;
+	Mon, 31 Aug 2026 10:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788166390; cv=none; b=kxHq8/hTpdP3faLGxp9mUPTLvpx7Anr3dUuBqEXIy63vLTr3ug+4yufQ+r2Be98cHxjl9ijQBWH00rfUvxqhlU2WgnX7nj4eIke81Q5OHpnmVrKW1FajYX9H2kIJQv2RjWnatJ2VaWZdEaLaVqMzaeLC0kYCixEbfeWah/vD7oo=
+	t=1788170852; cv=none; b=aKXSYP9D9FYnWj+typf9rRBTOmLmc1yGb4tr7zN8YsKKXLCaFrwCgS2KRy5KQ3BVNSo44ySBBwR3a/dJZJgXkrAjkw5lTDgM6oe/s3Yqa+zIjOWNATAOrKyZjqWFOBM1uNX1zvXUxut6C/Z1KeiKlhi/yc7ckTrJrJdf9WHOV+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788166390; c=relaxed/simple;
-	bh=CVbYk0gj5KXQ67iRLFH6F++pXSWYVzV4bNLBCZkNVy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMjqQqrQsw1Kut9lizc5JofwoupICLFbhmOsVtuCehoBflwsStmfi1ku6KApr70v8L3Ur9ebnY5B4N1S344fbsVpA3O3FJ5zg+GRybNyA3RQ7y+77BNOfc/lX6O1xHDhWIEO8RVLWpUrFkWpZfe2JgMkvxSo++P0NKaOlru9gmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ybb5RZzS; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1788170852; c=relaxed/simple;
+	bh=CKDvWF0ui5pn13nr7UoA/5PU88Wqt9/Kw0pgq4FBRGg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=pxRvXs0dhVvYJ6CrZKHUI3rK2nKUAP/AmRApNd17iwXakpjB9qdgFq9BRKeBf/PY8MageTDJ9rujgw+/urCs3ZBMzrR295ULSrUK0y+xwhYfQaiGqncgr4ouSc5tAHaN5ogJc+xZyUvylfO16DnxRbttJmQLU14RujYSPnYs3ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SmH/N28A; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ybb5RZzS"
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 67V82Hp11697480;
-	Mon, 31 Aug 2026 08:51:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=CVbYk0gj5KXQ67iRLFH6F++pXSWYVz
-	V4bNLBCZkNVy8=; b=Ybb5RZzSRXxH50tJV/HBUhrjVmIBDpR4ZbNq1+HWNZhvB9
-	5HFz5fRUyA93c16kA0wp16C+QRBksBq4Z2KEuh8Av/VE+KpkeZ4uGIQUuFwYp8uU
-	xXuqtLg0wMfNjYZFaPxAZCnM2V/o7hGSST9533aNdTPRiEx1JiKTCYt27zmk25J7
-	Qw4/U6qUdjt1S5siGQniStMxnMLzif3hA7fIxhRdTsEHTdlIJlnFntrVxKha/qic
-	jfLVcJD6XvtrKnI0i+4S97wyvEoc8kTmGGZfn4idvJs95XCVMPcS/yo7mKOpHgTT
-	AC11isR2/K0RsQ0eMx0d3i4xR5MWVk3oiovvNb3w==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4gbq2t00t9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 31 Aug 2026 08:51:04 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67V8fIDE023473;
-	Mon, 31 Aug 2026 08:51:03 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4gccexvpqk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 31 Aug 2026 08:51:03 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 67V8oxQj46334272
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 31 Aug 2026 08:50:59 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2A75F2004D;
-	Mon, 31 Aug 2026 08:50:59 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8CAB12004B;
-	Mon, 31 Aug 2026 08:50:57 +0000 (GMT)
-Received: from osiris (unknown [9.111.81.24])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 31 Aug 2026 08:50:57 +0000 (GMT)
-Date: Mon, 31 Aug 2026 10:50:56 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-        Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-        Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry
- handling
-Message-ID: <20260831085056.34274A00-hca@linux.ibm.com>
-References: <20260707181957.433213175@kernel.org>
- <ed8b99e6-4d90-4622-9d43-451bf6a8db2c@zytor.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SmH/N28A"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D32F14E41441;
+	Mon, 31 Aug 2026 10:07:27 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 92FDD60231;
+	Mon, 31 Aug 2026 10:07:27 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 77FB811C78AE2;
+	Mon, 31 Aug 2026 12:07:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1788170846; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=CKDvWF0ui5pn13nr7UoA/5PU88Wqt9/Kw0pgq4FBRGg=;
+	b=SmH/N28AQE63Hm6ogNyKsBeYnuoP6ubOF4PGCw6JN3UQTBFwOd3eftodZ2zmVIgZqjfgXW
+	hdt9NfomvtbQxGUSEPPcrGWfnpsYLV5J5MzgDYfgRPbVrhzvUH4hRfZxWnSqvU5FC9sJRt
+	GHVLldzFj+AkULkiTa0l/no2pq0tbiQSTNI58o9n1R7810wmpywpH8mkH8IvJmAkOtuAKo
+	o0d/FaobeVvwhF0tE31edMK1n+MN0G+7sP6mF8F3aLKPFtIldVu3oORxon5yxBnRIPrZZz
+	YIIDjyu/+OxEBWuxdoelW3tDS6FWuDEBFqzPB0vigfHEUxb+sdyQhYBAzf/kPQ==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed8b99e6-4d90-4622-9d43-451bf6a8db2c@zytor.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Authority-Analysis: v=2.4 cv=bc1bluPB c=1 sm=1 tr=0 ts=6a954078 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=kj9zAlcOel0A:10 a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=2rmWDWJpZfqxup52QhcA:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODMxMDA3MiBTYWx0ZWRfXw6StCSqGUaXh
- WvbpCQlGtz7BWihs+RH7DTv2WTOPxVyCWDhiSWtYE+xXgludqixVfK/gU8MUaWS0fxPWdxy86vH
- qJzG6nhsABnZyATt5K5eJawaXFm8xNE=
-X-Proofpoint-ORIG-GUID: bDXbK4NJXMMf6_5R5lg1wFJEO5GSpFz5
-X-Proofpoint-GUID: Fhr_wfi5ePHh4Bqv3MhKtt0iPRZ1Mvkg
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODMxMDA3MiBTYWx0ZWRfX/htDxJBtEHnv
- Z5NhKYazvuvBRJ72zC10F4fqCuZQvNxl5T1bxWCM9YyDyUuOyarWnRe1p0lqpKZl/OmyRFcmZLf
- ktLOOUR/RrJ6H/n8LU3DyRN14Rj88+RKLatjVJj6EvUm7yCYuy01GuzOqCiTMwCDp3qPyD8ygcz
- 8e7DrOBxrdld6/gHT5EMTdlMQoVKjlCd8tRGftrZtFR0eBrKEt+PFXrl5pqVW+wMvV30DgdS65s
- FO2OVicoQhWTWZLtRydH/w0eDM4R+aziyu8zv53VSgwZjxKL71DDEhdZB1VFr5JeZaTp0hNvCNd
- fL1C2mdKKTto6StljkY/Esj1kJ2CLVmDhxayGEQpB6INuQ8vyDvgd1hcoKr++IMzU8bbI32PX2p
- erwW4FtLz+3ZSzAofzRUQ2Kh1tXMYtSiayqZ9s635kOCihBZsW9PohTK3Pmd5E5U5z+A/YfXl7T
- OPEW+V8lEUn+zLxSJdQ==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-31_03,2026-08-27_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2608310072
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 31 Aug 2026 12:07:22 +0200
+Message-Id: <DL31NSK4T9VI.1CM5I9PRKJLCS@bootlin.com>
+Subject: Re: [PATCH] mips: select CONFIG_WEAK_REORDERING_BEYOND_LLSC from
+ CONFIG_EYEQ
+Cc: "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, =?utf-8?q?Beno=C3=AEt_Monin?=
+ <benoit.monin@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>, "Rahul Bedarkar" <rahulbedarkar89@gmail.com>,
+ "Paul Burton" <paulburton@kernel.org>
+To: "Jiaxun Yang" <jiaxun.yang@flygoat.com>, "Thomas Bogendoerfer"
+ <tsbogend@alpha.franken.de>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, "David S . Miller" <davem@davemloft.net>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard Brouer"
+ <hawk@kernel.org>, "John Fastabend" <john.fastabend@gmail.com>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.21.0-0-g5549850facc2
+References: <20260828-eyeq-reordering-llsc-v1-1-0c5a69fc5124@bootlin.com>
+ <DL0P7NCKVU0I.ARBMN6GAMMBS@bootlin.com>
+ <cea78eaa-aea0-4d1a-9695-8a6d73750216@app.fastmail.com>
+In-Reply-To: <cea78eaa-aea0-4d1a-9695-8a6d73750216@app.fastmail.com>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Thu, Aug 27, 2026 at 03:22:35PM -0700, H. Peter Anvin wrote:
-> This isn't a hard thing to solve in any way: replacing the pointer argument
-> with a two-element structure return would do the trick. As far as I know,
-> *all* architectures that support Linux support returning structures with two
-> register-sized values in registers.
+Hello Jiaxun,
 
-That is unfortunately not true. The s390 ABI defines that structures,
-regardless of size, are returned in a return value buffer allocated by
-the caller.
+On Sun Aug 30, 2026 at 5:05 AM CEST, Jiaxun Yang wrote:
+> On Fri, 28 Aug 2026, at 11:56 PM, Th=C3=A9o Lebrun wrote:
+>> First off, sorry to net maintainers for being in Cc of this patch.
+>> get_maintainer.pl added you and the MLs because the commit message
+>> containing "xdp". I deleted the MLs in Cc but forgot the individuals.
+>
+> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+Thanks for the review.
+
+> Can confirm weak ordering beyond LLSC is necessary for all MTI cores with=
+ CM.
+
+Only CPU_LOONGSON64 has "select ..." upstream, so I wondered if any
+board apart from Mobileye ones were missing the flag. An LLM pointed me
+to img/pistachio_marduk.dts and img/boston.dts which looks correct.
+I CCed the board maintainers.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+

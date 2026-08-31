@@ -1,462 +1,249 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88545293F8;
-	Mon, 31 Aug 2026 13:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB2E470EB2
+	for <linux-mips@vger.kernel.org>; Mon, 31 Aug 2026 15:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788183877; cv=none; b=detrywcBmCQ8sYQ7xHSEEZQDgM5JwVqmxSTG7Sya/FADIUm/oVGRNYUtwTSXxHVmiQfSrazttEU31zV9k4plIwg4Dv+SZQxDmfu3TqhvGspcXhfwZLkJvpDRlo//GGEBvN6TPbM62jIDyOKlSY/jnnDPMwqEBmG0fUPVBNmzL8w=
+	t=1788190571; cv=none; b=BG0U/dh1ImsnU59QBBUi7s2KJ3frLJ5N2ORW6bMKy8i5Gh1d+g+f/VtKKLiVI9w/w9PBuAJ11gcUiDb8iUa79GMpM19aM/JXnea3Z8Xp9ZIZZYfJP2ltIkXE/Qgkmbc+0AqwvMoRCd4iKaZYdfSAbzVquWSIaOVLi9It17s55Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788183877; c=relaxed/simple;
-	bh=qpWI73L8vgTIHGSXios1j7XIvTyywj6zMvBzUjPcgew=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L3SzgYKMKmGmJ8yZwxXQecUiQ33BanFKY3lIJxxXcibYQneVfBrlqPt3hXX4T4okFvQ8X/oTtXb8R6qiJ6Gzs4pojjaInudkAZ3faJH0gFsxcvlEAGLcHBTixfA5coa4upERepVKihvCKd804guqQHG+pGW/v9Xzmbpkuq9dgaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ecSZE4T0; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788190571; c=relaxed/simple;
+	bh=DodOb5bu1oSMuLPsOxNFB8oK01GET+pyiMt7NsDyP0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GLJHgHngeZ+yh4wzlqev0E8T+MmfG7YDuXCe5sdknLxI1YunLX8pKuR3RimeohwQigGhcPUQ2IZAmiaCP6MrGeh2QqYd6p2uphxxBzP3TweFw78SUlQitrlkRp+v9mx7KZH1d1w1OfU1UFyKCLJxGsaU2DaWxCEMlaC5ZHJhxFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dakA0lC1; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ewCGphf9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ecSZE4T0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D276A1F000E9;
-	Mon, 31 Aug 2026 13:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788183874;
-	bh=uzD/bvx2wfiQnNSbs6W6Vc/o8YOP6CDwTRIrMxm6Vvc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ecSZE4T0yIA/+uiMUq6s6uxwjnorPNhbFnOPsQkGCD0zziM3szpjruvDWTvgswSuI
-	 /4TtVGeMfPneUSOF0VC6GnQ45itXuWGpzpECWeg/y2P3xbN4z0U5KLU3kkm8/MCkRZ
-	 qPiE+B7Js6trrYd3YX7hw+NATysSRf/OwpYExs3ti5MHfIs+mz49bwyKoPyuVFWGQz
-	 /S2tMo7AghYxpx47Dc8emV1qPburTR5CBdgue88ErBfGQ11QLyY5U1QIS6vbP7KxYd
-	 jDm93LUJbB+Tqf0ds5ozOWtsa+9wJJVN11nbhMhr37CD9Fp8j/PmR4JltrOjINLdB3
-	 i6FSKMvIU0uZQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Rosen Penev <rosenp@gmail.com>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Sasha Levin <sashal@kernel.org>,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] mips: cps: Assemble jr.hb with an R2 ISA level
-Date: Mon, 31 Aug 2026 09:26:23 -0400
-Message-ID: <20260831133314.4125787-355-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260831133314.4125787-1-sashal@kernel.org>
-References: <20260831133314.4125787-1-sashal@kernel.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dakA0lC1";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ewCGphf9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1788190568;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uVxBilOuJ3eJRjLFViKxIC+i5050iOvt2YALC/2UHq4=;
+	b=dakA0lC1O+Wx9Un543FmnQ6r29Xds96hGCtuQA0VAHdBGT4SYp21rIzYG6yTjUx4ehqvn9
+	c08hMuqN3YlfCLEhSC3xsVCpI50N3PWBXPbusYv/nz3G1+t0tRx0ybS8myVyb71FOJZZpU
+	JUSv2Oq8Nn0tNxtxjBy9F1QDAWhlfUU=
+Received: from mail-yx1-f69.google.com (mail-yx1-f69.google.com
+ [74.125.224.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-paSxX9SKNauZWZivBy6RHw-1; Mon, 31 Aug 2026 11:36:06 -0400
+X-MC-Unique: paSxX9SKNauZWZivBy6RHw-1
+X-Mimecast-MFC-AGG-ID: paSxX9SKNauZWZivBy6RHw_1788190566
+Received: by mail-yx1-f69.google.com with SMTP id 956f58d0204a3-66c70f4b830so4849410d50.1
+        for <linux-mips@vger.kernel.org>; Mon, 31 Aug 2026 08:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1788190566; x=1788795366; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:content-type
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=uVxBilOuJ3eJRjLFViKxIC+i5050iOvt2YALC/2UHq4=;
+        b=ewCGphf972PAR8+k1iRpbk/FrpS7EDIgvk+laCzpoq6oHTazz0nWGn7fL5eenQuHDk
+         pK2aaSI3LtieJ0EDNlGLizJxmHY0iLVNgpR44zNteMSAcIYW5YhngTXGMwf2f/KOfYjE
+         3Wk5rTfDGf6+0AVVaXTb607fcY0Tkm0dVZy4ewwm8z/CSn07cILYFA9QJVgIF2mVs3Yq
+         bL6kUYmFnIdGxIHuEHdJoWgrFVWmZnxufKzwK4wrmJK+1GvYVcam+ZpRI9dmjF0EGAom
+         uErZdLe7+hzkEInBPE1SfmmDrAchECt9RKygdhev30/AXwHZJrT/GwT2EwbNichjtDM9
+         O1Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788190566; x=1788795366;
+        h=user-agent:in-reply-to:content-disposition:content-type
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=uVxBilOuJ3eJRjLFViKxIC+i5050iOvt2YALC/2UHq4=;
+        b=FSPBbEO5VayN7dQyzZeOP2Uz3Pcx2m1gVVh40JTR7eU7uRqSsQp/J0pqGU1WYYIj/+
+         gnpD0xXYstv1bu5IYqt9/PmygO17hZI351t+ApC6M/T+nd/UqE1kuPVC4G1iSOgxyA/x
+         mjBMzKA3Oy0mjDqULRSxCAjJhtp9s3VwNdc/LG0EdPhNMHCmIhMGVPpfylDaTqbMtRO6
+         xsEAEqNa1TrE3sqL/hIOx5UZaxXDiN68Hv69Fyyd6n9tTd2Obq8Izr8kv6aFVG2x2hc3
+         iJ3E8SIuRnIeGq51YnrvZIZ6kGd01AU87ZFxmgkZLRnkceqtTd+SQxoxRq5f9LVbwImA
+         5lbg==
+X-Forwarded-Encrypted: i=1; AKwUvBzOXM27Ffg4ucf/pEbqP2QyYc+HIlQ4U24ymUEbQWzekmGq2oth0NrGpf9FzIumsoAbYq5HnTYTChNV@vger.kernel.org
+X-Gm-Message-State: AFuF++m18wVQzkJp2NetSud4Nmqqm3CF4+pX5Y2dPib/6x6o2AfZJ3p6
+	pI2n5VK/JrVMsfne/gSX2+XHJDSmBYtgrKGV/hJUR8hMjLqrlgwfix8MpWSCtdT577n5uuvR8LO
+	941PY4UfURH4AYV6JpQtUUL+gCe5bzwaodDcF5DV4yCa5zwJGdwJ1y8PpnkcNih8=
+X-Gm-Gg: AYBFou3JjnVEYhNyC5I3cC97tVftZfiou1VMI7/T6iJdaugpBRkOXVQXHnMrFTBQ6sk
+	eY34FhPI+qVp8dVyINlxRN4km8M//nsi6goaDVi9t6QtKpe0XZveajhozIszMuC61Q0UoqWVfOk
+	ngvJxJ+gYHxJzWaFv5Kp2s/rLvBfrZFPdSHsHUQV4q3UifGPA/Feg8/w+T9bnrC3skTgDHWkfrt
+	8sHE87AyuZhuRWam+IOLD6kY5p7aUra/0Gje2IzuK9eLpkJTif+2mNErvgtiZlAPg7iGGpLUj71
+	1LJRUfeWBIYd6KCYxk7zvttFJpC0hxFzNUgGxg2IknA+NhuOpyTfz+G6QsbQH7QhP6xkb2lydLU
+	=
+X-Received: by 2002:a05:690e:13c7:b0:66f:8255:9f3d with SMTP id 956f58d0204a3-66f873db9b1mr559462d50.7.1788190565471;
+        Mon, 31 Aug 2026 08:36:05 -0700 (PDT)
+X-Received: by 2002:a05:690e:13c7:b0:66f:8255:9f3d with SMTP id 956f58d0204a3-66f873db9b1mr559344d50.7.1788190564555;
+        Mon, 31 Aug 2026 08:36:04 -0700 (PDT)
+Received: from redhat.com ([2600:382:8519:3f74:ab6c:bb55:e9cb:f8d6])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-66f7efc9dbfsm2062227d50.9.2026.08.31.08.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2026 08:36:03 -0700 (PDT)
+Date: Mon, 31 Aug 2026 11:35:55 -0400
+From: Brian Masney <bmasney@redhat.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Ryan Chen <ryan_chen@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Brian Masney <bmasney+clk@redhat.com>,
+	Jerome Brunet <jbrunet+clk@baylibre.com>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Billy Tsai <billy_tsai@aspeedtech.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Taichi Sugaya <sugaya.taichi@socionext.com>,
+	Takao Orito <orito.takao@socionext.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Avi Fishman <avifishman70@gmail.com>,
+	Tomer Maimon <tmaimon77@gmail.com>,
+	Tali Perry <tali.perry1@gmail.com>,
+	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
+	Benjamin Fair <benjaminfair@google.com>,
+	Sudeep Holla <sudeep.holla@kernel.org>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	David Lechner <david@lechnology.com>,
+	Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Santosh Shilimkar <ssantosh@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Vladimir Zapolskiy <vz@mleia.com>, Heiko Stuebner <heiko@sntech.de>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Prashant Gaikwad <pgaikwad@nvidia.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Ulf Hansson <ulfh@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-clk@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	openbmc@lists.ozlabs.org, arm-scmi@vger.kernel.org,
+	imx@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 00/45] clk: Make sure clk_init_data is fully initialized
+ (part two)
+Message-ID: <apWfW5ahiYagw0OR@redhat.com>
+References: <cover.1787239813.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.48
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-From: Rosen Penev <rosenp@gmail.com>
-
-[ Upstream commit e5d64f868e484da06f5c141c18c32c01c269625e ]
-
-A MIPS allmodconfig built with LLVM can select CPU_MIPS32_R1 together
-with MIPS_MT_SMP. In that configuration clang invokes the integrated
-assembler with -march=mips32, and the MIPS MT path in cps-vec.S fails
-to assemble two jr.hb instructions:
-
-  arch/mips/kernel/cps-vec.S:376:2: error: instruction requires
-  a CPU feature not currently enabled
-
-  arch/mips/kernel/cps-vec.S:490:4: error: instruction requires
-  a CPU feature not currently enabled
-
-The earlier jr.hb in the same file is already assembled inside a .set
-MIPS_ISA_LEVEL_RAW scope. The two failing sites are reached after
-popping back to the file's base ISA level, so LLVM correctly rejects
-them for an R1 target.
-
-Wrap those jr.hb instructions in the same ISA-level push/pop used by
-the working site. This keeps the MT code unchanged while making the
-required R2 hazard-branch encoding explicit to the assembler.
-
-Assisted-by: Codex:GPT-5.5
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
-Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-## Tree context
-
-**Local tree:** Linux **6.18.44** (`git describe HEAD` → `v6.18.44`,
-`make kernelversion` → `6.18.44`)
-
-**Commit under review:** `e5d64f868e484` — *mips: cps: Assemble jr.hb
-with an R2 ISA level* (mainline, 2026-05-26). **Not** an ancestor of
-this tree (`git merge-base --is-ancestor` → exit 1). The unfixed code is
-still present at lines 376 and 490 of `arch/mips/kernel/cps-vec.S`.
-
----
-
-## Phase 1: Commit message forensics
-
-**Step 1.1 — Subject parse**
-Record: `[mips: cps]` `[assemble/wrap]` — Wrap two `jr.hb` instructions
-in R2 ISA-level `.set push`/`.set pop` blocks so LLVM's integrated
-assembler accepts them.
-
-**Step 1.2 — Tags**
-Record:
-- `Assisted-by: Codex:GPT-5.5`
-- `Signed-off-by: Rosen Penev <rosenp@gmail.com>`
-- `Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>`
-- `Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>`
-- No `Fixes:`, `Reported-by:`, `Link:`, `Cc: stable@vger.kernel.org`,
-  `Tested-by:`
-
-Notable: reviewed by a MIPS maintainer; merged by Thomas Bogendoerfer
-(MIPS maintainer). LLVM toolchain folks were CC'd on the mailing list
-thread.
-
-**Step 1.3 — Body analysis**
-Record:
-- **Bug:** With `CPU_MIPS32_R1` + `MIPS_MT_SMP` (reachable via MIPS
-  `allmodconfig`) and **LLVM/clang**, integrated assembler runs with
-  `-march=mips32` (R1). Two `jr.hb` sites in `mips_cps_boot_vpes` fail
-  assembly with *"instruction requires a CPU feature not currently
-  enabled"* at lines 376 and 490.
-- **Symptom:** Kernel **build failure** (assembler error), not a runtime
-  crash.
-- **Root cause:** Those `jr.hb` instructions sit outside `.set
-  MIPS_ISA_LEVEL_RAW` scope after a `.set pop`; an earlier `jr.hb` in
-  the same file (line 212) is correctly inside such a scope.
-- **Fix approach:** Wrap each failing `jr.hb` in `.set push` / `.set
-  MIPS_ISA_LEVEL_RAW` / `.set pop`, matching the working site.
-
-**Step 1.4 — Hidden bug fix?**
-Record: **Yes** — described as an assembly fix, but it is a real
-**build-breaking bug** for a valid Kconfig combination with LLVM. Not
-cosmetic.
-
----
-
-## Phase 2: Diff analysis
-
-**Step 2.1 — Inventory**
-Record:
-- **File:** `arch/mips/kernel/cps-vec.S` (+6 lines, 0 removed)
-- **Function:** `mips_cps_boot_vpes` (inside `#elif
-  defined(CONFIG_MIPS_MT)` path)
-- **Scope:** Single-file, surgical (2 hunks, 3 lines each)
-
-**Step 2.2 — Code flow per hunk**
-
-| Hunk | Before | After |
-|------|--------|-------|
-| Site 1 (~line 375) | After `dvpe` block's `.set pop`, `jr.hb t1`
-assembled at file base ISA (R1 under LLVM) | `jr.hb` wrapped in
-temporary R2 ISA scope |
-| Site 2 (~line 489) | After VPE-exit `.set pop`, `jr.hb t0` at base ISA
-| Same R2 scope wrapper |
-
-Record: Both hunks affect the `CONFIG_MIPS_MT` boot-VPE path in
-`mips_cps_boot_vpes`, reached during CPS SMP boot when MT is enabled.
-
-**Step 2.3 — Bug mechanism**
-Record: **Build / assembler ISA-level mismatch.** `jr.hb` is a Release 2
-instruction. With `CPU_MIPS32_R1`, clang passes `-march=mips32` to the
-integrated assembler. Without `.set MIPS_ISA_LEVEL_RAW`, LLVM rejects
-`jr.hb`. This is not a runtime logic bug; emitted instructions are
-unchanged for hardware that already supports MT (which implies R2).
-
-**Step 2.4 — Fix quality**
-Record:
-- **Obviously correct:** Mirrors the existing working pattern at lines
-  202–212 in `mips_cps_core_init`.
-- **Minimal:** Only assembler directives added; no instruction sequence
-  changes.
-- **Regression risk:** Very low — scoped `.set push`/`.set pop` with no
-  lock or control-flow changes.
-
----
-
-## Phase 3: Git history investigation
-
-**Step 3.1 — Blame**
-Record: `git blame` in this stable checkout attributes all lines to an
-unrelated amdgpu cherry-pick root (`7e22de67e545d`), so per-line
-introduction dates are unreliable here. File header shows `cps-vec.S`
-dates to 2013 (Paul Burton). The unwrapped `jr.hb` sites are long-
-standing; the failure is exposed by LLVM's stricter ISA enforcement, not
-by a recent regression in this tree.
-
-**Step 3.2 — Fixes: tag**
-Record: N/A — no `Fixes:` tag present.
-
-**Step 3.3 — File history**
-Record: `git log --oneline -20 -- arch/mips/kernel/cps-vec.S` shows only
-the amdgpu commit (stable-tree history artifact). No prior fix for this
-issue in this tree.
-
-**Step 3.4 — Author context**
-Record: Rosen Penev (regular contributor, often build/toolchain fixes).
-Reviewed/merged by MIPS maintainers.
-
-**Step 3.5 — Dependencies**
-Record: **Standalone.** Single-patch series (v1 only). No prerequisite
-commits. Patch context matches current file (verified programmatically —
-both sites match).
-
----
-
-## Phase 4: Mailing list and external research
-
-**Step 4.1 — Original discussion**
-Record:
-- `b4 dig -c e5d64f868e484` →
-  https://patch.msgid.link/20260507232323.489383-1-rosenp@gmail.com
-- **Series:** v1 only (no later revisions)
-- Thomas Bogendoerfer: *"applied to mips-next"*
-- Maciej W. Rozycki: called the approach *"exceedingly pedantic"* but
-  concluded *"your patch is not incorrect and fixes a real problem"* →
-  `Reviewed-by:`
-- **No explicit `Cc: stable` nomination** in thread
-- **No NAKs**
-
-**Step 4.2 — Reviewers**
-Record: `b4 dig -w` — CC'd: `linux-mips@vger.kernel.org`, Thomas
-Bogendoerfer, Nathan Chancellor, Nick Desaulniers, LLVM list, LKML.
-
-**Step 4.3 — Bug report**
-Record: N/A — no external bug tracker link. Failure described concretely
-in commit message with assembler error text and line numbers.
-
-**Step 4.4 — Related patches**
-Record: Maciej noted a broader cleanup (wrap entire `CONFIG_MIPS_MT`
-block, redefine `MIPS_ISA_LEVEL_RAW` per word size) as future work —
-**not required** for this fix.
-
-**Step 4.5 — Stable list**
-Record: Not searched on lore stable list (no indication of prior stable
-discussion). Absence of stable nomination is not a negative signal per
-review instructions.
-
----
-
-## Phase 5: Code semantic analysis
-
-**Step 5.1 — Key functions**
-Record: `mips_cps_boot_vpes` (assembly leaf in `cps-vec.o`)
-
-**Step 5.2 — Callers**
-Record: `cps-vec.o` is linked when `CONFIG_MIPS_CPS=y`
-(`arch/mips/kernel/Makefile:61`). `mips_cps_boot_vpes` is part of CPS
-secondary-core/VPE boot vector code — early boot, not userspace-
-reachable, but required for SMP bring-up on CPS platforms.
-
-**Step 5.3 — Callees**
-Record: MT ASE coprocessor ops (`dvpe`, `evpe`, `mfc0`/`mtc0` on
-MVPCONTROL/VPECONTROL/TCHALT). Fix only changes assembler ISA scope
-around `jr.hb`.
-
-**Step 5.4 — Reachability**
-Record: Code is compiled when `CONFIG_MIPS_CPS` and `CONFIG_MIPS_MT`
-(selected by `CONFIG_MIPS_MT_SMP`) are both enabled. Trigger for the
-**bug** is at **compile time** with LLVM + `CPU_MIPS32_R1`, not at
-runtime.
-
-**Step 5.5 — Similar patterns**
-Record: Same file line 212 (`mips_cps_core_init`) already wraps `jr.hb`
-inside `.set MIPS_ISA_LEVEL_RAW`. `arch/mips/kernel/entry.S`
-(`mips_ihb`) uses the same pattern. The two failing sites were
-inconsistent with established local convention.
-
----
-
-## Phase 6: Cross-reference against local tree (6.18.44)
-
-**Step 6.1 — Buggy code present?**
-Record: **YES.** Lines 376 and 490 have bare `jr.hb` outside `.set
-MIPS_ISA_LEVEL_RAW` scope. Fix commit is **not** in this tree.
-
-**Step 6.2 — Backport complications**
-Record: **Clean apply expected.** Both patch contexts match current file
-content exactly. No conflicting changes detected.
-
-**Step 6.3 — Related fixes already present?**
-Record: **None found** in this tree for this issue.
-
----
-
-## Phase 7: Subsystem and maintainer context
-
-**Step 7.1 — Subsystem**
-Record: **arch/mips** — platform-specific boot/SMP assembly.
-Criticality: **IMPORTANT** for MIPS CPS+MT SMP platforms and for anyone
-building MIPS kernels; not universal like mm/net, but affects real
-builders and CI.
-
-**Step 7.2 — Activity**
-Record: MIPS CPS/MT code is mature; this is a toolchain compatibility
-fix on existing code.
-
----
-
-## Phase 8: Impact and risk assessment
-
-**Step 8.1 — Who is affected**
-Record: **Config-specific builders** — MIPS kernels with
-`CONFIG_MIPS_CPS` + `CONFIG_MIPS_MT_SMP` + `CPU_MIPS32_R1`, built with
-**LLVM/clang**. Typical trigger: `allmodconfig` CI builds; also any
-distro/toolchain vendor using clang for MIPS.
-
-**Step 8.2 — Trigger conditions**
-Record:
-- **When:** At kernel **build** time (assembler phase)
-- **How common:** Uncommon for production defconfigs (most CPS platforms
-  use R2+), but **common in kernel CI** (`allmodconfig`) and
-  increasingly relevant as LLVM MIPS support grows
-- **Userspace trigger:** No — not a runtime/security issue
-
-**Step 8.3 — Failure mode severity**
-Record: **Build failure** (hard assembler error) — severity **MEDIUM**
-for stable (blocks compilation; no runtime crash, no data corruption, no
-security exposure).
-
-**Step 8.4 — Risk/benefit**
-Record:
-- **Benefit:** Unblocks LLVM MIPS builds for valid configurations;
-  aligns with growing clang/LLVM kernel build support
-- **Risk:** Very low (6 assembler-directive lines, no logic change)
-- **Ratio:** Favorable — classic low-risk build fix
-
----
-
-## Phase 9: Final synthesis
-
-**Evidence FOR backport:**
-- Fixes a **real, reproducible build failure** (documented assembler
-  errors)
-- Falls under stable **BUILD FIX** exception category
-- Small, surgical, maintainer-reviewed
-- Buggy code exists in 6.18.44; patch applies cleanly
-- Standalone, no dependencies
-- Matches established pattern already used in the same file
-
-**Evidence AGAINST backport:**
-- Only affects a **niche Kconfig** (`allmodconfig` + R1 + MT_SMP + CPS +
-  LLVM)
-- **No runtime user impact** on already-built/deployed kernels
-- Reviewer noted a cleaner long-term approach exists (not blocking)
-
-**Stable rules checklist:**
-| Criterion | Result |
-|-----------|--------|
-| 1. Obviously correct and tested? | **PASS** — mirrors working site;
-Reviewed-by maintainer |
-| 2. Fixes real bug affecting users? | **PASS** — blocks kernel
-compilation for valid config |
-| 3. Important issue? | **PASS** (moderate) — build fix, not
-crash/corruption |
-| 4. Small and contained? | **PASS** — 6 lines, 1 file |
-| 5. No new features/APIs? | **PASS** — assembler directives only |
-| 6. Can apply to local tree? | **PASS** — context verified |
-
-**Exception category:** **BUILD FIX** (#4 in stable exceptions)
-
----
-
-## Verification
-
-- [Phase 1] `git show e5d64f868e484` — parsed full commit message and
-  tags
-- [Phase 1] Tags: Reviewed-by Maciej W. Rozycki; no Fixes/Reported-
-  by/Cc:stable
-- [Phase 2] Read `arch/mips/kernel/cps-vec.S` lines 198–495 — confirmed
-  two bare `jr.hb` vs wrapped site at 212
-- [Phase 2] Read `arch/mips/include/asm/compiler.h` —
-  `MIPS_ISA_LEVEL_RAW` defined as mips64r2/r5/r6 per CPU config
-- [Phase 3] `git blame` — unreliable in this stable tree (all lines →
-  unrelated root commit)
-- [Phase 3] `git merge-base --is-ancestor e5d64f868e484 HEAD` → exit 1
-  (fix not in 6.18.44)
-- [Phase 3] Python context match — both patch sites match current file
-- [Phase 4] `b4 dig -c e5d64f868e484` — lore URL found
-- [Phase 4] `b4 dig -a` — v1 only, no later revisions
-- [Phase 4] `b4 dig -w` — MIPS maintainer and LLVM folks CC'd
-- [Phase 4] `b4 dig -m /tmp/cps-jr-hb.mbx` — Thomas applied; Maciej
-  Reviewed-by, noted "fixes a real problem"
-- [Phase 5] `grep jr.hb arch/mips` — 3 sites in cps-vec.S; entry.S uses
-  same `.set MIPS_ISA_LEVEL_RAW` pattern
-- [Phase 5] `arch/mips/kernel/Makefile:61` — cps-vec.o built with
-  CONFIG_MIPS_CPS
-- [Phase 6] `git describe HEAD` / `make kernelversion` — tree is 6.18.44
-- [Phase 6] Buggy code confirmed present at lines 376, 490
-- [Phase 6] `arch/mips/Kconfig` — MIPS_MT_SMP and MIPS_CPS are
-  independently selectable options
-- [Phase 8] Failure mode: assembler error at build time, severity MEDIUM
-
----
-
-## Conclusion
-
-For **Linux 6.18.44**, this commit fixes a legitimate LLVM/clang build
-breakage in MIPS CPS+MT SMP assembly code. It is small, maintainer-
-reviewed, applies cleanly, and matches an established in-file pattern.
-While the affected configuration is niche and the failure is at build
-time rather than runtime, **build fixes are explicitly appropriate for
-stable trees**, and LLVM support is increasingly important for kernel
-builds.
-
-**YES**The analysis is done for **Linux 6.18.44**.
-
-**Commit:** `e5d64f868e484` — *mips: cps: Assemble jr.hb with an R2 ISA
-level*
-
-**Problem:** With LLVM/clang and `CPU_MIPS32_R1` + `MIPS_MT_SMP` (e.g.
-MIPS `allmodconfig`), two `jr.hb` instructions in `arch/mips/kernel/cps-
-vec.S` fail assembly because they sit outside a `.set
-MIPS_ISA_LEVEL_RAW` scope.
-
-**Fix:** Wrap those two sites in the same ISA-level push/pop used
-elsewhere in the file (+6 lines, one file). Reviewed by Maciej W.
-Rozycki; applies cleanly to this tree; the unfixed code is still present
-in 6.18.44.
-
-**Verdict:** **YES** — small, maintainer-reviewed build fix with very
-low risk.
-
- arch/mips/kernel/cps-vec.S | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index 2ae7034a3d5c4..70413c816eb03 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -373,8 +373,11 @@ LEAF(mips_cps_boot_vpes)
- 	.set	pop
- 
- 	PTR_LA	t1, 1f
-+	.set	push
-+	.set	MIPS_ISA_LEVEL_RAW
- 	jr.hb	t1
- 	 nop
-+	.set	pop
- 1:	mfc0	t1, CP0_MVPCONTROL
- 	ori	t1, t1, MVPCONTROL_VPC
- 	mtc0	t1, CP0_MVPCONTROL
-@@ -487,8 +490,11 @@ LEAF(mips_cps_boot_vpes)
- 	li	t0, TCHALT_H
- 	mtc0	t0, CP0_TCHALT
- 	PTR_LA	t0, 1f
-+	.set	push
-+	.set	MIPS_ISA_LEVEL_RAW
- 1:	jr.hb	t0
- 	 nop
-+	.set	pop
- 
- 2:
- 
--- 
-2.53.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1787239813.git.geert+renesas@glider.be>
+User-Agent: Mutt/2.4.0 (2026-06-19)
+
+Hi Geert / all,
+
+On Fri, Aug 21, 2026 at 10:53:10AM +0200, Geert Uytterhoeven wrote:
+> 	Hi all,
+> 
+> The clk_init_data structure contains several mutually-exclusive members
+> for different methods to specify the possible parents of a clock,
+> prompting drivers to initialize only the members they need.  However,
+> not initializing all members may cause subtle issues, which are only
+> exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
+> enabled.
+> 
+> Hence this series aims to make sure all members are fully initialized,
+> to avoid such bugs, and to prevent future breakage when converting
+> drivers to a different method for specifying the parents.
+> 
+> Part One[1] fixed all cases that I identified to be real bugs, in
+> response to a crash I saw on BeagleBone Black.
+> 
+> This series is the clock subpart of Part Two, which fixes remaining
+> cases that are currently harmless.  These are still fragile, and may
+> cause future breakage when converting drivers to a different method for
+> specifying the parents.
+> 
+> Thanks for your comments!
+> 
+> [1] "[PATCH treewide 0/5] clk: Make sure clk_init_data is fully
+>      initialized (part 1)"
+>     https://lore.kernel.org/cover.1787165329.git.geert+renesas@glider.be
+> 
+> Geert Uytterhoeven (45):
+>   clk: aspeed: Make sure clk_init_data is fully initialized
+>   clk: at91: Make sure clk_init_data is fully initialized
+>   clk: bcm: iproc: Make sure clk_init_data is fully initialized
+>   clk: berlin: Make sure clk_init_data is fully initialized
+>   clk: cdce925: Make sure clk_init_data is fully initialized
+>   clk: clk-axi-clkgen: Make sure clk_init_data is fully initialized
+>   clk: cs2000-cp: Make sure clk_init_data is fully initialized
+>   clk: davinci: Make sure clk_init_data is fully initialized
+>   clk: fractional-divider: Make sure clk_init_data is fully initialized
+>   clk: gemini: Make sure clk_init_data is fully initialized
+>   clk: highbank: Make sure clk_init_data is fully initialized
+>   clk: hisilicon: Make sure clk_init_data is fully initialized
+>   clk: imx: Make sure clk_init_data is fully initialized
+>   clk: ingenic: Make sure clk_init_data is fully initialized
+>   clk: keystone: Make sure clk_init_data is fully initialized
+>   clk: lmk04832: Make sure clk_init_data is fully initialized
+>   clk: mediatek: Make sure clk_init_data is fully initialized
+>   clk: milbeaut: Make sure clk_init_data is fully initialized
+>   clk: mmp: Make sure clk_init_data is fully initialized
+>   clk: mvebu: Make sure clk_init_data is fully initialized
+>   clk: mxs: Make sure clk_init_data is fully initialized
+>   clk: nomadik: Make sure clk_init_data is fully initialized
+>   clk: npcm7xx: Make sure clk_init_data is fully initialized
+>   clk: nxp: Make sure clk_init_data is fully initialized
+>   clk: pistachio: Make sure clk_init_data is fully initialized
+>   clk: pwm: Make sure clk_init_data is fully initialized
+>   clk: renesas: Make sure clk_init_data is fully initialized
+>   clk: rockchip: Make sure clk_init_data is fully initialized
+>   clk: samsung: Make sure clk_init_data is fully initialized
+>   clk: scpi: Make sure clk_init_data is fully initialized
+>   clk: silabs: Make sure clk_init_data is fully initialized
+>   clk: socfpga: Make sure clk_init_data is fully initialized
+>   clk: spear: Make sure clk_init_data is fully initialized
+>   clk: stm32: Make sure clk_init_data is fully initialized
+>   clk: st: Make sure clk_init_data is fully initialized
+>   clk: sunxi: Make sure clk_init_data is fully initialized
+>   clk: tegra: Make sure clk_init_data is fully initialized
+>   clk: uniphier: Make sure clk_init_data is fully initialized
+>   clk: ux500: Make sure clk_init_data is fully initialized
+>   clk: versatile: Make sure clk_init_data is fully initialized
+>   clk: vt8500: Make sure clk_init_data is fully initialized
+>   clk: x86: Make sure clk_init_data is fully initialized
+>   clk: xgene: Make sure clk_init_data is fully initialized
+>   clk: xilinx: Make sure clk_init_data is fully initialized
+>   clk: zynqmp: Make sure clk_init_data is fully initialized
+
+44 / 45 patches have been added to clk-next. I took it all for simplicity
+rather than everyone trying to cherry pick just their parts.
+
+Geert: The only patch that didn't apply was:
+
+  [PATCH 27/45] clk: renesas: Make sure clk_init_data is fully initialized
+
+I didn't look into it too much.
+
+Brian
 

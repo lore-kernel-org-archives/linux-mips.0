@@ -1,115 +1,120 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E180E379EC4;
-	Tue,  1 Sep 2026 17:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CE839891F
+	for <linux-mips@vger.kernel.org>; Tue,  1 Sep 2026 19:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788284926; cv=none; b=nRw44fybFluxUpS3KRt7kSsW6w/OGu3GXPu0so8YF/A4/X3lm6b9C39uqwoNXw4jEEW+86ji667yiQbpG+uZ+enhEq+DbEbrIBESKCTPnQ8mcqz5Z+BKh/4f2zePlE6KiHfgx2gG7gqdM6YA8a/o77ucMvuFcyhvG/YwuFeEHqw=
+	t=1788291246; cv=none; b=XXqzsD0274DmKqw4b8ntGT15DFhfcuOg/Vd63G2OFE6uPwQaoo8E1cRW3BG/jrMmD3JcnW8FNf1FjtqxUEYTY34D62u/sWdmK1OyUpJoXwvAM09uWYy0u/f3MjViWSiFPZ1hNzMhiPbYFE2k7X/Md7PzjyoaQu3KhlxeyJXnBQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788284926; c=relaxed/simple;
-	bh=ILEgUta+XEN5A01rR7LjqPYu5e1vBHkVQXMhim+XKZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QL2a4/xJJ7CEboRu8aaKbIpBEqV6TOOxxB3hZZ/7NAGEclplMo33/wpPsHIYDHA1WT5xAarWWJ/o5aIXFEnUrfOXXJ3PePT8RFhwXklDSjaR3b2k1sXfK9Bi0HX3JkV6ZhUcrGuzOkbRdJosmkTgIuNLCIvZ3MkE31VtWPbpDik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UVtis7e+; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1788291246; c=relaxed/simple;
+	bh=T9J1gxfDHXIxdL2lKT0b9+PNh7/0tNrUAHtU91n6X64=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lXtYXDhzsEt4GE+rfGfcxwY+ZcS4tob/ELFwvMmCtbGkoLr72UfXZjKGnZzUUzr9p+hmnz/R1mQAz4HQDOyRto2v+2b6c8PlPCrYSdR38HGTMqz2CnsRFPt8DyixjfwZWn276bbBgCsLwKT2e2dkKCiM2VncLz3QSfM9r+lPc6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KY3smrA6; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UVtis7e+"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PQNx8cP7/H92zG22iJw5UI7f9yq7f8zWrRV0yPrbUWI=; b=UVtis7e+r5/G27TIqfxZ+en6iD
-	ewP14Pe2h9SnqatfXnO6L1fC4qcBnFOELp+V8WjW5RT1xwY3uZi3XSEv9Vu+4qZ1jP6BGVn7PXBEA
-	4Uw0Phr831M7R4vLdI8REUIOdbiINbJ1LMU5Mje2MkkXTCbCEn9Xn2ArP+y9asBIjud478+zn1SSo
-	lebc9FLfrg1/y0a6m2dAyJLJ3yltmw6G3+vcRUXeO4yRAwAxeKznEDSHVJJRWpAMX3il8mcbEeTWo
-	3139sv5kbIIlk0Z/E868rddoQ5sSESOXVT4ZQj4kMrc2J++kPSB2h0IKqxPLn0UnyiWT6B5SeVd+c
-	852DOAfw==;
-Received: from [38.23.173.23] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1SaY-0000000Crxj-16sr;
-	Tue, 01 Sep 2026 17:48:03 +0000
-Date: Tue, 1 Sep 2026 13:47:49 -0400
-From: "Liam R. Howlett" <liam@infradead.org>
-To: Kiryl Shutsemau <kas@kernel.org>
-Cc: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <nico.pache@linux.dev>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
-	Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
-	Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
- RCU grace period
-Message-ID: <px4uwbuq4ixucmjzudxulldk5l2tbuymaoaheyc624jdznnac6@px5wkmxqjmfo>
-References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
- <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
- <apbOlyF77yDCV4cF@thinkstation>
- <apbcoMTVlL42G5tg@gremlin>
- <20260901142408.GA56830@ziepe.ca>
- <apbiB51hjm-9pRzf@gremlin>
- <apbuO_QveZNAz3ns@thinkstation>
- <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
- <apcHiE7jDQaFYXOM@thinkstation>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KY3smrA6"
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-49a97714f5dso1433255e9.0
+        for <linux-mips@vger.kernel.org>; Tue, 01 Sep 2026 12:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788291242; x=1788896042; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=a2OfNYzeEIu4hE7s+v0no5iuQlcG0XuJ4sg5AErZQdU=;
+        b=KY3smrA6vdSJ0S370Q78Po1z20FoRLW9kM27A97eh6fu19FyfpA58RFEu53gUfbTTV
+         n4KCF5AGTj1RRSphCkqjjm1jkWkDYp6pzrUCp3Cl3a3C8bu92dYiMBBENWIEjFiny64V
+         SdDEPiun1RwOyISKGRpECOR8JEf1gJVfNMuY545HfeVeU5mSQcfRuSe5zhWkJxyfZ9eN
+         aapVjA258MWzGXOJV/ULa/HPF8skxI3zeqswvt3iYc88EoqMSnjd0gEoyMJC43oCZfCI
+         3ECyNRqL23B2N6tsuBsF4aA5N/FSwD5AB84KlUhbog6c967AUY5udLXDa7Xuabsd9LUb
+         hI8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788291242; x=1788896042;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=a2OfNYzeEIu4hE7s+v0no5iuQlcG0XuJ4sg5AErZQdU=;
+        b=foUN/16gjrGuYwvcVaZfpfaTQUJ90Y1OrrwIxkbW7UVCq+96XE4vz/1q3bmYe83tiU
+         n2TzEIpQOmZpNA3LMSbvH0Bys4ufQo9P870hcAbfsQEl1baKepBIG/58xdWmRfuxGdUs
+         tI4BevY4cYo6CKcOVuH2UymNe4TM/K8bCK4tnxfhJloORbuaMocSWrp3lEpp/7GrKAOe
+         3MMwBLqLW/Iw3APhhcIiYGTS2eRSjIIaC4qXb4k7JltMj41wbygpTohHId1NQ/daJR/p
+         AIFvipkQLSl0dtMtxA5jMlLhDjcD7ZbeeCnnS0X/b81Jar/4aNkeWmCttpsfPtX8+tud
+         rZaw==
+X-Gm-Message-State: AFuF++nroRqs2yVynhzn0g9mRieEglndtZONndI1xViwIqbIGHj9zY4f
+	I8TouUbXLVea/Vi6lQ0edhXhAwamAJfqDzC4Joq3aKC8yZa4KWmlqT4C
+X-Gm-Gg: AR+sD121Ou7DpcshZOnMOeQZJt9BXKfvrQiX2/VnHxqbfqkEPCIdYE2hCQ3xT7rlBGd
+	2N3V25ThIdA8rpiMOjhQRsWyEHmjrIOn/0H7rzXeCHTAFAB8GgLoHnru6yvojDtIusqfN0RnP4N
+	NyLbBSBlRHnuxaww0j2+FMf4oRu3fqSZFl+TvfpBhhw0S8hdURVXz2HUrDXcwfxcF0wdrMCWPFc
+	9GVbwco4rK+kCca6ANCl1lOn1WBm9mrZV05JilDUW1Dm2GfIpBl02Og9e2n/KARoI4AJ7pRA+PJ
+	kETpkWmH8Qc8vxap5vGD7hw8EPMdqsHiXmnIl4pubuJNl13aClziCet0HfBrecSkHE+4tBHc7YF
+	Xpz2epV+gz3GKFv9/XTW4t7oewDA8PplSxKzNcq4JwtF4je+Czb4+YitRl90c7OFmoB5Umdx0cz
+	mmKCS799EHZJGGoqXsWy83NJlHInZ6VN6z5TGEXPwOgpVKLrQzcKSja/WzanwaEdJfOAZOLR3UN
+	UyxsejWFCUMyMT+lqh43/62RZbfTmWHeqoTOcbvSVFbi5rohx7ePPU3L5NqcggTqYFWzZFD4PQT
+	Z/kiBw==
+X-Received: by 2002:a05:600c:4f92:b0:49b:90cc:3c87 with SMTP id 5b1f17b1804b1-49b91c487b2mr576060905e9.13.1788291242049;
+        Tue, 01 Sep 2026 12:34:02 -0700 (PDT)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48448ed3840sm1099834f8f.17.2026.09.01.12.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2026 12:34:00 -0700 (PDT)
+From: Orgad Shaneh <orgads@gmail.com>
+To: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] MIPS: Octeon: apply USB FDT fixups also when USB is modular
+Date: Tue,  1 Sep 2026 19:33:55 +0000
+Message-ID: <20260901193357.1352617-1-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260827175728.1574-1-orgads@gmail.com>
+References: <20260827175728.1574-1-orgads@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <apcHiE7jDQaFYXOM@thinkstation>
+Content-Transfer-Encoding: 8bit
 
-On 26/09/01 06:13PM, Kiryl Shutsemau wrote:
-> On Tue, Sep 01, 2026 at 11:54:47AM -0400, Liam R. Howlett wrote:
-> > Do you have munmap() performance dependent workload that you are
-> > concerned about regressing?
-> 
-> exit(2) path is performance critical for many workloads. Like, if you
-> need to restart VM.
-> 
+The uctl/usbn device-tree fixups in octeon_prune_device_tree() - which
+set the board's USB reference-clock frequency and type from
+__cvmx_helper_board_usb_get_clock_type() - are guarded by
+"#ifdef CONFIG_USB", which is false when USB is built as a module. The
+fixups then silently disappear and octeon-hcd sees whatever default the
+DTS carries (12MHz crystal in octeon_3xxx.dts), leaving the PHY dead or
+the bus erroring on boards with a different reference clock.
 
-That is not enough to see any impact, although less overall work would
-be done during the exit call.
+Use IS_ENABLED() so USB=m gets the same fixups as USB=y.
 
-It would be very difficult to come up with a scenario that this would
-have a measurable difference and an even harder time to come up with one
-that is slower.
+Fixes: 7fd57ab9d9cf ("MIPS: Octeon: Fix compile error when USB is not enabled.")
+Assisted-by: Claude:claude-opus-5
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+---
 
+v2: no code change; added the Assisted-by tag for the AI assistance used
+    (Documentation/process/coding-assistants.rst).
+
+diff --git a/arch/mips/cavium-octeon/octeon-platform.c b/arch/mips/cavium-octeon/octeon-platform.c
+--- a/arch/mips/cavium-octeon/octeon-platform.c
++++ b/arch/mips/cavium-octeon/octeon-platform.c
+@@ -18,7 +18,7 @@
+ #include <asm/octeon/octeon.h>
+ #include <asm/octeon/cvmx-helper-board.h>
+ 
+-#ifdef CONFIG_USB
++#if IS_ENABLED(CONFIG_USB)
+ #include <linux/usb/ehci_def.h>
+ #include <linux/usb/ehci_pdriver.h>
+ #include <linux/usb/ohci_pdriver.h>
+@@ -1080,7 +1080,7 @@
+ 		;
+ 	}
+ 
+-#ifdef CONFIG_USB
++#if IS_ENABLED(CONFIG_USB)
+ 	/* OHCI/UHCI USB */
+ 	alias_prop = fdt_getprop(initial_boot_params, aliases,
+ 				 "uctl", NULL);
+-- 
+2.47.0

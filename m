@@ -1,189 +1,111 @@
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AC9430314
-	for <linux-mips@vger.kernel.org>; Tue,  1 Sep 2026 16:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB9F3515DF;
+	Tue,  1 Sep 2026 16:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788278781; cv=none; b=MSIY3Foux50I0DDjRUeFtfUdts3ZPa7FZvJ06pL2Cmn/w+ghv+URmvmSg2DcNDf5CCYiM/h9HyRChjtMXAgq4GHTPaAWTrx3sKJufzO8FBpQSwev9jfo8QnqM48OYM5RvCVMMZg5OLiGr/67YFBXlJMwZd42ZEDnhxDpz4RDqq0=
+	t=1788280966; cv=none; b=ATOjVT5Db0N7xiCL5krzQPo5EY/iLd0JSvouPE1uN6avgpTUkCrl5YJrJnpqzEpLX3yB115yTshINuiFzmEmBFpYn//iHVT7aDzHWjgcw2ESjbDIXARC7NLI8hjm5d8BiGIgyn6aVAcOKmW+n/odu36bVDaFZBvVSRnrHTwSrTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788278781; c=relaxed/simple;
-	bh=m9GF6BVXJghb0t0TACX7Y0SpJfQTXPLs06gu6gZAn2Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jNgYRB2OQU5EPOS9+A+GghoXiUWzVzADi9Q1aNQNmH3EqBrfqEGHw9ADD0iowAWBV7c7SmqSOsMO6x231Tu//QgHOUKG0tOusY4ZpOVSCteHtdFee6uuZ+z1a2Za8yV7cHVilezPaDlnKMg+98XfEHyqQntNeJQQq/Bfm9Cy+us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BQcWIcoV; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+	s=arc-20240116; t=1788280966; c=relaxed/simple;
+	bh=swntz4L9HLtJg2UG9/ZzLdp8IdD2tc7OIr/g248cZsk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NSBCgsf8OxLchhpR/gcsYiuJrOOcF9EJ5kviaeOYS7YhfjAuoKK/2kRbnLXebNFCy6oiVwBzEwftvkEVmgD3h6KJGUPVb47Wcs8OvsrpirHQg38k/WBN691iVxRMrhpvbkMg1QhboXd6Hi47LG+ldKu9Nc6YkEppsd8X1/wXszM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FmuBqmuA; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BQcWIcoV"
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-936cda0e3fbso8101585a.3
-        for <linux-mips@vger.kernel.org>; Tue, 01 Sep 2026 09:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1788278778; x=1788883578; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=wqCXc1d2wL50duIrdszOJfzq0EqANvFRgXietPv5nSU=;
-        b=BQcWIcoV7P3Hr2LDZpO5LnlyE0+kl7BJcY/963/R3GpW+crY1co2xJ0VB/jrCBT5U+
-         sUWQ0qhCyeJNxHtT6geZRvpMmyBGAmAqykF3LtaV2i1XYHstPYbbJwP2CNyvATO0fX7+
-         qdAzbkhHzNaFhbaje/y8wVWDOoJ+O8NTGXOplwJne+lpwuLVz4/mIJkeh0+/O1qhaoSZ
-         0L8++LEs2lMFVe4zBAmvRmxeNtGBbF6AWtXQKKjSUg79N+3uZkVTZ45yKLBp848ccCNt
-         HkWwtQY+zmVRVYj7zfVvYfJ9ZFsctneRdffIWTYUSyHt/PGBfVimfMFQZCKGETAmlej3
-         AErQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788278778; x=1788883578;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=wqCXc1d2wL50duIrdszOJfzq0EqANvFRgXietPv5nSU=;
-        b=eTiFaol7JRj8U6aatr+2NmrA78iJjUH3WXfKv6SfN1uXV6fob7rggHL5a8prxcVy9L
-         Jy9INPUmVwMfIOH4Fu5wgghgFUkjfTAceU6dXkOUyGRIPcGMlfHi1mDwtBrDrnmLLalj
-         WlOKPJ9rZEZwnAEXdI+i2oCX3vzN+An5Lr/lgCC/FfM4if6WPXk2YS9+EOmjY+qlB95U
-         ITQf8Kq1KTVALtmYD3+USs2VqPx4IqQXz93lld1W3xYhVxWG17sXGQDHBG+zsL18uOUM
-         LqBYw35jO/tcqMbwjiYX5MEHXnGFMMiPaxovzuVOutRwnb6dCv0DtFDwDTJZF8ND9WZ7
-         MqXg==
-X-Forwarded-Encrypted: i=1; AHgh+RpVLhl/D/HmQ2b38KIhwB8ibxGVi35jVMr/eubsyUuzVIPBrc35CqAL3TCEHXcoGdVxuHbD1S0J9Yz9@vger.kernel.org
-X-Gm-Message-State: AFuF++kuBQUDKIHl2LKiaqTd0V6FmZE82IJNdyAUNhjcauR2kznNJQI5
-	GSj9bTrAuiYGcD9pJl9oXh6UMi3gmPBGim/bmu4p0cZZ8ZYPoEaBmDpheEGuxms5+TM=
-X-Gm-Gg: AR+sD130XeeEq5oMFe9gWEAdrEr3Pws7YEdfZukA1OfMzTDTviB1qrkk/Jo+mAofc4A
-	2dXiNr5k5gRDvXJAkeU/3sr8fPswWhJa7506VmH5jb7wgxHiMwBVMM/28tqNWt/wCFaN1jiiM7+
-	fFz4ipLUu1JjChpq2JWdHuFqDiOFlfuYDBAVCgs84Y0AuuruAFvs1Htlvt2SAi719B9KmqZAKjU
-	fnEhf5wP5YuEKQavgpdRSFUtgmbuYPbg+Xo0z4QM84s/obFvpH9mixw2WO++WmSzrFl+goGVGSS
-	xekQe/f21RfMHPcn3Wch10RWEXBjQOY4/4UEXY48dxpqyuOeDqsyBj0OoT6Xw/pNSXfJD2JvhXO
-	ye7ZnGmVuIfRRgaWgWZjy8JKcqoI7FVVLgwCoM/7ZaDiKQzOoAx5DXde88irTiXkdiXBaHDZkvL
-	LHyEBlUWbGSgwDOhU8LezNSj+uWY4ml27A+Px+B80WxM8Y+zts21ktIXSxgT/yA/Pk6UFtwh/Ej
-	xDIlGKTsb0pwwUTcKkEJSRA68ochvB1L0+fq7EbYM8Xiw==
-X-Received: by 2002:a05:620a:21d2:b0:936:ea0d:ffc3 with SMTP id af79cd13be357-939139002d3mr3178331885a.22.1788278777843;
-        Tue, 01 Sep 2026 09:06:17 -0700 (PDT)
-Received: from ziepe.ca (hlfxns010zw-159-2-239-150.pppoe-dynamic.high-speed.ns.bellaliant.net. [159.2.239.150])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-93922e5278fsm886283685a.14.2026.09.01.09.06.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2026 09:06:17 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1x1R04-0000000BtB8-1Fgr;
-	Tue, 01 Sep 2026 13:06:16 -0300
-Date: Tue, 1 Sep 2026 13:06:16 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Liam R. Howlett" <liam@infradead.org>
-Cc: Kiryl Shutsemau <kas@kernel.org>,
-	"Lorenzo Stoakes (ARM)" <ljs@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Nico Pache <nico.pache@linux.dev>,
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
-	Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>,
-	Brian Cain <bcain@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Simon Schuster <schuster.simon@siemens-energy.com>,
-	Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Russell King <linux@armlinux.org.uk>,
-	Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>,
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-	Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
-	Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-	Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
- RCU grace period
-Message-ID: <20260901160616.GD56830@ziepe.ca>
-References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
- <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
- <apbOlyF77yDCV4cF@thinkstation>
- <apbcoMTVlL42G5tg@gremlin>
- <20260901142408.GA56830@ziepe.ca>
- <apbiB51hjm-9pRzf@gremlin>
- <apbuO_QveZNAz3ns@thinkstation>
- <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FmuBqmuA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648741F000E9;
+	Tue,  1 Sep 2026 16:42:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788280965;
+	bh=HDVTlAMfP0f4QnIQSJ5iqy4p0uotiN5NQJ+cYYyMCXo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=FmuBqmuAq3JP8YNaI0POHKUbWdFm5FqhIlxdVtqAULAuDDzXYDcvQSv+g0LIoTCxg
+	 Wa6zN7EDMXP1aE57e4R/SXKsCj3p9pyYxCccUDoF61yfWq7CmrLw4ulyRIGeiTT/gf
+	 53iM1Ht/9BdbUW10VO1B5JfkVHjRs9Te8n1phTi7O3+B0LoiQLPX0L6wm5hk2XK3af
+	 i34TPdZ8QjIxTkScphHc++PDIh/p3C43fWVCyRoy0kSu/CAmqKgeWAlYCWNUz6Zbhc
+	 v8XJ7rYsuW6KeO4AQfl9MJ8ARa2R/lq0GIh5E1f+Eo5wsjNhASee0onrqYiX+sAFZW
+	 D2MRVIXPF6gdQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: =?utf-8?Q?Beno=C3=AEt?= Monin <benoit.monin@bootlin.com>, Thomas
+ Bogendoerfer
+ <tsbogend@alpha.franken.de>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>, Chao-ying Fu
+ <cfu@wavecomp.com>, Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton
+ <paulburton@kernel.org>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
+ <tawfik.bayouk@mobileye.com>, Gregory CLEMENT
+ <gregory.clement@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] clocksource: mips-gic-timer: Set next GIC event
+ on the correct VP
+In-Reply-To: <-6r_yDA2RwW_Yn6kas-7SQ@bootlin.com>
+References: <20260810-sync-gic-counters-v2-0-dfe8b2c376b0@bootlin.com>
+ <20260810-sync-gic-counters-v2-4-dfe8b2c376b0@bootlin.com>
+ <87o6exi3pi.ffs@fw13> <-6r_yDA2RwW_Yn6kas-7SQ@bootlin.com>
+Date: Tue, 01 Sep 2026 18:42:41 +0200
+Message-ID: <87ik4oc48u.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 01, 2026 at 11:54:47AM -0400, Liam R. Howlett wrote:
-> On 26/09/01 04:28PM, Kiryl Shutsemau wrote:
-> > On Tue, Sep 01, 2026 at 03:41:17PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > > On Tue, Sep 01, 2026 at 11:24:08AM -0300, Jason Gunthorpe wrote:
-> > > > On Tue, Sep 01, 2026 at 03:12:45PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > > >
-> > > > > It won't be costly at the time of the calls obviously as its deferred. Maybe
-> > > > > increase some time spent in softirq but again is 512x that big of a deal?
-> > > > >
-> > > > > I'm not sure how you'd both defer the free and somehow utilise mmu_gather here
-> > > > > either really, certainly not without it becoming extremely messy.
-> > > >
-> > > > The less costly version is to thread the page to be freed onto the
-> > > > mmu_gather through a linked list in the struct page memory. This is
-> > > > super cheap since it is just a singly linked list operation.
-> > > >
-> > > > Then when the mmu_gather is flushed it does a single call_rcu using
-> > > > the rcu head of the struct page of the head of the list. The callback
-> > > > clears the entire linked list of pages.
-> 
-> If you are going through the trouble of doing this on your side with a
-> custom rcu callback, it might be better to pack the pointers in a way
-> that does not need to pointer chase through a linked list.
+On Tue, Sep 01 2026 at 17:53, Beno=C3=AEt Monin wrote:
+> On Thursday, 20 August 2026 at 10:41:29 CEST, Thomas Gleixner wrote:
+>> > On a multi-cluster system each cluster has its own GIC. The VO window =
+of
+>> > the local GIC is what write_gic_vl_other() redirects, so when the targ=
+et
+>> > CPU belongs to another cluster, write_gic_vo_compare() lands in the
+>> > wrong GIC, overwriting the COMPARE register of a VP in the local clust=
+er.
+>>=20
+>> The MIPS GIC clockevent device is strictly registered per CPU with the
+>> cpumask of that CPU. See gic_clockevent_cpu_init().
+>>=20
+>> The set_next_event() callback of a per CPU clockevent device is _always_
+>> invoked on that CPU and cannot be invoked on a different CPU.
+>>=20
+>> So I completely fail to understand what this cluster and non-current CPU
+>> voodoo is about.
+>>=20
+> Going through the log, here is what I found:
+>
+> The commit 414408d0eedd ("MIPS: allow GIC clockevent device config
+> from other CPUs") was merged in v3.16, its intent was to make the GIC
+> clockevent usable as a tick broadcast device.
 
-Well, I have 8 bytes of memory in a struct page and can't allocate in
-these paths, so IDK there is another option..
+Ah. Nice detective work.
 
-Jason
+> Also in v3.16, the commit 0467811e9bdb ("MIPS: mark GIC clockevent device
+> with CLOCK_EVT_FEAT_C3STOP") sets the C3STOP flag. With this flag, as
+> I understand it, the GIC clockevent cannot be used as a tick broadcast
+> device. So the set_next_event() callback is always invoked on the CPU
+> of the event.
+
+Correct. A broadcast device cannot stop. The whole point of a broadcast
+decive is to act as a global backup for per CPU devices which are
+affected by C3STOP. The PPC people added a hrtimer broadcast device to
+handle the case where no other devices are available
+
+> The `if/else` was added later in v4.15 by commit f16ff2bdb135
+> ("clocksource/drivers/mips-gic-timer: Add fastpath for local timer
+> updates"). But the `else` path was never called.
+
+So my assumption about voodoo was not too far off :)
+
+> I am going to drop the `else` path, should I also add the
+> CLOCK_EVT_FEAT_PERCPU flag, or is C3STOP and the cpumask enough?
+
+You can, though the device i already excluded from being qualified for
+broadcast by C3STOP. But for clarity sake, yes.
+
+Thanks,
+
+        tglx

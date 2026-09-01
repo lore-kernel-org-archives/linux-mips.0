@@ -1,111 +1,164 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB9F3515DF;
-	Tue,  1 Sep 2026 16:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00702483807;
+	Tue,  1 Sep 2026 17:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788280966; cv=none; b=ATOjVT5Db0N7xiCL5krzQPo5EY/iLd0JSvouPE1uN6avgpTUkCrl5YJrJnpqzEpLX3yB115yTshINuiFzmEmBFpYn//iHVT7aDzHWjgcw2ESjbDIXARC7NLI8hjm5d8BiGIgyn6aVAcOKmW+n/odu36bVDaFZBvVSRnrHTwSrTw=
+	t=1788282744; cv=none; b=OE3KVG8ISsv5rOhmuiLF9Ee2vwTL0JtsJ+DUCjDLuvQp09oJI8hscRm9NI+UwCFm+FOuG71H51BI2ZPVh3tpVv3CZlfiBo0yjKm+jFC456U7hCBCEw9mdVjWJG2TUsF052J/0qIR0V87eD9Au28CGu9ZF32nuccRNicYtkr63WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788280966; c=relaxed/simple;
-	bh=swntz4L9HLtJg2UG9/ZzLdp8IdD2tc7OIr/g248cZsk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NSBCgsf8OxLchhpR/gcsYiuJrOOcF9EJ5kviaeOYS7YhfjAuoKK/2kRbnLXebNFCy6oiVwBzEwftvkEVmgD3h6KJGUPVb47Wcs8OvsrpirHQg38k/WBN691iVxRMrhpvbkMg1QhboXd6Hi47LG+ldKu9Nc6YkEppsd8X1/wXszM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FmuBqmuA; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788282744; c=relaxed/simple;
+	bh=GJjpEYktLXQfUdDya8N4c9YCXPfJKcNIiYclRIysixU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=to+2KT+cbDO2M0XHUxB8hkWb48xHAwBpx/0xMO36noVGRXyRGzBsnnd0Aci5Br4KecSqYHdgZtsiYfnGqGpYsH6VEAdezAUFodpEZQjSkVN14t67LgP+rxtqYghFbFk3UTn2qhGySAILgYBjZM25SYGBWg6fMo+bPulT+nVvSS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Juse0t2C; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FmuBqmuA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648741F000E9;
-	Tue,  1 Sep 2026 16:42:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Juse0t2C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567FE1F000E9;
+	Tue,  1 Sep 2026 17:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788280965;
-	bh=HDVTlAMfP0f4QnIQSJ5iqy4p0uotiN5NQJ+cYYyMCXo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=FmuBqmuAq3JP8YNaI0POHKUbWdFm5FqhIlxdVtqAULAuDDzXYDcvQSv+g0LIoTCxg
-	 Wa6zN7EDMXP1aE57e4R/SXKsCj3p9pyYxCccUDoF61yfWq7CmrLw4ulyRIGeiTT/gf
-	 53iM1Ht/9BdbUW10VO1B5JfkVHjRs9Te8n1phTi7O3+B0LoiQLPX0L6wm5hk2XK3af
-	 i34TPdZ8QjIxTkScphHc++PDIh/p3C43fWVCyRoy0kSu/CAmqKgeWAlYCWNUz6Zbhc
-	 v8XJ7rYsuW6KeO4AQfl9MJ8ARa2R/lq0GIh5E1f+Eo5wsjNhASee0onrqYiX+sAFZW
-	 D2MRVIXPF6gdQ==
-From: Thomas Gleixner <tglx@kernel.org>
-To: =?utf-8?Q?Beno=C3=AEt?= Monin <benoit.monin@bootlin.com>, Thomas
- Bogendoerfer
- <tsbogend@alpha.franken.de>, Daniel Lezcano <daniel.lezcano@kernel.org>,
- Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>, Chao-ying Fu
- <cfu@wavecomp.com>, Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton
- <paulburton@kernel.org>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
- <tawfik.bayouk@mobileye.com>, Gregory CLEMENT
- <gregory.clement@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] clocksource: mips-gic-timer: Set next GIC event
- on the correct VP
-In-Reply-To: <-6r_yDA2RwW_Yn6kas-7SQ@bootlin.com>
-References: <20260810-sync-gic-counters-v2-0-dfe8b2c376b0@bootlin.com>
- <20260810-sync-gic-counters-v2-4-dfe8b2c376b0@bootlin.com>
- <87o6exi3pi.ffs@fw13> <-6r_yDA2RwW_Yn6kas-7SQ@bootlin.com>
-Date: Tue, 01 Sep 2026 18:42:41 +0200
-Message-ID: <87ik4oc48u.ffs@fw13>
+	s=k20260515; t=1788282742;
+	bh=StaeALLek35hMlcSHa6BZyUhT0ljTsLx6yTS5xCyYM0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Juse0t2CRnLclkizU3JyDowVdwlJ0iiAypCeeJBRrMzUuWkIA48/zZoxvPY8ynax5
+	 93+gzbbaOxxd6yRhV4ql7Earf9bVYAmXcQp1apsMu+Q9JCQPkIM5y0xSMnEsDYvX6v
+	 2m2QIAum85lWmt97me6fz/S83bX8ZzmWfL6Pp8nqNuVU53FW4YvFM/T1Z0XmItrBzv
+	 p6K4CvlNWhstOGcDUrFY3zM/GkKi/mg9QppuB2k3p3kNMWoWTsRRNuS43+ZRnbktrm
+	 AeAAbLVSoNyYJvnqJHEpn+uT3X0IsBTxymX/qrlQ/JRx2E0I3Zfvz6CmO5Pa+TDLJo
+	 ZP4Nl5FijSGRA==
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfauth.ams.internal (Postfix) with ESMTP id 509151980082;
+	Tue,  1 Sep 2026 13:12:02 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Tue, 01 Sep 2026 13:12:17 -0400
+X-ME-Sender: <xms:YQeXarupuu8lP4hODV4Kl4cTBMZRESUvNFli0neseEvSVdU6eTqegQ>
+    <xme:YQeXaujYR-JcqcZ5XRB19_Sp4AidO5MknnGtlz5Ss_8D6FAekB1GDKTys9TKm5dQ7
+    9-CzIWyGX5yW7Y4wxP7-FxE2PboOlz7Sija6KJsrP8cvzQQUwq3uQCR>
+X-ME-Received: <xmr:YQeXapWFsxw_1UNeqnO8z4EZg2oOg-FIVaehIEwbl2C9sTmSY05S5RPiU9I>
+X-ME-Proxy-Cause: dmFkZTE95wHRzu4Jku/uqR1uWajKbrR5zJX2cXnYtALksDxTaOWWCUqT0ALShYzFchhR19
+    jABbL3NMpQdq2Q4yk1wxABfpkhz1tXbwJ0ETPbBKtnkrOsetjBDE6HJPSHCSzQ+lV8p7hR
+    m8B5tw0NCYc8nr5KG+JJnI7EqrKbJ9j/iB4uBQ8v3yh2BnmhuMnsKxLkWZCbcUsikaiaIb
+    afOgG11+NHa8fIFfGiaQPV11ZUcZ/PxqcPGfORQq/nrNuM+iA2OtyKWdZtMIzuN7Y+Bitk
+    xOhO/HMBDeF+31R8MKrPNSYAO9QueQgK/MZ6ZozJxRSVjUBLpeca5t06PFY2rHErDLj+iW
+    2yn2As7fL8DmU2YIyhDqY4qqwa2/ZrsmjL2YjjyNf5Ut5V+o1Q2jHYwdnRpVE4qQekDIlA
+    0QFGDvxUI/D1PW8k3h1xG2sm2CMe+07Xc1+6x36TyY7o9SD12A1XaguCEJgvlOl/E4/LPo
+    GFNx+zoYsO4VdClgp1h7hc4suTeM5K0X91cofeEj76CiP8ubXYR9unXAMBRmzaTibsCFRl
+    htnRbe1HGqYqK8cW0PalkL3qgmd3CH6stsr7YLE6PHlCrh2N2VCi400sm4iXeFTUQOgmsx
+    q+kN/77vj/DcD2YNv53dz8Mkn5XTiexA6E9lSNNFtklTEqyElGj/pD/1naEQ
+X-ME-Proxy: <xmx:YQeXaiCrGQOdc0DQyRgUDZV_Q7rbwwtsvYy_6612aWm1Dw459aKeLg>
+    <xmx:YQeXak3aszLb-RuoyQQti3VDFiBgP4eq84UZpaU9PzzzbGI3kIPqQQ>
+    <xmx:YQeXagyRzlL5sf79pX7TX42r92YD-ITwLJRci3UCGMw3KLjWYgQL6Q>
+    <xmx:YQeXan2N5VeJKbhgyOObCD-q2vQfw0NbQQLabtDLgtNHoJWCeTl7HA>
+    <xmx:YQeXanzxgCScGaao3xUiAb6wqDwwmrMtpplfWrXaivHsO8SbqI1rMQni>
+Feedback-ID: i10464835:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 1 Sep 2026 13:11:59 -0400 (EDT)
+Date: Tue, 1 Sep 2026 18:11:57 +0100
+From: Kiryl Shutsemau <kas@kernel.org>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+ 	Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+ 	Baolin Wang <baolin.wang@linux.alibaba.com>,
+ "Liam R. Howlett" <liam@infradead.org>,
+ 	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
+ Dev Jain <dev.jain@arm.com>, 	Barry Song <baohua@kernel.org>,
+ Lance Yang <lance.yang@linux.dev>, 	Usama Arif <usama.arif@linux.dev>,
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
+ 	Geert Uytterhoeven <geert@linux-m68k.org>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ 	Simon Schuster <schuster.simon@siemens-energy.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ 	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>,
+ 	Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>,
+ 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Paul Walmsley <pjw@kernel.org>, 	Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, 	Alexandre Ghiti <alex@ghiti.fr>,
+ Russell King <linux@armlinux.org.uk>, 	Vineet Gupta <vgupta@kernel.org>,
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
+ 	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
+ 	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Nick Piggin <npiggin@gmail.com>, 	Peter Zijlstra <peterz@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ 	Andreas Larsson <andreas@gaisler.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ 	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+ 	Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ 	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ 	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ 	Michael Ellerman <mpe@ellerman.id.au>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ 	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ 	Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ 	Sven Schnelle <svens@linux.ibm.com>,
+ Richard Weinberger <richard@nod.at>,
+ 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ 	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+ 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, 	Arnd Bergmann <arnd@arndb.de>,
+ Vlastimil Babka <vbabka@kernel.org>, 	Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, 	Michal Hocko <mhocko@suse.com>,
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+ 	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, 	linux-hexagon@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ 	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
+ 	linux-arm-kernel@lists.infradead.org,
+ linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
+ 	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
+ loongarch@lists.linux.dev, 	linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ 	linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+ Hugh Dickins <hughd@google.com>, 	Qi Zheng <qi.zheng@linux.dev>
+Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
+ RCU grace period
+Message-ID: <apcFUthh0XSFg3JQ@thinkstation>
+References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
+ <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
+ <apbOlyF77yDCV4cF@thinkstation>
+ <apbcoMTVlL42G5tg@gremlin>
+ <20260901142408.GA56830@ziepe.ca>
+ <apbiB51hjm-9pRzf@gremlin>
+ <apbuO_QveZNAz3ns@thinkstation>
+ <apbvoN6ttgHfI_xg@gremlin>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <apbvoN6ttgHfI_xg@gremlin>
 
-On Tue, Sep 01 2026 at 17:53, Beno=C3=AEt Monin wrote:
-> On Thursday, 20 August 2026 at 10:41:29 CEST, Thomas Gleixner wrote:
->> > On a multi-cluster system each cluster has its own GIC. The VO window =
-of
->> > the local GIC is what write_gic_vl_other() redirects, so when the targ=
-et
->> > CPU belongs to another cluster, write_gic_vo_compare() lands in the
->> > wrong GIC, overwriting the COMPARE register of a VP in the local clust=
-er.
->>=20
->> The MIPS GIC clockevent device is strictly registered per CPU with the
->> cpumask of that CPU. See gic_clockevent_cpu_init().
->>=20
->> The set_next_event() callback of a per CPU clockevent device is _always_
->> invoked on that CPU and cannot be invoked on a different CPU.
->>=20
->> So I completely fail to understand what this cluster and non-current CPU
->> voodoo is about.
->>=20
-> Going through the log, here is what I found:
->
-> The commit 414408d0eedd ("MIPS: allow GIC clockevent device config
-> from other CPUs") was merged in v3.16, its intent was to make the GIC
-> clockevent usable as a tick broadcast device.
+On Tue, Sep 01, 2026 at 04:45:14PM +0100, Lorenzo Stoakes (ARM) wrote:
+> > munmap() of 64G worth of THP should be enough to demonstrate the
+> > problem.
+> 
+> I mean you're going to hit that from RCU freeing page tables already, which
+> most architectures already do right?
 
-Ah. Nice detective work.
+Not at the same rate -- tlb_remove_table() batches into struct
+mmu_table_batch. One call_rcu() per MAX_TABLE_BATCH.
 
-> Also in v3.16, the commit 0467811e9bdb ("MIPS: mark GIC clockevent device
-> with CLOCK_EVT_FEAT_C3STOP") sets the C3STOP flag. With this flag, as
-> I understand it, the GIC clockevent cannot be used as a tick broadcast
-> device. So the set_next_event() callback is always invoked on the CPU
-> of the event.
+> So if RCU saturation is a problem, that problem already exists, but I've
+> not heard of that being a problem at all?
 
-Correct. A broadcast device cannot stop. The whole point of a broadcast
-decive is to act as a global backup for per CPU devices which are
-affected by C3STOP. The PPC people added a hrtimer broadcast device to
-handle the case where no other devices are available
+I did quick test and I don't see a measurable difference in munmap()
+wall time of 40G of THPs. I see ~17x more softirqs, but this is
+expected.
 
-> The `if/else` was added later in v4.15 by commit f16ff2bdb135
-> ("clocksource/drivers/mips-gic-timer: Add fastpath for local timer
-> updates"). But the `else` path was never called.
+The objection is retracted.
 
-So my assumption about voodoo was not too far off :)
+We can return to this later if it is going to be visible anywhere.
 
-> I am going to drop the `else` path, should I also add the
-> CLOCK_EVT_FEAT_PERCPU flag, or is C3STOP and the cpumask enough?
-
-You can, though the device i already excluded from being qualified for
-broadcast by C3STOP. But for clarity sake, yes.
-
-Thanks,
-
-        tglx
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov

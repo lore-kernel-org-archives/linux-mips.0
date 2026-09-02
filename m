@@ -1,92 +1,129 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A111A345EA2
-	for <linux-mips@vger.kernel.org>; Wed,  2 Sep 2026 03:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E29C317163;
+	Wed,  2 Sep 2026 07:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788320579; cv=none; b=hizMEoST3aIAYN8yeXPAdvomZcGol9A4Z056da2pUd78T8D6ms+NiT5FomnlfQsrl0DVXIsFI0x2sJueE8xCkOmtugrzFnWUjpo35viX9e7rMC+ZsD7/JGxSyQuGIxXEVgyDh2HhlAVN2G/HKWZ0MeBcqo5yptkQ5l+ydq1+nPA=
+	t=1788333519; cv=none; b=ofzCULc6/n8z3VU0dG49mWBtOkAkOe6FmVluJYDj/ag8/YFTO6XZFya7qsbyUI41PDO2gcVYu4c/DbKB2Y3ASjX4tG3wH4rkHJgintbbz4j+mHv0uVxIKjpy2bGBR2bbs63EpIIY/2pRCI5vUOxkNwtxsA5UnEgtnJ7CdTHYI/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788320579; c=relaxed/simple;
-	bh=i3fo3pHteBDTj07Dr/Mi0B2AnpNZNlOf08y+DZE8ShQ=;
-	h=Message-ID:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LuUOavf6gHWZy66jNAGXyO1d25VjAw+gWSzpCoT2C/FIwlaZ0D4IKmy6WiuSDzXZd0kJSj1jK+hcVDYZimY7uAuHRI5PYLUlVhoEGzLmfYXVpQ7/44uEHAsq2X0fD+VQCm41Ek/Il7h4P1htgVbRMF6n2BqUcC/VUjQ2i/etEzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMCIUdT/; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1788333519; c=relaxed/simple;
+	bh=FrU0vwTWiXNpJLDHmXBFEhZPNs4uimrpEWy63hvXxRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jbSacaNtI4bB2J+ai+5lVDExrJWeTz3X5OcjTaLVOtnmO6QgOHIp8VsNiI/BkLunDcQeZ9hZQmhVZyOFkCxvqhVpiR0L70wtpaMw62rLkRLoDc4Bg20tMJ+zulffZrYbfqsikviioGG2ir8/I+tu4lbSwV0SSPIoBXkBXNFrl5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7fYUwa6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMCIUdT/"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2d9520b9155so4831575ad.3
-        for <linux-mips@vger.kernel.org>; Tue, 01 Sep 2026 20:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788320578; x=1788925378; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:subject:cc:to:from:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=g6mGPcki/1a/Lf2s2/1dI66mP0jWfESO0B2O9tUlL+Q=;
-        b=gMCIUdT/uUXyjF71g2To4LLwdSHF8jlWguTo+Vp/qw/8+NkRZ7qyxc1UN0ZO3WgHZ/
-         Z4kerIj9RTU++4QFGkV5uJpmrXAXsaTYpw+PtJZcOVYx4VZTfnkPTduQZgsHz7JVumv5
-         Qsu4/TjpX0Knpi+gPOp1stH4j3Axcb/QZQ5B/UaRcLCYt7d4Dq+3UAFXcZJoMp1NzGZd
-         xcbf9AOKxT5rIFqVpidTHmgS7WrOFAetHOFf7FqUREphbSJcOYCblYfbN69icDlmvAwX
-         1MeXAHDARqg6wIJuq2eY6liBFDfCiLawcGS5YcONwi6YkD1Jt3UWn26qFXj2VV37Qtuq
-         89CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788320578; x=1788925378;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:subject:cc:to:from:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=g6mGPcki/1a/Lf2s2/1dI66mP0jWfESO0B2O9tUlL+Q=;
-        b=rI6HnGeiFSgTgviPn4bQu6H1HZsyuSiAb+8zRkGhWHMTaP+SSuFsBplxBjczeGfJVR
-         lkJma6LRuOhnt1tMmQX24fpWXBlmuXSqk2JjWYBfupthqwO0/ejZbV9i4jDlWbO/pe8V
-         +FleYuDLPV0M/4wCgpmV409T/jRNfi+bF3iUXgZ4CjusXCstt/hatI7PzSiQW8u85aUN
-         5t6xkt7fWiiQFEDcKzA5/BX2NUYKjticeGi6BD82YGIeyoOharkjktkfRN5XNuk99NFu
-         ZVrtX7m2w/e4TQ+qY52jsIR1x79GWxcHyEbIWz86fNQCNZLepukK4Nj3mRqLI1M/4vqv
-         1L6Q==
-X-Forwarded-Encrypted: i=1; AKwUvBx7p1svUzMONLkGxpwhDpEGIcgnAqs3Z8MG8jp5+Vpb8Z4T3mTXXsMC4HzXVuYxvjrc8G2tJBon5+5o@vger.kernel.org
-X-Gm-Message-State: AFuF++nY/4yRHG4k3SdOePHkZa7YNfjNcGITwrgoD7QAOpFDlqFF5Gj9
-	8y0qSTlzJE9UQ8njwpXIQ3pG9vyRsBaurGzjdkH/vlzUCYXCxcCcgXjftNSG6Vo2
-X-Gm-Gg: AYBFou1gdi14w91H1CfLZaSGGa54YadgXD3OCVZiCrMk+JitMrHuf+NFMpHD0YDk5WQ
-	jcNl2Crd0St3ODl0GDN0Fr7SPoybkarnPwKI2lsMwplSo2sIe5NVJkvyQZeTy++0q/wreZL2Oux
-	1Ejp0y3MlIOr4NtERXDdOGx/wwh4FLgEAp1HBQqoGZJqr9Js/DpF0GoiDQsgmOAuKOQ9A3gLVVF
-	6nMyjMe5hSAPV07R1M76yJ09xVF+kCYG2/yhYIg5T2E9zxFCN8EwD+5oYf/qFPE2ekbSudVQVt3
-	JtW9KvS0oA7+Hz/VPG6zrtAUhjJOioHeEMn7/pNYpduNusCIg2r2Kzr9A2Y/PYsKQY+UIxswFF0
-	Aw5HuebCSsdIL58jXkuzhqoQvTnRaO0Ak6ucOfdcQB4JeGaRy0i6xhI9SCGvG5rS95cCkcj/M3D
-	fwvTOiDEaBJZRYnMSKKUji0Ey878p4JZTXy32e7dG7yIedp/vcex70AxsT+NVQVKYZmmOJlwFf8
-	hOE13SQ58if7NTCVafrfjuy9PyUtCMnw7XrtvEh2JVNF/Lfp9dDnw==
-X-Received: by 2002:a17:902:e78b:b0:2d9:2fc9:570f with SMTP id d9443c01a7336-2daec738b38mr32120595ad.16.1788320577728;
-        Tue, 01 Sep 2026 20:42:57 -0700 (PDT)
-Received: from [127.0.1.1] (ec2-99-79-140-187.ca-central-1.compute.amazonaws.com. [99.79.140.187])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2dadd4d7985sm5826315ad.84.2026.09.01.20.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2026 20:42:57 -0700 (PDT)
-Message-ID: <6a979b41.d6e1292d.3d29a1.3309@mx.google.com>
-Date: Tue, 01 Sep 2026 20:42:57 -0700 (PDT)
-From: Zhijian Han <hanzhijian1991@gmail.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH] EDAC/octeon: fix kernel-doc comment for co_cache_error_event
-In-Reply-To: <20260902012331.GEapd6k7g1DZxILLVW@fat_crate.local>
-References: <20260821233751.2331272-1-hanzhijian1991@gmail.com>
- <20260902012331.GEapd6k7g1DZxILLVW@fat_crate.local>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7fYUwa6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A4871F000E9;
+	Wed,  2 Sep 2026 07:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788333518;
+	bh=HL69uD1uJKKHK2MGV9jHTlVdAjJQsXCvWjdRatXtZi8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=e7fYUwa67YcCpJQnhksI8s5r9szKITxJpbFfZKbSZEUV+z5uyzc5KVa96Mmcx4OPa
+	 hUt+sVL9z7lmDGS9Suf7Q3aJpKPLexx3a/NMPJiJlaCJDXuxcuxyaxz84pEZBXSEgK
+	 hK46DbJNdrhDH2CyT6tHGkYccEzqAweJqh2ZaX6AlxXN/anm8MKc31fIhLosPvGg2y
+	 U14EJghhLQcVsFrGtCsS5GQ4yKDOMPcYW6i+hSEISmxkgXiK2vroFVIRmVO3euKPgd
+	 Hti3OS6v3ljm1ef3LsRJAnppDgU5JPV1KLX6nlwpvbkA5LtWwoLDgyTDi1QfJ1YQZy
+	 GAmqh7uM9xRJg==
+Date: Wed, 2 Sep 2026 08:18:24 +0100
+From: Sudeep Holla <sudeep.holla@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Ryan Chen <ryan_chen@aspeedtech.com>, Joel Stanley <joel@jms.id.au>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Brian Masney <bmasney+clk@redhat.com>,
+	Jerome Brunet <jbrunet+clk@baylibre.com>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Billy Tsai <billy_tsai@aspeedtech.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Taichi Sugaya <sugaya.taichi@socionext.com>,
+	Takao Orito <orito.takao@socionext.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Avi Fishman <avifishman70@gmail.com>,
+	Tomer Maimon <tmaimon77@gmail.com>,
+	Tali Perry <tali.perry1@gmail.com>,
+	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
+	Benjamin Fair <benjaminfair@google.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	David Lechner <david@lechnology.com>,
+	Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Santosh Shilimkar <ssantosh@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Vladimir Zapolskiy <vz@mleia.com>, Heiko Stuebner <heiko@sntech.de>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Prashant Gaikwad <pgaikwad@nvidia.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Ulf Hansson <ulfh@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-clk@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	openbmc@lists.ozlabs.org, arm-scmi@vger.kernel.org,
+	imx@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, soc@lists.linux.dev,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 30/45] clk: scpi: Make sure clk_init_data is fully
+ initialized
+Message-ID: <20260902-tiny-metal-silkworm-ffaadd@sudeepholla>
+References: <cover.1787239813.git.geert+renesas@glider.be>
+ <939f1be93abebc7967a889e9c24c34942df8229a.1787239813.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <939f1be93abebc7967a889e9c24c34942df8229a.1787239813.git.geert+renesas@glider.be>
 
-On Tue, Sep 01, 2026 at 06:23:31PM -0700, Borislav Petkov wrote:
-> I'm presuming your legal name is "Zhijian Han"?
-> Because you should use your proper legal name when you sign off on patches.
-> You don't have to send a new version - I can fix it up when applying.
+On Fri, Aug 21, 2026 at 10:53:40AM +0200, Geert Uytterhoeven wrote:
+> The clk_init_data structure contains several mutually-exclusive members
+> for different methods to specify the possible parents of a clock,
+> prompting drivers to initialize only the members they need.  However,
+> not initializing all members may cause subtle issues, which are only
+> exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
+> enabled.
+> 
+> Make sure all members are fully initialized, to avoid such bugs, and to
+> prevent future breakage when converting drivers to a different method
+> for specifying the parents.
+>
 
-Yes, "Zhijian Han" is correct.  Thank you for fixing it up.
+FWIW:
 
+Reviewed-by: Sudeep Holla <sudeep.holla@kernel.org>
+
+-- 
 Regards,
-Zhijian
+Sudeep

@@ -1,243 +1,189 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4BB4A64D1;
-	Wed,  2 Sep 2026 16:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D538377561
+	for <linux-mips@vger.kernel.org>; Wed,  2 Sep 2026 20:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788367707; cv=none; b=auaLOrPY2M/Fk60f5C0EQo7VvS1tNFDcxstsH4M1/sE2LYwmHeQRHQ1nxf0ddilJ425b7PhnYRLZgBFhsYf6UmBPcB4qtb34MjDVgqlAroYdBUcC7jLzY9bJNLjWfzBWfrKTtlehXDH9kJ30PENfQJhZJkntNYsL4pSsqniDVrM=
+	t=1788380216; cv=none; b=CfpFiKxdx+oxNfnExazZHECfQWXqEIzBXWRYSacUKlBLT+TVpmnwM8zf/1h/DJ7MsPenMHRFogZWnRsLXP9WhJhMvMPnP7WcfzXuuOSBMts6WgERQUio3x1JHpSUzRJHWJr6f7cUlRB7xkevpOCPEMWZ01s7NG0lztd88eWie7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788367707; c=relaxed/simple;
-	bh=U+OH94B40NoTGV5hu0mRvJHuyvI3dakCwtDknNYstOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CMQkQUAUTqAvNptWv4AOHwG8eUvH3Sz/a7y1nGjQAfY0K/gs3D6kw0n6QRDa+Srz629m/oSyutaKoVKU+ZoRuN4XRUUPZvPR2CFvX78AsQZhBJV4leChcMKpzhciawK7OnV9pFmocvEijgjSpWQXybXViHMWDbgVuU4jbuE2kt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=GnvXWjox; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1788380216; c=relaxed/simple;
+	bh=5hzLQzPg3Siq2sAjeVrPq1UVjrMV+4INkOiCvhmskWA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eTEXT/NAcWarx/etvgG6/pi3hxBgrk+/dy8aZoi+FBcp0MyjDxazC8geyQrDENEtOX4eX6HwyuM8TgxRAw6jRP4S273AtlBhIJQdNic8LnE9gGHYGzXI26wg1kB20pM/9Z9wNUcLhZHzMBZjR6RP24GvrmNS54XMzf3CbxvUrrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=WPo3DI7A; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=GC1Imw8u; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="GnvXWjox"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC6061682;
-	Wed,  2 Sep 2026 09:48:20 -0700 (PDT)
-Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07F7F3F882;
-	Wed,  2 Sep 2026 09:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1788367704; bh=U+OH94B40NoTGV5hu0mRvJHuyvI3dakCwtDknNYstOA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GnvXWjoxcxOtSQbkJLQQ3GnOKnrJ9nFr10cfwUtCgJWT/roaoVtAf1/mEvzgvikQ5
-	 RXVLekBW58kpBfbq00LwbRmlPLU/+FVDFDSMj4JxcQvr3vN8VaI7ommpT64lB9niJ6
-	 AjsG8nFfQXvSizHpPhebOyU19vy801Vi2MdIplc0=
-Date: Wed, 2 Sep 2026 17:48:14 +0100
-From: Yeoreum Yun <yeoreum.yun@arm.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Yeoreum Yun <yeoreum.yun@arm.com>, Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Barry Song <baohua@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	David Hildenbrand <david@kernel.org>,
-	Michal Hocko <mhocko@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>, Anup Patel <anup@brainfault.org>,
-	Atish Patra <atish.patra@linux.dev>, Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-openrisc@vger.kernel.org
-Subject: Re: [PATCH RFC v3 15/21] x86: mm: skip collapse_pud_page() when
- CONFIG_X86_DIRECT_GBPAGES disabled
-Message-ID: <aphTTqhf3yO74JoO@e129823.arm.com>
-References: <20260902-dummy_ptxp3-v3-0-5d8f5b17c25c@arm.com>
- <20260902-dummy_ptxp3-v3-15-5d8f5b17c25c@arm.com>
- <fa4acc56-9742-4a5e-abd4-7491ad426940@intel.com>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="WPo3DI7A";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="GC1Imw8u"
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 682Hqsg31650590
+	for <linux-mips@vger.kernel.org>; Wed, 2 Sep 2026 20:16:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=qcppdkim1; bh=46siBCCvcvlpzJgw+UUQdDmQusxn/J6ohah
+	T+j6al9s=; b=WPo3DI7A9bAW4tlVrg0bqu4V+styJyUGUWS5W2JZCHN1MQPiTEi
+	B/GveQ3mT/MrXBHqngiJvivPBht8vzfcWMVEe4SKqmIWxL6trNRvOAqeBCQxa9Cr
+	CWxC7O6PRXcoIuZHFmx9f3HHaBfZ14Fm6UC9YMn3bMaA2GNvqkFiKTdYJzVrn8z0
+	hJOGd1ybUsWB3nmQ5aLfFb0YTMEd1iqn7U0jVHt4/SGXznL8v5A7BR7nOU0B/Gyh
+	gwvi2r+y7o9EnlAP8R003zg6xp9/l3tKssS7AOrIDul135GXM5UYereiVFD5t9Xu
+	q6VoVNFAk528wRFtBLUFlQ4ltt5gNafAp0Q==
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4gemj4srnc-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Wed, 02 Sep 2026 20:16:53 +0000 (GMT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-396b9ef3070so2556484a91.3
+        for <linux-mips@vger.kernel.org>; Wed, 02 Sep 2026 13:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1788380212; x=1788985012; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=46siBCCvcvlpzJgw+UUQdDmQusxn/J6ohahT+j6al9s=;
+        b=GC1Imw8u+6QmBoKKJIF/uRpuS5oqHjNvfDNEEhXqVzIIqjQjtq2pDXzT6RdX9akwvR
+         cw6Xo1z7Ds/4ahgXk/3fo3stGSgJzeT0KC9dmPMsw5Y2OIGUcNlLjoFapCGvCbu2Md2v
+         xDkhQcL2jfXEAn2K5sG6p3Wn9s2RslahMWcu1ASUuRK27xo9ArXHpPRG1SDOt5Iu2M2L
+         hNLyZrHYx2AuK4XsATgLpLtia2xlfp1X1OsUYKZW25FlhZx1qOpoPndPzpzn2rj/qNSw
+         gwoV3TPw25V0BN2lW995W/pAWO0BnWoiMT1lG69xMasc7wAGmjXrWzA6PH5fs9lDXUKN
+         lVIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788380212; x=1788985012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=46siBCCvcvlpzJgw+UUQdDmQusxn/J6ohahT+j6al9s=;
+        b=PZPBUiQTuoQm9FY9vmm+pht/NZXrtZX3wCZLb73aSdWpGd64vHcVqFVgdGSUP1GgjZ
+         0olSacsLVWPZCRFw77bP+Q6wSiUMezWq5Ke1VouIWQ2jrKzd9JQT+eTLn782ksU3Hfnh
+         o6OI4cQPM5beB8pyylMuEslst4kMJRP+dGN+3OKpE7A6igcO4LQJWZn0nJVK2iJ0cW/n
+         g6tsvzghyR5KFUUmsq7+THguUlizi2Xmy5/d8mORVDZvSQqw8x4q2hh1fmU2MylYs+OQ
+         KpmeyfTdspSjfDYIxtM/9IfyZLOPbG4S8EfZOxnBftNDRQKmlYPxP7ROsmf3CjnTUeaF
+         Xy0Q==
+X-Forwarded-Encrypted: i=1; AKwUvBxVRSeipZ/T+JTP15bWPnG7mFsKLaQHF/uMtKCFEUnLzGI485kTPkHKeiiulbr4d0nl9NwuOGOhz4Ti@vger.kernel.org
+X-Gm-Message-State: AFuF++k11je4+4UeByaVorw6G6XOJvDbFX29qScn1bu5J9tHsCylnJfK
+	2RAmpSa7GfOGkBNWGhZOCkmvY/Dst3//OyjHfKmI+LRD/70vzGI9cxaF8hZCZp4vMvCEyNtepDV
+	OXstdIHNXZF4sj6Mb8QyOuzPf+FMOGBsrtZFFWnbR6bMUw+Sxn9rL3MeWAP+h33tW
+X-Gm-Gg: AYBFou07bPk7h+r/0y0tZ/C1ntfvAIik0QEU2iW2jJVlSwu+XmC300toUUc4wdftkRt
+	v2Xl2r36duK5tDbKEgOIwloKiS/10ioeyj4r376QDPH2zB5F85Y2MquwXZ2P5IOPmP0KWzBn+gY
+	9soib5zQxprjWEle0Uyz7sBgU2Ve5moUYjin+kSVs1P+puPdg/d1ewbmBbRitsWXKnM6/1UmD0T
+	Atqvi6eeO+RgQXbhyAahwVDx60/7DQsg59EMia1Q425p5YjfgkV8A6UqBFnoreNpIauK2B1+1Vp
+	GkAVTTJfuNxcRMYm+OJMy932Mek5ApEn6V+F8VOS0zNXDGq0gIlVcw3SmH+8W05tYRze1E5ns3A
+	nDz1SdTVjZ6z/LfCfin8Y/Y7TimM=
+X-Received: by 2002:a17:90a:c107:b0:398:d2a0:87ff with SMTP id 98e67ed59e1d1-39aedf7c6bbmr11956063a91.1.1788380212414;
+        Wed, 02 Sep 2026 13:16:52 -0700 (PDT)
+X-Received: by 2002:a17:90a:c107:b0:398:d2a0:87ff with SMTP id 98e67ed59e1d1-39aedf7c6bbmr11955961a91.1.1788380211806;
+        Wed, 02 Sep 2026 13:16:51 -0700 (PDT)
+Received: from hu-mojha-hyd.qualcomm.com ([202.46.23.25])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33256414c60sm497205eec.24.2026.09.02.13.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2026 13:16:51 -0700 (PDT)
+From: Mukesh Ojha <mukesh.ojha@oss.qualcomm.com>
+To: Liviu Dudau <liviu.dudau@arm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Paul Kocialkowski <paulk@sys-base.io>,
+        Linus Walleij <linusw@kernel.org>, Chen-Yu Tsai <wens@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Michal Simek <michal.simek@amd.com>
+Cc: Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Mukesh Ojha <mukesh.ojha@oss.qualcomm.com>
+Subject: [PATCH v2 0/11] drm: Use devm_of_reserved_mem_device_init()
+Date: Thu,  3 Sep 2026 01:46:29 +0530
+Message-ID: <20260902201640.2024648-1-mukesh.ojha@oss.qualcomm.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa4acc56-9742-4a5e-abd4-7491ad426940@intel.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTAyMDE3OSBTYWx0ZWRfX9sUpD5gc2KAd
+ ND6PUlSy6hTheL1IG+gbO2WrW9rGx2wB/fX0avGcdL+HmKvCtC5GA92epOkBmGRAR06tHzoiQ+i
+ 0JP7OEsOsjwWpetAT/C7LKKQGy6lP18eCUSlPRZ8tNHjDaxuaBEZOREHHsxU0E++kdtHHi0BH4k
+ Ohwr3IWAoVntJAoTYmwPxZzgkRwP+eYLbrua4FN0w+VVwChJNv2P+WKJqFszir2m+mg0rJT/GE2
+ 48awVyj1Uvyrfd0YdxLruKebRd36Rx0jPk5q27BK/4Cw/LaBdV4+V6VanaEzcC9HIN9870XDtuB
+ LkRf4poI+gZ4FNwfgZ1SLQhlu0R6kL+XAMpDUw+ATMgf1DB2Eo+cC0zM3rD8hMrqq5nM+a+CFVJ
+ fPOATS9VBvTzWdabc3dulr+Zb1o+KvwOq1XmCDwxtiycK6KS5ZBuWw8vew/7YcMruEPuPnD+2ha
+ SaHJLLtn09ZgGceUkVQ==
+X-Proofpoint-ORIG-GUID: QgonyzseJk20YqCic-gfvlVpJAfLOJKD
+X-Authority-Analysis: v=2.4 cv=MdhcfZ/f c=1 sm=1 tr=0 ts=6a988435 cx=c_pps
+ a=vVfyC5vLCtgYJKYeQD43oA==:117 a=ZePRamnt/+rB5gQjfz0u9A==:17
+ a=VdqzKS8jKosA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=u7WPNUs3qKkmUXheDGA7:22 a=yx91gb_oNiZeI1HMLzn7:22 a=VwQbUJbxAAAA:8
+ a=EUspDBNiAAAA:8 a=nZq82LKI3H6k8voUjgcA:9 a=rl5im9kqc5Lf4LNbBjHf:22
+X-Proofpoint-GUID: QgonyzseJk20YqCic-gfvlVpJAfLOJKD
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTAyMDE3OSBTYWx0ZWRfX2IA/KISNPltb
+ O8LdoL8cZ0iYueEwdqk6wZq/LGaFbmTprmTCTON88gSoH+abd+0EtFoMZqyyNJJ5v56Hqbd9qPD
+ +X75bzLRAUwp0Jq+CrYHqf67nnB9JSo=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-02_04,2026-09-02_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2609020179
 
-Hi Dave,
+Several DRM drivers manually manage reserved memory lifetime by pairing
+of_reserved_mem_device_init() with an explicit of_reserved_mem_device_release()
+in the remove or unbind path. Missing the release on any error path between
+the two calls leaks the region for the lifetime of the driver.
 
-> On 9/2/26 04:56, Yeoreum Yun wrote:
-> > The behaviour of pXd_page() will change with generic compile-time folded
-> > page tables by disallowing its use and triggering a compile-time error
-> > when it's used improperly, ensuring that the actual pXd_page() is used
-> > instead.
-> > 
-> > To prepare fot that, skip collapse_pud_page() when
-> > CONFIG_X86_DIRECT_GBPAGES is disabled.
-> 
-> Nit: this doesn't explain how the change actually fixes anything or what
-> the specific problem being solved is.
-> 
-> I think you want to say something along the lines of:
-> 
-> 	collapse_pud_page() uses pud_page() in a way which will soon
-> 	trigger a compile-time error on configs that have a folded pud.
-> 
-> 	The code which will generate that error is actually unreachable
-> 	on those configs because 'direct_gbpages' is always 0 there.
-> 	However, the compiler does not know that because
-> 	'direct_gbpages' is a normal integer from a separate compilation
-> 	unit.
-> 
-> 	Make the compiler aware when most of collapse_pud_page() is
-> 	unreachable by adding a Kconfig check. This ensures it will not
-> 	trip the errors when they are introduced. It probably also trims
-> 	the kernel image down a wee bit too as a side benefit.
+devm_of_reserved_mem_device_init() was recently introduced to tie the
+release to the device's devres lifetime automatically. Convert the affected
+DRM drivers to use it.
 
-Yes.. Sorry for my poor commit message.
+Note for drivers using the component framework (hdlcd, malidp, sun4i): the
+previous code called of_reserved_mem_device_release() explicitly in the
+component unbind callback. After conversion, the release happens at device
+removal (devm teardown) rather than at component unbind. For standard CMA
+or system heap reserved memory, this is benign. Drivers relying on custom
+rmem->ops with meaningful release-time side effects may need to retain an
+explicit release in unbind; those cases are not known to exist for the
+drivers converted here.
 
-> 
-> Maybe I should just merge something like the attached patch. I think it
-> would solve your problem and make things generally cleaner too.
-> 
-> There is an existing variable (direct_gbpages) that says whether the
-> kernel can and should use 1G pages in the direct map. It is driven
-> by a bunch of other machinery. At least:
-> 
->  1. Hardware support for 1G pages
->  2. Kconfig support for 1G direct mappings
->  3. Kernel command line overrides
-> 
-> Most code just checks the 'direct_gbpages' variable itself. But this
-> prevents compiler optimization in cases where 1G mappings are
-> compile-time disabled (via X86_DIRECT_GBPAGES).
-> 
-> Add a helper to replace 'direct_gbpages' checks. Check the Kconfig
-> option and base CPU support before looking at the variable.
-> 
-> This lets the compiler optimize things better, especially
-> collapse_pud_page() where most of the function can now be optimized
-> away.
+Changes since v1: https://lore.kernel.org/lkml/20260703193855.110619-2-mukesh.ojha@oss.qualcomm.com/
+ - Carried R-b tag if any.
+ - Rebased it.
 
-Yeap. I've tested with your patch and it works for me!
-Thanks!
+Mukesh Ojha (11):
+  drm: logicvc: Use devm_of_reserved_mem_device_init()
+  drm: hdlcd: Use devm_of_reserved_mem_device_init()
+  drm: pl111: Use devm_of_reserved_mem_device_init()
+  drm: komeda: Use devm_of_reserved_mem_device_init()
+  drm: malidp: Use devm_of_reserved_mem_device_init()
+  drm: ingenic: Use devm_of_reserved_mem_device_init()
+  drm: kmb: Use devm_of_reserved_mem_device_init()
+  drm: sun4i: Use devm_of_reserved_mem_device_init()
+  drm: xlnx: zynqmp_dpsub: Use devm_of_reserved_mem_device_init()
+  drm: aspeed: Use devm_of_reserved_mem_device_init()
+  drm: arcpgu: Use devm_of_reserved_mem_device_init()
 
-Reviewed-by: Yeoreum Yun <yeoreum.yun@arm.com>
-Tested-by: Yeoreum Yun <yeoreum.yun@arm.com>
+ drivers/gpu/drm/logicvc/logicvc_drm.c             | 21 ++++++++-------------
+ drivers/gpu/drm/arm/hdlcd_drv.c                   |  6 +-----
+ drivers/gpu/drm/pl111/pl111_drv.c                 |  4 +---
+ drivers/gpu/drm/arm/display/komeda/komeda_dev.c   |  4 +---
+ drivers/gpu/drm/arm/malidp_drv.c                  |  4 +---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c         | 13 +------------
+ drivers/gpu/drm/kmb/kmb_drv.c                     | 12 ++----------
+ drivers/gpu/drm/sun4i/sun4i_drv.c                 |  4 +---
+ drivers/gpu/drm/xlnx/zynqmp_dpsub.c               |  4 +---
+ drivers/gpu/drm/aspeed/aspeed_gfx_drv.c           |  2 +-
+ drivers/gpu/drm/tiny/arcpgu.c                     |  2 +-
+ 11 files changed, 14 insertions(+), 76 deletions(-)
 
-> 
-> ---
-> 
->  b/arch/x86/include/asm/pgtable.h     |   14 ++++++++++++++
->  b/arch/x86/kernel/cpu/common.c       |    2 +-
->  b/arch/x86/kernel/machine_kexec_64.c |    2 +-
->  b/arch/x86/mm/init.c                 |    2 +-
->  b/arch/x86/mm/pat/set_memory.c       |    4 ++--
->  5 files changed, 19 insertions(+), 5 deletions(-)
-> 
-> diff -puN arch/x86/include/asm/pgtable.h~direct_gbpages-compiletime arch/x86/include/asm/pgtable.h
-> --- a/arch/x86/include/asm/pgtable.h~direct_gbpages-compiletime	2026-09-02 06:53:57.835733398 -0700
-> +++ b/arch/x86/include/asm/pgtable.h	2026-09-02 08:17:01.434727771 -0700
-> @@ -1163,6 +1163,20 @@ static inline int pgd_none(pgd_t pgd)
->  #ifndef __ASSEMBLER__
->  
->  extern int direct_gbpages;
-> +static inline bool direct_gbpages_enabled(void)
-> +{
-> +	/* Check the direct map config option: */
-> +	if (!IS_ENABLED(CONFIG_X86_DIRECT_GBPAGES))
-> +		return false;
-> +
-> +	/* Check the CPU feature: */
-> +	if (!cpu_feature_enabled(X86_FEATURE_GBPAGES))
-> +		return false;
-> +
-> +	/* Check the command-line and early setup variable: */
-> +	return direct_gbpages;
-> +}
-> +
->  void init_mem_mapping(void);
->  void early_alloc_pgt_buf(void);
->  void __init poking_init(void);
-> diff -puN arch/x86/mm/init.c~direct_gbpages-compiletime arch/x86/mm/init.c
-> --- a/arch/x86/mm/init.c~direct_gbpages-compiletime	2026-09-02 06:55:01.004094924 -0700
-> +++ b/arch/x86/mm/init.c	2026-09-02 08:20:36.759992562 -0700
-> @@ -251,7 +251,7 @@ static void __init probe_page_size_mask(
->  		__default_kernel_pte_mask &= ~_PAGE_GLOBAL;
->  
->  	/* Enable 1 GB linear kernel mappings if available: */
-> -	if (direct_gbpages && boot_cpu_has(X86_FEATURE_GBPAGES)) {
-> +	if (direct_gbpages_enabled()) {
->  		printk(KERN_INFO "Using GB pages for direct mapping\n");
->  		page_size_mask |= 1 << PG_LEVEL_1G;
->  	} else {
-> diff -puN arch/x86/kernel/cpu/common.c~direct_gbpages-compiletime arch/x86/kernel/cpu/common.c
-> --- a/arch/x86/kernel/cpu/common.c~direct_gbpages-compiletime	2026-09-02 06:57:47.935849397 -0700
-> +++ b/arch/x86/kernel/cpu/common.c	2026-09-02 06:57:57.299617535 -0700
-> @@ -2660,7 +2660,7 @@ void __init arch_cpu_finalize_init(void)
->  		 * Right now we don't do that with gbpages because there seems
->  		 * very little benefit for that case.
->  		 */
-> -		if (!direct_gbpages)
-> +		if (!direct_gbpages_enabled())
->  			set_memory_4k((unsigned long)__va(0), 1);
->  	} else {
->  		fpu__init_check_bugs();
-> diff -puN arch/x86/kernel/machine_kexec_64.c~direct_gbpages-compiletime arch/x86/kernel/machine_kexec_64.c
-> --- a/arch/x86/kernel/machine_kexec_64.c~direct_gbpages-compiletime	2026-09-02 06:57:58.462712975 -0700
-> +++ b/arch/x86/kernel/machine_kexec_64.c	2026-09-02 06:58:05.219267514 -0700
-> @@ -257,7 +257,7 @@ static int init_pgtable(struct kimage *i
->  		info.kernpg_flag |= _PAGE_ENC;
->  	}
->  
-> -	if (direct_gbpages)
-> +	if (direct_gbpages_enabled())
->  		info.direct_gbpages = true;
->  
->  	for (i = 0; i < nr_pfn_mapped; i++) {
-> diff -puN arch/x86/mm/pat/set_memory.c~direct_gbpages-compiletime arch/x86/mm/pat/set_memory.c
-> --- a/arch/x86/mm/pat/set_memory.c~direct_gbpages-compiletime	2026-09-02 06:58:43.518414555 -0700
-> +++ b/arch/x86/mm/pat/set_memory.c	2026-09-02 06:59:27.252015369 -0700
-> @@ -130,7 +130,7 @@ void arch_report_meminfo(struct seq_file
->  	seq_printf(m, "DirectMap4M:    %8lu kB\n",
->  			direct_pages_count[PG_LEVEL_2M] << 12);
->  #endif
-> -	if (direct_gbpages)
-> +	if (direct_gbpages_enabled())
->  		seq_printf(m, "DirectMap1G:    %8lu kB\n",
->  			direct_pages_count[PG_LEVEL_1G] << 20);
->  }
-> @@ -1340,7 +1340,7 @@ static int collapse_pud_page(pud_t *pud,
->  	pmd_t *pmd, first;
->  	int i;
->  
-> -	if (!direct_gbpages)
-> +	if (!direct_gbpages_enabled())
->  		return 0;
->  
->  	addr &= PUD_MASK;
-> _
-
-
--- 
-Sincerely,
-Yeoreum Yun
+--
+2.34.1

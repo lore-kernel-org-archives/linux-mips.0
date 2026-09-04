@@ -1,179 +1,184 @@
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013070.outbound.protection.outlook.com [52.101.72.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4278D43DA4C;
-	Fri,  4 Sep 2026 09:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788514009; cv=fail; b=kfMKqkUlL/IEQsMawauIq8JxsgKQLbc/HgdKyyl7UvFK65nJDJsPqwHslThx2WpLOyVDGlGlhT59IeL9KWFjt0CcxYHOj6Y7DVS6yIc3MIKRz7cHkH9H95PQa9VgpmRk4pZ29C3/Yq5itO//EsJL/N7Ag6f+iJ2BKPQq9uPUJhs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788514009; c=relaxed/simple;
-	bh=mIE97ZpsRAJYncmwUbcUN+Pmv5nAClD4HeSpqZ7ymOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=K9Z9PcINiqnyjv4nIRaEZXkPH/JIc+q1EPOXl0NrOWRQjQcfq/zDTQ7EZTbpfzbUCjmAKw5Ib4/dAc4VDC/ofaOB/NtWdV3aYb0nQAcgZgFRBe6CaYsidt4u8lo+CY89mkkyywsXsfSYaoMs9gymrK1NTQoaDL32oZCvvekPVGs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=msEoMaqb; arc=fail smtp.client-ip=52.101.72.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577C839D6DA;
+	Fri,  4 Sep 2026 09:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788515770; cv=none; b=vEIChIyRS4Omq6xwUIYW+3Q6aoMDPFpwk7kQ2vdU+kvtEOlnJjA22WPMbJpZkdmaDhZZsJnUtGj/Bt7Tl+eb4w8ZthP231mP6TRRGITHCCWWVSoO7OAxZbkX95UPt5LJCwpPVGGddxw5q0w4DtvcVppeJM9H+a5h2uwWC0pjWbk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788515770; c=relaxed/simple;
+	bh=gnIBxKwtZtizljDf8ntnc5PsKurT8mkgOoph4B8t5LI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VXrkvAToVtT1JW3XMfrD90mR58cWb+QMhJeJXU6936umn4ayIBW5hl2UyErBc94AetdXJkPYFS5N+wf/LjBjxdbyGoRgnOeDU4kN2SvxBIIfD70CKnL3FF+cvbORHJReQMm8IV9aqqKXyIo1bOGXi5tJCyJk3rl0B3nb3+LQYB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0UfkgZLG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+4h++arR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ad1QSPu6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BNvHZQEx; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="msEoMaqb"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BKRKpCvDCk9ls7lAXfzRyJdLWIkP0A/t2LNo2EAeXmfmOvL4hhg0KRLbvJJl/WcMrNcKvcRGk4+UgP6vuKRairoJWT3cz12irNv/RKRvcSav1I2SMINr/dfsuFwcAzDlnboRf4oQsmfLAM0/l6Usnb98lqJQq6+YfBB5Sg2L/TsW5LzopRH1YV10hGR294NholmiJxCcG5op/zr7f09h9qIpVsoBW4/GjM7GTtQJ4UyLkz0e/QjBPpvdMPTow3p/cxY55ay2BV4bQDDULwPZ1894jfLYTiwpgZKphYkD0UGSY0uO8lOy3eIizlO7d+VetIp9uASRKlVyfjfWraLJkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jaJLRXdTfKBjKliU4yIsTLYlTagBUvh9PYCo9tJBrjo=;
- b=IkWUriX2chGSj2rbPC1oieLbsHUUp4COVM9HLk9G/CK0yioglup0ioEYHN/6Sxd4nn7xLzD6GfRYiQVT4AIAWNAjY5VqiAGu/bJ4fNsujmQFJcrHcwv8q7G4ZDbY8FAm1WwMjq+url6MjpoBnWu9o20KHDLK04zgt2YB/1K+mvM5E/0rhe2YbxHRfeWDa5fKrFU89al/iQ7FnlrfNnzeoaM4n+dMV0Cl4SSzRIywAt5Ai9/J3X7E+1kzMaC7b99Bco4e5TvfVK4tLbaBZHByPkrsUYaUhPWRtqm9iaKqDYi7fackieJcVGlCo6V/fJ5SmR5NFu8mEVvVh5ctq+HTng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 164.130.1.88) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=foss.st.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=foss.st.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jaJLRXdTfKBjKliU4yIsTLYlTagBUvh9PYCo9tJBrjo=;
- b=msEoMaqbYsaqV1ZQPmhcYSxwQMYYb86+W/3okiSZbBhwMY/qZBbKlAQuYBNpZJHzDu13/DMTjoasIEpi0ZMLUAPJR4Q8efjoVvPHUJuxkZeIGhc9+rCiPbwH8B+Vx6bBallKSnamIgfhgklR/oK7gRnRVFmUb4d7y5To6hpQn8wyX1M/9YsQ7WnGT4gBIsDwuCIn0F8shLFLRG05uTjo7DdNQVQccNRJU5/X4F8jitNRSXr2ZOHolIKlZ/8TTujiLDe2xnI168BZiILbAfaX0ikOZeFXhLTW3VoGD5VGXipRbzThjWeDQ9IxOSTY3UMALbyk1Tuuhh6jD/WcctIHLw==
-Received: from DUZPR01CA0033.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:468::8) by VI0PR10MB747752.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:800:2bd::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.13; Fri, 4 Sep
- 2026 09:26:42 +0000
-Received: from DB3PEPF0000885E.eurprd02.prod.outlook.com
- (2603:10a6:10:468:cafe::4) by DUZPR01CA0033.outlook.office365.com
- (2603:10a6:10:468::8) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.12 via Frontend Transport; Fri, 4
- Sep 2026 09:26:40 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 164.130.1.88)
- smtp.mailfrom=foss.st.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=foss.st.com;
-Received-SPF: Fail (protection.outlook.com: domain of foss.st.com does not
- designate 164.130.1.88 as permitted sender) receiver=protection.outlook.com;
- client-ip=164.130.1.88; helo=smtpO365.st.com;
-Received: from smtpO365.st.com (164.130.1.88) by
- DB3PEPF0000885E.mail.protection.outlook.com (10.167.242.9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.382.8 via Frontend Transport; Fri, 4 Sep 2026 09:26:39 +0000
-Received: from ENXDAG1NODE4.st.com (10.75.129.197) by smtpo365.st.com
- (10.250.44.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 4 Sep
- 2026 11:23:56 +0200
-Received: from [10.48.87.20] (10.48.87.20) by ENXDAG1NODE4.st.com
- (10.75.129.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 4 Sep
- 2026 11:26:37 +0200
-Message-ID: <be376690-5219-4bf3-8ed7-02a49cee0e30@foss.st.com>
-Date: Fri, 4 Sep 2026 11:26:37 +0200
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0UfkgZLG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+4h++arR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ad1QSPu6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BNvHZQEx"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 32E891F7C1;
+	Fri,  4 Sep 2026 09:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1788515754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DWnOsR3taajAx5HxQdLrn4oIj0S+37+jF+NaGCzhb2U=;
+	b=0UfkgZLGuceFVSXFhOXCo3bxuMJ/ajW/SjffHOn74F0at0FcRmV49AeQ5hyGC83Kd2rkz/
+	SCA+luHV89CZ9lAPn0tgbT98Y+Ggnw1dXkF73z5Y67zcXenuB2IGg/aSkVXNnR/zXtNFsU
+	g5YRfJTfTDBzKarYT0aJUsfOciJr8b4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1788515754;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DWnOsR3taajAx5HxQdLrn4oIj0S+37+jF+NaGCzhb2U=;
+	b=+4h++arRnl4FJbmh9/Vyp9J7QnfSbWLNoe3HTDCMTwA/eiG0QbkUvjvH0NU0guqMHpeh/q
+	hjDf1JNztScsFEBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ad1QSPu6;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BNvHZQEx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1788515750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DWnOsR3taajAx5HxQdLrn4oIj0S+37+jF+NaGCzhb2U=;
+	b=ad1QSPu6lJxN90Ow+Xg3moi/PVFKz5+jCa6LpBWejhp/Q5swAHdJSOy3FQk6VShnYjXheu
+	yrZGoxs9tbdRDgCDvWI+gZSd9tSOZMp5TJV5+RkaxnROpL63+vI+41Oi6SsCR5zUHnKSeg
+	5ExFBG+qWtL670H8SE7qFSX59co5esY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1788515750;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DWnOsR3taajAx5HxQdLrn4oIj0S+37+jF+NaGCzhb2U=;
+	b=BNvHZQExiGh1+LTbXnIpigowoCkEO/5O6Uic8NBtADtD4i1BYpJjQfjdWuwJsqdnxuiZBd
+	5w+stBh0rXm9TMCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10CAA13678;
+	Fri,  4 Sep 2026 09:55:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id t8IUBKaVmmqEKgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 04 Sep 2026 09:55:50 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9CC8CA13CE; Fri, 04 Sep 2026 11:55:45 +0200 (CEST)
+Date: Fri, 4 Sep 2026 11:55:45 +0200
+From: Jan Kara <jack@suse.cz>
+To: Tigran Aivazian <aivazian.tigran@gmail.com>
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Jan Kara <jack@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Hisam Mehboob <hisamshar@gmail.com>, 
+	Martin =?utf-8?Q?Kepplinger-Novakovi=C4=87?= <martink@posteo.de>, Christian Brauner <brauner@kernel.org>, 
+	Amir Goldstein <amir73il@gmail.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Lorenzo Stoakes <ljs@kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, David Howells <dhowells@redhat.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Theodore Ts'o <tytso@mit.edu>, 
+	Catalin Iacob <iacobcatalin@gmail.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Andrew Lunn <andrew@lunn.ch>, "Maciej W. Rozycki" <macro@orcam.me.uk>, 
+	Andrei Vagin <avagin@gmail.com>, Wei Yang <richard.weiyang@gmail.com>, 
+	Bhavik Sachdev <b.sachdev1904@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Wang Yan <wangyan01@kylinos.cn>, Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>, 
+	Malaya Kumar Rout <malayarout91@gmail.com>, linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] bfs: remove the filesystem
+Message-ID: <35dsgpk5dsh6bm4xoblrq6hdslfvtuibl5grzag37cye2hgepk@rkrtkjxdyk5g>
+References: <20260904082954.48738-1-enelsonmoore@gmail.com>
+ <CAK+_RL=RHfRLDc=Ldjx1p8KTHSKeELjnBpxEqYjwWX_8ur1hOw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dmaengine: vchan: add vchan_chan_name() to get
- channel device name
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	<Frank.Li@oss.nxp.com>
-CC: Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>,
-	Vinod Koul <vkoul@kernel.org>, Frank Li <Frank.Li@kernel.org>, Paul Cercueil
-	<paul@crapouillou.net>, Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-	Binbin Zhou <zhoubinbin@loongson.cn>, Patrice Chotard
-	<patrice.chotard@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, "Mathieu
- Desnoyers" <mathieu.desnoyers@efficios.com>, Thierry Reding
-	<thierry.reding@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>, "Ludovic
- Desroches" <ludovic.desroches@microchip.com>, Viresh Kumar
-	<vireshk@kernel.org>, Keguang Zhang <keguang.zhang@gmail.com>,
-	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, Manivannan Sadhasivam
-	<mani@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
-	<haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, "Chen-Yu
- Tsai" <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, "Samuel
- Holland" <samuel@sholland.org>, Kelvin Cao <kelvin.cao@microchip.com>, "Logan
- Gunthorpe" <logang@deltatee.com>, Laxman Dewangan <ldewangan@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	<linux-arm-kernel@lists.infradead.org>, <dmaengine@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<linux-actions@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
-	<imx@lists.linux.dev>, Frank Li <Frank.Li@nxp.com>
-References: <20260903-dma-chan_dev-rename-v2-0-0db305b6c716@nxp.com>
- <20260903-dma-chan_dev-rename-v2-1-0db305b6c716@nxp.com>
- <apqKgda7dW_JXolJ@ashevche-desk.local>
-Content-Language: en-US
-From: Amelie Delaunay <amelie.delaunay@foss.st.com>
-In-Reply-To: <apqKgda7dW_JXolJ@ashevche-desk.local>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: STKCAS1NODE1.st.com (10.75.128.134) To ENXDAG1NODE4.st.com
- (10.75.129.197)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PEPF0000885E:EE_|VI0PR10MB747752:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8e7f79ca-0027-4732-cfcc-08df0a66a00d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|23010399003|1800799024|82310400026|376014|7416014|4143699003|10067099003|18002099003|22082099003|11063799006|56012099006|13003099007|41080700001;
-X-Microsoft-Antispam-Message-Info:
-	iyoyOf3LVtUa56FiGdactARHtXf3qZbJg+Ym7tLfBsVQkpUD8TDuXyuvNn014MI+vJPGX/lVzaogT3SasTb0csZXPjriEPuwcHW7lcz6e+bOhKr7msAbG23aGOCMcADu1FUb9wv1KgMYh/rrJnY3jz+FRvmCOWU6Dgiea+81128aE1ixsZ9n+a+zTIz2IkOY2jU2DuLq6XfgjwmU0iI9RL+ZwgHupiiWUvIB57/vB7IUKeyGHkLZF0ZOHZkZ++zh43DcGWZ83zSj01GGEcM39D9UeuiU1bro/louxUU2PJLOpLG700GWItjkRyGmNvc7tqeP+wS+MmpuJEliStlUaih+2BSRTjri47fm5ZvoG6ypSZ7KqbUWc/sKxevY5LvQl+8xJowsMM5LN0jNWhqQTUvosDdG8Whw46mv82avSdB43SgilU6c+Y2/RDr8feaTXkKklGnVc2hoBqHNfJyxpe+nb0XP5fO0H58mZxTu/UFWt7uc6KbNxURdK+5UN/pDHIfUoUHoCGXgYtk8xdkv/kkcr6wp1T6ipPjeb/G0p/BlEjIyAnEX1a3ukRX3hT5f5/UcBtfKAndknwmAhkhomBXuSOUhXsMYd4pd3s6VjtmblGfVi9GEDv4wFiB7wIJPYzkmWDumq5bgn2i4iONaDKEOMiqQj5+y+XNWJULxyNLY16pnQzEthTRcxt/T85ZXYm6azn1UrMIVOrcdvhtlOgUZzulXyMCumD3W93zL1U8=
-X-Forefront-Antispam-Report:
-	CIP:164.130.1.88;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:smtpO365.st.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(23010399003)(1800799024)(82310400026)(376014)(7416014)(4143699003)(10067099003)(18002099003)(22082099003)(11063799006)(56012099006)(13003099007)(41080700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	k35KY3k+uMIA+ymPEIQP6XqlVgCKMVi5Y8XGIWHJr1lmi6su34MqOMCY00yeX7PFejkyyXTTkwHau71TF0xwNoxl5/8T9CqToMC/9YY5trjFJmGZ65UxquCjt78IyC1eqz0AzjQb1zF4NNwBxyjD7MH2cW2LiY2EqsCLlrvpop+MdidVf04s+P59ok3HoSjF9q1DhTLJs4Eok14ryJHimCV3ZXNYkZjzFC+Vuxd3vwQwEtz5EBIH1n+zDG5J2NxH/CA+oyVnA/LcOs7zzyKtKnLHWWyG5dWXGYYyXJw4toKF0YX7e/RzHAJ8k3LnE74qpGkIIcVgFDemshPiOY/QUX87pqMV8N4/qQ8OH+Qj0GIo/yk9mcB5oMKSQO0fgFnWuaZ1CLpjEd24e0zL5sIjvy+nWmp7+SYSW+M+/xgtqEgJVWbumAULZ7gkep4455le
-X-OriginatorOrg: foss.st.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2026 09:26:39.7294
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e7f79ca-0027-4732-cfcc-08df0a66a00d
-X-MS-Exchange-CrossTenant-Id: 75e027c9-20d5-47d5-b82f-77d7cd041e8f
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=75e027c9-20d5-47d5-b82f-77d7cd041e8f;Ip=[164.130.1.88];Helo=[smtpO365.st.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB3PEPF0000885E.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR10MB747752
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK+_RL=RHfRLDc=Ldjx1p8KTHSKeELjnBpxEqYjwWX_8ur1hOw@mail.gmail.com>
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 32E891F7C1
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[42];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com,linuxfoundation.org,infradead.org,ellerman.id.au,kernel.org,suse.cz,posteo.de,linux-m68k.org,redhat.com,alpha.franken.de,mit.edu,networkplumber.org,lunn.ch,orcam.me.uk,linux-foundation.org,kylinos.cn,vger.kernel.org,lists.ozlabs.org,lwn.net,linux.ibm.com,zeniv.linux.org.uk];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLx5fqm8k6as49t7tzapjazi4f)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim]
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
 
-On 9/4/26 11:08, Andy Shevchenko wrote:
-> On Thu, Sep 03, 2026 at 04:53:11PM -0400, Frank.Li@oss.nxp.com wrote:
-> 
->> Introduce vchan_chan_name() to obtain the DMA channel device name.
->>
->> Use a dedicated helper instead of directly accessing dma_chan::dev
->> so callers remain unaffected by an upcoming rename of the struct member.
-> 
-> LGTM,
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> ...
-> 
->>   		ret = devm_request_irq(&pdev->dev, chan->irq,
->>   				       stm32_dma_chan_irq, 0,
->> -				       dev_name(chan2dev(chan)), chan);
->> +				       vchan_chan_name(&chan->vchan), chan);
->>   		if (ret) {
->>   			dev_err(&pdev->dev,
->>   				"request_irq failed with err %d channel %d\n",
-> 
-> This one...
-> 
->> +++ b/drivers/dma/stm32/stm32-dma3.c
-> 
->>   		ret = devm_request_irq(&pdev->dev, chan->irq, stm32_dma3_chan_irq, 0,
->> -				       dev_name(chan2dev(chan)), chan);
->> +				       vchan_chan_name(&chan->vchan), chan);
->>   		if (ret) {
->>   			dev_err_probe(&pdev->dev, ret, "Failed to request channel %s IRQ\n",
->> -				      dev_name(chan2dev(chan)));
->> +				      vchan_chan_name(&chan->vchan));
->>   			goto err_clk_disable;
-> 
-> ...and this one are duplicate messages as devm_request*irq() printsr
-> most of the information.
-> 
-> Not sure if there will be a patch to simply drop them.
-> 
+Hello!
 
-It was the purpose of this series:
-https://lore.kernel.org/dmaengine/20260709135846.97972-1-panchuang@vivo.com/
+On Fri 04-09-26 09:51:10, Tigran Aivazian wrote:
+> On Fri, 4 Sept 2026 at 09:30, Ethan Nelson-Moore <enelsonmoore@gmail.com> wrote:
+> >
+> > BFS (not to be confused with BeFS, the BeOS filesystem) is the
+> > filesystem UnixWare uses for its boot partition. It has extremely
+> > limited functionality, only supporting contiguous files and no
+> > subdirectories. Even though the bfs driver is very small and is
+> > unlikely to cause future maintenance problems, given that the only type
+> > of data stored on such a partition is likely to be kernels and
+> > bootloader settings, there is very little reason anyone would want to
+> > access it from Linux. Other old Unix filesystems (efs, freevxfs) have
+> > been removed recently, and bfs is highly unlikely to have any users, so
+> > remove it as well. Retain the UAPI header to be safe.
+> 
+> You are right that probably no one would want to use BFS for storing the
+> actual data today. But some things have didactical value, rather than
+> mere pragmatic usage. It is the didactic value of MINIX (and its
+> limitations wrt making use of the wonderful capabilities of i386) that
+> has originally triggered the creation of Linux. But back to BFS: it is
+> actually used in Steve Pate's book "Linux Filesystems" (2024, unfinished
+> yet), which is a sequel to his excellent classic "UNIX Filesystems"
+> (2003), as an illustration of a particularly simple filesystem
+> implementation.
 
+So I agree BFS is simple. In fact so simple that I was confused by how it
+can get away with not implementing certain bits when having to modify it
+couple months ago when doing some fs-wide fixes :). Regarding didactical
+value, we currently also have minix and ext2 implementations more or less
+for educational purposes so frankly, I don't think we need a third one.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR

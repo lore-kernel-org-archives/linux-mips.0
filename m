@@ -1,149 +1,143 @@
-Received: from mail-yx1-f54.google.com (mail-yx1-f54.google.com [74.125.224.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6513B2D1D
-	for <linux-mips@vger.kernel.org>; Fri,  4 Sep 2026 08:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788511884; cv=pass; b=J5GhIsFEcFkd/Pi5qsASaf3l0bdOzoGNWcNaFgPfLSomSI3sW9pmisIAN7GlRb8Mu2DwEInsxavAuKxy3TKl3te62fHWCUjSAz3tR4OsE3lif8AZjtH6vw/e8o7CaG05EoU2rLE14glFYeV6HweVJXCbFCN8KtEeZTDsLl8nvoI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788511884; c=relaxed/simple;
-	bh=el9C0eC2AOZtIteG0TNFb/RC0Pp+DPvBNH48NZ87dWM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VlXCibOlLfJvy/A/O+olzbUZfpcW5KKROHzYZLlCsA1zLoBUYPDp0iKkCpv1z0enbI4LWk8cB1snxpBgrG0dKf1khSD6VSrGQpronrqL1Xpf37MD3B7qMq4pjbTAcRhUHeSJIXUI8b/Y1js8v7EUGHQDnLDxMtY+y5g5j59PY0Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TsDTFALD; arc=pass smtp.client-ip=74.125.224.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0926342E43A;
+	Fri,  4 Sep 2026 09:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788512912; cv=none; b=TP/p7enwwh439+6pySCOyFNz9n005h8XuSITQinxIOfICFx0FBtEerNOLfVWMDlvXL//24LuntDoToR3W4VcDHmaEziENI4u4dsU6dMEyUUwakTkTK6bu7Uch+6b7tt1H/T67CoMV69kYDDniZeNOFR5W9tFgyl8lpXegNR+hTQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788512912; c=relaxed/simple;
+	bh=RTOkuJscrpPJjVNNjxoNkn5V5c05RKVFnU/ZyQKRXhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ioyjqVFqcwYc3DWp3rhYgNdGMp3efF+n4mvE0rza0WbJfAoYlnPshq2JUMmeTRHbdSuPeuhpEEDabiy8/39DtdHBWBxo2X9gplDGgtqtbUR0Uc0hyFqpHJFslcQbNqkR/q6w+VflA76/yJoaqI0SwiK0pHf9TV4nOlopsybQeOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NAs6v+X3; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TsDTFALD"
-Received: by mail-yx1-f54.google.com with SMTP id 956f58d0204a3-66d116f0de8so641361d50.0
-        for <linux-mips@vger.kernel.org>; Fri, 04 Sep 2026 01:51:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788511882; cv=none;
-        d=google.com; s=arc-20260327;
-        b=lIbilbmEPrf+VChZ1/uylqmWZS4EO6dgQ7CTD9ec6VlwrbMwlwwnfI3AJJJI0xyCaN
-         iibZHo63yThdv518xygBf+ah45I067TIW2D0kMapM3QbVFpVDBnvs2HxONv2OPOqxneX
-         dr0Vjc/p7aA2OD2tgveAXqiqk2F1kCufA60aiW7hO+pJsdt7H60ndmlClMb850f1+qiF
-         BwImjdY6lZgV6buPFK1bwR4Wst5bPf62aC9624RRJFui/Iga+wE46o9q+i3k249YShA9
-         rQ/hOzwWqdba7UF3RhkUUWJ33+DMwd32HcAIofwi3dAuzvVS8mQfIe0bPIhnEkGaVGiH
-         B/vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=el9C0eC2AOZtIteG0TNFb/RC0Pp+DPvBNH48NZ87dWM=;
-        fh=TGIeSnJx3zLaV2wye918K7/SaEDAfkXPSIhuEVjGQqo=;
-        b=Qg/uB4Mtcf1j+tOj9QcYGsX2D7UYC/V6ju0aVuG4zPOTZVp11PHjw2JJosVM++XeQ5
-         onVlXC702nkKFdMIqx0iUeONR8YBVY2+M0gfCLwGmUQ0Bt5UQlMKx0JoiHDke5HcCSuT
-         xD92yQjnpWH5L9C2fcyJ0EK721AYUEBp7Z6KE4z3w/ASKvYUzakROeiuCE3cFGZedH/r
-         xTmmY72Nt7yTTl6Tzizvk58ur3Fwha9gGd09dsT/x3T5peRqzBwVzbA/k0utTWsjtPTg
-         DeitJARRs6Vyp724qMaDY1lRyah6K9Rs/7yolNVIwHnJIk1wlE/UQG9Sy4md29Eoj93L
-         ESOg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788511882; x=1789116682; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=el9C0eC2AOZtIteG0TNFb/RC0Pp+DPvBNH48NZ87dWM=;
-        b=TsDTFALDw4vsg1GN3g+UztVq9bUfuAKY8SIzq703SuedfYigVlMSf6jeA7JQqnvzo6
-         H+bdIZiYYT2Id0IFRDBzF/pSegUpkX04c+5X/MDwrFyoNXITvDHTLSrW8BHC+m+KsTlh
-         zyhiLtSj0nxFg/pCbyTDpM19NkKthyd2RAUgxwJ+4Bn8Q4cbn/9BlnxDwHjEWADhCtes
-         V7MilISWIICAkfPebCopcNudegdQLPQg/C0wmTUwg9kYGcEuRq2m9nCL1uSYkLAMXp/N
-         7hnYtLDQ/9EAXev+7dGUqNFxr0t81siXFKzxiiwpRat81kwxvqT1JpGLX/MXFOcCE7xL
-         TSXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788511882; x=1789116682;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=el9C0eC2AOZtIteG0TNFb/RC0Pp+DPvBNH48NZ87dWM=;
-        b=sfrClW/bshT/kn9arrsONviDDh28D4/SsXlN9kNpPOi9TwhPstMVNZKAdA/zcKsYzU
-         KsRCYWf3eXWAHATvy+JgWpfBdO/vBFUEoLG9Fgt2sWOUHxi82pqNiA36D4lHL+006ttd
-         XhPQKMla4qbGl+MDce6g37Bhm9WcBNc23+cpEPH1y9UWCwgsGC7rFp+VRcvy+AryGjIT
-         j6m3Sg3U3NK2xxQcOteUvW1DnMcEOzVs35/aXQ1EZqLlEUXNx0zf/mJxc1T8fyQRqG98
-         Fu0Jr2esqWadVz3ttlyuxG8BLxd+S37H+XA7aHOo5XZMDtmKWv12t3ZHIhcI25tBfWg/
-         gi5Q==
-X-Forwarded-Encrypted: i=1; AKwUvBxcCpSg0RNdwQaw2SagE1thwFggUxV+mZvAW5tgpu79J6Flz+AuRCteXiuQokpEIp91f72cQ1nCSrbj@vger.kernel.org
-X-Gm-Message-State: AFuF++k7xk0gQ6x1b0ZF5v1AhnSn46ymg8mE1+XFDoVV+BvGQvmrPzJr
-	61+gG2FlLn36a5M7DFaSSuKkZ1jFDlC7lLSTOd42PiorB2vt/YQkNX6qKOwRyuNohPGNkXfQLGB
-	PyfnHKO1JQGNK6AvEtf1BE9iasT2SJLg=
-X-Gm-Gg: AYBFou0TnZAaUj8F5+tQvMrRu/B7WqVQSlRizw1kauNp8x3/TM1O2FRfAW1b7/5xzZc
-	s7RMv4b1mTh7Fdc+jiUN3aJEHE9OruEr1OLW2mU6P30WIIenjYys/TwFW8dJ+sCG7/bh81OTLVJ
-	ZzcuZmBXLPRci2wAZ66kN8SafjR7HWQlQLMHScwG1iZSIvWzOHLpvDxvkfMbdnSPLbxStNLXKbT
-	Mh7HSC7+tqbdj2+hvUABtFs7iMb8sO1z+I3KHSRbR+x1nt8SLFdJTYYdL0ij+ie26S6DPY6LtYN
-	Q7YKZEvGF+N8xqiDNFn56KkdQeABCrfAZJX2jCSVja7K38QzP+Z5llBMox2QkoLO6Ggx//+bhUT
-	mxLtjPdtWpMnXjJ/w4cSl/g/h
-X-Received: by 2002:a05:690e:e25:b0:66d:2c09:fb70 with SMTP id
- 956f58d0204a3-66fb575c665mr1287497d50.0.1788511882074; Fri, 04 Sep 2026
- 01:51:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NAs6v+X3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1788512910; x=1820048910;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RTOkuJscrpPJjVNNjxoNkn5V5c05RKVFnU/ZyQKRXhU=;
+  b=NAs6v+X3rE+zaRAwahZC7m6n3SAJ7BWvE8ViOcmfn34gKLn7WE+aUri3
+   OddVrV/E9mj8+THqPT+cJ7WA+8xjUWQfZETMrQUCLCirR9vHMV9txs2mV
+   YiUA8p6tKEaRxIsj7AfZ5g4SKabhV0nPR5sku0QDRly769yyv6yABbBIG
+   XAONz+PsFtvkPQ5ktWq5/r57rIWsNNKqH9Ltjka1NyvN9QStpn/oW/yg7
+   PHyAskdV+dUYgYLoEmPPQkfdDx9deCgFDhmem6Xzx+QIAH6KZj8IrDAuY
+   Yo09ln/mB2D/VoqLt6qKqEMmSJFWlEIeJFybt0LJdFA3gQkhwwQdBNQVe
+   Q==;
+X-CSE-ConnectionGUID: jxatw5hKRAaEGdN2UazRxQ==
+X-CSE-MsgGUID: CBoWbNgAT6ScIVD4ibRvIA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11895"; a="99669234"
+X-IronPort-AV: E=Sophos;i="6.25,260,1779174000"; 
+   d="scan'208";a="99669234"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2026 02:08:29 -0700
+X-CSE-ConnectionGUID: EXOLF6UfRfSAQklaHXyikw==
+X-CSE-MsgGUID: 3CuE8+pcSBiwMrpvowrn3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,260,1779174000"; 
+   d="scan'208";a="266732821"
+Received: from slindbla-desk.ger.corp.intel.com (HELO localhost) ([10.245.244.224])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2026 02:08:20 -0700
+Date: Fri, 4 Sep 2026 12:08:17 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Frank.Li@oss.nxp.com
+Cc: Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>,
+	Vinod Koul <vkoul@kernel.org>, Frank Li <Frank.Li@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Binbin Zhou <zhoubinbin@loongson.cn>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	=?iso-8859-1?Q?Am=E9lie?= Delaunay <amelie.delaunay@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Ludovic Desroches <ludovic.desroches@microchip.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Kelvin Cao <kelvin.cao@microchip.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v2 1/3] dmaengine: vchan: add vchan_chan_name() to get
+ channel device name
+Message-ID: <apqKgda7dW_JXolJ@ashevche-desk.local>
+References: <20260903-dma-chan_dev-rename-v2-0-0db305b6c716@nxp.com>
+ <20260903-dma-chan_dev-rename-v2-1-0db305b6c716@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260904082954.48738-1-enelsonmoore@gmail.com>
-In-Reply-To: <20260904082954.48738-1-enelsonmoore@gmail.com>
-From: Tigran Aivazian <aivazian.tigran@gmail.com>
-Date: Fri, 4 Sep 2026 09:51:10 +0100
-X-Gm-Features: AcwNN1US813RpOVK53IyVszIyhGZqjM2-hVqjP58I9fP7PqngduJcqRbNBYYNbU
-Message-ID: <CAK+_RL=RHfRLDc=Ldjx1p8KTHSKeELjnBpxEqYjwWX_8ur1hOw@mail.gmail.com>
-Subject: Re: [PATCH] bfs: remove the filesystem
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Jan Kara <jack@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Hisam Mehboob <hisamshar@gmail.com>, 
-	=?UTF-8?Q?Martin_Kepplinger=2DNovakovi=C4=87?= <martink@posteo.de>, 
-	Christian Brauner <brauner@kernel.org>, Amir Goldstein <amir73il@gmail.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Lorenzo Stoakes <ljs@kernel.org>, 
-	Eric Biggers <ebiggers@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	David Howells <dhowells@redhat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Catalin Iacob <iacobcatalin@gmail.com>, 
-	Stephen Hemminger <stephen@networkplumber.org>, Andrew Lunn <andrew@lunn.ch>, 
-	"Maciej W. Rozycki" <macro@orcam.me.uk>, Andrei Vagin <avagin@gmail.com>, 
-	Wei Yang <richard.weiyang@gmail.com>, Bhavik Sachdev <b.sachdev1904@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Wang Yan <wangyan01@kylinos.cn>, 
-	Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>, Malaya Kumar Rout <malayarout91@gmail.com>, 
-	linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Luis de Bethencourt <luisbg@kernel.org>, 
-	Salah Triki <salah.triki@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260903-dma-chan_dev-rename-v2-1-0db305b6c716@nxp.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Hi Ethan,
+On Thu, Sep 03, 2026 at 04:53:11PM -0400, Frank.Li@oss.nxp.com wrote:
 
-On Fri, 4 Sept 2026 at 09:30, Ethan Nelson-Moore <enelsonmoore@gmail.com> wrote:
->
-> BFS (not to be confused with BeFS, the BeOS filesystem) is the
-> filesystem UnixWare uses for its boot partition. It has extremely
-> limited functionality, only supporting contiguous files and no
-> subdirectories. Even though the bfs driver is very small and is
-> unlikely to cause future maintenance problems, given that the only type
-> of data stored on such a partition is likely to be kernels and
-> bootloader settings, there is very little reason anyone would want to
-> access it from Linux. Other old Unix filesystems (efs, freevxfs) have
-> been removed recently, and bfs is highly unlikely to have any users, so
-> remove it as well. Retain the UAPI header to be safe.
->
+> Introduce vchan_chan_name() to obtain the DMA channel device name.
+> 
+> Use a dedicated helper instead of directly accessing dma_chan::dev
+> so callers remain unaffected by an upcoming rename of the struct member.
 
-You are right that probably no one would want to use BFS for storing
-the actual data today.
-But some things have didactical value, rather than mere pragmatic
-usage. It is the didactic
-value of MINIX (and its limitations wrt making use of the wonderful
-capabilities of i386) that
-has originally triggered the creation of Linux. But back to BFS: it is
-actually used in Steve Pate's
-book "Linux Filesystems" (2024, unfinished yet), which is a sequel to
-his excellent classic
-"UNIX Filesystems" (2003), as an illustration of a particularly simple
-filesystem implementation.
+LGTM,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I remember when Linus accepted my patch with BFS on 28 October 1999
-into 2.3.25 his comment
-was: "this appears to be a particularly simple one".
+...
 
-Kind regards,
-Tigran
+>  		ret = devm_request_irq(&pdev->dev, chan->irq,
+>  				       stm32_dma_chan_irq, 0,
+> -				       dev_name(chan2dev(chan)), chan);
+> +				       vchan_chan_name(&chan->vchan), chan);
+>  		if (ret) {
+>  			dev_err(&pdev->dev,
+>  				"request_irq failed with err %d channel %d\n",
+
+This one...
+
+> +++ b/drivers/dma/stm32/stm32-dma3.c
+
+>  		ret = devm_request_irq(&pdev->dev, chan->irq, stm32_dma3_chan_irq, 0,
+> -				       dev_name(chan2dev(chan)), chan);
+> +				       vchan_chan_name(&chan->vchan), chan);
+>  		if (ret) {
+>  			dev_err_probe(&pdev->dev, ret, "Failed to request channel %s IRQ\n",
+> -				      dev_name(chan2dev(chan)));
+> +				      vchan_chan_name(&chan->vchan));
+>  			goto err_clk_disable;
+
+...and this one are duplicate messages as devm_request*irq() printsr
+most of the information.
+
+Not sure if there will be a patch to simply drop them.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+

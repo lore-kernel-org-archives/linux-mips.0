@@ -1,58 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52339332EBB;
-	Fri,  4 Sep 2026 09:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5241D43637C;
+	Fri,  4 Sep 2026 09:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788513350; cv=none; b=Kv8VEvZmQ0KAQG2/aMBgJyJb9sMQID8Fv1J888CgGm+bE5vtrg1bcWTXLztFg5ZdakVq+FYJBrC5d5ODRKtzXtGczlayhZ9zEbHOFQHCLo/1okl0nekcM3PguoZE30XykBaGGDXPPmCEyNaHZNY3vfeehRNSR0+ZGZQvKlqTDyI=
+	t=1788513562; cv=none; b=XfABXQxI9z7niixpmQXtnaaPAioRvt4jFv0pemEtxqm+aUEVYwQAKlCdm9JkViA+OOmaZQc4/oNVnQF0syVnpBPTpmkMvwWRRTZaUYaS5hguvBGW7MUXPoDN/tQFWxB+ZmJxM2ceaj5nypScjNWxUsmhNa47/fvxNhXbPxujOc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788513350; c=relaxed/simple;
-	bh=0Kjz+wSEcdot/Kp+frqf0GhQv33OLZIVvwXtWAhVB5s=;
+	s=arc-20240116; t=1788513562; c=relaxed/simple;
+	bh=Ciu3EUMUtyrEFe1yr//0MMiw5+oF+KjxR5BN8wbUdAE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eBwouYxYfoxZ4hnYP7s24ceOxiUHXWgWSVSCn/GJjYmgZPC8qUgP7DbaRQPV/vpS2LXGwU4f+N+SgRSRyit+zTT2wdCo+yg8SwVz4+QL6dEbs+xrkomMohKKdkYqKrQO7w/KVlniIBmoFw1ugOl7IFtg7zMwdv+gDtLmEz+ACjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VufFzf3C; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=WB4tZbtonNLlvsk3S84ULkCYWkBB39WHAeNjh/SQMqR5FJfzPyTHvzT664s4uuTWhfNJba+qYmn6cJS1ov0/3Si/Ds1ZWgiQk3uMek8D+MOicxFo3PZpU05wjR+COM9Zw5mSMl/3eR/9kRpmBsdeoKNMG2FPhzzkaYNMc+6+3Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RsElDCme; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VufFzf3C"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031B41F00A3D;
-	Fri,  4 Sep 2026 09:15:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788513348;
-	bh=0Kjz+wSEcdot/Kp+frqf0GhQv33OLZIVvwXtWAhVB5s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=VufFzf3Cilbm8QtKx3NZr5yYaHyhMTKVokK/7JAundphZYwRJZyAo6texlJnLQJqv
-	 0fvCDCCOIVb3jI6uaP0ILqKvLG9T78RTOyIAFsuMHsgnyPijzHoRFRRH6DQ2StiC/3
-	 sH7vQ+ZLgzYJDgBDjOKSkfPwiqGFsosDZvbfmwZCP7Si+SvxBLGIojDr0IlwCbKulZ
-	 f9zPR8PI9gm1tbspmiVQz4qHraB1WqCV60hXJT0rY4w4G/8lUxsiwseP80Cg38WaQz
-	 P/s+D4hWHjAkILDLihL2QiXOz1ytOJPa+YYlmRwU+mUvvetZVXXljSRz0hn9gYQry6
-	 sOBg5ihVyDPaA==
-Date: Fri, 4 Sep 2026 10:15:37 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Tigran Aivazian <aivazian.tigran@gmail.com>
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Jan Kara <jack@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Hisam Mehboob <hisamshar@gmail.com>, 
-	Martin =?utf-8?Q?Kepplinger-Novakovi=C4=87?= <martink@posteo.de>, Christian Brauner <brauner@kernel.org>, 
-	Amir Goldstein <amir73il@gmail.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Eric Biggers <ebiggers@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	David Howells <dhowells@redhat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Theodore Ts'o <tytso@mit.edu>, Catalin Iacob <iacobcatalin@gmail.com>, 
-	Stephen Hemminger <stephen@networkplumber.org>, Andrew Lunn <andrew@lunn.ch>, 
-	"Maciej W. Rozycki" <macro@orcam.me.uk>, Andrei Vagin <avagin@gmail.com>, 
-	Wei Yang <richard.weiyang@gmail.com>, Bhavik Sachdev <b.sachdev1904@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Wang Yan <wangyan01@kylinos.cn>, 
-	Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>, Malaya Kumar Rout <malayarout91@gmail.com>, 
-	linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] bfs: remove the filesystem
-Message-ID: <apqHhmRD5rAeLivO@gremlin>
-References: <20260904082954.48738-1-enelsonmoore@gmail.com>
- <CAK+_RL=RHfRLDc=Ldjx1p8KTHSKeELjnBpxEqYjwWX_8ur1hOw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RsElDCme"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1788513560; x=1820049560;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ciu3EUMUtyrEFe1yr//0MMiw5+oF+KjxR5BN8wbUdAE=;
+  b=RsElDCmeaRg7oFk7AIHfvLhglCC4GdtqIoDC8dWlFTaZ6p9Z8daw994w
+   /GuzDkyudvSY/wn4fo8khEIK4tAokIofo9Vc+fzVmGrtAmNbCPRnBvxzK
+   zaMFM/OjZOAPUWceH+W2zPGuh+H/pCVT1LLnFD28lyXweAshyV5HMv8JU
+   1fdhpVi6Y15y7LyCexEA3L5qVnq2pl8tdukSYM5OzeBKc9iqb7o22Yl1S
+   /n5TSaThldYPZt/VGJ3gPImSi3lSIoX+ZA8dVRpNG7cYCFbFdxVeoUlVc
+   QcdEdtvd0IcIqDuSbK9Hmco2v2mhej2vSCQkzZOO6LpQusEVcZX6Xlnri
+   w==;
+X-CSE-ConnectionGUID: u1lCC2tbRWCbwEAIErAqrA==
+X-CSE-MsgGUID: TGCessxhTXq60/SsXcMDuQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11895"; a="88859559"
+X-IronPort-AV: E=Sophos;i="6.25,260,1779174000"; 
+   d="scan'208";a="88859559"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2026 02:19:19 -0700
+X-CSE-ConnectionGUID: VxyZgL0WS8O2yrnlkTwwVw==
+X-CSE-MsgGUID: gb9jsf5TTzWkjd20oz81HQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,260,1779174000"; 
+   d="scan'208";a="268676438"
+Received: from slindbla-desk.ger.corp.intel.com (HELO localhost) ([10.245.244.224])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2026 02:19:11 -0700
+Date: Fri, 4 Sep 2026 12:19:08 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Frank.Li@oss.nxp.com
+Cc: Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>,
+	Vinod Koul <vkoul@kernel.org>, Frank Li <Frank.Li@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Binbin Zhou <zhoubinbin@loongson.cn>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	=?iso-8859-1?Q?Am=E9lie?= Delaunay <amelie.delaunay@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Ludovic Desroches <ludovic.desroches@microchip.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Kelvin Cao <kelvin.cao@microchip.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-trace-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-actions@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v2 3/3] dmaengine: add union chan_dev for dma_chan::dev
+ for clarity
+Message-ID: <apqNDHoNt09QYJe7@ashevche-desk.local>
+References: <20260903-dma-chan_dev-rename-v2-0-0db305b6c716@nxp.com>
+ <20260903-dma-chan_dev-rename-v2-3-0db305b6c716@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -61,62 +94,142 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK+_RL=RHfRLDc=Ldjx1p8KTHSKeELjnBpxEqYjwWX_8ur1hOw@mail.gmail.com>
+In-Reply-To: <20260903-dma-chan_dev-rename-v2-3-0db305b6c716@nxp.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-On Fri, Sep 04, 2026 at 09:51:10AM +0100, Tigran Aivazian wrote:
-> Hi Ethan,
->
-> On Fri, 4 Sept 2026 at 09:30, Ethan Nelson-Moore <enelsonmoore@gmail.com> wrote:
-> >
-> > BFS (not to be confused with BeFS, the BeOS filesystem) is the
-> > filesystem UnixWare uses for its boot partition. It has extremely
-> > limited functionality, only supporting contiguous files and no
-> > subdirectories. Even though the bfs driver is very small and is
-> > unlikely to cause future maintenance problems, given that the only type
-> > of data stored on such a partition is likely to be kernels and
-> > bootloader settings, there is very little reason anyone would want to
-> > access it from Linux. Other old Unix filesystems (efs, freevxfs) have
-> > been removed recently, and bfs is highly unlikely to have any users, so
-> > remove it as well. Retain the UAPI header to be safe.
-> >
->
-> You are right that probably no one would want to use BFS for storing
-> the actual data today.
-> But some things have didactical value, rather than mere pragmatic
-> usage. It is the didactic
-> value of MINIX (and its limitations wrt making use of the wonderful
-> capabilities of i386) that
-> has originally triggered the creation of Linux. But back to BFS: it is
-> actually used in Steve Pate's
-> book "Linux Filesystems" (2024, unfinished yet), which is a sequel to
-> his excellent classic
-> "UNIX Filesystems" (2003), as an illustration of a particularly simple
-> filesystem implementation.
+On Thu, Sep 03, 2026 at 04:53:13PM -0400, Frank.Li@oss.nxp.com wrote:
 
-Oh wow! :) Nice to hear a new linux book is coming, as a fellow author [fighting
-my way through the editing stage atm :)] that's good to hear.
+> The current dma_chan structure contains both "device" and "dev". So
+> 
+> chan->device->dev refers to the DMA engine device.
+> chan->dev->device refers to the per-channel device instance.
+> 
+> Their similar naming makes the distinction unclear and increases reader
+> confusion.
+> 
+> Add union dma_chan::chan_dev to make its purpose explicit and clearly
+> identify it as the per-channel device. After all user switch to chan_dev,
+> union and dma_chan::dev will be removed.
+> 
+> Update the kernel-doc accordingly. Besides its sysfs usage, the per-channel
+> device is also used by some DMA engine drivers for IOMMU mapping and
+> therefore deserves a more accurate description.
+> 
+> No functional change intended.
 
-(I also learned, the hard way, why people don't tend to write kernel books these
-days - the modern kernel is too damn big! :)
+...
 
->
-> I remember when Linus accepted my patch with BFS on 28 October 1999
-> into 2.3.25 his comment
-> was: "this appears to be a particularly simple one".
+>  static inline struct device *chan2dev(struct axi_dma_chan *chan)
+>  {
+> -	return &chan->vc.chan.dev->device;
+> +	return &chan->vc.chan.chan_dev->device;
+>  }
 
-:)) nice!
+Looking at this and below I think we need a common helper(s)
 
-We shouldn't be afraid to remove stuff that is less maintained or that
-causes maintenance overhead or other headaches (e.g. blocking things from
-being developed), as I have often pointed out re: older architectures,
-nommu etc.
+>  static struct device *chan2dev(struct loongson2_cmc_dma_chan *lchan)
+>  {
+> -	return &lchan->vchan.chan.dev->device;
+> +	return &lchan->vchan.chan.chan_dev->device;
+>  }
 
-But I'm not sure if any of that applies here or not, so really one for
-VFS maintainers I think.
+>  	({								\
+>  		u32 _v;							\
+>  		_v = readl_relaxed((phy)->base + _reg((phy)->idx));	\
+> -		dev_vdbg(&phy->vchan->vc.chan.dev->device,		\
+> +		dev_vdbg(&phy->vchan->vc.chan.chan_dev->device,		\
+>  			 "%s(): readl(%s): 0x%08x\n", __func__, #_reg,	\
+>  			  _v);						\
+>  		_v;							\
 
->
-> Kind regards,
-> Tigran
+>  #define phy_writel(phy, val, _reg)					\
+>  	do {								\
+>  		writel((val), (phy)->base + _reg((phy)->idx));		\
+> -		dev_vdbg(&phy->vchan->vc.chan.dev->device,		\
+> +		dev_vdbg(&phy->vchan->vc.chan.chan_dev->device,		\
+>  			 "%s(): writel(0x%08x, %s)\n",			\
+>  			 __func__, (u32)(val), #_reg);			\
+>  	} while (0)
+>  #define phy_writel_relaxed(phy, val, _reg)				\
+>  	do {								\
+>  		writel_relaxed((val), (phy)->base + _reg((phy)->idx));	\
+> -		dev_vdbg(&phy->vchan->vc.chan.dev->device,		\
+> +		dev_vdbg(&phy->vchan->vc.chan.chan_dev->device,		\
+>  			 "%s(): writel_relaxed(0x%08x, %s)\n",		\
+>  			 __func__, (u32)(val), #_reg);			\
+>  	} while (0)
 
---
-Cheers, Lorenzo
+>  out_unlock:
+>  	spin_unlock_irqrestore(&pdev->phy_lock, flags);
+> -	dev_dbg(&pchan->vc.chan.dev->device,
+> +	dev_dbg(&pchan->vc.chan.chan_dev->device,
+>  		"%s(): phy=%p(%d)\n", __func__, found,
+>  		found ? found->idx : -1);
+>  
+
+> -	dev_dbg(&chan->vc.chan.dev->device,
+> +	dev_dbg(&chan->vc.chan.chan_dev->device,
+>  		"%s(): freeing\n", __func__);
+
+> -	dev_dbg(&phy->vchan->vc.chan.dev->device,
+> +	dev_dbg(&phy->vchan->vc.chan.chan_dev->device,
+>  		"%s(); phy=%p(%d) misaligned=%d\n", __func__,
+>  		phy, phy->idx, misaligned);
+
+> -	dev_dbg(&phy->vchan->vc.chan.dev->device,
+> +	dev_dbg(&phy->vchan->vc.chan.chan_dev->device,
+>  		"%s(): phy=%p(%d)\n", __func__, phy, phy->idx);
+
+> -	dev_dbg(&chan->vc.chan.dev->device,
+> +	dev_dbg(&chan->vc.chan.chan_dev->device,
+>  		"%s(): desc=%p\n", __func__, desc);
+>  	if (!chan->phy) {
+>  		chan->phy = lookup_phy(chan);
+>  		if (!chan->phy) {
+> -			dev_dbg(&chan->vc.chan.dev->device,
+> +			dev_dbg(&chan->vc.chan.chan_dev->device,
+>  				"%s(): no free dma channel\n", __func__);
+>  			return;
+
+(and so on in this PXA driver)
+
+Besides that we should drop __func__ from all _dbg() messages, that can be
+enabled run-time with help of Dynamic Debug.
+
+So I think this driver requires more prerequisite work.
+
+>  static struct device *chan2dev(struct stm32_dma_chan *chan)
+>  {
+> -	return &chan->vchan.chan.dev->device;
+> +	return &chan->vchan.chan.chan_dev->device;
+>  }
+
+>  static struct device *chan2dev(struct stm32_dma3_chan *chan)
+>  {
+> -	return &chan->vchan.chan.dev->device;
+> +	return &chan->vchan.chan.chan_dev->device;
+>  }
+
+>  static struct device *chan2dev(struct stm32_mdma_chan *chan)
+>  {
+> -	return &chan->vchan.chan.dev->device;
+> +	return &chan->vchan.chan.chan_dev->device;
+>  }
+
+...
+
+Something like
+
+vchan_to_device(vchan)
+{
+	return &vchan->chan.chan_dev->device;
+}
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+

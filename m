@@ -1,105 +1,151 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315F53EBF02;
-	Fri,  4 Sep 2026 10:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4AA3413789
+	for <linux-mips@vger.kernel.org>; Fri,  4 Sep 2026 11:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788518631; cv=none; b=d9Xh7P4orQKXdjv3lblr98LQolWwfwBxWg9LPVgjcnIGJhj1h+EcspshU42m6xelXdePNORPFvdLRMeeXqIDTQvmyXOTd1PZCF1F3kyEGa3rGGAaGS8akjZNJi6kqeKT6ACe5xgso5U0wHKIpAJvm/7ZYXo4L8npO4024b3y1bU=
+	t=1788520666; cv=none; b=p7cUbpC3sHVP3vMLakGUnEfMCvwEQPPIUOAq5AKQW8F3kTLuAteKAwD+H5lhzDOLEy/laSbqPKJzIr+PUoZbTa7PmI9BbR86V4MOPFCeIyLTg+K2LnDNWzKoWnRR6Fq4uispeUGTVmRYOvQTOJFwWSkoRBBPCovY2zCY4iLoYf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788518631; c=relaxed/simple;
-	bh=SEZe5HnLJEPtViVtmgtwkTJszcnx/wvXNNnLPrgibYw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=maA6sWf+OVNxGrGgX8QuPxZ4ZOo1pbE0P3Oqi20uZRIqvCswVoE2Y/Lp7L1n62oumHb8e98Ikel/22kAVF7Fbl0r5574wrGuJEB4sRc71iHcsL4+b+S2/4l3WLjqY4kol64XaT11ccHha9E3LR2/bsn01yTCl+vZxe9jrFlEyLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVjYeIbd; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788520666; c=relaxed/simple;
+	bh=E9dAA287EAa796HT4oYolBExrYvudPnFnaT/QfU9o4c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KJg91mYTY3RBdXehQVowI16CrFwyzefty/MLxMDFLJsIV378XrIhCYHwPcCYA69rqsiXMdCMd97X8cxeBLHtoy+ZI8MZANiwjqgycNeDFKzHaoTMVahlGUQJfkpMCdTSMsy2MNz4Q++nCI238BA99HH9lP8X/d21ZdxzZ9czK/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/utvK+h; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVjYeIbd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A10011F00A3D;
-	Fri,  4 Sep 2026 10:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788518629;
-	bh=VW/CLvXtR4yi53YJ7B+rM0JAvXpIe3UjCxJyIRDFpr0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=CVjYeIbd00dffOAYPugbkKN2MbArT5cImYadB4j+59apFTYJ6qNsx+HJXhXSHjxWd
-	 PDU+/10sgnpMiO+5G+/JkISHJeO5wyEx1bjM/hX2VhwGl6LIlR3fGnc8THVTpArie1
-	 0Xk7ms3jKC3xlsqJhXRbTzeRZjLy4Abb2Suyos0H7Aj2bak0q/nUotJea62OlTfBij
-	 QyM6wsxZkGpPgAGrubvnOsTcq+ZBX3tEAp72W8R7GuA7Lqbhu8bwvKXzqb7k6qJm9l
-	 sLBakyO/blUmymUISaV/2lYDlsveRZLBbJM96xbjGN9yZpw4lKEzujXCapOwqYUlvZ
-	 ZIMVI+2+bSC4Q==
-From: Christian Brauner <brauner@kernel.org>
-To: Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, 
- Nicholas Piggin <npiggin@gmail.com>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Jan Kara <jack@suse.cz>, 
- Jakub Kicinski <kuba@kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
- Hisam Mehboob <hisamshar@gmail.com>, 
- =?utf-8?q?Martin_Kepplinger-Novakovi=C4=87?= <martink@posteo.de>, 
- Amir Goldstein <amir73il@gmail.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
- Lorenzo Stoakes <ljs@kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- David Howells <dhowells@redhat.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Theodore Ts'o <tytso@mit.edu>, Catalin Iacob <iacobcatalin@gmail.com>, 
- Stephen Hemminger <stephen@networkplumber.org>, 
- Andrew Lunn <andrew@lunn.ch>, "Maciej W. Rozycki" <macro@orcam.me.uk>, 
- Andrei Vagin <avagin@gmail.com>, Wei Yang <richard.weiyang@gmail.com>, 
- Bhavik Sachdev <b.sachdev1904@gmail.com>, 
- Andrew Morton <akpm@linux-foundation.org>, Wang Yan <wangyan01@kylinos.cn>, 
- Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>, 
- Malaya Kumar Rout <malayarout91@gmail.com>, linux-doc@vger.kernel.org, 
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Ethan Nelson-Moore <enelsonmoore@gmail.com>
-Cc: Luis de Bethencourt <luisbg@kernel.org>, 
- Salah Triki <salah.triki@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Alexander Viro <viro@zeniv.linux.org.uk>
-In-Reply-To: <20260904082954.48738-1-enelsonmoore@gmail.com>
-References: <20260904082954.48738-1-enelsonmoore@gmail.com>
-Subject: Re: [PATCH] bfs: remove the filesystem
-Message-Id: <20260904-hinnimmt-triumphieren-handgefertigt-4e51fe2ed659@brauner>
-Date: Fri, 04 Sep 2026 12:43:09 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/utvK+h"
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-5218927884fso15745841cf.3
+        for <linux-mips@vger.kernel.org>; Fri, 04 Sep 2026 04:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788520663; x=1789125463; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=vafBG36yRum0S5znHILZDEuOCiOJO9YS/m791zdYti8=;
+        b=c/utvK+hg5+xJriXr2VDSUAk4ud+Awsz6Xqs/9RzRkFMm5Fbbj4a6voiPTcAfZMc8S
+         TPTr6m9n+olQSmWvKHMoTwd/S6dVj5AhzdyKR2iq8pmtg3sVFrf0JbXo6a4SQT3REXdO
+         LC7vhPZg2XZczUehwOKbwS9oW/u68zvWKvHmVf/l8FSRNbaGUjRS1bo4wIEXtKl8kkbe
+         rzOk0uCgSSXrfe9GCcOrKQi1RyXCV5DIyVdz0/wlzlRk1tZecBKlgurZgkxMgLy8VJAp
+         CJsii1xlJvbOJYpvO2Uyc/4ogOyD/1dBBBh0Zu/ZWEcMoS7/aPNn+TORoOBVeZVzYH0X
+         031A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788520663; x=1789125463;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=vafBG36yRum0S5znHILZDEuOCiOJO9YS/m791zdYti8=;
+        b=axTubOHwUXroMoCItQfpth+rloxsLefs+g8ogpJZhV4o9x2sJyAZi5n91zkc9krZPb
+         Gn6kSfZRTuXEA0diBb9QuThAR8nb6dzEpmQb93krcBcfVtPJ/PJFFuxz6sQz1OK7Csbc
+         FmGw0ABVsnw6uNqpvIgXgZqEYH67oYF5Y7rhOPRrBsNSAOxRg9CBHrftKbVZcTZspbBV
+         jN/rmk0H9bp3BlLwESeTJ3pDQfbaJGdC5T16pEfI4faH7L8dBStBzCD+Iu/I/4mMKbMU
+         fucO+J8m7IcHciA35oYJURWHRsz1xLnpPlp9T+KrPH4ENw7bx2zDXtZOkdVFG81V5Bvc
+         EiMg==
+X-Forwarded-Encrypted: i=1; AKwUvBzP+kRG/g7M0g5/zevmykGA3Lf1yoCynMR91bOxNKX65XECXSlTdl4QhmzVCPkW/SfA7AkvpFxaNUSd@vger.kernel.org
+X-Gm-Message-State: AFuF++kPAk6SLdarDkkQhApz9bK8mpTjX3A0hAkBK2F51kxn6eZbzDuq
+	5cl9kNcE98JFn9K4ZVKVVfUArBCriW7uU3zDy6PJ5SE6KAEbbpz1YYIw
+X-Gm-Gg: AYBFou3b0q3oL+l+Ovocv7EEWhk8RpbM+HPdACmmmE8RC3/oA2tQFy2OlhlZcPbfWgL
+	a/8c9ZiZ35H8mXguT3VZcSoqO4+IJstAipIl3PNh0gCLiSpMUxtjBuY1LH57wrc7Ywwq6M3ZIg2
+	6WZLX9kNXaCjb71DHJgoJUCxQM7gQxngufebZBOpG6fXHpsX8tQUDMorPycDClmq8PXrZp3Wybr
+	Fm+Ji99KAphufa8007a7bFBvbRa2eTsW0wlOIZZIdgMXBZXsL2pulZTEB6cM+UNdj6l9D4AU/Xq
+	WBtlHrJoWEboo6pdOBEceh60gAOVW2nedrTuygArhqEhNaHAsh2c228HTKLLa9ndE7C2grQM/Ak
+	5OCqyBGHMpN1nF9YIgYr7lMzgGJfJThHTpwJ6NIEXWFSB767VDgqHWWxR09M1TINuvYUXgy2pjj
+	JkrRv+O0NeHHFO/cAUlzulyu0V6xMdBWn1qBjkmap5ajFPWrQeNzJTZt0X
+X-Received: by 2002:a05:622a:144b:b0:530:430e:8f10 with SMTP id d75a77b69052e-53054a34eb9mr50348541cf.47.1788520663162;
+        Fri, 04 Sep 2026 04:17:43 -0700 (PDT)
+Received: from Turin ([187.15.144.163])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5305402a8fcsm18350171cf.1.2026.09.04.04.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2026 04:17:42 -0700 (PDT)
+From: Nicholas Dudar <main.kalliope@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	johan.almbladh@anyfinetworks.com,
+	paulburton@kernel.org,
+	tsbogend@alpha.franken.de
+Cc: martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	jolsa@kernel.org,
+	emil@etsalapatis.com,
+	ihor.solodrai@linux.dev,
+	bpf@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] bpf, mips: Add BPF_MOVSX support to the JITs
+Date: Fri,  4 Sep 2026 07:17:29 -0400
+Message-ID: <20260904111731.673341-1-main.kalliope@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.17-dev-db0b7
-X-Developer-Signature: v=1; a=openpgp-sha256; l=859; i=brauner@kernel.org;
- h=from:subject:message-id; bh=SEZe5HnLJEPtViVtmgtwkTJszcnx/wvXNNnLPrgibYw=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWTNWnB77S5lMyEl9+dJ/HLX590J4N+XsPtmUsuNHyGhN
- Q1OTHcedZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEykeiojwxoB52CpkN9BCyZ2
- 2izo/OY7bYapT739fJPZbu0Sp8xilzP8Lyt/d+TkVQWPP+sS1xyavfuujX3Dr4edtfbn2XY16J4
- 9ygYA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Fri, 04 Sep 2026 01:29:19 -0700, Ethan Nelson-Moore wrote:
-> bfs: remove the filesystem
+The MIPS32 and MIPS64 JITs lower register BPF_MOVSX as an ordinary
+MOV because their move paths ignore insn->off. The instruction is
+therefore silently miscompiled instead of falling back to the
+interpreter.
 
-I agree.
+Patch 1 factors ALU32 and ALU64 register moves into backend-local
+helpers. Patch 2 decodes the MOVSX width from insn->off in those
+helpers, keeping MIPS32 register-pair handling and the existing ALU32
+upper-half paths inside the move operation.
 
----
+This is missing architecture support rather than a regression. Core
+MOVSX support arrived after both backends, and the analogous RV32 change
+(c6a08afdfe3a, "riscv, bpf: Add support for BPF_MOVSX in RV32 JIT")
+went through bpf-next without a Fixes tag.
 
-Applied to the vfs-7.4.bfs branch of the vfs/vfs.git tree.
-Patches in the vfs-7.4.bfs branch should appear in linux-next soon.
+This series can be applied before or after the in-flight SDIV/SMOD
+series. Both are semantic prerequisites for MEMSX. The ordering
+discussion is here:
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Link: https://lore.kernel.org/bpf/CAJZwKkis=3NGw9At0WfiZaRYEoMPbQfqJKN0e+vtRDvp4VY5Ng@mail.gmail.com/
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Targeted MOVSX and MOV control testing under QEMU Malta covered MIPS32
+R1, R2, and R6 and MIPS64 R2 in both endian configurations, plus MIPS64
+R6 little endian. All 180 runs required the JIT and covered the baseline,
+helper-only, and final series boundaries.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+I also ran the complete unfiltered lib/test_bpf.c suite directly on the
+final v2 candidate with CONFIG_BPF_JIT_ALWAYS_ON=y on little-endian
+MIPS32 R2 and R6 and MIPS64 R2 and R6. The MIPS32 profiles returned
+1036 passes and 26 failures; the MIPS64 profiles returned 1035 passes
+and 26 failures. All five MOVSX cases passed on every profile. The 26
+remaining failures were 14 SDIV/SMOD, 8 BSWAP, 3 MEMSX, and 1
+JMP32_JA case.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-7.4.bfs
+Existing lib/test_bpf.c cases exercise all five valid MOVSX forms on
+MIPS, while verifier_movsx.c covers the generic verifier contract.
+No physical MIPS hardware was tested.
 
-[1/1] bfs: remove the filesystem
-      https://git.kernel.org/vfs/vfs/c/e36781a626b2
+Changes requested by Johan Almbladh in review of RFC v1:
 
+- Group the 8- and 16-bit cases and compute the shift from insn->off.
+- Move clobber bookkeeping to common emitter tails.
+- Avoid early returns and use emit_sext() for MIPS64 MOVSX32.
+
+Other changes in v2:
+
+- Document why width decoding belongs in the move helpers, the supported
+  ISA floor, and why other MOV offsets cannot reach these paths.
+- Run the complete test_bpf suite directly on v2 on four little-endian
+  ISA profiles.
+
+v1: https://lore.kernel.org/bpf/20260819010523.1057789-1-main.kalliope@gmail.com/
+
+Nicholas Dudar (2):
+  bpf, mips: Factor register moves into helpers
+  bpf, mips: Add support for BPF_MOVSX in the JITs
+
+ arch/mips/net/bpf_jit_comp32.c | 60 +++++++++++++++++++++++++++++++---
+ arch/mips/net/bpf_jit_comp64.c | 56 +++++++++++++++++++++++++++++--
+ 2 files changed, 109 insertions(+), 7 deletions(-)
+
+
+base-commit: 6655c409707ec8ce9ce0850ffe4fe02331fd4d9c

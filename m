@@ -1,126 +1,164 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CB3ACA4B;
-	Fri,  4 Sep 2026 16:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788538000; cv=none; b=XW5XykRisGHZRhH++zFFu45/uCMdNC5LlXpa0D+P8l2zY9nVJxMw1fn9HX/6jeMW/ZpF/jSMenK1Oml8Q13y8tDjW6vKDiM6CV1nh9NTC4La3D7Z2vhA80neU6m756ybRoIDiyaKeo7rD/Vu4uLN8VwN0dhhxyT5Ip77hcldpRI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788538000; c=relaxed/simple;
-	bh=8FSb/gjuciMqhZIT4RXlFvIKNcHmDi84w1BldFvuDhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sh/qN0alBc0a63zT/HPfMMRa4x3ha6j7NVeMS2us1rZ6NZfxV5Ip5df1wjlyySXZqLcyilEEGIShWyCgM9YWeEQu5sE5sTEv9ZQ6TVD/BGpYCNhb5jNG0omKeiuWapAkcV+BoXAq9ZyhlDAJdKaZUDfqxcfLplEB1ix+yjSH63Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFVs81Nr; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71856513540
+	for <linux-mips@vger.kernel.org>; Fri,  4 Sep 2026 17:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788542484; cv=pass; b=mayDzsjltgQrFri84lbY/NgEevMU/gCyPQGSnLd2w3sB1bpOx9Scr1Nz4zdluHfkztaAs9sz/8jWeCD+xyo87IfKjxY+3PyKwdiSjmkMUwQYaIZVsTAKv815gS2ZmXivu4ntvAk9RfbWrmFXfuxJtFUcdwXfN/yBEsb2ohNmJ4A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788542484; c=relaxed/simple;
+	bh=AFNBiWCRpUcEoXNChHss1VconiHm4hB8qaeZxdrK+Dg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GBnlLlVq5UIWW3TjjKYHW9Qv46moBCMxk+tsm5LpbI5Wl8pETh+BxMyBOdUJl+jR6jutsQ8p50Z4UAukXHyS9cy9A5V2zo46V1JtgFeXIiHAiBezVPvVVpg5t2jjRDARxiQzMhCQmDecBXh9oohg+13nJ0pjUeaz2FghHOwTB/g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+5ZMHHh; arc=pass smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFVs81Nr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B31E1F00A3D;
-	Fri,  4 Sep 2026 16:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788537990;
-	bh=89DU0GapqiOZlaA7jU9CQs5/T4ZZ4b0KeYVQAFryc+c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=CFVs81Nrix1xWs3kup1P05Krc0JJYYhS/ViPHckidBWbZUUGJsinV0OpG0P2Yp0BM
-	 Yi+nMeESljaXeDglpK+m7DNQxDrSYy8UGDgOQoERJShk9RAc41+SjMQlXp7YkTY/cs
-	 KX7Zc2qg+zrln15rB1FL9dhfPpQNrATWQEC0mVvJPFKr8EUGnQG1Al5bkXiPq+CkAV
-	 8ASReE6E/YXuMju48gmLyNRm35+cwsjDqveHmTZAEelBBwGoMRCiXvPw2ZAyXgeW7s
-	 FNu/myp6GFkUNY3kus7xr2P0HhWcShI8J6dlb8+vBIMclZAmORFzAg8TXYBEMMFa6n
-	 RwUUxSxh+CnkA==
-Date: Fri, 4 Sep 2026 17:06:19 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Jan Kara <jack@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Hisam Mehboob <hisamshar@gmail.com>, 
-	Martin =?utf-8?Q?Kepplinger-Novakovi=C4=87?= <martink@posteo.de>, Amir Goldstein <amir73il@gmail.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Eric Biggers <ebiggers@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, David Howells <dhowells@redhat.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Theodore Ts'o <tytso@mit.edu>, 
-	Catalin Iacob <iacobcatalin@gmail.com>, Stephen Hemminger <stephen@networkplumber.org>, 
-	Andrew Lunn <andrew@lunn.ch>, "Maciej W. Rozycki" <macro@orcam.me.uk>, 
-	Andrei Vagin <avagin@gmail.com>, Wei Yang <richard.weiyang@gmail.com>, 
-	Bhavik Sachdev <b.sachdev1904@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Wang Yan <wangyan01@kylinos.cn>, Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>, 
-	Malaya Kumar Rout <malayarout91@gmail.com>, linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>, Luis de Bethencourt <luisbg@kernel.org>, 
-	Salah Triki <salah.triki@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] bfs: remove the filesystem
-Message-ID: <aprr9xUwEmjA1N5T@gremlin>
-References: <20260904082954.48738-1-enelsonmoore@gmail.com>
- <20260904-hinnimmt-triumphieren-handgefertigt-4e51fe2ed659@brauner>
- <20260904151054.GG6047@frogsfrogsfrogs>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+5ZMHHh"
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6a68aaf4840so2892858a12.0
+        for <linux-mips@vger.kernel.org>; Fri, 04 Sep 2026 10:21:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788542480; cv=none;
+        d=google.com; s=arc-20260327;
+        b=ON48CtYpx7EYM1PZXJIs3wLcvKYSVy2g5Oq0D6mfwtPtzQd46rP89zcWB4FbVVVmFs
+         uqnZ9S7Y+5XisHoLPMM+Xbik8wP868mmvklVi1qOsgTVREZ7xh61n2aZ3G/Vr72MiEmD
+         F6///wNN1CtmYHi6emMqaw8V2pq9XYw7YDqhe5hpAxMtO65qX/fN5BZyvZiaFNso9oEf
+         CB7G+YS8zSF8y85uR2WHf19nJuhfb8Wp4nfS6KDiPvnHXsTKbM+wWVbvUL3i4x+sTJgj
+         8P7CnbNqEdwuGuyOurXBqtjr850a+LJxx9qH9+ANhBHP08VcGYQC78EREUC6zVsv70oO
+         pRYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        fh=jsdC8oP63/OFerUL+40Zsp0tFdMUmvci58s5mAjk2Ew=;
+        b=DH/JUws2tIPTJu3ZBig0n6bK4tLtEG3/Elt4DzTAkrH7M6iVxpj9Odlcx1yt2HWepw
+         1AbSDazaAVIZF+zig3n7ogafz288Sw2MYHZkV9PAHy6zQsfbPBkL+Au5/r1evxQbZUXq
+         nK6wu2l7uYKZ6dhf0MzS+lHaKS3nG1M28vifs4kev8lfFhMmbp5bqhMnt8b/vtmNdsPF
+         z70n1bJxOBXXC32sGzBQtWPD84u8maAifFuzS7njWFKciclkrcdZtZZKChJTYDBX3dDY
+         Hf1lSUwCH/jmIe/1O12c3z72BJLJen5mwOpcI+10VeMYI0fA9NCsFER4UwKPytnntkXN
+         Dxdg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788542480; x=1789147280; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        b=S+5ZMHHhfGjA+IdWmeugDDHgBwHG5bBYSPYfCEow+5chkn8MQle82UmWyVbxLiEN7d
+         ijcv6053WNTu2RqyJ6VR+Q1MSk4Vxz4n7ZKFRrjYrPqEbaWeUeae4OgCiLykWRLNUDRA
+         ZH/X93kZSKA1/wbKpcmxavHteq0Ow+JKUXYEkMsejbWI7AKmmLzp7rDEpD05dDMzdu05
+         qx2RS3AgstzLvoN8v5AUqAPOvMKc+nz/J8n2Lte3Wf5wq5bPQVeGs2cRbGv15hnp0TgY
+         EW5NlkkUE9iLPQcY1GiopKTuEm/IxQzvNCCThYHaycwvH5N4Y2kyLdCZ7Tyzs3tF5f6h
+         EH1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788542480; x=1789147280;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        b=mwP46IrlIuzV1s/lUUA9EVSMf+0jZ8l2dg7IdlCQZTZR6BOJYQHo/0xMQKr5JZgJf1
+         oQGA3KTSEZYyRRDsuSdUIjj6mXfBezdhnPCzB/TgT91eTt/sJy5Swccm7fmUY+pvJWUz
+         FACAFTgX9spSSCgxaHrSq26pogx+r2BLaecqRdAD8C6UG/luPn/bGKzcRNZ+8E7HPByh
+         3e/f7Ax3NcvL6fnX2C7RTGCEVPnEBKMqimgtjh0LGLrAyo3oaloN+ezapaD6J8Pt+udQ
+         1gy9B+XtaENAV4pAtetmRPo3OF0RPwKMe8/Em0+R6kRkZpcoPqL11Kl2abpp/fjbFbHx
+         VGnw==
+X-Forwarded-Encrypted: i=1; AKwUvByZ2DlU0s1gSlVcUrX0YAhR7k3rkdaypwHEiJdcnlbaqyNglOmuH1zgq15kJbjzlYNTXTAQ5HpwhOUd@vger.kernel.org
+X-Gm-Message-State: AFuF++lrYtbxz+kmoCjzF83elO2n1SDva3gil3xUdAesHVSuZE8XZMyU
+	SunxDQ9JBqJkGwgjoNBGWof+JR7vij2GpyayYq/pBxOWcR+fJR7O3HjGpkkTgiWdUj/UEdRHC7S
+	GTBznlFPwoqca2r9m2saQfUsRL0/ghSs=
+X-Gm-Gg: AYBFou0MttLyJLYuPFzUk+aAiMgsP9Iqr77mhNE7fGs0FY2Iz971QrlWOFtr6M0Qc/y
+	DhYYOiZq79fUtA2a0bDfXyWOGolLSd6bsx6Ff8pMjSrL1LCcSbCkXRGQEPMmkYJWcUfT8R6j+/0
+	U2YhqugyPie8JB1bQRKcTGzzoopFetgSVmxRFcIY1IQNhCsvtUwiJrDm7/sRQMU72d4Y4CWzDb/
+	EQZ79EUm2etkVj/8xJJtbTwXjn7eP4ATi/vt57LTvevpTXWVDRdLR41raok513Et9Ld33gGfc3g
+	IKwhZJ0QoS+mDjfS8cj+KDj3EeWFgl+OROYfAe1KugwgssPjjQZEv7bWCLR6/AUkoU9SEa/d1F/
+	z5LsGOM6sRIRf1twKXQzusOtOQPYTt0w=
+X-Received: by 2002:a05:6402:a252:20b0:6a6:9368:73a0 with SMTP id
+ 4fb4d7f45d1cf-6a696a73aa1mr4363499a12.6.1788542479338; Fri, 04 Sep 2026
+ 10:21:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260904151054.GG6047@frogsfrogsfrogs>
+References: <cover.1788351089.git.rrobaina@redhat.com> <4ada9fcbb93af8d5c1c9bfe2c83d94fc10bfe327.1788351089.git.rrobaina@redhat.com>
+In-Reply-To: <4ada9fcbb93af8d5c1c9bfe2c83d94fc10bfe327.1788351089.git.rrobaina@redhat.com>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Fri, 4 Sep 2026 19:21:07 +0200
+X-Gm-Features: AcwNN1WpEQ0Y6eKbtA6wNzDHeYOBs1Tconhq7C15XjRhFKDXvjk4jMYrR9OFExk
+Message-ID: <CA+=Fv5T4826T2sd0Gbh-nfZsqcWK_phdBKy4BLWOvDTt92t5Eg@mail.gmail.com>
+Subject: Re: [PATCH v2 02/13] alpha: pass pt_regs to audit_syscall_entry()
+To: Ricardo Robaina <rrobaina@redhat.com>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, paul@paul-moore.com, 
+	eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, 
+	richard.henderson@linaro.org, mattst88@gmail.com, linux@armlinux.org.uk, 
+	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, monstr@monstr.eu, 
+	tsbogend@alpha.franken.de, jonas@southpole.se, 
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
+	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
+	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
+	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 04, 2026 at 08:10:54AM -0700, Darrick J. Wong wrote:
-> On Fri, Sep 04, 2026 at 12:43:09PM +0200, Christian Brauner wrote:
-> > On Fri, 04 Sep 2026 01:29:19 -0700, Ethan Nelson-Moore wrote:
-> > > bfs: remove the filesystem
-> >
-> > I agree.
+Hi Ricardo,
+
+On Wed, Sep 2, 2026 at 4:44=E2=80=AFPM Ricardo Robaina <rrobaina@redhat.com=
+> wrote:
 >
-> At the moment, I don't.  Nowhere in this thread does anyone mention what
-> someone with a B(oot)FS filesystem image should do if they want to
-> extract whatever's stored in the filesystem.  Are there userspace tools
-> for that purpose (ala efs)?  Does "binwalk -e $bfs_image" suffice for
-> that purpose?  Or is there solid evidence that there isn't even a single
-> user (ala freevxfs) who strongly wants it to stay in?
+> audit_syscall_entry() now takes a pointer to pt_regs and extracts
+> the syscall arguments itself via syscall_get_arguments(). Drop the
+> individual argument registers from the call and pass regs instead.
 >
-> I'm all for getting rid of old cruft but there still needs to be a
-> documented offramp for users.
-
-Use an older/downstream version of linux? :)
-
-It's like the museum piece arch stuff - people argue vigorously in favour of
-nommu (which btw is a variety of linux that _doesn't implement forking_ :)))
-gesticulating at talks given at conferences etc.
-
-But then never quite answer the 'why not use an older version of linux' or 'why
-not just maintain it downstraem for the 3 people who need it'.
-
-Also worth consider what the Venn diagram overlap of bfs users and people
-running even-vaguely-tip kernels/likely to ever upgrade is. Quite likely zero I
-expect?
-
-I get the desire not to lose people their data, but the code's not gone away
-forever :)
-
+> Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
+> ---
+>  arch/alpha/kernel/ptrace.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> --D
+> diff --git a/arch/alpha/kernel/ptrace.c b/arch/alpha/kernel/ptrace.c
+> index fc8f6cedbb28..8a39c0473297 100644
+> --- a/arch/alpha/kernel/ptrace.c
+> +++ b/arch/alpha/kernel/ptrace.c
+> @@ -496,8 +496,7 @@ asmlinkage unsigned long syscall_trace_enter(void)
+>         }
 >
-> > ---
-> >
-> > Applied to the vfs-7.4.bfs branch of the vfs/vfs.git tree.
-> > Patches in the vfs-7.4.bfs branch should appear in linux-next soon.
-> >
-> > Please report any outstanding bugs that were missed during review in a
-> > new review to the original patch series allowing us to drop it.
-> >
-> > It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> > patch has now been applied. If possible patch trailers will be updated.
-> >
-> > Note that commit hashes shown below are subject to change due to rebase,
-> > trailer updates or similar. If in doubt, please check the listed branch.
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> > branch: vfs-7.4.bfs
-> >
-> > [1/1] bfs: remove the filesystem
-> >       https://git.kernel.org/vfs/vfs/c/e36781a626b2
-> >
-> >
+>  #ifdef CONFIG_AUDITSYSCALL
+> -       audit_syscall_entry(syscall_get_nr(current, regs),
+> -               regs->r16, regs->r17, regs->r18, regs->r19);
+> +       audit_syscall_entry(syscall_get_nr(current, regs), regs);
+>  #endif
+>         return syscall_get_nr(current, regs);
+>  }
+> --
+> 2.55.0
+>
+This doesn't apply on top of my "alpha: enable GENERIC_ENTRY" series
 
---
-Cheers, Lorenzo
+https://lore.kernel.org/linux-alpha/20260902184058.198679-1-linmag7@gmail.c=
+om/T/#t
+
+That series moves alpha's syscall entry onto the generic entry
+framework and removes syscall_trace_enter() and its direct
+audit_syscall_entry() call entirely - verified with git am against
+GENERIC_ENTRY applied, it fails at exactly this hunk.
+You don't need a replacement alpha patch, though. Once GENERIC_ENTRY
+lands, alpha's syscall entry goes through
+syscall_enter_from_user_mode_randomize_stack(), which already calls
+syscall_enter_audit() as part of the shared entry helpers
+(include/linux/entry-common.h). I applied patch 1/13 alone on top of
+GENERIC_ENTRY and confirmed alpha's entry path already routes through
+the updated __audit_syscall_entry() - no alpha-specific code needed.
+So for alpha, you can drop this patch in the next revision rather
+than rebase it.
+
+Regards
+Magnus

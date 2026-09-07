@@ -1,303 +1,237 @@
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk2-f12.google.com (mail-qk2-f12.google.com [74.125.230.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9AF4CA78F;
-	Mon,  7 Sep 2026 12:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788785247; cv=none; b=outxdI41elaPzuNKRkCH16aUqG4R06a6+2ZijtbBeMmK/cdkvuLFYTxUev2GYJ1CPKYLPHls7xCtieUKoFmziOUCH6TQYF8nHH/VsMVzTt6KC4ERzO4H+nz388eyfzHtm6V6xaDev3F/K0+C7QaYyj8eUCmWABZij3h5jiKhoeg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788785247; c=relaxed/simple;
-	bh=HJe8XfmAy+6cuvPSTFtenI0mNigrcHVtO6ugEMbO7Q8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PW27Ti6FzGEGV0I8XIrHz5qeEeAthezyXIzFwRg9xASkSFtzeI1wFIK5YsO6y3rXJxtD200Ss09dIAU+pqI9E+NV4dtCjhzh2l3WwmbLJZFDExJZ+UUcvfcPKQaI/EJlQc3fPzIKRo2NiaJDOPG2kCo7f0OpX1ooDfOsR9YD/cA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Y3/TFEJD; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1088F51E42E
+	for <linux-mips@vger.kernel.org>; Mon,  7 Sep 2026 16:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.230.204
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788800039; cv=pass; b=mkwJnmq0tX5UEdvRTlm3Q8t8Q+FtXB8TFX6vp5X7gwT408cdLc1+rvmR9eAm+DAcUC2UKn4qoLOO3PPCMNrIt444FqGmTPgpV0k4cTSdPKl+TMunvJ3bdb1RLwLUFx4/HA+sVzusc876VmD6oW8l5xyPC1PrJ6fC/TaRuw86OpQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788800039; c=relaxed/simple;
+	bh=7nZvXQAXFpGDq6OvBtcrjZaQ3gxcarFF2OJUmuf6SHc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S52C6h4vJNwuoBBF0OVWf0tNg549gh1fzPg/2QyRy4hRAt5Yn1ND+Rv/se3AeJWJi/jzITpO80P3xqcOb2/HcSKy58LVhiliHAF00F89VQpTzyNzAk1MSsMS44nm3BEOO99ejYvl7bt6J9YzZ0pqO5PjWY0FPAcan2reDxvKg8U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZOEcfTft; arc=pass smtp.client-ip=74.125.230.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Y3/TFEJD"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 517844E41569;
-	Mon,  7 Sep 2026 12:47:24 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1FC5960383;
-	Mon,  7 Sep 2026 12:47:24 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 90F9E11C7AF1F;
-	Mon,  7 Sep 2026 14:47:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1788785242; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=RTA8Cqgcw1oYnw9byAz6lCL72FCqdK7NKRYgo/TeUsY=;
-	b=Y3/TFEJDM74Fha72snIPF7WEQ2RTnKfjROyNOjuRoNLC2B/6+vFFtZhQJeMCYVBoNRKzcT
-	c8mDRD9jXvH/QMvPNtAp4R4zuP1yUHCSuDN4CcPHzK/CenFaeXx5DellYx8e8JN9tlqudr
-	Z77mlVWIscvm4UGaJ0QtfhFLUD7Kuk50z1Zvs1nDdte3ppNpPBfWDqPyF+KLVOxXRu8xRw
-	BzMPIBS6o3COOWyFr/FklYD/wA+oIEIEMwdHWghOy2K9DvuHgWNuGjN8F7NPAbKxUF4Oxh
-	6mYztltxEfNbdfEDoDlXqo7LZ1KbAGzABRtVfVGavnbQ2sUKJMTLAN3ePVcNrw==
-From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Date: Mon, 07 Sep 2026 14:46:39 +0200
-Subject: [PATCH v3 5/5] clocksource: mips-gic-timer: Use local counter on
- synced multi-cluster systems
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZOEcfTft"
+Received: by mail-qk2-f12.google.com with SMTP id d75a77b69052e-5307425f44bso311971cf.1
+        for <linux-mips@vger.kernel.org>; Mon, 07 Sep 2026 09:53:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788800036; cv=none;
+        d=google.com; s=arc-20260327;
+        b=pRKe8dggC5p8J5mqFBW2BgYBFhGBFadiIomdvOdfshpzeJF1onjK92X99FFh68ptkw
+         UGbCdQwhK7i5ae7n9P8kCyQm/FE2oJBiRYjuXn8REtX5QGJaiEvcHbDyL8r/2BIOjPYI
+         CE5tgb+hVSkWLV0iDGdvBgf5j0ov2XYI6Pg99nr3ObaIwyppyRTRcWV8F0/INTLLOqqf
+         rtX69iEizjuXwXbL4MXaUjobUxMfxYwTJOjlUo/o5m7nGi62NE1/UtaZfaDXH9aUmF5g
+         YTRsb3xPZgj1IxP6U/Jp17rYFKrk2J/VuwpUlNAxeZP4nnKG0TE1p6gSlq+jch+UsOFI
+         8+oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=WOgo3zFXzbtiQDjz57z5HXaLiQwAncd9HG4Gw1Bp/lg=;
+        fh=CEE0W2knNN8ookEfG/n/Az9LO7nZjRrwc7uQpPQ+AmQ=;
+        b=rdV89FndQvDLpzA22G+6w1AuYv0EYE70ndXkfXVWhgetRl2LxTlXzxutidzzrdCaQ2
+         RRinhUMjyvtkWYOavS7wEgKmLveGJdKYpTFFlEk1R44rl+WgGoS20OWyhDRhk6ZPsgf6
+         VQ2QArCACgABMpfU942bHqzA+iHrCcHswFrO+0jzLB2RokuOqLXnpgd8KYV9qGBCrdT0
+         Cb5cCuDpvCz/+789FlrDdthPIpCHZdfGHYm+78LZTFHBDjuBB0R6EXCkiaSaL7wVKN76
+         zzfulIz1K+eiVBoSHKWSnAQNryjhXp0l7hJ/A+BO6eDiv3Z9sFC1ClYrwpFKK08TbTUp
+         0snw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1788800036; x=1789404836; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=WOgo3zFXzbtiQDjz57z5HXaLiQwAncd9HG4Gw1Bp/lg=;
+        b=ZOEcfTftJhzBn8TSOkOKtoVoBUfs0xbVZP9wHIME5s8DaKMIumqZANXdTWAZZQG4bO
+         PsjF2/5Q7dfdSw5e/4doJHeaSAcrrwzHm5okWijPOCxUqMYTFuITP+L3zhdL7LBMLzBT
+         Jt+SHOoAutj1CLKQTV1FN0mPF2EGxDqFcsLwjlFwQHiJXiI0RuPd1xWARyOCutR3amvc
+         sQxz5M40LQ87mSFr29zXtVACvT1zPuvn5cV0my4RhbsT0V7tcqvEyDMudV1T+uNnLK+a
+         Py2kZwd1qLLizUDEbVxEWP3v9J2sunX74cBomy/fdJ0WlRZ+GPuOIbhrioUU/SARwrl5
+         i5kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788800036; x=1789404836;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=WOgo3zFXzbtiQDjz57z5HXaLiQwAncd9HG4Gw1Bp/lg=;
+        b=mf7uoBPh1at4hnGJ52UVaxime/lQNNo4i7I3lwq/pwsBPsALJsGBlTzGgPXNw7IIV6
+         RwCnW3CsCpf0g1oUWSCe0tnXBsiSbHpsD//ZZ4uKcL5BanK2gPjyOCCe4cWkdzeDl6bk
+         T2l9yJrnOxYHPW1m+UbnpRS4dmrkXiEZ/bkUwqnGvEbnHi3d4cu4qabZlvQt5zhqqz41
+         Kp9AJR2DwuMIhn0xd4+T5tbCxfMtONUev74PVUP9CauYCdg7YUth4yDWF0IJkt4L8Fqs
+         apTTRaWFhJLybnfNQqiTrDjZis+pr6sCo8QfezWtufdqtv28Q3ux6juoWsVOG1GdDQHO
+         b3Ag==
+X-Forwarded-Encrypted: i=1; AKwUvBy3iMwVzY4dae7xIxJCqBuLVLPxELo9T8tTb2IpzqBK/kg282yQezbXnkygfgXi2soiDXVWRsWqV34V@vger.kernel.org
+X-Gm-Message-State: AFuF++lH+6GoiF2mil3oeeyUBROW7qD6/Lv363kon3ooFp0tTHPNHdOo
+	dUl9V1JVM2K1y6dHoB+WaGvl5sXHs0x9UOlz4IGXD6kG5nqGxT2vbOo5bkdDlKwg0rfNfIYgAke
+	n5dKbDblzgsfR6nCjhZHigzGZhOiHt0qaWN1UJfAI
+X-Gm-Gg: AYBFou28iOLcuko+TsZgDD7QNMt+XwFp6B+d0j3vMtZy9fh+JWKl3RN8cVf8fd1DgOt
+	8ETjkztMGRM2oqvP45+cRrZ2nm9niJdnp4RbK86blEk8Bg+MElzMwcOSzIC5Rs9ZDeBT9bJCldj
+	67QxEH4LdAcumYrPaPMa33IWeqvIuqD3Q3orVVjMMi66u4g+QWfzcFZ/5lVAq5DfR6kF6f3kJ5h
+	xGAbLi8ay566IF3nHyaPMFtKkwNiX9d+wHLYabBC47prK8unjHvsQgyfUszPDEKafmEEOvXZz7V
+	WmbbcBcaxGi9iU5flJdbSDgMeTOWGD6BLXwPTQVjvQI=
+X-Received: by 2002:a05:622a:28e:b0:52f:8389:29e0 with SMTP id
+ d75a77b69052e-530920caba6mr3560401cf.0.1788800035234; Mon, 07 Sep 2026
+ 09:53:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20260907-sync-gic-counters-v3-5-3d891ddabdaf@bootlin.com>
-References: <20260907-sync-gic-counters-v3-0-3d891ddabdaf@bootlin.com>
-In-Reply-To: <20260907-sync-gic-counters-v3-0-3d891ddabdaf@bootlin.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Daniel Lezcano <daniel.lezcano@kernel.org>, 
- Thomas Gleixner <tglx@kernel.org>, 
- Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>, 
- Chao-ying Fu <cfu@wavecomp.com>, Aleksandar Rikalo <arikalo@gmail.com>, 
- Paul Burton <paulburton@kernel.org>, Radu Rendec <radu@rendec.net>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-X-Mailer: b4 0.16.0
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
+ <20260901-rcu-pagetable-freeing-v1-12-5456a81c8212@kernel.org>
+ <apbUpMDJglS99_yK@thinkstation> <apbfzUwBQyxe3P9R@gremlin>
+ <apcH74QsR5I-DIbL@thinkstation> <apcJhtvnd45EkjJI@gremlin>
+In-Reply-To: <apcJhtvnd45EkjJI@gremlin>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 7 Sep 2026 09:53:43 -0700
+X-Gm-Features: AcwNN1WRGdFWOzxEbOcmfkztqDuQQAGpor7Xm60pdWlD2DjKNo1Y7S4S7DNXdgs
+Message-ID: <CAJuCfpH_v4YU+hsQDU_yQ4HZDf-2C6DuiJU5PGL+uVAsTwkZug@mail.gmail.com>
+Subject: Re: [PATCH 12/12] mm: change the contract for free_pgtables(), update docs
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: Kiryl Shutsemau <kas@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
+	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+	Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Simon Schuster <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Magnus Lindholm <linmag7@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, 
+	Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In a multi-cluster MIPS system there is one GIC per cluster, each with
-its own independent counter. These counters are not synchronized in
-hardware and can drift relative to one another, which is why multi-
-cluster systems currently fall back to gic_hpt_read_multicluster():
-every clocksource read is redirected to cluster 0's counter via a
-cross-cluster register access.
+On Tue, Sep 1, 2026 at 10:25=E2=80=AFAM Lorenzo Stoakes (ARM) <ljs@kernel.o=
+rg> wrote:
+>
+> On Tue, Sep 01, 2026 at 06:15:17PM +0100, Kiryl Shutsemau wrote:
+> > On Tue, Sep 01, 2026 at 03:31:26PM +0100, Lorenzo Stoakes (ARM) wrote:
+> > > On Tue, Sep 01, 2026 at 02:57:13PM +0100, Kiryl Shutsemau wrote:
+> > > > On Tue, Sep 01, 2026 at 12:01:32PM +0100, Lorenzo Stoakes (ARM) wro=
+te:
+> > > > > diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+> > > > > index b91b1a98029c..ff8ff3706485 100644
+> > > > > --- a/mm/pgtable-generic.c
+> > > > > +++ b/mm/pgtable-generic.c
+> > > > > @@ -386,9 +386,21 @@ pte_t *pte_offset_map_rw_nolock(struct mm_st=
+ruct *mm, pmd_t *pmd,
+> > > > >   * be read-only/read-write protected.
+> > > > >   *
+> > > > >   * Note that free_pgtables(), used after unmapping detached vmas=
+, or when
+> > > > > - * exiting the whole mm, does not take page table lock before fr=
+eeing a page
+> > > > > - * table, and may not use RCU at all: "outsiders" like khugepage=
+d should avoid
+> > > > > - * pte_offset_map() and co once the vma is detached from mm or m=
+m_users is zero.
+> > > > > + * exiting the whole mm, does not take the page table lock befor=
+e freeing a
+> > > > > + * table.
+> > > > > + *
+> > > > > + * However, the PMD entry is cleared first, and the table freed =
+only after
+> > > > > + * an RCU grace period, so a walker that mapped the table under
+> > > > > + * rcu_read_lock() stays safe, and the pmd_same() recheck in
+> > > > > + * pte_offset_map_lock() detects the teardown.
+> > > > > + *
+> > > > > + * Therefore it is safe for "outsiders" like khugepaged to use
+> > > > > + * pte_offset_map() and co. for VMAs that might be undergoing pa=
+ge table
+> > > > > + * teardown.
+> > > >
+> > > > Is it strictly true?
+> > > >
+> > > > free_pte_range() clears the pmd without taking the PTL, so the
+> > > > pmd_same() recheck in pte_offset_map_lock() can pass and the pmd ge=
+ts
+> > > > cleared right after.
+> > > >
+> > > > Readers are fine -- __pte_offset_map() holds rcu_read_lock() until
+> > > > pte_unmap(), so the table cannot go away.
+> > > >
+> > > > khugepaged is an odd example here. collapse_pte_mapped_thp() and
+> > > > retract_page_tables() don't rely on this recheck -- they take pmd_l=
+ock()
+> > > > plus the ptl and do their own pmd_same() under both.
+> > > >
+> > > > Can we say walks are safe and leave the write rule where it is?
+> > >
+> > > Hmm yeah, ah page tables, what a rabbit hole of horror :)
+> > >
+> > > I guess this is effectively a reflection of the 'write lock on write,=
+ RCU load
+> > > on read' pattern in RCU itself generally.
+> > >
+> > > So, maybe something like:
+> > >
+> > >  * Note that free_pgtables(), used after unampping detached vmas, or =
+when
+> > >  * exiting the whoel mm, does not take a page table lock before freei=
+ng a page
+> > >  * table.
+> > >  *
+> > >  * As page table freeing itself is RCU-safe, page table readers can s=
+afely run
+> > >  * concurrently with page table teardown. However, writers cannot, as=
+ without
+> > >  * a lock nothing prevents concurrent teardown.
+> > >  */
+> > >
+> > > Instead? What do you think?
+> >
+> > s/whoel/whole/
+>
+> Haha yup the inevitable typo...
 
-Instead, actively synchronize the counter of each secondary cluster
-to cluster 0's counter as its CPUs come online. When the first CPU of
-a cluster starts and the GIC counter is stopped, gic_sync_counter_64()
-is used to align the local counter with cluster 0 on systems using 64-bit
-CM accesses:
-
-  - the local counter is stopped, loaded with cluster 0's counter value
-    plus an accumulated offset, and restarted;
-  - the alignment is checked by reading the local counter, cluster 0's
-    counter and the local counter again (t0, t1, t2). If t1 lies between
-    t0 and t2 the two counters are considered in sync;
-  - otherwise the offset is refined by half of the measured error to
-    compensate for the cross-cluster access latency, and the process is
-    retried.
-
-After a short delay the alignment is re-checked to confirm the counters
-have not drifted apart, and only then is the cluster recorded as
-synchronized in gic_synced_cl_map. Clusters with no cores and cluster
-0 itself are marked synchronized up-front.
-
-Once every cluster is synchronized, gic_clocksource_promote() switches
-the clocksource back from gic_hpt_read_multicluster() to the fast
-local gic_hpt_read(), re-registers it, and re-enables the GIC VDSO clock
-mode. It also registers the GIC counter as the sched_clock. Systems where
-synchronization cannot be achieved keep using the safe cross-cluster
-read path.
-
-Since gic_clocksource_promote() calls clocksource_unregister() and
-clocksource_register_hz() which internally use a mutex, it cannot be called
-directly from the CPU hotplug STARTING callback because interrupts are
-disabled. Instead the call is deferred to a workqueue.
-
-gic_clocksource_promote() also registers the local GIC counter as the
-sched clock via sched_clock_register(). This is valid from a non-__init
-context because sched_clock_register() lost its __init marker in
-commit 84b1a903aed8 ("time/sched_clock: Export symbol for sched_clock
-register function").
-
-Note that the clocksource is only promoted once when all clusters are
-first online and all GIC counters are in sync. It is assumed that even
-if a cluster is fully powered-off then on later, gic_sync_counter_64()
-will be able to synchronize it once again. Said differently: there is
-no support to "demote" the clocksource.
-
-On the dual-cluster Mobileye EyeQ6H SoC, this allows four times faster
-clock_gettime(CLOCK_MONOTONIC) and a much higher precision sched_clock
-instead of jiffies.
-
-Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
----
- drivers/clocksource/mips-gic-timer.c | 117 +++++++++++++++++++++++++++++++++--
- 1 file changed, 112 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index cdaf4ba1d509..2d6f69f87fbb 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -6,6 +6,7 @@
- #include <linux/clk.h>
- #include <linux/clockchips.h>
- #include <linux/cpu.h>
-+#include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/notifier.h>
-@@ -21,6 +22,8 @@ static int gic_timer_irq;
- static unsigned int gic_frequency;
- static unsigned int gic_count_width;
- static bool __read_mostly gic_clock_unstable;
-+static unsigned long *gic_synced_cl_map;
-+static struct work_struct gic_promote_work;
- 
- static void gic_clocksource_unstable(char *reason);
- 
-@@ -102,10 +105,71 @@ static void gic_update_frequency(void *data)
- 	clockevents_update_freq(this_cpu_ptr(&gic_clockevent_device), rate);
- }
- 
-+/* Number of iterations to synchronize the local GIC counter */
-+#define GIC_SYNC_ITERATIONS 4
-+
-+/* Delay in us to check if the local GIC counter is still in sync with cluster 0 */
-+#define GIC_SYNC_CHECK_DELAY 100
-+
-+static void gic_sync_counter_64(unsigned int cluster)
-+{
-+	unsigned int config = read_gic_config();
-+	u64 t0, t1, t2;
-+	s64 offset = 0;
-+
-+	mips_cm_lock_other(0, 0, 0, CM_GCR_Cx_OTHER_BLOCK_GLOBAL);
-+
-+	for (int i = 0; i < GIC_SYNC_ITERATIONS; i++) {
-+		write_gic_config(config | GIC_CONFIG_COUNTSTOP);
-+		write_gic_counter(read_gic_redir_counter() + offset);
-+		write_gic_config(config & ~GIC_CONFIG_COUNTSTOP);
-+
-+		t0 = read_gic_counter();
-+		t1 = read_gic_redir_counter();
-+		t2 = read_gic_counter();
-+
-+		if (time_in_range64(t1, t0, t2))
-+			break;
-+
-+		/*
-+		 * Compute the offset to apply to the local counter
-+		 * so that (t1 - t0) equals (t2 - t1).
-+		 */
-+		offset += (s64)(2 * t1 - t0 - t2) / 2;
-+	}
-+
-+	mips_cm_unlock_other();
-+
-+	if (!time_in_range64(t1, t0, t2))
-+		return;
-+
-+	udelay(GIC_SYNC_CHECK_DELAY);
-+
-+	mips_cm_lock_other(0, 0, 0, CM_GCR_Cx_OTHER_BLOCK_GLOBAL);
-+	t0 = read_gic_counter();
-+	t1 = read_gic_redir_counter();
-+	t2 = read_gic_counter();
-+	mips_cm_unlock_other();
-+
-+	/* If so, mark the cluster as synchronized */
-+	if (time_in_range64(t1, t0, t2) && gic_synced_cl_map)
-+		bitmap_set(gic_synced_cl_map, cluster, 1);
-+}
-+
- static int gic_starting_cpu(unsigned int cpu)
- {
--	/* Ensure the GIC counter is running */
--	clear_gic_config(GIC_CONFIG_COUNTSTOP);
-+	unsigned int cluster = cpu_cluster(&cpu_data[cpu]);
-+
-+	if (read_gic_config() & GIC_CONFIG_COUNTSTOP) {
-+		clear_gic_config(GIC_CONFIG_COUNTSTOP);
-+
-+		if (cluster && mips_cm_is64 && !gic_clock_unstable)
-+			gic_sync_counter_64(cluster);
-+
-+		if (gic_synced_cl_map &&
-+		    bitmap_full(gic_synced_cl_map, mips_cps_numclusters()))
-+			schedule_work(&gic_promote_work);
-+	}
- 
- 	gic_clockevent_cpu_init(cpu, this_cpu_ptr(&gic_clockevent_device));
- 	return 0;
-@@ -209,8 +273,33 @@ static void gic_clocksource_unstable(char *reason)
- 	clocksource_mark_unstable(&gic_clocksource);
- }
- 
-+static void gic_clocksource_promote(struct work_struct *work)
-+{
-+	if (gic_clock_unstable || gic_clocksource.read == &gic_hpt_read)
-+		return;
-+
-+	if (clocksource_unregister(&gic_clocksource) < 0)
-+		return;
-+
-+	gic_clocksource.read = &gic_hpt_read;
-+#ifdef CONFIG_GENERIC_GETTIMEOFDAY
-+	gic_clocksource.vdso_clock_mode = VDSO_CLOCKMODE_GIC;
-+#endif
-+
-+	if (clocksource_register_hz(&gic_clocksource, gic_frequency) < 0)
-+		return;
-+
-+	if (mips_cm_revision() >= CM_REV_CM3 || !IS_ENABLED(CONFIG_CPU_FREQ)) {
-+		sched_clock_register(mips_cm_is64 ?
-+				     gic_read_count_64 : gic_read_count_2x32,
-+				     gic_count_width, gic_frequency);
-+	}
-+}
-+
- static int __init __gic_clocksource_init(void)
- {
-+	unsigned int numclusters;
-+	bool synced = false;
- 	int ret;
- 
- 	/* Set clocksource mask. */
-@@ -222,14 +311,32 @@ static int __init __gic_clocksource_init(void)
- 
- 	/* Calculate a somewhat reasonable rating value. */
- 	if (mips_cm_revision() >= CM_REV_CM3 || !IS_ENABLED(CONFIG_CPU_FREQ))
--		gic_clocksource.rating = 300; /* Good when frequecy is stable */
-+		gic_clocksource.rating = 300; /* Good when frequency is stable */
- 	else
- 		gic_clocksource.rating = 200;
- 	gic_clocksource.rating += clamp(gic_frequency / 10000000, 0, 99);
- 
--	if (mips_cps_multicluster_cpus()) {
-+	numclusters = mips_cps_numclusters();
-+	if (numclusters > 1)
-+		gic_synced_cl_map = bitmap_zalloc(numclusters, GFP_KERNEL);
-+
-+	/*
-+	 * Mark cluster 0 as synchronized (with itself), and all clusters
-+	 * without cores since there is no local GIC counter access on those.
-+	 */
-+	if (gic_synced_cl_map) {
-+		bitmap_set(gic_synced_cl_map, 0, 1);
-+		for (unsigned int cl = 0; cl < numclusters; cl++) {
-+			if (!mips_cps_numcores(cl))
-+				bitmap_set(gic_synced_cl_map, cl, 1);
-+		}
-+		synced = bitmap_full(gic_synced_cl_map, numclusters);
-+	}
-+
-+	if (numclusters > 1 && !synced) {
- 		gic_clocksource.read = &gic_hpt_read_multicluster;
- 		gic_clocksource.vdso_clock_mode = VDSO_CLOCKMODE_NONE;
-+		INIT_WORK(&gic_promote_work, gic_clocksource_promote);
- 	}
- 
- 	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
-@@ -288,7 +395,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 	 * change performed by the CPC core clocks divider.
- 	 */
- 	if ((mips_cm_revision() >= CM_REV_CM3 || !IS_ENABLED(CONFIG_CPU_FREQ)) &&
--	     !mips_cps_multicluster_cpus()) {
-+	     gic_clocksource.read == &gic_hpt_read) {
- 		sched_clock_register(mips_cm_is64 ?
- 				     gic_read_count_64 : gic_read_count_2x32,
- 				     gic_count_width, gic_frequency);
-
--- 
-2.55.0
-
+Also s/unampping/unmapping please.
+>
+> >
+> > Otherwise, LGTM.
+>
+> Thanks! :)
+>
+> >
+> > --
+> >   Kiryl Shutsemau / Kirill A. Shutemov
+>
+> --
+> Cheers, Lorenzo

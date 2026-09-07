@@ -1,225 +1,107 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D5C449B2B;
-	Mon,  7 Sep 2026 09:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDC778F4A
+	for <linux-mips@vger.kernel.org>; Mon,  7 Sep 2026 09:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788772225; cv=none; b=AGX5qMPG3lHQD944JKeaogEYCgInzKrcIC7sZ1K8jLuAYsehG1XFWhliU2S1Sc0BLfzkGSgAtx9l8pNG/ji/8Ns01C41Fvzw8u9NtkERnNxUqKbueyHNK7AYGabZLdYUpZ0EjpBmSClaGIRaXGoLy/VwUfbp/hBkNmw3mhUmLhI=
+	t=1788773995; cv=none; b=XTJqsWTyEN+T8zPmlG1FOp/FVqQzL1rfNyJx/5q+DC93821E/joBWqdFiVGtvoo/lN4XlYmOe+4JOfcCv71RV6774zHyXMcoK55d51qDOXN5UniIYv3s44PAnEmhv+wGdC+gESC9XJRA//o5TN3bBbGP9+wBZ+pyRR5rKHPUgfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788772225; c=relaxed/simple;
-	bh=roVB1YyvOHDzourAJL+8yzY10KYNevFGzbF5hvxfCTs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XQXRssDEPgqywF95X0Kdvw/otuAxaFTePI4cxyzT9YDyFhuonyxIYNR13bV5hhQQtRjtRbqXeqX4hMS1INyFwLSBuVWJQ9PLaoNaNReqcEZ9fasoQcuo00+GDfV7ELkyfl6kHTEBYkTOZkT+D5+lgWzDo8Qglc0nC7avIKWJ0Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ck6fDWhm; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ck6fDWhm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD071F00A3A;
-	Mon,  7 Sep 2026 09:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788772223;
-	bh=0PTXH8W20ZyoeViUs3nxicCtaP/fM9lwo8ORJUMduDI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Ck6fDWhmbLP1YgsRsRuTXHe/4iAJ/igArbL6LZOygJxCWOmoM8zca1XGojZXMTg7w
-	 pAH0yLC3VYhWaILiQemRDd5ZZKrWRDBpTv6/po5aZ+W3lLonSZ3BjQJpgUWW4oX9E7
-	 7xlQg/X9YCou573+ejK8NgDQtggDVbsXBdDgiOwHAgTir+oYxG2W6bDnBlnhr3ecGD
-	 EK6N+o/5dRbqYY4dMiDNFXKl7vgFWWcuquI6dqggPqOmNffEFxgUKsDGfpSaPSmTii
-	 HB2OtAIziidum01Xmu3pz8+8WqxT26L9Z9/nrzq17aLSmiky6RHF/LZn7vxtx83P01
-	 BQZBSHmFVpJzw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Gibson <warthog618@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Subject: [PATCH 2/2 v7] gpiolib: remove linux/gpio.h
-Date: Mon,  7 Sep 2026 11:09:56 +0200
-Message-ID: <20260907090956.2825703-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260907090956.2825703-1-arnd@kernel.org>
-References: <20260907090956.2825703-1-arnd@kernel.org>
+	s=arc-20240116; t=1788773995; c=relaxed/simple;
+	bh=WlL+j/Ie6m0Twd+B1P3rICow2WcfWKryEoGQ+1VVbBo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g0YVEISKE9I4OO47oKiH/UZId0AznnhzoOe6T3tCWVry5s3ZLfUCFDZU/805mtGL9NSgYQvcTAvkiNo/H7o5kieAsh8Dm2hT9L9V9SOKLMILNwkUVPcJ4YxHaA7tN084UIkVLrf6X7YOAXISDEMtzTfgjqmt6tXrr4z9tUwzpSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-5c7d65c83feso3200509e0c.1
+        for <linux-mips@vger.kernel.org>; Mon, 07 Sep 2026 02:39:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788773993; x=1789378793;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=idsP1neYZsT92lOTYUcwf/RINlIKDTK8HxAaGpjV2+8=;
+        b=O3c76+VILN0DHmByeLjjWaeB9mfQJOGmJHppqQTWUnOnlezAU0YAZev/WQvNWYtvmM
+         5qS1j2OvBRtsl5EfD3VwAoxqAuJh/uOpycQVvKdgNMEA5nkjJenYuDsorG4v5+iuix8L
+         f8mVWffnlTGndT46sUn++RUEWcocmO8CNkGfRAw6b4bHWSVy3t2htBa3W6zI4pZkp2j6
+         Gn1XfF90s9h1i+uTj+uNu+Rq73LAUVW8DiVDy6Ffpg3eN+gvLCCRr5SYupCcvqb7UUSU
+         AOCw26I3rK7VkH9lB308yntpv/YjvRWqnO0ggMJ0lQ/CvzVQLjZHRGdKhP30FE9PxUkl
+         Ygcw==
+X-Forwarded-Encrypted: i=1; AKwUvByG6ZAljo7KWN8ud6R9geVhRM3drl+y25eTL2c55zluTIiNUxOWbGZFcOd1L2Hu+WdYjbAOeIyZByEf@vger.kernel.org
+X-Gm-Message-State: AFuF++k5s/R0R6Q4FLyMHoIsCY2+VhdGA8VlCVsHH35hR/tPd6x6bSB5
+	QZ4Qui1isWGBKKB78aitMMAlQzb0B+01eVUGTdat5CCtfwR1arhot/ymsjqeodD2
+X-Gm-Gg: AYBFou3L2FkrKMlh1HhrqcZqOvD6sYd+ePXVH8sa0ZM6aUzoX3XDxePlhKL9oBwxSev
+	Yy0IYi8WuZ1WwrTBVnPtiwHqtaVViQsT9tuiuUm6B98OPgZg6J2Jm3eoCrS/7leZtmlRoD+B1+o
+	Ocss2F4wlsf1jarG1P+DHVoU596vbKBJYXqjoK3ku5GSOsAoK081Vj5g3IoRDbQ+lJD3nAoKP4i
+	MrKBx7eicNGauC9GSJM7ZnYtSV1+pYe9ZUbGVzLNPVt8wf4p73Gh/qr/05ssiALpgzHfX9ts9Pv
+	8bWsYap9hiXaPfHzhfEuv6jcIwbnK0zwzNrhSpMbxyHKuxPAUyuJajSMbmNTClpbPxNCYwQ1XkH
+	PvYcAA5Ku9zNyIKxkPESZrIIHsUF9xm8fgROkb1Fd4cXZQLlEMBE+jE8qvembOgfqsHQQGl1ONf
+	iOgxNMCWcMnGFQZMjLwXXIznmhUZeBUDhcpykp36D/uK3dSG9qwLYBxAp/xWWQ5hiYX9f4RNzVW
+	or9XCn7TLBEq03IF2D3BmKyIm4GlA==
+X-Received: by 2002:ac5:ce1c:0:b0:5c7:ed31:3c11 with SMTP id 71dfb90a1353d-5c7ed796b9amr9005408e0c.3.1788773993381;
+        Mon, 07 Sep 2026 02:39:53 -0700 (PDT)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c7ec25b9casm7432975e0c.11.2026.09.07.02.39.52
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2026 02:39:52 -0700 (PDT)
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5bfc5b77c02so3134750e0c.0
+        for <linux-mips@vger.kernel.org>; Mon, 07 Sep 2026 02:39:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxlqsEgqv0gzaQKtYf5m9t2+hmqLbmLwx3Z5tExDHcFXo7Srh/wVpe+dqAF7McuqImn55Cfbe+MnLfD@vger.kernel.org
+X-Received: by 2002:a05:6122:c8f:b0:5c6:4bab:4cb2 with SMTP id
+ 71dfb90a1353d-5c7ed80403dmr10646528e0c.6.1788773992044; Mon, 07 Sep 2026
+ 02:39:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260907090956.2825703-1-arnd@kernel.org> <20260907090956.2825703-2-arnd@kernel.org>
+In-Reply-To: <20260907090956.2825703-2-arnd@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 7 Sep 2026 11:39:40 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVc=ntgrDDqdNUzEbeQ=qjh7Pw=B3TSN+qOD5bRY4_i+g@mail.gmail.com>
+X-Gm-Features: AcwNN1Wp7dWP-FBPz6xYVraXlAq6_uFTgT8pt9uLR2DvecmC1uG2AIElIe46m7g
+Message-ID: <CAMuHMdVc=ntgrDDqdNUzEbeQ=qjh7Pw=B3TSN+qOD5bRY4_i+g@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v7] gpiolib: turn off legacy interface by default
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Linus Walleij <linusw@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Gibson <warthog618@gmail.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 7 Sept 2026 at 11:10, Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> All users of the legacy interface now select CONFIG_GPIOLIB_LEGACY,
+> so it can be turned off by default and only get built on platforms
+> that still have one unconverted driver.
+>
+> Allow turning it on manually for compile testing, in order to keep
+> the build coverage of the legacy drivers in allmodconfig and
+> randconfig.
+>
+> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com> # for input
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-After all other drivers have converted to linux/gpio/consumer.h
-or linux/gpio/legacy.h, remove the final leftover bits here.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- MAINTAINERS                                  |  1 -
- arch/mips/txx9/rbtx4927/setup.c              |  2 +-
- arch/sh/boards/mach-rsk/devices-rsk7203.c    |  2 +-
- drivers/gpio/TODO                            |  4 +---
- drivers/gpio/gpiolib-cdev.c                  |  2 +-
- drivers/gpio/gpiolib-legacy.c                |  3 +--
- drivers/gpio/gpiolib.c                       |  2 +-
- drivers/net/wireless/morsemicro/mm81x/hw.c   |  1 -
- drivers/net/wireless/morsemicro/mm81x/yaps.c |  1 -
- include/linux/gpio.h                         | 22 --------------------
- 10 files changed, 6 insertions(+), 34 deletions(-)
- delete mode 100644 include/linux/gpio.h
+Gr{oetje,eeting}s,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3a19da74d00c..ee06d678cd59 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11255,7 +11255,6 @@ F:	Documentation/devicetree/bindings/gpio/
- F:	Documentation/driver-api/gpio/
- F:	drivers/gpio/
- F:	include/dt-bindings/gpio/
--F:	include/linux/gpio.h
- F:	include/linux/gpio/
- K:	(devm_)?gpio_(request|free|direction|get|set)
- K:	GPIOD_FLAGS_BIT_NONEXCLUSIVE
-diff --git a/arch/mips/txx9/rbtx4927/setup.c b/arch/mips/txx9/rbtx4927/setup.c
-index 223889c03186..fdbe2bd87979 100644
---- a/arch/mips/txx9/rbtx4927/setup.c
-+++ b/arch/mips/txx9/rbtx4927/setup.c
-@@ -48,7 +48,7 @@
- #include <linux/ioport.h>
- #include <linux/platform_device.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/machine.h>
- #include <linux/leds.h>
- #include <asm/io.h>
-diff --git a/arch/sh/boards/mach-rsk/devices-rsk7203.c b/arch/sh/boards/mach-rsk/devices-rsk7203.c
-index e6b05d4588b7..eb56b57812bd 100644
---- a/arch/sh/boards/mach-rsk/devices-rsk7203.c
-+++ b/arch/sh/boards/mach-rsk/devices-rsk7203.c
-@@ -10,7 +10,7 @@
- #include <linux/interrupt.h>
- #include <linux/smsc911x.h>
- #include <linux/input.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/legacy.h>
- #include <linux/gpio_keys.h>
- #include <linux/leds.h>
- #include <asm/machvec.h>
-diff --git a/drivers/gpio/TODO b/drivers/gpio/TODO
-index 7ce80fde1f17..4fce4a7e4704 100644
---- a/drivers/gpio/TODO
-+++ b/drivers/gpio/TODO
-@@ -52,9 +52,7 @@ Work items:
-   base can be made dynamic (set to -1) if CONFIG_GPIO_SYSFS is disabled.
- 
- - When this work is complete (will require some of the items in the
--  following ongoing work as well) we can delete the old global
--  numberspace accessors from <linux/gpio.h> and eventually delete
--  <linux/gpio.h> altogether.
-+  following ongoing work as well) we can delete <linux/gpio/legacy.h>.
- 
- -------------------------------------------------------------------------------
- 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 9f3b628d5793..1c2c94387b77 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -11,7 +11,7 @@
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/file.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/driver.h>
- #include <linux/hte.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/gpio/gpiolib-legacy.c b/drivers/gpio/gpiolib-legacy.c
-index ef3f2ef30cf2..33e5a45e720b 100644
---- a/drivers/gpio/gpiolib-legacy.c
-+++ b/drivers/gpio/gpiolib-legacy.c
-@@ -7,8 +7,7 @@
- 
- #include <linux/gpio/consumer.h>
- #include <linux/gpio/driver.h>
--
--#include <linux/gpio.h>
-+#include <linux/gpio/legacy.h>
- 
- #include "gpiolib.h"
- 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index ef8ccaf17c9c..c9c517488e0a 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -29,7 +29,7 @@
- #include <linux/string.h>
- #include <linux/string_choices.h>
- 
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/driver.h>
- #include <linux/gpio/machine.h>
- 
-diff --git a/drivers/net/wireless/morsemicro/mm81x/hw.c b/drivers/net/wireless/morsemicro/mm81x/hw.c
-index 9293f4094db1..e48eaf151faa 100644
---- a/drivers/net/wireless/morsemicro/mm81x/hw.c
-+++ b/drivers/net/wireless/morsemicro/mm81x/hw.c
-@@ -7,7 +7,6 @@
- #include <linux/stringify.h>
- #include <linux/types.h>
- #include <linux/unaligned.h>
--#include <linux/gpio.h>
- #include "hif.h"
- #include "mac.h"
- #include "bus.h"
-diff --git a/drivers/net/wireless/morsemicro/mm81x/yaps.c b/drivers/net/wireless/morsemicro/mm81x/yaps.c
-index e98a2a58726f..252116425bc3 100644
---- a/drivers/net/wireless/morsemicro/mm81x/yaps.c
-+++ b/drivers/net/wireless/morsemicro/mm81x/yaps.c
-@@ -2,7 +2,6 @@
- /*
-  * Copyright (c) 2017-2026 Morse Micro
-  */
--#include <linux/gpio.h>
- #include <linux/random.h>
- #include <linux/timer.h>
- #include <linux/bitops.h>
-diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-deleted file mode 100644
-index b0d4942a65de..000000000000
---- a/include/linux/gpio.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * NOTE: This header *must not* be included.
-- *
-- * If you're implementing a GPIO driver, only include <linux/gpio/driver.h>
-- * If you're implementing a GPIO consumer, only include <linux/gpio/consumer.h>
-- * If you're using the legacy interfaces, include <linux/gpio/legacy.h>
-- */
--
--#ifndef __LINUX_GPIO_H
--#define __LINUX_GPIO_H
--
--#include <linux/types.h>
--#ifdef CONFIG_GPIOLIB
--#include <linux/gpio/consumer.h>
--#endif
--
--#ifdef CONFIG_GPIOLIB_LEGACY
--#include <linux/gpio/legacy.h>
--#endif /* CONFIG_GPIOLIB_LEGACY */
--
--#endif /* __LINUX_GPIO_H */
--- 
-2.53.0
+                        Geert
 
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

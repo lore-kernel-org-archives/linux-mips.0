@@ -1,46 +1,46 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61713B2FCE;
-	Tue,  8 Sep 2026 06:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44402390CA6;
+	Tue,  8 Sep 2026 06:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788849244; cv=none; b=WSoLgi7SXV6URsQD32on9SWIcSWssx9fEdrvrJZIixiVo7ZnFRfufGkeq68OzAz57Nv+GYxFbCp4ZrP8bTK1XuBBvSio9UpH2nywLH0R65bZXkhLD3V0Cnhjty+VELbFrRZJIN+wB8rJ0Uh6y3ezryqKxWo3qH662yepbt/KlGg=
+	t=1788849246; cv=none; b=o86rjQig41MnRVJlHvj36I/AUOBXUy7j8JFcjdNXPNkFxX9HQ2SGX/46HAiYHAYC0UQ+sAPffiDi2ZXF8n7HRbqo+6wGZ166Zmzlk2SXpTDNQCybz3h9XwftYFLK2fcZ5nYw1oRxsW/2TwXIQPc50Dn5CoZ70ZMaIHo+CEOGYWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788849244; c=relaxed/simple;
-	bh=fVRENHv4++0cFzLHw247YU3v29PEq48gHKwsMBM12mc=;
+	s=arc-20240116; t=1788849246; c=relaxed/simple;
+	bh=PdmcaVe7pCu6upu7UTobIjeT+xi6m7cmShZzdDyDUqA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mHjSxDel+aalVN/b31uKAL9T+sZbv7Mj5qw3EHTcbOmkc98yNDCswMU812urp46Gs0D1fXPiKujy+VEH0Jb0sCvaodrswGrcXWS98KvMtlhvLLuqlCk+e7Ga3JqihRozqaNXnId6Jw2g4csfHzYGo6kJn9VF3+GscpTByiRzTXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tegE4qZL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4mxmFhK1; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=AjUQ8uUz/MTbD5sxGZN7obWBUdfMbwH9WCYWAjKE/sIcSpyVu4T27Jd6eCe2i8ynFOFncHKpT8MzS1mAcaHA3MCs4C8j0BIDzK03c72Vd5m6tNCjAtEjxhSA1dlUWp3t47WqRLQe2MXBPsro3pnlnGJAYU566i0cjppvpPsn9ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Duhd+tzh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TsyWF+JN; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tegE4qZL";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4mxmFhK1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Duhd+tzh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TsyWF+JN"
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849236;
+	s=2020; t=1788849237;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pjTX9rrwFsXVQ2q23yM95x2dyNZBtSAXhGeuKQ5L7eY=;
-	b=tegE4qZLU1owA5WPV94NgVm8p3Mq8VaPjSNgdIHREOQX0Gq4XrSZl8OsvTeQR1o2O0ToqM
-	Xm367SkFstd763Eo6owFZJOJOAWxkHQOODKGvEdBzYq2B2/3kIr4yjHD9sszGcSCx1SptV
-	g635te+HDDk1q3DLMtLxqoOnnxvdb46zf2QSvzDnB/HCb3w5B+xo1N1QrnklDtH2DBA/vH
-	h9wkKXhqYCfsLN1Qg5IIcOSb1MyIg2wE9xuBL8Ypr6IrRO7QY62HIWAyRY7FpK7V5BWIoL
-	Z2JLtU1vH2fZ9+5kHdooMTILHKviv3/rHjwYnf9P/M2Jj6gxGtPxKR7+obn0gA==
+	bh=B5v9YeHlqv3ovO/ql+3n8/DnO9S76Q/KXTK4Iu9nIj8=;
+	b=Duhd+tzhOIqAKD5Jsk7S5bIW+1/U+0lAyREaDyVMtUfkM+/2g6McMuZ8BVCtyusCW6KJhw
+	wjBNCvGCpNGgmhFNn9x5FtX2pPVsVPQncpaQfdGxuDFM2F8njXe/d+MpW+sHlGTHGFoNTq
+	Irhfb/b0d78bbsC8nUcr59RO2R6WK1QG6Wmmqjub7uMBsV8HzhabnT8Q3BXaImhnViQuCI
+	99Y24z+RnYH8P+/0VTaa0of5QDISRCOgkSmlsMF9mLF5D2je6Fs4Q2NdAPmpcUGUDioSm3
+	I7ouCpMLG1e5cQUG5eQhiKpjN9lpx2nzj/DsTf8/2g6tDQdVpp9HJVE2/Kspiw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849236;
+	s=2020e; t=1788849237;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pjTX9rrwFsXVQ2q23yM95x2dyNZBtSAXhGeuKQ5L7eY=;
-	b=4mxmFhK1TnLVvFb5Gy1yTMnk/5fB8HgnBZCO8URerY3D/Q/wTzne2uXK0IjtSF7q4DaUDA
-	DdO8rhE6PBNDdBAw==
-Date: Tue, 08 Sep 2026 08:33:49 +0200
-Subject: [PATCH v5 15/24] arm64: vdso: Enable the vdsocheck tool
+	bh=B5v9YeHlqv3ovO/ql+3n8/DnO9S76Q/KXTK4Iu9nIj8=;
+	b=TsyWF+JNT75r27JmDD427VBvLmTOCV3ff2Y7hv2xF0uvSSVXKhCkoTtj5xhp4+hfJtB9PC
+	YrBA0mfCXrb6F8Cw==
+Date: Tue, 08 Sep 2026 08:33:51 +0200
+Subject: [PATCH v5 17/24] powerpc/vdso: Enable the vdsocheck tool
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-15-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-17-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -91,11 +91,11 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=2617;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=3226;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=fVRENHv4++0cFzLHw247YU3v29PEq48gHKwsMBM12mc=;
- b=DDwbzH/SMGlKwp0xQn0FvyrfKZTXWpkAu8j9jSc4YRcRhytEC3Z/8E0SynIo/dONb3pcsCUqF
- v5dgouxRsS1CXrQYp0Ti0evF1Q/1uFXGqIg/yNttK78bWL8R2JJA0xa
+ bh=PdmcaVe7pCu6upu7UTobIjeT+xi6m7cmShZzdDyDUqA=;
+ b=KtzFUmFB6ajLIxA6GIlsiL6NZpPyhZkhtmdUQSlrxF2Z0EifBwB7dmyJS0AwkyNYLtHN5Uenz
+ k87bxRvOvh3AuR3/IHMkszUyZg00Zcqz3Ne04gmZUna19VeKFdykejP
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
@@ -105,62 +105,72 @@ with the vDSO which need to be worked around.
 
 Wire it up for the architecture.
 
-The compat vDSO will be handled by the existing 32-bit ARM configuration.
-
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/arm64/Kconfig              |  1 +
- arch/arm64/kernel/vdso/Makefile |  4 ++--
- lib/vdso/check/vdsocheck.rs     | 12 ++++++++++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
+ arch/powerpc/Kconfig              |  1 +
+ arch/powerpc/kernel/vdso/Makefile |  4 ++--
+ lib/vdso/check/vdsocheck.rs       | 27 +++++++++++++++++++++++++++
+ 3 files changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b5a51b0ef944..1caaf4737f02 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -258,6 +258,7 @@ config ARM64
- 	select TRACE_IRQFLAGS_NMI_SUPPORT
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select USER_STACKTRACE_SUPPORT
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 2580e27e4328..f19e225cfc5c 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -330,6 +330,7 @@ config PPC
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
+ 	select TRACE_IRQFLAGS_SUPPORT
 +	select VDSO_CHECK
+ 	select VDSO_DATASTORE
  	select VDSO_GETRANDOM
- 	select VMAP_STACK
- 	help
-diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-index 7dec05dd33b7..9fac0e54097d 100644
---- a/arch/arm64/kernel/vdso/Makefile
-+++ b/arch/arm64/kernel/vdso/Makefile
-@@ -61,7 +61,7 @@ targets += vdso.lds
- CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ 	#
+diff --git a/arch/powerpc/kernel/vdso/Makefile b/arch/powerpc/kernel/vdso/Makefile
+index 368759f81708..ca20b91b4373 100644
+--- a/arch/powerpc/kernel/vdso/Makefile
++++ b/arch/powerpc/kernel/vdso/Makefile
+@@ -81,9 +81,9 @@ targets += vdso64.lds
+ CPPFLAGS_vdso64.lds += -P -C
  
- # Link rule for the .so file, .lds has to be first
--$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
-+$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) $(vdsocheck) FORCE
- 	$(call if_changed,vdsold_and_vdso_check)
+ # link rule for the .so file, .lds has to be first
+-$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o FORCE
++$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o $(vdsocheck) FORCE
+ 	$(call if_changed,vdso32ld_and_check)
+-$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o FORCE
++$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o $(vdsocheck) FORCE
+ 	$(call if_changed,vdso64ld_and_check)
  
- # Strip rule for the .so file
-@@ -79,4 +79,4 @@ include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
- 
- # Actual build commands
- quiet_cmd_vdsold_and_vdso_check = LD      $@
--      cmd_vdsold_and_vdso_check = $(cmd_ld); $(cmd_vdso_check)
-+      cmd_vdsold_and_vdso_check = $(cmd_ld_vdso); $(cmd_vdso_check)
+ # assembly rules for the .S files
 diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
-index fb88ef0be09d..e45a1fbc6829 100644
+index e45a1fbc6829..429bdcd65818 100644
 --- a/lib/vdso/check/vdsocheck.rs
 +++ b/lib/vdso/check/vdsocheck.rs
-@@ -57,6 +57,18 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
+@@ -69,6 +69,33 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
              ..Default::default()
          }
          .into(),
-+        bindings::EM_AARCH64 => AllowedRelocations {
++        bindings::EM_PPC => AllowedRelocations {
 +            in_object_file: &[
-+                bindings::R_AARCH64_PREL64,
-+                bindings::R_AARCH64_PREL32,
-+                bindings::R_AARCH64_PREL16,
-+                bindings::R_AARCH64_LD_PREL_LO19,
-+                bindings::R_AARCH64_ADR_PREL_LO21,
-+                bindings::R_AARCH64_CALL26,
++                bindings::R_PPC_REL24,
++                bindings::R_PPC_REL14,
++                bindings::R_PPC_REL32,
++                bindings::R_PPC_REL16,
++                bindings::R_PPC_REL16_LO,
++                bindings::R_PPC_REL16_HI,
++                bindings::R_PPC_REL16_HA,
++            ],
++            ..Default::default()
++        }
++        .into(),
++        bindings::EM_PPC64 => AllowedRelocations {
++            in_object_file: &[
++                bindings::R_PPC64_REL24,
++                bindings::R_PPC64_REL14,
++                bindings::R_PPC64_REL32,
++                bindings::R_PPC64_REL64,
++                bindings::R_PPC64_REL16,
++                bindings::R_PPC64_REL16_LO,
++                bindings::R_PPC64_REL16_HI,
++                bindings::R_PPC64_REL16_HA,
 +            ],
 +            ..Default::default()
 +        }

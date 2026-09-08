@@ -1,30 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7402F1FC3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE1D5592F7;
 	Tue,  8 Sep 2026 14:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788877034; cv=none; b=q7GGPjdgOQIVL21QK4o0JW2ftTDOYIwBAG4aT8JfTA0HropWavNdi2p3C+KwUceS6uhtbTw+4yD7bzTGiijDtGhAhk74XvO4yrzsotlGhkYQgWT6yEpBLgktwWWrJ1uRM8a5ZwMf1RHdc29hoi212CCUh1sof0l+8V4XGkcCgR8=
+	t=1788877035; cv=none; b=KDzwcfsSEzwqxjnxlbjPzGdAJb13gOag6M9Xgg2lK2kueHInMLeddmR3fgBgCQCx5TB4jmRqZOwEvSyLTaye0kldoAWANj/3G57UAiziKGUDRBF2lB2kcKMwSbokITwCymgjFbxQLSzlE8A/vH7k5zA3BPehDaqMpD6Tk7M6+lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788877034; c=relaxed/simple;
-	bh=t1okoGPaxHAt35FqcHquy0wxG8EyE9Pc1d0XxM7Rewg=;
+	s=arc-20240116; t=1788877035; c=relaxed/simple;
+	bh=F7d7vUa9WQfkc7W5AyK7dAWJLmsWu1piFBCbiY/SUBQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h12S7LeBYvlE8R6OZ6dUwi6+tHF6Y3nHim53ximQB3PetYbf8PVpp5QmcfD4G+2+Aj1tgQ6lEMFERyUBZeCipXnc2wkIfe5h6KjdrOU76Q/WZH+wil6ZY4QWX0xr89S5rW5fB2qqzXTQjxtqLg9TdNGfpJw2rvoHA8JX1Qo1PDA=
+	 Content-Type:Content-Disposition:In-Reply-To; b=PFj0AO/JdfJmBlrpCyNdjPLMWw7j4kjkT2a6bFu7DvVbU4fOH9wa7Fvr2QyFlvZnZxQhcTxfbsQ4KngW6JGIZoazqMzxA/4CDMq75N038neyuWEeeJ9ExhoRRS3OA1oI/jbl2BBFGIRDM5mw41tM7ZO4T3qC/vtGVKPFwk+LM6I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1x3wd3-0002fh-00; Tue, 08 Sep 2026 16:16:53 +0200
+	id 1x3wd2-0002ff-00; Tue, 08 Sep 2026 16:16:52 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 87ED2C0133; Tue,  8 Sep 2026 16:15:18 +0200 (CEST)
-Date: Tue, 8 Sep 2026 16:15:18 +0200
+	id 1466CC0130; Tue,  8 Sep 2026 16:14:18 +0200 (CEST)
+Date: Tue, 8 Sep 2026 16:14:18 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Orgad Shaneh <orgads@gmail.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Octeon: apply USB FDT fixups also when USB is
- modular
-Message-ID: <aqAYdvTNO4DOYAdF@alpha.franken.de>
-References: <20260827175728.1574-1-orgads@gmail.com>
- <20260901193357.1352617-1-orgads@gmail.com>
+To: Julian Braha <julianbraha@gmail.com>
+Cc: arnd@arndb.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cjd@cjdns.fr
+Subject: Re: [PATCH v2] mips: econet: fix unmet dependencies for ECONET
+Message-ID: <aqAYOi0AMN_N2JLl@alpha.franken.de>
+References: <20260815235109.666268-1-julianbraha@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -33,50 +32,65 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260901193357.1352617-1-orgads@gmail.com>
+In-Reply-To: <20260815235109.666268-1-julianbraha@gmail.com>
 
-On Tue, Sep 01, 2026 at 07:33:55PM +0000, Orgad Shaneh wrote:
-> The uctl/usbn device-tree fixups in octeon_prune_device_tree() - which
-> set the board's USB reference-clock frequency and type from
-> __cvmx_helper_board_usb_get_clock_type() - are guarded by
-> "#ifdef CONFIG_USB", which is false when USB is built as a module. The
-> fixups then silently disappear and octeon-hcd sees whatever default the
-> DTS carries (12MHz crystal in octeon_3xxx.dts), leaving the PHY dead or
-> the bus erroring on boards with a different reference clock.
+On Sun, Aug 16, 2026 at 12:51:09AM +0100, Julian Braha wrote:
+> ECONET selects EARLY_PRINTK_8250, SERIAL_OF_PLATFORM, and SERIAL_8250
+> without ensuring their dependencies, EARLY_PRINTK and TTY are met. This
+> causes unmet dependencies:
 > 
-> Use IS_ENABLED() so USB=m gets the same fixups as USB=y.
+> WARNING: unmet direct dependencies detected for SERIAL_8250
+>   Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && !S390
+>   Selected by [y]:
+>   - ECONET [=y]
 > 
-> Fixes: 7fd57ab9d9cf ("MIPS: Octeon: Fix compile error when USB is not enabled.")
-> Assisted-by: Claude:claude-opus-5
-> Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+> WARNING: unmet direct dependencies detected for EARLY_PRINTK_8250
+>   Depends on [n]: EARLY_PRINTK [=n] && USE_GENERIC_EARLY_PRINTK_8250 [=y]
+>   Selected by [y]:
+>   - ECONET [=y]
+> 
+> WARNING: unmet direct dependencies detected for SERIAL_OF_PLATFORM
+>   Depends on [n]: TTY [=n] && HAS_IOMEM [=y] && SERIAL_8250 [=y] && OF [=y]
+>   Selected by [y]:
+>   - ECONET [=y]
+> 
+> However, in the discussion of v1 of this patch, Arnd pointed out that these
+> selects don't belong here in the first place. [1]
+> Let's remove them to resolve the unmet dependencies.
+> 
+> These unmet dependencies were found by kconfirm, a static analysis tool for
+> Kconfig.
+> 
+> Fixes: 79ee1d20e37c ("mips: econet: Fix incorrect Kconfig dependencies")
+> Fixes: 35fb26f94dfa ("mips: Add EcoNet MIPS platform support")
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 > ---
+> Link: https://lore.kernel.org/all/59c5582d-6fc1-48d0-a5df-b3b6f58aa227@app.fastmail.com/ [1]
 > 
-> v2: no code change; added the Assisted-by tag for the AI assistance used
->     (Documentation/process/coding-assistants.rst).
+> Changes since v1: remove the selects, instead of selecting more
+> Link to v1: https://lore.kernel.org/all/20260802161555.491549-1-julianbraha@gmail.com/
+> ---
+>  arch/mips/Kconfig | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/arch/mips/cavium-octeon/octeon-platform.c b/arch/mips/cavium-octeon/octeon-platform.c
-> --- a/arch/mips/cavium-octeon/octeon-platform.c
-> +++ b/arch/mips/cavium-octeon/octeon-platform.c
-> @@ -18,7 +18,7 @@
->  #include <asm/octeon/octeon.h>
->  #include <asm/octeon/cvmx-helper-board.h>
->  
-> -#ifdef CONFIG_USB
-> +#if IS_ENABLED(CONFIG_USB)
->  #include <linux/usb/ehci_def.h>
->  #include <linux/usb/ehci_pdriver.h>
->  #include <linux/usb/ohci_pdriver.h>
-> @@ -1080,7 +1080,7 @@
->  		;
->  	}
->  
-> -#ifdef CONFIG_USB
-> +#if IS_ENABLED(CONFIG_USB)
->  	/* OHCI/UHCI USB */
->  	alias_prop = fdt_getprop(initial_boot_params, aliases,
->  				 "uctl", NULL);
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index e2eb9627bd14..c3f69def2008 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -396,10 +396,7 @@ config ECONET
+>  	bool "EcoNet MIPS family"
+>  	select BOOT_RAW
+>  	select DEBUG_ZBOOT if DEBUG_KERNEL
+> -	select EARLY_PRINTK_8250
+>  	select ECONET_EN751221_TIMER
+> -	select SERIAL_8250
+> -	select SERIAL_OF_PLATFORM
+>  	select SYS_SUPPORTS_BIG_ENDIAN
+>  	select SYS_HAS_CPU_MIPS32_R1
+>  	select SYS_HAS_CPU_MIPS32_R2
 > -- 
-> 2.47.0
+> 2.55.0
 
 applied to mips-fixes
 

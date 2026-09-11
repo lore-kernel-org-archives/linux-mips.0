@@ -1,107 +1,199 @@
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7311F34D4E9
-	for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 16:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789144693; cv=pass; b=SM6IBNwIol6QHOCw1b6D9jqlhKkYI7H0vbw9Kj2V7dIkHIPAzSDY2KqP1CX/QQI7opTdmGKme9/Hm8+IHVT1JoL+06z3lIcvo9eq+zExTRQVOlBYaXV4RUf/crh3zGbHcQG/iVgwTlTZLxTQV3jU7/qKs97cFKzku3uCeG9MHCM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789144693; c=relaxed/simple;
-	bh=Z05kgezgeQBnAhHNLQ06IrbWptjbuPKQZgHZ1hJUBJw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZjoJ/hA1b7rmebhAWsUlURb/ZODJUvc17zjfhzqsxeQk19cFYV7GKoRIeKqmvofwMg5Aw30nhK2DmjU3rhW8Q1KFJl9d0AN0B9UiIZudnjVsQ6Tq44tMmeRBdyhBn89dr9urgFnzebJ6ofmJFUknMeoBe1Glvy7En5wDiG6B5aI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2M4yfDS; arc=pass smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7059A4A8FEC;
+	Fri, 11 Sep 2026 17:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789149284; cv=none; b=aKtg2rgat9HzkwiE8jha72lJSaC6NVuFk80iGZUBJQxVP1GRdMaX6QQtR9m0Gy5UgrWzv/iVr0+79KgFDPNA7ZkHWNZeIAvRO5boYJkdDoBAV15pQQkHo7NnleJqSkNhVkYffFYcV3QDRpuc6d11FTQhOJaiT1+9LlAyqKYD0xE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789149284; c=relaxed/simple;
+	bh=oT2HAQRYlBxYWXZEJgDhIx6sNDjZsCE9IaHCPNajnNI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gMGV6YWZF2aFmna3PGzcIZN+DzjlO9t+JSuAex66A6+rQRicnrPQRFwtmwRBhLA8tMw78HbaZuoCmNA97Hmv9AJuuqH+D6jHHEA6aAjNwNUFGcaOqR+5YoTgmpgP+n6xQKDhkuJFP44fGgDojbUQWXZiMHBHAGMasQ+NbOt10x8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/PEF628; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2M4yfDS"
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-c25420fe973so194564166b.0
-        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 09:38:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789144687; cv=none;
-        d=google.com; s=arc-20260327;
-        b=NzgVJCpjgzziIn+aHriM2yAOTFxlPk/lBhRBN1CWLO+kYMpuL72PQWJrr1QM0VXicm
-         1zwISGGxOHHBn9uIU2URCEMmFnD6qyCjBaKI7YFsHk2+xK88IZNBpO4VnRJRh4PKNYos
-         ngKg/62GjFEbFqHIknXDGK8qHMzT/243gc5v5h5JpCZmRL1eUioB/pPqI3uoBlSf0odJ
-         xE8CBtRsI8pmLvCCzAkSnems5mU3f2sKDPfYWI5t9FSwKL8PRXoTDDl4+HBQJ+PRMbnS
-         wiV0Aovx64gVnvtHViBdg9F+K4h785CWFDV0iZH2XT29JjeMXefTEaWuk7rnOoD02jLK
-         q2uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=Z05kgezgeQBnAhHNLQ06IrbWptjbuPKQZgHZ1hJUBJw=;
-        fh=dSBsaLxN1O5QcKrihZBIXLHhSA9zyKZVvoxneKAtu2w=;
-        b=DzwP3mwbXq4pHkqt23tMAykicBcXfwSv/xNUJefjG59D4civnun7/tZ6YfZyBlZX+1
-         9YE/3HNTo2zG+EjZhkuyw8laEKTC9oBr1SR6KvLxHPYlEbKYXMZGK/BcolJkjlM4JOTZ
-         VSkL3vhmNx7sw8lizqtGKU/3MCDBycnypmavmnHQBcrkrj6DwzWzj7AuEaJmu0hoxemQ
-         YH/2Qm0PdUjY/xXfVYEOCvxqpEyIe99dVs2+flkddSUHpfS4UnlYfyEP82yWvqKB/rq9
-         57BI9RhtY0PIFrBbZHbaJAMtiNyKsC0N0OXGGiHqoKZI8bZl4TmGwRtmglb9gdvIjyVI
-         rIDw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789144687; x=1789749487; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Z05kgezgeQBnAhHNLQ06IrbWptjbuPKQZgHZ1hJUBJw=;
-        b=g2M4yfDSACO/61PjGPBqrQrc0uxYXzpECVYGcmNPOYeaVOercFn43MaC34b7TKeOyQ
-         /vboXhT84q4ct7WEnTdjtTEPCkIxDqVol49N9RvYqqrqJFZ2+kouvQKAB4ziBlVuN7ci
-         +UH/CzRekC6lUCYwHDjF38Xv6OPAmykgyhQ1LZvh/YZd43KOUnp+HhIAP41WbAl8jbuN
-         crgTVbtRD9D+cDvw1ZIS+QSLRRUbXrnlA69krUc3znpM/G5PTzsiJ7+J77KVPhNc7MMg
-         H1OnUKJfSWUe1oixFPMtZZmH0g1nfLBX8DY5S3Bl5pUjx6/aVqpvRHp66BaDgp1IbvW3
-         Pswg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789144687; x=1789749487;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=Z05kgezgeQBnAhHNLQ06IrbWptjbuPKQZgHZ1hJUBJw=;
-        b=HLqKw3vTQeavEN2UCfmNUl7ASVdsNYEaYWHYE/+48dsRwbUDVUmmTTo0FxJ+0uCG44
-         1OeLvxldL3W+DebtAMAtGgSH1b4h3R72Kjz1lDIHskyixVEF58F4Qwhn0GuOF3vBthG7
-         JnmhflGgiqBWenkoIB6X97Uc7r769x+ZOU/7084R4917+g72cNRGz9qWPz8cvToxAnEN
-         xGUCImsFoKYumUs6N0HXJ8uBILPbsw322P+9xiCp5nmzELhEonkH64OspLneOsnOjtb3
-         j2mq2Ez4L33Ryx+Vv0Y/1rKymFzF1pOTVcMo2LAMQ6uwST2U15HYceYTWDXv70kQQlkM
-         VhTA==
-X-Forwarded-Encrypted: i=1; AKwUvBx8BlsKvH1W0JZFbijWtybp+w8k5BoPx0xQPXzMfJz715H719A/Sd547a+l4F+Y4bPWrbbBa3k5TcFn@vger.kernel.org
-X-Gm-Message-State: AFuF++nzfwhHLgYWKljthMpTdxDfgnylnfuGj0l4IO0y7Bprx69Vl1/P
-	I5a7kE97VpXMWIrF/6nH1yiYzopET7I7wgXFNB1/C6PRwJ6KbPnnrCV5AyJVYx3zrZ0avQ7C0YZ
-	cP98u+fg9iV/WdeQ3OPcKJq0sxtX8KqE=
-X-Gm-Gg: AYBFou1vXtOQ+IN8X5ag88JgFHZ7I+wzT58PX2D6fj7C0hSIIWTWlm0NDDfU3EPYYao
-	zZyUfBsYQNbMEtr40H/qOVNJz3EVlMxP+drAlR077I7Z0H1xb+93+TLccc4qe6YClxnOZ+dyeYS
-	webyaLbLMtg741Pg/nhakqrKqjptgR8+i7cao5z7Hvkabp7Xzr8yi1PQxinBPTIAFkIdWS/42/E
-	1xBg8KLLO8Y+DVix+Qnu8ClgYgDJ3ZOam7LDL+kRY5TIZqFkINio9gyNpV4x3SgfQhMzAJ9PcE4
-	jZzu/N9kR0/KZplPl9fSjr5WI6Gz5niBPuShSi0ogMtapgfDhG0XIeLaB6xaJnqI
-X-Received: by 2002:a17:907:73cd:b0:c1c:2007:298e with SMTP id
- a640c23a62f3a-c29666bc8e7mr228183666b.24.1789144686888; Fri, 11 Sep 2026
- 09:38:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/PEF628"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E7A1F000FF;
+	Fri, 11 Sep 2026 17:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789149283;
+	bh=4FwTYwpGmaK+5ispCEK7HH92jJqAfeRrVmWamTSNnqs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=R/PEF628C82R18CCBiTVgSxDDQxOmmbSQCnHAqmpckaTKvXRHHjbFndk35q0VJwbm
+	 kb2jEKyMa0SLgFgUCZjypSy8TU4f91YFYaL79LnYDkmD5YZ7AL7XoikZdUl97oCh3x
+	 QlUxYbS81ijVUF5fVhlk944TP7D2LmZtxTQuDrzP5dxAVnzOZPYc7bhPn+cxm0sUWh
+	 B4hxxUT5Cc5n6F5+/wjf5RtfTI0VG6FXcU6ZU4ZIB3MMKn1qFBNrVgDZdCZnR5hRoj
+	 ktqkGCSA0q7dC/KO31sDOWJ1h+hudAjLc0nPKfhMCyskclXeDI5VaQY7ZPVta2w4Q2
+	 g7mHI+jtqwWgA==
+Date: Fri, 11 Sep 2026 12:54:37 -0500
+From: Serge Hallyn <sergeh@kernel.org>
+To: =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>, ashish.kalra@amd.com,
+	michael.roth@amd.com, nsaenz@amazon.com, anelkz@amazon.de,
+	James.Bottomley@hansenpartnership.com,
+	Melody Wang <huibo.wang@amd.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+	x86@kernel.org, coconut-svsm@lists.linux.dev, joerg.roedel@amd.com
+Subject: Re: [PATCH 29/60] kvm: Implement KVM_CREATE_PLANE ioctl
+Message-ID: <aqRAXTdtUY_Yt8zJ@shallyn-amd>
+References: <20260608144252.351443-1-joro@8bytes.org>
+ <20260608144252.351443-30-joro@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260904111731.673341-1-main.kalliope@gmail.com>
- <20260904111731.673341-3-main.kalliope@gmail.com> <CAM1=_QTN3JJ6jtckf32F8wxBzLDbHSrzUttyMBWNqZKmRe=2rg@mail.gmail.com>
-In-Reply-To: <CAM1=_QTN3JJ6jtckf32F8wxBzLDbHSrzUttyMBWNqZKmRe=2rg@mail.gmail.com>
-From: Nicholas Dudar <main.kalliope@gmail.com>
-Date: Fri, 11 Sep 2026 12:37:53 -0400
-X-Gm-Features: AcwNN1UBDacB_mdUgPo31Abc79q-kaSzXTwE_yQATKEr1z50cei1mPjcgBoyYeY
-Message-ID: <CAJZwKkghmHn1twrwTtfGSZg5NZ5FMu8L_=6N_pb0VrP75GMKGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, mips: Add support for BPF_MOVSX in
- the JITs
-To: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
-	memxor@gmail.com, paulburton@kernel.org, tsbogend@alpha.franken.de, 
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
-	bpf@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260608144252.351443-30-joro@8bytes.org>
 
-> I would suggest that we do this optimization.
+On Mon, Jun 08, 2026 at 04:42:21PM +0200, Jörg Rödel wrote:
+> From: Paolo Bonzini <pbonzini@redhat.com>
+> 
+> Add a new VM ioctl to create a new plane. It returns a new file
+> descriptor which supports per-plane ioctls.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Co-developed-by: Joerg Roedel <joerg.roedel@amd.com>
+> Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
+> ---
+>  include/uapi/linux/kvm.h |  2 ++
+>  virt/kvm/kvm_main.c      | 75 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 77 insertions(+)
+> 
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 813f964a6dc1..24e34b8e4819 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1355,6 +1355,8 @@ struct kvm_s390_keyop {
+>  #define KVM_GET_DEVICE_ATTR	  _IOW(KVMIO,  0xe2, struct kvm_device_attr)
+>  #define KVM_HAS_DEVICE_ATTR	  _IOW(KVMIO,  0xe3, struct kvm_device_attr)
+>  
+> +#define KVM_CREATE_PLANE	  _IO(KVMIO, 0xe4)
+> +
+>  /*
+>   * ioctls for vcpu fds
+>   */
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 5a0277e2ac7c..03a44ff62f0f 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4843,6 +4843,34 @@ static long kvm_vcpu_compat_ioctl(struct file *filp,
+>  }
+>  #endif
+>  
+> +static long kvm_plane_ioctl(struct file *filp, unsigned int ioctl,
+> +			    unsigned long arg)
+> +{
+> +	struct kvm_plane *plane = filp->private_data;
+> +
+> +	if (plane->kvm->mm != current->mm || plane->kvm->vm_dead)
+> +		return -EIO;
+> +
+> +	switch (ioctl) {
+> +	default:
+> +		return -ENOTTY;
+> +	}
+> +}
+> +
+> +static int kvm_plane_release(struct inode *inode, struct file *filp)
+> +{
+> +	struct kvm_plane *plane = filp->private_data;
+> +
+> +	kvm_put_kvm(plane->kvm);
+> +	return 0;
+> +}
+> +
+> +static struct file_operations kvm_plane_fops = {
+> +	.unlocked_ioctl = kvm_plane_ioctl,
+> +	.release = kvm_plane_release,
+> +	KVM_COMPAT(kvm_plane_ioctl),
+> +};
+> +
+>  static int kvm_device_mmap(struct file *filp, struct vm_area_struct *vma)
+>  {
+>  	struct kvm_device *dev = filp->private_data;
+> @@ -5288,6 +5316,49 @@ static int kvm_vm_ioctl_get_stats_fd(struct kvm *kvm)
+>  	return fd;
+>  }
+>  
+> +static int kvm_vm_ioctl_create_plane(struct kvm *kvm, unsigned id)
+> +{
+> +	struct kvm_plane *plane;
+> +	struct file *file;
+> +	int r, fd;
+> +
+> +	if (id >= kvm_arch_max_planes(kvm) ||
+> +	    WARN_ON_ONCE(id >= KVM_MAX_PLANES))
+> +		return -EINVAL;
+> +
+> +	guard(mutex)(&kvm->lock);
+> +	if (kvm->planes[id])
+> +		return -EEXIST;
+> +
+> +	fd = get_unused_fd_flags(O_CLOEXEC);
+> +	if (fd < 0)
+> +		return fd;
+> +
+> +	plane = kvm_create_plane(kvm, id);
+> +	if (!plane) {
+> +		r = -ENOMEM;
+> +		goto put_fd;
+> +	}
+> +
+> +	kvm_get_kvm(kvm);
+> +	file = anon_inode_getfile("kvm-plane", &kvm_plane_fops, plane, O_RDWR);
+> +	if (IS_ERR(file)) {
+> +		r = PTR_ERR(file);
+> +		goto put_kvm;
+> +	}
+> +
+> +	fd_install(fd, file);
+> +	return fd;
+> +
+> +put_kvm:
+> +	kvm_put_kvm(kvm);
+> +	kvm_destroy_one_plane(plane);
 
-Thanks for reviewing. I'll get working on the seb/seh additions and
-ISA-specific MOVSX handling. I'll send SDIV/SMOD v4 with the updated
-uasm patch, followed by MOVSX v3.
+I believe shashiko is right here, and I don't see it changed in a later
+patch:  kvm->planes[id] will still point to the now-freed plane.
+Probably best if kvm_destroy_one_plane(plane) sets that to NULL itself
+after freeing the plane.
 
-Nicholas
+> +put_fd:
+> +	put_unused_fd(fd);
+> +	return r;
+> +}
+> +
+> +
+>  #define SANITY_CHECK_MEM_REGION_FIELD(field)					\
+>  do {										\
+>  	BUILD_BUG_ON(offsetof(struct kvm_userspace_memory_region, field) !=		\
+> @@ -5306,6 +5377,9 @@ static long kvm_vm_ioctl(struct file *filp,
+>  	if (kvm->mm != current->mm || kvm->vm_dead)
+>  		return -EIO;
+>  	switch (ioctl) {
+> +	case KVM_CREATE_PLANE:
+> +		r = kvm_vm_ioctl_create_plane(kvm, arg);
+> +		break;
+>  	case KVM_CREATE_VCPU:
+>  		r = kvm_vm_ioctl_create_vcpu(kvm, arg);
+>  		break;
+> @@ -6676,6 +6750,7 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+>  	kvm_chardev_ops.owner = module;
+>  	kvm_vm_fops.owner = module;
+>  	kvm_vcpu_fops.owner = module;
+> +	kvm_plane_fops.owner = module;
+>  	kvm_device_fops.owner = module;
+>  
+>  	kvm_preempt_ops.sched_in = kvm_sched_in;
+> -- 
+> 2.53.0
+> 

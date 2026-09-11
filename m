@@ -1,177 +1,137 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk2-f13.google.com (mail-qk2-f13.google.com [74.125.230.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6A04AB1A0;
-	Fri, 11 Sep 2026 19:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD197486415
+	for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 21:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789155733; cv=none; b=jctm52LycoyxZb6YT8Zx7C2SRrpe01fYdK74puzPu387aR4KnGCeJbFQY4UzggyHTwHIg2XNaaBEHTI1bUHccIwXR8lqUVQLAW1bG7sIBTnFD6ud5aI0dGayVFXD2VGEGH+yHr6DYg0kV5Thsj1/B6bOinR7JROAVOm9clPsSbs=
+	t=1789162434; cv=none; b=oU/McuPZBAI35j9FOoA6uV+JRL20cjOzMoCyIcgUzNaE1Y3WUvccRzZ24oHDRN/xP6fB2kGixx8fqEjoOoXZCRB5xfJCzooLQ41T7GxarVQ6mDAEdJ1vNo+oWBMgvFicK1fUrszFvZse+lXi36cu+qqJhlRNBPVX733tmTyzHyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789155733; c=relaxed/simple;
-	bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jKYBsWIkMs8vqLDfR0l0/ZQwRW+iQw0lhgA5FXBkk2pJia49SAdio/51gWF3WXfV8ogbFhd/wQUN12iGHwiw2epf8AXqA60YhgdnC8UYriXueO6YuXoA8yzpqE4nhEw+0pJ80B1v84h96Yk/6ma8ULrjGTX+T5MZnKt75uFKrOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5hZkxPe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789162434; c=relaxed/simple;
+	bh=6WWUp9R5KMfa/CshmsP7UggokIFh/r96TCUO6MKrmrk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QTdnqgkwAi1MkYWIm2s9ibs1n+/W9TEPCiR+xNID6sgVtTmZurwSznv7Dya3kzROuSa/XxuDuAtFKaG97ard6nkvUlFaF0y+GvpkXOPd2RPcDubTd093Pf2vs8UfhubFk+SL8bRCO9rE2nkamnvHNsGYhR9WIm2zKVusKmmddqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FPGGKtkF; arc=none smtp.client-ip=74.125.230.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5hZkxPe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6EE1F00893;
-	Fri, 11 Sep 2026 19:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789155714;
-	bh=M7feebBV+4w0SqCnHHPUA0WnsaaqlXi4RbYO862HspA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=b5hZkxPeby4ytfMTJauKfEirdwvu+obLbvn3xWPzZcr0wBfX3w+c2kujWFIcDpY9n
-	 25FLBvyf42J+UZUzQbo4EoU7R+DQKAdV1weZ0+5Qm1djVUXn5MsNCrmeyoRpAkTbTJ
-	 siMNDnCxo7ntKpAO1aUHoIFfJkSGnCkmDedyGaQ3sl0jd3SZvqvmObc3YM/xNBonZf
-	 k+LnB3mpReS5jSnuryAr5mgkoBDh+B/eY8XbcD0SZAWiMwiGHobrF0ybz9sq0aO3oR
-	 P9ZtVpQUF5BFr3CO4oSylZnpjSWQo66V0pbELQZm+VUzxOw02NQkviAWzBGK9gChxZ
-	 3WaZrJuQhS4QQ==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 11 Sep 2026 20:36:59 +0100
-Subject: [PATCH v3 12/12] mm: change the contract for free_pgtables(),
- update docs
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPGGKtkF"
+Received: by mail-qk2-f13.google.com with SMTP id af79cd13be357-939109fafd6so23921085a.3
+        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 14:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789162432; x=1789767232; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=jDUUpR7EV4DDb+hECXvl+mIFifzn7YL76NkRxKNfsbw=;
+        b=FPGGKtkFfDaMvTzDIIPjh3oLZLK5HK3+uToHjyAlSEJvSB7f4C2HJRBAxhJYtGZwQx
+         fvtEN+B6P3oh5GXgDqeP0eEXqxiAC1kNbOcSP2uV4Ean/GMtORrN76gehCkQ+KHTUsDT
+         rcxORD3vp9+96JquQjyW8fc2HO7QEhO9IXev4pQv9ymTs5gp9uEkYSmI2DjaLfa+mBEN
+         lBoG+seoPw4NXZGfjDesvHI0OB5+NIM6JL5aeZPrOawiTbYZc1gNA4injgftALQZbxir
+         9kYW+l16qcy0Hy9hSp0yM6rU7xJ7aHhU1EcPvvG1pNvpmW29W4EOV66zkeOmsYSMw31e
+         eHlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789162432; x=1789767232;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=jDUUpR7EV4DDb+hECXvl+mIFifzn7YL76NkRxKNfsbw=;
+        b=aQi+fH8Dw6S8/OurBgjdYsfYQU95wUqXJ8BTSYl1DOL3JxSSww1PaK5V6DPqAQlHBt
+         xYLhTIsQE+PyGVrnr9U0UmA8FGOJEUl7/s4gJyz+dPZbjlKlWuv5u39vdbwN1ZmUarNU
+         Lq2fAkv//IM574/vNTX/7slQR5E8LB6mBHuaFJdUR5L5v1QUNxfyMaVBHlsEN4fodnK9
+         WTIlMvsLjKEfW3HLw8vNNe+U/4Zs17voW2u52XKywSSevzSmn0qdWOEkK6r7K3y4BdU/
+         lFKLYUWWbL99LVF7DESNuXND/ll990nDP5AIivLupksckV86ofmf+Im6D47j4Bwdyd8W
+         nqxQ==
+X-Forwarded-Encrypted: i=1; AKwUvByGc4k7zNrd0myVx6kgusoslf3b4tbTmOH4mz8yABnZL93Wy9O3W5xdjQxQWooKN7+TYfb5eFkOlZ9/@vger.kernel.org
+X-Gm-Message-State: AFuF++lxOySjEuM5V5bZJm4NcNdzN9fFpVpwTC7BW9yESTfseozJzNol
+	X9SMmONBRKteyHZDtwuH4pXA/yrH8DzP+dTJImfwc3+rdEqkdmUSQHFx
+X-Gm-Gg: AYBFou0HUdR146tgRlcsKBf+GNd3Tzd7S1umpOJdGz74VBXKjt5snYd89lIgt9OmhCy
+	9pSO+FUQryBONsQPHbfzijxmxs/eDNS4kiDBZHoXOPlRdtt6ftGlcRbz9dmYsRkrH856JWJas9f
+	LTOPOY46zkFtii4GsrR1T3D/tOPTlToifVm+y9VgRgkWymJzN2R52bwt362fn+O7rKPT7rMbW+b
+	UUe5jyzYXIJY6HEeBoRVhyXjER6LVQtkXn6CouJwEBDLJo234JwEAkDuHFoYTizcJ2NB6dZZRqU
+	ASKKsddKIL4YYgzwtr7iyIptxgT2urqLXeowggpIcNgZWN9ziAgRqDv1kaQNVT+snAoSXxCmZb2
+	ShDkCOqRNp/EaB41NkDWLKxEXFiKC1WQAwovB95KLtDVq2zPwNxLtjqE1Hn48kDTLwI1cWxKGrq
+	cnSIEMVnywjA6QwtcDfeZo9k63+K0mNLyqH7IsJtdWS2HOkD8h8tihauccZ9W4zULo
+X-Received: by 2002:a05:620a:3726:b0:939:8373:b552 with SMTP id af79cd13be357-939ea048a73mr854217285a.1.1789162431590;
+        Fri, 11 Sep 2026 14:33:51 -0700 (PDT)
+Received: from Turin ([187.15.143.6])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9120f496598sm30170196d6.35.2026.09.11.14.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2026 14:33:51 -0700 (PDT)
+From: Nicholas Dudar <main.kalliope@gmail.com>
+To: tsbogend@alpha.franken.de,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	johan.almbladh@anyfinetworks.com,
+	paulburton@kernel.org
+Cc: martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	jolsa@kernel.org,
+	emil@etsalapatis.com,
+	ihor.solodrai@linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	philmd@oss.qualcomm.com
+Subject: [PATCH bpf-next v4 0/3] bpf, mips: Add signed div/mod support
+Date: Fri, 11 Sep 2026 17:33:37 -0400
+Message-ID: <20260911213340.3767930-1-main.kalliope@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-rcu-pagetable-freeing-v3-12-7b8c86103821@kernel.org>
-References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-In-Reply-To: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3290; i=ljs@kernel.org;
- h=from:subject:message-id; bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDRfPca+K1Qt69Vu3RSVu8e9Ur+x7Hbg6r6kKjhjQ
- tW2Xw17OkpZGMS4GGTFFFmefxHfHyQSNq/zgr8bzBxWJpAhDFycAjCRtYKMDKtcrE7Oe/bdKdOw
- QVRKubxP/maw6+Z2i5NRMyQLnn/8n8DIcLLhht/b1oOGNt4zuvVbs+/8t5WS4NfTdnZawiPYtGc
- JEwA=
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Now that page tables are freed after an RCU grace period, it is safe for
-read-only page table walkers to walk page table ranges that are being
-concurrently torn down, provided the mm is kept alive via mmgrab().
+The MIPS JITs do not interpret the insn->off value that selects signed
+DIV/MOD semantics, so negative operands produce unsigned results.
 
-It is however unsafe for writers to do so, as they must obtain an
-appropriate lock to do so safely.
+Factor div/mod emission into helpers, add the missing signed uasm
+operations, and decode insn->off in the div/mod emitters. On MIPS32,
+use signed 64-bit helpers for ALU64 operations.
 
-Update the pte_offset_map_lock()'s comment block to reflect this.
+The DIV/MOD implementation is unchanged from v3.
 
-Similarly update the process addresses documentation.
+Before this rebase, all signed DIV/MOD test_bpf cases passed with the
+pending MOVSX respin applied under QEMU Malta on little-endian MIPS32
+R1/R2/R6 and MIPS64 R2/R6. The full suite had 12 expected failures for
+unsupported operations (8 BSWAP, 3 MEMSX and 1 JMP32_JA).
+R1 had 18 failures in total: those 12 plus
+6 additional failures reproduced on unchanged v3 in the same environment.
+Earlier v3 testing covered big-endian MIPS32.
 
-Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
----
- Documentation/mm/process_addrs.rst |  6 ++++++
- mm/pgtable-generic.c               | 15 +++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
+Uasm object builds passed for MIPS32 R1/R6, MIPS64 R2/R6 and
+microMIPS32 R2 before the rebase. The new SEB/SEH encodings match GNU as
+for every register pair on MIPS32/64 R2/R3/R5/R6 in both endian modes;
+all pre-existing native opcode entries are unchanged. No physical
+hardware was tested.
 
-diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-index a7296f251799..b1f4f44d75eb 100644
---- a/Documentation/mm/process_addrs.rst
-+++ b/Documentation/mm/process_addrs.rst
-@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
- * When changing a page table entry the page table lock for that page table
-   **must** be held, except if you can safely assume nobody can access the page
-   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-+* Page tables may be *walked* under RCU alone, as page tables are freed only
-+  after an RCU grace period has elapsed. However, any entry found must be
-+  revalidated after the page table lock is taken (such as the
-+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-+  before it is acted upon. Changing an entry requires the page table
-+  lock and one of the locks that excludes teardown (mmap or VMA lock).
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index b91b1a98029c..a127e3e8f9b9 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-  * be read-only/read-write protected.
-  *
-- * Note that free_pgtables(), used after unmapping detached vmas, or when
-- * exiting the whole mm, does not take page table lock before freeing a page
-- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-+ * the whole mm, does not take a page table lock before freeing a page table.
-+ *
-+ * As page table freeing itself is RCU-safe, page table readers can safely run
-+ * concurrently with page table teardown.
-+ *
-+ * However, writers CANNOT as, without a lock being held, nothing prevents
-+ * concurrent teardown.
-+ *
-+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-  */
- pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 			   unsigned long addr, spinlock_t **ptlp)
+Changes in v4:
+- Add seb/seh uasm emitters for R2-or-newer CPUs.
+- Rebase onto current bpf-next without changing the implementation.
 
--- 
-2.55.0
+v3: https://lore.kernel.org/bpf/20260810194215.3754591-1-main.kalliope@gmail.com/
+MOVSX review: https://lore.kernel.org/bpf/CAM1=_QTN3JJ6jtckf32F8wxBzLDbHSrzUttyMBWNqZKmRe=2rg@mail.gmail.com/
 
+Nicholas Dudar (3):
+  bpf, mips: Factor out div/mod emission helpers
+  MIPS: uasm: Add signed div/mod and sign-extension emitters
+  bpf, mips: Add support for BPF_SDIV and BPF_SMOD
+
+ arch/mips/include/asm/uasm.h   |  8 ++++
+ arch/mips/mm/uasm-mips.c       | 12 ++++++
+ arch/mips/mm/uasm.c            | 24 ++++++++----
+ arch/mips/net/bpf_jit_comp.c   | 55 +++++++++++++++++++-------
+ arch/mips/net/bpf_jit_comp.h   |  4 +-
+ arch/mips/net/bpf_jit_comp32.c | 29 +++++++++-----
+ arch/mips/net/bpf_jit_comp64.c | 71 +++++++++++++++++++++++-----------
+ 7 files changed, 147 insertions(+), 56 deletions(-)
+
+
+base-commit: c1ff425d625eb2a4d2967e9889b85f202f24eb5d

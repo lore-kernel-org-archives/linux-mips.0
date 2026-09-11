@@ -1,62 +1,64 @@
-Received: from mail-qk2-f13.google.com (mail-qk2-f13.google.com [74.125.230.205])
+Received: from mail-qk2-f12.google.com (mail-qk2-f12.google.com [74.125.230.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD197486415
-	for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 21:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A2C486414
+	for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 21:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789162434; cv=none; b=oU/McuPZBAI35j9FOoA6uV+JRL20cjOzMoCyIcgUzNaE1Y3WUvccRzZ24oHDRN/xP6fB2kGixx8fqEjoOoXZCRB5xfJCzooLQ41T7GxarVQ6mDAEdJ1vNo+oWBMgvFicK1fUrszFvZse+lXi36cu+qqJhlRNBPVX733tmTyzHyk=
+	t=1789162438; cv=none; b=pwZVGfPbLDQliUg8UTtRPtUWC5xKrU3mrtzbMCHSOe8+j6yY+aVr2wAsTIx52VidvjU67l4q5Miv2Eu27JtY0vX6evaIIM9Jw0myGaWThVGb7OfCzJi1ZxGgyX5iO+gjmx4rTCuGzpIpaDTHtiv/0/OvDp4qTzLg3U4e0tIr0YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789162434; c=relaxed/simple;
-	bh=6WWUp9R5KMfa/CshmsP7UggokIFh/r96TCUO6MKrmrk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QTdnqgkwAi1MkYWIm2s9ibs1n+/W9TEPCiR+xNID6sgVtTmZurwSznv7Dya3kzROuSa/XxuDuAtFKaG97ard6nkvUlFaF0y+GvpkXOPd2RPcDubTd093Pf2vs8UfhubFk+SL8bRCO9rE2nkamnvHNsGYhR9WIm2zKVusKmmddqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FPGGKtkF; arc=none smtp.client-ip=74.125.230.205
+	s=arc-20240116; t=1789162438; c=relaxed/simple;
+	bh=IWB+cbvxBldSdWrEOxLvkQCXUWd+bHotGsjaP4R+oH8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oLAEjWUOAYje0aD8Ai13Gtls2kEtMy1IKyu4sY6aihYb30UGiLggvyDweimLq8H/EathHKf5FeIQ0KMZs+azN6ahm78Ni4NEuJdVMPFNkQV6SS3fdI3zBiDnQpniNCDDs+OZo2etZZeAYy9abwOYzUDhmikMUIEmEURNRnr8d2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=s1afA1+N; arc=none smtp.client-ip=74.125.230.204
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPGGKtkF"
-Received: by mail-qk2-f13.google.com with SMTP id af79cd13be357-939109fafd6so23921085a.3
-        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 14:33:52 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s1afA1+N"
+Received: by mail-qk2-f12.google.com with SMTP id d75a77b69052e-52fb76bcb09so269211cf.2
+        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 14:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789162432; x=1789767232; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=jDUUpR7EV4DDb+hECXvl+mIFifzn7YL76NkRxKNfsbw=;
-        b=FPGGKtkFfDaMvTzDIIPjh3oLZLK5HK3+uToHjyAlSEJvSB7f4C2HJRBAxhJYtGZwQx
-         fvtEN+B6P3oh5GXgDqeP0eEXqxiAC1kNbOcSP2uV4Ean/GMtORrN76gehCkQ+KHTUsDT
-         rcxORD3vp9+96JquQjyW8fc2HO7QEhO9IXev4pQv9ymTs5gp9uEkYSmI2DjaLfa+mBEN
-         lBoG+seoPw4NXZGfjDesvHI0OB5+NIM6JL5aeZPrOawiTbYZc1gNA4injgftALQZbxir
-         9kYW+l16qcy0Hy9hSp0yM6rU7xJ7aHhU1EcPvvG1pNvpmW29W4EOV66zkeOmsYSMw31e
-         eHlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789162432; x=1789767232;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20251104; t=1789162435; x=1789767235; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=jDUUpR7EV4DDb+hECXvl+mIFifzn7YL76NkRxKNfsbw=;
-        b=aQi+fH8Dw6S8/OurBgjdYsfYQU95wUqXJ8BTSYl1DOL3JxSSww1PaK5V6DPqAQlHBt
-         xYLhTIsQE+PyGVrnr9U0UmA8FGOJEUl7/s4gJyz+dPZbjlKlWuv5u39vdbwN1ZmUarNU
-         Lq2fAkv//IM574/vNTX/7slQR5E8LB6mBHuaFJdUR5L5v1QUNxfyMaVBHlsEN4fodnK9
-         WTIlMvsLjKEfW3HLw8vNNe+U/4Zs17voW2u52XKywSSevzSmn0qdWOEkK6r7K3y4BdU/
-         lFKLYUWWbL99LVF7DESNuXND/ll990nDP5AIivLupksckV86ofmf+Im6D47j4Bwdyd8W
-         nqxQ==
-X-Forwarded-Encrypted: i=1; AKwUvByGc4k7zNrd0myVx6kgusoslf3b4tbTmOH4mz8yABnZL93Wy9O3W5xdjQxQWooKN7+TYfb5eFkOlZ9/@vger.kernel.org
-X-Gm-Message-State: AFuF++lxOySjEuM5V5bZJm4NcNdzN9fFpVpwTC7BW9yESTfseozJzNol
-	X9SMmONBRKteyHZDtwuH4pXA/yrH8DzP+dTJImfwc3+rdEqkdmUSQHFx
-X-Gm-Gg: AYBFou0HUdR146tgRlcsKBf+GNd3Tzd7S1umpOJdGz74VBXKjt5snYd89lIgt9OmhCy
-	9pSO+FUQryBONsQPHbfzijxmxs/eDNS4kiDBZHoXOPlRdtt6ftGlcRbz9dmYsRkrH856JWJas9f
-	LTOPOY46zkFtii4GsrR1T3D/tOPTlToifVm+y9VgRgkWymJzN2R52bwt362fn+O7rKPT7rMbW+b
-	UUe5jyzYXIJY6HEeBoRVhyXjER6LVQtkXn6CouJwEBDLJo234JwEAkDuHFoYTizcJ2NB6dZZRqU
-	ASKKsddKIL4YYgzwtr7iyIptxgT2urqLXeowggpIcNgZWN9ziAgRqDv1kaQNVT+snAoSXxCmZb2
-	ShDkCOqRNp/EaB41NkDWLKxEXFiKC1WQAwovB95KLtDVq2zPwNxLtjqE1Hn48kDTLwI1cWxKGrq
-	cnSIEMVnywjA6QwtcDfeZo9k63+K0mNLyqH7IsJtdWS2HOkD8h8tihauccZ9W4zULo
-X-Received: by 2002:a05:620a:3726:b0:939:8373:b552 with SMTP id af79cd13be357-939ea048a73mr854217285a.1.1789162431590;
-        Fri, 11 Sep 2026 14:33:51 -0700 (PDT)
+        bh=OV9D4q5YUye7Q1vIF9rdT+FmHjwXYwylKYDxv971ac0=;
+        b=s1afA1+Nh/fV4+gGA6CqndLK2SISNZd9EwcvK1RkyCSdS9pF+Jlt9zAwX247rwgL75
+         0IzRb0/cByFW1HWbNWrgF92HCqKhF4fT3qikXg8bNYzIZTUdIyL6GZHv3AEECgNsIu5a
+         soAM3/0y8r8alN+tylS4UXWeKVUodfum6IepdITxJfcK639iS3KCTI2Zwv0eFdjxCKkA
+         JgiCePhLKolXUAwjvLy1ElboYv5dDql5ymi/UY96C0zqEjkFyd1U8b96nWNDLyES1l1z
+         7EHF9rEdNIqJ5FndsiZe/JKa/ZQdk1mNtbepCaoIzSYk4bBMhLvpmzFy8SwsDHs19Bsz
+         RyJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789162435; x=1789767235;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=OV9D4q5YUye7Q1vIF9rdT+FmHjwXYwylKYDxv971ac0=;
+        b=aEcMAaZqb+ouDshcGmy289r+C6sguTRH5rhMmdKQiqDOxSeSfq7RmGMl0tTbVvtjt6
+         uiH8Qkw4WxGu5qEjzpxSZEQkE2VUgQiCx1egTfF3s3SyJVhJr7VYJWrCAPN9X1u5pj6o
+         Uvpg+7NyY/X/Tza+RrmY6TzWDiHx5Q16yNYIe/7c563UhpZtSSvQcAFlXEJBw48lc24G
+         6C9hZ7MQwbo6lASfriN0a8Odg+vo6DC9xusoDEUPjsBpEpJgfRP4+GchE7QtM8RA3b4v
+         x2HxXwdwOBA57my9FgwzutlFYm25Qhasv22nzMXGjyUPwZhiYO5GOp9R3stcF7yJCruU
+         zngA==
+X-Forwarded-Encrypted: i=1; AKwUvBxygrzeDho0zcXHGDpyTlbiKQ/u7RHt0QPSlTArWG57ZObb4xSWO0JMduPS2VtuzfncoEaMLmUzi8Et@vger.kernel.org
+X-Gm-Message-State: AFuF++nrxSXL5zIQadpgAiFNURZXnzsUakfzhrnDfJGdcxDpaN9Z/tys
+	zIyPVd5Gs+AE7RJJFNxNiAkgQyUNCf8sGt5qxljwy5+m8esNr1A2aema
+X-Gm-Gg: AYBFou0tvCyoL6MFaMiqr20ccqgmFqkF5WiTsQXEWdzEdm7hKTNzbyEk5x3feLCb4nI
+	WxPKOuLuQmwuSskuDf6duC+Oh/1swDo/5lcyWFxpcsuLe1eu5nXgQEHLQih1qeuY8QL2t/ysSvi
+	5+YHC3JmzN0AZyu0ZCOSCe3EiNHwp8XJNhshzHljSamde8N0Pr8LdsqpYMsJgZv3bOPwb1d/yNM
+	oBbXgjtTCkJ4tba8/0HBSW/owOhQFUlssFS00/FAbpwaWdLDIKRS8hpZocSztyn4ZbNjKLUScjS
+	wqs7WNZMC289v6RXuzGJaNbOV8P02fcDXw0JFVz4dBSQsGxogNZyzDrgnqW0CH/jvavI1y7ODzG
+	HhBc95C7Jy8LaWLUAUys05s0Yv3gYHHXJspmjiljMf7j/sqO8If/PNwm3OLr+tQnazRKmf1U0is
+	imQ5ONT18UH+Qs1Uj0jSRLhITn2h88su1+a61NNPL87BQcH2tbwozGATryoOz9PU2p
+X-Received: by 2002:a05:620a:444c:b0:939:d913:9a74 with SMTP id af79cd13be357-93a03939ffbmr20881785a.46.1789162434800;
+        Fri, 11 Sep 2026 14:33:54 -0700 (PDT)
 Received: from Turin ([187.15.143.6])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9120f496598sm30170196d6.35.2026.09.11.14.33.48
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9120f496598sm30170196d6.35.2026.09.11.14.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2026 14:33:51 -0700 (PDT)
+        Fri, 11 Sep 2026 14:33:54 -0700 (PDT)
 From: Nicholas Dudar <main.kalliope@gmail.com>
 To: tsbogend@alpha.franken.de,
 	ast@kernel.org,
@@ -76,10 +78,12 @@ Cc: martin.lau@linux.dev,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	philmd@oss.qualcomm.com
-Subject: [PATCH bpf-next v4 0/3] bpf, mips: Add signed div/mod support
-Date: Fri, 11 Sep 2026 17:33:37 -0400
-Message-ID: <20260911213340.3767930-1-main.kalliope@gmail.com>
+Subject: [PATCH bpf-next v4 1/3] bpf, mips: Factor out div/mod emission helpers
+Date: Fri, 11 Sep 2026 17:33:38 -0400
+Message-ID: <20260911213340.3767930-2-main.kalliope@gmail.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260911213340.3767930-1-main.kalliope@gmail.com>
+References: <20260911213340.3767930-1-main.kalliope@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -89,49 +93,132 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The MIPS JITs do not interpret the insn->off value that selects signed
-DIV/MOD semantics, so negative operands produce unsigned results.
+Factor MIPS32 and MIPS64 division and modulo emission out of
+emit_alu_r() and emit_alu_r64(). This prepares the JITs to select signed
+or unsigned opcodes without duplicating the R6 and pre-R6 handling.
 
-Factor div/mod emission into helpers, add the missing signed uasm
-operations, and decode insn->off in the div/mod emitters. On MIPS32,
-use signed 64-bit helpers for ALU64 operations.
+No functional change intended.
 
-The DIV/MOD implementation is unchanged from v3.
+Suggested-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
+Assisted-by: Codex:gpt-5.6-sol
+Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
+---
+ arch/mips/net/bpf_jit_comp.c   | 36 ++++++++++++++++++++++------------
+ arch/mips/net/bpf_jit_comp64.c | 36 ++++++++++++++++++++++------------
+ 2 files changed, 48 insertions(+), 24 deletions(-)
 
-Before this rebase, all signed DIV/MOD test_bpf cases passed with the
-pending MOVSX respin applied under QEMU Malta on little-endian MIPS32
-R1/R2/R6 and MIPS64 R2/R6. The full suite had 12 expected failures for
-unsupported operations (8 BSWAP, 3 MEMSX and 1 JMP32_JA).
-R1 had 18 failures in total: those 12 plus
-6 additional failures reproduced on unchanged v3 in the same environment.
-Earlier v3 testing covered big-endian MIPS32.
-
-Uasm object builds passed for MIPS32 R1/R6, MIPS64 R2/R6 and
-microMIPS32 R2 before the rebase. The new SEB/SEH encodings match GNU as
-for every register pair on MIPS32/64 R2/R3/R5/R6 in both endian modes;
-all pre-existing native opcode entries are unchanged. No physical
-hardware was tested.
-
-Changes in v4:
-- Add seb/seh uasm emitters for R2-or-newer CPUs.
-- Rebase onto current bpf-next without changing the implementation.
-
-v3: https://lore.kernel.org/bpf/20260810194215.3754591-1-main.kalliope@gmail.com/
-MOVSX review: https://lore.kernel.org/bpf/CAM1=_QTN3JJ6jtckf32F8wxBzLDbHSrzUttyMBWNqZKmRe=2rg@mail.gmail.com/
-
-Nicholas Dudar (3):
-  bpf, mips: Factor out div/mod emission helpers
-  MIPS: uasm: Add signed div/mod and sign-extension emitters
-  bpf, mips: Add support for BPF_SDIV and BPF_SMOD
-
- arch/mips/include/asm/uasm.h   |  8 ++++
- arch/mips/mm/uasm-mips.c       | 12 ++++++
- arch/mips/mm/uasm.c            | 24 ++++++++----
- arch/mips/net/bpf_jit_comp.c   | 55 +++++++++++++++++++-------
- arch/mips/net/bpf_jit_comp.h   |  4 +-
- arch/mips/net/bpf_jit_comp32.c | 29 +++++++++-----
- arch/mips/net/bpf_jit_comp64.c | 71 +++++++++++++++++++++++-----------
- 7 files changed, 147 insertions(+), 56 deletions(-)
-
-
-base-commit: c1ff425d625eb2a4d2967e9889b85f202f24eb5d
+diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
+index 6ee4abe6a1f..320180330fb 100644
+--- a/arch/mips/net/bpf_jit_comp.c
++++ b/arch/mips/net/bpf_jit_comp.c
+@@ -338,6 +338,28 @@ void emit_alu_i(struct jit_context *ctx, u8 dst, s32 imm, u8 op)
+ 	clobber_reg(ctx, dst);
+ }
+ 
++/* ALU division operation (32-bit) */
++static void emit_div(struct jit_context *ctx, u8 dst, u8 src)
++{
++	if (cpu_has_mips32r6) {
++		emit(ctx, divu_r6, dst, dst, src);
++	} else {
++		emit(ctx, divu, dst, src);
++		emit(ctx, mflo, dst);
++	}
++}
++
++/* ALU modulo operation (32-bit) */
++static void emit_mod(struct jit_context *ctx, u8 dst, u8 src)
++{
++	if (cpu_has_mips32r6) {
++		emit(ctx, modu, dst, dst, src);
++	} else {
++		emit(ctx, divu, dst, src);
++		emit(ctx, mfhi, dst);
++	}
++}
++
+ /* ALU register operation (32-bit) */
+ void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+ {
+@@ -385,21 +407,11 @@ void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+ 		break;
+ 	/* dst = dst / src */
+ 	case BPF_DIV:
+-		if (cpu_has_mips32r6) {
+-			emit(ctx, divu_r6, dst, dst, src);
+-		} else {
+-			emit(ctx, divu, dst, src);
+-			emit(ctx, mflo, dst);
+-		}
++		emit_div(ctx, dst, src);
+ 		break;
+ 	/* dst = dst % src */
+ 	case BPF_MOD:
+-		if (cpu_has_mips32r6) {
+-			emit(ctx, modu, dst, dst, src);
+-		} else {
+-			emit(ctx, divu, dst, src);
+-			emit(ctx, mfhi, dst);
+-		}
++		emit_mod(ctx, dst, src);
+ 		break;
+ 	}
+ 	clobber_reg(ctx, dst);
+diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
+index fa7e9aa37f4..2520e1db7ab 100644
+--- a/arch/mips/net/bpf_jit_comp64.c
++++ b/arch/mips/net/bpf_jit_comp64.c
+@@ -197,6 +197,28 @@ static void emit_alu_i64(struct jit_context *ctx, u8 dst, s32 imm, u8 op)
+ 	clobber_reg(ctx, dst);
+ }
+ 
++/* ALU division operation (64-bit) */
++static void emit_div64(struct jit_context *ctx, u8 dst, u8 src)
++{
++	if (cpu_has_mips64r6) {
++		emit(ctx, ddivu_r6, dst, dst, src);
++	} else {
++		emit(ctx, ddivu, dst, src);
++		emit(ctx, mflo, dst);
++	}
++}
++
++/* ALU modulo operation (64-bit) */
++static void emit_mod64(struct jit_context *ctx, u8 dst, u8 src)
++{
++	if (cpu_has_mips64r6) {
++		emit(ctx, dmodu, dst, dst, src);
++	} else {
++		emit(ctx, ddivu, dst, src);
++		emit(ctx, mfhi, dst);
++	}
++}
++
+ /* ALU register operation (64-bit) */
+ static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+ {
+@@ -235,21 +257,11 @@ static void emit_alu_r64(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+ 		break;
+ 	/* dst = dst / src */
+ 	case BPF_DIV:
+-		if (cpu_has_mips64r6) {
+-			emit(ctx, ddivu_r6, dst, dst, src);
+-		} else {
+-			emit(ctx, ddivu, dst, src);
+-			emit(ctx, mflo, dst);
+-		}
++		emit_div64(ctx, dst, src);
+ 		break;
+ 	/* dst = dst % src */
+ 	case BPF_MOD:
+-		if (cpu_has_mips64r6) {
+-			emit(ctx, dmodu, dst, dst, src);
+-		} else {
+-			emit(ctx, ddivu, dst, src);
+-			emit(ctx, mfhi, dst);
+-		}
++		emit_mod64(ctx, dst, src);
+ 		break;
+ 	default:
+ 		/* Width-generic operations */

@@ -1,181 +1,132 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5665D36B90C
-	for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 23:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789170847; cv=none; b=PfscXvSikg/MA3JJlYaQzkURXjSL3u2m+1TQjHihTJ3CYngGodf2iGGni+GNY1Lczgp7E0eP4SCyUGLwOMJc3gnhhQWce/xtiDi8oWJjdgn6xwg4+JKTPdkqcq9oCZUI4Ebh4MlAGuHv7LhEK2iJza2sfLetnn9MOIdrY1U4Ffw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789170847; c=relaxed/simple;
-	bh=AhGRne8scMnXdCsxDSbn1g1zYM4uSCys9RuLljGwmns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=APevUw2VUcG26sQy7pT/Jv5ooWuNRNhKN5LYhLAdBVMa1qMkch002OnaZEdG/kl7PBTMOz9zs6GDx2g4tsI8sG+Pz2O0dh4uvY/wdGqBipQBCD1C1qfQ4gf6TVyYaQ6T/o9S6UOFSSWIrSi0Zv9k5wpXYJlbcjM4SghMFWjQrKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fZ5b8Uk9; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=thmv0Lpj; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA4F2165EA
+	for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2026 00:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789174392; cv=pass; b=VK9ZZydAFDacGpdIATswMl2vomfrVF3hjTSJ5r9CoF7iL6V/bhr59R84UO5hpWrJWGk+9rq5lcxCWYEDEtTlvHqMMIAyvTKd2cLJEqcr5WjjDTQm2O7yFcg6pNimedkwMi3wOCruRaZ5HwNMPb19xXWlt6PgoTmmZvtwIoKvQAw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789174392; c=relaxed/simple;
+	bh=CQQ5uxI5LJywT10nnwzEUlbjvcuF9cqEPowouB9NJYM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AGdvfhj02Aljm7uMUOvuQWUaaoYB6X3LeEY3W0uoKLuxpWUNjrt9NjJekihzxWl7zq9VA8tT4MNYhN3ao630ETzhG2o7WKhZtAmx1Hf4Qy03rOouFu5XdVPdvAeYardIBugM5qy5BD75XxCRSdpUWioPb3mGD2mMR9znU8gfqKg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M6nXHCLg; arc=pass smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fZ5b8Uk9";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="thmv0Lpj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1789170840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P01ICaDhB6Y/9B7lpP0PK4Bgc8sZGn3B2i3qpboQMSM=;
-	b=fZ5b8Uk9pwtbuaCxOXiQ2Qe/AkY20wCy26fv6vWrGvIKQVPKb9PwQVyoCPRnXMdoWCr9eF
-	/iUmXM5p46n7U8j+GLv6mpghniOpaMHY5kNoDLNHmGGI0UcA6Kiw9ZPhAcmYD2krIjYBRF
-	O5LD7HSLwrYsLwi0abd1DRxJSTknnVU=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-686-UfWJre2pM5e3pobg77CCwA-1; Fri, 11 Sep 2026 19:53:59 -0400
-X-MC-Unique: UfWJre2pM5e3pobg77CCwA-1
-X-Mimecast-MFC-AGG-ID: UfWJre2pM5e3pobg77CCwA_1789170839
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-9394ad7f64aso225411385a.3
-        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 16:53:59 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M6nXHCLg"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-c294183384fso256124866b.1
+        for <linux-mips@vger.kernel.org>; Fri, 11 Sep 2026 17:53:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789174389; cv=none;
+        d=google.com; s=arc-20260327;
+        b=mno5CVVdic3yVm9eWGNZHrgr6TvJwjx7bTE8GV/eCoRPjarUiNod2CVwLuMel+IJeZ
+         YuIPIESRK1rWkpLWM/gvrQPiVCmsSA81aswGtNcXjQhl57+6gSz8N6TB62iK5HLyiV7J
+         phTL32uzDjNFvnoQVKvnntYtgTIftZIaOVKiCRL1eeuHjtunioOhWYYwnLUU58AJMKUX
+         9Wvhk3i7nEP+AheJwjTItcFFhFqrMUDPiD8CnFvul8ncGGF7boW1PydksBykKQFWSypg
+         /b9TIrfHyGirqDlYGqo/UPX90buwHdzP4vfG/OeGIlzUs5NHAXmkLgzLmlbbQd0aAKrd
+         EIPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=CQQ5uxI5LJywT10nnwzEUlbjvcuF9cqEPowouB9NJYM=;
+        fh=G2YTyvAkwUkyRrKWdWCHfT6l+1SqTHDRI8Rzvo5d0V0=;
+        b=TrHePpqRlMnh20NrEl3LfewEy9/5WHTpMn0UCh5KA1vFJgRmADhsNXzqkICvwpTqhU
+         oEUamXphPDp1Tj4Ln7QW/W4RpKnNTYD3zpaKaxNR1K4R2PS0ObtlWGqxCK6x2VdcvxUo
+         h1aTG5W1whnkJzMaPc32OAO8mvyRcaxoh/WG+GITVpWTC982UNAV+UgLnW1nonlY3nos
+         4J9etHA7bbUcTIj1thJpaWaVvmSEH3lxoY6msCMHnuguci0v6yFJEwcFqjN+HaeCgjky
+         KOlfoYQJzM3cD4v8otJHZ6geyHNwL8SrODzvyMnnsknBtuomW/irgh4YM6DxQ82V7P+U
+         c9BQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1789170839; x=1789775639; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to
+        d=gmail.com; s=20251104; t=1789174389; x=1789779189; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=P01ICaDhB6Y/9B7lpP0PK4Bgc8sZGn3B2i3qpboQMSM=;
-        b=thmv0LpjZ4EPz3NKWTkjlsEUzf7NLGDs7qbH5MCgrgE4Eri+01i31VuVH/iFmtKSrO
-         FvMEDcnpyQB6co7pVDGOaHxUWXwqmpv+LHaym9kr9hNRvNkGrSBg2PTpMmkZMpYXHRCj
-         QaO5qsPTnhs3DddmBGTxJaIXOvWzPfbbf+eP3/QzcETIjfcBAzLnI78ZS257T6ITQUvO
-         SN1epTsv3A1Yi/lHCvit+1D6Us2uUnS/SeqEvb33ojDL/f2wjL1hzladhnSLC97aUAEN
-         hvP9WAvqNwsm9GZxToIsVWsL+Ks478TcYTfl4w10Kq9mAwaZHI2OcO4kt2LoF6cEOxv8
-         2BHg==
+        bh=CQQ5uxI5LJywT10nnwzEUlbjvcuF9cqEPowouB9NJYM=;
+        b=M6nXHCLgKnJz4RWXriSUPlzYrFaCIph0CapgEoDCVGumdGLXCy9dHgs5YIpz74mfrg
+         b+yNKGpNJgLcRRtb8vi2BC215CfpFuabnyscg/ZCKSw1subIrni867Q56obS505FXtyO
+         yXU/+XqdNsqHNL38TCFRE55ZF4DCGaLHPPBx2E2zKYInrcfNywFh1EBu4axQ32QmgTF8
+         8gCJRwnwS2Qt/Pud4RFTXgZzCC7nF+EoJEXXA2TApZy0MCE0TfnJm87VbZo2fysfA7IV
+         BZ3pjLWYGxHc727jFJRM3UC2twiFfjTaszCR35Gw4CHV05K+tlL9UQutozGzEFuWHhJf
+         kA/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789170839; x=1789775639;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20251104; t=1789174389; x=1789779189;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=P01ICaDhB6Y/9B7lpP0PK4Bgc8sZGn3B2i3qpboQMSM=;
-        b=XxlvHpVxNLL9I8egKKoSipltMYj6JLtSlc1fi1FzWbFOOA9zMTguTbxZad9HzhIrMQ
-         /d0vEJvqJbLk1UeiSu1QjDvW8r0ZQ3+ml7tf/eS3GhDOUHsDOEROrQemQSNQtKj16wIS
-         wCBTwzFl3WNg6i8M8H10SY0FihgkvyCFRbItPTEuH0VA5tVCMU0w9o1eyRV1Uiybig5u
-         yCdBmZZ6Aonc9kRTLBTnPGyVYBcKFP0FHbqCxIZT0bfbITifD10Mv8cDy90tP6BwAJLp
-         XjCAFyJ8UYHn/lJ7gKLnbMolEDiygWAJzldPyHZ+CfcmY7oIim5est9kIpb7dLfGtytT
-         u5IQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzaqV+cUBVXzhcVMtzUjv+m0i+7uoA7b2MM7MiRbq11/TklMgRzKBv5YE9hGzj3MxiMH6B9qG0mbR1Q@vger.kernel.org
-X-Gm-Message-State: AFuF++kjguRRQ1LNDuDqcOS1zIoJq4N0Z2HGDa6HaBLLJAzBnvn2Jskc
-	qEHC1eHmhOrBg08UgcTMM8oaM5e2x8qMsVWlHU0P47FTYaxtqAKSQM1x/VveHWNm/mJKB6fEQ1B
-	q2FuO63//E2tp1yP7nyQva4KloYeN97ozk9HSZKTNUVqB8Sxr3l/xexQf7eVQwbA=
-X-Gm-Gg: AYBFou3fmiIDbGZVUoEpkRG5l0hiM1D0OtTcl6HZxV3E35FMO5rGqo2i+l2jRovhDS4
-	hIf49ILPAFNBnsv5CnIL0Slq3G7LT8Sk950CRz5epKw48wksrtTEHJKmt7AZFyx9B4AgY4g7XIy
-	1mkVeCWM2aK+8DCYxlaipgJ4TOGa0O6d8xjqBcgiY2CJ4Apk+pi2Z429JIuMiEB1mhYLbUvhZvU
-	9dr78sqC8Lq4nCT2xjk4UBC9hM5AWYPt/Tq2e8y4O7dGg5i/rpzA2oUYw1pTPYO+RKZ0jMa1TpU
-	3M50r4tQ+RG6D86J0ntSMk0vaGy7v0ds3oPzGYRpJMsp92Kf2H8d4MvNAnRe0DN6lqyIafhS+FA
-	f7VK75dy9iiUt6Z/s/VyaN6gP1E/fu0gXUIw=
-X-Received: by 2002:a05:620a:6188:b0:939:5c62:fddd with SMTP id af79cd13be357-939ea134eb5mr1100339885a.19.1789170838699;
-        Fri, 11 Sep 2026 16:53:58 -0700 (PDT)
-X-Received: by 2002:a05:620a:6188:b0:939:5c62:fddd with SMTP id af79cd13be357-939ea134eb5mr1100336485a.19.1789170838210;
-        Fri, 11 Sep 2026 16:53:58 -0700 (PDT)
-Received: from redhat.com (c-73-183-53-213.hsd1.pa.comcast.net. [73.183.53.213])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-939e80e0c74sm368993485a.41.2026.09.11.16.53.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2026 16:53:56 -0700 (PDT)
-Date: Fri, 11 Sep 2026 19:53:55 -0400
-From: Brian Masney <bmasney@redhat.com>
-To: =?iso-8859-1?Q?Beno=EEt?= Monin <benoit.monin@bootlin.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: eyeq: Use devm_platform_ioremap_resource()
-Message-ID: <aqSUk0DcPB0WlorJ@redhat.com>
-References: <20260911-clk-eyeq-res-v1-1-39b04542db38@bootlin.com>
+        bh=CQQ5uxI5LJywT10nnwzEUlbjvcuF9cqEPowouB9NJYM=;
+        b=X0+Z6oCoRkDaCkf9kcGZix7sOBqb3lroEraLxOhr+6qbc+mgc8H0kvTJET6Jk0ujPS
+         90A9nqlUGBjClqNnJa6tBDTfGaDt+/6PE0ty1JjGywqae/L0IJo0bydd2FFBup9TaSJe
+         7S1U8FBPMqqRPqH4VLur9qKO2aWLdE2jkUs0peBYGRBcXNz7DrYlElizgUxWmzwt/8pB
+         LYJO4M1q2hoalGx8iP1rG5Hpuw6sVfqK4EBgMWnYTa9nzgnkG9PYKixYB7AnxKjL7lkh
+         urczZuLnvX3S+qAktXMtPjnBuJRKAQvqhmcFkuN5KSLg1RXPYZ0RY4xzAPK9V05yXbXZ
+         VWDw==
+X-Forwarded-Encrypted: i=1; AKwUvBz3O8GdDVDRYIx+2zg1qDkGIrAkCMYaijvTWbse2fJwaXWWm+7o8B6bOU/364HH3ip43dyufuHtjPej@vger.kernel.org
+X-Gm-Message-State: AFuF++l2/G/dwS70ExOEX8Ogdc5y8zhQ5F1Rs8JFrK75EPcBi1kX09S8
+	g6gcYpxoBjwNXoiFp2JPRWIpIo2+E85PJzElyCuDKHOZRD4wyQGzc9oAWMQogAIBtYElXdWsWqc
+	sP7JlzFJJGK2Sy9R1Mcfg/dGuCz8sp2w=
+X-Gm-Gg: AYBFou0PDtKuD/aARMCTVkN08w9Md2fBCGV6VQTy0MrRFWF5icS//VwesDKb+7R34EV
+	+jnuF5XGrxA7lh3C+u22rAnIumY9PvjWbi8bKLEfZYdk4A783GdmniVWJBtc5hE4TFIfFgQxTkw
+	ilEG861bVrknILPH8gkFKOy+49QPCy6d0LwlI8EY0T2v+pjIXR9WSG/o97vqPgWiWW/haO0pJFU
+	KIAmNFbq5Z4gRlZe3UmA2RzhADdQ69nRIhYqefj3n+TVw3p23WSDKxNmiH5fG0+boHu806LoKAQ
+	fqcRK2dGPJDB8m5/esMOqDnFShXSEBTXBhoqDksrzuDN/ei3d+tO9rDL19SdZ78E
+X-Received: by 2002:a17:907:8b91:b0:c28:f9e4:836c with SMTP id
+ a640c23a62f3a-c2966746c86mr293173366b.28.1789174388992; Fri, 11 Sep 2026
+ 17:53:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260911-clk-eyeq-res-v1-1-39b04542db38@bootlin.com>
-User-Agent: Mutt/2.4.0 (2026-06-19)
+References: <20260911213340.3767930-3-main.kalliope@gmail.com> <c440fa97680eae9966579d51586c2e6b9936bfc3157225269166e1c133515f8c@mail.kernel.org>
+In-Reply-To: <c440fa97680eae9966579d51586c2e6b9936bfc3157225269166e1c133515f8c@mail.kernel.org>
+From: Nicholas Dudar <main.kalliope@gmail.com>
+Date: Fri, 11 Sep 2026 20:52:57 -0400
+X-Gm-Features: AcwNN1Ur_WOJSfWbT1nTjTcNVZl3abwhTBIueEcresXiT5wFs3FL9dx_llrHL2k
+Message-ID: <CAJZwKkgKjSOsHADdupd8cFdyUXKQeVzNmwLyX0jDorru1p1W7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] MIPS: uasm: Add signed div/mod and
+ sign-extension emitters
+To: bot+bpf-ci@kernel.org
+Cc: tsbogend@alpha.franken.de, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com, 
+	johan.almbladh@anyfinetworks.com, paulburton@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yonghong.song@linux.dev, jolsa@kernel.org, 
+	emil@etsalapatis.com, ihor.solodrai@linux.dev, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, philmd@oss.qualcomm.com, 
+	martin.lau@kernel.org, mason@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Benoît,
+> This isn't a bug, but would it read better to add the SEB and SEH emitters
+> together with their first caller in the BPF_MOVSX series?
 
-On Fri, Sep 11, 2026 at 01:48:47PM +0200, Benoît Monin wrote:
-> Convert eqc_probe() from the open-coded platform_get_resource() +
-> ioremap() sequence to devm_platform_ioremap_resource(). Besides less
-> code, this requests the memory region so the OLB registers are properly
-> reserved in the iomem_resource tree.
-> 
-> Move devm_platform_ioremap_resource() before checking for device match
-> data, so OLBs bound without match data also get their memory region
-> mapped and reserved.
-> 
-> Add an entry for mobileye,eyeq6h-central-olb without match data: its
-> clocks are all registered by the early init and it has no auxiliary
-> devices, so probe() now reserves its region and stops there.
-> 
-> Suggested-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-> Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
-> ---
->  drivers/clk/clk-eyeq.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
-> index cf37feccc734..bb680283b6f2 100644
-> --- a/drivers/clk/clk-eyeq.c
-> +++ b/drivers/clk/clk-eyeq.c
-> @@ -513,21 +513,16 @@ static int eqc_probe(struct platform_device *pdev)
->  	const struct eqc_match_data *data;
->  	struct clk_hw_onecell_data *cells;
->  	unsigned int i, clk_count;
-> -	struct resource *res;
->  	void __iomem *base;
->  	int ret;
->  
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
->  	data = device_get_match_data(dev);
->  	if (!data)
-> -		return 0; /* No clocks nor auxdevs, we are done. */
-> -
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	if (!res)
-> -		return -ENODEV;
-> -
-> -	base = ioremap(res->start, resource_size(res));
-> -	if (!base)
-> -		return -ENOMEM;
-> +		return 0; /* Early only clocks, stop here but keep resource reserved */
->  
->  	/* Init optional auxiliary devices. */
->  	eqc_auxdev_create_optional(dev, base, data->reset_auxdev_name);
+I grouped the native-MIPS uasm additions for SDIV/SMOD and MOVSX in one
+preparatory patch, with instruction selection handled by their respective
+JIT changes. MOVSX v3 will declare this series as a dependency. Keeping
+SEB/SEH with their first callers would also be a valid split.
 
-Can you make this one patch.
+Until those callers arrive, the emitters are unused. Their definitions
+do not generate instructions, and the existing opcode encodings are
+preserved.
 
-> @@ -1175,6 +1170,7 @@ static const struct of_device_id eqc_match_table[] = {
->  	{ .compatible = "mobileye,eyeq5-olb", .data = &eqc_eyeq5_match_data },
->  	{ .compatible = "mobileye,eyeq6l-olb", .data = &eqc_eyeq6l_match_data },
->  	{ .compatible = "mobileye,eyeq6lplus-olb", .data = &eqc_eyeq6lplus_match_data },
-> +	{ .compatible = "mobileye,eyeq6h-central-olb" /* no data, early only */ },
->  	{ .compatible = "mobileye,eyeq6h-west-olb", .data = &eqc_eyeq6h_west_match_data },
->  	{ .compatible = "mobileye,eyeq6h-east-olb", .data = &eqc_eyeq6h_east_match_data },
->  	{ .compatible = "mobileye,eyeq6h-south-olb", .data = &eqc_eyeq6h_south_match_data },
-> 
+> and CONFIG_CPU_MICROMIPS kernels would hit build_insn()'s panic for them
+> since arch/mips/mm/uasm-micromips.c isn't updated with their encodings.
 
-And this a second patch?
+That requires a microMIPS caller. Neither this series nor the existing
+kernel code calls these emitters, and the planned MOVSX callers cannot
+be built for microMIPS: MIPS only selects HAVE_EBPF_JIT when
+!CPU_MICROMIPS.
 
-Otherwise this looks good to me.
+I checked this on the posted v4: olddefconfig removes the attempted BPF
+JIT settings with CPU_MICROMIPS enabled, and the microMIPS uasm object
+builds successfully. Compiled-table comparisons also confirm that every
+existing native and microMIPS opcode entry is preserved.
 
-Brian
+I also ran test_bpf on the official base and standalone v4, without
+MOVSX, under QEMU Malta on little-endian MIPS32 R2 and MIPS64 R2.
+Both showed exactly 14 signed DIV/MOD failures becoming passes, with
+no other test-status changes.
 
+Nicholas

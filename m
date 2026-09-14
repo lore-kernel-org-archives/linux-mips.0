@@ -1,151 +1,86 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF89493634
-	for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2026 16:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C684398F5;
+	Mon, 14 Sep 2026 23:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789405044; cv=none; b=sC0KMdHFnYkuKWmuQd+/EEC+HW/ysMhcIoFp1HpB8hmCV9V8cX4km2yPYQmkbT3NnMZmRRKmDIeoKgCOsDZrxwPr4xEfsKRaDpvQBWKMMifnnOzeegqfbzqQLhRZJoAmj+G0y8hoF37fJOFHk1D7WTPzWXIbjM9RtPGngminhV8=
+	t=1789427764; cv=none; b=VhMTZSYWyiJ2uWV2wyEEMq7kyaxsULetrFh3THxkh67P8AbZW+ExL4iAHTHP/fAAAvlhYetNXxNvO2ZkBuA+DPDkHeKuXeqkCJlZVtBGQXsLxWiKFRDeveVXnVWMhxHqZarzIyagM7zpahpsx9jUvLr51Edae/MLCX+A2pXC/xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789405044; c=relaxed/simple;
-	bh=uVw9vIxjDeVFEUcpIkDbKMJ3BRJ2DCL3fmL5T+0sdyo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/ZcIAFDPKfLtDwCdRxkJ04O34IQb98JFwa5XSbfAGBrPVYsDfv49F5tNXm+CB14M/P2S4G1tHl3dfMMi9z/n9fjYphE3QsNv1daUqS8G9taDMaZ/U2B7aMyqaMhsBXeDg0rWRk5LZb4aaYn0hkHfVJzG+tV4uI4JfqnYvdv3k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=byNSo4NK; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=cZ9hIzcQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1789427764; c=relaxed/simple;
+	bh=PzXq7TWknRAUSjNmxfaso1E5sx7aLEp9WGufOTDgD2c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t1GIYZLXmlbMmIRpiSKmSGLBYjCd0vNkcCZ0VKw3q/IWxYM0qnEAXInXkEMj63OsFlpUQ5n5k6QFMVhO6Y6sats7eWlt0ASGuo5ffauDTFKRKJZ+rz0ZMfwUO0arJz+jYaVEOyTABzPqOHfj/0ODdRu+Pp3cHntKdi9k8/rrs3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIzWyZA6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="byNSo4NK";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="cZ9hIzcQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1789405041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/S8qRxofUNMQ9OSgKE55n+W3yA4LSkLugFr32CACvBY=;
-	b=byNSo4NKVpFxhJCf2Aqg5A1MVyWjex2PMUqZ+ciLIVtuiE7SCa3PP5nwWH8294jE1aDP1r
-	sXoQnQbpBeKlrSx3go/+6k8fQMSeJ36apuDmZvnVhOtw8rhZMZlJ9ffN8vJCpygUbndm7x
-	7n+1yWWxhyXgNWHo1wKhlfrrrz/DaOM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-17--E5FceOXPEi2rQhKbEvdzA-1; Mon, 14 Sep 2026 12:57:20 -0400
-X-MC-Unique: -E5FceOXPEi2rQhKbEvdzA-1
-X-Mimecast-MFC-AGG-ID: -E5FceOXPEi2rQhKbEvdzA_1789405040
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-93a1de6d5c3so273243485a.3
-        for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2026 09:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1789405040; x=1790009840; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=/S8qRxofUNMQ9OSgKE55n+W3yA4LSkLugFr32CACvBY=;
-        b=cZ9hIzcQZJSVKN+cSh+lRPy7U/fyCiTT2te8KWy9k6biJcTIzbFj33P41KrRNr6IQE
-         QSz0XBMNdfU1m041VDDMdNe7mQEW+IKgRWtcmL/XCAFgT6GAFmyVNc576nv/+M1XxmEx
-         LOb4EFxWjMipTr0dyflE0zRPv1/boSjVC9+gV/SK7CrzeGTyrTjZcSapQlzaEZ3xgdVd
-         7xTL5JOfMAqHk4K5IO9ZswFPYgTGbPrHEjSWWdJW+y6ogpH0aTHeN3gKeF1mFjeuLHsm
-         Nop24QSmkaSvZw+4mxVl5XoQr+M8V/eGfcZfVhhQD8w8NtK12KCxpJpVFOc1rBUo0+fz
-         Nb9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789405040; x=1790009840;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=/S8qRxofUNMQ9OSgKE55n+W3yA4LSkLugFr32CACvBY=;
-        b=V7zLm4gahxe2nuEwCL+icZ7h24Z1F2XmLfKMDH8CzsySPp8frfy3edKs3Gb13jDxFv
-         zMGRj3keN8QvnXPauiU2VXd0kj+o3ZEPiojSuLODTijuN4ZnM4/vhUxdCbRkLa08aUeD
-         jqUqgvRiYllEUEdjyqAfJUwicOpHAZeYU+DLb6KCDaKW6mdIAsOG60fh9b5KiWXtuEEk
-         6e7IKe0bWfAJvVOmjG+xYtv4kU3C1RC5Q1LtSnqrhIu6vTKTyJL+5pSZYje3t+J9GwT7
-         K5L2PQj4mPyx4BrSF01EhSMmhZkBWr3YWXanb4cquxhb4azWQO1SKkm8k/34ncKgZYjt
-         iwdg==
-X-Forwarded-Encrypted: i=1; AKwUvBy1i4XeiazAVrbIgIuWqgC74w3UUnkkVbhdN7TG/VEkEJPa9iSQ4YzqqOsfy7fa+rtr4JWCVAMmRYoI@vger.kernel.org
-X-Gm-Message-State: AFuF++late4urokN3i8mLnqnaaDu6IcBNjmWLQ2C+gP1amFebBY/1sfh
-	bX3OWLBdsK4jthJsNq/oEkOoeG65UagnLGUfLPzJSL5vFcFinYJOgJfkx7FApFX1Ml/NFR3e3V1
-	LpnnUX9yw+qtabx3C17+OzHsmY/sdWx3NPv96mWbPLe6oe4J5iltqZ1liF4yICS4=
-X-Gm-Gg: AYBFou1eejYbVc1RkL3QrjljHnUxRmTGQPq0Y59ygKzuhjQCCms3j4/BIr6pJaKg2f3
-	78cq1s3xwiuG79gOlKgokbp6UKE2rZPQKad5u2XwdQYTLkMKVmMS0C9E9H/vTYukygu1xVyEUCD
-	jzUc9GXpvZzJm6+DZHnFJHTzzo5zRIqjiWFe4ewDGb2ILGR3RBJIqxIHaEtwKxJugHpK8zfcoOu
-	68G5+uznfcviMpwX1kwuJP1UR4MS9A5keqttEPWwQluWIHq9pKc+hJ+3F0eJYJZIeKRLo9P6xmt
-	9fCq8EM8WVyme+HnBZYOm7i13bVdtWPhR9+2/vvHUlku0/JpxXyoMi5A207TNSArNoqvuuoU49u
-	tlGA4926PyzicQv0hTpIgmjsknzApM0nrevE=
-X-Received: by 2002:a05:620a:4802:b0:937:7836:1501 with SMTP id af79cd13be357-93a2973a2c7mr527199385a.10.1789405039637;
-        Mon, 14 Sep 2026 09:57:19 -0700 (PDT)
-X-Received: by 2002:a05:620a:4802:b0:937:7836:1501 with SMTP id af79cd13be357-93a2973a2c7mr527194085a.10.1789405039208;
-        Mon, 14 Sep 2026 09:57:19 -0700 (PDT)
-Received: from redhat.com (c-73-183-53-213.hsd1.pa.comcast.net. [73.183.53.213])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-939e7f19291sm1072082885a.10.2026.09.14.09.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2026 09:57:18 -0700 (PDT)
-Date: Mon, 14 Sep 2026 12:57:16 -0400
-From: Brian Masney <bmasney@redhat.com>
-To: =?iso-8859-1?Q?Beno=EEt?= Monin <benoit.monin@bootlin.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] clk: eyeq: Use devm_platform_ioremap_resource()
-Message-ID: <aqgnbA_yMRXczyao@redhat.com>
-References: <20260914-clk-eyeq-res-v2-0-687e5de3aba7@bootlin.com>
- <20260914-clk-eyeq-res-v2-1-687e5de3aba7@bootlin.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIzWyZA6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F941F000FF;
+	Mon, 14 Sep 2026 23:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789427759;
+	bh=RwH+G4NIKOPDOx7e/oMm/7Vklp7Y5keUcHCNIa7SkMw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=fIzWyZA6UdmZD7hsC15psgVvwBq/uwrPdOgfhkHgj1S6Cuz2PkBpi2vJw6ldTH7en
+	 4/YOUYZufDRk25xh7Qoqxd5cx9SmOhAV4UQeYqsCXBhHkYiJH7areds0K/D08KcUz9
+	 wghgZVZPlV1i++y4bKcODpWeJTVjxXnOBBEdSms7NXhsuvlhDPc/bqDei2LrF0J77t
+	 FZSfsmUFXNw1ySkFkB1PFaYfTDYnmIopXnBpG0BpYNTKU3NP/NFC3Lv9e747KEF7el
+	 QtCPQ7FfKsKWKStI1K/XQHHdIRl6nUJA9ZvCfOs1k5HGHcRdu51e1k2U2vYBi2VTlR
+	 WC9Da0tS7vBdg==
+Date: Mon, 14 Sep 2026 16:15:57 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
+ <konradybcio@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Vinod Koul <vkoul@kernel.org>, Giuseppe
+ Cavallaro <peppe.cavallaro@st.com>, Chen-Yu Tsai <wens@kernel.org>, Jernej
+ Skrabec <jernej.skrabec@gmail.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
+ Brunet <jbrunet@baylibre.com>, Shawn Guo <shawnguo@kernel.org>, Fabio
+ Estevam <festevam@gmail.com>, Jan Petrous <jan.petrous@oss.nxp.com>,
+ s32@nxp.com, Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>, Romain Gantois
+ <romain.gantois@bootlin.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Magnus Damm <magnus.damm@gmail.com>, Maxime Ripard <mripard@kernel.org>,
+ Christophe Roullier <christophe.roullier@foss.st.com>, Bartosz Golaszewski
+ <brgl@kernel.org>, Radu Rendec <radu@rendec.net>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, Drew Fustini
+ <dfustini@tenstorrent.com>, linux-sunxi@lists.linux.dev,
+ linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+ imx@lists.linux.dev, linux-renesas-soc@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, sophgo@lists.linux.dev,
+ linux-riscv@lists.infradead.org, Bartosz Golaszewski
+ <bartosz.golaszewski@linaro.org>, stable@vger.kernel.org, Krzysztof
+ Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Lad Prabhakar
+ <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH net-next v14 00/10] net: stmmac: qcom-ethqos: add
+ support for SCMI power domains
+Message-ID: <20260914161557.3b520b4a@kernel.org>
+In-Reply-To: <20260908-qcom-sa8255p-emac-v14-0-ec212b747a7d@oss.qualcomm.com>
+References: <20260908-qcom-sa8255p-emac-v14-0-ec212b747a7d@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260914-clk-eyeq-res-v2-1-687e5de3aba7@bootlin.com>
-User-Agent: Mutt/2.4.0 (2026-06-19)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Benoît,
-
-On Mon, Sep 14, 2026 at 02:16:44PM +0200, Benoît Monin wrote:
-> Convert eqc_probe() from the open-coded platform_get_resource() +
-> ioremap() sequence to devm_platform_ioremap_resource(). Besides less
-> code, this requests the memory region so the OLB registers are properly
-> reserved in the iomem_resource tree.
+On Tue, 08 Sep 2026 16:57:19 +0200 Bartosz Golaszewski wrote:
+> Add support for the firmware-managed variant of the DesignWare MAC on
+> the sa8255p platform. This series contains new DT bindings and driver
+> changes required to support the MAC in the STMMAC driver.
 > 
-> Move devm_platform_ioremap_resource() before checking for device match
-> data, so OLBs bound without match data also get their memory region
-> mapped and reserved.
-> 
-> Suggested-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-> Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
-> ---
->  drivers/clk/clk-eyeq.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
-> index cf37feccc734..3662e6990bf7 100644
-> --- a/drivers/clk/clk-eyeq.c
-> +++ b/drivers/clk/clk-eyeq.c
-> @@ -513,21 +513,16 @@ static int eqc_probe(struct platform_device *pdev)
->  	const struct eqc_match_data *data;
->  	struct clk_hw_onecell_data *cells;
->  	unsigned int i, clk_count;
-> -	struct resource *res;
->  	void __iomem *base;
->  	int ret;
->  
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
+> It also reorganizes the ethqos code quite a bit to make the introduction
+> of power domains into the driver a bit easier on the eye.
 
-As Sashiko pointed out, it would probably make sense to just convert the
-rest of the driver over to use the devm_ variants where available (like
-of_clk_add_hw_provider).
-
-Brian
-
+Sorry for the delay, this series got eaten by the recent patchwork
+upgrade :( I will manually send out the AI review, would you be willing
+to report back if any of the reviews warrant v15?

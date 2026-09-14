@@ -1,40 +1,41 @@
 Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AB1442B1C
-	for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2026 12:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC99C44A3FA
+	for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2026 12:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789388250; cv=none; b=R2cuwVbfetbhPkHqEr8MzJhVgzm+newbWrSVdNXOg8j8nh4ScxG9zTwRdEz6NdvcGzrGzbe2lfjOon2m8Jm26p1KXq814OwTwVyiUTThwTnCdAVLr9C8y5QI5/iCIabCAq1SePyjWstEvw6MDnYEmmh67pdce7Q5jsINJ/pp9JY=
+	t=1789388256; cv=none; b=mOJRdsmTpui7ag+5XK4fzCbPscSmqLH74iJ1OgSPnx/EU0ukCTYSLg89I/V5eLF/+tjY6myba9UjMw6IuaOeQxud5PmJUxGgi18MWhLJWx+vd6rTkYkLewyhbZO19D5W26qM9fLfE5p6K9retA6x61tIFSnTwd1ENkMmNNh7KPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789388250; c=relaxed/simple;
-	bh=KmGPQR4S02xDOn2hhuDGTCS97bgDBDN+cTwq1SD2ge4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IazppAmyzGbk8Zkw5GiMzvv8f7+zjqLTIHgBo1Sl4Vw8M9eqyPPzFhEuyJHgycAqcgEjnmtV2mGSTax30OTCYixUZPj8e7yHytbY3yn0MfY2g/BMsrzZaSxtbTdSM/dJLEVMJg2xkXh1oWbS5v8sE+jdn/z9WVHYzcqEl3DQ+kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bvM2ntJO; arc=none smtp.client-ip=185.246.85.4
+	s=arc-20240116; t=1789388256; c=relaxed/simple;
+	bh=MHs1HgPxgPGY668f+F+QPsxuTFVLhQpne2pOOe6jaVg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=BaVCJhoZRvCCPRd/tmqdGCs/Iajg9Ga7wwgJvfXDEjHsRZWkq2c/tfvgrktWHDkNCwmjjLbEHlN1U7tldJq7uD+TWFciv+5EFA1zTTbmKYXKcj/e0bP+KQ4Mxf+c6FCpochbdZzpO6pjh+sO41OHc2tbW2ImDafkERS+R87mvJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=qP3juN8k; arc=none smtp.client-ip=185.246.85.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bvM2ntJO"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="qP3juN8k"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id D22F54E4059C;
-	Mon, 14 Sep 2026 12:17:27 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 797A94E4059C;
+	Mon, 14 Sep 2026 12:17:33 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A686060323;
-	Mon, 14 Sep 2026 12:17:27 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C5B9511C7AFD6;
-	Mon, 14 Sep 2026 14:17:20 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 4F52C60323;
+	Mon, 14 Sep 2026 12:17:33 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3A6B211C7AFA1;
+	Mon, 14 Sep 2026 14:17:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1789388242; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=CUtz7Nrg/bGGDpfvM7FOkMnzlbWz7wOHrg63BF6Ex7s=;
-	b=bvM2ntJOtWfiGF7gTdCCGXNm4N6kz1DEaR7UMFADNK3gfc+iezqLrUyBZNCULPE7Ivk/3H
-	whNSsMhST8LTRkrDq8XDOm7sxB1/Gs0JUy2nCNiFbLezVy93rWsayZL9/6ZOEs/3aoJwMz
-	BEJ6L6iINE4BczrNWUhlmAGEukEdjqsNHKEbbcYbZJE2w0oVYMTEmnNc56lITXoZtJIT7f
-	1QDa336nkIUhynQFrqcIfiGwZF5uUq3LOg8T8jHwQkBlbzpxB7ww/wLSZDSnqJ8eICpvjv
-	nnyLBChijleXtt/+BRIsQ6tlAt2cZcn80h89ZxHBG6XG6WSS+ARXN00jDKlvOw==
+	t=1789388248; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=PN7rLy5S3k/X4ISt6xJqizuIYpNUjwPdt0DJWzVjQUY=;
+	b=qP3juN8kOonVv5SJqbQODDeagTOyVi2mPODznh4uvP52N4BGIftlBNasw72laSH9mOMJlJ
+	P8cT2VqHoU6YytaDb1If8eqrcH2fBm5tQ2YTlcXiQYv6AdIcwUnLVPB7MuoubCAZTGcuCH
+	v+RcRnpV2ZUZWrKxunz0kd6N/ZpbG8XZkAOxiBMJbKVl6KNeLp4Wy/hLIbIRyzXI2Zecl6
+	1kg2+8ckFEZEaXitE0+fYMh/vZhGY2/tpe1s4HiifOGhakT1moDtq2tEfn+R40eUSkwbDI
+	TWtNiRD7esXqQmmT/XJ4K6IxofuD24zoqQBuXIBg0hmpQ9SMD/pmXBA4kC4Y3w==
 From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Subject: [PATCH v2 0/2] clk: eyeq: Reserve OLB memory regions
-Date: Mon, 14 Sep 2026 14:16:43 +0200
-Message-Id: <20260914-clk-eyeq-res-v2-0-687e5de3aba7@bootlin.com>
+Date: Mon, 14 Sep 2026 14:16:44 +0200
+Subject: [PATCH v2 1/2] clk: eyeq: Use devm_platform_ioremap_resource()
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -43,11 +44,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAKvlp2oC/1WNyw6CMBBFf4XM2jFtqQqu/A/DwrZTGR9UWyQSw
- r8LGBcuT3LuuQMkikwJ9tkAkTpOHJoJ1CoDW5+aMyG7iUEJtRWlFGhvV6SenhgpoXPGFztvtXc
- apskjkuf3kjtWX04vcyHbzo3ZqDm1IfbLXydn75eW/+lOosS8NEJvtHImLw4mhPbGzdqGO1TjO
- H4A9qrdO7wAAAA=
-X-Change-ID: 20260910-clk-eyeq-res-ddbf87fc4fd4
+Message-Id: <20260914-clk-eyeq-res-v2-1-687e5de3aba7@bootlin.com>
+References: <20260914-clk-eyeq-res-v2-0-687e5de3aba7@bootlin.com>
+In-Reply-To: <20260914-clk-eyeq-res-v2-0-687e5de3aba7@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
  Gregory CLEMENT <gregory.clement@bootlin.com>, 
  =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
@@ -60,58 +59,53 @@ Cc: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>,
 X-Mailer: b4 0.16.0
 X-Last-TLS-Session-Version: TLSv1.3
 
-The Other Logic Blocks of Mobileye SoCs are clock providers, and some of
-them are registered early with CLK_OF_DECLARE_DRIVER(). Their early init
-maps the registers with of_iomap(), which does not request the memory
-region. On the platform device side, eqc_probe() used a plain ioremap()
-too, so none of the OLB regions were reserved in the iomem_resource
-tree.
+Convert eqc_probe() from the open-coded platform_get_resource() +
+ioremap() sequence to devm_platform_ioremap_resource(). Besides less
+code, this requests the memory region so the OLB registers are properly
+reserved in the iomem_resource tree.
 
-Patch 1 converts eqc_probe() to devm_platform_ioremap_resource(): the
-region gets requested and the mapping is released by the devres
-machinery on unbind. The mapping is moved before the match data check so
-that OLBs bound without match data also get mapped and reserved.
+Move devm_platform_ioremap_resource() before checking for device match
+data, so OLBs bound without match data also get their memory region
+mapped and reserved.
 
-Patch 2 adds a match table entry for mobileye,eyeq6h-central-olb without
-match data. All of its clocks are registered by the early init and it
-has no auxiliary devices; bind it to get its region reserved.
-
-No functional change, besides the region reservation.
-
+Suggested-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
 Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
 ---
-Changes in v2:
-- Fix early return comment in eqc_probe() (Thanks Théo for the review)
-- Split the patch in two (Thanks Brian for the review)
-- Link to v1: https://patch.msgid.link/20260911-clk-eyeq-res-v1-1-39b04542db38@bootlin.com
+ drivers/clk/clk-eyeq.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Théo Lebrun <theo.lebrun@bootlin.com>
-To: Stephen Boyd <sboyd@kernel.org>
-To: Brian Masney <bmasney+clk@redhat.com>
-To: Jerome Brunet <jbrunet+clk@baylibre.com>
-To: Benoît Monin <benoit.monin@bootlin.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-clk@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
+index cf37feccc734..3662e6990bf7 100644
+--- a/drivers/clk/clk-eyeq.c
++++ b/drivers/clk/clk-eyeq.c
+@@ -513,21 +513,16 @@ static int eqc_probe(struct platform_device *pdev)
+ 	const struct eqc_match_data *data;
+ 	struct clk_hw_onecell_data *cells;
+ 	unsigned int i, clk_count;
+-	struct resource *res;
+ 	void __iomem *base;
+ 	int ret;
+ 
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
+ 	data = device_get_match_data(dev);
+ 	if (!data)
+-		return 0; /* No clocks nor auxdevs, we are done. */
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -ENODEV;
+-
+-	base = ioremap(res->start, resource_size(res));
+-	if (!base)
+-		return -ENOMEM;
++		return 0; /* No clocks nor auxdevs, stop here but keep resource reserved */
+ 
+ 	/* Init optional auxiliary devices. */
+ 	eqc_auxdev_create_optional(dev, base, data->reset_auxdev_name);
 
----
-Benoît Monin (2):
-      clk: eyeq: Use devm_platform_ioremap_resource()
-      clk: eyeq: Add mobileye,eyeq6h-central-olb compatible
-
- drivers/clk/clk-eyeq.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
----
-base-commit: cee9395acd8043be0644b25c34bfa86623f2b935
-change-id: 20260910-clk-eyeq-res-ddbf87fc4fd4
-
-Best regards,
---  
-Benoît Monin, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+-- 
+2.55.0
 

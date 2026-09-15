@@ -1,169 +1,203 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681D0456DF6;
-	Tue, 15 Sep 2026 20:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789502404; cv=none; b=grmNmtO7k43gdFEEaagxccHY2x2+ReWdaVWaLf1SlNaPbkiFwm80XjoURx+41u+XbQ5+pJ6zxo6rkDEPp1qgErcBZD9FZr9c2UXEN/Cic5joK0+XCuNwv1LHXS5qRav2vs8cNJ9XdKFdpg1E8qws+kPMo01ljufLDpRPTcp88Y4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789502404; c=relaxed/simple;
-	bh=Ozqb8Nlqcx4jTJr4HzpCRa4epQHmJdVAuT7sAYodQSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h8BQceOegfJr5rqgsF5zv+89DQxUeabk43C2i48Tedj7+86EOj2E/POVUrGyZDf2UACoFu9/dBhkB7NbemcKPj6dAGB7Yst/ZUQFeE4MENnoZjcprAUMyPV/TKnJAv00dQg7J1RIUtzU4y5SJwNHewx9ZJ3TnuVKuq5xMAYrG8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k7PBojoR; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B995485CE2
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 22:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=205.220.180.131
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789510896; cv=pass; b=GHM8qBzIF/gf/AD4ZhNZyyCNqYMLVDSTrIacy7PFkEysSU0udHp8BSF//4K64v3dUoRssU9PkeSbm0+ErexDWPuavHYJJQuDATXuCzqhrsgWe3Q7Ff5itxt2K6KWf6CbyQQYludCN6vnoRuZm+228lBjtr+DGr5cHM68+8ZwwGw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789510896; c=relaxed/simple;
+	bh=zMEH3dKvgIFeOLNgenpgNKtSSPQyo3I2Bi4hOFPx7Sw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IZWNvWeqATms0ktY3JyEQJji2eg/9+f+J0W2KtekoN0JmJwNT74Fv8IzMAhep00FVm9jSIWxbj4kZUNjLOAsrPXkaAI1cQyNGjY8r0b5D+OHUtcwz96BtGC8IGONPSF2vTlRiowykvZ9l3/lZFXFS+JleMl1/lXB6tQhUIdTHK8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=IV/k2TQj; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=aB07AtjI; arc=pass smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k7PBojoR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 069581F000FF;
-	Tue, 15 Sep 2026 20:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789502402;
-	bh=060FvzlSY1s+NjIuTsRc9Ny+zBNXkBYeefHqKI9hLNs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=k7PBojoRGnlYP+7hm1RNQd5WiXBzFE9G/TC6RDJLFlkIfILpDtK/GBadjjEtwmvkI
-	 VltqHkns7rFQJUs7zOmt6Aou56t41/k1s3vtqxmfTJXB2iTYaoQOZMoaAQLEbiBATM
-	 QliN/deaZlJIoWJkLmj+D4VvTn5Jx146y3TPh/vvsa/DnZhr9eIjruGktKRmZd1F8W
-	 d/n8s23s+ioe/dcLrN5uPZzQxe+1Zt37jah6tmmp47xTq2Q8c6opmO/Bh9z6yBVHOy
-	 7ebwggwCD440EEMlDbbPNOt17kbvHZ9ZDz+ruV708XKWcQk5yesfJHNbhyUtEGTA1U
-	 d3OVGyDuwb7RA==
-Date: Tue, 15 Sep 2026 13:00:00 -0700
-From: Kees Cook <kees@kernel.org>
-To: Bill Wendling <morbo@google.com>
-Cc: linux-kernel@vger.kernel.org, codemender-patching+linux@google.com,
-	Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Matthias Schwarzott <zzam@gentoo.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-	"Martin K. Petersen" <mkp@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>,
-	NeilBrown <neil@brown.name>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Kanglong Wang <wangkanglong@loongson.cn>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Qiang Ma <maqianga@uniontech.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>,
-	Thorsten Blum <blum@kernel.org>,
-	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Lyude Paul <lyude@redhat.com>,
-	Ashutosh Desai <ashutoshdesai993@gmail.com>,
-	Imre Deak <imre.deak@intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
-	Johan Hovold <johan@kernel.org>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Cryolitia PukNgae <cryolitia@uniontech.com>,
-	Jiaming Zhang <r772577952@gmail.com>,
-	Will Porter <mrwillporter@gmail.com>,
-	Cen Zhang <zzzccc427@gmail.com>,
-	=?iso-8859-1?Q?C=E1ssio?= Gabriel <cassiogabrielcontato@gmail.com>,
-	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>,
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
-	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 25/28] EDAC/thunderx: Replace strlcat() with seq_buf
-Message-ID: <202609151258.5FC01072@keescook>
-References: <20260915081910.4142719-1-morbo@google.com>
- <20260915081910.4142719-26-morbo@google.com>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="IV/k2TQj";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="aB07AtjI"
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68FLZNEH620738
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 22:21:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:to; s=
+	qcppdkim1; bh=hnJAniUUz5UpK0eAzqlFlmnyP+PG3E6KxIttKsrRd1w=; b=IV
+	/k2TQjkUrsTGpshqW8f1AkLpzgE6WqJLnJXyVNHKYz8mozA+vLQbIOpShvI99Nvk
+	BGk11nj45xZQZMebNdo7NiYw/EO7W5wcvHVc8eAkRKtGrNMclkKkbe3unomYvdUd
+	vFaT1byqggr1zubtRjDzuTG9pECEQdOzFAiv4kdIU3d7CXM0IsQ27dhrP8NvQBkU
+	TlOdMgPnM8h4FF25SXM2n03VFD94RLvjnLlaGSHHxie20ptztZeSDX3B4EelrzMT
+	n1DLEJiB1mKEp0dVH3Si7JCiMZpC8ZcIigaByfbQDV2F2ANWVcL1rru5kNRyAlZ9
+	ag1DWjYpUlLQQuGalXdA==
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4gq2y2kj71-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 22:21:31 +0000 (GMT)
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-46524220c5aso5637302fac.0
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 15:21:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789510891; cv=none;
+        d=google.com; s=arc-20260327;
+        b=qT1ikJLA4kq38Brh2jHRb+S+qnNk0sdX+dpcp5spKgBzZJn6iALh51IoYyNkGWbB3U
+         SkYD1kaYOQWrf4xgOzKyjhsk9F6aC0ejSWTOLgxWxlV+DqVUHqbe5jtgXwYz7ILdQDc8
+         aOSLKV/BiNtzWfb8n4cYo9hpLQwylddJ1e0ZDQXSpkANAXKjC1G/8L1kGwjU77lClxp5
+         N9BWJWN/4s3H2c7AQ6knx20Ev8knI1wBUaO7dmQarH3GNhuimECrn4zYOHAYi+YJXtaY
+         dgmCjZ0fRmeebBDGyrVVPUglUjlyXPaKMlrUAoCJ4Hbx6Iuf556Zyiy3bX5lVo9DVVFL
+         Bj+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:dkim-signature;
+        bh=hnJAniUUz5UpK0eAzqlFlmnyP+PG3E6KxIttKsrRd1w=;
+        fh=B0drxmGTeyDt6q/0pBkV6lQmdNRbWpHSarLwV/lcsaY=;
+        b=HrrdgWpjvgk+6qZHI2b4Mp8aM3YApjtCncwblZq6e3NvxWysGv4O/EIA+od6mo96V/
+         6Wb2HZvgKLEy6dg/uKd65ZCjGvuogj5d1LgDw+JO48F4vNgft6muGGQT0ljRpmoVP2yj
+         o1chXPhcoQQCPlCyNqnbGpVh4hiYqw07PDd8SZJp+C74Y5nqwk8ieTVdWScZQdp2kPYv
+         3/fQLAGcvpAUZ5SoRyhCBjYuR5TghQE0IROYqCU1dw9/XKmHZBcEOXJrHzLtzrPCIjCu
+         3nZLqVBKlziMO0HfowckrJFAg3OrdZmjZmmGwGTamO11huA+0efLs1E/nwW0Uue2qc4z
+         YWJQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1789510891; x=1790115691; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:reply-to:in-reply-to:references:mime-version:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=hnJAniUUz5UpK0eAzqlFlmnyP+PG3E6KxIttKsrRd1w=;
+        b=aB07AtjIKjPYRGcvBSuVUhbZlxd1+55zy/NhIuvnz19m7qssQTpE/4jhghs82a98Dx
+         rtzGuCLITyYJpv6qqsfwRyWf2V/rvp/BavfnHKk+3jeYdHSZJCYDfk5x4efzm884vIfW
+         UjGKSA8ySqC+bc1butY/HkkuCwEw+HH62Uipjk8j8bjqvTXRubAdUvP+c5BJvALTKQeE
+         2MFV1Wjr7h5QJcQaotkuVTv077nzlClUSJUJjEEq6X2ukv02bdE+qejZx/+uCM7gRcPt
+         xEQKVpHKyQ6abdYF/Q1vdcAj2ZFa315JGdv0g44dh8zUZEwY87qYbRStthdyfxwDukm3
+         Mbpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789510891; x=1790115691;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:reply-to:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=hnJAniUUz5UpK0eAzqlFlmnyP+PG3E6KxIttKsrRd1w=;
+        b=YLCuBIQOFWTHtyOhPwg1dVWdqkKROq+2x6LAhPu1rEtZxROEPB4nqsSvjiqRwhDEdY
+         xmvCOWT0yr+LmhnRO33104dDAH7pyEeF78TMco0xca3YdhYo3pcN+ykuv7zVEug9rTKF
+         4SjjjyFGaV8Uhjh5dFJdG7EQ0n2iqSazJZwzGSmxGVkJdvJBE34H2llTmJW5BwXFJpT7
+         bmZsbqbxaifeH3u7T8AGsmAaVrn9bA0pZM/Ju6afqxpr5pS6GtV5Mi1VEm+6H3cX4BNq
+         zYmW31QKecq4BmAr5NWxGTp8mQbt2fzhlcStVVXQfIaR1lyaV63To/4HKQFG0DKANPk2
+         0QTQ==
+X-Forwarded-Encrypted: i=1; AKwUvBz4UYvaZLoDVqMqV297Vwrga1gKeAyBLTH5LdIN6TOJYH7R3ryKo8yxw/7kec1nVLg7BMAxMEHfk2QY@vger.kernel.org
+X-Gm-Message-State: AFuF++lHNOYOR/tIQasK1XFlEsniKG2jGD9BRkxlihHBzLLs4dSveizO
+	FNHTX8Kqdxb3Bt2v9O2p/P/Cwnj+o0LTTuvDY9/nlywpMMutv71lzrGag7zESixLQBvKhWzOE98
+	PamDJl5CD+WrfV+29sL++mxnq13GyTk50ZyiRN7Be88QalLuvUqjFGgszskc02RwTMYW4zV4BbF
+	tlI1dDxRbzvYceD2omMf1oKhIozwlYRHUu4owLoUM=
+X-Gm-Gg: AYBFou2MGPF0ZRh518EboMU0fCJhEIxBwAgRVemjiRUHaKSflGf35GFor8mQBkpLQPJ
+	H4cmwZFKFBTxAMSc1wRphzs4hyAG8lkTDG78qvPV7GjgzoZim4F3AApquN/DK9XuDqrIRrpysa8
+	vaISMTdzxJZig2TXL4x0oDrJgosBHP057NBRC05Pn+CXj5Dol2dQ825RXQ
+X-Received: by 2002:a05:6870:30f:b0:45e:2de4:95f1 with SMTP id 586e51a60fabf-4847584c51dmr189780fac.2.1789510890871;
+        Tue, 15 Sep 2026 15:21:30 -0700 (PDT)
+X-Received: by 2002:a05:6870:30f:b0:45e:2de4:95f1 with SMTP id
+ 586e51a60fabf-4847584c51dmr189724fac.2.1789510890430; Tue, 15 Sep 2026
+ 15:21:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260915081910.4142719-26-morbo@google.com>
+References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
+ <CAHk-=wjeamU=_RYT9cR3dZJ2N-Teo-N1+aYh7jwhrB=iWXD0cg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjeamU=_RYT9cR3dZJ2N-Teo-N1+aYh7jwhrB=iWXD0cg@mail.gmail.com>
+Reply-To: rob.clark@oss.qualcomm.com
+From: Rob Clark <rob.clark@oss.qualcomm.com>
+Date: Tue, 15 Sep 2026 15:21:18 -0700
+X-Gm-Features: AcwNN1UxxSxAxz0XPK7niSod0Tx_HsUs-C3mKdcqDSaFkh659BGkCorPygYZGHE
+Message-ID: <CACSVV028AdnTYa6OKDeoJYCau58uTkKMgEdqTn7crNSV8QZxOA@mail.gmail.com>
+Subject: Re: [PATCH RFC POC 00/50] file: handle files on syscall exit
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Oleg Nesterov <oleg@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
+        David Airlie <airlied@redhat.com>, virtualization@lists.linux.dev,
+        kvm@vger.kernel.org, kexec@lists.infradead.org,
+        linux-hyperv@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-ORIG-GUID: RcqEBSi0MS1nZQpmW4YbdVzSnromCcYE
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTE1MDMyNiBTYWx0ZWRfX/ZKa0OBHkdHo
+ Qxphj+hY8v53UuDr2Y2I3lrNciE5khxBoLybZLGjOSGELKKNFd7SCFEYf3/j1KqJD8+7fOkQ/9k
+ alVklMqE9o6i5CuTjZQwZIf67+4DOlNriGA/QCC9dB/FaqYmZJWft4Dvh5QHrw45acaHc+c1Fks
+ uUMX+sUsXoN1e8bycQOnhYpmYNnt9tnDnxFf9ZjMpgRz4dRvEjuAEnA3QwkwNQ5vzE1kHDVWRb7
+ g3ZjbvMmkYZ7SVAlgdYvaESpLdlzACNL/oX79+we6d0lt4fq/hu1OrfIMOfg4Cb2+Zo0uBTL3n4
+ DYoG0zp1eTWmjiNrDJV+hbACfJNil1lSVlvQiWcfhEwPO4aLqTzLl4Jz8f5KFvSUDJmJGSiHkpt
+ UHNg2OwmdkyGRMTm7k1RCa27OPhGlY7PAo3wi4JPCXbZxIj/A5ktHWPf3ZAC15tSBj6oGNtLk3t
+ Mth/RIzH09gCuYWKFtQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTE1MDMyNiBTYWx0ZWRfX5genUGYg0/XZ
+ 8va3qsTOZi8H/ZZ93aKVX9Z63Gq8giSkAZP4Lwj5vM4NwQjy6xzuMjyVLdKI0BUnjq941OXxnjZ
+ getBsxyUAilARTObwRlUOVD5J+ViKDI=
+X-Proofpoint-GUID: RcqEBSi0MS1nZQpmW4YbdVzSnromCcYE
+X-Authority-Analysis: v=2.4 cv=IcISymqa c=1 sm=1 tr=0 ts=6aa9c4eb cx=c_pps
+ a=CWtnpBpaoqyeOyNyJ5EW7Q==:117 a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10
+ a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=ZpdpYltYx_vBUK5n70dp:22 a=Z4Rwk6OoAAAA:8 a=VwQbUJbxAAAA:8
+ a=2Rxv5svHm-zNKBYa0PsA:9 a=QEXdDO2ut3YA:10 a=vh23qwtRXIYOdz9xvnmn:22
+ a=HkZW87K1Qel5hWWM3VKY:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-15_05,2026-09-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011 malwarescore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2609040000
+ definitions=main-2609150326
 
-On Tue, Sep 15, 2026 at 08:18:42AM +0000, Bill Wendling wrote:
-> index e7c335ca0c36..4e3781815b6d 100644
-> --- a/drivers/edac/thunderx_edac.c
-> +++ b/drivers/edac/thunderx_edac.c
-> @@ -20,6 +20,7 @@
->  #include <linux/atomic.h>
->  #include <linux/bitfield.h>
->  #include <linux/circ_buf.h>
-> +#include <linux/seq_buf.h>
->  
->  #include <asm/page.h>
->  
-> @@ -47,12 +48,17 @@ static void decode_register(char *str, size_t size,
->  {
->  	int ret = 0;
->  
-> +	if (size > 0)
-> +		str[0] = '\0';
-> +
->  	while (descr->type && descr->mask && descr->descr) {
->  		if (reg & descr->mask) {
->  			ret = snprintf(str, size, "\n\t%s, %s",
->  				       descr->type == ERR_CORRECTED ?
->  					 "Corrected" : "Uncorrected",
->  				       descr->descr);
-> +			if (ret < 0 || ret >= size)
-> +				break;
->  			str += ret;
->  			size -= ret;
->  		}
+On Tue, Sep 15, 2026 at 9:02=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, 15 Sept 2026 at 04:31, Christian Brauner <brauner@kernel.org> wro=
+te:
+> >
+> > TL;DR, this lets arch code handle fd install and cleanup. fd_prepare()
+> > allocates a descriptor like get_unused_fd_flags() does and records it i=
+n
+> > a slot on the task. fd_stage() attaches the file to that slot and
+> > returns the number.
+>
+> Honestly, I am *not* a fan. At all.
+>
+> I think this adds complexity rather than removing it.
+>
+> The diffstat tells a story:
+>
+> >  106 files changed, 962 insertions(+), 861 deletions(-)
+>
+> in how this adds a hundred lines more than it deletes.
+>
+> But to make things worse, it adds them in bad places: low-level
+> architecture assembly code.
+>
+> Those extra lines are *not* making complicated code simpler. Quite the
+> reverse. They are taking fairly straightforward "just deal with errors
+> with normal cleanup in the place where it makes sense" and makes the
+> *straightforward* case simpler, while making the big picture more
+> complicated and subtle, and adding new code to places that are not
+> simple and just blindly do somethign that makes no sense in that
+> context.
 
-Seems like seq_buf would be better her? But yes, at the very least, this
-needs to be scnprintf, not snprintf (or add the checks as you have
-here).
+With fd's it is more than just about error rollback.. exposing an fd
+to userspace mid-way thru an ioctl is an easy security bug to write..
 
-The rest of the seq_buf conversions look right.
+OTOH, "just use FD_PREPARE() / fd_publish()"..
 
--- 
-Kees Cook
+BR,
+-R

@@ -1,165 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED32438473;
-	Mon, 14 Sep 2026 23:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F686352F86;
+	Tue, 15 Sep 2026 05:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789427794; cv=none; b=CoazFJgv1T2tF5pba25GSuo+XR4Ovcy1EnTIVQS80gY65x36iQi8bNTuHSikza5pSSydXKKK9Uq558R2dVG7vczRcRB75KEEDcl1ljQVqnOjwI2FZDa8arJSpfd/QM3YsxxnuYqxs7euVi+jb30gQaU6HxVrW6gJ1EX9OV83r0o=
+	t=1789451186; cv=none; b=nfSdHyuPjiuceHkvUc7aM602YJK2zad19VWt2jS8r3toFKddLw4OosSU0m7juNqMAuGh0gSAZ9mKG4KZuCJSj7xfI9kkBeER1Z1dHU+79uW1HH/x9W1oJ1E9fTrwHm2HtvqeZ6KKxl0/WZHwVR47zfwLTOfJpNOPMkoMIF4FcPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789427794; c=relaxed/simple;
-	bh=a9OoLxlbgryrlLKAmEGZIJMmuk4Mh04+3SkjLyPClyw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i1DsTFiJVlY7zS4sSOBrORFdAfR4zvZIANlwbcjquy/RcwEHKdDW0x+13OHiRs1pfdcYyapJ8OQjT0MpFyd7/neCmMts45ocm+FcmlOqwrKmie65miWV4uYTj5mFDp5EcoM7w5uh16gpg2BrX0vmBXCDIDNlKIw8kgN/92FFbBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z0MKwixY; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z0MKwixY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 586901F000FF;
-	Mon, 14 Sep 2026 23:16:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789427776;
-	bh=tIIjh/Uf6BNc6qFW23Fkd03LNzbGrXqGSgv6kpFBBBk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Z0MKwixYFejC9aXB2ou9gDyVgw+IXUfla6yha+G1h+pdjyd9O2GMLR6rfbmVCIqRh
-	 qnCgaS96Y5zdrUGXyZHeCOvJUyELkRb+9fGwuS5j2u7zwvM0KNnIOldogKIDh75OXI
-	 UU1X49g4kycw28XdTtqVEurHf9Wwkc//rViLO6ZtoDml0qlU8ptCINWW4hrt54jJG2
-	 hAPr0WuTs5yk74shR3GBcrH+k1Xa8WmdEfWKZAyL5keV+wX4e0ljXisLoEP1cRbpgh
-	 4LO1uDw+LaWAO/9Fcz1VWy59hEVIdQMtiu7jS8LG28h+tTb8lnAcVAxnFEOPTpkgHm
-	 sgjmnSADR5CMg==
-From: Jakub Kicinski <kuba@kernel.org>
-To: bartosz.golaszewski@oss.qualcomm.com
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	andersson@kernel.org,
-	konradybcio@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com,
-	vkoul@kernel.org,
-	peppe.cavallaro@st.com,
-	wens@kernel.org,
-	jernej.skrabec@gmail.com,
-	neil.armstrong@linaro.org,
-	khilman@baylibre.com,
-	jbrunet@baylibre.com,
-	shawnguo@kernel.org,
-	festevam@gmail.com,
-	jan.petrous@oss.nxp.com,
-	s32@nxp.com,
-	mohd.anwar@oss.qualcomm.com,
-	romain.gantois@bootlin.com,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	mripard@kernel.org,
-	christophe.roullier@foss.st.com,
-	brgl@kernel.org,
-	radu@rendec.net,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1789451186; c=relaxed/simple;
+	bh=/bcZf+K0knvclkuvHQw86JM91mB2J3WS6OpY+fCig9A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YOlFvxixaGwCXJqgRs/9v/IsqBTu6DL1QE8J7dOOo+ydGRv2TJQFMgOjzPVhJ44oXwJ4PrkPvgvGlTdTjpEj5USHON+m4mCa9XbcTfT9BUt041WdfY5/TuRS0WGUzzlHNBuA/kYUizax6BschBi/CuNRyBQkherycgC8DSDi9X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
+	by APP-01 (Coremail) with SMTP id qwCowAA3Cu6t26hquRIKCA--.51777S2;
+	Tue, 15 Sep 2026 13:46:21 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: cjd@cjdns.fr
+Cc: daniel.lezcano@kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	dfustini@tenstorrent.com,
-	linux-sunxi@lists.linux.dev,
-	linux-amlogic@lists.infradead.org,
 	linux-mips@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	sophgo@lists.linux.dev,
-	linux-riscv@lists.infradead.org,
-	bartosz.golaszewski@linaro.org
-Subject: Re: [PATCH net-next v14 07/10] net: stmmac: qcom-ethqos: fix SGMII loopback not set on resume after speed change
-Date: Mon, 14 Sep 2026 16:16:13 -0700
-Message-ID: <20260914231614.704318-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260908-qcom-sa8255p-emac-v14-7-ec212b747a7d@oss.qualcomm.com>
-References: <20260908-qcom-sa8255p-emac-v14-7-ec212b747a7d@oss.qualcomm.com>
+	tglx@kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>
+Subject: [PATCH] clocksource/drivers/timer-econet-en751221: Fix clock reference leak
+Date: Tue, 15 Sep 2026 05:45:52 +0000
+Message-Id: <20260915054552.1729612-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowAA3Cu6t26hquRIKCA--.51777S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF45Gr47Ar43Jw18Gr1DAwb_yoWkKFc_Wa
+	nIgr97Jr1Fk390kw4qvw13Z39IkFn7Zry8KrWIqa4fJa48CFyjkF1rurnIkr15uanrKF98
+	CFW7C3yrAr13WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbYFAJ
+	UUUUU==
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgkLA2qowR1bvwABs8
 
-This is an AI-generated review of your patch. The human sending this
-email has considered the AI review valid, or at least plausible.
+timer_init() obtains the timer clock with of_clk_get() and only reads
+its frequency with clk_get_rate(); the clock is never prepared nor
+enabled. All four return paths after the acquisition (of_iomap()
+failure, clocksource_mmio_init() failure, cevt_init() failure and
+success) return without clk_put(), leaking the consumer reference.
+
+Drop the reference with clk_put() right after the frequency has been
+read. The clock enable state is untouched.
+
+Fixes: 3b4c33ac87d0 ("clocksource/drivers: Add EcoNet Timer HPT driver")
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
 ---
-net: stmmac: qcom-ethqos: fix SGMII loopback not set on resume after speed change
+ drivers/clocksource/timer-econet-en751221.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This extends the guard in qcom_ethqos_set_sgmii_loopback() so that the MAC
-wrapper TX-to-RX loopback is also armed when ethqos->phy_mode holds
-PHY_INTERFACE_MODE_SGMII, not only PHY_INTERFACE_MODE_2500BASEX. Without
-the loopback, dwmac4_dma_reset() polls an RX clock that never toggles and
-times out.
+diff --git a/drivers/clocksource/timer-econet-en751221.c b/drivers/clocksource/timer-econet-en751221.c
+index 4008076b1a21..1859335345b5 100644
+--- a/drivers/clocksource/timer-econet-en751221.c
++++ b/drivers/clocksource/timer-econet-en751221.c
+@@ -181,6 +181,7 @@ static int __init timer_init(struct device_node *np)
+ 	}
+ 
+ 	econet_timer.freq_hz = clk_get_rate(clk);
++	clk_put(clk);
+ 
+ 	for (int i = 0; i < num_blocks; i++) {
+ 		econet_timer.membase[i] = of_iomap(np, i);
+-- 
+2.34.1
 
-No Link: tags were present in the commit header.
-
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> index fd7414a50eb4e..e067ceee01621 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> @@ -190,7 +190,8 @@ static void
->  qcom_ethqos_set_sgmii_loopback(struct qcom_ethqos *ethqos, bool enable)
->  {
->  	if (!ethqos->needs_sgmii_loopback ||
-> -	    ethqos->phy_mode != PHY_INTERFACE_MODE_2500BASEX)
-> +	    (ethqos->phy_mode != PHY_INTERFACE_MODE_2500BASEX &&
-> +	     ethqos->phy_mode != PHY_INTERFACE_MODE_SGMII))
->  		return;
-
-[Severity: Medium]
-Should this hunk be squashed into the preceding patch of the series, or at
-least carry a Fixes: tag naming it?
-
-The commit message says "mac_finish() now updates phy_mode to the
-runtime-resolved interface", which is the change made one patch earlier in
-this same series:
-
-  f40e72d57bcb38 ("net: stmmac: qcom-ethqos: update phy_mode to the
-  resolved interface in mac_finish()")
-
-git blame at this commit shows the assignment in ethqos_mac_finish_serdes():
-
-	ethqos->phy_mode = interface;
-
-came from f40e72d57bcb38. Before that, ethqos->phy_mode was written only
-once, in qcom_ethqos_probe() from the DT phy-mode property, so the
-2500BASEX-only guard could not go stale at runtime and the DMA reset
-timeout described here did not exist.
-
-Does that leave f40e72d57bcb38 broken on its own, e.g. as a bisect point or
-a stable backport? On a needs_sgmii_loopback platform (emac_v4_0_0_data)
-with DT phy-mode "2500base-x" whose link resolves to 1G SGMII:
-
-  ethqos_mac_finish_serdes()      -> ethqos->phy_mode = PHY_INTERFACE_MODE_SGMII
-  suspend / ifdown
-  resume / ifup
-  ethqos_clks_config(ethqos, true)
-    qcom_ethqos_set_sgmii_loopback(ethqos, true)
-      if (... ethqos->phy_mode != PHY_INTERFACE_MODE_2500BASEX)
-              return;                 /* loopback never enabled */
-  dwmac4_dma_reset()                  /* polls a non-toggling clock, times out */
-
-Also, the subject line reads as a standalone fix for a pre-existing
-problem, which hides the dependency on the previous patch. Would either
-squashing the guard change into f40e72d57bcb38, or adding
-
-  Fixes: f40e72d57bcb38 ("net: stmmac: qcom-ethqos: update phy_mode to the resolved interface in mac_finish()")
-
-make the ordering requirement explicit?
-
-One more note on the commit message wording: the second paragraph reads
-"qcom_ethqos_set_sgmii_loopback() gates this on phy_mode being 2500BASEX.
-mac_finish() now updates phy_mode to the runtime-resolved interface, any
-subsequent resume with a 1G SGMII link skips the loopback setup" — the
-sentence joining is missing a connector such as "so that" or "and since",
-which makes the causal relationship hard to follow.

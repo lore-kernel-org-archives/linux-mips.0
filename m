@@ -1,164 +1,179 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012024.outbound.protection.outlook.com [52.101.66.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs2-f41.google.com (mail-vs2-f41.google.com [74.125.227.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE30C43DEA1;
-	Tue, 15 Sep 2026 19:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A42F3812FB
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 19:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.227.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789499958; cv=fail; b=WQf/Fh2Er9xmw+QgHiXd0WSsOYMQtgrpHa244ArMiLLdYRQnXts9xmuA8YdvFn6TcB1ZblQnQX28nUXlbOfz1Ua7wvoKutlTC0qblNb33qCnXzOl2wY4ymskgeLaRbnxLZKoEhZOt4fh6OoBdlSBq3fYrLWch1Bvz0aLKWKJdTc=
+	t=1789500653; cv=pass; b=XWnL9vXHTJCF8mf5gYPlt10HmFXU2fN5O7IBkxoVPt9vsE2J4ycTIElhMqvBKS08mgTqH0ed66Nwh6PLYxsphSKIfFIuzbrb+JDa0J/IiBLmPRcWbpKVzcZ4RN/Sa8iDcRmoYDeBuy9okQACirWiX9dQUjNbn4WV0v98iAKofOo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789499958; c=relaxed/simple;
-	bh=FkaJCv3z/MbtOdseLiQmQXexJ7RT4zsZA8v3q1lJRPA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=pzgOQbhd+yU+0XyIjpToCnvltPvuuA7wV2sLNrwFij0pqhzbADZzbr7G3YP4UNiNyxiDJIH4zXs7w9QVV3ezTfRWCi1BYFhRP22ltZElvz2FEivJfuAjAGknkhsaD4pyzA7LL9F7ivAt0sDUqsn0bG8FecG7vlAmwU1PFcinXYw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=MXtn+ypC; arc=fail smtp.client-ip=52.101.66.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+	s=arc-20240116; t=1789500653; c=relaxed/simple;
+	bh=RfxsKW+gWzHzPnl0VGV4sp1JrOew5XduTAso8G35GXs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PO6XK3Z2rpMA1H6rvEu882ZnM88avKun2Una91Gj2dirs3UfLwW/FawkJRXqtfGyNLowBJSUuiZ+SjBW6Q2Akf26t4Tf9Xymn72tsJv7Flk4daBA+UXyWqxOz+LaoTUVFTx/bQs1PJbK5WnBKZx1dwv6sTEDXl70S4SxlqohGBE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mHQpOIQY; arc=pass smtp.client-ip=74.125.227.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="MXtn+ypC"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=k+jlpSHYb8Ub+7In69YuGfyaOJ+tFKySG2CDmEeUTaxMYBBnYQM2h+La/8RZpYmDkwVNJz7uNTodwy7iSec864rrEPm7kPksFGQE/+O2aMTeLo/4r6/kAvTkxcn98mpKvMkv5MDcIKiKoFPtNqivTwxgPKwLhFqycWRd7Eimmg1C0NDZHdfqJBKgqpIgjxbOVnI5gouG9QYxqdJHg744GpSFjsKPdFAij66qd07VIVBnFVI6FYxEGE5bdiqXbvLKe1KjFopyQvhK/QFCQYcSBLKVux8HjlpTSnv1P0IjBAds5MEYKsketfH9eRoTSAQTxkyhgHRmr7GIs7HZHgoSVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mGEyexUM3TOflQXxjBCztXzUGGHWXzucmQFVFrhlCZc=;
- b=J1gcm0UyOqq+RvEuGrH8f7AChy8RPdUcPBUwg74bu5SmmnZd4RE8nwOElWpjX2HTWDbcOxiQ66MuJUG26Esu3tx/Ye/o7gICBoWS7g8tWTc6OJ6bYWLP1g99loIkkEitRWNIPwlOh+TsK57H6m3djmP+QuGPwvrxxc0OVZYhUV0VNCVJRCVCWiq2oz4DOrVoSO8GS5F2iUW5w1WprsPd7XVlSwykhinYOFUM2qfqS4Ed3uvU9yHfTQ/0al9MP4WpO1iHaKnM4mu//BOkgAi+Q9XtkSgKPcZlCq4UcEhO6EV/yU4Ny14KjUcBBEdjKM6SPskOL5+ktXXF2xlKefwiXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mGEyexUM3TOflQXxjBCztXzUGGHWXzucmQFVFrhlCZc=;
- b=MXtn+ypCju6sr5aiEBE1c0a3769o59wuvd9uXQlyhnHK6Jahxh6DNw7dBkgHI5GNj48P51H/6Er8lfWgaQHPgxzRQE3wBmnG4iVzeTTcYSzkFHXZ3WgfQ1zt0dmHSwzmY8T2EGfQtGJxmv9B+tcsMSCNhG037CEOlOJeHmapANoFrXhhpdqO+CvTHQgEqcOwFboBfIHGEuPVLMw1Q1qY8ghBsAJRyhhKQadUUBd+DzfATekE2H/gmzRp6bdfUH9CRQrAh/0lwxdqusL+WRB1g6LtgMj8dvrZvn4Ce+EPlL6lnEQ3GW6LhzIg+pPIwPRBvET1d6eekGHLQvxzEfxUmQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from GV2PR04MB11799.eurprd04.prod.outlook.com (2603:10a6:150:2cf::9)
- by MA6PR04MB716823.eurprd04.prod.outlook.com (2603:10a6:250:52::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.12; Tue, 15 Sep
- 2026 19:19:13 +0000
-Received: from GV2PR04MB11799.eurprd04.prod.outlook.com
- ([fe80::2146:83a2:5329:b7c]) by GV2PR04MB11799.eurprd04.prod.outlook.com
- ([fe80::2146:83a2:5329:b7c%7]) with mapi id 15.21.0406.012; Tue, 15 Sep 2026
- 19:19:12 +0000
-Date: Tue, 15 Sep 2026 15:19:05 -0400
-From: Frank Li <Frank.li@oss.nxp.com>
-To: Mahad Ibrahim <mahad.ibrahim.dev@gmail.com>,
-	Binbin Zhou <zhoubinbin@loongson.cn>
-Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
-	Frank Li <Frank.Li@kernel.org>, linux-mips@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dmaengine: loongson1-apb-dma: avoid using iterator
- variable after list_for_each_entry()
-Message-ID: <aqmaKaqt0tHiNtla@lizhi-Precision-Tower-5810>
-References: <20260720142538.2766-1-mahad.ibrahim.dev@gmail.com>
- <20260729143247.6111-1-mahad.ibrahim.dev@gmail.com>
- <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <an9teadkgwUsmMnQ@lizhi-Precision-Tower-5810>
-X-ClientProxiedBy: CYXPR02CA0004.namprd02.prod.outlook.com
- (2603:10b6:930:cf::7) To GV2PR04MB11799.eurprd04.prod.outlook.com
- (2603:10a6:150:2cf::9)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mHQpOIQY"
+Received: by mail-vs2-f41.google.com with SMTP id 71dfb90a1353d-5c67e4fff62so50697e0c.2
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 12:30:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789500649; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Rw1fK9c3MXsdah/qjUqbkb8lEdKagR8X1K9aIuryczX668r8hMevzS6/Ju8H0KXNzO
+         WnG40JoOJNhPBdvNzbRpDDhc76mK5/8p1+zuhKlMvNdi6VfvUSBBjOWJDuaScd0qXtT+
+         xt3uD2OLz7wYbR6nbqmAYeH7em+70dBm2jfyml7AXUyk3ZaRRpehfsW/dCOtl3rrdO+u
+         FcJNfKLy9f9sRAspLizOKfSHxTsNqSNGsJGgdrrcmU6029zLdiMaXejW0NyAV32QK2s1
+         ylcUMCEx9GpsUN1vu1JyyBu1BJE+Y05I34d1iomEI15ecuj8CirGOcAqIS/zXdqubtMt
+         dOrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
+        fh=RH9ak5+I3cQFUzYSFJ5PEhZHaqwSBc2u851fsGuSJNA=;
+        b=NEmjJGW3VgLw68VxD2zAjPUAVbdhJO4oyRT6UwVtzgwtN4Cx3hXJfXl0S5JFOpbO4x
+         mEGoPphJbqt6+jJ/hpRIAkT2DEyLBWQHsnHE9GhesZIOSBhZ2tIHJ3L+vW7EYFlbJMJH
+         egGzg7fbYCMXBY5MD7wh0d4AhwWsZxvKJGWYHKDKXsmQZmfGRHTa9N61fhoTZCbqkjbE
+         W8U6Deyf8mMStqsnN5FNJOUbfsFLYckD+6YeCz3AjXOIaE2fsQS/gV8m7Dd0NEi/cSQr
+         ByfN5VwJWkAfFZt8Zz9PQwMUS3pMOxXfIFMf0pg6u8Ba4Vk4a/ePQ6JO2HgH6VyW07Q2
+         DhCg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1789500649; x=1790105449; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
+        b=mHQpOIQYcK/f3LO6suOWFn0Cy720wLrLpDZ76Y2mpOM3+C9DQTQajqMKss2+8vswyu
+         6kP5JbXC/uQnmjFeNyvbn7ykDMjEjp2433FP2tusVe+U1jFmELny3ub1VOqaeQk4+bmw
+         tGfgnCt0FH77KKNFK/CBvajJjeEiwDPenSWUOdNQWc6FxW5qw9OoucUz3vPurhja7+2W
+         SRX2li+U/pB+n68jTLoULDYN4LWrOMyMYUPvz3nmRdNTo7uPdox+mGt4Z2VuXMis+C7M
+         e3WQC4JCEtRXPwtZDWEutENmL8gBQ5snBkXOOLsO675Xs4UrytQv+QbVij8iLiq/Acss
+         xb9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789500649; x=1790105449;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
+        b=QMsAElcWKPtbQeWW1zodlEoNaqKuJRZJk8Gdwb47WE7Zc9uxha6pTjSaM2806jfYqc
+         +sbPFw/MiHKtn1jqK2d1H21vlz/x91eYHZKnIgGQehcFKQCMvQQitZHTx+QjXlGWA/FE
+         8mruH2ROCAYYBq884jzpPqxjXN7VQu0uu7Fq1UdflyR5v6is71b7IvVe4JH4t1FLMmDD
+         cFz+h0qRrzPPUMsRhJrqDeaAdtJh9rjK72+AQDyBeHnLVYOqECqdkhacbUaXUrQnBAdg
+         Dk6i3bYTZ24sUxc76JRdTFnJ/eczODVCc//Zzrc5D39lis4P0PewVo1oIAVk4pDTDIvA
+         ROAw==
+X-Forwarded-Encrypted: i=1; AKwUvBymx/qjLQ7iUQ9S3h5S6xFJD0oRo3ggyG0A7D6mjK0xisaystaBzriY0eCTh4XdLrhoA3B1wAtDfi6V@vger.kernel.org
+X-Gm-Message-State: AFuF++n5RUoXa/57t8ak3/zO7wZGM4X3HRCELSydp7r7+lDyLA0tUCEa
+	aQJ0f8QiVZPAYk1F29slPkqZxaS7F3LlObdaSmpq9hN8XU36dl3aT23d7fLu7LfrNFxcePQ2H6t
+	aV6dUSldaulMnBV7cPT0Bcvdect/SCqLM/sC5omI=
+X-Gm-Gg: AYBFou3c7gkU+kNp/IZDecFXgv2y70veHog1SLO2LSVxhsY6CZGNjlwKBg2Cz00r9da
+	qFsalArc9paGZ9yTf8roi1EYJQhOD4zfKXxj6a9YG+7KOUvrQHIDYhwfoIeY8vn0lHH1kpXgXdF
+	YYPCvESKi4HCKIUlUidfjVYbyaNweD5WTzpwEORqHS+UUswMYvf5Hy5LZre6fvSthjjFdHP3+Q1
+	YgzAHPBahyHpuTvN0gYE5pQ8ZhGPMq69Uv9J8ejtOxGbaUZm0aT02sd1RccSM5lxm05Bh0DFJMB
+	TgX1aG4wpuKihViex3e0/SWgJxV5tp32BTAZtVBox9x4HyZysvLedhbmSZKhaF3lUKTzR1mnhG8
+	t1NaBY6BLzKa7rC5J/txKPy2HDlu+OZ3dz/nthiWxLOYWuxicjPiLxtYeOnk6FYY=
+X-Received: by 2002:a05:6122:8d4:b0:5c8:3697:9289 with SMTP id
+ 71dfb90a1353d-5c993b49b7cmr4231155e0c.8.1789500648289; Tue, 15 Sep 2026
+ 12:30:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR04MB11799:EE_|MA6PR04MB716823:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8a26c6d-30ac-4da0-bf9b-08df135e3969
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|23010399003|19092799006|376014|1800799024|56012099006|11063799006|4143699003|10067099003|18002099003|22082099003|3023799007;
-X-Microsoft-Antispam-Message-Info:
-	blbBOzsfP3QXF1yc2DaPZOoKpQJ8+mAVLqviES8l+0HLnXj6BHzufKJOEza27BrDjjp1XRDSFG0RxSNyyviGHd7xTkKoDFatj1JnCG+wpF0XdXlQI/sbR1F0HO0bVeIkuEVRN5S1Za3SETLJD6ksmKhcBeslOQ67mZs+EL3AuYaPgjc7F95ovjTEhJhfs0XBwleRPIYeOOHMRZBp1+HwY8K1UO/cW1499i9SNj421GzGULPTK6Mz7gWfH+44MAfYxOJnYVrVQkTWytK58DSXvGodMERjHIWFCAYYt/6OwOT2xYmg+RyL8FzxBSB57XeUsDq6FfwdWtCFsewMEt6KnVeuQgDSJoNvFXJH1Gd/7+K4MyzlZ59U7bYtFYbIhHqAuSvbfNKpDytt1woUETR4WWgQUHx0GSiEc3ghhM8rsNm4TDEDJ42vzkL3ZXzG0qCACKDa/Jli9JiPIyQT26cptFAkc7Z1x/qPXGW8WLTOuJXe7KDUEK/Vh4keb2VCufvZ9+cIBA9mJGlBznSOJwfsJuN5/1q5PisVewBzKZChW2Pz2qmn3mO5g0haGvcGmMSs5xSKC+7pquWboKU+oTMioZ/pWRUsnH4BIMdeDe/FPXlxtIQlleV0h9Sb2wVa4TOcbSZ3iDuXA3O9wyEfOxuEYsQmj/V7+u0kgmKc8Lqpiqg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR04MB11799.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(19092799006)(376014)(1800799024)(56012099006)(11063799006)(4143699003)(10067099003)(18002099003)(22082099003)(3023799007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xV3lA81AqH6TR0n57DqibjR6MHPfyPclz7WxdMx+18HEW1sE/Bkay4086AoC?=
- =?us-ascii?Q?g/bb8zsAoB8XSmgOPqpCDpDK0I3mj533kxs4Pvt+o02EwhVGcQsxENcoAoAK?=
- =?us-ascii?Q?ndqCTYJkrgRagCuAHDvAhK57YZEkV/b0wsLa6/v2F9LYAdgRmHlAi2uczYrY?=
- =?us-ascii?Q?neDeysI1oKp7Jq5laWwDxCf4CXNqFaVpXbcheMqjqv2+lR+e0su9nPs/c0rU?=
- =?us-ascii?Q?DMKpEx4w51/xbhc1231hIdRqpjcZZ1RqCBH3b747/Ddi1KlKdKbTEX94cX8k?=
- =?us-ascii?Q?yhUodXFH2zH0PUkXOf6eyfj0hQQBG+f+9cLBYPxZwE4APRek2OLtOYfTsMyy?=
- =?us-ascii?Q?4KD+/LMoILkBZMWzBJc5o5i6Ncf36cJ2wR078nzdtOqM3d2QCo2oraxAIcZN?=
- =?us-ascii?Q?0QS7t2J5Akcd2IErNSJEAe7AEKNHdgVfBA5luUR/EbqP/kiwFNfLCpPsTZfx?=
- =?us-ascii?Q?ZJn7ZH8spcnyLfdV2jveHv4v6d3m+Iuhii3D/ZMA/pJyfG8WQrornescEBcu?=
- =?us-ascii?Q?0gC85Fa4AaVqH0KoyXIIfCQoDPQ4OPuR6yF4cc45l6ANPaMQQJ46hRI0fKc9?=
- =?us-ascii?Q?DtkM3hDkrQChInvk5hFd7Ugc5jqmeKqsU9YDM7bv65C7YGdneaTjJvxpfcq2?=
- =?us-ascii?Q?g+yy7HvF7AKy5+DzQL51fc3TWZb06eH86MSkOZR94uR1PNcZsmFHYApAwWX9?=
- =?us-ascii?Q?iSYr9KAsqDAW84aEUiK8NH/2IpEPDvMXA5lGUJrOl/BHII+QEIzwJDRqBrmv?=
- =?us-ascii?Q?io1fHoUy6GbPmTLM+UlC0rn36K44akOHebaclPpPcno3FVZGtAYWSJgbVLUN?=
- =?us-ascii?Q?A5IBfLOhMuMYjq9gbfxTWTl89JwuUYS83kN1YDk950ypWJ/ho050PUhdqDFx?=
- =?us-ascii?Q?kmY3vNf/lOobXUwJLwhaCYE+smpmLhLaLG5Koz2ebEWbk2ZpBreinSJ9guh6?=
- =?us-ascii?Q?cbEutdvBSec2l52K0/YT+u12encit0vRBp/7f2Iof8y2EH7+/bwkJlK4CKou?=
- =?us-ascii?Q?olLJUIPrNMrdnO3SXSpiKmAWyBE5K0LEIOmJ2ZybEuURFFkKnEsEGdP1hVW7?=
- =?us-ascii?Q?RbzuT6kR/6X22ZK7gqpNTpfpwsC1OXSVBRTozHe241ww0Spce/HHOZ2a+5OY?=
- =?us-ascii?Q?ENBJxAZHcLySq8I5it5Ed1hVSzNhVblyflBlWT3kZIguu4SQuuvbsXoj6dbk?=
- =?us-ascii?Q?MbpRq4Tm2kwynDyTtvsRg63aVtech2EDOyapKe7mwpwBVwfhXgUe2miY8U1u?=
- =?us-ascii?Q?Y0h/CaspuNeCtwT8H79v2vPpM/D66qlbNq9wwCSBDfPWdesdhfuTZsrLIBoM?=
- =?us-ascii?Q?MQ9VjTSz71j0Z7YMGjPpa92A2mvGkar7SyE5I2W7pk8rvo22wNtFJjWN/zO6?=
- =?us-ascii?Q?L1eUnRUNG8hmqqph4z0qsULogmtUFrlbSyfTovm6F6klDe2PxQkt2GSqdMzT?=
- =?us-ascii?Q?+zaIXfQbdVASyje2gMirxWMvGgwmxLEJjo7pu3K/UxNN34IXEmAcmTGZZC5L?=
- =?us-ascii?Q?hzENayNB9RRSHOH6r5K2a669a8a918UuFyg1G6tK9fkbQD03hz9gmiMcOwb4?=
- =?us-ascii?Q?HnT4ulYSAiw1YygbPgPG/EgcfSdH8o4KMk6IaoKQ1PHRrnVI+PqK/Wgo3QST?=
- =?us-ascii?Q?WuW8I3H90PXDeR3pVfJKoqghPh/vsybqEZWme+cZkuoLtnFlue0fl1howtZq?=
- =?us-ascii?Q?8uoFB4tubt/90yyRNkJc8axfvCMNqMwMwqaRJx5F9RoxXyMzs9xy2+yQj4va?=
- =?us-ascii?Q?ZrXv80fWlqGXPnjJt6E0WL0jrQIMNOyUfIU4oMxPC3pCOIqQiSVP?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8a26c6d-30ac-4da0-bf9b-08df135e3969
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR04MB11799.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2026 19:19:12.5004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wbv3W+66YfLnR9um7Cr2z6V6XR9/8m9TpRAshmmli6EVmsYYEfSzh0JEyTOQqz9b6dTL2FWrDeAWxJCZok4J8zvF/o0o6RvKbrvtxkSpS9EvUAgAQrOXlmsXEZF4nG3S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA6PR04MB716823
+References: <20260915081910.4142719-1-morbo@google.com> <20260915081910.4142719-22-morbo@google.com>
+ <202609151147.C5B45CB@keescook>
+In-Reply-To: <202609151147.C5B45CB@keescook>
+From: Bill Wendling <morbo@google.com>
+Date: Tue, 15 Sep 2026 12:30:31 -0700
+X-Gm-Features: AcwNN1W7vYosDgc2DMy2_OinBNj1qeEQ35WOY6PL8-NHlzjaHMOKmE1leyIGWNs
+Message-ID: <CAGG=3QXYtmJqE5oy5ZD0-G0=GNxK71KKYurusNJvLQNqR-o6+A@mail.gmail.com>
+Subject: Re: [PATCH 21/28] NFS: nfsroot: Refactor root_nfs_cat() to use snprintf()
+To: Kees Cook <kees@kernel.org>
+Cc: nikitash.mariiaw@gmail.com, linux-kernel@vger.kernel.org, 
+	codemender-patching+linux@google.com, Russell King <linux@armlinux.org.uk>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Matthew Brost <matthew.brost@intel.com>, 
+	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Matthias Schwarzott <zzam@gentoo.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
+	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
+	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
+	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
+	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
+	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
+	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
+	Johannes Berg <johannes.berg@intel.com>, 
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
+	Alexander Stein <alexander.stein@ew.tq-group.com>, 
+	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
+	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
+	=?UTF-8?Q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
+	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>, 
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org, 
+	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
+	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
+	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 14, 2026 at 03:33:13PM -0400, Frank Li wrote:
-> On Wed, Jul 29, 2026 at 02:32:47PM +0000, Mahad Ibrahim wrote:
-> > ls1x_dma_tx_status() locates the descriptor actively being processed by
-> > walking the LLI list and comparing the hardware reported next descriptor
-> > pointer against each element's next-descriptor pointer.
-> >
-> > A list_for_each_entry macro is used in the comparison phase. Which at
-> > the end of the loop leaves the lli pointer at the currently executing LLI.
-> > However this also subsequently runs for a non-match lli, in which it
-> > points at the head. This causes a type confusion bug which treats the
-> > head, which is a ls1x_dma_desc, as a ls1x_dma_lli object. Additionally it
-> > goes forwards and prints garbage via the dev_dbg.
-> >
-> > Fix the type confusion bug by only allowing matched LLI descriptor chains
-> > to print the current LLI and residue calculation, as failing to match
-> > should be treated as an unexpected condition.
-> >
-> > Found by the following Coccinelle check:
-> >
-> >   scripts/coccinelle/iterators/use_after_iter.cocci
-> >
-> >   drivers/dma/loongson/loongson1-apb-dma.c:461:6-9: ERROR: invalid
-> >   reference to the index variable of the iterator on line 450
-> >
-> > I did not see a bug upstream detailing this error, nor do I have the
-> > hardware to confirm this bug or error, all this is from a pure code
-> > examination.
-> >
-> > As I do not possess the hardware, I cannot test the patch. Compile tested
-> > only with mips64-linux-gnu-gcc.
+On Tue, Sep 15, 2026 at 11:52=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
 >
-> Avoid post new patch on old email thread.
+> On Tue, Sep 15, 2026 at 08:18:38AM +0000, Bill Wendling wrote:
+> >  fs/nfs/nfsroot.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
 >
-> Just simple said
+> This collides with:
+> https://lore.kernel.org/all/27956255dde39f58d73a7b51cb53cbe3d7804f54.1786=
+411026.git.mariianikitash@google.com/
 >
-> Compile test only.
+> > +     ret =3D snprintf(dest + len, destlen - len, "%s%s",
+> > +                    (len && dest[len - 1] !=3D ',') ? "," : "", src);
+>
+> I prefer Mariia's version because this inline ternary is difficult
+> to read.
+>
+Agreed. I was trying to not stomp on her work. Please ignore this patch.
 
-Please updated commit message at v3
+-bw
 
-Frank
+> I was expecting to land hers soon if the NFS folks don't pipe up. It is
+> one of the rare cases of still being open-coded, but the strlen() usage
+> was pre-existing to check for the trailing comma, so it's not a clean
+> seq_buf() conversion candidate...
+>
+> --
+> Kees Cook

@@ -1,57 +1,57 @@
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67883476072
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4711446E000
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460448; cv=none; b=uuCizk3XwmqP04PuLhcmZFgeBTSauYrL/2P3EeqaCBGEKaNnqGlrF6x9YUSnT2OzEjtARsaJdKgFSj92Lwtf/Ft5vSb+vEwXkeZ+/NOV653u9a5KAebSDSchBnJL2lVsFRx1pdlxbFW2AosqI4CXO0H9ktBE4eXuVdm9vUUTYKU=
+	t=1789460449; cv=none; b=JWNlpjWeOHlhN33HMcflvoghxawH5IQH/UEik64n9mkIaFhXRrdv9JieVqwnvRkfr3PKEeNNmyJHrBxuqODrH2ZNPvPlzfL5oT4txzCxDnQF1f6u0mZ8xIE+P1dkLQxJZrBxVWnlY9I0JJigwsQenntTL3QJ0Pqm5QgsSzBqz+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460448; c=relaxed/simple;
-	bh=Te8HD9YkwxCOhstie9EUJ32KLA4oNHtDIGXeNIM9YkI=;
+	s=arc-20240116; t=1789460449; c=relaxed/simple;
+	bh=EN6EGME+huegbOxDBjKH7V67mh976lOmZoZq43U+s0w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=R197Zin65wWHilDU87cDruRUsUbSedUIB9ASR4qeMV8ioXjOneOdZbvrVHqY/KtvEDYlA1t0LuzSiUflfkqB0U3P7oakjMls+VQZQwZkc1rjaqOC7zqA2KE5if7aJrRFWqzP9+SPdEcySFrNgXdoSHoOFSH84wKz0L+qLGT6i7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Sm0elxDu; arc=none smtp.client-ip=209.85.214.200
+	 To:Cc:Content-Type; b=ln+rgNK/jVun/NTH5KBdEFTHOAcTpm0UAZQaS8DaBmZUzxCwTf5BQbONGGZN03FrPoczXn4/hk2nfND7duZnWevczLwllzvhdIH8YYO5Zn57V67Rupe6SpfZ67TBkDh5F55glSicVK1wfXgF696KIu2VoMl7AjTj692oesRpt2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IN7mFECf; arc=none smtp.client-ip=209.85.214.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Sm0elxDu"
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2cfc52ddc55so61789135ad.3
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:20:22 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IN7mFECf"
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2dd753a52bbso18790605ad.0
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460415; x=1790065215; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460399; x=1790065199; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=aUeRHnlHuLyd8Os/OfUYHyanuI/6gSGpcAdXKzgjG1A=;
-        b=Sm0elxDuTug+KyLI8ny8KqtqtKZOMFIJlmUqfZKZtIGsP/tcONa+VEuplt7dYQpdkN
-         lu0WuWT00yQktV/5O4IVdA7Zx0lZQA2Ex75xJvHUD4V2IWv3s2bVd0xT4DobX/i5tnoJ
-         CI1csADnHX6Jo6vPyKhpWJnfHeucbxAhOzRqOT/6IJJSkynZY7MZvcHGx+isA1UH6OSu
-         rtYGVp3YO4gvXhNNO+mTLWcaINB25AbZJr4RA6acqlUzuzsWqpJRdApHH8giRudU7hdh
-         HXcteOOHe5cQrZwqXeGSuZ+WSd8/XIx8r1HZ/DPV57Zf7jgm1C8WEQw9iCmUv7vOYelq
-         +NFA==
+        bh=EgFMWIs3mUJyaWhldMFLFql9frpSc6deV3MqyJ0yzUw=;
+        b=IN7mFECf+lQARLCCu20shBJaZb8YTnUewxaKE/yWKSD5Vbgf9UY3RdZ3rRDjLRVZaE
+         yK7wbGvW4DIK+Vg0pjnsTrq22hbGV2BRSba/TrVdqeWM1/jsTbhFlUQkcZVvberBxd1d
+         SaDNtYVCwLgiVRfYGfpGb254t+/EUVUSeEWbVrLCcxNClqxguZ20/H8WwMKCwQ+moQgN
+         YX7dmX/fn5/SKtLJ+iwgTCzv3y5aPqff1Ajewyb3RPZpBd9ZPzG21xtxZqD0s6WsVYTN
+         wMYLfnEDv0wRIJ75lLG2IgBPGu//T9hW+jeC8Cxg2o/3gR1///x0IMDj8zJgaRJkqvIT
+         FCYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460415; x=1790065215;
+        d=1e100.net; s=20260707; t=1789460399; x=1790065199;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=aUeRHnlHuLyd8Os/OfUYHyanuI/6gSGpcAdXKzgjG1A=;
-        b=V2nFEVKLrOxqF/Q2XmLQ9Wom7Z++QumBcBjU09Cpba8xDpoP+6OSM6rIOnObLEWfFE
-         syTdkXzxt17KHnE8UM0TIVuq0aXs/JLGMt0vjzOnfy2klM0kYkKEQmvi+SR3Dx8lmoaL
-         9VREKxwjfX1L+VtocWo4Gw1KMeg6uSsp9ydnffGJTRiFzywwJ23hMiaSLAVakv9DVold
-         LaL7JFmgAW2GFtc76JOe/YKZR/Ku9zx0IqrUBEMtocEV6MWTsD9Q6RTfNTg972boFy9m
-         NSSzGAFgBXIGDGz4c+6efV4M7GqSBPlR5W263H6qO3kpOlpQ6uwQtypN9dhRRSsvq4G2
-         uTfw==
-X-Forwarded-Encrypted: i=1; AKwUvBwW1firRvwX9+Dcwl240ofEh8UlMqEGNva1UFYKgvrkwDZO1SqAibJFZ8c4UpVcW4O7vIV3TDBhIk/R@vger.kernel.org
-X-Gm-Message-State: AFuF++mO66heuPnoMnwbL9pIxWwcZMiASwSPsdpoHoQMuAxD+Oivn1Dw
-	+mhr/ssr0MFq16C9KEUDNRHwv8Fddhy5mjUGObVx3ZTuq9oAUXQkcQDTsCqtt3igIMwzw7MXg8n
-	1
-X-Received: from plbmz16.prod.google.com ([2002:a17:903:3510:b0:2dd:2adc:aa80])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:a8b:b0:2d9:26b3:547
- with SMTP id d9443c01a7336-2dd83882243mr420135ad.20.1789460414438; Tue, 15
- Sep 2026 01:20:14 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:40 +0000
+        bh=EgFMWIs3mUJyaWhldMFLFql9frpSc6deV3MqyJ0yzUw=;
+        b=Ao9rHRj4p+XBc8qSbK8jM/tVaRhJJi/SmFtWA/GC4Rmr01C/DQ0RggTvyY1f8F3zVW
+         b3VlN3Bg+tlOaLisk4rq9WkjldYA3Cf3SKkZIy5H8xATT2eGzo1kvQJ6+xhmlsTN8eD9
+         Iwy2hyaRMx9Jx7BKfh0wtpYo+Z1wtpG+kwJp2easstrudLvlqZp8jBwKT2tayjvxMMid
+         B6mX/QI+9FOZW4C/VyHgHzvWdKnGjWrQc9sz2liopABS4ifxdAshtpW68FWv42wltfsO
+         EEjamZtaLDFl5DdnFmSQqePPFpZIWxOLTR7v5vZvPeD4+0r6cnIKaYuMzR0Q305+g7xr
+         bT3Q==
+X-Forwarded-Encrypted: i=1; AKwUvBxWjqpj9Pu6c9GYyC+HlbbH0wvqb9M+u6CgojkCJtj/zWE9pETrrjbaCWdT/5B1DbbE6vZ/V6CgAZWr@vger.kernel.org
+X-Gm-Message-State: AFuF++moKctsS11zTsj420JNBo2BY7Z3CsPWWMXyq1zeJfTdF8nGnwa6
+	D/kzbZ2l2hG+PVml7mZ6xF+OzhliArxjhF6z8zj5Cb3ltEOnyg6hhQ/AuB+j1E/a45JU8W6I9Lx
+	P
+X-Received: from plrf13.prod.google.com ([2002:a17:902:ab8d:b0:2d9:21a2:1910])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:32cc:b0:2db:3d84:effc
+ with SMTP id d9443c01a7336-2dd6c5d600fmr121011565ad.6.1789460398023; Tue, 15
+ Sep 2026 01:19:58 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:28 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,9 +61,8 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-24-morbo@google.com>
-Subject: [PATCH 23/28] Input: synaptics_usb - use seq_buf and snprintf() for
- name and phys
+Message-ID: <20260915081910.4142719-12-morbo@google.com>
+Subject: [PATCH 11/28] wifi: brcmfmac: Replace strlcat() with snprintf() in brcmf_fw_alloc_request()
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
@@ -124,17 +123,17 @@ Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-synusb_probe() constructs the device name and physical path using a mix of
-strscpy(), strlcat(), and snprintf().
+brcmf_fw_alloc_request() constructs firmware file paths by chaining
+strscpy() and multiple strlcat() calls for the module parameter path,
+separator, base name, and extension.
 
-In preparation for removing the deprecated strlcat() API[1], use struct
-seq_buf to incrementally build synusb->name, and format synusb->phys with
-snprintf() after generating the USB path.
+In preparation for removing the deprecated strlcat() API[1], format the
+complete firmware path in a single snprintf() call.
 
 Link: https://github.com/KSPP/linux/issues/370 [1]
 Cc: codemender-patching+linux@google.com
-Assisted-by: Gemini:1.5-Pro-002 [editor_update_file, make_kernel_build_sing=
-le_file, test_runner_run_kunit_test]
+Assisted-by: SecurityEngineer:GPT-4o [editor_update_file, make_kernel_build=
+_single_file, shell_command_run]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -248,73 +247,45 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- drivers/input/mouse/synaptics_usb.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ .../broadcom/brcm80211/brcmfmac/firmware.c    | 21 +++++++------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/input/mouse/synaptics_usb.c b/drivers/input/mouse/syna=
-ptics_usb.c
-index 880a0c79148c..d13d2d6202ee 100644
---- a/drivers/input/mouse/synaptics_usb.c
-+++ b/drivers/input/mouse/synaptics_usb.c
-@@ -41,6 +41,7 @@
- #include <linux/usb.h>
- #include <linux/input.h>
- #include <linux/usb/input.h>
-+#include <linux/seq_buf.h>
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/=
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index 22ff326f1924..2f74a952599e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -845,22 +845,17 @@ brcmf_fw_alloc_request(u32 chip, u32 chiprev,
+ 	fwreq->n_items =3D n_fwnames;
 =20
- #define USB_VENDOR_ID_SYNAPTICS	0x06cb
- #define USB_DEVICE_ID_SYNAPTICS_TP	0x0001	/* Synaptics USB TouchPad */
-@@ -278,6 +279,8 @@ static int synusb_probe(struct usb_interface *intf,
- 	struct input_dev *input_dev;
- 	unsigned int intf_num =3D intf->cur_altsetting->desc.bInterfaceNumber;
- 	unsigned int altsetting =3D min(intf->num_altsetting, 1U);
-+	struct seq_buf s;
-+	char path[64];
- 	int error;
-=20
- 	error =3D usb_set_interface(udev, intf_num, altsetting);
-@@ -334,27 +337,29 @@ static int synusb_probe(struct usb_interface *intf,
- 			 ep->bInterval);
- 	synusb->urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
-=20
-+	seq_buf_init(&s, synusb->name, sizeof(synusb->name));
-+
- 	if (udev->manufacturer)
--		strscpy(synusb->name, udev->manufacturer,
--			sizeof(synusb->name));
-+		seq_buf_puts(&s, udev->manufacturer);
-=20
- 	if (udev->product) {
- 		if (udev->manufacturer)
--			strlcat(synusb->name, " ", sizeof(synusb->name));
--		strlcat(synusb->name, udev->product, sizeof(synusb->name));
-+			seq_buf_puts(&s, " ");
-+		seq_buf_puts(&s, udev->product);
+ 	for (j =3D 0; j < n_fwnames; j++) {
+-		fwreq->items[j].path =3D fwnames[j].path;
+-		fwnames[j].path[0] =3D '\0';
+ 		/* check if firmware path is provided by module parameter */
+ 		if (brcmf_mp_global.firmware_path[0] !=3D '\0') {
+-			strscpy(fwnames[j].path, mp_path,
+-				BRCMF_FW_NAME_LEN);
+-
+-			if (end !=3D '/') {
+-				strlcat(fwnames[j].path, "/",
+-					BRCMF_FW_NAME_LEN);
+-			}
++			snprintf(fwnames[j].path, BRCMF_FW_NAME_LEN, "%s%s%s%s",
++				 mp_path, (end =3D=3D '/') ? "" : "/",
++				 mapping_table[i].fw_base,
++				 fwnames[j].extension);
++		} else {
++			snprintf(fwnames[j].path, BRCMF_FW_NAME_LEN, "%s%s",
++				 mapping_table[i].fw_base,
++				 fwnames[j].extension);
+ 		}
+-		strlcat(fwnames[j].path, mapping_table[i].fw_base,
+-			BRCMF_FW_NAME_LEN);
+-		strlcat(fwnames[j].path, fwnames[j].extension,
+-			BRCMF_FW_NAME_LEN);
+ 		fwreq->items[j].path =3D fwnames[j].path;
  	}
 =20
--	if (!strlen(synusb->name))
--		snprintf(synusb->name, sizeof(synusb->name),
--			 "USB Synaptics Device %04x:%04x",
--			 le16_to_cpu(udev->descriptor.idVendor),
--			 le16_to_cpu(udev->descriptor.idProduct));
-+	if (!seq_buf_used(&s))
-+		seq_buf_printf(&s, "USB Synaptics Device %04x:%04x",
-+			       le16_to_cpu(udev->descriptor.idVendor),
-+			       le16_to_cpu(udev->descriptor.idProduct));
-=20
- 	if (synusb->flags & SYNUSB_STICK)
--		strlcat(synusb->name, " (Stick)", sizeof(synusb->name));
-+		seq_buf_puts(&s, " (Stick)");
-=20
--	usb_make_path(udev, synusb->phys, sizeof(synusb->phys));
--	strlcat(synusb->phys, "/input0", sizeof(synusb->phys));
-+	seq_buf_str(&s);
-+
-+	usb_make_path(udev, path, sizeof(path));
-+	snprintf(synusb->phys, sizeof(synusb->phys), "%s/input0", path);
-=20
- 	input_dev->name =3D synusb->name;
- 	input_dev->phys =3D synusb->phys;
 --=20
 2.55.0.1032.g73a4cd73de-goog
 

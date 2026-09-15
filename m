@@ -1,57 +1,57 @@
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C04A46EF90
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BD446D2AA
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460488; cv=none; b=OMVbGYW3FgyjSrPTxHOBZEvSA+TH9Ay+9VFzdnP7oK3zvdDW81Wfitvs/XJccxt31k6HVmK3XsqTr91ZvbsDm/X9bipmY3wnAavig1pYRgMrk6UL2qY64BJ0uJ728v15ypnY7ybuLEkVc/n25l5nvvoMpPMgW3sYyr4HZZQ6e74=
+	t=1789460716; cv=none; b=U5ibHZOiFvl+1I31KXBnn+72A3vICruSV7HR40QXtoceynjfU9KgMv0e1yun014SWHwx0VCJCttnCzm9XbNUOPCKKbXyXxL/Yv3LwRdnd9QR21WKdiUtml779KGnSFqVKZC3yRpKh73bKOgK2BZJYvCeZfeGyu3elGL4oEgxYio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460488; c=relaxed/simple;
-	bh=z7dasmw4/Yd5J5NMYLIKQKAVayxIH5dLlb/JPMHBnRA=;
+	s=arc-20240116; t=1789460716; c=relaxed/simple;
+	bh=Hbrp06lq3B7opj8tzjJVqcfrxhhZTvzJ1WqUPePmYuc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=G9yv9FJti75QeVgH3qNAkPQtBb0OD3gyayxTVv42Bh5bll+i3UAs9PxD0hBBQoxf2/+/njquhTsvPQ5VN0nGw5YQYZFFO0o7sZWHj9OnrzUDZIB4yKHjcRuON/02DBV0LzylspxUV3VeEcumvtUzL6eVw2gVdEBkW7L5oBury6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DnkxJOzA; arc=none smtp.client-ip=209.85.214.197
+	 To:Cc:Content-Type; b=mONi8ZcQNhsoCDJI/YRlbm+vNy5Seyujt/YyaAwodtT009/qFut3QT00nCquNH4m4HJnVFBXwacrxd4Wzim5kjD21yUOo+eYbF+kElVEYbkaEhZtjZpLaxqP8sghGk0dCBjuuufuV2VnCr273bIheDD23p6G0ULIntzUkyRVknQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eRps62iu; arc=none smtp.client-ip=209.85.210.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DnkxJOzA"
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2d02df2bf09so40883365ad.0
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:20:09 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eRps62iu"
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-86a880e91f0so7243943b3a.2
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460408; x=1790065208; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460713; x=1790065513; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=jabuqrMs8PQTYoTuRH1Tce2jM5ZfyHhnXojFxmEofr0=;
-        b=DnkxJOzAoYRCvFrZNk61l1D/qL7p6eKsJCT8XtQ2LGfkP45WZDxWz+OJQxlIz84IKb
-         MYOUF5eg2kJaGwcsK75t1FQYHvvOuJ1hJBQAlbEG+j3wOQ+Ga+E+8yeCWIJtsN/B2Q7h
-         uyUvcSV41pGlf+lQ1qS9X/yPmlx5TzzQjayk4tek7rCmZ6oXMf6J5SGt29zqCfU2sK76
-         mh0UG8NgBKykfkhIS7NKBs1uyGwwJyakNCtuFF+vreH2UHkQ9bgNSqCoRzUaLDigbonq
-         KQ8EIVMNfuo4wfDS56OYC/SnEG47oux3eQnv8+PGUcAHN7PgFKmpV3mYlGRdC3DgKlA6
-         3Daw==
+        bh=tzVl62qjzRm92BALDDypl3TnCOJSNAaLaOJ/zmWRh10=;
+        b=eRps62iuv55WnRNgczCyH8KusIyc0b2lLyvlrVzG9rBwIZwLmJB+r3bEoPOoE+cEHy
+         PEVbWgqqN3LQ81KD0XobiZolCSOIn7N3LYLqy+RHlyM42HWj4shhPhMbxmBeklCfZKvf
+         Pd7bNIQF9NLR0yarK22pvroDl9HA5afuF3S3/lVo85OESu4IhdT7Uy6vPhDQSue2q3yU
+         XgG4BXnscuqfTfnuRrH0IXWwBOFtAO6YOWFw6a2KGb4IsxtB7ad8TQzhEnCb5QkWyp/O
+         zeBC5HkATnfL+ifCUiqgubp1xCL/lLx7YwBSwOoAOglNKaw9ctS2t95NxAD17q6aPgIH
+         FcAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460408; x=1790065208;
+        d=1e100.net; s=20260707; t=1789460713; x=1790065513;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=jabuqrMs8PQTYoTuRH1Tce2jM5ZfyHhnXojFxmEofr0=;
-        b=JT8/5xe9qEYOsiR3Aj+eDW870x1jdaAKCtiJvcEOyXz4Lwh97hm3wrA6K6bSXKaJ7N
-         ie99ggS93+MUJfcVEm7rOrWHQPoEn9zns5dQPJnGNOoJBe6/yAYQek2nxHAxAwHD9TBl
-         9iXW2lPmGHSWWrSiJf7ErTuMdDmVtt8riNMFwB5rPsDpvO773imvOzTCSEqHMU9Dbb7R
-         VvIyzLWZUn8RYEDH+nb4bIilAntKE0NSFaDprAgFoAj+PKo6rIWf5cj4aIfF8gzWM+Yw
-         ZzLXmN6G5UMQWZ028H7UzveXISEpfXvIhHrIGAuR55WBcQcGicjHgyVi9YDE9u5yZ4dC
-         Kigg==
-X-Forwarded-Encrypted: i=1; AKwUvByUg4vT3V2YTQLKA13Rn/QVoxkrhX2FNTU2q8CHFtKksXa8dgwtr+gVHiUEgi8W7dhqdz274i8V4Y+U@vger.kernel.org
-X-Gm-Message-State: AFuF++mxg4wuXSy+eWltb6GXVtEmRmtUk2y0W9ezajYhZN2kM2kbb6r4
-	zQ6STJbKboJxFgoDZr7ksGk6eI0hwIvxnzGrq0XRrGSpPViexGWAZhAgvzTsjchKD0IAIVhDMJa
-	U
-X-Received: from plde9.prod.google.com ([2002:a17:902:d389:b0:2db:820a:9228])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:f786:b0:2dd:4070:8f5
- with SMTP id d9443c01a7336-2dd6c758602mr148465515ad.21.1789460407562; Tue, 15
- Sep 2026 01:20:07 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:32 +0000
+        bh=tzVl62qjzRm92BALDDypl3TnCOJSNAaLaOJ/zmWRh10=;
+        b=ixvVxVhs1nR4kjpoZJHq+jLNIL6MAhWq9ujTsib+7JK6WDPEcwfv5srLgqp1xL1qEG
+         eqEflK7ZHjMyUWzWO4pn6vufxGmgOeeMe3Ahvc6JARXBdQM9JPqzkckDaj6U7bvhG7To
+         M2E9NaQy04AWcsDqfU+UrK4pSG6kZ1iljsmuyjyoQIWP5E+kVPHds6Gc3Fj9jEjBJ8o/
+         H5sUPr6sCb7SklPM7WSF+vEpcUaiIrPjsnmvm4w6PcPHSCOedo43+rdUZ3kr44JmLDlY
+         3CwrSC7ZNh4df43jJDYAYJbpM/zJTBwIF1vZIaIietIH2CC6EFod8KQqbbMiSFXVPI8M
+         LcOg==
+X-Forwarded-Encrypted: i=1; AKwUvBzS0ZBT8TRmrmIUtoda3CkSHsC8ux8d71quXU1ETxdnD9Vuerg6JUD0iEgkftLhUuirJ/PqNmqDAKj/@vger.kernel.org
+X-Gm-Message-State: AFuF++mMSVBAJvl6Zzr67o8UHqpYP1jyETxOJNUT8jWfaRDU79X4Yc73
+	QQFGLTLgLGW+2Sxq9fJf2rKmP92mniT9bT4TLH8WiD7sp6wZ4nEKB8ev/FcjddglMYk99ZZm0Pw
+	X
+X-Received: from plbjx4.prod.google.com ([2002:a17:903:1384:b0:2dd:1457:fac8])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:190d:b0:2dd:4168:7bd3
+ with SMTP id d9443c01a7336-2dd6c6c0cb1mr140747065ad.12.1789460411041; Tue, 15
+ Sep 2026 01:20:11 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:36 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,8 +61,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-16-morbo@google.com>
-Subject: [PATCH 15/28] orangefs: Use seq_buf for debug help string generation
+Message-ID: <20260915081910.4142719-20-morbo@google.com>
+Subject: [PATCH 19/28] x86/setup: Use snprintf() to concatenate builtin and
+ boot command lines
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
@@ -123,23 +124,20 @@ Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-orangefs_prepare_debugfs_help_string() constructs the debugfs help text in
-a dynamically allocated buffer using repeated strlcat() calls across
-keyword loops, rescanning the buffer on every append.
+When CONFIG_CMDLINE_BOOL is enabled without CONFIG_CMDLINE_OVERRIDE,
+setup_arch() appends boot_command_line to builtin_cmdline using two
+strlcat() calls before copying the result back to boot_command_line.
 
-In preparation for removing the deprecated strlcat() API[1], use struct
-seq_buf to build the help string. This tracks the write position across
-the loops, allows formatting each keyword line with a single
-seq_buf_printf() call, and checks for truncation via
-seq_buf_has_overflowed().
-
-Additionally, replace the final strlcat() call that copies the completed
-string into debug_help_string with strscpy().
+In preparation for removing the deprecated strlcat() API[1], format the
+combined command line into a temporary buffer using a single snprintf()
+call and copy the result to both builtin_cmdline and boot_command_line.
+Using a temporary buffer avoids undefined behavior from passing overlapping
+source and destination buffers to snprintf().
 
 Link: https://github.com/KSPP/linux/issues/370 [1]
 Cc: codemender-patching+linux@google.com
-Assisted-by: Gemini:gemini-2.0-flash-exp [shell_command_run, editor_update_=
-file]
+Assisted-by: Developer:Gemini_2.5_Pro [editor_update_file, make_kernel_buil=
+d_single_file, checkpatch_run]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -253,97 +251,29 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- fs/orangefs/orangefs-debugfs.c | 36 +++++++++++++---------------------
- 1 file changed, 14 insertions(+), 22 deletions(-)
+ arch/x86/kernel/setup.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/orangefs/orangefs-debugfs.c b/fs/orangefs/orangefs-debugfs.=
-c
-index 9f94919a6bc6..6e2f9887eab4 100644
---- a/fs/orangefs/orangefs-debugfs.c
-+++ b/fs/orangefs/orangefs-debugfs.c
-@@ -37,6 +37,7 @@
-  */
- #include <linux/debugfs.h>
- #include <linux/slab.h>
-+#include <linux/seq_buf.h>
-=20
- #include <linux/uaccess.h>
-=20
-@@ -623,10 +624,10 @@ int orangefs_prepare_debugfs_help_string(int at_boot)
- 	char *client_title =3D "Client Debug Keywords:\n";
- 	char *kernel_title =3D "Kernel Debug Keywords:\n";
- 	size_t string_size =3D  DEBUG_HELP_STRING_SIZE;
--	size_t result_size;
- 	size_t i;
- 	char *new;
- 	int rc =3D -EINVAL;
-+	struct seq_buf s;
-=20
- 	gossip_debug(GOSSIP_UTILS_DEBUG, "%s: start\n", __func__);
-=20
-@@ -640,17 +641,14 @@ int orangefs_prepare_debugfs_help_string(int at_boot)
- 		goto out;
- 	}
-=20
-+	seq_buf_init(&s, new, string_size);
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index cda6adb9f69c..c40e0edd7c13 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -916,9 +916,11 @@ void __init setup_arch(char **cmdline_p)
+ #else
+ 	if (builtin_cmdline[0]) {
+ 		/* append boot loader cmdline to builtin */
+-		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
+-		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+-		strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
++		char tmp[COMMAND_LINE_SIZE];
 +
- 	/*
--	 * strlcat(dst, src, size) will append at most
--	 * "size - strlen(dst) - 1" bytes of src onto dst,
--	 * null terminating the result, and return the total
--	 * length of the string it tried to create.
--	 *
- 	 * We'll just plow through here building our new debug
--	 * help string and let strlcat take care of assuring that
-+	 * help string and let seq_buf take care of assuring that
- 	 * dst doesn't overflow.
- 	 */
--	strlcat(new, client_title, string_size);
-+	seq_buf_puts(&s, client_title);
-=20
- 	if (!at_boot) {
-=20
-@@ -665,24 +663,18 @@ int orangefs_prepare_debugfs_help_string(int at_boot)
- 			goto out;
- 		}
-=20
--		for (i =3D 0; i < cdm_element_count; i++) {
--			strlcat(new, "\t", string_size);
--			strlcat(new, cdm_array[i].keyword, string_size);
--			strlcat(new, "\n", string_size);
--		}
-+		for (i =3D 0; i < cdm_element_count; i++)
-+			seq_buf_printf(&s, "\t%s\n", cdm_array[i].keyword);
++		snprintf(tmp, COMMAND_LINE_SIZE, "%s %s", builtin_cmdline, boot_command_=
+line);
++		strscpy(builtin_cmdline, tmp, COMMAND_LINE_SIZE);
++		strscpy(boot_command_line, tmp, COMMAND_LINE_SIZE);
  	}
-=20
--	strlcat(new, "\n", string_size);
--	strlcat(new, kernel_title, string_size);
-+	seq_buf_puts(&s, "\n");
-+	seq_buf_puts(&s, kernel_title);
-=20
--	for (i =3D 0; i < num_kmod_keyword_mask_map; i++) {
--		strlcat(new, "\t", string_size);
--		strlcat(new, s_kmod_keyword_mask_map[i].keyword, string_size);
--		result_size =3D strlcat(new, "\n", string_size);
--	}
-+	for (i =3D 0; i < num_kmod_keyword_mask_map; i++)
-+		seq_buf_printf(&s, "\t%s\n", s_kmod_keyword_mask_map[i].keyword);
-=20
- 	/* See if we tried to put too many bytes into "new"... */
--	if (result_size >=3D string_size) {
-+	if (seq_buf_has_overflowed(&s)) {
- 		kfree(new);
- 		goto out;
- 	}
-@@ -692,7 +684,7 @@ int orangefs_prepare_debugfs_help_string(int at_boot)
- 	} else {
- 		mutex_lock(&orangefs_help_file_lock);
- 		memset(debug_help_string, 0, DEBUG_HELP_STRING_SIZE);
--		strlcat(debug_help_string, new, string_size);
-+		strscpy(debug_help_string, new, DEBUG_HELP_STRING_SIZE);
- 		mutex_unlock(&orangefs_help_file_lock);
- 		kfree(new);
- 	}
+ #endif
+ 	builtin_cmdline_added =3D true;
 --=20
 2.55.0.1032.g73a4cd73de-goog
 

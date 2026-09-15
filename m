@@ -1,57 +1,57 @@
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com [209.85.221.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EE2483BC9
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B204649CF2F
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460790; cv=none; b=fygUIr0GhdLU3UFLTgsEO4Q2woCgoA147m6Uup9GlSw/KqvGf+0rFnWM/jKwrgZ2ZHCqpUCu6g80Dd94PNNSBcbc12titH/CMWi0fVFpnQDUDfYNlObiA+Lae9tzKAj3M2cenqqJspThY824f/uPKnDrzYjhj3ctQoz10/jQKns=
+	t=1789460834; cv=none; b=o6iRpMMQlIU6loibmn0O3L85I9AyL5BWeOE3kuKP0/c8pEFAtg4NxuhbJT64fMgE8AImoEC0m0AbWbHqfIzRLRpGW4HYfXvpSSY1NffinlbsLkQaO4gKOkc7pxmE6f63gJUXyGpJaqb6XkCk5HgzXMUhz1bwzrLM8sFHHUyQtWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460790; c=relaxed/simple;
-	bh=EqxPY8uDyH4sIF56bisQGVYV4UgUVWe6Fa26kaXaoOs=;
+	s=arc-20240116; t=1789460834; c=relaxed/simple;
+	bh=WLXzasjY0mBK/NrbpJfTCOFtGklzxJ8+ta6QqRZkwNM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=MEC5ECWAXw1wzH33YtumNhZcq122DZEYm/bhZklNmVmUcFoTc/W1fQLRxQUTm6Z6ONIpdR5e6o+ZXlfS8gY4f5f4QhIkLEUkwbbn+Vi24xZ7C05l1J2Hu1IRbUVl/BBrKMhv9uO618MwNYctLtwu5AwAVsiMxSAv1i4lzbcLq0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sYo4rN3S; arc=none smtp.client-ip=209.85.160.200
+	 To:Cc:Content-Type; b=PxjrajFipWzDI4FkkK5mmaEXR8F7JwwOjUsKNz2zZxhHTz+tLGCZI/gOKCBizaaHYLeS1TmlYOoVLWiSI8RZQe4Q5TaTdFcJqp3goVszbmbDB5G+emOyWt8vd3VIvm1VSRhRywvJeuSCtZf4ir4eBSS6rTemnur/aJfQzHEyWk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KDgfdihY; arc=none smtp.client-ip=209.85.221.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sYo4rN3S"
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-51a8b0a08d2so79349911cf.0
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:26:28 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KDgfdihY"
+Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-5c82f879767so5169088e0c.3
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460788; x=1790065588; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460831; x=1790065631; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=XkXp/XZtfYpYjiXJEDXdoQGA1NlHq2kVyqBGidLpG58=;
-        b=sYo4rN3SqFvxGyUY8njzBM6LO8dOkQNiP+Ttx0lctZLpgNJVQASZqhf3r1kN2ny/rN
-         HxPcfz6eFImCJxw/ekEEDvq8W7EGeTZqb32ldHVEbwT2W9IccikwtbzMMpZeAe2RJlA6
-         Bnmvq+WGJq1tw+3tlUtiHgS49IBylqwz7BqtR0ZFEDaG9zBo573RcO4QtVtv3/DuyRyX
-         PWOfol0BbavLL7uMcJVnnSrWq9LFydMUaaqD21IEy9CpZvtyup+pqYF0yZEZAQPxdXX/
-         x1hxQ8gruK5DaJ52QJXCNDRXhM8WtMIVXg+p5TaPGDdSpq/o/g8OyIrCEHLdlyrSw0md
-         FgwQ==
+        bh=RYxDJLbbwpCoc34IeHntB/eNfLB4EmZZnrz8tORBuFs=;
+        b=KDgfdihYn+MNN/yfeOLGJoSiTJlWLC+mAEMOh4L2WTxujSZlrwGep2D8AP1sNPOLBf
+         KZUE2lrv2DA0N4x/ZZTR/gNbBpIscR74abQyW3bCbw4VKJCuneXBpFyv7dYIpVjYR0Y5
+         cbvwVCu6GVlNeEAh0v/7+/IhhMBXl246cZV4dqqP/BZqu0M0zxWeGp98KyRJucb1ii+7
+         +PI+II2Gwl5Q6g0RIzvrFkyZQ8CZoSyepf3QY2iid67fG1PllC5EEHC6GsfIuMfQbl8f
+         jmeCQC5b+/u5/55cgbSV1azPhgZ4zWRkSX74l/3cEFWRvaxvkvT9eCmMqersbpggYDBH
+         C9qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460788; x=1790065588;
+        d=1e100.net; s=20260707; t=1789460831; x=1790065631;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=XkXp/XZtfYpYjiXJEDXdoQGA1NlHq2kVyqBGidLpG58=;
-        b=TiPEvlkIU64f3aBc6yICHrTGaWvsSWNY3yMnfI7AwWTXq2wWCV8TwItzY0Pm36xbDB
-         Wpa/XGTErHNWqDdiiWAnZMQUeZf2Uk+5HjTZaD2ZM90vDh8WaTYAPSLQyPd6Ib5iXF/e
-         kEXYquqWqTezVhNy5x9UP5HhEiNyeByNFuM8z8hKBgFSPo8yO4V+WIiInvbNlu5dwDjs
-         MB/LPGZbwI8wIBArlrYKOJ40YEFXRtMESWC/5B9V9auZqy0jaCFL1ImUR+sHuCz+4/UJ
-         gmuBwECw1hrS35G9Fid28VOeztUiPW2s+Z5q3a6VPK72IaiWcnVS9XSR1E6LXKT/nc+f
-         tULw==
-X-Forwarded-Encrypted: i=1; AKwUvByKIdn1MriKF5eP60oiQ3P3NXERHxzUStsF7nLn3TewC68tRl5Go3kfrdVlatC3WgFWH2UZr6jVDQ8A@vger.kernel.org
-X-Gm-Message-State: AFuF++k5dsH7jHN+0MZUS9brHbmwN3+PurT4l+uIzp6D+/GWpYlB2ywT
-	5Zt0PRZxF6i4PvcYay5qQAIIoKPApOVAhcInz+zxAsDhblr1Uz2jHVs7JA5h0as7Ke4NzYl8ztK
-	3
-X-Received: from plbkc7.prod.google.com ([2002:a17:903:33c7:b0:2dd:630:cea4])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1965:b0:2d3:716e:e2ae
- with SMTP id d9443c01a7336-2dd6c5ef019mr154580855ad.6.1789460411846; Tue, 15
- Sep 2026 01:20:11 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:37 +0000
+        bh=RYxDJLbbwpCoc34IeHntB/eNfLB4EmZZnrz8tORBuFs=;
+        b=LidGfoB2Ip02lGhSOBgk5EE5NHXadlHpK49GhRzJXrI7J393Xbx330Kwz9COVtI3Ps
+         jgCfKVrwwXOj/+z7aC0p9MVTHXk2qFPQ1/pJwTnICaCPwJqtv30VikJU4klUvd85WQAf
+         Vqxeup30UXKXtzvl+xJt5c2gEohcvp6cJRVk9Xr38wjMp50RlXkPUlAAHsIlB3oVjOC2
+         j9Q+SiQfuBvRKZr87PK5shfrxmlC0kZK7oaHwAFU+8ZRWQnbK24eEEkCGKXi+L5+eypC
+         Iu1r5TxXZAYuQUL+BhrgE8KbdyrawKRF3o5lzVRkfhAr6vMMAVHAqYMNByaFooATbTMm
+         VTvw==
+X-Forwarded-Encrypted: i=1; AKwUvBxSIqRCwRL20q03gmZkbwiNbWRDWyGRqo2q9bazkoAkrCMzeGARO9AgnbwGK8q/c3/D23Ov8PF/q1pj@vger.kernel.org
+X-Gm-Message-State: AFuF++lmlmcS41NUV28xKSrqDrh2yJf3kTX1wmyhwLXvORaL+S5vH2Ai
+	CRHLW0deU3+X5HVpSpM9vB4peIiVbda1OKyvCXJSxvytamXn5F7PtIbHuawaFApanK0Jq+dIIZc
+	L
+X-Received: from plas19.prod.google.com ([2002:a17:903:2013:b0:2dd:75f1:13f5])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:40c6:b0:2d0:cc92:f7a9
+ with SMTP id d9443c01a7336-2dd837a6aeemr1077095ad.4.1789460419151; Tue, 15
+ Sep 2026 01:20:19 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:45 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,8 +61,8 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-21-morbo@google.com>
-Subject: [PATCH 20/28] parisc: Refactor strlcat() to seq_buf in setup_cmdline()
+Message-ID: <20260915081910.4142719-29-morbo@google.com>
+Subject: [PATCH 28/28] drm/xe/pf: Refactor strlcat() to seq_buf in sched_group_engines_read()
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
@@ -123,16 +123,17 @@ Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-setup_cmdline() uses multiple strlcat() calls to conditionally append
-default console and earlycon parameters to boot_command_line.
+Similar to control_read(), sched_group_engines_read() constructs a
+space-separated list of hardware engine names in a stack buffer using
+repeated strlcat() calls inside a loop.
 
-In preparation for removing the deprecated strlcat() API[1], initialize a
-struct seq_buf with the existing boot_command_line contents and use
-seq_buf_printf() to append the console parameters.
+In preparation for removing the deprecated strlcat() API[1], refactor
+sched_group_engines_read() to use struct seq_buf and seq_buf_printf().
 
 Link: https://github.com/KSPP/linux/issues/370 [1]
 Cc: codemender-patching+linux@google.com
-Assisted-by: CoPilot:Gemini-1.5-Pro [editor_update_file, shell_command_run]
+Assisted-by: Developer:Gemini [editor_update_file, make_kernel_build_single=
+_file, shell_command_run]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -246,57 +247,50 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- arch/parisc/kernel/setup.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index d3e17a7a8901..fa3efc82ad87 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -17,6 +17,7 @@
- #include <linux/init.h>
- #include <linux/console.h>
- #include <linux/seq_file.h>
-+#include <linux/seq_buf.h>
- #define PCI_DEBUG
- #include <linux/pci.h>
- #undef PCI_DEBUG
-@@ -42,6 +43,7 @@ static char __initdata command_line[COMMAND_LINE_SIZE];
- static void __init setup_cmdline(char **cmdline_p)
- {
- 	extern unsigned int boot_args[];
+diff --git a/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c b/drivers/gpu/drm/=
+xe/xe_gt_sriov_pf_debugfs.c
+index 5db7fc067c4d..548a50f74422 100644
+--- a/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c
++++ b/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c
+@@ -377,8 +377,10 @@ static ssize_t sched_group_engines_read(struct file *f=
+ile, char __user *buf,
+ 	struct xe_hw_engine *hwe;
+ 	enum xe_hw_engine_id id;
+ 	char engines[128];
 +	struct seq_buf s;
- 	char *p;
++	const char *s_str;
 =20
- 	*cmdline_p =3D command_line;
-@@ -54,19 +56,21 @@ static void __init setup_cmdline(char **cmdline_p)
- 	strscpy(boot_command_line, (char *)__va(boot_args[1]),
- 		COMMAND_LINE_SIZE);
+-	engines[0] =3D '\0';
++	seq_buf_init(&s, engines, sizeof(engines));
 =20
-+	s.buffer =3D boot_command_line;
-+	s.size =3D COMMAND_LINE_SIZE;
-+	s.len =3D strlen(boot_command_line);
-+
- 	/* autodetect console type (if not done by palo yet) */
- 	p =3D boot_command_line;
- 	if (!str_has_prefix(p, "console=3D") && !strstr(p, " console=3D")) {
--		strlcat(p, " console=3D", COMMAND_LINE_SIZE);
--		if (PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX)
--			strlcat(p, "ttyS0", COMMAND_LINE_SIZE);
--		else
--			strlcat(p, "tty0", COMMAND_LINE_SIZE);
-+		seq_buf_printf(&s, " console=3D%s",
-+			       PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX ?
-+			       "ttyS0" : "tty0");
+ 	if (group < num_groups) {
+ 		for_each_hw_engine(hwe, gt, id) {
+@@ -386,15 +388,14 @@ static ssize_t sched_group_engines_read(struct file *=
+file, char __user *buf,
+ 			u16 guc_logical_instance =3D xe_hwe_guc_logical_instance(hwe);
+ 			u32 mask =3D groups[group].engines[guc_class];
+=20
+-			if (mask & BIT(guc_logical_instance)) {
+-				strlcat(engines, hwe->name, sizeof(engines));
+-				strlcat(engines, " ", sizeof(engines));
+-			}
++			if (mask & BIT(guc_logical_instance))
++				seq_buf_printf(&s, "%s ", hwe->name);
+ 		}
+-		strlcat(engines, "\n", sizeof(engines));
++		seq_buf_puts(&s, "\n");
  	}
 =20
- 	/* default to use early console */
- 	if (!strstr(p, "earlycon"))
--		strlcat(p, " earlycon=3Dpdc", COMMAND_LINE_SIZE);
-+		seq_buf_printf(&s, " earlycon=3Dpdc");
+-	return simple_read_from_buffer(buf, count, ppos, engines, strlen(engines)=
+);
++	s_str =3D seq_buf_str(&s);
++	return simple_read_from_buffer(buf, count, ppos, s_str, strlen(s_str));
+ }
 =20
- #ifdef CONFIG_BLK_DEV_INITRD
- 	/* did palo pass us a ramdisk? */
+ static const struct file_operations sched_group_engines_fops =3D {
 --=20
 2.55.0.1032.g73a4cd73de-goog
 

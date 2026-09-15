@@ -1,57 +1,57 @@
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33B44772A3
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D179C4772BE
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 08:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460480; cv=none; b=NWjoP9Isiu8993d8ztLLHT7+5EYje745cbLx9c6abBzufLH9DZRvu/woRJfCy7HNP+HFOBoF4jnb0L9NRSHXk/vQnxaigj7T6pL4qI/RjsjOxMul0rPKT7IRuEj5SwQbajxt6LJiyKFXRkLBJBh7wD8X03h4ErBzicL1ib51wGw=
+	t=1789460482; cv=none; b=T3nqiUnUtJ2DopzuvqYMzXXPUPzKk9vc4Iywv8YtwTE1SRZnYSBanFuJbP2RzAo5YIMUKbBLb6amo+W6o55oYMjo1N9nn65r6SPWOWGMQLsW8hQCKcW54RxlezmUoSBaqjTbiT9Y9BnbZ78j+5G328K31Q9m/nMWDsvwRU6tr9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460480; c=relaxed/simple;
-	bh=RwAdEk8GoMG+Ylv02Q78v2tXMpN+9oITjoSVCa+/lcI=;
+	s=arc-20240116; t=1789460482; c=relaxed/simple;
+	bh=fIMzPvcr9X2eD4+Ac+cNHBPnvQriFstqx8IX88uxT8g=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=MuP7cTN1Bpx6YHcmq0kfQYHIKw40ziDI+ZAAJNA8Kl/DafIZ+KZh77Jhkuv5RywukSRIl3mfofu90hB9TIVqGZuTTLVv/JlZU7MBT34JLdcwTHLYDugTkTFfWvKGRbSBwFoTLn/O4DRzufIzP2KniF+JkATruanJYPOClB/DfaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KmARG9aJ; arc=none smtp.client-ip=209.85.215.199
+	 To:Cc:Content-Type; b=DcbMyTOHEWX4DTS+4XuhbmUe5DdYLhqu4TSXD7dR3IC7Qh6E+hqZt3sCR4qKkVVaig/TfhMfVlrGKd6/80HILXjoQKyOFZYQE96yQ5s7WYFbZIkDwKMh7B8qz/q+9LBuqbb3nGXz+YMlvwTjaOuaz1UCIVZB5Vulox9jDgpxpR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XNBwS6Zl; arc=none smtp.client-ip=209.85.216.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KmARG9aJ"
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-cc489e7a701so6024642a12.2
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:20:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XNBwS6Zl"
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-39e087a17dfso483294a91.3
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 01:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460419; x=1790065219; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460414; x=1790065214; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=3R1bHblX/YSNAoDVuSots2jijK47BJf7ndWg1gXSC20=;
-        b=KmARG9aJw+EfrxjNpwdI07LN4CIXUR8sFQ6kkwPFhACadzvxbNPSIDqr//33Alc4UY
-         R52INMML5LN0aTuN8HjZxDuM76h1AAPcVXn64yUT5rjit5U+iGgl1MF/BPOb2cuiZPyE
-         Wv+fQiUqjwl3D7XanEH4V1189fAZLMrNUiH5L4sX194GyKiZUpMsh1fcaGDV5CYbubY9
-         zj839tWYTRKD3DVNfwMII7er+yQ1vrEDArJ2YZCq2Nc1++mCm4429OPTjsrTlmItPsPN
-         +wzv3LuzLp959vh3m2lMJbDvEUvDqQ7gTJ7C0wDgVReew1uK7PhFLz5ZO2mKQArH31TA
-         dF6A==
+        bh=uYw3XH3TVDlWH5yZkMBbor+NJ9bN2wpB4N7ncSus1u4=;
+        b=XNBwS6ZlysMhxrUqqJ/uLbHPTUaSSsIjOvuIHGTZX+PnLOh3ty/EUnYyXIKNeG5PkP
+         Oxqgoa+5XZX7qXt66zx2QE+STRW4Fn39I34TQMNBRz2oP6dJARq2mOb1vyHXdBXsTOvr
+         kRbWYPOP96GHKP7m40wZ8TeuSsEufgEU37LlVvfv3zrYHvIvYR5Gy0afURNW94nGulNf
+         JnNXG0z+ExtAlkbWAOTPxSmbxOeGMvQluJq/YkLM9XhxuYxHrlHo6wjjIoRd3sOPMhH0
+         marxa3jFRjQV6mavrbtmTKG+UqH1RHBRhhVhZ+0CO40nVGTHHfEgdPalLgxfTOmgN70h
+         DEUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460419; x=1790065219;
+        d=1e100.net; s=20260707; t=1789460414; x=1790065214;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=3R1bHblX/YSNAoDVuSots2jijK47BJf7ndWg1gXSC20=;
-        b=xq09F0ff/hulc0aT5C7dW2xYGeomnJBZv6hHnOYMTdFniS579M2mcXlV8AP2MYTHB9
-         yAvhpro086cTw+WUw+AsEmZA8iLWIART9X7qGbNdud7gUCwrsX2y0pIB/ZkLco8wWLgx
-         HrVofHMpDnh1sa2IaG1l8vVFuu3J/H4Q/jsyBWR3bnS6eaH8TNgkRe61T48O14OrzJOX
-         KwhBy+9OrDUmxO04aFGcvjAyMqpcNoPXhgxtLdZTYbfwnn+31sTNWQqWWs2zEH+uOzNj
-         MzjzhfNzvFv3uUm49Zu5lU4ZIYrbt6RlGyAHQ2cN1pg9ep+2Pw3YQkrbFavcwNDYllT9
-         IngQ==
-X-Forwarded-Encrypted: i=1; AKwUvByMcfXEMuhg9/vR7jZdtJp3kn4++1QAxha3WNHqs3bsnGfpK+XyEuri90iL0M5lE4XM9Ni6lx+9XJ+h@vger.kernel.org
-X-Gm-Message-State: AFuF++kkhA14BcZqqUMD8nLSHod7bq2NMud4siZ5wnsoIxpceNnppA3x
-	X/kxIwZpNvkUJGwzUJwjetc54jpaGIa+JU+hcPSiUsayx+xAD6mkqyGxyrVkqp2dYlWRUn24pUX
-	M
-X-Received: from pghu21.prod.google.com ([2002:a63:ef15:0:b0:cc4:da05:ef4c])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:3315:b0:3d3:aec2:4dcd
- with SMTP id adf61e73a8af0-3db40623e61mr13262094637.25.1789460418341; Tue, 15
- Sep 2026 01:20:18 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:44 +0000
+        bh=uYw3XH3TVDlWH5yZkMBbor+NJ9bN2wpB4N7ncSus1u4=;
+        b=IkmEuD9GDzAq6yAMrpm37H/NOhxdIe3ki1uY1lpFaFje3iAXDsSrLg9Yel1qzhuphd
+         LWu1pn8MNJhgD/0CQAN+VAyl0oBWvOt78QWd9aeyAKELNaF1v1ABKeeyJG3HziXJL9kt
+         WvzuCxqdObCm8wd1M5sS+BMczY5tAzggkDqMe09k6MiEuGvbQ717kg4zSulDnngG7ta8
+         r5EuZZZAg6o7hiI3lxgtBlw4pjXROzeJDkMKdEUKSgsXVLy1n5HxrM8/Dl55JPiEHtWX
+         +KPi3Wr4pBG2ylmalji/91Kof2q5Rm1mK0FowQICs7e6mw19KKrGBhXvcwyNIcGb3fTg
+         g5Hw==
+X-Forwarded-Encrypted: i=1; AKwUvBzWQ+wic5ZrS/5CRW4LlsQFXOGNdu1+TJCHixGKrnnESUvOXvXBOs9HBibjXuP+7rJCnb7rrr1SznpF@vger.kernel.org
+X-Gm-Message-State: AFuF++nyWuLjc0O+kRK3BBStyxc2FUrjo3wR8+osF6FqT92r+IDB0G1M
+	K1GO4ZuFZTZY5DqRCTESQO6PSMHTPkpjZDwLsk78+wq+YrZ9LQUgyIamLpLxc8QpBVLGu/3L+Gs
+	s
+X-Received: from pgap5.prod.google.com ([2002:a63:4205:0:b0:cc4:33fd:a4f7])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:6d8a:b0:3db:3e1c:8585
+ with SMTP id adf61e73a8af0-3db4063b18fmr14587917637.27.1789460412692; Tue, 15
+ Sep 2026 01:20:12 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:38 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,8 +61,8 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-28-morbo@google.com>
-Subject: [PATCH 27/28] drm/xe/pf: Convert strlcat() to seq_buf in control_read()
+Message-ID: <20260915081910.4142719-22-morbo@google.com>
+Subject: [PATCH 21/28] NFS: nfsroot: Refactor root_nfs_cat() to use snprintf()
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
@@ -123,17 +123,18 @@ Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-control_read() builds a list of supported SR-IOV VF control commands in a
-stack buffer by calling strlcat() twice per command in a loop.
+root_nfs_cat() computes the length of "dest" with strlen(), but then uses
+up to two strlcat() calls to append a comma separator and "src",
+rescanning "dest" each time.
 
-In preparation for removing the deprecated strlcat() API[1], use struct
-seq_buf and seq_buf_printf() to format each command line and pass
-seq_buf_used() directly to simple_read_from_buffer().
+In preparation for removing the deprecated strlcat() API[1], use the
+already-computed length and a single snprintf() call to append the
+optional comma and "src", returning -1 if the result is truncated.
 
 Link: https://github.com/KSPP/linux/issues/370 [1]
 Cc: codemender-patching+linux@google.com
-Assisted-by: CoT-Agent:Gemini-2.0-Flash [editor_update_file, shell_command_=
-run]
+Assisted-by: CoPilot:Claude-3.5-Sonnet [editor_update_file, make_kernel_bui=
+ld_single_file]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -247,44 +248,34 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/nfs/nfsroot.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c b/drivers/gpu/drm/=
-xe/xe_gt_sriov_pf_debugfs.c
-index 0f242db775e1..5db7fc067c4d 100644
---- a/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c
-+++ b/drivers/gpu/drm/xe/xe_gt_sriov_pf_debugfs.c
-@@ -4,6 +4,7 @@
-  */
-=20
- #include <linux/debugfs.h>
-+#include <linux/seq_buf.h>
-=20
- #include <drm/drm_print.h>
- #include <drm/drm_debugfs.h>
-@@ -663,15 +664,15 @@ static ssize_t control_write(struct file *file, const=
- char __user *buf, size_t c
- static ssize_t control_read(struct file *file, char __user *buf, size_t co=
-unt, loff_t *ppos)
+diff --git a/fs/nfs/nfsroot.c b/fs/nfs/nfsroot.c
+index 432612d22437..a28208414aec 100644
+--- a/fs/nfs/nfsroot.c
++++ b/fs/nfs/nfsroot.c
+@@ -173,12 +173,15 @@ static int __init root_nfs_cat(char *dest, const char=
+ *src,
+ 			       const size_t destlen)
  {
- 	char help[128];
-+	struct seq_buf s;
- 	size_t n;
+ 	size_t len =3D strlen(dest);
++	int ret;
 =20
--	help[0] =3D '\0';
-+	seq_buf_init(&s, help, sizeof(help));
- 	for (n =3D 0; n < ARRAY_SIZE(control_cmds); n++) {
--		strlcat(help, control_cmds[n].cmd, sizeof(help));
--		strlcat(help, "\n", sizeof(help));
-+		seq_buf_printf(&s, "%s\n", control_cmds[n].cmd);
- 	}
+-	if (len && dest[len - 1] !=3D ',')
+-		if (strlcat(dest, ",", destlen) >=3D destlen)
+-			return -1;
++	if (len >=3D destlen)
++		return -1;
 =20
--	return simple_read_from_buffer(buf, count, ppos, help, strlen(help));
-+	return simple_read_from_buffer(buf, count, ppos, help, seq_buf_used(&s));
+-	if (strlcat(dest, src, destlen) >=3D destlen)
++	ret =3D snprintf(dest + len, destlen - len, "%s%s",
++		       (len && dest[len - 1] !=3D ',') ? "," : "", src);
++
++	if (ret < 0 || ret >=3D destlen - len)
+ 		return -1;
+ 	return 0;
  }
-=20
- static const struct file_operations control_ops =3D {
 --=20
 2.55.0.1032.g73a4cd73de-goog
 

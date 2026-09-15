@@ -1,154 +1,197 @@
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8789D353A69
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 07:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B633603EF;
+	Tue, 15 Sep 2026 07:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789456417; cv=none; b=DVqNKnUVV35GwOTN6wZWSq8OmbYK7XcAknjTVqpPbYh+2nRaHX8KM818kM+CNmSGGV/W7XLZ32ukvb2duuf/a0jTbBRbQJ1X5gLA39EnndKpQT+DuuRlIFK99x+yPqaCBsiS6Td2BdjegnZEuDz5ebbkQHmal3b3fYYXGXq+7Cc=
+	t=1789458401; cv=none; b=BFDcQzxGK4e4I1ysXU7Ygnm4hxaG3nvC5Xh2bzhHZGw6vgFgowbAVtQU3shfKB0w1EGIsct13O9stJOjpvuBKziCrcOG25l+LAhLx5b88sI8U/hq8m+Z6L5ii9QNX4G4M8vwgVjFpMUGJDdjNsZyT5HXax0zF0ZReHQ2wpdY4sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789456417; c=relaxed/simple;
-	bh=VJPiA57oY/5vyoJkrmWgpCXvfp7VtHP7Ct2Mll3e6pM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sdbDdhTlp0K7U970qkJz3mhVxdZtwuqGgeOU2V1VYK6rRz28mWHrZZ2yznG1dtc9QGbD3cPi1FVSR00L1j8vqm/L9jLZAqTr3yDlVR97ZEXTJ54hl6ZOclq/RYs0STk+CqXm7Gkn6qlH+2IdvdWG4IHAtVr8wFyvehj/WqE4YVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HrYP5Coz; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1789458401; c=relaxed/simple;
+	bh=TGxiytZbwlmv2BP60EKFFTrI1970pAfKpcdYND/NbhU=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=ss4mmL7pK104vP9ztMmaWmMWoI8sFHMZwt46sl309JMcHlCucR9SfcV2jEbsPhGEh2Qp28ERVWVzBzW8NXF5WEfi3ItLdIu3ypC+jGcQf6f9BK/V5/2c5D631Js1p/12fYAd9QLr0OJAv1LNxfbLSsI4G8njjMWr/JTtV8oOq1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=gWJOwkn8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qdEMAFAK; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HrYP5Coz"
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-49e6bad7b79so26302435e9.1
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 00:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789456414; x=1790061214; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=velMxIt+642lquxYVKbrnSVvPRt1SpQzIuYolRQYJw0=;
-        b=HrYP5CoznF8vgUi3JCmujnTnNjVljxzsH/hWlebMlSfTOqXBdY2QbsFWdOXlLungB1
-         QnE9UaPv1FgVCrMyYpK3xZmJQHtzM6jMGAX7SkXA2efeyQoIH3bHBnYNWyTrW1rtcHro
-         +3hk0tgALDfb6giikhzTK71it21pLTngv7N3/UiZp5YTwoVHlSbwzHdOvddOCTgVuQib
-         6bGigJxAVd3/qc1ECbVEOvtsgSabxi5s+S6NVLNjvxXS4QjJbVVpM7jsJqPSmF3FhjXM
-         aUZ9uadZiNhC02GGM78bDfAzK2hELwQAqAxATZTqCmX3QNORZCYjawO+LUn33D2qDUrC
-         8GvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789456414; x=1790061214;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=velMxIt+642lquxYVKbrnSVvPRt1SpQzIuYolRQYJw0=;
-        b=Gj8YrJwe7Op1aIuIJXZkrtnSx2AAA/uiY8HI0CsZPW23PF6WXWcxXs98zF5i3zsPK0
-         qCdzcuDsOZ7F5J66rEu1tpgeC3PdifpIiZZ3+r+/FbSQuBZwYRi4zhcAG3BvXYgnNzRo
-         E5anwcn40aqttvLogDAc1kDW2EZUzDqoSi7zzYuIXXDMJHjoTkZSnd18bp3PouLRVy5R
-         nA5E0rXkoAtXgZUkovYMK4y2LscN57mzJ8NFWNs/QLlNUn1jgkcYN9kLBMLccf07mLdG
-         H9eqFUm6tnMhe/3rhqcCumtytNO5UmJ+sm1+W4j/4j8nv1KARHyUBzYTwnuNptpA8RZo
-         lOVw==
-X-Gm-Message-State: AFuF++mpjzDpTW0dnnEAKnesSxigb6QBeIGCR3TznF7th7rG1yUka1gK
-	NyTnbt24aooAWC2AzFgDnaln9tekTW1CC+vTxwPxsizjtLUURWkb1iPNHK43BlcL
-X-Gm-Gg: AYBFou0OSJDQTFA8azvICMD2V88bIv1ezYhTjr4YWMw7Q8cTr5q2llzbJOazYWcfBvP
-	ZMi30j2Nl6LOXbuwAiMdyVHMOiJHdoIiZ/6SXlYCGtLDswgp+LlyxIjWMDSoS9YYKffoNhFO0CM
-	hWS3QdLlzFqwRstS/E3EY+8bHAwDUnRLkaQQct3mM8ZJWVuoa89fDz0uDPGy9VQasL5nw9SSj8M
-	01gz/QddKGrBfu4cBLRnL4KsEQ2wcDsC8J5CKsOLgC0X7i/yO0u1v3VSMcvG141pmCehDnJDzzv
-	hC2GXu+foVTdIgTQoEkiK9CU1k+BqQa9ToHdkt63op7nmrOa6Op7jWCFfcRo3VtcoW62tBrgRO+
-	23UeOFvOqYcv/vfqMZulYr0+MvFqnOGqCQ1tMGFf9OFMKrzOmlTeXp+OD9/KE4gg/VauRSd+jkJ
-	c1bBFrYee1qfyHPVFegQYK/WVsv2vx7FZKIzF7LtBFrc6szNSS5VFumoC9q+k4c68u4I15fb8sD
-	SmE2vBXWqreQadLRkf90MPFtYFLp2mg0bch7EjklhHnxxY3A+fCCJuIi3d9c4D/bqRIWXc/+6jg
-	assgQ5uRThf7z3WP
-X-Received: by 2002:a05:600c:4e4a:b0:49c:dc14:d681 with SMTP id 5b1f17b1804b1-49e7a63a784mr80413585e9.3.1789456412284;
-        Tue, 15 Sep 2026 00:13:32 -0700 (PDT)
-Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7ef735cesm42941345e9.6.2026.09.15.00.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2026 00:13:31 -0700 (PDT)
-From: Orgad Shaneh <orgads@gmail.com>
-To: tsbogend@alpha.franken.de
-Cc: linux-mips@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	osalvador@suse.de,
-	stable@vger.kernel.org
-Subject: [PATCH 2/2] MIPS: mm: do not write a huge TLB entry when the probe misses
-Date: Tue, 15 Sep 2026 07:13:25 +0000
-Message-ID: <20260915071329.15125-2-orgads@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260915071329.15125-1-orgads@gmail.com>
-References: <20260915071329.15125-1-orgads@gmail.com>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="gWJOwkn8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qdEMAFAK"
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfout.phl.internal (Postfix) with ESMTP id 44038EC062E;
+	Tue, 15 Sep 2026 03:46:36 -0400 (EDT)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Tue, 15 Sep 2026 03:46:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1789458395;
+	 x=1789544795; bh=J9TVHqMg6DzzuOSZ1h26Nn1hQ6ISaDnr9mEy//ELed0=; b=
+	gWJOwkn8qVN0hj5f7WGvUZAhs3CZBeo3GtMSnu/ybA444ItsfZGyyR6+lz82aTX5
+	EL7LNzJnDcPjzFwK7THKOIdKd+pVUpYX7LxF27ZbNQbvDamNN35AuOBsC6X6iWWC
+	gMkW8RwX1lPflvdT5EZNkGaqcVLkBypc3ZpdJkP6I0hlpxBI5eDHQSNs3Ihflz9Z
+	wfy+YCcLbTeW11trLS8vNBqg3sMcfvIdPtn4qbJzLODTh6jfPUY6L4WJ/xqWajfC
+	8l1ukToruj4EtuzHVD/1s/GJ72cqNlWjljgzwiZeZPlvGw6BdC45WzYMl8uxChxm
+	ILs5ft66VzolU0WB9BwLkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1789458395; x=
+	1789544795; bh=J9TVHqMg6DzzuOSZ1h26Nn1hQ6ISaDnr9mEy//ELed0=; b=q
+	dEMAFAKJsWQ2+R7P4+Ed6WvD9pC356dz6S04fOLECMzm8F3kEeumGyrGIp9GdH7n
+	rJAZrdpKqns8Sh0JpUZPL+7pZL7A88OOFpWfWmUBFH4cB/ST9byyoJ1fU0/7v3rk
+	Cw5a6/yyFr44xw34IwXHNnDR6Ek7yGWQRcAGYSaNnktd1J993qmFQS56O2ETIj8+
+	Fi8RqszY9Z+VOG+LjF6463mAlf4Al91GBm9J5INvRXbC4KWaEvQ6BtT7ONVMppEf
+	ClnohD6ujLK7MKzAw41NP3nTQtUCgsrb/SAM8tZBZgLHczjucu127P6jZbts1dar
+	670Hd9OULOrJVEuZN79Xw==
+X-ME-Sender: <xms:1veoaq-s-zK2UArd3jLyOSO5wgaVrbeebs-nQ5DuVrX_z0-9H71hyQ>
+    <xme:1veoaliUMKFoItbNkdFPzPq-h_rIyk8e6dnqDrRxPIacByiVZzEhzZipYdnRVMavs
+    bYeTGnTMAU98JOQ1tFDypHz-PO5QqWM3P7qsj-YmmYJu9ofMetskFM>
+X-ME-Proxy-Cause: dmFkZTFjBJTPSsEvy7MdPYY6zoz5hEujSdjlA0j1/ndTB6CM/iz4MVRXgkhD+6Up0/ryRu
+    xEKhw7XJzajgoXQusJgmwVrHZmGtqCQvgETtVrkeGYuXdxEoqFrBwJbIKAeiBLsoCdS4by
+    UTMePArx3+74ccqnNttcOua34hzVwQqbxzZEliOytewiy6U/yDTXlu01lwA1i4z02FxOeY
+    cQMGEYrfctlDcOg/PWPqgycJxZY6uswSnNn9EWOz2NKeVkGVxOPeVjyHqG+aa3YRBLZK3+
+    qDvmOvsQTDC4uQg9wePtcFpouKeI+yVVPp4ahrnz+mqeTgRbjRkbmT7F4A7l5Zg3mRtZem
+    V1YTrkyQYtU/UrXQRE+v6Up2nhaqvUqzuxKIYY28PgJxjwr8y6dyBPzzJ8q3igIyZSzb8a
+    yi/2ZGz1krnOkI63xE7YqxxTTZTzmzbynlxlCj6WWZOJKyzTNJ/5eL/sHFZ1/cVfS51at/
+    gb1AdH/c/zYpgO4Vcice7yl/S7IAL2p29oJAbte/BKvAByatZfMVfT1Gq6V7IXwyrXZ8Ko
+    VfyG6z/JW8cm3p2JBFul+1KZzSruB/ey6Nb71FEe7/u1j9S7r6SnUqmz38RuV0/LPP77cl
+    eEgXy9ucq2nzC/+/yMwfyDCiv6sTZB0cQCjs5hveFN0OaIIdbgsZibgZq5mQ
+X-ME-Proxy: <xmx:2feoauhm05MVTTJFNChLLZ1eEI5vzlR1J4HNxrorZrOq3zNpDqSXkg>
+    <xmx:2feoavezASGoXoYquy_goSx0civPySVKcBZ1RDM6sU5tu2LUzLSjCQ>
+    <xmx:2feoal36ABBh5m1iTrh0wreAOmUA8HFVmzS3bQvWmDTc_87EzWkVMw>
+    <xmx:2feoajr3p3sPVKfBW7otUAqGoHu_zctcV3NxIEfgODa2TeI_vp-uwA>
+    <xmx:2_eoahL73tD2rKVLVCoyvzx-4DgTHujZF_SW7UbuyouYn8oDxnXmPXfq>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id A85E332A0081; Tue, 15 Sep 2026 03:46:30 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: AA0MNwphKERR
+Date: Tue, 15 Sep 2026 09:45:50 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, kernel-dev@igalia.com,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev,
+ linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
+Message-Id: <95b693c0-ca51-4355-99ba-2b37a1ab2169@app.fastmail.com>
+In-Reply-To: <20260828-tonyk-syscall_table-v6-0-fdd358456cf1@igalia.com>
+References: <20260828-tonyk-syscall_table-v6-0-fdd358456cf1@igalia.com>
+Subject: Re: [PATCH v6 00/13] syscalls: Add a shared table for all archs
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-__update_tlb() probes for the 8K pair at the address it is given and,
-for a huge pmd, writes the huge entry with tlbwi at the probed index or
-with tlbwr when the probe misses. That works only if the caller passes
-the faulting address, so that the probe finds the 4K entry the refill
-handler loaded for the faulting page and the huge entry replaces it.
+On Sat, Aug 29, 2026, at 01:19, Andr=C3=A9 Almeida wrote:
+> While implementing a new syscall, we need to wire up it's number to th=
+e arch
+> table. Since syscall number 403, all architectures are on sync regardi=
+ng the
+> number (except alpha), which make things a lot easier but more repetit=
+ive as
+> well. Have a look at commit b36d4b6aa88 ("arch: hookup listns() system=
+ call"),
+> with 15 lines of mostly:
+>
+>   +470    common  listns                          sys_listns
+>
+> There's already a "common" table shared with a bunch of archs at
+> `scripts/syscall.tbl`, but due to historical reasons some archs will n=
+ever be
+> able to move to this table and share all the numbers.
+>
+> The generic table starts from 403 (clock_gettime64), the first common =
+syscall.
+>
+> I've compile tested for arm32, arm64, s390, mips, sparc and alpha by c=
+omparing
+> the syscalls_*.h and unistd_*.h files generated before and after this =
+patchset.
+> For most of cases the files are identical, for the few cases that they=
+ are not,
+> there's a note in the commit explaining why they are equivalent.
 
-update_mmu_cache_pmd() is not called that way. do_set_pmd() has always
-passed the huge-aligned address, and since commit ebcfc63d6bca ("mm:
-abstract THP allocation") the anonymous THP fault path does too
-(map_anon_folio_pmd()). The probe then misses the stale 4K entry, which
-sits at the faulting page somewhere else in the 2 MB range, tlbwr adds
-a huge entry next to it, and the TLB holds two entries matching the
-faulting address. Octeon raises "Machine Check exception - caused by
-multiple matching entries in the TLB" on the next refill of that page;
-a process on a CN63XX board died this way within a second of start, on
-the first anonymous THP of its bss.
+I've tried merging these for the asm-generic tree now, and would like to
+send them for 7.4.
 
-Skip the write when the probe misses. The refill and TLBL/TLBS handlers
-probe the faulting address themselves and rewrite the stale entry with
-the huge one (they also set the software young bit), so the entry is
-installed on the next access at the cost of one exception.
+Unfortunately, the build bot flagged problems on mips, see the patch bel=
+ow
+for my workarounds=3D, but I think we have to improve that still and did=
+n't
+just fold it into your patch.
 
-Fixes: fd062c847a8c ("MIPS: TLB support for hugetlbfs.")
-Cc: stable@vger.kernel.org
-Assisted-by: Claude:claude-opus-5
-Signed-off-by: Orgad Shaneh <orgads@gmail.com>
----
-diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
---- a/arch/mips/mm/tlb-r4k.c
-+++ b/arch/mips/mm/tlb-r4k.c
-@@ -332,6 +332,19 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
- 	/* this could be a huge page  */
- 	if (pmd_leaf(*pmdp)) {
- 		unsigned long lo;
-+
-+		/*
-+		 * The probe above only covers the 8K pair at @address, and
-+		 * a huge mapping is installed with the huge-aligned address
-+		 * while the refill that started the fault left a 4K entry
-+		 * for the faulting page elsewhere in the range. Writing the
-+		 * huge entry to a random index would leave two entries
-+		 * matching the faulting address; leave it to the refill and
-+		 * TLBL/TLBS handlers, which probe the faulting address.
-+		 */
-+		if (idx < 0)
-+			goto out;
-+
- 		write_c0_pagemask(PM_HUGE_MASK);
- 		ptep = (pte_t *)pmdp;
- 		lo = pte_to_entrylo(pte_val(*ptep));
-@@ -339,10 +352,7 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
- 		write_c0_entrylo1(lo + (HPAGE_SIZE >> 7));
- 
- 		mtc0_tlbw_hazard();
--		if (idx < 0)
--			tlb_write_random();
--		else
--			tlb_write_indexed();
-+		tlb_write_indexed();
- 		tlbw_use_hazard();
- 		write_c0_pagemask(PM_DEFAULT_MASK);
- 	} else
-@@ -380,6 +390,7 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
- 			tlb_write_indexed();
- 	}
- 	tlbw_use_hazard();
-+out:
- 	htw_start();
- 	flush_micro_tlb_vm(vma);
- 
--- 
-2.47.0
+As you took out the dependencies on the syscall_*.tbl files, the
+output does not get rebuilt if changes are made to the table, and I
+have not come up with a good solution for mips. My hack just adds both
+input files to all outputs, which works but is not technically correct.
+
+The rt_sigtimedwait and ustat entries had a typo that caused a link
+error, but I did not check if there were any additional mistakes that
+caused incorrect output data without causing a link failure.
+
+       Arnd
+
+diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/sysca=
+lls/Makefile
+index aaa5443ea906..51b9939ecff0 100644
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@ -40,10 +40,10 @@ src_n32 :=3D $(src)/syscall_n.tbl
+ src_n64 :=3D $(src)/syscall_n.tbl
+ src_o32 :=3D $(src)/syscall_o32.tbl
+=20
+-$(kapi)/unistd_nr_%.h: $(systbl_common) $(sysnr) FORCE
++$(kapi)/unistd_nr_%.h: $(src_o32) $(src_n64) $(systbl_common) $(sysnr) =
+FORCE
+        $(call if_changed,sysnr)
+=20
+-$(kapi)/syscall_table_%.h: $(systbl) $(systbl_common) FORCE
++$(kapi)/syscall_table_%.h: $(src_o32) $(src_n64) $(systbl) $(systbl_com=
+mon) FORCE
+        $(call if_changed,systbl)
+=20
+ uapisyshdr-y           +=3D unistd_n32.h                 \
+diff --git a/arch/mips/kernel/syscalls/syscall_n.tbl b/arch/mips/kernel/=
+syscalls/syscall_n.tbl
+index e3d278f715b7..84c35c1f0c3e 100644
+--- a/arch/mips/kernel/syscalls/syscall_n.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n.tbl
+@@ -133,14 +133,14 @@
+ 123    common  capget                          sys_capget
+ 124    common  capset                          sys_capset
+ 125    common  rt_sigpending                   sys_rt_sigpending       =
+compat_sys_rt_sigpending
+-126    common  rt_sigtimedwait                 sys_rt_sigtimedwait_time=
+        compat_sys_rt_sigtimedwait_time32
++126    common  rt_sigtimedwait                 sys_rt_sigtimedwait     =
+compat_sys_rt_sigtimedwait_time32
+ 127    common  rt_sigqueueinfo                 sys_rt_sigqueueinfo     =
+compat_sys_rt_sigqueueinfo
+ 128    common  rt_sigsuspend                   sys_rt_sigsuspend       =
+compat_sys_rt_sigsuspend
+ 129    common  sigaltstack                     sys_sigaltstack         =
+compat_sys_sigaltstack
+ 130    common  utime                           sys_utime               =
+sys_utime32
+ 131    common  mknod                           sys_mknod
+ 132    common  personality                     sys_personality         =
+sys_32_personality
+-133    common  ustat                           sys_usta                =
+compat_sys_usta
++133    common  ustat                           sys_ustat               =
+compat_sys_ustat
+ 134    common  statfs                          sys_statfs              =
+compat_sys_statfs
+ 135    common  fstatfs                         sys_fstatfs             =
+compat_sys_fstatfs
+ 136    common  sysfs                           sys_sysfs

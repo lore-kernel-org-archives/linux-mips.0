@@ -1,70 +1,74 @@
-Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
+Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com [74.125.225.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631A34D5A1
-	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 07:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A202C44E653
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 07:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789456397; cv=none; b=adQmCDWh/H8FnQRQHGzvbyfVA3Zy37HOUdMHYyrmWfhXp4qcXlFJ6AHdJeehMMKO8fg8KFgJfg7qE15voJkrhSF8+YhResHKphS4KB24AhrBf0IlLD+sxzkC4lN63LDqUJK+2j/bEBidx4NPwREA98qywtZBi+8G2kCMsWx/qZc=
+	t=1789456400; cv=none; b=WfDIvo8GgiWolaZRcStWcBQ2iP9vkeQUjhkdqQKOeO7L7n6oGEcdzELVjooBPNuLyqz4YMBPXBk3N6JKGd/hR75KRIwRdJq1z3b4K9sHInfRnH7ecuixH7lqkD7Z5BcEP8Jspm2tXIploYJWFydSbQJXMcTWn+P8b3dnpy8P0D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789456397; c=relaxed/simple;
-	bh=yKvdK3j8xOuUGSgKYDb2u+uvfmNE/Kj+TpTf0ZtDgLU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lsew7oYW/pEy7ishb5H39Oi6QLzh/LXnaCO6qYOQ0mJb/Ty3/gy9uG6lOueWC8PfQQESAIfna53yNqt56mQt/wcMZI9pEgQ6FFAT+Ir7/4O6Uw3ksn+nQKPKgBUKf9+Cz4k2+Hxj62Be4a4X2KSsyLs1LTuUtF9SyX4OLESQRfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pgIbtUv8; arc=none smtp.client-ip=74.125.225.140
+	s=arc-20240116; t=1789456400; c=relaxed/simple;
+	bh=yB4DTPywDVS0kZaLiWSK4e+LQ75BupYNTAlBCvXkq8I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ovc4jcTF0mvJcH6ZMEv2lYR57XFB1sRJFJUeW5jWgxyF5aTjot5vF6KaLaSwG9FgwYNwbonu5mnA5KxJPfCX+1ag93CU/UHuLA2lM5S2NIGB8oB7m4qcyBlXSe6uYq0Bfn1+tD01YMK2blrurdrqJxHPxHnInTCdMoY7b0AAClY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sYZs/A8u; arc=none smtp.client-ip=74.125.225.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pgIbtUv8"
-Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49b912d822dso20326365e9.2
-        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 00:13:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sYZs/A8u"
+Received: by mail-wr2-f12.google.com with SMTP id ffacd0b85a97d-482f6351831so1505051f8f.1
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 00:13:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789456394; x=1790061194; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=9zrX61GeCI+3H5TcNjr1lM5UeIxHraXxb4N6RDSCO5k=;
-        b=pgIbtUv8UY4Vd2/dw5MHAXYSzAmmvKd3Jdg+PcvEqkvxDWtr75o3XzNhU+easPp7cq
-         QsJFm5GluW8Cq/K4334E7AIrtJ4CAEh+TZtpS3J/ihtWfsO53IHWNCqNEmUAPJgrF1ZO
-         pJAV4corDZpuoui9ci51rJKPR+IgdTWVXagKXttd2NDNCqjQTC8MAsCe40g85rgnchXt
-         0q0CQySq3KEg+uR6+xhfIIMq5yHJ1wOsqyPDOzlm1Xfj1m8OUbRKuKWmUCNCv1rIEQ+v
-         W8Nx+waTe2ljdDvxNeGZkr4rpLaHMCazt52KGQjxkQOgX75627fBHRj/2R+y6lA2f+AW
-         9WpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789456394; x=1790061194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1789456397; x=1790061197; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=9zrX61GeCI+3H5TcNjr1lM5UeIxHraXxb4N6RDSCO5k=;
-        b=B5rU8myoru4KLLs5yzqFl9VDW4tExd/Ys/TxWhYwRBH5hJmpD2MqlQBVCtRwVWDIzx
-         gJU2zwI/SjY2b2LvOLGdrWpyaS4j3oukQf7SlSngPB9H2glZKM67TWoPdHrmn8nWezXh
-         OSBoIU1bkE0ZOuea4pxWEkaM3YbDczEpiHGDp/tfshVbobIffS05NEUFgt+uVLZWNwTq
-         LruWLGOdqJxkx0do0VFanJC9zm5NoiXe7V8+sFyJwcEt+87FjwseMCxchGfQKM6LbBJd
-         3g+LUEohHKLb16EfWZXO5G6gF5IWV6H4Uj25LAUcHuD96Yzi0gMILxS5LeBF4+bZuNhy
-         /Ikw==
-X-Gm-Message-State: AFuF++m0xkgUiF1v3BegHs3jJpsNqklcU7sXGjEbHNTf/uTCGw40R+2b
-	YQ0fn1n249ndzQTvMP4Cam//zsqjjsMZRwIdvROpybLN2V9XKPBT7ryb
-X-Gm-Gg: AYBFou2pXvBS++Lr2sJk+40go1spkpvHeMfhd808L+HTMFq3rVWtNFd4SbO4jUgSh4Z
-	1PoApTLqKBhlDsCB23uJBiFrf0GX7hHDDvFbPpoPTA55Riw9Ms/Camlt4WOUTSmBzduFjYYLZIb
-	AQ/bSTGaO0RCr3Ol8XP+X+1JS72E3EWQ77BEmm18RrR7hyaImCkUrjng5CO7cOD0vhmXLVZ73N1
-	QdpNp5+dnbnNYt2slEYyCiLOw7qYXI+WvFMusv7FGTbR7PbaIEqK88qfk46HERPt+4JUiE/4EEj
-	qU1JJWop9b2sWL9SyOLMpWp3B8aqyZspKIsEX7iWfHVLf2WP8GOMtfGjDohNfdHnl1+7JUU5SyR
-	BzYBO77nEW0weCrLPe2K3/FV+RL9/UXd/IPAiu7Sl83e9DzJ6Pkn3N++ogsELkbBLJ8hfDqRp6y
-	kKaFbc8lK8IcUEwqiWQqckbh7NEmCAG6CKhQwnF2+DzdVRjBzoZS3ccwCCeEOd68BYHBGSRGJCP
-	zbOdm3C2qIcWnlZZwXLn+Qy7UdaPf62pp1z0M3Y2D9184uuwnAuLPc8WQF1jSxvtOGnAzZx7xNr
-	VA9GSIeDq+oAoTPBoy11+L3Yl3g=
-X-Received: by 2002:a05:600c:3e0a:b0:49c:e1cd:536 with SMTP id 5b1f17b1804b1-49e7a669298mr70764985e9.12.1789456392912;
-        Tue, 15 Sep 2026 00:13:12 -0700 (PDT)
+        bh=I2PdkKNZ/AyrBmsE4RadQsZc68sMFv/kNqiw2CLuvNk=;
+        b=sYZs/A8uGjtDlZKfJ64UJsspsmg8GAXmD+A4CnSUPlQohB5YkD+TxAVGm/J2gLROl/
+         WsTg9ZpjdzAe0SBr5YoJJzdeFOvuYKMD+97y+ZhgJHRnLhLY1q7Fb11rxrA5Kpa03boY
+         RG3vFzE6o95jt1vExy022oJMa2g8OlKJbV83WdO9eepMp5RJpQYfOznbdBdDEgnkxaDC
+         YrySrwP5O/fxj2opuCQNeUVC/D9e26XIIM9etz4SZ+BPFKbZKU/KMS4eSQGlb/1g4mqP
+         mdbNRXQhJAdYsFu1O9iCH/UM/NsUJqJ5dMNbeO5FWCOC0fUFxgIP0v+lE0e+BzppPRJJ
+         jvgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789456397; x=1790061197;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=I2PdkKNZ/AyrBmsE4RadQsZc68sMFv/kNqiw2CLuvNk=;
+        b=YXG1GVBOUJyzghRQ1Usi6x0uoTsbVkBSeA9tbFSQgrTrfw2FBKV+XrG5nMc8JLXRpB
+         RR3Fi8xNpTu1K5wOvla0OGVUcC263EKlPLy5VEnKTNZgnwoUA3a4sdWn3tAFlS2BtQ7d
+         cOx6hSd8uXEchfwfnF5fnPfAmzcaWkH3f5xurZj6spWPhfIhZwKjXNHYr5fLCMQGU6da
+         DFDI8nOcAH/a83IZub/RRpSC/QIqY6n6W3JBl8o0HcFf0SuzGroQYTey4nvLiGh0ruvj
+         BD6d/3M/4Nt4yrVUCwfZG7nqy4RPYFMg0XHX6qK4Cewg3OqYhMBvnwujZvMdR3pTxh43
+         7rig==
+X-Gm-Message-State: AFuF++lPRAZFSXQxxM3U2kWdAo4ldwBNfbaTvCnK381dcFVsZMS5pW6g
+	AdOjzKRCaIodbrc5rpNUgj3wRgbc+EX+YEpZb2xDw+4sM3LcwToxrFlOiHh+hg==
+X-Gm-Gg: AYBFou0Ah1yXc6hzMBHsLHo4l9v0ITr/P6/0AgOHN+5sm5K3r7mHT2DJgRwLd8UOg0w
+	fspSv2Xd+iO1stWbV/8nG1Yq8c0sJ9hlXDsA3Y3KQJCQqacrd8wLzAdwf2mWK0/toRBFSOTYb6b
+	6bna1NZ5WlvHfgR0p2ZpMmHh1NDsCh1xW2k66V6bnPehkjaDuE7EYQJTgdMS/fTtwgKNdXoTzyB
+	8BPK7Uaa6W9MhZWkQQRRg3x4fC8/TNQDuQ67hSwIX6UhCUXivOSFOLWABGau3uNOnWRg9OCXtX3
+	zwgKqbRc/sFOxaCY2KDtN8ELh3J5b9GLNrO/lS6qWnCOZU3qurxM4apN0NUdwOT7jG+PnAybC5b
+	r1SLfBViDB1nqkxk4H0dpzHrtVAQLGvTBwcDnDOZbUJIlFS0tEZBe9cdA/O/ktN593D+TS5vJ2N
+	yazzL6FRcrFGrBmi+29wqPNfoAPmDZoBSJCNwnAEv4R+pATBRG2ooEgstIGq6fdxuffhJ8UU2qc
+	XYKrARy9nGPwWvQmPxQIWRLa4K10WZ8DL2ETMpEhCMSq8gkLTzEv7ZDdrJUydGkF6Eru1h3x0qm
+	1TkOmz2WUAqJWVH4
+X-Received: by 2002:a05:600c:4e89:b0:49d:7f5:4cdd with SMTP id 5b1f17b1804b1-49e7a68d80emr65338705e9.27.1789456396433;
+        Tue, 15 Sep 2026 00:13:16 -0700 (PDT)
 Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7d284a7bsm117889265e9.3.2026.09.15.00.13.12
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7d284a7bsm117889265e9.3.2026.09.15.00.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2026 00:13:12 -0700 (PDT)
+        Tue, 15 Sep 2026 00:13:16 -0700 (PDT)
 From: Orgad Shaneh <orgads@gmail.com>
 To: tsbogend@alpha.franken.de
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] MIPS: OCTEON: cvmx-l2c: use the OCTEON II register model on all CN6XXX
-Date: Tue, 15 Sep 2026 07:12:44 +0000
-Message-ID: <20260915071306.15006-1-orgads@gmail.com>
+Subject: [PATCH 2/5] MIPS: OCTEON: cvmx-l2c: add the CN66XX L2 geometry
+Date: Tue, 15 Sep 2026 07:12:45 +0000
+Message-ID: <20260915071306.15006-2-orgads@gmail.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260915071306.15006-1-orgads@gmail.com>
+References: <20260915071306.15006-1-orgads@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -73,32 +77,22 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The L2 helpers pick between the OCTEON II and the CN3XXX/CN5XXX
-register model with OCTEON_IS_MODEL(OCTEON_CN63XX), which matches the
-CN63XX only. Every other OCTEON II part - CN66XX, CN68XX, CN61XX -
-takes the CN3XXX/CN5XXX branch and touches registers that do not exist
-on it: L2C_DBG, L2C_LCKBASE, L2C_LCKOFF and L2C_SPAR4 instead of the
-LCKL2 cache operation, the L2C_WPAR_{PPX,IOBX} way-partitioning
-registers and L2C_TADX_TAG.
+cvmx_l2c_get_set_bits() and cvmx_l2c_get_num_assoc() know the CN63XX as
+the only OCTEON II part, so on a CN6635 both fell through to their
+"Unsupported OCTEON Model" defaults: 2048 sets, and 8 ways which the
+CN3XXX/CN5XXX fuse path - a read of L2D_FUS3, which is not a register
+on OCTEON II - then shifted down to 2.
 
-On a CN6635 board cvmx_l2c_lock_line(), called from prom_init() under
-CONFIG_CAVIUM_OCTEON_LOCK_L2 to lock the TLB refill and exception
-vectors, therefore went through L2C_DBG/L2C_LCKBASE. Whatever those
-writes hit inside the L2 controller left it silently dropping stores to
-DRAM above 512 MB: a probe that wrote 0x20400000, 0x40000000,
-0x80000000 and 0xe0000000 in prom_init read its values back before the
-lock block and the old contents right after it, on CCA 0, 2 and 3
-alike, while writes below 256 MB and every u-boot "mw" stuck. Since the
-cvmx bootmem free list keeps its nodes inside the free blocks
-themselves, the kernel's first split above 0x20000000 was lost, the
-walk of the free list stopped there, and the board came up with 248 MB
-of its 8 GB.
+The CN66XX L2 has the CN63XX geometry, 16 ways and 1024 sets, and
+reports its fused-off ways in MIO_FUS_DAT3[l2c_crip] like the rest of
+OCTEON II, so name it in those three branches. With this the board
+reports assoc 16, sets 1024, and cvmx_l2c_lock_line() computes the tag
+alias from the right associativity.
 
-Match the whole CN6XXX family, which is what these register accesses
-are keyed to. The CN63XX keeps exactly the same path.
-
-The geometry helpers in this file need the same treatment but not the
-same condition; they are handled in the next patch.
+The CN68XX and CN61XX are deliberately left alone: their L2 geometry
+differs from the CN63XX, and the CN68XX also uses bit <2> of
+MIO_FUS_DAT3[l2c_crip], which the decoding here does not handle. I have
+no such board to test on.
 
 Assisted-by: Claude:claude-opus-5
 Signed-off-by: Orgad Shaneh <orgads@gmail.com>
@@ -106,98 +100,35 @@ Signed-off-by: Orgad Shaneh <orgads@gmail.com>
 diff --git a/arch/mips/cavium-octeon/executive/cvmx-l2c.c b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
 --- a/arch/mips/cavium-octeon/executive/cvmx-l2c.c
 +++ b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
-@@ -54,7 +54,7 @@ int cvmx_l2c_get_core_way_partition(uint32_t core)
- 	if (core >= cvmx_octeon_num_cores())
- 		return -1;
+@@ -773,7 +773,9 @@ int cvmx_l2c_get_set_bits(void)
  
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
- 		return cvmx_read_csr(CVMX_L2C_WPAR_PPX(core)) & 0xffff;
- 
- 	/*
-@@ -91,14 +91,14 @@ int cvmx_l2c_set_core_way_partition(uint32_t core, uint32_t mask)
- 	mask &= valid_mask;
- 
- 	/* A UMSK setting which blocks all L2C Ways is an error on some chips */
--	if (mask == valid_mask && !OCTEON_IS_MODEL(OCTEON_CN63XX))
-+	if (mask == valid_mask && !OCTEON_IS_MODEL(OCTEON_CN6XXX))
- 		return -1;
- 
- 	/* Validate the core number */
- 	if (core >= cvmx_octeon_num_cores())
- 		return -1;
- 
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		cvmx_write_csr(CVMX_L2C_WPAR_PPX(core), mask);
- 		return 0;
- 	}
-@@ -147,10 +147,10 @@ int cvmx_l2c_set_hw_way_partition(uint32_t mask)
- 	mask &= valid_mask;
- 
- 	/* A UMSK setting which blocks all L2C Ways is an error on some chips */
--	if (mask == valid_mask	&& !OCTEON_IS_MODEL(OCTEON_CN63XX))
-+	if (mask == valid_mask	&& !OCTEON_IS_MODEL(OCTEON_CN6XXX))
- 		return -1;
- 
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
- 		cvmx_write_csr(CVMX_L2C_WPAR_IOBX(0), mask);
- 	else
- 		cvmx_write_csr(CVMX_L2C_SPAR4,
-@@ -160,7 +160,7 @@ int cvmx_l2c_set_hw_way_partition(uint32_t mask)
- 
- int cvmx_l2c_get_hw_way_partition(void)
- {
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
- 		return cvmx_read_csr(CVMX_L2C_WPAR_IOBX(0)) & 0xffff;
- 	else
- 		return cvmx_read_csr(CVMX_L2C_SPAR4) & (0xFF);
-@@ -313,7 +313,7 @@ static void fault_in(uint64_t addr, int len)
- 
- int cvmx_l2c_lock_line(uint64_t addr)
- {
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		int shift = CVMX_L2C_TAG_ADDR_ALIAS_SHIFT;
- 		uint64_t assoc = cvmx_l2c_get_num_assoc();
- 		uint64_t tag = addr >> shift;
-@@ -460,7 +460,7 @@ void cvmx_l2c_flush(void)
- int cvmx_l2c_unlock_line(uint64_t address)
- {
- 
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		int assoc;
- 		union cvmx_l2c_tag tag;
- 		uint32_t tag_addr;
-@@ -661,7 +661,7 @@ union cvmx_l2c_tag cvmx_l2c_get_tag(uint32_t association, uint32_t index)
- 			     (int)index, cvmx_l2c_get_num_sets());
- 		return tag;
- 	}
--	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		union cvmx_l2c_tadx_tag l2c_tadx_tag;
- 		uint64_t address = CVMX_ADD_SEG(CVMX_MIPS_SPACE_XKPHYS,
- 						(association << CVMX_L2C_TAG_ADDR_ALIAS_SHIFT) |
-@@ -745,7 +745,7 @@ uint32_t cvmx_l2c_address_to_index(uint64_t addr)
+ 	if (OCTEON_IS_MODEL(OCTEON_CN56XX) || OCTEON_IS_MODEL(OCTEON_CN58XX))
+ 		l2_set_bits = 11;	/* 2048 sets */
+-	else if (OCTEON_IS_MODEL(OCTEON_CN38XX) || OCTEON_IS_MODEL(OCTEON_CN63XX))
++	else if (OCTEON_IS_MODEL(OCTEON_CN38XX) ||
++		 OCTEON_IS_MODEL(OCTEON_CN63XX) ||
++		 OCTEON_IS_MODEL(OCTEON_CN66XX))
+ 		l2_set_bits = 10;	/* 1024 sets */
+ 	else if (OCTEON_IS_MODEL(OCTEON_CN31XX) || OCTEON_IS_MODEL(OCTEON_CN52XX))
+ 		l2_set_bits = 9;	/* 512 sets */
+@@ -805,7 +807,8 @@ int cvmx_l2c_get_num_assoc(void)
+ 	    OCTEON_IS_MODEL(OCTEON_CN50XX) ||
+ 	    OCTEON_IS_MODEL(OCTEON_CN38XX))
+ 		l2_assoc = 8;
+-	else if (OCTEON_IS_MODEL(OCTEON_CN63XX))
++	else if (OCTEON_IS_MODEL(OCTEON_CN63XX) ||
++		 OCTEON_IS_MODEL(OCTEON_CN66XX))
+ 		l2_assoc = 16;
+ 	else if (OCTEON_IS_MODEL(OCTEON_CN31XX) ||
+ 		 OCTEON_IS_MODEL(OCTEON_CN30XX))
+@@ -816,7 +819,7 @@ int cvmx_l2c_get_num_assoc(void)
  	}
  
- 	if (indxalias) {
--		if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+		if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 			uint32_t a_14_12 = (idx / (CVMX_L2C_MEMBANK_SELECT_SIZE/(1<<CVMX_L2C_IDX_ADDR_SHIFT))) & 0x7;
- 
- 			idx ^= idx / cvmx_l2c_get_num_sets();
-@@ -878,7 +878,7 @@ void cvmx_l2c_flush_line(uint32_t assoc, uint32_t index)
- 		return;
- 	}
- 
+ 	/* Check to see if part of the cache is disabled */
 -	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
-+	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
- 		uint64_t address;
- 		/* Create the address based on index and association.
- 		 * Bits<20:17> select the way of the cache block involved in
++	if (OCTEON_IS_MODEL(OCTEON_CN63XX) || OCTEON_IS_MODEL(OCTEON_CN66XX)) {
+ 		union cvmx_mio_fus_dat3 mio_fus_dat3;
+ 
+ 		mio_fus_dat3.u64 = cvmx_read_csr(CVMX_MIO_FUS_DAT3);
 -- 
 2.47.0

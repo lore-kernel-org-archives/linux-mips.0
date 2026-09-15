@@ -1,32 +1,70 @@
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F686352F86;
-	Tue, 15 Sep 2026 05:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631A34D5A1
+	for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 07:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789451186; cv=none; b=nfSdHyuPjiuceHkvUc7aM602YJK2zad19VWt2jS8r3toFKddLw4OosSU0m7juNqMAuGh0gSAZ9mKG4KZuCJSj7xfI9kkBeER1Z1dHU+79uW1HH/x9W1oJ1E9fTrwHm2HtvqeZ6KKxl0/WZHwVR47zfwLTOfJpNOPMkoMIF4FcPs=
+	t=1789456397; cv=none; b=adQmCDWh/H8FnQRQHGzvbyfVA3Zy37HOUdMHYyrmWfhXp4qcXlFJ6AHdJeehMMKO8fg8KFgJfg7qE15voJkrhSF8+YhResHKphS4KB24AhrBf0IlLD+sxzkC4lN63LDqUJK+2j/bEBidx4NPwREA98qywtZBi+8G2kCMsWx/qZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789451186; c=relaxed/simple;
-	bh=/bcZf+K0knvclkuvHQw86JM91mB2J3WS6OpY+fCig9A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YOlFvxixaGwCXJqgRs/9v/IsqBTu6DL1QE8J7dOOo+ydGRv2TJQFMgOjzPVhJ44oXwJ4PrkPvgvGlTdTjpEj5USHON+m4mCa9XbcTfT9BUt041WdfY5/TuRS0WGUzzlHNBuA/kYUizax6BschBi/CuNRyBQkherycgC8DSDi9X4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-01 (Coremail) with SMTP id qwCowAA3Cu6t26hquRIKCA--.51777S2;
-	Tue, 15 Sep 2026 13:46:21 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: cjd@cjdns.fr
-Cc: daniel.lezcano@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	tglx@kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>
-Subject: [PATCH] clocksource/drivers/timer-econet-en751221: Fix clock reference leak
-Date: Tue, 15 Sep 2026 05:45:52 +0000
-Message-Id: <20260915054552.1729612-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1789456397; c=relaxed/simple;
+	bh=yKvdK3j8xOuUGSgKYDb2u+uvfmNE/Kj+TpTf0ZtDgLU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lsew7oYW/pEy7ishb5H39Oi6QLzh/LXnaCO6qYOQ0mJb/Ty3/gy9uG6lOueWC8PfQQESAIfna53yNqt56mQt/wcMZI9pEgQ6FFAT+Ir7/4O6Uw3ksn+nQKPKgBUKf9+Cz4k2+Hxj62Be4a4X2KSsyLs1LTuUtF9SyX4OLESQRfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pgIbtUv8; arc=none smtp.client-ip=74.125.225.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pgIbtUv8"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49b912d822dso20326365e9.2
+        for <linux-mips@vger.kernel.org>; Tue, 15 Sep 2026 00:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789456394; x=1790061194; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=9zrX61GeCI+3H5TcNjr1lM5UeIxHraXxb4N6RDSCO5k=;
+        b=pgIbtUv8UY4Vd2/dw5MHAXYSzAmmvKd3Jdg+PcvEqkvxDWtr75o3XzNhU+easPp7cq
+         QsJFm5GluW8Cq/K4334E7AIrtJ4CAEh+TZtpS3J/ihtWfsO53IHWNCqNEmUAPJgrF1ZO
+         pJAV4corDZpuoui9ci51rJKPR+IgdTWVXagKXttd2NDNCqjQTC8MAsCe40g85rgnchXt
+         0q0CQySq3KEg+uR6+xhfIIMq5yHJ1wOsqyPDOzlm1Xfj1m8OUbRKuKWmUCNCv1rIEQ+v
+         W8Nx+waTe2ljdDvxNeGZkr4rpLaHMCazt52KGQjxkQOgX75627fBHRj/2R+y6lA2f+AW
+         9WpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789456394; x=1790061194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=9zrX61GeCI+3H5TcNjr1lM5UeIxHraXxb4N6RDSCO5k=;
+        b=B5rU8myoru4KLLs5yzqFl9VDW4tExd/Ys/TxWhYwRBH5hJmpD2MqlQBVCtRwVWDIzx
+         gJU2zwI/SjY2b2LvOLGdrWpyaS4j3oukQf7SlSngPB9H2glZKM67TWoPdHrmn8nWezXh
+         OSBoIU1bkE0ZOuea4pxWEkaM3YbDczEpiHGDp/tfshVbobIffS05NEUFgt+uVLZWNwTq
+         LruWLGOdqJxkx0do0VFanJC9zm5NoiXe7V8+sFyJwcEt+87FjwseMCxchGfQKM6LbBJd
+         3g+LUEohHKLb16EfWZXO5G6gF5IWV6H4Uj25LAUcHuD96Yzi0gMILxS5LeBF4+bZuNhy
+         /Ikw==
+X-Gm-Message-State: AFuF++m0xkgUiF1v3BegHs3jJpsNqklcU7sXGjEbHNTf/uTCGw40R+2b
+	YQ0fn1n249ndzQTvMP4Cam//zsqjjsMZRwIdvROpybLN2V9XKPBT7ryb
+X-Gm-Gg: AYBFou2pXvBS++Lr2sJk+40go1spkpvHeMfhd808L+HTMFq3rVWtNFd4SbO4jUgSh4Z
+	1PoApTLqKBhlDsCB23uJBiFrf0GX7hHDDvFbPpoPTA55Riw9Ms/Camlt4WOUTSmBzduFjYYLZIb
+	AQ/bSTGaO0RCr3Ol8XP+X+1JS72E3EWQ77BEmm18RrR7hyaImCkUrjng5CO7cOD0vhmXLVZ73N1
+	QdpNp5+dnbnNYt2slEYyCiLOw7qYXI+WvFMusv7FGTbR7PbaIEqK88qfk46HERPt+4JUiE/4EEj
+	qU1JJWop9b2sWL9SyOLMpWp3B8aqyZspKIsEX7iWfHVLf2WP8GOMtfGjDohNfdHnl1+7JUU5SyR
+	BzYBO77nEW0weCrLPe2K3/FV+RL9/UXd/IPAiu7Sl83e9DzJ6Pkn3N++ogsELkbBLJ8hfDqRp6y
+	kKaFbc8lK8IcUEwqiWQqckbh7NEmCAG6CKhQwnF2+DzdVRjBzoZS3ccwCCeEOd68BYHBGSRGJCP
+	zbOdm3C2qIcWnlZZwXLn+Qy7UdaPf62pp1z0M3Y2D9184uuwnAuLPc8WQF1jSxvtOGnAzZx7xNr
+	VA9GSIeDq+oAoTPBoy11+L3Yl3g=
+X-Received: by 2002:a05:600c:3e0a:b0:49c:e1cd:536 with SMTP id 5b1f17b1804b1-49e7a669298mr70764985e9.12.1789456392912;
+        Tue, 15 Sep 2026 00:13:12 -0700 (PDT)
+Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e7d284a7bsm117889265e9.3.2026.09.15.00.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2026 00:13:12 -0700 (PDT)
+From: Orgad Shaneh <orgads@gmail.com>
+To: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] MIPS: OCTEON: cvmx-l2c: use the OCTEON II register model on all CN6XXX
+Date: Tue, 15 Sep 2026 07:12:44 +0000
+Message-ID: <20260915071306.15006-1-orgads@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,52 +72,132 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowAA3Cu6t26hquRIKCA--.51777S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF45Gr47Ar43Jw18Gr1DAwb_yoWkKFc_Wa
-	nIgr97Jr1Fk390kw4qvw13Z39IkFn7Zry8KrWIqa4fJa48CFyjkF1rurnIkr15uanrKF98
-	CFW7C3yrAr13WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbYFAJ
-	UUUUU==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgkLA2qowR1bvwABs8
 
-timer_init() obtains the timer clock with of_clk_get() and only reads
-its frequency with clk_get_rate(); the clock is never prepared nor
-enabled. All four return paths after the acquisition (of_iomap()
-failure, clocksource_mmio_init() failure, cevt_init() failure and
-success) return without clk_put(), leaking the consumer reference.
+The L2 helpers pick between the OCTEON II and the CN3XXX/CN5XXX
+register model with OCTEON_IS_MODEL(OCTEON_CN63XX), which matches the
+CN63XX only. Every other OCTEON II part - CN66XX, CN68XX, CN61XX -
+takes the CN3XXX/CN5XXX branch and touches registers that do not exist
+on it: L2C_DBG, L2C_LCKBASE, L2C_LCKOFF and L2C_SPAR4 instead of the
+LCKL2 cache operation, the L2C_WPAR_{PPX,IOBX} way-partitioning
+registers and L2C_TADX_TAG.
 
-Drop the reference with clk_put() right after the frequency has been
-read. The clock enable state is untouched.
+On a CN6635 board cvmx_l2c_lock_line(), called from prom_init() under
+CONFIG_CAVIUM_OCTEON_LOCK_L2 to lock the TLB refill and exception
+vectors, therefore went through L2C_DBG/L2C_LCKBASE. Whatever those
+writes hit inside the L2 controller left it silently dropping stores to
+DRAM above 512 MB: a probe that wrote 0x20400000, 0x40000000,
+0x80000000 and 0xe0000000 in prom_init read its values back before the
+lock block and the old contents right after it, on CCA 0, 2 and 3
+alike, while writes below 256 MB and every u-boot "mw" stuck. Since the
+cvmx bootmem free list keeps its nodes inside the free blocks
+themselves, the kernel's first split above 0x20000000 was lost, the
+walk of the free list stopped there, and the board came up with 248 MB
+of its 8 GB.
 
-Fixes: 3b4c33ac87d0 ("clocksource/drivers: Add EcoNet Timer HPT driver")
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+Match the whole CN6XXX family, which is what these register accesses
+are keyed to. The CN63XX keeps exactly the same path.
+
+The geometry helpers in this file need the same treatment but not the
+same condition; they are handled in the next patch.
+
+Assisted-by: Claude:claude-opus-5
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
 ---
- drivers/clocksource/timer-econet-en751221.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clocksource/timer-econet-en751221.c b/drivers/clocksource/timer-econet-en751221.c
-index 4008076b1a21..1859335345b5 100644
---- a/drivers/clocksource/timer-econet-en751221.c
-+++ b/drivers/clocksource/timer-econet-en751221.c
-@@ -181,6 +181,7 @@ static int __init timer_init(struct device_node *np)
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-l2c.c b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
+--- a/arch/mips/cavium-octeon/executive/cvmx-l2c.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-l2c.c
+@@ -54,7 +54,7 @@ int cvmx_l2c_get_core_way_partition(uint32_t core)
+ 	if (core >= cvmx_octeon_num_cores())
+ 		return -1;
+ 
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
+ 		return cvmx_read_csr(CVMX_L2C_WPAR_PPX(core)) & 0xffff;
+ 
+ 	/*
+@@ -91,14 +91,14 @@ int cvmx_l2c_set_core_way_partition(uint32_t core, uint32_t mask)
+ 	mask &= valid_mask;
+ 
+ 	/* A UMSK setting which blocks all L2C Ways is an error on some chips */
+-	if (mask == valid_mask && !OCTEON_IS_MODEL(OCTEON_CN63XX))
++	if (mask == valid_mask && !OCTEON_IS_MODEL(OCTEON_CN6XXX))
+ 		return -1;
+ 
+ 	/* Validate the core number */
+ 	if (core >= cvmx_octeon_num_cores())
+ 		return -1;
+ 
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 		cvmx_write_csr(CVMX_L2C_WPAR_PPX(core), mask);
+ 		return 0;
+ 	}
+@@ -147,10 +147,10 @@ int cvmx_l2c_set_hw_way_partition(uint32_t mask)
+ 	mask &= valid_mask;
+ 
+ 	/* A UMSK setting which blocks all L2C Ways is an error on some chips */
+-	if (mask == valid_mask	&& !OCTEON_IS_MODEL(OCTEON_CN63XX))
++	if (mask == valid_mask	&& !OCTEON_IS_MODEL(OCTEON_CN6XXX))
+ 		return -1;
+ 
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
+ 		cvmx_write_csr(CVMX_L2C_WPAR_IOBX(0), mask);
+ 	else
+ 		cvmx_write_csr(CVMX_L2C_SPAR4,
+@@ -160,7 +160,7 @@ int cvmx_l2c_set_hw_way_partition(uint32_t mask)
+ 
+ int cvmx_l2c_get_hw_way_partition(void)
+ {
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX))
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX))
+ 		return cvmx_read_csr(CVMX_L2C_WPAR_IOBX(0)) & 0xffff;
+ 	else
+ 		return cvmx_read_csr(CVMX_L2C_SPAR4) & (0xFF);
+@@ -313,7 +313,7 @@ static void fault_in(uint64_t addr, int len)
+ 
+ int cvmx_l2c_lock_line(uint64_t addr)
+ {
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 		int shift = CVMX_L2C_TAG_ADDR_ALIAS_SHIFT;
+ 		uint64_t assoc = cvmx_l2c_get_num_assoc();
+ 		uint64_t tag = addr >> shift;
+@@ -460,7 +460,7 @@ void cvmx_l2c_flush(void)
+ int cvmx_l2c_unlock_line(uint64_t address)
+ {
+ 
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 		int assoc;
+ 		union cvmx_l2c_tag tag;
+ 		uint32_t tag_addr;
+@@ -661,7 +661,7 @@ union cvmx_l2c_tag cvmx_l2c_get_tag(uint32_t association, uint32_t index)
+ 			     (int)index, cvmx_l2c_get_num_sets());
+ 		return tag;
+ 	}
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 		union cvmx_l2c_tadx_tag l2c_tadx_tag;
+ 		uint64_t address = CVMX_ADD_SEG(CVMX_MIPS_SPACE_XKPHYS,
+ 						(association << CVMX_L2C_TAG_ADDR_ALIAS_SHIFT) |
+@@ -745,7 +745,7 @@ uint32_t cvmx_l2c_address_to_index(uint64_t addr)
  	}
  
- 	econet_timer.freq_hz = clk_get_rate(clk);
-+	clk_put(clk);
+ 	if (indxalias) {
+-		if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++		if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 			uint32_t a_14_12 = (idx / (CVMX_L2C_MEMBANK_SELECT_SIZE/(1<<CVMX_L2C_IDX_ADDR_SHIFT))) & 0x7;
  
- 	for (int i = 0; i < num_blocks; i++) {
- 		econet_timer.membase[i] = of_iomap(np, i);
+ 			idx ^= idx / cvmx_l2c_get_num_sets();
+@@ -878,7 +878,7 @@ void cvmx_l2c_flush_line(uint32_t assoc, uint32_t index)
+ 		return;
+ 	}
+ 
+-	if (OCTEON_IS_MODEL(OCTEON_CN63XX)) {
++	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
+ 		uint64_t address;
+ 		/* Create the address based on index and association.
+ 		 * Bits<20:17> select the way of the cache block involved in
 -- 
-2.34.1
-
+2.47.0

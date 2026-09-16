@@ -1,55 +1,40 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433ED3A255F;
-	Wed, 16 Sep 2026 12:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439B34D2EFA
+	for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 12:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789560548; cv=none; b=dbnNfbhkj/znBeL2/LifOo3fg2DPmMCOeit6x3t3bS4sA6jC1VtIcMETLF/LCNp/eHRBhyCvzcrU8qRJlY3xoEuhAlgdqBkwjufq8RV1Pwv1ZwPyfkWGpWE273BWouaVqE74SJBRUzj0gsJgozF+/RDiEauScimGVlxh3WIdZNM=
+	t=1789560561; cv=none; b=IVxIghRO4SB8qkARzXJOKlNsa0y58bfmChrcDRiB52U1V2onC4N16GxrsujFczQK/mYDnxp4r7OwqCUGCx9BhUcHXnVEiLkWu58amL9KKGeBueDwXHrI3P4bAHG2dOIRfOBwzrFIUsBGKAdHSMUnP1/Plqe9PiU+BCz3XgjIeYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789560548; c=relaxed/simple;
-	bh=d+riWkzY7q0D6HM2ci+jcWpLhyoHJWVEnRYlfZf/RNY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=rK3IcuLdCRqtwUcuqSCZYkWNy1y+KIic1YkpIHNtkMs0Nmpf/3hZkzl6qfwUPLquhOvbeH6TerA7xwpRgYCBAgwYMSL7gBWgl8J5SZrPS1y5RBiDhZHLEx2zTCNitrvPwL175CuBP2EQgt1pfPmgJW4xIyA7DJMdsUJerAaji+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UInVsfQ6; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789560561; c=relaxed/simple;
+	bh=VRe54C6FRbPvoEQSP/yy+xFeaC9/EYg71u6oRhkux6c=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QkzyZBanuO5dvmuZ00Cd2qgSSmEzUjjm/pBw/42OQRBFpKPv0cwkG6ffXqltxhRQdBqz1/gKPxSjzrj+EpwQvT0Esyak8gUay0YvdBpgWXqtEAQfLCVKmvdBPQT6GlTZFuiWexjfi7aDovw5bruNAn2pVxIAvBbT2tyDJCFHMog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lhOpG2yv; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UInVsfQ6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD1C1F000FF;
-	Wed, 16 Sep 2026 12:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789560539;
-	bh=HSYim5Wxi1PvEp4JVMuAVhAZ3OFAwfBLwHxEX4lM0DY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=UInVsfQ6krE0FNJY5UUARa6DiUpRAySntdgO4ZVZj5o2/6rWF9kh5/JFk5VKetz+6
-	 nufkt9N7nc6DcjrICjgjPGDG8ba4gMzLDQtpOk30asoDM/0F0KGup5nOO8dGmPGfd9
-	 zJdaqUZr/S8dIqdLk/95Gtio+yOo9pKnSfF5nBy7n0JBNKD5CRgDcea0jpgJDDyLBe
-	 7+zQGGvl4Y/2cszG5lGr1lyVennQcglpeTyZj70igNO4+560odvmqd5xdEQZxm9/yG
-	 MWKavfwzoLfy8rbBnxVZN+HIG9YTrhcttbL4A7QvYQ67s7/+aKdrQf2WgaJeAxHBJV
-	 u5CFDyVM1dceQ==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, 
- Pengpeng Hou <pengpeng@iscas.ac.cn>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Baojun Xu <baojun.xu@ti.com>, 
- =?utf-8?q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
- Cyril Chao <cyril.chao@mediatek.com>, Darren Ye <darren.ye@mediatek.com>, 
- David Rhodes <david.rhodes@cirrus.com>, Kevin Lu <kevin-lu@ti.com>, 
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
- Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, 
- linux-mips@vger.kernel.org, linux-sound@vger.kernel.org, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, 
- patches@opensource.cirrus.com, Paul Cercueil <paul@crapouillou.net>, 
- Jaroslav Kysela <perex@perex.cz>, 
- Richard Fitzgerald <rf@opensource.cirrus.com>, Sen Wang <sen@ti.com>, 
- Shenghao Ding <shenghao-ding@ti.com>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20260828113416.47061-1-pengpeng@iscas.ac.cn>
-References: <20260828113416.47061-1-pengpeng@iscas.ac.cn>
-Subject: Re: (subset) [PATCH 00/20] ASoC: propagate register restore
- failures
-Message-Id: <178949144504.151760.12464142695639435377.b4-ty@b4>
-Date: Tue, 15 Sep 2026 17:57:25 +0100
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lhOpG2yv"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 7325F4E406E3
+	for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 12:09:09 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 3193860337;
+	Wed, 16 Sep 2026 12:09:09 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 48FD911C7AFE8;
+	Wed, 16 Sep 2026 14:09:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1789560544; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=tcfZBexq3+xx1Uv0GA8D4XJxPbWL0A4ePxUkLHqPiW0=;
+	b=lhOpG2yvAGqAL98qnU6wMMLzXxGWLSsyxmhVDtKwTtXBBrbgaq3LYFjY6PUYjX573xp6i/
+	jW8HVvVJcWtImiWmebt8UIZCW9uQRariCkoo71TwOL6TpNhnQJn6QKxlzNaqkxYhbdO3m0
+	3u/VUBPMJ7itnIaKrTjI5yAjXi4HAQSju8Cd2dWrY+ix/YhYOMjh7JNo/n2kMVGwYGrvOV
+	yLiBQC1wPM3qiwhKV9hsYf83BVGPVGwnrNInbCR//eFpt8KeqnrA9OgyKiT8uvCX1NFehq
+	CTzQMIso0p7z0XMfrX1VbsNhya3M+b5yi8OyPOn5Cz2ljdO4x5KkocS1dCnG9A==
+From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
+Subject: [PATCH v3 0/2] clk: eyeq: Reserve OLB memory regions
+Date: Wed, 16 Sep 2026 14:08:53 +0200
+Message-Id: <20260916-clk-eyeq-res-v3-0-93a3b831a5d0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -57,90 +42,81 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3614; i=broonie@kernel.org;
- h=from:subject:message-id; bh=d+riWkzY7q0D6HM2ci+jcWpLhyoHJWVEnRYlfZf/RNY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqqobUqaQMsTSfvXw5SOzhPOjjf49lajDtxY70q
- bjt1LzvU2eJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaqqG1AAKCRAk1otyXVSH
- 0JwAB/4qX2VCeUFhY26zn+oKpD/Z2FRkfF5QuhC418CZ9p4F5gLsSZJzpAqnUeSLWh6eX73u3xL
- zzsmCliChrB4KPQ6kn0A02V87HZxC2LIuwi8D5GXPjtiqiujVztKUdAjTdkCA8/L8S/UUSofek6
- U+nFLSsGhKyGlYM09dbKt3u7sAWDD+znHNxYoAp2V5rJOp8WJnY56qzDR6dblNGSsJVzBlQqU6P
- kzI1glDOfv5zqLcz8/4BKkbU5Pz7UzgiJqBzfS02j+MSAvAnT3UqdfAYrszSKUz7wWLIFEs8nlh
- NN0+KQHdQrXdlQh8mHDeBrlCKSKrcbjmYO96Rey1XEGJslbI
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIANWGqmoC/12Nyw6CMBQFf4V07TVtKS9X/odxQdtbqQ+qLTYSw
+ r8LGBNxOcmZOQMJ6C0GsksG4jHaYF07QbpJiGrq9oRg9cSEU57TilFQ1wtgjw/wGEBracrCKGG
+ 0IJNy92jsa8kdjh8OT3lG1c2NedHY0DnfL3+Rzbtvmq3TkQGDtJJUZIJrmZZ76Vx3te1WuRuZ4
+ 5H/6uJP50AhLwvMNKa1rIu1Po7jG5mjrCn7AAAA
+X-Change-ID: 20260910-clk-eyeq-res-ddbf87fc4fd4
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
+ Jerome Brunet <jbrunet+clk@baylibre.com>
+Cc: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-mips@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.16.0
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Fri, 28 Aug 2026 19:33:55 +0800, Pengpeng Hou wrote:
-> ASoC: propagate register restore failures
-> 
-> Several ASoC codec and AFE power transitions restore cached register state
-> after reset or power loss.  The callbacks in this series all have an effective
-> error consumer: component probe or hw_params, DAPM bias handling, device
-> runtime PM, or system PM.  They currently continue or publish success after a
-> required register operation failed.
-> 
-> [...]
+The Other Logic Blocks of Mobileye SoCs are clock providers, and some of
+them are registered early with CLK_OF_DECLARE_DRIVER(). Their early init
+maps the registers with of_iomap(), which does not request the memory
+region. On the platform device side, eqc_probe() used a plain ioremap()
+too, so none of the OLB regions were reserved in the iomem_resource
+tree.
 
-Applied to
+Patch 1 converts eqc_probe() to devm_platform_ioremap_resource(): the
+region gets requested and the mapping is released by the devres
+machinery on unbind. The mapping is moved before the match data check so
+that OLBs bound without match data also get mapped and reserved.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.4
+Patch 2 adds a match table entry for mobileye,eyeq6h-central-olb without
+match data. All of its clocks are registered by the early init and it
+has no auxiliary devices; bind it to get its region reserved.
 
-Thanks!
+No functional change in normal operation, besides the region reservation.
 
-[01/20] ASoC: adau1372: Unwind failed power restoration
-        https://git.kernel.org/broonie/sound/c/affb75ebf9ae
-[02/20] ASoC: adau1701: Propagate register cache replay errors
-        https://git.kernel.org/broonie/sound/c/6194ceba5dac
-[03/20] ASoC: cs35l56: Propagate register restore errors from runtime resume
-        https://git.kernel.org/broonie/sound/c/adf7e9a1f508
-[04/20] ASoC: cs42l42: Propagate system resume restore errors
-        https://git.kernel.org/broonie/sound/c/68cbe8933835
-[05/20] ASoC: es9356: Publish IRQ readiness after cache replay
-        https://git.kernel.org/broonie/sound/c/31a717842535
-[06/20] ASoC: jz4740: Propagate codec wake-up errors
-        https://git.kernel.org/broonie/sound/c/c826c897a330
-[07/20] ASoC: max98088: Propagate cache replay errors from bias restore
-        https://git.kernel.org/broonie/sound/c/11e145401b68
-[08/20] ASoC: ssm2518: Unwind failed power restoration
-        https://git.kernel.org/broonie/sound/c/6b4330d590a2
-[09/20] ASoC: ssm4567: Unwind failed power restoration
-        https://git.kernel.org/broonie/sound/c/4406319f7f52
-[10/20] ASoC: tlv320aic3x: Propagate power restoration errors
-        https://git.kernel.org/broonie/sound/c/1621a23dd164
-[11/20] ASoC: wm8731: Unwind supplies on cache replay failure
-        https://git.kernel.org/broonie/sound/c/f7c28c42085b
-[12/20] ASoC: wm8770: Unwind supplies on cache replay failure
-        https://git.kernel.org/broonie/sound/c/fcfcb17039d9
-[13/20] ASoC: wm8804: Propagate cache replay errors from runtime resume
-        https://git.kernel.org/broonie/sound/c/a4de439e78dc
-[14/20] ASoC: wm8904: Unwind resources on cache replay failure
-        https://git.kernel.org/broonie/sound/c/4da4cb28883d
-[15/20] ASoC: wm8985: Unwind supplies on cache replay failure
-        https://git.kernel.org/broonie/sound/c/76f9631fa81b
-[16/20] ASoC: wm8991: Propagate cache replay errors from bias restore
-        https://git.kernel.org/broonie/sound/c/745f64b9335b
-[17/20] ASoC: wm8993: Unwind supplies on cache replay failure
-        https://git.kernel.org/broonie/sound/c/7784ba385367
-[18/20] ASoC: wm8996: Unwind supplies on cache replay failure
-        https://git.kernel.org/broonie/sound/c/8fe60034e163
+Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
+---
+Changes in v3:
+- Unregister the clocks if the clock provider registration fails
+  (Thanks Brian and sashiko for the review)
+- Link to v2: https://patch.msgid.link/20260914-clk-eyeq-res-v2-0-687e5de3aba7@bootlin.com
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Changes in v2:
+- Fix early return comment in eqc_probe() (Thanks Théo for the review)
+- Split the patch in two (Thanks Brian for the review)
+- Link to v1: https://patch.msgid.link/20260911-clk-eyeq-res-v1-1-39b04542db38@bootlin.com
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Théo Lebrun <theo.lebrun@bootlin.com>
+To: Stephen Boyd <sboyd@kernel.org>
+To: Brian Masney <bmasney+clk@redhat.com>
+To: Jerome Brunet <jbrunet+clk@baylibre.com>
+To: Benoît Monin <benoit.monin@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-clk@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+---
+Benoît Monin (2):
+      clk: eyeq: Use devm_platform_ioremap_resource()
+      clk: eyeq: Add mobileye,eyeq6h-central-olb compatible
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ drivers/clk/clk-eyeq.c | 31 ++++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
+---
+base-commit: cee9395acd8043be0644b25c34bfa86623f2b935
+change-id: 20260910-clk-eyeq-res-ddbf87fc4fd4
 
-Thanks,
-Mark
+Best regards,
+--  
+Benoît Monin, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 

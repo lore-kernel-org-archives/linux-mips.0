@@ -1,174 +1,186 @@
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63324A3410
-	for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 21:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.226.204
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789595066; cv=pass; b=r8fubkzrecJZsN43Yq8CRnswnV7npC3jPb1g6/0Rf+sUGcRWNqvB815atGFBNZr3EpdN4RLV0Cnxg/AB99TUswLpBj7fpugD4mW5Y62rUpRFeNQuhDozWwx6A1DGH7vvyHPonUSgbqPbjpku3POt7lsAzHpA76XSCiKDUUcXtiY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789595066; c=relaxed/simple;
-	bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g/l50mBvVen4PY//GuksiE1HawBxChuIpnJoti5N1fdOrkQte65z1ojL+irdE5TWpR4ESXHyJC436etk256eE7Ep/Sd33L5/WuY4sx8ZtEETXlBPJCQblIlJQ/ZYc/27hv1wl82ZehJ1Quy6jB9M0cGfem41qMGlerzZ6PHN/Yw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PhRvxyDc; arc=pass smtp.client-ip=74.125.226.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82574A49B3;
+	Wed, 16 Sep 2026 22:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789597197; cv=none; b=WozMF5NyCK9+jGNW3Qot3gt+mzrGWFi6IjeGqRwHaJHvNkkRHF+bE2NetHSpiZ8Y5X+5NjLHzViKhYSW5x9t/6yNKULP+JBpmZMCf/inih6iQsxI3+QOqx2XHcp7IecFz/RohmLvOemK31Ik0S9ZW23naafYZJWQ4AUphqgHPPw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789597197; c=relaxed/simple;
+	bh=PgYamMXCdi4VRyBf5DPb5l7tFDhJvPaxGoqF/5mIgS8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tDhpMCp1CnXxoRLuHEWZY6UE2/mTB+65yL71c+Bo/DrvsFMnr4wu49lKfMtcTLsf3iaTAlzlnsotJYtl9R0PeRS/0lh6sgNCTSYNS8npejHZIbSMhbbVenso/Nq2ej55r1ZCczVKcZjSBMU8h7etA0bVNel51ZzN4mecDWMnvfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=FJ1GGUUq; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PhRvxyDc"
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e9af41731so61834241.3
-        for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 14:44:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789595057; cv=none;
-        d=google.com; s=arc-20260327;
-        b=kMWdpdKpun+iNzux/Lebu7R3HhX98ZKqnRfwfktQguANg+R1dXJwCQULbre1r3Bd73
-         PLrUrdl06FOOnnSbWZSCKbM0IykATod/L03Up7s/nYO0Hfgc/4RHZOlzGqJIum/eR9ly
-         uCFHkeEMW2D4kXJQT6OHnJA50tSYUqiGwvFngTijJ/qCtDurjjQeHXs/lqxcbwPQFCV/
-         BiQVItlZGBuKu9M/ugHOUyXN7YZmN0DUfbtbbbfJV79OfKUirOhE5mquR1oxLnWmmUzL
-         t0oxAgccyq2iQJ17lT49OOu1fhy6It0v7GmkE0x4WUg57zKmUxMIvDB8rI2kRhcPuAJW
-         +etg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
-        fh=vzOJa4QqVRkVFelkaS6nSdOMJjUK9XnLPs8dnKk49CA=;
-        b=R1PevwM9C2/aefnUoh317onDSb3hXng1Wopw0qme26N6DXo0KzMBfjP4tysUer0/A9
-         iXntZLh1NrYoRHh2TYUbfltgjo+alhm8ehHjkjkWP+fPzTq3pQeQBALWuoWOLMS0m6HD
-         usBFksF/F1HJYY9TVRajZo+f3Qd6YUm0vft+oDoW3uZawid/49fR2vD+u2/FcrPHqcFI
-         V9b5K0CYf4EsrRJLgAh70T+Qy4omx/LWehYPEy0XhtFt2STt13KDYPX6Ss5BgppgzSmI
-         F0YA42Dz9xi6QwEhBtokY62gObcAnc/TkjImcjwgcctbwZQtEVPMn3jIGQqbiL/xAjHx
-         auYQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789595057; x=1790199857; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
-        b=PhRvxyDcEKpo82rz7bjO1wDQ8uBdzgmqFw/6qMLJ6ysl579NXOSm57qPRzt39pD3oV
-         RQb6cdMJNN/Ek0B5W2zGNfO0RqIoSKMqtIpUc7eAhIfyNHQGufGBDtCJwInLu+pX9hxn
-         J9cpThCkU1tmfCxsOJRLdZFf8wYm3kRlo/yoPwYzsu2PbhjQqcSKR20KyEdhLP8618yJ
-         5CmZfZeIm2+Na8mFl/ktZ3dXA1iPW6HhEYtD+ujAGpNgWXor7U3Ki4cMIqiM6LMBSHL9
-         ktggN+6MCwK15bvCxc3iBeUikkFZwpbRMOG0Pyt60U5y0YJFcb8fm4EhJ+LQPrX9SbDv
-         Tdmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789595057; x=1790199857;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
-        b=EKeTA706jSNcZDmFesIoh+/N06FOX6z0DrrCSZniySXvqb4xiBYDEx+z8y9kXi89y2
-         PaMQfY88ckUnmzPMJ2OIzADHCq4kWGYejMi4ezn4LXVN7mQLx/kqm3q/Q2hYPdF0Avgd
-         qgcKhXycGlpeFm7+jEwzaeUtNwG++uV6gibiGD22g1qN/+moGrH1CTMM+6AkGc0h+W3Y
-         XH3KdUJVSIoK7PPzdAlXBDtOY5SEAW5tk6Gpt0UtJrfT8kx+ptl5f5S9mhqAi+pgZtOa
-         ANIRlb/Ykc06O2qW6oD4PrkkpRHJQttBDd9x14RbZAISIyH/emvv77MMtj73/H+gXkr2
-         UgDw==
-X-Forwarded-Encrypted: i=1; AKwUvByYpudUTbryKzuadK4Bcu4KRga9gJKu5M15JQyRUmhiCqzSEzVpa1yyvsHBfmvAn0FbW5ejq5Onou8X@vger.kernel.org
-X-Gm-Message-State: AFuF++mKZXkaMYb5Do1Ns/eZqTWEXtJaQQaZZ2eNOKaegVZoHWm8iLDK
-	iR95BjMqhZm6S4LpVwpnoWGPv56qUry2diCK7wJJQ/mhlgygENALk0CDMAz9nK+FoWpAtedSRb7
-	k+RE7jqJXJn6D80adv8Dbq6IGhr9kIsxzO0uh2Fk=
-X-Gm-Gg: AYBFou35P8wvpM6Nzdtria+Wkft/Ug9lmcGejnZu5iBtUQvKl/uvkN8Alg+Y/f/PDDt
-	l/fCJ1bzfmHrRCOm6IoKp/jRBLykyCFD9pwibN/Ul77L9KQcltPoIgMHoP7YT3tRfQbzda00dBZ
-	Pz9TvoVajg1DA8Z4yjiTgae1DoqIyAsjj49FtijBFPTxc1hcela+ksGCM3ZGVNk7h4u19umpum0
-	2f+lWvM5vfmhUX1k9Yw2OyF1uysQtcPcXTzHilEzfY9E9xQLGxDGg7de2VLkELKQb6vY/uQeRVJ
-	Z5OepUx3nZ9vMqx3LREz/jicyT/43CJSxejok6f/ZBWrYt2leSIDu9D1UDRJo9nPd1HgPF27N0T
-	PH08ypVxLnt7jmoCXqFQ9
-X-Received: by 2002:a05:6102:a85:b0:7a2:2a6b:e7b4 with SMTP id
- ada2fe7eead31-7a22a6be8efmr62586137.2.1789595055938; Wed, 16 Sep 2026
- 14:44:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FJ1GGUUq"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:From:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:From:Reply-To;
+	bh=0jjaJqT+4yE26s3Gd2hr+zhg3vtd5fJJJh6Wg8rfPjg=; b=FJ1GGUUqC8SfggqGAFpM/dbaxC
+	/6H9VEZaA7bVJZaF6Sg2vwo3NrVxh/g1JW0sKYJhxcuTnL/RXl43YgNKSRU/Jv12SMgzzJSKtji/p
+	6E4O7hjbQPZ5Z/N3+N8dm/KYVyniukxbdWoj5z1gxViAVdzFiARjH0cDQ+XJ1mpYL/BOp3p0oiFMt
+	v0bo5+CTx4t3QxIf+MCt1cGnhjPfYAf7SA9kuKysxpkdk9vIHJvhl6mFUmTIwgDsh9O511Wuh50cq
+	vIG7Th5Vb/AeoCHTywm65bN4JdacomMltdgJfEpPL4xKm8tigNPoevpDdSQ/ypuIo3q79vjqvZYpF
+	Bls852nQ==;
+Received: from [177.172.123.214] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1x6xyb-0039Hm-2L; Thu, 17 Sep 2026 00:19:37 +0200
+Message-ID: <6fa4e1e3-c023-465c-9490-ce2f18ffaa91@igalia.com>
+Date: Wed, 16 Sep 2026 19:19:36 -0300
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260915081910.4142719-1-morbo@google.com> <20260915081910.4142719-26-morbo@google.com>
- <202609151258.5FC01072@keescook> <20260916010945.GEaqnsWSZ-DTMyTO25@fat_crate.local>
-In-Reply-To: <20260916010945.GEaqnsWSZ-DTMyTO25@fat_crate.local>
-From: Bill Wendling <morbo@google.com>
-Date: Wed, 16 Sep 2026 14:43:59 -0700
-X-Gm-Features: AcwNN1XbboPOY3deKY79Gty15vkSErYIT9HTgeQdVXaDzFhBvm8_kiOA449bIqU
-Message-ID: <CAGG=3QVZRCJ94+DOfSsSDhsrXVYf-ec01NZBy299nYiCAYfXKg@mail.gmail.com>
-Subject: Re: [PATCH 25/28] EDAC/thunderx: Replace strlcat() with seq_buf
-To: Borislav Petkov <bp@alien8.de>
-Cc: Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
-	codemender-patching+linux@google.com, Russell King <linux@armlinux.org.uk>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Matthew Brost <matthew.brost@intel.com>, 
-	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Matthias Schwarzott <zzam@gentoo.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
-	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
-	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
-	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
-	Johannes Berg <johannes.berg@intel.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
-	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
-	=?UTF-8?Q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
-	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>, 
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org, 
-	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
-	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 00/13] syscalls: Add a shared table for all archs
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, kernel-dev@igalia.com,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev,
+ linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20260828-tonyk-syscall_table-v6-0-fdd358456cf1@igalia.com>
+ <95b693c0-ca51-4355-99ba-2b37a1ab2169@app.fastmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <95b693c0-ca51-4355-99ba-2b37a1ab2169@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 15, 2026 at 6:11=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
-e:
->
-> On Tue, Sep 15, 2026 at 01:00:00PM -0700, Kees Cook wrote:
-> > Seems like seq_buf would be better her? But yes, at the very least, thi=
-s
-> > needs to be scnprintf, not snprintf (or add the checks as you have
-> > here).
-> >
-> > The rest of the seq_buf conversions look right.
->
-> This driver has been an orphan for a while now (we just made it official)=
- so
-> I'd prefer it if we don't do anything here.
->
-I'll remove those changes from future emails.
+Em 15/09/2026 04:45, Arnd Bergmann escreveu:
+> On Sat, Aug 29, 2026, at 01:19, André Almeida wrote:
+>> While implementing a new syscall, we need to wire up it's number to the arch
+>> table. Since syscall number 403, all architectures are on sync regarding the
+>> number (except alpha), which make things a lot easier but more repetitive as
+>> well. Have a look at commit b36d4b6aa88 ("arch: hookup listns() system call"),
+>> with 15 lines of mostly:
+>>
+>>    +470    common  listns                          sys_listns
+>>
+>> There's already a "common" table shared with a bunch of archs at
+>> `scripts/syscall.tbl`, but due to historical reasons some archs will never be
+>> able to move to this table and share all the numbers.
+>>
+>> The generic table starts from 403 (clock_gettime64), the first common syscall.
+>>
+>> I've compile tested for arm32, arm64, s390, mips, sparc and alpha by comparing
+>> the syscalls_*.h and unistd_*.h files generated before and after this patchset.
+>> For most of cases the files are identical, for the few cases that they are not,
+>> there's a note in the commit explaining why they are equivalent.
+> 
+> I've tried merging these for the asm-generic tree now, and would like to
+> send them for 7.4.
+> 
+> Unfortunately, the build bot flagged problems on mips, see the patch below
+> for my workarounds=, but I think we have to improve that still and didn't
+> just fold it into your patch.
+> 
+> As you took out the dependencies on the syscall_*.tbl files, the
+> output does not get rebuilt if changes are made to the table, and I
+> have not come up with a good solution for mips. My hack just adds both
+> input files to all outputs, which works but is not technically correct.
+> 
 
-> And yes, that mega CC list is just gross.
->
-Apologies. :-(
+Thanks for testing! I believe I found a simple solution for this. I 
+modified syscall_o32.tbl and can confirm it triggers a rebuild now:
 
--bw
+diff --git a/arch/mips/kernel/syscalls/Makefile 
+b/arch/mips/kernel/syscalls/Makefile
+index aaa5443ea906..9e31d1ce5015 100644
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@ -40,10 +40,10 @@ src_n32 := $(src)/syscall_n.tbl
+  src_n64 := $(src)/syscall_n.tbl
+  src_o32 := $(src)/syscall_o32.tbl
+
+-$(kapi)/unistd_nr_%.h: $(systbl_common) $(sysnr) FORCE
++$(kapi)/unistd_nr_%.h: $(systbl_common) $(src_%) $(sysnr) FORCE
+         $(call if_changed,sysnr)
+
+-$(kapi)/syscall_table_%.h: $(systbl) $(systbl_common) FORCE
++$(kapi)/syscall_table_%.h: $(systbl) $(systbl_common) $(src_%) FORCE
+         $(call if_changed,systbl)
+
+  uapisyshdr-y           += unistd_n32.h                 \
+
+> The rt_sigtimedwait and ustat entries had a typo that caused a link
+> error, but I did not check if there were any additional mistakes that
+> caused incorrect output data without causing a link failure.
+> 
+
+Ops, my bad. I had another round comparing the tables, and I found 
+another case that needed a fix:
+
+diff --git a/arch/mips/kernel/syscalls/syscall_n.tbl 
+b/arch/mips/kernel/syscalls/syscall_n.tbl
+index e3d278f715b7..1882527053af 100644
+--- a/arch/mips/kernel/syscalls/syscall_n.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n.tbl
+@@ -43,7 +43,7 @@
+  33     common  pause                           sys_pause
+  34     common  nanosleep                       sys_nanosleep 
+sys_nanosleep_time32
+  35     common  getitimer                       sys_getitimer 
+compat_sys_getitimer
+-36     common  setitimer                       sys_setitimer 
+compat_setitimer
++36     common  setitimer                       sys_setitimer 
+compat_sys_setitimer
+  37     common  alarm                           sys_alarm
+  38     common  getpid                          sys_getpid
+  39     common  sendfile                        sys_sendfile64 
+compat_sys_sendfile
+
+Let me know if both diffs look good to you, and then I can send a v7.
+
+Thanks!
+
+>         Arnd
+> 
+> diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
+> index aaa5443ea906..51b9939ecff0 100644
+> --- a/arch/mips/kernel/syscalls/Makefile
+> +++ b/arch/mips/kernel/syscalls/Makefile
+> @@ -40,10 +40,10 @@ src_n32 := $(src)/syscall_n.tbl
+>   src_n64 := $(src)/syscall_n.tbl
+>   src_o32 := $(src)/syscall_o32.tbl
+>   
+> -$(kapi)/unistd_nr_%.h: $(systbl_common) $(sysnr) FORCE
+> +$(kapi)/unistd_nr_%.h: $(src_o32) $(src_n64) $(systbl_common) $(sysnr) FORCE
+>          $(call if_changed,sysnr)
+>   
+> -$(kapi)/syscall_table_%.h: $(systbl) $(systbl_common) FORCE
+> +$(kapi)/syscall_table_%.h: $(src_o32) $(src_n64) $(systbl) $(systbl_common) FORCE
+>          $(call if_changed,systbl)
+>   
+>   uapisyshdr-y           += unistd_n32.h                 \
+> diff --git a/arch/mips/kernel/syscalls/syscall_n.tbl b/arch/mips/kernel/syscalls/syscall_n.tbl
+> index e3d278f715b7..84c35c1f0c3e 100644
+> --- a/arch/mips/kernel/syscalls/syscall_n.tbl
+> +++ b/arch/mips/kernel/syscalls/syscall_n.tbl
+> @@ -133,14 +133,14 @@
+>   123    common  capget                          sys_capget
+>   124    common  capset                          sys_capset
+>   125    common  rt_sigpending                   sys_rt_sigpending       compat_sys_rt_sigpending
+> -126    common  rt_sigtimedwait                 sys_rt_sigtimedwait_time        compat_sys_rt_sigtimedwait_time32
+> +126    common  rt_sigtimedwait                 sys_rt_sigtimedwait     compat_sys_rt_sigtimedwait_time32
+>   127    common  rt_sigqueueinfo                 sys_rt_sigqueueinfo     compat_sys_rt_sigqueueinfo
+>   128    common  rt_sigsuspend                   sys_rt_sigsuspend       compat_sys_rt_sigsuspend
+>   129    common  sigaltstack                     sys_sigaltstack         compat_sys_sigaltstack
+>   130    common  utime                           sys_utime               sys_utime32
+>   131    common  mknod                           sys_mknod
+>   132    common  personality                     sys_personality         sys_32_personality
+> -133    common  ustat                           sys_usta                compat_sys_usta
+> +133    common  ustat                           sys_ustat               compat_sys_ustat
+>   134    common  statfs                          sys_statfs              compat_sys_statfs
+>   135    common  fstatfs                         sys_fstatfs             compat_sys_fstatfs
+>   136    common  sysfs                           sys_sysfs
+

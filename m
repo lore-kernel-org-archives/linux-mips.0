@@ -1,194 +1,155 @@
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB9545D182
-	for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 08:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.226.204
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789547314; cv=pass; b=S48RHjnYcNSLqN0JP6sBCQZeIcFCalEzt3p/uleoz1MTPVp2A0k+23hi03z+ZMDfUMrDtIkU8zindQmMKuN365fHcDwZBGbhNWgCIQDFeDd0WZcywyhp9UBlEKRs84LYshtSdHHQx5BAu5u9IavuHuQW1tssUPxnW0jCqMoTJxo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789547314; c=relaxed/simple;
-	bh=T9FXw02kbHJEl+ZSBnKkmAGVnRlakuQY/1vtyQfdaEU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XDsvM0ZOCwPswa8u/cXg8RUXJZh8edKRcGOpDj1F2cp5Rph2L7k3JT0c0zufWJ5HWMM1BiS82fqSnnEXcxeSUn6G7vlkYrW3wlSxy60zU9MpRPj2HSaciEfkr6dIXS+4a5/7sGs8hYKSy2foXFAXIrk9rHEp021SlvDxj4hJkKE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VoGSrkoy; arc=pass smtp.client-ip=74.125.226.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002354AFE14
+	for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 09:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.140
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789552252; cv=none; b=Ot1xFxWb9M36nLnaP5H1LSg6v8xpb4PBW8Haofy/CZ5EYML1zd1wSjD33X9zn3iaQJK5aXAOHj8qyUE+Ri3c+WXOjU+0/LrxQryr5jZBoqaV0YNgrUuOuB0qi4budJ4bM8LMszEuEW8k9cjHNtOZPFRBaIt6ofYu8T2M22sJ+Wk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789552252; c=relaxed/simple;
+	bh=zVftL0e6KTn1Fup/RmgkkUqXURXldH56P13A6WLi8KQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pxZqbYxpJcrje8P3T/rvJx7tavZlDwlnJdxliR0M7Q997APJcc5WijBb1+KWVM9wlE2uOg4/F89dJYfYQX8FrgO2zMZSr+YfjZ8e4cEyGIdW5E4yyRLhRbZA6SPUYCXLGiJsQX7KPDDyZysvUVqVkh9zR8BQqqxakGbBMxS7+6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dzby88uf; arc=none smtp.client-ip=74.125.225.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VoGSrkoy"
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e9d8a796aso117978241.0
-        for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 01:28:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789547310; cv=none;
-        d=google.com; s=arc-20260327;
-        b=s09moJAGXrwfUzyS2d+UQY/9wATTbRNiBjH0fH+J/gC43kSFVngYtaVrkxnUFlB6jp
-         kiOgwF1+7j3nyBxaw+om9RzgKejXnjaE5o+gf+snbLtHYgCf0brkT+S2Dew2lwTVsdee
-         /VEF2SO1MqCoZKf8ENlZeftKv92KaQ/hBfOPvWkidig4faKu1B0mSoBuI9G3QvvwyN3Y
-         6arV2tBfDupGsqGGJTvwu5ozazZH7DMQaEMXSq/WgnV6yBG7xEsuaIVVHv9P0PPSu9AO
-         psr3A2fNeZmIx8qZyy0tuXQOcGlVfqRnPuaDoCvsO5fLRFFJvTTDrChUcs7KBnvreWPs
-         Xk1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=MArIcxEq1DF3tM6gYQ8CgYvDf8FqlVp7SuT0GyZ8Xuo=;
-        fh=G2Ly01qJkxIyp+Zq260+meGl8vbllDG+bcz2CckTO1Q=;
-        b=BmhmxAdBEw0MdpadJWAI6HOG+OxaGagfiDd7Y8evhbn18e8/Y31sXbGrucgPkaL5GM
-         PeRp+MipaVsVikf8rzQjVGQ+n9JyTDqa1WD+VH1jt4Hk0qiXZSS2sMJ11yJGkZzyP+tf
-         Z47LRXCJNd/FVD3gyWnKAmwIkKO0RLquu6TAP93HYAX3vVzjoXjqvSWcYlQ0HbyctUAS
-         E7ofy7SO+/wZmRmMCi87rftOZuKoclFOI5PEFYPv/GrmkPpXYAQ+VV/4Z3qyfbpcvV1O
-         P5kPP0gUvjPAkufLRr01dId+LtWcoxt1FO6Iq8mh8hb4G0s8UzpEj706u23HYtB4G+nV
-         w33g==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dzby88uf"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49ccead2aecso3137605e9.0
+        for <linux-mips@vger.kernel.org>; Wed, 16 Sep 2026 02:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789547310; x=1790152110; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+        d=gmail.com; s=20251104; t=1789552219; x=1790157019; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=MArIcxEq1DF3tM6gYQ8CgYvDf8FqlVp7SuT0GyZ8Xuo=;
-        b=VoGSrkoykj4iHFBQlHi6x04MMZ4xlV2riMpfJ6wSq6uWEU/YZEm4zFEvaKTt8Bnss/
-         KguOf6k2h3GF/q5RTu8fC4OklgcKX8epdHUlHqWQjhJq+iFTkPt/+mCMs4J7O3GvYvQF
-         P+hKfiW15cldfddkPJMiS7aOS0vemE/CqqIXnZNuGTjdax3yzKFz5ArlVFlmuAw+0E9s
-         Qy6HfEuGzy1JhqU5AikECaOVGMfNxTdehATGPVl74iq2MShnoj+5SOEzJbHLB3Kew61N
-         kI+b/JimjFPEp/gErA0Q/OAqkM3ZqEcQY8su3dd7sw7vd/8Cl2vmjq+HPXXJ/PrdOJKs
-         vpUA==
+        bh=79YAdtaHEv3S3nDvYc6X9C5ar06F3FncZEtUncQdJQ4=;
+        b=Dzby88ufsV19pEuHSQnO0Z3r75FgiJ44qF/jXgKTm3w+wAYVSGDUH6LyexeTQiqa/g
+         mb7EWvB3UuhKI7YAj+i2TOZr9/Z0Jn4HnQ3SO6kUkIrvAwSnRTzKzvfGb0So06LetuEf
+         Ts3VEs9CM5zHiWBu1V4JZ71jpXN6ZkETnLDwqKE7PV3aA5kY0+ABvWOim6YHWnbq5cCK
+         nHzOneSJDYvvXY/C7BkTDDo/hN/r3+9IBjrwRhsKYcoz9kdWM+uOTg6K8qjcDaH6D7EX
+         KA0rYEGGzwyipB5cM3imDGmhTpbUuWgcSiyW3ZIBr1TR7/Q7dN5mD7jr++kuJyreI5UR
+         skeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789547310; x=1790152110;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
+        d=1e100.net; s=20260707; t=1789552219; x=1790157019;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=MArIcxEq1DF3tM6gYQ8CgYvDf8FqlVp7SuT0GyZ8Xuo=;
-        b=noSf75Y2BCyzK1+NxLAsBXIjx7WleEpFG3oFq46X/sOCT6y48FaqKKwzYqIc50YjQy
-         Skfk7ID81cp7Cwi7bzprgiWIQCTvUuHNpomZYjM1z8CuD3cdsUHcuCRxyub19JA5Yli1
-         aFUHxpYFlqjcP9uoGiIhjolnIqkKVvFlOOBzztkxscrpafY+JZKN1PIid1x3om5vpR+C
-         In5kOazGuHPElUusoGCKxYZ7AG4+HjfBRyHCXjM2nZ5G9M2bwLLCQyJ06aOnu+0tyFyn
-         3mCD9z7s+nlnHh7iVSL3xb9O9Hkg1rGG3gHc4bHwFxT/81WGiiOCmMtvuv5jbvsOcDNT
-         Dcbg==
-X-Forwarded-Encrypted: i=1; AKwUvBxsVjit50dX5taA6wtClwg3bQGUdGF7Et6ZYSL1yEtNf1sUTR3NvJJfQCQEWm0OHlq/bjRXqeBySFmh@vger.kernel.org
-X-Gm-Message-State: AFuF++mXVTErbFHmRzPMqMd6X9FaZrEcgfDOXSno9hEePq/vYYFPETDn
-	yUQ5jcU9ZoWaowhZmE0kWfOU27G//6O7KVbmwepJnwqPArer7wnmR/NG8RJf4I3BcaDUAhE0fg0
-	14+UpB5RsbIgDLjC1ct8uneK2csgZjvd0KAhgwz0=
-X-Gm-Gg: AYBFou3uzpahNKt0sunChk6h+YxSH+xZ9K9emFqmshimtHqcNql5305DqGKioOTmqeW
-	cDsSlV/ckZc1VHp4glWZ5HEdmty9I/XU5A5psTqeXp1PaXb3ru33kr7Zc58s8v32B6pKHsLi3pc
-	7u3qI3r323a73KVvPFHEBdlWegL9ipj7jIgAA/LMa2mTSBExI8zbmcnTAA8hKqiaj36zSY3gkm2
-	eW9WI6MJRw3mWbd5ABGPpVQY8qaF6PN0cVpF5s1DxFM7f/4oumKD7mTPn8rZk4/GWBJpqB55j4D
-	UysAmMHvsvt3PD44W18zMXiO2KtrwhfLDW6XseXhZD0pcpOuchGfgkRrEOoB7xvCCroCNEdMpzX
-	bIut+rM3QdyPN/OWeHUAz
-X-Received: by 2002:a05:6102:3712:b0:786:a11e:484d with SMTP id
- ada2fe7eead31-7a0522a8290mr540435137.6.1789547309631; Wed, 16 Sep 2026
- 01:28:29 -0700 (PDT)
+        bh=79YAdtaHEv3S3nDvYc6X9C5ar06F3FncZEtUncQdJQ4=;
+        b=L96nmjjg4kCUYsqiFFaOqcIS+uCixhWXzlB6EkhlP2TavitL/wMell0iBN8IBZxhRj
+         pZ/OiF/7wLKqfyQsdgAytFFeJ4LA4/V2fG7SbQevfbZUVtIBXhO8zMTgnKu3l90mKjj9
+         tNZ9Gbj4VJGGo5afWv+JibGDAXfyegW9VobawIinyY7FOuQjHwEmQn4IfF8pOmTJxSCr
+         Rew9yZf/Y/laFkEWGmGiO9qXBL+8LGcjNftA7AELvF9mgntDTjfuemp+oa/TcIxkn+3/
+         UcBRdfN2tyw93xg8KZP8cPzZ9qnGRuAI9+iP8l1WZDCzYwI3qgPJ6sMZetAXchNvC1Lm
+         y41Q==
+X-Forwarded-Encrypted: i=1; AKwUvByWAfuB/4KlGbHjKYbhzf2f3Liwo5HB3/jC3+XbJcx88MgowOCFrOyqwRbtokvNZO8tVJL5zdjaDRd0@vger.kernel.org
+X-Gm-Message-State: AFuF++mgFgzuBRosRr/eHyYZ4giamspdlhaHxgIkKT9dhGsvSjaJ6K8D
+	hxMec5W3h086cTqCy7HPg1UN7CXjA6z82tlbdfH2pWUwxuB8HtFC2pNu
+X-Gm-Gg: AYBFou0CD5E9lKfwMSQT6jwz/jPeC01Gks8ZhbvPdWFHlPG3Nfr3391RvAEoOYRUXij
+	ibgBAUNxAgG1X/mglZYtduc0DBU8wdkyZfC033CWvYw1Gg1GyyTO+mSr62PvoA09wiHPdpKfUXa
+	6llfqCXkngtZM7Q4MbcecLcd1PiFnkx0wNr3EimnOLG7WXVaKYjrUzUxbQbCp+bbk5TBTiCgiDl
+	DE6OtI4J3Y7qyMYfe8e9PcJReVsakXj24LVjC4fc8Pb+Rqt69rkBKrP3UyGx3cWYeQ7RE14XGnF
+	Yr5gBYezpm/Q7p4N+J/d8nr5cjRJfT3RtKYAU407URKSaWtzq4lE5CTIndjbZBsAfAejMe05Bt+
+	xzEdDiI67nbt6zDLbJuK0COtfuTqAxNUN+0uwyvS2tHcDAEcgnm3d3Td4+ulsWs3BpkMxzJsXy0
+	pvLwU2KscVeISS+3TtbEw3+9Caw0jF9GUDiW8y+XklG7+UwYcrqPHOJLJ+Xdjns0ON5ERrfqTGn
+	lNV4Dwr2ES5Kl5QAeE+o7OZfQU8QbKxcL88lmYv1RAFD1c=
+X-Received: by 2002:a05:600c:4ec6:b0:49c:fea3:8633 with SMTP id 5b1f17b1804b1-49eb732aec0mr19444455e9.24.1789552219000;
+        Wed, 16 Sep 2026 02:50:19 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49e83b02245sm84055225e9.10.2026.09.16.02.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2026 02:50:18 -0700 (PDT)
+Date: Wed, 16 Sep 2026 10:50:17 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jann Horn <jannh@google.com>, Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Ingo
+ Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Oleg Nesterov <oleg@redhat.com>,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org, Jens Axboe
+ <axboe@kernel.dk>, io-uring@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ bpf@vger.kernel.org, David Airlie <airlied@redhat.com>,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org,
+ kexec@lists.infradead.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH RFC POC 00/50] file: handle files on syscall exit
+Message-ID: <20260916105017.13ea5e36@pumpkin>
+In-Reply-To: <CAHk-=wi3Kkqgfg6zUTHpQoZNL2VOB4vYqpi6RX0WNO++29UtyQ@mail.gmail.com>
+References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
+	<CAG48ez1RsdT=O=-0city3vjgWhDvY424KtTmrCJntWy5ds3HBQ@mail.gmail.com>
+	<CAHk-=wi3Kkqgfg6zUTHpQoZNL2VOB4vYqpi6RX0WNO++29UtyQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260915081910.4142719-1-morbo@google.com> <20260915081910.4142719-4-morbo@google.com>
- <202609151155.CC22827@keescook>
-In-Reply-To: <202609151155.CC22827@keescook>
-From: Bill Wendling <morbo@google.com>
-Date: Wed, 16 Sep 2026 01:28:13 -0700
-X-Gm-Features: AcwNN1W06HBvxyPAyDNMWJbd-pZRzg8rOuNuZoGljznF0BEtCKl9YZ-3dIsOV-o
-Message-ID: <CAGG=3QU2LxKLdqTOHse4U9AZ3sGAUe-C_wbDnBq4W1ncdsPVwg@mail.gmail.com>
-Subject: Re: [PATCH 03/28] ARM: atags: Replace strlcat() with snprintf() for
- cmdline extend
-To: Kees Cook <kees@kernel.org>
-Cc: linux-kernel@vger.kernel.org, codemender-patching+linux@google.com, 
-	Russell King <linux@armlinux.org.uk>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Matthew Brost <matthew.brost@intel.com>, 
-	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Matthias Schwarzott <zzam@gentoo.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
-	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
-	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
-	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
-	Johannes Berg <johannes.berg@intel.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
-	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
-	=?UTF-8?Q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
-	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>, 
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org, 
-	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
-	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Sep 15, 2026 at 12:00=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
-> On Tue, Sep 15, 2026 at 08:18:20AM +0000, Bill Wendling wrote:
-> > --- a/arch/arm/kernel/atags_parse.c
-> > +++ b/arch/arm/kernel/atags_parse.c
-> > @@ -121,9 +121,10 @@ __tagtable(ATAG_REVISION, parse_tag_revision);
-> >  static int __init parse_tag_cmdline(const struct tag *tag)
-> >  {
-> >  #if defined(CONFIG_CMDLINE_EXTEND)
-> > -     strlcat(default_command_line, " ", COMMAND_LINE_SIZE);
-> > -     strlcat(default_command_line, tag->u.cmdline.cmdline,
-> > -             COMMAND_LINE_SIZE);
-> > +     size_t len =3D strlen(default_command_line);
-> > +
-> > +     snprintf(default_command_line + len, COMMAND_LINE_SIZE - len,
-> > +              " %s", tag->u.cmdline.cmdline);
-> >  #elif defined(CONFIG_CMDLINE_FORCE)
-> >       pr_warn("Ignoring tag cmdline (using the default kernel command l=
-ine)\n");
-> >  #else
->
-> It's pretty clear we have a pattern of "simple append" that is needed,
-> and while strlcat() does that, it's horrible. I feel like we need an
-> appending scnprintf(), and it needs to return like strscpy() does (i.e.
-> -E2BIG on truncation).
->
-> My goal would be:
->
-> - don't open-code string length math
-> - never leave the destination unterminated
-> - allow for format strings
-> - yes/no return indication for "did this truncate?"
->
-> Initializing a whole seq_buf struct for these small cases is too much
-> overhead...
->
-> For both cases (small without seq_buf, large with seq_buf), it is also
-> frequently needed to know the resulting strlen. seq_buf doesn't do this
-> right today, and a strscpy-style return value also doesn't tell us. :(
->
-Something like "llvm::Twine" would work well for this.
+On Tue, 15 Sep 2026 12:08:57 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
--bw
+> On Tue, 15 Sept 2026 at 10:52, Jann Horn <jannh@google.com> wrote:
+> >
+> > Is this mainly about stuff like "we installed a file descriptor and
+> > then the following put_user() failed"? Because if so, I think a nicer
+> > fix would be to have a policy of "if userspace provides unwritable
+> > memory to a syscall, just keep going and pretend the access worked",
+> > and maybe have a sysctl that kills the process when this happens to
+> > emphasize that userspace should not be doing this.  
+> 
+> We've done that before, where we just ignore put_user() errors and the
+> user gets whatever the user gets.
+> 
+> It is maybe not optimal, but it's fine. You can find quite a lot of
+> unchecked put_user() calls with a pattern like
+> 
+>         git grep '^[[:space:]]*put_user(.*);'
+> 
+> and some of them are in core code - see the two in kernel/fork.c, for example.
+> 
+> One of them says "if userspace has not set up a proper pointer then
+> tough luck". The other one doesn't even bother with a comment.
+
+I think the code should try to return EFAULT (IIRC that is too hard
+in one of the exec cases).
+Otherwise very unexpected things might happen if the memory is just
+readonly.
+If you ignore the error and the pointer is invalid the application will
+get a SIGSEGV and (usually) die.
+But winding back kernel data because a user copy failed is likely to
+be problematic/difficult and at best have error path code that isn't
+really tested.
+
+As well as writing fd numbers to userspace, some sockopt code tries to
+wind back if the write to optlen fails (which has been read earlier).
+
+I've forgotten which Unix converted EFAULT to SIGSEGV in the system
+call exit code - I'm sure one of the ones I've used did.
+
+David
+
+> 
+> The scheduler has two cases too, although one of them is admittedly
+> for another error case.
+> 
+> So yes, saying "if you pass bogus arguments, you get what you get" is
+> a valid model. It's perhaps not the *preferred* model, but it's not
+> wrong.
+> 
+> It *would* be wrong to take code that already has error handling and
+> remove the error handling, though.
+> 
+>                   Linus
+> 
+

@@ -1,170 +1,106 @@
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f10.google.com (mail-pj2-f10.google.com [74.125.227.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C37A49EC6E;
-	Thu, 17 Sep 2026 23:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5583368A4
+	for <linux-mips@vger.kernel.org>; Fri, 18 Sep 2026 02:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789688826; cv=none; b=EfC5WvrTs7o0OCcRa6bagqyx2BIi8YamC2rvk2YmfWvtYsCKxFyCJ0x6FLeCkv0hpuNQN1GTbBuQa6JizLE2FUzqxPuyMuv/3blbYq9zUsAidWSwUOpbpn9qEnH7LyGsaHejF23vZEQU78Yc29y+c6+L8GWSehN+ztr94ANEGf0=
+	t=1789700290; cv=none; b=SyjME+eilrdzMuzDypc49jqmawf9BsNivp7dnD7nCS5Atfkb2ohxxc8tSZphpJ2S8FVUUGOSCU4RHr8hCAbi8u2DJYpBanECBoI96ndpKFpkAu/sakJHDzL9t5tIA6GY3As2kGSR0xEhpYAhk8X7caKsr/WMIpvY4XYVQTASHA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789688826; c=relaxed/simple;
-	bh=eYxNeCvy4p71IloUWnXnyvA9fBmKrgyjMUcMHXcwN74=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TxcPeLk5pG68vAHw6rbs3982Wc5lW17c9XBrym6pQrXcXw3x1twfmi5sTST/74F3Chdm+yHaNfJUVSQdkInEAvFJKATphZu4cKclM7QB0TUfot9EQeItnyutBwyRTCGfCZpwnoZAN1avJX+/qvLUShM5B3fWWm+gBBkw+3nmSOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=gheur/nM; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+	s=arc-20240116; t=1789700290; c=relaxed/simple;
+	bh=KDOmclcli+FIMhiT/H8F2ExL9E5Qi0X8SZDXkzOjbp0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dyRRrsF2XG4aTX7A2DoihVIi4RzFZwhEMcE+ShIlfOh9/f/qocloa6F873QXggWzMv1Tj07wYbBDYwsXjpuCOtZtHyc3PE/lmxilpyaANA6WbmBlofJ0WdPAA7acURW/JX1vybCBRiR6kMqgSqvObKh7b9Y1RAKep3eMebEKqlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pKwHYEBH; arc=none smtp.client-ip=74.125.227.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="gheur/nM"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Cc:To:Message-Id:Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Subject:Date:From:From:Reply-To;
-	bh=VjIF0aVYBJ9Ga527Xyl4l3TJ4nkphldiKj6rE37lIV8=; b=gheur/nMPek+i8kLFpvkVHAyoA
-	Y0UoRtj/Js9lo8iylHZauNc3biC/m4IyBCeZEFc0TJNs86xnVEiv1xxx/bmPZIwVZkjhVVq9C9MF1
-	pbg7g2wIOx332nHBJBAB8ZoQrKBpmRV5ZPHuylh8FaLMmjUKT2dzCXSkyY+hhN59WnerlyOQDz8TR
-	Btr3f8CZqUaq6tuAbgrCVtEcxJa8UMOGtvu6K5MyauhJ0lWKBXcc6ZnuSa00FBvVWU2OIbZvV7qM0
-	N1JfphDPeC86odzDoCB/qCIydFWOm3ohvNynmbd5R+hMouNOyjGgVqi+Vq3MMVDOy6WsAmW8/eJ1E
-	d19sqt7A==;
-Received: from [177.172.123.214] (helo=[192.168.15.100])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1x7Loh-003hU7-Ow; Fri, 18 Sep 2026 01:46:59 +0200
-From: =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Date: Thu, 17 Sep 2026 20:46:16 -0300
-Subject: [PATCH v7 13/13] alpha: Use the common syscall table
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pKwHYEBH"
+Received: by mail-pj2-f10.google.com with SMTP id 98e67ed59e1d1-39e249c766bso111650a91.0
+        for <linux-mips@vger.kernel.org>; Thu, 17 Sep 2026 19:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789700282; x=1790305082; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=8kSB2cuIIxJwGu7fdUThqgSHJbDb70xS3kiq9uD6ddk=;
+        b=pKwHYEBHhZiCevsSptRykxp615AkqURbT3T+5PvdX6rdMJQRtaJl+UGMiVQ0tQb7oa
+         0n4fa+mcGwV/6gR3FmiaULE0uHFVro7AKZzXHy7kNmNAtspr0wconrA1cmuBP7xabyF+
+         QnpGlpVeSMVzi2v8+uOyY2huxTJ+WKMmummvsV6QzlddY7Sat4NLxTKeTH+wLyDQWkf6
+         8UZsVIWH5eeg+MG9dI4Wi5FITiO83B2KqKnAUh17GFez+6kZkHs0R4Y994A+GSDAHHTK
+         iQGNgnJS00Lf+eUqERqMiYnUuymVtnvRQ40xnck7RXhhnN6ctRSysb6/jh9BIjGYgTuf
+         dI7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789700282; x=1790305082;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=8kSB2cuIIxJwGu7fdUThqgSHJbDb70xS3kiq9uD6ddk=;
+        b=Gzfhxgz9PIdmfImXvCHWn4MVzu7o0fXHFVGOQ+LXkE9QTZIpiBiBTauho5986R6FrW
+         3g57i+qdtdT44rf6FvbsKIw2PjGObCSnXPBpDaR+TGNkK9afCyx92OWizBOR9SPKE13g
+         5lCTsv6AFlIfmQGI9UOho6dql004oldOFA05Eff4W5gaDwWbqoeb0zx+/u16n7n8m2cq
+         r9fBxJRmn7zWgeUvvlV6XpuSyU3WmwtCaqjKfJFIPAkCcR0Nn73VzFXeARBHY6OSE04o
+         mE9CYQGPToauonGPAzq2G2qbBeZSgi0H5ssD4ylM5AvcU/26NBAdIz/eFhd6ppNZ/69q
+         oL/g==
+X-Gm-Message-State: AFuF++kG10PsRf+MjtzzwyMDYMGP+L7frKeZXZRkIlZqHjOx3gvX/yO1
+	eK7wLIfuIKlunRC5xEfBpbtMBCwNnTUHKZC6Trh95tb58JAj/lCXY2XgbQXCdr7ITUs=
+X-Gm-Gg: AYBFou1AvBT3CAR9VAjNqKHClzsUx5GwuHO0nAJAxEifnzP7VC4dziX+iqzNtPxzT05
+	xYwQbNbtrsLzeL9S7aKRlgGlIxY5GZMQ1EOzLMrdLqNp6QBUIQxbPYdp5Ycysl2dpv8+N8J/Goc
+	aHxzsCHgsbGEsqnZOT/cnX0XXPi5ZPqFAKCJFQ0V8Hryk0PbgeQgUqWAlEHPiOWJGIYbjZoRB3l
+	9I35gojc0ikpfdMSjyuyrwb6HHcSt3M1CimoPguO+takT0youHNz8dQtsZv8vNEctplY0E/lryo
+	w4tiVonGDbVftMxSdFwjlIP08WOPWHijNC04qMejcx7itx2lvPwsP4QjlCVX/Hvv1Qf5wcTipZB
+	8pGFgZZ1MU+Ldin70Mq50YFTKtDFdn9yEqC1L4VubZAt1crDxC2AUiejLPQ4+uJxhh7pcpcckjV
+	06h22/fRTh0c5c3XxlJn4nrMdj+wzbWFZe09+P6U6o0x41IyP27rMKXS8EgSccd6lx1p7a5ESeP
+	7s0eU1s/Q0hEFHkT9uC02Dt6XK8fN2at/zh1OjEYwUUPWsPZENpYjQA0rNF/pUz7p8mQOzdWDkz
+	5kMgmIwg10Z3O12X6o2WoAUph5fWBoYTEjyjZFmbhy4TyB1Ee/G4c/zkK9ZSZ2sAvQ==
+X-Received: by 2002:a17:90a:1188:b0:39e:5b3c:4633 with SMTP id 98e67ed59e1d1-39e5b3c4de4mr344901a91.21.1789700281948;
+        Thu, 17 Sep 2026 19:58:01 -0700 (PDT)
+Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33c286d98c6sm412282eec.5.2026.09.17.19.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2026 19:58:01 -0700 (PDT)
+From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH] MIPS: remove unused <asm/amon.h> header
+Date: Thu, 17 Sep 2026 19:57:51 -0700
+Message-ID: <20260918025757.389718-1-enelsonmoore@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260917-tonyk-syscall_table-v7-13-f4cd8f8e3265@igalia.com>
-References: <20260917-tonyk-syscall_table-v7-0-f4cd8f8e3265@igalia.com>
-In-Reply-To: <20260917-tonyk-syscall_table-v7-0-f4cd8f8e3265@igalia.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmanon <arnd@arndb.de>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
- linux-kbuild@vger.kernel.org, kernel-dev@igalia.com, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev, 
- linux-mips@vger.kernel.org, sparclinux@vger.kernel.org, 
- =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-X-Mailer: b4 0.15.2
 
-Remove some of the duplicated code by using the common syscall number
-table.
+The last use of arch/mips/include/asm/amon.h was removed in
+commit 7fb6f7b0af67 ("MIPS: Remove deprecated CONFIG_MIPS_CMP"),
+but it was left behind. Remove it.
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
+Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
 ---
- arch/alpha/kernel/syscalls/Makefile    | 14 +++++++---
- arch/alpha/kernel/syscalls/syscall.tbl | 49 ----------------------------------
- arch/alpha/kernel/systbls.S            |  1 +
- 3 files changed, 11 insertions(+), 53 deletions(-)
+ arch/mips/include/asm/amon.h | 12 ------------
+ 1 file changed, 12 deletions(-)
+ delete mode 100644 arch/mips/include/asm/amon.h
 
-diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
-index b265e4bc16c2..03099daff6b9 100644
---- a/arch/alpha/kernel/syscalls/Makefile
-+++ b/arch/alpha/kernel/syscalls/Makefile
-@@ -7,17 +7,23 @@ $(shell mkdir -p $(uapi) $(kapi))
- syscall := $(src)/syscall.tbl
- syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
-+systbl_common := $(srctree)/scripts/syscall_common.tbl
-+abis := common,__clone3
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr \
-+		   --common-tbl $(systbl_common) --common-offset 110 \
-+		   --abis $(abis) $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) \
-+		   --common-tbl $(systbl_common) --common-offset 110 \
-+		   --abis $(abis) $< $@
- 
--$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
-+$(uapi)/unistd_32.h: $(syscall) $(systbl_common) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
-+$(kapi)/syscall_table.h: $(syscall) $(systbl_common) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_32.h
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index a41276634923..7066a3920899 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -463,52 +463,3 @@
- 532	common	getppid				sys_getppid
- # all other architectures have common numbers for new syscall, alpha
- # is the exception.
--534	common	pidfd_send_signal		sys_pidfd_send_signal
--535	common	io_uring_setup			sys_io_uring_setup
--536	common	io_uring_enter			sys_io_uring_enter
--537	common	io_uring_register		sys_io_uring_register
--538	common	open_tree			sys_open_tree
--539	common	move_mount			sys_move_mount
--540	common	fsopen				sys_fsopen
--541	common	fsconfig			sys_fsconfig
--542	common	fsmount				sys_fsmount
--543	common	fspick				sys_fspick
--544	common	pidfd_open			sys_pidfd_open
--545	common	clone3				__clone3
--546	common	close_range			sys_close_range
--547	common	openat2				sys_openat2
--548	common	pidfd_getfd			sys_pidfd_getfd
--549	common	faccessat2			sys_faccessat2
--550	common	process_madvise			sys_process_madvise
--551	common	epoll_pwait2			sys_epoll_pwait2
--552	common	mount_setattr			sys_mount_setattr
--553	common	quotactl_fd			sys_quotactl_fd
--554	common	landlock_create_ruleset		sys_landlock_create_ruleset
--555	common	landlock_add_rule		sys_landlock_add_rule
--556	common	landlock_restrict_self		sys_landlock_restrict_self
--# 557 reserved for memfd_secret
--558	common	process_mrelease		sys_process_mrelease
--559	common  futex_waitv                     sys_futex_waitv
--560	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
--561	common	cachestat			sys_cachestat
--562	common	fchmodat2			sys_fchmodat2
--563	common	map_shadow_stack		sys_map_shadow_stack
--564	common	futex_wake			sys_futex_wake
--565	common	futex_wait			sys_futex_wait
--566	common	futex_requeue			sys_futex_requeue
--567	common	statmount			sys_statmount
--568	common	listmount			sys_listmount
--569	common	lsm_get_self_attr		sys_lsm_get_self_attr
--570	common	lsm_set_self_attr		sys_lsm_set_self_attr
--571	common	lsm_list_modules		sys_lsm_list_modules
--572	common  mseal				sys_mseal
--573	common	setxattrat			sys_setxattrat
--574	common	getxattrat			sys_getxattrat
--575	common	listxattrat			sys_listxattrat
--576	common	removexattrat			sys_removexattrat
--577	common	open_tree_attr			sys_open_tree_attr
--578	common	file_getattr			sys_file_getattr
--579	common	file_setattr			sys_file_setattr
--580	common	listns				sys_listns
--581	common	rseq_slice_yield		sys_rseq_slice_yield
--582	common	fchroot				sys_fchroot
-diff --git a/arch/alpha/kernel/systbls.S b/arch/alpha/kernel/systbls.S
-index 68f3e4f329eb..9a67d29f7818 100644
---- a/arch/alpha/kernel/systbls.S
-+++ b/arch/alpha/kernel/systbls.S
-@@ -7,6 +7,7 @@
- 
- #include <asm/unistd.h>
- 
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)        __SYSCALL(nr, native)
- #define __SYSCALL(nr, entry) .quad entry
- 	.data
- 	.align 3
-
+diff --git a/arch/mips/include/asm/amon.h b/arch/mips/include/asm/amon.h
+deleted file mode 100644
+index 3cc03c64a9c7..000000000000
+--- a/arch/mips/include/asm/amon.h
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Copyright (C) 2013 Imagination Technologies Ltd.
+- *
+- * Arbitrary Monitor Support (AMON)
+- */
+-int amon_cpu_avail(int cpu);
+-int amon_cpu_start(int cpu, unsigned long pc, unsigned long sp,
+-		   unsigned long gp, unsigned long a0);
 -- 
-2.55.0
+2.43.0
 

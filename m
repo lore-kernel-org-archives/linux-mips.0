@@ -1,32 +1,32 @@
 Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034903D79FB;
-	Fri, 18 Sep 2026 15:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A5E501296;
+	Fri, 18 Sep 2026 15:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789745320; cv=none; b=Oc0f4GbJVhNr0lVx9uSSt86K+/QPTr1zSploWYX1QCYmq6cD2LoviiZbCLAjZEftGJvOsh+gKNrO05wxYTgb+GEw6yDhsRcahzotbLZgSb64hlK/vER2V5tCBSXm2/vue3Dsf/Qma9tBYfNRJ3FVfngvT1pJlwf5/IXfoQgRpWQ=
+	t=1789745321; cv=none; b=AoCDtG+GOIZomvLveLCEVVPWCNGJrg/v+dpU1cS0Qf5hUwhSjetJd0y2r3z9neIKv50DR92XAeGiNS7Oqgk5YevOoKBVfN7sFT0CpoV+Wj6eQ3mDpYMwsm0exGalHYjrYms6EdE3ZMFqPNkLtb/UTngrAX2Oq2CJtP+8GG/WUeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789745320; c=relaxed/simple;
-	bh=x0XMny1qGGl4AJoowktjLCWIaQ/7L5RzSu5rS1V5VRE=;
+	s=arc-20240116; t=1789745321; c=relaxed/simple;
+	bh=9cxKqRSzDI1k9DZMBIppT7I1D0ocQhPQ6p2OsQkLhW4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Cf2w/mz8p3ZtTsKCLLF4ml422XJx+Zw52gyPq7IdIL0qNjKxqKNid6aTBFSd+kuMcuNBfc3lBbRMXWDSFDx9xIvGiWzlv8fHaDrLWhjIfO2uvtoOzFkuav7U1DQxZ/XF59YY6XJEWY3DuJVbb3z4fZhQK7GbXOCB1K/cT6OyIDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=uX454NtH; arc=none smtp.client-ip=5.135.140.105
+	 MIME-Version; b=WObILques19hnffBrdXmYbxLqOHs/1f+VlYyX6DzKhwTXjuB8TT+eGcRqEbqee7IdXScAQHRCxR7hMW0QeJNZDhEUfjka4QZP+tBof3EhFG6ogBrsbmJYjykNm577hahbkWFu+LQtHungEG00t+g8V4vw7VkDjo8/aTi5vPWlBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=uS0adGKB; arc=none smtp.client-ip=5.135.140.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="uX454NtH"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 914314DFDF6;
-	Fri, 18 Sep 2026 17:28:35 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="uS0adGKB"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4C3A34DFAE1;
+	Fri, 18 Sep 2026 17:28:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
-	t=1789745316; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1789745311; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=lRhqM7LAgl/X+6g5+JRRCWTiassQyFmX1v5QtTJrszQ=;
-	b=uX454NtHF9oNJIkjLj3vUtSZT7IAO4zpZTt7MkGUCalehqpYOj+RknmIRucB6v/5Z10qeQ
-	LPVBgBfA5J+7ufSHKmBnjm/hdZ24Iw8LeV57lX49wHLunDZKietYyHVKFEziZSo5biVIH7
-	/dCQMDnR8+F8UFklT4NtTmKkbDbilt4OfQtdMYLcVRPMCExIfNo64eYrOwmBCcj1oa2HiB
-	R81UA/gAExFs8zwfBqxmumhhQ79qsDqAjOyXW36kljH+0IBBf5WUOCndoyBdkpgiCP4V1D
-	a6wbNj8Glq3zPb2YGFgIBcDfTa0O4oWFApM44HhjD/TJR0xL3vZTXd+jXEB49w==
+	bh=Q6cAAX9tCyXcIpCsb2E2vZSxmNLsA1iEdhH9bQm/us8=;
+	b=uS0adGKBAJomhqpunxhzpjqXJPkPv1g45R+/ASpyvZS2CN/E8P1zBzrAKk4Vfw10sEaJNC
+	MU2gEM8mGmOAm69ES9x2LlD1q41W4jOTBraW0BlDhuD0zWEWSKynHnxJ8JhJpgGWy+aDyX
+	PbOX775hQ9oR9L3dVBaZ0YssFNJF/859cg46OatNujIPtOTzcPY7hF/yRSa7nA9qNUmH57
+	rF5YMgdGmZuite3BcAkvjaE5MoJdrwcH10chBnyzYLKLXOh41RP3Ku3RQPgxh7UQuuXroN
+	27qb7FKX7/0TdwHbtADeL5fs/rwlZvJ7AQDHjAn4ZsjSL7uB+f1+zhgq+vug4g==
 From: Caleb James DeLisle <cjd@cjdns.fr>
 To: linux-mips@vger.kernel.org
 Cc: conor+dt@kernel.org,
@@ -39,9 +39,9 @@ Cc: conor+dt@kernel.org,
 	tglx@kernel.org,
 	grandmaster@al2klimov.de,
 	Caleb James DeLisle <cjd@cjdns.fr>
-Subject: [PATCH v8 4/5] clocksource/timer-econet-en751221: Disable IRQ until cevt registered
-Date: Fri, 18 Sep 2026 15:28:21 +0000
-Message-Id: <20260918152822.343811-5-cjd@cjdns.fr>
+Subject: [PATCH v8 1/5] clocksource/timer-econet-en751221: fix refcount leak
+Date: Fri, 18 Sep 2026 15:28:18 +0000
+Message-Id: <20260918152822.343811-2-cjd@cjdns.fr>
 In-Reply-To: <20260918152822.343811-1-cjd@cjdns.fr>
 References: <20260918152822.343811-1-cjd@cjdns.fr>
 Precedence: bulk
@@ -53,56 +53,30 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Eliminate a race condition where cevt_interrupt may trigger before
-clockevents_config_and_register has been called, and dev->event_handler
-is at that point NULL. Additionally, NULL check dev->event_handler in
-interrupt callback just in case clockevents_config_and_register failed.
+From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 
+Every value returned from of_clk_get() is supposed to be cleaned up
+via clk_put() once not needed anymore.
+
+Fixes: 3b4c33ac87d0 ("clocksource/drivers: Add EcoNet Timer HPT driver")
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 Signed-off-by: Caleb James DeLisle <cjd@cjdns.fr>
 ---
- drivers/clocksource/timer-econet-en751221.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/clocksource/timer-econet-en751221.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/clocksource/timer-econet-en751221.c b/drivers/clocksource/timer-econet-en751221.c
-index 714702b9ef12..f2c4c1ee0a56 100644
+index 4008076b1a21..1859335345b5 100644
 --- a/drivers/clocksource/timer-econet-en751221.c
 +++ b/drivers/clocksource/timer-econet-en751221.c
-@@ -75,7 +75,10 @@ static irqreturn_t cevt_interrupt(int irq, void *dev_id)
- 		return IRQ_NONE;
- 
- 	iowrite32(ioread32(reg_count(cpu)), reg_compare(cpu));
--	dev->event_handler(dev);
-+
-+	if (dev->event_handler)
-+		dev->event_handler(dev);
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -104,12 +107,11 @@ static int cevt_init_cpu(uint cpu)
- 	reg = ioread32(reg_ctl(cpu)) | ctl_bit_enabled(cpu);
- 	iowrite32(reg, reg_ctl(cpu));
- 
--	enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
--
--	/* Do this last because it synchronously configures the timer */
- 	clockevents_config_and_register(cd, econet_timer.freq_hz,
- 					ECONET_MIN_DELTA, ECONET_MAX_DELTA);
- 
-+	enable_percpu_irq(cd->irq, IRQ_TYPE_NONE);
-+
- 	return 0;
- }
- 
-@@ -178,6 +180,8 @@ static int __init timer_init(struct device_node *np)
- 		goto out_membase;
+@@ -181,6 +181,7 @@ static int __init timer_init(struct device_node *np)
  	}
  
-+	irq_set_status_flags(econet_timer.irq, IRQ_NOAUTOEN);
-+
- 	ret = request_percpu_irq(econet_timer.irq, cevt_interrupt, np->name,
- 				 &econet_timer_pcpu);
+ 	econet_timer.freq_hz = clk_get_rate(clk);
++	clk_put(clk);
  
+ 	for (int i = 0; i < num_blocks; i++) {
+ 		econet_timer.membase[i] = of_iomap(np, i);
 -- 
 2.39.5
 

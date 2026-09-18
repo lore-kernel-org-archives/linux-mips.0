@@ -1,63 +1,102 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6191351AECC;
-	Fri, 18 Sep 2026 16:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748EB282F16;
+	Fri, 18 Sep 2026 17:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789749736; cv=none; b=aq4dL0AJhL6lETGorOtBxP07J4+syN1NvnfhPxMIiaEdKKl+A6WhTGaFUSVDft5y/+Mr40FOTA7vnA2QxjuMqjyRNpTC64A5uHD4XBOsZawLWOkpHOop1ojo5BpoW9mopsGCQw4Yb0dLJ3qieo3d8y+jj4A0BaiSGsUSwHvnimU=
+	t=1789753844; cv=none; b=ZqBJxgIYJU9JfkKmwgS/gbmkXMpZzAdh7oHsX/uBmIKUL+E3Y42NcUfrDfq3DFmOI/1Ga/jAJMWH2g4vKkpRMysORy1YHX2HyeSIBBjjfgpO0iQhrojJ6q+xHI+NeTLij314zaO0xJmlhlZ0jhHb3PEEhHso/Y7ISKBuBD/mIRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789749736; c=relaxed/simple;
-	bh=fNWwMQ0x6CwclBrM9frHYZFwAtJnjK1RsCACbveEg/M=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=C1VZ5rdojtdJRQY+hg9Fwa4pnUItglqTPViJD5aq0MnNWua1kzbui6zNB0lxdswMXPQ+IlfHo6t58sncY0xGq1ba7sUW42cyq717HBUxPhn5Cg94zRkTeGUHUF8+w1AMkUO/OVVxa6Gcs3T+c/IH8FM+qRhNVzd4GImLXnXjoqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqepX40r; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789753844; c=relaxed/simple;
+	bh=jwqUH2/fnxblnjXYIcNTOs95dG3nDY4ZG5hOAciLubI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D+UMswfsXOqNqnUYYbQhzxdsPzo5d2wMrswSOHpov/pst6dwjyLvL6glqByORo88lYNKIqSpK3eHqcUsMKu2I5eYm505XmytHRvtdB/j2IOdouxPtPAKJ5gKZ0/IdgqR1h1T3Or2CWNzoSMgwKinsWIuaoQ2Qg8fxc4AcIOS6e8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jvtw5OGw; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqepX40r"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0095C1F0089D;
-	Fri, 18 Sep 2026 16:41:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jvtw5OGw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B751F000FF;
+	Fri, 18 Sep 2026 17:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789749717;
-	bh=zR/bbyJkrD3eZOo77lI31jiWQ00mGioNk2ozHsrnsvU=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc;
-	b=kqepX40rXC2JNTtvreW267BsPMJfr3ZKALUSpNqeOA5+YxNxdZ91D5K5kUmlUB7Mz
-	 UvYiGF/8tdySDRWIUevRr422BV5tZWnUF2FIUR0QOlemaIPobg9gYbhwEvS2UPx6id
-	 qZ8OVCVJp2goQZqOYiv4VVdURtjAn4LLFOTBQk+x0AdmtSqUOjZz0bRnu3iDGQq8No
-	 uFWmUx5n2bAFrf2+Z5+ORLO4Ri2U0fsd9oLIXGF5LkCyQ5GhgV028Qi7FQfZWClU5W
-	 dfq/Pu1oUI35dIBk9CfDqzjARW3LW4rb4vKKbF4IL+58B6BjofXiOanq4BxavnrBm3
-	 7EE8y2YlXN53g==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 5695F380CFE4;
-	Fri, 18 Sep 2026 16:40:51 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS fixes for v7.3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <aqzmX0yjaJ0kJXgQ@alpha.franken.de>
-References: <aqzmX0yjaJ0kJXgQ@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <aqzmX0yjaJ0kJXgQ@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_7.3_1
-X-PR-Tracked-Commit-Id: 126f16e0a1b353c2ba5c7e2c8626cfa865934f9f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5023f5b861d50e43b25a3b1de47808023243484a
-Message-Id: <178974964989.1040423.4352516368509920430.pr-tracker-bot@kernel.org>
-Date: Fri, 18 Sep 2026 16:40:49 +0000
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: torvalds@linux-foundation.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=k20260515; t=1789753837;
+	bh=TG2xvNJBCXx1WTpRAKtFtjW+qEDTB07eN3TryfDzbiM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Jvtw5OGw0qgxCGGmNESlcbfLK2iqnqleBg0SZDDtuoGuy78On8VzRlf5agdDYe+aU
+	 D6fKMdGPGu7vRSVE6n19/ak5jN+gjUEEsJiZWAp+R6AcU36ncJQ2YmcNHh2BdV2jls
+	 lW4iilLjgjTT/9jjNUn/+Sw/SSB0acL/5kXk21rl3MJvDnGoszcdb2gW1s3X28f9Gy
+	 JJLm3W9SWzbxgAVFkyPJaWtMf9t6tXYLrwRFxYKc08K498LyrxQs+yjQc7dHjkZauV
+	 Dur9aZKISUJ/kR5yNKl4bmrQEr8tdm1OlVy1NnuMJ7WaQo98QZGYMeSTsH6hq2y092
+	 XceuyyBfUgXdg==
+Date: Fri, 18 Sep 2026 23:20:32 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Frank.Li@oss.nxp.com
+Cc: Aubin Constans <aubin.constans@microchip.com>,
+	Ulf Hansson <ulfh@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Russell King <linux@armlinux.org.uk>, Frank Li <Frank.Li@nxp.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Lars Persson <lars.persson@axis.com>,
+	Linus Walleij <linusw@kernel.org>, Fan Wu <fanwu01@zju.edu.cn>,
+	Rosen Penev <rosenp@gmail.com>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Pedro Demarchi Gomes <pedrodemargomes@gmail.com>,
+	Zhan Xusheng <zhanxusheng1024@gmail.com>,
+	Pan Chuang <panchuang@vivo.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
+	Rakuram Eswaran <rakuram.e96@gmail.com>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	"open list:MULTIMEDIA CARD (MMC), SECURE DIGITAL (SD) AND..." <linux-mmc@vger.kernel.org>,
+	"moderated list:ARM/Microchip (AT91) SoC support" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:INGENIC JZ47xx SoCs" <linux-mips@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC / LAYERSCAPE ARM ARCHIT..." <imx@lists.linux.dev>,
+	"open list:OMAP HS MMC SUPPORT" <linux-omap@vger.kernel.org>,
+	"moderated list:ARM/ACTIONS SEMI ARCHITECTURE" <linux-actions@lists.infradead.org>,
+	"open list:TMIO/SDHI MMC DRIVER" <linux-renesas-soc@vger.kernel.org>,
+	"open list:ARM/ARTPEC MACHINE SUPPORT" <linux-arm-kernel@axis.com>
+Subject: Re: [PATCH v2 1/1] mmc: use dmaengine_get_dma_device() instead of
+ chan->device->dev
+Message-ID: <aq156IdeXdaE4Fqg@parshuram>
+References: <20260918152349.2101305-1-Frank.Li@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260918152349.2101305-1-Frank.Li@oss.nxp.com>
 
-The pull request you sent on Fri, 18 Sep 2026 09:21:03 +0200:
+On 18-09-26, 11:23, Frank.Li@oss.nxp.com wrote:
+> From: Frank Li <Frank.Li@nxp.com>
+> 
+> Replace direct dma_chan::device::dev access with the proper
+> dmaengine_get_dma_device() for consumer API
+> 
+> chan->device->dev is not always the device used for DMA mapping.
+> Some DMA engines support per-channel IOMMU mappings, so different
+> channels may use different DMA devices.  dmaengine_get_dma_device()
+> returns the correct device for each channel.
+> 
+> This also prepares for making the DMA engine provider data structures
+> private. DMA consumers should not access DMA engine internals directly.
+> 
+> Assisted-by: LLM
+> Reviewed-by: Linus Walleij <linusw@kernel.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_7.3_1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5023f5b861d50e43b25a3b1de47808023243484a
-
-Thank you!
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+~Vinod

@@ -1,69 +1,70 @@
-Received: from mail-pj2-f10.google.com (mail-pj2-f10.google.com [74.125.227.138])
+Received: from mail-oo2-f10.google.com (mail-oo2-f10.google.com [74.125.231.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5583368A4
-	for <linux-mips@vger.kernel.org>; Fri, 18 Sep 2026 02:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7643DAACE
+	for <linux-mips@vger.kernel.org>; Fri, 18 Sep 2026 03:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.231.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789700290; cv=none; b=SyjME+eilrdzMuzDypc49jqmawf9BsNivp7dnD7nCS5Atfkb2ohxxc8tSZphpJ2S8FVUUGOSCU4RHr8hCAbi8u2DJYpBanECBoI96ndpKFpkAu/sakJHDzL9t5tIA6GY3As2kGSR0xEhpYAhk8X7caKsr/WMIpvY4XYVQTASHA8=
+	t=1789700473; cv=none; b=WyW+WMfG+ud2OKysOQuEHnJBm6cJJoVKTqCBux5In/5GyzagBscvr8rNyaOiZvb/VmM6Fym/6LgJM0aZg2LnEYXyA1/uybPHhF362pnz/mkHmmKjHrEsmkbNSnqm2bzeStSGhFxX1BKfyyNfhvfkqakR2CcM4pUMXgYo4OIYDkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789700290; c=relaxed/simple;
-	bh=KDOmclcli+FIMhiT/H8F2ExL9E5Qi0X8SZDXkzOjbp0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dyRRrsF2XG4aTX7A2DoihVIi4RzFZwhEMcE+ShIlfOh9/f/qocloa6F873QXggWzMv1Tj07wYbBDYwsXjpuCOtZtHyc3PE/lmxilpyaANA6WbmBlofJ0WdPAA7acURW/JX1vybCBRiR6kMqgSqvObKh7b9Y1RAKep3eMebEKqlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pKwHYEBH; arc=none smtp.client-ip=74.125.227.138
+	s=arc-20240116; t=1789700473; c=relaxed/simple;
+	bh=+HddCpkGzaEhskuHGKat07n7DBKQwKJBHvQiq42RYUI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sKWikkgVsmFrsJ/3876Goy763yEUopBlCn8KAwolY8kOReMDzeT6TTtyz9o7m8u7Xy9W34BMF6+PSC4kvlznwAVGyAG/ov5/plV8b11OwhxZKgC6fh6WkJdWyF4LUvOohxBBcSDUI3ZLuThlpuGVzDW1V5lh16a9/UlsSWY5FfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HO8rqLAS; arc=none smtp.client-ip=74.125.231.138
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pKwHYEBH"
-Received: by mail-pj2-f10.google.com with SMTP id 98e67ed59e1d1-39e249c766bso111650a91.0
-        for <linux-mips@vger.kernel.org>; Thu, 17 Sep 2026 19:58:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HO8rqLAS"
+Received: by mail-oo2-f10.google.com with SMTP id 006d021491bc7-6c7150a9098so116882eaf.0
+        for <linux-mips@vger.kernel.org>; Thu, 17 Sep 2026 20:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789700282; x=1790305082; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789700467; x=1790305267; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8kSB2cuIIxJwGu7fdUThqgSHJbDb70xS3kiq9uD6ddk=;
-        b=pKwHYEBHhZiCevsSptRykxp615AkqURbT3T+5PvdX6rdMJQRtaJl+UGMiVQ0tQb7oa
-         0n4fa+mcGwV/6gR3FmiaULE0uHFVro7AKZzXHy7kNmNAtspr0wconrA1cmuBP7xabyF+
-         QnpGlpVeSMVzi2v8+uOyY2huxTJ+WKMmummvsV6QzlddY7Sat4NLxTKeTH+wLyDQWkf6
-         8UZsVIWH5eeg+MG9dI4Wi5FITiO83B2KqKnAUh17GFez+6kZkHs0R4Y994A+GSDAHHTK
-         iQGNgnJS00Lf+eUqERqMiYnUuymVtnvRQ40xnck7RXhhnN6ctRSysb6/jh9BIjGYgTuf
-         dI7Q==
+        bh=njOTNoQxhdYDra+WY2QRBnoEXnWS/kdPZ6L+QpvvB8U=;
+        b=HO8rqLASOvnFTG8jAJxtdHhQpgPfIKZjRb4Atu01YElgNli62R1HXiREgagX98brZ4
+         UR4lcbAwPWRDGKdwNKX/Wpa1OuJhPMKa9q9eDXr7Ly8uZOky0AncF4/RnxGwkSTbvOHY
+         9loY1i/QngpsezFbVaCBX1R0XuXIpLiyKZdwWqIqAvXOzD5Y3q9MgU+nw8ZS74mqq96U
+         ynyJZVm3GNRAyO55h6a9Uo25Nt3fhJMn/7HNq6sWFZtBcLka55YJMKKeHKtpm3b1+J4i
+         /5mybW1rt39wIVIglH/Wx1NdnIL2zihOjAOrp1sgwE/rIdg5XaN8U8Ix2FXc2fkIYA4i
+         nE1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789700282; x=1790305082;
+        d=1e100.net; s=20260707; t=1789700467; x=1790305267;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=8kSB2cuIIxJwGu7fdUThqgSHJbDb70xS3kiq9uD6ddk=;
-        b=Gzfhxgz9PIdmfImXvCHWn4MVzu7o0fXHFVGOQ+LXkE9QTZIpiBiBTauho5986R6FrW
-         3g57i+qdtdT44rf6FvbsKIw2PjGObCSnXPBpDaR+TGNkK9afCyx92OWizBOR9SPKE13g
-         5lCTsv6AFlIfmQGI9UOho6dql004oldOFA05Eff4W5gaDwWbqoeb0zx+/u16n7n8m2cq
-         r9fBxJRmn7zWgeUvvlV6XpuSyU3WmwtCaqjKfJFIPAkCcR0Nn73VzFXeARBHY6OSE04o
-         mE9CYQGPToauonGPAzq2G2qbBeZSgi0H5ssD4ylM5AvcU/26NBAdIz/eFhd6ppNZ/69q
-         oL/g==
-X-Gm-Message-State: AFuF++kG10PsRf+MjtzzwyMDYMGP+L7frKeZXZRkIlZqHjOx3gvX/yO1
-	eK7wLIfuIKlunRC5xEfBpbtMBCwNnTUHKZC6Trh95tb58JAj/lCXY2XgbQXCdr7ITUs=
-X-Gm-Gg: AYBFou1AvBT3CAR9VAjNqKHClzsUx5GwuHO0nAJAxEifnzP7VC4dziX+iqzNtPxzT05
-	xYwQbNbtrsLzeL9S7aKRlgGlIxY5GZMQ1EOzLMrdLqNp6QBUIQxbPYdp5Ycysl2dpv8+N8J/Goc
-	aHxzsCHgsbGEsqnZOT/cnX0XXPi5ZPqFAKCJFQ0V8Hryk0PbgeQgUqWAlEHPiOWJGIYbjZoRB3l
-	9I35gojc0ikpfdMSjyuyrwb6HHcSt3M1CimoPguO+takT0youHNz8dQtsZv8vNEctplY0E/lryo
-	w4tiVonGDbVftMxSdFwjlIP08WOPWHijNC04qMejcx7itx2lvPwsP4QjlCVX/Hvv1Qf5wcTipZB
-	8pGFgZZ1MU+Ldin70Mq50YFTKtDFdn9yEqC1L4VubZAt1crDxC2AUiejLPQ4+uJxhh7pcpcckjV
-	06h22/fRTh0c5c3XxlJn4nrMdj+wzbWFZe09+P6U6o0x41IyP27rMKXS8EgSccd6lx1p7a5ESeP
-	7s0eU1s/Q0hEFHkT9uC02Dt6XK8fN2at/zh1OjEYwUUPWsPZENpYjQA0rNF/pUz7p8mQOzdWDkz
-	5kMgmIwg10Z3O12X6o2WoAUph5fWBoYTEjyjZFmbhy4TyB1Ee/G4c/zkK9ZSZ2sAvQ==
-X-Received: by 2002:a17:90a:1188:b0:39e:5b3c:4633 with SMTP id 98e67ed59e1d1-39e5b3c4de4mr344901a91.21.1789700281948;
-        Thu, 17 Sep 2026 19:58:01 -0700 (PDT)
+        bh=njOTNoQxhdYDra+WY2QRBnoEXnWS/kdPZ6L+QpvvB8U=;
+        b=GjmlaTFSBtd549PBMHdIUu5hJiVfvCc71fkeOzqaCyU+FlT/aCZBqOAO2rxNbCCdd6
+         Vwsxjk/5Y77iGRuJ9J6mzSFRYhmxkbzNFQ7FO2og5i7Pdk+5lm6RPo1sy/mAAKjJLb9x
+         p1lAzo9uzS5S2v1r9DKw8pYrIBqaMbQITQ/Vx+UFbJVheECYpBmwSSijIxTzacqskZf6
+         I+kXjpST+UX6fRaCjmArcc9GGNTF29MzqSzELb5FrY06EuSU1JzFCkvtBxykTIK3QsVq
+         L97bvPjUiGLeDX6yHuomUyQ1OfoeGncHPwZ441vzz2LUXjajmt2VyBoI5oKe5z3GSe5M
+         Iz9A==
+X-Gm-Message-State: AFuF++nudUuUgwqOVc0eNU546ktmFqjy/MqoKE2eqm3lHEXFaroxBv9C
+	gByk1W6lPiRHfWvogbSU6fPRbmkSkmDsqdBMJKAlB9GlHcqGLYpUD9x8vowkvY8ItJA=
+X-Gm-Gg: AYBFou1wWztEcBDGBC1GJqIr+FChzCu2hsefOq/ag09v08a5UHFxQTkqQqL+MFAsHFX
+	7sK80+Ls1yZp4mq7sOOKdSzvSXaRkgzZwsiz+WcJTCwXLkpL1CbOEEhDkHjSZE3LY6/vW0fIuvf
+	aHJhA7LXoG1zGlFtkad4W5Jc4rE4Rb61HkGCBp+6nAJ7lMjEodR6cFvTPcCYubnmn5jfMs0+9pJ
+	zCLtx2laBeHRRbkPStueujby3JvrEQzk3Pp/UTJ32ND74B/kZ5x/Bgwi66ACrj1emKqnIZUFpmR
+	xFuYKccscZapzE9xJvcI7HOmtauP2ORN8CnsmsJjhCmTUmtCc0MUMbA9PTNQVY81nf8wT/iWN3K
+	IGrnayMJT/rSArFtpqVKAx1zqxbujG4CbHecVHkd+S99+2uKDy+QpB10Q07ZslQMI937OAhXqol
+	Q3+jGoFhKEZtuWxCgpnE2DujRt59ncjGJ/WuT1phnVGVod/b94TrT1kRRTdo3J+yTdKh81ybm6m
+	9vP17MUl5FRWYlF1YvZwRRTV5jj5ESJWixvGwP/gSM4HAdvT2QPJbAUigrYRqlgTmy7Yg/jlcWF
+	S2t/vP5cpa59ffUeiTazU8OYPbW2tLHa8En11Hf7Ar8hS7M+4Y/z4xiIRezCdbybqGxyMyO6xkV
+	8Yw==
+X-Received: by 2002:a05:6820:3092:b0:6b7:83c5:fde3 with SMTP id 006d021491bc7-6ca9bd4512fmr1047706eaf.36.1789700467262;
+        Thu, 17 Sep 2026 20:01:07 -0700 (PDT)
 Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33c286d98c6sm412282eec.5.2026.09.17.19.58.01
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-144cddb4cf8sm815225c88.1.2026.09.17.20.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2026 19:58:01 -0700 (PDT)
+        Thu, 17 Sep 2026 20:01:06 -0700 (PDT)
 From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
 To: linux-mips@vger.kernel.org
 Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH] MIPS: remove unused <asm/amon.h> header
-Date: Thu, 17 Sep 2026 19:57:51 -0700
-Message-ID: <20260918025757.389718-1-enelsonmoore@gmail.com>
+Subject: [PATCH] MIPS: remove unused <asm/mips-boards/sead3-addr.h> header
+Date: Thu, 17 Sep 2026 20:00:35 -0700
+Message-ID: <20260918030041.397914-1-enelsonmoore@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -73,34 +74,105 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The last use of arch/mips/include/asm/amon.h was removed in
-commit 7fb6f7b0af67 ("MIPS: Remove deprecated CONFIG_MIPS_CMP"),
-but it was left behind. Remove it.
+The last use of arch/mips/include/asm/mips-boards/sead3-addr.h was
+removed in commit 64601cb1343f ("leds: Remove SEAD-3 driver") but it
+was left behind. Remove it.
 
 Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
 ---
- arch/mips/include/asm/amon.h | 12 ------------
- 1 file changed, 12 deletions(-)
- delete mode 100644 arch/mips/include/asm/amon.h
+ .../mips/include/asm/mips-boards/sead3-addr.h | 83 -------------------
+ 1 file changed, 83 deletions(-)
+ delete mode 100644 arch/mips/include/asm/mips-boards/sead3-addr.h
 
-diff --git a/arch/mips/include/asm/amon.h b/arch/mips/include/asm/amon.h
+diff --git a/arch/mips/include/asm/mips-boards/sead3-addr.h b/arch/mips/include/asm/mips-boards/sead3-addr.h
 deleted file mode 100644
-index 3cc03c64a9c7..000000000000
---- a/arch/mips/include/asm/amon.h
+index c0db57802f7c..000000000000
+--- a/arch/mips/include/asm/mips-boards/sead3-addr.h
 +++ /dev/null
-@@ -1,12 +0,0 @@
+@@ -1,83 +0,0 @@
 -/*
 - * This file is subject to the terms and conditions of the GNU General Public
 - * License.  See the file "COPYING" in the main directory of this archive
 - * for more details.
 - *
-- * Copyright (C) 2013 Imagination Technologies Ltd.
-- *
-- * Arbitrary Monitor Support (AMON)
+- * Copyright (C) 2015 Imagination Technologies, Inc.
+- *   written by Ralf Baechle <ralf@linux-mips.org>
 - */
--int amon_cpu_avail(int cpu);
--int amon_cpu_start(int cpu, unsigned long pc, unsigned long sp,
--		   unsigned long gp, unsigned long a0);
+-#ifndef __ASM_MIPS_BOARDS_SEAD3_ADDR_H
+-#define __ASM_MIPS_BOARDS_SEAD3_ADDR_H
+-
+-/*
+- * Target #0 Register Decode
+- */
+-#define SEAD3_SD_SPDCNF				0xbb000040
+-#define SEAD3_SD_SPADDR				0xbb000048
+-#define SEAD3_SD_DATA				0xbb000050
+-
+-/*
+- * Target #1 Register Decode
+- */
+-#define SEAD3_CFG				0xbb100110
+-#define SEAD3_GIC_BASE_ADDRESS			0xbb1c0000
+-#define SEAD3_SHARED_SECTION			0xbb1c0000
+-#define SEAD3_VPE_LOCAL_SECTION			0xbb1c8000
+-#define SEAD3_VPE_OTHER_SECTION			0xbb1cc000
+-#define SEAD3_USER_MODE_VISIBLE_SECTION		0xbb1d0000
+-
+-/*
+- * Target #3 Register Decode
+- */
+-#define SEAD3_USB_HS_BASE			0xbb200000
+-#define SEAD3_USB_HS_IDENTIFICATION_REGS	0xbb200000
+-#define SEAD3_USB_HS_CAPABILITY_REGS		0xbb200100
+-#define SEAD3_USB_HS_OPERATIONAL_REGS		0xbb200140
+-#define SEAD3_RESERVED				0xbe800000
+-
+-/*
+- * Target #3 Register Decode
+- */
+-#define SEAD3_SRAM				0xbe000000
+-#define SEAD3_OPTIONAL_SRAM			0xbe400000
+-#define SEAD3_FPGA				0xbf000000
+-
+-#define SEAD3_PI_PIC32_USB_STATUS		0xbf000060
+-#define   SEAD3_PI_PIC32_USB_STATUS_IO_RDY	(1 << 0)
+-#define   SEAD3_PI_PIC32_USB_STATUS_SPL_INT	(1 << 1)
+-#define   SEAD3_PI_PIC32_USB_STATUS_GPIOA_INT	(1 << 2)
+-#define   SEAD3_PI_PIC32_USB_STATUS_GPIOB_INT	(1 << 3)
+-
+-#define SEAD3_PI_SOFT_ENDIAN			0xbf000070
+-
+-#define SEAD3_CPLD_P_SWITCH			0xbf000200
+-#define SEAD3_CPLD_F_SWITCH			0xbf000208
+-#define SEAD3_CPLD_P_LED			0xbf000210
+-#define SEAD3_CPLD_F_LED			0xbf000218
+-#define SEAD3_NEWSC_LIVE			0xbf000220
+-#define SEAD3_NEWSC_REG				0xbf000228
+-#define SEAD3_NEWSC_CTRL			0xbf000230
+-
+-#define SEAD3_LCD_CONTROL			0xbf000400
+-#define SEAD3_LCD_DATA				0xbf000408
+-#define SEAD3_CPLD_LCD_STATUS			0xbf000410
+-#define SEAD3_CPLD_LCD_DATA			0xbf000418
+-
+-#define SEAD3_CPLD_PI_DEVRST			0xbf000480
+-#define SEAD3_CPLD_PI_DEVRST_IC32_RST		(1 << 0)
+-#define SEAD3_RESERVED_0			0xbf000500
+-
+-#define SEAD3_PIC32_REGISTERS			0xbf000600
+-#define SEAD3_RESERVED_1			0xbf000700
+-#define SEAD3_UART_CH_0				0xbf000800
+-#define SEAD3_UART_CH_1				0xbf000900
+-#define SEAD3_RESERVED_2			0xbf000a00
+-#define SEAD3_ETHERNET				0xbf010000
+-#define SEAD3_RESERVED_3			0xbf020000
+-#define SEAD3_USER_EXPANSION			0xbf400000
+-#define SEAD3_RESERVED_4			0xbf800000
+-#define SEAD3_BOOT_FLASH_EXTENSION		0xbfa00000
+-#define SEAD3_BOOT_FLASH			0xbfc00000
+-#define SEAD3_REVISION_REGISTER			0xbfc00010
+-
+-#endif /* __ASM_MIPS_BOARDS_SEAD3_ADDR_H  */
 -- 
 2.43.0
 

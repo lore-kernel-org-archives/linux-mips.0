@@ -1,169 +1,206 @@
-Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11010050.outbound.protection.outlook.com [52.101.84.50])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D8C4BD34F;
-	Mon, 21 Sep 2026 16:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790006911; cv=fail; b=NBypjse5XdsL4drqgDjnabnl6RfkRhhhelVnv/IhoELAh7OqNC/80U9tka71DU6Jin955UlaEO9Rgy8InMEYOyB7Z3xVcOlFFbaH9Q8+N/v+nt5+xwM3qrt5uamCVh9HMGpAzXbLe30hXIsvivxnWFRVuTeuR7Oj/VRgSHqHrr0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790006911; c=relaxed/simple;
-	bh=eeu5SElqmUMD6kBDALfXEwO/2IZJ13X0VeDHcgsVAts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=jYCHi7wjeXGCohJ2F9t6yjQlBo/Bdzt4qYaA+DbNnnFwnGCxtSEoMbClQI4DuaEbRaZIYSlr9NFcCUzNhFv7h6qo/pT8zfhiOS2f3JlIa9OWUZ5DMJbeNYsoN33vVGk2bcwEfOIE9x7duV64W2CMQ43WsqWnfz8f+1lvO7Tf/28=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=I9S5BAxk; arc=fail smtp.client-ip=52.101.84.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF684BF941;
+	Mon, 21 Sep 2026 16:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790007681; cv=none; b=WtN7u9yR5/gmhwCaIIZghF15XiVyxGETZ3Pz0S2klyT0ydOJaBlbi81F0h5hmE9WERPSlfsFxIDae1YX+qI5WfE8b6g921cIgPEP76wCpoKlYpvAwF2t5DuujFpKVminVgS5qsGIdsuN+cys5yMz3PZ0Ywy6PC7uGaUmEBYLHhw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790007681; c=relaxed/simple;
+	bh=oGrCEH101JYJ0TwgVUxNMjImKrJahWj0BvTmscqgBZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tb0peq0Q/dwMLkrjlTv3DbfBIYdIyKKyoavgHH5JcG69s7baHNhxmxeHyFe+H+DZhf6J/odPIxyBn647gcjbBaHwtNjPHtW8hlT187KwSMJPNKHBVZOw3JxNp1SoPa59VoeO7OxKa+rwYfBURahz/Xs0fGSDEAI/Ms637ksKAXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pUf8M6np; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="I9S5BAxk"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bcwUXd5eghpl3OcBmQjtf59A4wzIaFOZThmRlJLTksXqP2CXvs3Qi1OJimUlLXezW3VOtLdURqys7fdyvTZ91VdIYuGqOVhKp2BYkPMgdJg6yh25zOULSl8boyL46Hds3YjmMffBagWDM0rQCxTObPlcvRQIWw34Ww/zgLw0vv3ZwFUlQi4eMgm/iUCBSEf+ZKxVT+vFtdrJAIK69zoRhbMql8Xy+3E1HYMarfWvPwnb/NqqXwNbJRHaXTSBE50orUrKukbQ9MLOmeidIifLpJ0YyFZRz3AJ01zxoouEAqxMULe9QxyW0lJYhAgXW9OXNgMa0bG5cHqOnTYUSmxIxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eeu5SElqmUMD6kBDALfXEwO/2IZJ13X0VeDHcgsVAts=;
- b=dp6lgFbXVH2zWNLtB4baREK5WEJCNCf8O8C90izuMFa59OiY/baJUWQgAf6sX2NShwDQIOidrxXRobsCzG4w2NiyKV975FcG9IgeIfr5atpHW11SvL/Mr8GYK+P9xdVJyeg/yN+6Tnj6B6NqRLcPRYqzgIeCbjn2cub0wxaXV9J6wP2Cqekt3cjCzrAcru3AEIY0e4FeBZFjIfbcprTB9DidbbdEHEgxq/X9mtGeLza9MTVL+y2yinqaakgYE3Fi4cY0YLV/26zPEzZXCf30SByVIwOJ1dkO7DbjhQt7IxOuDahYTe1PMxKh2T5UGp7viIKdRuo15Q9xkp1EndXeQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eeu5SElqmUMD6kBDALfXEwO/2IZJ13X0VeDHcgsVAts=;
- b=I9S5BAxklhCqwSKuMJdi6x3zn5tGIfjHt3c6x9PsALoPeZMe3Q2ZOqmbWTBR9nZ+KKulNMhtDWOhW4R6ghOcUsdfeNFU2Svrq5CR9R3h+CjlwgDuZpBrMemdx8MPVDwiB4aY7yO+lmfkGWKvCk1ZFRqdx/UhNyOWexRAt975UansZirMrJkqzb8TMEhr7/gI7bM2oigPNh7d3s4Xzduepzc8u1mNboaVp8Ohjtq4ut7iOYwsCkgI+jGttiSS/EwLTaUZksfhCrFvCG8sdqg9xnQLdcXhPqpUCaJpjY3MMluw5s7bba/cMPEo4cB4bHUWsqen9LWGRTVgqmjhqsKypQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from GV2PR04MB11799.eurprd04.prod.outlook.com (2603:10a6:150:2cf::9)
- by DUYPR04MB12668.eurprd04.prod.outlook.com (2603:10a6:10:660::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.16; Mon, 21 Sep
- 2026 16:08:27 +0000
-Received: from GV2PR04MB11799.eurprd04.prod.outlook.com
- ([fe80::2146:83a2:5329:b7c]) by GV2PR04MB11799.eurprd04.prod.outlook.com
- ([fe80::2146:83a2:5329:b7c%7]) with mapi id 15.21.0428.015; Mon, 21 Sep 2026
- 16:08:27 +0000
-Date: Mon, 21 Sep 2026 11:08:13 -0500
-From: Frank Li <Frank.li@oss.nxp.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: Aubin Constans <aubin.constans@microchip.com>,
-	Ulf Hansson <ulfh@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Russell King <linux@armlinux.org.uk>, Frank Li <Frank.Li@nxp.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Lars Persson <lars.persson@axis.com>,
-	Linus Walleij <linusw@kernel.org>, Fan Wu <fanwu01@zju.edu.cn>,
-	Vinod Koul <vkoul@kernel.org>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Rosen Penev <rosenp@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Pedro Demarchi Gomes <pedrodemargomes@gmail.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Zhan Xusheng <zhanxusheng1024@gmail.com>,
-	Pan Chuang <panchuang@vivo.com>, Khalid Aziz <khalid@kernel.org>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
-	Rakuram Eswaran <rakuram.e96@gmail.com>,
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	"open list:MULTIMEDIA CARD (MMC), SECURE DIGITAL (SD) AND..." <linux-mmc@vger.kernel.org>,
-	"moderated list:ARM/Microchip (AT91) SoC support" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:INGENIC JZ47xx SoCs" <linux-mips@vger.kernel.org>,
-	"open list:ARM/FREESCALE IMX / MXC / LAYERSCAPE ARM ARCHIT..." <imx@lists.linux.dev>,
-	"open list:OMAP MMC SUPPORT" <linux-omap@vger.kernel.org>,
-	"moderated list:ARM/ACTIONS SEMI ARCHITECTURE" <linux-actions@lists.infradead.org>,
-	"open list:TMIO/SDHI MMC DRIVER" <linux-renesas-soc@vger.kernel.org>,
-	"open list:ARM/ARTPEC MACHINE SUPPORT" <linux-arm-kernel@axis.com>
-Subject: Re: [PATCH v3 1/1] mmc: use dmaengine_get_dma_device() instead of
- chan->device->dev
-Message-ID: <arFWbWgzyigSLAEO@SMW015318>
-References: <20260921144426.1083196-1-Frank.Li@oss.nxp.com>
- <arFG6UHs3VRifkBq@shikoro>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <arFG6UHs3VRifkBq@shikoro>
-X-ClientProxiedBy: CY5PR19CA0070.namprd19.prod.outlook.com
- (2603:10b6:930:69::16) To GV2PR04MB11799.eurprd04.prod.outlook.com
- (2603:10a6:150:2cf::9)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pUf8M6np"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=/p/wcPtAYiIR16GkUrLsbGWfaNUG1APNWwlFrFY+MPk=; b=pUf8M6npYUllN36pF1Jjui7cUH
+	0cJnXOLLz8IMSoZFJYPgc5lro6QvvcAllD8kT8yvE2oXFQprRQN7QLqZcTyDV+/8rFVjXMhuvVI4c
+	mWHFSIlZyvQAbCSPpjRnrW7h03Dt13F+2Qa/Di9V411h9xwD421wQBb0B8hrQkPwEnoZSwLlA8b3c
+	Kfkv8In7DpmocmZwhpAHIvZc9azVaZuBZ7uGZh5Y7LrzlnECHlH4ORj71wjsVVkvIkxXQY7w3Ow7z
+	53Tv7T57hxQw+gODKEoIK9DtM5Pxbl1EDRuIQGHtUrD4gv23z7yDTkKGm1qzW6a6kZ4r/O3ZyUV15
+	Yc6W3yIg==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x8gl0-00000002oNa-486R;
+	Mon, 21 Sep 2026 16:20:43 +0000
+Message-ID: <c0c67459-6b75-4bcd-b068-3752e23afbf6@infradead.org>
+Date: Mon, 21 Sep 2026 09:20:40 -0700
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR04MB11799:EE_|DUYPR04MB12668:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9480c4db-0051-46f8-1a03-08df17fa91f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|19092799006|1800799024|23010399003|376014|7416014|366016|10067099003|56012099006|4143699003|11063799006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	iph9a54kZb9L02c5d2bBHr07Kxg6W8ftoQctrnniEiZaEZZopw4Yjb5oSHWb5JaM0auNZj+5qLvP5M2EChZqSe1WCOe9nEAutV+EVxmekOZO2Iwbgr4eU0kfjoPy+BSklojh+qtFyNZ4n6uiKj+wporcvi71oGe1OekAFKApnjJoEoBuC1o211jJvDLgYxFarUvn70HiyncwpDbfNo+WmgrFQX9dIncUvPiCoSC/s8zIFXD7f2oylk7PWPSaZhf7AK2VCRfyBEO4ABxTYe7SqEYu4eIVOYkp85tIsqv0RHtWAYXnIOdN5LiGA6zNfJQGxvjkm6eOz+GUEsuDNRsM1JzwyyqAqyJn3OkK8kEydodJU4FLh9X3LmCUIMXEfxm7dZc0b0z+6dPSqd22P37VegDd8aukR+MswJQWe29hSZX0/FytmN6qLkecRazgev1dqkBU7NOtwYwo7MMAb6oxKOQ1/NlJXPLEoolECW+F9bZMN/gqxRz4MbOqoLyJUESIvF6MIESQNFq9C743qqylK7jb2xliDG2UFNRB8FQLHONjqAL4oxuZqVLT/hVIfMOrgzWOGL4ouRNUv8RvtOzrNx2GGMSGL4VLwwbEgonHZTxhgoY0QWQCOA5qy8JCPKcZvowsMDf130QsF68efYA1ww==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR04MB11799.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(1800799024)(23010399003)(376014)(7416014)(366016)(10067099003)(56012099006)(4143699003)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?OO66PwKA2AeFc68YhvXiHKQL82jnBoPht8pwwz0VA6jjb/jPS1SnxZrf/4JS?=
- =?us-ascii?Q?sbHtcBu1d2OgEy1Q8cEXUdgj2bhNQedS3Xbh6y6IMe8sUO7EYNqVepIoRyp1?=
- =?us-ascii?Q?0fZ5JzFOZpvvFHa2xmwHK2COLOuJiffpvmP0mcuHh5Gg16fj3fcL1LKQTRt2?=
- =?us-ascii?Q?KBomaoDTNAlUoJPFozUUMQZEZiSSwXN3kKyj/Ts1pc1WaVdSREP1hTBBGGHp?=
- =?us-ascii?Q?/wrNDk+4Z+esvObni1pNL5zewDAgrkvMF2TdGyGPP0EzPIfQTgj2VG5flfui?=
- =?us-ascii?Q?YuLvF+IJah+fxa/qwbJ7RXeNzU4wz3pnLIX6RUkZhNuVPA1+CApNEVLUdnDi?=
- =?us-ascii?Q?/UANJX+5HEbIfcz1z7iAXwmRPFjl5xLKjlJ/DzcRcMjaqcKgPycr49gXr5a4?=
- =?us-ascii?Q?2cUqRJ2ZB2tvUUihqsuSX8aCuiRAN3k4ENRKXwqHjVCx/ay8U0s4/jrUOppM?=
- =?us-ascii?Q?CdRRP5yu+gLfvJdkKJ4uNk0FvnECuA/vJlKZDjlb+nY0iC2YdeMiW+6A0Szl?=
- =?us-ascii?Q?OsXnjCefLYRxSTxeJBkrFVeUQBCuqzm7MB9XJ8GvHQm3JPY3Wz6JwX96p/5/?=
- =?us-ascii?Q?eOaIHNCT4sGy3XnufJ5vSFffTGk0bdNIUIcLOL7B95iopM3MH+CGFPR2zmtx?=
- =?us-ascii?Q?CcG1G5NQxlMWJkam0fg7K1sK1+fhPMpfsQKAMQkAPzaIQdHPtyqtLTuwzwim?=
- =?us-ascii?Q?NFCrhVVuECJcmxLQwY0M12qSIsS6RzrN738MC76vVU6eDjEXxNyW1wKFLlHN?=
- =?us-ascii?Q?3X+Ea9k5l+lzWZHmLrstHhnUn24gytrxwS1/fDu9cdz8FoJgBEqlqDyEcRDT?=
- =?us-ascii?Q?73RqecegxP2lb7nMPFOOapDOJ4Njyxg6RUnwYCp0MQbC7JLwiq+Je9umBCLY?=
- =?us-ascii?Q?LnCVSpGsvKaZ67lxSqZrjNzufqVhy+8gTrcQpu3FmaiFyl9Cfh79TrKQM2kY?=
- =?us-ascii?Q?1tOMKLCa2gwDDCJYOIZ/G6HHBas6szJgqrxkXQA9q8vJHNJgKKa+uqjmFZ62?=
- =?us-ascii?Q?ttu7t5EJqfNKV8hmiTRZrmKEFK74rcfUSn30nNybcjMyJ8qmkeiNtKqPOWp3?=
- =?us-ascii?Q?Z0ohScZkXaD9s4Zk/0Vq+ajObqrH3pIyjCJBa1qkVlusC026EBi1AZ4YuNIp?=
- =?us-ascii?Q?4XHqZvLfSJ+ZLj2KUTt/RH4YkGuEVdnquPCPnQFm5NO9BvXUfc2siiM7KmJP?=
- =?us-ascii?Q?GTn8PXDw2Grbuobj8btwGXwRdwPdCKFcCBgQ3resj1YwWtIgkUXQjEnsy8fO?=
- =?us-ascii?Q?aPsIjJUUiKWEQD9UqOyjndAIfzmuby9n6nCHfLDpsSWks3pBYAoiJYWM1xQc?=
- =?us-ascii?Q?z55kK/Ak+nbtpVqBMRT3Vlp1y162jRvPsb4GObMLyR1q3qIq6ljlpX0CrCt0?=
- =?us-ascii?Q?ysvnhC3yqLQ8VQuq2msnhmTRhVH4+ohLec5BWSMWiuORwjFEgswf3VNBgdwx?=
- =?us-ascii?Q?z4JCMf/vfJmqJjTWXf1qhVAqgT14LCxvfkiGXHzVHzoq+nBp36Q+INNIU/ba?=
- =?us-ascii?Q?Eq+5GnP75j+fHebtmlSrFJtIdOwE/NDoyOrkHiXL9Az5SVm0cUCCuURu6D6O?=
- =?us-ascii?Q?16epfiC2pzxQ7Meyiq8b0j98u/MdBgPEO+FAMTOa6oTkUQPE7uUFn4PexS+Z?=
- =?us-ascii?Q?SfiY15VmvDIa5IDldTYVyExU4WEbtpNZZb4bXadd7ORqkTux3mbJQna6Zmf/?=
- =?us-ascii?Q?ZWJwUBuY8n2eYCRKCVXuSxHs4XtP86yqY0xYmlsUbVgpp/53BezlkNTsC/aD?=
- =?us-ascii?Q?GoKwbg0CJJCKndV5X1vG+V4sDyuxJFjpHvEWbOfizwhx3maxVaXh?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9480c4db-0051-46f8-1a03-08df17fa91f7
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR04MB11799.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2026 16:08:26.9581
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LFChKBo5HzPC8CRCNheL05TlR2RcrCLVLtIR1j+h/eU7pg3qTvhqj5DOYIsjaTskijZhGevXiR1yID4AClaWEGdd3/CoVuzE5Vkkv9cSZbY3YeXoXncZ6mvrVRjqzWN5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUYPR04MB12668
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 21/21] Documentation: mm: clarify behaviour of
+ compile-time folded page tables
+To: Yeoreum Yun <yeoreum.yun@arm.com>, Russell King <linux@armlinux.org.uk>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>,
+ Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Barry Song <baohua@kernel.org>,
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ David Hildenbrand <david@kernel.org>, Michal Hocko <mhocko@kernel.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>,
+ Bibo Mao <maobibo@loongson.cn>, Anup Patel <anup@brainfault.org>,
+ Atish Patra <atish.patra@linux.dev>, Paul Walmsley <pjw@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alex@ghiti.fr>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, "Liam R. Howlett" <liam@infradead.org>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+ linux-openrisc@vger.kernel.org
+References: <20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com>
+ <20260921-dummy_ptxp3-v1-21-cd40cf68242e@arm.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20260921-dummy_ptxp3-v1-21-cd40cf68242e@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 21, 2026 at 05:02:01PM +0200, Wolfram Sang wrote:
->
-> > eviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> Missing 'R' at the beginning. checkpatch would have reported this,
-> please put it in your loop.
 
-Sorry, I missed run checkpatch before send.
 
-Frank
+On 9/21/26 3:55 AM, Yeoreum Yun wrote:
+> From: "David Hildenbrand (Arm)" <david@kernel.org>
+> 
+> Compile-time folded page tables are not necessarily easy to understand, and even
+> people the were once familiar with the concept might need to refresh their memory.
+> 
+> Add proper documentation, including a nice diagram, for the current design.
+> Mention details about dummy functions, including the recently changed pXdp_get()
+> helpers.
+> 
+> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
 
->
+Documentation/mm/page_tables.rst:197: WARNING: Bullet list ends without a blank line; unexpected unindent. [docutils]
+
+See below for a fix.
+
+> ---
+>  Documentation/mm/page_tables.rst | 84 +++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 75 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/mm/page_tables.rst b/Documentation/mm/page_tables.rst
+> index 126c876282509..84f2715c7de0a 100644
+> --- a/Documentation/mm/page_tables.rst
+> +++ b/Documentation/mm/page_tables.rst
+> @@ -143,15 +143,81 @@ pointers on each level is architecture-defined.::
+>  Page Table Folding
+>  ==================
+>  
+> -If the architecture does not use all the page table levels, they can be *folded*
+> -which means skipped, and all operations performed on page tables will be
+> -compile-time augmented to just skip a level when accessing the next lower
+> -level.
+> -
+> -Page table handling code that wishes to be architecture-neutral, such as the
+> -virtual memory manager, will need to be written so that it traverses all of the
+> -currently five levels. This style should also be preferred for
+> -architecture-specific code, so as to be robust to future changes.
+> +Not all architectures support 5-level page tables; while for some of them
+> +the exact number of supported page table levels is known at compile time,
+> +others can determine the number of page table levels at runtime based on
+> +hardware support and address space sizes.
+> +
+> +Generic page table walking code always assumes that 5 levels of page table
+> +exist. To make page table walking code not have to worry about that,
+> +`compile-time folding` and `runtime folding` of page tables are used.
+> +Compile-time folding is mostly handled in common code, whereas runtime folding
+> +is exclusively handled in architecture code.
+> +
+> +This description focuses on generic compile-time folded page tables; for
+> +architecture-specific variants, some details can vary, however, without
+> +affecting common page table walkers.
+> +
+> +When walking folded page tables, all upper page table levels up to the supported
+> +level are skipped in page table walkers: this is achieved by (a) treating
+> +entries in upper page table levels as present and pointing at a page table; and
+> +(b) having page table walkers cast the entry pointer to the next-level entry
+> +instead of dereferencing that table. From the perspective of a page table
+> +walker, the entry points at itself.
+> +
+> +Assuming compile-time folded 4-level page tables, to achieve (a), pgd_present()
+> +and pgd_leaf() are hard-coded to indicate a present page table entry that
+> +points at a page table, and to achieve (b) p4d_offset() and
+> +p4d_offset_lockless() simply cast the page table entry pointer to the next
+> +lower level.
+> +
+> +In the current design, this is further modeled by having the P4D have a
+> +single page table entry::
+> +
+> +        PGD
+> +  --> +------+          NOP4D
+> +      | ptr0 |-------> +------+           PUD
+> +      | ptr1 |-        | ptr0 |-------> +-----+
+> +      | ptr2 | \       +------+         | ptr |-------> ...
+> +      | ptr3 |  \                       | ptr |
+> +        ...      \                        ..
+> +                  \        NOP4D
+> +                   +----> +------+           PUD
+> +                          | ptr1 |-------> +-----+
+> +                          +------+         | ptr |-------> ...
+> +                                           | ptr |
+> +                                             ...
+> +
+> +Note that the arrows from PGD to NOP4D represent page-table-walker
+> +transitions, not pointers stored in the pgd entries.
+> +
+> +Using p4d as an example, `nop4d`/`p4d folded` translates to the following:
+> +
+> +- p4d is considered folded into pgd; both are operating on the same page
+> + table.
+
+     table.
+(add one more prefix space to align the indentation)
+
+> +
+> +- Most pgd_* helpers are hard-coded dummy functions that ignore the passed
+> +  pgd_t values entirely. Exceptions are pgd_val() and low-level helpers
+> +  set_pgd() + pgd_page_vaddr(), which effectively translate to set_p4d()/
+> +  p4d_pgtable() to keep existing arch code working.
+> +
+> +  Architectures must provide p4d_* helpers (unless further common
+> +  compile-time folding applies).
+> +
+> +- PTRS_PER_P4D is hard-coded to 1. Architectures must define PTRS_PER_PGD.
+> +
+> +To avoid reading a value that will never be used but cannot be entirely
+> +optimized out, compile-time folded page table code also makes pXdp_get()
+> +return a constant dummy value.
+> +
+> +In common code, this only affects pXd_val() when used for printing page
+> +table entries for debugging purposes. As we don't want architecture code
+> +that uses set_pXd(), pgd_page_vaddr() or pXd_pgtable() to accidentally
+> +operate on dummy values, the compiler will error out if it detects that the
+> +helpers are used with dummy values. For a folded level, pXd_page() must not
+> +be used and unconditionally triggers a compiler error. Architecture code must
+> +instead call the helpers on the proper first page table level: e.g., set_p4d()
+> +instead of set_pgd().
+>  
+>  
+>  MMU, TLB, and Page Faults
+> 
+
+-- 
+~Randy
+

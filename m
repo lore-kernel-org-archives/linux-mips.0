@@ -1,168 +1,298 @@
-Received: from mail-m12784.qiye.163.com (mail-m12784.qiye.163.com [115.236.127.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938B5371043;
-	Mon, 21 Sep 2026 06:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.236.127.84
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D8E483800;
+	Mon, 21 Sep 2026 10:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789972828; cv=none; b=TMTUZOHAHWKtlGHdAtg0JSccLLhwkrl8YKJCS3lCccqg3Q5NpfkKnRr6qF65s3GtL6ntJNECBFNDH587i9z9xLMgR6e0mSv9lDAdcBwmfae8AK4R5MM6KzEGZnnRyKsqo9fFvFmGli9PpRWQU5xrjIi9eUBHQU4lJUXX4Hs8o/E=
+	t=1789988191; cv=none; b=PHFiPsXB2xoruhH2TcaE9cS5H87qSXebfb4ZJrWmXPjHx3i4G0zO8Nwb81+H+sYa1hsecS4Ku2BhEa4d7zRLLwB5Nur0hnnsz9TuqIhuNtsvoV7KnOTKRZOy5qeqxX+g0Z6hC7b9v7MCII8DwjyPB1CM+xGEUfegG5zG4Ym5ZBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789972828; c=relaxed/simple;
-	bh=zogB3eIaVFO5Hr0oK5SvadmLRtsVFE2O34heUjlZQ/c=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Pg4yGT+GR2MdTakO4KG7FTxHGxxtobPWrlujkIBr+XwGLzL1jQAcLybiDyaOVuhNEc8JK+oKJsG6Wc9c0SrKka+4JT+KfDdAFOJC543ZKnaYfg5NniP7VsV6vfPmrqsWI68PO/z26SAcKcx+jCrF1GoRHT2POILHNx/av9YSXJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=ZHOwku2D; arc=none smtp.client-ip=115.236.127.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+	s=arc-20240116; t=1789988191; c=relaxed/simple;
+	bh=+i8NbpdYfXEvFu0AxrNhp/lyU11LX+xOPtpkodZuoZc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KPUSmYCcJ5ROGubHlq3JJCACxQk6mRnTFzT9S/CSevHpnthbG+9tcpkJmnV2K8+z0lr4pZswJdo6D1tFhwd0FIHcwWRI+9wTd7x3aX+1n6lt5ac39/CQ6HhCAxt17FEs9mkCe4YlfqdJLdIJmQFGb1YfLSclQjr7wrfkWh2jPyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=Bhv3Dhtu; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="ZHOwku2D"
-Received: from [172.16.12.74] (unknown [61.154.14.86])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 4e87d7a93;
-	Mon, 21 Sep 2026 14:34:59 +0800 (GMT+08:00)
-Message-ID: <96882735-091f-49c6-a47b-5da8be711818@rock-chips.com>
-Date: Mon, 21 Sep 2026 14:34:57 +0800
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="Bhv3Dhtu"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A60E31CE0;
+	Mon, 21 Sep 2026 03:56:25 -0700 (PDT)
+Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B5A33F86C;
+	Mon, 21 Sep 2026 03:56:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1789988189; bh=+i8NbpdYfXEvFu0AxrNhp/lyU11LX+xOPtpkodZuoZc=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Bhv3DhtuD6Cc8rwixG2H8y2y5nevldUQEJ99eSoyfMk4qBO2ab0cToeT2cXbSDP1w
+	 5B9PvkL5BTasymCaQ5TeMYR9YHvDUR7NMqo9NIWozjErm7RSi1y6nW7vnof/bEQ1HK
+	 jQ+R2xJUOx4CXO2rJCd6zgJruSt0PxXkpmhjZxz8=
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+Subject: [PATCH 00/21] mm: change behavior of pXdp_get()/pXd_page() in
+ compile-time folded pgtable
+Date: Mon, 21 Sep 2026 11:55:22 +0100
+Message-Id: <20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 19/19] drm/bridge: analogix_dp: don't create a
- panel_bridge
-From: Damon Ding <damon.ding@rock-chips.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Jessica Zhang <jesszhan0024@gmail.com>,
- Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
- Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Paul Cercueil <paul@crapouillou.net>,
- Paul Kocialkowski <paulk@sys-base.io>, Linus Walleij <linusw@kernel.org>,
- Inki Dae <inki.dae@samsung.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Sean Paul <sean@poorly.run>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
- Randy Dunlap <rdunlap@infradead.org>
-Cc: Albert Esteve <aesteve@redhat.com>, Anusha Srivatsa
- <asrivats@redhat.com>, Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
- Hui Pu <Hui.Pu@gehealthcare.com>, Ian Ray <ian.ray@gehealthcare.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, asahi@lists.linux.dev,
- linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
- linux-tegra@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>
-References: <20260916-drm-bridge-every-panel-v3-0-83afb4f1a707@bootlin.com>
- <20260916-drm-bridge-every-panel-v3-19-83afb4f1a707@bootlin.com>
- <975a4d45-9a61-4858-b498-8bc0a1e44746@rock-chips.com>
-Content-Language: en-US
-In-Reply-To: <975a4d45-9a61-4858-b498-8bc0a1e44746@rock-chips.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0aa0c2acc9e403a8kunm657b9e77980220
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVkZQx9KVh9PGB9MT0kfGB1ITFYVFA
-	kWGhdVEwETFhoSFyQUDg9ZV1kYEgtZQVlNSlVKTk9VSk9VQ01ZV1kWGg8SFR0UWUFZT0tIVUpLSE
-	pKQkxVSktLVUpCS0tZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=ZHOwku2DSYkcme2HF6miD3tsHrohcDCgQN32pWRYnUFFJhMdcqTLpQQOBt1nASCVshzWCK1Rf2jUBn74aj5YAYiAlPuBMp3c1pQ2RZPJiSymLL/avNTAW5fYkrdsl8AUfIfftyZEjxzoezMDLxmwH2o4F6DAq4wXT1lyFhMzJFI=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=TrLtgz6x2U7PEO6IDlWwEQdJyY8ByiWJ0svyu3eBk3I=;
-	h=date:mime-version:subject:message-id:from;
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABoNsWoC/23P3W7CMAwF4FdBuSaTEzc/5WrvgRBKHXfkorRKW
+ QVCffcFpE1M4fJY+o7tu5g5J57FbnMXmZc0p/FcgtpuBJ3C+YtliiULDdqC01rG72G4HafLdUK
+ JrlHReSIHvShiytyn67Ntfyj5lObLmG/P8kU/pu97Fi1BxpabLkRUDOEz5OGDxkE8WhZ8lf6/x
+ CI7stD1QTNj/JPb35tR1cIHwjY23itDlfDQ1MLZ2CKAd8B9LdQbwVT+MYAmBqiFNrVQ6Cwp23q
+ kekcLuhYm+t50ypF++eOwrusPwv8YutgBAAA=
+To: Russell King <linux@armlinux.org.uk>, 
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, 
+ Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, Barry Song <baohua@kernel.org>, 
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, 
+ Wei Xu <weixugc@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+ David Hildenbrand <david@kernel.org>, Michal Hocko <mhocko@kernel.org>, 
+ Lorenzo Stoakes <ljs@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+ Bibo Mao <maobibo@loongson.cn>, Anup Patel <anup@brainfault.org>, 
+ Atish Patra <atish.patra@linux.dev>, Paul Walmsley <pjw@kernel.org>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexandre Ghiti <alex@ghiti.fr>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>, "Liam R. Howlett" <liam@infradead.org>, 
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org, 
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+ linux-openrisc@vger.kernel.org, Muhammad Usama Anjum <usama.anjum@arm.com>, 
+ Yeoreum Yun <yeoreum.yun@arm.com>, Sohil Mehta <sohil.mehta@intel.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9844; i=yeoreum.yun@arm.com;
+ h=from:subject:message-id; bh=+i8NbpdYfXEvFu0AxrNhp/lyU11LX+xOPtpkodZuoZc=;
+ b=owEB7AET/pANAwAKAW3Vw9FaxTEzAcsmYgBqsQ1KCbJJAqHkpHjl4ozK2NXp7qf/cafPN5Gsm
+ +gxHtcAZRCJAbIEAAEKAB0WIQQtg+CS3QUzuFh1pJ1t1cPRWsUxMwUCarENSgAKCRBt1cPRWsUx
+ M+6AC/iJXNspes5rnQWu8wvadRPsdMNjF1lkZkrvJR3XjCh++EMLT2t10G/96ThPJv1v5gudtBJ
+ wlETudZZqHVDDaWl8iuv4U9wk7WbgdaOFBa1UBfPa1PeulkrDL6nDPzqXPi8osXF7i3R2vbvdJg
+ IF+tCtEMy4u9DQbrEoJ9ESuzSzVxhob+Gp6+Fhs0dQhuEMQC15auP87Fbmw4AYVhYudLSzhzOt9
+ bNm0oDqDg5tIA2mbbLeiLgftFe1AxtIOyEHTtFZbZKbpwMliY5L9mYbbwr8UVLUMi1pi1vDo1R7
+ tQYmfPoyqgGZEevfxxri09zTop97HbHrhQBlUvdICPJD79ASKUhR5VlSYf444UwlyaZ5CArG4u7
+ IkCnlcTdm3AKMrK6uK/kADc4i1VSWiCF2O1j5hQVk2Vk3m2VH0asj1iA7O+iwV856nWBXdpA6vo
+ ZrN09/yEVvkZA8rhUEmyeetMXNcvxN7nCNWUOZL6wF0fqvoskNUFimzkkBvsXTShde8g==
+X-Developer-Key: i=yeoreum.yun@arm.com; a=openpgp;
+ fpr=2D83E092DD0533B85875A49D6DD5C3D15AC53133
 
-On 9/21/2026 11:07 AM, Damon Ding wrote:
-> Hi Luca,
-> 
-> On 9/16/2026 9:45 PM, Luca Ceresoli wrote:
->> Now a panel_bridge is automatically created for every drm_panel and the
->> panel-bridge API is just a deprecated wrapper to access it.
->>
->> Update and simplify the code by just getting a reference to the
->> already-existing bridge using of_drm_get_bridge_by_endpoint().
->>
->> As of_drm_get_bridge_by_endpoint() returns a refcounted bridge, take care
->> of putting the bridge reference. This is not easily done in the remove 
->> path
->> due to the different probe paths of the user drivers, so add a devm 
->> action
->> to ensure the reference is put only when it was taken.
->>
->> Assisted-by: opencode:deepseek-v4-flash-0731
->> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
->> ---
->>   drivers/gpu/drm/bridge/analogix/Kconfig            |  1 -
->>   drivers/gpu/drm/bridge/analogix/analogix_dp_core.c | 40 ++++++++++++ 
->> +---------
->>   drivers/gpu/drm/exynos/exynos_dp.c                 | 36 + 
->> +-----------------
->>   drivers/gpu/drm/rockchip/analogix_dp-rockchip.c    |  9 -----
->>   include/drm/bridge/analogix_dp.h                   |  1 -
->>   5 files changed, 25 insertions(+), 62 deletions(-)
->>
+Using ptep_get() and its counterparts in common code is suboptimal on
+kernel configurations with generic compile-time folded page tables.
+By default, ptep_get() and its friends expands to READ_ONCE(),
+forcing the compiler to emit a load even when the value is not used afterwards.
 
-[snip]
+This issue was recently reported by Christophe Leroy [1] for ppc32
+preventing futher code conversion to ptep_get()/pmdp_get()/... helper
+and the same behavior can also be observed on arm64 when built with
+2- or 3-level page tables
 
->> @@ -488,14 +487,6 @@ static void rockchip_dp_remove(struct 
->> platform_device *pdev)
->>   {
->>       struct rockchip_dp_device *dp = platform_get_drvdata(pdev);
+e.g) perf_get_page_size() in arm64 with CONFIG_PGTABLE_LEVEL=3:
 
-The above unused &rockchip_dp_device could be also remved.
+00000000000052a0 <perf_get_page_size>:
+    ...
+    52dc: d53b4234     	mrs	x20, DAIF
+    52e0: d50343df     	msr	DAIFSet, #0x3
+    ...
+    52fc: d35e9a69     	ubfx	x9, x19, #30, #9        /* pud_offset_lockless() */
+    5300: f9403508     	ldr	x8, [x8, #0x68]
+    5304: f869790a     	ldr	x10, [x8, x9, lsl #3]   /* pudp_get() */
+    5308: f90007ea     	str	x10, [sp, #0x8]
+    530c: f8697908     	ldr	x8, [x8, x9, lsl #3]    /* pudp_get() */
+    ...
+    5360: 90000009     	adrp	x9, 0x5000 <perf_prepare_sample+0x548>
+    5364: 92746908     	and	x8, x8, #0x7ffffff000
+    5368: d3557675     	ubfx	x21, x19, #21, #9       /* pmd_offset_lockless() */
+    ...
+    5394: f8757ac8     	ldr	x8, [x22, x21, lsl #3]  /* pmdp_get() */
 
->> -    /*
->> -     * Release the probe-time reference from of_drm_find_panel(). If 
->> bind
->> -     * ran, the panel_bridge holds a second reference that devm cleanup
->> -     * will release when the bridge is destroyed after remove() returns.
->> -     */
->> -    if (dp->plat_data.panel)
->> -        drm_panel_put(dp->plat_data.panel);
->> -
->>       component_del(&pdev->dev, &rockchip_dp_component_ops);
->>   }
->> diff --git a/include/drm/bridge/analogix_dp.h b/include/drm/bridge/ 
->> analogix_dp.h
->> index 0e0b87abee59..6033137b651e 100644
->> --- a/include/drm/bridge/analogix_dp.h
->> +++ b/include/drm/bridge/analogix_dp.h
->> @@ -35,7 +35,6 @@ static inline bool analogix_dp_is_rockchip(enum 
->> analogix_dp_devtype type)
->>   struct analogix_dp_plat_data {
->>       enum analogix_dp_devtype dev_type;
->> -    struct drm_panel *panel;
->>       struct drm_bridge *next_bridge;
->>       struct drm_encoder *encoder;
->>       struct drm_connector *connector;
->>
-> 
-> I apply this patch series with the related one[0], and the eDP work well 
-> on my RK3576 board.
-> 
-> Tested-by: Damon Ding <damon.ding@rock-chips.com>
-> 
-> In my patch series for Analogix DP HPD support, Heiko also pointed out 
-> that devm_drm_of_get_bridge()(deprecated now) can be used to get the 
-> panel bridge directly, and the redundant &analogix_dp_plat_data.panel 
-> can be removed[1]. Since your patch series already contains these 
-> optimizations, I will rebase my patch series on top of yours for 
-> subsequent updates.
-> 
-> Reviewed-by: Damon Ding <damon.ding@rock-chips.com>
-> 
-> [0] https://lore.kernel.org/all/20260915-drm-bridge-drm_panel-cleanup- 
-> v4-0-30401d9406f3@bootlin.com/
-> [1] https://lore.kernel.org/all/5609825.iZASKD2KPV@diego/
-> 
+Though PGTABLE_LEVEL=3, since the pudp_get() still remain with
+READ_ONCE(), there's redundant load for the pud which is folded.
+
+To prevent generating suboptimal code, make pXdp_get() return a dummy
+entry for compile-time folded page tables, make the helpers such as
+pXd_offset()/pXd_offset_lockless(), set_pXd() validate dummy entries
+at compile time to catch the wrong usage and prohibit calls to
+pXd_page() in pgtable-nopXd.h.
+
+This series does not change the behaviour of existing code that directly
+manipulates folded page-table levels using set_pgd(), pgd_page_vaddr(), and
+related helpers. Those helpers continue to behave as before.
+
+The new restrictions only apply to code that adopts the pXdp_get()-based
+access model for compile-time folded page tables.
+
+As the pXdp_get() can return *dummy* entry, some of code using
+the stack value where saves the pXdp_get() could be a problematic:
+
+  1. Passing address of stack value where saves the pXdp_get() result
+     to pXd_offset() for example:
+
+       pud_t *pudp, pud;
+       pmd_t *pmdp;
+
+       pud = pudp_get(pudp, address);
+       pmdp = pmd_offset(&pud, pud, address);
+
+     (e.g. host_pfn_mapping_level() in loongarch).
+
+  2. Using the pXdp_get() result to use as argument of pXd_val() and
+     to check prot without checking pgtable is folded.
+     for example, x86's effective_prot().
+
+  3. Using set_pXd() with pXdp_get() will set problematic dummy entry
+     in folded page table like:
+
+       set_pXd(pxdp, pXdp_get(pxdp_k));
+
+  4. Using pgd_page_vaddr() to get the first-level pgtable.
+     passing dummy pxdp_get() for pgd_page_vaddr() will return wrong
+     address. Therefore, make pgd_page_vaddr() and pXd_pgtable() to
+     trigger the error for improper usage with folded dummy entry in the
+     generic compile-time folded pgtable.
+
+Thanksfully, above cases are rare since (1) most of usage using
+pXd_offset() with result of upper pXd_offset(), (2) it's extreamely
+rare to use pXd_val() for non-leaf entry in the kernel,
+(3) is to handle the vmalloc_fault or set the first level of page table
+and (4) to setup early page table and etc.
+
+Therefore, properly handle this uncommon and problematic pattern, and
+document the current design of compile-time folded page tables.
+
+This patch is based on mm-unstable.
+
+Future work
+===========
+ - print_bad_page_map() and show_pte() still prints dummy values
+   instead of printing the same content for all generic compile-time
+   folded page tables. We might want to skip printing dummy values later.
+
+ - We currently catch abuse of dummy values on the stack at compile-time by
+   relying on constant propagation by the compiler. Usama's work [3] on using
+   distinct types for sw vs. hw PTEs could help here as well."
+
+ - Clean up vmalloc fault handling by synchronizing the vmalloc entry on
+   32-bit architectures. This code is almost identical across architectures.
+
+ - Unfortunately, the current design of compile-time folded page tables appears
+   to be internally consistent but confusing. For example,
+   when CONFIG_PGTABLE_LEVELS is 2, p4d, pud, and pmd are expected to
+   be folded into pgd. However, the architecture code uses set_pmd()
+   to update the top-level page-table entry, even though it includes pgtable-nopmd.h.
+
+   In the future, it would be good to eliminate this source of confusion,
+   possibly by treating all folded upper levels consistently as dummy wrappers
+   around the highest real page-table level:
+
+         NOPGD
+   --> +------+           P4D
+       | ptr0 |-------> +------+           PUD
+       +------+         | ptr0 |-------> +-----+
+                        | ptr1 |-        | ptr | -------> ...
+                        | ptr2 | \       | ptr |
+                        | ptr3 |  \        ...
+                          ...      \
+                                    \        PUD
+                                     +----> +-----+
+                                            | ptr | -------> ...
+                                            | ptr |
+                                              ...
+
+Link: [1] https://lore.kernel.org/all/0019d675-ce3d-4a5c-89ed-f126c45145c9@kernel.org/
+Link: [2] https://lore.kernel.org/all/20251113014656.2605447-1-samuel.holland@sifive.com/
+Link: [3] https://lore.kernel.org/r/74182e50-b54f-4d2d-a27f-3a59a538d6bc@arm.com
+
+Patch History
+=============
+from RFC v3 to v1:
+  - Drop and rebase for CONFIG_X86_DIRECT_GBPAGES and use the Dave's
+    patch (https://lore.kernel.org/all/20260902194718.E1FF3041@davehans-spike.ostc.intel.com/)
+  - Link to RFC v3: https://lore.kernel.org/r/20260902-dummy_ptxp3-v3-0-5d8f5b17c25c@arm.com
+
+from RFC v2 to RFC v3:
+  - repasre commit message
+  - move ptdump_pgtable_first_level() into pgalloc.h
+  - skip the huge pud operation when CONFIG_X86_DIRECT_GBPAGES is disabled
+  - docuemtns compile-time folded page table
+  - drop the applied patch.
+  - Link to RFC v2: https://lore.kernel.org/all/20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com/
+
+from RFC v1 to RFC v2:
+  - Restore slient fallback to next pXd in set_pXd() and pXd_pgtable()
+    and add check whether they're called with dummy entry.
+  - Add some comment for returning first entry of pgd in arm with
+    2 pgtable-level
+  - Link to RFC v1: https://lore.kernel.org/all/20260713135614.1618183-1-yeoreum.yun@arm.com/
+
+---
+Dave Hansen (1):
+      x86/mm: Introduce helper for checking direct map 1G page support
+
+David Hildenbrand (Arm) (13):
+      ARM: mm: make nommu pgd_t a scalar
+      ARM: mm: make 2-level pgd_t a scalar
+      ARM: mm: remove custom pgdp_get()
+      LoongArch: mm: define pud_leaf() only when PUD exists
+      MIPS: mm: define pud_leaf() only when PUD exists
+      mm/pgtable: define (pgd|p4d|pud)_leaf() for folded page tables
+      mm/pgtable: define (pgd|p4d|pud)_offset_lockless() for folded page tables
+      openrisc/pgtable: drop __pmd_offset()
+      mm/pgtable: optimize pmdp_get() and friends for folded pagetable levels
+      mm/pgtable: catch abuse of folded dummy pgd_t/p4d_t/pud_t
+      mm/pgtable: disallow calling (pgd|p4d|pud)_page, pgd_page_vaddr() and (p4d|pud)_pgtable with dummy
+      mm/pgtable: disallow calling folded set_pgd/set_p4d/set_pud with dummy
+      Documentation: mm: clarify behaviour of compile-time folded page tables
+
+Yeoreum Yun (7):
+      mm: vmscan: remove stack copy address of pud/pmd pass in walk_pud/pmd_range()
+      loongarch: kvm: remove stack copy address of pXd in pXd_offset()
+      riscv: kvm: remove stack copy address of pXd in pXd_offset()
+      riscv: mm: use proper set_pXd() for generic compile-time folded patable in vmalloc_fault()
+      mm/pgtable: redefine PGTABLE_LEVEL enum with ascend order from PGD
+      x86: mm: use pgtable_level enum in effective_prot_pXd()
+      x86: mm: carve out the generic compile-time folded pgtable case in effective_prot()
+
+ Documentation/mm/page_tables.rst            | 84 +++++++++++++++++++++++++----
+ arch/arm/include/asm/page-nommu.h           |  4 +-
+ arch/arm/include/asm/pgtable-2level-types.h | 20 +++++--
+ arch/arm/include/asm/pgtable.h              |  2 -
+ arch/arm64/include/asm/pgtable.h            | 23 --------
+ arch/loongarch/include/asm/pgtable.h        |  2 +
+ arch/loongarch/kvm/mmu.c                    | 20 ++++---
+ arch/mips/include/asm/pgtable.h             |  2 +
+ arch/openrisc/include/asm/pgtable.h         |  3 --
+ arch/riscv/kvm/mmu.c                        | 20 ++++---
+ arch/riscv/mm/fault.c                       | 52 +++++++++++-------
+ arch/x86/include/asm/pgtable.h              | 14 +++++
+ arch/x86/kernel/cpu/common.c                |  2 +-
+ arch/x86/kernel/machine_kexec_64.c          |  2 +-
+ arch/x86/mm/dump_pagetables.c               | 18 ++++---
+ arch/x86/mm/init.c                          |  2 +-
+ arch/x86/mm/pat/set_memory.c                |  6 +--
+ include/asm-generic/pgtable-nop4d.h         | 54 +++++++++++++++----
+ include/asm-generic/pgtable-nopmd.h         | 54 +++++++++++++++----
+ include/asm-generic/pgtable-nopud.h         | 56 +++++++++++++++----
+ include/linux/pgtable.h                     | 69 +++++++++++++++++-------
+ mm/vmscan.c                                 |  4 +-
+ 22 files changed, 371 insertions(+), 142 deletions(-)
+---
+base-commit: 8d61431ed2607386b427752505379536eb634ce8
+change-id: 20260722-dummy_ptxp3-3741d78cc70f
 
 Best regards,
-Damon
+-- 
+Sincerely,
+Yeoreum Yun
 

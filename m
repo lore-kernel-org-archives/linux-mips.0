@@ -1,79 +1,92 @@
-Received: from mail-lr2-f12.google.com (mail-lr2-f12.google.com [74.125.230.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zeus03.de (zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120284A5EB2
-	for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2026 14:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2894AA1D3
+	for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2026 15:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790002494; cv=none; b=aafdA36KId20E13w86j+HtkX7gI2SitbF8uAOYwWmPKFN/5w988/MBZowK9kvVXP8ew2BGUFquacJt/I2s0tIggKVwDGgQswDB0IegV2/1DMHTURxHf53kZY5WMevTlQsDPxRV5Y4c7KYxE2C//KPRisBdGaV3AenekZLxdtmFg=
+	t=1790002938; cv=none; b=V86dOJsZoSExpl5BLvwKm21swA3MjcGCN64OXZxUiZX4eyrtAGd0F9snZHE9hDnpzFORizMOIPhnbx4xNaEBZkYVSWaliG/I+TWGEytEwoGEsnSsy8sfBAVx+ifZlpr0h7PFKCcBIaXzJuDsxpBuVUke9G60PLCOFxpaH7alBz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790002494; c=relaxed/simple;
-	bh=QWcJ1ZwZUHcxpyq7thHCmohE4ptDaGzodLSdKk9x9Zk=;
-	h=Mime-Version:From:References:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DI54FminhfL7jtplz8fnEpAbK/e4rUywl+nqOPJRpqBAP+LuiclCVuoI3JgVVaw8pqQzwa1ZhcyeGsc027xFcmFzCmlZXNpvqzdz1mBI+Ir7yFU8cHM2KXOCE6vGpSETF3dmDm3kQ1J2ytRm2BEa8xVTOpnCSAouitudLMOTcGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=black-desk.cn; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.230.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=black-desk.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lr2-f12.google.com with SMTP id 38308e7fff4ca-3a302c23fb2so25678871fa.2
-        for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2026 07:54:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790002489; x=1790607289;
-        h=content-type:cc:to:subject:message-id:date:in-reply-to:references
-         :from:mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=QWcJ1ZwZUHcxpyq7thHCmohE4ptDaGzodLSdKk9x9Zk=;
-        b=VqcCQOuutR9U7KDETSTEJcGDQBP/N+GpFDUV19Pc0kFJGKPx0L35kwow6HMeaDFnTn
-         CxmMNzsjZIGL8R/7L4vT5BXgD6CWRhnfu6ocmobCH33gVIF8OZZqOd7YRSXoW/7s3cV+
-         RTH3OmAfeAYzZ+zEkaIrKP/5u4A1AtTDA3vbSjrBWwLMEmUcDA3UqMzBHFYtgtmzS45D
-         UneAWHKFhkYEbGgNZD+NwudMZyhkQb7bttymNS2X5Y71noOQ1uUGKf1xsg29cHXZBRrc
-         bUF0/k3Ls/F1W6vFHr2ViiR7RwbUcP+fWXaXAYsW0h/yyKqenfMDXrOlolZsg3cYVP0r
-         EL/A==
-X-Forwarded-Encrypted: i=1; AKwUvBxoLTzQUkbzAUOUTAzLeAJDTV2pMbdBoriZ2My5RiMXQb3u/xI0n1O2Q/MXzcikQEy0WNOcBec1l7EN@vger.kernel.org
-X-Gm-Message-State: AFuF++nHNRjuRdvj4LVou9SRArmrUJskKrSIOyMFUNR51dZ76NH9FUmy
-	tlubWgcMe1heTDPAgZuxDX3JxVEMSJnGpC0KiIh0Tg+eYGmNGiRsvruLJ5X9VTEmQNPMjQ==
-X-Gm-Gg: AYBFou2DOelulx/xJWh0rs7/SJPfBBVtJ4wRtaHWeztfE/2n/aJDoQoGAITQjje5alE
-	ThtVjVmdVTsZLNE9chS9aN+XVBpyXNJU92rqtvwbHLH/BZEVk1QKTntmpgMikYdJxMhQwq3nsVc
-	i8r0SdbJokc3VEvNqdIXbocExtNHtlci00H4iJCtQBRsjEumc/u6cF9c/i1jl0+FOtAZ/DsgP9u
-	Vvxj0zEN1B4QL4TpQ3UvQw/2rP/1h2PUOwU8vBAb+T2btsbDGa2Ph2w95Dsy24F0phW6Xa8sIoB
-	b1gozgKLvhfdO96Z/Z0k/0s6WFIEqfEAqrPEXn0O7y3M28FlzxNEclWrLguwmmHz5fbUSwquopV
-	LYpe77AgBsjAj9JYGj5FOhPs9in4SiyjGngtQEAXJEbqFqihSnKPRx1szxE5QDP7mxJFPLoyFWS
-	gjv2uDz422Uh4NeENsxrTRClGoUEgbi2u/IbZVRyRSLx5IWPj2RTJExVnLkgMZAkIewACGhDMmn
-	U20KyvdsHuMVqsaU2P8JuxJFkcpNWi+C7owmM0ILvGugGtMcD5P1/TFCax4vik9
-X-Received: by 2002:a05:651c:a383:20b0:3a3:74b7:fc0d with SMTP id 38308e7fff4ca-3a5fc03661fmr16349111fa.25.1790002489199;
-        Mon, 21 Sep 2026 07:54:49 -0700 (PDT)
-Received: from mail-lf2-f12.google.com (mail-lf2-f12.google.com. [74.125.229.204])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3a60765a963sm22365951fa.37.2026.09.21.07.54.48
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2026 07:54:48 -0700 (PDT)
-Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f1801fso3086342e87.2
-        for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2026 07:54:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBzhNzrAnnCBypdSqJPJh45LdGJbcC09K0y/Oxip38gQ1F6PIJvUwCjEG2sxQs6vTHQG0+I+jC77JggV@vger.kernel.org
-X-Received: by 2002:a05:6512:3a96:b0:5b8:9c46:d4cd with SMTP id
- 2adb3069b0e04-5b8c1951288mr3688629e87.55.1790002488480; Mon, 21 Sep 2026
- 07:54:48 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 21 Sep 2026 09:54:47 -0500
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 21 Sep 2026 09:54:47 -0500
+	s=arc-20240116; t=1790002938; c=relaxed/simple;
+	bh=q+k41I23EnF+ywwJVp5opoab61DziI9GqC7O+IBIQuY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a8+dIM3M+Gf/CNEvB/eeUGg9E9To6z5z1SZ/KNpFyu0O/aU50rcPWOuofZ1Uyv+Wy9DQDy1nmEpMIFfjO4kZo+TiLFkCAbWeEmEPfvDCdSl1KI7igZFXV37anEaqbFRoRcLeqKUs9F+yM8EfMnhjKXU7B9cew0X/80uOYGY7cQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Llj3tjya; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Llj3tjya"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=q+k4
+	1I23EnF+ywwJVp5opoab61DziI9GqC7O+IBIQuY=; b=Llj3tjyabc9jD3ygIy0d
+	v6IykIHu4O7+DHsAEWfmUSj+SVvqYH+b3iih7E5eG/2oyo1RGWJAllD89u0M+rqQ
+	QB/9TpXWDY1+AQlo1U4gDfNBNEOkflOdGtk7EEI00ghECrjUX5WlXF2M0GtaOePj
+	oZnbTeyYtdjorLwxhj4u8ZtyNFmEg7eKnXTh9x+jtERUdGtzfghvglst+/f4gh3C
+	Law6933BB31Wpnc6c2FbSI1zCra8md3JZNMeTnzDhUy/Ixvg90UIcdrlFoaFnpAu
+	FhDheS9iwK4JLAzWYiHEDOHTvJ3XVk43FDTxLJx4fKR5mvd7g7TxUMzZ1uYpJIDB
+	rw==
+Received: (qmail 3690923 invoked from network); 21 Sep 2026 17:02:02 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Sep 2026 17:02:02 +0200
+X-UD-Smtp-Session: l3s3148p1@1sZMiP9boMJQT+F6
+Date: Mon, 21 Sep 2026 17:02:01 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Frank.Li@oss.nxp.com
+Cc: Aubin Constans <aubin.constans@microchip.com>,
+	Ulf Hansson <ulfh@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Russell King <linux@armlinux.org.uk>, Frank Li <Frank.Li@nxp.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Lars Persson <lars.persson@axis.com>,
+	Linus Walleij <linusw@kernel.org>, Fan Wu <fanwu01@zju.edu.cn>,
+	Vinod Koul <vkoul@kernel.org>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Rosen Penev <rosenp@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Pedro Demarchi Gomes <pedrodemargomes@gmail.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Zhan Xusheng <zhanxusheng1024@gmail.com>,
+	Pan Chuang <panchuang@vivo.com>, Khalid Aziz <khalid@kernel.org>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+	Rakuram Eswaran <rakuram.e96@gmail.com>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	"open list:MULTIMEDIA CARD (MMC), SECURE DIGITAL (SD) AND..." <linux-mmc@vger.kernel.org>,
+	"moderated list:ARM/Microchip (AT91) SoC support" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:INGENIC JZ47xx SoCs" <linux-mips@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC / LAYERSCAPE ARM ARCHIT..." <imx@lists.linux.dev>,
+	"open list:OMAP MMC SUPPORT" <linux-omap@vger.kernel.org>,
+	"moderated list:ARM/ACTIONS SEMI ARCHITECTURE" <linux-actions@lists.infradead.org>,
+	"open list:TMIO/SDHI MMC DRIVER" <linux-renesas-soc@vger.kernel.org>,
+	"open list:ARM/ARTPEC MACHINE SUPPORT" <linux-arm-kernel@axis.com>
+Subject: Re: [PATCH v3 1/1] mmc: use dmaengine_get_dma_device() instead of
+ chan->device->dev
+Message-ID: <arFG6UHs3VRifkBq@shikoro>
+References: <20260921144426.1083196-1-Frank.Li@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: Chen Linxuan <me@black-desk.cn>
-X-Mailer: aerc 0.22.0
-References: <alpine.DEB.2.21.2609191504030.27665@angie.orcam.me.uk> <alpine.DEB.2.21.2609191513020.27665@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2609191513020.27665@angie.orcam.me.uk>
-Date: Mon, 21 Sep 2026 09:54:47 -0500
-X-Gmail-Original-Message-ID: <CAC1kPDOfcwWWf=c=P0jdkC3gY_XgW+kUVRHJUzGcbg3kDWXQVw@mail.gmail.com>
-X-Gm-Features: AcwNN1V6c2qU0b0r9BU2071ZB6Xf7zCTCVbgql1xyH-Rm3j5rkXmiN9tXpwtK7I
-Message-ID: <CAC1kPDOfcwWWf=c=P0jdkC3gY_XgW+kUVRHJUzGcbg3kDWXQVw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] MIPS: Only check -msym32 when need-compiler
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: WangYuli <wangyuli@aosc.io>, Chen Linxuan <chenlinxuan@uniontech.com>, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260921144426.1083196-1-Frank.Li@oss.nxp.com>
 
-Reviewed-by: Chen Linxuan <me@black-desk.cn>
+
+> eviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Missing 'R' at the beginning. checkpatch would have reported this,
+please put it in your loop.
+

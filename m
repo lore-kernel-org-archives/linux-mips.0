@@ -1,180 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pz2-f40.google.com (mail-pz2-f40.google.com [74.125.228.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9555625FB;
-	Tue, 22 Sep 2026 15:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C3E5625F4
+	for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 16:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790091662; cv=none; b=lKYLWg7xTgmkdX6w/IpTUhKuPBILMZ0C4pIIX/MUi8IotSiFUcdZH71kk/5xJw3WqNErPyile6DAiEu2nbUio2SrkAuAen5oSk76x90SazdTxbRZlaXoVxCV38eMZN3UXiICLi7X57rNIDkqD9BDWPYu+IxLGH2EeYvLi5r6nDQ=
+	t=1790093187; cv=none; b=f1ctdVvjSe4nxhUSCG/h7mGDES17kQ9OU/OnUVd+3uNm5rpL9GQbErrTWh+Ei8LmPMqbZkorsiNK/HYEa/rZdyMoNr72uJBlBEPPrYqgqvumh+tx90mOyUifkLVqg1zc+PdYs2IJW5BDgMmEtksxIog8n5xF6Vd1gtnCflARvUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790091662; c=relaxed/simple;
-	bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QqIGSMikRCz1vzq42pbBh8/9s+WbQSzbBmw66zP22hZvNZpf4zdgZpxPqNauzE7vJRvg/rtwwhr5opanPHhWAAbeMBClqdWnuXJOjOJPyqeqKd7zCCkd5UH3r653LXA4UcTcBQGCoeu8tQZhKYmoARy9NOYEEHo+lZyHW/kfQdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jI1Gy7Ri; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790093187; c=relaxed/simple;
+	bh=h1w+Qv4/sGVzxOdf+Ix3udYEmOXzVfOdXIc9MVNO/C0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eyULhfij0rKcA04FfjfHf5ifEZs37cduKKQEjDaFH6RQpUScPIttQUi5rP6sJ4rQB3oStifJx1GQAqtteLj/ttGNOU8ec1Xsi0QiP3OZnErx/YJWQOpEn0TwBHQgTjWRwtvv95rr/8Br9AcGrPgNaxIpH+6f7pFf6luL39Esz4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMDmPyEA; arc=none smtp.client-ip=74.125.228.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jI1Gy7Ri"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34FD1F0089A;
-	Tue, 22 Sep 2026 15:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790091661;
-	bh=M7feebBV+4w0SqCnHHPUA0WnsaaqlXi4RbYO862HspA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=jI1Gy7Ri0dwagnMGdXDueH8Vw/me/BZQMY1ZLvclBfYHE07TPWIYqEZKTOfDeKMM7
-	 WWEYNmjHnqF3lwoScgBfUCpcP4Vzmd31Iqmg0Sox8i0+b3EzEc/kGtknRiFqelROnJ
-	 wcbUogIVm7JOp0s23z9uLqzTc+N99mJYI/tD1tkVSdrEOCMZ8aSwT3rqdtSH2Hyz8Z
-	 bOYZ6vTeWolpG4Fwfi6cgaTCqHY7pSa4UY721VzOIhSOaCjXR8xijEU4EtkTdNMAxs
-	 dW8uW14KTDudI1kEbfNi0V+Sn1IfY0buJZpOX2Ea2f+GpSpPZYolfJ0Ii0rrzBB1ZY
-	 xFRhD3RYFSySA==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Tue, 22 Sep 2026 16:35:43 +0100
-Subject: [PATCH v4 12/12] mm: change the contract for free_pgtables(),
- update docs
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMDmPyEA"
+Received: by mail-pz2-f40.google.com with SMTP id d2e1a72fcca58-87c90648f99so99536b3a.0
+        for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 09:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790093185; x=1790697985; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:sender:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=PPW98yHxBe0jnJjpb3xLL3oml+tR+1V2NeEOab79eBQ=;
+        b=NMDmPyEAvyoFH3cmiEP7D3ukmtjegJG61kRoec7Ulu3XDLS0F/LdqELMyMnQxnDfSf
+         syTFBCkJsKoxV0QNxoQRoN+8g1i/tEAilqNQWhKpDEZ8BSwRWq8/7YVcN+ODpwN42kFQ
+         HtjGSFSXHdpU3W4PjvfeGcNbVUe0FuHpeJPHB7+vLBA6Te0PjX6Vxi8N+M6RX17R5oc1
+         Nmt08z62Ub16PioR6gYToWQoE3u+qdsMavpOXIpRdoIBE6hY1TSfit+yklSvLZF4issl
+         xKu5D+Fm/Id+4eO8bmLGa9ujSmVkGL621GRiHBmu76KdAjJPgyMeG+5jF30KNfR5IdTi
+         hG5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790093185; x=1790697985;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=PPW98yHxBe0jnJjpb3xLL3oml+tR+1V2NeEOab79eBQ=;
+        b=b9quvoDMIP+lmfXGZE+ctasvVwK7UVUYErtnJRlpTsEc89JV6rpOTUOiAzeFBQq03z
+         LzhAt2KewcnVZIkamN2L3qSUbxFis8lx3SllNzQV3VxFNkeCxkmxVndtNRJE21MfCpfi
+         MEVoQ7yv2iXy3NOMnq0sJyzV8N5Q1qnPnix02mz9vx+K5fPj5+dTEinxHEdYjPbWfz0/
+         tLg8byfGdGKBa2qXpJPOCPvrGsAAK2bpeFfAwjFUsDqgivn29xg46655QUzP7l/pdznz
+         s90qYNeCLUYwWhpVQdImjKqrE7oj9hVpFY5fiW3nhF7elRQgTXReacRD7xbyLMz65Yyq
+         kAJQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxHm+EIUBVfrTAixERSoPfhPtMe/OTTXoSM17VJ10FoTyJfe5r5a+Qx6OrGErV7wdTAQ+cjf7idewxJ@vger.kernel.org
+X-Gm-Message-State: AFuF++kHMtrZuoK39DQOZWat38DFsdced4DUanbH2ecSyM0sM2NQ29p7
+	AqoTUm+w5vUe7CvmpcnFvynZlW/mGZF6q9StVLP1vaLEVXUIbI4culHxkHGHg2PA
+X-Gm-Gg: AYBFou17AYzD9cyTcMaX+n21a7n634GIsd41h/bhthA1Ed6JJc03ZIOrnTcFVaUiNaQ
+	qicEoahNqA9bdmhyoq1ZaIRx4sy2VtrPb2N01dXrIsdiQa57oStLXiaI4uu9qDsMU9+eHVUKsp9
+	aFgagzyKJW8GPuEVor/ebBe1tV4D7o9YEYlvVOmSsBpm3gGwUP3u84qtjjbRsFd6pplvmrFRPKY
+	huv946Y8e0izCymtU5Rm9UKSQ7Pgo1MSW1Ult066BSVOfgR6zv5dJx+EgQ5F/9I/zPzLh+uZyXC
+	yOGaHgnGG+SRFgxJGZE32QedNRDV44nt2osO63jHkaXN2Ngqf5R1PxOxbM0A4Ifn8UQT0bD2wYH
+	cfkUs1W9VijCpVP9vXTCyZp5LeHUUkFcNeY8u2n+OZsbS2RETesjwSgfyjwpwgZvbONMHiwi7cy
+	2O1LzEH9T6L4QpZz9yNwrLNlZKUAX0b+BaCxBUAWQdL5rwU8sN86WHhBj729e07lVTqtD8riKzI
+	zsgivL20nMl
+X-Received: by 2002:a05:6a00:6c8a:b0:857:726d:270e with SMTP id d2e1a72fcca58-87d1b8ae75emr78552b3a.26.1790093184841;
+        Tue, 22 Sep 2026 09:06:24 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-87d1d5c0125sm15826b3a.23.2026.09.22.09.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2026 09:06:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 22 Sep 2026 09:06:23 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Cc: Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: generic: Remove undefined image 'ramdisk'
+Message-ID: <7ca39d09-3fda-4a13-b3b6-34a88cd3d8b8@roeck-us.net>
+References: <20260922-mips-ramdisk-fix-v1-1-959d163c2445@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260922-rcu-pagetable-freeing-v4-12-fe1ad1f1e303@kernel.org>
-References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
-In-Reply-To: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, 
- Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
- Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org, 
- "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3290; i=ljs@kernel.org;
- h=from:subject:message-id; bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLI2Lci5KhCa0NC7PfzCodRL5yaIOr81TeH4vvJq5rn/a
- t8KJq161VHKwiDGxSArpsjy/Iv4/iCRsHmdF/zdYOawMoEMYeDiFICJdCYxMkyx61z519qF/Wrr
- nHyBV2IWzI+aa9tvzQh+L+iflK2mVczwz8bMcIvqx7JdNwMKJ/810e10aW9/OveN8PQ/uWtXX9B
- nZQMA
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260922-mips-ramdisk-fix-v1-1-959d163c2445@oss.qualcomm.com>
 
-Now that page tables are freed after an RCU grace period, it is safe for
-read-only page table walkers to walk page table ranges that are being
-concurrently torn down, provided the mm is kept alive via mmgrab().
+On Tue, Sep 22, 2026 at 08:19:04AM -0700, Jeff Johnson wrote:
+> As originally reported by Guenter Roeck [1] and subsequently confirmed by
+> me [2], a MIPS allmodconfig build can fail with:
+> 
+> Error: configuration 'pcb110' references undefined image 'ramdisk' in property 'ramdisk'
+> make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
+> make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
+> 
+> Or with:
+> 
+> Error: configuration 'pcb105' references undefined image 'ramdisk' in property 'ramdisk'
+> make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
+> make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
+> 
+> Guenter's original report made the observation that this was triggered by
+> an operating system update since he saw the same errors appear on
+> previously working kernels after the update.
 
-It is however unsafe for writers to do so, as they must obtain an
-appropriate lock to do so safely.
+Ah yes, my "fix" was to stop building mips:allmodconfig.
 
-Update the pte_offset_map_lock()'s comment block to reflect this.
+> 
+> I prompted an LLM with the information available and it provided the
+> following additional information:
+> 
+> This is not a kernel bug — it's a mkimage behavior change in u-boot-tools.
+> Your system recently received an upgrade from u-boot-tools 2024.01 =>
+> 2025.10 (Ubuntu 24.04 noble-security), which included two upstream commits
+> from June 2025:
+> 
+> - tools: mkimage: validate image references in FIT configurations (commit 7a8b25a)
+> - tools: mkimage: propagate error codes from fit_handle_file() (commit 21705d3)
+> 
+> These commits made mkimage strictly validate that every image name
+> referenced in a configurations node actually exists in the images section.
+> Previously it silently ignored undefined references, now it errors out.
+> 
+> The offending files in the kernel are arch/mips/generic/board-jaguar2.its.S
+> and arch/mips/generic/board-serval.its.S — their configurations reference
+> ramdisk = "ramdisk" but no ramdisk image node is ever defined anywhere in the
+> FIT source. This was always technically wrong; the new u-boot-tools 2025.10
+> just enforces it.
+> 
+> To fix the issue, remove the stale ramdisk references from both ITS files.
+> 
+> Assisted-by: LLM
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Link: https://lore.kernel.org/all/f817c158-412b-4fd1-9941-9c2ff421b91a@roeck-us.net/ # [1]
+> Reported-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+> Link: https://lore.kernel.org/all/7eca1c7f-52d5-43bc-afcb-1f6ac198e391@oss.qualcomm.com/ # [2]
+> Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
 
-Similarly update the process addresses documentation.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
----
- Documentation/mm/process_addrs.rst |  6 ++++++
- mm/pgtable-generic.c               | 15 +++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-index a7296f251799..b1f4f44d75eb 100644
---- a/Documentation/mm/process_addrs.rst
-+++ b/Documentation/mm/process_addrs.rst
-@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
- * When changing a page table entry the page table lock for that page table
-   **must** be held, except if you can safely assume nobody can access the page
-   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-+* Page tables may be *walked* under RCU alone, as page tables are freed only
-+  after an RCU grace period has elapsed. However, any entry found must be
-+  revalidated after the page table lock is taken (such as the
-+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-+  before it is acted upon. Changing an entry requires the page table
-+  lock and one of the locks that excludes teardown (mmap or VMA lock).
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index b91b1a98029c..a127e3e8f9b9 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-  * be read-only/read-write protected.
-  *
-- * Note that free_pgtables(), used after unmapping detached vmas, or when
-- * exiting the whole mm, does not take page table lock before freeing a page
-- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-+ * the whole mm, does not take a page table lock before freeing a page table.
-+ *
-+ * As page table freeing itself is RCU-safe, page table readers can safely run
-+ * concurrently with page table teardown.
-+ *
-+ * However, writers CANNOT as, without a lock being held, nothing prevents
-+ * concurrent teardown.
-+ *
-+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-  */
- pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 			   unsigned long addr, spinlock_t **ptlp)
-
--- 
-2.55.0
-
+> ---
+>  arch/mips/generic/board-jaguar2.its.S | 2 --
+>  arch/mips/generic/board-serval.its.S  | 1 -
+>  2 files changed, 3 deletions(-)
+> 
+> diff --git a/arch/mips/generic/board-jaguar2.its.S b/arch/mips/generic/board-jaguar2.its.S
+> index c2b8d479b26c..a91a06f1254f 100644
+> --- a/arch/mips/generic/board-jaguar2.its.S
+> +++ b/arch/mips/generic/board-jaguar2.its.S
+> @@ -28,13 +28,11 @@
+>  			description = "Jaguar2 Linux kernel";
+>  			kernel = "kernel";
+>  			fdt = "fdt-jaguar2_pcb110";
+> -			ramdisk = "ramdisk";
+>  		};
+>  		pcb111 {
+>  			description = "Jaguar2 Linux kernel";
+>  			kernel = "kernel";
+>  			fdt = "fdt-jaguar2_pcb111";
+> -			ramdisk = "ramdisk";
+>  		};
+>  	};
+>  };
+> diff --git a/arch/mips/generic/board-serval.its.S b/arch/mips/generic/board-serval.its.S
+> index dde833efe980..3b89e208d29a 100644
+> --- a/arch/mips/generic/board-serval.its.S
+> +++ b/arch/mips/generic/board-serval.its.S
+> @@ -18,7 +18,6 @@
+>  			description = "Serval Linux kernel";
+>  			kernel = "kernel";
+>  			fdt = "fdt-serval_pcb105";
+> -			ramdisk = "ramdisk";
+>  		};
+>  	};
+>  };
+> 
+> ---
+> base-commit: f0100363d8c374bd8e9ea7c9ba02744f0b802ca4
+> change-id: 20260922-mips-ramdisk-fix-bfd73f30eee1
+> 

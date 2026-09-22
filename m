@@ -1,174 +1,74 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0909E4DDB5D;
-	Tue, 22 Sep 2026 06:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7A44D7D22;
+	Tue, 22 Sep 2026 06:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790060232; cv=none; b=nlkAgTvMt0ZA/wCgKtkASITULlUcYUt7MLinWgG87fMF48RJkY3WUb41lzgyspJebz+wNb07nvddZdYa6sP/ij+4RGD218MxEKcu/HnSxrAdpwTTLHSc/Cc1tU1P3SrOQE36Jd06Cisi0UUE/p+py1bpI4LAflQOgq+gEQeY19I=
+	t=1790060233; cv=none; b=mdyPqRFeUTNkLyABBUlOeX6WE8DXeZAkW0yp135o+Oosekq/FOa3B//udllVP2XR8+5McZtop3NkLqUr8938wBlXM3gbo1eKv8/EhPyWHa8fqcpzQhWd7BGZBr8TqCooNGmEmMmzhNUAN8GazkSEd7CebAHn8LbR46gbz+i7P9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790060232; c=relaxed/simple;
-	bh=FcTCXKGeTtFpcrVBbNfvj7cPYW3qv1hqdB+74dNhimk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t4R3j0C9beNNBa7K2P3aVbc9p4Mgd8XQYXSib4fY8CJEKrml8aScp0do6EJQYFI5xP9vX5Y4ZDYwdBf5He1IBGniSl6zp7Ngj7HpgkD9VmmAWFg6iqQ6hBEtHN4dm35Co5D9aXDnYxMcyRO6k8gsk6863vDhmnqYl3ju5uPtL1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BNB44/zw; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790060233; c=relaxed/simple;
+	bh=1d/dvcHxVamna9owaFeoSOXs3fDbPWjgtvVHJ9x58IE=;
+	h=Message-ID:Date:From:To:Subject:In-Reply-To:References:Cc; b=IttfEl0aMB7N1rQReIXj0MhZAhQuqbsaLWwOl5Feec4SN2FcplPdlH/S0bk5/Z0rFTt64CVd43gZJ/GWSVudmm6GNC1wwbk1vKBYT7kwOW76qVAiA8q+2fYknU0YSTzpSRW2g4Ek20QYS4mTewMFytD6NfrE/1yollz+67gSIik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TDo0ofYb; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BNB44/zw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 602FD1F000FF;
-	Tue, 22 Sep 2026 06:56:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TDo0ofYb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B991F00898;
+	Tue, 22 Sep 2026 06:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790060224;
-	bh=VVgL/uzz137uMRzSkpFduyYcDsPNmDrSlT5+2SBHXpU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=BNB44/zwKoNMc0NnM2KjlJD0Vr/OZo7eRyriJNlJby7xV70V9sHGh4ZUo3N6FgJ5t
-	 AjPqJib9IFHuoqfPh8SyGVJoAHqxb/F0KmSrGipZ3+Sm+r/lDNT/XUTs7nFCcT2DhH
-	 g5WR1jq4muLh7CxgYUjUANWn3iQ3FgYkWa6NZWbaJ6BOFWumg9ZQKJ956iEpeA81PA
-	 hzTJ4cfSvz4m1vsEf2dZ4qKH6nXJpbMvl69nqyp+3sqrQFniFXCfQhmD8wTBwEdZc/
-	 /Yq6Bnpzrc3VVAujAQyozn9bvn0jHEZpnABRRKd4QSAfltWAjXL8kiHAK+SmBrRSWB
-	 c5nlXGg/IquUw==
-X-Mailer: emacs 31.1 (via feedmail 11-beta-1 I)
-From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Steven Price <steven.price@arm.com>,
-	Suzuki K Poulose <Suzuki.Poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Mostafa Saleh <smostafa@google.com>,
-	Petr Tesarik <ptesarik@suse.com>,
-	Alexey Kardashevskiy <aik@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Xu Yilun <yilun.xu@linux.intel.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	x86@kernel.org
-Subject: Re: [PATCH v5 3/6] dma: swiotlb: Centralize minimal pool sizing
-In-Reply-To: <21180ec6-b9ad-43fd-9e52-51df644e1b93@arm.com>
-References: <20260921063628.362078-1-aneesh.kumar@kernel.org>
- <20260921063628.362078-4-aneesh.kumar@kernel.org>
- <21180ec6-b9ad-43fd-9e52-51df644e1b93@arm.com>
-Date: Tue, 22 Sep 2026 12:26:47 +0530
-Message-ID: <yq5apky53hao.fsf@kernel.org>
+	s=k20260515; t=1790060223;
+	bh=1d/dvcHxVamna9owaFeoSOXs3fDbPWjgtvVHJ9x58IE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc;
+	b=TDo0ofYbNdfgzlG8qaMtA+hOaXzI2f+8O7RhKvtC64oAxw5fY99+Xnmpn4wuSn1k/
+	 UFu1OOvp2Y+3cDkZCdyu8ToN+hSihOfZ6cIqvShfoUL3SY+CbYSlsweV1In9DuAobn
+	 STQEIh6E7UqqP0lkiUPyBOVRhKndm6Dg5wROir+eZsX5I+1nyyew2NF26rf7yj3rRE
+	 vIkNS3s0GDFHUxy2TYFchLghJvCIFbA6HR/9eZOTUGyPoP4f1wgH1CTIXFhybpxNEM
+	 GMK6KQfYL+R/4HGOjBKfQN89DJMtXwJEDfsFr4ODWV1iocn/bH64X/PssKOFOp6jIC
+	 6rraVpPj7OLzg==
+Message-ID: <3925411c892a96d8e72872191a915deb@kernel.org>
+Date: Tue, 22 Sep 2026 06:56:59 +0000
+From: "Maxime Ripard" <mripard@kernel.org>
+To: "Luca Ceresoli" <luca.ceresoli@bootlin.com>
+Subject: Re: [PATCH v3 05/19] drm/panel: embed a drm_bridge into every
+ drm_panel
+In-Reply-To: <20260916-drm-bridge-every-panel-v3-5-83afb4f1a707@bootlin.com>
+References: <20260916-drm-bridge-every-panel-v3-5-83afb4f1a707@bootlin.com>
+Cc: asahi@lists.linux.dev, dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-tegra@vger.kernel.org, "Albert
+ Esteve" <aesteve@redhat.com>, "Andrzej Hajda" <andrzej.hajda@intel.com>, "Anusha
+ Srivatsa" <asrivats@redhat.com>, "David Airlie" <airlied@gmail.com>, "Dmitry
+ Baryshkov" <dmitry.baryshkov@oss.qualcomm.com>, "Fabio Estevam" <festevam@gmail.com>, "Frank
+ Li" <Frank.Li@nxp.com>, "Hui Pu" <Hui.Pu@gehealthcare.com>, "Ian Ray" <ian.ray@gehealthcare.com>, "Inki
+ Dae" <inki.dae@samsung.com>, "Jagan Teki" <jagan@amarulasolutions.com>, "Jernej
+ Skrabec" <jernej.skrabec@gmail.com>, "Jessica Zhang" <jesszhan0024@gmail.com>, "Jonas
+ Karlman" <jonas@kwiboo.se>, "Jonathan Corbet" <corbet@lwn.net>, "Laurent
+ Pinchart" <Laurent.pinchart@ideasonboard.com>, "Laurentiu Palcu" <laurentiu.palcu@oss.nxp.com>, "Linus
+ Walleij" <linusw@kernel.org>, "Lucas Stach" <l.stach@pengutronix.de>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, "Marek Szyprowski" <m.szyprowski@samsung.com>, "Maxime
+ Ripard" <mripard@kernel.org>, "Neil Armstrong" <neil.armstrong@linaro.org>, "Paul
+ Cercueil" <paul@crapouillou.net>, "Paul Kocialkowski" <paulk@sys-base.io>, "Pengutronix
+ Kernel Team" <kernel@pengutronix.de>, "Randy Dunlap" <rdunlap@infradead.org>, "Robert
+ Foss" <rfoss@kernel.org>, "Sascha Hauer" <s.hauer@pengutronix.de>, "Sean
+ Paul" <sean@poorly.run>, "Shuah Khan" <skhan@linuxfoundation.org>, "Simona
+ Vetter" <simona@ffwll.ch>, "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Thomas
+ Zimmermann" <tzimmermann@suse.de>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
 
-Robin Murphy <robin.murphy@arm.com> writes:
+On Wed, 16 Sep 2026 15:45:29 +0200, Luca Ceresoli wrote:
+> Adding a drm_panel does currently not add a panel_bridge wrapping
+> it. Usually the panel_bridge creation happens later, when some other driv=
+er
+> (e.g. the previous bridge or the encoder) calls *_of_get_bridge() and the
+> following element in the pipeline is a panel.
+>=20
+>=20
+> [ ... ]
 
-> On 21/09/2026 7:36 am, Aneesh Kumar K.V (Arm) wrote:
->> A default SWIOTLB pool used only for unaligned kmalloc bouncing can be
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
- [ ... 54 lines skipped ... ] 
-
->>   
->> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->> index 8f86deb25be2..f368a73f4ed0 100644
->> --- a/kernel/dma/swiotlb.c
->> +++ b/kernel/dma/swiotlb.c
->> @@ -483,9 +483,18 @@ static bool __init swiotlb_kmalloc_needs_bounce(void)
->>   static void __init
->>   swiotlb_adjust_pool_size(enum swiotlb_pool_policy policy)
->>   {
->> +	if (swiotlb_default_size_changed())
->> +		return;
->> +
->
-> This appears to be entirely redundant, as ultimately the point of this 
-> function is to call swiotlb_adjust_size() (if it does anything at all), 
-> and the first thing that does is this same exact check. We hardly need 
-> to micro-optimise short-circuiting a handful of arithmetic in a one-off 
-> setup path, and it's convoluted enough as it is, so please try to avoid 
-> redundancy that makes it even more confusing to follow.
->
-
-OK, I'll drop this.
-
->
->>   	switch (policy) {
->> -	case SWIOTLB_POOL_MINIMAL:
->> +	case SWIOTLB_POOL_MINIMAL: {
->> +		unsigned long size;
->> +
->> +		/* Use 1MB per 1GB of RAM for kmalloc() bouncing. */
->> +		size = DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
->> +		swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
->>   		break;
->
-> Similarly I think it would be clearer if we had a common 
-> swiotlb_adjust_size() call at the end of the function, and then either 
-> calculate a size or return early in each switch case as appropriate.
->
-> Furthermore, swiotlb_size_or_default() is awful IMO - and in fact after 
-> this series we could perhaps clean it up entirely by making the size 
-> implicit in swiotlb_init_late() - not to mention misleadingly redundant. 
-> I'd say just open-code "default_nslabs << IO_TLB_SHIFT" like elsewhere 
-> in the file, but in fact it may as well just be IO_TLB_DEFAULT_SIZE 
-> (think about it...)
->
-
-How about we rename swiotlb_size_or_default to
-
-unsigned long swiotlb_default_pool_size(void)
-{
-	return default_nslabs << IO_TLB_SHIFT;
-}
-
-We still need a helper because arch/arm/xen/mm.c also uses it. I also
-updated swiotlb_adjust_pool_size() as suggested.
-
-static void __init
-swiotlb_adjust_pool_size(enum swiotlb_pool_policy policy)
-{
-	unsigned long size;
-
-	switch (policy) {
-	case SWIOTLB_POOL_MINIMAL:
-		/* Use 1MB per 1GB of RAM for kmalloc() bouncing. */
-		size = DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
-		size = min(swiotlb_size_or_default(), size);
-		break;
-	case SWIOTLB_POOL_CC_GUEST:
-		size = swiotlb_adjusted_size();
-		break;
-	case SWIOTLB_POOL_NONE:
-		WARN(true, "Cannot adjust SWIOTLB size without a pool\n");
-		return;
-	case SWIOTLB_POOL_DEFAULT:
-	default:
-		return;
-	}
-
-	swiotlb_adjust_size(size);
-}
-
-
--aneesh
+Thanks!
+Maxime

@@ -1,228 +1,214 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E569153FD4F;
-	Tue, 22 Sep 2026 12:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BE2544D5B
+	for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 15:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790079318; cv=none; b=jRFsUMksaMXyWqcy+eQV3y9S6FTGR1+izeECBr6kpBTy11NegHXS5W/tCKzqFQBq9GwUNVK/LSFjLgSPkAWgVFyZ4Fki9JnlYMOtz/+rAJY/nv6dEjy1aZC/wHmH2NCig5Cchs3v1IhO9bmK8yUbC3tDg+chKhR1T71wMPnXXz0=
+	t=1790090355; cv=none; b=dXHB1w/7MjmA1OAPdcvMCp6zCUoOqDi9NMqw8bbXO9bxbCYHTa7fZBmXmDU4WM7vT9K6J526N8uthftXgRQrcCBqj/vAJ8I4S0D0lg7CtRVDzpcNi23wiYijeaWC6NhRARXPch5B9TblJ/HC5qFQyvJMZn2QV//4fFjvBl0+eiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790079318; c=relaxed/simple;
-	bh=mNKIEd9Mmq/3t8Td5s7hd4YWf9+CfeM6DmvIMcYTb9s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WXnP3Mkf/CKenxrSVLma8ecFAfErZ1jtgMhxXdiTMOFfL2k5eYCJPRiaMtMDxuTOJCWPRnz90U/BdSK6tDRSLlSnYeFxHeJ/W/4naabYZ1wkfPKPu/7QSbCVa7yP/S2VcrAyo0GqCRjEWaiqUMCvKPKSrnEWldLKUKRrncxfqvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h3gqLkdx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790090355; c=relaxed/simple;
+	bh=qKU/+TC29Qdo/H/kbTGQp+ZjmMowErRa4hVsa8ZF49I=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hhIckrLyVCgKVvoRbP4a06wKcKPDMBHimgAH5G6ZzSoZE6/AUC+WMwUIaFiQQFHElqlinV5b+IysZjYfg1O1Hi2/R6zTMH11MGApFZ79WikmNS3Qi+dUhgt/YysnVvAxN88kzTaLNkXiRrJK4v6DzgOxvbPQ6w93NQYDVsORmyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=SL20+d3h; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=RjSv3Qk1; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3gqLkdx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117D71F000FF;
-	Tue, 22 Sep 2026 12:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790079316;
-	bh=gItcWC83jyqQewAzlLEIrIdpVAhf+FBobtBOU1cWYdE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=h3gqLkdxuBoehEGT/VKAAx5lOOZyw0R9ECju20pTUpkGq3CY4/SfkP5Oo8Atj/17P
-	 LheKowjELtZHtWEwX8eBKfgrKHJcRi0+O+d1XJm5SNFJeLnSFaLisjCbEBlxeLxjOn
-	 7b+NpgO+ZPXTsbOJUosoddrg+40PBvbsgsGmbY2VSvCJX0WLnI37yVWEjSxgbtaT89
-	 F/0sTPdrQN1xs1nAXdWed32VZcInT1tJCp8N+5WqvK/lF5EAI6+8MCsas5iRPln/rt
-	 CkKwC8hH7tDlCqpUlqLBsfISPWksuIen1RI49kVL18Y30A/o4HPBKzvey0Im1JOlMy
-	 V88LVj2NYFEMg==
-Date: Tue, 22 Sep 2026 13:14:52 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
-	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v3 01/12] mm/huge_memory: zap deposited page tables after
- an RCU grace period
-Message-ID: <arJrv6FdUUgAbVp1@gremlin>
-References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
- <20260911-rcu-pagetable-freeing-v3-1-7b8c86103821@kernel.org>
- <467b6599-b73a-4f58-a29a-b6c6d1ffc3a5@kernel.org>
- <aqrAflIQbwcNKlQL@gremlin>
- <bc2805a7-361e-4082-bf71-efc125b93c84@kernel.org>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="SL20+d3h";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="RjSv3Qk1"
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68MEjSFk705891
+	for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 15:19:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=QJ7BDtvrQk9oc493hpD5+c
+	MdtDSBDbzy53kpeL3b5jI=; b=SL20+d3hXneetHnxh7Oq8zr8VZELVI1fHqEBbC
+	1z/tbP5Ven6FRDLwn/by9b7bzYx8E1erSkPqus+EwhnjL2y7YBkM35DUHgwcZWEE
+	jQMOPpGxYkAPwIm2MmGppInkXsaFdR3HngA9U4l2KbbQGhLLX4TMBa4ZYRygExs/
+	LZwTkZDM6sEICK9nDxxjoZf8CPD1HYuTjwf/d1zoIUiWTdOKoLJx8sg+qqnsLNRm
+	Rvatf5NLh1NLtsrEVhpASzVB/Lz/qv6mnNB5NLz6gdRlHT09lu1eXQX6RqtGSeU+
+	ExpPmDnGcn9zuqPTvldAlGdrQQj3RwGGPIiFVkdDz2tVRMpw==
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4gufbauev5-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 15:19:13 +0000 (GMT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-38e8fee6af3so8419a91.1
+        for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 08:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1790090352; x=1790695152; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=QJ7BDtvrQk9oc493hpD5+cMdtDSBDbzy53kpeL3b5jI=;
+        b=RjSv3Qk14lP1raQeWDBvZp/x6twTTzeRX+1iKm95CwTL5eIeoYR4JcP2VTW1qpM6Dl
+         YHm70KjRWhQNuvOok3p88l2b4RicESysoiLtuZ6HVYHkneDdu1NQiN0PbtF6C5QnWZgM
+         +QHNF9C42UgqqwHYSkORbEDp5eJ/VTRNPiDkBmp1+xv9UdYZ6x/Vx7Spuvvk3HKA41Ou
+         1YXA1UZ61XG9/5QVLPvqCcJlSRT5tHVw7GLWl4pNDBZIeAaqbiDfi7j86frcqU01ZWBl
+         00aQC3tLNUhxqeuHrXqWJvLe4OdlD1dxP+pShMaJ8JzgX059DC5D5hIwqmzl7ObKs1Z/
+         MGfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790090352; x=1790695152;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=QJ7BDtvrQk9oc493hpD5+cMdtDSBDbzy53kpeL3b5jI=;
+        b=vy0aJbBNPPb5qHTL1ggibSpEiYtCaxXJtq5IcWSNciQbeuO/q65REBwLPwZUrKjHgj
+         Oz7I8huSYj30VbceWmGMETfxpz1NQz6Vk/gmzhMXUOlHTrI2szEIVEWlTBLvfrN4jmkq
+         GKUqsk00zIXLAfqW9twGxLU0suvOTVeKoYC+Z0blw+5EH8yuw4b1d1YylVHBk6laR+f5
+         63ObJ9pN5JJ+PK13jHEH7jJxJNKOVGADH0dD868mlHGAncinj8oZ1P5e2Ts6QuFF9Pkf
+         VdQLKp/VasSyEurl50kal7PaJ3FYg8ofBG5rhy9wRXgp1gshPudYu66bSdW9QEORRUTJ
+         XEYQ==
+X-Gm-Message-State: AFuF++m3F5qGI4Xp+ZPobnxk/JnIVMSuDv7/uX5EMUIMcVFJjSeeH600
+	ZmdWKlrk+cuU6eWDpgATREPYo20VCzAa45a3UMuTHiXvviBMuCiuQjc2wCFmzvKThxERYlDiu89
+	DM8RMXCcSg52g/+O4Tg/wy4HrKNc18Ir4rkRqL8B3d5Qii5iyj1ikp9lShKjcID5+
+X-Gm-Gg: AYBFou1v9lICi7Lf2sd/1lu58cypsIIUK5d1ItH16NFoVQ+WPFAabjghvzG2IttoVdA
+	6hI4880mTG9BKphy79aLKfyTrA18ZawHvg4Idi0u3ZAjfdND8KOSOs5cCQs7wMmgq/0hdAGwKiD
+	iGYu6QW1gRZnCxtL/hPdb6ZEYrnvzKHx48/Inexf8DZZa8YFgTA0bC/4Ukf0Nqx49kQuDoifZt3
+	CREleV9EpUIeielj6x1hzO59ouZE8XSPRNlZgwooJ6IC1U4SbjNIaboQoM7XYeCC929wc8dl8FL
+	ZmsLvZ6CbIm+CyN/srqWY2oir9RhDAq0HQ3idgE918ge+cSzzoDl8ysjyimmBT9Jl7unVrKOXMc
+	o0s+z2UhKKKCkCMUC8OzhV1H5GXGuiQon03LQensWpMTg3Pr5WM21ew==
+X-Received: by 2002:a17:90b:5806:b0:39e:6c69:f47c with SMTP id 98e67ed59e1d1-3a073273eabmr1751194a91.59.1790090352059;
+        Tue, 22 Sep 2026 08:19:12 -0700 (PDT)
+X-Received: by 2002:a17:90b:5806:b0:39e:6c69:f47c with SMTP id 98e67ed59e1d1-3a073273eabmr1751157a91.59.1790090351483;
+        Tue, 22 Sep 2026 08:19:11 -0700 (PDT)
+Received: from hu-jjohnson-lv.qualcomm.com (Global_NAT1.qualcomm.com. [129.46.96.20])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a07d881b4bsm31367a91.15.2026.09.22.08.19.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2026 08:19:10 -0700 (PDT)
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Date: Tue, 22 Sep 2026 08:19:04 -0700
+Subject: [PATCH] MIPS: generic: Remove undefined image 'ramdisk'
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc2805a7-361e-4082-bf71-efc125b93c84@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260922-mips-ramdisk-fix-v1-1-959d163c2445@oss.qualcomm.com>
+X-B4-Tracking: v=1; b=H4sIAGecsmoC/x2MQQqAIBAAvyJ7bsEMivpKdKhcawlNXIhA/HvSc
+ QZmMgglJoFJZUj0sPAdKrSNgv1cw0HItjIYbXo9GoOeo2BavWW50PGLm7ND5zpNRC3ULCaq+l/
+ OSykfKmiGe2IAAAA=
+X-Change-ID: 20260922-mips-ramdisk-fix-bfd73f30eee1
+To: Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+X-Mailer: b4 0.14.3
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIyMDIyNCBTYWx0ZWRfX4fhaGoyoz0b4
+ YMFd8GQM74h9A10s2twpDwiPgZqTMraeg69qFkk6ZhEYiOWNrV/NM4E/D8g6ePG/pLtKUZ55Yx7
+ 6u73n7Ez7TjADB68S4v+butGWegsBprNQPPbojbKeWgHi6qdQFYGQl6s+s61IxYCy9SKDETlhq3
+ y06Bf/fLK+aNXDbqh5jqqeWUP5COFGSd3MMtounJKwqjFaGLakKPF5cjm5Xxjg4zpaYgeSuLkDg
+ 8q8CqF8+Jeuo/U1mdbwnTUxwaHwF0rCdofZ0kEm7Ckmih+m7E8+rXoJqeEHaVXnIb5w13fib1T0
+ rwtmCweG/AHuOaa0WhjXmn/cQucqh7BbFIxwwY2xgsTpMEcCL07sR1BszL7kPFxfWtuStvsQIUV
+ 8LVyytTDhpvGbCbKqMKfZIs8CgaTFp4I2xgDwJMSv/Ae57PRb4mmeYAyGCaBKuBXoIe/WkOB/+s
+ l7tzl/TGGrgN2XIUczw==
+X-Authority-Analysis: v=2.4 cv=IYYSymqa c=1 sm=1 tr=0 ts=6ab29c71 cx=c_pps
+ a=vVfyC5vLCtgYJKYeQD43oA==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
+ a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=gowsoOTTUOVcmtlkKump:22
+ a=VwQbUJbxAAAA:8 a=_jlGtV7tAAAA:8 a=EUspDBNiAAAA:8 a=jKwo560XmKW45XqFjXMA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=rl5im9kqc5Lf4LNbBjHf:22
+ a=nlm17XC03S6CtCLSeiRr:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIyMDIyNCBTYWx0ZWRfX8MKu3MxH+s68
+ U/yW4+TcHrPONKvrWy/WDe4Gzvp1ymphWd05DP7nyvyWARISno9IOiF3LhB1ALxX7AN1cQ6xoln
+ t6JzEQvAgVXuPYSEzn1T/6NVipPDjTw=
+X-Proofpoint-ORIG-GUID: 3_xPTTzHrgG-G17lEkD5f9--j1mVWy2c
+X-Proofpoint-GUID: 3_xPTTzHrgG-G17lEkD5f9--j1mVWy2c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-22_02,2026-09-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ bulkscore=0 spamscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609220224
 
-On Mon, Sep 21, 2026 at 07:13:16PM +0200, David Hildenbrand (Arm) wrote:
-> On 9/16/26 18:59, Lorenzo Stoakes (ARM) wrote:
-> > On Wed, Sep 16, 2026 at 04:42:04PM +0200, David Hildenbrand (Arm) wrote:
-> >> On 9/11/26 21:36, Lorenzo Stoakes (ARM) wrote:
-> >>> When an anonymous mapping is collapsed for THP, a PTE page table is
-> >>> 'deposited' with the installed PMD entry.
-> >>
-> >> Right. Or when we allocate an anon THP.
-> >
-> > That case doesn't interact with page walking though, as they're
-> > just-allocated right?
->
-> I was surprised to read that page tables deposited during collapse should behave
-> differently than page tables deposited during allocation :)
+As originally reported by Guenter Roeck [1] and subsequently confirmed by
+me [2], a MIPS allmodconfig build can fail with:
 
-You'll be super surprised by how VMAs behave when detached vs. attached then ;)
+Error: configuration 'pcb110' references undefined image 'ramdisk' in property 'ramdisk'
+make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
+make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
 
->
-> That's the semantic change you are adding (and that I didn't quite understand
-> from reading your description): a deposited page table could now get reused and
-> modified for another page table due to a PMD split, while there might still be
-> an RCU page table walker walking it. And PMD comparisons (+ proper memory
-> ordering) have to make sure that we didn't just walk  something that doesn't
-> belong to us.
->
-> [...]
->
-> >>
-> >> Wait, but wouldn't it be really problematic to punch a page table that is still
-> >
-> > Punch? You mean deposit?
->
-> Yes!
+Or with:
 
-Ack.
+Error: configuration 'pcb105' references undefined image 'ramdisk' in property 'ramdisk'
+make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
+make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
 
->
-> >
-> >> being walked into the deposited list where it can just be allocated from another
-> >> PMD->PTE split?
-> >
-> > In general, RCU-only page table walkers are _only_ guaranteed that the page
-> > tables are not freed from underneath them, as per the cover letter:
-> >
-> > 	"As a result, page table walks can now be performed safely under RCU without
-> > 	 any risk of page tables being freed underneath a walker.
-> >
-> > 	However, this is the only guarantee that this work provides - page table
-> > 	walkers must still ensure that page table entries are as expected
-> > 	throughout."
->
-> So far page table walkers never walk deposited page tables. Just like they never
-> walk freed page tables.
->
-> For *current* lockless page table walkers (IRQs disabled),
-> tlb_remove_table_sync_one() takes care of that. So there is no such thing as
-> "walking a page table that was reused in different context (as a page table) in
-> the meantime".
+Guenter's original report made the observation that this was triggered by
+an operating system update since he saw the same errors appear on
+previously working kernels after the update.
 
-Yup I know. That describes what happens for RCU page table walkers _after_ the
-changes of course.
+I prompted an LLM with the information available and it provided the
+following additional information:
 
->
-> >
-> > So this series doesn't actually have to answer that :)
-> >
-> > But a PTE PTL -> pmd_same() check will flag anything like that,
-> > a.k.a. pte_offset_map_lock().
-> >
-> > The RCU lock replaces stablisation on stuff other than VMA/mmap or rmap
-> > lock.
-> >
-> > If the walker needs to be sure the PTE is actually valid and belongs to the
-> > expected walk then further is required.
-> >
-> > Alternatively (like GUP-fast) if you wanted to avoid locking at all, IRQs
-> > off would be required paired with the tlb_remove_table_sync_one() in
-> > collapse_huge_page().
->
-> Doing an RCU sync in tlb_remove_table_sync_one() would be the big hammer (I
-> thought that was discussed with Lance recently). There is also this option: just
-> allocate a new page table and deposit it, and free the existing page table
-> through RCU.
+This is not a kernel bug — it's a mkimage behavior change in u-boot-tools.
+Your system recently received an upgrade from u-boot-tools 2024.01 =>
+2025.10 (Ubuntu 24.04 noble-security), which included two upstream commits
+from June 2025:
 
-Hmm yeah big old lump hammer :) I mean I don't see how that could really
-possibly fly as an option, we have tlb_remove_table_sync_rcu() for
-!CONFIG_PT_RECLAIM arches (i.e. err... the more 'specialist' ones :) but for
-those in actual use that sounds a wee bit nuclear.
+- tools: mkimage: validate image references in FIT configurations (commit 7a8b25a)
+- tools: mkimage: propagate error codes from fit_handle_file() (commit 21705d3)
 
->
-> Long story short: allowing empty page tables to be freed by RCU is simple.
-> Allowing empty page tables to be reused while they are still getting walked is
-> obviously more complicated conceptually. Likely it can be made working, but I'd
-> hope that we can keep it simpler.
+These commits made mkimage strictly validate that every image name
+referenced in a configurations node actually exists in the images section.
+Previously it silently ignored undefined references, now it errors out.
 
-I'm not sure it can really safely be guaranteed or it'd involve more lock
-dependencies or something horrible anyway.
+The offending files in the kernel are arch/mips/generic/board-jaguar2.its.S
+and arch/mips/generic/board-serval.its.S — their configurations reference
+ramdisk = "ramdisk" but no ramdisk image node is ever defined anywhere in the
+FIT source. This was always technically wrong; the new u-boot-tools 2025.10
+just enforces it.
 
-But... we don't need to care about any of that....
+To fix the issue, remove the stale ramdisk references from both ITS files.
 
->
-> >
-> > Another strategy could be used I guess with looped checks but it gets a bit
-> > sketchy with timing etc.
-> >
-> > But actually maybe we can avoid all that...
-> >
-> >>
-> >> Note that pgtable_trans_huge_withdraw() just dequeues *some* PTE page table in
-> >> the list attached to the PMD table.
-> >>
-> >> Something is odd here.
-> >
-> > ...Since this code path already allocates (the huge folio), so allocation
-> > here isn't an issue (as long as done outside of lcosk), why not have it
-> > also allocate a new PTE to deposit and RCU-free the existing PTE instead?
-> >
-> > That eliminates the one place in the kernel (afaik) where a
-> > page-table-walker-visible table can just get yoinked over somewhere else.
-> >
-> > Then a lockless PMD check works.
-> >
-> > E.g. something like the below?
->
-> Hah! Great minds think alike.
+Assisted-by: LLM
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/all/f817c158-412b-4fd1-9941-9c2ff421b91a@roeck-us.net/ # [1]
+Reported-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Link: https://lore.kernel.org/all/7eca1c7f-52d5-43bc-afcb-1f6ac198e391@oss.qualcomm.com/ # [2]
+Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+---
+ arch/mips/generic/board-jaguar2.its.S | 2 --
+ arch/mips/generic/board-serval.its.S  | 1 -
+ 2 files changed, 3 deletions(-)
 
-...Because great minds indeed <3
+diff --git a/arch/mips/generic/board-jaguar2.its.S b/arch/mips/generic/board-jaguar2.its.S
+index c2b8d479b26c..a91a06f1254f 100644
+--- a/arch/mips/generic/board-jaguar2.its.S
++++ b/arch/mips/generic/board-jaguar2.its.S
+@@ -28,13 +28,11 @@
+ 			description = "Jaguar2 Linux kernel";
+ 			kernel = "kernel";
+ 			fdt = "fdt-jaguar2_pcb110";
+-			ramdisk = "ramdisk";
+ 		};
+ 		pcb111 {
+ 			description = "Jaguar2 Linux kernel";
+ 			kernel = "kernel";
+ 			fdt = "fdt-jaguar2_pcb111";
+-			ramdisk = "ramdisk";
+ 		};
+ 	};
+ };
+diff --git a/arch/mips/generic/board-serval.its.S b/arch/mips/generic/board-serval.its.S
+index dde833efe980..3b89e208d29a 100644
+--- a/arch/mips/generic/board-serval.its.S
++++ b/arch/mips/generic/board-serval.its.S
+@@ -18,7 +18,6 @@
+ 			description = "Serval Linux kernel";
+ 			kernel = "kernel";
+ 			fdt = "fdt-serval_pcb105";
+-			ramdisk = "ramdisk";
+ 		};
+ 	};
+ };
 
-Will respin with that then, thanks! :)
+---
+base-commit: f0100363d8c374bd8e9ea7c9ba02744f0b802ca4
+change-id: 20260922-mips-ramdisk-fix-bfd73f30eee1
 
->
-> --
-> Cheers,
->
-> David
-
---
-Cheers, Lorenzo

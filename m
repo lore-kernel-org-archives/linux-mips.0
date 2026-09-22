@@ -1,177 +1,134 @@
-Received: from mail-pz2-f40.google.com (mail-pz2-f40.google.com [74.125.228.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C3E5625F4
-	for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 16:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9538A55C33F;
+	Tue, 22 Sep 2026 16:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790093187; cv=none; b=f1ctdVvjSe4nxhUSCG/h7mGDES17kQ9OU/OnUVd+3uNm5rpL9GQbErrTWh+Ei8LmPMqbZkorsiNK/HYEa/rZdyMoNr72uJBlBEPPrYqgqvumh+tx90mOyUifkLVqg1zc+PdYs2IJW5BDgMmEtksxIog8n5xF6Vd1gtnCflARvUo=
+	t=1790095388; cv=none; b=ZDgn5xjvnpsUHPkt2RC7VwBEw3Pz5LZ+zMAD8JF9sY3hu8gzvXQaLUv8I6Ba9OK+G31Fjwo6dhXxo6wuZCVtIT87A+dvRRLMNpDN6Z/Mvhs1jot3txgsCwQ0OXK79fbCjbJic9dZWjjwZsZXgHT4ukhwm+SIJzrlWsc7e/16sMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790093187; c=relaxed/simple;
-	bh=h1w+Qv4/sGVzxOdf+Ix3udYEmOXzVfOdXIc9MVNO/C0=;
+	s=arc-20240116; t=1790095388; c=relaxed/simple;
+	bh=14Jwv5SqG/STLi+i1lVISv+YxviZldN+nSDRF/nZ4aI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eyULhfij0rKcA04FfjfHf5ifEZs37cduKKQEjDaFH6RQpUScPIttQUi5rP6sJ4rQB3oStifJx1GQAqtteLj/ttGNOU8ec1Xsi0QiP3OZnErx/YJWQOpEn0TwBHQgTjWRwtvv95rr/8Br9AcGrPgNaxIpH+6f7pFf6luL39Esz4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMDmPyEA; arc=none smtp.client-ip=74.125.228.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=YT6QyjWIa6M8H72XjgrlOtJIXFsrvMW6Tk4uRNyl5P7DoDUTwViIM+pJoqN/VqUKh7avusm3rgoHezEe/WZ+Ku89SA2IKsUODzdI/flH/mtbg7kEFZbnJb+JT2cSt19gn92WwlGaIpvWBZsgg7qcLUVYu23MTMqfWLMmTx7gLCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DXSA/Gcd; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMDmPyEA"
-Received: by mail-pz2-f40.google.com with SMTP id d2e1a72fcca58-87c90648f99so99536b3a.0
-        for <linux-mips@vger.kernel.org>; Tue, 22 Sep 2026 09:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790093185; x=1790697985; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:sender:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=PPW98yHxBe0jnJjpb3xLL3oml+tR+1V2NeEOab79eBQ=;
-        b=NMDmPyEAvyoFH3cmiEP7D3ukmtjegJG61kRoec7Ulu3XDLS0F/LdqELMyMnQxnDfSf
-         syTFBCkJsKoxV0QNxoQRoN+8g1i/tEAilqNQWhKpDEZ8BSwRWq8/7YVcN+ODpwN42kFQ
-         HtjGSFSXHdpU3W4PjvfeGcNbVUe0FuHpeJPHB7+vLBA6Te0PjX6Vxi8N+M6RX17R5oc1
-         Nmt08z62Ub16PioR6gYToWQoE3u+qdsMavpOXIpRdoIBE6hY1TSfit+yklSvLZF4issl
-         xKu5D+Fm/Id+4eO8bmLGa9ujSmVkGL621GRiHBmu76KdAjJPgyMeG+5jF30KNfR5IdTi
-         hG5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790093185; x=1790697985;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=PPW98yHxBe0jnJjpb3xLL3oml+tR+1V2NeEOab79eBQ=;
-        b=b9quvoDMIP+lmfXGZE+ctasvVwK7UVUYErtnJRlpTsEc89JV6rpOTUOiAzeFBQq03z
-         LzhAt2KewcnVZIkamN2L3qSUbxFis8lx3SllNzQV3VxFNkeCxkmxVndtNRJE21MfCpfi
-         MEVoQ7yv2iXy3NOMnq0sJyzV8N5Q1qnPnix02mz9vx+K5fPj5+dTEinxHEdYjPbWfz0/
-         tLg8byfGdGKBa2qXpJPOCPvrGsAAK2bpeFfAwjFUsDqgivn29xg46655QUzP7l/pdznz
-         s90qYNeCLUYwWhpVQdImjKqrE7oj9hVpFY5fiW3nhF7elRQgTXReacRD7xbyLMz65Yyq
-         kAJQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxHm+EIUBVfrTAixERSoPfhPtMe/OTTXoSM17VJ10FoTyJfe5r5a+Qx6OrGErV7wdTAQ+cjf7idewxJ@vger.kernel.org
-X-Gm-Message-State: AFuF++kHMtrZuoK39DQOZWat38DFsdced4DUanbH2ecSyM0sM2NQ29p7
-	AqoTUm+w5vUe7CvmpcnFvynZlW/mGZF6q9StVLP1vaLEVXUIbI4culHxkHGHg2PA
-X-Gm-Gg: AYBFou17AYzD9cyTcMaX+n21a7n634GIsd41h/bhthA1Ed6JJc03ZIOrnTcFVaUiNaQ
-	qicEoahNqA9bdmhyoq1ZaIRx4sy2VtrPb2N01dXrIsdiQa57oStLXiaI4uu9qDsMU9+eHVUKsp9
-	aFgagzyKJW8GPuEVor/ebBe1tV4D7o9YEYlvVOmSsBpm3gGwUP3u84qtjjbRsFd6pplvmrFRPKY
-	huv946Y8e0izCymtU5Rm9UKSQ7Pgo1MSW1Ult066BSVOfgR6zv5dJx+EgQ5F/9I/zPzLh+uZyXC
-	yOGaHgnGG+SRFgxJGZE32QedNRDV44nt2osO63jHkaXN2Ngqf5R1PxOxbM0A4Ifn8UQT0bD2wYH
-	cfkUs1W9VijCpVP9vXTCyZp5LeHUUkFcNeY8u2n+OZsbS2RETesjwSgfyjwpwgZvbONMHiwi7cy
-	2O1LzEH9T6L4QpZz9yNwrLNlZKUAX0b+BaCxBUAWQdL5rwU8sN86WHhBj729e07lVTqtD8riKzI
-	zsgivL20nMl
-X-Received: by 2002:a05:6a00:6c8a:b0:857:726d:270e with SMTP id d2e1a72fcca58-87d1b8ae75emr78552b3a.26.1790093184841;
-        Tue, 22 Sep 2026 09:06:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-87d1d5c0125sm15826b3a.23.2026.09.22.09.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2026 09:06:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 22 Sep 2026 09:06:23 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-Cc: Paul Burton <paulburton@kernel.org>,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DXSA/Gcd"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=acmbGOYX6e5b9nsGkh+Evf65NkqvOdBjs0iMPuA3tME=; b=DXSA/GcdR6HXs2iM/AY4Vz+edJ
+	kA/NioItpmK4uLBa+N+yBYGy/TG5czyqFC4qExUiAy7txhD2ZetX+uytMySoVkb7vf95MpnQHobXs
+	5nj+vhS0PUVYU2/JaoirFCdNajGdEWvlQ4wdWlfiL1oP8Yf0G8zCFuk5lYCptlXSEaQ0KOZm+zJN+
+	NG7W2GGIrdOancjdcnpkIbZqCN7FFw8zwNf+GSbFUdO+K8gp+sYxBhPsjldvrqJGrSpLKHYWgpKte
+	3kxOzApBvbjROOxG3nl5IbBdc+LakvvRp2Rg1UGqSPeIiJ9mKJOUkUI2TQFNOzS2neJmoa4FFivIy
+	UMSxC1qg==;
+Received: from willy by casper.infradead.org with local (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x93ZL-00000009bF8-0eHw;
+	Tue, 22 Sep 2026 16:42:11 +0000
+Date: Tue, 22 Sep 2026 17:42:10 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Nico Pache <nico.pache@linux.dev>,
+	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
+	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
+	Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Simon Schuster <schuster.simon@siemens-energy.com>,
+	Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Russell King <linux@armlinux.org.uk>,
+	Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>,
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+	Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: generic: Remove undefined image 'ramdisk'
-Message-ID: <7ca39d09-3fda-4a13-b3b6-34a88cd3d8b8@roeck-us.net>
-References: <20260922-mips-ramdisk-fix-v1-1-959d163c2445@oss.qualcomm.com>
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+	Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
+Message-ID: <arKv4qbF04KB2WxQ@casper.infradead.org>
+References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260922-mips-ramdisk-fix-v1-1-959d163c2445@oss.qualcomm.com>
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
 
-On Tue, Sep 22, 2026 at 08:19:04AM -0700, Jeff Johnson wrote:
-> As originally reported by Guenter Roeck [1] and subsequently confirmed by
-> me [2], a MIPS allmodconfig build can fail with:
+On Tue, Sep 22, 2026 at 04:35:31PM +0100, Lorenzo Stoakes (ARM) wrote:
+> m68k-motorola required the biggest change - since RCU page table freeing
+> uses call_rcu(), this means page table freeing can arise from softirq
+> context.
 > 
-> Error: configuration 'pcb110' references undefined image 'ramdisk' in property 'ramdisk'
-> make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
-> make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
-> 
-> Or with:
-> 
-> Error: configuration 'pcb105' references undefined image 'ramdisk' in property 'ramdisk'
-> make[3]: *** [../arch/mips/boot/Makefile:173: arch/mips/boot/vmlinux.gz.itb] Error 1
-> make[2]: *** [../arch/mips/Makefile:403: vmlinux.gz.itb] Error 2
-> 
-> Guenter's original report made the observation that this was triggered by
-> an operating system update since he saw the same errors appear on
-> previously working kernels after the update.
+> This was fixed with an IRQ-safe spin lock used in both get_pointer_table()
+> and free_pointer_table().
 
-Ah yes, my "fix" was to stop building mips:allmodconfig.
+You don't need to use an irq-safe spinlock for softirqs.  It does work,
+but it's overkill since it disables hardirqs.  If you use spin_lock_bh(),
+only softirqs are prevented from running (and it's safe to call
+spin_lock_bh() when in softirq context, just like it's safe to call
+spin_lock_irqsave() in hardirq or softirq context).
 
-> 
-> I prompted an LLM with the information available and it provided the
-> following additional information:
-> 
-> This is not a kernel bug — it's a mkimage behavior change in u-boot-tools.
-> Your system recently received an upgrade from u-boot-tools 2024.01 =>
-> 2025.10 (Ubuntu 24.04 noble-security), which included two upstream commits
-> from June 2025:
-> 
-> - tools: mkimage: validate image references in FIT configurations (commit 7a8b25a)
-> - tools: mkimage: propagate error codes from fit_handle_file() (commit 21705d3)
-> 
-> These commits made mkimage strictly validate that every image name
-> referenced in a configurations node actually exists in the images section.
-> Previously it silently ignored undefined references, now it errors out.
-> 
-> The offending files in the kernel are arch/mips/generic/board-jaguar2.its.S
-> and arch/mips/generic/board-serval.its.S — their configurations reference
-> ramdisk = "ramdisk" but no ramdisk image node is ever defined anywhere in the
-> FIT source. This was always technically wrong; the new u-boot-tools 2025.10
-> just enforces it.
-> 
-> To fix the issue, remove the stale ramdisk references from both ITS files.
-> 
-> Assisted-by: LLM
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Link: https://lore.kernel.org/all/f817c158-412b-4fd1-9941-9c2ff421b91a@roeck-us.net/ # [1]
-> Reported-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-> Link: https://lore.kernel.org/all/7eca1c7f-52d5-43bc-afcb-1f6ac198e391@oss.qualcomm.com/ # [2]
-> Signed-off-by: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
->  arch/mips/generic/board-jaguar2.its.S | 2 --
->  arch/mips/generic/board-serval.its.S  | 1 -
->  2 files changed, 3 deletions(-)
-> 
-> diff --git a/arch/mips/generic/board-jaguar2.its.S b/arch/mips/generic/board-jaguar2.its.S
-> index c2b8d479b26c..a91a06f1254f 100644
-> --- a/arch/mips/generic/board-jaguar2.its.S
-> +++ b/arch/mips/generic/board-jaguar2.its.S
-> @@ -28,13 +28,11 @@
->  			description = "Jaguar2 Linux kernel";
->  			kernel = "kernel";
->  			fdt = "fdt-jaguar2_pcb110";
-> -			ramdisk = "ramdisk";
->  		};
->  		pcb111 {
->  			description = "Jaguar2 Linux kernel";
->  			kernel = "kernel";
->  			fdt = "fdt-jaguar2_pcb111";
-> -			ramdisk = "ramdisk";
->  		};
->  	};
->  };
-> diff --git a/arch/mips/generic/board-serval.its.S b/arch/mips/generic/board-serval.its.S
-> index dde833efe980..3b89e208d29a 100644
-> --- a/arch/mips/generic/board-serval.its.S
-> +++ b/arch/mips/generic/board-serval.its.S
-> @@ -18,7 +18,6 @@
->  			description = "Serval Linux kernel";
->  			kernel = "kernel";
->  			fdt = "fdt-serval_pcb105";
-> -			ramdisk = "ramdisk";
->  		};
->  	};
->  };
-> 
-> ---
-> base-commit: f0100363d8c374bd8e9ea7c9ba02744f0b802ca4
-> change-id: 20260922-mips-ramdisk-fix-bfd73f30eee1
-> 

@@ -1,128 +1,306 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6254D4893;
-	Wed, 23 Sep 2026 11:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0141651E43E;
+	Wed, 23 Sep 2026 12:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790164632; cv=none; b=cms6jZbv+RwJ6rf2/5bP+QwohzPuorgiphQiX4CobuKVXn0nbhCLFPKRdkESJn3TUUtrqpP4B7hNIgHrgO1mg3U7FjIoBd81iG2Qf3Tuu5fFrAY8TkbBzrBQUrFV7RnSmQbfXWjeadzKJ9UfPi1XwRV5DfWnOnk6s4lmZ7Er8AI=
+	t=1790167683; cv=none; b=pzeNnZSBlvowPDHXvxpWDOkyCBJ8vdDK9F9y5sL51vKmm5SgDuCRbmaImp7iJdsxGwbILxDQcdfyGxPHzRH/b5HJ/m9aSPg91zKv5GOR5Kyz9crlq0/2LQHoPV6BZ4kN8+X1Ce+rs6AiO6EEHQYhlJLK9bjHJ96S70QuNecbB9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790164632; c=relaxed/simple;
-	bh=Ds2KAw8gvOa+tR2z36qGcwS8SV5iMl/blAUnmIflQkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XqHgkXiKnf0Mxk1qZV9P4aR5TcOAHe+g5BYLdkwu9AllYavYtPRoHXc9tqw232rVpNAXeGDtj+QfwO7jLx/3RMKc51yLh+EmdhnewzXTXomh4vh5ILfP4oQKEZy2PWjYHCBBM64z54v46xmoHyo3SerB/Rq0jUT2xP7LbSBt7PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLzOlpie; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790167683; c=relaxed/simple;
+	bh=RIhC3hUarxRrR/f5mRDyLyshn3OVC6xd4Pet+9BmBkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dxBwz8oPjtqFmAVcTA2TbWsH1sHdgbLmCoYCgnNIZYyoOHD/GtwEC9T3e+h7PTZnh6qbRYDGFSezOW3stCmblXXvBctC5FD/GbMs+pUDaeC68UVd5tFpk07Bfbxqx5fSepzNuRksWL/RXD2a61FPsA0AcsFAd6e/B3V43KTY/4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=db+pBdYh; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLzOlpie"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2610A1F000FF;
-	Wed, 23 Sep 2026 11:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790164614;
-	bh=Ds2KAw8gvOa+tR2z36qGcwS8SV5iMl/blAUnmIflQkQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=MLzOlpiehBp7rmWLxJ9aplJ887M0HtvnTYcr7Feppz4GpXnrb891HqE1sAdH3CEdJ
-	 l+KxVqMBqRNoASgtK1ZWDhIV9vd6xSNNP12m6pFGj2BbzuxpBXMCxSHLYzmSxu6TWY
-	 VREKtAqIxlSX2XhdiU58tDKPP9A+aK2QQnnqLStGVJR1fPKeyEbSVAJVeAQ3VTMf9A
-	 d/C+oL9WdOE7XZZXqx582LOK0Vav7S1QSMg/Rx3fXHnkivLhsw3ynV4BU43Z8gVVyr
-	 XvvM4WhyacwSjjIwFyNJgXErigsiQzZKnEfV38NBbIL0nF4laCa9rcV0Y3Asd/YJ+G
-	 a8K3aXfd2AHzA==
-Date: Wed, 23 Sep 2026 12:56:30 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Lance Yang <lance.yang@linux.dev>
-Cc: akpm@linux-foundation.org, david@kernel.org, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, liam@infradead.org, nico.pache@linux.dev, ryan.roberts@arm.com, 
-	dev.jain@arm.com, baohua@kernel.org, usama.arif@linux.dev, kas@kernel.org, 
-	guoren@kernel.org, bcain@kernel.org, geert@linux-m68k.org, dinguyen@kernel.org, 
-	schuster.simon@siemens-energy.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, 
-	shorne@gmail.com, dalias@libc.org, glaubitz@physik.fu-berlin.de, pjw@kernel.org, 
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, linux@armlinux.org.uk, 
-	vgupta@kernel.org, monstr@monstr.eu, chris@zankel.net, jcmvbkbc@gmail.com, 
-	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org, 
-	davem@davemloft.net, andreas@gaisler.com, richard.henderson@linaro.org, 
-	mattst88@gmail.com, linmag7@gmail.com, catalin.marinas@arm.com, mark.rutland@arm.com, 
-	chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de, 
-	James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, 
-	chleroy@kernel.org, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@kernel.org, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	arnd@arndb.de, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, jgg@ziepe.ca, jhubbard@nvidia.com, peterx@redhat.com, 
-	ysato@users.sourceforge.jp, shakeel.butt@linux.dev, corbet@lwn.net, rdunlap@infradead.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, hughd@google.com, 
-	qi.zheng@linux.dev, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 08/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
-Message-ID: <arO-Y0qZpqpdqzwB@gremlin>
-References: <20260922-rcu-pagetable-freeing-v4-8-fe1ad1f1e303@kernel.org>
- <20260923115417.34112-1-lance.yang@linux.dev>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="db+pBdYh"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACA861570;
+	Wed, 23 Sep 2026 05:47:56 -0700 (PDT)
+Received: from [10.2.212.23] (e121345-lin.cambridge.arm.com [10.2.212.23])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86ECA3F86C;
+	Wed, 23 Sep 2026 05:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1790167680; bh=RIhC3hUarxRrR/f5mRDyLyshn3OVC6xd4Pet+9BmBkI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=db+pBdYhJE2fGHV6VKDio2pztmLqY1Eh+yFiBoVVLDJx2jEVzxpsuPFnx+/nlttpc
+	 Cf7Ot496F1Lyd/LCV9ab67bSymlJjM1X4hMWqAB3TKvs0DOlRrG+fpxyRQ9Bkqz49+
+	 7jFl+bqKwsuz59JreWAqLWWa4hJJWVTOV1uNJGBk=
+Message-ID: <644aa208-55f0-440c-94b9-75e58e588dde@arm.com>
+Date: Wed, 23 Sep 2026 13:47:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260923115417.34112-1-lance.yang@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/6] dma: swiotlb: Centralize memory-encryption pool
+ sizing
+To: "Aneesh Kumar K.V (Arm)" <aneesh.kumar@kernel.org>,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Will Deacon
+ <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ Steven Price <steven.price@arm.com>,
+ Suzuki K Poulose <Suzuki.Poulose@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Jiri Pirko <jiri@resnulli.us>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Mostafa Saleh <smostafa@google.com>,
+ Petr Tesarik <ptesarik@suse.com>, Alexey Kardashevskiy <aik@amd.com>,
+ Dan Williams <dan.j.williams@intel.com>, Xu Yilun
+ <yilun.xu@linux.intel.com>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Russell King <linux@armlinux.org.uk>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>, Paul Walmsley <pjw@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, x86@kernel.org
+References: <20260921063628.362078-1-aneesh.kumar@kernel.org>
+ <20260921063628.362078-5-aneesh.kumar@kernel.org>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20260921063628.362078-5-aneesh.kumar@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 23, 2026 at 07:54:17PM +0800, Lance Yang wrote:
->
-> On Tue, Sep 22, 2026 at 04:35:39PM +0100, Lorenzo Stoakes (ARM) wrote:
-> >Currently, non-x2 sh specifies CONFIG_MMU_GATHER_RCU_TABLE_FREE allowing
-> >RCU page table freeing.
-> >
-> >sh-X2 is problematic because it utilises slab-allocated PMD page tables,
-> >and thus tlb_remove_ptdesc() cannot be used in these cases.
-> >
-> >All other sh variants are fine as commit e3ecf7c7d082 ("mm: pgtable:
-> >convert some architectures to use tlb_remove_ptdesc()") already converted
-> >page table freeing to use tlb_remove_ptdesc(), which does so after an RCU
-> >grace period when CONFIG_MMU_GATHER_RCU_TABLE_FREE is specified.
-> >
-> >Resolve this issue by firstly specifying CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
-> >for sh-X2, so the arch can provide its own __tlb_remove_table()
-> >implementation (called after the RCU grace period).
-> >
-> >Then, convert __pmd_free_tlb() to tag the pointer to the PMD, and have
-> >__tlb_remove_table() check this tag to determine whether to free via the
-> >slab or to use pagetable_dtor_free().
->
-> Makes sense to me, so RCU callback won't mistake a slab PMD for a PTE
-> page :)
+On 21/09/2026 7:36 am, Aneesh Kumar K.V (Arm) wrote:
+> Memory-encrypted guests use shared or unencrypted memory for DMA and may
+> route all DMA through SWIOTLB. The default pool can therefore be too
+> small for I/O-intensive workloads.
+> 
+> Move the existing x86 guest-sizing policy into the SWIOTLB core. For
+> SWIOTLB_POOL_CC_GUEST, size the pool to 6% of guest memory, clamped
+> between the normal default and 1 GiB. Preserve an explicit swiotlb=
+> size.
+> 
+> Provide swiotlb_adjusted_size() so early users, including the x86 crash
+> kernel reservation, can account for the prospective guest pool size
+> before SWIOTLB initialization. Use the same area-aware alignment for
+> both the prospective and allocated sizes.
+> 
+> Host memory encryption still selects a normal-sized shared pool and
+> does not use the guest-sizing policy.
+> 
+> A restricted DMA pool already provides shared bounce buffers for its
+> devices. Record its presence during reserved-memory initialization and
+> do not select the confidential-guest default-pool policy solely because
+> guest memory encryption is active.
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Aneesh Kumar K.V (Arm) <aneesh.kumar@kernel.org>
+> ---
+>   arch/x86/include/asm/crash_reserve.h |  6 ++--
+>   arch/x86/mm/mem_encrypt.c            | 24 --------------
+>   include/linux/swiotlb.h              |  6 ++++
+>   kernel/dma/swiotlb.c                 | 47 +++++++++++++++++++++++++++-
+>   4 files changed, 56 insertions(+), 27 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/crash_reserve.h b/arch/x86/include/asm/crash_reserve.h
+> index 7835b2cdff04..c1f5bf5d4182 100644
+> --- a/arch/x86/include/asm/crash_reserve.h
+> +++ b/arch/x86/include/asm/crash_reserve.h
+> @@ -18,7 +18,9 @@
+>    * no good way to detect the paging mode of the target kernel which will be
+>    * loaded for dumping.
+>    */
+> -extern unsigned long swiotlb_size_or_default(void);
+> +#ifdef CONFIG_X86_64
+> +unsigned long __init swiotlb_adjusted_size(void);
+> +#endif
+>   
+>   #ifdef CONFIG_X86_32
+>   # define CRASH_ADDR_LOW_MAX     SZ_512M
+> @@ -33,7 +35,7 @@ extern unsigned long swiotlb_size_or_default(void);
+>   static inline unsigned long crash_low_size_default(void)
+>   {
+>   #ifdef CONFIG_X86_64
+> -	return max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
+> +	return max(swiotlb_adjusted_size() + (8UL << 20), 256UL << 20);
+>   #else
+>   	return 0;
+>   #endif
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index 95bae74fdab2..912f22ca838f 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -101,9 +101,6 @@ void __init mem_encrypt_init(void)
+>   
+>   void __init mem_encrypt_setup_arch(void)
+>   {
+> -	phys_addr_t total_mem = memblock_phys_mem_size();
+> -	unsigned long size;
+> -
+>   	/*
+>   	 * Do RMP table fixups after the e820 tables have been setup by
+>   	 * e820__memory_setup().
+> @@ -114,27 +111,6 @@ void __init mem_encrypt_setup_arch(void)
+>   	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+>   		return;
+>   
+> -	/*
+> -	 * For SEV and TDX, all DMA has to occur via shared/unencrypted pages.
+> -	 * Kernel uses SWIOTLB to make this happen without changing device
+> -	 * drivers. However, depending on the workload being run, the
+> -	 * default 64MB of SWIOTLB may not be enough and SWIOTLB may
+> -	 * run out of buffers for DMA, resulting in I/O errors and/or
+> -	 * performance degradation especially with high I/O workloads.
+> -	 *
+> -	 * Adjust the default size of SWIOTLB using a percentage of guest
+> -	 * memory for SWIOTLB buffers. Also, as the SWIOTLB bounce buffer
+> -	 * memory is allocated from low memory, ensure that the adjusted size
+> -	 * is within the limits of low available memory.
+> -	 *
+> -	 * The percentage of guest memory used here for SWIOTLB buffers
+> -	 * is more of an approximation of the static adjustment which
+> -	 * 64MB for <1G, and ~128M to 256M for 1G-to-4G, i.e., the 6%
+> -	 */
+> -	size = total_mem * 6 / 100;
+> -	size = clamp_val(size, IO_TLB_DEFAULT_SIZE, SZ_1G);
+> -	swiotlb_adjust_size(size);
+> -
+>   	/* Set restricted memory access for virtio. */
+>   	virtio_set_mem_acc_cb(virtio_require_restricted_mem_acc);
+>   }
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index d69370c08094..be3962a33fc6 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -193,6 +193,7 @@ void swiotlb_dev_init(struct device *dev);
+>   size_t swiotlb_max_mapping_size(struct device *dev);
+>   bool is_swiotlb_allocated(void);
+>   bool is_swiotlb_active(struct device *dev);
+> +unsigned long __init swiotlb_adjusted_size(void);
+>   void __init swiotlb_adjust_size(unsigned long size);
+>   phys_addr_t default_swiotlb_base(void);
+>   phys_addr_t default_swiotlb_limit(void);
+> @@ -232,6 +233,11 @@ static inline bool is_swiotlb_active(struct device *dev)
+>   	return false;
+>   }
+>   
+> +static inline unsigned long __init swiotlb_adjusted_size(void)
+> +{
+> +	return 0;
+> +}
+> +
+>   static inline void swiotlb_adjust_size(unsigned long size)
+>   {
+>   }
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index f368a73f4ed0..c19675846fc1 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -80,6 +80,7 @@ struct io_tlb_slot {
+>   
+>   static bool swiotlb_force_bounce;
+>   static bool swiotlb_force_disable;
+> +static bool restricted_dma_pool_present __initdata;
+>   
+>   enum swiotlb_pool_policy {
+>   	SWIOTLB_POOL_NONE,
+> @@ -480,6 +481,46 @@ static bool __init swiotlb_kmalloc_needs_bounce(void)
+>   	       (dma_get_cache_alignment() > 1);
+>   }
+>   
+> +/**
+> + * swiotlb_adjusted_size() - get the prospective adjusted SWIOTLB size
+> + *
+> + * Return the size that confidential-computing guest sizing would select for
+> + * the default pool, without changing the configured SWIOTLB size. An
+> + * explicit swiotlb= size is always preserved. An explicit area count is
+> + * included in the size calculation. Automatic area sizing is initialized
+> + * later from the running kernel's possible CPU map and any resulting size
+> + * adjustment is therefore not reflected in the returned size.
+> + */
+> +unsigned long __init swiotlb_adjusted_size(void)
 
-Yes indeed :)
+This is yet another misleadingly ambiguous name.
 
->
-> >This follows the pattern used by sparc64 as implemented in commit
-> >4a0100f7546f ("sparc64: use RCU page table freeing").
-> >
-> >Previously __pmd_free_tlb() freed PMD page tables immediately, before any
-> >TLB flush IPI. This seems to be a pre-existing bug, which this change also
-> >resolves.
-> >
-> >CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is only specified for sh-X2, as setting
-> >it disables CONFIG_PT_RECLAIM and causes __tlb_remove_table_one() to call
-> >tlb_remove_table_sync_rcu() and synchronize_rcu() in turn, and this is not
-> >necessary for other sh variants.
-> >
-> >This forms part of an overall effort to switch every architecture to this
-> >mode.
-> >
-> >Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-> >Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> >---
->
-> LGTM, feel free to add:
->
-> Acked-by: Lance Yang <lance.yang@linux.dev>
+> +{
+> +	unsigned long nslabs, size = swiotlb_size_or_default();
+> +
+> +	if (swiotlb_default_size_changed() ||
+> +	    !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> +		return size;
 
-Thanks!
+And this makes for another needlessly convoluted calling convention.
 
---
-Cheers, Lorenzo
+> +	/*
+> +	 * For SEV and TDX and CCA, all DMA has to occur via
+> +	 * shared/unencrypted pages. Kernel uses SWIOTLB to make this
+> +	 * happen without changing device drivers. However, depending on
+> +	 * the workload being run, the default 64MB of SWIOTLB may not be
+> +	 * enough and SWIOTLB may run out of buffers for DMA, resulting in
+> +	 * I/O errors and/or performance degradation especially with high
+> +	 * I/O workloads.
+> +	 *
+> +	 * Adjust the default size of SWIOTLB using a percentage of guest
+> +	 * memory for SWIOTLB buffers.
+> +	 *
+> +	 * The percentage of guest memory used here for SWIOTLB buffers is
+> +	 * more of an approximation of the static adjustment which 64MB for
+> +	 * <1G, and ~128M to 256M for 1G-to-4G, i.e., the 6%
+> +	 */
+> +	size = memblock_phys_mem_size() * 6 / 100;
+
+But mostly I fail to see how this makes any sense for the x86 
+crash_low_size_default() case anyway. This calculation is based on the 
+*total* system memory, of which 6% is likely comparable to (or perhaps 
+even more than) the *entire* amount of memory reserved for the crash 
+kernel itself. What's more, if the low memory and size restrictions are 
+lifted for regular CoCo SWIOTLB as people want, then it becomes even 
+more utterly nonsensical to tie crashkernel_low to this.
+
+Yes, this happens to be the behaviour that falls out of how two 
+different parts of the existing code interact, but I highly doubt it was 
+ever intentional, so I'm not convinced that complicating SWIOTLB 
+interfaces to blindly preserve it is the right thing to do.
+
+Thanks,
+Robin.
+
+> +	size = clamp_val(size, IO_TLB_DEFAULT_SIZE, SZ_1G);
+> +	nslabs = swiotlb_aligned_nslabs(size);
+> +
+> +	return nslabs << IO_TLB_SHIFT;
+> +}
+> +
+>   static void __init
+>   swiotlb_adjust_pool_size(enum swiotlb_pool_policy policy)
+>   {
+> @@ -496,6 +537,7 @@ swiotlb_adjust_pool_size(enum swiotlb_pool_policy policy)
+>   		break;
+>   	}
+>   	case SWIOTLB_POOL_CC_GUEST:
+> +		swiotlb_adjust_size(swiotlb_adjusted_size());
+>   		break;
+>   	case SWIOTLB_POOL_NONE:
+>   		WARN(true, "Cannot adjust SWIOTLB size without a pool\n");
+> @@ -511,7 +553,8 @@ swiotlb_select_pool_policy(unsigned int flags)
+>   	if (swiotlb_force_disable)
+>   		return SWIOTLB_POOL_NONE;
+>   
+> -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> +	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+> +	    !restricted_dma_pool_present)
+>   		return SWIOTLB_POOL_CC_GUEST;
+>   
+>   	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
+> @@ -2157,6 +2200,8 @@ static int __init rmem_swiotlb_setup(unsigned long node,
+>   	    of_get_flat_dt_prop(node, "no-map", NULL))
+>   		return -EINVAL;
+>   
+> +	restricted_dma_pool_present = true;
+> +
+>   	pr_info("Reserved memory: created restricted DMA pool at %pa, size %ld MiB\n",
+>   		&rmem->base, (unsigned long)rmem->size / SZ_1M);
+>   	return 0;
+

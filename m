@@ -1,112 +1,111 @@
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+Received: from mail-vs2-f26.google.com (mail-vs2-f26.google.com [74.125.227.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4864D448BBE
-	for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 15:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.226.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712FE412BFA
+	for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 17:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.227.26
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790177805; cv=pass; b=NPIMvgXSWZEIiANpxQUnCnVsNUvuN9941z5oYt9o2juRVXe2A3GqjMza7uUySePQS9yVutGLEkLmx9cBPFs8kF4CWFtckjIC5xdVw5QPzhKvtzb8aZ/TgNbYuaN1HOEyx1gTHQ/K2ty3G5dWSdPQOp3t47k1Y/4jY6oJw8GcGDs=
+	t=1790185309; cv=pass; b=aXgfyceXJYBrsYkH3LhpMJicA1k9e2pYTdg6X32CjmMDpJvDLr/NWTWawcx+/pFaNKyOpkcEjYnBKm0DPLL/gTj5dZCHpSScD+esBJeWnK2fh3IR0yCqx8PbWZrSEabnmXwpepF52zntJjelgVOQddk9yGlj+4/LVHiVNuTvaAE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790177805; c=relaxed/simple;
-	bh=MckAIFt7y6KQiCveSZvFBLKgfYCSm/ZaqCz+bYvfhus=;
+	s=arc-20240116; t=1790185309; c=relaxed/simple;
+	bh=eTXt+YWRlRejCDOgioYTKQsqgUN/p/gA8amlQ8yNWKU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bhyKT7PtX5aZ4bXNEM9En2vMwPKuandgwNLQ0fSxOK5sKkiwwlm58aTxbTehS8b1Gsdhm3B60UUnZ1RcVQaMVo/GMxAxHCugYxY+O9c3IIzG8WxusxHRUraeXXwEsXpDMKyXm7MTMQ9LRsPf4hakPp4f1vEFpPlfWFGfUatx5do=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b=l2TOw4Lx; arc=pass smtp.client-ip=74.125.226.204
+	 To:Cc:Content-Type; b=kqbnu8V2NIhHIY8tqbUhKM9YA4DplO7WicxL1nYntb5ROKqsohnNuuwpp7n+BWxYWJbuosEGdQtZPmJph4Y2VSvwdZaQ6nj5tg1uKT+jorQsvxm413lLI3LF8F+g0Q45Sba+cmODLqvgVp9YHahfAQXRoaeZLIzdWVTNOc/h1YA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=pass smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks.com header.i=@anyfinetworks.com header.b=XbqwyzBO; arc=pass smtp.client-ip=74.125.227.26
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=anyfinetworks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b="l2TOw4Lx"
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e97e2c7b3so654928241.0
-        for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 08:36:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790177803; cv=none;
+	dkim=pass (2048-bit key) header.d=anyfinetworks.com header.i=@anyfinetworks.com header.b="XbqwyzBO"
+Received: by mail-vs2-f26.google.com with SMTP id 71dfb90a1353d-5c67e529da9so488418e0c.2
+        for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 10:41:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790185307; cv=none;
         d=google.com; s=arc-20260327;
-        b=sfoYew9IisXnJC6+rZuutqW1eCSBBRER95fciHNm0uHbO8Vgm/8YsVnFK9EkpMhcIr
-         NL+GYE1c2E1xgvjEV2GUM7QbFK7ygsHA0sC4L3xC2kmr+YyOcVuERnh9D+5QZQ18h7xR
-         xHdnyHwkwumgSDTp0naA9IcMdhrDKi1WIR86C6EoL5/PVxh8CjLzYSSlxMaKI4g2yLhl
-         FQfNDNcdIdSLilqP3KlZK+Zzz1aPZac+/NpEL4JvwQ0M0rf4TZU8U+1ogTCJAfm0BLut
-         fZu1RL5J1V5QCk+hP60+IO3hyoOgPRl+6u8p7qSPmiW50q8huQbR0pvTCpFZVVTE599Z
-         qeIQ==
+        b=Zd36t35zf7OMKroRtnN1hsTpz3o7/YuVSZHkvhaSgyeZiUDdRaYDdoHBWJnJTqwXBr
+         5Y/MUTN6Sm8Gs/VzpdPjraWnE95TkN+wKjh20cEUcRI2EPH0/77SeQCulPcoxapjLdSP
+         GHqW7BrYrJY0fYY1DFW939aO1c0CdRVpBSD/2UoG5f+Lnwk4CEvhLqCpILk+7bJW96h0
+         SB5pZln8e+1hFvNPlQzEDFnmE/GIIsR210UvVoKeeNVau3v4leTrReShXGiBGYPaa2Wk
+         vzcRRm904BHlGvm9OdcUTxQRS1SKzhBZmoi40rTskxCzF+Tfbzn7odnZVE93Rs2wgW1f
+         L5FQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=WyKcbkEZlymHx0VcQ7j5z0yvfYLusEKHMFeFnghlEvU=;
-        fh=FBqfWiUcqf/c/VhUJTfevn6hRQPd6zdQvjJN6p21zlk=;
-        b=lh3GisMR5iSjwPyfr6lSYXL7yyp2ErwjILLT+OyXUVD05MYaQnrPMxtT8MZS+xG0B8
-         O1MPPB2VChheMVHWHIRj9SPNRPygbW2Ji/tviA6DhYQIlydujN7QnANS8/NunSX7m6et
-         WvJq22Nnxe2fx5Uu3kEme8Q7fNql6PGniz3jjSFuUKMRWlL3Y8JzXQyQ4JC4AFFJ7v/y
-         jyaLN4ZhWhielD8GvE3aISg+tJEIncbNlhlgqjy+dsRuUl1aMwnAoeS8FNDsPiyBipZV
-         z9ZYoKvX0d+TXJ4HPgD/EO3kX79gaYb2JC8ZTbIeoxGvtdozSv/u0BWQKd6Gqr5CSimx
-         A2HA==;
+        bh=eTXt+YWRlRejCDOgioYTKQsqgUN/p/gA8amlQ8yNWKU=;
+        fh=s3lpCkSuEiFV0T5hBcIonUh9rQn32Ql58VuPvvjrL+I=;
+        b=Y36hwzSE7V/vNqw20kZQ/t/mCz2fmyYxs/2HOgM1+4a3/bIhwzT9oQsG5HCCbFqfvQ
+         oVlVxIKE35ludc+Sfvy+bzYHFXdXan7HdRqX0m+Tugk7bDEfpykpfH1PdkFLdFzQ2jY2
+         H/ul6YmI4kOjrNmVYc0wq+oQYx3J+pR9ICEAHphHSZ/G2j3gd3FCwcEFkUQNAR+6Xktc
+         8fnl/rMyhW3mBIxSSq3rTYw75qffMvEYPctvfq6bsJ7sqYwbb7aneHIfbQGexm3rXIk3
+         W3FhTXvyb4RqSaxWB4IfrYq6rFhpFCy7ES7eTe1hobShRf1F4A9J9HekTxFb+VEALl/n
+         opaQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20251104.gappssmtp.com; s=20251104; t=1790177803; x=1790782603; darn=vger.kernel.org;
+        d=anyfinetworks.com; s=google; t=1790185307; x=1790790107; darn=vger.kernel.org;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=WyKcbkEZlymHx0VcQ7j5z0yvfYLusEKHMFeFnghlEvU=;
-        b=l2TOw4LxGBKykjSF6yNa2YP4rRN+HRl2i7AntiIAVw6rxJINw/YSTkq0NvZycm3N/e
-         ne4Lc/zLTwN3UeZDESODBDOOcEbzZDs4neg9holUuBm7QbL8+LVLWVZDM0ALbCtbAeDo
-         0eDAQn+lIzXrndwUjlVhPMdk5+U6CTCiJFzrxB7SM3W5UViZJzcFq42ZUngGYo+i/XO3
-         v42WFEV8rxgGpQMVFC2kC/3N34lvxKXVzuplNyxshLjYPNJJObWJgHS08RWIZUVKCVfK
-         xdY7cj8P703FrBFSBKWENWXDeru76REFVDSSdM0jFsqzwPUaaYONs6kq6NItxq1Z/7nr
-         uDOA==
+        bh=eTXt+YWRlRejCDOgioYTKQsqgUN/p/gA8amlQ8yNWKU=;
+        b=XbqwyzBO580wnwSqu1bce/6Bu7P0NuoV8UcknY8G8wgjWYDJzy8WJFPYKSAvR5WLNN
+         SqrYwX/vHaHnCxWbP4Ex5w22EI8A0pyLqJQNBsZdFLomS9iqC5VCddJE/fPNmlZDNhDM
+         +2Ue5+9yYvHCksv/eRB7xr59f+5m4qTTqDjfZOhvu9JVdCumdDupcdokUjLxYhBPjHS9
+         XrDYAkaI+aAkaw0VYacR0l1a5k93WLyl79yINDtUn94ttjq78d/JhMcYe1OXsBpjYeAr
+         sHZ1u89SuJ6QPi7YkRW3h/8fm2u5Ukrxs76FAr2lGNW4yWn5FW1Ll+zORPHUolQ3BJC9
+         Abxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790177803; x=1790782603;
+        d=1e100.net; s=20260707; t=1790185307; x=1790790107;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=WyKcbkEZlymHx0VcQ7j5z0yvfYLusEKHMFeFnghlEvU=;
-        b=kj/LatdVWLPC35Ga47spxLI87sWHSJhpgv1YHD7Uz7z/xAmeP1R6Sz/wcs63HwAo4j
-         8QICWUrm2aQ1rACqHzt1NO7v0LRB0owwYMvFfge59k/Hgk/JgSEyEeyCMwuObxGJXopN
-         rwqlZ5rzhtVUtkgyrTcMrfxRCO5GSEF2yVNVMU8qBWmk6EBz0dyNWRu+98+x7ZGnsL0K
-         gtiyDRauzJJpSIv1AY+GFz53pQED8a5ss6m1VzbwGUHVdayjl6yUcVenQNxNcIo3Y8JZ
-         XXmvTg++D3DG0ipyindRcQj673ZFSe3GdBTXTJsbJYLiUwsGnDhf6keskWMb7lP7cqiW
-         //6g==
-X-Forwarded-Encrypted: i=1; AKwUvBzoor+NHEifQ2ksrCgF2aOPI6yqQZvn22pNoMgUG5wgfCg9EUI/jGFQRjydfmDACsd1m94fbajKEkhe@vger.kernel.org
-X-Gm-Message-State: AFuF++m+sL7JB2XxxwHggYU5wocyDgs4IW8oHIroMfmbP8hMyMn7jTcM
-	moVsxB4w1eiLKsj+qy6O5ipXfF/cEvPwzwb+Me76s7KMSHEB4AOCFsvFMVuvtIF4xh7UShtiZzt
-	H13mXzO84biKyiqopxMyhWezwzDNkHoz+89yV/ss3bQ==
-X-Gm-Gg: AYBFou0f36Z4jG9LcL3BA/T2fKEWRTJvP5ajbRpllfz/epaTnb2hmaZb/MVRT6ggpvL
-	6/tclQAJuwrUv6wD7RXZE6p7m3RK9DeKNSlJGlmXEduhVnwqQqN2dXBjFCHiKkjRXaAJHsSSoUo
-	cgJ/2kP8yrg47XFVV8Dpg23GMwl6XSVV8mMO8I3jNlmbOeT1RVlzPYLst2zG5sbGdeDcJw/NP7O
-	bDpG+dUuBXz8b7CwF/pY3W6FjllttckRGG9e60qJKpTuQMSCcCIH4smvYBKCEqlTAuApABFj32U
-	Pg6+h23of1srwQbj697HB3UJvjjY/6HRHQWD3EZOWnMOp3Oc/+mT1ag=
-X-Received: by 2002:a05:6102:c94:b0:7a7:19aa:8a81 with SMTP id
- ada2fe7eead31-7ac1ceab000mr2765066137.28.1790177803157; Wed, 23 Sep 2026
- 08:36:43 -0700 (PDT)
+        bh=eTXt+YWRlRejCDOgioYTKQsqgUN/p/gA8amlQ8yNWKU=;
+        b=WgEWfAUZmSCbhUIE18AJ35BE4ES98t8Ft41G95wLqODGkCMlmHKz9vBprIpppvfHwc
+         Mf1UOk25JlZFAt9BHKM9rT+nepVycA8hbVyUGHVie12n62x1Dhy42BEPvsmEbKTYr7aB
+         R5IKOswgOwVweSvF6Np9Y+cKtvdyq81o9DwX77x8O9a9aq8tPml3t4PWaLL+f9TNvoJW
+         8KY9QSo8aLexyC6eOor1b66ya+DFi5jBmAM7hRRA0O9OKiZuXfJ2LSZSCv7sB/O3XS25
+         ZU9a/xSRF+ma4S+gnaI41l2iVG/YKGlI7ERBClrKQdY59p2HbzjhChmwVoXaKqWM31/V
+         3eew==
+X-Forwarded-Encrypted: i=1; AKwUvBxfFMHqy7hwYKq1DCKxJHi6HJuVkuHHCknpMBhOsnfsQFuyZVi89KUDtJbEESEDeOxgYkYz7dKfK8ph@vger.kernel.org
+X-Gm-Message-State: AFuF++n7kd3L3J9jC0W9jrxeoPPZRTscG/SNxvitBdUhh74Tg/JuFGsc
+	5uwvDyqThToV0FNMmJ2y7KkkMRQ2QVTLjhtyHCUq1jS0E3DNetzqKbmDVJLsywXQRWSMhJrc3GV
+	vaOMvlaQdTDhUzrNHlukG7WP9cdyCMBdZ51jFhz2M6A==
+X-Gm-Gg: AYBFou10bPPHPVhfOObc+QHP+v6BcnGv5Pzk+S6Uxw6QBkDenzmZqdBptNB6RVzGsFG
+	+A+ziodniNu9a2YYC/DfHKmbeg7LwFbDV3LSTh0+ODE4L6gDnDlWEu43bXb051lhngmK97c9vEh
+	50gUF6b0XjMjQP09i97PSWkacyHG8WUbgNJBgkHKbJ5btTE38WJrvrm2pCFQ4WuX+ZKALARR8lc
+	PQEuwoug2DDc7LfyLegAGqp6yKOAyScKgtl45gbI7UNGR8Dn3i32FbJrzS/MwPtsHQsBi1OJHJR
+	N+tZyHJc1bDUWJf2fr4PCA/t0ljECChUARtJ5j0kqQw/ayHOe64Ald5H5P86UEL4+g==
+X-Received: by 2002:a05:6122:2207:b0:5c9:a60b:e5d6 with SMTP id
+ 71dfb90a1353d-5c9f167b9e1mr4151746e0c.16.1790185307262; Wed, 23 Sep 2026
+ 10:41:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260911213340.3767930-1-main.kalliope@gmail.com>
-In-Reply-To: <20260911213340.3767930-1-main.kalliope@gmail.com>
+References: <20260912180643.1426488-1-main.kalliope@gmail.com>
+In-Reply-To: <20260912180643.1426488-1-main.kalliope@gmail.com>
 From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date: Wed, 23 Sep 2026 17:36:32 +0200
-X-Gm-Features: AclHuK9A_heK5XpfCJuEwPoemEBWBt68h_7NVvsiHk4qVRuUG-8IlkgYOWm5Ax8
-Message-ID: <CAM1=_QT3=gVshfds+0dZbmHy3vrturgddDfzj8MQYaj_mCchMg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/3] bpf, mips: Add signed div/mod support
+Date: Wed, 23 Sep 2026 19:41:36 +0200
+X-Gm-Features: AclHuK_YVE_M0LMnByAXkUpK3TPaTMcOIBWbPB_vF5KvqXaURtUamsR22WrjU-Q
+Message-ID: <CAM1=_QSGvyph2hUcf4xD0gkNeVN5vM-ragecigyy0dGpr3ZU_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf, mips: Add BPF_MEMSX support to the JITs
 To: Nicholas Dudar <main.kalliope@gmail.com>
-Cc: tsbogend@alpha.franken.de, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com, paulburton@kernel.org, 
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, paulburton@kernel.org, tsbogend@alpha.franken.de, 
 	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
 	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	philmd@oss.qualcomm.com
+	bpf@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-> Nicholas Dudar (3):
->   bpf, mips: Factor out div/mod emission helpers
->   MIPS: uasm: Add signed div/mod and sign-extension emitters
->   bpf, mips: Add support for BPF_SDIV and BPF_SMOD
+> An out-of-tree
+> fixture strengthens the signed/unsigned load comparisons and adds negative
+> and sign-clear loads with dst == src.
+
+Consider adding this to the test_bpf suite.
 
 Tested together with the other MIPS BPF JIT series and fixes. See
 https://lore.kernel.org/bpf/CAM1=_QTjcyMtMLawSFnCt2c5wJJ-if40GSfo+o-CoZqcgx5wYQ@mail.gmail.com/
 for test setup and results.
 
-For the series:
 Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 

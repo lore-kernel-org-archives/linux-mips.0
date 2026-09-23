@@ -1,127 +1,107 @@
-Received: from mail-lf2-f12.google.com (mail-lf2-f12.google.com [74.125.229.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681303B0AE7
-	for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 11:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705EB49DBA6
+	for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 11:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790161864; cv=none; b=nFuNhBZidd46/4rXBrlrfsYyI6j1dvMlNu4su7aBDdXgvH/BVRVd4GOYkvxNL8cA+98Oh/Subs0vkN8akgKpj6YV+zDRHBaUJhYQqJQFqsDpmUb6G3tCdQEIHNIPh/uOvAPLXt5kXl+2nc4Ulro1vrCwAQVPXtX8MWwAn8FoEeU=
+	t=1790163013; cv=none; b=DOrVnA8A/eikMTZiPJDGab6LWdxASK6B5CtPJtmiWGjrpfz4bWWqEWbq1vRh/Q3OgMUPnaHxzw4Ns2NwbKUnjrFZqBSq11cFf0U+QlObvBFERM8HfF4GJLODiC/AE6rSqQKpGqTfmPzLas6JkpPHIMY6NYTAccEsqv/SVcELSW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790161864; c=relaxed/simple;
-	bh=Y1MeJjIUqtIcD45CjDERSrfL5qZNM44AZrKbswPZd44=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cAgASxpS3UgKB73AMT7SpMNnWiXstKDDDc4LkUd15CtgMsR5RtaXMkmWkhEDqPD6v/lO5jZnQdkR8/XoiK+Mbd14bdBWHJW7ILXQUvte87m2Qf24qVV1xCBiMISEJofzwkW58cyJ1YDyukYZ4qspey6RbjVdmNIc6NQ68+kJ+Uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b=kQnWQvwV; arc=none smtp.client-ip=74.125.229.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
+	s=arc-20240116; t=1790163013; c=relaxed/simple;
+	bh=AYhacAIOU9DfNtEKQcLBl4WUi74t7QonBaw7zJRbTMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qcOtV6tpvHlVXnZ0bOfnKE+T9AxkQKWJX/lYfTLrdpAWQC4TZiyg0LgXqhxWfTNCBMaZN/r78VQOGoGfRp17hCn8+9gchCew1K6e1IETrS1l3V70+RAywpMtot/Z70JUO2sN4Kf7MyovwH6hKeBvuJAIkRvPJ8I+Htd7iayG9tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bIPJpYp8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20251104.gappssmtp.com header.i=@anyfinetworks-com.20251104.gappssmtp.com header.b="kQnWQvwV"
-Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f13d77so848890e87.0
-        for <linux-mips@vger.kernel.org>; Wed, 23 Sep 2026 04:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20251104.gappssmtp.com; s=20251104; t=1790161858; x=1790766658; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6F6IrMVbkAxuPsXSBU2GCL4E74W3Y9sNczvVD9Ex120=;
-        b=kQnWQvwVasq7adqWT9Slkc7J5ZkUUv3mCOWZ2r4wpRIgh2pxTcG9W4NsX+Sv5cu8iY
-         c2gbdKY/4/78qcUAHWsVYKmUAKlPcjBjVQUwRQn3KKT1aXTGqVBod9Ky3tlX0B71WY/P
-         UE2Zv0FkFJMS9D71T04+MqQeTktiSgEzlu3Ewme40FIDQpLwb9Lv0BsKSuPqOaCEMV2W
-         YcJboTJB1bZzjicaUZNnJ5EX2At5mwC7R1XQQTA6rLKEB8GXneG6wdjz+7US/Jp92AV+
-         e+qb/l8purEmF+266z4RkQGyIw4vUZ9DIS0FprE2ZQ7ACi4qvQUCYhFG4t+WvC9sKiiw
-         TorQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790161858; x=1790766658;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=6F6IrMVbkAxuPsXSBU2GCL4E74W3Y9sNczvVD9Ex120=;
-        b=d/6KobhLwZAQnijWDnA+vDQIwIBiutKegfa+OCXUDM95zs9G6LclLTAiOBOGAxxagj
-         XPPsC69RVK6D456UKXWJsRsYdlw6CMiPVtNHCpEdWw1+R/o3greBVuNcD/TUUV013/ex
-         8KycXiMOB+uKGWT4ZyLOwRlRa0Eis8F5sGXuzz0Qq/aRrW/jX0gYZ0ZDYHmY6ZxgY0rj
-         k3r3v0o2vp9c2OPHkwQxqU7ivJVAwfzCgRiUT3gQP9g8Fv6tN/L7Dgkudoubg3E2L22s
-         AivGDSo00aiJiK3Y7AmdjiDSWTBjnq4tHPIVjSw8OQBEoBZOIzBRV7ukZ5ni69neDX5w
-         XubQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxGwgMdZX1JOGdDc/wRPB5MEHrv3exu65+IIOrGAUZeJuIFLhO/kXwO0uU7wx+yrihVp3vlsDSBmlYs@vger.kernel.org
-X-Gm-Message-State: AFuF++nlwpfVZ38Vu3whAtU9+FeDwDqqTRSZ34Ay13GobNiMbUU+DENj
-	gGIlRe3H9M6bktOyF0f4/lfo9prP0ZBfH11NYDCV3SnPK/vQbx9GuVJpVlZdK2hihT0=
-X-Gm-Gg: AYBFou2shMPi+QJvQEf+89CAw/4/WiVFka3hAMWQGr+WsquJzhBcWY8DrNJWFM7g1pU
-	7a3xlzz19o5X/NnUixM/UxDGECArckSfdG1vPfjDAuukOEPiVOELo2CT9WBhRTw1KBSrQ+OrcDx
-	09V6JHDQRd2Tag9LWxdgvibD1qajGr/oIqKem6MDBnRHaKahX8QIoVJvKR686SdOFr6V4RvDSxj
-	xD2SpgHY1ESyXqizFBkSoaxn4Y/ccGbQcbCYlHaZVGQf38oA4dX3DHN0egljaRszkASSt33tgES
-	xPORU0QbGzuvHp6y+6A5hw6yZp4/rdpYvku+aKTNJ5NC3M5flp4OeziUOjRlSktvSCazlqVhyDG
-	L7T7psC6zieDZQZkw0nmdy1Bz2C4vV3C6wEbSFGVy5iTn+Kl6E3ZyQnTqDcGnITMElXwaTfLUJQ
-	h1phNzBkn4dJZMu9WXQ7biVPmIjxBwcZvrkTysUrTGsaRc1cot+YdFJlVcCMi4gAP/P4FqxELui
-	VHWiTovixSVX/I82E+SV8cNOKPMhjOchZ039X/t8qw=
-X-Received: by 2002:a05:6512:3f26:b0:5b6:4ae:5b83 with SMTP id 2adb3069b0e04-5b8d89b6f07mr733196e87.33.1790161858572;
-        Wed, 23 Sep 2026 04:10:58 -0700 (PDT)
-Received: from nuc.. (78-69-188-101-no600.tbcn.telia.com. [78.69.188.101])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b8d8589783sm507873e87.51.2026.09.23.04.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2026 04:10:58 -0700 (PDT)
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To: tsbogend@alpha.franken.de,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	memxor@gmail.com,
-	paulburton@kernel.org,
-	main.kalliope@gmail.com
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	jolsa@kernel.org,
-	emil@etsalapatis.com,
-	ihor.solodrai@linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	philmd@oss.qualcomm.com,
-	Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf 2/2] bpf, mips: Fix BSWAP 32 and 16 on MIPS64
-Date: Wed, 23 Sep 2026 12:51:58 +0200
-Message-ID: <20260923105158.3514342-2-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260923105158.3514342-1-johan.almbladh@anyfinetworks.com>
-References: <20260923105158.3514342-1-johan.almbladh@anyfinetworks.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bIPJpYp8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1790162997;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AYhacAIOU9DfNtEKQcLBl4WUi74t7QonBaw7zJRbTMw=;
+	b=bIPJpYp8SAvjpZ0hLmxcgWBBZD4aKLNw4pyzFJp9H04E6JcBVDr8Ik0Gd8/7ua43hTSnBm
+	LA8r6ianIPOgrDVM9CWa+jOYuHNfiLKVKgAgDgOt+V8YdaFOTJafSGFIO7Zw5ToKEexGA3
+	SWZ8EpsuhfvGyCWS0WAOHYt6kD5YIOA=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-363-gooFaoLZMMuKAK_dogOFiQ-1; Wed,
+ 23 Sep 2026 07:29:53 -0400
+X-MC-Unique: gooFaoLZMMuKAK_dogOFiQ-1
+X-Mimecast-MFC-AGG-ID: gooFaoLZMMuKAK_dogOFiQ_1790162988
+Received: from mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.95])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8D61E1955F14;
+	Wed, 23 Sep 2026 11:29:44 +0000 (UTC)
+Received: from fedora (headnet05.pony-001.prod.iad2.dc.redhat.com [10.2.32.117])
+	by mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 27F2A418;
+	Wed, 23 Sep 2026 11:29:29 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 23 Sep 2026 13:29:44 +0200 (CEST)
+Date: Wed, 23 Sep 2026 13:29:28 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Ricardo Robaina <rrobaina@redhat.com>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, bpf@vger.kernel.org,
+	paul@paul-moore.com, eparis@redhat.com, sgrubb@redhat.com,
+	richard.henderson@linaro.org, mattst88@gmail.com, linmag7@gmail.com,
+	linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+	guoren@kernel.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+	jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com, James.Bottomley@hansenpartnership.com,
+	deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, davem@davemloft.net,
+	andreas@gaisler.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com, tglx@kernel.org,
+	peterz@infradead.org, luto@kernel.org
+Subject: Re: [PATCH v3 01/14] audit: log all six syscall arguments in the
+ SYSCALL record
+Message-ID: <arO4GNT_5wNEYsCO@redhat.com>
+References: <cover.1790088067.git.rrobaina@redhat.com>
+ <855572d1b7461e7f258547be0f11c74029755110.1790088067.git.rrobaina@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <855572d1b7461e7f258547be0f11c74029755110.1790088067.git.rrobaina@redhat.com>
+X-Scanned-By: MIMEDefang 3.6 on 10.30.177.95
 
-The 16/32-bit byteswap implementations for MIPS64r1 and earlier do
-not have an explicit zero extension afterwards. The input is first
-sign-extended to 64 bits, and the byteswap sequence can then leave
-the result sign-extended depending on the value of the low bits.
+On 09/22, Ricardo Robaina wrote:
+>
+> The SYSCALL record currently logs only four of the six syscall
+> arguments (a0-a3). The remaining two are captured but silently
+> discarded before reaching the audit context. This leads to the
+> need for auxiliary records when audit-relevant data lands in the
+> 5th or 6th argument of a syscall.
+>
+> Extend the SYSCALL record to log all six arguments, by adding
+> arguments a4 and a5 (5th and 6th syscall arguments respectively)
+> inline within the existing record. Also add the two new args to
+> the audit rules switch case, so audit rules can filter on them.
+>
+> Rather than plumbing two more register arguments through every
+> architecture's syscall entry path, retrieve the arguments from
+> pt_regs via syscall_get_arguments(). To keep the series bisectable,
+> add new helpers audit_syscall_entry_regs() and
+> __audit_syscall_entry_regs() that take a pointer to pt_regs, rather
+> than modifying the existing ones in place. Later patches convert
+> each architecture over to the new helpers, and a final patch removes
+> the legacy helpers and renames the new ones back to the original
+> naming.
 
-Add the missing zero-extension.
-
-Found with test_bpf on MIPS64r1 emulated by QEMU.
-
-Fixes: fbc802de6b10 ("mips, bpf: Add new eBPF JIT for 64-bit MIPS")
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
----
- arch/mips/net/bpf_jit_comp64.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
-index fa7e9aa37f49..6681ccac9dd9 100644
---- a/arch/mips/net/bpf_jit_comp64.c
-+++ b/arch/mips/net/bpf_jit_comp64.c
-@@ -305,8 +305,7 @@ static void emit_bswap_r64(struct jit_context *ctx, u8 dst, u32 width)
- 	case 16:
- 		emit_sext(ctx, dst, dst);
- 		emit_bswap_r(ctx, dst, width);
--		if (cpu_has_mips64r2 || cpu_has_mips64r6)
--			emit_zext(ctx, dst);
-+		emit_zext(ctx, dst);
- 		break;
- 	}
- 	clobber_reg(ctx, dst);
--- 
-2.43.0
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 

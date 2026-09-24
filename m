@@ -1,222 +1,247 @@
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8F73A48D9;
-	Thu, 24 Sep 2026 03:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E8C3F6C42;
+	Thu, 24 Sep 2026 06:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790220515; cv=none; b=Yw5qQYCGi+7iNpZwNvSrWrKmYqwCd8krqhjc5xB9u2rp3duzWtSbU0jP/v+kkL+xbtpUMVw1GpKEu59EqjzX3Cgwq7gUmv0AODl+UUlvZUlgP88W29dy1uvZ7Y5QoapEwf/xpQds3SZJ1NDwwB03K3WpzrQA0D8cDcqoqkCuZGo=
+	t=1790230103; cv=none; b=DJPx48o4eNEna6Y+YV9FXVta7lFd/W2jcysElpFe3fDUSEQoPcdquRqDZBOv5N2xxBK3ONUV8R2w4ylBr/HhlLE9hsOhIJB9BbWwy29mHSuZdBTAdi8TADd9QeCy0msWm8h2DhOeSp6oDe89g5S/sAvktA6fbKVkSB1Agg9BWhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790220515; c=relaxed/simple;
-	bh=ApGqBebKLjgFzhSNUM7xIQ3yP5/hw3k2FpOoK1sAf5c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aKWAE1A6bq3iOhfidv27CtSWI4enF4+wGkdv9Untcvq1pFrm8SQcS0kEQ8idlP0cKKpeoqiHmc/CcTJ+ipoI0ejxXklulAsaAt2LzSJdObXZfK/MlwI2XgWWmHZh+vX76Rv3UVCYznigqBk/zSBSw9VUe9Mm7UHKx7TALizIJW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=K/WjFZkl; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1790230103; c=relaxed/simple;
+	bh=v+9XRJTtvH3BqjVcGSVcYBfvf9q3PzWiAk0+il3HErc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nz1+ztePF+ssuakARklb0dG2Os8purwey7kWidUK/sw+HNzIIm89srv36oHVx4FnBFLcZxhg3rtov58e+HcYtrbslJRS5a+QsMf0xqRCLrms92ZxuVGtmBOsdLTmnTPkt7Q7CyzFSZOuSJ+WvuNjCGmful6PzPautSrPQ8/b4co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dCLAyysY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="K/WjFZkl"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1790220508; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=CU0OqDp6nwpS3D+8EJdb+ofEYYwhoXq3LClu7tPE0EE=;
-	b=K/WjFZklHLLceBT2SrZsRUps5Vz4TS7Fib8nichlvpMJ2OYw4tX/wUq6Kf6sQ4ZqSKAGR3L7QnGG8T1yGQDv4crAgrZAhFAOaoTlyOluY/IgOH2XJ7Ztv+tlo5/QESLWGAKL4lfGBM3y0NuSnUjpzvXPup+9xRuXwwUVC7+wMRE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=98;SR=0;TI=SMTPD_---0XBYP0rj_1790220500;
-Received: from 30.74.144.118(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0XBYP0rj_1790220500 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 24 Sep 2026 11:28:21 +0800
-Message-ID: <bd6c18af-68dc-4565-a2e3-04dd21e7ea3a@linux.alibaba.com>
-Date: Thu, 24 Sep 2026 11:28:19 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dCLAyysY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABCE41F000FF;
+	Thu, 24 Sep 2026 06:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790230098;
+	bh=A+b0QfMrBYdMcYFCICVqdR0OXDOa6w9OD48EIiSzDyI=;
+	h=From:To:Cc:Subject:Date;
+	b=dCLAyysYJq3tw3Zd89/8HfyIdVUUN6YTWImQbQtYWgNgSoX+q7H8933X4zO5vsix/
+	 cWAmzjdMnk+PSNjJeT226kssBmm8ufXA7enM27yO7uWkccRxhHNQnYvO++Zr45t6eP
+	 OeALh5UHn/vSCK0Rh4RSy3KJUeVFnG5TsvTPhd9ST8OCQK505QKdc6V0IFjBVNhBMy
+	 xNiX0aNyHwI9CKrv7R9GSYhWwqqiaaErgu4K++3z+05rY+zy3QOaz8I96TAPuEeUjI
+	 0Th7aF8pwVdxGD0s8uvsSbzv4vyoM16Mk5PfUSMlOWPka5qZHjNKC5wurOCZj94FfQ
+	 SY60QB0CQgMvw==
+From: "Aneesh Kumar K.V (Arm)" <aneesh.kumar@kernel.org>
+To: iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: "Aneesh Kumar K.V (Arm)" <aneesh.kumar@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Steven Price <steven.price@arm.com>,
+	Suzuki K Poulose <Suzuki.Poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Mostafa Saleh <smostafa@google.com>,
+	Petr Tesarik <ptesarik@suse.com>,
+	Alexey Kardashevskiy <aik@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Xu Yilun <yilun.xu@linux.intel.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v6 0/8] dma: swiotlb: Centralize default pool policy and sizing
+Date: Thu, 24 Sep 2026 11:37:48 +0530
+Message-ID: <20260924060756.1325156-1-aneesh.kumar@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/12] mm/khugepaged: deposit a newly allocated page
- table on collapse
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>,
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen
- <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>,
- Jonas Bonn <jonas@southpole.se>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
- Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>,
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin
- <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner
- <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
- Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>,
- Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org
-References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
- <20260922-rcu-pagetable-freeing-v4-1-fe1ad1f1e303@kernel.org>
- <arN7q5nHz7iebA_e@gremlin>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <arN7q5nHz7iebA_e@gremlin>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+Hi,
+
+This series centralizes swiotlb default-pool selection and sizing, and
+simplifies the initialization flags used to describe pool placement.
+
+The first patch replaces the addressing-limit argument with initialization
+flags and introduces explicit policies for the different reasons a default
+pool may be needed. Architectures now report DMA addressing constraints with
+SWIOTLB_INIT_ADDRESSING_LIMIT, while the core selects the corresponding pool
+policy.
+
+The second patch moves the reduced sizing used when the pool is needed only
+for unaligned kmalloc bouncing from arm64 and RISC-V into the swiotlb core.
+
+The third patch centralizes swiotlb sizing for memory-encrypted systems. It
+moves the existing x86 guest-sizing policy into the core. Host memory
+encryption retains the normal pool size, and a shared default pool is not
+selected solely for guest memory encryption when a restricted DMA pool is
+present.
+
+The fourth patch removes SWIOTLB_ANY. Pool placement is derived directly from
+SWIOTLB_INIT_ADDRESSING_LIMIT: pools required for limited DMA addressing are
+allocated below the architecture's low address limit, while other pools may
+be allocated anywhere in directly mapped memory. Xen continues to request a
+pool explicitly with SWIOTLB_INIT_REMAP without imposing a low-address
+constraint.
+
+Changes from v5:
+https://lore.kernel.org/all/20260921063628.362078-1-aneesh.kumar@kernel.org
+* Collect Reviewed-by tags.
+* Drop the x86 crash changes
+* Add two new patches:
+  "dma: swiotlb: Consolidate slab rounding"
+  "dma: swiotlb: Rename swiotlb_size_or_default()"
+* Drop the swiotlb_default_size_changed() helper.
+* Simplify swiotlb_adjust_pool_size().
+
+Changes from v4:
+https://lore.kernel.org/all/20260914070135.313337-1-aneesh.kumar@kernel.org
+* Collect Reviewed-by tags.
+* Add a new patch, "dma: swiotlb: Track whether the pool size was explicitly set".
+* Retain SWIOTLB_ANY usage for RISC-V until patch 6.
+* Rename SWIOTLB_INIT_FORCE_DISABLE to SWIOTLB_INIT_DEFAULT_OFF.
+
+Changes from v3:
+https://lore.kernel.org/all/20260904101810.1193505-1-aneesh.kumar@kernel.org
+* Add a new patch, "dma: swiotlb: Add an overridable architecture pool opt-out".
+* Clarify the change in default behavior with the removal of SWIOTLB_ANY.
+
+Changes from v2:
+https://lore.kernel.org/all/20260813102521.1367737-1-aneesh.kumar@kernel.org
+* Rebase to latest tree.
+* Drop SWIOTLB_ANY and derive that based on SWIOTLB_INIT_ADDRESSING_LIMIT
+* Add SWIOTLB_INIT_REMAP.
+
+v1:
+https://lore.kernel.org/all/20260811134056.756015-1-aneesh.kumar@kernel.org
+
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Mostafa Saleh <smostafa@google.com>
+Cc: Petr Tesarik <ptesarik@suse.com>
+Cc: Alexey Kardashevskiy <aik@amd.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Paul Walmsley <pjw@kernel.org>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-mips@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: x86@kernel.org
+
+Aneesh Kumar K.V (Arm) (8):
+  dma: swiotlb: Rename swiotlb_size_or_default()
+  dma: swiotlb: Consolidate slab rounding
+  dma: swiotlb: Track whether the pool size was explicitly set
+  dma: swiotlb: Centralize default pool policy selection
+  dma: swiotlb: Centralize minimal pool sizing
+  dma: swiotlb: Centralize memory-encryption pool sizing
+  dma: swiotlb: Add an overridable architecture pool opt-out
+  dma: swiotlb: Remove SWIOTLB_ANY
+
+ Documentation/core-api/swiotlb.rst   |   8 +-
+ arch/arm/mm/init.c                   |   6 +-
+ arch/arm/xen/mm.c                    |   2 +-
+ arch/arm64/mm/init.c                 |  14 +-
+ arch/loongarch/kernel/setup.c        |   2 +-
+ arch/mips/cavium-octeon/dma-octeon.c |   2 +-
+ arch/mips/loongson64/dma.c           |   2 +-
+ arch/mips/sibyte/common/dma.c        |   2 +-
+ arch/powerpc/kernel/dma-swiotlb.c    |   4 +-
+ arch/powerpc/mm/mem.c                |  17 ++-
+ arch/powerpc/platforms/pseries/svm.c |  10 --
+ arch/powerpc/sysdev/fsl_pci.c        |   1 +
+ arch/riscv/mm/init.c                 |  24 +---
+ arch/s390/mm/init.c                  |   2 +-
+ arch/x86/include/asm/crash_reserve.h |   4 +-
+ arch/x86/kernel/pci-dma.c            |  23 +++-
+ arch/x86/mm/mem_encrypt.c            |  24 ----
+ include/linux/swiotlb.h              |  17 ++-
+ kernel/dma/swiotlb.c                 | 193 +++++++++++++++++++--------
+ 19 files changed, 210 insertions(+), 147 deletions(-)
 
 
+base-commit: 704340f1cd0dcef829eb62f5b48ae95a2ce17bdf
+-- 
+2.43.0
 
-On 9/23/26 3:14 PM, Lorenzo Stoakes (ARM) wrote:
-> Andrew - would it be possible to make one quick fix up below?
-> 
-> On Tue, Sep 22, 2026 at 04:35:32PM +0100, Lorenzo Stoakes (ARM) wrote:
->> collapse_huge_page() deposits a PTE page table on PMD collapse in order
->> that it can be utilised for subsequent split operations, meaning that those
->> operations do not need to perform an allocation (as they are in a context
->> where it might be unwise).
->>
->> However the PTE page table which is deposited is the one which is currently
->> mapped by the PMD entry that is in the process of being collapsed.
->>
->> Once deposited, the PTE page table may be used in a split of any other
->> unrelated PMD entry.
->>
->> This is currently not an issue as this operation is performed with VMA/mmap
->> write lock + anon rmap locks held, so ordinary page table walkers will
->> never accidentally end up walking the wrong thing, and GUP-fast is
->> protected by an IPI via tlb_remove_table_sync_one().
->>
->> However, the series to which this commit belongs implements RCU-safe page
->> table traversal, at which point this becomes problematic.
->>
->> This can be resolved by using pte_offset_map_lock() which gates on a PTE
->> PTL and a pmd_same() check, but lockless walks are unsafe as things stand.
->>
->> Resolve this by simply allocating a new, zeroed, PTE page table to deposit
->> at the point of collapse.
->>
->> This path is already costly and an allocation has already been performed
->> for the huge folio, so this allocation is statistical noise in terms of
->> performance and memory usage at this point.
->>
->> With this PTE page table deposited, RCU-free the existing PTE page table
->> so it is safe for page table walkers to traverse within a grace period.
->>
->> This also brings this deposit case in line with all other page table
->> deposit logic which deposit a fresh page table.
->>
->> Additionally, this was the only place in the kernel that displaced a page
->> table like this, so eliminating it also helps consistency.
->>
->> An edge case for deposit exists for powerpc and its hash-based MMU - it
->> stores hash slot data in deposited page tables and zeroes them on withdraw,
->> so a zeroed deposited page table works correctly for it.
->>
->> Since khugepaged runs as a kernel thread, do a little dance in
->> alloc_deposit_pte() to correctly charge the allocation.
->>
->> This is already done for the folio allocation via alloc_charge_folio() but
->> no such wrapper exists for a page table allocation.
->>
->> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
->> ---
->>   mm/khugepaged.c | 32 ++++++++++++++++++++++++++++++--
->>   1 file changed, 30 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
->> index f49a6710933b..dab421f8233e 100644
->> --- a/mm/khugepaged.c
->> +++ b/mm/khugepaged.c
->> @@ -1278,6 +1278,23 @@ static enum scan_result alloc_charge_folio(struct folio **foliop, struct mm_stru
->>   	return SCAN_SUCCEED;
->>   }
->>
->> +static pgtable_t alloc_deposit_pte(struct mm_struct *mm)
->> +{
->> +	/*
->> +	 * khugepaged is run from a kernel thread, so need to manually set the
->> +	 * correct memcg so the allocation gets charged correctly.
->> +	 */
->> +	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
->> +	struct mem_cgroup *old_memcg = set_active_memcg(memcg);
->> +	pgtable_t pgtable;
->> +
->> +	pgtable = pte_alloc_one(mm);
->> +
->> +	set_active_memcg(old_memcg);
->> +	mem_cgroup_put(memcg);
->> +	return pgtable;
->> +}
->> +
->>   /*
->>    * collapse_huge_page() expects the mmap_lock to be unlocked before entering and
->>    * will always return with the lock unlocked, to avoid holding the mmap_lock
->> @@ -1293,7 +1310,7 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
->>   	LIST_HEAD(compound_pagelist);
->>   	pmd_t *pmd, _pmd;
->>   	pte_t *pte = NULL;
->> -	pgtable_t pgtable;
->> +	pgtable_t pgtable = NULL;
->>   	struct folio *folio;
->>   	spinlock_t *pmd_ptl, *pte_ptl;
->>   	enum scan_result result = SCAN_FAIL;
->> @@ -1310,6 +1327,12 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
->>   		goto out_nolock;
->>   	}
->>
->> +	if (is_pmd_order(order)) {
->> +		pgtable = alloc_deposit_pte(mm);
->> +		if (!pgtable)
->> +			goto out_nolock;
-> 
-> Fixup is here:
-> 
-> -		if (!pgtable)
-> -			goto out_nolock;
-> +		if (!pgtable) {
-> +			result = SCAN_ALLOC_HUGE_PAGE_FAIL;
-> +			goto out_nolock;
-> +		}
-
-With the fix applied, LGTM.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>

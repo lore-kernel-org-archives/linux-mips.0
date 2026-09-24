@@ -1,81 +1,190 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mta1.migadu.com (out-212.mta1.migadu.com [95.215.58.212])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7903CEBBD;
-	Thu, 24 Sep 2026 02:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521A33D25AF
+	for <linux-mips@vger.kernel.org>; Thu, 24 Sep 2026 02:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790215277; cv=none; b=BKShP08H739/EqklhZ1jtsxwMuy2/xYoNkpjFhXuUairL1Nw5emHwP+OvKMqJ1WXRAos7WQ7+U1dg4g1HmuBbqfrqnAetB4qfrjtf0jtkE4Wd6GIZVQGEsx+WA+8TMaPmzrLhx9jGQOoichKy0dbjC/YHsarAXJm1X7ebvvJkl8=
+	t=1790217695; cv=none; b=L+d16AuTD7x5J/WyhFpzBKuTjWrPnA2ttP/ghR6WsyUnM2g1D5Gf8OAj8pwy5aJ9y6+tEIJwM8tpJJ65PXaJALhcVQvqU5G/7n3jB8qgyJJBLLUZTecy+yojjsH98WMFrTrr7wm9Vxz1li1IFllnZc3o4SKIXeI0YADk767wbms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790215277; c=relaxed/simple;
-	bh=OM8FzaNdN/aNmNIyypdshST0LOswihwFcXsnq8D+/jo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=BPxhb9VpubrgVQ+YmhOQ5bkzL1yZZWc2rAIt9e3wsDUrgXspf0ArXhPHD5WDqpFHAShG9BdmiufIps3S4ttuhtJw2JnqFDxSYFJe+2NU/hjJWv2wOF4QEoCFSCS/Ri0H5PeS39W1/uwV8CBU/0PAdhmLw+nHsLZdqexYlMxqMrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GTrZSxhx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790217695; c=relaxed/simple;
+	bh=4JyEcF/oNMZQFBpW+pWfHZaiat0WqM84Tbff9DsrqFA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eiNgclxSz9iPnzZvyUvB0iLbizZy2UqonVlGCH1svbEylwijrJ/5wXsXArmY4xMU83ARUn0/iVzP4YCHt6jdR8rdeJm4/HFefYSCtoiOkdArtUGf60lHA3bzLMZN4u7ni95hteoQePAz/p8IqifyiN+kOKMAX/+6gqeT4D26sGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VPiRC6gZ; arc=none smtp.client-ip=95.215.58.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GTrZSxhx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C324C1F000FF;
-	Thu, 24 Sep 2026 02:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790215275;
-	bh=g0aj46NEjoDGBadQK9wkroxvOgx7dhvNbNN8G7+etOc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=GTrZSxhxZt5c/DwijecymloH4R/EkRLVVBja2zNZlN3QErTBOycG+zfn5SJBUgoDC
-	 tTTeIPiffidWmZ2WxBLgftgBngoFHx2ewSl1/Vheb+rt6ICR+YVOm+J/AwXlIB5++7
-	 8TcK5DEs3rbO+AyNBxgrfgAld1LDJPPLBa2EoOz4HXM1yhL3V//DkLq4m8R1IzX/2q
-	 m5FtvJmuidEIs7NYKVD4CNpeE0jnGKbYVHhlIGnq1gF30WbYYp4Po5zZ3RvLqmZ+U5
-	 7jD1NJ1sbPkFcb9O7strCSVmjuGNykXVvDJhGbZBjMvJcV2a90j8tNILRmQb/U8YiG
-	 gt7EiV+3YFwrg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 939CA39E9611;
-	Thu, 24 Sep 2026 02:00:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VPiRC6gZ"
+X-Envelope-To: linux-mips@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=4JyEcF/oNMZQFBpW+pWfHZaiat0WqM84Tbff9DsrqFA=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1790217691; v=1; x=1790822491;
+ b=VPiRC6gZba8yFYNQpqTSni09Egij5edXFDUUnAj7i3M5zkd80EAj4aqT/N7XfWc5F2OixOop
+ 0Q8er/e7zgITLXB2+juST/5TNsyW+iFj5/5dlwLxHT1bp2FoRxxnk5B5dayr/3EMAq3bR/sEbdT
+ lo3p2/Fk0ljGasHRnRbYD/Zo=
+X-Envelope-To: linux-mips@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id 1489725b085043fe;
+	Thu, 24 Sep 2026 02:41:26 +0000
+X-Mizu-Trace-ID: 1489725b085043fe
+X-Migadu-Flow: FLOW_OUT
+From: Lance Yang <lance.yang@linux.dev>
+To: ljs@kernel.org
+Cc: akpm@linux-foundation.org,
+	david@kernel.org,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	liam@infradead.org,
+	nico.pache@linux.dev,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	baohua@kernel.org,
+	lance.yang@linux.dev,
+	usama.arif@linux.dev,
+	kas@kernel.org,
+	guoren@kernel.org,
+	bcain@kernel.org,
+	geert@linux-m68k.org,
+	dinguyen@kernel.org,
+	schuster.simon@siemens-energy.com,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com,
+	dalias@libc.org,
+	glaubitz@physik.fu-berlin.de,
+	pjw@kernel.org,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	alex@ghiti.fr,
+	linux@armlinux.org.uk,
+	vgupta@kernel.org,
+	monstr@monstr.eu,
+	chris@zankel.net,
+	jcmvbkbc@gmail.com,
+	will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	davem@davemloft.net,
+	andreas@gaisler.com,
+	richard.henderson@linaro.org,
+	mattst88@gmail.com,
+	linmag7@gmail.com,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	deller@gmx.de,
+	maddy@linux.ibm.com,
+	mpe@ellerman.id.au,
+	chleroy@kernel.org,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com,
+	svens@linux.ibm.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	tglx@kernel.org,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	arnd@arndb.de,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	jgg@ziepe.ca,
+	jhubbard@nvidia.com,
+	peterx@redhat.com,
+	ysato@users.sourceforge.jp,
+	shakeel.butt@linux.dev,
+	corbet@lwn.net,
+	rdunlap@infradead.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	hughd@google.com,
+	qi.zheng@linux.dev,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 10/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc32
+Date: Thu, 24 Sep 2026 10:41:20 +0800
+Message-ID: <20260924024120.14225-1-lance.yang@linux.dev>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-10-fe1ad1f1e303@kernel.org>
+References: <20260922-rcu-pagetable-freeing-v4-10-fe1ad1f1e303@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2] bpf, mips: Fix immediate JMP JEQ/JNE on MIPS32
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <179021520541.1274904.9859067781953002975.git-patchwork-notify@kernel.org>
-Date: Thu, 24 Sep 2026 02:00:05 +0000
-References: <20260923105158.3514342-1-johan.almbladh@anyfinetworks.com>
-In-Reply-To: <20260923105158.3514342-1-johan.almbladh@anyfinetworks.com>
-To: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc: tsbogend@alpha.franken.de, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com,
- paulburton@kernel.org, main.kalliope@gmail.com, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, jolsa@kernel.org,
- emil@etsalapatis.com, ihor.solodrai@linux.dev, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, philmd@oss.qualcomm.com
-
-Hello:
-
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 23 Sep 2026 12:51:57 +0200 you wrote:
-> An addu instruction was emitted instead of addiu, causing the immediate
-> value 1 to be interpreted as register $at. This made the comparison
-> result invalid when the immediate operand was negative. Note that $at
-> is mapped to BPF_REG_AX, which is used for constant blinding.
-> 
-> Fix the instruction to use the immediate form.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,1/2] bpf, mips: Fix immediate JMP JEQ/JNE on MIPS32
-    https://git.kernel.org/bpf/bpf/c/db762fd96be2
-  - [bpf,2/2] bpf, mips: Fix BSWAP 32 and 16 on MIPS64
-    https://git.kernel.org/bpf/bpf/c/8110ba097778
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
+On Tue, Sep 22, 2026 at 04:35:41PM +0100, Lorenzo Stoakes (ARM) wrote:
+>Careful handling is required for sparc32 which implements page tables as
+>part of a shared backing page.
+>
+>To support this, a custom __tlb_remove_table() function is required, as
+>specified by CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE.
+>
+>This allows __pte_free_tlb() and __pmd_free_tlb() to specify which page
+>table level is being freed, which is transmitted to __tlb_remove_table()
+>through setting the lowest bit of the page table to 1 for a PMD and 0 for a
+>PTE (the page tables are 256-byte aligned so this is safe to do).
+>
+>Next, since the page table freeing is done via RCU callback, and thus might
+>be executed in softirq context, update the spin locks to IRQ save/restore.
+>
+>Then, in __tlb_remove_table(), figure out whether to free a PMD page table
+>via free_pmd_fast() or a PTE via the newly introduced __pte_free()
+>function, using the lower bit encoded in __pte_free_tlb() or
+>__pmd_free_tlb() to determine which to call.
+>
+>As part of this change use this spin lock rather than mm->page_table_lock
+>for all shared page table exclusion, as RCU freeing means that page tables
+>can be freed from soft IRQ context so both don't have an mm and also
+>mm->page_table_lock is not IRQ-safe.
+>
+>Note that the specification of CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE disables
+>CONFIG_PT_RECLAIM for sparc32, which mirrors sparc64.
+>
+>This forms part of an overall effort to switch every architecture to this
+>mode, and with it complete, means every architecture now supports
+>CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+>
+>Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+>Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+>---
+
+Also ran page-table teardown stress on qemu-system-sparc (SS-20, sun4m,
+CONFIG_SPARC32=y). All 24 rounds ran cleanly :)
+
+Feel free to add:
+
+Tested-by: Lance Yang <lance.yang@linux.dev>
+Acked-by: Lance Yang <lance.yang@linux.dev>

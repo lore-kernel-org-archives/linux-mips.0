@@ -1,239 +1,125 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf2-f12.google.com (mail-lf2-f12.google.com [74.125.229.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E034E80A6;
-	Fri, 25 Sep 2026 22:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1615F48BD26
+	for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 23:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790375294; cv=none; b=VZH/BiaSxtJ9uXf1J6VmquuOy7xBI40B+9BZ3cDiaVTQ0zqoPlfLhcwiJY+NhfIbzUia2BEHVNtEOMJ90alHr3G2W4RpAvgkrzApE7eGxbnZZ/7kJJcup+/hLPx4mBkPvdbapl0YkBrXcQAsvD5o7tzfUhZrBMFbmAbpkVby//0=
+	t=1790378437; cv=none; b=B5Sk1G5zWiiuQW7n+7LQ39juK/wMDS18W/P1FAOneyx2nJQ9dO0baoW6gjklQKxm7lz0z6aE++/gzk6oVM6sTAJ+//UOJRB9tSFWHk3tsOmsgvdbCCjuq6Ss3WI20ZBsRYz2Ber0IKkxgi52L6HsbVVRz8cHCltnEhGYVipNuJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790375294; c=relaxed/simple;
-	bh=LIE18EfmLkLkXotFVWEkCHTUxqnDKtQBlt3Td04PunM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=N1GRB0LkNfKJiR94imuZ6TO6okUnx9nrwLshuspZM/192hn0AhwTQfvPVCM/BH4rAfv2ZvWU9h9nYQjZ66LxjLjW73HM4iGcp7SsVWQA2EZpfik+XHQeGrenVyZgu0wc27xjpcYPQaENSRec45RHnBU3uX2+NUVyutNVhpoGXLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=S6120kZC; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790378437; c=relaxed/simple;
+	bh=WtL6rxCkfdZ7pTmQgPmxPdrmUbCTBflSvx5Si7/9zqQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PVwh37TV7ozbtJTNygXkGin0X60iBSoNMKQaTbvhW7YLnGUVqj/OLI5pXgRx+BWG9PbCXLW3nKcqB3hso98kjK8iZhs37/ATwf9jLx2ChqilB29Fwz+d5rwaQYwEVEh+DSdi9JOaqD2Ep5bMyqDo89uotNIxuG23KiYH5RFrVhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=pass smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks.com header.i=@anyfinetworks.com header.b=hGWTSofy; arc=none smtp.client-ip=74.125.229.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=anyfinetworks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="S6120kZC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2B91F000FF;
-	Fri, 25 Sep 2026 22:28:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=anyfinetworks.com header.i=@anyfinetworks.com header.b="hGWTSofy"
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f1e419so479751e87.0
+        for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 16:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux-foundation.org; s=korg; t=1790375292;
-	bh=/FeqC6NsreHCzW9fFs+vzkIExlhoQtzmbN9AT65QI1Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=S6120kZCR12iXPZt0xcZL0+Wfn1gU1RZB7NUKDNkZNJefGSfG9P6RA8Epfy+rvbkU
-	 xVs4fjUj0UHw+k+Gz9ZkgCGkot9F+dI1a3SWmLuTTxquEIyiCktMR74MXAiWNxdK6p
-	 IPoozz5ITxp6Mrzfo2l82/2c0yVPGzL/vW8rZJG0=
-Date: Fri, 25 Sep 2026 15:28:08 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, Baolin
- Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett"
- <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, Ryan Roberts
- <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song
- <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, Usama Arif
- <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren
- <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster
- <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne
- <shorne@gmail.com>, Rich Felker <dalias@libc.org>, John Paul Adrian
- Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>,
- Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris
- Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Will Deacon
- <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick
- Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- "David S. Miller" <davem@davemloft.net>, Andreas Larsson
- <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>,
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
- Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
- Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)"
- <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka
- <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan
- <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe
- <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu
- <peterx@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Shakeel
- Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, Randy
- Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins
- <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
- linux-doc@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH v5 00/12] mm: make userland page table freeing RCU-safe
-Message-Id: <20260925152808.d4cae19cc002b1bba26502af@linux-foundation.org>
-In-Reply-To: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
-References: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        d=anyfinetworks.com; s=google; t=1790378434; x=1790983234; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=VR5L8+oQ4rLRFzubuBQiKFNbiQQRFe9UBoKloIMhE4A=;
+        b=hGWTSofyMjrw+LaOQDnltigZODwrNbFkhOy46DfWgLaRe2d8QG9YRnplGTlj5HehGC
+         wfe3yyE3x3tlCrGp2J/ZaEQnyQA1ZVI2xvJDSQUsZgl/i9vJnabxUknxUpHAL0FNgnJe
+         /RFj5MU61cVuGDcG/AYfq0JLD6h4Y+4b4xMUz7HZXFTxQnD03k7x2q+VWV1TVRS0lhrZ
+         YjZIzrpyZAwZ5VOR7FAiqKdaikY2Jg1xsM/G9ry2GB3MUH5gVZFLYXwxoFlzx6t+voZj
+         fMwBISjtBZFFTjPxrgJK9IlxjW/UPzivZq/SiwHkspaf+LHTe2JDRVQnR7sSj0cM67LK
+         XBBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790378434; x=1790983234;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=VR5L8+oQ4rLRFzubuBQiKFNbiQQRFe9UBoKloIMhE4A=;
+        b=1jLvciodFfYm12w1sSCf0qH3IVf/dFczIIb3G0TKaI6Q40KIqpp654iFWMob0vQIo6
+         vUhS7GIKtOdu8ZfsMLAS+glqjXQehecMI8Bv+SzD9t7JMb24seNuCS65Dju1HeMtDM96
+         IqBLMYVNmowFICXRZ9Abn531zDySr3Kxe0T5ppaSYfmW7avYBfZ6QP20/+o7C8+2SLtv
+         rBuDOwrRhIp0QDU//8YdobLF83OsUhzV4aVnPWi3/9WfDQ2mDCka7GFNNWLw52Q+jy4d
+         sKy6BtkMDch7DxZFdyPCpN811DCUBRRuFh0c/tMPiYp24DWbxWkq8gdz5cWsEBgTI4Wu
+         IfLw==
+X-Forwarded-Encrypted: i=1; AKwUvByjbSvom5dLpgvGtAwrmJBoXEN8ZDNUk+dIGF6kPslOKEpmH1/UDVy4FJ6Eqf8vwPiacZtjbYF57D1A@vger.kernel.org
+X-Gm-Message-State: AFuF++lfERetx2VUtdP27FEOcqOIfWeV59Pl7G6oPNHO/uUjADmVPEj5
+	55HDirSCFewyp0dGQ32B8iFghYk4jBIwOxl3fWzorH7xCAHbzRYHJXK+KiIuI8n2f1o=
+X-Gm-Gg: AYBFou1GiHt1b8n/p+sByJaVzT67ah8RDGtRC3RocuQkjBtiSQALpdhCw/04F55hDfl
+	yeTj9vr4NqOG8VZOU97f0qA+3XzErWjPulLQGIB5zxdb58Z7OnZ5E4eeHoVSy1QWRmLuV9LOSZe
+	Bim3VosXJadvSmvh2GE9H78ZSSs9JIa0L54RTEU4bfndqJb/v+NRF/6WBmxZlVovBd11xxkfOUg
+	M+DqNaZ6xu+2TH9tUC8dEuCIWkH6IJxgYpHJ/WvwERTuQn5ojYqZMvweHEFE98QFTZUcZ0tzTM2
+	y/v8V90mNh3F25vsPSsp1d4Rp3PXWGbwvA+kytlYraLzwPfnCTo1sP4RNfH15wzEq6m1fsxMf7p
+	7ehcznxHUdsWZvUiztQlk2OfZkV6IHtgjSP1PFXrfh9JmmdVxnL7utKzfSo2JypBB/KuhwVwXT3
+	yvZ/Io5elqmh14y+V3FISyJGVm4aXxNTB1HtY0qOUHCt+sR+lwkYbECQvvQ0zyTggqhjCbuxYel
+	KerNRu8WVP62Op6AyvEgmOcR6ZmLljq1EZU0FauCAg=
+X-Received: by 2002:a05:6512:208:b0:5b8:b392:b40f with SMTP id 2adb3069b0e04-5b8df09bdfcmr1779080e87.5.1790378433940;
+        Fri, 25 Sep 2026 16:20:33 -0700 (PDT)
+Received: from nuc.. (78-69-188-101-no600.tbcn.telia.com. [78.69.188.101])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b8e6af81cfsm875260e87.40.2026.09.25.16.20.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2026 16:20:33 -0700 (PDT)
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To: tsbogend@alpha.franken.de,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	paulburton@kernel.org,
+	main.kalliope@gmail.com
+Cc: martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	jolsa@kernel.org,
+	emil@etsalapatis.com,
+	ihor.solodrai@linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	philmd@oss.qualcomm.com,
+	Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next 0/2] bpf, mips: Add JIT support for v4 instructions
+Date: Sat, 26 Sep 2026 01:19:30 +0200
+Message-ID: <20260925231932.1063678-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, 25 Sep 2026 21:09:35 +0100 "Lorenzo Stoakes (ARM)" <ljs@kernel.org> wrote:
+The MIPS eBPF JIT currently lacks support for several BPF instructions
+introduced by later revisions of the BPF ISA. This series adds JIT
+support for unconditional BSWAP and JMP32_JA. Together with the recent
+work of Nicholas Dudar, this completes support for the BPF v4 ISA in
+the JIT.
 
-> The majority of architectures in the kernel defer page table freeing until
-> an RCU grace period has elapsed, this series converts all remaining
-> architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
-> altogether.
-> 
-> This is important because it enables safe lockless page table walking under
-> RCU alone.
-> 
-> Doing so allows for reduced lock contention, avoids lock ordering concerns
-> and enables fast, efficient and correct page table walking as a result.
+The series was applied with Nicholas Dudar's patch for MEMSX added on
+top ("bpf, mips: Add BPF_MEMSX support to the JITs"). The JIT was then
+tested on QEMU MIPS targets, with the following results.
 
-Thanks, I've updated mm-unstable to this version.
+MIPS32r1/r2/r6 big and little endian:
+test_bpf: Summary: 1062 PASSED, 0 FAILED, [1050/1050 JIT'ed]
 
-> v5:
-> * Collected tags (thanks all! :)
-> * Updated 1/12 to correctly set result to SCAN_ALLOC_HUGE_PAGE_FAIL should
->   the page table allocation fail, as per Lance.
-> * Updated 1/12 to rename alloc_deposit_pte() to alloc_deposit_pte_table()
->   and dropped the powerpc hash MMU paragraph from the commit message, as
->   per David.
-> * Updated 9/12 to use a BH-disabling spinlock rather than an IRQ-safe one,
->   as per Matthew.
-> * Updated the subject line of 11/12 to clarify that the patch removes
->   now-unneeded code, as per David.
-> * Updated 12/12 documentation as per David, Lance.
+MIPS64r1/r2/r6 big and little endian:
+test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
 
-Here's how v5 altered mm.git:
+All JIT-eligible tests were JITed and all tests pass on all 12 QEMU
+MIPS targets. No physical MIPS hardware was used in the tests.
+
+Johan Almbladh (2):
+  bpf, mips: Add JIT support for unconditional BSWAP
+  bpf, mips: Add JIT support for JMP32_JA
+
+ arch/mips/net/bpf_jit_comp.c   |  2 +-
+ arch/mips/net/bpf_jit_comp.h   |  2 +-
+ arch/mips/net/bpf_jit_comp32.c | 11 +++++++++++
+ arch/mips/net/bpf_jit_comp64.c | 11 +++++++++++
+ 4 files changed, 24 insertions(+), 2 deletions(-)
 
 
- Documentation/mm/process_addrs.rst |    9 +++++++--
- arch/m68k/mm/motorola.c            |   16 +++++++---------
- mm/khugepaged.c                    |    4 ++--
- 3 files changed, 16 insertions(+), 13 deletions(-)
-
---- a/arch/m68k/mm/motorola.c~b
-+++ a/arch/m68k/mm/motorola.c
-@@ -181,7 +181,7 @@ static void *add_pointer_table(struct mm
- 	new = PD_PTABLE(pt_addr);
- 
- 	PD_MARKBITS(new) = ptable_mask(type) - 1;
--	scoped_guard(spinlock_irqsave, &ptable_lock)
-+	scoped_guard(spinlock_bh, &ptable_lock)
- 		list_add(new, &ptable_list[type]);
- 
- 	return (pmd_t *)pt_addr;
-@@ -191,16 +191,15 @@ void *get_pointer_table(struct mm_struct
- {
- 	unsigned int tmp, off;
- 	unsigned long mask;
--	unsigned long flags;
- 	ptable_desc *dp;
- 	void *ret;
- 
--	spin_lock_irqsave(&ptable_lock, flags);
-+	spin_lock_bh(&ptable_lock);
- 	dp = ptable_list[type].next;
- 	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
- 
- 	if (mask == 0) {
--		spin_unlock_irqrestore(&ptable_lock, flags);
-+		spin_unlock_bh(&ptable_lock);
- 		return add_pointer_table(mm, type);
- 	}
- 
-@@ -213,7 +212,7 @@ void *get_pointer_table(struct mm_struct
- 	}
- 
- 	ret = ptdesc_address(PD_PTDESC(dp)) + off;
--	spin_unlock_irqrestore(&ptable_lock, flags);
-+	spin_unlock_bh(&ptable_lock);
- 	return ret;
- }
- 
-@@ -223,9 +222,8 @@ int free_pointer_table(void *table, int
- 	unsigned long ptable = (unsigned long)table;
- 	unsigned long pt_addr = ptable & PAGE_MASK;
- 	unsigned int mask = 1U << ((ptable - pt_addr)/ptable_size(type));
--	unsigned long flags;
- 
--	spin_lock_irqsave(&ptable_lock, flags);
-+	spin_lock_bh(&ptable_lock);
- 
- 	dp = PD_PTABLE(pt_addr);
- 	if (PD_MARKBITS (dp) & mask)
-@@ -236,7 +234,7 @@ int free_pointer_table(void *table, int
- 	if (PD_MARKBITS(dp) == ptable_mask(type)) {
- 		/* all tables in ptdesc are free, free ptdesc */
- 		list_del(dp);
--		spin_unlock_irqrestore(&ptable_lock, flags);
-+		spin_unlock_bh(&ptable_lock);
- 
- 		mmu_page_dtor((void *)pt_addr);
- 		pagetable_dtor_free(virt_to_ptdesc((void *)pt_addr));
-@@ -249,7 +247,7 @@ int free_pointer_table(void *table, int
- 		list_move(dp, &ptable_list[type]);
- 	}
- 
--	spin_unlock_irqrestore(&ptable_lock, flags);
-+	spin_unlock_bh(&ptable_lock);
- 	return 0;
- }
- 
---- a/Documentation/mm/process_addrs.rst~b
-+++ a/Documentation/mm/process_addrs.rst
-@@ -541,8 +541,13 @@ We establish basic locking rules when in
-   after an RCU grace period has elapsed. However, any entry found must be
-   revalidated after the page table lock is taken (such as the
-   :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
--  before it is acted upon. Changing an entry requires the page table
--  lock and one of the locks that excludes teardown (mmap or VMA lock).
-+  before it is acted upon. Changing an entry requires the page table lock
-+  and one of the locks that excludes teardown (any one of the mmap, VMA or
-+  rmap locks).
-+* When traversing page tables under RCU alone it is important to take care
-+  when operating upon leaf entries - if the value is operated upon (for
-+  instance getting the folio associated with a PTE) an appropriate lock must
-+  be taken to prevent concurrent modification.
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
---- a/mm/khugepaged.c~b
-+++ a/mm/khugepaged.c
-@@ -1278,7 +1278,7 @@ static enum scan_result alloc_charge_fol
- 	return SCAN_SUCCEED;
- }
- 
--static pgtable_t alloc_deposit_pte(struct mm_struct *mm)
-+static pgtable_t alloc_deposit_pte_table(struct mm_struct *mm)
- {
- 	/*
- 	 * khugepaged is run from a kernel thread, so need to manually set the
-@@ -1328,7 +1328,7 @@ static enum scan_result collapse_huge_pa
- 	}
- 
- 	if (is_pmd_order(order)) {
--		pgtable = alloc_deposit_pte(mm);
-+		pgtable = alloc_deposit_pte_table(mm);
- 		if (!pgtable) {
- 			result = SCAN_ALLOC_HUGE_PAGE_FAIL;
- 			goto out_nolock;
-_
+base-commit: 6ac134ec930642d5b574b63a72a0e999c2470c64
+-- 
+2.43.0
 

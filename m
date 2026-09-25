@@ -1,93 +1,141 @@
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072D236A342;
-	Thu, 24 Sep 2026 14:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790259051; cv=none; b=HTgDyCFkXZ0xXTCI5NaSyMOqpLgbyvT1XqOqpk6e/407PSyqI8Xv9rs+rn9OJKHIsB1arOkxS49J+AEYh9vdDKAOMem2ZuJcCmcSIquGDvO0dPUpn1/LGjf+EBuRq8xKfJxwTJXT3ilD4KN2d264+bP8O32XnTytIpZf6XSLvjM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790259051; c=relaxed/simple;
-	bh=9TgDyFwJ+7DDH6AX96a9gn3Z9AGTUD/r7aNoQfYxkzw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kmXMF/VkL5ic2k8xY/pvP9AztbgccvS35Y0i7Ovdxg4WlwZeikri8kW/fayXtqfYLG3PKoMzGGaT8LQLiHzsGISLy7hI4Qt1OHiT0n0/+le2wHKoRV2WDHliasS82S9QjUrtVy/WQwR4Qo9+m9fucW0XiH3HoDWDao9kb4c/+Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p200300f6af404a00e4ccc4fdbbd66590.dip0.t-ipconnect.de [IPv6:2003:f6:af40:4a00:e4cc:c4fd:bbd6:6590])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 561341C7465;
-	Thu, 24 Sep 2026 16:10:47 +0200 (CEST)
-Date: Thu, 24 Sep 2026 16:10:46 +0200
-From: =?utf-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, 
-	Sean Christopherson <seanjc@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, ashish.kalra@amd.com, 
-	michael.roth@amd.com, nsaenz@amazon.com, anelkz@amazon.de, 
-	Melody Wang <huibo.wang@amd.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kvmarm@lists.linux.dev, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, x86@kernel.org, 
-	coconut-svsm@lists.linux.dev, joerg.roedel@amd.com
-Subject: Re: [PATCH 35/60] kvm: Add VCPU plane-scheduling state and helpers
-Message-ID: <arUtYyK25eKQYY7j@8bytes.org>
-References: <20260608144252.351443-1-joro@8bytes.org>
- <20260608144252.351443-36-joro@8bytes.org>
- <e7eb0dba-790a-4644-9895-5c9a7420d7fe@redhat.com>
- <aib8n5lO6HKbLC4Y@8bytes.org>
- <CABgObfbUsDeStnZF-7oyR-W-Bvd4qTMoeUwGizgn10UTdKtZ2A@mail.gmail.com>
- <aigE2EvJyZlYDz0V@8bytes.org>
- <570f82e8b8bc968a31a4ba859145f6c324e41247.camel@HansenPartnership.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0591D47126F;
+	Fri, 25 Sep 2026 09:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790327182; cv=none; b=itVmmrr8yO1O37PYaMgTY3as4y3P062qBekIk6D5e+H0F/zu4ai3iZISLSOPTqVyvRlwW7sMvZNd/eTb+JIAPpNORKcoKiwhj/9DmowX25/G/wMcL/oIzvzzXdcj4si92daC5Ipls/91n+bzJewtZ7qebBh6ZgKHs4e4aeRd+88=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790327182; c=relaxed/simple;
+	bh=SJVcI/EkKT5qN9PuN96627g2c1HT0j46qZH1zpOIzGo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
+	 Content-Type:References; b=APZSyMOvQ2Rnp/QoF94xJaGMe/Y/C3rSGj7b2m3iwYflfNg72tQOsdy2CgFwGoN490Y9dBxa3ohXODqxwHi+zlr4yJx9UdE86fLqCooI728Pb/jaQYgDJkt0IpIEG7bj7cyoe05jKwYBVDczGgu3FXAq8s/a1rL/BGTy/cfSLlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=vanVKrSk; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="vanVKrSk"
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20260925085711euoutp023034b78e8628550a3ae5d7840b37570c~YhJYCLvL92670226702euoutp022;
+	Fri, 25 Sep 2026 08:57:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20260925085711euoutp023034b78e8628550a3ae5d7840b37570c~YhJYCLvL92670226702euoutp022
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1790326631;
+	bh=fRkS/AwRvXfqS9hACKPrCrxlhkEVLAdRbTDbRYWa8VU=;
+	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
+	b=vanVKrSk5T6FjDTn74/1SUO/LMXVqJxekusjmh+babZgiVJMQp94HjScOSgxnGlOR
+	 5d4koPLRi1e6pSrU0IEHhOTj75hlbtCMapcYoGSA9uiDQv+BCXn4dZic+bQLLvKziH
+	 LU69fdmLb9XCyuTFLtUEuYD6O202XJ3H6/pu8JBg=
+Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20260925085711eucas1p1485ce5a6153e8db654ed3cd6ed2fb70c~YhJX0T9dK1519715197eucas1p1s;
+	Fri, 25 Sep 2026 08:57:11 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20260925085707eusmtip2203bb57f8f737ff31c8cf3ba1f2b8a50~YhJULSaYY1254612546eusmtip2q;
+	Fri, 25 Sep 2026 08:57:07 +0000 (GMT)
+Message-ID: <40d8c179-f240-486d-b446-c76549d72772@samsung.com>
+Date: Fri, 25 Sep 2026 10:57:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <570f82e8b8bc968a31a4ba859145f6c324e41247.camel@HansenPartnership.com>
+User-Agent: Betterbird (Windows)
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v6 0/8] dma: swiotlb: Centralize default pool policy and
+ sizing
+To: "Aneesh Kumar K.V (Arm)" <aneesh.kumar@kernel.org>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>, Mark
+	Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, Steven Price
+	<steven.price@arm.com>, Suzuki K Poulose <Suzuki.Poulose@arm.com>, Catalin
+	Marinas <catalin.marinas@arm.com>, Jiri Pirko <jiri@resnulli.us>, Jason
+	Gunthorpe <jgg@ziepe.ca>, Mostafa Saleh <smostafa@google.com>, Petr Tesarik
+	<ptesarik@suse.com>, Alexey Kardashevskiy <aik@amd.com>, Dan Williams
+	<dan.j.williams@intel.com>, Xu Yilun <yilun.xu@linux.intel.com>, Madhavan
+	Srinivasan <maddy@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, Albert Ou
+	<aou@eecs.berkeley.edu>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, x86@kernel.org
+Content-Language: en-US
+In-Reply-To: <20260924060756.1325156-1-aneesh.kumar@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CMS-MailID: 20260925085711eucas1p1485ce5a6153e8db654ed3cd6ed2fb70c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20260924060823eucas1p1d27fbf57221c9b4c0e9831a9b0cdd7d3
+X-EPHeader: CA
+X-CMS-RootMailID: 20260924060823eucas1p1d27fbf57221c9b4c0e9831a9b0cdd7d3
+References: <CGME20260924060823eucas1p1d27fbf57221c9b4c0e9831a9b0cdd7d3@eucas1p1.samsung.com>
+	<20260924060756.1325156-1-aneesh.kumar@kernel.org>
 
-Hi James,
-
-On Fri, Jul 17, 2026 at 10:35:10AM -0400, James Bottomley wrote:
-> So this all depends how the planes are started.  If you're starting
-> them from an IGVM file that loads the most privileged code and then
-> runs the guest in a different plane, absolutely, it can work as you
-> describe.  However, the common use case for serviceable security
-> enclaves is you start the kernel first (necessarily in plane 0) and
-> then bring up the enclaves later which means the planes > 0 are
-> technically higher privilege since they're running hidden security
-> code.  HOWEVER, there's no reason at all to trust a security enclave
-> that's doing something like guarding private keys to be able to poke
-> anywhere it wants in the guest ... that's a security breach waiting to
-> happen, so it would really be better if the model were not
-> hierarchical, but more akin to the ability to seal planes off from each
-> other, so the kernel can start the enclave, which would then set itself
-> and the communication area up, but then the plane 0 kernel would remove
-> access to most memory from the enclave.
-> 
-> In this sealing model, there's no absolute privilege levels; each plane
-> would decide what the other planes can see of its memory space and, on
-> security grounds, we'd likely configure the enclaves to have the least
-> possible privilege.
-> 
-> Now, Windows applications expect VSM to be strictly hierarchical in
-> terms of privilege, but if we create a sealing primitive as described
-> above, we can get it to build the strict VSM privilege hierarchy in the
-> hyper-v driver.
-
-I mostly agree with this and have to say that my statement in the cover letter
-about plane hierarchies was a bit broad.
-
-The main assumption this patch-set makes about plane 0 is that it is the plane
-which does the IRQ scheduling. Say a VM has Plane 0,1, and 2. A VCPU runs plane
-2 and KVM wants to inject an IRQ into plane 1 of that VCPU. Now KVM needs the
-VCPU to decide whether it wants to run plane 1 to handle the IRQ or continue
-with plane 2 because it currently has higher-priority work to do.
-
-This decision is made on plane 0 in this patch-set, which it needs to be for
-VMPLs. Does VSM have a similar concept for IRQ scheduling between VTLs or will
-the hypervisor take care to run a VTL when it has IRQs?
+On 24.09.2026 08:07, Aneesh Kumar K.V (Arm) wrote:
+> This series centralizes swiotlb default-pool selection and sizing, and
+> simplifies the initialization flags used to describe pool placement.
+>
+> The first patch replaces the addressing-limit argument with initialization
+> flags and introduces explicit policies for the different reasons a default
+> pool may be needed. Architectures now report DMA addressing constraints with
+> SWIOTLB_INIT_ADDRESSING_LIMIT, while the core selects the corresponding pool
+> policy.
+>
+> The second patch moves the reduced sizing used when the pool is needed only
+> for unaligned kmalloc bouncing from arm64 and RISC-V into the swiotlb core.
+>
+> The third patch centralizes swiotlb sizing for memory-encrypted systems. It
+> moves the existing x86 guest-sizing policy into the core. Host memory
+> encryption retains the normal pool size, and a shared default pool is not
+> selected solely for guest memory encryption when a restricted DMA pool is
+> present.
+>
+> The fourth patch removes SWIOTLB_ANY. Pool placement is derived directly from
+> SWIOTLB_INIT_ADDRESSING_LIMIT: pools required for limited DMA addressing are
+> allocated below the architecture's low address limit, while other pools may
+> be allocated anywhere in directly mapped memory. Xen continues to request a
+> pool explicitly with SWIOTLB_INIT_REMAP without imposing a low-address
+> constraint.
 
 
--Joerg
+I would like to give this patchset some tests in linux-next and merge this to
+v7.4-rc1, as this is important continuation of the code already merged to v7.3.
+
+
+Any chance to get some more acks from arch maintainers (especially x86)?
+Unfortunately I had to reduce the CC list due to my smtp limits...
+
+> ...
+>
+>  Documentation/core-api/swiotlb.rst   |   8 +-
+>  arch/arm/mm/init.c                   |   6 +-
+>  arch/arm/xen/mm.c                    |   2 +-
+>  arch/arm64/mm/init.c                 |  14 +-
+>  arch/loongarch/kernel/setup.c        |   2 +-
+>  arch/mips/cavium-octeon/dma-octeon.c |   2 +-
+>  arch/mips/loongson64/dma.c           |   2 +-
+>  arch/mips/sibyte/common/dma.c        |   2 +-
+>  arch/powerpc/kernel/dma-swiotlb.c    |   4 +-
+>  arch/powerpc/mm/mem.c                |  17 ++-
+>  arch/powerpc/platforms/pseries/svm.c |  10 --
+>  arch/powerpc/sysdev/fsl_pci.c        |   1 +
+>  arch/riscv/mm/init.c                 |  24 +---
+>  arch/s390/mm/init.c                  |   2 +-
+>  arch/x86/include/asm/crash_reserve.h |   4 +-
+>  arch/x86/kernel/pci-dma.c            |  23 +++-
+>  arch/x86/mm/mem_encrypt.c            |  24 ----
+>  include/linux/swiotlb.h              |  17 ++-
+>  kernel/dma/swiotlb.c                 | 193 +++++++++++++++++++--------
+>  19 files changed, 210 insertions(+), 147 deletions(-)
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+

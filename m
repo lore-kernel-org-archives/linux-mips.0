@@ -1,90 +1,112 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB9B4A5C44
-	for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 14:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E2A4A5C55
+	for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 16:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790346552; cv=none; b=E9oBz4J0uVaU2rwidoYJWxdmcFQ1NkYLi9W5CuAreX4yc8XPE/WOkMzMBp//7/+gVI5o1PFiZdG2Y8OTTVixBn706XqK3/p0ifFx98/sj3XC4nMe24cSJLx0yLaObJYzbfQKNat9FO/SRq8KK/BCqx9FtGqIEjZ9zDu22c6vSno=
+	t=1790353554; cv=none; b=QTPBXzr1kdGF/jiOqiNvTcE2AxD4gOVZcXuBbO6EjzjQNHjz/59aiZ1Q7wwA7K6y051WJotPX55SIhVI7bm9nKG9YqC7HlbTh9wERKmtoqnZGlbA4p8qRPs7sgPYuAMQ+MUd3j1o0geQzj0gptTcRhRbC7up8O40/Eh/iKv8XZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790346552; c=relaxed/simple;
-	bh=ml/kJmd2QciEkxkIPM0iG2xc9A8CmDKmcLQrId8i3uw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=mOoK2fweI0UdZBKroafyoJX6HFiLDdn8okLodUkyaCJ/EfmPm08nWOQfbrM6pkkzaGIR21SZDotXU3oVOTS++ZGniggzkI6Ca1UxMJf9D0Uh5vPsL13xcub+mQp29VM8AUYSG9YvtUCP/YwCEXoQuW23sk3kYsPqNywev4Q6jz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ijk3lvV5; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1790353554; c=relaxed/simple;
+	bh=6fYDLPuw7TdEq9beCl8lZHCEAKip/STw7RgtlWkrkg8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bWBUSf+RynqF/li/F5GcpFQ/7pagPQU/B7+WUyAm8Vd8OVW43UJUqirUwTQ35/nWOO4dwExNLI0xCYJSRx18oB13dWjhDqScQIQ0QtpKChpm+M3zxASY/3Wecx2sQpgOD/V9GUjN/JTj/m0kgtWfO3QohYlSv71XRgQDYtYAy/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkZTyo4x; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ijk3lvV5"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id BF4101A1024;
-	Fri, 25 Sep 2026 14:29:08 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8F3196073B;
-	Fri, 25 Sep 2026 14:29:08 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55F52102F08C8;
-	Fri, 25 Sep 2026 16:28:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790346546; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=B9SAdsKIM9po5e3COkJx3/f5eCr9H91R3DRSye2x0s0=;
-	b=ijk3lvV5Ytolj7ONBao+6E1jKrnPnfqy9PllVh0sQCIKiPAby37e8RfcmECcCv+xY5uLnP
-	4JvEKceRY00bMEL3lG2XtcvoIuwGkJbZaS3yZV+5WifBxC67dfZ3v9AwpGbE99XT75VJto
-	q7Tak5DIT/J8DVIyRCsa/db6qkwEwG/Mae2miTe95upekFvjLycmzNk2ERWRoHGxA+gRg0
-	9w6BtmJ+qGCeIm0mKS50LpaDZVzGFdRx/AYZV9Kh8nSShWs+CGTqXxyQVc9pdtgZW6DcOJ
-	vsy96kev8o5HMZpeYOx/l14ApShn4aI5DXIWAe3q8tpuxM8k4H0KA69523GogQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>, 
- Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Richard Weinberger <richard@nod.at>, 
- Keguang Zhang <keguang.zhang@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, 
- Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>, 
- Niravkumar L Rabara <niravkumarlaxmidas.rabara@altera.com>, 
- Alok Tiwari <alok.a.tiwari@oracle.com>, Chen Ni <nichen@iscas.ac.cn>, 
- Runyu Xiao <runyu.xiao@seu.edu.cn>, Frank Li <Frank.Li@nxp.com>, 
- Pengpeng Hou <pengpeng@iscas.ac.cn>, Haotian Zhang <vulab@iscas.ac.cn>, 
- Johan Hovold <johan@kernel.org>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>, 
- Rosen Penev <rosenp@gmail.com>, linux-mtd@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, Frank.Li@oss.nxp.com
-Cc: imx@lists.linux.dev, vkoul@kernel.org
-In-Reply-To: <20260917204724.1289912-1-Frank.Li@oss.nxp.com>
-References: <20260917204724.1289912-1-Frank.Li@oss.nxp.com>
-Subject: Re: [PATCH 1/1] mtd: use dmaengine_get_dma_device() instead of
- chan->device->dev
-Message-Id: <179034653501.1166139.9018677426507757712.b4-ty@bootlin.com>
-Date: Fri, 25 Sep 2026 16:28:55 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkZTyo4x"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E61C1F0089D
+	for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 16:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790353552;
+	bh=6fYDLPuw7TdEq9beCl8lZHCEAKip/STw7RgtlWkrkg8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=SkZTyo4xxfFfIHkKIcVzKt/r6NVyGCRHYPlxBuj/CfdOc5/UiPnHhsNeysafJ83uT
+	 PrsApt20TbtzJyRpj/ArQV+ysPRtw70TjqJbVdGUsvZcqDtlWD9Kq6uCr9e2hR5TcQ
+	 WqHkFq31PmtukKbdE6y/W8GS9/XSR4o73yuajz9jGmCx6GdhINz2kzewMKYZle40Rz
+	 Jc4eglh/tm38aa+rDhaE+rYk23PpYcf8o3TBVaTamJ/idDzDGvcrFiD2suq/GxYFWK
+	 zgFkLbpLOozrM5LhUI306UQ1mmZ30ZjqiBsz8Sk4d6Pq2YHLUgL3h7x5LiWU8/PFE8
+	 PJ7V94nNq5nFA==
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b8e820df9dso885432e87.2
+        for <linux-mips@vger.kernel.org>; Fri, 25 Sep 2026 09:25:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBzqNQx0w/gLSlYRYfM4kutCacNDla8Jy1a6izV8bRJc3eH71hswtlnJcMuDK4/KT5o0FxaEEZUd55V1@vger.kernel.org
+X-Gm-Message-State: AFuF++kLg+31HhUL7yBABv5ul1xbKws8h2h4yjmDUurUiETXgNRuA6ku
+	K/BnC2WX3F2ZYDHyQsp4oIoQcME5CurV9Fx2AQRj0eYBAF+Ru4rReQQuw8kvAG6DCvd4BnHACGm
+	TxD/dHPJnxY/eyySVeNFYWRmJgFF4v9w=
+X-Received: by 2002:a05:6512:1344:b0:5b6:1a7c:59db with SMTP id
+ 2adb3069b0e04-5b8df0d22f7mr2083445e87.53.1790353550897; Fri, 25 Sep 2026
+ 09:25:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20260916-drm-bridge-every-panel-v3-0-83afb4f1a707@bootlin.com>
+ <20260916-drm-bridge-every-panel-v3-12-83afb4f1a707@bootlin.com>
+ <arInho2bsfJiCgjV@houat> <DLNCQEG62F5N.O98WAO4U2FJO@bootlin.com>
+ <CAD++jLkk-a0MrQUiaDD8OoDDoYVwBwSjFTj5ZBy=Xo7MS4+01g@mail.gmail.com> <arTlpd-KAsVpj3UH@houat>
+In-Reply-To: <arTlpd-KAsVpj3UH@houat>
+From: Linus Walleij <linusw@kernel.org>
+Date: Fri, 25 Sep 2026 18:25:35 +0200
+X-Gmail-Original-Message-ID: <CAD++jLmktDoqn2EbXsNnyGRudo-q2NCxUf+9ZjeU+WrY4CBMWw@mail.gmail.com>
+X-Gm-Features: AclHuK_fq2ZWJ1A-qMmc6hpV7kHeTfdnkXq9HUzMYWRHIkAmDRIf8rPpfyjUW1o
+Message-ID: <CAD++jLmktDoqn2EbXsNnyGRudo-q2NCxUf+9ZjeU+WrY4CBMWw@mail.gmail.com>
+Subject: Re: [PATCH v3 12/19] drm/mcde: dsi: don't create a panel_bridge
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Jessica Zhang <jesszhan0024@gmail.com>, Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>, 
+	Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Paul Cercueil <paul@crapouillou.net>, 
+	Paul Kocialkowski <paulk@sys-base.io>, Inki Dae <inki.dae@samsung.com>, 
+	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Sean Paul <sean@poorly.run>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Albert Esteve <aesteve@redhat.com>, 
+	Anusha Srivatsa <asrivats@redhat.com>, Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
+	Hui Pu <Hui.Pu@gehealthcare.com>, Ian Ray <ian.ray@gehealthcare.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
+	asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 17 Sep 2026 16:47:06 -0400, Frank.Li@oss.nxp.com wrote:
-> Replace direct dma_chan::device::dev access with the proper
-> dmaengine_get_dma_device() for consumer API.
-> 
-> chan->device->dev is not always the device used for DMA mapping.
-> Some DMA engines support per-channel IOMMU mappings, so different
-> channels may use different DMA devices.  dmaengine_get_dma_device()
-> returns the correct device for each channel.
-> 
-> [...]
+On Thu, Sep 24, 2026 at 10:57=E2=80=AFAM Maxime Ripard <mripard@kernel.org>=
+ wrote:
+> On Thu, Sep 24, 2026 at 09:51:53AM +0200, Linus Walleij wrote:
 
-Applied to mtd/next, thanks!
+> > > Linus, unless you have more info I'm going to apply the patch as
+> > > is. Removing this special case would be welcome as a later patch.
+> >
+> > I'd say go ahead as-is.
+>
+> I'm fine with that, but I really want this removed at some point.
 
-[1/1] mtd: use dmaengine_get_dma_device() instead of chan->device->dev
-      commit: a018524a2ec96da5bb1965053967a20e0069ed9e
+If Luca wanna fix this up (drop this path) that's fine by me,
+else send a patch immediately after this is applied and I'll
+ACK it.
 
-Patche(s) should be available on mtd/linux.git and will be
-part of the next PR (provided that no robot complains by then).
+> > I do have the idea to code up and submit the AV8100 encoder
+> > and I have the hardware to test it, but every other user should
+> > be using panels directly, and I would be the only non-panel
+> > user so I can deal with it when it comes up.
+>
+> It won't change a thing. All existing "panel" users will be bridge users
+> after this patch is merged. So whether you want to enable a bridge or
+> not shouldn't matter, the only thing that does is whether the existing
+> users would still work.
 
-Kind regards,
-Miquèl
+I know, all it does is create a snag that I would run into myself.
 
+But it's not gonna be a problem for anyone else, that's all I meant.
+
+Yours,
+Linus Walleij

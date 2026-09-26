@@ -1,30 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FC6403E89;
-	Sat, 26 Sep 2026 10:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C955A41BA69;
+	Sat, 26 Sep 2026 10:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790419304; cv=none; b=DEIub76CKZTiR2bLQTBtFM8oGtkABM2i+9T+DNYleF03n7b2SJbEBX2nvgzawj6uS1AEbIPKoBlPGFSTHXk3wZWRsMDKKkJA5S/dRfSKnUpfm1C7/8f4nrIrapF33e/41F6hRhRaWak2+TD4EfzXmLiOTSpze9ZHZ5bfTOJiaho=
+	t=1790419311; cv=none; b=iVo30I+XquVX4Mpl8IotzG2R2p1UiiQNyS1dmyeVEp0CQ3hjZ0VD00bcHsoTFgL/WA+wmfVO5ste1TWYLEOuZ41i1G+mJDVwMkJiffKdq5Cs7NvfIZgb3tkZoxTvGrsPTM3HkVevbPzcWO784Eg0/bA4mIMqwXZbX039g/Lrtcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790419304; c=relaxed/simple;
-	bh=MkVT9rIDhIjf5DMHntQtxvvwNm0MNeMOryJv+WJYEoM=;
+	s=arc-20240116; t=1790419311; c=relaxed/simple;
+	bh=ko5kc8GpaxfX6EdcdK7C5rIIul58e3eUXGk4SYWbUzU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EYJ6xaLzWjn9ab6NW5MVLHC8rbl6nQhwu8pQSY6Pc/pyfRCYaAGoyzSEWT2UUNR+M8H2TFQfljuZT+T2oA9rFPk3SimBuB1BKABI0/+tY5B6BSfYnzB7Iu+0MAVTf2fUmQApMFtt6uVZaoBSJqaG07XGUzybb851Md7kHGIjL2E=
+	 Content-Type:Content-Disposition:In-Reply-To; b=JDj/d4kGBVHqPe5zRzdfUW0IfnS/T4NdeDwJEia3RQqfle0XOqLvL2sGLdg8xcNNzD7v8kOdUXZlq31ERPN8S9RB/CrBJhbSID+uvcg6jfBx+NbZyLXIyYxLGhVNqbP8wvwvQVtmBfg707Ni5/rArau/rcjgcTO3wIZJWtDIwbs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xAP4O-0007LB-00; Sat, 26 Sep 2026 11:51:48 +0200
+	id 1xAP4O-0007LD-00; Sat, 26 Sep 2026 11:51:48 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id F1F47C0BF2; Sat, 26 Sep 2026 11:35:41 +0200 (CEST)
-Date: Sat, 26 Sep 2026 11:35:41 +0200
+	id F3309C0C0A; Sat, 26 Sep 2026 11:35:58 +0200 (CEST)
+Date: Sat, 26 Sep 2026 11:35:58 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Orgad Shaneh <orgads@gmail.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] MIPS: OCTEON: require the Core-14449 workaround only
- on CN63XX pass 1
-Message-ID: <areR7bJxN9YBgrn_@alpha.franken.de>
-References: <20260915071306.15006-1-orgads@gmail.com>
- <20260915071306.15006-5-orgads@gmail.com>
+Cc: linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, osalvador@suse.de,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] MIPS: mm: align hugetlb mappings in
+ arch_get_unmapped_area()
+Message-ID: <areR_hMi-gEyUQ-0@alpha.franken.de>
+References: <20260915071329.15125-1-orgads@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -33,52 +34,60 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260915071306.15006-5-orgads@gmail.com>
+In-Reply-To: <20260915071329.15125-1-orgads@gmail.com>
 
-On Tue, Sep 15, 2026 at 07:12:48AM +0000, Orgad Shaneh wrote:
-> prom_free_prom_memory() probes the hint field of a compiler-emitted
-> PREF and panics when it is not 28, which is what -Wa,-mfix-cn63xxp1
-> (CONFIG_CAVIUM_CN63XXP1) rewrites every prefetch in the kernel to. The
-> test is gated on OCTEON_IS_MODEL(OCTEON_CN6XXX), so it fires on every
-> OCTEON II part, including the pass 2 chips that do not need the
-> workaround:
+On Tue, Sep 15, 2026 at 07:13:24AM +0000, Orgad Shaneh wrote:
+> Since hugetlb mappings were made to go through the architecture's
+> arch_get_unmapped_area{,_topdown}(), every architecture that implements
+> those has to align hugetlb files itself. The generic implementation and
+> loongarch do it with huge_page_mask_align(); MIPS was left out.
 > 
->   Kernel panic - not syncing: OCTEON II DCache prefetch workaround not
->   in place (cfa00004).
->   Please build kernel with proper options (CONFIG_CAVIUM_CN63XXP1).
+> A non-MAP_FIXED mmap() of a hugetlbfs file therefore returns an address
+> that is only SHMLBA aligned, and the kernel then installs 2 MB PMDs for
+> a VMA that starts in the middle of a PMD. The consequences on an
+> Octeon (CN63XX) board running a process that links libhugetlbfs with
+> HUGETLB_ELFMAP=R and HUGETLB_MORECORE=yes, all within a minute of
+> start: the neighbouring 4 KB page table is clobbered, the TLB ends up
+> with overlapping entries ("Caught Machine Check exception - caused by
+> multiple matching entries in the TLB"), process exit trips
+> BUG_ON(start & ~huge_page_mask(h)) in __unmap_hugepage_range(), and
+> freed pages leak into unrelated kernel structures (oopses in the irq
+> maple tree, in pte_offset_map, ...).
 > 
-> on a CN6335-AAP pass 2.2.
+> Do what loongarch does in commit 3109d5ff484b ("LoongArch: Set hugetlb
+> mmap base address aligned with pmd size"): when the file is a hugetlb
+> file, use its page mask as the search alignment instead of the cache
+> colour mask.
 > 
-> Core-14449 is a CN63XX pass 1.x erratum, and the vendor's own runtime
-> check says so: it errors out only for OCTEON_CN63XX_PASS1_X without the
-> fix, and otherwise merely warns about lost performance when fixed code
-> runs on a part that is not a CN63XX. Narrow the check to CN63XX pass
-> 1.x to match.
-> 
-> The alternative - enabling CONFIG_CAVIUM_CN63XXP1 to satisfy the check -
-> is not free: the assembler flag rewrites every prefetch in the kernel
-> (77 of them in this build) to pref 0x1c, which is worth avoiding on an
-> in-order core whose receive path is dominated by memcpy.
-> 
-> uasm_i_pref() keeps its OCTEON_CN6XXX condition: it only touches the
-> handful of runtime-generated TLB handlers, where the cost does not
-> matter.
-> 
+> Fixes: 7bd3f1e1a9ae ("mm: make hugetlb mappings go through mm_get_unmapped_area_vmflags")
+> Cc: stable@vger.kernel.org # 6.13+
 > Assisted-by: Claude:claude-opus-5
 > Signed-off-by: Orgad Shaneh <orgads@gmail.com>
 > ---
-> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-> --- a/arch/mips/cavium-octeon/setup.c
-> +++ b/arch/mips/cavium-octeon/setup.c
-> @@ -1127,7 +1127,7 @@ EXPORT_SYMBOL(prom_putchar);
+> diff --git a/arch/mips/mm/mmap.c b/arch/mips/mm/mmap.c
+> --- a/arch/mips/mm/mmap.c
+> +++ b/arch/mips/mm/mmap.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/elf-randomize.h>
+>  #include <linux/errno.h>
+> +#include <linux/hugetlb.h>
+>  #include <linux/mm.h>
+>  #include <linux/mman.h>
+>  #include <linux/export.h>
+> @@ -72,8 +73,11 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
+>  	}
 >  
->  void __init prom_free_prom_memory(void)
->  {
-> -	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
-> +	if (OCTEON_IS_MODEL(OCTEON_CN63XX_PASS1_X)) {
->  		/* Check for presence of Core-14449 fix.  */
->  		u32 insn;
->  		u32 *foo;
+>  	info.length = len;
+> -	info.align_mask = do_color_align ? (PAGE_MASK & shm_align_mask) : 0;
+>  	info.align_offset = pgoff << PAGE_SHIFT;
+> +	if (filp && is_file_hugepages(filp))
+> +		info.align_mask = huge_page_mask_align(filp);
+> +	else
+> +		info.align_mask = do_color_align ? (PAGE_MASK & shm_align_mask) : 0;
+>  
+>  	if (dir == DOWN) {
+>  		info.flags = VM_UNMAPPED_AREA_TOPDOWN;
 > -- 
 > 2.47.0
 

@@ -1,29 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69249359A9B;
-	Sat, 26 Sep 2026 10:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3465D3E5578;
+	Sat, 26 Sep 2026 10:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790418513; cv=none; b=iFqGmhQrgj/smhau1A7rGr4SaSzziIY97qEkWFaDuC532p1bB1IH08iUrFHx2IOnFnl/VzM7H8MPd3ljrxIFHD72UTMYOWvVh3NEBFoAfPMfh5RAo4KbRv+1tOTOawqskTy1TTAGFzPxaVJgDPqlY1hah7fEq0U/KV7GUFdWeNU=
+	t=1790418523; cv=none; b=WcVz89YFXV9rWsXOE8VthvO621N1MOum+ZzZmcprzZDEpx0q7FJMxzgLJKCDX/Tb8KyZHHIHk5KJzANtWRd8gHot5UgxuazEyftX1rYiQaEcEKi8yJObnIGLE3BJJMxFh5uBT8jE134ybAVPvo97wR4ilWilUM7VtZPlGTl4538=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790418513; c=relaxed/simple;
-	bh=GO2cR0RpoClQ4WJScbxMQDjYbDKej/2O7ZhH3MwhzAA=;
+	s=arc-20240116; t=1790418523; c=relaxed/simple;
+	bh=wyegZmQAupT04LbKSQlX2Eue2jfzPQBJugFkMtxdIfQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VO8cbHU3IxBF6eb/mnCsYS7mwrcKY/hx2DaEvPiXeEOuF4wKKbfEhWGKEfDFareMDA4qUCIfnAGgZBqoMeEqcuZzX/S44phR39v4cjINaucwray0e0X8+km6+C1QjfrLK+lkhyQKMoYOyn9dcaATz79y4tEr508kN5cZjKXsIuI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=lw/HfRB9HPKrT2M0yoyCP4tfCOguot4Xwf5EcQkSjaRa0SxMioYpk/G/UDVJXcMfhaDstN81il/L2sJYyTT19vVFzrvptgTD4/V4uo1PnVjV0kOG0Xh//jAJhYH0psYmetoMWHwJfHh7UgaKAg0OZtWxKIB5X26KszoTt1TJO/U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xAP4O-0007Kk-00; Sat, 26 Sep 2026 11:51:48 +0200
+	id 1xAP4O-0007Kg-00; Sat, 26 Sep 2026 11:51:48 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 75B67C09D2; Sat, 26 Sep 2026 11:32:00 +0200 (CEST)
-Date: Sat, 26 Sep 2026 11:32:00 +0200
+	id D32EFC02BE; Sat, 26 Sep 2026 11:28:59 +0200 (CEST)
+Date: Sat, 26 Sep 2026 11:28:59 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: linux-mips@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Alchemy: clock: Make sure clk_init_data is fully
- initialized
-Message-ID: <areRED8_2Nw7eCFu@alpha.franken.de>
-References: <3610b51df642abb1fbb39f5bd93fddea43f8f164.1787240060.git.geert+renesas@glider.be>
+To: Udaya Kiran Challa <challauday369@gmail.com>
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	skhan@linuxfoundation.org, me@brighamcampbell.com,
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] mips: dts: pic32: pic32mzda: Remove unused
+ address-cells, size-cells property
+Message-ID: <areQW4ZAc-rCbEm5@alpha.franken.de>
+References: <20260731174751.86819-1-challauday369@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,38 +35,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3610b51df642abb1fbb39f5bd93fddea43f8f164.1787240060.git.geert+renesas@glider.be>
+In-Reply-To: <20260731174751.86819-1-challauday369@gmail.com>
 
-On Fri, Aug 21, 2026 at 12:05:15PM +0200, Geert Uytterhoeven wrote:
-> The clk_init_data structure contains several mutually-exclusive members
-> for different methods to specify the possible parents of a clock,
-> prompting drivers to initialize only the members they need.  However,
-> not initializing all members may cause subtle issues, which are only
-> exposed when CONFIG_INIT_STACK_ALL_PATTERN or CONFIG_INIT_STACK_NONE is
-> enabled.
+On Fri, Jul 31, 2026 at 11:17:51PM +0530, Udaya Kiran Challa wrote:
+> The #address-cells and #size-cells properties are not strictly
+> needed since the child nodes don't have reg properties
 > 
-> Make sure all members are fully initialized, to avoid such bugs, and to
-> prevent future breakage when converting drivers to a different method
-> for specifying the parents.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Udaya Kiran Challa <challauday369@gmail.com>
 > ---
-> Compile-tested only.
+>  arch/mips/boot/dts/pic32/pic32mzda.dtsi | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Part One[1] fixed all cases that I identified to be real bugs, in
-> response to a crash I saw on BeagleBone Black.
-> 
-> This patch is the MIPS subpart of Part Two, which fixes remaining cases
-> that are currently harmless.  These are still fragile, and may cause
-> future breakage when converting drivers to a different method for
-> specifying the parents.
-> 
-> [1] "[PATCH treewide 0/5] clk: Make sure clk_init_data is fully
->      initialized (part 1)"
->     https://lore.kernel.org/cover.1787165329.git.geert+renesas@glider.be
-> ---
->  arch/mips/alchemy/common/clock.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> diff --git a/arch/mips/boot/dts/pic32/pic32mzda.dtsi b/arch/mips/boot/dts/pic32/pic32mzda.dtsi
+> index feca35ba56a4..433dff3cf14f 100644
+> --- a/arch/mips/boot/dts/pic32/pic32mzda.dtsi
+> +++ b/arch/mips/boot/dts/pic32/pic32mzda.dtsi
+> @@ -76,8 +76,6 @@ evic: interrupt-controller@1f810000 {
+>  	};
+>  
+>  	pic32_pinctrl: pinctrl@1f801400 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+>  		compatible = "microchip,pic32mzda-pinctrl";
+>  		reg = <0x1f801400 0x400>;
+>  		clocks = <&rootclk PB1CLK>;
+> -- 
+> 2.34.1
 
 applied to mips-next
 

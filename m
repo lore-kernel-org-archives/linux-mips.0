@@ -1,151 +1,146 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AF8395266;
-	Sun, 27 Sep 2026 09:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE7F3B14D7;
+	Sun, 27 Sep 2026 16:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790500538; cv=none; b=MELZ73n2/QYbHQ7RNZqPTzdLLZNnAm8FYSp3WBolT506YjmK+Or9EYjQBMPh5SbA/WbrbI5GBEeyt00MoBSjQD38JRSVZ0JYNrUNDkXkqOaRSzcADTGh5o9FuMKldSCwEsErD7dkMdYemPhW+w2iGZbvR+N36yEOiws2dBMyDIQ=
+	t=1790526547; cv=none; b=eN+WjkxVpkz2v2JHPHYVshsPVH96hRhnWKnv2Nl4YTLJD7d1t+aZKW8QWBl4k9d86buKUiGp8eRrjaiTg2yp4EJ4UAIrVYZnVZZr48E6tBvdrq5z481I7+S2Nskow5NQU0dx98v3Qzu5/lk5QmB/8JjkGyfMGur1Pye3Th0h8cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790500538; c=relaxed/simple;
-	bh=hMO4NyaxfEYYR64CwvNMaEs+uPYjwCuKAYDmNgCMYgw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j3VRLQS912GMsj8g5X6f91NsU1WWGlrkOpunKunG+8bsNbIYjoO7jY5uykglAOfvr9kn0I8gedW2YTDWjM7ktjxwbbxVx5gWCx6T0NU7Q5Y4ecxlRQqY76TPKkQ4/kf3ky0i8e3Gph9VKiubPgUXft6PqGP1sZvZ9TJYL8UddCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=fail smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=alpha.franken.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AD60B1FDDC;
-	Sun, 27 Sep 2026 09:15:20 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58576133F3;
-	Sun, 27 Sep 2026 09:15:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vQBjCKXeuGp1egAAD6G6ig:T2
-	(envelope-from <tsbogend@alpha.franken.de>); Sun, 27 Sep 2026 09:15:20 +0000
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] MIPS: octeon: Add detection of UBNT Edgeroute Lite devices
-Date: Sun, 27 Sep 2026 11:15:11 +0200
-Message-ID: <20260927091512.117046-2-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260927091512.117046-1-tsbogend@alpha.franken.de>
-References: <20260927091512.117046-1-tsbogend@alpha.franken.de>
+	s=arc-20240116; t=1790526547; c=relaxed/simple;
+	bh=NFwGvC4VcTSAbSA8FSD8ChPzP4PPCj/LwW9t2T9a8zA=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=D0UAO1QBZJ7l3BItuB2YR0IZSK79+zoNAT/03S1tC4jC+Hfc1MxXx+sZyLhOPoJRT9Ad8tw6NA/TbLI0qJSl+/xddwoprT1XTIjgv3gD5OvTY7F4kYtj3D1Hta2GjoJfJiuHc7zxn/+857iSdIfLKe6ICAKYXARWcxib8E995Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IggNfbCO; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IggNfbCO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 002D31F000FF;
+	Sun, 27 Sep 2026 16:29:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790526546;
+	bh=lMcI0XjYXxee6gQybGjy+nF52Zob3DzrgHJzmXEp8fc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=IggNfbCOWc3Qu2tHK8WHnDs24hP2X51WEjGQiUMCT3DAKwlWx+bJ2owge4SRyItne
+	 p/YpydwrSEs+xZKdAH785auXYfIjvrNKDIDBUAxAo/fiCqY00BehgZU5c54oX8hC6K
+	 K9jCzqmBItHAHdjk8iSth2KVRjfPInxo3/LlNMAG2uthWkQ0tLYPpdGi3TJsngGu/y
+	 w8Vx/fxAHLAzMU15096FUduU0PNkJDGiVCemZpXViZtmcBbX7bDWUs6r7rFjhsykYP
+	 RZxgnrIIqHOLoUnECh48i98eyWQRZi62VyGfLtyp9IkvBhsi4xxoVEGsUWWYjDTz2y
+	 xDD4ugM5ILP0w==
+Subject: Re: [PATCH net-next v15 2/9] dt-bindings: phy: document the serdes
+ PHY on sa8255p
+From: netdev-bot+sashiko@kernel.org
+To: bartosz.golaszewski@oss.qualcomm.com
+Cc: andersson@kernel.org, konradybcio@kernel.org, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, vkoul@kernel.org,
+ peppe.cavallaro@st.com, wens@kernel.org, jernej.skrabec@gmail.com,
+ neil.armstrong@linaro.org, khilman@baylibre.com, jbrunet@baylibre.com,
+ shawnguo@kernel.org, festevam@gmail.com, jan.petrous@oss.nxp.com, s32@nxp.com,
+ mohd.anwar@oss.qualcomm.com, romain.gantois@bootlin.com,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mripard@kernel.org,
+ christophe.roullier@foss.st.com, brgl@kernel.org, radu@rendec.net,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, dfustini@tenstorrent.com,
+ linux-sunxi@lists.linux.dev, linux-amlogic@lists.infradead.org,
+ linux-mips@vger.kernel.org, imx@lists.linux.dev,
+ linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ sophgo@lists.linux.dev, linux-riscv@lists.infradead.org,
+ bartosz.golaszewski@linaro.org
+Date: Sun, 27 Sep 2026 16:29:03 +0000
+Message-ID: <179052654351.2160803.11432185989352625433@kernel.org>
+In-Reply-To: <20260923-qcom-sa8255p-emac-v15-2-e82f33720737@oss.qualcomm.com>
+References: <20260923-qcom-sa8255p-emac-v15-2-e82f33720737@oss.qualcomm.com>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Rspamd-Queue-Id: AD60B1FDDC
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: 6.51
-X-Spam-Level: ******
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [6.51 / 50.00];
-	NEURAL_SPAM_LONG(3.49)[0.997];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_SPAM_SHORT(2.43)[0.810];
-	R_DKIM_NA(2.20)[];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[dt];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
 
-The U-Boot of Ubiquiti Edgerouter Lite don't provide a DT to the kernel.
-Use MIPS_MACHINE mechanism to provide one.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/boot/dts/cavium-octeon/Makefile |  1 +
- arch/mips/cavium-octeon/Kconfig           |  5 +++++
- arch/mips/cavium-octeon/Makefile          |  2 ++
- arch/mips/cavium-octeon/board-ubnt.c      | 16 ++++++++++++++++
- 4 files changed, 24 insertions(+)
- create mode 100644 arch/mips/cavium-octeon/board-ubnt.c
+Low priority / nit picks for your consideration:
 
-diff --git a/arch/mips/boot/dts/cavium-octeon/Makefile b/arch/mips/boot/dts/cavium-octeon/Makefile
-index 48085bca666c..aa3a5ff1468d 100644
---- a/arch/mips/boot/dts/cavium-octeon/Makefile
-+++ b/arch/mips/boot/dts/cavium-octeon/Makefile
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_CAVIUM_OCTEON_SOC)	+= octeon_3xxx.dtb octeon_68xx.dtb
-+dtb-$(CONFIG_OCTEON_BOARD_UBNT)	+= ubnt_e100.dtb
-diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
-index 450e979ef5d9..f3618117cc39 100644
---- a/arch/mips/cavium-octeon/Kconfig
-+++ b/arch/mips/cavium-octeon/Kconfig
-@@ -89,4 +89,9 @@ config OCTEON_ILM
- 	  To compile this driver as a module, choose M here.  The module
- 	  will be called octeon-ilm
- 
-+config OCTEON_BOARD_UBNT
-+	bool "Support Ubiquiti Devices"
-+	help
-+	  Enable this for missing Ubiquit device trees and quirks
-+
- endif # CAVIUM_OCTEON_SOC
-diff --git a/arch/mips/cavium-octeon/Makefile b/arch/mips/cavium-octeon/Makefile
-index ab84ede0cbe0..c9b52c94a8ca 100644
---- a/arch/mips/cavium-octeon/Makefile
-+++ b/arch/mips/cavium-octeon/Makefile
-@@ -18,3 +18,5 @@ obj-y += executive/
- obj-$(CONFIG_MTD)		      += flash_setup.o
- obj-$(CONFIG_SMP)		      += smp.o
- obj-$(CONFIG_OCTEON_ILM)	      += oct_ilm.o
-+
-+obj-$(CONFIG_OCTEON_BOARD_UBNT)	      += board-ubnt.o
-diff --git a/arch/mips/cavium-octeon/board-ubnt.c b/arch/mips/cavium-octeon/board-ubnt.c
-new file mode 100644
-index 000000000000..e89ab3a02f49
---- /dev/null
-+++ b/arch/mips/cavium-octeon/board-ubnt.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <asm/machine.h>
-+#include <asm/octeon/octeon.h>
-+
-+static __init bool ubnt_e100_detect(void)
-+{
-+	return cvmx_sysinfo_get()->board_type == CVMX_BOARD_TYPE_UBNT_E100;
-+}
-+
-+extern const char __dtb_ubnt_e100_begin[];
-+
-+MIPS_MACHINE(ubnt_e100) = {
-+	.fdt = __dtb_ubnt_e100_begin,
-+	.detect = ubnt_e100_detect,
-+};
+- [Low] In the new binding
+  Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-…
+
+--
+
+dt-bindings: phy: document the serdes PHY on sa8255p
+
+This commit adds a new binding for the SGMII/SerDes PHY on Qualcomm sa8255p
+platforms. The hardware is the same as sa8775p rev3, but here firmware
+manages the PHY over SCMI.
+
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml
+> new file mode 100644
+> index 0000000000000..9e846e3815555
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/qcom,sa8255p-dwmac-sgmii-phy.yaml
+
+[ ... ]
+
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  power-domain-names:
+> +    maxItems: 1
+
+[Severity: Low]
+This isn't a bug, but should power-domain-names pin its value here?
+
+The property is listed under required, and the example uses "serdes".
+However, the only constraint is maxItems: 1. A node with
+power-domain-names = "foo" would still pass dt_binding_check, so the value
+of a required property is left undefined in the ABI.
+
+The other firmware-managed sa8255p bindings fix their names with const
+entries. For example, qcom,sa8255p-geni-i2c.yaml has:
+
+  power-domain-names:
+    items:
+      - const: power
+      - const: perf
+
+qcom,sa8255p-ethqos.yaml, added later in this series, does the same with
+core and mdio.
+
+power-domains also has no description, so the binding doesn't say what the
+single domain represents.
+
+Could this use items: - const: serdes for power-domain-names, and add an
+items: - description: entry for power-domains? Another option is to drop
+power-domain-names, since there is only one entry.
+
+The driver added later in the series (phy-qcom-sgmii-eth-scmi.c) doesn't
+look the domain up by name. The driver core attaches the single domain
+automatically, so an unexpected name causes no runtime failure. The concern
+is limited to the schema and the ABI definition.
+
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#phy-cells"
+> +  - power-domains
+> +  - power-domain-names
+
+[ ... ]
+
+> +        power-domains = <&scmi7_dvfs 0>;
+> +        power-domain-names = "serdes";
+> +    };
+
 -- 
-2.51.0
-
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260923-qcom-sa8255p-emac-v15-0-e82f33720737%40oss.qualcomm.com

@@ -1,122 +1,75 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C3F474273;
-	Sat, 26 Sep 2026 15:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CD22A1BF;
+	Sun, 27 Sep 2026 08:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790435705; cv=none; b=naFdBf9+/eqocvJbhZ/JhgwdkGc0PTYR2aks88aEA0lKpjb/HV80xSVf6gpj4S1dNyp/aG/aUzw5QtmJB+LQAErtzXz1qpRoQ2Xg5nJLT4P2ridb5TpAsZ3ZoIzlCyTWn7+zUn0adZLp2hYOb2XwoF8gBt43oNbSaIEY19CbCms=
+	t=1790498630; cv=none; b=DWCWZiISA8lcSmco5dOQM8gX74KFIe57CzueXaSMM7Rlwa2QPwo34DVojn8XTySt2vmDJK20wSw8tTDxPszERWk2TKEFH/8E7JVro9nt3oHBnl2I5Kbogykr5hsBoAhClRPvF9Kcw3MBEAFMErGHpI08Lu8nYOHkhRp7/1BZ2YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790435705; c=relaxed/simple;
-	bh=ClVltLSpZXX7kyYoGrs6WXWqQwR9MaJl7aFlqiT71a0=;
+	s=arc-20240116; t=1790498630; c=relaxed/simple;
+	bh=L+LZ+XmSMjWrR8X2VVXOLMfn5PjdwHxGxapzLJ8kWvY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DPzWOKbog8IjlKJypCupAWCTohUjqiBEZds1sPQd5lxWbeiN7KVO2t03RtSb78bIgH1C1OaqHQvVAWEVqeeVTiDu0gjfejFN6TIjTL2UTiWDsLb3ZVh4kKrBXcvpYdttSooW3ppEGwI5tDXekTHNg3FeXMevPUdlkAdHLAUgpKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMbXDXzo; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMbXDXzo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E0A1F000FF;
-	Sat, 26 Sep 2026 15:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790435702;
-	bh=ClVltLSpZXX7kyYoGrs6WXWqQwR9MaJl7aFlqiT71a0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=YMbXDXzoGinwjtRaX2S2hqGI03VydgE7flbwKGLsH/D4N25KRqqxdVXEDMU4fUr98
-	 tixVjYJIraXwbE0CtskCAF0P56zAVnU95MkukV+OofcQ6nmryHDlXUVQbJXVnSS9Pk
-	 e7HbfqWF8ATzoeQPTpT/atbfJ0COmyrDPM/0vup039dsGZAHBr28PoVXUXUpPsagXe
-	 mXJbpuvsSWvvZ5fgw9f2V1LqW8EdvORKt55opNL8L4yn8Ol18YZiL2K28+KjVR9nWx
-	 ZYMhAMxtc9m2OaxvGEucFh3GLQMKwaY369dnBT86mm0NOXbrVyzh89kRPZhdaUrWWv
-	 uPtirHf7WgA7w==
-Date: Sat, 26 Sep 2026 17:14:57 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Linus Walleij <linusw@kernel.org>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>, 
-	Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, Paul Cercueil <paul@crapouillou.net>, 
-	Paul Kocialkowski <paulk@sys-base.io>, Inki Dae <inki.dae@samsung.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Sean Paul <sean@poorly.run>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Albert Esteve <aesteve@redhat.com>, Anusha Srivatsa <asrivats@redhat.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Hui Pu <Hui.Pu@gehealthcare.com>, 
-	Ian Ray <ian.ray@gehealthcare.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
-	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 12/19] drm/mcde: dsi: don't create a panel_bridge
-Message-ID: <arfhYxN4y_ZcXsZa@houat>
-References: <20260916-drm-bridge-every-panel-v3-0-83afb4f1a707@bootlin.com>
- <20260916-drm-bridge-every-panel-v3-12-83afb4f1a707@bootlin.com>
- <arInho2bsfJiCgjV@houat>
- <DLNCQEG62F5N.O98WAO4U2FJO@bootlin.com>
- <CAD++jLkk-a0MrQUiaDD8OoDDoYVwBwSjFTj5ZBy=Xo7MS4+01g@mail.gmail.com>
- <arTlpd-KAsVpj3UH@houat>
- <CAD++jLmktDoqn2EbXsNnyGRudo-q2NCxUf+9ZjeU+WrY4CBMWw@mail.gmail.com>
- <DLOJIV124RG7.27SOPEOHBTA7W@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sLAhQCXYRVfWlvl4pQ5Mtz37JtCrH28SciPdO7QAORrdpTjnVfW8jvKUKmGfgeOr46c4Fu6gxVcSflw1ddwzJ/bd7P4+VEUVBHBj8woXgCmZhPpqKOJ4fVvGiaDJ0zS9WDmehQAnVQX9h8ylH6Yk/muE/kED3UE/Nujs3U9+Pnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xAkTz-0008Gu-00; Sun, 27 Sep 2026 10:43:39 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 41995C0955; Sun, 27 Sep 2026 10:43:03 +0200 (CEST)
+Date: Sun, 27 Sep 2026 10:43:03 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Kexy Biscuit <kexybiscuit@aosc.io>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 2/2] docs: ABI: lefi: drop "ROM Size" in sysfs file doc.
+Message-ID: <arjXF4kF9x-rpfDw@alpha.franken.de>
+References: <20260921032048.4060710-1-rdunlap@infradead.org>
+ <20260921032048.4060710-2-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="dg3ucg3v26dehzsz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DLOJIV124RG7.27SOPEOHBTA7W@bootlin.com>
+In-Reply-To: <20260921032048.4060710-2-rdunlap@infradead.org>
 
+On Sun, Sep 20, 2026 at 08:20:48PM -0700, Randy Dunlap wrote:
+> The "ROM Size" line was dropped in a previous commit. Now delete it
+> in the ABI documentation also.
+> 
+> Fixes: bd2212d658d7 ("MIPS: Loongson64: remove ROM Size unit in boardinfo")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+> Cc: Kexy Biscuit <kexybiscuit@aosc.io>
+> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> 
+>  Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo |    1 -
+>  1 file changed, 1 deletion(-)
+> 
+> --- linux-next-20260918.orig/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
+> +++ linux-next-20260918/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
+> @@ -23,7 +23,6 @@ Description:
+>  		 BIOS Info
+>  		 Vendor                  : Kunlun
+>  		 Version                 : Kunlun-A1901-V4.1.3-20200414093938
+> -		 ROM Size                : 4 KB
+>  		 Release Date            : 2020-04-14
+>  
+>  		By the way, using dmidecode command can get the similar info if there
+> 
 
---dg3ucg3v26dehzsz
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 12/19] drm/mcde: dsi: don't create a panel_bridge
-MIME-Version: 1.0
+applied to mips-next
 
-On Fri, Sep 25, 2026 at 06:33:15PM +0200, Luca Ceresoli wrote:
-> Hello Linus,
->=20
-> On Fri Sep 25, 2026 at 6:25 PM CEST, Linus Walleij wrote:
-> > On Thu, Sep 24, 2026 at 10:57=E2=80=AFAM Maxime Ripard <mripard@kernel.=
-org> wrote:
-> >> On Thu, Sep 24, 2026 at 09:51:53AM +0200, Linus Walleij wrote:
-> >
-> >> > > Linus, unless you have more info I'm going to apply the patch as
-> >> > > is. Removing this special case would be welcome as a later patch.
-> >> >
-> >> > I'd say go ahead as-is.
-> >>
-> >> I'm fine with that, but I really want this removed at some point.
-> >
-> > If Luca wanna fix this up (drop this path) that's fine by me,
-> > else send a patch immediately after this is applied and I'll
-> > ACK it.
->=20
-> To avoid postponing this series I plan to apply as is on Monday. I can se=
-nd
-> another patch later to remove the !panel case.
+Thomas.
 
-Works for me :)
-
-Maxime
-
---dg3ucg3v26dehzsz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCarfhbQAKCRAnX84Zoj2+
-dgfdAYDG6Hu5i0e526axMly2zcjPr4YeajdmZ6bTC6CCZBd1XimS1nPSmAH1o1Wh
-jL7z65EBgJ/BZN2zgzTAR8W15VSdR3qxd4+gFK3Sr3hkGLJSe9YoI6JmUUUSQpXj
-edP84d+izQ==
-=Inr9
------END PGP SIGNATURE-----
-
---dg3ucg3v26dehzsz--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

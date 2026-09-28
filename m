@@ -1,115 +1,125 @@
-Received: from mail-pz2-f38.google.com (mail-pz2-f38.google.com [74.125.228.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00BB34DCC7
-	for <linux-mips@vger.kernel.org>; Mon, 28 Sep 2026 08:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.38
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F40B481643;
+	Mon, 28 Sep 2026 08:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790584055; cv=none; b=Kxayrvbh64QKBKkZDCCTSxCwdyqLTbmJzLcnnJ3YvpgAAUb+Aea594OfDMriSvuXwtZtqfodaUqklINGAAY6ioX7JFD/pMCTc/Pv22E/4vVwmWxcCLrq/AbqyqYXbPBExnkmbPey9xSUO3euYT31Z3TCF4EA6tCWP4eo6Zrfy9w=
+	t=1790584715; cv=none; b=jbOFpteUPRPj/M21wpb874aCU1CevjPFOB2zwG7s8kYrmVez7KiH9vDhuMKtls+s0mSrnxtufj5+cGejAxCB9e85wc70F7hafQj2wxA8pMFgZLndjqN4YvE9ixkRJnFQPLJv9sd1Kwyngeg1tKwVH0wGoyktNDwIOSEfLqz4C/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790584055; c=relaxed/simple;
-	bh=qAKPddpqFgfHmTQw4mD4LolSxZQhiX47J3WLDmhJNXc=;
+	s=arc-20240116; t=1790584715; c=relaxed/simple;
+	bh=xRNO/by/2nbYzoS2n4kE6HjL3ijCoclEq0fgOfixgEg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uxQprENDGhRw3xk1KOQpNe/ujPfJ+VsDZw0VgI6dqagRk0yMMYOU7y6qLVwcMsTOLJmI5Cv3cvkhyqzx+ZX8jW60u335sD5utoWEiJ9cp2sniCOVYeOhrilY9XsL3b/slMQZK4ufpzUu1kwPbZMpC7MxHkcp3Qi4MLjIY1uq2Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LU0862Q2; arc=none smtp.client-ip=74.125.228.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LU0862Q2"
-Received: by mail-pz2-f38.google.com with SMTP id d2e1a72fcca58-88206fc44c6so1146534b3a.2
-        for <linux-mips@vger.kernel.org>; Mon, 28 Sep 2026 01:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1790584053; x=1791188853; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=XfTNwTEf8cXEoiVJjaR2wzaM0AVgLL//fGyHvTOkwQs=;
-        b=LU0862Q2vbkM8L70ECClA6fPi7+gq6ZxFDngKIrBT1sWsKXYt7AxZveVgNS+4JaQhy
-         lJOMXW681dRW8Xtvr/0MGGXEV0h2vmvn6xXc4TQD8jvvHVHow0M747uwJW6/XauN8QOV
-         6lShKGYxn5my6xEmfiRRNtCxRBdJ5KQlc9T1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790584053; x=1791188853;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=XfTNwTEf8cXEoiVJjaR2wzaM0AVgLL//fGyHvTOkwQs=;
-        b=oIyra4eNeleE5dufvn4ZuK8lNOUYbOBH51wrzfSbBff8wx2TpjjygFs9odrliQSAf3
-         n/tm3YB0d38laHpwXJ37oAYIbgKE4BhUi3SNeihiTz62D1rO4ozMH4aTVrP4juzLQBhx
-         nI1iNDDQ0AXzFLBJtByc8ceG+3dORf/g6gHPFuUI/MPb7AOkL9IbiZnJLBW02dF+I9Pi
-         3N2yheAJNiU7+VWFJY1sJWIFNFkd6zWMZjWJ6soOccVnXV0BPfyPdrSrUQV9D1zibs9b
-         s3vszBac4Hq78Zgq9gzciztQ4f9D2kdp4jFbqnHLgXkAJjdXanvY3fN4SsRep/E5300l
-         O0tQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwOaH84r1a0ZTnrD9FW96dKhEKmsSDrLaJES9xXiYdm8jxY0HepdOe647RyBB7LaaWoQuQaZIovUJkm@vger.kernel.org
-X-Gm-Message-State: AFuF++kDE1xG1GOS+65YbUiftdxAI4diQY99ZGGGVvi41X5yN8+qknZJ
-	U8PiBktQRKVTKo767nlh9d+xzVn09v9Jyuc30VdxDldnxdJrk8xO9orP4RxH+aSXRw==
-X-Gm-Gg: AYBFou1iikxfkJsYlV56HRfCLwlSF3EurJYXfF963InlHY3T06oN3JGKlHhwl76cYsh
-	JNSeM6AhQjUdM8NMpRp5rkdwIaPB3+oU3pmCc77WWSTAvZXMorWEled96gMYbBBUfiZKgy40Moy
-	sVylTdxJX0kUEteuAWvXP2WA9uxrvVlkH947O7zJS6oYjqD29EXVi0FuWjhNrkEuXHEl9d96BeM
-	v606EbT+W2dusWORighpyzQ1Py6783FvicxQhG1d683XBk53xZRxB3PpQz1ntMKqEl/cCcbes9v
-	ekrP78DppVNa0snn5lsc6+kmLIJUXRK84aJVgHxP9csyIkh6epKOHkbAADYW2wXR9Du492XMqwO
-	Y8vWd/zrlqdXTPXgwxru6UYkbw7mqsolr8tETgDb3azenSeTpW1TNCHtN+aw4+nwujCBLh7pREb
-	tFrQnY+8Bqf7JnCufePhvN53XAHsdwXv6dZaFFmBm7whFukXB9/FaDiyAjShgCmDXvNYeTyzj7D
-	4SYr1cNKgW+ROmoZQ6Onq+zrKco/OvZlqNgVdo=
-X-Received: by 2002:a05:6a00:7619:b0:880:8fe8:a3ea with SMTP id d2e1a72fcca58-8808fe8a798mr3659738b3a.45.1790584053122;
-        Mon, 28 Sep 2026 01:27:33 -0700 (PDT)
-Received: from google.com ([2a00:79e0:2031:6:fdbe:318b:98fe:bd96])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-87feae8d827sm3676965b3a.36.2026.09.28.01.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2026 01:27:32 -0700 (PDT)
-Date: Mon, 28 Sep 2026 17:27:23 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Michal Wilczynski <m.wilczynski@samsung.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Russell King <linux@armlinux.org.uk>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Minchan Kim <minchan@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-block@vger.kernel.org, 
-	Yann Collet <yann.collet.73@gmail.com>, Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, 
-	Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Sungguk <sungguk.na@samsung.com>, Jaehoon Chung <jh80.chung@samsung.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH RFC 0/9] lib/lz4: stop forking upstream LZ4, vendor it
- instead
-Message-ID: <arokqo4gVQVglkBa@google.com>
-References: <CGME20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2@eucas1p2.samsung.com>
- <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
- <arnr-Su0uJdK_rOb@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uPArhzC37GwYuiCEhnvt+I4jbkIQAsY3yRRtxBGw7FaKz/opFdIwt5vNA6SfOikjzHZ2SPaDaK3MPL0YoOmQwiKk22o55Ms4D11zBx66omRGYhShszd8kk9eEvtT1o68KdebFaX996Zr218VAw3D873KNapURZ7nOBFCRF4LARM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xB6sQ-0003sT-00; Mon, 28 Sep 2026 10:38:22 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 42272C02BE; Mon, 28 Sep 2026 10:22:07 +0200 (CEST)
+Date: Mon, 28 Sep 2026 10:22:07 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: =?iso-8859-1?Q?Beno=EEt?= Monin <benoit.monin@bootlin.com>
+Cc: Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
+	Chao-ying Fu <cfu@wavecomp.com>,
+	Aleksandar Rikalo <arikalo@gmail.com>,
+	Paul Burton <paulburton@kernel.org>, Radu Rendec <radu@rendec.net>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] irqchip/mips-gic: Fix recursive acquisition of
+ gic_lock in gic_set_affinity()
+Message-ID: <arojr46BtH7FEQOS@alpha.franken.de>
+References: <20260907-sync-gic-counters-v3-0-3d891ddabdaf@bootlin.com>
+ <20260907-sync-gic-counters-v3-2-3d891ddabdaf@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <arnr-Su0uJdK_rOb@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260907-sync-gic-counters-v3-2-3d891ddabdaf@bootlin.com>
 
-On (26/09/28 13:25), Sergey Senozhatsky wrote:
-> On my x86_64 build .text size change seems to be quite significant:
+On Mon, Sep 07, 2026 at 02:46:36PM +0200, Benoît Monin wrote:
+> Commit 322a90638768 ("irqchip/mips-gic: Multi-cluster support")
+> made gic_set_affinity() call gic_set_type() when an interrupt's
+> affinity is moved between clusters. gic_set_type() takes gic_lock with
+> raw_spin_lock_irqsave(), but gic_set_affinity() holds gic_lock at that
+> point, so the same raw spinlock is acquired twice, triggering a deadlock.
 > 
->  ./scripts/bloat-o-meter lib/lz4/lz4_compress-old.ko lib/lz4/lz4_compress.ko
-> add/remove: 0/2 grow/shrink: 5/1 up/down: 8022/-1755 (6267)
-> Function                                     old     new   delta
-> LZ4_compress_fast_continue                  6028   10486   +4458
-> LZ4_compress_destSize                        158    3112   +2954
-> LZ4_compress_fast_extState                  4078    4597    +519
-> LZ4_saveDict                                  82     153     +71
-> __UNIQUE_ID_modinfo_466                       52      72     +20
-> __pfx_LZ4_compress_destSize_generic           16       -     -16
-> LZ4_loadDict                                 261     204     -57
-> LZ4_compress_destSize_generic               1682       -   -1682
-> Total: Before=14756, After=21023, chg +42.47%
+> Split gic_set_type() into a gic_set_type_locked() helper that assumes
+> gic_lock is already held. gic_set_type() takes gic_lock and calls the
+> helper, and gic_set_affinity() calls gic_set_type_locked() directly,
+> since it already holds gic_lock.
+> 
+> Fixes: 322a90638768 ("irqchip/mips-gic: Multi-cluster support")
+> Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
+> ---
+>  drivers/irqchip/irq-mips-gic.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 3b31cbcbed6f..f2ae60d39d66 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -297,14 +297,14 @@ static void gic_ack_irq(struct irq_data *d)
+>  	}
+>  }
+>  
+> -static int gic_set_type(struct irq_data *d, unsigned int type)
+> +static int gic_set_type_locked(struct irq_data *d, unsigned int type)
+>  {
+>  	unsigned int irq, pol, trig, dual;
+> -	unsigned long flags;
+> +
+> +	lockdep_assert_held(&gic_lock);
+>  
+>  	irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
+>  
+> -	raw_spin_lock_irqsave(&gic_lock, flags);
+>  	switch (type & IRQ_TYPE_SENSE_MASK) {
+>  	case IRQ_TYPE_EDGE_FALLING:
+>  		pol = GIC_POL_FALLING_EDGE;
+> @@ -351,11 +351,16 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
+>  	else
+>  		irq_set_chip_handler_name_locked(d, &gic_level_irq_controller,
+>  						 handle_level_irq, NULL);
+> -	raw_spin_unlock_irqrestore(&gic_lock, flags);
+>  
+>  	return 0;
+>  }
+>  
+> +static int gic_set_type(struct irq_data *d, unsigned int type)
+> +{
+> +	guard(raw_spinlock_irqsave)(&gic_lock);
+> +	return gic_set_type_locked(d, type);
+> +}
+> +
+>  #ifdef CONFIG_SMP
+>  static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
+>  			    bool force)
+> @@ -407,7 +412,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
+>  	 * trigger type in the new cluster.
+>  	 */
+>  	if (cl != old_cl)
+> -		gic_set_type(d, irqd_get_trigger_type(d));
+> +		gic_set_type_locked(d, irqd_get_trigger_type(d));
+>  
+>  	/* Route the interrupt to its new VP(E) */
+>  	if (gic_irq_lock_cluster(d)) {
+> 
+> -- 
+> 2.55.0
 
-D'oh you actually point that out in the commit message, sorry for the noise.
+Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

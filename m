@@ -1,42 +1,42 @@
 Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56EE44E9C10
-	for <linux-mips@vger.kernel.org>; Tue, 29 Sep 2026 12:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EE64E9C10;
+	Tue, 29 Sep 2026 12:14:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790684064; cv=none; b=XWd98egB7YL9Fra/b6r2GYE28UMnULJI3uM9tXe/zdhXwL2JOWsi7LsNA6Yfgv41eGBepi0aFbse/Y0IpQNIo/7rgL0kYdBDZHbARVoYflzg4dVTQhiA+cfi1dbecKwkmnwpfCf3TrXzg2bAyaqB/E3W08/jWmF7QVLI3btaykY=
+	t=1790684066; cv=none; b=K30egHPbVk3CoDAEINKjrPOsn75usgUEHdx22Y510KI69bMYnDUfHKcwzVsTjLf6tOBP6lWYsJ0kVAPoBADp4OgT9bZgM5wGs5R8ucpdjJvJCrm59UM6R18VMqaaK+IBIU9bZuqodWvhfkXCgr0z4HQ7guzsSfPWN3M82ZE40rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790684064; c=relaxed/simple;
-	bh=KieOLW7RylFid5wyz+mz1b3HREYt00TuMlfsCAGftEw=;
+	s=arc-20240116; t=1790684066; c=relaxed/simple;
+	bh=d97xc9Y1R18q+2AQuZhy8Mwb5qfpprWx4ATDL6YLdtI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OiIlNZRN33J/sv/63E4DjJtnQRoY/MnhJ8rUKGgIYm5UOjuSMtHTU38MEfiP6mz+S6yJdEKTEbI8oLlnBuR4jG3pF8wmWtv3PYU+9Alq5zKx7WdPbIZ+BqhTp4J/e6U8CS2eo1UEgBR9VFVXg2wS+O0He3enIloGr4nsMQADSbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pEsRLg5A; arc=none smtp.client-ip=185.246.84.56
+	 In-Reply-To:To:Cc; b=u4w6atWAmRDhXdj7b5p7oHwX2XPFtPof03lOBVL314ANtDq7HZr7qp4XTDoTKQ4f6O+LmKTBfejt2KPPvG3eyXm1kuQlWDfpOjZY4F2hsapvfhfxL90jVhG16SPHv8niU8q4PznOD+Y0G30/U5Ur1PzHjdtYGvVzRtFuI0tPlrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=zvlFbpd8; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pEsRLg5A"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="zvlFbpd8"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id D8E8F1A105E;
-	Tue, 29 Sep 2026 12:14:20 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 924941A105F;
+	Tue, 29 Sep 2026 12:14:22 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id AD2EF601BD;
-	Tue, 29 Sep 2026 12:14:20 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 640181032904B;
-	Tue, 29 Sep 2026 14:14:18 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 66D37601BD;
+	Tue, 29 Sep 2026 12:14:22 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1A76510329529;
+	Tue, 29 Sep 2026 14:14:20 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790684059; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1790684061; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=s0+MWKDhP5HMmTuzdTX3ooN40b7v315Oz+r3MYIzcL8=;
-	b=pEsRLg5AQfxYbENs8XH9BS8sH08MrzHXA1LwTCQQdyxnqFPuePzvPbPzuasGdkQwnB2Frv
-	9sz5JuMeRmf645sw7GkJMttMv6sd9VAE00PudGlrK455bsaQ7uL5xITAxTKlu3mX6uJ15q
-	/l7/rkeccXuERs5tgBzJwytYp1heE9mTq3x6G201WOkClINxCI7A7YAxmlUSCw7/TLpwBA
-	9p63vUxVl2edqGaYnJi/m5rrW/8ob3+l2j8R9N7nEvWsvNfE7bTO7FKxk5NxBBxxgHfgF6
-	y2lKEr87QaPP+KSHV8VYKkskSF3aIZvQA3edUyjygsfH4zAhja8Sm0BG7t+Qag==
+	bh=l4yD82GHhREFsdsMccvpbDPRksBJicEaO8appZy9fvA=;
+	b=zvlFbpd83vJPSd+z2K98d99iHB/vmEmqJUh/IyLuxcHQaCZJYGaBi19fb19zGmrETA/XcO
+	z626Wz4HDdT9GDwe2N/x2HcjP1gj/1zb4hvskj/azS3EMoCzu2Up2LZDjd7EvHJWZjd0t6
+	G4CTuR0wrq6lkLrVlRq7vmxofmgDAaHXIFEevHwskM9pBGtDcrrjFO/HJ0pNaG0026OA1N
+	QFyX/Q+bZIQONvG/60f9mAa8HO3DiCJ+RktDYS9P6EEv9BDX3cp1MJNRRI+BfVnMzNvHGs
+	GBcFF43/df8sdHRgnuIz+YN5WSY0trBvDiC8cK/6xgnAje4TYomfEX1ZVyfIcw==
 From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Date: Tue, 29 Sep 2026 14:14:10 +0200
-Subject: [PATCH v4 3/5] irqchip/mips-gic: Transfer interrupt mask state
- across clusters
+Date: Tue, 29 Sep 2026 14:14:11 +0200
+Subject: [PATCH v4 4/5] clocksource: mips-gic-timer: Simplify
+ gic_next_event() for per-cpu timer
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -45,7 +45,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260929-sync-gic-counters-v4-3-ec70c4b60434@bootlin.com>
+Message-Id: <20260929-sync-gic-counters-v4-4-ec70c4b60434@bootlin.com>
 References: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
 In-Reply-To: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
@@ -63,83 +63,54 @@ Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
 X-Mailer: b4 0.16.0
 X-Last-TLS-Session-Version: TLSv1.3
 
-When an interrupt's affinity is moved to a CPU in another cluster,
-gic_set_affinity() updates the routing (GIC_SH_MAP_VP) and trigger type
-in the destination cluster, but never touched the interrupt's mask state.
+The GIC clock event device is registered per CPU and is flagged with
+CLOCK_EVT_FEAT_C3STOP. This guarantees that the set_next_event() callback
+is always invoked on the CPU of the event.
 
-The interrupt mask is per-cluster. After such a move the interrupt may
-be left disabled in the destination cluster, so it never fires despite
-being correctly routed to its new VP.
+Drop the code path configuring the compare register of another CPU as it
+is never called and does not correctly handle the case of having multiple
+clusters, and document this guarantee by adding the CLOCK_EVT_FEAT_PERCPU
+flag to the clock event device features.
 
-Move the mask state along with the interrupt: disable it in the old
-cluster while clearing the route so it is no longer delivered, then
-configure the trigger type in the new cluster and re-enable it there
-if it was enabled in the old cluster.
-
-Fixes: 322a90638768 ("irqchip/mips-gic: Multi-cluster support")
+Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
 ---
- drivers/irqchip/irq-mips-gic.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ drivers/clocksource/mips-gic-timer.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index f2ae60d39d66..be38989d8e73 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -368,6 +368,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
- 	unsigned int irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
- 	unsigned int cpu, cl, old_cpu, old_cl;
- 	unsigned long flags;
-+	bool enabled;
+diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+index 1501c7db9a8e..cdaf4ba1d509 100644
+--- a/drivers/clocksource/mips-gic-timer.c
++++ b/drivers/clocksource/mips-gic-timer.c
+@@ -52,18 +52,13 @@ static u64 notrace gic_read_count(void)
  
- 	/*
- 	 * The GIC specifies that we can only route an interrupt to one VP(E),
-@@ -389,15 +390,20 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
- 	raw_spin_lock_irqsave(&gic_lock, flags);
+ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+ {
+-	int cpu = cpumask_first(evt->cpumask);
+ 	u64 cnt;
+ 	int res;
  
- 	/*
--	 * If we're moving affinity between clusters, stop routing the
--	 * interrupt to any VP(E) in the old cluster.
-+	 * If we're moving affinity between clusters, save the interrupt's
-+	 * mask state, stop routing it to any VP(E) in the old cluster and
-+	 * disable it there so it is no longer delivered.
- 	 */
- 	if (cl != old_cl) {
- 		if (gic_irq_lock_cluster(d)) {
-+			enabled = read_gic_redir_mask(irq);
- 			write_gic_redir_map_vp(irq, 0);
-+			write_gic_redir_rmask(irq);
- 			mips_cm_unlock_other();
- 		} else {
-+			enabled = read_gic_mask(irq);
- 			write_gic_map_vp(irq, 0);
-+			write_gic_rmask(irq);
- 		}
- 	}
+ 	cnt = gic_read_count();
+ 	cnt += (u64)delta;
+-	if (cpu == raw_smp_processor_id()) {
+-		write_gic_vl_compare(cnt);
+-	} else {
+-		write_gic_vl_other(mips_cm_vp_id(cpu));
+-		write_gic_vo_compare(cnt);
+-	}
++	write_gic_vl_compare(cnt);
++
+ 	res = ((int)(gic_read_count() - cnt) >= 0) ? -ETIME : 0;
+ 	return res;
+ }
+@@ -82,6 +77,7 @@ static void gic_clockevent_cpu_init(unsigned int cpu,
+ {
+ 	cd->name		= "MIPS GIC";
+ 	cd->features		= CLOCK_EVT_FEAT_ONESHOT |
++				  CLOCK_EVT_FEAT_PERCPU |
+ 				  CLOCK_EVT_FEAT_C3STOP;
  
-@@ -409,10 +415,20 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
- 
- 	/*
- 	 * If we're moving affinity between clusters, configure the interrupt
--	 * trigger type in the new cluster.
-+	 * trigger type and, if it was enabled in the old cluster, enable it
-+	 * in the new one.
- 	 */
--	if (cl != old_cl)
-+	if (cl != old_cl) {
- 		gic_set_type_locked(d, irqd_get_trigger_type(d));
-+		if (enabled) {
-+			if (gic_irq_lock_cluster(d)) {
-+				write_gic_redir_smask(irq);
-+				mips_cm_unlock_other();
-+			} else {
-+				write_gic_smask(irq);
-+			}
-+		}
-+	}
- 
- 	/* Route the interrupt to its new VP(E) */
- 	if (gic_irq_lock_cluster(d)) {
+ 	cd->rating		= 350;
 
 -- 
 2.55.0

@@ -1,41 +1,42 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 916F44E9C10
-	for <linux-mips@vger.kernel.org>; Tue, 29 Sep 2026 12:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D2751AFF5;
+	Tue, 29 Sep 2026 12:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790684059; cv=none; b=Wv65zXLi2Daw7a/noSM4H8vTx6Y4EnH/86L7FEerTtlI+MArMwj6nqB9FugaxKpgZOwJmzljztwwFM0AU/hf2Ip7oXSlUa1N2I0VxI/3DNbRNsbjT1GxWzad6E+PD0ytTHPqwzmB2fOxPqNF9CnCpLYkylyKmkP0jNWx8uPu14A=
+	t=1790684061; cv=none; b=JDOfTp83uAT6nhtQcVXFzJuapb2I6iGw2TbjjX3j/qtJtQjzseR51p8t+uzqFwubky19a33ILa9R/UudKLxuEc2vD7aK7ffclwcQXfkHkSZmyjMRStnb/gueiS0ZH3IPjypvtXhvAaTow+hBVIb/BsEFUdO+sIPERWsc+gm42oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790684059; c=relaxed/simple;
-	bh=0+FK7CZdNqjwUrlTbS3GOvCFn0zxabA/TtGnzwA6aMA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TT+zbxWqeBvqvSUNYgLj2aGsK6xiymT0j5SUTnkdaocN5AvbXwMIRP4zrU4SXC4zdRO68Ggu9kpig/wjzXnaupjQLaa7hokBPJ5QetRa3lyTpXzOSdjwp3+4OZ9u+L9a945POwZriOsvgwlMtmrduDjB5EC6JvhDoETMmJNIPvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NSBsxO66; arc=none smtp.client-ip=185.246.84.56
+	s=arc-20240116; t=1790684061; c=relaxed/simple;
+	bh=sUsxY7+TaUUsXnFemphP4sfuf0/NNkCe0s/kpfyOSdI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=kiASYzRfPHHvcdS69u8KnofokjGWGygm3Gp4qQwpntKKJtyeihtmD/5aLC6Cb0HfTP4tA//kswAXCif1G1d8O/O3H5Ut3nuLmvE8dqgby6VQHzao2Tho5lRiOHUaR3ikWe9QqYv/4rdZIPqhbNPRxL8nQXmTlB4jx5QrXRTHyZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bzfwiQ0g; arc=none smtp.client-ip=185.246.85.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NSBsxO66"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bzfwiQ0g"
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id C21C61A105E;
-	Tue, 29 Sep 2026 12:14:14 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 59D8D4E410BE;
+	Tue, 29 Sep 2026 12:14:17 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9508D601BD;
-	Tue, 29 Sep 2026 12:14:14 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 25B6F1032904B;
-	Tue, 29 Sep 2026 14:14:09 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2E2CF601BD;
+	Tue, 29 Sep 2026 12:14:17 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E2DE810329529;
+	Tue, 29 Sep 2026 14:14:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790684053; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=A3Qxs4TGrNUfCVNKwYJJtBFl5Z95xNFCzczvn4uL2t4=;
-	b=NSBsxO66s/RT1WEBpwTNhYbLhCZlF5S13iidsgkIk+GU0EDusmcvolh2/eJAA3UfJUK1hW
-	cA3fp1xeDIWEW78sum7OQGzEyNUMteFhidqmK6e7XUWNIYHnENPy8U8tL40t3eeynlnquA
-	47lNN5jGT+EnySNUzxBKDtEOsZUZa3gMfArjuhKQcf6mhgABkBWYlrUMx4D2ycllAuWpUu
-	LWQwuawfWn2ipm5jiQRSk60pbeZgmfibYSCnVfx+25CopeOMtVm9cG7jxUSJTfZoyOnv2g
-	cmE5twEwwE1mdqPmX6r6FFtZongUYETh3wr52jafco0Ac01arvmqnim/wTFcVw==
+	t=1790684055; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=aEEYPj79EMPUCoBxaARpFVNacfnVg40ZfaAXzWDux54=;
+	b=bzfwiQ0gqRcRSSXbhjrlH8ttnZICRwdVn72xn7OKFUuLsIrZkLPx4/OVOZ1JUBFKexaP8u
+	ALbdpcF8vNrrsGhfEI2+MTu544BaGqc8asA0wUXMCOnQMEvNinTFVIToAXRa0qy8vOaPAy
+	Khv/ywzq6OiuxjCIMm2bTb2HIHGICtel0dx/+0EHy2KA2TTtjhlLQ27RaMcZWciTvWy+jU
+	kMbpr/OnP0GJpyN8b+od4aTVJ3CMuM1MxdDmAt9aFklbOlqFIwQfo3dpb5THDJC0yU7gcW
+	0yXQcr/LnGgPaQtEMlrD0qJRm7gbWoC1IpFXcZV81nlxh622dWzYNesdBNoFTA==
 From: =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>
-Subject: [PATCH v4 0/5] MIPS: GIC clocksource/irqchip improvements and
- fixes for multi-cluster systems
-Date: Tue, 29 Sep 2026 14:14:07 +0200
-Message-Id: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
+Date: Tue, 29 Sep 2026 14:14:08 +0200
+Subject: [PATCH v4 1/5] irqchip/mips-gic: Fix unbalanced cm_core_lock in
+ for_each_online_cpu_gic()
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -44,12 +45,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAI+ru2oC/23PywoCMQwF0F+Rro2k7TAPV/6HuOgj1Yq20o5Fk
- fl3Z1QQdJYXknOTB8uUPGW2XjxYouKzj2EM1XLBzEGFPYG3Y2YCRY0NbyDfg4G9N2DiNfSUMnB
- ja12h7uqW2Lh3SeT87WVud++cr/pIpp+gaeLgcx/T/VVa+DT38UU14xcOHJQSlbPoJGq30TH2J
- x9WJp7Z1FDE12g5zhkCEKyjVgsjm1rjvyG/RodzfxY5GtK2HbdWaat+7hiG4Qlz7/U5TgEAAA=
- =
-X-Change-ID: 20260717-sync-gic-counters-1cd6b40b968e
+Message-Id: <20260929-sync-gic-counters-v4-1-ec70c4b60434@bootlin.com>
+References: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
+In-Reply-To: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
  Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>, 
  Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton <paulburton@kernel.org>, 
@@ -65,104 +63,89 @@ Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
 X-Mailer: b4 0.16.0
 X-Last-TLS-Session-Version: TLSv1.3
 
-This series addresses multi-cluster MIPS GIC handling: it fixes a few
-cross-cluster and lock bugs, and allows the GIC timer to be used as a
-fast local clocksource on multi-cluster systems by synchronizing the
-per-cluster counters.
+Commit d9e2ed610a60 ("irqchip/mips-gic: Support multi-cluster in
+for_each_online_cpu_gic()") added a gic_unlock_cluster() call to the
+macro's loop increment, which unconditionally invokes
+mips_cm_unlock_other() on multi-cluster systems. However nothing in the
+loop ever acquires the corresponding mips_cm_lock_other(), so on
+multi-cluster hardware every invocation of for_each_online_cpu_gic()
+releases an unheld per-CPU cm_core_lock.
 
-The first three patches are for the irq-mips-gic irqchip driver.
+With CONFIG_PROVE_LOCKING this triggers a "bad unlock balance detected"
+warning at boot, e.g. from gic_irq_domain_map() while mapping local
+interrupts. Only the first occurrence is reported, since the first
+warning permanently disables lockdep (debug_locks = 0); the unbalanced
+release itself silently persists.
 
-The first patch fixes the for_each_online_cpu_gic() macro which
-was releasing an unheld per-CPU cm_core_lock on every invocation
-on multi-cluster hardware. Move both the acquire and release into
-__gic_with_next_online_cpu() so they stay balanced and the for_each
-macro accesses all VP on a multi-cluster system.
+Fix this by moving both the acquire and release into
+__gic_with_next_online_cpu() so they stay balanced. When advancing to a
+CPU in a remote cluster, lock the CM redirect block for that cluster via
+mips_cm_lock_other(); when leaving a remote cluster (or finishing the
+iteration) release it with mips_cm_unlock_other(). Local-cluster CPUs
+require no locking, so single-cluster systems are unaffected. This also
+makes the redirect region behave correctly when accessing local register
+blocks of CPUs in other clusters.
 
-The second patch fixes a recursive acquisition of gic_lock in
-gic_set_affinity() when moving interrupt SMP affinity across clusters,
-caused by a call to gic_set_type(). Split out a gic_set_type_locked()
-helper to resolve the issue.
+Drop the now-unused gic_unlock_cluster() helper and its call from the
+for_each_online_cpu_gic() increment.
 
-The third patch transfers the interrupt mask state when moving affinity
-across clusters. The mask is per-cluster, so after a cross-cluster move
-the interrupt was left disabled in the destination cluster; and
-unconditionally enabling it would unmask an interrupt that was
-deliberately disabled. Save the mask state in the source cluster and
-restore it in the destination cluster.
-
-The last two patches are for the mips-gic-timer clocksource driver.
-
-The fourth patch simplifies gic_next_event() as it is guaranteed to be
-invoked on the CPU that owns the event, and adds the CLOCK_EVT_FEAT_PERCPU
-flag to document that guarantee.
-
-The last patch is the main functional change, carried over from v1. It
-synchronizes each secondary cluster's GIC counter to cluster 0's counter
-as its CPUs come online. Once every cluster is in sync, it promotes the
-clocksource from the slow cross-cluster gic_hpt_read_multicluster() path
-to the fast local gic_hpt_read() and re-enables the GIC VDSO clock mode.
-The switch is done with a flag rather than by unregistering and
-re-registering the clocksource. On the dual-cluster Mobileye EyeQ6H SoC
-this makes clock_gettime(CLOCK_MONOTONIC) about four times faster on the
-secondary cluster and replaces the jiffies-based sched_clock with the
-high-precision GIC counter.
-
-This series was tested on Mobileye SoCs with different cluster
-configurations:
-* The EyeQ5 with two clusters but only one is equipped with VP
-  (VP topology {2,2,2,2},{} total 8).
-* The EyeQ6Lplus which is strictly single cluster
-  (VP topology {4,4} total 8).
-* The EyeQ6H with two identical clusters
-  (VP topology {4,4,4,4},{4,4,4,4} total 32).
-
-Although I am posting this as a single series since the patches
-are all related to the GIC, the changes to the irqchip driver and
-to the clocksource driver are independent from each other and can be
-merged in different trees. I can split the series in two if it helps
-reviewing/merging.
-
+Fixes: d9e2ed610a60 ("irqchip/mips-gic: Support multi-cluster in for_each_online_cpu_gic()")
+Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
 ---
-Changes in v4:
-- Patch 3: Don't unconditionally enable the interrupt when moving affinity
-  across clusters (Thanks to Thomas Bogendoerfer for the review)
-- Patch 5: Use a flag to avoid unregistering and re-registering the
-  clocksource (Thanks to Thomas Bogendoerfer for the review)
-- Link to v3: https://patch.msgid.link/20260907-sync-gic-counters-v3-0-3d891ddabdaf@bootlin.com
+ drivers/irqchip/irq-mips-gic.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-Changes in v3:
-- Rebased on v7.3-rc1.
-- Simplified gic_next_event() as it is strictly per-CPU instead of fixing
-  unused code.
-- Link to v2: https://patch.msgid.link/20260810-sync-gic-counters-v2-0-dfe8b2c376b0@bootlin.com
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 19a57c5e2b2e..3b31cbcbed6f 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -70,6 +70,10 @@ static int __gic_with_next_online_cpu(int prev)
+ {
+ 	unsigned int cpu;
+ 
++	/* Release the redirect/other region lock to the previous CPU, if any. */
++	if (prev >= 0)
++		mips_cm_unlock_other();
++
+ 	/* Discover the next online CPU */
+ 	cpu = cpumask_next(prev, cpu_online_mask);
+ 
+@@ -77,23 +81,12 @@ static int __gic_with_next_online_cpu(int prev)
+ 	if (cpu >= nr_cpu_ids)
+ 		return cpu;
+ 
+-	/*
+-	 * Move the access lock to the next CPU's GIC local register block.
+-	 *
+-	 * Set GIC_VL_OTHER. Since the caller holds gic_lock nothing can
+-	 * clobber the written value.
+-	 */
+-	write_gic_vl_other(mips_cm_vp_id(cpu));
++	/* Lock access to redirect/other region to the next CPU */
++	mips_cm_lock_other_cpu(cpu, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+ 
+ 	return cpu;
+ }
+ 
+-static inline void gic_unlock_cluster(void)
+-{
+-	if (mips_cps_multicluster_cpus())
+-		mips_cm_unlock_other();
+-}
+-
+ /**
+  * for_each_online_cpu_gic() - Iterate over online CPUs, access local registers
+  * @cpu: An integer variable to hold the current CPU number
+@@ -108,7 +101,6 @@ static inline void gic_unlock_cluster(void)
+ 	guard(raw_spinlock_irqsave)(gic_lock);		\
+ 	for ((cpu) = __gic_with_next_online_cpu(-1);	\
+ 	     (cpu) < nr_cpu_ids;			\
+-	     gic_unlock_cluster(),			\
+ 	     (cpu) = __gic_with_next_online_cpu(cpu))
+ 
+ /**
 
-Changes in v2:
-- Four new patches described above fixing multi-cluster
-  handling in the GIC irqchip and clocksource drivers.
-- In the last patch, gic_clocksource_promote() is now deferred via a
-  workqueue instead of a CPUHP ONLINE callback, to avoid a lockdep
-  issue on clocksource_mutex.
-- Link to v1: https://patch.msgid.link/20260724-sync-gic-counters-v1-1-aa24fd0f30bf@bootlin.com
-
----
-Benoît Monin (5):
-      irqchip/mips-gic: Fix unbalanced cm_core_lock in for_each_online_cpu_gic()
-      irqchip/mips-gic: Fix recursive acquisition of gic_lock in gic_set_affinity()
-      irqchip/mips-gic: Transfer interrupt mask state across clusters
-      clocksource: mips-gic-timer: Simplify gic_next_event() for per-cpu timer
-      clocksource: mips-gic-timer: Use local counter on synced multi-cluster systems
-
- drivers/clocksource/mips-gic-timer.c | 138 ++++++++++++++++++++++++++++++-----
- drivers/irqchip/irq-mips-gic.c       |  59 +++++++++------
- 2 files changed, 156 insertions(+), 41 deletions(-)
----
-base-commit: cee9395acd8043be0644b25c34bfa86623f2b935
-change-id: 20260717-sync-gic-counters-1cd6b40b968e
-
-Best regards,
---  
-Benoît Monin, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+-- 
+2.55.0
 

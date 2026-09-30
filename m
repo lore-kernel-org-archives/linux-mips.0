@@ -1,136 +1,140 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7253453D9D5;
-	Tue, 29 Sep 2026 17:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from mail-pz2-f39.google.com (mail-pz2-f39.google.com [74.125.228.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C377B3921ED
+	for <linux-mips@vger.kernel.org>; Wed, 30 Sep 2026 06:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790701275; cv=none; b=dPeotgbVSr5KfUHKoOaMNvcovrNzT8zeqUEqQKzFlQkVZxVAnYeVqPXPVCy81vPfuZG2FsfiVz3mTpLEGyPsVzq9o7QAJxLBebZWrCJDnR89oC74G2SXJ3u5lp7W8AhkVBPWGB7+j+kJ9yxDSvV/Trlgdz1DzRx9i8f6v+5Grzg=
+	t=1790748489; cv=none; b=uBJ2AvZpWCaszmMuhk66cFE5Ma8+6AjJlnb70NnxBLxH9aFy1/G07PDF/8N3tXJx8Fjj3iZJOrqwgRCEK843z7J2FEG22FNEyXT4KhjtWve6j/PGWneBwyt5RDcdHOCH/qIlW/Bf5ZRg1duc1WbfCcgXi/FxX+rrTNjNTjBrrh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790701275; c=relaxed/simple;
-	bh=Rabq6Q9+T/qOe5bLcUl+TYr43hAHbB8ss/JqYkLZ++g=;
+	s=arc-20240116; t=1790748489; c=relaxed/simple;
+	bh=FQT7C9mEtUI9zyQeAiy/rz7mwvm/L9IqR2P4MCxmtag=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eudn/dHAD3EIlyJrG9REu2hSNToQyJPvoy1TC/zgVtQO+HHipXt3rdXS2LwMEAYxJrQsuz1SevyaLGI12F4wz1+cTNTABPBRfR7i5g8NOOJQ62RSfT1ks91Jq7Cc/u/yYIb3yIFktf/VFl9mjDd3Nvnr8fvUN2y1LFjOCqVdSzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xBbCO-0005Ga-00; Tue, 29 Sep 2026 19:01:00 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 2DD2AC0955; Tue, 29 Sep 2026 19:00:36 +0200 (CEST)
-Date: Tue, 29 Sep 2026 19:00:36 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: =?iso-8859-1?Q?Beno=EEt?= Monin <benoit.monin@bootlin.com>
-Cc: Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
-	Aleksandar Rikalo <arikalo@gmail.com>,
-	Paul Burton <paulburton@kernel.org>,
-	Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-	Chao-ying Fu <cfu@wavecomp.com>,
-	Daniel Lezcano <daniel.lezcano@kernel.org>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] irqchip/mips-gic: Transfer interrupt mask state
- across clusters
-Message-ID: <arvutL1S7NsR7mKZ@alpha.franken.de>
-References: <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
- <20260929-sync-gic-counters-v4-3-ec70c4b60434@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pJKDZcnzH+2jAyESJOMvJIV1HdvjF1agxe5SafmTeM9n0q/8vSTUX+88Eua4APy0+qFZRjitunv+YBUJOF5DxENddmyN7D4LljRjSudi+ZNbHNJfGh6Ma1ZU9C+Xe/tABGs1wI1JM78/MJYD9oVRjThIv0fEOdqpKPjpDiDzf0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GpLOQ885; arc=none smtp.client-ip=74.125.228.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GpLOQ885"
+Received: by mail-pz2-f39.google.com with SMTP id 41be03b00d2f7-cc7979d1dedso1553190a12.3
+        for <linux-mips@vger.kernel.org>; Tue, 29 Sep 2026 23:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1790748487; x=1791353287; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=CgFmFj2igJGpmbRflOSd7wans++uMlq7r70gUY54Vy0=;
+        b=GpLOQ885YueQnMRr7aYksbM090881sDEr8Fe1usp/q0pr6fKEwx2Cglw8wGIeuqXfo
+         z9+qdro7WLQlY5O7IK5f2JeUGmrO0obUFcd+Na/uUiQIuolwIOhoYcdmwDhyJuUCflos
+         uNc3Zr3tAz8ZSh0r82sTNNcJOP6oSeRIpn2Zg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790748487; x=1791353287;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=CgFmFj2igJGpmbRflOSd7wans++uMlq7r70gUY54Vy0=;
+        b=yHGYsyUbPDrZNL2wHjaiwhMMxGQ5Xs+Ij22/mUXH18ZjjW1NDdh5Hk7cGLVSmqelqh
+         4qpBqcezjflB7cDOpw+kmSPbrt+TeBg7jTD9vzOUunTl02Gr2cKR7xT+BMQglCveAvVk
+         2Wrjt31qJSQegnedhX0uvRma3R1g9rnrTeWA1y4Bur1VQauk4j3LKu4z8kWQdwr5RgMp
+         x9hebKPQAr7gfkBt6OZofx5263urDlRQ0/20wyZlvx+eF3NSAwIXOPCfRxKNp+5V/PPE
+         yK13f1FdhAS93Cvn/aZ02DiYq3Mv8nj43SgXH5LJvPfF372ZssrFnje5Dj1NclR7NNwr
+         DXaw==
+X-Forwarded-Encrypted: i=1; AKwUvBxJcy0q6ypMUVx+eT2wgMl5cZyPMFen5/3EgDs+eSS531EdMgyqko3TeY6YjxfHE3s2P7+vInjzDcZ7@vger.kernel.org
+X-Gm-Message-State: AFuF++meE10J70DZ8PjFIdGERYGCq6qdND+CIBmCHzydCFHhDK9zpzvE
+	8K645MtjkzvnBuTZgDaDL6sL/ZxoY6tvDQuqjsR4gxDX+TIcaGrVYexpBnXoQv41dg==
+X-Gm-Gg: AYBFou2656lAI9F0JONuQNhhpmzgGTLWejb5ft3BkJa44/g6saxY60DKW2v5L4MhjsH
+	W8pHmqx2Y/v2QRCn6762oPBJwj/qap8TeGppjx0aXVDqe96cJulwTmJXpgYdzmjbxHHJgHI55rl
+	Qwys2zufnfpKM93sHVdGJBBSR8gyaiaDesqVp+RpTUv3bGA1ZkIW+qSuKUNNdaPI0QXCYPMUw+3
+	7PPOt1kQP43kWyIzrlSMBH1kdVSgFjR7JfN4Htem1Ehkr0MG7FN9MIV36Hu9fLzBDRWzgbL7ZPe
+	XOaFgWbpR0yQZeM34qUew1FY+bDwveTi8cJ2gxvUNh9z2ec/IZsK9xqPGj6cIEzpEO+mYILvZFG
+	iPs+JCxADxGxPqhf+PVHlq0ri96XTDzExYZnZJqnIrMgt0MHBVOBdDUv7gVEjCzB2xllKgPPfta
+	vXXdG9DPwvld0eD7WbJT5y6i/HCVJA88WOs2e5n4YPZOI9Y99KccOCfuGOTdGXUlBYvFWu/g3/M
+	UUL1NkusK6+KW+ktpIP+KEZCUV/vnIDI34xhOEonutcGJeLTg==
+X-Received: by 2002:a05:6a21:492:b0:3de:3bd5:604c with SMTP id adf61e73a8af0-3de9e87f358mr387844637.41.1790748487167;
+        Tue, 29 Sep 2026 23:08:07 -0700 (PDT)
+Received: from google.com ([2a00:79e0:2031:6:31b3:f8c3:893a:d0bb])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-88725d68389sm247895b3a.39.2026.09.29.23.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2026 23:08:06 -0700 (PDT)
+Date: Wed, 30 Sep 2026 15:07:56 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Michal Wilczynski <m.wilczynski@samsung.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Russell King <linux@armlinux.org.uk>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Minchan Kim <minchan@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, 
+	Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Phillip Lougher <phillip@squashfs.org.uk>, Sungguk <sungguk.na@samsung.com>, 
+	Jaehoon Chung <jh80.chung@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH RFC 1/9] lib/lz4: import upstream LZ4 sources verbatim
+Message-ID: <aryehUJml8fTy0o-@google.com>
+References: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
+ <CGME20260925113452eucas1p170bfdb34dfbf670a14a6f8f0c2f5094a@eucas1p1.samsung.com>
+ <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260929-sync-gic-counters-v4-3-ec70c4b60434@bootlin.com>
+In-Reply-To: <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
 
-On Tue, Sep 29, 2026 at 02:14:10PM +0200, Benoît Monin wrote:
-> When an interrupt's affinity is moved to a CPU in another cluster,
-> gic_set_affinity() updates the routing (GIC_SH_MAP_VP) and trigger type
-> in the destination cluster, but never touched the interrupt's mask state.
-> 
-> The interrupt mask is per-cluster. After such a move the interrupt may
-> be left disabled in the destination cluster, so it never fires despite
-> being correctly routed to its new VP.
-> 
-> Move the mask state along with the interrupt: disable it in the old
-> cluster while clearing the route so it is no longer delivered, then
-> configure the trigger type in the new cluster and re-enable it there
-> if it was enabled in the old cluster.
-> 
-> Fixes: 322a90638768 ("irqchip/mips-gic: Multi-cluster support")
-> Signed-off-by: Benoît Monin <benoit.monin@bootlin.com>
-> ---
->  drivers/irqchip/irq-mips-gic.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-> index f2ae60d39d66..be38989d8e73 100644
-> --- a/drivers/irqchip/irq-mips-gic.c
-> +++ b/drivers/irqchip/irq-mips-gic.c
-> @@ -368,6 +368,7 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
->  	unsigned int irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
->  	unsigned int cpu, cl, old_cpu, old_cl;
->  	unsigned long flags;
-> +	bool enabled;
->  
->  	/*
->  	 * The GIC specifies that we can only route an interrupt to one VP(E),
-> @@ -389,15 +390,20 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
->  	raw_spin_lock_irqsave(&gic_lock, flags);
->  
->  	/*
-> -	 * If we're moving affinity between clusters, stop routing the
-> -	 * interrupt to any VP(E) in the old cluster.
-> +	 * If we're moving affinity between clusters, save the interrupt's
-> +	 * mask state, stop routing it to any VP(E) in the old cluster and
-> +	 * disable it there so it is no longer delivered.
->  	 */
->  	if (cl != old_cl) {
->  		if (gic_irq_lock_cluster(d)) {
-> +			enabled = read_gic_redir_mask(irq);
->  			write_gic_redir_map_vp(irq, 0);
-> +			write_gic_redir_rmask(irq);
->  			mips_cm_unlock_other();
->  		} else {
-> +			enabled = read_gic_mask(irq);
->  			write_gic_map_vp(irq, 0);
-> +			write_gic_rmask(irq);
->  		}
->  	}
->  
-> @@ -409,10 +415,20 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
->  
->  	/*
->  	 * If we're moving affinity between clusters, configure the interrupt
-> -	 * trigger type in the new cluster.
-> +	 * trigger type and, if it was enabled in the old cluster, enable it
-> +	 * in the new one.
->  	 */
-> -	if (cl != old_cl)
-> +	if (cl != old_cl) {
->  		gic_set_type_locked(d, irqd_get_trigger_type(d));
-> +		if (enabled) {
-> +			if (gic_irq_lock_cluster(d)) {
-> +				write_gic_redir_smask(irq);
-> +				mips_cm_unlock_other();
-> +			} else {
-> +				write_gic_smask(irq);
-> +			}
-> +		}
-> +	}
->  
->  	/* Route the interrupt to its new VP(E) */
->  	if (gic_irq_lock_cluster(d)) {
-> 
-> -- 
-> 2.55.0
+On (26/09/25 13:27), Michal Wilczynski wrote:
+[..]
 
-Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> +void LZ4_resetStream_fast(LZ4_stream_t* ctx) {
+> +    LZ4_prepareTable(&(ctx->internal_donotuse), 0, byU32);
+> +}
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+[..]
+
+> +void LZ4_attach_dictionary(LZ4_stream_t* workingStream, const LZ4_stream_t* dictionaryStream)
+> +{
+> +    const LZ4_stream_t_internal* dictCtx = (dictionaryStream == NULL) ? NULL :
+> +        &(dictionaryStream->internal_donotuse);
+> +
+> +    DEBUGLOG(4, "LZ4_attach_dictionary (%p, %p, size %u)",
+> +             workingStream, dictionaryStream,
+> +             dictCtx != NULL ? dictCtx->dictSize : 0);
+> +
+> +    if (dictCtx != NULL) {
+> +        /* If the current offset is zero, we will never look in the
+> +         * external dictionary context, since there is no value a table
+> +         * entry can take that indicate a miss. In that case, we need
+> +         * to bump the offset to something non-zero.
+> +         */
+> +        if (workingStream->internal_donotuse.currentOffset == 0) {
+> +            workingStream->internal_donotuse.currentOffset = 64 KB;
+> +        }
+> +
+> +        /* Don't actually attach an empty dictionary.
+> +         */
+> +        if (dictCtx->dictSize == 0) {
+> +            dictCtx = NULL;
+> +        }
+> +    }
+> +    workingStream->internal_donotuse.dictCtx = dictCtx;
+> +}
+
+Just a side note,
+there is a bunch of new helpful API added in this release.  Currently,
+we do some memcpy hacks to avoid re-init of lz4 C/D-dict in zram, but
+once this series lands I'll be happy to send some trivial EXPORT_SYMBOL
+patches so that zram (and other lz4 users) can use standard lz4 dict
+API instead of hacks.

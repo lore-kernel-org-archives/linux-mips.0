@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871BD4A499F;
-	Wed, 30 Sep 2026 23:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E2D39022A;
+	Wed, 30 Sep 2026 23:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790811140; cv=none; b=U1CjMpMSGWbEXpiFsYw4dWqb899crKLIa94Gpa1fzCKvqZl53/LBA+QY//PM57JxgjGHQ2oIku0lMQguSituHFwX4EG3hB4BGYWmVDh6RXJDpGpVTy8a3llmpfcW2hzDej/cRuxhqPHkmejRzi1Uu37RxY4zXUw+/474OCQ5d/E=
+	t=1790811217; cv=none; b=MsJKfniWKSh625PQ6LdMbANthgm2/1o9YSrPeBjQ8J1VK/k+xoKqnx7c6Cj/69RGToFSlIjfvTRvL3/0S+8PbOPOtykOjm4Jl7JMBQ59b4n2VLQy7Rd9eRB7XkQl5ngXLEwHUeYrZVvJ3hfq23hp8IADoJMyA3eVWBgo22dUg0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790811140; c=relaxed/simple;
-	bh=klMsnEP+vb9DhYgoK6Y/sENCG6Q3x+RrqvetvjVh6zM=;
+	s=arc-20240116; t=1790811217; c=relaxed/simple;
+	bh=+i09NqmEGvWAgOQSu2JzfsI3KQxK9zOuELeNfrb/YCU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oAU44vK1MFSJHz9XgBSCO08e8oMeRsOksD9VymdgV/RBXyFb3YB7dQTyHomHO1jF72jwV61n/Y2XduHGqljMHaD7BhmAxiiAOwUNEUbcZF9pq2YJe9jg+u3uUUBfvq5HWc6hkPKi335MEvmFJzJM/F5fqURnlJqxHI/bDTxw4a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YKzKQScV; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version:Content-Type; b=tdFc8MebTcEtRpI38c4U7Mqb5uq06qf0EMlnd/iNJXyTRs75LWwXRmQqDpC6rVaudKNL/WqEtOmV71fYcDYzMrLadjlMrDO7HykXTZO6K7vM3YoqBLjhWYvEhMdkObJXLLrV1qkoBN3K+LQP8cxFuM7FqC57T93njBwQKo5LCf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iM5V8kpr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YKzKQScV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C3C1F000FF;
-	Wed, 30 Sep 2026 23:32:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iM5V8kpr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C986A1F000FF;
+	Wed, 30 Sep 2026 23:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790811139;
-	bh=ng115hWZ2LMwKhDc1Httr+OsIIIboQhXGl5/aPDAQoQ=;
+	s=k20260515; t=1790811216;
+	bh=FNK/3xFH9eCNhn2rwMTGwfSucgaTbz1Hnohkj9sa4DM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=YKzKQScVQVhjWvsISsBvvd+RZk8usvWcSOdVDF+hEZmkCSypcdgnfyxLAOWFWnGUi
-	 QQEtlC7xApH7XqyAoqUafqECurZATIh9SGxK2FQ0WsjPQgbReJZlKuzNRlqWqi4EPw
-	 8SPR0Dl+eXnngN0zEKgnmlMMy3a9TkzwfiLB0VmPHYpMR3k8e0iCbwYDWCIiRllFh5
-	 vOckl23hCF9F09n+LN0KGaC+Y1drrkXrkVoBItWgbdX7P/CqiN3H9WihVWBbDes6E5
-	 hmQ9VdXbGtwO/GBtB/pNrkR78Ld9LQx9p6P8JW2bgZbSZTLc3hZldUygvFbZw/h2IT
-	 rp0CwiCFJHtvw==
-Date: Wed, 30 Sep 2026 16:32:17 -0700
+	b=iM5V8kprPcqUUtABn8RdjhABq8ehgpbe8HkhOI6mg+s6DDKlOTP6XWs6thPr/T+I+
+	 /09P8WKMmvjdyd9hwWuizmemuZFg7YuxXw9f9Brv09nH6OLcgcU76tG5N4hEZyNNlI
+	 Zo+uMo1F5XPzSsJZ32D6FvkicUSSMBjkatis4KkJFCQN0t3VLq7UGK8LxQCpl1av3z
+	 ZJNQithgImxzAK/2VUJnPm6zHvoU+EMoQ5ljVKWox7TTZzzayUMw5jor3CpTrJj0xJ
+	 na5+drmiYFcHLS05GrUtvwtT7DGiN6sqyJpsRJ6y0oH73+IUGcfukvWLxscPl34msJ
+	 IgWcMfc7EYn9Q==
+Date: Wed, 30 Sep 2026 16:33:34 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
@@ -55,13 +55,13 @@ Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
  imx@lists.linux.dev, linux-renesas-soc@vger.kernel.org,
  linux-rockchip@lists.infradead.org, sophgo@lists.linux.dev,
  linux-riscv@lists.infradead.org, Bartosz Golaszewski
- <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH net-next v15 3/9] phy: qcom: add the SGMII SerDes PHY
- driver for SCMI systems
-Message-ID: <20260930163217.4003d232@kernel.org>
-In-Reply-To: <20260923-qcom-sa8255p-emac-v15-3-e82f33720737@oss.qualcomm.com>
+ <bartosz.golaszewski@linaro.org>, stable@vger.kernel.org
+Subject: Re: [PATCH net-next v15 1/9] net: phy: aquantia: fix system
+ interface type not updated in forced mode
+Message-ID: <20260930163334.60b4a88c@kernel.org>
+In-Reply-To: <20260923-qcom-sa8255p-emac-v15-1-e82f33720737@oss.qualcomm.com>
 References: <20260923-qcom-sa8255p-emac-v15-0-e82f33720737@oss.qualcomm.com>
-	<20260923-qcom-sa8255p-emac-v15-3-e82f33720737@oss.qualcomm.com>
+	<20260923-qcom-sa8255p-emac-v15-1-e82f33720737@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -71,18 +71,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 23 Sep 2026 17:14:37 +0200 Bartosz Golaszewski wrote:
-> Implement support for the firmware-managed SGMII/SerDes PHY present on
-> Qualcomm platforms. Do this as a separate driver from the HLOS-managed
-> variant as they don't share almost any code.
+On Wed, 23 Sep 2026 17:14:35 +0200 Bartosz Golaszewski wrote:
+> aqr_gen1_read_status() decodes the MDIO_PHYXS_VEND_IF_STATUS register
+> to determine which SerDes interface the PHY is currently using on its
+> system side and stores the result in phydev->interface. phylink relies
+> on this value to configure the MAC.
 > 
+> The autoneg == AUTONEG_DISABLE check is not correct:
+> MDIO_PHYXS_VEND_IF_STATUS is set by the PHY firmware based on the
+> negotiated link speed, not based on whether autoneg was used to reach
+> it. When the link comes up at 1G in forced mode, the register correctly
+> reads SGMII, but the early return prevents phydev->interface from being
+> updated. It stays at whatever value it held before (typically 2500BASE-X
+> from the initial autoneg run), so phylink configures the MAC for the
+> wrong interface and the link cannot come up.
+> 
+> Remove the autoneg guard so that the system interface type is always
+> decoded when the link is up.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 110a2432c520 ("net: phy: aquantia: add downshift support")
 > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> ---
->  drivers/phy/qualcomm/Kconfig                   |  10 +++
->  drivers/phy/qualcomm/Makefile                  |   1 +
->  drivers/phy/qualcomm/phy-qcom-sgmii-eth-scmi.c | 117 +++++++++++++++++++++++++
->  3 files changed, 128 insertions(+)
 
-Hmm, why is this here? is there a hard dependency?
-Otherwise it'd be better to send it separately out to Vinod,
-this is drivers/phy after all.
+Sounds like a real regression, is it? Should we ship it to Linus
+tomorrow so that it makes 7.3? stable + next does not compute for me

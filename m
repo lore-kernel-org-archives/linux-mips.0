@@ -1,101 +1,149 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5801F37CD22;
-	Wed, 30 Sep 2026 15:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50924D1787;
+	Wed, 30 Sep 2026 15:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790783378; cv=none; b=OY4wbzLLfEOGQBT73Mn9V0iIW2GOmCEovdXC3MNuBdkOPeR4284K38OcoN02709D9pMUkJQrv99XjWYIUiB9SEt68ieW22XSRAawSUfAg3d71szGEHWlCub41kQHYYcMaTNe9Z5Ws15rz3faHIgUZ+IE9yr9Xsp+fo4xlhiNnRE=
+	t=1790783913; cv=none; b=FCX+nABzNWKSO2+2YQH2ZQikHMzBBQd7YMGvYTjVdjZsAT6QXP4uyUCK1SQJvxRzMptVsAaBc+YWK3AgYdhUK40cTkWcNzz2imYz05O6g+wt0aVjS1HdzK7R5jy1NtZnNtnnA00HRnhL2gJb8ni2rSIUk/2T/q0sJqleCD+NjzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790783378; c=relaxed/simple;
-	bh=BZkNu09Lfo6E+PsCpkCvwK4EEJPyrX4CAGS3ahr7LG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e8WMdZSxUy8nZ/z5ZBaAf9l/F8qnFty35sUIRTmwCMGlhQynDGH86riqoThCMoS3BB0xIGrYqRdBVhVE5VxvQEmw54L3V77uowBv6RLWjtU+CDc4Q2owLU32fZVsyfjygd+ndkAnnYEzR+jeVXUN9bCWK3/ul6doftgHQ8n+9tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dWbqTVIG; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1790783913; c=relaxed/simple;
+	bh=7+uOAdwvRA5Phs71HOWvHd2WnABdLy2EzB8eI2nyFFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lqTI12H6q0H84KMyhlgT9gmEZn/iqjp61tDA5rFSJatvq8zU0nlK0U8uiX3Q5xqHh6PlSUnk8h6Yg1SDGRU91+5rrANOAeMjKSzexzdFe/2YegbpPcA8IjjdKnpkSeUCO9jwVR434AzJdX/lZ+enO2qW0fa6M9fnzZw9tD7hgak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=L2tfF9HC; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dWbqTVIG"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 68D421A1072;
-	Wed, 30 Sep 2026 15:49:27 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3B3F060749;
-	Wed, 30 Sep 2026 15:49:27 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9F1B81032982E;
-	Wed, 30 Sep 2026 17:49:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1790783362; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=ugAZhI+twJwNfbo6mFa57skyyDPMFQpEayEsyi2uEZc=;
-	b=dWbqTVIGz2+RpQy77T547XaL0yN4tBM/cauDoqWYCYcTn7sAUqzs+q3xYeFHdynGA7DN1B
-	VrdJ1rmL5GYiBiZUy1iMA21YdlI9fzE8jdU2qJJOV18lA2UCw6EUkCyFPFfxsEnN+YzHTo
-	pIIlBmPW8m6/0sHj0tKsWhhwuL8HEb4TxFogctwfKkyvL7ALA+AqK3EDSR6BBNUOhHSL83
-	Esnc//5dx+6eSWVKppS5NhuQPCubrJXxCfwpaCKrflwrEB7S8CZdAKB66/PLt1dXD/4GQJ
-	fJaXB07SPafcKgotLQ54wGZEUimkgGnm3IVWntCSaHfzFybLbSaV/mFrSkbSgg==
-From: =?UTF-8?B?QmVub8OudA==?= Monin <benoit.monin@bootlin.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
- Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton <paulburton@kernel.org>,
- Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
- Chao-ying Fu <cfu@wavecomp.com>, Daniel Lezcano <daniel.lezcano@kernel.org>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH v4 5/5] clocksource: mips-gic-timer: Use local counter on synced
- multi-cluster systems
-Date: Wed, 30 Sep 2026 17:49:17 +0200
-Message-ID: <3hJ3aZuPRWSZSVZ0yXJIXA@bootlin.com>
-In-Reply-To: <arvuZDCu_1vp4Yw5@alpha.franken.de>
-References:
- <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
- <20260929-sync-gic-counters-v4-5-ec70c4b60434@bootlin.com>
- <arvuZDCu_1vp4Yw5@alpha.franken.de>
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="L2tfF9HC"
+Received: from ideasonboard.com (unknown [93.65.100.155])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 34D4C34;
+	Wed, 30 Sep 2026 17:56:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1790783786;
+	bh=7+uOAdwvRA5Phs71HOWvHd2WnABdLy2EzB8eI2nyFFE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L2tfF9HC3qurjOKRXYDMqOKASmD+Fr11uViI6pruu4IK+X2gjb+Qrc0LPbo2ClC/i
+	 pQ50KvP2bVEDVqeebyd/BBPmVqkW68rD+oEjTdYgMuso89FKaU5zYqVN2gKEIaX8Kh
+	 049B+Gb1N/HvapsKch/NcZ4isnk/qWbGR2u6qN6Y=
+Date: Wed, 30 Sep 2026 17:58:14 +0200
+From: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To: Mukesh Ojha <mukesh.ojha@oss.qualcomm.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konradybcio@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Joel Stanley <joel@jms.id.au>, 
+	Andrew Jeffery <andrew@codeconstruct.com.au>, Paul Cercueil <paul@crapouillou.net>, 
+	Anitha Chrisanthus <anitha.chrisanthus@intel.com>, Paul Kocialkowski <paulk@sys-base.io>, 
+	Linus Walleij <linusw@kernel.org>, Chen-Yu Tsai <wens@kernel.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Alexey Brodkin <abrodkin@synopsys.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Michal Simek <michal.simek@amd.com>, 
+	Daniel Scally <dan.scally@ideasonboard.com>, Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Eddie James <eajames@linux.ibm.com>, 
+	Tiffany Lin <tiffany.lin@mediatek.com>, Andrew-CT Chen <andrew-ct.chen@mediatek.com>, 
+	Yunfei Dong <yunfei.dong@mediatek.com>, Minghsiu Tsai <minghsiu.tsai@mediatek.com>, 
+	Houlong Wei <houlong.wei@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Joseph Liu <kwliu@nuvoton.com>, Marvin Lin <kflin@nuvoton.com>, 
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Thierry Reding <thierry.reding@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Srinivas Kandagatla <srini@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ge Gordon <gordon.ge@bst.ai>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Ulf Hansson <ulfh@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Saravana Kannan <saravanak@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+	Bard Liao <yung-chuan.liao@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, 
+	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Peter Chen <peter.chen@cixtech.com>, Fugang Duan <fugang.duan@cixtech.com>, 
+	Ekansh Gupta <ekansh.gupta@oss.qualcomm.com>, BST Linux Kernel Upstream Group <bst-upstream@bstai.top>, 
+	Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, 
+	Chunyan Zhang <zhang.lyra@gmail.com>, 
+	CIX Linux Kernel Upstream Group <cix-kernel-upstream@cixtech.com>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-aspeed@lists.ozlabs.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-media@vger.kernel.org, openbmc@lists.ozlabs.org, linux-mediatek@lists.infradead.org, 
+	kernel@collabora.com, linux-tegra@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-staging@lists.linux.dev, 
+	linux-sound@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, imx@lists.linux.dev, 
+	sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH 21/42] media: arm: mali-c55: Use
+ devm_of_reserved_mem_device_init()
+Message-ID: <ar0xb9md8E76G5VI@zed>
+References: <20260703193855.110619-1-mukesh.ojha@oss.qualcomm.com>
+ <20260703193855.110619-22-mukesh.ojha@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260703193855.110619-22-mukesh.ojha@oss.qualcomm.com>
 
-On Tuesday, 29 September 2026 at 18:59:16 CEST, Thomas Bogendoerfer wrote:
-> >  static int gic_starting_cpu(unsigned int cpu)
-> >  {
-> > -      /* Ensure the GIC counter is running */
-> > -      clear_gic_config(GIC_CONFIG_COUNTSTOP);
-> > +      unsigned int cluster =3D cpu_cluster(&cpu_data[cpu]);
-> > +
-> > +      if (read_gic_config() & GIC_CONFIG_COUNTSTOP) {
-> > +              clear_gic_config(GIC_CONFIG_COUNTSTOP);
-> > +
-> > +              if (cluster && mips_cm_is64 && !gic_clock_unstable)
-> > +                      gic_sync_counter_64(cluster);
-> > +
-> > +              if (gic_synced_cl_map &&
-> > +                  bitmap_full(gic_synced_cl_map, mips_cps_numclusters(=
-)))
-> > +                      schedule_work(&gic_promote_work);
->=20
-> do we really need the workqueue ? As far as I understand
-> sched_clock_register() doesn't use the clocksource mutex, so we should
-> be able to directly call gic_promote() again.
+Hi Mukesh
 
-With CONFIG_IRQ_TIME_ACCOUNTING=3Dy, calling sched_clock_register() from the
-CPU hotplug STARTING callback leads to a deadlock. We also need the
-workqueue to call it.
+On Sat, Jul 04, 2026 at 01:08:34AM +0530, Mukesh Ojha wrote:
+> Use the devres-managed devm_of_reserved_mem_device_init() instead of
+> the manual of_reserved_mem_device_init()/of_reserved_mem_device_release()
+> pair, letting the device resource manager handle cleanup automatically.
+>
+> Signed-off-by: Mukesh Ojha <mukesh.ojha@oss.qualcomm.com>
 
-Best regards,
-=2D-=20
-Beno=C3=AEt Monin, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
 
+I'll collect this single patch for the Mali-C55 PR for v7.4
 
-
+> ---
+>  drivers/media/platform/arm/mali-c55/mali-c55-core.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/media/platform/arm/mali-c55/mali-c55-core.c b/drivers/media/platform/arm/mali-c55/mali-c55-core.c
+> index 94a389b3f833..afbec11f69f8 100644
+> --- a/drivers/media/platform/arm/mali-c55/mali-c55-core.c
+> +++ b/drivers/media/platform/arm/mali-c55/mali-c55-core.c
+> @@ -801,14 +801,12 @@ static int mali_c55_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return dev_err_probe(dev, ret, "failed to acquire resets\n");
+>
+> -	of_reserved_mem_device_init(dev);
+> +	devm_of_reserved_mem_device_init(dev);
+>  	vb2_dma_contig_set_max_seg_size(dev, UINT_MAX);
+>
+>  	ret = __mali_c55_power_on(mali_c55);
+> -	if (ret) {
+> -		dev_err_probe(dev, ret, "failed to power on\n");
+> -		goto err_release_mem;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to power on\n");
+>
+>  	ret = mali_c55_check_hwcfg(mali_c55);
+>  	if (ret)
+> @@ -847,9 +845,6 @@ static int mali_c55_probe(struct platform_device *pdev)
+>  	kfree(mali_c55->context.registers);
+>  err_power_off:
+>  	__mali_c55_power_off(mali_c55);
+> -err_release_mem:
+> -	of_reserved_mem_device_release(dev);
+> -
+>  	return ret;
+>  }
+>
+> @@ -864,7 +859,6 @@ static void mali_c55_remove(struct platform_device *pdev)
+>  	}
+>  	pm_runtime_disable(&pdev->dev);
+>  	kfree(mali_c55->context.registers);
+> -	of_reserved_mem_device_release(&pdev->dev);
+>  }
+>
+>  static const struct of_device_id mali_c55_of_match[] = {
+> --
+> 2.53.0
+>

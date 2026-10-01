@@ -1,97 +1,116 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E2D39022A;
-	Wed, 30 Sep 2026 23:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B828836E468
+	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 05:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790811217; cv=none; b=MsJKfniWKSh625PQ6LdMbANthgm2/1o9YSrPeBjQ8J1VK/k+xoKqnx7c6Cj/69RGToFSlIjfvTRvL3/0S+8PbOPOtykOjm4Jl7JMBQ59b4n2VLQy7Rd9eRB7XkQl5ngXLEwHUeYrZVvJ3hfq23hp8IADoJMyA3eVWBgo22dUg0I=
+	t=1790832656; cv=none; b=OtE7iXxpmcL//D2zbN5FqoMKWlMBxT9MOHLVfpkw+9ArZkCBKPCn3yv8n/qC3Fdz3wKbykMW8dv+kg+nWwUQYQKDVeESHULwulE6A0phRDKTd+pzGhXyF0J22MavyWr3l358e+MdSDrtak9/5NvzRXL2NdAobsKXtsrJnCATVpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790811217; c=relaxed/simple;
-	bh=+i09NqmEGvWAgOQSu2JzfsI3KQxK9zOuELeNfrb/YCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tdFc8MebTcEtRpI38c4U7Mqb5uq06qf0EMlnd/iNJXyTRs75LWwXRmQqDpC6rVaudKNL/WqEtOmV71fYcDYzMrLadjlMrDO7HykXTZO6K7vM3YoqBLjhWYvEhMdkObJXLLrV1qkoBN3K+LQP8cxFuM7FqC57T93njBwQKo5LCf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iM5V8kpr; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790832656; c=relaxed/simple;
+	bh=EmA6//KppfeUgVZiV4cMUwGel9FhZCcjp0UJf5p4IKQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UPuAgw1rXmxrdqTKaACaA5mLHK6edxonUMD6bu0sbwH8oNB8RUVHu6TTBWHYqiJr0CbD4V3sih0pA5dPhBMaig4Io2+F+mwaSHF042f0VRuZbWLWtIzb+l2k9miRBvEaaMfAxFxb1LCx9stk2k6nfbCQS2qetLN6BIG/HFd2+gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=bw22YXjU; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iM5V8kpr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C986A1F000FF;
-	Wed, 30 Sep 2026 23:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790811216;
-	bh=FNK/3xFH9eCNhn2rwMTGwfSucgaTbz1Hnohkj9sa4DM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=iM5V8kprPcqUUtABn8RdjhABq8ehgpbe8HkhOI6mg+s6DDKlOTP6XWs6thPr/T+I+
-	 /09P8WKMmvjdyd9hwWuizmemuZFg7YuxXw9f9Brv09nH6OLcgcU76tG5N4hEZyNNlI
-	 Zo+uMo1F5XPzSsJZ32D6FvkicUSSMBjkatis4KkJFCQN0t3VLq7UGK8LxQCpl1av3z
-	 ZJNQithgImxzAK/2VUJnPm6zHvoU+EMoQ5ljVKWox7TTZzzayUMw5jor3CpTrJj0xJ
-	 na5+drmiYFcHLS05GrUtvwtT7DGiN6sqyJpsRJ6y0oH73+IUGcfukvWLxscPl34msJ
-	 IgWcMfc7EYn9Q==
-Date: Wed, 30 Sep 2026 16:33:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
- <konradybcio@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Vinod Koul <vkoul@kernel.org>, Giuseppe
- Cavallaro <peppe.cavallaro@st.com>, Chen-Yu Tsai <wens@kernel.org>, Jernej
- Skrabec <jernej.skrabec@gmail.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Shawn Guo <shawnguo@kernel.org>, Fabio
- Estevam <festevam@gmail.com>, Jan Petrous <jan.petrous@oss.nxp.com>,
- s32@nxp.com, Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>, Romain Gantois
- <romain.gantois@bootlin.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>, Maxime Ripard <mripard@kernel.org>,
- Christophe Roullier <christophe.roullier@foss.st.com>, Bartosz Golaszewski
- <brgl@kernel.org>, Radu Rendec <radu@rendec.net>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, Drew Fustini
- <dfustini@tenstorrent.com>, linux-sunxi@lists.linux.dev,
- linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
- imx@lists.linux.dev, linux-renesas-soc@vger.kernel.org,
- linux-rockchip@lists.infradead.org, sophgo@lists.linux.dev,
- linux-riscv@lists.infradead.org, Bartosz Golaszewski
- <bartosz.golaszewski@linaro.org>, stable@vger.kernel.org
-Subject: Re: [PATCH net-next v15 1/9] net: phy: aquantia: fix system
- interface type not updated in forced mode
-Message-ID: <20260930163334.60b4a88c@kernel.org>
-In-Reply-To: <20260923-qcom-sa8255p-emac-v15-1-e82f33720737@oss.qualcomm.com>
-References: <20260923-qcom-sa8255p-emac-v15-0-e82f33720737@oss.qualcomm.com>
-	<20260923-qcom-sa8255p-emac-v15-1-e82f33720737@oss.qualcomm.com>
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="bw22YXjU"
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2881F3F601
+	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 05:30:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20251003; t=1790832645;
+	bh=1VE1RYfLq2T8mu9mJjmLt+ict1IadVMm9yDzloS+OAM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=bw22YXjUxhQ3mxLDK4VlPrqp2hOY6j2Ba+B+ChVg5uqR+55ct0Y6LBXrv0JNOKnSY
+	 9kvqod2OoeI43mLeQ9PqoOYwWX8Xii7UyYFymyN7QEyP5sjhBWHS3AenUZaKYPeKr5
+	 PaleHXWHjjx1ULBKXy3R972WGqMneROt7Jn03XA8YZjEMuSrHe6Xmm7n1itwBgZlDd
+	 U+aRv+2kqxNVIqxQyL6R+Fflksba/eSLRJfmvG/ERlpBVZtuDx0zgR/QI/Mt7oDn0A
+	 iPyDpXMb28yUgVPAuy0O0YNoZTkXsD2dZ0sLQASo3dKxqmKRAn14C7cX6Pf2PRP4KE
+	 ASV+BEO4HANdwOVD/kuJn0viXUtPssbyDys/2Luw6IOyisWYjOKcj0zOl7ltUQmej9
+	 BYKwOY+iVEl/lIdTVsVXM0b4NuFR2zM84TasUbjK9ge0wvtMKKkQN4tl3WnGG/7b85
+	 7X/CImbvqB4+cue8lJxG+HJEVjbHJQEg7dGq36jUk5KwVpJNQXP/GXP6RsaCfVg73L
+	 OgZnopTA6fXdGHAwCd9XUkIck32n43z2PiB3CpscMCSTaW+/4Edayub4UN/cAHflZb
+	 qYmxpZmUkyMKhu5Vo+uMbhVD+qAWUpef2TJa/OBAVGqALaCMko2IDMl39px8yhGc2N
+	 kg/YqXKTmpaPKBYa2SfbKTkY=
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2cee1ec30f2so58734475ad.3
+        for <linux-mips@vger.kernel.org>; Wed, 30 Sep 2026 22:30:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790832643; x=1791437443;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=1VE1RYfLq2T8mu9mJjmLt+ict1IadVMm9yDzloS+OAM=;
+        b=hY+2qNBGxOiW4GOvFJ73CAEgL3imrl1dZltJVRlgxsAJ2ebjaWjDRtxTbOi2lsG5zt
+         ye39z4zljW/6bD6o3GmwhpC9yO20Y33Mr23S6zhXPpEidiU27IfmYCuH7S5GIPkpQjSm
+         yHz1GaD88cA7/BXIzU1GUjkt6ISal8iV9N31adh867/Ls0H5wObAKg7H8l8k8wjZFtwY
+         4KH6aj/mGgdRn/WwKvwyxi5VzvQTpeyFV83KdqwgrdNKe2OBmhX+pbLFb2TWE5yENp8/
+         TkteWMrj77JbjdyT9H6q8OlI4tcYQ1COGyMlUj1eTj0Ceu8jvGTD9smaQg6jynYnpqIb
+         ZFVw==
+X-Gm-Message-State: AFq9FYITpvIcE9iU3oZa1bAspxwB+tJFUtSuVNsotD0o0btxDqr6R75M
+	IveEqYEEYZusnW8iiedTHAPABYYMaHXcvsARKuleZVTDWjNkKwx0fOefyIs8DHsuDzJxbK4H0h/
+	p+o1mjI+Wgbbh+B8N/QlhBDQQOyD0HNh3HcWd+s/cmJaF7sAlK1/c6P1vBpnbGCNFzIlPi1Cjnb
+	s+bDM=
+X-Gm-Gg: AYBFou15Qr5BqI4uXGsCyjUS85Hgm55jYpKAEGe6bijASWOqljWcHVu0H2H9GpP8d2w
+	s6h/ppr3Wx4W0paUEIDOw1M/FhklKVjSxyUvps7CeEo81uESNv9vuNh1xbAKgE6jOKpzpT6Dm8P
+	HeI/VZzqIzRybzdphMBoT85wGJBCFOM8G+J50QK+GJNK3IYNT63GfthGdzecl7xg/KDDaNZp5Y7
+	ZzHuIwXzocNaQwUeOTNWMmH/adLwxVyL0ph35ZuHDcedIGYEhkPm5K56DB4RvhRwvOjeNW8Hm2K
+	KY4AhNa2kuqZ53X1aKkrpZfxKGcyTYkvxY/2fLk3jmw4NBgjxAM+HRuqhasd2UNX18j+eDHqNCQ
+	61qvPYah5g2Y0IBgWPv9hDVskatd3dkQJ+grD8syHmJYjKeO9KvlE8Por
+X-Received: by 2002:a17:902:c945:b0:2c9:c952:6e9 with SMTP id d9443c01a7336-2e2e49167eamr32572225ad.2.1790832643550;
+        Wed, 30 Sep 2026 22:30:43 -0700 (PDT)
+X-Received: by 2002:a17:902:c945:b0:2c9:c952:6e9 with SMTP id d9443c01a7336-2e2e49167eamr32572045ad.2.1790832643130;
+        Wed, 30 Sep 2026 22:30:43 -0700 (PDT)
+Received: from resolute-linux.lxd (124-218-37-86.cm.dynamic.apol.com.tw. [124.218.37.86])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e300b4273csm5205745ad.64.2026.09.30.22.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2026 22:30:42 -0700 (PDT)
+From: Aristo Chen <aristo.chen@canonical.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Aristo Chen <aristo.chen@canonical.com>
+Subject: [PATCH] MIPS: GT64120: Remove duplicate GT_PCI1M1LD_OFS and GT_PCI1M1HD_OFS
+Date: Thu,  1 Oct 2026 05:30:15 +0000
+Message-ID: <20261001053016.76578-1-aristo.chen@canonical.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 23 Sep 2026 17:14:35 +0200 Bartosz Golaszewski wrote:
-> aqr_gen1_read_status() decodes the MDIO_PHYXS_VEND_IF_STATUS register
-> to determine which SerDes interface the PHY is currently using on its
-> system side and stores the result in phydev->interface. phylink relies
-> on this value to configure the MAC.
-> 
-> The autoneg == AUTONEG_DISABLE check is not correct:
-> MDIO_PHYXS_VEND_IF_STATUS is set by the PHY firmware based on the
-> negotiated link speed, not based on whether autoneg was used to reach
-> it. When the link comes up at 1G in forced mode, the register correctly
-> reads SGMII, but the early return prevents phydev->interface from being
-> updated. It stays at whatever value it held before (typically 2500BASE-X
-> from the initial autoneg run), so phylink configures the MAC for the
-> wrong interface and the link cannot come up.
-> 
-> Remove the autoneg guard so that the system interface type is always
-> decoded when the link is up.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 110a2432c520 ("net: phy: aquantia: add downshift support")
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+The GT_PCI1M1LD_OFS and GT_PCI1M1HD_OFS register offsets are defined
+twice in a row with identical values. Identical macro redefinitions are
+valid C, so the compiler never warned about it. Drop the second copy.
 
-Sounds like a real regression, is it? Should we ship it to Linus
-tomorrow so that it makes 7.3? stable + next does not compute for me
+No functional change.
+
+Signed-off-by: Aristo Chen <aristo.chen@canonical.com>
+---
+ arch/mips/include/asm/gt64120.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/gt64120.h b/arch/mips/include/asm/gt64120.h
+index 5d68d726598a..2ad770ff3c56 100644
+--- a/arch/mips/include/asm/gt64120.h
++++ b/arch/mips/include/asm/gt64120.h
+@@ -45,8 +45,6 @@
+ #define GT_PCI1M0HD_OFS		0x0a8
+ #define GT_PCI1M1LD_OFS		0x0b0
+ #define GT_PCI1M1HD_OFS		0x0b8
+-#define GT_PCI1M1LD_OFS		0x0b0
+-#define GT_PCI1M1HD_OFS		0x0b8
+ 
+ #define GT_SCS10AR_OFS		0x0d0
+ #define GT_SCS32AR_OFS		0x0d8
+
+base-commit: f552e14f77bfce3e7ee0bb268ab023951baec3ff
+-- 
+2.53.0
+

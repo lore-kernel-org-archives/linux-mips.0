@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F96523785;
-	Thu,  1 Oct 2026 16:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DE1526AB8;
+	Thu,  1 Oct 2026 16:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871227; cv=none; b=bzByD9IDgi51GB7Wz8E8kxlfmHSPv04218ogfvzAR0fR8cuqn06pH9N9J6XUJnJpvOTsMYUcoBAqd04PbsxH6y4NfG5VIrnbfBp1ZclL1D68aqnmoRKmBBOs14g4LJk7JkjV1P8viuHkz50cfBeIt7kz2IfQTNngwnsJ/Wub/H4=
+	t=1790871229; cv=none; b=ely1tSX31gqubmLK8miqqetRJrOgniQ7kV7HOOLYpWd0dwQJkU/jaIzhMXO7ZRkhrUJeIsdyZoMdIVxD3eeTY+PAKa6z8ChX3QSbbABlous+Hr6Zps0LLDg/vdaRo7lpOXbyuj5nlvwS6WJm0hte/dTsS+nG2EIXNs7zW7xYbrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871227; c=relaxed/simple;
-	bh=PH8OwZN/aakY2K2zcSUrh8w5XO+nFZ1XtvNenZgUVvY=;
+	s=arc-20240116; t=1790871229; c=relaxed/simple;
+	bh=ZK312++OZGVroPW7nJWbwnUq0hdQ7h7PrAxN3CAzQhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qpPHmcDuAj9SbVcNTtAXODwc7QYgkedH3k2WZpRQCas1EHPCG4EKNU75cgsGVwLTqj0hxib1IbwdFaBAQ/9DmSK1CTMKcEtt4rvU2Sy7Ibab0VQGLO1yM4gjxoye2Ayk+0YIF886CBtnHJjP+71hmPAiI67yN2xRuzT3aKabVwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N/0B1jgO; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=jiOb77CaJ6AY+JRWRs71COmu384scg1Ow5fhDr5ezRMl/qo7nB3yp9MPTcjzG9dTekQhQznC6rqfarJEa0rkUswpSfJCHvpqQ0xghnUFwKkEcGt/15dwq2ASRLP/rPjZt9+CD6VGD7vC/4NVaIr7miDCf/YBPq2+Z1iJ7PfqKpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isQiYO+X; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N/0B1jgO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 238161F000FF;
-	Thu,  1 Oct 2026 16:13:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isQiYO+X"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18FDF1F00898;
+	Thu,  1 Oct 2026 16:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871226;
-	bh=Om0zPmfcD16McftxiSRMXlG1iNliCeFQ7uvZ0Lg5r8I=;
+	s=k20260515; t=1790871228;
+	bh=LygTuLcG2lFhRcRaQ2DWoQQdh6iGlHQsBji/xYZdafk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=N/0B1jgOu2bhlsilLHrm+EmP64ZvCMKkw0fjVXT9eG52VdScaOyu8+Q/ThETSjyUo
-	 BZGCKx7S3OXb92HfiGrZAUSYh3ILQa44x4+oIZ7uoOGnl0sZ7Hugzac11Fo1P+KGv4
-	 RBeVLCtuw0j8C0QW3oXQ4NUS8gVBRw68x7L9pdBBJN2iwI/8cEtTBl+RDXJdC8QckI
-	 RZk3ne8ydooAwkG1kN09LraiVinqNHNGZaYOcn1itpEVtYH3JYPp91nXwNQOZWWU/s
-	 5zDu8dnEHpWXzs+6N8rKg9PZeQwrFnKxAnqxdeMxYH6vEtOpKL83+fE0Up7eNUF6BF
-	 lXAHs1QRlMLFw==
+	b=isQiYO+X8AdB+KGCimYDzUuhaejFHOhyx2K+fstuCly92BnocpvzLpEzNJTqipNYZ
+	 zdPnE1peAtDOSBhtbJ5T6zL5FtzX04D9Mu1uwVjjLS9w89DJ1YVKqDnHtJctK0zm7E
+	 C4NqwHWrZUm9/vEYSZmcYaOjIhsy1Jsk6Geewq/NQVri2Yj11K80LwevhDrMmtSfzo
+	 Ve0Tm/OiPLqawi/hoFwvIzs013EBaou/+QUuGMgqt78yhN/FFN9M0RS8iGk/WXm2NO
+	 cAVpM6+rLRvjJmjOxtSfhj4Nf13JaZwcCSA9CjDRMFcwvvbcadjPAPkUkdT2IuN51N
+	 K7ojyTwP+4bWA==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 13/38] MIPS: SGI-IP27: route interrupt masks and slices through both PIs
-Date: Thu,  1 Oct 2026 18:11:48 +0200
-Message-ID: <731d55b6d7e53bcc48a9271dc0fb57ecbae571d3.1790857966.git.kaloz@kernel.org>
+Subject: [PATCH 14/38] MIPS: SGI-IP27: address a CPU's own PI for NMI, IPI and RT counter
+Date: Thu,  1 Oct 2026 18:11:49 +0200
+Message-ID: <76f2a9c32eba23de36817f0a186def01e009e1c7.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -44,188 +44,258 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-cputoslice() and PI_CPU_NUM return a physid, 0-3 across a Bedrock hub's
-two PIs, where a Hub has a plain A/B bit. Add helpers splitting it into
-A/B slot and PI block, and give every remote access the slice's PI
-block. Local accesses already reach the running CPU's own PI.
+REMOTE_HUB_SEND_INTR(), SEND_NMI() and nmi_dump_hub_irq() reach the first
+PI only; address a CPU's own PI. Call hub_rtc_init() once per PI; its
+LOCAL_HUB writes reach the calling CPU's own PI. Read the clocksource from
+the boot CPU's PI and enable the Bedrock NI reset for NMI.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/sn/arch.h |  8 ++++++++
- arch/mips/include/asm/sn/intr.h | 10 ++++++----
- arch/mips/sgi-ip27/ip27-berr.c  |  4 ++--
- arch/mips/sgi-ip27/ip27-irq.c   | 17 +++++++++--------
- arch/mips/sgi-ip27/ip27-smp.c   | 16 +++++++++-------
- arch/mips/sgi-ip27/ip27-timer.c |  4 ++--
- 6 files changed, 36 insertions(+), 23 deletions(-)
+ arch/mips/include/asm/sn/intr.h      |  4 +--
+ arch/mips/include/asm/sn/kldir.h     |  1 +
+ arch/mips/include/asm/sn/sn1/hub.h   | 11 ++++++++
+ arch/mips/include/asm/sn/sn1/kldir.h | 14 ++++++++++
+ arch/mips/sgi-ip27/ip27-init.c       | 14 +++++++---
+ arch/mips/sgi-ip27/ip27-nmi.c        | 38 +++++++++++++++++++---------
+ arch/mips/sgi-ip27/ip27-smp.c        |  4 +--
+ arch/mips/sgi-ip27/ip27-timer.c      |  8 ++++--
+ 8 files changed, 73 insertions(+), 21 deletions(-)
+ create mode 100644 arch/mips/include/asm/sn/sn1/kldir.h
 
-diff --git a/arch/mips/include/asm/sn/arch.h b/arch/mips/include/asm/sn/arch.h
-index 9a9682543e89..602219f98b04 100644
---- a/arch/mips/include/asm/sn/arch.h
-+++ b/arch/mips/include/asm/sn/arch.h
-@@ -18,7 +18,15 @@
- #endif
- 
- #define cputonasid(cpu)		(sn_cpu_info[(cpu)].p_nasid)
-+/*
-+ * The slice is the CPU's physid: on a Bedrock hub 0-3 across two PI blocks,
-+ * bit 0 selecting a PI's A/B register slot and bit 1 the PI block.
-+ */
- #define cputoslice(cpu)		(sn_cpu_info[(cpu)].p_slice)
-+#define slicetoab(slice)	((slice) & 1)
-+#define slicetosubnode(slice)	(((slice) >> 1) & 1)
-+#define cputoab(cpu)		slicetoab(cputoslice(cpu))
-+#define cputosubnode(cpu)	slicetosubnode(cputoslice(cpu))
- 
- #define INVALID_NASID		(nasid_t)-1
- #define INVALID_PNODEID		(pnodeid_t)-1
 diff --git a/arch/mips/include/asm/sn/intr.h b/arch/mips/include/asm/sn/intr.h
-index 3d6954d370dc..90b613f68623 100644
+index 90b613f68623..4927232fafc3 100644
 --- a/arch/mips/include/asm/sn/intr.h
 +++ b/arch/mips/include/asm/sn/intr.h
-@@ -29,13 +29,15 @@ do {								\
- 	LOCAL_HUB_L(PI_INT_PEND0);				\
- } while (0);
+@@ -14,8 +14,8 @@
  
--#define REMOTE_HUB_CLR_INTR(hub, level)				\
-+/* An interrupt is pending in the PI block of the CPU it is routed to. */
-+#define REMOTE_HUB_PI_CLR_INTR(hub, sn, level)			\
- do {								\
- 	nasid_t	 __hub = (hub);					\
-+	int __sn = (sn);					\
- 								\
--	REMOTE_HUB_S(__hub, PI_INT_PEND_MOD, (level));		\
--	REMOTE_HUB_L(__hub, PI_INT_PEND0);			\
--} while (0);
-+	REMOTE_HUB_PI_S(__hub, __sn, PI_INT_PEND_MOD, (level));	\
-+	REMOTE_HUB_PI_L(__hub, __sn, PI_INT_PEND0);		\
-+} while (0)
+ #define LOCAL_HUB_SEND_INTR(level)				\
+ 	LOCAL_HUB_S(PI_INT_PEND_MOD, (0x100 | (level)))
+-#define REMOTE_HUB_SEND_INTR(hub, level)			\
+-	REMOTE_HUB_S((hub), PI_INT_PEND_MOD, (0x100 | (level)))
++#define REMOTE_HUB_PI_SEND_INTR(hub, sn, level)			\
++	REMOTE_HUB_PI_S((hub), (sn), PI_INT_PEND_MOD, (0x100 | (level)))
  
  /*
-  * Hard-coded interrupt levels:
-diff --git a/arch/mips/sgi-ip27/ip27-berr.c b/arch/mips/sgi-ip27/ip27-berr.c
-index 9eb497cb5d52..b176856aa77c 100644
---- a/arch/mips/sgi-ip27/ip27-berr.c
-+++ b/arch/mips/sgi-ip27/ip27-berr.c
-@@ -63,7 +63,7 @@ static int ip27_be_handler(struct pt_regs *regs, int is_fixup)
+  * When clearing the interrupt, make sure this clear does make it
+diff --git a/arch/mips/include/asm/sn/kldir.h b/arch/mips/include/asm/sn/kldir.h
+index f394b1e0c956..23999dd43eb2 100644
+--- a/arch/mips/include/asm/sn/kldir.h
++++ b/arch/mips/include/asm/sn/kldir.h
+@@ -31,6 +31,7 @@ typedef struct kldir_ent_s {
+ 
+ #ifdef CONFIG_SGI_IP27
+ #include <asm/sn/sn0/kldir.h>
++#include <asm/sn/sn1/kldir.h>
+ #endif
+ 
+ #endif /* _ASM_SN_KLDIR_H */
+diff --git a/arch/mips/include/asm/sn/sn1/hub.h b/arch/mips/include/asm/sn/sn1/hub.h
+index 71ccd2ba3698..60e0f249852f 100644
+--- a/arch/mips/include/asm/sn/sn1/hub.h
++++ b/arch/mips/include/asm/sn/sn1/hub.h
+@@ -26,4 +26,15 @@
+ #define LRI_SYSTEM_SIZE_IP35(id)	(((id) >> 46) & 0x3)
+ #define LRI_SYSTEM_SIZE_NMODE_IP35	2
+ 
++/*
++ * Network interface port reset: bit 0 sends a link reset, bit 2 resets
++ * the local Bedrock.  Bit 0 of the reset enable register lets a reset
++ * arriving over the link reset this Bedrock.
++ */
++#define NI_PORT_RESET_IP35	(HUBNIBASE_IP35 + 0x000008)
++#define NI_RESET_ACTION_IP35	0x01
++#define NI_RESET_LOCAL_IP35	0x04
++#define NI_RESET_ENABLE_IP35	(HUBNIBASE_IP35 + 0x000010)
++#define NI_RESET_OK_IP35	0x01
++
+ #endif /* _ASM_SN_SN1_HUB_H */
+diff --git a/arch/mips/include/asm/sn/sn1/kldir.h b/arch/mips/include/asm/sn/sn1/kldir.h
+new file mode 100644
+index 000000000000..c95dccb3ce55
+--- /dev/null
++++ b/arch/mips/include/asm/sn/sn1/kldir.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * SN1 (Bedrock) kldir constants.
++ *
++ * Copyright (C) 2026 Imre Kaloz <kaloz@kernel.org>
++ */
++#ifndef _ASM_SN_SN1_KLDIR_H
++#define _ASM_SN_SN1_KLDIR_H
++
++/* Save area of kernel NMI regs in the PROM format. */
++#define IP35_NMI_KREGS_OFFSET		0x9000
++#define IP35_NMI_KREGS_CPU_SIZE	0x400
++
++#endif /* _ASM_SN_SN1_KLDIR_H */
+diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
+index 108d90908763..88d79c50d9a7 100644
+--- a/arch/mips/sgi-ip27/ip27-init.c
++++ b/arch/mips/sgi-ip27/ip27-init.c
+@@ -37,7 +37,11 @@
+ 
+ #define CPU_NONE		(cpuid_t)-1
+ 
++/* A Bedrock hub has two PI register blocks; a Hub has one. */
++#define PIS_PER_HUB		2
++
+ static DECLARE_BITMAP(hub_init_mask, MAX_NUMNODES);
++static DECLARE_BITMAP(pi_init_mask, MAX_NUMNODES * PIS_PER_HUB);
+ nasid_t master_nasid = INVALID_NASID;
+ bool system_is_ip35;
+ 
+@@ -46,9 +50,15 @@ EXPORT_SYMBOL_GPL(sn_cpu_info);
+ 
+ static void per_hub_init(nasid_t nasid)
  {
- 	unsigned long errst0, errst1;
- 	int data = regs->cp0_cause & 4;
--	int cpu = LOCAL_HUB_L(PI_CPU_NUM);
-+	int cpu = slicetoab(LOCAL_HUB_L(PI_CPU_NUM));
++	int cpu = smp_processor_id();
+ 	struct hub_data *hub = hub_data(nasid);
++	int subnode = cputosubnode(cpu);
  
- 	if (is_fixup)
- 		return MIPS_BE_FIXUP;
-@@ -84,7 +84,7 @@ static int ip27_be_handler(struct pt_regs *regs, int is_fixup)
- void __init ip27_be_init(void)
+-	cpumask_set_cpu(smp_processor_id(), &hub->h_cpus);
++	cpumask_set_cpu(cpu, &hub->h_cpus);
++
++	/* A second pass would zero the counter under a CPU already ticking. */
++	if (!test_and_set_bit(nasid * PIS_PER_HUB + subnode, pi_init_mask))
++		hub_rtc_init(nasid);
+ 
+ 	if (test_and_set_bit(nasid, hub_init_mask))
+ 		return;
+@@ -58,8 +68,6 @@ static void per_hub_init(nasid_t nasid)
+ 	REMOTE_HUB_S(nasid, IIO_ICTP, 0x800);
+ 	REMOTE_HUB_S(nasid, IIO_ICTO, 0xff);
+ 
+-	hub_rtc_init(nasid);
+-
+ 	if (nasid) {
+ 		/* copy exception handlers from first node to current node */
+ 		memcpy((void *)NODE_OFFSET_TO_K0(nasid, 0),
+diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
+index 07d63d020d22..53875b93cca1 100644
+--- a/arch/mips/sgi-ip27/ip27-nmi.c
++++ b/arch/mips/sgi-ip27/ip27-nmi.c
+@@ -14,8 +14,9 @@
+ 
+ #include "ip27-common.h"
+ 
+-#define SEND_NMI(_nasid, _slice)	\
+-	REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
++#define SEND_NMI(_nasid, _slice)					\
++	REMOTE_HUB_PI_S((_nasid), slicetosubnode(_slice),		\
++		(PI_NMI_A + (slicetoab(_slice) * PI_NMI_OFFSET)), 1)
+ 
+ typedef unsigned long machreg_t;
+ 
+@@ -44,12 +45,18 @@ void install_cpu_nmi_handler(int slice)
+ static void nmi_cpu_eframe_save(nasid_t nasid, int slice)
  {
- 	/* XXX Initialize all the Hub & Bridge error handling here.  */
--	int cpu = LOCAL_HUB_L(PI_CPU_NUM);
-+	int cpu = slicetoab(LOCAL_HUB_L(PI_CPU_NUM));
- 	int cpuoff = cpu << 8;
+ 	struct reg_struct *nr;
++	int kregs_offset, kregs_cpu_size;
+ 	int		i;
  
- 	mips_set_be_handler(ip27_be_handler);
-diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-index 7e5aa04c6695..02a49bb8529d 100644
---- a/arch/mips/sgi-ip27/ip27-irq.c
-+++ b/arch/mips/sgi-ip27/ip27-irq.c
-@@ -72,7 +72,7 @@ static void disable_hub_irq(struct irq_data *d)
- static void setup_hub_mask(struct hub_irq_data *hd, const struct cpumask *mask)
++	kregs_offset = system_is_ip35 ? IP35_NMI_KREGS_OFFSET :
++					  IP27_NMI_KREGS_OFFSET;
++	kregs_cpu_size = system_is_ip35 ? IP35_NMI_KREGS_CPU_SIZE :
++					    IP27_NMI_KREGS_CPU_SIZE;
++
+ 	/* Get the pointer to the current cpu's register set. */
+ 	nr = (struct reg_struct *)
+-		(TO_UNCAC(TO_NODE(nasid, IP27_NMI_KREGS_OFFSET)) +
+-		slice * IP27_NMI_KREGS_CPU_SIZE);
++		(TO_UNCAC(TO_NODE(nasid, kregs_offset)) +
++		slice * kregs_cpu_size);
+ 
+ 	pr_emerg("NMI nasid %d: slice %d\n", nasid, slice);
+ 
+@@ -119,18 +126,19 @@ static void nmi_cpu_eframe_save(nasid_t nasid, int slice)
+ 
+ static void nmi_dump_hub_irq(nasid_t nasid, int slice)
  {
- 	nasid_t nasid;
--	int cpu;
-+	int cpu, sn;
++	int subnode = slicetosubnode(slice);
+ 	u64 mask0, mask1, pend0, pend1;
  
- 	cpu = cpumask_first_and(mask, cpu_online_mask);
- 	if (cpu >= nr_cpu_ids)
-@@ -80,12 +80,13 @@ static void setup_hub_mask(struct hub_irq_data *hd, const struct cpumask *mask)
- 
- 	nasid = cpu_to_node(cpu);
- 	hd->cpu = cpu;
--	if (!cputoslice(cpu)) {
--		hd->irq_mask[0] = REMOTE_HUB_PTR(nasid, PI_INT_MASK0_A);
--		hd->irq_mask[1] = REMOTE_HUB_PTR(nasid, PI_INT_MASK1_A);
-+	sn = cputosubnode(cpu);
-+	if (!cputoab(cpu)) {
-+		hd->irq_mask[0] = REMOTE_HUB_PI_PTR(nasid, sn, PI_INT_MASK0_A);
-+		hd->irq_mask[1] = REMOTE_HUB_PI_PTR(nasid, sn, PI_INT_MASK1_A);
- 	} else {
--		hd->irq_mask[0] = REMOTE_HUB_PTR(nasid, PI_INT_MASK0_B);
--		hd->irq_mask[1] = REMOTE_HUB_PTR(nasid, PI_INT_MASK1_B);
-+		hd->irq_mask[0] = REMOTE_HUB_PI_PTR(nasid, sn, PI_INT_MASK0_B);
-+		hd->irq_mask[1] = REMOTE_HUB_PI_PTR(nasid, sn, PI_INT_MASK1_B);
+-	if (slice == 0) {				/* Slice A */
+-		mask0 = REMOTE_HUB_L(nasid, PI_INT_MASK0_A);
+-		mask1 = REMOTE_HUB_L(nasid, PI_INT_MASK1_A);
++	if (!slicetoab(slice)) {			/* Slice A */
++		mask0 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_MASK0_A);
++		mask1 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_MASK1_A);
+ 	} else {					/* Slice B */
+-		mask0 = REMOTE_HUB_L(nasid, PI_INT_MASK0_B);
+-		mask1 = REMOTE_HUB_L(nasid, PI_INT_MASK1_B);
++		mask0 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_MASK0_B);
++		mask1 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_MASK1_B);
  	}
- }
  
-@@ -147,7 +148,7 @@ static int hub_domain_alloc(struct irq_domain *domain, unsigned int virq,
- 	info->nasid = cpu_to_node(hd->cpu);
+-	pend0 = REMOTE_HUB_L(nasid, PI_INT_PEND0);
+-	pend1 = REMOTE_HUB_L(nasid, PI_INT_PEND1);
++	pend0 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_PEND0);
++	pend1 = REMOTE_HUB_PI_L(nasid, subnode, PI_INT_PEND1);
  
- 	/* Make sure it's not already pending when we connect it. */
--	REMOTE_HUB_CLR_INTR(info->nasid, swlevel);
-+	REMOTE_HUB_PI_CLR_INTR(info->nasid, cputosubnode(hd->cpu), swlevel);
- 
- 	desc = irq_to_desc(virq);
- 	desc->irq_common_data.node = info->nasid;
-@@ -253,7 +254,7 @@ void install_ipi(void)
- {
- 	int cpu = smp_processor_id();
- 	unsigned long *mask = per_cpu(irq_enable_mask, cpu);
--	int slice = LOCAL_HUB_L(PI_CPU_NUM);
-+	int slice = slicetoab(LOCAL_HUB_L(PI_CPU_NUM));
- 	int resched, call;
- 
- 	resched = CPU_RESCHED_A_IRQ + slice;
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index 159dbd6ddda8..ac960023d334 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -94,15 +94,17 @@ void cpu_node_probe(void)
- 
- static __init void intr_clear_all(nasid_t nasid)
- {
--	int i;
-+	int i, sn, pis = system_is_ip35 ? 2 : 1;
- 
--	REMOTE_HUB_S(nasid, PI_INT_MASK0_A, 0);
--	REMOTE_HUB_S(nasid, PI_INT_MASK0_B, 0);
--	REMOTE_HUB_S(nasid, PI_INT_MASK1_A, 0);
--	REMOTE_HUB_S(nasid, PI_INT_MASK1_B, 0);
-+	for (sn = 0; sn < pis; sn++) {
-+		REMOTE_HUB_PI_S(nasid, sn, PI_INT_MASK0_A, 0);
-+		REMOTE_HUB_PI_S(nasid, sn, PI_INT_MASK0_B, 0);
-+		REMOTE_HUB_PI_S(nasid, sn, PI_INT_MASK1_A, 0);
-+		REMOTE_HUB_PI_S(nasid, sn, PI_INT_MASK1_B, 0);
- 
--	for (i = 0; i < 128; i++)
--		REMOTE_HUB_CLR_INTR(nasid, i);
-+		for (i = 0; i < 128; i++)
-+			REMOTE_HUB_PI_CLR_INTR(nasid, sn, i);
+ 	pr_emerg("PI_INT_MASK0: %16llx PI_INT_MASK1: %16llx\n", mask0, mask1);
+ 	pr_emerg("PI_INT_PEND0: %16llx PI_INT_PEND1: %16llx\n", pend0, pend1);
+@@ -227,5 +235,11 @@ static void nmi_dump(void)
+ 	 * Save the nmi cpu registers for all cpu in the eframe format.
+ 	 */
+ 	nmi_eframes_save();
+-	LOCAL_HUB_S(NI_PORT_RESET, NPR_PORTRESET | NPR_LOCALRESET);
++	if (system_is_ip35) {
++		LOCAL_HUB_S(NI_RESET_ENABLE_IP35, NI_RESET_OK_IP35);
++		LOCAL_HUB_S(NI_PORT_RESET_IP35,
++			    NI_RESET_ACTION_IP35 | NI_RESET_LOCAL_IP35);
++	} else {
++		LOCAL_HUB_S(NI_PORT_RESET, NPR_PORTRESET | NPR_LOCALRESET);
 +	}
  }
+diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
+index ac960023d334..fc4d9379a93e 100644
+--- a/arch/mips/sgi-ip27/ip27-smp.c
++++ b/arch/mips/sgi-ip27/ip27-smp.c
+@@ -122,13 +122,13 @@ static void ip27_send_ipi_single(int destid, unsigned int action)
+ 		panic("sendintr");
+ 	}
  
- static void ip27_send_ipi_single(int destid, unsigned int action)
-diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
-index 5f4da05cb2c9..aee14a7aad8a 100644
---- a/arch/mips/sgi-ip27/ip27-timer.c
-+++ b/arch/mips/sgi-ip27/ip27-timer.c
-@@ -30,7 +30,7 @@
- static int rt_next_event(unsigned long delta, struct clock_event_device *evt)
- {
- 	unsigned int cpu = smp_processor_id();
--	int slice = cputoslice(cpu);
-+	int slice = cputoab(cpu);
- 	unsigned long cnt;
- 
- 	cnt = LOCAL_HUB_L(PI_RT_COUNT);
-@@ -47,7 +47,7 @@ static irqreturn_t hub_rt_counter_handler(int irq, void *dev_id)
- {
- 	unsigned int cpu = smp_processor_id();
- 	struct clock_event_device *cd = &per_cpu(hub_rt_clockevent, cpu);
--	int slice = cputoslice(cpu);
-+	int slice = cputoab(cpu);
+-	irq += cputoslice(destid);
++	irq += cputoab(destid);
  
  	/*
- 	 * Ack
+ 	 * Set the interrupt bit associated with the CPU we want to
+ 	 * send the interrupt to.
+ 	 */
+-	REMOTE_HUB_SEND_INTR(cpu_to_node(destid), irq);
++	REMOTE_HUB_PI_SEND_INTR(cpu_to_node(destid), cputosubnode(destid), irq);
+ }
+ 
+ static void ip27_send_ipi_mask(const struct cpumask *mask, unsigned int action)
+diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
+index aee14a7aad8a..14df8608b14b 100644
+--- a/arch/mips/sgi-ip27/ip27-timer.c
++++ b/arch/mips/sgi-ip27/ip27-timer.c
+@@ -100,9 +100,13 @@ static void __init hub_rt_clock_event_global_init(void)
+ 				   "hub-rt", &hub_rt_clockevent));
+ }
+ 
++/*
++ * Each PI of a Bedrock hub has its own RT counter, zeroed when that PI's
++ * first CPU comes up; the timebase is the boot CPU's.
++ */
+ static u64 hub_rt_read(struct clocksource *cs)
+ {
+-	return REMOTE_HUB_L(cputonasid(0), PI_RT_COUNT);
++	return REMOTE_HUB_PI_L(cputonasid(0), cputosubnode(0), PI_RT_COUNT);
+ }
+ 
+ struct clocksource hub_rt_clocksource = {
+@@ -115,7 +119,7 @@ struct clocksource hub_rt_clocksource = {
+ 
+ static u64 notrace hub_rt_read_sched_clock(void)
+ {
+-	return REMOTE_HUB_L(cputonasid(0), PI_RT_COUNT);
++	return REMOTE_HUB_PI_L(cputonasid(0), cputosubnode(0), PI_RT_COUNT);
+ }
+ 
+ static void __init hub_rt_clocksource_init(void)
 -- 
 2.47.3
 

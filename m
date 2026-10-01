@@ -1,44 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A963538D81;
-	Thu,  1 Oct 2026 16:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ECB4189BA;
+	Thu,  1 Oct 2026 16:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871265; cv=none; b=BILjK9w8LII+OZ5sWNpA1J91VE+T5PKAJ4p+TFUzfv+qTrAKJGIoJ3OeuCq0zDa1rTfMLZixJKrV73HoM+7iK+BPd1FbbjlK7CAdZQN2U6fsKVe5kuwpExvkZNkpVzpSg76pekpRSvEWAGB92ulZ9Uk10ymsTxHT8YUhOt+Pqac=
+	t=1790871267; cv=none; b=DFi7NBOqRHGPtMYM/wuoPK2O24r6HjuZj8SW1duvGVc4PaX6eA+kPrjSQBGdEufiquEslt8sTsshmfIzJS2FkPSjE4YuQxYESugtWLWmuy1d2e9jZuUWxEsGaxH0IIdntbhO3AIKyGxYXNjLDUc/chZsLmz7I9fHYpv6e829ikA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871265; c=relaxed/simple;
-	bh=x4QDSKa3uUbkGyqM6BgoedxOZGNn6zXlqR62PAoqJNw=;
+	s=arc-20240116; t=1790871267; c=relaxed/simple;
+	bh=xqpx7Vizb9nt6+G7vkXl+UNnveEGX7PGHw2oUYxuNHM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ns1XgDuxVjbYhDj4Zmicw19oq96K+7NZQ5JzlChR+zuJTNtvgmCNL5HjFdvhv94O/m0wBcOlHFbAJ3qSPkuAope/AYX9mms/t7gAZldxPUeqWpjqLIv6NUkEA4fxCkw+a+oPcw2s829vr5bZKnQxHaErYP89TicjCljkHLz5iFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3Myv6Gm; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=vF3BjeUkg+F4gK2wEFe4QTSYoS5PdRrgOgtGWMc0AwlyHaLtGZ7QRr+u7iGMWZQ+NlbuqNyltWC5uZKMcdHc+3PqmaClNK854Ky4XnaP/6BOohvOwWBkllFEbmujeaApfLKUqvvFQ9sviHJ5GytOEUF6CLFjjbpbIF/Ed1TMuBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JdT4VHoY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3Myv6Gm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91FB61F00898;
-	Thu,  1 Oct 2026 16:14:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdT4VHoY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC86F1F000FF;
+	Thu,  1 Oct 2026 16:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871264;
-	bh=W0pzQTADNEWd5Hpps94prj4R5jhnHNhgf7B99L1yipk=;
+	s=k20260515; t=1790871265;
+	bh=tVHm06X34u8AGKrX5ze42cJuWlkT4sfU7DA1g2GyizE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=I3Myv6GmO57dc20fN49TTnmEooEs8u+eHG6/DMU8Z8QuOA8aEeRZXXtPmfdwyj2PJ
-	 UENyLezxTLtOJNR6aa+Dyuccy357mZbjRIK1Fz4Q2NuZYLckYSggGtgJ8Abn4/gwLi
-	 hdGl6QVPhj3yzlwnFY2IDp0q8KcpaG1wlbQgzSDwr//u0kEe96/ZU2BUJQ3yquhcGD
-	 LN3JepjYWvKybJYIWtUVCYccDG1bLagkb5QtXjlJyKW9ZznADv9N5aTAbMu73hwvG0
-	 YaERLr00TxZ4pCaJttWunysVH7KUH8oDEKLSC4k39L1sCDadvu+joP2YHQZq41+xDk
-	 7vCiyGIefNtVg==
+	b=JdT4VHoYF5BObVvAQ6g/FQ+j9XFKx5/ms0Bkmu+M0KueAq1hquYzIO51ArYJNXQsX
+	 hoUuC8Ph8GKEP5u0DXSxLtcrbgNcDMGbB0shUpGrKxnMhVl5dQJk4ToMD5inOIPrtY
+	 Kz3aUnEnQ86EN0ncYsvHSmVYMrPXtPt3T64DUEOetkYML05M5+kWTbvwow0+SB0s59
+	 GOH1x0iERS+OPtzqNIk9Vccmozw7qhTyeQaVisYy8VXzjosBhcIYHj6+fg0sw/A9FF
+	 hqP8gTfCThvdbgoc7t4cfSZhF6U5YQ6E/DikueQn/hx61d5rX/msu4yQ8HCAow47r/
+	 DmT0tgXo0OJHA==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org
-Subject: [PATCH 32/38] net: ethernet: sgi: ioc3-eth: fall back to the platform MAC address
-Date: Thu,  1 Oct 2026 18:12:07 +0200
-Message-ID: <db3d3f341b74d91f7119849d7d5621bc024c8578.1790857966.git.kaloz@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 33/38] MIPS: SGI-IP27: don't register a w1 master on an XBridge or PIC
+Date: Thu,  1 Oct 2026 18:12:08 +0200
+Message-ID: <462d9f216272243d9b2521826ef487ac9c52f44a.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -50,41 +44,93 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The IOC3 on Fuel's system board has no MAC PROM on its 1-wire bus, so
-ioc3eth_get_mac_addr() cannot succeed there and the probe defers for
-ever. Ask eth_platform_get_mac_address() before deferring; on IP35
-machines it answers from the L1 system controller. Once deferred probing
-gives up with neither source answering, use a random address.
+On an XBridge the b_nic register's 1-wire bit-bang path reads back a
+constant mcr, so a sgi_w1 master registered there enumerates nothing but
+phantom slave IDs. Move the w1 registration into bridge_w1_create() and
+call it for classic Bridges only. On IP35 the L1 supplies the board part
+number and MAC address instead.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- drivers/net/ethernet/sgi/ioc3-eth.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/mips/sgi-ip27/ip27-xtalk.c | 41 +++++++++++++++++++++++++--------
+ 1 file changed, 31 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-index 8702dfdf4c36..85b49e7b0f79 100644
---- a/drivers/net/ethernet/sgi/ioc3-eth.c
-+++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-@@ -857,9 +857,16 @@ static int ioc3eth_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Invalid resource\n");
- 		return -EINVAL;
+diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
+index 73b2eef96bdb..091186cb7a04 100644
+--- a/arch/mips/sgi-ip27/ip27-xtalk.c
++++ b/arch/mips/sgi-ip27/ip27-xtalk.c
+@@ -31,13 +31,10 @@ enum xtalk_bridge_type {
+ 	XTALK_PIC_BUS1,
+ };
+ 
+-static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+-				   enum xtalk_bridge_type type)
++static struct platform_device *bridge_w1_create(nasid_t nasid, int widget)
+ {
+-	struct xtalk_bridge_platform_data *bd;
+ 	struct sgi_w1_platform_data *wd;
+ 	struct platform_device *pdev_wd;
+-	struct platform_device *pdev_bd;
+ 	struct resource w1_res;
+ 	unsigned long offset;
+ 
+@@ -46,7 +43,7 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+ 	wd = kzalloc_obj(*wd);
+ 	if (!wd) {
+ 		pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
+-		return;
++		return NULL;
  	}
--	/* get mac addr from one wire prom */
--	if (ioc3eth_get_mac_addr(regs, mac_addr))
--		return -EPROBE_DEFER; /* not available yet */
-+	/* get mac addr from one wire prom, or from the platform */
-+	if (ioc3eth_get_mac_addr(regs, mac_addr) &&
-+	    eth_platform_get_mac_address(&pdev->dev, mac_addr)) {
-+		err = driver_deferred_probe_check_state(&pdev->dev);
-+		if (err == -EPROBE_DEFER)
-+			return err; /* not available yet */
+ 
+ 	snprintf(wd->dev_id, sizeof(wd->dev_id), "bridge-%012lx",
+@@ -77,6 +74,35 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+ 	}
+ 	/* platform_device_add_data() duplicates the data */
+ 	kfree(wd);
++	return pdev_wd;
 +
-+		dev_warn(&pdev->dev, "no MAC address, using a random one\n");
-+		eth_random_addr(mac_addr);
++err_put_pdev_wd:
++	platform_device_put(pdev_wd);
++err_kfree_wd:
++	kfree(wd);
++	return NULL;
++}
++
++static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
++				   enum xtalk_bridge_type type)
++{
++	struct xtalk_bridge_platform_data *bd;
++	struct platform_device *pdev_wd = NULL;
++	struct platform_device *pdev_bd;
++	unsigned long offset;
++
++	offset = NODE_OFFSET(nasid);
++
++	/*
++	 * An XBridge's b_nic register reads back a constant mcr on the
++	 * 1-wire bit-bang path, so a sgi_w1 master there enumerates only
++	 * phantom slave IDs. Only a classic Bridge gets one.
++	 */
++	if (type == XTALK_BRIDGE) {
++		pdev_wd = bridge_w1_create(nasid, widget);
++		if (!pdev_wd)
++			return;
 +	}
  
- 	dev = alloc_etherdev(sizeof(struct ioc3_private));
- 	if (!dev)
+ 	bd = kzalloc_obj(*bd);
+ 	if (!bd) {
+@@ -139,11 +165,6 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+ err_unregister_pdev_wd:
+ 	platform_device_unregister(pdev_wd);
+ 	return;
+-err_put_pdev_wd:
+-	platform_device_put(pdev_wd);
+-err_kfree_wd:
+-	kfree(wd);
+-	return;
+ }
+ 
+ static int probe_one_port(nasid_t nasid, int widget, int masterwid)
 -- 
 2.47.3
 

@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0142D421237;
-	Thu,  1 Oct 2026 16:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04CA475344;
+	Thu,  1 Oct 2026 16:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871210; cv=none; b=W1hCf/wzh8TfPmybRuNR88ALwSaQmBklAlAI47MbelFFMqUXv5onB1p2R0scrKbS/J/IKPchBOUzM/16Sh/E9nmVH+8IAbol18iYYCXAsf4AQYuibXDRK2s9mk1IW8tGMH4k4tLE1rt7t+wC3iJEbb6gC01OGNdSMZMHbU0bkNo=
+	t=1790871212; cv=none; b=axbZpoavlTsPbLNMMFlig9+8yZZRHYXMMAJMknotRHEFcttm73jnuNPs9iOVsyzu4W5ARrvUYnjS/iDXoVlYwS0DqeI+5S8HxNfSQnGPSdhNRtefchr/8f09JUUxpDwvCNCyld7Atxa7YhtYayA9YTj6EnWNr1FS1uwAEqEcG54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871210; c=relaxed/simple;
-	bh=WqwlH9QBd8ai+Ft2VtMqsJMZ85HIwRRf09XrZlgdHsc=;
+	s=arc-20240116; t=1790871212; c=relaxed/simple;
+	bh=qzr381M4jQrCqOy50gj0657Krtwngz2FDDN6eHzK9vI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uhskgijGEpYb//hKBATJ+mIAV/U8PA0PjhrRcST5Tw/RW6JI1g4kYb9Fx1r77Xq/xE8V99QJZHepdx2tyIQq8yD1jQ3FMJ3StzxHTjgXUgPtfFEPAET6IhYo0iehBPjZX4MDCT/LeXkiKNB35SrHM8gpoTBRXJZuwVm8uwiWQD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aH8gncHN; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=D82eIWKaWPUTHveUxKbrhcdrQMHChg4wSKXfVFEfH8UINNveZyGN2G68Ku7e9wM3s8Nqtcgvbqg6Dd8OdTHfobDEVYailpM/tGiJGmP7bKrSbX0paVnr85M7Wm9VvEB+6VXvwjrze6mAFKGc3Ee7c5umDqU3Pz2+5wKXRPn1IRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5a/feKc; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aH8gncHN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A651F000FF;
-	Thu,  1 Oct 2026 16:13:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5a/feKc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9E31F00898;
+	Thu,  1 Oct 2026 16:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871208;
-	bh=pHDQc2j6qj5LPopQ+H7d+cJyPrODCNBvmWAFRf5GgxI=;
+	s=k20260515; t=1790871210;
+	bh=s9JsZbLBN2ktH0/DfsMUl+U/Asupg5vWsbX20GnEMQI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=aH8gncHNyFUu7AtdLfFkjVSghsumSvHIkZqlDUWINpvJ49ooLdP7YWl5s1o0dxFv/
-	 5fT+EqTquAIqmPDvcWIWuS3uCleG3aUk0eKi6d1+j0+SGiDJ7/3vPEEhqEwMunRgoX
-	 Ac2IKVNoJtfB1XtAG8oHuE4apxYGKj8/KAplPC/igy0CS0dARNXLYrVoGV6M28vIRF
-	 6rLAo6BP48EwVEzcqO7L0Ibk3v4LgnJKbyP9CpQPVNThyaEukCEvmh8NnqTf08zWOY
-	 EyYdMwBa/0RPjo4G988RDeoDKPziru4dnm7/ayabpxhUzDqXHuxPuEErz6MLRnrnka
-	 rEAdUU3GZp5kg==
+	b=b5a/feKc2QhouX4QuGLCgU5tKiDemDUrQiWxsbf2BRH6CJTBi2S0A8NSLZo3+cfbA
+	 WJnIhncJ/dJP4RdNc7aMwygKqozEmFTsv7ZXFUg40hBlBgqImRRlIMV2hskCIEY+mi
+	 ScwtVdCh8xXXkE/Dq27esi/ZePC7Yoi7924Olks8muIg/EtoIkG0JisJhu83P7go+f
+	 V0ifm2x3YhbBLGqNy8Z+tlWn1CwwXlN+sB/pNz9kN51+Gga2EYHJeBtJAIK4dleqOo
+	 HLJKLxgi7yJEV340ie5f7DgThMmGc/bnmj0PTXk+FAAdrbEyat61BjG6p7nW77iMRV
+	 7LTUkHU3MIA6w==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 03/38] MIPS: SGI-IP27: add REMOTE_HUB_PI_S()/REMOTE_HUB_PI_L()
-Date: Thu,  1 Oct 2026 18:11:38 +0200
-Message-ID: <5b13c77052cc8bb84217affb32f5a9bf984afffc.1790857966.git.kaloz@kernel.org>
+Subject: [PATCH 04/38] MIPS: SGI-IP27: detect Bedrock hubs at boot
+Date: Thu,  1 Oct 2026 18:11:39 +0200
+Message-ID: <c8db28c553a0f99eb05682a6a44bd3399dd4d63e.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -44,48 +44,70 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some hub generations split each hub's PI registers across two
-subnode blocks instead of one, so a remote access needs a subnode
-selector on top of REMOTE_HUB_ADDR()'s node selector. Passing
-subnode 0 reduces the new form to plain REMOTE_HUB_L()/REMOTE_HUB_S().
+Read a hub's widget-ID register as the first thing prom_init() does
+and record whether it is a Bedrock ASIC, so later code can branch on
+that instead of a compile-time select. A local alias read needs no
+nasid, so this runs first.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/sn/addrs.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/mips/include/asm/sn/addrs.h | 6 ++++++
+ arch/mips/sgi-ip27/ip27-init.c   | 9 +++++++++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/arch/mips/include/asm/sn/addrs.h b/arch/mips/include/asm/sn/addrs.h
-index 7c675fecbf9a..d5c7cfea7761 100644
+index d5c7cfea7761..51161fd5130b 100644
 --- a/arch/mips/include/asm/sn/addrs.h
 +++ b/arch/mips/include/asm/sn/addrs.h
-@@ -267,6 +267,27 @@
+@@ -35,6 +35,12 @@
  
- #endif /* !__ASSEMBLER__ */
+ #endif /* __ASSEMBLER__ */
  
-+/*
-+ * Some hub generations split each hub's PI registers across two subnode
-+ * blocks HUBPI_OFFSET apart; REMOTE_HUB_ADDR() always targets subnode 0.
-+ */
-+#define HUBPI_OFFSET		0x00200000
-+
-+#define REMOTE_HUB_PI_ADDR(_n, _sn, _x) \
-+	(REMOTE_HUB_ADDR((_n), (_x)) + ((_sn) ? HUBPI_OFFSET : 0))
-+
 +#ifndef __ASSEMBLER__
 +
-+#define REMOTE_HUB_PI_PTR(_n, _sn, _x)	\
-+	((u64 *)REMOTE_HUB_PI_ADDR((_n), (_sn), (_x)))
++extern bool system_is_ip35;
 +
-+#define REMOTE_HUB_PI_L(_n, _sn, _r)		\
-+	__raw_readq(REMOTE_HUB_PI_PTR((_n), (_sn), (_r)))
-+#define REMOTE_HUB_PI_S(_n, _sn, _r, _d)	\
-+	__raw_writeq((_d), REMOTE_HUB_PI_PTR((_n), (_sn), (_r)))
++#endif /* __ASSEMBLER__ */
 +
-+#endif /* !__ASSEMBLER__ */
+ 
+ #define NASID_GET_META(_n)	((_n) >> NASID_LOCAL_BITS)
+ #ifdef CONFIG_SGI_IP27
+diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
+index a4daf8ccd16c..6394c2076041 100644
+--- a/arch/mips/sgi-ip27/ip27-init.c
++++ b/arch/mips/sgi-ip27/ip27-init.c
+@@ -31,6 +31,7 @@
+ #include <asm/thread_info.h>
+ #include <asm/sn/launch.h>
+ #include <asm/sn/mapped_kernel.h>
++#include <asm/xtalk/xwidget.h>
+ 
+ #include "ip27-common.h"
+ 
+@@ -38,6 +39,7 @@
+ 
+ static DECLARE_BITMAP(hub_init_mask, MAX_NUMNODES);
+ nasid_t master_nasid = INVALID_NASID;
++bool system_is_ip35;
+ 
+ struct cpuinfo_ip27 sn_cpu_info[NR_CPUS];
+ EXPORT_SYMBOL_GPL(sn_cpu_info);
+@@ -139,8 +141,15 @@ const char *get_system_type(void)
+ 	return "SGI Origin";
+ }
+ 
++static inline bool hub_is_bedrock(void)
++{
++	return XWIDGET_PART_NUM(LOCAL_HUB_L(IIO_WID)) == WIDGET_BDRCK_PART_NUM;
++}
 +
- /*
-  * Software structure locations -- permanently fixed
-  *    See diagram in kldir.h
+ void __init prom_init(void)
+ {
++	system_is_ip35 = hub_is_bedrock();
++
+ 	prom_init_cmdline(fw_arg0, (LONG *)fw_arg1);
+ 	prom_meminit();
+ }
 -- 
 2.47.3
 

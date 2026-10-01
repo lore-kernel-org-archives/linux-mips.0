@@ -1,109 +1,86 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C30238E8C7
-	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 07:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80B847ACE8;
+	Thu,  1 Oct 2026 08:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790840361; cv=none; b=o9LSMzmn02Pue7H2ZX336ow1xO9iWUlDkRUvzIzCzwLWoqBotc8FO8NwrueePlt/YmEZl2JMhkqurdp/NyzoXtZ8kGReZg/5fbhs4VQhVNfyEx2z1G0UUd+xK6xeMcIbidLzVuLDmgL2K6cmLEKDnCpK8fBp0ekIqHYr+mUYbzg=
+	t=1790842809; cv=none; b=VHqC83DxNJ8XuPV54yIoUOlqKPC5dSOx34nehwF8L3+h0QXnxCfurU183sWBfMngQqiT20jtdEjUaKA3XSAWZqFFezCfoKn1Qf0O9QP5YPqrs1j+uTlrQyJzjecWz5WWXQ60yZ+hSrDGGACGIiSx82wLNwCZ5ZrjhYJQfFeIaFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790840361; c=relaxed/simple;
-	bh=prgThMa3RDaqzpouVznTJCw2SnOG3567R/8UJXmM108=;
-	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FDgd8hFuxQbbZkVdxgkSzYJl2EAI2iEA5YLy4cQGBn2wcVCpORHPU6yPYYc0jtWDqPeQkVcrKejhWi/pMFqYrJJv6J5njD9vaHnxObmCqOMdOmzA6HR5P6GHq7pq05Bp2mdXn+Fu/izVXx45xX6fkdiG7N9ivAmX5yUl2amlNpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n2+XWT+B; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790842809; c=relaxed/simple;
+	bh=jKJ929piK79nIx5hZ5XE8MWpLA7cfM9ky+fPfR7foR8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=CiIPkMX0IaEEz9Xybt0oeyAnOOxkLiPfsItjuqe5iDzpusyA4qTMfdx2JmmxUnM5o+r6MtMV8VrQ3+YCaDC8zXEP9XDP7jpSXIWBf9Al1Soi01RkSZdpoUvDaGazmu95FWjJBd4lLwMQUD2gvfPViyVufa8CyyyGE4M9ICHvRZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sx4aXXuH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n2+XWT+B"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29B21F000FF
-	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 07:39:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sx4aXXuH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 453101F000FF;
+	Thu,  1 Oct 2026 08:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790840358;
-	bh=6/ClGyojAdsXGc/BQReGBNWEln4ElamcBkeTBZDQp5g=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=n2+XWT+Bu1cNpHLYk4VDrdVuuJQUIf9M4gZzHR83YDrQSjKINbgf+XlzLeWoKKvqw
-	 tNM24P0GoNygp5GfPL4yqTOrVUywoxNC1z4cpLvIMAGgUF/ygnFxPDoukx+NIZf+cs
-	 SOwtPhZEkt8LCgMxzcHlGUjdqYX0Yf62unNQcIfOLhRJQJ0cIPZhO4IqV5Y+cLQsMe
-	 3VahmIia143D0a9XgLtVd/6cOzrLJIIE34mr7myQee2mcatfng5cp4am3cTY0mExH8
-	 RQeJAj/f1nsSR3Rxb/NQ4kGSmY5o9DBePvVy6PDaqBOBOasBiplMTOqrqKRX5oMY7M
-	 a7poTZJ5FFkdQ==
-Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b8e986b8b1so6323626e87.3
-        for <linux-mips@vger.kernel.org>; Thu, 01 Oct 2026 00:39:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvByqiDK9umOv/SX3CjhkUfUt+9C0ucXsM7TlkK4ML0GKfRIXY2FF8thP/gvpr2iDAnSoPcuH1xr3bXGI@vger.kernel.org
-X-Gm-Message-State: AFq9FYI4txxG+nJRlZ4mRDxqV0t43aPNhxsWsM6kyiHKfgEGKuckFJBw
-	bOHG1iZn574B6qt+716RRvMSZjfE/9O4hjTauF9TaGQgGgJy85MLEmPUI1n4DyLz2kqBYyOh+Kh
-	LzXlQMWYXT6KAs8pgHJFf4oKSy6xT+wyySiYKmF+wLg==
-X-Received: by 2002:a05:6512:2115:b0:5b8:f4ad:6e49 with SMTP id
- 2adb3069b0e04-5ba402b86b1mr998420e87.8.1790840013059; Thu, 01 Oct 2026
- 00:33:33 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 1 Oct 2026 10:33:32 +0300
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 1 Oct 2026 10:33:32 +0300
-From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <20260930163217.4003d232@kernel.org>
+	s=k20260515; t=1790842807;
+	bh=NCK/vtMOrbcVDdBrjZGfheC/3nQmLE7ZcgKVbsaagwQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=Sx4aXXuH/WX2CXGTNwzCUz1k8RBAAoNyAjmxPyzAQGQ6kOefXj0TZjOVIuMHf8SqB
+	 Te2qarYcRLzyRdOgDxbGu6nX70XSKlMHHChJyiqqieEX1wbHxWyvZMag2THC+6w23L
+	 OSMoYcYc+S/KgvSSPyFREotnfCpPuzHlgrVNpa7t2+nFOvXouEcPM5k6BX9eM5ST0k
+	 /RWFdhchXCd/iLUJyNJpF9nWA88C7Cx6LX2Ym0ouGB7oAQAklixGbJhpC2BWGV9iFh
+	 3BxS005fRWRstnx/B7YsOmKHjTs+l48dD8+0eODmq664qARPSJCPM7oD1kZT1lVrfz
+	 Mijedxz0cb3iA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3A42A380CFE4;
+	Thu,  1 Oct 2026 08:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260923-qcom-sa8255p-emac-v15-0-e82f33720737@oss.qualcomm.com>
- <20260923-qcom-sa8255p-emac-v15-3-e82f33720737@oss.qualcomm.com> <20260930163217.4003d232@kernel.org>
-Date: Thu, 1 Oct 2026 10:33:32 +0300
-X-Gmail-Original-Message-ID: <CAMRc=MfEHHny4x8pi-M-WqvcTxFY+98TvRa1jFTKQBjYCzy8FQ@mail.gmail.com>
-X-Gm-Features: AclHuK_lOavdmNlSvx0sNUPmny1qPtgCYs4QE7hryCERWbwB8_l7zIoUuzlYZiM
-Message-ID: <CAMRc=MfEHHny4x8pi-M-WqvcTxFY+98TvRa1jFTKQBjYCzy8FQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v15 3/9] phy: qcom: add the SGMII SerDes PHY
- driver for SCMI systems
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/3] net: move the type 2 sockets out of tree
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <179084280603.2317625.14903596427850220915.git-patchwork-notify@kernel.org>
+Date: Thu, 01 Oct 2026 08:20:06 +0000
+References: <20260928190800.2521749-1-kuba@kernel.org>
+In-Reply-To: <20260928190800.2521749-1-kuba@kernel.org>
 To: Jakub Kicinski <kuba@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Vinod Koul <vkoul@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
-	Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Fabio Estevam <festevam@gmail.com>, Jan Petrous <jan.petrous@oss.nxp.com>, s32@nxp.com, 
-	Mohd Ayaan Anwar <mohd.anwar@oss.qualcomm.com>, Romain Gantois <romain.gantois@bootlin.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Maxime Ripard <mripard@kernel.org>, Christophe Roullier <christophe.roullier@foss.st.com>, 
-	Bartosz Golaszewski <brgl@kernel.org>, Radu Rendec <radu@rendec.net>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, Drew Fustini <dfustini@tenstorrent.com>, 
-	linux-sunxi@lists.linux.dev, linux-amlogic@lists.infradead.org, 
-	linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	sophgo@lists.linux.dev, linux-riscv@lists.infradead.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
+ kernel@xen0n.name, chenhuacai@kernel.org, tsbogend@alpha.franken.de,
+ deller@gmx.de, razor@blackwall.org, idosch@nvidia.com, aconole@redhat.com,
+ ardb@kernel.org, tim.bird@sony.com, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org
 
-On Thu, 1 Oct 2026 01:32:17 +0200, Jakub Kicinski <kuba@kernel.org> said:
-> On Wed, 23 Sep 2026 17:14:37 +0200 Bartosz Golaszewski wrote:
->> Implement support for the firmware-managed SGMII/SerDes PHY present on
->> Qualcomm platforms. Do this as a separate driver from the HLOS-managed
->> variant as they don't share almost any code.
->>
->> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
->> ---
->>  drivers/phy/qualcomm/Kconfig                   |  10 +++
->>  drivers/phy/qualcomm/Makefile                  |   1 +
->>  drivers/phy/qualcomm/phy-qcom-sgmii-eth-scmi.c | 117 +++++++++++++++++++++++++
->>  3 files changed, 128 insertions(+)
->
-> Hmm, why is this here? is there a hard dependency?
-> Otherwise it'd be better to send it separately out to Vinod,
-> this is drivers/phy after all.
->
+Hello:
 
-Heh, it's always the same question of whether to split larger series into
-per-subsystem threads or keep them together in order to provide the full
-picture and let maintainers pick up subsets of patches. I've been yelled at
-for doing both in the past. :)
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Ok, I'll split the next iteration into smaller chunks.
+On Mon, 28 Sep 2026 12:07:57 -0700 you wrote:
+> LLC2 sockets are admin-only already. We have been getting a trickle
+> of LLM-driven fixes for these, even tho we don't know of any active
+> user. The code is so bad the LLM fixes just turn into a never ending
+> stream of revisions and follow ups as fixing one condition reveals
+> 5 more bugs. Let's move this code out of tree.
+> 
+> The series itself is LLM generated, the LLM was also nice enough
+> to generates some tests and validate that the OOT module actually
+> works.
+> 
+> [...]
 
-Bart
+Here is the summary with links:
+  - [net-next,1/3] llc: move the type 2 sockets out of tree
+    https://git.kernel.org/netdev/net-next/c/003f21868b2b
+  - [net-next,2/3] llc: strip the leftovers of the llc2 removal
+    https://git.kernel.org/netdev/net-next/c/6c1f58d7d5df
+  - [net-next,3/3] net: drop unused LLC-related includes
+    https://git.kernel.org/netdev/net-next/c/0b934eb6b142
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+

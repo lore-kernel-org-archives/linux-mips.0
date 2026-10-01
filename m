@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F89417D86;
-	Thu,  1 Oct 2026 16:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0142D421237;
+	Thu,  1 Oct 2026 16:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871208; cv=none; b=sgJhRy4AYoz/H7qyFCWonsr4AAm7/BhoFyT+E/hYH5w+r2g6lTo1EFr3DzNTqp+zsmjvR0Ebu/DmYfUYTnjC3IC2JaXyaALq4ngyyE9RKTKR7CxavQi1EgUiHFahOnMJqMTm6PI3A4XxpWdBz6y1FNJuHbUGb/JvbsfeD0xKJyY=
+	t=1790871210; cv=none; b=W1hCf/wzh8TfPmybRuNR88ALwSaQmBklAlAI47MbelFFMqUXv5onB1p2R0scrKbS/J/IKPchBOUzM/16Sh/E9nmVH+8IAbol18iYYCXAsf4AQYuibXDRK2s9mk1IW8tGMH4k4tLE1rt7t+wC3iJEbb6gC01OGNdSMZMHbU0bkNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871208; c=relaxed/simple;
-	bh=CdGivnxl5MoL32xwj6eFE357qYSGI2eVI/HLthxhfN4=;
+	s=arc-20240116; t=1790871210; c=relaxed/simple;
+	bh=WqwlH9QBd8ai+Ft2VtMqsJMZ85HIwRRf09XrZlgdHsc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gomFKQcsk0AHflzwyYXDjbsVVZSSIUPf6k9R9YExWqkSmsr9NtvS44PDBVul5qIaK0O16oDQ6Vwol5RTlWMyXA6TWTL+B/NwP6B3fzwmpGo799EtM3y93uqthvGqpkbD5Sq/snTBnQa/VyNKoOGee0E3Tv0Q6h0bVUG0CH8tyU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=REZ2v5AL; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=uhskgijGEpYb//hKBATJ+mIAV/U8PA0PjhrRcST5Tw/RW6JI1g4kYb9Fx1r77Xq/xE8V99QJZHepdx2tyIQq8yD1jQ3FMJ3StzxHTjgXUgPtfFEPAET6IhYo0iehBPjZX4MDCT/LeXkiKNB35SrHM8gpoTBRXJZuwVm8uwiWQD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aH8gncHN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="REZ2v5AL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F601F00899;
-	Thu,  1 Oct 2026 16:13:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aH8gncHN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A651F000FF;
+	Thu,  1 Oct 2026 16:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871207;
-	bh=OsIglhLwMszfFOmwWJ2K1FGVyyLQb8WZ6HpQVaoCw60=;
+	s=k20260515; t=1790871208;
+	bh=pHDQc2j6qj5LPopQ+H7d+cJyPrODCNBvmWAFRf5GgxI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=REZ2v5ALSgUp0lYYSHUEcDod0XCqlf+JgVg3c1BiAI+ZIzpeUI6uH05jQKaEB9egr
-	 TAnyunJU98+3rbkC8BKlcP++3OFwjOuSlWL/Nc8GkoFDpl1gE7rZ4CV3G0ZkPu63x9
-	 LlrLcCcEOYqzKWtVMqx0lUEyOvSYLndr6MlLsyWLKQlSgEygGxNtJOuPOEMi1ekTRS
-	 UWcBEQPdoCxmYCFWP5i79iyJUK6Fi6A2jubiROCOnsdYAmptNwT/99Nei37LYtK9Hs
-	 m4bjCjIPUk6ibkwLDFg9/7dNoadx4TxrE2phkz+NXPYK1Dl/Qke7wByZU9dQdFLKoe
-	 KO7ob5dbXYh1Q==
+	b=aH8gncHNyFUu7AtdLfFkjVSghsumSvHIkZqlDUWINpvJ49ooLdP7YWl5s1o0dxFv/
+	 5fT+EqTquAIqmPDvcWIWuS3uCleG3aUk0eKi6d1+j0+SGiDJ7/3vPEEhqEwMunRgoX
+	 Ac2IKVNoJtfB1XtAG8oHuE4apxYGKj8/KAplPC/igy0CS0dARNXLYrVoGV6M28vIRF
+	 6rLAo6BP48EwVEzcqO7L0Ibk3v4LgnJKbyP9CpQPVNThyaEukCEvmh8NnqTf08zWOY
+	 EyYdMwBa/0RPjo4G988RDeoDKPziru4dnm7/ayabpxhUzDqXHuxPuEErz6MLRnrnka
+	 rEAdUU3GZp5kg==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/38] MIPS: SGI-IP27: dump the NMI save areas the CPU scan recorded
-Date: Thu,  1 Oct 2026 18:11:37 +0200
-Message-ID: <ce2cb621eb1b54ed316689ab9fc4933ae57ce932.1790857966.git.kaloz@kernel.org>
+Subject: [PATCH 03/38] MIPS: SGI-IP27: add REMOTE_HUB_PI_S()/REMOTE_HUB_PI_L()
+Date: Thu,  1 Oct 2026 18:11:38 +0200
+Message-ID: <5b13c77052cc8bb84217affb32f5a9bf984afffc.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -44,61 +44,48 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-nmi_node_eframe_save() walks a fixed two slices per node, so the crash
-dump can print a register set and a hub interrupt state for a slice the
-node's CPU scan never recorded. Walk the recorded slices instead.
+Some hub generations split each hub's PI registers across two
+subnode blocks instead of one, so a remote access needs a subnode
+selector on top of REMOTE_HUB_ADDR()'s node selector. Passing
+subnode 0 reduces the new form to plain REMOTE_HUB_L()/REMOTE_HUB_S().
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/sgi-ip27/ip27-nmi.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/mips/include/asm/sn/addrs.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
-index fc2816398d0c..07d63d020d22 100644
---- a/arch/mips/sgi-ip27/ip27-nmi.c
-+++ b/arch/mips/sgi-ip27/ip27-nmi.c
-@@ -4,6 +4,7 @@
- #include <linux/nodemask.h>
- #include <linux/spinlock.h>
- #include <linux/smp.h>
-+#include <linux/topology.h>
- #include <linux/atomic.h>
- #include <asm/sn/types.h>
- #include <asm/sn/addrs.h>
-@@ -13,12 +14,6 @@
+diff --git a/arch/mips/include/asm/sn/addrs.h b/arch/mips/include/asm/sn/addrs.h
+index 7c675fecbf9a..d5c7cfea7761 100644
+--- a/arch/mips/include/asm/sn/addrs.h
++++ b/arch/mips/include/asm/sn/addrs.h
+@@ -267,6 +267,27 @@
  
- #include "ip27-common.h"
+ #endif /* !__ASSEMBLER__ */
  
--#if 0
--#define NODE_NUM_CPUS(n)	CNODE_NUM_CPUS(n)
--#else
--#define NODE_NUM_CPUS(n)	CPUS_PER_NODE
--#endif
--
- #define SEND_NMI(_nasid, _slice)	\
- 	REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
- 
-@@ -148,13 +143,18 @@ static void nmi_dump_hub_irq(nasid_t nasid, int slice)
-  */
- static void nmi_node_eframe_save(nasid_t nasid)
- {
--	int slice;
-+	int cpu;
- 
- 	if (nasid == INVALID_NASID)
- 		return;
- 
- 	/* Save the registers into eframe for each cpu */
--	for (slice = 0; slice < NODE_NUM_CPUS(slice); slice++) {
-+	for_each_possible_cpu(cpu) {
-+		int slice = cputoslice(cpu);
++/*
++ * Some hub generations split each hub's PI registers across two subnode
++ * blocks HUBPI_OFFSET apart; REMOTE_HUB_ADDR() always targets subnode 0.
++ */
++#define HUBPI_OFFSET		0x00200000
 +
-+		if (cputonasid(cpu) != nasid)
-+			continue;
++#define REMOTE_HUB_PI_ADDR(_n, _sn, _x) \
++	(REMOTE_HUB_ADDR((_n), (_x)) + ((_sn) ? HUBPI_OFFSET : 0))
 +
- 		nmi_cpu_eframe_save(nasid, slice);
- 		nmi_dump_hub_irq(nasid, slice);
- 	}
++#ifndef __ASSEMBLER__
++
++#define REMOTE_HUB_PI_PTR(_n, _sn, _x)	\
++	((u64 *)REMOTE_HUB_PI_ADDR((_n), (_sn), (_x)))
++
++#define REMOTE_HUB_PI_L(_n, _sn, _r)		\
++	__raw_readq(REMOTE_HUB_PI_PTR((_n), (_sn), (_r)))
++#define REMOTE_HUB_PI_S(_n, _sn, _r, _d)	\
++	__raw_writeq((_d), REMOTE_HUB_PI_PTR((_n), (_sn), (_r)))
++
++#endif /* !__ASSEMBLER__ */
++
+ /*
+  * Software structure locations -- permanently fixed
+  *    See diagram in kldir.h
 -- 
 2.47.3
 

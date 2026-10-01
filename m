@@ -1,29 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9093B71CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD053AA504;
 	Thu,  1 Oct 2026 12:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790856778; cv=none; b=cJLFxiZ6qXJVLl+4ESmfY/mgWLYMKy/9gjrMJO+tAxWfW2bNBvK1YvYmGLXBaEa94qDf6it4QWn/kMOhXN7Vldj3P/vCJwhhBQrF6QKyIodZ07FByzj5NteZYcuBLvcDplmG5UiR9AuLte+UkVDyB5nkshXJmw+6ZUeI1SkwEC0=
+	t=1790856779; cv=none; b=fO/4CxwX7MJjL2jrT7sVlkp3nOGW33ft0Q6/Lb2KXJC2KSeWwFnkdeCUmhgD4ZTTli84WSeLGj71LFvEXW9yMuc0Ux2xGplRkBc8Wv3PM+SgPxcUIUbVdiYWTQBvUQ1AafpuZjlJXkBpvLQSMOYu33Crwk7beKp4jbIBJoQGiVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790856778; c=relaxed/simple;
-	bh=o18IV4zOtC20tUpw2bNMBkrDUv8rwqxXfGNlGHNF5zY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QfimSSu8QhKFgNlMIPx00ZpfVM+NlAeWtbcIy5oGLjQG99JGTd7bNFtpFIsGQuPYKPuew0jGjy06tj8lzuD7UEIdBqEQ+TNzLOXQ/KUTY8cS6da4AH3bVeobLlmekvdILfVfcBIxW9zgqXyxGPCm95TlGfl4gdDbATCfZ6ypMGI=
+	s=arc-20240116; t=1790856779; c=relaxed/simple;
+	bh=zmElfo4wwKo+YuTwO44I2buljGIfeXw6fR9jlt6yYJk=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uM2j3mDauMBdBAEhZBnvrsGbEY8oW037PUoGXP9siVDoqJV73tbyBPDwKELY7u8svSh4u0k+6HiShQ2pXD3Q8DllZUER8iGXkkJTurzFvIGE4y/bXzy1KVpdeIe3pveULuLbnFV7uyJWRyChPpBMQcmpWvG+L/4yzeoJ/0ZwrKM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xCFeU-00010i-00; Thu, 01 Oct 2026 14:12:42 +0200
+	id 1xCFeU-00010g-00; Thu, 01 Oct 2026 14:12:42 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 5BDF3C02BE; Thu,  1 Oct 2026 14:11:53 +0200 (CEST)
-Date: Thu, 1 Oct 2026 14:11:53 +0200
+	id 1A43FC09D2; Thu,  1 Oct 2026 14:12:30 +0200 (CEST)
+Date: Thu, 1 Oct 2026 14:12:30 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Aristo Chen <aristo.chen@canonical.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: GT64120: Remove duplicate GT_PCI1M1LD_OFS and
- GT_PCI1M1HD_OFS
-Message-ID: <ar5OCUOixCsB1hD_@alpha.franken.de>
-References: <20261001053016.76578-1-aristo.chen@canonical.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: octeon: Add detection of UBNT Edgeroute Lite
+ devices
+Message-ID: <ar5OLh3SBEmrr769@alpha.franken.de>
+References: <20260927091512.117046-1-tsbogend@alpha.franken.de>
+ <20260927091512.117046-2-tsbogend@alpha.franken.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,37 +34,20 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261001053016.76578-1-aristo.chen@canonical.com>
+In-Reply-To: <20260927091512.117046-2-tsbogend@alpha.franken.de>
 
-On Thu, Oct 01, 2026 at 05:30:15AM +0000, Aristo Chen wrote:
-> The GT_PCI1M1LD_OFS and GT_PCI1M1HD_OFS register offsets are defined
-> twice in a row with identical values. Identical macro redefinitions are
-> valid C, so the compiler never warned about it. Drop the second copy.
+On Sun, Sep 27, 2026 at 11:15:11AM +0200, Thomas Bogendoerfer wrote:
+> The U-Boot of Ubiquiti Edgerouter Lite don't provide a DT to the kernel.
+> Use MIPS_MACHINE mechanism to provide one.
 > 
-> No functional change.
-> 
-> Signed-off-by: Aristo Chen <aristo.chen@canonical.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
->  arch/mips/include/asm/gt64120.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/gt64120.h b/arch/mips/include/asm/gt64120.h
-> index 5d68d726598a..2ad770ff3c56 100644
-> --- a/arch/mips/include/asm/gt64120.h
-> +++ b/arch/mips/include/asm/gt64120.h
-> @@ -45,8 +45,6 @@
->  #define GT_PCI1M0HD_OFS		0x0a8
->  #define GT_PCI1M1LD_OFS		0x0b0
->  #define GT_PCI1M1HD_OFS		0x0b8
-> -#define GT_PCI1M1LD_OFS		0x0b0
-> -#define GT_PCI1M1HD_OFS		0x0b8
->  
->  #define GT_SCS10AR_OFS		0x0d0
->  #define GT_SCS32AR_OFS		0x0d8
-> 
-> base-commit: f552e14f77bfce3e7ee0bb268ab023951baec3ff
-> -- 
-> 2.53.0
+>  arch/mips/boot/dts/cavium-octeon/Makefile |  1 +
+>  arch/mips/cavium-octeon/Kconfig           |  5 +++++
+>  arch/mips/cavium-octeon/Makefile          |  2 ++
+>  arch/mips/cavium-octeon/board-ubnt.c      | 16 ++++++++++++++++
+>  4 files changed, 24 insertions(+)
+>  create mode 100644 arch/mips/cavium-octeon/board-ubnt.c
 
 applied to mips-next
 

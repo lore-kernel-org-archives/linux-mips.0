@@ -1,106 +1,104 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D394E48F83C;
-	Thu,  1 Oct 2026 16:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1904306B3D;
+	Thu,  1 Oct 2026 16:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871278; cv=none; b=OsB2hMGcWDFoh5f0QQo/KsoYs8LOCb/mX4h1QcSrMqN8r9a18exA35VNr4B0quA7gleq3XbCz/vvUaYvudX4DpZotlqY8wYao8Mt/TZ653sJlHL+z9WmB0FtzAYvo+Jm7wvhhIif5+Ss7yrdDm9BEvEDQqo3gUj8kz3ujJsHg64=
+	t=1790872787; cv=none; b=UZtvJN5QZEto5TltoKEYxr0ppVAYtXtuOhjZPfh5Hd0Qe+uL6dZdygLvjevcsihmzQ9KxrSwp31ztzl5sFeazjyLoTYeaFH8Py7qOl758uJhZShvdn1i+R14pBHoFucmJCRvIywoFTaPcicOyUw0RYWQ562oDFvu0AcjUjDwaTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871278; c=relaxed/simple;
-	bh=DRvKTSI9ZAgs+IWprkHaymgE8PLaR0rtmWhHLY6zzY8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BSoQBB6uGgmG2T0CF63FS8Azp4y1t+aw4KGDB5bgnmPvVBjSiEqI8FMUXAq0849DHlDZH6/D45daJa8qbPGKMXT8WjVKtKapXanlQFyFJN38QoUIWtDrPRcXjr7jlua8gJONrexgVy3MvOyqDJnfnu4bS0b0Ch3qieqi85VIZv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Abn8a0N9; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790872787; c=relaxed/simple;
+	bh=CoFIg5zVxdnbRNF+xA6y6DD9CF5IBpGo8K9jZgyNx3w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kaqBlTxaUPITMooQa4fKaJ1pTI21KHooF5ud9IGMJBVhc/nJ9+KBnfKwjvDNDWk/OZlocf0GdzzuwgOO51+x0NtRU40xoIyWTvQDFNESavtP8dRNJJYQsTbnDMRyh364YI770fL2KrpYUk0PxE/xaxC1gutIphgnPUWR+H2BDww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CplMPwRu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VHCx7DuI; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Abn8a0N9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68EA81F000FF;
-	Thu,  1 Oct 2026 16:14:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871272;
-	bh=3CaAfugjwYzrJ4r+wt+PU5N7zk/QniW4cG6Ge/Ok7Ak=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Abn8a0N9wx4px8b6onYIixuNKNyI81D3jt5FQdRllR67E0wocp3GF8a0+V28fwJcP
-	 +uFBh5oF0WZZOmKYj2zIYFKwqvvyIK8Mt/2n2fMeAovnFlw6pBPOldMw4mFMv/L8ky
-	 VG9j+LzUYj2mhSsHAU6HAdC6L6eHMTCqD+sR7rpKDWLGMgTlUuNj3DiVqGZs5B1pv4
-	 9CVUB4YJe0HvC4ttAivztO99PRkExYyUPtYa8N708CrQDMPcX6Zz9KhUCfsxlJL947
-	 +ADstmtAP8t5ptlsTm9e5l7wvQ/bua9XX9mt7J7KdI2r1fOtRdWQLxC9ti6wd7RldV
-	 slCYU9RlW7PTA==
-From: Imre Kaloz <kaloz@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 37/38] MIPS: SGI-IP27: take the console from the KLCONFIG header on IP35
-Date: Thu,  1 Oct 2026 18:12:12 +0200
-Message-ID: <b564d5126e8066df287d6d7fdc83bac972a90b32.1790857966.git.kaloz@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
-References: <cover.1790857966.git.kaloz@kernel.org>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CplMPwRu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VHCx7DuI"
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1790872783;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dW+cKpw6NdVRG/EtiOgDyZsg/gwP7QSsUMI8sG6iNmE=;
+	b=CplMPwRudXp//hBgERoFxRn7Fjmt5Pds98oTs2ahHQAsV5AnmZct5dhPqw2fIAzNCpt+jb
+	BYkcvIWsAUP/0DER5dvEeMzYdS4IzM1SOpSd+oQy48E7uQf3z6mjZrTgEuens/cx0DUrH7
+	J4ZjlRHb689GsYpHapad9NaZTZbX4UZ9Yddp5Gb8gDuS+duTw0tdn4JDCGljnlXQYz49fA
+	r95YsBMKWlPTFhRi6uBe6T0rvmi/85N09xZh/om6UO1ZYt758cj6OMwKSMS4qvbGMty1PL
+	yVi0PaKEC+qZ6OpkNrhQr5ix0/QD83w4K9wCyAZVPB7jJGIRYS1DDXHMNGsPEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1790872783;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dW+cKpw6NdVRG/EtiOgDyZsg/gwP7QSsUMI8sG6iNmE=;
+	b=VHCx7DuIamZChKkQRioT97bAfm8uBI3g7ZQ9nSUagzTCKeo6XhP1bL1UWVP3ZkehW2aMYb
+	cHSUPIHM8i/t6/Cg==
+To: Imre Kaloz <kaloz@kernel.org>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, linux-serial@vger.kernel.org, Petr Mladek
+ <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] MIPS: SGI-IP27: print the NMI dump on an nbcon console
+In-Reply-To: <20261001155013.1694-1-kaloz@kernel.org>
+References: <20261001155013.1694-1-kaloz@kernel.org>
+Date: Thu, 01 Oct 2026 18:45:43 +0206
+Message-ID: <87ece98je8.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-An IP35 PROM records its console UART and baud rate in the KLCONFIG
-header. That UART is ttyS0 on Fuel and Tezro, so when the record is
-present and the command line names no console, prefer ttyS0 at that baud
-rate.
+On 2026-10-01, Imre Kaloz <kaloz@kernel.org> wrote:
+> Since the 8250 console became nbcon, printk() in nmi_dump() only queues
+> records for the printer thread, which never runs because no CPU leaves
+> the NMI handler before the hub reset. Print the dump from an emergency
+> section.
 
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/sgi-ip27/ip27-init.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Please excuse my ignorance, but could you inform me about the context?
+When is nmi_dump() called? Does the hardware always reset/reboot/hang
+from this call?
 
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index 7f16d7f437c9..6a15ba577b60 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -6,6 +6,7 @@
-  * Copyright (C) 2000 - 2001 by Kanoj Sarcar (kanoj@sgi.com)
-  * Copyright (C) 2000 - 2001 by Silicon Graphics, Inc.
-  */
-+#include <linux/console.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/sched.h>
-@@ -164,6 +165,26 @@ static void __init ip27_set_machine_name(void)
- 		gfx ? "with" : "without");
- }
- 
-+/*
-+ * Prefer ttyS0 at the baud rate the IP35 PROM recorded for its console
-+ * UART in the KLCONFIG header.
-+ */
-+static void __init ip27_setup_console(void)
-+{
-+	static char options[8];
-+	console_t *cons;
-+
-+	if (!system_is_ip35 || strstr(arcs_cmdline, "console="))
-+		return;
-+
-+	cons = KL_CONFIG_CH_CONS_INFO(master_nasid);
-+	if (!cons->uart_base)
-+		return;
-+
-+	snprintf(options, sizeof(options), "%d", cons->baud);
-+	add_preferred_console("ttyS", 0, options);
-+}
-+
- void __init plat_mem_setup(void)
- {
- 	u64 p, e, n_mode;
-@@ -215,6 +236,7 @@ void __init plat_mem_setup(void)
- 	set_io_port_base(IO_BASE);
- 
- 	ip27_set_machine_name();
-+	ip27_setup_console();
- }
- 
- const char *get_system_type(void)
--- 
-2.47.3
+> Fixes: d3539347022a ("serial: 8250: Switch to nbcon console, take 2")
+> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+> ---
+>  arch/mips/sgi-ip27/ip27-nmi.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
+> index fc2816398d0c..4447c0bec8b4 100644
+> --- a/arch/mips/sgi-ip27/ip27-nmi.c
+> +++ b/arch/mips/sgi-ip27/ip27-nmi.c
+> @@ -1,4 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +#include <linux/console.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mmzone.h>
+>  #include <linux/nodemask.h>
+> @@ -183,6 +184,12 @@ static void nmi_dump(void)
+>  	 */
+>  	arch_spin_lock(&nmi_lock);
+>  
+> +	/*
+> +	 * No CPU leaves the NMI handler before the hub reset below, so an
+> +	 * nbcon console's printer thread would never print the dump.
+> +	 */
+> +	nbcon_cpu_emergency_enter();
+> +
+>  #ifdef REAL_NMI_SIGNAL
+>  	/*
+>  	 * Wait up to 15 seconds for the other cpus to respond to the NMI.
 
+The CPU enters an emergency state, but shouldn't it exit the emergency
+state at some point? Or does the machine always unstoppably
+reset/reboot/hang after this point?
+
+John Ogness

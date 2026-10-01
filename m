@@ -1,58 +1,89 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD053AA504;
-	Thu,  1 Oct 2026 12:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066A43D3D11;
+	Thu,  1 Oct 2026 15:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790856779; cv=none; b=fO/4CxwX7MJjL2jrT7sVlkp3nOGW33ft0Q6/Lb2KXJC2KSeWwFnkdeCUmhgD4ZTTli84WSeLGj71LFvEXW9yMuc0Ux2xGplRkBc8Wv3PM+SgPxcUIUbVdiYWTQBvUQ1AafpuZjlJXkBpvLQSMOYu33Crwk7beKp4jbIBJoQGiVA=
+	t=1790869880; cv=none; b=EmQx5eL0/W1JiBpgj1pCooVGSEM0cYBK9unbms0AZEil38hljCw3u3DlFbEvfNBEMW+Enddm2r+GJr++xGWdgAR2i3mndO9ehk11e2ZzG8xwE7bcY5JA/Ccd5eJ0rPEfzQNDEJKlovRoXtsjjenWtV3hXLGkMv87qvtuD7DXMmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790856779; c=relaxed/simple;
-	bh=zmElfo4wwKo+YuTwO44I2buljGIfeXw6fR9jlt6yYJk=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uM2j3mDauMBdBAEhZBnvrsGbEY8oW037PUoGXP9siVDoqJV73tbyBPDwKELY7u8svSh4u0k+6HiShQ2pXD3Q8DllZUER8iGXkkJTurzFvIGE4y/bXzy1KVpdeIe3pveULuLbnFV7uyJWRyChPpBMQcmpWvG+L/4yzeoJ/0ZwrKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xCFeU-00010g-00; Thu, 01 Oct 2026 14:12:42 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 1A43FC09D2; Thu,  1 Oct 2026 14:12:30 +0200 (CEST)
-Date: Thu, 1 Oct 2026 14:12:30 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: octeon: Add detection of UBNT Edgeroute Lite
- devices
-Message-ID: <ar5OLh3SBEmrr769@alpha.franken.de>
-References: <20260927091512.117046-1-tsbogend@alpha.franken.de>
- <20260927091512.117046-2-tsbogend@alpha.franken.de>
+	s=arc-20240116; t=1790869880; c=relaxed/simple;
+	bh=Yuns9E3KGms7wb6PGVNm+5IOEbxvimzMSkyBzHlrIYo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sC/O5YNk+bTzZvxBeF/MfK+xTHfBfSH4jt4EeVXKPLF5pTYCTV6LSh4AIOrJ3x0I7MLW01hvwaUIWtLL5/5aAsO4SlNFH8529HTZDFL4Crfn5OhDQaBueAvKUIVzxihfRrJmaBz3PyWIAIIn5KeUk/psX2agGO4oSqZwvqTDbrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRppxj+A; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRppxj+A"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DD9C1F000FF;
+	Thu,  1 Oct 2026 15:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790869878;
+	bh=AxqsiyUPL1aYVcbhtVljXtqmVoFslqYIIISj4vvWajQ=;
+	h=From:To:Cc:Subject:Date;
+	b=nRppxj+ARHSCEFtpxg/6LQ2559dxVxm1gkPfC1jGLlE05TYQma64unYjONJo5s2tL
+	 srI7d4ksafVup+0H67yRNfBujbZIyfJdvqeUFT52jR28N7QFP4sTNlhdPsLdkIufIr
+	 5hj586lygtZnGCp28vRYhHpmREdBtM9wLO3GrANrt9Mx0vmfS0bj38Fu032G18Ph03
+	 ZqpbcrLOUk7krzonqZEYIxh5Q8M6BIq5vV3gfl+tEdRSTC8hK8bNkuoNC22c8B8qY3
+	 DHE44DlnHHLNU9CYvBiozQasQoQZuP1T7sKe6E2WWeTo0549I/UU8VYrBwBRc2E4SZ
+	 uYXi2fpWU6MNg==
+From: Imre Kaloz <kaloz@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	linux-serial@vger.kernel.org,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] MIPS: SGI-IP27: print the NMI dump on an nbcon console
+Date: Thu,  1 Oct 2026 17:50:13 +0200
+Message-ID: <20261001155013.1694-1-kaloz@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260927091512.117046-2-tsbogend@alpha.franken.de>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Sep 27, 2026 at 11:15:11AM +0200, Thomas Bogendoerfer wrote:
-> The U-Boot of Ubiquiti Edgerouter Lite don't provide a DT to the kernel.
-> Use MIPS_MACHINE mechanism to provide one.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/boot/dts/cavium-octeon/Makefile |  1 +
->  arch/mips/cavium-octeon/Kconfig           |  5 +++++
->  arch/mips/cavium-octeon/Makefile          |  2 ++
->  arch/mips/cavium-octeon/board-ubnt.c      | 16 ++++++++++++++++
->  4 files changed, 24 insertions(+)
->  create mode 100644 arch/mips/cavium-octeon/board-ubnt.c
+Since the 8250 console became nbcon, printk() in nmi_dump() only queues
+records for the printer thread, which never runs because no CPU leaves
+the NMI handler before the hub reset. Print the dump from an emergency
+section.
 
-applied to mips-next
+Fixes: d3539347022a ("serial: 8250: Switch to nbcon console, take 2")
+Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+---
+ arch/mips/sgi-ip27/ip27-nmi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thomas.
+diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
+index fc2816398d0c..4447c0bec8b4 100644
+--- a/arch/mips/sgi-ip27/ip27-nmi.c
++++ b/arch/mips/sgi-ip27/ip27-nmi.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/console.h>
+ #include <linux/kernel.h>
+ #include <linux/mmzone.h>
+ #include <linux/nodemask.h>
+@@ -183,6 +184,12 @@ static void nmi_dump(void)
+ 	 */
+ 	arch_spin_lock(&nmi_lock);
+ 
++	/*
++	 * No CPU leaves the NMI handler before the hub reset below, so an
++	 * nbcon console's printer thread would never print the dump.
++	 */
++	nbcon_cpu_emergency_enter();
++
+ #ifdef REAL_NMI_SIGNAL
+ 	/*
+ 	 * Wait up to 15 seconds for the other cpus to respond to the NMI.
 
+base-commit: 5dd1818b15d98d4a20806cd00b1b40320b06004f
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.47.3
+

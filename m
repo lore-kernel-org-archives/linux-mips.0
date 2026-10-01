@@ -1,116 +1,93 @@
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B828836E468
-	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 05:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E25486B9B
+	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 06:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790832656; cv=none; b=OtE7iXxpmcL//D2zbN5FqoMKWlMBxT9MOHLVfpkw+9ArZkCBKPCn3yv8n/qC3Fdz3wKbykMW8dv+kg+nWwUQYQKDVeESHULwulE6A0phRDKTd+pzGhXyF0J22MavyWr3l358e+MdSDrtak9/5NvzRXL2NdAobsKXtsrJnCATVpw=
+	t=1790837969; cv=none; b=dr/gkzXvt2/V3K4Yve3eiLmhPHV5DNXt2qTf/812MN/dPPoldvMEw4Co37Did8ah/q1uu4Mx3FwujKkXmpdECQoop9KFt6yluyzEqB4ZvfzmVX5/q+lJsi1cOaTdB2ZTVMEgta3EtJFewdGezIfFgQvkxXvCuBDIC1ehe3/i2HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790832656; c=relaxed/simple;
-	bh=EmA6//KppfeUgVZiV4cMUwGel9FhZCcjp0UJf5p4IKQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UPuAgw1rXmxrdqTKaACaA5mLHK6edxonUMD6bu0sbwH8oNB8RUVHu6TTBWHYqiJr0CbD4V3sih0pA5dPhBMaig4Io2+F+mwaSHF042f0VRuZbWLWtIzb+l2k9miRBvEaaMfAxFxb1LCx9stk2k6nfbCQS2qetLN6BIG/HFd2+gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=bw22YXjU; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+	s=arc-20240116; t=1790837969; c=relaxed/simple;
+	bh=adKEV0wp8fnkm3B2gVtkxUbYQ0N4xZbbOvQZcLnu0xk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FXbOMbWE7Uh49HL3mCtp4WuB3VozATyiZRgCo1FZ1iueg6TbjoBhM9UAUO+VvbeJAWwufEdenHBnQydvfveBmz0OuC+zGM9fFdophm2UAvH0tLOzGphXpP5Od80LBSBQdsZg1jp+Ti7TstLQXSO62mZiEHckyYUup4HGmp+QBuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZTEqIekg; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="bw22YXjU"
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2881F3F601
-	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 05:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1790832645;
-	bh=1VE1RYfLq2T8mu9mJjmLt+ict1IadVMm9yDzloS+OAM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=bw22YXjUxhQ3mxLDK4VlPrqp2hOY6j2Ba+B+ChVg5uqR+55ct0Y6LBXrv0JNOKnSY
-	 9kvqod2OoeI43mLeQ9PqoOYwWX8Xii7UyYFymyN7QEyP5sjhBWHS3AenUZaKYPeKr5
-	 PaleHXWHjjx1ULBKXy3R972WGqMneROt7Jn03XA8YZjEMuSrHe6Xmm7n1itwBgZlDd
-	 U+aRv+2kqxNVIqxQyL6R+Fflksba/eSLRJfmvG/ERlpBVZtuDx0zgR/QI/Mt7oDn0A
-	 iPyDpXMb28yUgVPAuy0O0YNoZTkXsD2dZ0sLQASo3dKxqmKRAn14C7cX6Pf2PRP4KE
-	 ASV+BEO4HANdwOVD/kuJn0viXUtPssbyDys/2Luw6IOyisWYjOKcj0zOl7ltUQmej9
-	 BYKwOY+iVEl/lIdTVsVXM0b4NuFR2zM84TasUbjK9ge0wvtMKKkQN4tl3WnGG/7b85
-	 7X/CImbvqB4+cue8lJxG+HJEVjbHJQEg7dGq36jUk5KwVpJNQXP/GXP6RsaCfVg73L
-	 OgZnopTA6fXdGHAwCd9XUkIck32n43z2PiB3CpscMCSTaW+/4Edayub4UN/cAHflZb
-	 qYmxpZmUkyMKhu5Vo+uMbhVD+qAWUpef2TJa/OBAVGqALaCMko2IDMl39px8yhGc2N
-	 kg/YqXKTmpaPKBYa2SfbKTkY=
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2cee1ec30f2so58734475ad.3
-        for <linux-mips@vger.kernel.org>; Wed, 30 Sep 2026 22:30:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790832643; x=1791437443;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=1VE1RYfLq2T8mu9mJjmLt+ict1IadVMm9yDzloS+OAM=;
-        b=hY+2qNBGxOiW4GOvFJ73CAEgL3imrl1dZltJVRlgxsAJ2ebjaWjDRtxTbOi2lsG5zt
-         ye39z4zljW/6bD6o3GmwhpC9yO20Y33Mr23S6zhXPpEidiU27IfmYCuH7S5GIPkpQjSm
-         yHz1GaD88cA7/BXIzU1GUjkt6ISal8iV9N31adh867/Ls0H5wObAKg7H8l8k8wjZFtwY
-         4KH6aj/mGgdRn/WwKvwyxi5VzvQTpeyFV83KdqwgrdNKe2OBmhX+pbLFb2TWE5yENp8/
-         TkteWMrj77JbjdyT9H6q8OlI4tcYQ1COGyMlUj1eTj0Ceu8jvGTD9smaQg6jynYnpqIb
-         ZFVw==
-X-Gm-Message-State: AFq9FYITpvIcE9iU3oZa1bAspxwB+tJFUtSuVNsotD0o0btxDqr6R75M
-	IveEqYEEYZusnW8iiedTHAPABYYMaHXcvsARKuleZVTDWjNkKwx0fOefyIs8DHsuDzJxbK4H0h/
-	p+o1mjI+Wgbbh+B8N/QlhBDQQOyD0HNh3HcWd+s/cmJaF7sAlK1/c6P1vBpnbGCNFzIlPi1Cjnb
-	s+bDM=
-X-Gm-Gg: AYBFou15Qr5BqI4uXGsCyjUS85Hgm55jYpKAEGe6bijASWOqljWcHVu0H2H9GpP8d2w
-	s6h/ppr3Wx4W0paUEIDOw1M/FhklKVjSxyUvps7CeEo81uESNv9vuNh1xbAKgE6jOKpzpT6Dm8P
-	HeI/VZzqIzRybzdphMBoT85wGJBCFOM8G+J50QK+GJNK3IYNT63GfthGdzecl7xg/KDDaNZp5Y7
-	ZzHuIwXzocNaQwUeOTNWMmH/adLwxVyL0ph35ZuHDcedIGYEhkPm5K56DB4RvhRwvOjeNW8Hm2K
-	KY4AhNa2kuqZ53X1aKkrpZfxKGcyTYkvxY/2fLk3jmw4NBgjxAM+HRuqhasd2UNX18j+eDHqNCQ
-	61qvPYah5g2Y0IBgWPv9hDVskatd3dkQJ+grD8syHmJYjKeO9KvlE8Por
-X-Received: by 2002:a17:902:c945:b0:2c9:c952:6e9 with SMTP id d9443c01a7336-2e2e49167eamr32572225ad.2.1790832643550;
-        Wed, 30 Sep 2026 22:30:43 -0700 (PDT)
-X-Received: by 2002:a17:902:c945:b0:2c9:c952:6e9 with SMTP id d9443c01a7336-2e2e49167eamr32572045ad.2.1790832643130;
-        Wed, 30 Sep 2026 22:30:43 -0700 (PDT)
-Received: from resolute-linux.lxd (124-218-37-86.cm.dynamic.apol.com.tw. [124.218.37.86])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e300b4273csm5205745ad.64.2026.09.30.22.30.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2026 22:30:42 -0700 (PDT)
-From: Aristo Chen <aristo.chen@canonical.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Aristo Chen <aristo.chen@canonical.com>
-Subject: [PATCH] MIPS: GT64120: Remove duplicate GT_PCI1M1LD_OFS and GT_PCI1M1HD_OFS
-Date: Thu,  1 Oct 2026 05:30:15 +0000
-Message-ID: <20261001053016.76578-1-aristo.chen@canonical.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZTEqIekg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0BE11F008A5
+	for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2026 06:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790837966;
+	bh=adKEV0wp8fnkm3B2gVtkxUbYQ0N4xZbbOvQZcLnu0xk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=ZTEqIekgpZghTg8Qn8vwEmbcMeMYl2MORgJxn3aIHii9lmlTTHXZULIZaVG6qSbBU
+	 P1GpvEyVhrBhMi/mxpGoxmyOhDj0twY5/81waMYx34MNJYpyJW/LGUPeAxIk4Gb3tS
+	 291yIQxl1AzJd+hKdqlRFd6inzcyYydgb3tNfWPDRy9FVVDUzeGQbpXp2S02THGyJO
+	 cBNMWgzFXyDjGvG+KjD2jVAWTdEuZ5SPtgBv4hf/VJBW5T/eR3p7ntSCwVWjJbxHS/
+	 EtdsuoEljzPiJkqs+B/W+oywc3R6jty9xcO198geJNwEC8Z9ZM5JTuumBUxhIb+jXo
+	 21JWDU1ZRilHQ==
+Received: by mail-lf2-f13.google.com with SMTP id 2adb3069b0e04-5bb54bd50c2so93746e87.2
+        for <linux-mips@vger.kernel.org>; Wed, 30 Sep 2026 23:59:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBwp2KLHJhc3v6JJNsPQjDH9ytpLCZp1pP15PJsw38CkItNDu5PRQo1O67xdYhdGj6dWYJGJd1DWLkBl@vger.kernel.org
+X-Gm-Message-State: AFq9FYKVARbtVmXXxUM/2p7coO51FmeF6xH0P6Dbg046DgxLbH9/DMeO
+	kIRNBDYT6NR01rhDAnaVPEzv2zAkp9LJD+IMXvsTc+7tECJWZASeVA1SCyFkBzarOiQa9dLecr+
+	O5fo8B9DfPNcEq8DmR7w2WYlgiWYSY50=
+X-Received: by 2002:a05:6512:3ba0:b0:5ba:3b01:36a5 with SMTP id
+ 2adb3069b0e04-5ba405ee75amr1389712e87.14.1790837964923; Wed, 30 Sep 2026
+ 23:59:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260916-drm-bridge-every-panel-v3-0-83afb4f1a707@bootlin.com> <20260916-drm-bridge-every-panel-v3-7-83afb4f1a707@bootlin.com>
+In-Reply-To: <20260916-drm-bridge-every-panel-v3-7-83afb4f1a707@bootlin.com>
+From: Linus Walleij <linusw@kernel.org>
+Date: Thu, 1 Oct 2026 08:59:09 +0200
+X-Gmail-Original-Message-ID: <CAD++jLkhYNZ4R4Z60zTzNoZwCtk4rcL-pCbgdHpNEzV-4oO_Wg@mail.gmail.com>
+X-Gm-Features: AclHuK8feDgrhg1tWHz9y2oJ4IDmaC5Th2MaGXRPg_l1XDpQ6IeWaj3r9RadEo0
+Message-ID: <CAD++jLkhYNZ4R4Z60zTzNoZwCtk4rcL-pCbgdHpNEzV-4oO_Wg@mail.gmail.com>
+Subject: Re: [PATCH v3 07/19] drm/panel: deprecate panel-bridge APIs
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Jessica Zhang <jesszhan0024@gmail.com>, Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>, 
+	Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Paul Cercueil <paul@crapouillou.net>, 
+	Paul Kocialkowski <paulk@sys-base.io>, Inki Dae <inki.dae@samsung.com>, 
+	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Sean Paul <sean@poorly.run>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Albert Esteve <aesteve@redhat.com>, 
+	Anusha Srivatsa <asrivats@redhat.com>, Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
+	Hui Pu <Hui.Pu@gehealthcare.com>, Ian Ray <ian.ray@gehealthcare.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
+	asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The GT_PCI1M1LD_OFS and GT_PCI1M1HD_OFS register offsets are defined
-twice in a row with identical values. Identical macro redefinitions are
-valid C, so the compiler never warned about it. Drop the second copy.
+On Wed, Sep 16, 2026 at 3:46=E2=80=AFPM Luca Ceresoli <luca.ceresoli@bootli=
+n.com> wrote:
 
-No functional change.
+> Now that a drm_bridge is embedded into every drm_panel, the panel_bridge =
+is
+> not needed anymore. Its APIs are just accessing the embedded drm_bridge
+> transparently.
+>
+> Deprecate them all, encouraging to use the drm_bridge API.
+>
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-Signed-off-by: Aristo Chen <aristo.chen@canonical.com>
----
- arch/mips/include/asm/gt64120.h | 2 --
- 1 file changed, 2 deletions(-)
+Reviewed-by: Linus Walleij <linusw@kernel.org>
 
-diff --git a/arch/mips/include/asm/gt64120.h b/arch/mips/include/asm/gt64120.h
-index 5d68d726598a..2ad770ff3c56 100644
---- a/arch/mips/include/asm/gt64120.h
-+++ b/arch/mips/include/asm/gt64120.h
-@@ -45,8 +45,6 @@
- #define GT_PCI1M0HD_OFS		0x0a8
- #define GT_PCI1M1LD_OFS		0x0b0
- #define GT_PCI1M1HD_OFS		0x0b8
--#define GT_PCI1M1LD_OFS		0x0b0
--#define GT_PCI1M1HD_OFS		0x0b8
- 
- #define GT_SCS10AR_OFS		0x0d0
- #define GT_SCS32AR_OFS		0x0d8
-
-base-commit: f552e14f77bfce3e7ee0bb268ab023951baec3ff
--- 
-2.53.0
-
+Yours,
+Linus Walleij

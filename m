@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580865328A9;
-	Thu,  1 Oct 2026 16:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA2F47CA62;
+	Thu,  1 Oct 2026 16:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871244; cv=none; b=TLKRaO/0YSw+vu/qE69uIX4VZJcbicyoSrlTYLE7Jawos+9m7Pru9REe5n1K/kqY2XGEGqYMlyOMFQa5y9YBAePCsD27ivszZGl0MdYZBgtk4gJyc0wYwqA4WWHk2KzuwB4NlerQJYOyA786QNrTONyv62ew+Edl4VX4OWme8Ng=
+	t=1790871246; cv=none; b=gQsCPKmdhhxhsUYKwMdKF+iZ+lu6QTG+HhBqwmGmjusYc+2yGY5VhHU1FRVvVAJzWx0jIDqGdNPSaQd+GWNyQO5oUU2QHjC4akIESRkbI/SO3t4yG+GtQsOx1FoBht/TsyB14ZWBCFNOv/THaDDB3wYArnVjunYPz+uvQjQCyrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871244; c=relaxed/simple;
-	bh=GEJlmDjet5Wvlg1XrscE3PhMaSO6snNiTUmWty0CtYg=;
+	s=arc-20240116; t=1790871246; c=relaxed/simple;
+	bh=8+PvyS6ji2FmbM9y9Ba4fGd5wJDl63PZd7Iqgn+LOuI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uJboKhJS5Z933R5FdZlcWNdDfFImqy3q+1rwjJVbcLB8gVe/5tDQItBJmVNM/t+MBoofG4vP+CQV8f8PTNsLP9TIkvUJojxrvLzEtmFq582aZQjm2JWds8gmmLl4gA3+Kyv3wrF89mPq9pi51OUXEhMNqVmEliGRd1C8rbZEIZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adMbjfY/; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=OOl93c58OAMvQBQzV3+vEeY4Ei1vwcSUANtMqQdbLpOXBrgmCGFC2z9HltV/YH0S/TBXmicr0Ls4S80k5EiC7kFDKSASNrmntEHqRii/T21o1uJvp1x6fFL9RWw/LUT81I2QhxMQgYmymBj8Wdd+vRyMP8K6Gsr7DZF2DGRSvIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3A3nnPO; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adMbjfY/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D7C1F00898;
-	Thu,  1 Oct 2026 16:14:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3A3nnPO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1D291F000FF;
+	Thu,  1 Oct 2026 16:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871243;
-	bh=PGIJKLAd9BQoYJjzJGnQWdvjdffH0nJ8G9xyOPufKZ8=;
+	s=k20260515; t=1790871245;
+	bh=XDNKYH5GTGA1OApzvl5Q9iscSnKUP7cKDUTlVGjEA/Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=adMbjfY/5ytseUCXA1p/JZqvrsGHOkzCrHlMQjGoa6vqjgyrdcr74ax12lY2wPseU
-	 VNQA9qk/29CjNocydoLIKScuHs6hJo4OAllftlHSCXLZgD7fiRUc0AnDv1Cqz+4mVH
-	 twzipoiJgLMIXgfEA6u1UlnRIEXu7QumT1YIV0qPZZyqUwhcq23JISSCIpobNjgJtM
-	 dmUH+eseL9SMtIHMFJ3wxY8H4u8FY5tfupKmizS3IOmZQmrVywyXQIu3BQCGb3I79e
-	 w2HFZ8K+g3TlufIO+OJWBrxoO3XkiLz1Jjgo04HPLZqV2mqFyx84Jx+KuRSU/eLplI
-	 UbRwqGuV1FoFg==
+	b=l3A3nnPOl6WPHoiIStthSR4SlLTh7m34DvB35MYZh5jo+zLhNGnmMnc/edNJcQN3M
+	 xlyZXHfy3iO2J5I3ihyEA2fXjPP2gN+Za7ycD43nG8x02BAJbnuzmfJARMdys3Es/D
+	 4BHhmNgZHh+zUIZifiFPJt15NzZWsbUrjvtT49s+0YES1NXu27dL84uCqvxv7dFvls
+	 xBylfsDKCE8wiLMx/oHGAyCkhRiO4S6omCmoGlqxjOWEYz6KOQxifhq4jLTfAf0yPg
+	 HoNDxx0Lx2Fg5qM93PMD0baIcApMY2HuuYlNuMr1IJyx7hBVVoFk2bbaeqKTChpTW2
+	 qHoW+2B+Gmiyw==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 22/38] MIPS: SGI-IP27: recognize the PXBow crossbar
-Date: Thu,  1 Oct 2026 18:11:57 +0200
-Message-ID: <d8c8e80c754760b657ca3e9955fb6468a77089ba.1790857966.git.kaloz@kernel.org>
+Subject: [PATCH 23/38] MIPS: PCI: xtalk-bridge: recognize the PIC widget's 64-bit-only registers
+Date: Thu,  1 Oct 2026 18:11:58 +0200
+Message-ID: <b1b33df20ce6a5b85c842ae81b82fa4617744ee1.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -44,61 +44,190 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A Tezro's crossbar is a PXBow, widget part number 0xd100. Without
-recognizing it, xtalk_probe_node() logs the widget as unknown and never
-calls xbow_probe(), leaving every IO widget behind it unenumerated.
+PIC replicates the Bridge/XBridge register layout, twice in one widget
+window for its two PCI buses, and does not accept a 32-bit write to half
+of a 64-bit register. Flag it, widen the register accessors to the
+double word, and spawn a controller per bus.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/xtalk/xwidget.h | 7 +++++++
- arch/mips/sgi-ip27/ip27-xtalk.c       | 2 ++
- 2 files changed, 9 insertions(+)
+ arch/mips/include/asm/pci/bridge.h | 70 +++++++++++++++++++++++++++---
+ arch/mips/sgi-ip27/ip27-xtalk.c    | 30 ++++++++++---
+ 2 files changed, 89 insertions(+), 11 deletions(-)
 
-diff --git a/arch/mips/include/asm/xtalk/xwidget.h b/arch/mips/include/asm/xtalk/xwidget.h
-index 978877e8a090..6a98e87b4711 100644
---- a/arch/mips/include/asm/xtalk/xwidget.h
-+++ b/arch/mips/include/asm/xtalk/xwidget.h
-@@ -109,6 +109,7 @@
- #define WIDGET_BDRCK_PART_NUM	0xc110
- #define WIDGET_TPU_PART_NUM	0xc202
- #define WIDGET_XXBOW_PART_NUM	0xd000
-+#define WIDGET_PXBOW_PART_NUM	0xd100
- #define WIDGET_XBRDG_PART_NUM	0xd002
- #define WIDGET_NULL_PART_NUM	-1
+diff --git a/arch/mips/include/asm/pci/bridge.h b/arch/mips/include/asm/pci/bridge.h
+index 2ea0f1e2cd76..76c5db983748 100644
+--- a/arch/mips/include/asm/pci/bridge.h
++++ b/arch/mips/include/asm/pci/bridge.h
+@@ -12,6 +12,8 @@
+ #ifndef _ASM_PCI_BRIDGE_H
+ #define _ASM_PCI_BRIDGE_H
  
-@@ -183,6 +184,12 @@ static const struct widget_ident widget_idents[] __initconst __maybe_unused = {
- 		"xxbow",
- 		{NULL, "1.0", "2.0", NULL},
- 	},
-+	{
-+		WIDGET_XXBOW_MFGR_NUM,
-+		WIDGET_PXBOW_PART_NUM,
-+		"pxbow",
-+		{NULL, "1.0", NULL},
-+	},
- 	{
- 		WIDGET_XBRDG_MFGR_NUM,
- 		WIDGET_XBRDG_PART_NUM,
++#include <linux/build_bug.h>
++#include <linux/stddef.h>
+ #include <linux/types.h>
+ #include <linux/pci.h>
+ #include <asm/xtalk/xwidget.h>		/* generic widget header */
+@@ -39,6 +41,9 @@
+ #define BRIDGE_SSRAM_64K	0x00010000	/* 64kB */
+ #define BRIDGE_SSRAM_0K		0x00000000	/* 0kB */
+ 
++/* PIC replicates its register block twice within one widget's 16MB window. */
++#define PIC_BUS1_OFFSET		0x800000
++
+ /* ========================================================================
+  *    Bridge address map
+  */
+@@ -264,6 +269,15 @@ struct bridge_regs {
+ 	} b_external_flash;			/* 0xC00000 */
+ };
+ 
++/*
++ * Pin b_device[]/b_rrb_map[]'s low-half placement: bridge_readl() and
++ * bridge_writel() rely on it.
++ */
++static_assert(offsetof(struct bridge_regs, b_device[0].reg) == 0x204);
++static_assert(offsetof(struct bridge_regs, b_device[1].reg) == 0x20c);
++static_assert(offsetof(struct bridge_regs, b_rrb_map[0].reg) == 0x284);
++static_assert(offsetof(struct bridge_regs, b_rrb_map[1].reg) == 0x28c);
++
+ /*
+  * Field formats for Error Command Word and Auxiliary Error Command Word
+  * of bridge.
+@@ -394,6 +408,7 @@ struct bridge_err_cmdword {
+ /* Widget part number of bridge */
+ #define BRIDGE_WIDGET_PART_NUM		0xc002
+ #define XBRIDGE_WIDGET_PART_NUM		0xd002
++#define PIC_WIDGET_PART_NUM		0xd102
+ 
+ /* Manufacturer of bridge */
+ #define BRIDGE_WIDGET_MFGR_NUM		0x036
+@@ -817,11 +832,54 @@ struct bridge_controller {
+ #define BRIDGE_CONTROLLER(bus) \
+ 	((struct bridge_controller *)((bus)->sysdata))
+ 
+-#define bridge_read(bc, reg)		__raw_readl(&bc->base->reg)
+-#define bridge_write(bc, reg, val)	__raw_writel(val, &bc->base->reg)
+-#define bridge_set(bc, reg, val)	\
+-	__raw_writel(__raw_readl(&bc->base->reg) | (val), &bc->base->reg)
+-#define bridge_clr(bc, reg, val)	\
+-	__raw_writel(__raw_readl(&bc->base->reg) & ~(val), &bc->base->reg)
++/*
++ * PIC does not accept a 32-bit write to half of a 64-bit register, so
++ * widen each access to the 8-byte-aligned double word and extract or
++ * insert the 32-bit value at its byte position. The pointer is
++ * volatile-qualified because widget_cfg_t is, and b_widget sits in
++ * every bridge_regs.
++ */
++static inline u32 bridge_readl(struct bridge_controller *bc, volatile u32 *reg)
++{
++	void *dw;
++	unsigned int shift;
++
++	if (likely(!bc->is_pic))
++		return __raw_readl(reg);
++
++	dw = (void *)((unsigned long)reg & ~7UL);
++	shift = ((unsigned long)reg & 4) ? 0 : 32;
++
++	return __raw_readq(dw) >> shift;
++}
++
++static inline void bridge_writel(struct bridge_controller *bc,
++				 volatile u32 *reg, u32 val)
++{
++	void *dw;
++	unsigned int shift;
++	u64 tmp;
++
++	if (likely(!bc->is_pic)) {
++		__raw_writel(val, reg);
++		return;
++	}
++
++	dw = (void *)((unsigned long)reg & ~7UL);
++	shift = ((unsigned long)reg & 4) ? 0 : 32;
++
++	tmp = __raw_readq(dw);
++	tmp = (tmp & ~(0xffffffffULL << shift)) | ((u64)val << shift);
++	__raw_writeq(tmp, dw);
++}
++
++#define bridge_read(bc, reg)		bridge_readl(bc, &bc->base->reg)
++#define bridge_write(bc, reg, val)	bridge_writel(bc, &bc->base->reg, val)
++#define bridge_set(bc, reg, val)				\
++	bridge_writel(bc, &bc->base->reg,			\
++		      bridge_readl(bc, &bc->base->reg) | (val))
++#define bridge_clr(bc, reg, val)				\
++	bridge_writel(bc, &bc->base->reg,			\
++		      bridge_readl(bc, &bc->base->reg) & ~(val))
+ 
+ #endif /* _ASM_PCI_BRIDGE_H */
 diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
-index bd2ac24452f5..105977316391 100644
+index 105977316391..73b2eef96bdb 100644
 --- a/arch/mips/sgi-ip27/ip27-xtalk.c
 +++ b/arch/mips/sgi-ip27/ip27-xtalk.c
-@@ -21,6 +21,7 @@
- 
- #define XBOW_WIDGET_PART_NUM	0x0
- #define XXBOW_WIDGET_PART_NUM	0xd000	/* Xbow in Xbridge */
-+#define PXBOW_WIDGET_PART_NUM	0xd100	/* PXbow */
- #define BASE_XBOW_PORT		8     /* Lowest external port */
- 
+@@ -27,6 +27,8 @@
  enum xtalk_bridge_type {
-@@ -241,6 +242,7 @@ static void xtalk_probe_node(nasid_t nasid)
+ 	XTALK_BRIDGE,
+ 	XTALK_XBRIDGE,
++	XTALK_PIC_BUS0,
++	XTALK_PIC_BUS1,
+ };
+ 
+ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+@@ -88,21 +90,32 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+ 	}
+ 
+ 
+-	bd->bridge_addr = RAW_NODE_SWIN_BASE(nasid, widget);
++	bd->bridge_addr = RAW_NODE_SWIN_BASE(nasid, widget) +
++			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0);
+ 	bd->intr_addr	= BIT_ULL(47) + 0x01800000 + PI_INT_PEND_MOD;
+ 	bd->nasid	= nasid;
+ 	bd->masterwid	= masterwid;
+ 	bd->is_xbridge	= type == XTALK_XBRIDGE;
++	bd->is_pic	= type == XTALK_PIC_BUS0 || type == XTALK_PIC_BUS1;
+ 
++	/* Split a PIC's window at bus 1 or its resource request fails. */
+ 	bd->mem.name	= "Bridge PCI MEM";
+-	bd->mem.start	= offset + (widget << SWIN_SIZE_BITS) + BRIDGE_DEVIO0;
+-	bd->mem.end	= offset + (widget << SWIN_SIZE_BITS) + SWIN_SIZE - 1;
++	bd->mem.start	= offset + (widget << SWIN_SIZE_BITS) +
++			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0) +
++			  BRIDGE_DEVIO0;
++	bd->mem.end	= offset + (widget << SWIN_SIZE_BITS) +
++			  (type == XTALK_PIC_BUS0 ? PIC_BUS1_OFFSET :
++						    SWIN_SIZE) - 1;
+ 	bd->mem.flags	= IORESOURCE_MEM;
+ 	bd->mem_offset	= offset;
+ 
+ 	bd->io.name	= "Bridge PCI IO";
+-	bd->io.start	= offset + (widget << SWIN_SIZE_BITS) + BRIDGE_DEVIO0;
+-	bd->io.end	= offset + (widget << SWIN_SIZE_BITS) + SWIN_SIZE - 1;
++	bd->io.start	= offset + (widget << SWIN_SIZE_BITS) +
++			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0) +
++			  BRIDGE_DEVIO0;
++	bd->io.end	= offset + (widget << SWIN_SIZE_BITS) +
++			  (type == XTALK_PIC_BUS0 ? PIC_BUS1_OFFSET :
++						    SWIN_SIZE) - 1;
+ 	bd->io.flags	= IORESOURCE_IO;
+ 	bd->io_offset	= offset;
+ 
+@@ -149,6 +162,13 @@ static int probe_one_port(nasid_t nasid, int widget, int masterwid)
+ 	case XBRIDGE_WIDGET_PART_NUM:
+ 		bridge_platform_create(nasid, widget, masterwid, XTALK_XBRIDGE);
  		break;
- 	case XBOW_WIDGET_PART_NUM:
- 	case XXBOW_WIDGET_PART_NUM:
-+	case PXBOW_WIDGET_PART_NUM:
- 		pr_info("xtalk:n%d/0 xbow widget\n", nasid);
- 		xbow_probe(nasid);
- 		break;
++	case PIC_WIDGET_PART_NUM:
++		/* PIC always has both buses in silicon: probe each. */
++		bridge_platform_create(nasid, widget, masterwid,
++				       XTALK_PIC_BUS0);
++		bridge_platform_create(nasid, widget, masterwid,
++				       XTALK_PIC_BUS1);
++		break;
+ 	default:
+ 		pr_info("xtalk:n%d/%d unknown widget (0x%x)\n",
+ 			nasid, widget, partnum);
 -- 
 2.47.3
 

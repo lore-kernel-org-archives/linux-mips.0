@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04CA475344;
-	Thu,  1 Oct 2026 16:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9778048F83C;
+	Thu,  1 Oct 2026 16:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790871212; cv=none; b=axbZpoavlTsPbLNMMFlig9+8yZZRHYXMMAJMknotRHEFcttm73jnuNPs9iOVsyzu4W5ARrvUYnjS/iDXoVlYwS0DqeI+5S8HxNfSQnGPSdhNRtefchr/8f09JUUxpDwvCNCyld7Atxa7YhtYayA9YTj6EnWNr1FS1uwAEqEcG54=
+	t=1790871213; cv=none; b=pjY1KSrCB8u8peEptSEpOVk1pehbgwa+csk4eyZaA82/fBewN7gmgBmU/g5p9/2NHjxg4WOf4PZhzf15xkDC8an7UZGctW3UbZ1PXDGamtQvI2J3x2bUfNIM8/wXiuh5D43NV9ODZaDwkb5lhV7pxKVwX5sSIFo3WxUsdQXnV9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790871212; c=relaxed/simple;
-	bh=qzr381M4jQrCqOy50gj0657Krtwngz2FDDN6eHzK9vI=;
+	s=arc-20240116; t=1790871213; c=relaxed/simple;
+	bh=4W3pTcVgYMqpv8j4cpuixLm9Ru8+ENegfQ8zSxuv7vc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D82eIWKaWPUTHveUxKbrhcdrQMHChg4wSKXfVFEfH8UINNveZyGN2G68Ku7e9wM3s8Nqtcgvbqg6Dd8OdTHfobDEVYailpM/tGiJGmP7bKrSbX0paVnr85M7Wm9VvEB+6VXvwjrze6mAFKGc3Ee7c5umDqU3Pz2+5wKXRPn1IRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5a/feKc; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=I/qYrrUe3heUoDkEaSMRPCFO/pFYcw5wdrrYNebJR6YtmjZoP+UL2F2m5UflVCWaiWM1VYZ7B1aYKQxaNMiBj7BqB8BqI0Rn5aUVqLlFKPO8ZBZYXV1JIFRQgybbpHE5JyhZmHcPJfdcUYSTnQ3F/c28Vdww/XVR94nWNwu/JlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GRlX0atA; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5a/feKc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9E31F00898;
-	Thu,  1 Oct 2026 16:13:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GRlX0atA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 271ED1F000FF;
+	Thu,  1 Oct 2026 16:13:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790871210;
-	bh=s9JsZbLBN2ktH0/DfsMUl+U/Asupg5vWsbX20GnEMQI=;
+	s=k20260515; t=1790871212;
+	bh=BIfgpQReYP6KjCNcPJHj8JOkUxH3b9b7suJ+Bq7Gr0s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=b5a/feKc2QhouX4QuGLCgU5tKiDemDUrQiWxsbf2BRH6CJTBi2S0A8NSLZo3+cfbA
-	 WJnIhncJ/dJP4RdNc7aMwygKqozEmFTsv7ZXFUg40hBlBgqImRRlIMV2hskCIEY+mi
-	 ScwtVdCh8xXXkE/Dq27esi/ZePC7Yoi7924Olks8muIg/EtoIkG0JisJhu83P7go+f
-	 V0ifm2x3YhbBLGqNy8Z+tlWn1CwwXlN+sB/pNz9kN51+Gga2EYHJeBtJAIK4dleqOo
-	 HLJKLxgi7yJEV340ie5f7DgThMmGc/bnmj0PTXk+FAAdrbEyat61BjG6p7nW77iMRV
-	 7LTUkHU3MIA6w==
+	b=GRlX0atA7tOObJGE4LiiYfoTcWgZntJn8yXU25/d4hTEUq+9qNFlHneNYHA0fh8Mk
+	 9bIPlylU3+AbInjbJEBO9wjFWKP07+WhkRpByLfr4AJY8Ixwtnb4UyoJTS7TgEtEwh
+	 Hjnw/RxLrvCBaYoMQvHX/GqKHzcTptn73TtHwv47TaweNLGF9BJqedCwqy4rnSHcgx
+	 vLImdj380oJHxRzQs5wEechPD0COoyyhkNuV9WCUxi3gxr1JwIqvscVBeS04z6yGyF
+	 WZCrEwr5gLeTkM9YsUo9bXy86iMnX9cR1K5UNqi3cCALQJnZY/cg75sSs+bMGwfwiN
+	 7K1JwY92fqqAA==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 04/38] MIPS: SGI-IP27: detect Bedrock hubs at boot
-Date: Thu,  1 Oct 2026 18:11:39 +0200
-Message-ID: <c8db28c553a0f99eb05682a6a44bd3399dd4d63e.1790857966.git.kaloz@kernel.org>
+Subject: [PATCH 05/38] MIPS: SGI-IP27: widen Kconfig for the Bedrock-based machines
+Date: Thu,  1 Oct 2026 18:11:40 +0200
+Message-ID: <4fc16d1274a57ba882209f0bdbae416e88e0e852.1790857966.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1790857966.git.kaloz@kernel.org>
 References: <cover.1790857966.git.kaloz@kernel.org>
@@ -44,70 +44,42 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Read a hub's widget-ID register as the first thing prom_init() does
-and record whether it is a Bedrock ASIC, so later code can branch on
-that instead of a compile-time select. A local alias read needs no
-nasid, so this runs first.
+CONFIG_SGI_IP27 now also covers the Bedrock-based IP35 machines such as
+Fuel and Tezro, told apart from Origin 200/2000 at runtime rather than by
+a separate config symbol. Update the prompt and help text.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/sn/addrs.h | 6 ++++++
- arch/mips/sgi-ip27/ip27-init.c   | 9 +++++++++
- 2 files changed, 15 insertions(+)
+ arch/mips/Kconfig | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/include/asm/sn/addrs.h b/arch/mips/include/asm/sn/addrs.h
-index d5c7cfea7761..51161fd5130b 100644
---- a/arch/mips/include/asm/sn/addrs.h
-+++ b/arch/mips/include/asm/sn/addrs.h
-@@ -35,6 +35,12 @@
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e2eb9627bd14..eb291fa7fd08 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -757,7 +757,7 @@ config SGI_IP22
+ 	  that runs on these, say Y here.
  
- #endif /* __ASSEMBLER__ */
+ config SGI_IP27
+-	bool "SGI IP27 (Origin200/2000)"
++	bool "SGI IP27 (Origin200/2000) and IP35 (Fuel, Tezro)"
+ 	select ARCH_HAS_PHYS_TO_DMA
+ 	select ARCH_SPARSEMEM_ENABLE
+ 	select FW_ARC
+@@ -782,9 +782,10 @@ config SGI_IP27
+ 	select MIPS_L1_CACHE_SHIFT_7
+ 	select NUMA
+ 	help
+-	  This are the SGI Origin 200, Origin 2000 and Onyx 2 Graphics
+-	  workstations.  To compile a Linux kernel that runs on these, say Y
+-	  here.
++	  These are the SGI Origin 200, Origin 2000 and Onyx 2 Graphics
++	  workstations, and the IP35 machines built around the Bedrock hub
++	  ASIC, such as Fuel and Tezro.  To compile a Linux kernel that runs
++	  on these, say Y here.
  
-+#ifndef __ASSEMBLER__
-+
-+extern bool system_is_ip35;
-+
-+#endif /* __ASSEMBLER__ */
-+
- 
- #define NASID_GET_META(_n)	((_n) >> NASID_LOCAL_BITS)
- #ifdef CONFIG_SGI_IP27
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index a4daf8ccd16c..6394c2076041 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -31,6 +31,7 @@
- #include <asm/thread_info.h>
- #include <asm/sn/launch.h>
- #include <asm/sn/mapped_kernel.h>
-+#include <asm/xtalk/xwidget.h>
- 
- #include "ip27-common.h"
- 
-@@ -38,6 +39,7 @@
- 
- static DECLARE_BITMAP(hub_init_mask, MAX_NUMNODES);
- nasid_t master_nasid = INVALID_NASID;
-+bool system_is_ip35;
- 
- struct cpuinfo_ip27 sn_cpu_info[NR_CPUS];
- EXPORT_SYMBOL_GPL(sn_cpu_info);
-@@ -139,8 +141,15 @@ const char *get_system_type(void)
- 	return "SGI Origin";
- }
- 
-+static inline bool hub_is_bedrock(void)
-+{
-+	return XWIDGET_PART_NUM(LOCAL_HUB_L(IIO_WID)) == WIDGET_BDRCK_PART_NUM;
-+}
-+
- void __init prom_init(void)
- {
-+	system_is_ip35 = hub_is_bedrock();
-+
- 	prom_init_cmdline(fw_arg0, (LONG *)fw_arg1);
- 	prom_meminit();
- }
+ config SGI_IP28
+ 	bool "SGI IP28 (Indigo2 R10k)"
 -- 
 2.47.3
 

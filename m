@@ -1,121 +1,71 @@
-Received: from mail-pj2-f34.google.com (mail-pj2-f34.google.com [74.125.227.162])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE2F3101A7
-	for <linux-mips@vger.kernel.org>; Sun,  4 Oct 2026 23:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF321400DE8;
+	Mon,  5 Oct 2026 08:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791157712; cv=none; b=CSTtjNVaQ1cZ2Voxqcd9cOXB7Crq+Wyfizyiap+fb2O+fWNqBM9A4nhl2f3cOEWjGDWY5E3IkGM+a+EDlPAd+O04Z8GkBiFAApewchdb/C7icQEtJsR5uU6asSFN4VyKKRc1FporxDIG/OhBqwGfaa69BmiTPz7u417pXAnTGGk=
+	t=1791189581; cv=none; b=joEy5IoNK9sX24VpLxKyRYlsp0os3+Q1sutdJFBFUo8BKKibBrG9cqIYcV0vdJpbmmG1SSIHSK3RvZBP78UslowNGYWDxH3VqximX84O7lQ8Y1s7JrOOiSu8pn2WzYk8SH0KLehyaTZol/19ZdZeYgbFfNSkqUMuF30n1DJcHwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791157712; c=relaxed/simple;
-	bh=Yakr+ipymN7ZnA+Xz4TDokUUTt0zx6UpbPqxI12sIzE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fR31buH0O32zL8VZw/iyqsaDmxbW2i7NBFNhT9T6xm8nxr1akNQhBocFYLwJItL5GsrSh8fuOMQGzeh/Jc6gaqTwr5cwgDs4mnLFWDaGAwqETwlKefFvClS5jtYyKt83ILn7H+vm86b0t9OBuuWDBk725l0OLEGDVP7WKaEPI2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C436IMPh; arc=none smtp.client-ip=74.125.227.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1791189581; c=relaxed/simple;
+	bh=g+Oo6kbYdXpTWrgAqiIP43Ul0a+nwIHetvB/s/2gGs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f5of7RODT8SVQS+oglqx0xpLxAyMYywl4Id2lMtyG4nUKgw8KJUkqldA2pU5x/QmSc6/Y8LaPWMw1vYuRmCTeyPf4nalN0/zpd1FlF+a7gYIRazUjPkYdRkyBEHUkmnHg/lNfK2aS5l0t72vDpwu2sPjXLulv1gz2lT/CrcVgg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Xn1etKoT; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C436IMPh"
-Received: by mail-pj2-f34.google.com with SMTP id d9443c01a7336-2d747eb79f7so3532155ad.1
-        for <linux-mips@vger.kernel.org>; Sun, 04 Oct 2026 16:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791157710; x=1791762510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=dO6qiiwJ5mjkpx+bVW9ukEfz8rnMpwLVr276QlZKmZE=;
-        b=C436IMPhgzSHcCaPbpqrBCHxhPGVgJCpHq5OadFUyEls0wJerWsJ59E21vBqSUhpBJ
-         RPL1LdK8aVWQx2JB+USXBZofzQeDVaYuqMdZxmKFzar9I7nUScnl41MeO/Q3s0GOQFXE
-         qiK07yKk0dKLcdIK5SB9wcKfV2O3fGMvgPpeTAcjLcv7IaQLOdRgJCJI+Ywk/xarOcLZ
-         Ov1lDGLf0mPydr2QWzmm+sNtWTyZ8DcNlgOz+Vn6mop++D0yJUm3TdFRmkcKSc/N+9ld
-         zx0i9PS1YgZN6aBlaIZOG+a+3h2neZjev+X2/aYvveplS3YIJbGRCghxc3bCROIuzdxS
-         w/Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791157710; x=1791762510;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=dO6qiiwJ5mjkpx+bVW9ukEfz8rnMpwLVr276QlZKmZE=;
-        b=wTMWPEvcFbFow2LctN1STNfQR2M75Ia7GKCCMJF5RA7jsEe0Gfn0UZ7kQHLSzbc5r+
-         pu5ns9jJn9qPhDc6XX/GkX3MaWwTkNHCPz3Tr6fywY8x6UZIL6Wo87tADz1Nz+nxVbJ0
-         d1wW+EXWglbB+Vo/ya43UWXTnTeFGsUSM0Gyj7fron35g0lKMEhhquGlKCUFlbouVfCA
-         ATiSOrr7L6qXECLZomFNxGYKFYJgevEz131ikkrbe1QpH/ScbCpejqNjyTigZZScbeXq
-         84ZGs61bpqNewrMJTJl1QjNtICJr8m2nXL8cjUBimv4iXRBkUVSfQt00fJM0cOm7UpjJ
-         tblw==
-X-Gm-Message-State: AFq9FYIXVJSrEr3PUHBNx8roni/aPGLwWodGWVg8OfhNt1FNxYsGRHYX
-	BnuMIsW6/f8Yk69NzPtyec3Xm+DPYj2+ozeZDzuQ5ffc0OWO8HBNTNZdFL8WHWvULng=
-X-Gm-Gg: AYBFou3o4z2BIxcbv/sNuvej4FR+WG2OSwj88i2NrXweRGNatfGf4mstv+UZCJyr6HF
-	SzHrSEbSbW7l7yDStzPleg7oJ8f56U8z1A6M5YtnsC+/CYx9wu5/m+Wm9AnG2otse0H1SMemCaX
-	KhjFfNYk1VzU+FpqE5smpUeimBbfuGgWJHM8z+wTv1Zju27dvk4J+resHazuebU3SNOvbEHN877
-	ThUuvKykjcQM0KZsBm4VZDR3oZNZh42eyP2Q0qx2szDxOIA5B9wygOF+OPnAQdVvm/2M8HTf/Qu
-	ClDbBwWupFmeRjPQwsEduBEnI4dzTK6K9qxZ1gp9TdlJELU4Pb+FTjfjzKjo7+bD3Rt5fqREv+b
-	ZIk60mJnEb5IruvijbUPNxVCF35UYJP2/APoa8m5IDSPywTrPbLfFc3oupDpcCRvbC48v26RSBE
-	xCqrXyJYJWv/y3B0Ysqg7pber3eL5VaaWYdnbbQPFMOTgLLJij6pI4Y2XgfPavwV0tZ/kX28cqO
-	F0/tLnthreB/RCqZhpvc/ClFVrVLF0c0kARHYyGcXhShiPNLEGAV3bygX2mSjy0BY3hL6m+JzYp
-	vVP1q5S0DkSt795ADrU6xqoDMmX1gs7u/b+xmdTinATgUzB2PxE3S7tf6uM=
-X-Received: by 2002:a17:903:8c3:b0:2dd:c0ff:e727 with SMTP id d9443c01a7336-2e49b65f04emr81741455ad.57.1791157709961;
-        Sun, 04 Oct 2026 16:48:29 -0700 (PDT)
-Received: from ryzen.lan ([2601:644:8000:7a86::e35])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e49f6cd764sm26207215ad.48.2026.10.04.16.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2026 16:48:29 -0700 (PDT)
-From: Rosen Penev <rosenp@gmail.com>
-To: linux-mips@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Xn1etKoT"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=8YAheal/bOJc18SMan7lnG9SW9YRTAdQQ//1cWA65q0=; b=Xn1etKoT/4y6enwBaTM8hDjAt7
+	UrW1RCRlTcUMc8P++S3bg2zlJG6tY7lWy4dOhPT5pClu8FhAQMyoSsRiQOVjArO3/u7HdwcPCvNB3
+	KhQyxVDEq5NXZrbbviFAjhuyeCwfSDG0m89rSgWfCV/gfppJTeREKi+QLPhlit/LlEq1Xq6k8AOBK
+	tpUo+EWb1zLbUpzXc1ne7cEo37CQJ8LLN02BXSCS3mwYQb07WyZm+oLGZUPMdK21US5x1stqn4ks6
+	bRh/IK8INtSAlClWOEi/65hZyOFoe6Gl9bNgryLImAb9YkbKSr7EvKU1BKhwcXTurDALFMlaJ3+Tl
+	8Wht0uVQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1xDeEQ-0000000FuGG-0C32;
+	Mon, 05 Oct 2026 08:39:34 +0000
+Date: Mon, 5 Oct 2026 01:39:34 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Imre Kaloz <kaloz@kernel.org>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Paul Burton <paulburton@kernel.org>,
-	linux-kernel@vger.kernel.org (open list),
-	llvm@lists.linux.dev (open list:CLANG/LLVM BUILD SUPPORT:Keyword:\b(?i:clang|llvm)\b)
-Subject: [PATCH] MIPS: Avoid dead code/data elimination when using recordmcount
-Date: Sun,  4 Oct 2026 16:48:26 -0700
-Message-ID: <20261004234826.541468-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.56.0
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 21/38] MIPS: SGI-IP27: route XBridge and PIC DMA through
+ the 32-bit window
+Message-ID: <asNiRoPpv6dkAFD4@infradead.org>
+References: <cover.1790857966.git.kaloz@kernel.org>
+ <cce203c61386970826873f87cc9d0e6c732c3a53.1790857966.git.kaloz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cce203c61386970826873f87cc9d0e6c732c3a53.1790857966.git.kaloz@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION builds with -ffunction-sections,
-placing every function in its own section. recordmcount refuses to use
-weak symbols as section bases, as a strong definition could override
-them, so a weak function alone in its section, such as the generic
-pcibios_fixup_bus() stub, breaks the build:
+On Thu, Oct 01, 2026 at 06:11:56PM +0200, Imre Kaloz wrote:
+> XBridge does not honour the SN0-style 64-bit direct-mapped DMA address:
+> commands complete but no data moves. PIC moves no data either. Route
+> both through the 2GB 32-bit window and cap bus_dma_limit at its top, so
+> SWIOTLB bounces anything above it. PIC is flagged once a following
+> patch enumerates it.
+> 
+> Only XBridge (part 0xd002) is flagged; a Bridge (0xc002) behind a Hub
+> keeps the 64-bit direct map. The 64MB bounce pool comes from node 0
+> whenever DRAM passes 2GB, on Hub any multi-node machine. A PIC bus in
+> PCI-X mode takes the window too; IRIX does not.
 
-  Cannot find symbol for section 88: .text.pcibios_fixup_bus.
-  drivers/pci/probe.o: failed
+It's been a while, but IIRC XBridge also support 64-bit direct-mapped
+DMA addresses, just differently.
 
-MIPS always records mcount locations with recordmcount, so this hits
-any config with the function tracer and dead code elimination enabled,
-e.g. malta_defconfig built with LLVM=1.
-
-Only offer dead code elimination when recordmcount is not used, as
-powerpc does since commit f8b2336f15f3 ("powerpc: Avoid dead code/data
-elimination when using recordmcount"). In practice this makes it
-unavailable together with the function tracer on MIPS.
-
-Fixes: c0436b503591 ("MIPS: Enable dead code elimination")
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- arch/mips/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index ddabe25d6bf7..f4f82bd75b66 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -79,7 +79,7 @@ config MIPS
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
--	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-+	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !FTRACE_MCOUNT_USE_RECORDMCOUNT
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_PAGE_SIZE_4KB if !CPU_LOONGSON2EF && !CPU_LOONGSON64
--- 
-2.56.0
-
+If you find a late 2.4 or early 2.6 kernel, it comes with an open source
+copy of the IRIX-style PCI code under arch/ia64/ that also includes the
+older chips never used on Altix.  It might be worth to take a look at
+that for clues.

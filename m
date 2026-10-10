@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3A63314C4;
-	Sat, 10 Oct 2026 18:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB03F361651;
+	Sat, 10 Oct 2026 18:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791656311; cv=none; b=DKipgca25jZERBLG/fRqFxsVUfkiFNTQz7LpHDBi8mmcU/0KM53LHCukaetWBJuABgNGQvnxf5SuJJOlm2ckhTmtfqhWccVdKQ6C+2U8jIaimQopUJC25A3MmJftA3JIXMUmgZKt2Hp9RGYQLa6CjJX8ocsE/dfBJP8RO3jLCf0=
+	t=1791656312; cv=none; b=YDQrKu/nc3gD2eQGT8mJhzcrD1tq6hddWN2P5lWjRMy/azWidnz9jhwXABBPAN98RXJtss6c3HdMnxrITT7YseiKLfuj77ZM/ps1nu80DIcorhoUBodYXQN5AEgo4AVOlu0366QNG5Jb8Hu1cd9li9tM4UmNGCkCePqhLFWOpOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791656311; c=relaxed/simple;
-	bh=Qo64louV01f5nI8Xu6Q32opf0kDq79BfYBCtWY4FHc0=;
+	s=arc-20240116; t=1791656312; c=relaxed/simple;
+	bh=Bb3EZ/tIvgogzBCtsv68AWxR3iFdDr2vxZ4V6MFNBAg=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=CsBcayVUDVdg95uzMoNPmYpn7ZzqrMPoE819BBDP1NzhCifkAoDCyI/6cF/RTL4dB+EHcHLT/ap9Sg5l+y2p05ITkT568o8zuUTfTYEHz27EB0a0kWerWMXaL9v8355Q1Ai8ykrSdKJcElezyFAFvX0ptNDlsueB9r1exo5Yxg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSUqUjhs; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=H7RCFW/9Ox5F18o9hAc8VcsHPTQL5MHKoFh5r59RiL1x9W2aKD7CWRmkhXgwaDba1YlZadERVG+28/OsLJ4E1taYsM6UVQVcz4fWnpwMRU0zuKWUMASWNgmcPy6s2/EEqQS7LXmApkVOLZa99rmWe9u8ipgsk3drsGbAv8TJp0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1c+CjvO; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSUqUjhs"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B979C1F000FF;
-	Sat, 10 Oct 2026 18:18:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1c+CjvO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65EC11F00893;
+	Sat, 10 Oct 2026 18:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791656309;
-	bh=MibGS/SpY0Ht5gaekMQ0o/eJhlHCrk+F8KrkjlZ3ZDw=;
+	s=k20260515; t=1791656311;
+	bh=DABjXQsbi9RuJVFUzsnDF0bYFa+oP4wh4gikf+ijQLg=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=nSUqUjhs8JB8WpDj8yztKXZhVbc6EY77S5ELQMVm6BCxtosTcbXOrLgMzqn+wgftU
-	 DHlAeAf9bGGm+zhbrMa+05fUlij/t9lrqCDrv8kDeetGuUZ57Z3AZcixlZXfHsU/LF
-	 VNm/8MGAlIyIGDFN9O7e+wFtUk87azQ+7c6Afd5VPuOUqZAvHx9hW/Adt0FOpJNZHb
-	 B6ar9H9vf/wtdxHvPoIrSYYkLPu4unHPa24lA0wzNhy/tNgXzogAUYD5ko7fwbO8P0
-	 RMtlaDTH8i7QRB2zR+Ur4Yb2Iyn3sNRuQMJjYjqmu00XakzraIbHgs1D2OCJWtY8RP
-	 Z41ZWeOc79ZVA==
-Message-ID: <sashiko-outbox-166799@kernel.org>
+	b=l1c+CjvOo71L7B1Av8FxkrevRc5fo86Vym756a7Q8j43edRtcYc+TN5SgcT7SwE66
+	 Wgxl5xa8TXoNRmWcs1vfEBUZCBLxhfnbPMz2vZ3mTy6zG29XmZAU84tszQTpWcKfLn
+	 Z0u0ryJT3A3+VBu6gVdCXu5ZI+0Zg4joB0WrSWEjehEAqL5i0ZAhTydz5fBcnmUNvG
+	 yoPQU/9tnc1Lzjkafe7Dr5R+eaK0bymsSrmefvbodKj1MdydEuOriItElCekQLdGKy
+	 7GMeIsqGtdE/Bqj0qHelMXZYhFhoX4LgPZIA3bnGN1Sm80OnFy+b2PikUU30NMYlbB
+	 oYqq39/dTPaiw==
+Message-ID: <sashiko-outbox-166800@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 2/3] mtd: cfi_cmdset_0002: implement point() for
- simple linear maps
+Subject: Re: [PATCH v2 3/3] MIPS: Octeon: flash: use the simple map
+ accessors without a shared eMMC
 Reply-To: sashiko-reviews@lists.linux.dev
-To: "Orgad Shaneh" <orgads@gmail.com>, miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at, tsbogend@alpha.franken.de
-Cc: dwmw2@infradead.org, corbet@lwn.net, linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, ulli.kroll@googlemail.com, linux-mtd@lists.infradead.org, kaloz@openwrt.org, linusw@kernel.org, linux-kernel@vger.kernel.org, john@phrozen.org, nico@fluxnic.net
-In-Reply-To: <20261010180840.2152492-3-orgads@gmail.com>
+To: miquel.raynal@bootlin.com, "Orgad Shaneh" <orgads@gmail.com>, tsbogend@alpha.franken.de, richard@nod.at, vigneshr@ti.com
+Cc: kaloz@openwrt.org, corbet@lwn.net, dwmw2@infradead.org, john@phrozen.org, linux-mtd@lists.infradead.org, linux-doc@vger.kernel.org, linux-mips@vger.kernel.org, linusw@kernel.org, linux-kernel@vger.kernel.org, nico@fluxnic.net, ulli.kroll@googlemail.com
+In-Reply-To: <20261010180840.2152492-4-orgads@gmail.com>
 References: <20261010172142.2138956-1-orgads@gmail.com>
  <20261010180840.2152492-1-orgads@gmail.com>
- <20261010180840.2152492-3-orgads@gmail.com>
+ <20261010180840.2152492-4-orgads@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 10 Oct 2026 18:18:28 +0000
+Date: Sat, 10 Oct 2026 18:18:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -48,97 +48,75 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [High] mtd: cfi_cmdset_0002: FL_POINT deadlocks and hangs XIP erases via =
-FL_XIP_WHILE_ERASING
+- [Medium] mips: cavium-octeon: static map_info overwrite and memory leak i=
+n octeon_flash_probe
 --
 
-commit 5f3b3543d5ee6dad5e8171d86ea7a290abab737e
+commit 2d9aae5bb3f634f71b28d3ae93087e12e701fbe6
 Author: Orgad Shaneh <orgads@gmail.com>
 
-mtd: cfi_cmdset_0002: implement point() for simple linear maps
+MIPS: Octeon: flash: use the simple map accessors without a shared eMMC
 
-This commit adds a point() and unpoint() pair for cfi_cmdset_0002, modeled
-on cfi_intelext_point(), allowing linearly mapped chips to be scanned in
-place. It handles FL_POINT operations and ensures that a point does not
-suspend an erase, but waits for it to finish instead.
+This commit updates the Octeon flash driver to use simple_map_init()
+when the boot bus isn't shared with an eMMC host, reducing mount times
+significantly. It also checks for supported bank widths earlier in the
+probe function to avoid hitting BUG calls on unsupported widths.
 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_=
-cmdset_0002.c
-> index 517db2f2707f4..b0330839a2133 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-
-[ ... ]
-
-> @@ -906,8 +926,12 @@ static int get_chip(struct map_info *map, struct flc=
-hip *chip, unsigned long adr
->  		return 0;
-> =20
->  	case FL_ERASING:
-> +		/*
-> +		 * Not for a point: the erase would stay suspended for as
-> +		 * long as it is held, which for cramfs is the whole mount.
-> +		 */
->  		if (!cfip || !(cfip->EraseSuspend & (0x1|0x2)) ||
-> -		    !(mode =3D=3D FL_READY || mode =3D=3D FL_POINT ||
-> +		    !(mode =3D=3D FL_READY ||
->  		    (mode =3D=3D FL_WRITING && (cfip->EraseSuspend & 0x2))))
->  			goto sleep;
-
-[Severity: High]
-This patch correctly prevents FL_POINT from suspending an erase here, but
-does this also need to be applied to FL_XIP_WHILE_ERASING?
-
-If mtd_point() is called during FL_XIP_WHILE_ERASING, get_chip() still
-allows mode =3D=3D FL_POINT:
-
-drivers/mtd/chips/cfi_cmdset_0002.c:get_chip() {
-    ...
-	case FL_XIP_WHILE_ERASING:
-		if (mode !=3D FL_READY && mode !=3D FL_POINT &&
-		    (!cfip || !(cfip->EraseSuspend&2)))
-			goto sleep;
-		chip->oldstate =3D chip->state;
-		chip->state =3D FL_READY;
-		return 0;
-    ...
-}
-
-This allows do_point_onechip() to successfully change chip->state to FL_POI=
-NT
-while leaving chip->oldstate as FL_XIP_WHILE_ERASING.
+> diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-oct=
+eon/flash_setup.c
+> index 3395acde4d60a..5448d5139c640 100644
+> --- a/arch/mips/cavium-octeon/flash_setup.c
+> +++ b/arch/mips/cavium-octeon/flash_setup.c
 
 [ ... ]
 
-> @@ -960,8 +984,13 @@ static int get_chip(struct map_info *map, struct flc=
-hip *chip, unsigned long adr
->  		return -EIO;
-> =20
->  	case FL_POINT:
-> -		/* Only if there's no operation suspended... */
-> -		if (mode =3D=3D FL_READY && chip->oldstate =3D=3D FL_READY)
-> +		/*
-> +		 * Only if there's no operation suspended: the chip is in
-> +		 * array mode, so reads, further points and the reboot
-> +		 * reset (which only re-enters array mode) can go ahead.
-> +		 */
-> +		if ((mode =3D=3D FL_READY || mode =3D=3D FL_POINT ||
-> +		     mode =3D=3D FL_SHUTDOWN) && chip->oldstate =3D=3D FL_READY)
->  			return 0;
->  		fallthrough;
->  	default:
+> @@ -85,6 +96,12 @@ static int octeon_flash_probe(struct platform_device *=
+pdev)
+[ ... ]
+>  		flash_map.size =3D 0x1fc00000 - flash_map.phys;
+>  		/* 8-bit bus (0 + 1) or 16-bit bus (1 + 1) */
+>  		flash_map.bankwidth =3D region_cfg.s.width + 1;
+>  		flash_map.virt =3D ioremap(flash_map.phys, flash_map.size);
 
-[Severity: High]
-If chip->oldstate is FL_XIP_WHILE_ERASING because it wasn't filtered out
-above, will subsequent operations deadlock here?
+[Severity: Medium]
+If multiple flash devices are probed, does this unconditionally overwrite
+the static flash_map.virt with a new ioremap() mapping?
 
-Because oldstate is not FL_READY, normal read operations (FL_READY) would
-fall through to the sleep block indefinitely until the point is released
-(which for cramfs is the mount lifetime).
+If an earlier probe successfully registered an MTD device, overwriting
+the singleton flash_map could corrupt the previous device's mapping.
 
-Could this also cause the XIP background erase loop to spin indefinitely
-waiting for chip->state to return to FL_XIP_WHILE_ERASING?
+>  		pr_notice("Bootbus flash: Setting flash for %luMB flash at "
+>  			  "0x%08llx\n", flash_map.size >> 20, flash_map.phys);
+
+[ ... ]
+
+>  		mymtd =3D do_map_probe("cfi_probe", &flash_map);
+>  		if (mymtd) {
+>  			mymtd->owner =3D THIS_MODULE;
+>  			mtd_device_parse_register(mymtd, part_probe_types,
+>  						  NULL, NULL, 0);
+>  		} else {
+>  			pr_err("Failed to register MTD device for flash\n");
+>  		}
+
+[Severity: Medium]
+Is an iounmap(flash_map.virt) needed here when do_map_probe() fails?
+
+Without it, this error path appears to leak the virtual mapping.
+
+The v2 changelog mentions omitting iounmap() because it could unmap a
+mapping that an earlier probe registered. However, since the static
+flash_map.virt is unconditionally overwritten by ioremap() earlier in
+this function, wouldn't the singleton already be corrupted if a prior
+probe existed?
+
+Skipping iounmap() in this path appears to just leak memory rather than
+safely preserving any previous mapping.
+
+>  	}
+>  	return 0;
+>  }
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261010180840.2152=
-492-1-orgads@gmail.com?part=3D2
+492-1-orgads@gmail.com?part=3D3

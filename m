@@ -1,65 +1,65 @@
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5583C363C6C
-	for <linux-mips@vger.kernel.org>; Sat, 10 Oct 2026 18:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769DD36923B
+	for <linux-mips@vger.kernel.org>; Sat, 10 Oct 2026 18:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791655726; cv=none; b=ZpfSivEUi1Lx73HaR/IL/5WJs8iSIO/Cbf4R7uM2nJgL7hU03tmPSqRTLGuVVAp9a030GLlHWiAL8FP+rMkx59r4ctoq/d7opWQZCztdS7ll7NmtI4zzD41HpVcaPE++N++lDCojWaqeukt0u5Z/RFkO26LoCp8aJ1ikEXO0Jyc=
+	t=1791655731; cv=none; b=EGxt8aDkuW2y5FDuTTVOTmzOGjmxotVSCxWA46kVuXi35YKbLLNLEZCeqWXXcNd40bIN8rHu7nerV6FQ81wJ8lfjrmmaio5v60AvQrOXkcvgU/oYTl+sZEg5zoVF/5IfMAKGIZCifMjoA39poOyae0G+9UTGD6RFeWi+/f5c/kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791655726; c=relaxed/simple;
-	bh=RGIcDyDx0BJX1dV79kkHkskveBYrqKzj8PwX8+l9R+k=;
+	s=arc-20240116; t=1791655731; c=relaxed/simple;
+	bh=oL1tj+JddJbZs+8aPd84rdl67gDVa6MHL6kZr25xpxg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D8no06JX7YwRljUG5zVKSWK7mh7odb3GNymc20IljWzcKS+8XEUNcC5gEbPLWH0lHvT6L/ZrXrbp+IWFcTsWQLFhQ9jT3QGJvutqvvbwnudDo6iMcKdtZv0EYf/AT/tlBZz5E7rsW5Vr30Wo1SxaIDOmYyAm1GbDwMwjhdNICHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SpLEwBsP; arc=none smtp.client-ip=209.85.221.52
+	 MIME-Version; b=YKnSILkK/+zbvLWcB7V32IbpvHzZzk2pjH9qgSeP664jDRR0X0V5kSEnOSelcpI9O6kYN+y+GgRztbFMhdNjve0Nm62dWLN1R6cnVzhMKPlkf+j8DFZhSWeVItkeZVyb7xUYAoj4pwId1Z3jLNgYL+qtDdNXTtR9k1SbWqpTsyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iofdCH/H; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SpLEwBsP"
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-48c02782159so424751f8f.0
-        for <linux-mips@vger.kernel.org>; Sat, 10 Oct 2026 11:08:45 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iofdCH/H"
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-48afcfc4bf5so678393f8f.1
+        for <linux-mips@vger.kernel.org>; Sat, 10 Oct 2026 11:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791655723; x=1792260523; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1791655727; x=1792260527; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=nqJzHpBsOkwbCuifN5JxVshD70grUK+B6gcyk5nzdLY=;
-        b=SpLEwBsPCi2ZTYmSlEtksFMJpHw+qRBo+vgA18TmX2fLppqG1cEz1lGZLMt+TYLfVD
-         7FeMJcKODhuQwvIn+TcOD7cYCZCsgMllr1Rwdyq8txTj2gxeMq0JXZrqJ5KSzrxu09QY
-         c2noiE02vfd0BvdwwEIWcU46692HWhWI7yGSyESWWfoPZKQVu3m+BtfgSXSnAjPvFh3H
-         7ote5duLUdmisK7+63aahJ3YNRO73hQlMQHj2bjbaZGZ3DtxDuUBCmkuBaLQln98JncH
-         r296qzMSEk9rVcD4akq7ACFFlfeTUdVEObbNjAHkjyZCC58CAAEBu7dy9bLPosoKccV0
-         tdyQ==
+        bh=vcqIx5ZHTyVbwnT9JsODmu7/jC4GQuUPl3/Y3jt0FjA=;
+        b=iofdCH/HUMXQnJOxcNISjjRKTHpW29ZGoY7UD54wHkq1QlDyfMr70yeEbUWfghhN1m
+         V+OyngEWcXKVSSUa2v//HG4kQ/Il3TqXY0bI1GlHUXm77cA9naglRtneyKQse8aXv82K
+         QxhX0XANp58IERFWEtpIHmj+U/rQ7qXriLw4xinNDH81uOak7ed9iItlbFPywc7qt6XW
+         4FBgF0c084bQ2HwWmpM/U78ECVdGi9BmVuORQI6JUEiN7dE3Z+3Yes+KPZio9Hsjm0Fw
+         XFa9nvEkl0E7d2zlpdqAdpyHfdLP39KPxDVNaYX4mk3LDQGQeosuw4fm3OMBNYqVjAx7
+         rC+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791655723; x=1792260523;
+        d=1e100.net; s=20260707; t=1791655727; x=1792260527;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=nqJzHpBsOkwbCuifN5JxVshD70grUK+B6gcyk5nzdLY=;
-        b=M4bYKrOnA2q7qOHVaWrodKuRU1he4ZVrmWKLH4pv3kaGiGi6dvwI7EEB5PW7UchDJX
-         UiN6B0C9oERb+OKdGs5ETOB/yg7WzcMfTOpie76ST7ZcQZib9KATsWH6rNiWSN+YIPUD
-         5wqh/E9/gr22MGq75AQ6Ez/uTHowmAOm/KBDsFN7EJr14oFX4USYkMZizY45Cv/OuD46
-         hca8vz7zpY/PHhI46BxYhOKfzpcMJZhb+ckUmAXqUF16tQA/i/2WOUs1ZH2T7WH5FblL
-         rntc10Lzo9nOD65wzcc5CT7zRRAMH6DGvREbDzlqDB0n61dWfHQ7dAW4Gcdl10YhcvvX
-         qQrg==
-X-Forwarded-Encrypted: i=1; AKwUvByKU1kZ8Dqc6yKQgYtaZ7li/PkniM7CCHaLbCvH0rI0VgN7r65K1V+ihmK0oO93JBCB1ESsoYa85NxC@vger.kernel.org
-X-Gm-Message-State: AFq9FYIKlXv1MCDGFDxEh7NTHOzvOBMF4B8if/6cgNN1WdggntiwyTZh
-	W04YGKZgpCTZTOj1Mt+8WJAN/zt9JzBuAYbYvnI3jAAqOHrlvVJqZS/V
-X-Gm-Gg: AYBFou19VeXhh2Siur2tXrENrL2wp24LTAGd1Hbj7hAX54tSHSlByscBPlP5Iv8GTsN
-	ACh9R1B+XafNMDZqghFyzCnCWJuXe7idHI2MFBr9Xza35Nayz04k0q1UeEooXWRYnfsRk9Vcy9j
-	7RBO6TrcN9pjWGeqMzkbw5IIpPpHHqdekNE0SRW5wHWR2Hb33MnH8X1O9w6CBC5VevdsWV1cIBv
-	ssNNgQBMCdPVAfEpRPeF3eW+xO9JIJpj/NHLkXhT4iFqO18srs/hegvyIz9eywLC1w+8+mJHKT5
-	0ofB7TaPdOR78ggEz4d4VpNP9J8H8haa5l6WCNhcWOhliL83qIU4AceBpyub9z2oEL5pNEVv9fz
-	ySJ/X3e8cY2y273cAPjVH59OlruHczmEyo5FDmlhM0AH+cuutmP2K2wXlVFmOkSVmKsQjsu907J
-	FTjIeNxADg4dL9s8YHlKfMyD2JUWY2ZuWHbvZH/7qWFDtOqLwk2jrrSK+w4bO1bFypRBIXgGHzc
-	eiXsTh9hQOHWnxl5FWiZQwO2lo3ZuPYtiD7c29E3KlCYJZ7aTtsEamjAkVnf/VfO0sb+5Bx9KfW
-	gI4wF8tf46mpg2xM
-X-Received: by 2002:a05:600c:548e:b0:4a0:1aa0:7cfa with SMTP id 5b1f17b1804b1-4a18e4aa724mr101228615e9.12.1791655723242;
-        Sat, 10 Oct 2026 11:08:43 -0700 (PDT)
+        bh=vcqIx5ZHTyVbwnT9JsODmu7/jC4GQuUPl3/Y3jt0FjA=;
+        b=jUOPg70X5UwrtGKQ2LMdYTcAr3onWCumE8a1iQ+c4ybWJ+loubZ4fBlnxXYlDsxFqY
+         37f8cPaMhk87cuRMfCH735UvvvWRxWqCY3eC8R4JgyULKlpGNiFwXdMzKfOgespSsh4r
+         z7VJms/kc0vAMI4zagPyndNKBRatXvwcwF4GMPXkBnn6a53RQevlOhC3B3KIztFO8TcJ
+         x5WDplQ0wRitnkaU4gy63DpAsdvXYzZei71QqJr9ye9DjelzhAazphy6LwZZ6SuxEHqx
+         hYED/vK/pTfi/oP/dSZplkWfoHRHMn6fU8CjQj49Ary2npzTn/rzXqfPksr9z3ztjZ5B
+         WCqg==
+X-Forwarded-Encrypted: i=1; AKwUvBwIgRQ3DAlXWtS44CWXNYhCujvZPyX0HmHciBxrJUoJZdU7NFpi+1z1pZ+SLhsotSs1oxHSXFtrJDcb@vger.kernel.org
+X-Gm-Message-State: AFq9FYIYr3r0vkx/+1NQ/DpHjdWH/SAW6A2yrdXifONVjwx734nZg/Qd
+	i6ANLuvB/sR8LQAcMrdaoacOeDkls4Lhu34HnSaWH1oI3r3FUtH3A3Qy
+X-Gm-Gg: AYBFou1UJ+gqjPF5RFD2KFdhEVttdi3p/Eo42gXxFl22hQ0SpPKzzRnmpF/bFXGExUT
+	/LSC6cU8jqx/tROO4xSgeDjz7Y0/52raM+AnFpZTW4SA/Tx5IlryxvkB9vZMNg7zDNilfx7crYZ
+	rbqUQEq4gAW0Q7N/JXznqNgUkjZbHEv3cLUDK6B18LnHEmlWKycfbz7gT4HMlxDvzIguKgI6cU9
+	sEa9I9tfun7HU3n3yBDOqQI8snnFjKnz37j3xhRJ56RjkFkRQB5tUn00iDcol5rHZigzegXabkI
+	1y9MYuhgXymXyy3apYbcJtWPYTWe/5tGbYwJHuVzSTOHB4MVFe21WL09DXA4J49iHoGHRtmGij5
+	64/JtJlfJg4E6Yz8iA5oeluIacENGX9EIJZQiS6FLKltH9uLWVrLVDPfd4zTEp8pYpV/Ka0WEmi
+	8jfxFefY54+ZGYkCbXWQr4ahLTFyX2hfHuusug8+TsUVVfcJhmscDdXOKX52FB75AfrSNH3Cxak
+	Tt4/MG8TyIM3zvNPa4G6dHiI1oaS2r0tEWyw4ZJhly3uD4rlWgEjzCyr26azX2jIyZoKZBbxtWp
+	LZz7IxMXuZrQLqMP
+X-Received: by 2002:a05:6000:46c7:b0:488:7dc6:4e9 with SMTP id ffacd0b85a97d-48dbaadd40bmr6536672f8f.10.1791655726559;
+        Sat, 10 Oct 2026 11:08:46 -0700 (PDT)
 Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48db97ce3aasm10187163f8f.21.2026.10.10.11.08.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48db97ce3aasm10187163f8f.21.2026.10.10.11.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2026 11:08:41 -0700 (PDT)
+        Sat, 10 Oct 2026 11:08:45 -0700 (PDT)
 From: Orgad Shaneh <orgads@gmail.com>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -76,12 +76,13 @@ Cc: linux-mtd@lists.infradead.org,
 	dwmw2@infradead.org,
 	corbet@lwn.net,
 	linux-doc@vger.kernel.org
-Subject: [PATCH v2 0/3] mtd: point() for cfi_cmdset_0002, on simple maps only
-Date: Sat, 10 Oct 2026 18:08:37 +0000
-Message-ID: <20261010180840.2152492-1-orgads@gmail.com>
+Subject: [PATCH v2 1/3] mtd: maps: only point() maps read through the simple accessors
+Date: Sat, 10 Oct 2026 18:08:38 +0000
+Message-ID: <20261010180840.2152492-2-orgads@gmail.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261010172142.2138956-1-orgads@gmail.com>
+In-Reply-To: <20261010180840.2152492-1-orgads@gmail.com>
 References: <20261010172142.2138956-1-orgads@gmail.com>
+ <20261010180840.2152492-1-orgads@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -90,75 +91,99 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-jffs2 scans a flash in place through mtd_point() when the chip driver
-offers it, and copies every used eraseblock through mtd_read()
-otherwise. cfi_cmdset_0002 never had point(), so every jffs2 mount on
-an AMD-style NOR copies the whole used area. On an Octeon CN6635 board
-with a 100 MB jffs2 partition on an 8-bit M29EW that takes 15-30 s at
-every boot.
+map_is_linear() only checks that a map has a physical address. Map
+drivers that install their own accessors keep one, and a pointer
+bypasses whatever those accessors do:
 
-1/3 tightens the existing gate first. map_is_linear() only checks for
-a physical address, so cfi_cmdset_0001 already points at maps whose
-own accessors swap bytes (IXP4xx), switch pins (Gemini) or lock the
-bus (lantiq). The new map_is_simple() also requires the simple
-accessors.
+- physmap's IXP4xx support: the expansion bus only takes 16-bit
+  accesses (the reason it cannot use memcpy_fromio()), and on
+  little-endian kernels every access also flips address bit 1 and
+  swaps bytes;
+- physmap's Gemini support enables the flash pins only inside its
+  accessors;
+- lantiq-flash serializes the external bus against PCI and copies byte
+  by byte because the EBU cannot take a prefetching memcpy;
+- cobalt-flash reads at an offset inside a PCI BAR while leaving phys 0.
 
-2/3 adds point()/unpoint() to cfi_cmdset_0002 behind the same gate,
-modeled on cfi_cmdset_0001, and lists it in the cramfs documentation.
+cfi_cmdset_0001 hands such pointers to jffs2 today, and the IXP4xx
+boards carry Intel StrataFlash. Add map_is_simple(), true when the map
+reads through the simple accessors (always true without
+CONFIG_MTD_COMPLEX_MAPPINGS, where the accessors are inline), and
+require it before enabling point(). Maps with custom accessors fall
+back to copying through them; on big-endian IXP4xx, where pointed reads
+happened to work, jffs2 mounts get slower.
 
-3/3 lets the Octeon flash map use the simple accessors when no eMMC
-host shares its boot bus. Without it, 2/3 changes nothing on Octeon.
-It builds without 1/3 and 2/3 but only pays off once they are in, so
-taking all three through mtd with an ack from Thomas seems simplest.
+Fixes: 9d3b5086f6d4 ("mtd: physmap_of_gemini: Handle pin control")
+Fixes: 2aba2f2a704d ("mtd: physmap_of: add a hook for Intel IXP4xx flash probing")
+Assisted-by: Claude:claude-opus-5-5
+Signed-off-by: Orgad Shaneh <orgads@gmail.com>
+Cc: Linus Walleij <linusw@kernel.org>
+Cc: Imre Kaloz <kaloz@openwrt.org>
+Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
+Cc: John Crispin <john@phrozen.org>
+---
+v2: no change.
 
-Tested on that board with 7.2.9: the mount drops to 0.6-0.8 s. The
-md5s of the images on the jffs2 partition held across reboots and
-across ten 8 MB write/delete rounds. The series applies to v7.3-rc4
-and to mtd/next.
+ drivers/mtd/chips/cfi_cmdset_0001.c |  2 +-
+ drivers/mtd/maps/map_funcs.c        | 12 ++++++++++++
+ include/linux/mtd/map.h             |  2 ++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-Separately, for the MTD maintainers to judge: the write-buffer count
-truncation that cfc5ebc9540e ("mtd: cfi_cmdset_0002: cap the
-write-buffer chunk at 256 bytes on an x8 device") fixed in
-cfi_cmdset_0002 has two siblings. do_write_buffer() in cfi_cmdset_0001
-writes CMD(words) and the one in cfi_cmdset_0020 writes
-CMD(len / map_bankwidth(map) - 1). On an x8 device CMD() keeps only
-the low 8 bits of the count in each device lane, so a write buffer
-larger than 256 bytes per device would be programmed with a truncated
-count. I have no x8 Intel or ST part to test on, so I have not touched
-either; I do not know whether such a part exists.
-
-Changes in v2, all from sashiko's review of v1:
-- 2/3: a point no longer suspends an erase in progress. cramfs holds its
-  point for the whole mount, so the erase - and the task waiting on it,
-  and the reboot reset - would stay suspended until umount.
-- 3/3: the bank width is checked before ioremap(), and the iounmap()
-  calls v1 added are gone; flash_map is a single static instance, so
-  on a second probe they could unmap what the first one registered.
-- Not changed: sashiko also asked about writers sleeping
-  uninterruptibly behind a long-held point. That is how
-  cfi_cmdset_0001 has always behaved, and 2/3 describes the cramfs
-  consequence: a cramfs mounted from /dev/mtdblockN on AMD flash
-  today falls back to the block device, and after this series it
-  takes the direct path, so writes to other partitions of the same
-  chip wait until it is unmounted. If you would rather not change
-  that, I can make point() in cfi_cmdset_0002 opt-in.
-
-v1: https://lore.kernel.org/all/20261010172142.2138956-1-orgads@gmail.com/
-
-Orgad Shaneh (3):
-  mtd: maps: only point() maps read through the simple accessors
-  mtd: cfi_cmdset_0002: implement point() for simple linear maps
-  MIPS: Octeon: flash: use the simple map accessors without a shared
-    eMMC
-
- Documentation/filesystems/cramfs.rst  |  11 +-
- arch/mips/cavium-octeon/flash_setup.c |  36 +++++-
- drivers/mtd/chips/cfi_cmdset_0001.c   |   2 +-
- drivers/mtd/chips/cfi_cmdset_0002.c   | 162 +++++++++++++++++++++++++-
- drivers/mtd/maps/map_funcs.c          |  12 ++
- include/linux/mtd/map.h               |   2 +
- 6 files changed, 211 insertions(+), 14 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index b73596a..3f3364c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -299,7 +299,7 @@ static void fixup_LH28F640BF(struct mtd_info *mtd)
+ static void fixup_use_point(struct mtd_info *mtd)
+ {
+ 	struct map_info *map = mtd->priv;
+-	if (!mtd->_point && map_is_linear(map)) {
++	if (!mtd->_point && map_is_linear(map) && map_is_simple(map)) {
+ 		mtd->_point   = cfi_intelext_point;
+ 		mtd->_unpoint = cfi_intelext_unpoint;
+ 	}
+diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
+index 1a4add9..ccf1dbf 100644
+--- a/drivers/mtd/maps/map_funcs.c
++++ b/drivers/mtd/maps/map_funcs.c
+@@ -41,5 +41,17 @@ void simple_map_init(struct map_info *map)
+ }
+ 
+ EXPORT_SYMBOL(simple_map_init);
++
++/*
++ * True when every access goes through the simple accessors, so a reader
++ * may use map->virt directly; a map with its own accessors (byte swaps,
++ * bus locking, address fixups) must not be pointed at.
++ */
++bool map_is_simple(struct map_info *map)
++{
++	return map->read == simple_map_read &&
++	       map->copy_from == simple_map_copy_from;
++}
++EXPORT_SYMBOL(map_is_simple);
+ MODULE_DESCRIPTION("Out-of-line map I/O");
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 75b0b2a..ebee3fe 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -449,6 +449,7 @@ static inline void inline_map_copy_to(struct map_info *map, unsigned long to, co
+ #define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
+ 
+ extern void simple_map_init(struct map_info *);
++bool map_is_simple(struct map_info *map);
+ #define map_is_linear(map) (map->phys != NO_XIP)
+ 
+ #else
+@@ -460,6 +461,7 @@ extern void simple_map_init(struct map_info *);
+ 
+ #define simple_map_init(map) BUG_ON(!map_bankwidth_supported((map)->bankwidth))
+ #define map_is_linear(map) ({ (void)(map); 1; })
++#define map_is_simple(map) ({ (void)(map); 1; })
+ 
+ #endif /* !CONFIG_MTD_COMPLEX_MAPPINGS */
+ 
 -- 
 2.53.0
 

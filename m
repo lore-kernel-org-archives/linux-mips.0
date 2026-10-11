@@ -1,128 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtpdh17-2.aruba.it (smtpdh17-2.aruba.it [62.149.155.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E8B3043CF;
-	Sun, 11 Oct 2026 06:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2797445FFCC
+	for <linux-mips@vger.kernel.org>; Sun, 11 Oct 2026 22:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.117
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791700787; cv=none; b=BDJauqXA4jyhbipcdHcExDLUIvpqR4wlrrtJm7J/nfrhsQYKj/+d52wPVBLAdw/Vgan3Ad3POOMbfA+78csni8iOSzTIFKv38dt56ruIOBZQtr2NUuPdCMiDtqzTg/jI35MEqR/1ERrS6fyZ73eCWPeKa2XLc+Pc08pJmt3rHgI=
+	t=1791758919; cv=none; b=mfr9y5gyRdbhmRg/5n3DorohAjJ9HOvvALdzgsdWbwh7ddHNoTnaBT9zRTSdgkiDdFj7BzGQSqPP4lbw3o/53G9QptI+sGtsAzasOUG38+xL2WmmP5pCBpjaPKBi0i7NAcbR0YCRW7RAgmjGxbHOEQ8B/avLQF6QazqLD37X0O0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791700787; c=relaxed/simple;
-	bh=C5Rxy1xxYjielGyndIfYhv706RkItB1VEhDqvVi8v7c=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=df7llGZ50gBKWIgQjHs/B1BsgD9KwAeW0cVw1AiImLhwsdNec+nn9bVFOJ2Yumw4FnlLsd75w8wG1I8cksQceIGzz6c0BgN1Vjj2XQL7HgqKpU0gft04CktMc8qHTNITG0gcQ/BJgBsHCaT54/4k/+Jk6rSrG5sQOrnVKBunYQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VD4cxtcp; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791758919; c=relaxed/simple;
+	bh=IKeJyZOjiuymxr65r7tntGqpXYBLk1QNFkGjPfO+gzo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=RgEmlZQYAff9XVaXVsTWhQ11ZuArpJL/Avos3h6oAhjTjJZYe66C6BV5NYdt4g1uxJkgzmRerjcISHygMtxWBunV0zKNkg+bKb0/3t5Ho3AiPGw1xrRb7lF6siPpuqa1+dMJuccurpNT/J9DK2nDHI6Rb1aMt9AF8p3RMpxDPXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it; spf=pass smtp.mailfrom=mythread.it; dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b=f3Xi/AP5; arc=none smtp.client-ip=62.149.155.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VD4cxtcp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98B601F0089B;
-	Sun, 11 Oct 2026 06:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791700786;
-	bh=JeEJOoAQZinF5jq024suht+rQLWI0JuvVje59ye2Z2Y=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=VD4cxtcp2VHzq/DBwXdVnu5D5j5jn5CglTljQvtMyrb1dqq+SQFvM645n8iCbAzcF
-	 dXKqNLD+sKGIByrnQFRnyWibE2Kj4MCOFmCjWWtpHwsGwFltqXjdWoIOLLAhvwCwQn
-	 EOWrANlTKFLOJ7AyYVZ1Pv7FEF6ltg2qTohkYd74hvnELAVNXiV5uHshM6wS3zFlvz
-	 xy8R2xjwsBnz/DGEERXErbv1ZfMAbbpAO/I8Anhx/kCnq/9pTZSQusePEERtWyQ4DM
-	 PR8WAn/hrggKSn86zA45KJtLqfDQpwdXVEqRkYrzK+4r9XZN5/gZNnjX36adO0oWTv
-	 K5aDZmlRDdxQw==
-Message-ID: <sashiko-outbox-167073@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3 3/3] MIPS: Octeon: flash: use the simple map
- accessors without a shared eMMC
-Reply-To: sashiko-reviews@lists.linux.dev
-To: tsbogend@alpha.franken.de, "Orgad Shaneh" <orgads@gmail.com>, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mips@vger.kernel.org, nico@fluxnic.net, corbet@lwn.net, linux-doc@vger.kernel.org, john@phrozen.org, kaloz@openwrt.org, ulli.kroll@googlemail.com, linusw@kernel.org, linux-kernel@vger.kernel.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
-In-Reply-To: <20261011062908.2365879-4-orgads@gmail.com>
-References: <20261010172142.2138956-1-orgads@gmail.com>
- <20261011062908.2365879-1-orgads@gmail.com>
- <20261011062908.2365879-4-orgads@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 11 Oct 2026 06:39:45 +0000
+	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b="f3Xi/AP5"
+Received: from [192.168.1.237] ([94.34.125.0])
+	by Aruba SMTP with ESMTPSA
+	id G2INxu7ww76R9G2IOxOszf; Mon, 12 Oct 2026 00:45:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
+	t=1791758733; bh=IKeJyZOjiuymxr65r7tntGqpXYBLk1QNFkGjPfO+gzo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:To;
+	b=f3Xi/AP5n2XuAR5C+DT6YxQSExW0nZKwRZRSF+li1/jYGy8tHi8sas2vHk3/jsdBf
+	 ZIk7hzrOoKTUaXAx6itP2iISQ3xcoduIlhpvjs+a3m+MoC4R0I+vFFRXPZKHzSOXu9
+	 T+vn8tFvUydNQlIbIA+S+qe3XHv08nG91y7N5nupesyqaMWAc0YIPrhIvAYaqt2rSB
+	 H5YRENiTz5VFimJ9ulSH125A4BuOZscqopzUiqgrhBVCu07LsMnpmWnb53TIAocB4n
+	 XocrBBWYgiURF0ZnpCaZWs1JMvf23td7dFiV+QGdDe3pGkxmbiwfyY8ziInz8VofWR
+	 S2hoMa0RUb1Ng==
+From: Alessio Ferri <alessio.ferri@mythread.it>
+Date: Mon, 12 Oct 2026 00:45:29 +0200
+Subject: [PATCH v2 5/5] MIPS: dts: bcm6362: add the integrated WLAN
+ backplane
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261012-bcm6362-wlan-v2-5-4752da7e0982@mythread.it>
+References: <20261012-bcm6362-wlan-v2-0-4752da7e0982@mythread.it>
+In-Reply-To: <20261012-bcm6362-wlan-v2-0-4752da7e0982@mythread.it>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-wireless@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Alessio Ferri <alessio.ferri@mythread.it>
+X-Mailer: b4 0.14.3
+X-CMAE-Envelope: MS4xfP/1Jx3Il+CvHY4LSerOJ/80LHXXGV/Lypmh3G2ykaIUQdN/11Ail4rWDjVDIQBqtsX1XGXhaBUzX62VQsXaak3cwxeCoCn7va8m3uwpEk18mFbdBz7Y
+ b5JmiOq4RFfBm0D1g78TBQP6MceT+Py+Ps3qDmhcxIghRxF6ZmM7bs1PGFvLwKoLIUy0jtUiTVLbLd4c4ez+snqnz3ZmwY5BaL/xLOGe3ZuZoHWJlE5o2vLQ
+ 9bAJOQX0xo8bGvTDJOwvw6I5ZjNBOUaQDUuKuAu9q+II6kWFUKwq1n8de/BoFRvmNXzwp3h0VHqn/bfJTGtJflBFnF3Pa3cD8Ke2J5t0ECloyAzqld27Pqhb
+ z7Sx4+EcfyRAI9pfXqnE8WrKJVPQQU7AMh31vSTdqcvzhdTp0COrO/+FJIpY8QQzh4TxQrfHwb04P/RE0Y5YJx2OOGzTFfHat+JlEUV237cWENsIa2khbX8X
+ NWczwCnsvxc59vUL4LEFKUQgyKG4PWlLoHpCHvHA8EuD8Q7cECsPqwQ9W7ybQhazQu34YHpaSANl2cYoYkaD4v06Q70lSXAL2N1Gg5e558hS9ViV/m/eEK89
+ TUa/Mb0CluLNDKVoc9AVMBW4gHbtF44wrT4AgaTqMXzQGrK1gkykkb4wrTCwThSK/Jo=
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] mtd: cavium: global state corruption of flash_map on multiple prob=
-es
---
+Describe the bcma backplane of the integrated WLAN macro,
+with its clock, resets, power domain and the interrupt of the 802.11
+core. It is default disabled, boards having the WLAN need to
+enable it.
 
-commit c32cf6c857e3356732452178a52a4e739fcaf273
-Author: Orgad Shaneh <orgads@gmail.com>
+Assisted-by: LLM
+Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
+---
+ arch/mips/boot/dts/brcm/bcm6362.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-MIPS: Octeon: flash: use the simple map accessors without a shared eMMC
+diff --git a/arch/mips/boot/dts/brcm/bcm6362.dtsi b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+index d74021925c53..c6de39588840 100644
+--- a/arch/mips/boot/dts/brcm/bcm6362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+@@ -261,5 +261,25 @@ usbh: usb-phy@10002700 {
+ 
+ 			status = "disabled";
+ 		};
++
++		wlan: bus@10004000 {
++			compatible = "brcm,bcm6362-wlan-bus-axi";
++			reg = <0x10004000 0x1000>,
++			      <0x10007000 0x100>;
++			reg-names = "chipcommon", "wlan-ctrl";
++
++			#address-cells = <1>;
++			clocks = <&periph_clk BCM6362_CLK_WLAN_OCP>;
++			#interrupt-cells = <1>;
++			interrupt-map = <0x00005000 0 &periph_intc 7>;
++			interrupt-map-mask = <0x000fffff 0xffff>;
++			power-domains =
++				<&periph_pwr BCM6362_POWER_DOMAIN_WLAN_PADS>;
++			resets = <&periph_rst BCM6362_RST_WLAN_SHIM>,
++				 <&periph_rst BCM6362_RST_WLAN_UBUS>;
++			reset-names = "wlan", "wlan-ubus";
++
++			status = "disabled";
++		};
+ 	};
+ };
 
-This commit modifies the Octeon flash driver to conditionally use simple map
-accessors when the bootbus is not shared with an eMMC host. Doing so avoids
-unnecessary semaphore usage and enables MTD to use the point() method
-for faster jffs2 mounts. It also adds early bank width validation before
-mapping memory.
+-- 
+2.56.0
 
-> diff --git a/arch/mips/cavium-octeon/flash_setup.c b/arch/mips/cavium-oct=
-eon/flash_setup.c
-> index 3395acde4d60a..5448d5139c640 100644
-> --- a/arch/mips/cavium-octeon/flash_setup.c
-> +++ b/arch/mips/cavium-octeon/flash_setup.c
-
-[ ... ]
-
-> @@ -102,11 +119,20 @@ static int octeon_flash_probe(struct platform_devic=
-e *pdev)
->  		flash_map.virt =3D ioremap(flash_map.phys, flash_map.size);
->  		pr_notice("Bootbus flash: Setting flash for %luMB flash at "
->  			  "0x%08llx\n", flash_map.size >> 20, flash_map.phys);
-> -		WARN_ON(!map_bankwidth_supported(flash_map.bankwidth));
-> -		flash_map.read =3D octeon_flash_map_read;
-> -		flash_map.write =3D octeon_flash_map_write;
-> -		flash_map.copy_from =3D octeon_flash_map_copy_from;
-> -		flash_map.copy_to =3D octeon_flash_map_copy_to;
-> +		/*
-> +		 * The boot bus semaphore only serializes the flash against
-> +		 * an eMMC host that shares the bus (the CIU3 parts have
-> +		 * their own). Without one, use the simple accessors: they
-> +		 * let MTD point at the flash, so jffs2 scans it in place.
-> +		 */
-> +		if (octeon_flash_bus_shared()) {
-> +			flash_map.read =3D octeon_flash_map_read;
-> +			flash_map.write =3D octeon_flash_map_write;
-> +			flash_map.copy_from =3D octeon_flash_map_copy_from;
-> +			flash_map.copy_to =3D octeon_flash_map_copy_to;
-> +		} else {
-> +			simple_map_init(&flash_map);
-> +		}
->  		mymtd =3D do_map_probe("cfi_probe", &flash_map);
-
-[Severity: High]
-Can this cause global state corruption if multiple flash devices are probed?
-
-Looking at arch/mips/cavium-octeon/flash_setup.c, flash_map is defined as a
-single static struct map_info instance:
-
-static struct map_info flash_map;
-
-If multiple cfi-flash devices are present on the platform bus,
-octeon_flash_probe() will be called for each of them. A second probe will
-overwrite the phys, virt, size, and bankwidth fields of the shared flash_map
-instance.
-
-Since do_map_probe() passes a pointer to flash_map to the CFI layer, both
-mtd_info instances will retain a reference to this single map via mtd->priv=
-. Any
-I/O on the first flash device would then use the mapped memory, size, and C=
-FI
-state of the second device, which could lead to data corruption.
-
-Does it make sense to allocate struct map_info dynamically per device inste=
-ad?
-
->  		if (mymtd) {
->  			mymtd->owner =3D THIS_MODULE;
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261011062908.2365=
-879-1-orgads@gmail.com?part=3D3

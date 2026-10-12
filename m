@@ -1,94 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2181F486B9A;
-	Tue, 13 Oct 2026 17:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE7347B436
+	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791912921; cv=none; b=RVJcmA7Pe3O0wsSwDfN5zijxZWM+GdYYBy53G3uC/nivx3xLJrOcB4JuYYkpthlbOSWJWzckWFQFUOfvOdUxcnaP2xAA5Yi0gSnqBUowzOSQth6jvBtIEg34jBx396vqF7Ivdy3BTS0y4M6zEIHOrR5Hs+Bf4zoHlLxCm5easkY=
+	t=1791914165; cv=none; b=nTKzB77J0M12emMKdTw8G0+8ySqYEwX3fS/8kKQMN5Ol09CQ+Panb7uEN8doqKoMDXTvuC2xFjQpK0nMMgl8VgFGj3HK1AgNp75WlUPBrLGJME7e7vgCxYcdiXGJ6X41ant1gphMm0vyAFCCu62jk1hH9RDbml8iMTwug9Ft0dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791912921; c=relaxed/simple;
-	bh=4twf8Ig83j6rkVDnor3DhOBVrA0QW/ohTKWyuUpG2IU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=So/zJlpIlVWZr7llgGGcg5nq/KnJhp1hG65kb+X/QsaIWkrJ90HzLq74ZjDN1q2vk6TfuIdv2xCyy31IbA27hCNLyoIum5hH7VAj//VfrOt6vv/1r0J58CaixEm+jTIdz6KFGZsGrMWlkERjQwJw5HyrK31Jj88/345kDtZdmgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oMqQOCXC; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791914165; c=relaxed/simple;
+	bh=IXy9DdQ8dX8X4dJokEbVSO5P1A9Fal8nKRSa4Y5lE9I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rEEnlHoOi2XjaTw6Wmu8JosptHuHgQzm/JvLSk2qmDItzWLpqgNgEQJzITiY2ne8VW5Ljk1WR1RVm79TWH1R/0UFRzxflzIl7+5eRgnYFAdC9sz5M0ur83ItuV5u5mX5fSLyq/zHe1d+cnQ6XzDWosC5K6ZCIk2XG9bfiKJTtxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kAayTUDx; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oMqQOCXC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81A9A1F000FF;
-	Tue, 13 Oct 2026 17:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791912919;
-	bh=khTJvLKv/+vOyw+yWXKAIK2ePXBBTi6nmBmOdNZF1bE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=oMqQOCXCThSpiERo+J2ssNIxZSBPR/i04TI56b3HPg93nuwHeSySq6TcZ+W9B1BfO
-	 9JQNaL3PM0yzxFAH99mc2X7kX0kSJpIO5Y3okHhq1lczj08fcEv+p2vf4JZLI1T1YO
-	 lAmDVAze1RHqnVkLHe6WMw/h0GfYZSWLrzxk6DFWGF1Hg3CPMSvnzL99N9X+0H04Td
-	 4oVhwjTzTiV/Qr649AhK3Km50FccntIee9ZJyRCBHtfZJv12rnAS+YujVVmsDf3Sbd
-	 V210kbDPOhUDUexFzYUrkL75BsdSI7pTnaTPXm++NPfvhlhWKMZTwBjqAKJhVNEH8s
-	 WRObtjnrJ5j8A==
-Date: Tue, 13 Oct 2026 19:35:08 +0200
-From: Eric Biggers <ebiggers@kernel.org>
-To: vladimir@genproof.com
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH 0/5] lib/crypto: Handle large lengths in poly1305 and
- chacha20poly1305
-Message-ID: <20261013173508.GB3830@quark>
-References: <20261012-libcrypto-4gib-lengths-v1-0-ea566c129a2e@genproof.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kAayTUDx"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id AE1571A1219
+	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:02 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 8276660362
+	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:02 +0000 (UTC)
+Received: by mail.galae.net (Postcow, from userid 0)
+	id 120A311D718C7; Tue, 13 Oct 2026 19:50:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1791914162; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=IXy9DdQ8dX8X4dJokEbVSO5P1A9Fal8nKRSa4Y5lE9I=;
+	b=kAayTUDxKwL7FBS9TSE2AD7JyE/y8s16wRmSotR7LtfY3SWviDuPqyD/0QIkLvKaALhnyk
+	w5MVdTABa2i8kO1ScRIT5kp/XJaw76Hcy4FDsX0e64VEQ//1gW3Ul1BPFg8cDT1kkF9zm1
+	h1/SeplyIs054u9CvHF8ag3Sm5JcTNZE4U2CiidpOYXbyrEJOG0oqq9CnR3VB8WvadOmrx
+	g9yjSFeVZueUM+EW2s58oV2wFpZOchwhqOIuIRDYoqx5MXb2CCdsPTyf/DPYVxHJ4XFDpR
+	MHJj6BwZRomxiD50T/4v28q4RH/rrcbYejHa3tJyPHUZkUaP/ulszFvzTSY5eg==
+Authentication-Results: mail.galae.net;
+	none
+From: =?UTF-8?B?QmVub8OudA==?= Monin <benoit.monin@bootlin.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
+ Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton <paulburton@kernel.org>,
+ Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
+ Chao-ying Fu <cfu@wavecomp.com>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
+Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH v4 0/5] MIPS: GIC clocksource/irqchip improvements and fixes for
+ multi-cluster systems
+Date: Mon, 12 Oct 2026 16:02:41 +0200
+Message-ID: <Phq99rR9S2iy7CfTiYmYpQ@bootlin.com>
+X-KMail-Identity: 1879870109
+X-KMail-Transport: 829653360
+X-KMail-Fcc: 154
+X-KMail-Identity-Name: =?UTF-8?B?QmVub8OudA==?= Monin (bootlin.com)
+X-KMail-Transport-Name: SMTP (benoit.monin@bootlin.com - galae)
+In-Reply-To: <4619ced8-b385-42e6-9c9e-0745a68c62c7@oss.qualcomm.com>
+References:
+ <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
+ <4619ced8-b385-42e6-9c9e-0745a68c62c7@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261012-libcrypto-4gib-lengths-v1-0-ea566c129a2e@genproof.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Last-TLS-Session-Version: None
+X-Rspamd-Queue-Id: 120A311D718C7
+X-Spamd-Result: default: False [-0.37 / 30.00];
+	BAYES_HAM(-1.27)[83.22%];
+	DATE_IN_PAST(1.00)[27];
+	MIME_GOOD(-0.10)[text/plain];
+	BCC(0.00)[];
+	DKIM_SIGNED(0.00)[bootlin.com:s=dkim];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_ZERO(0.00)[0];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[alpha.franken.de,kernel.org,rendec.net,gmail.com,syrmia.com,wavecomp.com,oss.qualcomm.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	MAILCOW_DOMAIN_HEADER_FROM(0.00)[bootlin.com];
+	URIBL_BLOCKED(0.00)[bootlin.com:email,bootlin.com:mid,bootlin.com:url,localhost:rdns,localhost:helo];
+	TO_DN_SOME(0.00)[]
 
-On Mon, Oct 12, 2026 at 09:31:17PM +0000, Vladimir Kukharenko via B4 Relay wrote:
-> This series makes the Poly1305 and ChaCha20-Poly1305 library code handle
-> large lengths:
-> 
-> - poly1305_update() can write past its 16-byte buffer if it holds a
->   partial block and nbytes >= 2^32 - desc->buflen.
-> - The chacha20poly1305 functions use only the low 32 bits of their
->   size_t message and associated data lengths.
-> - On 64-bit MIPS and RISC-V, the poly1305 assembly reads past its input
->   for lengths of 2 GiB or more: these ABIs sign-extend its u32 length
->   argument, and the assembly uses all 64 bits.  arm64 has the same
->   prototype mismatch, with no known failure.
-> 
-> Patches 1-3 fix the assembly prototypes, one architecture per patch.
-> The assembly already treats the length as 64-bit, so they declare it as
-> size_t, as commit f3d6cb3dc039 ("lib/crypto: x86/sha1: Migrate
-> optimized code into library") did for the x86 SHA-1 assembly.
-> Patches 4 and 5 make poly1305_update() and chacha_crypt() take size_t
-> lengths.  The patches apply independently, except that on 64-bit MIPS
-> and RISC-V patch 4 relies on patches 1 and 2 for inputs of 2 GiB or more.
-> 
-> No in-tree caller passes inputs this large (WireGuard passes at most one
-> packet, big_key at most 1 MiB), so I consider these ABI robustness
-> improvements rather than fixes and have not added Fixes or Cc stable tags.
-> 
-> I tested with the lib/crypto KUnit suite on UML, x86_64, i386, arm64,
-> riscv64 and mips64, with a temporary 2 GiB KUnit test on arm64, riscv64
-> and mips64 (it oopses on riscv64 and mips64 without patches 1 and 2), and
-> in userspace against OpenSSL for inputs above 4 GiB.
-> 
-> I found the bugs fixed by patches 4 and 5 while writing Coq/VST proofs of
-> this code with LLM agents, and an LLM review of patch 4 found the one
-> fixed by patches 1-3.  I used an LLM-based assistant to write the patches
-> and descriptions, and reviewed its work.
+On Friday, 2 October 2026 at 12:02:29 CEST, Daniel Lezcano wrote:
+> On 9/29/26 14:14, Beno=C3=AEt Monin wrote:
+>=20
+> [ ... ]
+>=20
+> > Although I am posting this as a single series since the patches
+> > are all related to the GIC, the changes to the irqchip driver and
+> > to the clocksource driver are independent from each other and can be
+> > merged in different trees. I can split the series in two if it helps
+> > reviewing/merging.
+> >=20
+> > Signed-off-by: Beno=C3=AEt Monin <benoit.monin@bootlin.com>
+> > ---
+> Applied, patch 4 & 5
+>=20
+Thanks for the merge, Daniel!
 
-Thanks!  Patches 1-3 look good.  I'm less sure about patches 4-5, since
-they go through some trouble to work around (some implementations of)
-poly1305_blocks() and chacha_crypt_arch() not taking size_t.  Wouldn't
-it make sense to convert those to size_t at the same time?
+Any takers for the first 3 patches to the GIC irqchip driver?
 
-- Eric
+Best regards,
+=2D-=20
+Beno=C3=AEt Monin, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

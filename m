@@ -1,330 +1,226 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C4B3D8122;
-	Mon, 12 Oct 2026 23:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE522D47F1;
+	Tue, 13 Oct 2026 04:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791848511; cv=none; b=Blb+o5WyhyXzQZHTb2ikWWFsuvlXSHPR0DBd7N8fcPtLIUGM+APtI3uRguQYFPgBoB/armIT3PV0J9VD87wiKWk2Yihn2DAo6rUhmqYH6bmjkJW2sEU1nSkW1SPO3hSZzko0lI4tUMnBIwss1LFYwh0Z8z1bK6M164wlqckzqu4=
+	t=1791865794; cv=none; b=T6s18jpLvkpib+CxUy2lgjd44AIc+wrS7fCMrsXCdKORTCCm5A3clKYPeKQBSog3HxzKoCQlaL0AffVUQdhjC36hnql8EVfvyZguj52qCdpuhxNAVVgbGU/TNmqdumO0KbXdPgmeBQttW4rdaoK1/ULe9PqWfEmIrzxfFIFt1NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791848511; c=relaxed/simple;
-	bh=iD+/aLbLxyN4OPgQVnmXQ+36xaYhRSs8OGa/lzPqXVQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JxuVd6FqHAM85kyrF4YywN2BpfviVtTwtIRQAzZXitLsXFNN8XNLpRbFG/bwlQNJYY4ZEi28iVPvSsD0FPsRFNoroBe2aePkk7mkYLXNn7vhyPeuHkXTOgCoejDUkBPe93MCu0R3akSmlAI0im7of+VNAJMY2YvfMOXqQXRCuFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F3rhYTqN; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1791865794; c=relaxed/simple;
+	bh=r2VvdiVqdKv9nmvYDujhlbTFxC3GBuTulrLElcsVUw0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pa4ENBS7N+IGdGRQxcIEDnLIi5rtaWd6aBFC7y4yP+LzXWbmnYU62kFnW3/2Be6gyNyAxkwTX2Isl37P+dZalY4KIQiGaxZy1subzsc99Oxg7NOt2exWDvsjwIYi/7SNYJlKP7ddW4QvjOnNcpRdAKzM3S478qnrYiAYytgrvpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c6HEXGO8; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F3rhYTqN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c6HEXGO8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1791848509; x=1823384509;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=iD+/aLbLxyN4OPgQVnmXQ+36xaYhRSs8OGa/lzPqXVQ=;
-  b=F3rhYTqNn1jOf/080UxZTRngn6PqWLJXR1SDmRtQPOt8lsQ78hnABWeS
-   aVVzEJLXzzK2SIQQ88CSq0m3WtjwkS3C0L3ApDyJCeW5CD2hzp3wgEqiY
-   31LlCWUY1Dp3JFBmrWo6RUKYxlXHTPuK25+hV7oPYzUlpO/eCR5i2i+2q
-   Jwj9hTqGsnkaJquDtEU/p9mEqMFWYourj6NWBeHnArrZu9F4/J85fBZhi
-   CvZO+HOpQJSj3ozaR2fTqlXLry9XicApAAgj2AVW4nlB42H+iVoppcfbM
-   K6YvUncO/GyHwZMzefy66eqILEkrNupMady6onl995J5mwO99auMczQH2
-   w==;
-X-CSE-ConnectionGUID: u/NXtRM1SnO1/4gc/Q/dgw==
-X-CSE-MsgGUID: ul9liZSPRf2d9fcdG1zs6w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11933"; a="450036"
-X-IronPort-AV: E=Sophos;i="6.27,154,1787036400"; 
-   d="scan'208";a="450036"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2026 16:41:48 -0700
-X-CSE-ConnectionGUID: Ul+a5TfqQzeWtVVntqfNIw==
-X-CSE-MsgGUID: d0HMC7X4QHe9fpBC8h1eFA==
+  t=1791865792; x=1823401792;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=r2VvdiVqdKv9nmvYDujhlbTFxC3GBuTulrLElcsVUw0=;
+  b=c6HEXGO8Ktw+pRF2l1xNE8r/Lko6K8O2KpMkRsQBLrOtk8DNT2vxXl8F
+   gNXXzTFEtj6G//McEltLLGCwDNqr898kYIZCL+VfpSmsVK1eCHJ02H8Bv
+   SjFYfC+ZwEOsnB/TjGF9W/0bzbU6O8w00lWwlrfy8r6NzqYN05NaLQiVD
+   7BmL8klKGXcNnpftRj9ZHEZKCKaVT58QmrdsrwCt01j23Poe69Ug/Pme8
+   2Vm+QCpcIz8uOKH8GQ2jbgoRNSMQ8QmpgMfAkm27ShMdzstcq4Y1dYd4Q
+   7DH+/keHk7wwQme+V5JKtSfjCG/bPLmOKnNAzx3jiIE5WPyBYlfEHG9CP
+   g==;
+X-CSE-ConnectionGUID: jWcw330kQAaRFtLK+ajyyQ==
+X-CSE-MsgGUID: LldSytFRQFGiVvGAkG56YA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11933"; a="455696"
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="455696"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2026 21:29:52 -0700
+X-CSE-ConnectionGUID: LLFFodjhR6KSB9AuZxdNDA==
+X-CSE-MsgGUID: 20C8C+a5QLCruzaLX9AhEQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,154,1787036400"; 
-   d="scan'208";a="1209371"
-Received: from unknown (HELO [10.241.242.105]) ([10.241.242.105])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2026 16:41:48 -0700
-Message-ID: <cf703658d922b4d698d35e35bb942f359971d850.camel@linux.intel.com>
-Subject: Re: [RFC PATCH v3 02/13] drivers/base/arch_topology: Add support
- for initializing sbm topology
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: K Prateek Nayak <kprateek.nayak@amd.com>, Peter Zijlstra	
- <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, Ingo Molnar	
- <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot	
- <vincent.guittot@linaro.org>, Andrew Morton <akpm@linux-foundation.org>, 
- Arnd Bergmann	 <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, 	linux-s390@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, 	linux-mips@vger.kernel.org,
- loongarch@lists.linux.dev, 	driver-core@lists.linux.dev, Sudeep Holla
- <sudeep.holla@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich	 <dakr@kernel.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt	
- <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman	
- <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, Shrikanth
- Hegde	 <sshegde@linux.ibm.com>
-Date: Mon, 12 Oct 2026 16:41:47 -0700
-In-Reply-To: <20261001192849.74788-3-kprateek.nayak@amd.com>
-References: <20261001192849.74788-1-kprateek.nayak@amd.com>
-	 <20261001192849.74788-3-kprateek.nayak@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="1391334"
+Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 12 Oct 2026 21:29:50 -0700
+Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xGU94-00000000CWe-44YB;
+	Tue, 13 Oct 2026 04:29:46 +0000
+Date: Tue, 13 Oct 2026 12:28:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Rosen Penev <rosenp@gmail.com>, linux-mips@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: lib: prefetch ahead in csum_partial()
+Message-ID: <202610131201.wWk11MLy-lkp@intel.com>
+References: <20261010065442.23780-1-rosenp@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261010065442.23780-1-rosenp@gmail.com>
 
-On Thu, 2026-10-01 at 19:28 +0000, K Prateek Nayak wrote:
-> Add (fragile) support for initializing sparsebitmap topology for
-> architectures that support GENERIC_ARCH_TOPOLOGY.
->=20
-> Similar to setting cpu_smt_set_num_threads(), count the number of unique
-> LLCs (if last_level_cache_is_valid() true, otherwise) / packages, and
-> the maximum threads that exist in those instance and set
-> sbm_set_proc_config().
->=20
-> Any failure on the path will default to considering the entire processor
-> as a single sbm domain and the default logic will divide the system into
-> BITS_PER_LONG chunks. In case of a failure, sbm core will skip using
-> arch_sbm_cpu_instance_id() and assume all CPUs belong to the same
-> instance with the same instance id.
->=20
-> Signed-off-by: K Prateek Nayak <kprateek.nayak@amd.com>
-> ---
->  drivers/base/arch_topology.c | 122 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 121 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 8c5e47c28d9a..f55745a93298 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -20,6 +20,7 @@
->  #include <linux/cpumask.h>
->  #include <linux/init.h>
->  #include <linux/rcupdate.h>
-> +#include <linux/sbm.h>
->  #include <linux/sched.h>
->  #include <linux/units.h>
-> =20
-> @@ -930,6 +931,114 @@ __weak int __init parse_acpi_topology(void)
->  	return 0;
->  }
-> =20
-> +/*
-> + * Note: arch_sbm_cpu_instance_id() is only used if init_sbm_topology()
-> + * below succeeds at setting the sbm topology. Either the LLC
-> + * information is valid or package_id is dependable.
-> + */
-> +int arch_sbm_cpu_instance_id(int cpu)
-> +{
-> +	if (last_level_cache_is_valid(cpu)) {
-> +		struct cacheinfo *llc_info =3D get_cpu_cacheinfo_llc(cpu);
-> +
-> +		if (!llc_info)
-> +			goto out;
-> +
-> +		if (llc_info->attributes & CACHE_ID)
-> +			return llc_info->id;
-> +
-> +		/*
-> +		 * XXX: fw_token be truncated from cast
-> +		 * when the value is returned as an int.
-> +		 */
-> +		return (int)((long)llc_info->fw_token);
-> +	}
-> +out:
-> +	return cpu_topology[cpu].package_id;
-> +}
-> +
-> +static void __init init_sbm_topology(void)
-> +{
-> +	int num_sbm_instances =3D 0, max_threads_per_instance =3D -1;
-> +	bool has_cache =3D false, has_package =3D false;
-> +	cpumask_var_t unique_cpus;
-> +	struct xarray instances;
-> +	unsigned long cpu, *count;
-> +
-> +	/*
-> +	 * If the allocation fails, the sbm core will use
-> +	 * the default logic of splitting CPUs evenly in
-> +	 * BITS_PER_LONG chunk.
-> +	 */
-> +	if (!zalloc_cpumask_var(&unique_cpus, GFP_KERNEL))
-> +		return;
-> +
-> +	xa_init(&instances);
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		bool found =3D false;
-> +		int unique_cpu;
-> +
-> +		for_each_cpu(unique_cpu, unique_cpus) {
-> +			/*
-> +			 * XXX: Assumes last_level_cache_is_valid() is uniformly true
-> +			 * across the entire system if it is true for one CPU.
-> +			 */
-> +			if (last_level_cache_is_valid(cpu)) {
+Hi Rosen,
 
-I don't think last_level_cache_is_valid() can be true for any CPU at
-this point. Here is the call order on arm64. riscv is the same in
-arch/riscv/kernel/smpboot.c.
+kernel test robot noticed the following build errors:
 
-  smp_prepare_cpus()                          arch/arm64/kernel/smp.c
-    init_cpu_topology()
-      fetch_cache_info(cpu)                   for every possible CPU
-        allocate_cache_info(cpu)              kzalloc: all leaves are zero
-      init_sbm_topology()                     <-- counts instances HERE
-        last_level_cache_is_valid(cpu)        false for every CPU
-        =3D> groups by package_id
-    store_cpu_topology(boot cpu)
-      update_siblings_masks()
-        detect_cache_attributes()             boot CPU leaves filled HERE
-   =20
-  kernel_init_freeable()                      init/main.c=20
-    sbm_init()
-    alloc_sbm_index(boot cpu)
-      arch_sbm_cpu_instance_id()              boot CPU: LLC id
+[auto build test ERROR on linus/master]
+[also build test ERROR on v7.3-rc6 next-20261009]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-  secondary_start_kernel()                    on each secondary CPU
-    store_cpu_topology(cpu)
-      update_siblings_masks()
-        detect_cache_attributes(cpu)          this CPU's leaves filled HERE
-  sched_cpu_activate(cpu)
-    alloc_sbm_index(cpu)
-      arch_sbm_cpu_instance_id()              this CPU: LLC id
+url:    https://github.com/intel-lab-lkp/linux/commits/Rosen-Penev/MIPS-lib-prefetch-ahead-in-csum_partial/20261009-235442
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20261010065442.23780-1-rosenp%40gmail.com
+patch subject: [PATCH] MIPS: lib: prefetch ahead in csum_partial()
+config: mips-rbtx49xx_defconfig (https://download.01.org/0day-ci/archive/20261013/202610131201.wWk11MLy-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 16.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261013/202610131201.wWk11MLy-lkp@intel.com/reproduce)
 
-last_level_cache_is_valid() only returns true when the LLC leaf has
-CACHE_ID set or a fw_token:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202610131201.wWk11MLy-lkp@intel.com/
 
-        return (llc->attributes & CACHE_ID) || !!llc->fw_token;
+All errors (new ones prefixed by >>):
 
-Both are written only from detect_cache_attributes(), through
-cache_shared_cpu_map_setup() -> cache_setup_properties():
+   Assembler messages:
+>> arch/mips/lib/csum_partial.S:202: Error: opcode not supported on this processor: r4600 (mips3) `pref 0,0x100($4)'
+   arch/mips/lib/csum_partial.S:203: Error: opcode not supported on this processor: r4600 (mips3) `pref 0,0x120($4)'
+   arch/mips/lib/csum_partial.S:204: Error: opcode not supported on this processor: r4600 (mips3) `pref 0,0x140($4)'
+   arch/mips/lib/csum_partial.S:205: Error: opcode not supported on this processor: r4600 (mips3) `pref 0,0x160($4)'
 
-  - DT:   cache_setup_of_node() sets fw_token and CACHE_ID
-          (drivers/base/cacheinfo.c)
-  - ACPI: cache_setup_acpi() sets fw_token and CACHE_ID
-          (drivers/acpi/pptt.c)
 
-fetch_cache_info() only counts the cache levels and allocates the
-leaves with kzalloc, so at init_sbm_topology() time every leaf still
-has attributes =3D=3D 0 and fw_token =3D=3D NULL. Not even the boot CPU has=
- its
-leaves filled yet, because its store_cpu_topology() runs after
-init_cpu_topology().
+vim +202 arch/mips/lib/csum_partial.S
 
-I think complications arise if we don't have the complete cache info.
+   102	
+   103		.text
+   104		.set	noreorder
+   105		.align	5
+   106	LEAF(csum_partial)
+   107	EXPORT_SYMBOL(csum_partial)
+   108		move	sum, zero
+   109		move	t7, zero
+   110	
+   111		sltiu	t8, a1, 0x8
+   112		bnez	t8, .Lsmall_csumcpy		/* < 8 bytes to copy */
+   113		 move	t2, a1
+   114	
+   115		andi	t7, src, 0x1			/* odd buffer? */
+   116	
+   117	.Lhword_align:
+   118		beqz	t7, .Lword_align
+   119		 andi	t8, src, 0x2
+   120	
+   121		lbu	t0, (src)
+   122		LONG_SUBU	a1, a1, 0x1
+   123	#ifdef __MIPSEL__
+   124		sll	t0, t0, 8
+   125	#endif
+   126		ADDC(sum, t0)
+   127		PTR_ADDU	src, src, 0x1
+   128		andi	t8, src, 0x2
+   129	
+   130	.Lword_align:
+   131		beqz	t8, .Ldword_align
+   132		 sltiu	t8, a1, 56
+   133	
+   134		lhu	t0, (src)
+   135		LONG_SUBU	a1, a1, 0x2
+   136		ADDC(sum, t0)
+   137		sltiu	t8, a1, 56
+   138		PTR_ADDU	src, src, 0x2
+   139	
+   140	.Ldword_align:
+   141		bnez	t8, .Ldo_end_words
+   142		 move	t8, a1
+   143	
+   144		andi	t8, src, 0x4
+   145		beqz	t8, .Lqword_align
+   146		 andi	t8, src, 0x8
+   147	
+   148		LOAD32	t0, 0x00(src)
+   149		LONG_SUBU	a1, a1, 0x4
+   150		ADDC(sum, t0)
+   151		PTR_ADDU	src, src, 0x4
+   152		andi	t8, src, 0x8
+   153	
+   154	.Lqword_align:
+   155		beqz	t8, .Loword_align
+   156		 andi	t8, src, 0x10
+   157	
+   158	#ifdef USE_DOUBLE
+   159		ld	t0, 0x00(src)
+   160		LONG_SUBU	a1, a1, 0x8
+   161		ADDC(sum, t0)
+   162	#else
+   163		lw	t0, 0x00(src)
+   164		lw	t1, 0x04(src)
+   165		LONG_SUBU	a1, a1, 0x8
+   166		ADDC(sum, t0)
+   167		ADDC(sum, t1)
+   168	#endif
+   169		PTR_ADDU	src, src, 0x8
+   170		andi	t8, src, 0x10
+   171	
+   172	.Loword_align:
+   173		beqz	t8, .Lbegin_movement
+   174		 LONG_SRL	t8, a1, 0x7
+   175	
+   176	#ifdef USE_DOUBLE
+   177		ld	t0, 0x00(src)
+   178		ld	t1, 0x08(src)
+   179		ADDC(sum, t0)
+   180		ADDC(sum, t1)
+   181	#else
+   182		CSUM_BIGCHUNK1(src, 0x00, sum, t0, t1, t3, t4)
+   183	#endif
+   184		LONG_SUBU	a1, a1, 0x10
+   185		PTR_ADDU	src, src, 0x10
+   186		LONG_SRL	t8, a1, 0x7
+   187	
+   188	.Lbegin_movement:
+   189		beqz	t8, 1f
+   190		 andi	t2, a1, 0x40
+   191	
+   192	.Lmove_128bytes:
+   193	#ifdef CONFIG_CPU_HAS_PREFETCH
+   194		/*
+   195		 * Fetch the block two iterations ahead, but only while it lies
+   196		 * inside the buffer: on non-coherent systems a line prefetched
+   197		 * past the end could belong to a buffer the device still owns.
+   198		 */
+   199		sltiu	t5, t8, 3
+   200		bnez	t5, 2f
+   201		 nop
+ > 202		pref	0, 0x100(src)
+   203		pref	0, 0x120(src)
+   204		pref	0, 0x140(src)
+   205		pref	0, 0x160(src)
+   206	2:
+   207	#endif
+   208		CSUM_BIGCHUNK(src, 0x00, sum, t0, t1, t3, t4)
+   209		CSUM_BIGCHUNK(src, 0x20, sum, t0, t1, t3, t4)
+   210		CSUM_BIGCHUNK(src, 0x40, sum, t0, t1, t3, t4)
+   211		CSUM_BIGCHUNK(src, 0x60, sum, t0, t1, t3, t4)
+   212		LONG_SUBU	t8, t8, 0x01
+   213		.set	reorder				/* DADDI_WAR */
+   214		PTR_ADDU	src, src, 0x80
+   215		bnez	t8, .Lmove_128bytes
+   216		.set	noreorder
+   217	
+   218	1:
+   219		beqz	t2, 1f
+   220		 andi	t2, a1, 0x20
+   221	
 
-How about updating the design to wait for cache detection instead? The
-earliest point where all booted CPUs have their cacheinfo is
-sched_init_smp(). That is also where the scheduler builds its own LLC
-domains, from the llc_sibling masks that store_cpu_topology() fills.
-Nothing needs an sbm index before then: nohz_balance_enter_idle()
-returns early on on_null_domain() until the domains exist, and 12/13
-already moves the nohz allocation into sched_init_smp(). Roughly:
-
- 1. Move sbm_init() and the boot CPU's alloc_sbm_index() from
-    kernel_init_freeable() to the start of sched_init_smp(), before
-    init_sched_fair_class_smp().
-   =20
- 2. Count the instances there, over the online CPUs, with
-    arch_sbm_cpu_instance_id(). At that point it can safely return
-    the LLC ID. Counting and runtime then use the same function on
-    the same data.
-   =20
- 3. Hand out indices to all active CPUs in one pass at that point. In
-    sched_cpu_activate(), call alloc_sbm_index() only once
-    sched_smp_initialized is set, i.e. for CPUs hotplugged later.
-
- 4. Leave room for possible CPUs that did not boot (maxcpus=3D, or arm64
-    ACPI vCPU hotplug). Their cacheinfo is still unknown at
-    sched_init_smp(). Possible choice is what powerpc and s390
-    do in this series: assume each of them may add a new instance, or
-    land in the largest one. Their package could give a tighter bound.
-
-Perhaps this could simplify the design.
-
-Thanks.
-
-Tim
-
-> +				has_cache =3D true;
-> +				if (last_level_cache_is_shared(cpu, unique_cpu)) {
-> +					found =3D true;
-> +					break;
-> +				}
-> +			} else {
-> +				/* Go by package_id if no LLC information is found. */
-> +				has_package =3D true;
-> +				if (cpu_topology[unique_cpu].package_id =3D=3D
-> +				    cpu_topology[cpu].package_id) {
-> +					found =3D true;
-> +					break;
-> +				}
-> +			}
-> +		}
-> +
-> +		/* XXX: CPUs should not suddenly switch IDs mid way. */
-> +		if (has_cache && has_package)
-> +			goto out;
-> +
-> +		if (!found) {
-> +			count =3D kzalloc_obj(*count);
-> +			if (!count)
-> +				goto out;
-> +
-> +			cpumask_set_cpu(cpu, unique_cpus);
-> +			*count +=3D 1;
-> +
-> +			xa_store(&instances, cpu, count, GFP_KERNEL);
-> +			continue;
-> +		}
-> +
-> +		count =3D xa_load(&instances, unique_cpu);
-> +		if (!count)
-> +			goto out;
-> +
-> +		*count +=3D 1;
-> +	}
-> +
-> +	xa_for_each(&instances, cpu, count) {
-> +		max_threads_per_instance =3D max_t(int, max_threads_per_instance, *cou=
-nt);
-> +		num_sbm_instances++;
-> +	}
-> +
-> +	sbm_set_topology(num_sbm_instances, max_threads_per_instance);
-> +out:
-> +	xa_for_each(&instances, cpu, count) {
-> +		xa_erase(&instances, cpu);
-> +		kfree(count);
-> +	}
-> +	xa_destroy(&instances);
-> +	free_cpumask_var(unique_cpus);
-> +}
-> +
->  void __init init_cpu_topology(void)
->  {
->  	int cpu, ret;
-> @@ -954,8 +1063,19 @@ void __init init_cpu_topology(void)
->  			continue;
->  		else if (ret !=3D -ENOENT)
->  			pr_err("Early cacheinfo failed, ret =3D %d\n", ret);
-> -		return;
-> +		break;
->  	}
-> +
-> +	/*
-> +	 * If fetch_cache_info() fails for first CPU,
-> +	 * init_cpu_sbm_topology() will use pacakge_id instead.
-> +	 *
-> +	 * Uniform cache topology is a necessary since implementation
-> +	 * assumes last_level_cache_is_valid() gives same result for
-> +	 * all possible CPUs
-> +	 */
-> +	if (!ret || (cpu =3D=3D 0 && ret =3D=3D -ENOENT))
-> +		init_sbm_topology();
->  }
-> =20
->  void store_cpu_topology(unsigned int cpuid)
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki

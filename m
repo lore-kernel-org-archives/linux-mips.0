@@ -1,39 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5AA5208D2;
-	Tue, 13 Oct 2026 13:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717325208C9;
+	Tue, 13 Oct 2026 13:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897539; cv=none; b=jWi4x75DF++hPmCA7UPz7FwMLrqUc0tGIT9kGTd0hMX/s2Tofp0UeV0fLqCq/DNosovX1kPai2LEtro/GYWeWVT0+Ao37KtK72BrmxKfik8TGZSNd7X4BKrfhCCFnzMeNUu2Q9WjDmdzj1HQ6dlx337oUM77GyAe3m3PzDjZAqg=
+	t=1791897541; cv=none; b=nUKOwEoXGywiFTeNVyyc85G/9dv7JT+DfvPgsHDu06EKg2gTn9VoSSWJKofcv+HZU0bWguY46VfXXRwKnyO/oWWcXPN5aQi+jdlZ+U3NjpefaFsptmJg+JffbchP3qYLdwPvTtvF3LQkvPQuB7YDWhQJ59KPD5XwE2Y/k2UC6EQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897539; c=relaxed/simple;
-	bh=nPX5fodMhIC5Z+7wy1MEUVd18oD8aCEjDiBSP4AKKfA=;
+	s=arc-20240116; t=1791897541; c=relaxed/simple;
+	bh=IL5pJrVeowNm7HB0gGdTKuMNOaYGJJg1aZf0ARtg5S0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gj5Oj0smv4RHbBe05NfX983zSGhBVI8rkMddmvTNC1KyPG7qiHz8sAy/kUHtEc66yPO7FskcpKh6VINJosCIe4yP8jm4fuqYn+ZF9pcfS6fQed2uV84KTPsWR4Wuqai8UNIZDmxNXPRuBHb9dRDNOAd6SomS3yfCGG9YIStLcMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PEGh+Tug; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=S4Yu14y323yFq32Z25tlmXBVbCVWzl8DXh1Ak3oUNxICFJLsdB/VR7a4WcfDUq3Y4S0cVaK4gnumMxhhlii41XLz3MeL4PoukBfJOQOGHn2cQDGhSHFTnJmixArF1usW2kx+4LkIcbs+sXrtwGh4ilXNTO3ARoIE7zKEYBCXkwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5ASJmhP; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEGh+Tug"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0771F1F00893;
-	Tue, 13 Oct 2026 13:18:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5ASJmhP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8EA1F000FF;
+	Tue, 13 Oct 2026 13:18:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897538;
-	bh=RrUX5cOyIDqfWceQg9sJIMbkBAKQXyN7VQRTNCVo6Qs=;
+	s=k20260515; t=1791897540;
+	bh=nK7JyA5RsdIh4U/tvz6Lf7hRH416A/K/R6YPf9lAQ9I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=PEGh+TugY3Srj7CusP1P+FD2alySEX9pcSSfVZAAgrSSIqPBzX8DMjeH9u9kq26Wj
-	 jw90nnimyCL6U3momaumV8EEc5fRDIgH+uNUejfwSCSboRno+3qFcuDioiXhhvtiDk
-	 nGYyhmp3GSyQWx2qJJCR+zO4c1zg2GjST0bAZsIAuojMVP1tUUL0wJn9fpfdoiVHkE
-	 zZb/lAXQMFO0xufmZrcR7aLM0mJSXfxW19qS3VrevX2Iy8ksBN+g6vVZGx1DRixGPK
-	 /VE9raHdRYh9Ec09bdGOIdlWjgq0aDNjoo+y+m1r6zEZr8yXpN4g21gIMQw8o95Y5n
-	 aq4WBj8D+2fDQ==
+	b=c5ASJmhPjLlo2T60iZ1VYLn4p1h987N15vMMEWwh57/hYp6RYuhFULG1qAm8zBdKu
+	 PjoYFeLkBt9IygmXf+rja3tdfp/6YDFGnztpoZyhVSXKoE2Tc8qGvwQZGaOaMIWxVE
+	 FtWBS7F4btc2BOmPsLx9HFQmbLj9qGuJZ20uHwEc6Kgyr3OPwFVHiOEiL5+SMOi+iW
+	 bOQAUJRa7md5PgkT+CzV48BHRD8FnA7EiAr2Ao6o/SxWhjupvzukop0dAo+yzQBL9l
+	 NyXGomeP34xcndr88rR/675ARXviPB8vwb4iqXgfoMm8Qyk96Akb1HwL2hgM5EUerE
+	 rYUdFZ0Kn0aVQ==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lee Jones <lee@kernel.org>
-Subject: [PATCH v2 14/53] MIPS: SGI-IP27: decode a Bedrock hub's node id and system size
-Date: Tue, 13 Oct 2026 15:16:34 +0200
-Message-ID: <88d5503fa1d576673035551a862d8a19b02da94d.1791890466.git.kaloz@kernel.org>
+Subject: [PATCH v2 15/53] MIPS: SGI-IP27: put a Bedrock hub's boot CPU in slot 0
+Date: Tue, 13 Oct 2026 15:16:35 +0200
+Message-ID: <bc6fc655269f474b62c3094c4658d25da4c806b9.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -45,204 +45,48 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Bedrock's LB_REV_ID holds the node id in bits 39:32 and the system
-size, which sets N mode and the region size, in bits 47:46. Decode
-both by hub generation; the assembly form, built only for
-MAPPED_KERNEL, keys on the widget ID.
+ip27_smp_setup() takes CPU 0 to be the boot CPU. On a Bedrock hub, swap
+the boot CPU's sn_cpu_info[] entry, found by nasid and PI_CPU_NUM slice,
+into slot 0, and give slot 0 master_nasid. The PROM's virtids run
+densely from 0 in board-list order and so match the table's slots.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- .../include/asm/mach-ip27/kernel-entry-init.h |  8 +++-
- arch/mips/include/asm/sn/agent.h              |  2 +-
- arch/mips/include/asm/sn/sn0/hub.h            | 37 +++++++++++++++++--
- arch/mips/include/asm/sn/sn0/hubni.h          |  3 ++
- arch/mips/include/asm/sn/sn1/hub.h            | 14 +++++++
- arch/mips/include/asm/xtalk/xwidget.h         |  2 +-
- arch/mips/sgi-ip27/ip27-init.c                |  6 ++-
- 7 files changed, 63 insertions(+), 9 deletions(-)
+ arch/mips/sgi-ip27/ip27-smp.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-ip27/kernel-entry-init.h b/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-index 3e54f605a70b..cd50e6d3d966 100644
---- a/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-+++ b/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-@@ -65,8 +65,10 @@
-  * arch/mips/mach-xxx/kernel-entry-init.h when necessary.
-  */
- 	.macro	kernel_entry_setup
--	GET_NASID_ASM	t1
-+#ifdef CONFIG_MAPPED_KERNEL
-+	GET_NASID_ASM	t1, t0
- 	move		t2, t1			# text and data are here
-+#endif
- 	MAPPED_KERNEL_SETUP_TLB
- 	.endm
+diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
+index 62733e049570..d49766cffd12 100644
+--- a/arch/mips/sgi-ip27/ip27-smp.c
++++ b/arch/mips/sgi-ip27/ip27-smp.c
+@@ -80,6 +80,15 @@ void cpu_node_probe(void)
+ 		highest = node_scan_cpus(nasid, highest);
+ 	}
  
-@@ -74,7 +76,8 @@
-  * Do SMP slave processor setup necessary before we can safely execute C code.
-  */
- 	.macro	smp_slave_setup
--	GET_NASID_ASM	t1
-+#ifdef CONFIG_MAPPED_KERNEL
-+	GET_NASID_ASM	t1, t0
- 	dli	t0, KLDIR_OFFSET + (KLI_KERN_VARS * KLDIR_ENT_SIZE) + \
- 		    KLDIR_OFF_POINTER + CAC_BASE
- 	dsll	t1, NASID_SHFT
-@@ -82,6 +85,7 @@
- 	ld	t0, 0(t0)			# t0 points to kern_vars struct
- 	lh	t1, KV_RO_NASID_OFFSET(t0)
- 	lh	t2, KV_RW_NASID_OFFSET(t0)
-+#endif
- 	MAPPED_KERNEL_SETUP_TLB
++	/* The boot CPU must be CPU 0 wherever the board list puts it. */
++	for (i = 1; system_is_ip35 && i <= highest; i++) {
++		if (cputonasid(i) == master_nasid &&
++		    cputoslice(i) == LOCAL_HUB_L(PI_CPU_NUM)) {
++			swap(sn_cpu_info[0], sn_cpu_info[i]);
++			break;
++		}
++	}
++
+ 	printk("Discovered %d cpus on %d nodes\n", highest + 1, num_online_nodes());
+ }
+ 
+@@ -168,9 +177,9 @@ static void __init ip27_smp_setup(void)
+ 	replicate_kernel_text();
  
  	/*
-diff --git a/arch/mips/include/asm/sn/agent.h b/arch/mips/include/asm/sn/agent.h
-index 8873eb34e31b..1d6d0cd5e5fd 100644
---- a/arch/mips/include/asm/sn/agent.h
-+++ b/arch/mips/include/asm/sn/agent.h
-@@ -15,8 +15,8 @@
- #include <asm/sn/arch.h>
- 
- #if defined(CONFIG_SGI_IP27)
--#include <asm/sn/sn0/hub.h>
- #include <asm/sn/sn1/hub.h>
-+#include <asm/sn/sn0/hub.h>
- #endif /* CONFIG_SGI_IP27 */
- 
- /*
-diff --git a/arch/mips/include/asm/sn/sn0/hub.h b/arch/mips/include/asm/sn/sn0/hub.h
-index 916394319af5..c5429dbddc7a 100644
---- a/arch/mips/include/asm/sn/sn0/hub.h
-+++ b/arch/mips/include/asm/sn/sn0/hub.h
-@@ -31,6 +31,8 @@
- #include <asm/sn/sn0/hubni.h>
- //#include <asm/sn/sn0/hubcore.h>
- 
-+#include <asm/xtalk/xwidget.h>
-+
- /* Translation of uncached attributes */
- #define UATTR_HSPEC	0
- #define UATTR_IO	1
-@@ -39,13 +41,35 @@
- 
- #ifdef __ASSEMBLER__
- /*
-- * Returns the local nasid into res.
-+ * Clears tmp on a Bedrock hub.  Nothing has read the hub's part number
-+ * this early, so take it from the widget ID.
-  */
--	.macro GET_NASID_ASM res
-+	.macro GET_HUB_GEN_ASM tmp
-+	dli	\tmp, LOCAL_HUB_ADDR(IIO_WID)
-+	ld	\tmp, (\tmp)
-+	dsrl	\tmp, WIDGET_PART_NUM_SHFT
-+	andi	\tmp, (WIDGET_PART_NUM >> WIDGET_PART_NUM_SHFT)
-+	xori	\tmp, WIDGET_BDRCK_PART_NUM
-+	.endm
-+
-+/*
-+ * Returns the local nasid into res, clobbering tmp.
-+ */
-+	.macro GET_NASID_ASM res, tmp
-+	.set	push
-+	.set	reorder
-+	GET_HUB_GEN_ASM \tmp
- 	dli	\res, LOCAL_HUB_ADDR(NI_STATUS_REV_ID)
- 	ld	\res, (\res)
-+	beqz	\tmp, 1f
- 	and	\res, NSRI_NODEID_MASK
- 	dsrl	\res, NSRI_NODEID_SHFT
-+	b	2f
-+1:
-+	dsrl	\res, LRI_NODEID_SHFT_IP35
-+	andi	\res, LRI_NODEID_MASK_IP35
-+2:
-+	.set	pop
- 	.endm
- #else
- 
-@@ -54,8 +78,13 @@
-  */
- static inline nasid_t get_nasid(void)
- {
--	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
--			 >> NSRI_NODEID_SHFT);
-+	u64 id = LOCAL_HUB_L(NI_STATUS_REV_ID);
-+
-+	if (system_is_ip35)
-+		return (nasid_t)((id >> LRI_NODEID_SHFT_IP35) &
-+				 LRI_NODEID_MASK_IP35);
-+
-+	return (nasid_t)((id & NSRI_NODEID_MASK) >> NSRI_NODEID_SHFT);
- }
- #endif
- 
-diff --git a/arch/mips/include/asm/sn/sn0/hubni.h b/arch/mips/include/asm/sn/sn0/hubni.h
-index 4830bae723e4..ff7df5e27f66 100644
---- a/arch/mips/include/asm/sn/sn0/hubni.h
-+++ b/arch/mips/include/asm/sn/sn0/hubni.h
-@@ -252,6 +252,9 @@ typedef union	hubni_port_error_u {
- 
- static inline int get_region_shift(void)
- {
-+	if (system_is_ip35)
-+		return LRI_SYSTEM_SIZE_IP35(LOCAL_HUB_L(NI_STATUS_REV_ID));
-+
- 	if (LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK)
- 		return NASID_TO_FINEREG_SHFT;
- 
-diff --git a/arch/mips/include/asm/sn/sn1/hub.h b/arch/mips/include/asm/sn/sn1/hub.h
-index db41bcb3d34a..71ccd2ba3698 100644
---- a/arch/mips/include/asm/sn/sn1/hub.h
-+++ b/arch/mips/include/asm/sn/sn1/hub.h
-@@ -12,4 +12,18 @@
- #define HUBXBBASE_IP35		0x00700000
- #define HUBMDBASE_IP35		0x00780000
- 
-+/*
-+ * LB_REV_ID, at the base of the LB block and so at Hub's NI_STATUS_REV_ID
-+ * offset, holds the node id in bits 39:32.
-+ */
-+#define LRI_NODEID_SHFT_IP35	32
-+#define LRI_NODEID_MASK_IP35	0xff
-+
-+/*
-+ * Bits 47:46 give the system size: 0, 1 or 2 is log2 of the nodes per
-+ * region, and 2 is N mode.
-+ */
-+#define LRI_SYSTEM_SIZE_IP35(id)	(((id) >> 46) & 0x3)
-+#define LRI_SYSTEM_SIZE_NMODE_IP35	2
-+
- #endif /* _ASM_SN_SN1_HUB_H */
-diff --git a/arch/mips/include/asm/xtalk/xwidget.h b/arch/mips/include/asm/xtalk/xwidget.h
-index 6dae5d9628f7..978877e8a090 100644
---- a/arch/mips/include/asm/xtalk/xwidget.h
-+++ b/arch/mips/include/asm/xtalk/xwidget.h
-@@ -122,7 +122,7 @@ struct widget_ident {
- };
- 
- /* Known Xtalk Widgets */
--static const struct widget_ident __initconst widget_idents[] = {
-+static const struct widget_ident widget_idents[] __initconst __maybe_unused = {
- 	{
- 		WIDGET_XBOW_MFGR_NUM,
- 		WIDGET_XBOW_PART_NUM,
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index 6394c2076041..108d90908763 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -121,7 +121,11 @@ void __init plat_mem_setup(void)
- 	 * Try to catch kernel missconfigurations and give user an
- 	 * indication what option to select.
+-	 * PROM sets up system, that boot cpu is always first CPU on nasid 0
++	 * The boot CPU is CPU 0, on the node it booted from
  	 */
--	n_mode = LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_MORENODES_MASK;
-+	if (system_is_ip35)
-+		n_mode = LRI_SYSTEM_SIZE_IP35(LOCAL_HUB_L(NI_STATUS_REV_ID)) ==
-+			 LRI_SYSTEM_SIZE_NMODE_IP35;
-+	else
-+		n_mode = LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_MORENODES_MASK;
- 	printk("Machine is in %c mode.\n", n_mode ? 'N' : 'M');
- #ifdef CONFIG_SGI_SN_N_MODE
- 	if (!n_mode)
+-	cputonasid(0) = 0;
++	cputonasid(0) = master_nasid;
+ 	cputoslice(0) = LOCAL_HUB_L(PI_CPU_NUM);
+ }
+ 
 -- 
 2.47.3
 

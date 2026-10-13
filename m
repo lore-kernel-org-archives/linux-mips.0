@@ -1,39 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE0E528435;
-	Tue, 13 Oct 2026 13:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C4A5172EA;
+	Tue, 13 Oct 2026 13:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897596; cv=none; b=PAgNLzMsGSiJvY6QTW4RcvEy8duZ2NFf30rQ4bzVRa66jbgAa+R52V3OpENfSOurPmubAZvPQ+9xPbqHp6WpESSRTQtHTwI83rq+AmNPs6Mv4m58U8GwiBvOQeSplbUIP9EqZrAJJFsZ1CnD7vR/GOeXrA1M6eHLWJl89D9wqRY=
+	t=1791897598; cv=none; b=l7PYcXKp09EVOqvYZT1BuNO8PBfe0YwvasqI+baRjVvr//Alu51b9HDNbfpzywFkfWax+Ngevd8r6B+uuwx5uBt/YX8wj4hbYTMXLx9kdRNDwZJIhCH8lqGeMfROHJsD3Ivkk6sJ+U2V2eRO95OtuirE3zlXf6zbcAldhcuFTLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897596; c=relaxed/simple;
-	bh=8tSZ4zbzKOqmYkLkeRrEPQVN5GUXPpHklRj95Y9dkhk=;
+	s=arc-20240116; t=1791897598; c=relaxed/simple;
+	bh=QhJ5+eaRfcB6wbhoRyCx16YfAS7qNa5zyoqoQnncbXo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TE9GkO8uFhh27GUirNNCJ7+sWaF63vqUKGlpqcO3oQILNm5eFh8KwMhlcGAy7/ciVpti1j2OcM201ALEXZ7JuTIzMMUhxA1m1OY8ZS64vi9I/GIG7ZH+eltuLCjmgzZYWi0s7Snj4KW/evTfPXtLwcq1V0jB0CSEQQmAbOaMBbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0EFg4AY; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=VJY9L79bGrZwks5l/Foets48gaLn+vnRlVBwLZgQz6CPX1cK3OTNEycvioOA/mzRIWydNtBxMoVstnwc1cPrEI69lTHsFsGjNcFW7fCwUcLCYxh2h9/mWRvKktGJjFdZcZ8Jukvn+82EXCHyzgZq4fvvpaZ0l2PSpVPpzUt1+q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0145Uqr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0EFg4AY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D1901F00893;
-	Tue, 13 Oct 2026 13:19:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0145Uqr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9DA1F000FF;
+	Tue, 13 Oct 2026 13:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897595;
-	bh=OXyTITu9D/IvJ9jBB3Z3XJwdAe6qBwDhHlfEXCbHj9w=;
+	s=k20260515; t=1791897597;
+	bh=NvP/VjVpmiE5AbNgBRdIdcviFuM7yakYB1BMGN2ENt8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=e0EFg4AY/69z7KFOSnVGCYCik7QzaHbxE5aPVtoGNS0m2y8bpSV2pXppIqH+KIC3I
-	 CI3EFn/BMNLBWoKoIwprS8A74UXYzi1WwB0X++twqZW0UwlG7rdknHmCroIMWqPoQw
-	 A5UB0ZXv64ND/FqIoieivR8j9b8HlzMcBd3SMWSg1nXz9dkD4Pdsi/KEajjNE5YQFA
-	 cuChC3IKRXbWq27pUn422Gv7G0JX6f8f8FqZSxYPkPxuCbBaFxsZuYf+/dQJ4HWUwX
-	 MBtDIFc5fSFCQ8tAfJwYUhvYb8QEr/6NNXoxotvr1tEbhOLx+/V5Xb0KqveNKcMVBA
-	 eBHrpESv4VX+Q==
+	b=b0145UqroQjFzK836QRqz/wbciW12jiu3Z7boZCtReW72+tEgvFRCtfnwbO6wwb1M
+	 jWqEKVMg1i6Ar7+66qkKkL9BAA69IbGnSUIuRorWsSDU3rnLOt44c+Zez2fHetxtpK
+	 tuhe4mtQk3BWQ7+T2IUUCuVsxFzIvY31DJ8HVCNnqhxhv79GVwvHzbfXpPhxiwZF94
+	 oioqSY13cUE66eNrFm+yNn2q9IZB4/fSqHL8gyHIVwNASfI/Ru2OtDM0z93cVEVQh4
+	 4QTia9oJsh/mw6NCd91qUKTdlab/uwyVhXt+Sisn0bseQTxyA8hdfNOjmXAZpTl+IL
+	 Ud5P2Sh3PrZpQ==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lee Jones <lee@kernel.org>
-Subject: [PATCH v2 41/53] MIPS: SGI-IP27: identify the machine by the L1 brick type
-Date: Tue, 13 Oct 2026 15:17:01 +0200
-Message-ID: <a61ab60b231a2f5d1f334699e106240d4779c461.1791890466.git.kaloz@kernel.org>
+Subject: [PATCH v2 42/53] MIPS: SGI-IP27: register the Odyssey graphics widget
+Date: Tue, 13 Oct 2026 15:17:02 +0200
+Message-ID: <c07197a87a2ebac4231b02d97e1942b689687b73.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -45,191 +45,92 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On a Bedrock hub, name the machine after the brick-type code the L1
-reports for its chassis. Attached graphics makes an Origin an Onyx, so
-a graphics-class KLCONFIG board picks between the two names. An
-unlisted code keeps "SGI IP35".
+The Odyssey (VPro) graphics widget is a direct xtalk widget with no PCI
+bridge in front of it, so it needs a platform_device of its own rather
+than piggybacking on bridge_platform_create(). Its register aperture is
+the widget's small window, and the sgi-odyssey DRM driver binds it.
+The driver programs the board with the widget id of its master hub,
+passed as the u32 property "sgi,master-widget".
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/sn/l1.h  |  1 +
- arch/mips/sgi-ip27/ip27-init.c | 68 ++++++++++++++++++++++++++++++++++
- arch/mips/sgi-ip27/ip27-l1.c   | 45 ++++++++++++++++++++++
- 3 files changed, 114 insertions(+)
+ arch/mips/sgi-ip27/ip27-xtalk.c | 39 +++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/arch/mips/include/asm/sn/l1.h b/arch/mips/include/asm/sn/l1.h
-index 1a3b7fa0e213..f9fa8a8051e6 100644
---- a/arch/mips/include/asm/sn/l1.h
-+++ b/arch/mips/include/asm/sn/l1.h
-@@ -17,5 +17,6 @@
+diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
+index 091186cb7a04..b56e70db20cf 100644
+--- a/arch/mips/sgi-ip27/ip27-xtalk.c
++++ b/arch/mips/sgi-ip27/ip27-xtalk.c
+@@ -7,9 +7,11 @@
+  * Generic XTALK initialization code
+  */
  
- int l1_exec_command(const char *cmd);
- int l1_read_board_partnum(unsigned int component, char *buf, size_t len);
-+int l1_read_brick_type(void);
++#include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/smp.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/platform_data/sgi-w1.h>
+ #include <linux/platform_data/xtalk-bridge.h>
+ #include <asm/sn/addrs.h>
+@@ -24,6 +26,9 @@
+ #define PXBOW_WIDGET_PART_NUM	0xd100	/* PXbow */
+ #define BASE_XBOW_PORT		8     /* Lowest external port */
  
- #endif /* __ASM_SN_L1_H */
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index c92f1bef692e..7f16d7f437c9 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -13,12 +13,15 @@
- #include <linux/mm.h>
- #include <linux/export.h>
- #include <linux/cpumask.h>
-+#include <linux/ctype.h>
- #include <asm/bootinfo.h>
- #include <asm/cpu.h>
- #include <asm/io.h>
-+#include <asm/prom.h>
- #include <asm/sgialib.h>
- #include <asm/time.h>
- #include <asm/sn/agent.h>
-+#include <asm/sn/l1.h>
- #include <asm/sn/types.h>
- #include <asm/sn/klconfig.h>
- #include <asm/sn/ioc3.h>
-@@ -98,6 +101,69 @@ void per_cpu_init(void)
- 	enable_percpu_irq(IP27_HUB_PEND1_IRQ, IRQ_TYPE_NONE);
++/* Odyssey's register aperture, as sized by the sgi-odyssey driver. */
++#define ODYSSEY_REG_SIZE		0x00410000
++
+ enum xtalk_bridge_type {
+ 	XTALK_BRIDGE,
+ 	XTALK_XBRIDGE,
+@@ -167,6 +172,37 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+ 	return;
  }
  
-+/*
-+ * The boot brick's L1 type character names the machine family. What makes
-+ * an Origin an Onyx is attached graphics, so a graphics-class board in the
-+ * KLCONFIG picks between the two names; gfx_model is NULL for a family
-+ * that has only one.
-+ */
-+static const struct {
-+	char brick_type;
-+	const char *model;
-+	const char *gfx_model;
-+} ip27_models[] = {
-+	{ '4', "SGI Origin 300", "SGI Onyx 300" },
-+	{ '7', "SGI Origin 350", "SGI Onyx 350" },
-+	{ '8', "SGI Onyx 350", NULL },		/* graphics blade */
-+	{ '9', "SGI Tezro", NULL },		/* deskside */
-+	{ 'A', "SGI Fuel", NULL },
-+	{ 'C', "SGI Origin 3000", "SGI Onyx 3000" },
-+	{ 'Q', "SGI Tezro Rackmount", NULL },
-+};
-+
-+static bool __init ip27_has_graphics(void)
++static void odyssey_platform_create(nasid_t nasid, int widget, int masterwid)
 +{
-+	nasid_t nasid;
++	const struct property_entry props[] = {
++		PROPERTY_ENTRY_U32("sgi,master-widget", masterwid),
++		{ }
++	};
++	struct resource res;
++	struct platform_device_info info = {
++		.name = "sgi-odyssey",
++		.id = PLATFORM_DEVID_AUTO,
++		.res = &res,
++		.num_res = 1,
++		.properties = props,
++	};
++	struct platform_device *pdev;
 +
-+	for_each_online_node(nasid)
-+		if (find_lboard_class((lboard_t *)KL_CONFIG_INFO(nasid),
-+				      KLCLASS_GFX))
-+			return true;
++	memset(&res, 0, sizeof(res));
++	res.name = "sgi-odyssey";
++	res.start = NODE_OFFSET(nasid) + (widget << SWIN_SIZE_BITS);
++	res.end = res.start + ODYSSEY_REG_SIZE - 1;
++	res.flags = IORESOURCE_MEM;
 +
-+	return false;
++	pr_info("xtalk:n%d/%x odyssey widget: reg=[%pa-%pa]\n",
++		nasid, widget, &res.start, &res.end);
++
++	pdev = platform_device_register_full(&info);
++	if (IS_ERR(pdev))
++		pr_warn("xtalk:n%d/%x odyssey platform device registration failed: %ld\n",
++			nasid, widget, PTR_ERR(pdev));
 +}
 +
-+static void __init ip27_set_machine_name(void)
-+{
-+	int brick_type, i;
-+	bool gfx;
-+
-+	if (!system_is_ip35)
-+		return;
-+
-+	brick_type = l1_read_brick_type();
-+	if (brick_type < 0)
-+		return;
-+
-+	gfx = ip27_has_graphics();
-+
-+	for (i = 0; i < ARRAY_SIZE(ip27_models); i++) {
-+		if (ip27_models[i].brick_type != brick_type)
-+			continue;
-+
-+		if (gfx && ip27_models[i].gfx_model)
-+			mips_set_machine_name(ip27_models[i].gfx_model);
-+		else
-+			mips_set_machine_name(ip27_models[i].model);
-+		return;
-+	}
-+
-+	mips_set_machine_name(get_system_type());
-+	pr_info("Unlisted L1 brick type 0x%02x '%c', %s a graphics board\n",
-+		brick_type, isprint(brick_type) ? brick_type : '?',
-+		gfx ? "with" : "without");
-+}
-+
- void __init plat_mem_setup(void)
+ static int probe_one_port(nasid_t nasid, int widget, int masterwid)
  {
- 	u64 p, e, n_mode;
-@@ -147,6 +213,8 @@ void __init plat_mem_setup(void)
- 	ioport_resource.start = 0;
- 	ioport_resource.end = ~0UL;
- 	set_io_port_base(IO_BASE);
-+
-+	ip27_set_machine_name();
- }
- 
- const char *get_system_type(void)
-diff --git a/arch/mips/sgi-ip27/ip27-l1.c b/arch/mips/sgi-ip27/ip27-l1.c
-index 173a506595da..98c94d14bd5f 100644
---- a/arch/mips/sgi-ip27/ip27-l1.c
-+++ b/arch/mips/sgi-ip27/ip27-l1.c
-@@ -79,6 +79,7 @@
- #define L1_REQ_EXEC_CMD		0x0000	/* interpret plaintext command */
- 
- /* L1_TASK_GENERAL requests */
-+#define L1_REQ_BRICK_ID		0x0003	/* rack, slot and brick type */
- #define L1_REQ_EEPROM		0x0006	/* access eeprom */
- 
- /* L1_REQ_EEPROM additional argument values (non C-brick component) */
-@@ -733,6 +734,50 @@ int l1_read_board_partnum(unsigned int component, char *buf, size_t len)
- 	return 0;
- }
- 
-+/*
-+ * The L1 answers two integers; the low byte of the second is the
-+ * one-character brick-type code of its chassis.
-+ */
-+static int l1_get_brick_type(void)
-+{
-+	u32 address = L1_ADDRESS(L1_TYPE_L1,
-+				 L1_ADDRESS_LOCAL | L1_TASK_GENERAL);
-+	u8 pkt[64];		/* command and response packet buffer */
-+	u8 *args;
-+	size_t arglen;
-+	u32 rack_slot, brick_type;
-+	int rc;
-+
-+	rc = l1_transact(get_nasid(), pkt, sizeof(pkt), address,
-+			 L1_REQ_BRICK_ID, &args, &arglen, 0);
-+	if (rc < 0)
-+		return rc;
-+	if (rc != 2)
-+		return -EIO;
-+
-+	rc = l1_packet_get_int(&args, &arglen, &rack_slot);
-+	if (rc)
-+		return rc;
-+
-+	rc = l1_packet_get_int(&args, &arglen, &brick_type);
-+	if (rc)
-+		return rc;
-+
-+	return brick_type & 0xff;
-+}
-+
-+int l1_read_brick_type(void)
-+{
-+	unsigned long flags;
-+	int rc;
-+
-+	spin_lock_irqsave(&l1_lock, flags);
-+	rc = l1_get_brick_type();
-+	spin_unlock_irqrestore(&l1_lock, flags);
-+
-+	return rc;
-+}
-+
- static u8 ip27_l1_mac_addr[ETH_ALEN];
- static bool ip27_l1_mac_addr_valid;
- static bool ip27_l1_mac_addr_tried;
+ 	widgetreg_t		widget_id;
+@@ -190,6 +226,9 @@ static int probe_one_port(nasid_t nasid, int widget, int masterwid)
+ 		bridge_platform_create(nasid, widget, masterwid,
+ 				       XTALK_PIC_BUS1);
+ 		break;
++	case WIDGET_ODYS_PART_NUM:
++		odyssey_platform_create(nasid, widget, masterwid);
++		break;
+ 	default:
+ 		pr_info("xtalk:n%d/%d unknown widget (0x%x)\n",
+ 			nasid, widget, partnum);
 -- 
 2.47.3
 

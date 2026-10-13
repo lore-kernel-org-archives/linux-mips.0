@@ -1,39 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4928A522F00;
-	Tue, 13 Oct 2026 13:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656CF522EF3;
+	Tue, 13 Oct 2026 13:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897568; cv=none; b=cu3mn6SBO0N461eexT+DhB8vdDR8lI6HMBBtHjEFi4tdaJxAQ2X4vakgwzPWKNqJ5SOInb9BC+CUJTQsaxENTij23KEvOWs5qdm7QSPejnu9D8AtPPpiG/roEGz9kb0DEjK0vIev1HszifESvRMCJClILNni5WhDmZQ4hd4uTaE=
+	t=1791897570; cv=none; b=OtdkfAnvEklH+230Q/qj9vhDzqpxaOzxT1sO/Zn53rPmi+5k3dyV6GWyF+739k3VZwQ8ODITLromomqhmiy68H086ZVcXz/gBN7mqw+TYPWI9cByks+taDnwXEpoUjXucht7gn6Bki8BoqtLE5FK0EJR7KD9TuSGCk1xK2opne0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897568; c=relaxed/simple;
-	bh=CrM0EJ/80xcymeJ9rBkc54stg3u37KmomijV1aPQeTU=;
+	s=arc-20240116; t=1791897570; c=relaxed/simple;
+	bh=zSi3HcqF79H52t6/KM+fLFZI8scbUR2r0wJElkz0t5U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TIaUUaqCq4qqVt1iq7MxT9pywLrf8prKEM/P1KYhb9X0oLjEOzvzbvk67gyJ41lv8+aLht2FLW0sxXVUaGCCiwblLl/nLXzwEJp9NOXOJSppIPLstGIWmNc643WnpnkwJ3473WRd9N2LL+QWEX9Jnrn10HKWeBvTOLNPNXlCM8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgCdaub+; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=oCe5rAxjfPdc+O8e39fdWemca2vKnR1C3tR8AORj/B/d5lMfGcBB6jh7Wz6rTiC7yu/Yh8tvKnxk0C84JXCfOlTBasrhZNttH/EX1Hjc36UhgjNxf7/NIPzX9p/LVSHeug2SkfpowVlAgLaAVEWtVOakm9nINJLKRTQdrSiW/9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cObPB8lK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgCdaub+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F05051F000FF;
-	Tue, 13 Oct 2026 13:19:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cObPB8lK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD4DD1F00893;
+	Tue, 13 Oct 2026 13:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897567;
-	bh=D+TBvWMLvmBKwy00oRCucrcOrehKh88e2lighJV2U4c=;
+	s=k20260515; t=1791897569;
+	bh=WIiKNeDNzRujP8sK5SnI4wnmCS4jvciUXv1qk79M3Ok=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=DgCdaub+KjSiCbG5p+snOypdbw3GcbfyeEmJehkkCKR8qkW66gFzLNXfMQ5pn+jbV
-	 WPu+ta8s271O0bKGoIUl0tcT6eIKDwZ7mFw8v0xwPqVo9sr9frTddto0l0aTNrjWrl
-	 j3zfR9HZyx/p+DS2Hn3lI6VfcjOoPPe2SJ0MIE7rpZ4gt95iGSVCl8tAqEokyCGKL+
-	 9UG0kvlW0Y580FGzfj2bTNipHsN5ZMC2A6NHxVsNH5BxUc2Z6bVt4ODP+rO+gF8rfj
-	 OBV6ubEQ5L/ST16PnRtlPNkXgH+vx2HqR4TXSPBH8TuLbmn+JIspb3SQJXkUEV4uuh
-	 6kcM42ABdwywQ==
+	b=cObPB8lKweikkgjZ77cS0Xv+TppngwKq1lcSoMLM8z58z3aTWNCetczz6FXbhOsO3
+	 3BXD9844iVeGGb1TY5twml5McXiVXTRaIsU8cexCmkJN6ydBNhpLm+BhNRTbuGDYsn
+	 soE2el1w+kzmgNMizVqUu9UE5ATDXg9pSFo3mI/9eEbz199sc3tyrzK7zNe021VqK3
+	 IznEuji6yb9fX6Zu94cO79n3MUqyqCAJ1nz7W4e8RfcTsoWfFiJmh4w4DTZqw/mWSO
+	 QBSSl9wQ+fD09CZQwe14OazlVcwIadW6hlXFWQmmKhOmgPoKxTIjP6pCoiQteM8hCa
+	 bQxwEtndnx0fw==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lee Jones <lee@kernel.org>
-Subject: [PATCH v2 28/53] MIPS: PCI: xtalk-bridge: recognize the PIC widget's 64-bit-only registers
-Date: Tue, 13 Oct 2026 15:16:48 +0200
-Message-ID: <15b805388c1af0ecfacfb317980d56c3ab968899.1791890466.git.kaloz@kernel.org>
+Subject: [PATCH v2 29/53] MIPS: PCI: xtalk-bridge: match PIC's register-level differences
+Date: Tue, 13 Oct 2026 15:16:49 +0200
+Message-ID: <b9fc15824764ac21f088ef16b98070340b0f1288.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -45,190 +45,200 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-PIC replicates the Bridge/XBridge register layout, twice in one widget
-window for its two PCI buses, and does not accept a 32-bit write to half
-of a 64-bit register. Flag it, widen the register accessors to the
-double word, and spawn a controller per bus.
+PIC's config space puts the ASIC at device 0 and the slots at 1-4, its
+write-request RAM needs clearing, and b_int_addr[] takes a full XIO
+address. Handle each, and clear PIC's NO_SNOOP and RELAX_ORDER bits.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/include/asm/pci/bridge.h | 70 +++++++++++++++++++++++++++---
- arch/mips/sgi-ip27/ip27-xtalk.c    | 30 ++++++++++---
- 2 files changed, 89 insertions(+), 11 deletions(-)
+ arch/mips/include/asm/pci/bridge.h | 11 ++++++
+ arch/mips/pci/pci-xtalk-bridge.c   | 60 +++++++++++++++++++++++-------
+ 2 files changed, 58 insertions(+), 13 deletions(-)
 
 diff --git a/arch/mips/include/asm/pci/bridge.h b/arch/mips/include/asm/pci/bridge.h
-index 647ea5c9e34b..cbf36bcbe0b7 100644
+index cbf36bcbe0b7..ec17f4bcc6e8 100644
 --- a/arch/mips/include/asm/pci/bridge.h
 +++ b/arch/mips/include/asm/pci/bridge.h
-@@ -12,6 +12,8 @@
- #ifndef _ASM_PCI_BRIDGE_H
- #define _ASM_PCI_BRIDGE_H
+@@ -372,6 +372,12 @@ struct bridge_err_cmdword {
  
-+#include <linux/build_bug.h>
-+#include <linux/stddef.h>
- #include <linux/types.h>
- #include <linux/pci.h>
- #include <asm/xtalk/xwidget.h>		/* generic widget header */
-@@ -39,6 +41,9 @@
- #define BRIDGE_SSRAM_64K	0x00010000	/* 64kB */
- #define BRIDGE_SSRAM_0K		0x00000000	/* 0kB */
+ #define BRIDGE_ATE_RAM		0x00010000	/* Internal Addr Xlat Ram */
  
-+/* PIC replicates its register block twice within one widget's 16MB window. */
-+#define PIC_BUS1_OFFSET		0x800000
++/* PIC Write Request RAM: three 256-entry, 64-bit arrays. */
++#define PIC_WR_REQ_BUFSIZE	256
++#define PIC_WR_REQ_LOWER	0x00018000
++#define PIC_WR_REQ_UPPER	0x00018800
++#define PIC_WR_REQ_PARITY	0x00019000
 +
- /* ========================================================================
-  *    Bridge address map
-  */
-@@ -264,6 +269,15 @@ struct bridge_regs {
- 	} b_external_flash;			/* 0xC00000 */
- };
+ #define BRIDGE_TYPE0_CFG_DEV0	0x00020000	/* Type 0 Cfg, Device 0 */
+ #define BRIDGE_TYPE0_CFG_SLOT_OFF	0x00001000	/* Type 0 Cfg Slot Offset (1..7) */
+ #define BRIDGE_TYPE0_CFG_FUNC_OFF	0x00000100	/* Type 0 Cfg Func Offset (1..7) */
+@@ -389,6 +395,7 @@ struct bridge_err_cmdword {
+ /* Byte offset macros for Bridge device IO spaces */
  
-+/*
-+ * Pin b_device[]/b_rrb_map[]'s low-half placement: bridge_readl() and
-+ * bridge_writel() rely on it.
-+ */
-+static_assert(offsetof(struct bridge_regs, b_device[0].reg) == 0x204);
-+static_assert(offsetof(struct bridge_regs, b_device[1].reg) == 0x20c);
-+static_assert(offsetof(struct bridge_regs, b_rrb_map[0].reg) == 0x284);
-+static_assert(offsetof(struct bridge_regs, b_rrb_map[1].reg) == 0x28c);
-+
- /*
-  * Field formats for Error Command Word and Auxiliary Error Command Word
-  * of bridge.
-@@ -394,6 +408,7 @@ struct bridge_err_cmdword {
- /* Widget part number of bridge */
- #define BRIDGE_WIDGET_PART_NUM		0xc002
- #define XBRIDGE_WIDGET_PART_NUM		0xd002
-+#define PIC_WIDGET_PART_NUM		0xd102
+ #define BRIDGE_DEV_CNT		8	/* Up to 8 devices per bridge */
++#define PIC_NSLOTS		4	/* PIC: 4 devices per bus */
+ #define BRIDGE_DEVIO0		0x00200000	/* Device IO 0 Addr */
+ #define BRIDGE_DEVIO1		0x00400000	/* Device IO 1 Addr */
+ #define BRIDGE_DEVIO2		0x00600000	/* Device IO 2 Addr */
+@@ -461,6 +468,10 @@ struct bridge_err_cmdword {
+ #define BRIDGE_CTRL_WIDGET_ID(n)	((n) << 0)
+ #define BRIDGE_CTRL_WIDGET_ID_MASK	(BRIDGE_CTRL_WIDGET_ID(0xf))
  
- /* Manufacturer of bridge */
- #define BRIDGE_WIDGET_MFGR_NUM		0x036
-@@ -822,11 +837,54 @@ struct bridge_controller {
- #define BRIDGE_CONTROLLER(bus) \
- 	((struct bridge_controller *)((bus)->sysdata))
++/* PIC-only widget control bits, upper 32 bits of the register. */
++#define PIC_CTRL_NO_SNOOP		(0x1ull << 62)
++#define PIC_CTRL_RELAX_ORDER		(0x1ull << 61)
++
+ /* Bridge Response buffer Error Upper Register bit fields definition */
+ #define BRIDGE_RESP_ERRUPPR_DEVNUM_SHFT (20)
+ #define BRIDGE_RESP_ERRUPPR_DEVNUM_MASK (0x7 << BRIDGE_RESP_ERRUPPR_DEVNUM_SHFT)
+diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
+index 03ccb82a6189..b2c3a8b207da 100644
+--- a/arch/mips/pci/pci-xtalk-bridge.c
++++ b/arch/mips/pci/pci-xtalk-bridge.c
+@@ -178,7 +178,7 @@ static int ioc3_cfg_wr(void *addr, int where, int size, u32 value)
  
--#define bridge_read(bc, reg)		__raw_readl(&bc->base->reg)
--#define bridge_write(bc, reg, val)	__raw_writel(val, &bc->base->reg)
--#define bridge_set(bc, reg, val)	\
--	__raw_writel(__raw_readl(&bc->base->reg) | (val), &bc->base->reg)
--#define bridge_clr(bc, reg, val)	\
--	__raw_writel(__raw_readl(&bc->base->reg) & ~(val), &bc->base->reg)
-+/*
-+ * PIC does not accept a 32-bit write to half of a 64-bit register, so
-+ * widen each access to the 8-byte-aligned double word and extract or
-+ * insert the 32-bit value at its byte position. The pointer is
-+ * volatile-qualified because widget_cfg_t is, and b_widget sits in
-+ * every bridge_regs.
-+ */
-+static inline u32 bridge_readl(struct bridge_controller *bc, volatile u32 *reg)
-+{
-+	void *dw;
-+	unsigned int shift;
-+
-+	if (likely(!bc->is_pic))
-+		return __raw_readl(reg);
-+
-+	dw = (void *)((unsigned long)reg & ~7UL);
-+	shift = ((unsigned long)reg & 4) ? 0 : 32;
-+
-+	return __raw_readq(dw) >> shift;
-+}
-+
-+static inline void bridge_writel(struct bridge_controller *bc,
-+				 volatile u32 *reg, u32 val)
-+{
-+	void *dw;
-+	unsigned int shift;
-+	u64 tmp;
-+
-+	if (likely(!bc->is_pic)) {
-+		__raw_writel(val, reg);
-+		return;
-+	}
-+
-+	dw = (void *)((unsigned long)reg & ~7UL);
-+	shift = ((unsigned long)reg & 4) ? 0 : 32;
-+
-+	tmp = __raw_readq(dw);
-+	tmp = (tmp & ~(0xffffffffULL << shift)) | ((u64)val << shift);
-+	__raw_writeq(tmp, dw);
-+}
-+
-+#define bridge_read(bc, reg)		bridge_readl(bc, &bc->base->reg)
-+#define bridge_write(bc, reg, val)	bridge_writel(bc, &bc->base->reg, val)
-+#define bridge_set(bc, reg, val)				\
-+	bridge_writel(bc, &bc->base->reg,			\
-+		      bridge_readl(bc, &bc->base->reg) | (val))
-+#define bridge_clr(bc, reg, val)				\
-+	bridge_writel(bc, &bc->base->reg,			\
-+		      bridge_readl(bc, &bc->base->reg) & ~(val))
+ static int bridge_nslots(struct bridge_controller *bc)
+ {
+-	return BRIDGE_DEV_CNT;
++	return bc->is_pic ? PIC_NSLOTS : BRIDGE_DEV_CNT;
+ }
  
- #endif /* _ASM_PCI_BRIDGE_H */
-diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
-index 105977316391..73b2eef96bdb 100644
---- a/arch/mips/sgi-ip27/ip27-xtalk.c
-+++ b/arch/mips/sgi-ip27/ip27-xtalk.c
-@@ -27,6 +27,8 @@
- enum xtalk_bridge_type {
- 	XTALK_BRIDGE,
- 	XTALK_XBRIDGE,
-+	XTALK_PIC_BUS0,
-+	XTALK_PIC_BUS1,
- };
+ static void bridge_disable_swapping(struct pci_dev *dev)
+@@ -213,6 +213,8 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ 	struct bridge_controller *bc = BRIDGE_CONTROLLER(bus);
+ 	struct bridge_regs *bridge = bc->base;
+ 	int slot = PCI_SLOT(devfn);
++	/* PIC config-space device 0 is the PIC ASIC; devices start at 1. */
++	int cfgslot = bc->is_pic ? slot + 1 : slot;
+ 	int fn = PCI_FUNC(devfn);
+ 	void *addr;
+ 	u32 cf;
+@@ -225,7 +227,7 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ 	if (slot >= bridge_nslots(bc))
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
  
- static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
-@@ -88,21 +90,32 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid,
+-	addr = &bridge->b_type0_cfg_dev[slot].f[fn].c[PCI_VENDOR_ID];
++	addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].c[PCI_VENDOR_ID];
+ 	if (get_dbe(cf, (u32 *)addr))
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 
+@@ -234,12 +236,12 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16))) {
+-		addr = &bridge->b_type0_cfg_dev[slot].f[fn].l[where >> 2];
++		addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].l[where >> 2];
+ 		return ioc3_cfg_rd(addr, where, size, value,
+ 				   bc->ioc3_sid[slot]);
  	}
  
+-	addr = &bridge->b_type0_cfg_dev[slot].f[fn].c[where ^ (4 - size)];
++	addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].c[where ^ (4 - size)];
  
--	bd->bridge_addr = RAW_NODE_SWIN_BASE(nasid, widget);
-+	bd->bridge_addr = RAW_NODE_SWIN_BASE(nasid, widget) +
-+			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0);
- 	bd->intr_addr	= BIT_ULL(47) + 0x01800000 + PI_INT_PEND_MOD;
- 	bd->nasid	= nasid;
- 	bd->masterwid	= masterwid;
- 	bd->is_xbridge	= type == XTALK_XBRIDGE;
-+	bd->is_pic	= type == XTALK_PIC_BUS0 || type == XTALK_PIC_BUS1;
+ 	if (size == 1)
+ 		res = get_dbe(*value, (u8 *)addr);
+@@ -305,6 +307,8 @@ static int pci_conf0_write_config(struct pci_bus *bus, unsigned int devfn,
+ 	struct bridge_controller *bc = BRIDGE_CONTROLLER(bus);
+ 	struct bridge_regs *bridge = bc->base;
+ 	int slot = PCI_SLOT(devfn);
++	/* See the matching comment in pci_conf0_read_config(). */
++	int cfgslot = bc->is_pic ? slot + 1 : slot;
+ 	int fn = PCI_FUNC(devfn);
+ 	void *addr;
+ 	u32 cf;
+@@ -313,7 +317,7 @@ static int pci_conf0_write_config(struct pci_bus *bus, unsigned int devfn,
+ 	if (slot >= bridge_nslots(bc))
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
  
-+	/* Split a PIC's window at bus 1 or its resource request fails. */
- 	bd->mem.name	= "Bridge PCI MEM";
--	bd->mem.start	= offset + (widget << SWIN_SIZE_BITS) + BRIDGE_DEVIO0;
--	bd->mem.end	= offset + (widget << SWIN_SIZE_BITS) + SWIN_SIZE - 1;
-+	bd->mem.start	= offset + (widget << SWIN_SIZE_BITS) +
-+			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0) +
-+			  BRIDGE_DEVIO0;
-+	bd->mem.end	= offset + (widget << SWIN_SIZE_BITS) +
-+			  (type == XTALK_PIC_BUS0 ? PIC_BUS1_OFFSET :
-+						    SWIN_SIZE) - 1;
- 	bd->mem.flags	= IORESOURCE_MEM;
- 	bd->mem_offset	= offset;
+-	addr = &bridge->b_type0_cfg_dev[slot].f[fn].c[PCI_VENDOR_ID];
++	addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].c[PCI_VENDOR_ID];
+ 	if (get_dbe(cf, (u32 *)addr))
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
  
- 	bd->io.name	= "Bridge PCI IO";
--	bd->io.start	= offset + (widget << SWIN_SIZE_BITS) + BRIDGE_DEVIO0;
--	bd->io.end	= offset + (widget << SWIN_SIZE_BITS) + SWIN_SIZE - 1;
-+	bd->io.start	= offset + (widget << SWIN_SIZE_BITS) +
-+			  (type == XTALK_PIC_BUS1 ? PIC_BUS1_OFFSET : 0) +
-+			  BRIDGE_DEVIO0;
-+	bd->io.end	= offset + (widget << SWIN_SIZE_BITS) +
-+			  (type == XTALK_PIC_BUS0 ? PIC_BUS1_OFFSET :
-+						    SWIN_SIZE) - 1;
- 	bd->io.flags	= IORESOURCE_IO;
- 	bd->io_offset	= offset;
+@@ -322,11 +326,11 @@ static int pci_conf0_write_config(struct pci_bus *bus, unsigned int devfn,
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16))) {
+-		addr = &bridge->b_type0_cfg_dev[slot].f[fn].l[where >> 2];
++		addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].l[where >> 2];
+ 		return ioc3_cfg_wr(addr, where, size, value);
+ 	}
  
-@@ -149,6 +162,13 @@ static int probe_one_port(nasid_t nasid, int widget, int masterwid)
- 	case XBRIDGE_WIDGET_PART_NUM:
- 		bridge_platform_create(nasid, widget, masterwid, XTALK_XBRIDGE);
- 		break;
-+	case PIC_WIDGET_PART_NUM:
-+		/* PIC always has both buses in silicon: probe each. */
-+		bridge_platform_create(nasid, widget, masterwid,
-+				       XTALK_PIC_BUS0);
-+		bridge_platform_create(nasid, widget, masterwid,
-+				       XTALK_PIC_BUS1);
-+		break;
- 	default:
- 		pr_info("xtalk:n%d/%d unknown widget (0x%x)\n",
- 			nasid, widget, partnum);
+-	addr = &bridge->b_type0_cfg_dev[slot].f[fn].c[where ^ (4 - size)];
++	addr = &bridge->b_type0_cfg_dev[cfgslot].f[fn].c[where ^ (4 - size)];
+ 
+ 	if (size == 1)
+ 		res = put_dbe(value, (u8 *)addr);
+@@ -406,6 +410,22 @@ struct bridge_irq_chip_data {
+ 	nasid_t nasid;
+ };
+ 
++/* PIC takes the full 48-bit XIO address here, source in bits 55:48. */
++static void bridge_set_int_addr(struct bridge_controller *bc, int pin,
++				int bit, nasid_t nasid)
++{
++	if (bc->is_pic) {
++		void *addr = &bc->base->b_int_addr[pin];
++		u64 xio = bc->intr_addr & ((1ULL << 48) - 1);
++
++		__raw_writeq(((u64)bit << 48) | xio, addr);
++	} else {
++		bridge_write(bc, b_int_addr[pin].addr,
++			     (((bc->intr_addr >> 30) & 0x30000) |
++			      bit | (nasid << 8)));
++	}
++}
++
+ static int bridge_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 			       bool force)
+ {
+@@ -419,9 +439,7 @@ static int bridge_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 	if (ret >= 0) {
+ 		cpu = cpumask_first_and(mask, cpu_online_mask);
+ 		data->nasid = cpu_to_node(cpu);
+-		bridge_write(data->bc, b_int_addr[pin].addr,
+-			     (((data->bc->intr_addr >> 30) & 0x30000) |
+-			      bit | (data->nasid << 8)));
++		bridge_set_int_addr(data->bc, pin, bit, data->nasid);
+ 		bridge_read(data->bc, b_wid_tflush);
+ 	}
+ 	return ret;
+@@ -485,9 +503,7 @@ static int bridge_domain_activate(struct irq_domain *domain,
+ 	int pin = irqd->hwirq;
+ 	u32 device;
+ 
+-	bridge_write(bc, b_int_addr[pin].addr,
+-		     (((bc->intr_addr >> 30) & 0x30000) |
+-		      bit | (data->nasid << 8)));
++	bridge_set_int_addr(bc, pin, bit, data->nasid);
+ 	bridge_set(bc, b_int_enable, (1 << pin));
+ 	bridge_set(bc, b_int_enable, 0x7ffffe00); /* more stuff in int_enable */
+ 
+@@ -1044,6 +1060,24 @@ static int bridge_probe(struct platform_device *pdev)
+ 	bridge_set(bc, b_wid_control, BRIDGE_CTRL_PAGE_SIZE);
+ #endif
+ 
++	if (bc->is_pic) {
++		unsigned long ctrl = (unsigned long)&bc->base->b_wid_control;
++		void *ctrl64 = (void *)(ctrl & ~7UL);
++		int i;
++
++		/* Keep DMA snooped and ordered. */
++		__raw_writeq(__raw_readq(ctrl64) &
++			     ~(PIC_CTRL_NO_SNOOP | PIC_CTRL_RELAX_ORDER),
++			     ctrl64);
++
++		/* Clear so a stale entry can't trip a parity error. */
++		for (i = 0; i < PIC_WR_REQ_BUFSIZE * 8; i += 8) {
++			__raw_writeq(0, (u8 *)bc->base + PIC_WR_REQ_LOWER + i);
++			__raw_writeq(0, (u8 *)bc->base + PIC_WR_REQ_UPPER + i);
++			__raw_writeq(0, (u8 *)bc->base + PIC_WR_REQ_PARITY + i);
++		}
++	}
++
+ 	/*
+ 	 * Hmm...  IRIX sets additional bits in the address which
+ 	 * are documented as reserved in the bridge docs.
 -- 
 2.47.3
 

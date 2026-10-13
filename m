@@ -1,39 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185C1521221;
-	Tue, 13 Oct 2026 13:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E949F52123C;
+	Tue, 13 Oct 2026 13:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897543; cv=none; b=dEg5h/Bn1zpMRtt1fJqktIqXQX93K3y6WEiw5q0wDu0/39/29hme1XMEjI4xDiylFo2Yledn8cK3rPTk1lVhIbIvJksAnjXDvw6sShNRjbXxUX4I7Nvk82B8tBoRlqUxs4nY8Bx2Bzzqz9M98gwMpLQYOJx/a8rDethUY5WeUCs=
+	t=1791897544; cv=none; b=FS16cAQBnoss1jqaEQlS/L+AypcpCKIsN7V7qF7lSIZAoIVGUuBp20Yc3j1EowcZ9NX+Zfj7wye1DPWEYIkXxippiFRuXAtczHTynNkLaoFSu5tBpZjQtHJNlxbOSWJjsnTZ2JbO+jqi8GdgCWDJyXOjqVoYr/hLQbRlYT1zBgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897543; c=relaxed/simple;
-	bh=hRyq95jeA7bYtX595jP4Y2lSWzHdBKa/Xe6AAuH5LHs=;
+	s=arc-20240116; t=1791897544; c=relaxed/simple;
+	bh=1a6p8La4O+gZvyhbPBARC27fHfoLIMt7OPma6tfmIz4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lnTo61pxTQzTPr/p1HksDI8L6rDbyX+ifFr5AgMoga1Te0ZMezydEyx9B2D2tm3lW+UgUuCNmgSOUjByTz+ci+0V/7h1EhiEVDQUCHj5cPYhMjGApPVx0Gqd756onXHMqvA4nl6BUJ5bQrSrqFN3MvOAopr/+EsgW2oyjgsXnUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nyoutZoN; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=OdWZxBeq3ye6FpR2rCNWxu2HKGMvSc2M+xacZVNfBcE2sVZuN5R7Qw94u1ksZ/LZbC7GTyBwKHZoriAyzDGVfBEl1FXWG9hEW5eq044rAPdLKYPTtz51WiU76KsklF/leju0/+ywvv9PHj0of1b8xt8hqmrPxJtRSFHb8oQhQPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCy8aBnY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nyoutZoN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF6E51F00893;
-	Tue, 13 Oct 2026 13:19:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCy8aBnY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D021F000FF;
+	Tue, 13 Oct 2026 13:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897542;
-	bh=mBP6pSGNHgICxEEzwZvqPhFYoxdpGjTywawTPRgXIcQ=;
+	s=k20260515; t=1791897543;
+	bh=W9AXGHXT1++O8dEXmJWWVcm6McGUIZriO4dqTiwr3u4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=nyoutZoNSwaXnbv3P1y/zCORVNDVKr4QuryUv36QdVVWGzDhRcSt2frF+dHQAP6wm
-	 rPauQ2y9fU1cvLIUXDdcKEM4sAafb5fhM6scPteRaB2zULEp50e+txalJVT5aSOL8a
-	 YpUcUHCJG1/1Je4rSBsP9R5b7oM60CsHu5JzUFfste8TysUUupPMkPEqbI4fhdYmq1
-	 7W80JwQ6++2Mro2Mwe2yIpu4W5NoG92uSAFq517MLyynddUEpMYcmy18IL68lffHS7
-	 +Dsf7cXQMlRmVyuF1NmAsU4j8yfJqWc+lb62drQa9TAmNBiLRT1qKfCxTmW6x5tITu
-	 +2Gcbmt4ehXzA==
+	b=VCy8aBnY/4NxhqF8RtIR1aEigCLFgUlDxXaBpyQZZLkIDXFvAfXYHacTlV5YyG6Yo
+	 qhQfgLyn7VC073R8USR2MuF4zS+m1UYUgk8FXZPR0G9qDtax2AqM/1fwQnBWQD2WJQ
+	 H6N8ldT1FUJMmhluncZLfwJF57F9kA7yTvrXd9IS1mnSA9Gdfc96mHVbOhp4HeWwSo
+	 a0Auv+0WpNQF4CpyHw7DcglDA5PHbzLznlQtlvM89kC7GpNn+bmrZLy48JUhuqbPcy
+	 QjUeo1J3z9jokonZIjW2B5N950AERORBti2i/1mHmQSESuaS75jbFWKW74Deh1o+oC
+	 LmQZp2+KLs72A==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lee Jones <lee@kernel.org>
-Subject: [PATCH v2 16/53] MIPS: SGI-IP27: lay out node memory in 1GB banks on Bedrock hubs
-Date: Tue, 13 Oct 2026 15:16:36 +0200
-Message-ID: <c99a1738b90b0e63fc62acf11025b8fc0dbc6ddc.1791890466.git.kaloz@kernel.org>
+Subject: [PATCH v2 17/53] MIPS: SGI-IP27: reserve the bottom 64MB of node 0 on Bedrock hubs
+Date: Tue, 13 Oct 2026 15:16:37 +0200
+Message-ID: <07f9803ba7742f9f2e2243b857c41ecfbcc3b3d6.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -45,94 +45,60 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hub describes a node's memory as 128MB slots, four slots to a
-klconfig bank entry. Bedrock gives each bank entry a 1GB slot of its
-own and sizes it in megabytes. Take the slot shift, the slot count and
-the bank size from the hub generation.
+On Bedrock hubs, reserve the first 64MB of physical memory, the bottom
+of node 0, and place node 0's node data above it. node_getfirstfree()
+covers only the kernel image, so the area needs a reservation of its
+own.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/sgi-ip27/ip27-memory.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+ arch/mips/sgi-ip27/ip27-memory.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 4317f5ae1fd1..0204dc8bb1bb 100644
+index 0204dc8bb1bb..98184dfcd8c5 100644
 --- a/arch/mips/sgi-ip27/ip27-memory.c
 +++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -31,9 +31,16 @@
+@@ -17,6 +17,7 @@
+ #include <linux/mmzone.h>
+ #include <linux/export.h>
+ #include <linux/nodemask.h>
++#include <linux/sizes.h>
+ #include <linux/swap.h>
+ #include <linux/pfn.h>
+ #include <linux/highmem.h>
+@@ -36,6 +37,9 @@
+ /* A Bedrock node's memory comes in 1GB banks. */
+ #define BEDROCK_SLOT_SHIFT	30
  
- #include "ip27-common.h"
- 
--#define SLOT_PFNSHIFT		(SLOT_SHIFT - PAGE_SHIFT)
- #define PFN_NASIDSHFT		(NASID_SHFT - PAGE_SHIFT)
- 
-+/* A Bedrock node's memory comes in 1GB banks. */
-+#define BEDROCK_SLOT_SHIFT	30
++/* Reserved at the bottom of node 0, which starts at physical 0. */
++#define BEDROCK_RSVD_SIZE	SZ_64M
 +
-+static unsigned int __init slot_shift(void)
-+{
-+	return system_is_ip35 ? BEDROCK_SLOT_SHIFT : SLOT_SHIFT;
-+}
-+
- struct node_data *__node_data[MAX_NUMNODES];
- EXPORT_SYMBOL(__node_data);
- 
-@@ -230,7 +237,8 @@ static void __init dump_topology(void)
- 
- static unsigned long __init slot_getbasepfn(nasid_t nasid, int slot)
+ static unsigned int __init slot_shift(void)
  {
--	return ((unsigned long)nasid << PFN_NASIDSHFT) | (slot << SLOT_PFNSHIFT);
-+	return ((unsigned long)nasid << PFN_NASIDSHFT) |
-+	       ((unsigned long)slot << (slot_shift() - PAGE_SHIFT));
- }
+ 	return system_is_ip35 ? BEDROCK_SLOT_SHIFT : SLOT_SHIFT;
+@@ -370,6 +374,10 @@ static void __init node_mem_init(nasid_t node)
  
- static unsigned long __init slot_psize_compute(nasid_t nasid, int slot)
-@@ -249,6 +257,12 @@ static unsigned long __init slot_psize_compute(nasid_t nasid, int slot)
- 	if (!banks)
- 		return 0;
+ 	get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
  
-+	/* Bedrock bank entry N sizes the 1GB slot N, in megabytes. */
-+	if (system_is_ip35) {
-+		size = (unsigned long)banks->membnk_bnksz[slot];
-+		return (size << 20) >> PAGE_SHIFT;
-+	}
++	/* Keep the node data above the reserved area. */
++	if (system_is_ip35 && node == 0)
++		slot_freepfn = max(slot_freepfn, PFN_UP(BEDROCK_RSVD_SIZE));
 +
- 	/* Size in _Megabytes_ */
- 	size = (unsigned long)banks->membnk_bnksz[slot/4];
+ 	/*
+ 	 * Allocate the node data structures on the node first.
+ 	 */
+@@ -410,6 +418,10 @@ void __init prom_meminit(void)
  
-@@ -315,12 +329,13 @@ static void __init mlreset(void)
- static void __init szmem(void)
- {
- 	unsigned long slot_psize, slot0sz = 0, nodebytes;	/* Hack to detect problem configs */
-+	int slots = system_is_ip35 ? MD_MEM_BANKS : MAX_MEM_SLOTS;
- 	int slot;
- 	nasid_t node;
+ 	mlreset();
+ 	szmem();
++
++	if (system_is_ip35)
++		memblock_reserve(0, BEDROCK_RSVD_SIZE);
++
+ 	max_low_pfn = PHYS_PFN(memblock_end_of_DRAM());
  
- 	for_each_online_node(node) {
- 		nodebytes = 0;
--		for (slot = 0; slot < MAX_MEM_SLOTS; slot++) {
-+		for (slot = 0; slot < slots; slot++) {
- 			slot_psize = slot_psize_compute(node, slot);
- 			if (slot == 0)
- 				slot0sz = slot_psize;
-@@ -328,7 +343,7 @@ static void __init szmem(void)
- 			 * We need to refine the hack when we have replicated
- 			 * kernel text.
- 			 */
--			nodebytes += (1LL << SLOT_SHIFT);
-+			nodebytes += (1LL << slot_shift());
- 
- 			if (!slot_psize)
- 				continue;
-@@ -337,7 +352,7 @@ static void __init szmem(void)
- 						(slot0sz << PAGE_SHIFT)) {
- 				pr_info("Ignoring slot %d onwards on node %d\n",
- 								slot, node);
--				slot = MAX_MEM_SLOTS;
-+				slot = slots;
- 				continue;
- 			}
- 			memblock_add_node(PFN_PHYS(slot_getbasepfn(node, slot)),
+ 	for (node = 0; node < MAX_NUMNODES; node++) {
 -- 
 2.47.3
 

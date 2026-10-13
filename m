@@ -1,42 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6B852BE31;
-	Tue, 13 Oct 2026 13:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB53352CCE2;
+	Tue, 13 Oct 2026 13:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897608; cv=none; b=pHAXxoedwaoMK43jkMFfBLzGkcBUxV3fmDF3959zKJ6CQzWny/OvMuknIBHwNgfdtjd4GuimDEi8i6/ntP/+GkEyghzXIne0sPshHyyJqgefml++tLLJY1HUE5mIZCiDt7d6KXzMROgSJw67THPcYhfWhlOTxMAbzrL8Ra9GwjY=
+	t=1791897611; cv=none; b=Ri+PvPN/u1sl0d/TVAGKdUwZ9z+Lhe7w/Gf50oJGE//JioPJnZFVrIfsptdJlUm50nSMSC/K8X2KnZ9vcm+6zgPBr5XAJk9HPp6AVbgQOfT6ibQaOaX5ATBNSBxtcVLaZF9UZZxZo3LLZ6Oj0Xo6ERPO/blp5pjExzlQ62EVESY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897608; c=relaxed/simple;
-	bh=a2w0pxd7qkkN9gG85gc3cuvyVXHYjkOjPA17mVGPhMM=;
+	s=arc-20240116; t=1791897611; c=relaxed/simple;
+	bh=ZsCibNfHVpmODyeW+kDskAOvaZbtna9nOOUXItoncOI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Sg/+ChtOzk8avAf6mjMQpwxD2cHrV2xsQqsJX2rWvePO3c8OsqPxRwm3NMG1AHM+FJAVjAsVPaKW3uCz8XIH9qHC0wlsCXmA+HA0rLbk7LB/Lu/OqYHU2Sh7EvuLgIgAW5kjb3LxsKyM1hr/vrMCWC3SjkqXZtcVzbYNM3ND81k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lY3BtV7m; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=lB7BT6yvkwxZUmB9N6rrVruVVrhLw3EnvgMO1yodEg+ZqY8XrVMYEtU0HdfrqjSkqWxKGJOEXwUX49mb2BEXEykX2M2NVLcdeT3KQVG9aZg0V3y2cPLY6pDYW7VFBZe4KWLNtSzR7+oT4DYgOo9KuCQBV/Er7mJWO7l5nxmqv50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ApP1SDOP; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lY3BtV7m"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 087AD1F00893;
-	Tue, 13 Oct 2026 13:20:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ApP1SDOP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF9A1F000FF;
+	Tue, 13 Oct 2026 13:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897607;
-	bh=cuYWs1nQ+WZdkccxXDyRboJzFrnZwgbW7zMkiE2i1O4=;
+	s=k20260515; t=1791897609;
+	bh=NGjPxtYP8d19DLpFJz8y4OTFxlH9aI6IW0UxwqJ67i0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=lY3BtV7m0Oox5pJixXm3yIq74EPRtw1o+ENN8Wf4P4GJAy8IryMulziYaqq5hkmL/
-	 0wGUUZljyuPCNQVww5PeTSm+QvRYa049Xltowhc3vPLdtSpnE2V6gv4PMddwXhSj2Q
-	 6RDco83l0i2Bl/Vhar6pt/asvTPNG9JHLFraQMua/Ogu+rAzFZIcAUxUiWAZeS9Oh/
-	 FFLE10Tj7G0rB59lstlWr7eRIhP9eAbX546XYqtGoFyBzoFPZfHpmNjFz3+Qkkl/lm
-	 j5qkoJ5JjphcmqiKYtiO8eTQwI59gX27O+YysUBQjQvjbP8u942TVNDjZHYPIi19d8
-	 ZoOmJDCDPzsmg==
+	b=ApP1SDOPp14qjZp6i5Ps2KkR04BnkODXOSXqfCGfybfog1KDY8Nf482uN94FjsaqC
+	 y4DDVCY2pLsQI6ckVV6Vcn+i+LkPDSPfH9inA7cIZzfiUKXxwQgpisi32IFupoBuXv
+	 iwN6st/v8i1kmJQTTtt0cXr7KrRAm90Kw/w8lI5NPfFygxIa8EMpBH5bGeViXwS75I
+	 5VM3iRSgMcqDBMBfYF8B7J+VAQEKP+S9aJNLVN3lYm//I2Awa/BXOP4avku+8yK+9u
+	 YTSmJSJGbnEken6RRdU4k1w5g5PBtUELmXgdWqABJx9WlGv+pMBsGlA9yLi+SUfg6+
+	 MPWiOPl5030vQ==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	linux-ide@vger.kernel.org
-Subject: [PATCH v2 47/53] MAINTAINERS: add an entry for the SGI IOC4 ATA driver
-Date: Tue, 13 Oct 2026 15:17:07 +0200
-Message-ID: <7e185e14e16f071b0850087e30f6cac4af85b1f1.1791890466.git.kaloz@kernel.org>
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH v2 48/53] MIPS: ip27_defconfig: update for the onboard hardware
+Date: Tue, 13 Oct 2026 15:17:08 +0200
+Message-ID: <d72d2f94d1aa021780da85417dcc246a3d317b97.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -48,31 +45,305 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add an entry for drivers/ata/pata_sgiioc4.c, the libata driver for the
-IOC4 ATA/ATAPI controller.
+Drop add-in card and SoC drivers no IP27 or IP35 machine carries
+(wireless, PCI NICs and PHYs, FC/iSCSI/SAS HBAs, UIO drivers, I2C), the
+OMFS filesystem, and options for removed symbols or with unmet
+dependencies. Regenerate the file with make savedefconfig.
+
+Enable USB host, storage and HID for the onboard USB of the Fuel, Tezro
+and Origin 300, and input for the IOC3 PS/2 ports. Set NETDEVICES,
+which only the iSCSI drivers selected.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/configs/ip27_defconfig | 177 +++----------------------------
+ 1 file changed, 13 insertions(+), 164 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a30c09a55c72..826f0ffb71fd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24925,6 +24925,12 @@ F:	include/linux/phylink.h
- F:	include/linux/sfp.h
- K:	phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
- 
-+SGI IOC4 ATA DRIVER
-+M:	Imre Kaloz <kaloz@kernel.org>
-+L:	linux-ide@vger.kernel.org
-+S:	Maintained
-+F:	drivers/ata/pata_sgiioc4.c
-+
- SHARED MEMORY COMMUNICATIONS (SMC) SOCKETS
- M:	D. Wythe <alibuda@linux.alibaba.com>
- M:	Dust Li <dust.li@linux.alibaba.com>
+diff --git a/arch/mips/configs/ip27_defconfig b/arch/mips/configs/ip27_defconfig
+index 4c8abe4611b8..2dfa929a6553 100644
+--- a/arch/mips/configs/ip27_defconfig
++++ b/arch/mips/configs/ip27_defconfig
+@@ -10,10 +10,7 @@ CONFIG_CPUSETS=y
+ CONFIG_RELAY=y
+ CONFIG_EXPERT=y
+ CONFIG_SGI_IP27=y
+-CONFIG_NUMA=y
+-CONFIG_SMP=y
+ CONFIG_HZ_1000=y
+-CONFIG_PCI=y
+ CONFIG_MIPS32_O32=y
+ CONFIG_MIPS32_N32=y
+ CONFIG_PM=y
+@@ -40,7 +37,6 @@ CONFIG_INET6_AH=m
+ CONFIG_INET6_ESP=m
+ CONFIG_INET6_IPCOMP=m
+ CONFIG_IPV6_MIP6=m
+-CONFIG_IPV6_SIT=m
+ CONFIG_IPV6_SIT_6RD=y
+ CONFIG_IPV6_TUNNEL=m
+ CONFIG_IPV6_MULTIPLE_TABLES=y
+@@ -49,7 +45,6 @@ CONFIG_IPV6_MROUTE=y
+ CONFIG_IPV6_PIMSM_V2=y
+ CONFIG_NETWORK_SECMARK=y
+ CONFIG_NET_SCHED=y
+-CONFIG_NET_SCH_CBQ=m
+ CONFIG_NET_SCH_HTB=m
+ CONFIG_NET_SCH_HFSC=m
+ CONFIG_NET_SCH_PRIO=m
+@@ -59,7 +54,6 @@ CONFIG_NET_SCH_SFQ=m
+ CONFIG_NET_SCH_TEQL=m
+ CONFIG_NET_SCH_TBF=m
+ CONFIG_NET_SCH_GRED=m
+-CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+@@ -67,8 +61,6 @@ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+ CONFIG_CLS_U32_MARK=y
+-CONFIG_NET_CLS_RSVP=m
+-CONFIG_NET_CLS_RSVP6=m
+ CONFIG_NET_CLS_FLOW=m
+ CONFIG_NET_CLS_CGROUP=y
+ CONFIG_NET_CLS_ACT=y
+@@ -79,9 +71,7 @@ CONFIG_NET_ACT_MIRRED=m
+ CONFIG_NET_ACT_NAT=m
+ CONFIG_NET_ACT_PEDIT=m
+ CONFIG_NET_ACT_SKBEDIT=m
+-CONFIG_CFG80211=m
+-CONFIG_MAC80211=m
+-CONFIG_RFKILL=m
++# CONFIG_VGA_ARB is not set
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_SCSI=y
+@@ -94,21 +84,8 @@ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SCAN_ASYNC=y
+ CONFIG_SCSI_SPI_ATTRS=y
+-CONFIG_SCSI_FC_ATTRS=y
+-CONFIG_SCSI_CXGB3_ISCSI=m
+-CONFIG_SCSI_BNX2_ISCSI=m
+-CONFIG_BE2ISCSI=m
+-CONFIG_SCSI_HPSA=m
+-CONFIG_SCSI_3W_SAS=m
+-CONFIG_SCSI_AIC94XX=m
+-# CONFIG_AIC94XX_DEBUG is not set
+-CONFIG_SCSI_MVSAS=m
+-# CONFIG_SCSI_MVSAS_DEBUG is not set
+ CONFIG_SCSI_MPT2SAS=m
+-CONFIG_LIBFC=m
+ CONFIG_SCSI_QLOGIC_1280=y
+-CONFIG_SCSI_PMCRAID=m
+-CONFIG_SCSI_BFA_FC=m
+ CONFIG_SCSI_DH=y
+ CONFIG_SCSI_DH_RDAC=m
+ CONFIG_SCSI_DH_HP_SW=m
+@@ -121,8 +98,6 @@ CONFIG_MD_RAID0=y
+ CONFIG_MD_RAID1=y
+ CONFIG_MD_RAID10=m
+ CONFIG_MD_RAID456=y
+-CONFIG_MD_MULTIPATH=m
+-CONFIG_MD_FAULTY=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_CRYPT=m
+ CONFIG_DM_SNAPSHOT=m
+@@ -133,146 +108,33 @@ CONFIG_DM_MULTIPATH=m
+ CONFIG_DM_MULTIPATH_QL=m
+ CONFIG_DM_MULTIPATH_ST=m
+ CONFIG_DM_UEVENT=y
++CONFIG_NETDEVICES=y
+ CONFIG_IFB=m
+ CONFIG_MACVLAN=m
+ CONFIG_VETH=m
+-CONFIG_ATL2=m
+-CONFIG_ATL1E=m
+-CONFIG_ATL1C=m
+-CONFIG_B44=m
+ CONFIG_TIGON3=y
+-CONFIG_BNX2X=m
+-CONFIG_ENIC=m
+-CONFIG_BE2NET=m
+-CONFIG_E1000E=m
+-CONFIG_IGB=m
+-CONFIG_IGBVF=m
+-CONFIG_IXGBE=m
+-CONFIG_JME=m
+-CONFIG_MLX4_EN=m
+-# CONFIG_MLX4_DEBUG is not set
+-CONFIG_KS8851_MLL=m
+-CONFIG_AX88796=m
+-CONFIG_AX88796_93CX6=y
+-CONFIG_ETHOC=m
+-CONFIG_QLA3XXX=m
+-CONFIG_NETXEN_NIC=m
+-CONFIG_SFC=m
+ CONFIG_SGI_IOC3_ETH=y
+-CONFIG_SMC91X=m
+-CONFIG_SMSC911X=m
+-CONFIG_NIU=m
+-CONFIG_TEHUTI=m
+-CONFIG_VIA_VELOCITY=m
+-CONFIG_PHYLIB=y
+-CONFIG_CICADA_PHY=m
+-CONFIG_DAVICOM_PHY=m
+-CONFIG_ICPLUS_PHY=m
+-CONFIG_LSI_ET1011C_PHY=m
+-CONFIG_LXT_PHY=m
+-CONFIG_MARVELL_PHY=m
+-CONFIG_NATIONAL_PHY=m
+-CONFIG_QSEMI_PHY=m
+-CONFIG_REALTEK_PHY=m
+-CONFIG_SMSC_PHY=m
+-CONFIG_STE10XP=m
+-CONFIG_VITESSE_PHY=m
+-CONFIG_ADM8211=m
+-CONFIG_ATH5K=m
+-CONFIG_ATH9K=m
+-CONFIG_ATMEL=m
+-CONFIG_PCI_ATMEL=m
+-CONFIG_B43=m
+-CONFIG_B43LEGACY=m
+-# CONFIG_B43LEGACY_DEBUG is not set
+-CONFIG_IPW2100=m
+-CONFIG_IPW2100_MONITOR=y
+-CONFIG_IPW2100_DEBUG=y
+-CONFIG_IPW2200=m
+-CONFIG_IPW2200_MONITOR=y
+-CONFIG_IPW2200_PROMISCUOUS=y
+-CONFIG_IPW2200_QOS=y
+-CONFIG_IPW2200_DEBUG=y
+-CONFIG_IWL4965=m
+-CONFIG_IWL3945=m
+-CONFIG_IWLWIFI=m
+-CONFIG_HOSTAP=m
+-CONFIG_HOSTAP_FIRMWARE=y
+-CONFIG_HOSTAP_FIRMWARE_NVRAM=y
+-CONFIG_HOSTAP_PLX=m
+-CONFIG_HOSTAP_PCI=m
+-CONFIG_HERMES=m
+-# CONFIG_HERMES_CACHE_FW_ON_INIT is not set
+-CONFIG_PLX_HERMES=m
+-CONFIG_TMD_HERMES=m
+-CONFIG_NORTEL_HERMES=m
+-CONFIG_P54_COMMON=m
+-CONFIG_P54_PCI=m
+-CONFIG_LIBERTAS=m
+-CONFIG_LIBERTAS_THINFIRM=m
+-CONFIG_MWL8K=m
+-CONFIG_RT2X00=m
+-CONFIG_RT2400PCI=m
+-CONFIG_RT2500PCI=m
+-CONFIG_RT61PCI=m
+-CONFIG_RT2800PCI=m
+-CONFIG_RTL8180=m
+-CONFIG_WL1251=m
+-CONFIG_WL12XX=m
+-# CONFIG_INPUT is not set
++CONFIG_INPUT_EVDEV=m
+ CONFIG_SERIO_SGI_IOC3=m
+-CONFIG_SERIO_LIBPS2=m
+ CONFIG_SERIO_RAW=m
+-CONFIG_SERIO_ALTERA_PS2=m
+ # CONFIG_VT is not set
+-CONFIG_NOZOMI=m
+ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+-CONFIG_SERIAL_8250_EXTENDED=y
+ CONFIG_SERIAL_8250_MANY_PORTS=y
+-CONFIG_SERIAL_8250_SHARE_IRQ=y
+ CONFIG_SERIAL_8250_IOC3=y
+-CONFIG_HW_RANDOM_TIMERIOMEM=m
+-CONFIG_I2C_CHARDEV=m
+-CONFIG_I2C_ALI1535=m
+-CONFIG_I2C_ALI1563=m
+-CONFIG_I2C_ALI15X3=m
+-CONFIG_I2C_AMD756=m
+-CONFIG_I2C_AMD8111=m
+-CONFIG_I2C_I801=m
+-CONFIG_I2C_ISCH=m
+-CONFIG_I2C_PIIX4=m
+-CONFIG_I2C_NFORCE2=m
+-CONFIG_I2C_SIS5595=m
+-CONFIG_I2C_SIS630=m
+-CONFIG_I2C_SIS96X=m
+-CONFIG_I2C_VIA=m
+-CONFIG_I2C_VIAPRO=m
+-CONFIG_I2C_OCORES=m
+-CONFIG_I2C_PCA_PLATFORM=m
+-CONFIG_I2C_SIMTEC=m
+-CONFIG_I2C_TAOS_EVM=m
+-CONFIG_I2C_STUB=m
+ CONFIG_W1=y
+ CONFIG_W1_MASTER_SGI=y
+ CONFIG_W1_SLAVE_DS250X=y
+ # CONFIG_HWMON is not set
+ CONFIG_THERMAL=y
+-# CONFIG_VGA_ARB is not set
+-CONFIG_LEDS_LP3944=m
+-CONFIG_LEDS_PCA955X=m
+-CONFIG_LEDS_BD2802=m
+-CONFIG_LEDS_TRIGGER_TIMER=m
+-CONFIG_LEDS_TRIGGER_HEARTBEAT=m
+-CONFIG_LEDS_TRIGGER_BACKLIGHT=m
+-CONFIG_LEDS_TRIGGER_DEFAULT_ON=m
+ CONFIG_SGI_MFD_IOC3=y
++CONFIG_USB=m
++CONFIG_USB_EHCI_HCD=m
++CONFIG_USB_OHCI_HCD=m
++CONFIG_USB_STORAGE=m
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_M48T35=y
+ CONFIG_UIO=y
+-CONFIG_UIO_AEC=m
+-CONFIG_UIO_SERCOS3=m
+-CONFIG_UIO_PCI_GENERIC=m
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT2_FS_XATTR=y
+ CONFIG_EXT2_FS_POSIX_ACL=y
+@@ -288,35 +150,22 @@ CONFIG_BTRFS_FS_POSIX_ACL=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+-CONFIG_NETFS_SUPPORT=m
+-CONFIG_FSCACHE=y
+-CONFIG_FSCACHE_STATS=y
+-CONFIG_CACHEFILES=m
+ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+ CONFIG_SQUASHFS=m
+-CONFIG_OMFS_FS=m
+ CONFIG_NFS_FS=y
+ CONFIG_SECURITYFS=y
+ CONFIG_CRYPTO_CRYPTD=m
+-CONFIG_CRYPTO_CTS=m
+-CONFIG_CRYPTO_LRW=m
+-CONFIG_CRYPTO_XTS=m
+-CONFIG_CRYPTO_HMAC=y
+-CONFIG_CRYPTO_XCBC=m
+-CONFIG_CRYPTO_MD4=m
+-CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA512=m
+-CONFIG_CRYPTO_WP512=m
+-CONFIG_CRYPTO_ANUBIS=m
+ CONFIG_CRYPTO_BLOWFISH=m
+-CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
+-CONFIG_CRYPTO_KHAZAD=m
+-CONFIG_CRYPTO_SEED=m
+ CONFIG_CRYPTO_SERPENT=m
+-CONFIG_CRYPTO_TEA=m
+ CONFIG_CRYPTO_TWOFISH=m
++CONFIG_CRYPTO_LRW=m
++CONFIG_CRYPTO_XTS=m
++CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_WP512=m
++CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_LZO=m
 -- 
 2.47.3
 

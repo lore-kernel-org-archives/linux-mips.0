@@ -1,39 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A5552CCFA;
-	Tue, 13 Oct 2026 13:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D740B52D2D1;
+	Tue, 13 Oct 2026 13:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791897612; cv=none; b=jqSY7+E/60u24cD9+4wYJP0Axu+R4O2C7/adJFmTmzXW5eXlEmZIWHmI4UfY7BzEO39K8UAP5qw1pUg7SrldsigI1n1dxRAXC7GYv6dzgcGt6ccME1RV91lAteklUlOyOkyS9+iJ8w9VRJjhNponjP1Z941JNfFAxemNXVlc+eM=
+	t=1791897615; cv=none; b=Hclq8dEp1o+048Qfllw+DlNFDrjiB1GUsr5F4vLaXTekoH+nXKXMYbGeEaJ7kltKemFFGY/jxE29RiLVS7nCFNyfSWc+Ocnu/YKpbbeeXXRx/Qm0IHENfAmlpYZH7tNFnIJhGjZC+lzVVFGcBH0D3ckqPELRPPunu4a4Vm7wgdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791897612; c=relaxed/simple;
-	bh=FG5EqU3zL/zzk9tt8AaEoWrb/5C9n+zQJJDDovQswIU=;
+	s=arc-20240116; t=1791897615; c=relaxed/simple;
+	bh=PM4Rbtn21bgoM+lLkBjM7wdSl73xTdMGGOQ2yirNnZ8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fqAWRRJ57ZrofnfOdh52BbsEoNbThXYXmn62ANp36zhLPyijfsg/W2LviCbK1hKRnDztMlSzdBZTp1dIX9wqPDVG+EX5+0HQZ6V9YMHiON0kVMG3BNvkfO3+px+VH1/J/4xnYNfKPsgxnGBhbX7+ULS3464CRdbnv+o/6Ij8odw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mt8n4o26; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=jLDPI648qE+9tpx0Df1SCcAekdovVaoX7xvkFiaG12MSVbUgEZNC16e7wH0+AzIZ3R0b3J/DECqSqBYWCYnoY//hgH5ANBpIyIZiPiv0ob/Vva/ThVm2oLT9IqrmetCtVfg5pM8GIaOq5+kBuRWdKtDisWqJ3TmwgzX1b1hb89I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gb0Km/nn; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mt8n4o26"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662E31F0089A;
-	Tue, 13 Oct 2026 13:20:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gb0Km/nn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DBF21F000FF;
+	Tue, 13 Oct 2026 13:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791897611;
-	bh=/amCQNVzPl10ewnKmugc10jN/fIuwsDOm0c4jkaWScM=;
+	s=k20260515; t=1791897613;
+	bh=P5+i7FvVViqR5XGn7d/roOqUutL/m7YjBgKdURYXQ0Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Mt8n4o261YNqcqcgF2V3sCnnf8jvJGl6GMQl8mQg1QOZJ2p34tBRYqx4y6JoCUZmV
-	 oorIL65RsXZqJA99uda3FcqZFQfalLCMb8/LSIqtiGUZY13VLc4ZEQCXytFnX3iUn9
-	 KCVbZeJd+J+5qlenSKee0VelokddnvfFeVo1+hpSS5iHLg3UHS9ThUVbpau0Pywxpg
-	 0kvs+UDbFJGYUmwQmSmaLKNkgQmjjpv2HhixHsmmK9L+dBUwku6SCKIiYodhEzXmHh
-	 Z40EoGA3pWiD25MXBH9IUfiIc9ynjFlkAwkA8K5I7TYP+HCuZveMqfPIds0Wvic99E
-	 ejo4D3M79sqbw==
+	b=gb0Km/nnfyjO00zOZ6NrvWE+Qrzx44oWHI1I3Q0uZPtMF5FDrUiI4MSbzg05FUmci
+	 hEK/z7COT3/nz3nuevDkPEGVdUouBFf7/bZmebHW2xCFmodUk2p1CE+SzZIgdqSozs
+	 yiHmE0dOkxHTLGk/4a0u2YtPHNPrELJiAwvzwiaq/CWi+OWUEK+ru9JQ4eAxZbg4ch
+	 6ML0nmzh7IHeChu8oG0VUgHAKlDk5L6heMEGu5mMrpORZ7VzGExl86VZjsFRkWHUMH
+	 W0Ubx3uqiqgVk4llRbLr11uO1Kr2J/fs8xuToSgaOA3JOhe754HbF01RG8VBhxKh5k
+	 3beKhbiwFXuxg==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>
-Subject: [PATCH v2 49/53] MIPS: ip27_defconfig: enable pata_sgiioc4 and the DVD-ROM path
-Date: Tue, 13 Oct 2026 15:17:09 +0200
-Message-ID: <2dc94105e0697b178e882f391e298dd9604aa68b.1791890466.git.kaloz@kernel.org>
+	Lee Jones <lee@kernel.org>,
+	linux-leds@vger.kernel.org
+Subject: [PATCH v2 50/53] MIPS: SGI-IP27: add L1 front-panel LED and display requests
+Date: Tue, 13 Oct 2026 15:17:10 +0200
+Message-ID: <2422a141898801ad0f0ae908382bee1e823517a3.1791890466.git.kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
@@ -45,56 +46,152 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Set CONFIG_ATA=y and CONFIG_PATA_SGIIOC4=y. Both are built in rather
-than modular, because ip27_defconfig lacks BLK_DEV_INITRD, so no module
-can load before root is mounted.
-
-The I-brick's IOC4 ATA channel carries an ATAPI DVD-ROM drive. Change
-CONFIG_BLK_DEV_SR from =m to =y for the same reason, and add
-CONFIG_ISO9660_FS and CONFIG_UDF_FS so the disc can be mounted.
-
-CONFIG_SCSI=y drops out of the diff: CONFIG_ATA selects SCSI, so make
-savedefconfig removes the explicit line.
+Add l1_set_leds(), which sets the Fuel and Tezro front-panel LEDs, and
+l1_set_display(), which writes line 2 of the Tezro's L1 display. Both
+can be called from a panic notifier.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/configs/ip27_defconfig | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/sn/l1.h | 16 +++++++++
+ arch/mips/sgi-ip27/ip27-l1.c  | 67 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 83 insertions(+)
 
-diff --git a/arch/mips/configs/ip27_defconfig b/arch/mips/configs/ip27_defconfig
-index 2dfa929a6553..2959615d656b 100644
---- a/arch/mips/configs/ip27_defconfig
-+++ b/arch/mips/configs/ip27_defconfig
-@@ -74,10 +74,9 @@ CONFIG_NET_ACT_SKBEDIT=m
- # CONFIG_VGA_ARB is not set
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_ATA_OVER_ETH=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=y
--CONFIG_BLK_DEV_SR=m
-+CONFIG_BLK_DEV_SR=y
- CONFIG_CHR_DEV_SG=m
- CONFIG_CHR_DEV_SCH=m
- CONFIG_SCSI_CONSTANTS=y
-@@ -91,6 +90,8 @@ CONFIG_SCSI_DH_RDAC=m
- CONFIG_SCSI_DH_HP_SW=m
- CONFIG_SCSI_DH_EMC=m
- CONFIG_SCSI_DH_ALUA=m
-+CONFIG_ATA=y
-+CONFIG_PATA_SGIIOC4=y
- CONFIG_MD=y
- CONFIG_BLK_DEV_MD=y
- CONFIG_MD_LINEAR=m
-@@ -150,6 +151,8 @@ CONFIG_BTRFS_FS_POSIX_ACL=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-+CONFIG_ISO9660_FS=y
-+CONFIG_UDF_FS=y
- CONFIG_PROC_KCORE=y
- CONFIG_TMPFS=y
- CONFIG_TMPFS_POSIX_ACL=y
+diff --git a/arch/mips/include/asm/sn/l1.h b/arch/mips/include/asm/sn/l1.h
+index f9fa8a8051e6..42611fe51a3a 100644
+--- a/arch/mips/include/asm/sn/l1.h
++++ b/arch/mips/include/asm/sn/l1.h
+@@ -7,6 +7,7 @@
+ #ifndef __ASM_SN_L1_H
+ #define __ASM_SN_L1_H
+ 
++#include <linux/bits.h>
+ #include <linux/types.h>
+ 
+ /*
+@@ -15,8 +16,23 @@
+  */
+ #define L1_BOARD_COMPONENT_MAX	8
+ 
++/*
++ * Front-panel LEDs of a Fuel or a deskside Tezro. ON and BLINK switch off
++ * every LED outside the mask; OFF switches off only the masked ones.
++ */
++#define L1_LED_RED		BIT(0)
++#define L1_LED_WHITE		BIT(1)
++
++#define L1_LED_ON		0
++#define L1_LED_OFF		1
++#define L1_LED_BLINK		2
++
++#define L1_DISPLAY_WIDTH	16
++
+ int l1_exec_command(const char *cmd);
+ int l1_read_board_partnum(unsigned int component, char *buf, size_t len);
+ int l1_read_brick_type(void);
++int l1_set_leds(unsigned int mask, unsigned int state);
++int l1_set_display(const char *text);
+ 
+ #endif /* __ASM_SN_L1_H */
+diff --git a/arch/mips/sgi-ip27/ip27-l1.c b/arch/mips/sgi-ip27/ip27-l1.c
+index 98c94d14bd5f..3fe0214d0f91 100644
+--- a/arch/mips/sgi-ip27/ip27-l1.c
++++ b/arch/mips/sgi-ip27/ip27-l1.c
+@@ -26,7 +26,9 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #include <linux/etherdevice.h>
++#include <linux/export.h>
+ #include <linux/hex.h>
++#include <linux/panic.h>
+ #include <linux/serial_reg.h>
+ #include <linux/spinlock.h>
+ #include <linux/stdarg.h>
+@@ -81,6 +83,8 @@
+ /* L1_TASK_GENERAL requests */
+ #define L1_REQ_BRICK_ID		0x0003	/* rack, slot and brick type */
+ #define L1_REQ_EEPROM		0x0006	/* access eeprom */
++#define L1_REQ_DISP2		0x1005	/* write line 2 of the display */
++#define L1_REQ_LED		0x1009	/* set the front-panel LEDs */
+ 
+ /* L1_REQ_EEPROM additional argument values (non C-brick component) */
+ #define L1_EEP_LOGIC		0x01	/* logic board */
+@@ -414,6 +418,19 @@ static int l1_response_to_errno(u32 response)
+  */
+ static DEFINE_SPINLOCK(l1_lock);
+ 
++/*
++ * Once a panic has stopped the other CPUs, one of them may hold the lock
++ * for good; the panicking CPU then goes to the wire without it.
++ */
++static bool l1_lock_irqsave(unsigned long *flags)
++{
++	if (panic_in_progress())
++		return spin_trylock_irqsave(&l1_lock, *flags);
++
++	spin_lock_irqsave(&l1_lock, *flags);
++	return true;
++}
++
+ /*
+  * Run one request/response exchange in pkt, which has to be large enough
+  * for both; returns the response's argument count.
+@@ -493,6 +510,56 @@ int l1_exec_command(const char *cmd)
+ 	return rc == 0 ? 0 : -EIO;
+ }
+ 
++int l1_set_leds(unsigned int mask, unsigned int state)
++{
++	u32 address = L1_ADDRESS(L1_TYPE_L1,
++				 L1_ADDRESS_LOCAL | L1_TASK_GENERAL);
++	u8 pkt[64];		/* command and response packet buffer */
++	unsigned long flags;
++	bool locked;
++	int rc;
++
++	locked = l1_lock_irqsave(&flags);
++
++	/* arguments: LED mask, then new state, both INT */
++	rc = l1_transact(get_nasid(), pkt, sizeof(pkt), address, L1_REQ_LED,
++			 NULL, NULL, 2,
++			 L1_ARG_INT, (u32)mask, L1_ARG_INT, (u32)state);
++
++	if (locked)
++		spin_unlock_irqrestore(&l1_lock, flags);
++
++	return rc < 0 ? rc : 0;
++}
++EXPORT_SYMBOL_GPL(l1_set_leds);
++
++/*
++ * Write line 2 of the display; line 1 belongs to the L1. Padding to the
++ * full width leaves nothing of a longer earlier line behind.
++ */
++int l1_set_display(const char *text)
++{
++	u32 address = L1_ADDRESS(L1_TYPE_L1,
++				 L1_ADDRESS_LOCAL | L1_TASK_GENERAL);
++	char line[L1_DISPLAY_WIDTH + 1];
++	u8 pkt[64];		/* command and response packet buffer */
++	unsigned long flags;
++	bool locked;
++	int rc;
++
++	snprintf(line, sizeof(line), "%-*s", L1_DISPLAY_WIDTH, text);
++
++	locked = l1_lock_irqsave(&flags);
++
++	rc = l1_transact(get_nasid(), pkt, sizeof(pkt), address,
++			 L1_REQ_DISP2, NULL, NULL, 1, L1_ARG_ASCII, line);
++
++	if (locked)
++		spin_unlock_irqrestore(&l1_lock, flags);
++
++	return rc < 0 ? rc : 0;
++}
++
+ /* Read a component's board IA record from EEPROM. */
+ static int l1_read_board_ia(nasid_t nasid, int type, unsigned int component,
+ 			    u8 **ria, size_t *rialen)
 -- 
 2.47.3
 

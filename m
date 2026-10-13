@@ -1,302 +1,188 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9163DB332;
-	Tue, 13 Oct 2026 09:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ACC53EAC71;
+	Tue, 13 Oct 2026 09:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791883898; cv=none; b=HhhkbegzlUR0PWWsRFE+SCGxyzzvK8IvlGyasNXS4v2y5qkPj83ry9bNMH3tv0DZqu3NgGO61bch63cUg0UNw1UEHP6b8TwkC/HaryeT6yUjxKacnqm9kPn4XrazCRcOmHB7ybWbfnk2GTawEux4Gnd5eI2iCnargldEXkz5iRY=
+	t=1791884351; cv=none; b=I3Z27NrsO9FQdjpj/zK4KHmCSUvZdFb1AnYxAqOa8BdMG7kGbDxiTQieKSR6ti4hDBfPTkGz2Y0Q0Ccfge4tNR6QSTYa2gA3gJoBJXKiK6AkcuBINDr4RSLhzRKsNbDydO+O19zCk7HB6MtX7G/BlS/OoT6jiJGD2CVkR+60z28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791883898; c=relaxed/simple;
-	bh=OqA21yJGURWr+fHR8OGWuJePl6Or9B4i9mUbbo2HePw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obEEXZ7B9t96E8LtsBe36UmkpAxHVdgMCLrvOb3F0GbjbJqi6kAP/0XQ+OoAbbyOzLGDYh+I6ziA92/LfE3T9JC83QR2bwljPpJyTUhvGV7CMdP9y1EiIPPqIR/WRvg/bMSujtPMms5sZkVA40QYca12p/zAcDNLfQl3xJvCV3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=KFN/Jucf; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1791884351; c=relaxed/simple;
+	bh=MfdL16pHlEe17irfSZRgBjaGF0LtGPyhE+ahivadnHA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i7rignTZXt21Kb9g0RlsOpQcieTo8fHsAmIOzL08Npz/zGlQUEbEGwlGv8y4gJXswjUr62PYUXpP1OWwa4+9b+TJmjtvEB3oqYR/GAPIcrQUi/VGS6BY/5+mIgs4Zffn/Qm8KG+8qBWjkxUiMC2D2jGzKl0OBmQ1hqVIdQrRkD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSKY8j8e; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="KFN/Jucf"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 321E3169E;
-	Tue, 13 Oct 2026 02:31:32 -0700 (PDT)
-Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0B4C3F7B4;
-	Tue, 13 Oct 2026 02:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1791883895; bh=OqA21yJGURWr+fHR8OGWuJePl6Or9B4i9mUbbo2HePw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KFN/JucfaG6tVijFPqugjqklOhToK3tk/lGovkOGhrU5S8A/hBH3mHfEusBBzJPzJ
-	 UyD1cF2qpgw4gHADM2nbeK6S2v6bJ9y95xpv4BpMzEMhH6fCnxZBlMCDLZgKWgQOFe
-	 V1OvHKS+j9QazwgOeLl4Usk+vA/oFiPbdqVmRQz4=
-Date: Tue, 13 Oct 2026 10:31:25 +0100
-From: Yeoreum Yun <yeoreum.yun@arm.com>
-To: Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Barry Song <baohua@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	David Hildenbrand <david@kernel.org>,
-	Michal Hocko <mhocko@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>, Anup Patel <anup@brainfault.org>,
-	Atish Patra <atish.patra@linux.dev>, Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-openrisc@vger.kernel.org,
-	Muhammad Usama Anjum <usama.anjum@arm.com>,
-	Yeoreum Yun <yeoreum.yun@arm.com>,
-	Sohil Mehta <sohil.mehta@intel.com>
-Subject: Re: [PATCH 00/21] mm: change behavior of pXdp_get()/pXd_page() in
- compile-time folded pgtable
-Message-ID: <as36bbrMVHOESsLd@e129823.arm.com>
-References: <20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSKY8j8e"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB201F00893;
+	Tue, 13 Oct 2026 09:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791884350;
+	bh=eLPwh/yQWtDaxNr2UEwq5ZW0o84R3kGQoo6l+HPSejk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=dSKY8j8ejFhnFyf/MjMoUpM2fDoiS0upsh/RlcqA63qPiiDOOVJManG46aLXMIeb6
+	 JwgT2rvZt6HFgdLQNiBqSOsUW8j0WoTZA6GBST8Rt2mqdYdt3xLSpAotxVdl5e7kAK
+	 X+9cTaRbwZEJGErSi5SibklRXt+i4y+qNbr+ClQRvGaNwrkfOBWcJacEkmzzwDyXyW
+	 RXP6jWBISD3Nv2YwJsVxU9aHAlgEw+7k0VgMMfwUkqbqNW2FpI44X0CpULV8jl9hDo
+	 pBPIwbEKbjj5IOqwhuehO02qNopXAEQWC2XLbEiW+/NrmNccBiwu4bbJrT0Zt9xH+c
+	 ekHFx0Tf4neAg==
+Message-ID: <b404f3d7-1b2d-418a-8634-72c61ce33f8b@kernel.org>
+Date: Tue, 13 Oct 2026 11:39:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] serial: 8250: make port operations work on struct
+ uart_8250_port
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Ryan Chen <ryan_chen@aspeedtech.com>, Billy Tsai
+ <billy_tsai@aspeedtech.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Ray Jui <ray.jui@broadcom.com>,
+ Scott Branden <scott.branden@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Chaitanya Vadrevu <chaitanya.vadrevu@emerson.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>,
+ Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+ Thierry Reding <thierry.reding@kernel.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Kees Cook <kees@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig_=28The_Capable_Hub=29?=
+ <u.kleine-koenig@baylibre.com>, netdev@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-parisc@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <cover.1791873876.git.jirislaby@kernel.org>
+ <c59fa203f325e0fe7601ea0fbc0d222c8b37f9eb.1791873876.git.jirislaby@kernel.org>
+ <as3etnbZatn4sbfx@ashevche-desk.local>
+ <c6b08f53-b5ee-44c8-93d1-54fdf5994ed2@kernel.org>
+ <as31PsESOgLUhMB6@ashevche-desk.local>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <as31PsESOgLUhMB6@ashevche-desk.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On 13. 10. 26, 11:09, Andy Shevchenko wrote:
+> On Tue, Oct 13, 2026 at 09:53:26AM +0200, Jiri Slaby wrote:
+>> On 13. 10. 26, 9:33, Andy Shevchenko wrote:
+>>> On Tue, Oct 13, 2026 at 08:48:51AM +0200, Jiri Slaby (SUSE) wrote:
+> 
+> ...
+> 
+>>>> -	rc = serial8250_register_8250_port(&port);
+>>>> -	if (rc < 0)
+>>>> +	struct uart_8250_port *uport = serial8250_register_8250_port(&port);
+>>>> +	if (IS_ERR(uport)) {
+>>>> +		rc = PTR_ERR(uport);
+>>>>    		goto err_sysfs_remove;
+>>>> +	}
+>>
+>>> Also do not define
+>>> variables in the middle of the code (it's only allowed for auto cleanup
+>>> variables and for-loop iterators).
+>>
+>> Why, actually?
+> 
+> Because it's the style.
 
-May I ask there are any further comments on this series?
+There is no hard style though. It varies across subsystems.
 
-Thanks!
+> Linus also told it many times
 
-> Using ptep_get() and its counterparts in common code is suboptimal on
-> kernel configurations with generic compile-time folded page tables.
-> By default, ptep_get() and its friends expands to READ_ONCE(),
-> forcing the compiler to emit a load even when the value is not used afterwards.
-> 
-> This issue was recently reported by Christophe Leroy [1] for ppc32
-> preventing futher code conversion to ptep_get()/pmdp_get()/... helper
-> and the same behavior can also be observed on arm64 when built with
-> 2- or 3-level page tables
-> 
-> e.g) perf_get_page_size() in arm64 with CONFIG_PGTABLE_LEVEL=3:
-> 
-> 00000000000052a0 <perf_get_page_size>:
->     ...
->     52dc: d53b4234     	mrs	x20, DAIF
->     52e0: d50343df     	msr	DAIFSet, #0x3
->     ...
->     52fc: d35e9a69     	ubfx	x9, x19, #30, #9        /* pud_offset_lockless() */
->     5300: f9403508     	ldr	x8, [x8, #0x68]
->     5304: f869790a     	ldr	x10, [x8, x9, lsl #3]   /* pudp_get() */
->     5308: f90007ea     	str	x10, [sp, #0x8]
->     530c: f8697908     	ldr	x8, [x8, x9, lsl #3]    /* pudp_get() */
->     ...
->     5360: 90000009     	adrp	x9, 0x5000 <perf_prepare_sample+0x548>
->     5364: 92746908     	and	x8, x8, #0x7ffffff000
->     5368: d3557675     	ubfx	x21, x19, #21, #9       /* pmd_offset_lockless() */
->     ...
->     5394: f8757ac8     	ldr	x8, [x22, x21, lsl #3]  /* pmdp_get() */
-> 
-> Though PGTABLE_LEVEL=3, since the pudp_get() still remain with
-> READ_ONCE(), there's redundant load for the pud which is folded.
-> 
-> To prevent generating suboptimal code, make pXdp_get() return a dummy
-> entry for compile-time folded page tables, make the helpers such as
-> pXd_offset()/pXd_offset_lockless(), set_pXd() validate dummy entries
-> at compile time to catch the wrong usage and prohibit calls to
-> pXd_page() in pgtable-nopXd.h.
-> 
-> This series does not change the behaviour of existing code that directly
-> manipulates folded page-table levels using set_pgd(), pgd_page_vaddr(), and
-> related helpers. Those helpers continue to behave as before.
-> 
-> The new restrictions only apply to code that adopts the pXdp_get()-based
-> access model for compile-time folded page tables.
-> 
-> As the pXdp_get() can return *dummy* entry, some of code using
-> the stack value where saves the pXdp_get() could be a problematic:
-> 
->   1. Passing address of stack value where saves the pXdp_get() result
->      to pXd_offset() for example:
-> 
->        pud_t *pudp, pud;
->        pmd_t *pmdp;
-> 
->        pud = pudp_get(pudp, address);
->        pmdp = pmd_offset(&pud, pud, address);
-> 
->      (e.g. host_pfn_mapping_level() in loongarch).
-> 
->   2. Using the pXdp_get() result to use as argument of pXd_val() and
->      to check prot without checking pgtable is folded.
->      for example, x86's effective_prot().
-> 
->   3. Using set_pXd() with pXdp_get() will set problematic dummy entry
->      in folded page table like:
-> 
->        set_pXd(pxdp, pXdp_get(pxdp_k));
-> 
->   4. Using pgd_page_vaddr() to get the first-level pgtable.
->      passing dummy pxdp_get() for pgd_page_vaddr() will return wrong
->      address. Therefore, make pgd_page_vaddr() and pXd_pgtable() to
->      trigger the error for improper usage with folded dummy entry in the
->      generic compile-time folded pgtable.
-> 
-> Thanksfully, above cases are rare since (1) most of usage using
-> pXd_offset() with result of upper pXd_offset(), (2) it's extreamely
-> rare to use pXd_val() for non-leaf entry in the kernel,
-> (3) is to handle the vmalloc_fault or set the first level of page table
-> and (4) to setup early page table and etc.
-> 
-> Therefore, properly handle this uncommon and problematic pattern, and
-> document the current design of compile-time folded page tables.
-> 
-> This patch is based on mm-unstable.
-> 
-> Future work
-> ===========
->  - print_bad_page_map() and show_pte() still prints dummy values
->    instead of printing the same content for all generic compile-time
->    folded page tables. We might want to skip printing dummy values later.
-> 
->  - We currently catch abuse of dummy values on the stack at compile-time by
->    relying on constant propagation by the compiler. Usama's work [3] on using
->    distinct types for sw vs. hw PTEs could help here as well."
-> 
->  - Clean up vmalloc fault handling by synchronizing the vmalloc entry on
->    32-bit architectures. This code is almost identical across architectures.
-> 
->  - Unfortunately, the current design of compile-time folded page tables appears
->    to be internally consistent but confusing. For example,
->    when CONFIG_PGTABLE_LEVELS is 2, p4d, pud, and pmd are expected to
->    be folded into pgd. However, the architecture code uses set_pmd()
->    to update the top-level page-table entry, even though it includes pgtable-nopmd.h.
-> 
->    In the future, it would be good to eliminate this source of confusion,
->    possibly by treating all folded upper levels consistently as dummy wrappers
->    around the highest real page-table level:
-> 
->          NOPGD
->    --> +------+           P4D
->        | ptr0 |-------> +------+           PUD
->        +------+         | ptr0 |-------> +-----+
->                         | ptr1 |-        | ptr | -------> ...
->                         | ptr2 | \       | ptr |
->                         | ptr3 |  \        ...
->                           ...      \
->                                     \        PUD
->                                      +----> +-----+
->                                             | ptr | -------> ...
->                                             | ptr |
->                                               ...
-> 
-> Link: [1] https://lore.kernel.org/all/0019d675-ce3d-4a5c-89ed-f126c45145c9@kernel.org/
-> Link: [2] https://lore.kernel.org/all/20251113014656.2605447-1-samuel.holland@sifive.com/
-> Link: [3] https://lore.kernel.org/r/74182e50-b54f-4d2d-a27f-3a59a538d6bc@arm.com
-> 
-> Patch History
-> =============
-> from RFC v3 to v1:
->   - Drop and rebase for CONFIG_X86_DIRECT_GBPAGES and use the Dave's
->     patch (https://lore.kernel.org/all/20260902194718.E1FF3041@davehans-spike.ostc.intel.com/)
->   - Link to RFC v3: https://lore.kernel.org/r/20260902-dummy_ptxp3-v3-0-5d8f5b17c25c@arm.com
-> 
-> from RFC v2 to RFC v3:
->   - repasre commit message
->   - move ptdump_pgtable_first_level() into pgalloc.h
->   - skip the huge pud operation when CONFIG_X86_DIRECT_GBPAGES is disabled
->   - docuemtns compile-time folded page table
->   - drop the applied patch.
->   - Link to RFC v2: https://lore.kernel.org/all/20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com/
-> 
-> from RFC v1 to RFC v2:
->   - Restore slient fallback to next pXd in set_pXd() and pXd_pgtable()
->     and add check whether they're called with dummy entry.
->   - Add some comment for returning first entry of pgd in arm with
->     2 pgtable-level
->   - Link to RFC v1: https://lore.kernel.org/all/20260713135614.1618183-1-yeoreum.yun@arm.com/
-> 
-> ---
-> Dave Hansen (1):
->       x86/mm: Introduce helper for checking direct map 1G page support
-> 
-> David Hildenbrand (Arm) (13):
->       ARM: mm: make nommu pgd_t a scalar
->       ARM: mm: make 2-level pgd_t a scalar
->       ARM: mm: remove custom pgdp_get()
->       LoongArch: mm: define pud_leaf() only when PUD exists
->       MIPS: mm: define pud_leaf() only when PUD exists
->       mm/pgtable: define (pgd|p4d|pud)_leaf() for folded page tables
->       mm/pgtable: define (pgd|p4d|pud)_offset_lockless() for folded page tables
->       openrisc/pgtable: drop __pmd_offset()
->       mm/pgtable: optimize pmdp_get() and friends for folded pagetable levels
->       mm/pgtable: catch abuse of folded dummy pgd_t/p4d_t/pud_t
->       mm/pgtable: disallow calling (pgd|p4d|pud)_page, pgd_page_vaddr() and (p4d|pud)_pgtable with dummy
->       mm/pgtable: disallow calling folded set_pgd/set_p4d/set_pud with dummy
->       Documentation: mm: clarify behaviour of compile-time folded page tables
-> 
-> Yeoreum Yun (7):
->       mm: vmscan: remove stack copy address of pud/pmd pass in walk_pud/pmd_range()
->       loongarch: kvm: remove stack copy address of pXd in pXd_offset()
->       riscv: kvm: remove stack copy address of pXd in pXd_offset()
->       riscv: mm: use proper set_pXd() for generic compile-time folded patable in vmalloc_fault()
->       mm/pgtable: redefine PGTABLE_LEVEL enum with ascend order from PGD
->       x86: mm: use pgtable_level enum in effective_prot_pXd()
->       x86: mm: carve out the generic compile-time folded pgtable case in effective_prot()
-> 
->  Documentation/mm/page_tables.rst            | 84 +++++++++++++++++++++++++----
->  arch/arm/include/asm/page-nommu.h           |  4 +-
->  arch/arm/include/asm/pgtable-2level-types.h | 20 +++++--
->  arch/arm/include/asm/pgtable.h              |  2 -
->  arch/arm64/include/asm/pgtable.h            | 23 --------
->  arch/loongarch/include/asm/pgtable.h        |  2 +
->  arch/loongarch/kvm/mmu.c                    | 20 ++++---
->  arch/mips/include/asm/pgtable.h             |  2 +
->  arch/openrisc/include/asm/pgtable.h         |  3 --
->  arch/riscv/kvm/mmu.c                        | 20 ++++---
->  arch/riscv/mm/fault.c                       | 52 +++++++++++-------
->  arch/x86/include/asm/pgtable.h              | 14 +++++
->  arch/x86/kernel/cpu/common.c                |  2 +-
->  arch/x86/kernel/machine_kexec_64.c          |  2 +-
->  arch/x86/mm/dump_pagetables.c               | 18 ++++---
->  arch/x86/mm/init.c                          |  2 +-
->  arch/x86/mm/pat/set_memory.c                |  6 +--
->  include/asm-generic/pgtable-nop4d.h         | 54 +++++++++++++++----
->  include/asm-generic/pgtable-nopmd.h         | 54 +++++++++++++++----
->  include/asm-generic/pgtable-nopud.h         | 56 +++++++++++++++----
->  include/linux/pgtable.h                     | 69 +++++++++++++++++-------
->  mm/vmscan.c                                 |  4 +-
->  22 files changed, 371 insertions(+), 142 deletions(-)
-> ---
-> base-commit: 8d61431ed2607386b427752505379536eb634ce8
-> change-id: 20260722-dummy_ptxp3-3741d78cc70f
-> 
-> Best regards,
-> -- 
-> Sincerely,
-> Yeoreum Yun
+Which is neither an argument. Linus is wrong at times ("Link:" use as an 
+example).
 
+All in all, I do not insist on this at all. It's easier to read and 
+follow the code for me. Not necessarily the case for others...
+
+>> First, it is used in the kernel quite a few times already
+>> [1]. Second, while it is sort of c++ism (and I like to use modern c++), it
+>> makes the life of the variable a lot more obvious.
+>>
+>> [1] eg. see output of: rg -U -C 5 '}\n+\s+struct .*\*.*=' drivers/
+> 
+> (you made me to install something I haven't heard about, it's better to use
+>   `git grep` though)
+
+rg is order of magnitude faster (searches in parallel). More importantly 
+in this case, supports multiline matches. (And respects .git ignores.)
+
+> Note excluded __free() if I get regexp correctly
+> 
+> $ rg -U -l '}\n+\s+struct .*\*[^)]*=' drivers/ | less
+> drivers/ufs/host/ufs-qcom.c
+...
+> drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> 
+> So, less than dozen of drivers doing wrong is not an argument, try something
+> better. But thanks, I will check and address this in some of the above.
+
+Well, it's only an example of a declaration after a previous opening 
+brace "{" -- this one turned out to be easy to search for. There is a 
+lot of more, of course. kernel/ included.
+
+thanks,
 -- 
-Sincerely,
-Yeoreum Yun
+js
+suse labs

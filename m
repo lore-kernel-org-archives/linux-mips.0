@@ -1,144 +1,79 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A94F3AE18C;
-	Tue, 13 Oct 2026 11:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA774FE2CD;
+	Tue, 13 Oct 2026 12:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791892769; cv=none; b=MN6iNty6Ps2CBmFovEp5YILSjXC7XVDKIuI+RQU6C55TWy7TGcwsbbMe14FiM9La/TmmgJeRWoFt6yfTsauxfTdmbKQQLVW01Z0WibQomcbV7jY36MBss2z3YSP8JGKICBF/P/7cAZuVYL+BcmaIU7hTRsZwSHYJkNQArMjv6V8=
+	t=1791894586; cv=none; b=HIfyh/uo7L+/GL8l8ieuWAx4GiCrr2QeG7tJhx4ZtbopTiBZKGqza8IZgaB7jp9Sah9UC9PrFtbsyxKE7WtwnH3PFHqovRx48NDA9OyGnYDsA4/dMzy80IQeCfKdnPKvehR29xxTb1jXzK0zF3PmSOAB7YYBr7g3oRjHFjC27mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791892769; c=relaxed/simple;
-	bh=SZzA6vvUJYM0lz1rUR6EObh0Mygb+GIMbqCbKzpkYF4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WCa5OxC88wwFeJy4zC7LT28T8jeCL861h+g2FHi03tJhg+alW1lDihZgD4swv2Ii3xdq+Yn6zgG+bH5/URjBKbAi0xb5uimosgizOezARFiQG4N5qDQzoKgq52nhu3nSjOToCKrOrFfOMwxftDTs7ip2y/FXh4GZgKgiewc49pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LYo1n4l3; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791894586; c=relaxed/simple;
+	bh=m58Bil6SEo59z5xuXsyHV0kdJsn5yFcJa9DyG9GpIN0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sBwItllsxPd6AqsaiDoozB9wwpCvZ2GoXyMZqRqC9P3txkmvja/MFmlwK3HErY+3Gb9iu/sP/70jgzJ+z8nWDGzinMBtbzOp9uc7lj1YHhD5CJ4rf5fw1HP2ReHAaJ2Kv+HUyYD+EL+SxNm3IJN/B5BLdJUaGJcI8PZ9l8apejI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=permerror header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=W7Opt5YB; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LYo1n4l3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142491F00893;
-	Tue, 13 Oct 2026 11:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791892768;
-	bh=MU0vUS/kZ7mz97MIn2LIV0y2OfYrimt1hD5AoeM1eE4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=LYo1n4l3fs4zCg+zJx0cDkWTBEO8xboWYWTDuikLdvcX/Lh1NI1Y7+zEHr9k3RkIn
-	 R67aIXAuZIr7qvITuyaGLqbWplDNI/U7Yx3YD3LygxCtLRWN8axyuRnrmJV+gZn05v
-	 mdXsZuu3Frpmg6kX3tsoLA2G93/WLsso5I7LPiJhM9bbBedDLS9LO9jdi4hWw8flvv
-	 VMCNb/hUg5YN7/Rr6Mzcg0sFDqCSp1bLT2LTdocORqA+NhwpqLBTNAVSlE3nEqgPAx
-	 QgQGmKS8VwkVXO5aVkEjwN6WJOsIz5tAJPNb/SIEiY2CSzrtvz0MmRjkUCJ8qR/Olv
-	 CVdSRsnMtTc7g==
-From: Imre Kaloz <kaloz@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>,
-	mfd@lists.linux.dev
-Subject: [PATCH 2/2] MIPS: SGI-IP30: shut down cleanly on a power button press
-Date: Tue, 13 Oct 2026 13:58:20 +0200
-Message-ID: <20261013115820.13293-3-kaloz@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261013115820.13293-1-kaloz@kernel.org>
-References: <20261013115820.13293-1-kaloz@kernel.org>
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="W7Opt5YB"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=m58Bil6SEo59z5xuXsyHV0kdJsn5yFcJa9DyG9GpIN0=;
+	t=1791894583; x=1793104183; b=W7Opt5YBWl6hFcKKO9fPmMzsidU212IvmH/V7qgqh/ZSkiu
+	L8K/FGzkyj6xEVyMQRyZN/z5Io1pUOBXghycwK8c5/anIYNxQKB8zQNpyANeuYAvHx9mgX1/8iLLF
+	p6WQN0vJhAd/44hQBHKJz5P4t5inPCHs5zxJ3rw3vgpn6ngGWopRw5qK10+b59nOfBTJo0JF+tgfR
+	4drmnfVT3HN6pqMNVM0h2MQVFZjRgfHSs+krvOHZVojZoYkoi9q6TgAxnUhJNTCr9iZGKW4bobaJR
+	55d3Qf/eINxAr4Hwllj5c5gSUwvawmEZlqAzs5Jzzc/yi4CE2gPbO082rL4xwPJQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1xGbdS-0000000HNKf-2AVL;
+	Tue, 13 Oct 2026 14:29:38 +0200
+Message-ID: <b7e21fad06d27f88b3c18060b4f4a69149de52eb.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 0/5] bcma: support the BCM6362 integrated WLAN
+ backplane
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Alessio Ferri <alessio.ferri@mythread.it>, Rob Herring
+ <robh@kernel.org>,  Krzysztof Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>,  =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=	
+ <zajec5@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Florian
+ Fainelli	 <florian.fainelli@broadcom.com>, Broadcom internal kernel review
+ list	 <bcm-kernel-feedback-list@broadcom.com>, Thomas Bogendoerfer	
+ <tsbogend@alpha.franken.de>
+Cc: linux-wireless@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Date: Tue, 13 Oct 2026 14:29:37 +0200
+In-Reply-To: <20261012-bcm6362-wlan-v2-0-4752da7e0982@mythread.it>
+References: <20261012-bcm6362-wlan-v2-0-4752da7e0982@mythread.it>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-The power button raises a kickstart interrupt on the DS1687, and
-rtc-ds1685 cuts power at once unless the platform supplies a
-prepare_poweroff hook. Supply one that starts an orderly power-off,
-cutting power directly on a second press or after 120 seconds.
+On Mon, 2026-10-12 at 00:45 +0200, Alessio Ferri wrote:
+>=20
+> My router is running daily with it, using openwrt kernel 6.12.
 
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/include/asm/sgi/heart.h |  2 ++
- arch/mips/sgi-ip30/ip30-power.c   | 26 ++++++++++++++++++++++++++
- drivers/mfd/ioc3.c                |  6 ++++++
- 3 files changed, 34 insertions(+)
+[...]
 
-diff --git a/arch/mips/include/asm/sgi/heart.h b/arch/mips/include/asm/sgi/heart.h
-index c224c2e3575a..736cabb7fdbb 100644
---- a/arch/mips/include/asm/sgi/heart.h
-+++ b/arch/mips/include/asm/sgi/heart.h
-@@ -317,6 +317,8 @@ struct ip30_heart_regs {		/* 0x0ff00000 */
- 
- extern struct ip30_heart_regs __iomem *heart_regs;
- 
-+void ip30_prepare_poweroff(void);
-+
- #define heart_read	____raw_readq
- #define heart_write	____raw_writeq
- 
-diff --git a/arch/mips/sgi-ip30/ip30-power.c b/arch/mips/sgi-ip30/ip30-power.c
-index 2b862b27e114..1200fef108b1 100644
---- a/arch/mips/sgi-ip30/ip30-power.c
-+++ b/arch/mips/sgi-ip30/ip30-power.c
-@@ -17,6 +17,8 @@
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-+#include <linux/reboot.h>
-+#include <linux/workqueue.h>
- 
- #include <asm/reboot.h>
- #include <asm/sgi/heart.h>
-@@ -52,6 +54,30 @@ static void ip30_machine_power_off(void)
- 	ds1685_rtc_poweroff(to_platform_device(dev));
- }
- 
-+#define IP30_POWERDOWN_TIMEOUT	120	/* seconds */
-+
-+static bool ip30_shutting_down;
-+
-+static void ip30_power_timeout(struct work_struct *work)
-+{
-+	ip30_machine_power_off();
-+}
-+
-+static DECLARE_DELAYED_WORK(ip30_power_work, ip30_power_timeout);
-+
-+/* Called by the RTC driver when the power button is pressed. */
-+void ip30_prepare_poweroff(void)
-+{
-+	/* A second press powers off at once. */
-+	if (ip30_shutting_down)
-+		ip30_machine_power_off();
-+
-+	/* Shut down through userspace, powering off anyway if it stalls. */
-+	ip30_shutting_down = true;
-+	orderly_poweroff(true);
-+	schedule_delayed_work(&ip30_power_work, IP30_POWERDOWN_TIMEOUT * HZ);
-+}
-+
- static int __init ip30_reboot_setup(void)
- {
- 	_machine_restart = ip30_machine_restart;
-diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
-index 5f8ac364b610..8f603651cc8e 100644
---- a/drivers/mfd/ioc3.c
-+++ b/drivers/mfd/ioc3.c
-@@ -24,6 +24,9 @@
- 
- #include <asm/pci/bridge.h>
- #include <asm/sn/ioc3.h>
-+#ifdef CONFIG_SGI_IP30
-+#include <asm/sgi/heart.h>
-+#endif
- 
- #define IOC3_IRQ_SERIAL_A	6
- #define IOC3_IRQ_SERIAL_B	15
-@@ -321,6 +324,9 @@ static struct ds1685_rtc_platform_data ip30_rtc_platform_data = {
- 	.no_irq = false,
- 	.uie_unsupported = true,
- 	.access_type = ds1685_reg_indirect,
-+#ifdef CONFIG_SGI_IP30
-+	.plat_prepare_poweroff = ip30_prepare_poweroff,
-+#endif
- };
- 
- static const struct resource ioc3_rtc_ds1685_resources[] = {
--- 
-2.47.3
+> This was drafted with the help of an LLM and cross built with gcc=20
+> mips cross compiler and checked with the dev version of sparse.
+> This time i also ran dt-check-style and it didn't flag anything.
 
+So ... are you running it or not? I'm confused.
+
+Either way, I have no idea what to do with it - I guess Rafa=C5=82 if you
+want this picked up then let folks know? But the last patch should
+probably go through some MIPS trees anyway, so the others might as well
+go there too, I don't care (and don't really _want_ to be responsible
+for this obscure corner just because some wifi drivers use it).
+
+johannes

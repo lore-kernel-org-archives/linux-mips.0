@@ -1,109 +1,133 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929D44FC8F7;
-	Tue, 13 Oct 2026 13:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C69E1F4176;
+	Tue, 13 Oct 2026 13:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791898777; cv=none; b=ipWm/+a8pawC62gcMXUGKr4UijTws/5qKqRPkxMFEw++gozsVqkOQR1mMvghoLg9T811xnexrRtt9iVFnA0rAJ+w84ZZq2ZE/RacABt709iX1Ne+X0UkAdC4b12GbBvWN0LWZ2sOv8mUc25OIUXiqCU7pfGjXCXBxfwqEzqi8Ho=
+	t=1791898948; cv=none; b=MCX0uz+NbC9WoWrn1OrhCUMHUu+XTGWderEbaB4FiPrhuklyMqL43pSEFbeUSLFCE3bjr1ngldZXcFKVrZlzNTlGMTGhhGiOOuobDKjkgwqTNtnAj2e0SRJQCgUBPi5LNCQ0GP5ioZg9betMrV/F8NtHIKyiGhRLJxoa0vuJUvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791898777; c=relaxed/simple;
-	bh=2WZGIqEbldNKhXLHKAuCMhGNUX/RELV4QSiH5d6ZLE8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=B43oMzDB86cgGB+RyHxPb7ob80yFpgYJJ3eW04hdQ7yWc9O+ieOtL9fWh3fejfkj87A48oR96kEJ1HC7m7qZ12j/ftntQSXuMA8CtduOZnc2vBWU3jAzjbmxTbXY/4VpsEjB4VYcetvZH3ks2j4vux4o5v0nQTJb6zysOd9eDJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dg01ATRD; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791898948; c=relaxed/simple;
+	bh=47Ugmu/MXcINVLz36piL1JROl9v9e1tY83Sfw+DVcuU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YGu8SNnsKyLeIPoALxaWqsuSH9Eok0I4T5UIXmVB5ty6vWQZOxKRjBuYxsnmFAK8BhhINyN01F/gNbmwCC98nFaDoMgdIv6ly2jLJr3RAD2T7tahqA9Nbuxj6E6YsfPnUFGyAqHQ9Ss7YFqkIvmlK/5NIZih+hsZdWpj0Eb9+D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KkUp03N+; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dg01ATRD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78FEF1F000FF;
-	Tue, 13 Oct 2026 13:39:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791898776;
-	bh=uwDMgIaomJD8m439CAgoY3FZDR+usALINXr9CkGDmlA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References;
-	b=dg01ATRD9kqp3Q8jqcc7Thw9V0pItC95JSWKB9Uk2fSEnSn4Z6GOG9MYscI4pbxy/
-	 fhqnL198U3Rm5prcjKSxXbs19N0LE4RJjcH+3SSXUeb2ogfmgtwK2qjYNxV/AA7tSX
-	 3oU/86v7Rues+MpQwsAKEO0HRKRFpXLh9u6S+ea6zXdRCo+JNaBbIeLVDpUEnAqjqW
-	 nbaf5PjgGwSLz+5YELt2Ic74Oh97b88dV96rye5k5pkvXvGhH+ZFeX2Td1XHGaSUOX
-	 Vk6PPyz6tfZGzSHkpXS6Wf7PvD0dh5+CBL3KmlyTeyEt+lMlQHIKdTO1FYE2VOZH8v
-	 YpSCXX12WyGIw==
-Date: Tue, 13 Oct 2026 15:38:33 +0200 (CEST)
-From: Imre Kaloz <kaloz@kernel.org>
-To: Damien Le Moal <dlemoal@kernel.org>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    Lee Jones <lee@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-    linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2 47/53] MAINTAINERS: add an entry for the SGI IOC4 ATA
- driver
-In-Reply-To: <abe9654f-c81d-427a-97ec-a9c4d4e18f74@kernel.org>
-Message-ID: <70b2e9c4-0b8a-1b73-1690-e9c31fbe080d@kernel.org>
-References: <cover.1791890466.git.kaloz@kernel.org> <7e185e14e16f071b0850087e30f6cac4af85b1f1.1791890466.git.kaloz@kernel.org> <abe9654f-c81d-427a-97ec-a9c4d4e18f74@kernel.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KkUp03N+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1791898946; x=1823434946;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=47Ugmu/MXcINVLz36piL1JROl9v9e1tY83Sfw+DVcuU=;
+  b=KkUp03N+ITvZEvt2JAuPCCybFBGCkdRtXBXDYlrZ+6gD87wEG7eAt7sM
+   I+s3cdnOIDztVRAFke+CYsjYH0SfBCYP/LFDgEM8iZjvYXdIIKZZKQ58q
+   Nkw9cd5yW9drpikYmdiKAVCR52UKs/LTn2plees+CQdZpScXt8QtzIwII
+   rIKTKTy0mJxP1u5X71bqFCINu6tdjrPI7wv2IimNyJZIGuan5dTRKx6M2
+   AVcnmVhjH+WthNxG9QQWytHnjxYTlfnWXwBu8OW1dIZPpGoIwvxmF2dK2
+   S54AOxsWt+Dui0E1YWXgLmxfIx4b1rbIiTjtGxEZ+BP6uTiVqav4BxmXx
+   A==;
+X-CSE-ConnectionGUID: quUdVjy2SHeHGQJAtflHYg==
+X-CSE-MsgGUID: U4mD7TgHTRCO7KpRfX/NjQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11933"; a="633434"
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="633434"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2026 06:42:25 -0700
+X-CSE-ConnectionGUID: 1rsirYx7QQWSpEQLINJRXw==
+X-CSE-MsgGUID: c9T0gSdUTQCfhwUxRTS5/Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="1090773"
+Received: from ncintean-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.48])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2026 06:42:16 -0700
+Date: Tue, 13 Oct 2026 16:42:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Alejandro Colomar <alx+linux-hardening@kernel.org>,
+	gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Ryan Chen <ryan_chen@aspeedtech.com>,
+	Billy Tsai <billy_tsai@aspeedtech.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <ray.jui@broadcom.com>,
+	Scott Branden <scott.branden@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Chaitanya Vadrevu <chaitanya.vadrevu@emerson.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>, Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>,
+	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-parisc@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] serial: 8250: make port operations work on struct
+ uart_8250_port
+Message-ID: <as41NVTyPHp8cMS-@ashevche-desk.local>
+References: <cover.1791873876.git.jirislaby@kernel.org>
+ <c59fa203f325e0fe7601ea0fbc0d222c8b37f9eb.1791873876.git.jirislaby@kernel.org>
+ <as3etnbZatn4sbfx@ashevche-desk.local>
+ <c6b08f53-b5ee-44c8-93d1-54fdf5994ed2@kernel.org>
+ <as31PsESOgLUhMB6@ashevche-desk.local>
+ <b404f3d7-1b2d-418a-8634-72c61ce33f8b@kernel.org>
+ <as4JDXOIGvCbAnE_@debian>
+ <f808883b-464e-4de8-a0c1-f799fd3d755e@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-44373446-1791898716=:27186"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f808883b-464e-4de8-a0c1-f799fd3d755e@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Oct 13, 2026 at 01:06:41PM +0200, Jiri Slaby wrote:
+> On 13. 10. 26, 12:51, Alejandro Colomar wrote:
+> > 	alx@debian:~/src/linux/linux/master$ time rg -n ARRAY_SIZE | wc -l
+> > 	58957
+> > 
+> > 	real	0m0.512s
+> > 	user	0m0.490s
+> > 	sys	0m0.974s
+> > 
+> > It's around 50% faster, which I wouldn't call orders of magnitude.
+> 
+> If you pipe rg's output somewhere, it no longer works in parallel.
 
---8323329-44373446-1791898716=:27186
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Ha-ha! It means it's useless, as it outputs (as of your example) directly to
+the console without any pager, so one can't simply look backwards (it's limited
+by the terminal emulator scroll-back buffer).
 
-Hi Damien,
+> Are we really about to discuss this?
 
-On Tue, 13 Oct 2026, Damien Le Moal wrote:
+Up to you, I think `git grep` wins anyway by several reasons (at lest for me).
 
-> On 2026/10/13 15:17, Imre Kaloz wrote:
->> Add an entry for drivers/ata/pata_sgiioc4.c, the libata driver for the
->> IOC4 ATA/ATAPI controller.
->>
->> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
->> ---
->>  MAINTAINERS | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index a30c09a55c72..826f0ffb71fd 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -24925,6 +24925,12 @@ F:	include/linux/phylink.h
->>  F:	include/linux/sfp.h
->>  K:	phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
->>
->> +SGI IOC4 ATA DRIVER
->> +M:	Imre Kaloz <kaloz@kernel.org>
->> +L:	linux-ide@vger.kernel.org
->> +S:	Maintained
->> +F:	drivers/ata/pata_sgiioc4.c
->> +
->>  SHARED MEMORY COMMUNICATIONS (SMC) SOCKETS
->>  M:	D. Wythe <alibuda@linux.alibaba.com>
->>  M:	Dust Li <dust.li@linux.alibaba.com>
->
-> Please squash this into patch 45.
->
-> Also, the cover letter mentions that patch 45-47 are for libata but I did not
-> receive patch 46. I only received the cover letter, and patches 45 and 47.
->
-> Are you planning to get all of this merged through the mips tree?
-
-Will squash 47 into 45 in v3.
-
-Sorry about 46: it only touches drivers/mfd/ioc3.c and 
-arch/mips/include/asm/sn/ioc4.h, so get_maintainer left linux-ide off it. 
-It adds the IOC4 ATA/ATAPI MFD cell that pata_sgiioc4 binds to:
-https://lore.kernel.org/all/754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org/
-v3 will copy you and linux-ide on it.
-
-As for merging: pata_sgiioc4 depends on the IOC4 support added earlier in 
-the series (asm/sn/ioc4.h and the MFD cell), so I’d like it to go through 
-the MIPS tree with your ack, if that works for you.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Best,
-Imre
---8323329-44373446-1791898716=:27186--

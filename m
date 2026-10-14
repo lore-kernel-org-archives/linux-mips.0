@@ -1,119 +1,125 @@
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE7347B436
-	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D8540F759
+	for <linux-mips@vger.kernel.org>; Wed, 14 Oct 2026 03:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791914165; cv=none; b=nTKzB77J0M12emMKdTw8G0+8ySqYEwX3fS/8kKQMN5Ol09CQ+Panb7uEN8doqKoMDXTvuC2xFjQpK0nMMgl8VgFGj3HK1AgNp75WlUPBrLGJME7e7vgCxYcdiXGJ6X41ant1gphMm0vyAFCCu62jk1hH9RDbml8iMTwug9Ft0dE=
+	t=1791950360; cv=none; b=mia/UHPqxPc+yXtELe25YkyiWhwyXPtTJxTd95UjFjLyyuwWCy0kWoXWqfyuBxoAqlEj6bhyYE+g4D8SkG5AeF5fFkpv/BNhGqciOlAnzR06QmVr3/8s/+f3QXmQO3BzV8i4gT7M8CkX3R4Ycaovn+HmvD+bt/BEx5W0XD+6gAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791914165; c=relaxed/simple;
-	bh=IXy9DdQ8dX8X4dJokEbVSO5P1A9Fal8nKRSa4Y5lE9I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rEEnlHoOi2XjaTw6Wmu8JosptHuHgQzm/JvLSk2qmDItzWLpqgNgEQJzITiY2ne8VW5Ljk1WR1RVm79TWH1R/0UFRzxflzIl7+5eRgnYFAdC9sz5M0ur83ItuV5u5mX5fSLyq/zHe1d+cnQ6XzDWosC5K6ZCIk2XG9bfiKJTtxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kAayTUDx; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1791950360; c=relaxed/simple;
+	bh=eo2KS1rD2mthJFfkPWGzxyjARkBBzJ1ObzuNrYesD1s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VtXPktwcq+yvzvB3cTzh+Vpypr9JuQ9czrA8DZXrmXe9mXAMhVvNHuhFoXyV6BQOJGu6Ea5veI+NfiixKpUdklNWddvRUKs+PowDPMmPrxBQ6M6g+TDrkx5vwg6ZF1hViTnHnXM6Hj9y1bK9WLyxCOVR+vmofpCmJED1mRs7NeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ajkvbjk3; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kAayTUDx"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id AE1571A1219
-	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:02 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8276660362
-	for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 17:56:02 +0000 (UTC)
-Received: by mail.galae.net (Postcow, from userid 0)
-	id 120A311D718C7; Tue, 13 Oct 2026 19:50:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1791914162; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=IXy9DdQ8dX8X4dJokEbVSO5P1A9Fal8nKRSa4Y5lE9I=;
-	b=kAayTUDxKwL7FBS9TSE2AD7JyE/y8s16wRmSotR7LtfY3SWviDuPqyD/0QIkLvKaALhnyk
-	w5MVdTABa2i8kO1ScRIT5kp/XJaw76Hcy4FDsX0e64VEQ//1gW3Ul1BPFg8cDT1kkF9zm1
-	h1/SeplyIs054u9CvHF8ag3Sm5JcTNZE4U2CiidpOYXbyrEJOG0oqq9CnR3VB8WvadOmrx
-	g9yjSFeVZueUM+EW2s58oV2wFpZOchwhqOIuIRDYoqx5MXb2CCdsPTyf/DPYVxHJ4XFDpR
-	MHJj6BwZRomxiD50T/4v28q4RH/rrcbYejHa3tJyPHUZkUaP/ulszFvzTSY5eg==
-Authentication-Results: mail.galae.net;
-	none
-From: =?UTF-8?B?QmVub8OudA==?= Monin <benoit.monin@bootlin.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
- Aleksandar Rikalo <arikalo@gmail.com>, Paul Burton <paulburton@kernel.org>,
- Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
- Chao-ying Fu <cfu@wavecomp.com>, Daniel Lezcano <daniel.lezcano@kernel.org>,
- Daniel Lezcano <daniel.lezcano@oss.qualcomm.com>
-Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- =?UTF-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH v4 0/5] MIPS: GIC clocksource/irqchip improvements and fixes for
- multi-cluster systems
-Date: Mon, 12 Oct 2026 16:02:41 +0200
-Message-ID: <Phq99rR9S2iy7CfTiYmYpQ@bootlin.com>
-X-KMail-Identity: 1879870109
-X-KMail-Transport: 829653360
-X-KMail-Fcc: 154
-X-KMail-Identity-Name: =?UTF-8?B?QmVub8OudA==?= Monin (bootlin.com)
-X-KMail-Transport-Name: SMTP (benoit.monin@bootlin.com - galae)
-In-Reply-To: <4619ced8-b385-42e6-9c9e-0745a68c62c7@oss.qualcomm.com>
-References:
- <20260929-sync-gic-counters-v4-0-ec70c4b60434@bootlin.com>
- <4619ced8-b385-42e6-9c9e-0745a68c62c7@oss.qualcomm.com>
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ajkvbjk3"
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3ab3260b35dso2295982a91.1
+        for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 20:59:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1791950358; x=1792555158; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=5STA7RRpF0bZE7yNESPvMRAN/jMwPnFqOs2b9BGo7gc=;
+        b=ajkvbjk3kTPfvCqcZGv4EJqKjl+5/xxRCJuc52x+TJywPi/B9lU7YuQiSJvhgrdZFS
+         ZCqGSfrf5efC82Vl+nSlFwfDM8PcreOEcIMxYFLkZrGBQinbjcZFV3cn95wzsuFAKNHu
+         c9EXuJyOrgR43wPTICZCiqx5zbn10VaDruDFaTZfhr7STZmLeLqeWpOaTxV+GdLRUa+P
+         LGG2A4hNTeO0nvLe6CVn+adZh+nalPuwJGwWWc9+5jMH2ejXNhIY1ByllNNuX1r2oUCu
+         DgUfkyOmM15luwL/Gz0oEp/tEOp7ECgdgo6JMC9cruIIn3aGKDIvi7a1+d8e7OmPq/32
+         gXjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791950358; x=1792555158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=5STA7RRpF0bZE7yNESPvMRAN/jMwPnFqOs2b9BGo7gc=;
+        b=S+Mp9uwyujxMSK+94f2MbHIj+mnbfQwtfU9+XU8qUu8BawoOBZCgY8PPLXzEJiWyut
+         WSaOZKDb7z0HkMj3olukde9QQ4jsd6z8lutmfdIXOvYE56ohnAiMA1lzTg14OV8sLA7B
+         Pqtg+WHNYWyEHRnpqR7ZKKu4LG685qT9yAjX28ShGkdzsLePhovGsZsQWrGSGQmrGkFW
+         qFA67dgKvbZCohFkMQ5r9HynPMlEaZy60trFuvuSMB4a/lnhpWp3JWomh4eXC4+tIiQs
+         xAzwif0j107LAGUNfIqQxQMuim7M6HZQ3oXcpb8XV9moIVysjVtrcPFibNfv+t6756JN
+         rvew==
+X-Forwarded-Encrypted: i=1; AKwUvBznX8xNg+OxiBo/oXjoXmXE+lGKd/lwofGxRqhc9TVEdiMiNokEK7/lJtVFTirtAKjlOqFmbW/SrK+F@vger.kernel.org
+X-Gm-Message-State: AFq9FYKklQSgyl16tJEf7WyE+IJAOaliJjJ6ZBFtNmxHUJT4tAzMX7W/
+	AYsXCAX1i/ODQhwAdzty0d6YYXYfBaqmefR4aMKxkw9A2ryIucTve/mMf5WzeVaWwX0=
+X-Gm-Gg: AYBFou0r6R8S9oVvfabCDiehuNftFWytMI0ZBaeAST+IqUQJf0vr4vZhDjdtbjFH6/H
+	YGUl3NVUOcoXIMv0MDF99fCG8sw7AegpuYsQhzDZChUgHV6IEstBAD96jo6dxp47PKtlKJEuKKe
+	jHT6ofUK6EjusjXcmXipGH/sdT4MN6qsU6oy26QFjIo6ikh6FvvBAEJ/oJ7Q/nr9Jbp6AAWycCR
+	8o72SOefvIGcFpMjg4DyoLyTgwGeFGd8LBHUZpQevNmL6FK3s2pf1PHA+Tnloy3Vsaw0mKngar3
+	xNg28X96EbCMhC46YRoGbmble1hTloAgkcuNivX7xaKA407qZ+tbDd+Z5WrH7rDIcHf5WVRr+88
+	lNYwl5npc5zXb6wwEQKwjNLwkFGP9dg3OlWRuwVYa5P58YRkdrpapvbjTk2zhUsaMuI2Dy5GfZS
+	O+11T6HbJTNkE1EUwHFVzAvl8pAuB2oAvatcMypItg9HMz8h5WyKKjHK5kysr+7ifwIDKR/mMG8
+	KnCpx7ROB6W49JwwYPK
+X-Received: by 2002:a17:90b:4c8a:b0:39e:6a80:b799 with SMTP id 98e67ed59e1d1-3ac63bfe81amr1395913a91.41.1791950357376;
+        Tue, 13 Oct 2026 20:59:17 -0700 (PDT)
+Received: from n232-176-004.byted.org ([36.110.163.103])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac5f24a538sm2492305a91.9.2026.10.13.20.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2026 20:59:16 -0700 (PDT)
+From: Muchun Song <songmuchun@bytedance.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>
+Cc: Muchun Song <muchun.song@linux.dev>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mm: Generalize page table allocation helpers
+Date: Wed, 14 Oct 2026 11:59:07 +0800
+Message-ID: <20261014035910.687847-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Last-TLS-Session-Version: None
-X-Rspamd-Queue-Id: 120A311D718C7
-X-Spamd-Result: default: False [-0.37 / 30.00];
-	BAYES_HAM(-1.27)[83.22%];
-	DATE_IN_PAST(1.00)[27];
-	MIME_GOOD(-0.10)[text/plain];
-	BCC(0.00)[];
-	DKIM_SIGNED(0.00)[bootlin.com:s=dkim];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_ZERO(0.00)[0];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[alpha.franken.de,kernel.org,rendec.net,gmail.com,syrmia.com,wavecomp.com,oss.qualcomm.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	MAILCOW_DOMAIN_HEADER_FROM(0.00)[bootlin.com];
-	URIBL_BLOCKED(0.00)[bootlin.com:email,bootlin.com:mid,bootlin.com:url,localhost:rdns,localhost:helo];
-	TO_DN_SOME(0.00)[]
+Content-Transfer-Encoding: 8bit
 
-On Friday, 2 October 2026 at 12:02:29 CEST, Daniel Lezcano wrote:
-> On 9/29/26 14:14, Beno=C3=AEt Monin wrote:
->=20
-> [ ... ]
->=20
-> > Although I am posting this as a single series since the patches
-> > are all related to the GIC, the changes to the irqchip driver and
-> > to the clocksource driver are independent from each other and can be
-> > merged in different trees. I can split the series in two if it helps
-> > reviewing/merging.
-> >=20
-> > Signed-off-by: Beno=C3=AEt Monin <benoit.monin@bootlin.com>
-> > ---
-> Applied, patch 4 & 5
->=20
-Thanks for the merge, Daniel!
+A subsequent series will switch runtime vmemmap population to the
+generic page-table allocators. Since vmemmap tables belong to init_mm,
+the allocators must select GFP_PGTABLE_KERNEL and mark the ptdesc as a
+kernel page table.
 
-Any takers for the first 3 patches to the GIC irqchip driver?
+Some architecture-specific allocators do not preserve both semantics.
+LoongArch and MIPS choose PMD/PUD GFP flags without checking the mm,
+which can charge kernel PMD tables to a memcg and leave user PUD tables
+unaccounted. The private PMD/PUD allocators also omit kernel ptdesc
+marking.
 
-Best regards,
-=2D-=20
-Beno=C3=AEt Monin, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Rather than duplicate this handling in each architecture, extend the
+generic PTE, PMD and PUD allocators to support architecture
+initialization hooks and non-zero table orders. LoongArch, MIPS and
+parisc can then drop their private allocators and inherit the generic
+GFP selection and ptdesc handling.
+
+This series only prepares the allocation interfaces; the runtime
+vmemmap conversion will be submitted separately.
+
+Muchun Song (3):
+  mm: generalize kernel PTE table allocation
+  mm: generalize PMD page table allocation
+  mm: generalize PUD page table allocation
+
+ arch/loongarch/include/asm/pgalloc.h | 48 ----------------------------
+ arch/mips/include/asm/pgalloc.h      | 40 -----------------------
+ arch/parisc/include/asm/pgalloc.h    | 17 ----------
+ include/asm-generic/pgalloc.h        | 29 ++++++++++++++---
+ 4 files changed, 24 insertions(+), 110 deletions(-)
+
+
+base-commit: ad9f2d463666c64e94b04be5263c9bf8f9f96fb7
+-- 
+2.54.0
+

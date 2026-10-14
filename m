@@ -1,36 +1,37 @@
 Received: from smtpdh16-2.aruba.it (smtpdh16-2.aruba.it [62.149.155.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921F34BD346
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924CD4BD79A
 	for <linux-mips@vger.kernel.org>; Wed, 14 Oct 2026 20:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792010664; cv=none; b=Rv+2Gbu+y/fCC7zKuE00NXX4zP0kRyKZ9wQbVgbCODNlhdxQEEvh4v/dRzDe8qTU0hQQcwv1nQGEP4qjv/8Q2NrYfx4YcnsO99Wdu5TMuaQ/4JGcr71hAXEvUEMhZU6sWcUdBZlW5y/AJYeUgfJwV106xK9ieo1ISK4Gs6yED38=
+	t=1792010664; cv=none; b=txTDt6e7CUF8fNNV8thczR1Y+bS+ruEo/73uwyniD6SiaZwaM6L1kKUOagf2dIZTUOKUq0hzlkNg4RwfY6cqSyYI9HhkbG9kG8beaS3hboAiJNjH/eOWpOXMdAljTYBdkqLMrq9YS8ReIFgxVlKkvKUafZ678oaeuuPXbN/6eb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1792010664; c=relaxed/simple;
-	bh=vnxKdlktPGPEkbhDNu2bx7SncaHDHmPQdqwJyVebjWk=;
+	bh=0/Wg1LIzI4WYei9afLFroj693OPuqwQEgqkX5ZH5lng=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ctkc3jWy4O6SEPtSTow22FIXaeRHlj/XYkQX82ApjUUA6muXeDEXuIYdyOHytJ66GPBL6SbRAowUJacfJAOpR/57Pa5ne9y5GW7+7DhvgPclUBtaPmYFpve+D2t9pUlrBvbA956srSfROq/ZdJ0pqi86KOeCVBUg21s9gsMtqE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it; spf=pass smtp.mailfrom=mythread.it; dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b=giQiLLIz; arc=none smtp.client-ip=62.149.155.101
+	 In-Reply-To:To:Cc; b=HtI3fg6iM5DBO/QwdJOInDdQgfPFeK+OvDvMibsrk1wQz9wLgKQZ2JTYfQOXcE+uyO1JS+JEhFJFrSZDTxvmRJ2+fjLHKldM5TQRjYz8nMqySJezk+SkLVmnzim96AL3FCPbT/pYblr4Z77rOv2NKk71dSPY0ZzMxLSO3PFUTEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it; spf=pass smtp.mailfrom=mythread.it; dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b=A+O4omfC; arc=none smtp.client-ip=62.149.155.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b="giQiLLIz"
+	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b="A+O4omfC"
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id H5mdx2rTsgYw4H5mkxSpCp; Wed, 14 Oct 2026 22:41:14 +0200
+	id H5mdx2rTsgYw4H5mkxSpD2; Wed, 14 Oct 2026 22:41:14 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1792010474; bh=vnxKdlktPGPEkbhDNu2bx7SncaHDHmPQdqwJyVebjWk=;
+	t=1792010474; bh=0/Wg1LIzI4WYei9afLFroj693OPuqwQEgqkX5ZH5lng=;
 	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=giQiLLIzASdGT9cnozy4Wi2Vi54Pf6sOGjlnjufl7j2tDyq74l44atAzamfahOBKz
-	 19Xpa04GcFlzSSADKTrH3oh4ZE+H7xwrb9fNtswwtMP8LwvtPKMJ5ruZGlgms2I9RS
-	 jVHbgDv7ejSToguMutAkRpR3wXf86HR6CDk9C607e+Qeao0VBXApJLSlq0Xd2bKSx8
-	 aPR/mRYm9gm1VYYqy3hPn7u/bYump37aOyTgNifRoqpMr58z3YC8ZAyeByedbbLdC2
-	 FvkOK1cXagLCRUmwlf4r+lm46zjBpStr0BedOKcvbKynWHoHKvMjqfmbnys+DbaxKl
-	 gsSj5wxKDETyQ==
+	b=A+O4omfCqfFTVhPZR+FoEmlZP2mYWU0na3mCwNXuGnmwPq8jylnliZbcMrc2+LueZ
+	 oOnyHCcdU9Yc90xBH/V/Nu3X92+ged/81h22Qkztrp6ZRX2k/F+PLt3z57uMnckElb
+	 tg/6VCOi28CGI0VjBFeqe/sZJpjHI1iyD0BuLWDiR21Ex8AhoWCUySavStRH06C3bg
+	 ofzSo4m/Lcpt4T357Jn6UbKAiofyQs6LUi3+SaOaVxB2aOHQJBD4gKfznAy2PFA8Uu
+	 HCrCPSoaOzngCei5baRFFbFCs9/QZUFMO0NT8+yC0OZup/hfvpsPY5wPKNKsnj9JkE
+	 C8cdtEPQgQveQ==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Wed, 14 Oct 2026 22:41:04 +0200
-Subject: [PATCH 3/8] bcma: pcie2: request HT on BCM4352/BCM4360
+Date: Wed, 14 Oct 2026 22:41:05 +0200
+Subject: [PATCH 4/8] bcma: chipcommon: set corecontrol bits 5:2 on
+ BCM4352/BCM4360
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -39,7 +40,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261014-bcma-ac-rev1-v1-3-b608e99d3f56@mythread.it>
+Message-Id: <20261014-bcma-ac-rev1-v1-4-b608e99d3f56@mythread.it>
 References: <20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it>
 In-Reply-To: <20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
@@ -52,28 +53,29 @@ X-CMAE-Envelope: MS4xfN6bvGWMrM3C7O32slcQTgHJbTXhr2UxDy/TzXIa2DcooUo5kdVgvXe81fV
  mKegveVIEqU6Z9ZhYUCDrKIlFKqPkPus3gTD2KCcHzV44gbRmNXv/6A6JezWhN1EeQmgRQQA1xeFymDzEBLiExMyliHnRB89fiyCxQW1qSlJK6s1s6syT9/C
  kyZf+2ow2FchGDligTtg4DZwV/2Keg==
 
-Set HAVEHTREQ in the PCIe2 core's clock control on chip rev 3, as
-Broadcom's driver does.
+Set them in chipcommon init, as Broadcom's driver does.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/bcma/driver_pcie2.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/bcma/driver_chipcommon.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/bcma/driver_pcie2.c b/drivers/bcma/driver_pcie2.c
-index cf889fc62..fd8fab982 100644
---- a/drivers/bcma/driver_pcie2.c
-+++ b/drivers/bcma/driver_pcie2.c
-@@ -170,6 +170,9 @@ void bcma_core_pcie2_init(struct bcma_drv_pcie2 *pcie2)
- 	case BCMA_CHIP_ID_BCM4360:
- 	case BCMA_CHIP_ID_BCM4352:
- 		pcie2->reqsize = 1024;
-+		if (ci->rev == 3)
-+			pcie2_set32(pcie2, BCMA_CLKCTLST,
-+				    BCMA_CLKCTLST_HAVEHTREQ);
- 		break;
- 	default:
- 		pcie2->reqsize = 128;
+diff --git a/drivers/bcma/driver_chipcommon.c b/drivers/bcma/driver_chipcommon.c
+index fd91a39f0..889f8cc1c 100644
+--- a/drivers/bcma/driver_chipcommon.c
++++ b/drivers/bcma/driver_chipcommon.c
+@@ -227,6 +227,11 @@ void bcma_core_chipcommon_init(struct bcma_drv_cc *cc)
+ 			((leddc_on << BCMA_CC_GPIOTIMER_ONTIME_SHIFT) |
+ 			 (leddc_off << BCMA_CC_GPIOTIMER_OFFTIME_SHIFT)));
+ 	}
++
++	/* Corecontrol bits 5:2: bit 3 is UARTCLKEN, the rest undocumented. */
++	if (cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4352 ||
++	    cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4360)
++		bcma_cc_set32(cc, BCMA_CC_CORECTL, 0x3c);
+ 	cc->ticks_per_ms = bcma_chipco_watchdog_ticks_per_ms(cc);
+ 
+ 	cc->setup_done = true;
 
 -- 
 2.34.1

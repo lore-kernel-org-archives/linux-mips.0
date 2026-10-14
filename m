@@ -1,37 +1,36 @@
 Received: from smtpdh16-2.aruba.it (smtpdh16-2.aruba.it [62.149.155.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0604A92ED
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E77E4A99B7
 	for <linux-mips@vger.kernel.org>; Wed, 14 Oct 2026 20:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792010662; cv=none; b=Nmw9kkcTxS2GeQxdDcIPzcmktp7xCZp7aP5onaA+hAoA7FxvmjDWMZn/90YU9yWDApca5qDL4d4nqA10pfIA7Vuz82ADQpBtgR0Kgiw7xnyBX+xAAAJ86n2YSD1g45LOY5x4SGkIXsZuHNw72XdGr2BtbF7DKXnrLZnZMr3xN8Q=
+	t=1792010662; cv=none; b=k/eqA+0KS2TbZlemf5F11Y9mt2OWT6jxoyE+769FOg7EqeaIDJfBCD+prer8hQ5R6Fw4rfglRXIw1/GCSQukx0W30ZTxhc7p9L0RkrARruf7I3Qs5HikLfDRcFXqqXAHWhDVi9ziqIy8dJz3cnxS0Ij4Sg0joevr5R/BKkApAMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1792010662; c=relaxed/simple;
-	bh=vKCGoYZkyy2tX3DnxdaTcewcIzz4/PetZAI2mHkxFSg=;
+	bh=nWNVc9Z1ai3UXmQ+AXUVO+y8GzWaTt8mFejXwvTxs7Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BzTaqkG79fzJO1Ii7m7Uy1GzXgOVojAtyAiIH5jJCpAHl0sTsv0rdAXrWPdXkf3DMNPKBxisR75nK1fQ65+m4lgf5EiCLO2LkQEcKihk63xXeh7hau1OAWp8MkjOKLhFwBkGkv1gFjhzyL8Z43roPQbiCkOGdGfkKKd/04c4tyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it; spf=pass smtp.mailfrom=mythread.it; dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b=Aw+tFIeb; arc=none smtp.client-ip=62.149.155.101
+	 In-Reply-To:To:Cc; b=hgBQkPFx+OQuXENOo4P2XKgXthixYfGIKUDBAX4l4x6YnN05lpYizB2CMwbWYVrLqzqfsalf6EKOE0ldsYgt702gahlJXbL14kn9QSk+5spgq8HxkyE+KZlyUdSpfOlUgKWCHY2XsTszfM2FX7wb4KA7lQDWGKhfJGRnBHsY2mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it; spf=pass smtp.mailfrom=mythread.it; dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b=blIXOl0b; arc=none smtp.client-ip=62.149.155.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b="Aw+tFIeb"
+	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.b="blIXOl0b"
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id H5mdx2rTsgYw4H5mjxSpCL; Wed, 14 Oct 2026 22:41:13 +0200
+	id H5mdx2rTsgYw4H5mjxSpCb; Wed, 14 Oct 2026 22:41:14 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1792010473; bh=vKCGoYZkyy2tX3DnxdaTcewcIzz4/PetZAI2mHkxFSg=;
+	t=1792010474; bh=nWNVc9Z1ai3UXmQ+AXUVO+y8GzWaTt8mFejXwvTxs7Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=Aw+tFIebYZJ6zdTapjeOS4/QGHTOuBXGYCVW/M61QiWQujIsPFfOLoPoXTMnxtaOT
-	 1gLHQGWVI9B35sODBCczEuoHVe73MtwRvtp3fNyIx6/5E3UQbc2ZjAek0bZIQpcbKK
-	 hioHYRTA0aDeMirR9GyxFu9eV2c5inw3bdAlGAnbvfByNkvZkN+Gazu+DViEL0Sch0
-	 kZ6E7pbOFidxkd41O5W7t7FDGYEN6JbtPz08jRpq7m0+odW0Wo1ZccNTQyFjjRLbQT
-	 b3I+NE0tt4MndWZZnE0/x1sWfnkbgCU4x+c3OAiqVCOyYKKRrEU7hE1qS2mI7r3uEJ
-	 KEpIDIRUs9QWg==
+	b=blIXOl0bCE2DiEiuQfd+BQFkt3g+APs60iUXhTTD5yR39ZL8XL9ms2XBPLeyxJgGo
+	 LQOCExwBaOHBtacr9O7o/qilXv1eyRxoXPm0Q2aJIm/RQphfcGUAzWBBK5BX5NOQnv
+	 2oPaJnc6DFZV+FId+/jEVCZHe+rr8+kZc0fuhWbJ8agI0zIdy1lVbeJVKf3/Egc8RD
+	 BkbMfayFuo9Ctz+fxauF65g/uje46P6w6Ifx9bzhCGJhDuCYUzazxbnYIikm9F+l9C
+	 tfSEvFSMC0fXYpDWxbBqRUkEIoTjL0DcG2uXXyOf2eK0oTLpshKF6Cnkjv5+5X1jhe
+	 G42o0HJwMa72A==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Wed, 14 Oct 2026 22:41:02 +0200
-Subject: [PATCH 1/8] bcma: core: clear only FORCEHT for
- BCMA_CLKMODE_DYNAMIC
+Date: Wed, 14 Oct 2026 22:41:03 +0200
+Subject: [PATCH 2/8] bcma: pmu: init PLL and resources on BCM4352/BCM4360
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,7 +39,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261014-bcma-ac-rev1-v1-1-b608e99d3f56@mythread.it>
+Message-Id: <20261014-bcma-ac-rev1-v1-2-b608e99d3f56@mythread.it>
 References: <20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it>
 In-Reply-To: <20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
@@ -48,32 +47,116 @@ To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
 Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>
 X-Mailer: b4 0.15.2
-X-CMAE-Envelope: MS4xfJN6aUMWVTjyiHFlqSbsKeZSW6xP+jdx1SjIjpoGY4uWNTV0gKvUVw3FYL84pLgtYmg2ix5Zm0gW9AVNUJLIbPfPl1QskPJ3vyGbj4Ybljjw2cn/sy1r
- kAwGpZvGggFAILdBvKhGK3Rjnvlt4AsnfqlNxePDQJTlIBQrr9UuMJbAou4bmLe23JIQ9HedYNo5tCZj+wFlsKG+bbDvn97Itywim6szkQOzgS9m2pul/tyy
- j3fG3Zs2Yzqv+ubZI5ejLxhKLMw3yIZfJGQkTLWsN+zyt67CzpiKJr0f033vTS5RNZuB48UQ2XMOnb+WcnKQq+yU7WrGwcPA7t+nXwAvVkv7WIyUP1YDj3Ji
- d7G0fMYXqhutk5HN9A41YgVlgc+Asw==
+X-CMAE-Envelope: MS4xfN6bvGWMrM3C7O32slcQTgHJbTXhr2UxDy/TzXIa2DcooUo5kdVgvXe81fVvf6wzmSgSnOaKHiSGsKl2IllWFyWYWr/hijrNkzps/zICNVKcY3nYBTr/
+ qohWDO37teboALBM+PLNp4cyhwEYJCVBkZX+nlnxek2EYYk/UIzYQdW1aVIuQJshedE/JUNXq1wuPENeRXXERG26Gv9OEmrDXjpAmN8vkoGnRu3RauHZg1au
+ mKegveVIEqU6Z9ZhYUCDrKIlFKqPkPus3gTD2KCcHzV44gbRmNXv/6A6JezWhN1EeQmgRQQA1xeFymDzEBLiExMyliHnRB89fiyCxQW1qSlJK6s1s6syT9/C
+ kyZf+2ow2FchGDligTtg4DZwV/2Keg==
 
-Clear FORCEHT with bcma_mask32() and leave the other CLKCTLST bits as
-they are.
+On chip rev 3:
+
+- program PLLCTL2/3 for a 960.0098 MHz fractional VCO from the 40 MHz
+  crystal, except on a BCM4360 strapped for USB;
+- set the up/down time of resource 6;
+- with chipstatus RSRC_INIT_MODE0 clear, program PLLCTL6/14 and set
+  max_res_mask to 0x1ff.
+
+The values are those of Broadcom's driver on rev 3; other revisions are
+left as they are.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/bcma/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bcma/driver_chipcommon_pmu.c        | 41 +++++++++++++++++++++++++++++
+ include/linux/bcma/bcma_driver_chipcommon.h |  4 +++
+ 2 files changed, 45 insertions(+)
 
-diff --git a/drivers/bcma/core.c b/drivers/bcma/core.c
-index 37a5ffe67..f4246689e 100644
---- a/drivers/bcma/core.c
-+++ b/drivers/bcma/core.c
-@@ -100,7 +100,7 @@ void bcma_core_set_clockmode(struct bcma_device *core,
- 			bcma_err(core->bus, "HT force timeout\n");
+diff --git a/drivers/bcma/driver_chipcommon_pmu.c b/drivers/bcma/driver_chipcommon_pmu.c
+index 263ef6fa1..ab2b2701d 100644
+--- a/drivers/bcma/driver_chipcommon_pmu.c
++++ b/drivers/bcma/driver_chipcommon_pmu.c
+@@ -145,6 +145,39 @@ static void bcma_pmu2_pll_init0(struct bcma_drv_cc *cc, u32 xtalfreq)
+ 	/* TODO: Do we need to update OTP? */
+ }
+ 
++static void bcma_pmu_4360_pll_init(struct bcma_drv_cc *cc)
++{
++	struct bcma_bus *bus = cc->core->bus;
++
++	if (bus->chipinfo.rev != 3)
++		return;
++	if (bus->chipinfo.id == BCMA_CHIP_ID_BCM4360 &&
++	    cc->status & BCMA_CC_CHIPST_4360_MODE_USB)
++		return;
++
++	/* Fractional VCO, 960.0098 MHz from a 40 MHz crystal. */
++	bcma_chipco_pll_write(cc, BCMA_CC_PMU_PLL_CTL2, 0x0c31);
++	bcma_chipco_pll_write(cc, BCMA_CC_PMU_PLL_CTL3, 0x100e);
++	bcma_pmu_set32(cc, BCMA_CC_PMU_CTL, BCMA_CC_PMU_CTL_PLL_UPD);
++}
++
++/* Returns the max resource mask to program, 0 to leave it alone. */
++static u32 bcma_pmu_4360_resources_init(struct bcma_drv_cc *cc)
++{
++	if (cc->core->bus->chipinfo.rev != 3)
++		return 0;
++
++	bcma_pmu_write32(cc, BCMA_CC_PMU_RES_TABSEL, 6);
++	bcma_pmu_write32(cc, BCMA_CC_PMU_RES_UPDNTM, 0x00200001);
++
++	if (cc->status & BCMA_CC_CHIPST_4360_RSRC_INIT_MODE0)
++		return 0;
++	bcma_chipco_pll_write(cc, BCMA_CC_PMU_PLL_CTL6, 0x09048562);
++	bcma_chipco_pll_write(cc, BCMA_CC_PMU_PLL_CTL14, 0x09048562);
++	bcma_pmu_set32(cc, BCMA_CC_PMU_CTL, BCMA_CC_PMU_CTL_PLL_UPD);
++	return 0x1ff;
++}
++
+ static void bcma_pmu_pll_init(struct bcma_drv_cc *cc)
+ {
+ 	struct bcma_bus *bus = cc->core->bus;
+@@ -156,6 +189,10 @@ static void bcma_pmu_pll_init(struct bcma_drv_cc *cc)
+ 			xtalfreq = 20000;
+ 		bcma_pmu2_pll_init0(cc, xtalfreq);
  		break;
- 	case BCMA_CLKMODE_DYNAMIC:
--		bcma_set32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
-+		bcma_mask32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
- 		break;
++	case BCMA_CHIP_ID_BCM4352:
++	case BCMA_CHIP_ID_BCM4360:
++		bcma_pmu_4360_pll_init(cc);
++		break;
  	}
  }
+ 
+@@ -188,6 +225,10 @@ static void bcma_pmu_resources_init(struct bcma_drv_cc *cc)
+ 			  BCMA_RES_4314_WL_CORE_READY;
+ 		max_msk = 0x3FFFFFFF;
+ 		break;
++	case BCMA_CHIP_ID_BCM4352:
++	case BCMA_CHIP_ID_BCM4360:
++		max_msk = bcma_pmu_4360_resources_init(cc);
++		break;
+ 	default:
+ 		bcma_debug(bus, "PMU resource config unknown or not needed for device 0x%04X\n",
+ 			   bus->chipinfo.id);
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index 0cb6638b5..45c37b6bd 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -107,6 +107,8 @@
+ #define  BCMA_CC_CHIPST_4706_PCIE1_DISABLE	BIT(5) /* PCIE1 enable strap pin */
+ #define  BCMA_CC_CHIPST_5357_NAND_BOOT		BIT(4) /* NAND boot, valid for CC rev 38 and/or BCM5357 */
+ #define  BCMA_CC_CHIPST_4360_XTAL_40MZ		0x00000001
++#define  BCMA_CC_CHIPST_4360_RSRC_INIT_MODE0	0x00000020
++#define  BCMA_CC_CHIPST_4360_MODE_USB		0x00000100
+ #define BCMA_CC_JCMD			0x0030		/* Rev >= 10 only */
+ #define  BCMA_CC_JCMD_START		0x80000000
+ #define  BCMA_CC_JCMD_BUSY		0x80000000
+@@ -500,6 +502,8 @@
+ #define BCMA_CC_PMU_PLL_CTL3		3
+ #define BCMA_CC_PMU_PLL_CTL4		4
+ #define BCMA_CC_PMU_PLL_CTL5		5
++#define BCMA_CC_PMU_PLL_CTL6		6
++#define BCMA_CC_PMU_PLL_CTL14		14
+ 
+ #define BCMA_CC_PMU1_PLL0_PC0_P1DIV_MASK	0x00f00000
+ #define BCMA_CC_PMU1_PLL0_PC0_P1DIV_SHIFT	20
 
 -- 
 2.34.1

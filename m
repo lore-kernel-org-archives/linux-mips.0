@@ -1,222 +1,143 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC588411A18
-	for <linux-mips@vger.kernel.org>; Wed, 14 Oct 2026 03:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE9F214A9B;
+	Wed, 14 Oct 2026 09:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791950375; cv=none; b=KNvSxqXkZW1iaTram28DW1RVYOr7MKrggPzFhMmTwTJw9AUpZCO5W44zsvlaeSxVklLlq3/Wkdh8PAGu4qrNLmCfiJnfGIIf//1ovEeN3XbBP1IzCKxHNWEfy8x7DZ4wYg6MO0fRm9lXiOUu0CUBck1BzgjqmT38Dg1vZ6riG9c=
+	t=1791970637; cv=none; b=Hgzsjci1cJOxjOvvK+Cx3RAKJD992Ttv/wr5oN17cotXYXQWHMtzZ13MBOMHIBvAmgmQlfrTecJw3qhX4ci6s34GdfUhNdRoALGBebsdbD1coL0+f50dp2X+SSGJKDhf+wVJQvHxyGLQIxEHzWW5hAAuBtX473pH7LPXQZY1Psc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791950375; c=relaxed/simple;
-	bh=VmhSKYg91t8FaQOY7PLXlCuiEpMdg/PrBe3jC/5xDCQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gzwMmzb9nZ5OkJiUgoGPZxTzA6kDcaH1SmUf8JD9ferXM6WlrXncPp87Qn7oCD6AYpvwC7gxDHqkwfSDHpnDRxZQHBDrZQAj8alN5jr522cvKpiQ62Bgj+fw9xmdSU1wZo3xZ53U7iMaTACI5rVN0dCjFmZSwQ2J4z1KlgNWUM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kqTZnVp1; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1791970637; c=relaxed/simple;
+	bh=aKZtPwqzeE96oGYnpF4kyMMCRvl++NeTCQ9OfWbteUA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R7FhUNjNVyykOpDULJaXR7NEtmamn2xnI5YEIPRawKKEc1YZ8G7Uji5bpL4LxmrdbmIs0g23whmbVohK+KD07XRQCPKozXrJGwzn5LLl8swxzkV5uPPYtyhPEpBViASkcQ5GMp1icq9heiZ+xrCJm3MSxTas0DvLzlKFToCozmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Md25q2/7; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kqTZnVp1"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-cd5cd8d89a7so1354850a12.1
-        for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2026 20:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1791950373; x=1792555173; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=xaAy9NFbsaWAIqgLcyoOERlKyqqeQpYUYBxUTmvTMEc=;
-        b=kqTZnVp15BzlwlEcIFdqDpTLKhQ68pAqOMqfdDbpM1tZP8lGqnJxDxivpVQ4zfYmKh
-         lDw0/zH3cZfx9EBO2+UcYKvTc+FBFXM8r+k+TWzOt57h0f/oblx2DBC5bNGPDBcpYAQT
-         PV6uwSQdl0MVHLdcHqP4y1He8VKGj1jsBuxpTDggfV2OJ/NLhH2F49bxda/RM+bwbdqa
-         bQrrEgK7hallbIXGdgybND/vmm94+gUNSs1QfoMRV8TU7YyrEB0vRdLCUGcIVad8mwdu
-         GwbglmgVEAynIeF9xWjs9wsG7rS14gZ/EOj95hcclTXVf4FByVThtUU0QSulLNCe5ZQ4
-         aL2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791950373; x=1792555173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xaAy9NFbsaWAIqgLcyoOERlKyqqeQpYUYBxUTmvTMEc=;
-        b=oiFCAjdj719NGIz0uK88otyGv+DT80ghofT8FLIg/ZUM+rnCd7KIazHWCjwfAATbOP
-         KBsL1fgu2XcCnEraspz3gnqZ5EQLOaBR+4CSpqjIt9VuZLV7AvDPzHUu0EjX/irVOOYD
-         gJQGu26A4dtzMXHo+6asHzsXfrvUqEKHNu/jc7UHdpGcatiOm9FtiNi/1HAE/y7ONeQU
-         WwNQQbRM1jmjt7cnlPINK+7NW0asQ79BEXL6DQKkwkn6rIFwQL+o+5PvPfUfaxupFDk/
-         ZvFlvh36weFGpJXfn4MDLvl4lbCxpDzIMH6gj/DCk4qDJReRx72zb7BZk5M1iXYYoOmf
-         gtJQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzfBpCkvAIputGI3U8rXDjUVTYYHxVFwuYIiS9jOLqGijV9Fn7DGQs02QaUgnytSlWaLHslYqHPEfnl@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ76/ngUZC24kymivtCkx0lOdHT8JcyeTBzC0WF4p5uK+6ZGGWG
-	qbuYp57vnYzkK0g0RZWWgSVgcr51XmOSK4Va9h2A/qSGjrs5ocDu8GfmzdzqaXVgkX0=
-X-Gm-Gg: AYBFou1e9G2XvGf1Nq8o32H+lkQ+mcFvSGIt5iW+xXIac1dkazO0lBuheWH7E7qrlEv
-	1RgjBUafKW3ZIUgYVSTrychOsD+PyBwVn46s6i5IYYOiypIO0+hGHxFDCFDI/lCQop1q0xqt2Y+
-	hllCQ5eG/j8fS84szvOWKBDaJWZPjc3GB+VbdT9QYLELIaWHPGiWM5zmIwvU9XztIwePs2NCk9U
-	Tbw0P72RlOCANbkZhNzcZSsaef7qHI07dlgd3GoXsmUmc0h2XsR5eQNZMfeyrA3GLGcIzd4MRg3
-	wRaMV3xjaOzGv8q4yXIQj+zn1agtQU6TWhRsm4dQy5xO2dNTYd0i1lQfyYjY35a5EPwtwOFs6Sj
-	O2alrMhBZo2Ux+3gb2yiNlM1SdTxDaTRjsq3YeIILhhthpxo+gw+v+axGKMdP89tUeIY/7CLHFa
-	6n8EygEE8fshQ6Rx6EaW6QN2DThaWY5jMQv4BLGlPBe2OGnFpcCyZtEQxV1Geytl0LJEDxqwNgW
-	ywOuCam7thNGq8+/c8u
-X-Received: by 2002:a17:90b:384c:b0:3ab:f38:2b43 with SMTP id 98e67ed59e1d1-3ab3ac86fbamr12973731a91.34.1791950373230;
-        Tue, 13 Oct 2026 20:59:33 -0700 (PDT)
-Received: from n232-176-004.byted.org ([36.110.163.103])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ac5f24a538sm2492305a91.9.2026.10.13.20.59.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2026 20:59:32 -0700 (PDT)
-From: Muchun Song <songmuchun@bytedance.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>
-Cc: Muchun Song <muchun.song@linux.dev>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	linux-mm@kvack.org,
-	linux-arch@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mm: generalize PUD page table allocation
-Date: Wed, 14 Oct 2026 11:59:10 +0800
-Message-ID: <20261014035910.687847-4-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261014035910.687847-1-songmuchun@bytedance.com>
-References: <20261014035910.687847-1-songmuchun@bytedance.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Md25q2/7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC701F000FF;
+	Wed, 14 Oct 2026 09:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791970636;
+	bh=+2G0A/3OONu+QthUk+8RoUXZZVX5MxzQK4zcElH7KTo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Md25q2/7GRPy3HBELNBHL7uPX806RGT67lCZfLnSBsUeXUM6XEDfdGJ20wgmzESxB
+	 BNDrLWfenVgPPRBuyJF/xnomNAmAXkKnAN3BOHThnnzLiIxlnmAeyoneb3BRBtw7C8
+	 pSr1jnxuo6Ol0etv1XXLWTs7GvNhxUMsp+44bXeK2bEGqX6JUOQ4KnRBUZLb6Ko80R
+	 Ou/NDuR0MuGRoLb/SGPYiJTu1yLgQ13YlNnuvn/2M9B9ag0IGRwfB3RbJGp2xqM1lT
+	 iDQYcE1WOA8t9OxfkoqcAVFVITy7fAoIK3Gl12LetkJ0b+fm1xS4QZ6opCzMpPTxZh
+	 UQbqqrxEHmCMQ==
+Message-ID: <ef5b6275-d15b-4192-a278-ab23235956a0@kernel.org>
+Date: Wed, 14 Oct 2026 11:37:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/21] mm: change behavior of pXdp_get()/pXd_page() in
+ compile-time folded pgtable
+To: Yeoreum Yun <yeoreum.yun@arm.com>, Russell King <linux@armlinux.org.uk>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>,
+ Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Barry Song <baohua@kernel.org>,
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
+ Anup Patel <anup@brainfault.org>, Atish Patra <atish.patra@linux.dev>,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, "Liam R. Howlett" <liam@infradead.org>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+ linux-openrisc@vger.kernel.org, Muhammad Usama Anjum <usama.anjum@arm.com>,
+ Sohil Mehta <sohil.mehta@intel.com>
+References: <20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com>
+ <as36bbrMVHOESsLd@e129823.arm.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <as36bbrMVHOESsLd@e129823.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The generic PUD allocator assumes order-0 page tables and zero-valued empty
-entries. MIPS and LoongArch need pud_init() to install their invalid
-entries. MIPS also uses PUD_TABLE_ORDER to describe the allocation size.
+On 10/13/26 11:31, Yeoreum Yun wrote:
+> Hi all,
+> 
+> May I ask there are any further comments on this series?
 
-Default PUD_TABLE_ORDER to zero, honor architecture overrides, and invoke
-pud_init() from the generic allocator. MIPS and LoongArch can then drop
-their duplicate helpers and use the generic constructor handling and kernel
-ptdesc marking.
+Let's resend after -rc1.
 
-This also switches their user PUD allocations from GFP_KERNEL to
-GFP_PGTABLE_USER, so they are accounted to the active memory cgroup
-context. Allocations for init_mm continue to use GFP_PGTABLE_KERNEL.
+I think most arch changes are reasonably simple and uncontroversial.
 
-Assisted-by: LLM
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- arch/loongarch/include/asm/pgalloc.h | 16 ----------------
- arch/mips/include/asm/pgalloc.h      | 15 ---------------
- include/asm-generic/pgalloc.h        | 11 +++++++++--
- 3 files changed, 9 insertions(+), 33 deletions(-)
+But I'd prefer if riscv maintainers could have a look at
 
-diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
-index 1fc9a0751f19..06a36da302d3 100644
---- a/arch/loongarch/include/asm/pgalloc.h
-+++ b/arch/loongarch/include/asm/pgalloc.h
-@@ -8,7 +8,6 @@
- #include <linux/mm.h>
- #include <linux/sched.h>
- 
--#define __HAVE_ARCH_PUD_ALLOC_ONE
- #include <asm-generic/pgalloc.h>
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm,
-@@ -51,21 +50,6 @@ extern pgd_t *pgd_alloc(struct mm_struct *mm);
- #endif
- 
- #ifndef __PAGETABLE_PUD_FOLDED
--
--static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
--{
--	pud_t *pud;
--	struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL, 0);
--
--	if (!ptdesc)
--		return NULL;
--	pagetable_pud_ctor(ptdesc);
--	pud = ptdesc_address(ptdesc);
--
--	pud_init(pud);
--	return pud;
--}
--
- #define __pud_free_tlb(tlb, x, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(x))
- 
- #endif /* __PAGETABLE_PUD_FOLDED */
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 2f123455e363..4346802e283f 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -13,7 +13,6 @@
- #include <linux/mm.h>
- #include <linux/sched.h>
- 
--#define __HAVE_ARCH_PUD_ALLOC_ONE
- #include <asm-generic/pgalloc.h>
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
-@@ -52,20 +51,6 @@ extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
- #ifndef __PAGETABLE_PUD_FOLDED
- 
--static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
--{
--	pud_t *pud;
--	struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL, PUD_TABLE_ORDER);
--
--	if (!ptdesc)
--		return NULL;
--	pagetable_pud_ctor(ptdesc);
--	pud = ptdesc_address(ptdesc);
--
--	pud_init(pud);
--	return pud;
--}
--
- static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
- {
- 	set_p4d(p4d, __p4d((unsigned long)pud));
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index 68e473908758..cc8445e6078d 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -182,24 +182,31 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
- 
- #if CONFIG_PGTABLE_LEVELS > 3
- 
-+#ifndef PUD_TABLE_ORDER
-+#define PUD_TABLE_ORDER	0
-+#endif
-+
- static inline pud_t *__pud_alloc_one_noprof(struct mm_struct *mm, unsigned long addr)
- {
- 	gfp_t gfp = GFP_PGTABLE_USER;
- 	struct ptdesc *ptdesc;
-+	pud_t *pud;
- 
- 	if (mm == &init_mm)
- 		gfp = GFP_PGTABLE_KERNEL;
- 
--	ptdesc = pagetable_alloc_noprof(gfp, 0);
-+	ptdesc = pagetable_alloc_noprof(gfp, PUD_TABLE_ORDER);
- 	if (!ptdesc)
- 		return NULL;
- 
- 	pagetable_pud_ctor(ptdesc);
-+	pud = ptdesc_address(ptdesc);
-+	pud_init(pud);
- 
- 	if (mm == &init_mm)
- 		ptdesc_set_kernel(ptdesc);
- 
--	return ptdesc_address(ptdesc);
-+	return pud;
- }
- #define __pud_alloc_one(...)	alloc_hooks(__pud_alloc_one_noprof(__VA_ARGS__))
- 
+  [PATCH 11/21] riscv: mm: use proper set_pXd() for generic compile-time folded
+  patable in vmalloc_fault()
+
+You are working on some general vmalloc_fault() cleanups, but until we have them
+I would hope to get an ACK from riscv maintainers that this temporary solution
+is good to go in.
+
 -- 
-2.54.0
+Cheers,
 
+David

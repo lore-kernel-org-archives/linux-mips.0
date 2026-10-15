@@ -1,98 +1,132 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C7C47CA7C;
-	Thu, 15 Oct 2026 08:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D8C3BED79;
+	Thu, 15 Oct 2026 14:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.135.140.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792053217; cv=none; b=tPPCt7XmsXELkS+v7UapnEz3a7TNUS+XqGY88BK76fBN4Pvpe0SrlQ3ggzAkHYdCAJFQF7VYRwx45jqjZm4c702PInaKw8tXfnqvZemR1r/Q6iHvu0glM8+3c0h8DVMg7zldNbJxRSMA2E+5sMyjpOw6EBDzLYKcRYcp7gkg1KY=
+	t=1792076035; cv=none; b=JEA4tqZ2ULK1Ctkdt0Ymt7mQxk3XGfOKP9rNeE3lDo/8FUjIxJ4sGCvdmPQu5+CUImxO4Ly9PVSRhI0iq/JYAq7hcati3V6xz9HasuR01oFI9dcv1l8/XY/UFsGwCHzy+kzA9/jU6MpmlKYEV9/s8oSMiF4100+DBOTnjWoM0XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792053217; c=relaxed/simple;
-	bh=ji8b0TU9oVYNUhNlUuAHj/WAOvWYnf0gl0BElyTFqMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MZffULj7kHaJVsJGRRmFGmv/Q548HEXfn8kBOzI1Y8b/cJ4Fsy6RVU+0zWYpQueEKW0yAofIsl87l6v6arYnM7ORmH6ZqmEPkmnbkmQIAlOSko5K698PnnLjmYG8sZ1/PG4khJAi6vIJZcoi7stcOJiSyOw43NEhr3nqFKA/dHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UtjExpLX; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792076035; c=relaxed/simple;
+	bh=bqcfBCgYsB9ZtE8OlSD6Jglr+qUCARckYjJJsi63qfA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aGBnfktT1BZO+lt3mFHSWC5AZsNFpu/CK079+hrXYTQNukorhDQug2eCzhkgcGo+cTJ/rHsaHasMdR9YWP/UZrDBGe8Q6yeZ7pwUeMt7FayFdVpu85nZVUdJZFRI0W8RoWeoY8pQhRF69Yq3O0KANhEGbHicoci79XSHjn1x4eI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr; spf=none smtp.mailfrom=cjdns.fr; dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b=oMVm8ZSk; arc=none smtp.client-ip=5.135.140.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UtjExpLX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B31CA1F000C5;
-	Thu, 15 Oct 2026 08:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792053215;
-	bh=AOZJvgkf51bXSMCUGPR93r0N2Iu+EN4HtBMStIPgKjU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=UtjExpLX+a8cuwlOqRz7cmtKMwlhGF6EnvQaF0p0x4Idxm7ijZzJ4N4aHzgnTwlwz
-	 R8l5QkDwcjiwdCBHnSSRjTENCW08WR3l+IPSoc8tl1wAz2YK6UMjqe+xrJrJTVMzqJ
-	 MF7tyXtn/OSw2I7X24p6aWSO9Oj/85pkVXRZJqnSDeQXfOMbOnbLe0GUhAOGM2sD2X
-	 HekeupaPpNdH7XpRSKNDfJ7waPaTVh+8cokwHTARhRjZNQUO+kbrqC0b10qK3i0PHH
-	 L89uERs+2aOpCbcvSSbRB28Xz57aSinboHKLUsW89VCRBBgh6LJp0SsTjzcNZ77czB
-	 aZ5VuixK0k5AQ==
-Date: Thu, 15 Oct 2026 11:33:25 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Muchun Song <songmuchun@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>, Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] mm: Generalize page table allocation helpers
-Message-ID: <atCP1YszjrtrB30U@kernel.org>
-References: <20261014035910.687847-1-songmuchun@bytedance.com>
+	dkim=pass (2048-bit key) header.d=cjdns.fr header.i=@cjdns.fr header.b="oMVm8ZSk"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EA9865AE6BD;
+	Thu, 15 Oct 2026 16:53:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1792076028; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=RXL920K2AccXRK21o/mWNGIz7E5QvJkjVNn0WJ8HmE0=;
+	b=oMVm8ZSkYN56FUZyvT9Uwk2pPXqkPsv9UqsMRJsUi4vA8sBbA9VRZuS/4RCl5yVxwOicrX
+	c+2ur4y7M8xr46N2DAMJZtV5X/NCnVVJ3Dyy0IS/8rAuEpvL6CKOJc5me86i2AR8run84P
+	8JV/tF3yqKlxCzGyuC2NyJUt9ZdO0Qx0+9c0GZ11+c1w1KvUcJvy4y78Ijw0V5ryHs45MQ
+	AOFCcNUU3QOiCc4V30Ee9XbP+bIODvMWJvY878jXnyQ6zFweVXIg01nCYfxfBRnLC6qY0V
+	KXSW2E5D3t9DV/OqWonHL4wcNJMQlZeE4z6oOcgDQeerI23RpjXRCilO6YVUIA==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: conor+dt@kernel.org,
+	daniel.lezcano@kernel.org,
+	devicetree@vger.kernel.org,
+	krzk+dt@kernel.org,
+	linux-kernel@vger.kernel.org,
+	naseefkm@gmail.com,
+	robh@kernel.org,
+	tglx@kernel.org,
+	grandmaster@al2klimov.de,
+	Caleb James DeLisle <cjd@cjdns.fr>
+Subject: [PATCH v10 0/5] clocksource/timer-econet-en751221: Support irq number per timer
+Date: Thu, 15 Oct 2026 14:53:26 +0000
+Message-Id: <20261015145331.453837-1-cjd@cjdns.fr>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261014035910.687847-1-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, Oct 14, 2026 at 11:59:07AM +0800, Muchun Song wrote:
-> A subsequent series will switch runtime vmemmap population to the
-> generic page-table allocators. Since vmemmap tables belong to init_mm,
-> the allocators must select GFP_PGTABLE_KERNEL and mark the ptdesc as a
-> kernel page table.
-> 
-> Some architecture-specific allocators do not preserve both semantics.
-> LoongArch and MIPS choose PMD/PUD GFP flags without checking the mm,
-> which can charge kernel PMD tables to a memcg and leave user PUD tables
-> unaccounted. The private PMD/PUD allocators also omit kernel ptdesc
-> marking.
-> 
-> Rather than duplicate this handling in each architecture, extend the
-> generic PTE, PMD and PUD allocators to support architecture
-> initialization hooks and non-zero table orders. LoongArch, MIPS and
-> parisc can then drop their private allocators and inherit the generic
-> GFP selection and ptdesc handling.
-> 
-> This series only prepares the allocation interfaces; the runtime
-> vmemmap conversion will be submitted separately.
-> 
-> Muchun Song (3):
->   mm: generalize kernel PTE table allocation
->   mm: generalize PMD page table allocation
->   mm: generalize PUD page table allocation
+This timer appears on both the EcoNet EN751221 (34Kc) and on the
+EN751627 / EN7528 (1004Kc) SoCs. On the 34Kc the interrupt controller
+uses a percpu interrupt while on the others it uses an individual
+IRQ number for each CPU timer. Add support for EN751627 and EN7528.
+Add support for IRQ number for each CPU timer under the
+econet,en751627-timer compatible.
 
-Reviewed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Changes since v9:
+* Use dynamic size irq and iomem block arrays based on DT
+* Update commit message explicating that CPU hotplug is intentionally
+not supported
 
->  arch/loongarch/include/asm/pgalloc.h | 48 ----------------------------
->  arch/mips/include/asm/pgalloc.h      | 40 -----------------------
->  arch/parisc/include/asm/pgalloc.h    | 17 ----------
->  include/asm-generic/pgalloc.h        | 29 ++++++++++++++---
->  4 files changed, 24 insertions(+), 110 deletions(-)
-> 
-> 
-> base-commit: ad9f2d463666c64e94b04be5263c9bf8f9f96fb7
-> -- 
-> 2.54.0
-> 
+Changes since v8:
+* Actually git commit changes from v7. Guys, I sincerely apologize for
+the spam.
 
+Changes since v7:
+* Use %zd for logging with ARRAY_SIZE to avoid compiler errors if
+test-compiling on 64 bit.
+
+Changes since v6:
+* Rebase to tip/timers/core (base-commit below)
+
+Changes since v5:
+* Integrate patch fix refcount leak from:
+Link: https://lore.kernel.org/linux-mips/20260526184105.18962-3-grandmaster@al2klimov.de/
+* NULL econet_timer.membase after unmapping
+* NULL check dev->event_handler in case clockevents_config_and_register
+  failed to fully register.
+* v5: https://lore.kernel.org/linux-mips/20260516233943.49502-1-cjd@cjdns.fr/
+
+Changes from v4:
+* Fixed incorrect compatible in DT schema
+* Bracing in out_irq_free if statement
+* I did not move cpuhp_setup_state past the point of no return
+* v4: https://lore.kernel.org/linux-mips/20260516215720.4160831-1-cjd@cjdns.fr
+
+Changes from v3:
+* off-by-one in out_irq_free
+* Gracefully fail if too many address resources are provided in the DT
+* Allow fewer actual timers than num_possible_cpus, as long as they
+never start
+* v3: https://lore.kernel.org/linux-mips/20260516182648.3987792-1-cjd@cjdns.fr
+
+v3 note:
+
+I decided to take this patchset in a slightly different direction from
+v2. There is a certain amount of initialization that once it has run,
+it cannot be reverted in case of error. The original driver init was a
+mixture of revertible and non-revertible code which made it too easy
+for code which is designed with best practices in mind to in fact
+introduce a bug. Therefore I start by making the init process more
+legible but without any business logic changes, then fix a race
+condition by keeping IRQ disabled until after cevt is setup, then
+finally add non-percpu IRQ support.
+
+* v2: https://lore.kernel.org/linux-mips/20260514000601.3430262-1-cjd@cjdns.fr
+
+Changes from v1:
+* Split changes over 3 refactoring patches + main patch
+* Remove driver discussion from dt commit message
+* v1: https://lore.kernel.org/linux-mips/20260416175101.958073-1-cjd@cjdns.fr/
+
+
+Caleb James DeLisle (5):
+  dt-bindings: timer: econet: Update EN751627 for multi-IRQ
+  clocksource/timer-econet-en751221: Init teardown on error if possible
+  clocksource/timer-econet-en751221: Disable IRQ until cevt registered
+  clocksource/timer-econet-en751221: Support EN751627 without percpu IRQ
+  clocksource/timer-econet-en751221: Do not use NR_CPUS for resource
+    array size
+
+ .../bindings/timer/econet,en751221-timer.yaml |  31 ++-
+ drivers/clocksource/timer-econet-en751221.c   | 204 ++++++++++++++----
+ 2 files changed, 179 insertions(+), 56 deletions(-)
+
+
+base-commit: c40b76c8cf580466d9e56223f7f74beecc165480
 -- 
-Sincerely yours,
-Mike.
+2.39.5
+

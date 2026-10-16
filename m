@@ -1,60 +1,62 @@
-Received: from mail-dl1-f48.google.com (mail-dl1-f48.google.com [74.125.82.48])
+Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C504735AC10
-	for <linux-mips@vger.kernel.org>; Fri, 16 Oct 2026 22:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605F8446830
+	for <linux-mips@vger.kernel.org>; Fri, 16 Oct 2026 22:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792188982; cv=none; b=BCAlVm7YFp/KNPHHzNM2swaibvCfeJFNGSnlylERcN2A48i2RF8R1kzxgvLOupGWE8MA5IR8bgpBgDW3hjDBjKxvVX4iSqfGHV3rT9YX7vN/RjWGNlhCwT59j1Vu7MCUrlACpPtQ/4QJbZUWBCzJX5Wt3MWGK2Q5vT2xe5Iq+z8=
+	t=1792188984; cv=none; b=rylRulAcg00QwRBmhlipa4uS0xBi6bVRSa2doH7P8FK+RUPcBR7lgP+1uR1HkOGDolmKl0EidkNgZuQsNS4GfMmjNElzONcEf/jDYkh0IJ2atBk7W2GSfkRARtSDwdWPGJHbfuuw1ZeM7T83JKNkIK4cMhX6o0TfbfSgWu//kj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792188982; c=relaxed/simple;
-	bh=XJsty+XVq3BgRuwoN2PV39ABqsBfB0LokyWIO3aDiLA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lBpEiwe1FfoGIqAXO0ssDMmFTH7pjHQ529Q8ihalbEBwcxKOYNrxovaPA3ibRtd7YC4G9S1XgqzGC9N+i8alXeGspuK/tbyPou9Dj4cv7++w6uUvwdmqI2mqMz0mW+uNXxmhHEqgoeE+zyLMwssASgrOYW/ztBkcNyOdslaPA7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZbG634vI; arc=none smtp.client-ip=74.125.82.48
+	s=arc-20240116; t=1792188984; c=relaxed/simple;
+	bh=F5rwnE+TarX3Uu1jbAXzL1o9rcgu7FuxAMhEFAkxA5U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Y9F+vIssIL9MdtTbeabw+CPfi0twL5XdlRqIrBJN6CSuYEN43ruKQIVqwKPBr430f4la0XbhLZEGGlLXGDewWpVo6VfqcCnKW2CiH26dA5i1ZUWS248NCRc8tICC0JY2JuuZfBdWg4NneL/Bkx5SZCugj1bqS0CexwO+6UA4g2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fr182G+s; arc=none smtp.client-ip=74.125.82.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZbG634vI"
-Received: by mail-dl1-f48.google.com with SMTP id a92af1059eb24-16ad92569b5so375459c88.1
-        for <linux-mips@vger.kernel.org>; Fri, 16 Oct 2026 15:16:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fr182G+s"
+Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-35f036b17easo1042347eec.1
+        for <linux-mips@vger.kernel.org>; Fri, 16 Oct 2026 15:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792188981; x=1792793781; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=bsRKo08wZU2d222RmzKutSRcq0g6gJCTiEkblWEA6+U=;
-        b=ZbG634vIPC+kuAzhAbUYFxgmlxlQ6ybF9uI/bvrzn+X3X5YMCdOfRk5Cz2fKwr36Ov
-         25odjBoN4/m4wZFwKHPGG7fWShsJ8OcaQoI25HsBXBasmhgy3KoGIqFmUf0V+Xzlsbcz
-         5kgz80MkzRjF73+xLKPQL2O9OmINQziqn2XNykKrDK0OYRwkSFE52541+zHDoDeLRdT+
-         mTpIO8phRt6dez3RgwoqqEaJh5xnj+r9YEfynDg1UEOK1B5rfF0qdBVjYDKYPHBD5MIE
-         QJYZYVElbkaR3K/pxC7h5fpl01+9Rt9agD8H06zyVG5Eo3IK9vyar0kORxRt/nvti8nv
-         WB8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792188981; x=1792793781;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1792188982; x=1792793782; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=bsRKo08wZU2d222RmzKutSRcq0g6gJCTiEkblWEA6+U=;
-        b=xuoZKRc1gR7IBYmvg0YVm9pAkU57sWIZnRb7NBKdV6DZHERy2WDad4GEsmkZNTwevI
-         mUniQ74RPZucsFR0FvH2KrFPDgbJbyizc0VuHxdGioxdghA2biKqda8oRAsuMvMePiyN
-         uVU0BmVZppkk8SKgJjdIkN/RgUwhG0aJGg3cULZDTyfZ//s9xvvD7GmWc0X7UN5gb9U6
-         Dg/11Sp3DWywZoRqs/6kzPUiM3K38wdSKFfccRDQgez1nO8NTsbLqAxZzhqjpaZgK6kW
-         48YQTiY9NgFrbfdRkdJm2NBS75uYYJPUAfkrv9x7OZe2ecIQ4bgnFpMJ61ygsvJh0zM5
-         qzMg==
-X-Gm-Message-State: AFq9FYLGc/JTHeufhC50XLKLv2rlC6+54LiK9CQO7N0tOAFtzlgN+ypH
-	yy3hbQYWsuNXPmwD2ybhaUEXFNx/3mZLkRjnkpoEDYHea6biaXRqiS9AkgWj8w==
-X-Gm-Gg: AYBFou2Dhayspxy3oQfq6RO4yQtLL23BjUyAHbxFmrvcKMNwVPTGU2YJvq9SokgMaNi
-	QiSFY1Yeg+au6FffA2ckpN0oIhhezuRaT0v+qyOGUbiMDRycK73GYPhV5EkTd81m2IrSgun35FZ
-	KLH654OyygukORhLugKnfigIcloeuZufOis5vsZhLpnFxDZUxzVFroDS1o2vuP3T2K4JkI5qrA/
-	5HqxpSOcl6Lv8JbpoAaPMgKfEA6h0JRQ25LqjWVYVuhdl28uO4SDpjo67xMkRezUG7HqMz4dLsR
-	iJGa8Y+nOgd4ODBZSivo8p1gO0GiJTRv/ELA+Z/+p3+o1Z33Cg/RyxUioW0CteZc2lnLGLTo0kp
-	Ws9vRsrHQyU4WfGZ9JVB/81n/KyMPS+AfMbBuSM+LRDQYQl+NMTrW/CTBBSYq2vmi/tOtN357qO
-	qmPGvFQy00AercxFaPQ4gPcV6PkyvWG8HU85plT7/F6U1zw8LkcAJc4jEFVx+dVh0RWvx9KQ==
-X-Received: by 2002:a05:701b:208a:b0:168:fe32:35a with SMTP id a92af1059eb24-18512296a20mr1365274c88.20.1792188980748;
-        Fri, 16 Oct 2026 15:16:20 -0700 (PDT)
+        bh=hAJ5TtwW+qsqI5u2ZCLK61rBpDAhHmzAtC4VpXZeDfM=;
+        b=fr182G+sFNo9SIEVI9oIgyNgcARtionZP5sOA3FG4c/0QWMRw6PAb5stDN0vHTQa5c
+         iMNquurhQoeN1h/hJ80gq0h5aW4dls2rdnGuNzhpYiglT4fNVD/QbRzySrfKfZAtktPk
+         uH+1vqtPVIH9hPAUIEDZBbEF14lxrQDcW8VtngRpHEIL7X7C6LsEy9qHhu5s1osPXm7Z
+         sdTYVfdDATc7WBO7FvV8iK0eVCf4EXABz398XPzYUenbLfKRV5cFucxI3Wjw85qjkh4d
+         Y4TgUIoEhJb0/OfULOnfNfYyusBMgoO6CWpmVSTV6SqHnsj2xSlbzzIOtwTqeJcwhdPH
+         zC/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792188982; x=1792793782;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=hAJ5TtwW+qsqI5u2ZCLK61rBpDAhHmzAtC4VpXZeDfM=;
+        b=ZuqHuHHcQwxTnXD1htvP7h8IcCYYfGTj6qFhGzgBdnpyQHn0iWhk2dAWeZ8yBKpEIF
+         ZcT8bniji12ETjWIP6tqdczSVb/H7LeetOULDvQxVbAwiyEVckxvB3HSvWOHLE782lj0
+         xzFrq8eXDnIxTZeVTv6m5yfJqHAWfxVnkx49unFPPB0Kgs/G0HQe0PZHet5wZbkvu7RH
+         qfKGa10OAX8GpjwFUkX7hF5qP/WOQQXyrCZ3wKOMYSU9RHrMVvwyPrJtqyKTPrmqXvYg
+         4rSim4zvdEu/O4i81f0hBngR+93z+hO1H9zSL/PEPgnrqSifpGHnt7ymoGiWQ6Y7Fgzn
+         O1tA==
+X-Gm-Message-State: AFq9FYLDjgEgJPncDZqunbJtsofvXqsjqNj0Lq/mrucImYNE1Xep1prq
+	Og18+Ta25B48CKHRHFZO4EFFcMjPMjpsyEw2UXF7OMVBaN8bf13T6xUlgnKb0QGs
+X-Gm-Gg: AYBFou0bemaQoOmSWTJqX6lDd4lnQWi4FQb+anh2M86hpDZPoS3yhKgrwXchRv/BVOe
+	YrAljhNj/XYBX74rWJcLwmT+c9HF0X8eT91BqtvtP9ScT4aIBAmEQdd/W1BggSD33/OKoodVqpc
+	lmxuGDJimjASvHzLWYWmYp70zIc+ROnAxHW3VMh3dezR4+o+ijb8pXJz3BCftoYbMNYOqKGdYrQ
+	gltnVdIDgSDDtxqOMScJozhI7Q0RTZ75teiDXicCGHeE+Qek8DdZ+xDrJpI5X5L8NLbn7Jvu0ew
+	MXJKhQwmnhnYdEG+a0j+WDpRVXLT/L6zgNtt4CLZn0Vi6tIEYlIN8j4TzXKMpsjXPFXuSnduIBe
+	T22nXdad2QJgx8YUOEE7RXPPAS4kvV0PfIbQVPhEv5EW2EMMCF6Nc9K1TGqo9xJPdQ26bzXPL7X
+	m4x7I5Rbr0QU1M+XBOp3nYQhR94M5tkb+zqV49RuBf3vOyYkTJXbKouQG35gQhPIyA02MEkXM=
+X-Received: by 2002:a05:701b:4584:b0:158:1ed2:cb58 with SMTP id a92af1059eb24-18514634414mr1389008c88.39.1792188982207;
+        Fri, 16 Oct 2026 15:16:22 -0700 (PDT)
 Received: from eldorado ([2600:8802:b00:1f84:d294:66ff:fe95:a98e])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1831919fc14sm10480863c88.6.2026.10.16.15.16.19
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1831919fc14sm10480863c88.6.2026.10.16.15.16.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 15:16:20 -0700 (PDT)
+        Fri, 16 Oct 2026 15:16:21 -0700 (PDT)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: linux-mips@vger.kernel.org
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
@@ -77,10 +79,12 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
 	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
 	linux-kernel@vger.kernel.org (open list),
 	manuel.lauss@gmail.com
-Subject: [PATCH 0/5] MTX-1 watchdog driver removal
-Date: Fri, 16 Oct 2026 15:16:12 -0700
-Message-ID: <20261016221617.2223004-1-f.fainelli@gmail.com>
+Subject: [PATCH 1/5] watchdog: gpio: Allow devices described by software nodes
+Date: Fri, 16 Oct 2026 15:16:13 -0700
+Message-ID: <20261016221617.2223004-2-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261016221617.2223004-1-f.fainelli@gmail.com>
+References: <20261016221617.2223004-1-f.fainelli@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -89,30 +93,41 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series removes the bespoke mtx-1_wdt driver and migrates it
-to the generic gpio_wdt driver which it should have done ever since
-gpio_wdt existed.
+The driver reads its configuration through device properties and obtains
+its GPIO with the descriptor API. Neither operation requires ACPI or OF,
+so allow the driver to be selected on platforms using software nodes.
 
-Assuming the patches are satisfactory, I suppose it would be easier to
-merge those via the watchdog tree than the MIPS tree?
+Add a platform module alias so a non-OF platform device can also load the
+driver when it is built as a module.
 
-Florian Fainelli (5):
-  watchdog: gpio: Allow devices described by software nodes
-  dt-bindings: watchdog: gpio: Describe minimum heartbeat intervals
-  watchdog: gpio: Support watchdogs with a minimum heartbeat interval
-  MIPS: Alchemy: Use the GPIO watchdog driver on MTX-1
-  watchdog: Remove the MTX-1 watchdog driver
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/watchdog/Kconfig    | 2 +-
+ drivers/watchdog/gpio_wdt.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
- .../bindings/watchdog/linux,wdt-gpio.yaml     |  11 +-
- arch/mips/alchemy/board-mtx1.c                |   8 +-
- arch/mips/configs/mtx1_defconfig              |   2 +-
- drivers/watchdog/Kconfig                      |   9 +-
- drivers/watchdog/Makefile                     |   1 -
- drivers/watchdog/gpio_wdt.c                   |  15 +-
- drivers/watchdog/mtx-1_wdt.c                  | 245 ------------------
- 7 files changed, 31 insertions(+), 260 deletions(-)
- delete mode 100644 drivers/watchdog/mtx-1_wdt.c
-
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index f7d0a0c2c0ef..f50709c635e5 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -267,7 +267,7 @@ config DA9062_WATCHDOG
+ 
+ config GPIO_WATCHDOG
+ 	tristate "Watchdog device controlled through GPIO-line"
+-	depends on GPIOLIB && (ACPI || OF)
++	depends on GPIOLIB
+ 	select WATCHDOG_CORE
+ 	help
+ 	  If you say yes here you get support for watchdog device
+diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
+index 1abc7d0b78a6..ff323d6e692e 100644
+--- a/drivers/watchdog/gpio_wdt.c
++++ b/drivers/watchdog/gpio_wdt.c
+@@ -191,3 +191,4 @@ module_platform_driver(gpio_wdt_driver);
+ MODULE_AUTHOR("Alexander Shiyan <shc_work@mail.ru>");
+ MODULE_DESCRIPTION("GPIO Watchdog");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:gpio-wdt");
 -- 
 2.53.0
 

@@ -1,57 +1,61 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=178.62.254.231
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792497774;
-	b=Ij3bku+KBWZngvBqGN5ETncyUAe6Jegn6lhYB8UxQokzKu+BcpNIDSHoFaU5kfihJGzg
-	 l7MrIVdhCyCAsDgq/eZPfD8zl6+gaK/tyCsMsjxyLgUcrf3u7BVYwnbQT6PIm7h2SSu3y
-	 zIKvSphqkLf41+cI6S+xHSU8/YcbxmaiNmX9CXGSco5/K3DMTNEM4nkAuiHmHpLZLWLEJ
-	 +JvF7xrEbiqapH12OXfMEd7s7spxHRb1I9mSE9Onyzo07EbT0mPrg1vTVrQfyjjn7zXjs
-	 49mKDkfAq0HN9I5WYm0r3AiyKZySZR5RGQx3VimlBi1CvmbV67KzEewF5ecBvWD3mOA==
+	t=1792498228;
+	b=xW9ibVEFBtuOrU/d6IWFtXbLAo17iSSw9u1bDj7FmV9je3Nmuf+J9legDh8ZtOMnpf39
+	 Vt9iqCUB6Y/gYMbTBn8VaDU5Uw72hWrb8QFeOKtXYc4/Sgd1mFD6z2gLU3mEDQS68WekI
+	 7ZpOYLw6P5RZ+UtdKYu4gWMlglk5TeCyT4Nr1lTfWflhfq6UlTgOMamzJWvAvQzP/5was
+	 q1383z23XIoZdS6vsvRs/UFZouMvw9FJ7q+3wisD7LxPbRFtJVJ9lpvDFVIMXsgwAVFU6
+	 XgUS8Mh2IFIH28oZifXO6hhopr360GvmmplspNWeiS1Jos2qx+2l6Z5DmfPU07zKftA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792497774;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
-	 X-AI-Review-Draft;
-	bh=Y2DFF4RD/jpeoGAQOUaJaBLkOA2GdM6dme7+WS01fbA=;
-	b=y11ki587H+59Wi16VPbWv/os5ACEcMhRotZNymBaOf4/he8itDr1k93OQWOs0rc92IKg
-	 lV+KBZic/PNFk3ac68phlb8xxprqZC9zPZzZcY26gsndUynaXXrED1XyvU27JQmuNQIYn
-	 afF6jEgecnsjzvXgvqW5eKr3l9OjzBmxySWSxrH+/XWu7kbz4An944lbXE6u2HvPpop1u
-	 R7Dd9eWcT20FgAndcGbCIUz2IHlXApK5gRNGdz4sNXEF7htdSNlfKvc7D/3QNsdrDiCo0
-	 yJrjdrJMBN2fLNhyZDLkjjm5RHX3+S6QGtYtOEix9XaRuUO9ld2AtQK1RSK/89Czfsw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792498228;
+	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=sTpXpqxyTpYyZqI41kPo7NL0tb03kdS+CKkIuEPUMdk=;
+	b=oNhs1J7xoK8098yXTb//RWZEw7z/EVNDxg0Bayouu8qKCNvX6w2DO0K/JZajqfaDyJAr
+	 IkT32HNsNqkDK9TY5Y965Ow1ALnF3w6MhcqLBCmoNqCSJ1vyBPTxsp9ROb497B2T7tg6A
+	 pxflyt8+8GP0+Citto0bRJTRnsjiw8zVe5U7c+pHKxVn8gm46ud9E1xCfR0GtcmkAMLKf
+	 hB8L1EwqQm3gEwKeyf+eTT3Aby2UblurYLDRpjMdtCzv0rFJfAH70jaqRgXsuJ+y0m9Np
+	 xlbMUkl7A62O7JjbcT7cZBzgqxV+nPScDiIM8JqgjPNPIYPTn2I2OWlkagERBrahRiQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="RZ7nwwD/";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=ilvokhin.com;
+	spf=pass smtp.mailfrom=ilvokhin.com;
+	dkim=pass header.d=ilvokhin.com header.i=@ilvokhin.com header.a=rsa-sha256 header.s=mail header.b=SgiIw18d;
+	arc=none smtp.remote-ip=178.62.254.231
+Received: from mail.ilvokhin.com (mail.ilvokhin.com [178.62.254.231])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55157606A320;
-	Tue, 20 Oct 2026 12:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD56606A31C;
+	Tue, 20 Oct 2026 12:10:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4DD56606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ilvokhin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ilvokhin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RZ7nwwD/
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E96F21F000C8;
-	Tue, 20 Oct 2026 12:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792497774;
-	bh=Y2DFF4RD/jpeoGAQOUaJaBLkOA2GdM6dme7+WS01fbA=;
+	dkim=pass (1024-bit key, unprotected) header.d=ilvokhin.com header.i=@ilvokhin.com header.a=rsa-sha256 header.s=mail header.b=SgiIw18d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilvokhin.com;
+	s=mail; t=1792498220;
+	bh=sTpXpqxyTpYyZqI41kPo7NL0tb03kdS+CKkIuEPUMdk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=RZ7nwwD/kK42buUjMB+42iUvu0ezt90YjX9ThQlTajBVSuiNGSiIlOJd8hqIoaBXH
-	 0vHRuNChHrLsty+JHf5kfLn7qoheh17/56QxjSlGtvZRWSi7+DMFL80AMjTHpXF2wq
-	 0Uoku9c+GfFUI5+Z3NGbhYe0XOIpHzKly7S50suMvkiQwb+eQVaw0FjBZLnapDchgv
-	 iLuT9J/nHkxT12XhoYXxSn9yXQQz0FpZ963EkUrpAltSDEvanKLnwLndK7qO7yWFcj
-	 8ggTzPsKA5xo8AfZdwl20B1QYwytpifRhL0NeIwhVCTcplbdxPd15Ey1rzxobO0rqz
-	 pgMYh1PRVrDjQ==
-Date: Tue, 20 Oct 2026 13:02:49 +0100
-From: Lee Jones <lee@kernel.org>
-To: Imre Kaloz <kaloz@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, mfd@lists.linux.dev,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 31/53] mfd: ioc3: Add support for IOC4
-Message-ID: <179198346971.839288.6829273567060577383@kernel.org>
-References: <cover.1791890466.git.kaloz@kernel.org>
- <2e8b812274f3049c687c37d1b7c3b3a4ee22d008.1791890466.git.kaloz@kernel.org>
+	b=SgiIw18dq/op+6gC0UqgBHtudL9pBSHF8UhNiPppS3zCUm2LOYtWIzk3JRo/IRsg5
+	 WJbn+DJKfBDGk3J6UCMAuD8MCPhtPGCvRI3KlVMzsLd8AXfhx5/rSnLY6ilyD6H7B7
+	 KQ6PwTPSkB8twGLwBJ62J/PmGkgbZbsOecZPy1M4=
+Received: from shell.ilvokhin.com (shell.ilvokhin.com [138.68.190.75])
+	(Authenticated sender: d@ilvokhin.com)
+	by mail.ilvokhin.com (Postfix) with ESMTPSA id 0D214FB8D8;
+	Tue, 20 Oct 2026 12:10:20 +0000 (UTC)
+Date: Tue, 20 Oct 2026 12:10:18 +0000
+From: Dmitry Ilvokhin <d@ilvokhin.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@vger.kernel.org, manuel.lauss@gmail.com,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thierry Reding <treding@nvidia.com>,
+	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: Alchemy: Register interrupt chips with the IRQ core
+Message-ID: <atdaKuYVOlnpna2o@shell.ilvokhin.com>
+References: <20261016181602.2152632-1-f.fainelli@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -63,38 +67,23 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2e8b812274f3049c687c37d1b7c3b3a4ee22d008.1791890466.git.kaloz@kernel.org>
-X-AI-Review-Draft: <2e8b812274f3049c687c37d1b7c3b3a4ee22d008.1791890466.git.kaloz@kernel.org>
+In-Reply-To: <20261016181602.2152632-1-f.fainelli@gmail.com>
 
---- checkpatch.pl: clean (0 issues) ---
+On Fri, Oct 16, 2026 at 11:15:59AM -0700, Florian Fainelli wrote:
+> Alchemy initializes its interrupt chips through the set-type callbacks,
+> which use irq_set_chip_handler_name_locked() to assign the chip and flow
+> handler. This bypasses irq_set_chip() and its descriptor registration.
+> 
+> Since /proc/interrupts switched to iterating the IRQ descriptor maple tree,
+> the statically allocated Alchemy descriptors are no longer found. On an
+> MTX-1, the file contains only the CPU header and ERR counter even though
+> the timer, serial, Ethernet and PCI wireless interrupts work.
+> 
+> Register each IC0/IC1 interrupt chip through irq_set_chip() before setting
+> the initial trigger type. Do the same for the Au1300 GPIC. Keep the locked
+> set-type callbacks for later trigger changes.
+> 
+> Fixes: 171cc0d9eed1 ("genirq/proc: Speed up /proc/interrupts iteration")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-On Tue, 13 Oct 2026, Imre Kaloz wrote:
-
-> IOC4 is IOC3's successor on IP35 Origin 350-class boards. Its serial and
-> PS/2 cores reuse IOC3's drivers and its interrupt status splits into two
-> banks. The serial ports need IOC4 firmware revision 62 or later and are
-> not registered on older firmware.
->
-> The serial, interrupt and GPIO register definitions in asm/sn/ioc4.h
-> follow include/linux/ioc4.h and drivers/tty/serial/ioc4_serial.c, removed
-> by commit f7bc6e42bf12 ("drivers: remove the SGI SN2 IOC4 base support")
-> and commit a017ef17cfd8 ("tty/serial: remove the ioc4_serial driver").
->
-> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
-> ---
->  MAINTAINERS                                   |   1 +
->  arch/mips/include/asm/sn/ioc4.h               | 142 ++++++++
->  drivers/mfd/ioc3.c                            | 323 +++++++++++++++---
->  drivers/tty/serial/8250/8250_ioc3.c           |   5 +-
->  include/linux/platform_data/sgi-ioc3-serial.h |  13 +
->  5 files changed, 438 insertions(+), 46 deletions(-)
-
-Do we really need to bundle all of these changes into this commit?
-
-This is going to be a nightmare to review!
-
->  create mode 100644 arch/mips/include/asm/sn/ioc4.h
->  create mode 100644 include/linux/platform_data/sgi-ioc3-serial.h
-
--- 
-Lee Jones
+Reviewed-by: Dmitry Ilvokhin <d@ilvokhin.com>

@@ -1,49 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792439929;
-	b=QOnEsdYkMSEo9DGfwGLrmUz+pGJyv7BJPuApodSPLRC2/1x1UN0E9c3hm7qPtNAkFWBo
-	 W4gD20uj4Gz8dxXmAY0v2/1IgdStGuzm+g6q+t4BBc32Ktu4g3xqmOZGMQ9hp4P8H8F01
-	 8Rake5K3nHowTLDi7eYKSc03roLM+JscSpq8DZv1B1fSIdPwVqmsTUyfTsHHizpQc/OOB
-	 HgCaF5RXFB8Ij5lhhOpEurbzwKWhanlq60KRSODcOsEDWWj1nS/TunIUqakTrwvg+A0M0
-	 XAnCGOEzavHYHy8JOPw/ImefBULTzqPOxQWz6Te0VEQ3yt1RVFRv0ftg+ck9Vxqe3Rw==
+	t=1792458031;
+	b=fsi5Ak65GzAaIp/3AUU2cOdErRzENpz5HpMbM1j+xHj5uRFn47fmaknCzmpzXy8+6QMd
+	 AchgLXhPvjUXVD5u6QdgC+N2p2Tk3/yijAlQRdeEORS6fkY6jahvE95JlCi9wCsMXkqiO
+	 X9wdjTxGugmHQUp13IhUiOervo47oQ+fKkeqTrwnDFiowGohn5EH5Rh4DSxKIgwdAOscw
+	 zn/Ye3DkMEn3OnovVK4sPEhglZFmv3AgKFyrCzSvoX/YqgIzO9KN67BDCBVfKK+XUirDG
+	 QKzQlR5ereEm1Ebd42s6F0RL7S4WMScBUePcjExDOeKuFr1+Kuo3zLpzYgERUZRxpZw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792439929;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=ErgWcZmMTaBLQFpV5lxLifZbUpY+cx+TKNxtxNPZQl4=;
-	b=pAZGA/wV0aKsENaXpAQZ8VtDqjYnT09CPVtkPGFGBdokj920lf6wD6IsY1biBkZ6QeLt
-	 7GkMgntR4z70Rd7m0v5KlF8Q13r7RcGgXUZ6g7/Vd4fM0swC8Dl5+QQ5+to9yLYMR2pfD
-	 E8lgV7MVe03zAcIScJ4TZU0vPyk6DbeubH6Um8mcTRxlSvzugrjvUB8z5OpqqPx2RAtwx
-	 cpIbpcpSjxKEeL8BK4nLKy+CId6jJq2gwk4ZBmDmGZO8W7F1qXZ9LtgQ7ywfbFiqs9GgN
-	 zDADX4xokfcgbcDh4rwprFu79OcFpNKcnqDKmr2L51Vdn5U7++N9vNMc2HTICk/WZeg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792458031;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Sender:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=v3oHSdXRqTXEkQ1Kg6tzlq5Y/Vbou/Oklmbka51QfB8=;
+	b=vENt6uGAYOzIoItXNSnBw6Cjlu+Lo3AjHyrrwM6vaLm84E2r9C4IKMr8+uQasMVNmpMA
+	 +lLqAGTwW2uH+rURgQ687RFqt5WDlt391nR8sh3jPxgaaUZZ/Gq9nCu3MzOHFNeXN6dV1
+	 rVexEE37Pq19kMUTV21ixTfw9vQusrZkVpZFZjxP8JM9kPuNk6tNfUPMvjolWiHNOkQR/
+	 Oi2FvBR1uVIByYX5yACl0C3vdZgMJZII30uPS9ZlA2OJzR6Z0eHcySSdYTmGcxRDp+YXE
+	 dEdGSpgFuJKvS+Kdt6bBsD8m8EGwN0qyosEsbmrkWSjFGNJE1ELvK82koCqFYIT0F4w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565E7606A319;
-	Mon, 19 Oct 2026 19:58:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 565E7606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 4EA1E92009C; Mon, 19 Oct 2026 21:58:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 477C492009B;
-	Mon, 19 Oct 2026 20:58:41 +0100 (BST)
-Date: Mon, 19 Oct 2026 20:58:41 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: kernel test robot <lkp@intel.com>, Rosen Penev <rosenp@gmail.com>, 
-    linux-mips@vger.kernel.org, oe-kbuild-all@lists.linux.dev, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: lib: prefetch ahead in csum_partial()
-In-Reply-To: <CAMuHMdXCKXN5PiDwRJiEj9aBGcU0J+H=q5tQoO7OfPEboCWGJg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2610192009000.22065@angie.orcam.me.uk>
-References: <20261010065442.23780-1-rosenp@gmail.com> <202610131201.wWk11MLy-lkp@intel.com> <alpine.DEB.2.21.2610190013300.22065@angie.orcam.me.uk> <CAMuHMdVoAthYZFzuMmVb8awHUia4xeEfFKK=1PA23iCV0SsFbw@mail.gmail.com> <alpine.DEB.2.21.2610191519120.22065@angie.orcam.me.uk>
- <CAMuHMdXCKXN5PiDwRJiEj9aBGcU0J+H=q5tQoO7OfPEboCWGJg@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dmarc=none header.from=roeck-us.net;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=fIkPQbH3;
+	arc=none smtp.remote-ip=209.85.216.49
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA98606A31D
+	for <linux-mips@vger.kernel.org>; Tue, 20 Oct 2026 01:00:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9DA98606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=fIkPQbH3
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-3a0aaa0fd13so2507735a91.2
+        for <linux-mips@vger.kernel.org>; Mon, 19 Oct 2026 18:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792458030; x=1793062830; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=v3oHSdXRqTXEkQ1Kg6tzlq5Y/Vbou/Oklmbka51QfB8=;
+        b=fIkPQbH3pF5SwFrMV9+GGqeqxbOBWQK9uj8Tp7vNvlgDGGsb9leed5ugsgVR+4vHsd
+         Y91lYj/TDdzHOp1Nlxq8Tr0UWMeTWxq0tZlvYH0//t5TIjXKBaafHlGCiHlrq4cIAAJG
+         M7uJEuwWXyqQ6DRLxbibvMh87NpcgjU32mgVOpGQzWm/ExseUyv/uBe37+WXxZTBJzBL
+         RfaJinNPAFM4lStG1w74T0WNtZb1UJhQkSbo4Wp48anjYSPnr/Mja/0VPH4KZAaEc/PG
+         GQKgmpTLawO+fjhjQ4RI4zy81SFT0zawkUkaPdL0/yqjUdmOjKizI0sTdPKYPrdfqVdX
+         h+HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792458030; x=1793062830;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=v3oHSdXRqTXEkQ1Kg6tzlq5Y/Vbou/Oklmbka51QfB8=;
+        b=ti+qXclm4rlS+GLgV54yrbmrZZgBlRTj0907KmKsuPs6Wz/BefMXymZEVGUkSBH0hG
+         G+/ep539FdJxlVnJdWRSW2BHYVoqYyXlSPnypp8O0KFbV7VqTthnwDPMn4lOO4Df9Q8k
+         /vCA/kBwIH/TmprTD+ZFPgqEQ7SJ5JUrG/Iok5h27APoYN7dqFOzlSlAEJPoM6TF4J3q
+         hUFuoQtl7KpbDpOKDhK/PgjkUdg4XUjhC3dzUO32ZugBNnHgHrDjQfhIVQilCWbWo0Uy
+         4pVZxZPpEJTL9bpjM9GwvvUOdRNoxAQ3w6lFvNqK5sHNL0XF5vNVR1IRkC4Rfmo+kwKz
+         +HTw==
+X-Forwarded-Encrypted: i=1; AKwUvBwDDFfJlYIzcff4diFOI20jTJYFv9Ouq5esgow/AzPykPPT/hRWUh487mKl2x+VaZxn8D5wBxBoEGAX@vger.kernel.org
+X-Gm-Message-State: AFq9FYJMNBz1+ERmmIBhN90xuylOJjtyPazOQII91m7AXZBj1tQSosMs
+	sZHrcJkbuYlvJ6u5OkyFLadPWUuxQCsYlA9qOh40wHVNnvOACB3MIBVG
+X-Gm-Gg: AYBFou0oi5T/wmT+pdzr6t1BZYsBF3UEi32wWvMzIjEMpYA8/q26PUoN5C3O1VdAea0
+	lZvwzaFvBsFGH2DCOLKBK+NXUbzaaBlfdBHGKeD+N1qC4WO2obWYOgthKPqC4R4O3rGJRKVs4re
+	bB8o1WmjCp5Tx8Lott1uHyAuC0Vp9ZIMpUivoBMvXfA/7/jPdAYv+WkeBrBD0sb2SU5cURpys/b
+	Mbwj+pJlDB12O7UlhcO9IuV2rBpSBe32K4yEKPKq6jlznA5Dk3b6qZsbyMrzALsGKIow3zjaoEE
+	ZKNMojlxvWawQgSyQOlnQ+X+5261XH/rlS2NLyoZ441gdWR5tRWDcuLnuGideZvndz4rz/bsotK
+	HyZKYVuqXaBFZSLERyXGPoqAYjb/InzgqNeKfblI7ltH3MdrJsrzAvQ+g1vq9xBZ8ig4BJgDdHc
+	tLOoiCnSAhip/RCB6/69aJ5wRq/KkZAXPEeqbtOP/eFZvasrHBr0eE/VozXKo42eBeJ2FFd59I9
+	cCGCviQshwmN3/k+PEdpx9iCOIi7XfDiHIkLDZfMITegQM4
+X-Received: by 2002:a17:90b:380b:b0:3ab:413:49b1 with SMTP id 98e67ed59e1d1-3aceefb87eemr7913039a91.48.1792458028879;
+        Mon, 19 Oct 2026 18:00:28 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:da43:aeff:fecc:bfd5? ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ea1517e7cfsm6466715ad.58.2026.10.19.18.00.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2026 18:00:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <85d47f47-1432-48fe-b83b-4d53381c5461@roeck-us.net>
+Date: Mon, 19 Oct 2026 18:00:26 -0700
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -53,44 +92,86 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] MTX-1 watchdog driver removal
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
+ Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+ Eric Biggers <ebiggers@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mingyu Wang <25181214217@stu.xidian.edu.cn>,
+ Robert Marko <robert.marko@sartura.hr>,
+ "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ manuel.lauss@gmail.com
+References: <20261016221617.2223004-1-f.fainelli@gmail.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ np3900V20aS7eD9K8GTU0TGC1pyz6IVJwIE=
+In-Reply-To: <20261016221617.2223004-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Geert,
-
-> >  I'd estimate it as one day worth of engineering effort plus maybe another
-> > one for machines to work through verification, for the binutils side and
-> > the associated changes needed for GCC, i.e. a `-march=' option update plus
-> > maybe enabling a couple of existing machine description patterns for the
-> > Tx49 too.  Would you be able to run GCC verification with your system?
+On 10/16/26 15:16, Florian Fainelli wrote:
+> This patch series removes the bespoke mtx-1_wdt driver and migrates it
+> to the generic gpio_wdt driver which it should have done ever since
+> gpio_wdt existed.
 > 
-> The rbtx4927 is about the slowest system I still do regular testing on.
+> Assuming the patches are satisfactory, I suppose it would be easier to
+> merge those via the watchdog tree than the MIPS tree?
+> 
+ From my perspective, patches are ok, and I'd be happy to apply
+them through the watchdog tree. However, I would need an Ack
+from a MIPS maintainer to do that.
 
- Speed is of no essence, I've recently run regression-testing with a R3k 
-DECstation, a VAXstation (with NetBSD), and previously, as a day job, with 
-a crippled ARM board well below the capabilities of the former systems.  
-Depending on the components chosen and the amount of breakage triggered by 
-the tests themselves (timeouts!) it could take from several hours to a few 
-days.
+Thanks,
+Guenter
 
-> It uses a Debian 8 nfsroot (over 10 Mbps Ethernet), which is the latest
-> Debian release still supporting the instruction subset suppported
-> by TX49XX.
-
- I run most of my target systems NFS-rooted as well (over 100Mbps FDDI for 
-a change).  Little is required from the target environment: an SSH server 
-and a POSIX shell, and then either an NFS client for direct build system 
-access or rsync for remote sysroot maintenance (in which case `rm' command 
-is needed too to discard test cases copied over, once executed).
-
-> So as long as no native compilation of large packages is required,
-> it can be done.  I can also give you remote access?
-
- There is no native compilation at all, only remote execution over SSH, 
-driven from the build system by DejaGNU.
-
- As for remote access, that would be an option, perhaps an easy one since 
-I've done it before with someone else, as long as you can offer temporary 
-storage for the sysroot to operate the target system with (~225MiB for 
-o32, ~285MiB for n64, indicative) and some network bandwidth.
-
-  Maciej

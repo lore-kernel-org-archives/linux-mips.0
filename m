@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792530566;
-	b=e7Hh/JpkwChIObCRlzbOF696bjTwZyX+oCG7RJu0DUjicywQgUa4gJuXWfqniXPL1uN/
-	 ///HHBSbhD3SiWvEI1W47/x/0+KNiUX5hnUccAUcBBK9roJMZaA0lAvBf+OY7uuAEjNvS
-	 /qFED39l25z/HYQwicfGH3uBs6aMRqKlUPO7ZzEWjKAU7tlvjFLpN5vFYHj6OIRRl/Luv
-	 F4BJPTZaH6RZ8RmEYgnmLMpbYiZLJRChbOWvRjeuy/1nB2NuqGnHSb3Kkt+KnOLz4wg7b
-	 nrNtVpIwGIsSTHiSi9EiY68XzLBWgEIS/645YHA3gjH0Cygpw77uK4qHoiS4VcgJNzQ==
+	t=1792530579;
+	b=Kkuu7Vdwj4kYX7xY9mllpxfc7EcHAT7L/xMJYOhYi2lBB98Lm2QZELbGvFCHzexLFdOE
+	 fIo1lyV1eg+SPzyTctaigPvuOeALTuDF0kn2103xumtXZTWllees8mvpF4jMI9ZCGzZsi
+	 bOjomqjvW4IxD+zYMjTIn/nLfSfi1639mXJlpd1Vbpnv4v8kNt8VivWfvNFEt8BW+XAun
+	 ZXqvuLDI3qvPGklJhiia/gR5DhW+79vw+HEogygePwqxl2p+8XlFLJ+qjVwQIGaiwW6YT
+	 Bc4e2WF78Y3Qk2iJ3JN0E/+QNBgWiuajv7eexQ/qhlmLnHyMQ5m9w+PMNxbk/LEYM2A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792530566;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792530579;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=PxxCaJIqknia6ac+c48SkpD1XjTsEIo4lgcRMWH37Yk=;
-	b=Qf6S4sIH/QEmf7ijJGdz0noZdJhGLJEsTyiB28KWY4e4sPNGc6mkD+FYDFi8RjRQhTOn
-	 vWGidtyb34ip3FFGc7x5+tKzATk9oA0dhR8DoazOVu9cbOS3WSJXESXmhtWxvjT2SmCwn
-	 m3iZt3Cuzif07jlPCMavTdHrKj6/uVJ9zR+KclATCQJDxFfMRO95fgqdqjhipN/Q/7+up
-	 PCghJ2ETRqxaf1B1XPluUvKeCyAcoxgud3kc9fKw4igpitTBigMp/mA3SYpb5lOcCUK3C
-	 PX3KxOj+h+/My3KljA3vEAFpzqVeRCIuXe3nRMJfGXusbDbz63mF6VgmxfHA1Sjtyxw==
+	bh=M93DmeGlZygcyyCb8djuafRGbQIseJa4Cxd6+PcQ6LU=;
+	b=5bC7W9q+qoBZ3Vxtverb5CYloSFCtyYJKRJ0vTNC/SZ8SijZjE0gV56rU1qIEUZPkhxe
+	 TJm1ILYBwxZo4nb1qUwIJ0pEEXDXmMvL3YPrtWUmAx69eJEEmjTp4h7MfmhJBij5dVj/h
+	 gPIFYZvslpdUVv8Rt4c02tcEHi14I4y34bv0BinbsUsp/TbpSn8Au/PoJjFr+TQ35jBUe
+	 arhsK5fgbWdmWr54Nt3B2c6jeIX7Q2Xgn1/QPPAtKbL8Y/FxPxHNFMPOrC8p7jWOHb2Pq
+	 j0GJnVZUDgLJusmsGu6v0gQNg2dTX7y8LBlH8km4s9sgU3axf2egf0ZJAyIuwfMMWYg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AgObrhSV;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gWwdTzW1;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFAF606A319;
-	Tue, 20 Oct 2026 21:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F6F606A31E;
+	Tue, 20 Oct 2026 21:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AgObrhSV
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5531F000C9;
-	Tue, 20 Oct 2026 21:09:24 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gWwdTzW1
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4708D1F000CD;
+	Tue, 20 Oct 2026 21:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792530566;
-	bh=PxxCaJIqknia6ac+c48SkpD1XjTsEIo4lgcRMWH37Yk=;
+	s=k20260515; t=1792530578;
+	bh=M93DmeGlZygcyyCb8djuafRGbQIseJa4Cxd6+PcQ6LU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=AgObrhSVaJxNZ80VKxl2eRuQF9ugO8W4sZOnTK7scklsSWN/U+M/sTZu2gEZoKO2X
-	 rVXXtEie5oznqTMl9DK17yFTRYCXBO1YxXVYQkiafLVoHs0QHFpFouppgky8hXqKh4
-	 DgiNSt3W2zWMlkj22DrzMzjfxHuOB0qPjJxlEnKoZcDOYIGAi9nMTN5LHQa3FViIfp
-	 GV8dTcgQA4+ONmfh9EvHgobPHWmow/2dWwTo5fQOlexfCU0td0NlBTQxu5wmiGrYSt
-	 TFJkgfHlmULKfx1L+GU6tYjHWO+OHxxkoqzlZ6zGfQFYLEKdjwMmOLy/lWh1EfN4j7
-	 Df76/YZ0nYLmA==
+	b=gWwdTzW11oXxkSHNEdH4fitccnfSU02nEVQLw8HRzPVg7eQNJ7Gouuk+8zzHxK/AB
+	 9MJyrtKUBcAT8lIQjXS8oWL/AYSezgOKEq7kEJTMkY5ANemfemKDIBhjUWhyKdnvc1
+	 XyjpzxH70raTye+mhA7Q+SkA8Mwq3b5LwNkLXAw4qdnhMd2qqFxHqWDiEaM7mdwh4P
+	 Jk7kLMYLFDywp/c6KvUQCWHFNGmN7WHFtj6MBMqBkmeSk8wtRgPhFHtvkyYfbJIHcp
+	 SmPwNgFwZmECwCPCg1AjSREI5rUh9MNuklqYuGaFWLAwfxiOybVBPiq9mU1P7gC6IF
+	 deMZaMQZhLl+w==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Lee Jones <lee@kernel.org>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	mfd@lists.linux.dev,
-	linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2 46/53] mfd: ioc3: Add IOC4 ATA/ATAPI cell
-Date: Tue, 20 Oct 2026 23:08:17 +0200
-Message-ID: <20261020210818.27215-1-kaloz@kernel.org>
+	Pavel Machek <pavel@kernel.org>,
+	linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 51/53] leds: Add driver for the SGI Fuel and Tezro front-panel LEDs
+Date: Tue, 20 Oct 2026 23:08:30 +0200
+Message-ID: <20261020210831.12225-1-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <179198336665.839288.12369537253671309518@kernel.org>
-References: <cover.1791890466.git.kaloz@kernel.org> <754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org> <179198336665.839288.12369537253671309518@kernel.org>
+In-Reply-To: <179198335037.839288.6380344650126608454@kernel.org>
+References: <cover.1791890466.git.kaloz@kernel.org> <bdc0fa8089faf9ce4ff80695035173ab59357227.1791890466.git.kaloz@kernel.org> <179198335037.839288.6380344650126608454@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,20 +66,64 @@ Content-Transfer-Encoding: 8bit
 
 On Tue, 20 Oct 2026, Lee Jones wrote:
 
-> > +	{
-> > +		.name = "pata_sgiioc4",
-> > +		.resources = ioc4_ata_resources,
-> > +		.num_resources = ARRAY_SIZE(ioc4_ata_resources),
-> > +	},
+> > +struct ip35_leds;
 >
-> Shouldn't this have been added in Patch 31?
+> Can you find another way to avoid: leds->led->leds->led->leds ...
 
-It should have, yes. In v3 the ATA cell, its resources and the
-level-triggered other_ir bit move into the patch that adds the IOC4
-cells (part of the split of 31 I described in my other reply) and
-this one goes away.
+I can, and it comes out nicer too. The LED core registers the classdev
+with &pdev->dev as its parent, so the callbacks can get at the shared
+state through dev_get_drvdata(cdev->dev->parent). I'll set it with
+platform_set_drvdata() before the registration loop, drop the forward
+declaration and the back-pointer, and have the update helper take both
+the shared state and the LED:
+
+	static int ip35_led_update(struct ip35_leds *leds,
+				   struct ip35_led *led, unsigned int state)
+
+> > +	struct mutex lock;	/* protects ->state of both LEDs */
+>
+> Not sure that comment is required.
+
+Agreed, gone.
+
+> > +	mutex_lock(&leds->lock);
+>
+> guard(mutex)(&leds->lock) ?
+
+Will do. The explicit mutex_unlock() goes with it.
+
+> > +	for (i = 0; i < ARRAY_SIZE(leds->led); i++) {
+>
+> for (int i = 0; ...
+
+Will do, here and in probe.
+
+> > +	*delay_on = 1000;
+> > +	*delay_off = 1000;
+>
+> If the hardware only supports a fixed 2s period (1000ms on / 1000ms
+> off), shouldn't we only accept it when '*delay_on == 0 && *delay_off
+> == 0' (or when both are already 1000) and return '-EINVAL' otherwise
+> so the LED core falls back to software blinking for other requested
+> rates?
+
+You're right, and that is the better behaviour.
+
+> > +static struct platform_driver ip35_leds_driver = {
+> > +	.probe		= ip35_leds_probe,
+> > +	.driver		= {
+> > +		.name	= "ip35-leds",
+> > +	},
+> > +};
+>
+> This padding is creeping me out.
+>
+> Why would you line-up things that aren't at the same level?
+
+Old habits, and no good reason beyond that :) The tab alignment on
+.probe, .driver and .name goes; v3 will use a single space before each '='.
 
 
-Thanks for catching it,
+Thanks a lot for the thorough review,
 
 Imre

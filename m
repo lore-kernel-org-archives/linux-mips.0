@@ -1,59 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792530540;
-	b=lg88bf9rQV9vmDbAF++EsW4Bt7QjcfeIhJyBKCgQJoTfyOhxvX1TuM+HKPY6WRJhFPth
-	 RKN/bJODw1p7g56npgZK4rrgb7jOrYOz0sus2BwTRjpX2cUYO2UEBBfSvnukCtfbqoO5r
-	 JJfEB/KLLpHizbn8e1cKAdazgjBprdNvAwjTspV906YYPw3TH+4skhaE+M5Emi/13e9Br
-	 LdAYjGbba+WHIR0HWR9d3zHKk0rlMbExA+brpzq6ZH3oNdgwTa1qDWO7bb0oHxS0ib0/n
-	 8yKQrMFjq0xjT9T1odeqkYTZ3ndVRUx2UoIJfmyybwWIft7hJ71RxZqLFIWG60A2JGA==
+	t=1792530566;
+	b=e7Hh/JpkwChIObCRlzbOF696bjTwZyX+oCG7RJu0DUjicywQgUa4gJuXWfqniXPL1uN/
+	 ///HHBSbhD3SiWvEI1W47/x/0+KNiUX5hnUccAUcBBK9roJMZaA0lAvBf+OY7uuAEjNvS
+	 /qFED39l25z/HYQwicfGH3uBs6aMRqKlUPO7ZzEWjKAU7tlvjFLpN5vFYHj6OIRRl/Luv
+	 F4BJPTZaH6RZ8RmEYgnmLMpbYiZLJRChbOWvRjeuy/1nB2NuqGnHSb3Kkt+KnOLz4wg7b
+	 nrNtVpIwGIsSTHiSi9EiY68XzLBWgEIS/645YHA3gjH0Cygpw77uK4qHoiS4VcgJNzQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792530540;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792530566;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=FWlmaieVF3G5nqJkpjCWlEpztN0OshGDCOqC4t4ddFQ=;
-	b=hU5BZXIRJEw3tpb0DaB6e8ev/me7h0NELqGQ9tNHnl6rqqniek/ZQDu0fJVjZtPgNfPe
-	 TL5Jo0cexGki9ct5PXZk83yq9z9vvrzF3DDgP5HXC1yWg8vDHlCdioKU2v2sjiL5+3ZUx
-	 Y7q8OJbOzfdRxVoynsAZOdtHvH+MJQktfATRYUrQC780nHdKAQQytdFMauYd401s00wUP
-	 Vty8TnWiKR8EQ2fVfmjdo/onOncDir0sw071YjLZFO+YBPWsuKIW9rxJEtirL8K0/mYTV
-	 xXS4EszOFpdKgsOnwYMvqDZx6m9UcDxreZHYc0SSHpgt2jo2WdUCNpKmBqL8jB1uVXg==
+	bh=PxxCaJIqknia6ac+c48SkpD1XjTsEIo4lgcRMWH37Yk=;
+	b=Qf6S4sIH/QEmf7ijJGdz0noZdJhGLJEsTyiB28KWY4e4sPNGc6mkD+FYDFi8RjRQhTOn
+	 vWGidtyb34ip3FFGc7x5+tKzATk9oA0dhR8DoazOVu9cbOS3WSJXESXmhtWxvjT2SmCwn
+	 m3iZt3Cuzif07jlPCMavTdHrKj6/uVJ9zR+KclATCQJDxFfMRO95fgqdqjhipN/Q/7+up
+	 PCghJ2ETRqxaf1B1XPluUvKeCyAcoxgud3kc9fKw4igpitTBigMp/mA3SYpb5lOcCUK3C
+	 PX3KxOj+h+/My3KljA3vEAFpzqVeRCIuXe3nRMJfGXusbDbz63mF6VgmxfHA1Sjtyxw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="OxP9/a2+";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AgObrhSV;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF34606A319;
-	Tue, 20 Oct 2026 21:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFAF606A319;
+	Tue, 20 Oct 2026 21:09:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OxP9/a2+
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 641271F000CB;
-	Tue, 20 Oct 2026 21:08:56 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AgObrhSV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5531F000C9;
+	Tue, 20 Oct 2026 21:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792530538;
-	bh=FWlmaieVF3G5nqJkpjCWlEpztN0OshGDCOqC4t4ddFQ=;
+	s=k20260515; t=1792530566;
+	bh=PxxCaJIqknia6ac+c48SkpD1XjTsEIo4lgcRMWH37Yk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OxP9/a2+ATby/nWvWsklJEXB+YxJyzUyrH3x45stE0us9xPlS37nBoJvZjIFfebYT
-	 SXWgapf5vSZ1Ji8rh8PBAl8HTD8j8xpuSjTlSmCt6Qb1V2E8Wnp4Wf1MZEKo4D+lLG
-	 i/45LJT9p3FoFTWPQndcVrKBPNgHIBq5FaqBLCU7gPvUAxdncUkb5tL9AFuNLVfpkg
-	 P3w2vpfbfQ1zMvt7MGzq2gNaphtQV+pmcHFkoltznYV1UaIwKnj5NngiNGsqUfsdyu
-	 noK6PYFAMlfPW3XVPW3fyq96knkfQfmd2f7Foo7AMKhIBbakkBAQ9WFk7ZhWWzQEJd
-	 B7t7JrgUgET+w==
+	b=AgObrhSVaJxNZ80VKxl2eRuQF9ugO8W4sZOnTK7scklsSWN/U+M/sTZu2gEZoKO2X
+	 rVXXtEie5oznqTMl9DK17yFTRYCXBO1YxXVYQkiafLVoHs0QHFpFouppgky8hXqKh4
+	 DgiNSt3W2zWMlkj22DrzMzjfxHuOB0qPjJxlEnKoZcDOYIGAi9nMTN5LHQa3FViIfp
+	 GV8dTcgQA4+ONmfh9EvHgobPHWmow/2dWwTo5fQOlexfCU0td0NlBTQxu5wmiGrYSt
+	 TFJkgfHlmULKfx1L+GU6tYjHWO+OHxxkoqzlZ6zGfQFYLEKdjwMmOLy/lWh1EfN4j7
+	 Df76/YZ0nYLmA==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Lee Jones <lee@kernel.org>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
 	mfd@lists.linux.dev,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 31/53] mfd: ioc3: Add support for IOC4
-Date: Tue, 20 Oct 2026 23:07:47 +0200
-Message-ID: <20261020210749.11045-1-kaloz@kernel.org>
+	linux-ide@vger.kernel.org
+Subject: Re: [PATCH v2 46/53] mfd: ioc3: Add IOC4 ATA/ATAPI cell
+Date: Tue, 20 Oct 2026 23:08:17 +0200
+Message-ID: <20261020210818.27215-1-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <179198346971.839288.6829273567060577383@kernel.org>
-References: <cover.1791890466.git.kaloz@kernel.org> <2e8b812274f3049c687c37d1b7c3b3a4ee22d008.1791890466.git.kaloz@kernel.org> <179198346971.839288.6829273567060577383@kernel.org>
+In-Reply-To: <179198336665.839288.12369537253671309518@kernel.org>
+References: <cover.1791890466.git.kaloz@kernel.org> <754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org> <179198336665.839288.12369537253671309518@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -68,44 +66,20 @@ Content-Transfer-Encoding: 8bit
 
 On Tue, 20 Oct 2026, Lee Jones wrote:
 
-> >  5 files changed, 438 insertions(+), 46 deletions(-)
+> > +	{
+> > +		.name = "pata_sgiioc4",
+> > +		.resources = ioc4_ata_resources,
+> > +		.num_resources = ARRAY_SIZE(ioc4_ata_resources),
+> > +	},
 >
-> Do we really need to bundle all of these changes into this commit?
->
-> This is going to be a nightmare to review!
+> Shouldn't this have been added in Patch 31?
 
-Fair point, and sorry about that. It grew in one piece while I was
-bringing the hardware up, and I should have cut it up before posting.
-
-For v3 I'll split it into five patches:
-
- 1. mfd: ioc3: Add per-variant interrupt banks
-    The irq_chip, domain map and chained handler move to a bank table,
-    and ioc3_priv_data gets a variant pointer and a generic __iomem
-    base. Only the IOC3 variant exists at this point.
-
- 2. MIPS: SGI-IP27: Add IOC4 register definitions
-    arch/mips/include/asm/sn/ioc4.h on its own.
-
- 3. serial: 8250_ioc3: Take the UART clock from platform data
-    include/linux/platform_data/sgi-ioc3-serial.h and the one-line
-    change in 8250_ioc3.c, with the MAINTAINERS entry for the header.
-
- 4. mfd: ioc3: Add support for IOC4
-    The IOC4 variant, its two interrupt banks, ioc4_setup() and the
-    non-serial cells (kbd, RTC and, from patch 46, ATA).
-
- 5. mfd: ioc3: Add IOC4 serial cells
-    ioc4_serial_setup(), the firmware revision check and the four
-    UART cells.
-
-Each one builds on its own, and 1 and 3 leave IOC3 boards behaving
-exactly as before, so they should be easy to check in isolation.
-
-The overall shape of v3 still depends on what Thomas prefers for the
-series, so it will follow once he has had a chance to look.
+It should have, yes. In v3 the ATA cell, its resources and the
+level-triggered other_ir bit move into the patch that adds the IOC4
+cells (part of the split of 31 I described in my other reply) and
+this one goes away.
 
 
-Thanks for taking the time to go through it,
+Thanks for catching it,
 
 Imre

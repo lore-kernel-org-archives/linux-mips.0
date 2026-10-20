@@ -1,49 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792516416;
-	b=AQ7Toam1qpb2jxgxaSFZTdqwshBkBY3NMIFhq+AyxF9dYp/pFpVe7S2YfkhnOgb/wWgK
-	 EQa8R6FDXzUGptqrGMz7f7PQWV2xTkOYJ62J+lDV2jA/narGc7BZdYwqyJu0qhKjeXMLL
-	 udNxxUL4wLMrIHsnPwm2a6GlxuAtlItmAIOfeqtjbJHf3u0dTu0ugXmfkoXCH/Cw8kFVd
-	 2Zh8NgMYmdYvTXJYMPg72VVsSnyyqjNHPBUSZOLcD3jW6e9DEcmHPMItK9/n4LPcaUcp1
-	 Co9BqxHs73ZR9D6lFGSgEHHIxVvFQfp+Y55bLIf2mEZ1nMzK+Yzuxa+fN4If4NIng5g==
+	t=1792519581;
+	b=yRxVG1cn2VDemaZX9X34VXm+aBqqsT38soHCB7l6vr+e0rdZ84YSBiLJAVplL0PUubQA
+	 pBalpFyoaEZLUH7rI/zB5wIfGLAIXbguXr4gTJ5/pm+1ctz5wW/FVcvOOGsngoqZaeQe1
+	 4VjLk71lzchdy1Bvb8/gTfF8nagOVDHbeq1omLtUBrZ9eR4OyUzIMZ6FwvAGQALNXtNC+
+	 sBR4ZC4pNbgl7puDHECxYy11fs3S7sbC5AkFsmp3+KfA3DGeAUilDxQAgzwT+I3l3dz3l
+	 fmvAuNdXY9Ogk9OSLzeII/7fN2ijoxQ5Te8mqrJveaJheZsU4lkuNz76Yy1rgi79F8g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792516416;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=tPVdO1o+Ij7sz/RsEElNJyknFuLxfrVY4fHViUXvVJE=;
-	b=y9aXfHyvkXEm7D0g8FjAmpSk3aCu5GvM/7SWhHMTFXPOz+D/lS3d2g4ywIJyx2Ey1T9M
-	 1pf5xKxFurqTbLZA9s5QyrpZr8pga8y4iaGRXz4ZG1Rd8DnrLmhvkL13fuidrR5xyfPJ1
-	 RwxM2pa10lDrT+0Nlp3/MU2gdlrGBWOqtykokdQC2ph4ejWBOB4tCj10TqKjRjYqjXnXg
-	 5uBrOuw/e1hufDQRbb3B3qsoIpvo4CothKz/vo156kPbSbrVaFogrZmoi1M6imCHl+9r9
-	 5bwWLkmKVji2KD/0RPYvFhS5Ruq5vqxBolbXJAfHLf7PSbf8DDOX+xmzUlfxD4U55pg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792519581;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=HVb+cZJd/B0SyswVrB5yNoiyhOraxVQrSwREAf5tTOE=;
+	b=teARR8Ol0RpM2q/I6oKAzG3P94nRztZZo0rStM9vgYTYSgh/5gM6i6ceD2/aPv8M43b7
+	 i/wb3vejoioWbSQ5dIYmRMdis7SutRBdRjkubh201pBm0T7BiOPP/T7ErhFf/+F/iDfDd
+	 CsbNt37bunaDxroi4eBnWVDBpirU9ExHDnXK4BR0zD7Pkq4/VNLpm+9rextk8vELFQuxp
+	 1PuYJyg3TxhYaQSRJU5Yxj3qEuEtuUS9xXWprEAyf1Qhan2bcVe6ICLpHGAyae17tZOFA
+	 pZ1Gkr901ji1Or1c/nGHaMBkp+tWMZrTnyZWE0GIHLmL/S47zTiBpRJwEv+THm6gVZA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2EB606A320;
-	Tue, 20 Oct 2026 17:13:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AE2EB606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 9507892009C; Tue, 20 Oct 2026 19:13:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 8FD1B92009B;
-	Tue, 20 Oct 2026 18:13:32 +0100 (BST)
-Date: Tue, 20 Oct 2026 18:13:32 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Florian Fainelli <f.fainelli@gmail.com>
-cc: linux-mips@vger.kernel.org, ilpo.jarvinen@linux.intel.com, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Cobalt: Include legacy IDE ports in the PCI I/O
- window
-In-Reply-To: <20261015203107.545047-1-f.fainelli@gmail.com>
-Message-ID: <alpine.DEB.2.21.2610201758400.22065@angie.orcam.me.uk>
-References: <20261015203107.545047-1-f.fainelli@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VOSCLcav;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAFA606A323;
+	Tue, 20 Oct 2026 18:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VOSCLcav
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F9B1F000C9;
+	Tue, 20 Oct 2026 18:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792519581;
+	bh=HVb+cZJd/B0SyswVrB5yNoiyhOraxVQrSwREAf5tTOE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=VOSCLcav+2Q4vNjUNvhkr6i5DNiI17LtAqaaIRzCzrM8wZyC5l4KcdrlFDpvx5311
+	 SEo6MM2zhzIGkyPZXOnlvwBXy6MFWr3/RnJaISTv+py52eDkP3e4GcI070pM172tyA
+	 aN9qceol4RnuUJReHmdm/O+2skabYnJSxsPSNRHdhamkukSo5wMIWfncUJIpwQm6A1
+	 iZu/hz1oyXwCkgHMK8aqynuQK/TsdwJQ5k636/lNnJ3/8qBYlWEZ0bsE2odhTVdnJU
+	 /Os3eb+hvwQdYrZMQNU7V5fqPT3awKe8qb+OD5vIErPd7bWxHq17+Xs4tg8sbSyrMe
+	 zj9J8181KItxQ==
+Date: Tue, 20 Oct 2026 11:06:19 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Imre Kaloz <kaloz@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Lee Jones
+ <lee@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri
+ Slaby <jirislaby@kernel.org>, mfd@lists.linux.dev,
+ linux-serial@vger.kernel.org, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel
+ <cassel@kernel.org>, linux-ide@vger.kernel.org, Pavel Machek
+ <pavel@kernel.org>, linux-leds@vger.kernel.org, Bjorn Helgaas
+ <bhelgaas@google.com>, linux-pci@vger.kernel.org, Christoph Hellwig
+ <hch@lst.de>
+Subject: Re: [PATCH v2 00/53] MIPS: SGI-IP27: add support for the IP35
+ (Bedrock hub) machines
+Message-ID: <20261020110619.12774a1c@kernel.org>
+In-Reply-To: <cover.1791890466.git.kaloz@kernel.org>
+References: <cover.1791890466.git.kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,25 +71,10 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Oct 2026, Florian Fainelli wrote:
+On Tue, 13 Oct 2026 15:16:20 +0200 Imre Kaloz wrote:
+> This series adds support for the SGI machines built around the Bedrock
+> hub (IP35), such as Fuel and Tezro, to the IP27 platform code.
 
-> The Cobalt PCI I/O window starts at 0x1000, excluding the VIA IDE
-> controller's fixed compatibility-mode ports at 0x170, 0x1f0, 0x376 and
-> 0x3f6. These resources cannot be claimed under the host bridge window.
-> 
-> Since pcibios_enable_device() was converted to pci_enable_resources(),
-> the unclaimed IDE resources cause device enable to fail with -EINVAL:
-> 
->   pata_via 0000:00:09.1: BAR 0 [io  0x01f0-0x01f7]: not claimed; can't enable device
->   pata_via 0000:00:09.1: probe with driver pata_via failed with error -22
-> 
-> Lower the PCI I/O window start to 0x100 so the fixed IDE resources can
-> be claimed. Keep the reserved ISA resources below 0x100 outside the PCI
-> window.
-
- Why not go with 0 (unless that's not what the system controller supports 
-as the bottom of the PCI I/O space), and just set PCIBIOS_MIN_IO correctly 
-as several platforms do instead?  Is there a southbridge in your system?
-
-  Maciej
+Why do we need support for machines discontinued 20+ years ago?

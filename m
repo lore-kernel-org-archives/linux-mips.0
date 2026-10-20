@@ -1,55 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792498349;
-	b=txWzyIfXVwDbu36MmFLn9BFP10ClkrCIIELN6B8Uup92myAE+cQmKUgjFWJliFCxlszi
-	 Bg4+JhEdAflHJfMwVlmeJpRuOP1LZtlM7tKXifMDnqBwmc9Bl27zftLv+hRvaGLFRjUEx
-	 2hnJ8dREmaWbWqSKubW0UcgYwFzOiU5Qx/GWS2vtC59W7tWd8u82MEMMJJIEJXPXei/4Z
-	 1+TDFjychiQCc8eI7K2sMI5/jey0YV2ECZ8LTTmuVTPJXb/2PaZxyRQMFN89nrinKU6wm
-	 LkRGz5HZPthcMmS8rFu2/4QKwQi01ZECevfaX6RfsXvFfmym8+UJ6njrXl1k/q6XC3w==
+	t=1792498808;
+	b=TgtUQp9KkyXc8x4pOS9MNLswCJhpYLq5ii1CeruK1BjuG3pCrI2DNduKDtO9NucDHKJC
+	 6fYweD3A99/cuhx5uymiOTPBAYyOfb0DDzFYhYMvUDcaMsgqPqMvKFHEyPztiEN37MGng
+	 TGqjgaJMFoEq7yqJr+Ugr4mpPgC7DLbXPyJt/RHGNKv0GIwEzopijWORKVPxuELwxQXWT
+	 2bUvuGf5nh96501d8poyJnp2YEqsbC2iiJjlLBvrtJYkTMygtFUFnNArjwKvmQIkQHSLm
+	 ycshB3D8q8rU1SRnZ+W2nU7xod402Llp6PX2bB6mYGE6YcxClKSKn5wt2Ba1eK8aPGw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792498349;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792498808;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
 	 X-AI-Review-Draft;
-	bh=CQJLh+vS7OYaAUP51MkMV7udw8y7udD7KSJWpA2e+Dw=;
-	b=hASVVBlEHdkHcz0SmW7Uzl8S/htyjbDzTPJ/JMLCaOX3WdXZMDrKYkG6phW/jgMR20Kd
-	 x2XCK15Y4A4sNSv3Dh64LvHe0pHGSDS+/9qzyZwf8JGfdgyhM3EHFA5ZWJWW/Vlveh9cX
-	 k0fKP5GjOl9s+UkPlIkwcG/Bc5jX6b3g217kIuZ8A2H4Y3IhM4B2+TCjupSNA8kfAFGR7
-	 tulXPtcHIYtq6oui5C8Ttb0/Pno8P6WF0YzarsrnJF2lRxr7DAOzt7hk0vXXWus2sjzA/
-	 /nbsusWf+1T3o2/m1ik8yBJAMUHgVrD8be8vym6S2XxQgKZDj2hZY+TfykkQAGXof/g==
+	bh=TCdVXSGSguFVS8MyCXGGA3abu+IxpKh+QZmcP+izsyA=;
+	b=oviIGUAVXzdbq9LcCohloM8yEH4Ve62FYzkaw9pY/VeFT4xeLy6VIB0Pw/dT2ovF1ATr
+	 /0xj/e5l3XwNiHDIlWhiViHliYQHSjoftWr6ZXk4TiY2Mjs1uX6Dr6iZVl9Eol9hGu0yX
+	 Ys8w+Ape5yy6V+Sow4AiwUQisM4V4Jvw67I7NuxW9j4M9BEiazc79ZsFtjczqduNdllxh
+	 DCEuyFY0CNXlJMQF/aWu3dNNBrv03PDRfqsRPB2elEinOqNVDQ3THp+8hrAa01oh2S7oX
+	 uw+kCIhf1NRWxYk+gaV89uMiPe2HCmOFKxKOCDVmzgUz8ns7wHRiaXztaFY3NE5aPAw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aa1PnYSf;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IJVVRKIg;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D4F606A31A;
-	Tue, 20 Oct 2026 12:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66073606A31D;
+	Tue, 20 Oct 2026 12:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aa1PnYSf
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F8291F000C8;
-	Tue, 20 Oct 2026 12:12:27 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IJVVRKIg
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57C761F000C7;
+	Tue, 20 Oct 2026 12:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792498348;
-	bh=CQJLh+vS7OYaAUP51MkMV7udw8y7udD7KSJWpA2e+Dw=;
+	s=k20260515; t=1792498808;
+	bh=TCdVXSGSguFVS8MyCXGGA3abu+IxpKh+QZmcP+izsyA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=aa1PnYSfevYL1ZNdXnjb+hI4uRvs1/gGxkB9941j+c/MDXOYLL2KkvdBqZLLcOAk1
-	 HBeGTbFDjrYGgfiCTjwIWncOYAiCuI0OG4B8ygWJWkgdsItZCxC2uMUgk+hhyX8K9F
-	 Tgk/NlL5XTI4TopYbTnq2DjzBnltSjcHhYKEHrxCWCWxXOg/j9JkjrnXJbVf8yGflG
-	 X59sS/RqKELC24Ah7jFmyc218zLJ++sEF9H8BJvoZIF7c9uFv8R6FreL2QMtT0uZdn
-	 ObSoVhNkT6920mkJiyqrcTcWqYiaI5NZk+gYgWl4ebXNSY8t+xLzlBHq6Ky94/BWc1
-	 nPWxytbnG/D5Q==
-Date: Tue, 20 Oct 2026 13:12:24 +0100
+	b=IJVVRKIgFSrexqVCXORSbEEkGUOmcayAeVWkSMcowf9fEW/8t0izGWKURoeTxgG/h
+	 2INlCShOxU8v8ox4jyiyboFzmXwwrOb9mnVhNOlMu+rz+LMviFbnUWItE7hd/B5W/v
+	 /S1F/imWQ5mV76y/qmlOMQcoAXCdBuUnQ9Q0oTUvEQFOxjCHwx+uPDLk7fNJ+YXLtL
+	 PMrY9K24sDgpHb4J4ug489b5PPaUsaKGbFfKFiOk/jgHYYUNExxXqJdbuv093y04O/
+	 a1dqKNHfR/78kiXdDr1YG1oc1MxdxuVijOG1rpoJCZViC2T9tk0tP7HlTofMGVYbuu
+	 JXYbsAKN0yQIA==
+Date: Tue, 20 Oct 2026 13:20:03 +0100
 From: Lee Jones <lee@kernel.org>
 To: Imre Kaloz <kaloz@kernel.org>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mfd@lists.linux.dev
-Subject: Re: [PATCH v2 46/53] mfd: ioc3: Add IOC4 ATA/ATAPI cell
-Message-ID: <179198336665.839288.12369537253671309518@kernel.org>
+	Pavel Machek <pavel@kernel.org>, linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 51/53] leds: Add driver for the SGI Fuel and Tezro
+ front-panel LEDs
+Message-ID: <179198335037.839288.6380344650126608454@kernel.org>
 References: <cover.1791890466.git.kaloz@kernel.org>
- <754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org>
+ <bdc0fa8089faf9ce4ff80695035173ab59357227.1791890466.git.kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -61,96 +62,236 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org>
-X-AI-Review-Draft: <754bae380c938b63eeaa87e3dccf9755314675ed.1791890466.git.kaloz@kernel.org>
+In-Reply-To: <bdc0fa8089faf9ce4ff80695035173ab59357227.1791890466.git.kaloz@kernel.org>
+X-AI-Review-Draft: <bdc0fa8089faf9ce4ff80695035173ab59357227.1791890466.git.kaloz@kernel.org>
 
 --- checkpatch.pl: clean (0 issues) ---
 
 On Tue, 13 Oct 2026, Imre Kaloz wrote:
 
-> Add an IOC4 cell for pata_sgiioc4: a DEFINE_RES_MEM() over struct
-> ioc4_ata_regs and a DEFINE_RES_IRQ() for other_ir bit 0
-> (IOC4_OTHER_IR_ATA_INT). It joins ioc4_cells[] between the kbd and rtc
-> cells.
->
-> The ATA passthrough bit follows the drive's INTRQ line, which stays
-> asserted until Status is read, unlike the discrete events on the rest
-> of other_ir. Make it the one level-triggered bit of the other_ir bank.
-> libata reads Status while servicing the interrupt, so ioc3_irq_ack()'s
-> W1C write is the only ack needed.
+> The SGI Fuel and Tezro front-panel LEDs are set through the L1 system
+> controller, whose LED request switches off every LED outside its mask,
+> so send the pattern of both LEDs on each change. Probe takes over the
+> PROM's state without writing it.
 >
 > Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 > ---
->  arch/mips/include/asm/sn/ioc4.h |  1 +
->  drivers/mfd/ioc3.c              | 19 +++++++++++++++++++
->  2 files changed, 20 insertions(+)
+>  drivers/leds/Kconfig     |  12 ++++
+>  drivers/leds/Makefile    |   1 +
+>  drivers/leds/leds-ip35.c | 144 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 157 insertions(+)
+>  create mode 100644 drivers/leds/leds-ip35.c
 >
-> diff --git a/arch/mips/include/asm/sn/ioc4.h b/arch/mips/include/asm/sn/ioc4.h
-> index 781fcfb81b5e..d23676ae82b4 100644
-> --- a/arch/mips/include/asm/sn/ioc4.h
-> +++ b/arch/mips/include/asm/sn/ioc4.h
-> @@ -129,6 +129,7 @@ struct ioc4 {
->  #define IOC4_OTHER_IR_GEN_INT		0xff000000	/* generic pins */
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index d0d3182236be..9ca75364264b 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -1035,6 +1035,18 @@ config LEDS_IP30
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called leds-ip30.
 >
->  #define IOC4_OTHER_IR_KBD_INT_BIT	6	/* bit index */
-> +#define IOC4_OTHER_IR_ATA_INT_BIT	0	/* bit index */
->
->  #define IOC4_SSCR_DMA_EN	0x10000000	/* enable ring buffer DMA */
->
-> diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
-> index 01c919c18b06..b471c90e737c 100644
-> --- a/drivers/mfd/ioc3.c
-> +++ b/drivers/mfd/ioc3.c
-> @@ -850,6 +850,13 @@ static const struct ioc3_variant ioc3_variant = {
->  	(IOC4_SIO_IR_PORT_INT(0) | IOC4_SIO_IR_PORT_INT(1) | \
->  	 IOC4_SIO_IR_PORT_INT(2) | IOC4_SIO_IR_PORT_INT(3))
->
-> +/*
-> + * In other_ir only ATA passthrough is level triggered. It follows the
-> + * drive's INTRQ line, which stays asserted until the host reads Status;
-> + * the other other_ir bits are discrete events.
-> + */
-> +#define IOC4_OTHER_LVL_MASK	IOC4_OTHER_IR_ATA_INT
+> +config LEDS_IP35
+> +	tristate "LED support for SGI Fuel and Tezro"
+> +	depends on LEDS_CLASS
+> +	depends on SGI_IP27
+> +	help
+> +	  This option enables support for the red and white front-panel
+> +	  LEDs of SGI Fuel and Tezro workstations, which the L1 system
+> +	  controller drives.
 > +
->  #define IOC4_UART_RES(port) {						\
->  	DEFINE_RES_MEM(offsetof(struct ioc4, uart[port]),		\
->  		       sizeof_field(struct ioc4, uart[port])),		\
-> @@ -869,6 +876,12 @@ static const struct resource ioc4_kbd_resources[] = {
->  	DEFINE_RES_IRQ(IOC4_IRQ_OTHER_BASE + IOC4_OTHER_IR_KBD_INT_BIT)
->  };
->
-> +static const struct resource ioc4_ata_resources[] = {
-> +	DEFINE_RES_MEM(offsetof(struct ioc4, ata),
-> +		       sizeof_field(struct ioc4, ata)),
-> +	DEFINE_RES_IRQ(IOC4_IRQ_OTHER_BASE + IOC4_OTHER_IR_ATA_INT_BIT)
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called leds-ip35.
+> +
+>  config LEDS_ACER_A500
+>  	tristate "Power button LED support for Acer Iconia Tab A500"
+>  	depends on LEDS_CLASS && MFD_ACER_A500_EC
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index a68244bd50fb..b45d1d70c431 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -36,6 +36,7 @@ obj-$(CONFIG_LEDS_GPIO_REGISTER)	+= leds-gpio-register.o
+>  obj-$(CONFIG_LEDS_HP6XX)		+= leds-hp6xx.o
+>  obj-$(CONFIG_LEDS_INTEL_SS4200)		+= leds-ss4200.o
+>  obj-$(CONFIG_LEDS_IP30)			+= leds-ip30.o
+> +obj-$(CONFIG_LEDS_IP35)			+= leds-ip35.o
+>  obj-$(CONFIG_LEDS_IPAQ_MICRO)		+= leds-ipaq-micro.o
+>  obj-$(CONFIG_LEDS_IS31FL319X)		+= leds-is31fl319x.o
+>  obj-$(CONFIG_LEDS_IS31FL32XX)		+= leds-is31fl32xx.o
+> diff --git a/drivers/leds/leds-ip35.c b/drivers/leds/leds-ip35.c
+> new file mode 100644
+> index 000000000000..fba918265e3d
+> --- /dev/null
+> +++ b/drivers/leds/leds-ip35.c
+> @@ -0,0 +1,144 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * LED driver for the SGI Fuel and Tezro front panels, which the L1
+> + * system controller drives.
+> + *
+> + * Copyright (C) 2026 Imre Kaloz <kaloz@kernel.org>
+> + */
+> +
+> +#include <linux/leds.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <dt-bindings/leds/common.h>
+> +
+> +#include <asm/sn/l1.h>
+> +
+> +struct ip35_leds;
+
+Can you find another way to avoid: leds->led->leds->led->leds ...
+
+> +struct ip35_led {
+> +	struct led_classdev cdev;
+> +	struct ip35_leds *leds;
+> +	unsigned int mask;
+> +	unsigned int state;
 > +};
 > +
->  static const struct resource ioc4_rtc_resources[] = {
->  	DEFINE_RES_MEM(IOC4_BYTEBUS_DEV0, M48T35_REG_SIZE)
->  };
-> @@ -898,6 +911,11 @@ static const struct mfd_cell ioc4_cells[] = {
->  		.resources = ioc4_kbd_resources,
->  		.num_resources = ARRAY_SIZE(ioc4_kbd_resources),
->  	},
-> +	{
-> +		.name = "pata_sgiioc4",
-> +		.resources = ioc4_ata_resources,
-> +		.num_resources = ARRAY_SIZE(ioc4_ata_resources),
+> +struct ip35_leds {
+> +	struct mutex lock;	/* protects ->state of both LEDs */
+
+Not sure that comment is required.
+
+> +	struct ip35_led led[2];
+> +};
+> +
+> +/*
+> + * ON and BLINK switch off every LED outside their mask, so each change
+> + * sends the pattern of both LEDs. A steady LED next to a blinking one
+> + * cannot be shown; the blinking one wins.
+> + */
+> +static int ip35_led_update(struct ip35_led *led, unsigned int state)
+> +{
+> +	struct ip35_leds *leds = led->leds;
+> +	unsigned int old, on = 0, blink = 0;
+> +	int i, ret;
+> +
+> +	mutex_lock(&leds->lock);
+
+guard(mutex)(&leds->lock) ?
+
+> +
+> +	old = led->state;
+> +	led->state = state;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leds->led); i++) {
+
+for (int i = 0; ...
+
+> +		if (leds->led[i].state == L1_LED_ON)
+> +			on |= leds->led[i].mask;
+> +		else if (leds->led[i].state == L1_LED_BLINK)
+> +			blink |= leds->led[i].mask;
+> +	}
+> +
+> +	if (blink)
+> +		ret = l1_set_leds(blink, L1_LED_BLINK);
+> +	else if (on)
+> +		ret = l1_set_leds(on, L1_LED_ON);
+> +	else
+> +		ret = l1_set_leds(L1_LED_RED | L1_LED_WHITE, L1_LED_OFF);
+> +
+> +	if (ret)
+> +		led->state = old;
+> +
+> +	mutex_unlock(&leds->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ip35_led_set(struct led_classdev *cdev, enum led_brightness value)
+> +{
+> +	struct ip35_led *led = container_of(cdev, struct ip35_led, cdev);
+> +
+> +	return ip35_led_update(led, value ? L1_LED_ON : L1_LED_OFF);
+> +}
+> +
+> +/* The L1 blinks at a fixed 2 s period of its own, whatever the delays. */
+> +static int ip35_led_blink_set(struct led_classdev *cdev,
+> +			      unsigned long *delay_on,
+> +			      unsigned long *delay_off)
+> +{
+> +	struct ip35_led *led = container_of(cdev, struct ip35_led, cdev);
+> +
+> +	*delay_on = 1000;
+> +	*delay_off = 1000;
+
+If the hardware only supports a fixed 2s period (1000ms on / 1000ms
+off), shouldn't we only accept it when '*delay_on == 0 && *delay_off ==
+0' (or when both are already 1000) and return '-EINVAL' otherwise so the
+LED core falls back to software blinking for other requested rates?
+
+> +
+> +	return ip35_led_update(led, L1_LED_BLINK);
+> +}
+> +
+> +/* The PROM leaves the white LED lit and the red one dark. */
+> +static const struct {
+> +	const char *name;
+> +	unsigned int mask;
+> +	unsigned int state;
+> +} ip35_led_info[] = {
+> +	{ "white:" LED_FUNCTION_STATUS, L1_LED_WHITE, L1_LED_ON },
+> +	{ "red:" LED_FUNCTION_FAULT, L1_LED_RED, L1_LED_OFF },
+> +};
+> +
+> +static int ip35_leds_probe(struct platform_device *pdev)
+> +{
+> +	struct ip35_leds *leds;
+> +	int i, ret;
+> +
+> +	leds = devm_kzalloc(&pdev->dev, sizeof(*leds), GFP_KERNEL);
+> +	if (!leds)
+> +		return -ENOMEM;
+> +
+> +	ret = devm_mutex_init(&pdev->dev, &leds->lock);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leds->led); i++) {
+
+As above.
+
+> +		struct ip35_led *led = &leds->led[i];
+> +
+> +		led->leds = leds;
+> +		led->mask = ip35_led_info[i].mask;
+> +		led->state = ip35_led_info[i].state;
+> +		led->cdev.name = ip35_led_info[i].name;
+> +		led->cdev.max_brightness = 1;
+> +		led->cdev.brightness = led->state == L1_LED_ON;
+> +		led->cdev.brightness_set_blocking = ip35_led_set;
+> +		led->cdev.blink_set = ip35_led_blink_set;
+> +
+> +		ret = devm_led_classdev_register(&pdev->dev, &led->cdev);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver ip35_leds_driver = {
+> +	.probe		= ip35_leds_probe,
+> +	.driver		= {
+> +		.name	= "ip35-leds",
 > +	},
+> +};
 
-Shouldn't this have been added in Patch 31?
+This padding is creeping me out.
 
->  	{
->  		.name = "rtc-m48t35-ip35",
->  		.resources = ioc4_rtc_resources,
-> @@ -974,6 +992,7 @@ static const struct ioc3_irq_bank ioc4_irq_banks[] = {
->  		.ir = offsetof(struct ioc4, other_ir),
->  		.ies = offsetof(struct ioc4, other_ies),
->  		.iec = offsetof(struct ioc4, other_iec),
-> +		.lvl_mask = IOC4_OTHER_LVL_MASK,
->  	},
->  };
->
+Why would you line-up things that aren't at the same level?
+
+> +module_platform_driver(ip35_leds_driver);
+> +
+> +MODULE_AUTHOR("Imre Kaloz <kaloz@kernel.org>");
+> +MODULE_DESCRIPTION("SGI Fuel and Tezro front-panel LED driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:ip35-leds");
 > -- 
 > 2.47.3
 >

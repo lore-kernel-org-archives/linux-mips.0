@@ -1,52 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792609443;
-	b=CD4K1CGnCGL9Nacl/AXZNVgPFX7+T2W91VHL97ay8B6UDegKtdYhKA4Mg6x6perfznur
-	 t3LnzSIrhktWRxTTt/m9hCuZJx/eo7Zt9o2dp40Cq9BE1zpxOYQGUth3Y9mjbcUQjJI8l
-	 c6fdihMW0fbxr6WtHYfuxlHlzFs6Bq46ZXFfODC8V8PwlN1Y9hA2B+UMxSrte/TZkGpfl
-	 W5u27VZ7eHwH5crMD8VjODvWgwX4RaApj6d4ZOPW2lxcZoRtQmshYixl8Rg1N59zotW/k
-	 +khIlMZDodexD3gH1edNp/RJmRUb9TYR5P3gBCDP+i94Q5K82J/NQskpsc4lJrXfN7g==
+	t=1792610727;
+	b=bzYFH2YCqsb5FbK2bKLxV7lerhNSgPewdtZMYaBgRdVPfTsGp8nU3mkPzZW1cRMtOCVe
+	 sDSkdG3E96J15GUb3tdRxzB2wbweLJ20nSO5KAwPbXkgx2Bbqeefa5FbLaEK/dpz4cD4d
+	 XpwoPktwdENstVdxlOSqSvLpzZI1MiyXNHFNqZQ8SNxFPrSx+OgvcAWOWyihJ2JQUlYLv
+	 HKeq9KR3JP9O3qkMTDCqz7s1QOypQ/2upqQF6X1xbcKGV2pUOlvMK1LK9qf8LoRrUXz4S
+	 hstYcckGo7q7PPRxQ4gGPGLM/5fT7MG+OLtiwNGW/+lFWHrdFs6fnAUPdA1fy+VBncg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792609443;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792610727;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=n8U3NPb6qJjh33S8/t0CTqr/1TXqpv+wOJ21D7k9Jjk=;
-	b=UC1j0QhC82yCcKwzGBN063p3GzRg7C69oW/KBlunRdFssY+UclE8TUQ0TE96exQ4WFGm
-	 AKTd2ePCeRm87Sp0xdfIiPyC+LAA1M+S44xZviv9to042h3xJg6SRTGlyZLb1XaOhWd+C
-	 PWECW6V0LFpJnmxo+eDM+EF4KdAITSFJj4m25cUOdq06V5MfK46DxAi2rn/5fpkjBSAlD
-	 1wzE2hcVEk/98bpdNRT0t83hm+fsMcbTB1vnb5KQhLgVgE3B1SD+E/mOI5yvaWpHktDxD
-	 usI8S3FkcSMURseN7eMJh24KUvAWeHz++zkoZ47iqiNXNA2Z+qKWuOnOCEc4DySF6lg==
+	bh=sjCpdyShRVnpbbjsucvC1+bwhlDf66MnFYOscuaJnwA=;
+	b=srS4gZj8lXTBcPCPW5xA3sp4FPg/6pEGktt76Oqr5sQ8ornSCxO7so1dE8tGtp+8W+/c
+	 z/RkguK9N6Bh72h8sn0uissdbZ351HJ+/B8gdgK2B7DMfQqvjw9HPEfe7w6j2U6DCwf0z
+	 7qAMRcATUy1B+ubpzw0mFe6aqohKHjGCx6LcjU6ynX78NLd33BHY6o3Zl4tMTIJzr/dhM
+	 II4Dl6HA6v6KslRmfTnADkp6AnuknuSMG1aRGsy5zjBLNSzp0L9w5mRKc/Wqh/RCkRtlJ
+	 Up6g9kGwU7twzbWOA0VneCXqCTz7MDhMqYEaN7eFLhfJFBmSaq9gRzo4OMmhiYz4mIQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iF4rFlar;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ee13T8jx;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB02606A319;
-	Wed, 21 Oct 2026 19:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A15606A319;
+	Wed, 21 Oct 2026 19:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iF4rFlar
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20EDC1F000C1;
-	Wed, 21 Oct 2026 19:04:00 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ee13T8jx
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C393D1F000C1;
+	Wed, 21 Oct 2026 19:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792609442;
-	bh=n8U3NPb6qJjh33S8/t0CTqr/1TXqpv+wOJ21D7k9Jjk=;
+	s=k20260515; t=1792610726;
+	bh=sjCpdyShRVnpbbjsucvC1+bwhlDf66MnFYOscuaJnwA=;
 	h=From:To:Cc:Subject:Date;
-	b=iF4rFlarNDUzt0Pu+RPkNWNasD01VPEbRg3XHxJCU9XoxEt/De8/bJlnPQIAcq3hv
-	 pkzF+gssYeGtkih9uVBCCSofWTm9Pl8/2Ivr55M6Z5MhxShUNzi10H1zpFaLhEfYq5
-	 fmMWO56djQgCNELQA2dDdSF6HcWZvncx+bQwV57gOZGTcADHryIgcZade9FpdH49LL
-	 +bt5HaX425QuppusFjKSz+53P5RrJxv2RwxiUa1R4GzDkWx/sQBarGn7vEop1bV4QG
-	 vBjNkMgKnOop22tkYOqfTNtzvkmgC7Oiz4fkyqmRkspuaGQRi9dVbhWB8cDdEer63O
-	 am2V/0FVcaVgw==
+	b=Ee13T8jxwM4nqTd1hnjNcmqfhN4urnClOV6Golnug9uNr9af0+GcMsGsrXnOWmNhL
+	 RK5rNkzbRYFcHOzo529rCYDd+XbRRdQFlcg+pXwIVqw3iS5umj5t8ereN5ip62tlNQ
+	 WveS3rfug/z3vc/MmWcRyCmSK+O78zCl/JPGiuWrTI3sX4fZhfjVCqpKTnR6eU80PB
+	 /PkAUqfQY2sPNqqKgzSROPK27sx9eeQnkbiUFrPmc45jUc7WC01c5bpFbvtFzqopao
+	 8rhEwTLjJVJ8Vdl1w8bRUApvogUYuJUArI7b6j005+xnqdJBrdn9RQ7zk3gooRVua7
+	 00/H1sJiLLiXg==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: SGI-IP27: Install the cache error vector on every CPU
-Date: Wed, 21 Oct 2026 21:02:53 +0200
-Message-ID: <20261021190253.30128-1-kaloz@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] MIPS: sgi-ip32: CRIME 1.1 and MACE PCI fixes
+Date: Wed, 21 Oct 2026 21:24:14 +0200
+Message-ID: <20261021192418.7246-1-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -59,65 +58,41 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The hub flips the low 128K of the CKSEG1 (attribute 0) uncached alias
-per CPU slice, and the cache error vector is fetched through it.
-trap_init() writes the vector through TO_UNCAC(), which is not flipped,
-so only slice 0 sees it. Copy it to each secondary CPU's slot as it
-comes up.
+This series fixes hangs and stale PIO reads on SGI O2 machines with a
+CRIME 1.1 memory controller.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/sgi-ip27/ip27-smp.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Patches 1-2 stop the MACE PCI code from issuing a bridge register
+sequence that hangs the machine under DMA load: slot interrupts are
+masked in CRIME and the bridge control register is left alone at run
+time, as IRIX, OpenBSD and NetBSD do.
 
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index 62733e049570..0fef66b86959 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -7,11 +7,13 @@
-  * Copyright (C) 2000 - 2001 by Silicon Graphics, Inc.
-  */
- #include <linux/init.h>
-+#include <linux/string.h>
- #include <linux/sched.h>
- #include <linux/sched/task_stack.h>
- #include <linux/topology.h>
- #include <linux/nodemask.h>
- 
-+#include <asm/addrspace.h>
- #include <asm/page.h>
- #include <asm/processor.h>
- #include <asm/ptrace.h>
-@@ -133,6 +135,18 @@ static void ip27_init_cpu(void)
- 	per_cpu_init();
- }
- 
-+static void ip27_init_secondary(void)
-+{
-+	/*
-+	 * The hub flips the low 128K of the attribute 0 uncached alias per
-+	 * CPU slice and the cache error vector is fetched through that alias,
-+	 * so the copy trap_init() made through TO_UNCAC() only serves slice 0.
-+	 */
-+	memcpy((void *)CKSEG1ADDR(0x100), (void *)TO_UNCAC(0x100), 0x80);
-+
-+	ip27_init_cpu();
-+}
-+
- static void ip27_smp_finish(void)
- {
- 	hub_rt_clock_event_init();
-@@ -182,7 +196,7 @@ static void __init ip27_prepare_cpus(unsigned int max_cpus)
- const struct plat_smp_ops ip27_smp_ops = {
- 	.send_ipi_single	= ip27_send_ipi_single,
- 	.send_ipi_mask		= ip27_send_ipi_mask,
--	.init_secondary		= ip27_init_cpu,
-+	.init_secondary		= ip27_init_secondary,
- 	.smp_finish		= ip27_smp_finish,
- 	.boot_secondary		= ip27_boot_secondary,
- 	.smp_setup		= ip27_smp_setup,
+Patch 3 reports the real CRIME revision, which the current code
+reads as 1 on both 1.1 and 1.4. Patch 4 fences PIO reads on CRIME
+1.1, where a read that follows an aic7880 status register read within
+a few microseconds returns stale data; the fence stays off on 1.4.
+
+Patches 1-2 are independent of 3-4 and are marked for stable.
+
+Tested on O2 systems with CRIME 1.1 and 1.4.
+
+Imre Kaloz (4):
+  MIPS: sgi-ip32: Mask MACE PCI interrupts in CRIME only
+  MIPS: sgi-ip32: Leave MACE PCI control alone in config accesses
+  MIPS: sgi-ip32: Report the real CRIME revision
+  MIPS: sgi-ip32: Fence PIO reads on CRIME 1.1
+
+ arch/mips/include/asm/io.h                    | 11 +++++
+ arch/mips/include/asm/ip32/crime.h            |  2 +-
+ .../include/asm/mach-generic/read-fence.h     | 20 +++++++++
+ arch/mips/include/asm/mach-ip32/read-fence.h  | 29 ++++++++++++
+ arch/mips/pci/ops-mace.c                      | 26 ++++++++---
+ arch/mips/pci/pci-ip32.c                      |  9 +++-
+ arch/mips/sgi-ip32/crime.c                    | 38 +++++++++++++---
+ arch/mips/sgi-ip32/ip32-irq.c                 | 45 ++-----------------
+ 8 files changed, 123 insertions(+), 57 deletions(-)
+ create mode 100644 arch/mips/include/asm/mach-generic/read-fence.h
+ create mode 100644 arch/mips/include/asm/mach-ip32/read-fence.h
+
 
 base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
 -- 

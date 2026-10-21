@@ -1,54 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.222.181
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792610733;
-	b=MNLcRHBUABQLi/LmOp9J2mEesoHSuj1Ab9c8qP9JPOmnaRMOn5mynZoih/OPlKLT5WwD
-	 1lxutx/RX5/f3WodIMrpHUaF5o0KMZtgccTFPX7P8tEGFVkEftJ3t23/fahjjnD6iFs7J
-	 ij8Jq7J4Wg/LG8uupG65Jqq4ogZYTqddDPpnmW7QyqONVlIKX1Gier3k5y/X66YKGLN5p
-	 EaPBSfUnEn79TefhhMRjr0UbofUbacrv0mpA0dweQnXfcjjKhZy0WSp6AyWmft5MAKjbw
-	 cfZVh3DFXVubSIEgsX5WjdsPl+A1trV44pPJ0dgk+oedyshMDI0W/IPUz3LLD0+Blqw==
+	t=1792613101;
+	b=4xcaYJexxaXqWaWRDfDE+hB8ZJml79mLZGVnkGIAXMMncr+PUDhey//FKHsRbU346ooY
+	 8CsZOUY345WbR3szEF04tAkJ/BWhCl6pqueJDOFQdgWOirFvFvFVLYVP2kXWSirR0Yhu9
+	 +vIpRx4P139kCsRJn6ghIkl5c7uLrHl8tmCEJcPotuRAR//yaLfLUdlppbD9R9YR752/3
+	 nFkDJkGWjqoYWX27HUN39Lyl+Wi4pBjp1FhngrTRY74D82DdnBUaCeIoUMWNDEvECTPRN
+	 JFX+m+Ej133L+4nMZYd1zcDqkL/ZRlyubOM3PhhmFMw1CmUlpprgayiYYxuxng90XRg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792610733;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=mSX9v2pr1sdjjKRZWZbxDho1NDgHigoIBxnmLCesK40=;
-	b=GF5k4UdcmRKZHO4P/lkLwx1sAcar2eWZdDx/MaeZDQz18+JXrglMKtJkw2Ww/B/NJqGf
-	 mZF3lwLLKKiTVSsO+kZQJhvjgwvz++xGKLH7w7wbGzXTrU5h/LOAC8WhmXkrUlhU5VXC9
-	 KdfxtPxvubCNrkYVnXjUIhu8lbiyRDSFYvJtK/+wvphHLcdZBt9+hPdBjdW2KMD3n+ffD
-	 tLkUg3JxWYreE2kvEDCJcFFacRhD/0b9/Tq5M1X8BSC9kCoFXsi7BsdX2Ysb5l7eL6MDf
-	 YL1f6Y/VVSCO07cCqdSRnmwtSzRVmuxRhks+ci7Re3ygrqybpjHxYw2OFsjgl11II2Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792613101;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=yem/FCFQ19eiUX+mO8WtB6J4U2HGPncanaJPXy64y58=;
+	b=W+juYMRD3kQhxGRzCcTfbdnnTZHDFYj0qgkHmvkGXWd2jNAg1L+ZsGW+7KlTJXg0GvjS
+	 6Jisx9Dd8jK0HT77UjiWn34CPaAVM56J2EWu3gPysEfdaMCmWip7g6lCiQwdkGxeuassc
+	 ugvN32vz9qI5l/E6Xn92PyaYE9KeLvrA0J15eSVl77P/Q4ilO7FPMIBn5/GFqp5JdMn9v
+	 zEW8U5eJ6EXWFYwC9laRkuUSsDN34HlHe4F0ra8/E6LZnG/6F38Qe/wNhNl2luwR8JWye
+	 bKRMn19ETEk0MqRFzgJgQW1Iv8bH1juS7rO22tvkRDDT/mo1jmz3KXTguvBjJkgoROg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JkIMys9Z;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=Ym1TYH9+;
+	arc=none smtp.remote-ip=209.85.222.181
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4A7606A328;
-	Wed, 21 Oct 2026 19:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE267606A322
+	for <linux-mips@vger.kernel.org>; Wed, 21 Oct 2026 20:05:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CE267606A322
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JkIMys9Z
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E041F000C1;
-	Wed, 21 Oct 2026 19:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792610733;
-	bh=mSX9v2pr1sdjjKRZWZbxDho1NDgHigoIBxnmLCesK40=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=JkIMys9ZabwDH2UxEfZ7rZcg4quMsWIp2irU5dBLmK1QbqZfRROv6khr97pSDMd0X
-	 YV/wQsJWFqaXZAeAhIUIH1wx2poLFTgPW67BL6iYkuXXI/kN9dsNY5ZyAMBvma4kj1
-	 jm5DSFTznVHhNdMry9u1g7DYwr5/YtRRyCd7hlJSDB/SmZZYGJvLRuF9BjskbXk8/s
-	 qBUuE/SvUcYwZ3TU7LxU5CHex8LFaX6cNv8vzh5cuDHMCYXp3v0IjPnVxbEJC4YmPO
-	 OHI44bkcLyqR89MFBTd48ZnR13Namw3vyaeSHL38qZadz5CdDmIxoCU3HwXa7kQF+w
-	 IlRaRasnRHl1Q==
-From: Imre Kaloz <kaloz@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] MIPS: sgi-ip32: Fence PIO reads on CRIME 1.1
-Date: Wed, 21 Oct 2026 21:24:18 +0200
-Message-ID: <20261021192418.7246-5-kaloz@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261021192418.7246-1-kaloz@kernel.org>
-References: <20261021192418.7246-1-kaloz@kernel.org>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=Ym1TYH9+
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-93f1cf92c9eso109802885a.0
+        for <linux-mips@vger.kernel.org>; Wed, 21 Oct 2026 13:05:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792613100; x=1793217900; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=yem/FCFQ19eiUX+mO8WtB6J4U2HGPncanaJPXy64y58=;
+        b=Ym1TYH9+MGUbPFXjUtxvTI/tyvFxuDDo2d7X9M9Ad72puFTEACheu1aWHQ7SprkB6s
+         yz3XSeURAPin0XpP8yZvMZXFNEICUQvD3uWS8zbBxOovJDbk0GoBb2XU02coqMuvaLG+
+         jAYLnKOefHN91xV65mm0s6KPPogMitgV5F6mxopjxAyhL59OWhDs0wQNKAam/sVbF+3F
+         jVDUbl6jcQrsI7Dw62Ft5oQ16uStdgrGXn2Wz0Dalyli2HPTHsbnRVLeacs1UPtBuWOU
+         237XA7UujSPxhC/bU8ytWFKp4zEbpUN0NRJ645IGh879Uy+CbHPCQWpwkDkrkDWiLy2y
+         q1TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792613100; x=1793217900;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=yem/FCFQ19eiUX+mO8WtB6J4U2HGPncanaJPXy64y58=;
+        b=i8LsOJVUNUa+fon+a6/mTP4/jKYJLeoBep12Z4bHFI1Px4gmwVhcu3QQilGwGGA8pk
+         qP1qN0v1JO91lrNPKSfDDIrhk8P7FrfzSPVyUYiSPKco0MVrWGZpbn0G7I4oHeAOnDtc
+         K7Pq4E+BlqY/ILaYK71exGpw1+9v6B8QVS4FQe1qOj7LSNAlrh/8dT5JV2/4/05XO0HR
+         bVeZjn9tijh0y0LEoNiEJsuh84mc9OHTIPe9yreycvhmFqlycrvrpVudcOHlrYX4k/BC
+         IpN5vMoxtWTtFxDS64W2BbfTpGWx/ZjsIasJVjcPSbg/w8d6WNrrw6TfTB/Bgc9niguN
+         pwBw==
+X-Gm-Message-State: AFq9FYIltr+g/xpT7pAYBX06656f0dggpzvaMx5lZtus09axBFYjX6m6
+	RX5hh1HlJqew3eGqA8CfEZ4RiHxr1W4hkawpRy81ksX4kbktmQTn/cTN
+X-Gm-Gg: AYBFou3PNdLbDOSNfJ9bO5u1FgUzOTOCxrsKqQ4H08hLCtk8oZVGtwUnAJeomI3YoBJ
+	J/YRa/BRRmZKsJ9q8zZb7D3oGra6bgwgeP/YGCFAtUif3IPngOWx6bunqfivuWK3u9YeP1HHDMX
+	/2JPbWkCxXJKWWJhn25KODWM/s5xubAPxwBeBtRcAz2ukoYVlmyAB2mkhl+kIDivwJYJz1l3Uo0
+	ZhSHHs0izOwsUx1vvYp6LB56hy2nYoG1yUj/7Rn9uyPmxwNz3m+q7gdSHZXG7VROkVqSXiJUpVX
+	K3l0Tz3TC0BCLnuhEPOG+9YbYP4Y6mBZDlrdC2aJ6dUip5tM6N7WV04alFSOLZXGWAXJGU37kxv
+	qyeacyudecrCtaP/qkpGJ3+YF3e2QrrdPTQCrqZndpXe7xaOZqNh2mvc2GI0GNOZ5X2HSWegU77
+	054mgt9BDGd41TVAaO3eTKWj1mfHuavXnrWXCE/8FH79AfYw6nLj+3RgdhG6JWuMaYqOk80EBgu
+	MX2tLJPLqmN9KEU8maSfWyE49LguiSOSVzdpzZxSL8CMnZ3xrG1OW6sCkYdY34b0oKhPC1fXpWX
+	l/pl+FA=
+X-Received: by 2002:a05:620a:45a2:b0:93f:12d4:67cb with SMTP id af79cd13be357-93f5803d490mr595358885a.80.1792613099719;
+        Wed, 21 Oct 2026 13:04:59 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-93f56d98978sm336971485a.10.2026.10.21.13.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2026 13:04:58 -0700 (PDT)
+Message-ID: <5388e60d-6418-4b84-8a88-5e647248025d@gmail.com>
+Date: Wed, 21 Oct 2026 13:04:55 -0700
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -58,185 +90,46 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MIPS: Cobalt: Include legacy IDE ports in the PCI I/O
+ window
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org, ilpo.jarvinen@linux.intel.com,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Bjorn Helgaas <bhelgaas@google.com>, open list <linux-kernel@vger.kernel.org>
+References: <20261015203107.545047-1-f.fainelli@gmail.com>
+ <alpine.DEB.2.21.2610201758400.22065@angie.orcam.me.uk>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2610201758400.22065@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On CRIME 1.1, a MACE or PCI read within about 2us of a read of some PCI
-registers (aic7880 HCNTRL, INTSTAT, ERROR) can return that read's data.
-Under audio and SCSI DMA, repeating aic7xxx's ahc_pause(), register
-read, ahc_unpause() hangs the machine; fenced, it runs clean, as
-measured on an O2 with a CRIME 1.1. The next read can be an interrupt
-handler's, so the fence follows the trigger.
+On 10/20/26 10:13, Maciej W. Rozycki wrote:
+> On Thu, 15 Oct 2026, Florian Fainelli wrote:
+> 
+>> The Cobalt PCI I/O window starts at 0x1000, excluding the VIA IDE
+>> controller's fixed compatibility-mode ports at 0x170, 0x1f0, 0x376 and
+>> 0x3f6. These resources cannot be claimed under the host bridge window.
+>>
+>> Since pcibios_enable_device() was converted to pci_enable_resources(),
+>> the unclaimed IDE resources cause device enable to fail with -EINVAL:
+>>
+>>    pata_via 0000:00:09.1: BAR 0 [io  0x01f0-0x01f7]: not claimed; can't enable device
+>>    pata_via 0000:00:09.1: probe with driver pata_via failed with error -22
+>>
+>> Lower the PCI I/O window start to 0x100 so the fixed IDE resources can
+>> be claimed. Keep the reserved ISA resources below 0x100 outside the PCI
+>> window.
+> 
+>   Why not go with 0 (unless that's not what the system controller supports
+> as the bottom of the PCI I/O space), and just set PCIBIOS_MIN_IO correctly
+> as several platforms do instead?  Is there a southbridge in your system?
 
-Add a read hook to the MIPS accessors that, on CRIME 1.1, follows each
-MMIO and port read by 5us with interrupts off. Other platforms compile
-it out.
+0 does not work and gives me:
 
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/include/asm/io.h                    | 11 +++++++
- .../include/asm/mach-generic/read-fence.h     | 20 +++++++++++++
- arch/mips/include/asm/mach-ip32/read-fence.h  | 29 +++++++++++++++++++
- arch/mips/sgi-ip32/crime.c                    | 12 ++++++++
- 4 files changed, 72 insertions(+)
- create mode 100644 arch/mips/include/asm/mach-generic/read-fence.h
- create mode 100644 arch/mips/include/asm/mach-ip32/read-fence.h
+[    0.205993] Skipping PCI bus scan due to resource conflict
 
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 980187a83053..a5c49d319546 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -26,6 +26,7 @@
- #include <asm/pgtable-bits.h>
- #include <asm/string.h>
- #include <mangle-port.h>
-+#include <read-fence.h>
- 
- /*
-  * Raw operations are never swapped in software.  OTOH values that raw
-@@ -222,6 +223,8 @@ static inline void pfx##write##bwlq(type val,				\
- static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
- {									\
- 	volatile type *__mem;						\
-+	unsigned long __rflags;						\
-+	bool __fence;							\
- 	type __val;							\
- 									\
- 	__mem = (void *)__swizzle_addr_##bwlq((unsigned long)(mem));	\
-@@ -229,6 +232,7 @@ static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
- 	if (barrier)							\
- 		iobarrier_rw();						\
- 									\
-+	__fence = plat_read_fence_begin(&__rflags);			\
- 	if (sizeof(type) != sizeof(u64) || sizeof(u64) == sizeof(long)) \
- 		__val = *__mem;						\
- 	else if (cpu_has_64bits) {					\
-@@ -251,6 +255,8 @@ static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
- 		__val = 0;						\
- 		BUG();							\
- 	}								\
-+	if (__fence)							\
-+		plat_read_fence_end(__rflags);				\
- 									\
- 	/* prevent prefetching of coherent DMA data prematurely */	\
- 	if (!relax)							\
-@@ -283,6 +289,8 @@ static inline void pfx##out##bwlq(type val, unsigned long port)		\
- static inline type pfx##in##bwlq(unsigned long port)			\
- {									\
- 	volatile type *__addr;						\
-+	unsigned long __rflags;						\
-+	bool __fence;							\
- 	type __val;							\
- 									\
- 	__addr = (void *)__swizzle_addr_##bwlq(mips_io_port_base + port); \
-@@ -292,7 +300,10 @@ static inline type pfx##in##bwlq(unsigned long port)			\
- 	if (barrier)							\
- 		iobarrier_rw();						\
- 									\
-+	__fence = plat_read_fence_begin(&__rflags);			\
- 	__val = *__addr;						\
-+	if (__fence)							\
-+		plat_read_fence_end(__rflags);				\
- 									\
- 	/* prevent prefetching of coherent DMA data prematurely */	\
- 	if (!relax)							\
-diff --git a/arch/mips/include/asm/mach-generic/read-fence.h b/arch/mips/include/asm/mach-generic/read-fence.h
-new file mode 100644
-index 000000000000..0147ed88bc01
---- /dev/null
-+++ b/arch/mips/include/asm/mach-generic/read-fence.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_MACH_GENERIC_READ_FENCE_H
-+#define __ASM_MACH_GENERIC_READ_FENCE_H
-+
-+#include <linux/types.h>
-+
-+/*
-+ * Called around every MMIO and port read; plat_read_fence_end() runs only
-+ * when plat_read_fence_begin() returned true.
-+ */
-+static inline bool plat_read_fence_begin(unsigned long *flags)
-+{
-+	return false;
-+}
-+
-+static inline void plat_read_fence_end(unsigned long flags)
-+{
-+}
-+
-+#endif /* __ASM_MACH_GENERIC_READ_FENCE_H */
-diff --git a/arch/mips/include/asm/mach-ip32/read-fence.h b/arch/mips/include/asm/mach-ip32/read-fence.h
-new file mode 100644
-index 000000000000..7e3105af4c6f
---- /dev/null
-+++ b/arch/mips/include/asm/mach-ip32/read-fence.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_MACH_IP32_READ_FENCE_H
-+#define __ASM_MACH_IP32_READ_FENCE_H
-+
-+#include <linux/irqflags.h>
-+#include <linux/types.h>
-+
-+extern bool crime_read_fence;
-+void crime_read_fence_end(unsigned long flags);
-+
-+/*
-+ * CRIME 1.1 can return a PCI read's data again to the next MACE or PCI
-+ * read issued within about 2us, so each read is followed by 5us with
-+ * interrupts off.
-+ */
-+static inline bool plat_read_fence_begin(unsigned long *flags)
-+{
-+	if (!crime_read_fence)
-+		return false;
-+	local_irq_save(*flags);
-+	return true;
-+}
-+
-+static inline void plat_read_fence_end(unsigned long flags)
-+{
-+	crime_read_fence_end(flags);
-+}
-+
-+#endif /* __ASM_MACH_IP32_READ_FENCE_H */
-diff --git a/arch/mips/sgi-ip32/crime.c b/arch/mips/sgi-ip32/crime.c
-index a24424437c6b..0b94150fbec1 100644
---- a/arch/mips/sgi-ip32/crime.c
-+++ b/arch/mips/sgi-ip32/crime.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2005 Ilya A. Volynets <ilya@total-knowledge.com>
-  */
- #include <linux/types.h>
-+#include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/interrupt.h>
-@@ -25,6 +26,16 @@ struct sgi_mace __iomem *mace;
- 
- EXPORT_SYMBOL_GPL(mace);
- 
-+bool crime_read_fence __read_mostly;
-+EXPORT_SYMBOL(crime_read_fence);
-+
-+void crime_read_fence_end(unsigned long flags)
-+{
-+	udelay(5);
-+	local_irq_restore(flags);
-+}
-+EXPORT_SYMBOL(crime_read_fence_end);
-+
- void __init crime_init(void)
- {
- 	static const char * const revs[] = { "1.1", "1.3", "1.4" };
-@@ -41,6 +52,7 @@ void __init crime_init(void)
- 	switch (id & CRIME_ID_IDBITS) {
- 	case CRIME_ID_IDVALUE:
- 		rev = revs[min_t(u64, id >> 32, ARRAY_SIZE(revs) - 1)];
-+		crime_read_fence = !(id >> 32);
- 		break;
- 	case CRIME_ID_IDVALUE_B:
- 		rev = "1.5";
+There is no south bridge AFAICT, the CPU connection to the GT-64111.
 -- 
-2.47.3
-
+Florian

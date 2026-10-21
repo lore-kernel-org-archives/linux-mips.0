@@ -1,49 +1,75 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792549211;
-	b=i9xBa+dxzZyPEyhBQFBfnlimcTeI55miGMsX3mCarEB8DgkBFmCEhYA69Xvg6EvxaUuf
-	 yCNvZ6q11eVleS5oyF0jQVfxOsjRVv3QB5tpvdbGIgm2Utn62FO6IDyzdAKvj9vyjyIM2
-	 kYWHLju3CWHTAtCIgD1fntceA58atBCSb8zlh6skeJ3xvewxxWkAeoY0wk6m4LXSA0tcf
-	 WvJHSErU6frGRFXWOChhYURq9y3ZH9DpcDGIU3tlhT+QtOleAK9EnzUbanSIyYCXfLQo2
-	 5TcYmvUg6s6JpthnKAe+EFVcwRh0D9x9Ed5Au8l7pce964Y/kQWqtzkNqWoCeMD3HNQ==
+	t=1792573629;
+	b=rJumeTl39JHTbqjLTwfTxJUB5jCU8SoP6Xt42Vtog9CeFnGWvaT5vzBFwePrgjlgwM/Y
+	 i0i2FHbX9uUuB04slTejOoyhkGrBAIfdDHoZvM/zb83VW+Mcah4/YNr1OTMxFoFdM1d6D
+	 dFKf7ywiJMU7Dl8SRYf/GA1Yw3XSSOWFrIvS/Xv4vZOJUmp/PRNwDSNYyoIi2+w0Iwt9Z
+	 lbe+r5JeFSJUXuaexh6K5p+OXmvadm37Yp0RauPNBWSLLFwXcQrxeENaX61zJn1lvvCvO
+	 jZGEVloxlO0v5vN2gKqYdABbETtGxJRW2dhS95V5LhQjQFDIVTc5rP0twOsC0HbuxoA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792549211;
-	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc;
-	bh=CPwgKGW+9+HgEnPqxnA55xboDkaUxoq5NKTXtZj/nJE=;
-	b=qSpqf2mCSgSrhwYtbrDxeTqmy8TGjBYhvWkfQNifw2DAodqMaV5uVpjIem2QlZsrBW++
-	 E8pLg2KoObaEexlqqtCHUiijNjo8HTqFtNMfc/eUmCYqtNscdlmTxOhLSVlD8610EUMPo
-	 oTkzoBCgunbbGhTt47+uX7BbITVTq4rB8oA1r3rs/aIL/aj9V6wbpVzlSJVt9Qy7tsRm/
-	 Vov0aNanMJoSoEJFxqEym/VVl8NvCYmT0Sk7dwnGI3dnLcB8QdnP50Jpb3OqfBe3vIcQ2
-	 V8/Asuc9/ViYZvUT46rXJ/7yrTt0XRGQxgk4Ri5ZkEkiNsr0cVA7LvwPCWPVfT/lh7g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792573629;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=rg0LSI4npnBDUHtGy7KX4tR0xQfgXS+TF5Cj0A9UQlA=;
+	b=TwReF0pqTdL156r1ljAVacn3FKYqMOkoZvCi5WusGSUgovFNjyx8XCN8rA3MD/j+Skg3
+	 mIV3JwvsqZqrvj9xKeM3wWFkgly+FhRNyxHbDZ2p4TmMC2SIZ7BO0p8v6Lc2XIZQrovF/
+	 86k0YDC4YAbZAaesDpJm1I1MQgikWhOOtf0i3O+has/Ats5Q/baZYUP1UZapDSmrV2Vjj
+	 XrjK3IoW7IsWOo/lUM/N4neMQAp39fD/8DKyAWlSFH0XLKsEyJTo4CZOLcd5BCdHfu9RA
+	 PgGaDlEPmmJXWrW1UnbuxoFQflcUR1uDAUVtvhT+l4763yVqXZ2j7Kqxb7V1sLQiozA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NYaa27a+;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="dyuS/W3e";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41433606A31E;
-	Wed, 21 Oct 2026 02:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59655606A31A;
+	Wed, 21 Oct 2026 09:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NYaa27a+
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BC5E1F000CA;
-	Wed, 21 Oct 2026 02:20:11 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dyuS/W3e
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFE11F000C9;
+	Wed, 21 Oct 2026 09:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792549211;
-	bh=CPwgKGW+9+HgEnPqxnA55xboDkaUxoq5NKTXtZj/nJE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=NYaa27a+E7gei+Ol9psKdfXfiAU6OpungqJR76z1KeeQFEFjyBLQ7xIxVzxWnluTL
-	 lv3N7b/TqCO/EiJdxHVaCU/fcS6BXhoq6fF14VrgR+8ZHJNQf46BZXs2+XZrUw9yu2
-	 /5Dr1WnBxhlBBstrX1xZ2aF6ul1B9XIocoPHlvkMtCSnKmDJeRAtjl0UvhLiY7ZJYp
-	 3UJd9MC0EZ19gJ/B5qErRGgDAFgHjiX+qs3qfbAw2AxYBptLmuv9JTlDFdtBnYRi2t
-	 k1Q1LqBg+wMQ3NJei12Fvm2YJG37ykFf7fVyuZSUo5hlj3OGXZY/EK4OAQNR3gnpqp
-	 SiLeJk2xQV++w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F146D3809A0D;
-	Wed, 21 Oct 2026 02:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20260515; t=1792573629;
+	bh=rg0LSI4npnBDUHtGy7KX4tR0xQfgXS+TF5Cj0A9UQlA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=dyuS/W3ea7Wx2GQYveNRK6A4clR9WKquzSo7emGhmilDJhGfkRm482JLiSIwwvRnx
+	 tRz4YkGWU3RkgKsj26EjGPNpY38Ya01YaNDP0hCT90bnF7P5q+D7Py9DsMI5woYLHu
+	 wWbIaBLbHYHuXIVgoDtWJ0GLSihrVcRJkLfNz8gTGWeofTATdXiiLIVoIqZpPBnzRO
+	 XCtataIa6A8TKYyIOUu2+EzZ1bNvRfuGc+c8P/3T4KJasoornuP0Gp+q4aozA5S8bU
+	 fB3ivzGfBxENRbMhT6L4jvtekd5apDXWVnfilDfcEojbQzi8sh0s8xZWFvkeCBEgDP
+	 PUnDjzchRcszg==
+From: Imre Kaloz <kaloz@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lee Jones <lee@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	mfd@lists.linux.dev,
+	linux-serial@vger.kernel.org,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	linux-ide@vger.kernel.org,
+	Pavel Machek <pavel@kernel.org>,
+	linux-leds@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 00/53] MIPS: SGI-IP27: add support for the IP35 (Bedrock hub) machines
+Date: Wed, 21 Oct 2026 11:05:55 +0200
+Message-ID: <20261021090556.21168-1-kaloz@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261020145611.4e277615@kernel.org>
+References: <cover.1791890466.git.kaloz@kernel.org> <20261020110619.12774a1c@kernel.org> <20261020204214.28625-1-kaloz@kernel.org> <20261020145611.4e277615@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,72 +80,27 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v16 0/7] net: stmmac: qcom-ethqos: add support
- for
- SCMI power domains
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <179254920980.330607.14638814196996636300.git-patchwork-notify@kernel.org>
-Date: Wed, 21 Oct 2026 02:20:09 +0000
-References: <20261014-qcom-sa8255p-emac-v16-0-0266c2ead980@oss.qualcomm.com>
-In-Reply-To: <20261014-qcom-sa8255p-emac-v16-0-0266c2ead980@oss.qualcomm.com>
-To: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-Cc: andersson@kernel.org, konradybcio@kernel.org, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, andrew+netdev@lunn.ch,
- davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, vkoul@kernel.org,
- peppe.cavallaro@st.com, wens@kernel.org, jernej.skrabec@gmail.com,
- neil.armstrong@linaro.org, khilman@baylibre.com, jbrunet@baylibre.com,
- shawnguo@kernel.org, festevam@gmail.com, jan.petrous@oss.nxp.com,
- s32@nxp.com, mohd.anwar@oss.qualcomm.com, romain.gantois@bootlin.com,
- geert+renesas@glider.be, magnus.damm@gmail.com, mripard@kernel.org,
- christophe.roullier@foss.st.com, brgl@kernel.org, edumazet@kernel.org,
- radu@rendec.net, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, dfustini@tenstorrent.com,
- linux-sunxi@lists.linux.dev, linux-amlogic@lists.infradead.org,
- linux-mips@vger.kernel.org, imx@lists.linux.dev,
- linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org,
- sophgo@lists.linux.dev, linux-riscv@lists.infradead.org,
- bartosz.golaszewski@linaro.org, sashiko-bot@kernel.org,
- martin.blumenstingl@googlemail.com, krzysztof.kozlowski@oss.qualcomm.com,
- prabhakar.mahadev-lad.rj@bp.renesas.com
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 14 Oct 2026 14:36:39 +0200 you wrote:
-> Add support for the firmware-managed variant of the DesignWare MAC on
-> the sa8255p platform. This series contains new DT bindings and driver
-> changes required to support the MAC in the STMMAC driver.
+On Tue, 20 Oct 2026 14:56:11 -0700 Jakub Kicinski wrote:
+> I don't think you answered my question, or at least I'm too daft 
+> to catch what you mean. IP35 was not supported so nobody is using
+> it with Linux today. You're adding the support, and since it's 
+> a platform discontinued 20 years ago there's 0 chance of real users 
+> of any of this code.
 > 
-> It also reorganizes the ethqos code quite a bit to make the introduction
-> of power domains into the driver a bit easier on the eye.
-> 
-> [...]
+> What am I missing?
 
-Here is the summary with links:
-  - [net-next,v16,1/7] net: stmmac: dwmac4: don't program the 1us tick counter without a CSR clock
-    https://git.kernel.org/netdev/net-next/c/d09d7b8e86e5
-  - [net-next,v16,2/7] dt-bindings: net: qcom: document the ethqos device for SCMI-based systems
-    https://git.kernel.org/netdev/net-next/c/534198a05d92
-  - [net-next,v16,3/7] net: stmmac: qcom-ethqos: set serdes mode before powerup
-    https://git.kernel.org/netdev/net-next/c/7af44cb9e447
-  - [net-next,v16,4/7] net: stmmac: qcom-ethqos: update phy_mode to the resolved interface in mac_finish()
-    https://git.kernel.org/netdev/net-next/c/05b3ea7346e3
-  - [net-next,v16,5/7] net: stmmac: qcom-ethqos: reuse the address of ethqos_emac_driver_data
-    https://git.kernel.org/netdev/net-next/c/92719abd6378
-  - [net-next,v16,6/7] net: stmmac: qcom-ethqos: factor out linux-level setup into a separate function
-    https://git.kernel.org/netdev/net-next/c/acf1e3db9151
-  - [net-next,v16,7/7] net: stmmac: qcom-ethqos: add support for sa8255p
-    https://git.kernel.org/netdev/net-next/c/bb3183e1c938
+The users are the people running these machines, the same population
+as for IP27 and IP30, and the ioc3-eth driver in net/ exists for them
+today. The series was developed and tested on a Fuel and a Tezro in
+regular use, so "nobody is using it with Linux" is true only in the
+sense that the support isn't merged yet; that was equally true of IP30
+when it went in for 5.5, and of every port before it.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The kernel's test for a platform isn't commercial relevance, it's a
+maintainer, which Thomas is, and testers, which this series has. If
+netdev doesn't want to spend time on it, say so and I'll ask Thomas to
+take the two ioc3-eth patches through the MIPS tree.
 
 
+Imre

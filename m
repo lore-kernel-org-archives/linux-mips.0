@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1792695277;
-	b=XniZNicGUr5ftlxfOEisPx3TAu4JvaOvSUPGKOrWbEmpdwVXHxCLfphKEwzKY+oyEhPy
-	 8ZytjGeSIyIf1n7PZgKkpIJk/eQguLfpxAOJBmuVrOTnhkQ80d2xP+sLROc2VSWM+AJR3
-	 iSxjFP967wNwSiHgLdu5b+wBzGjAirDGDmHN9tv0KvW+1Aceq9wG8vAJQAIS3LBP1ve8X
-	 L7iPd3mob3mAgkzBdSuGR9oYT4H8t4k8Mvht0gXgLVDkGn7dsKQVwWDfNunVCnMWL4grF
-	 mfVt96Rc8sRufDyrdNt4MF2CAXay5IRPGM2yBz8SjfmvNBcDHv66BBfI4DV49Vff1Gg==
+	b=zyx97YXQqvayD3in1MTealeZBbORPa4GQvAeRkC8qxvnRm5QiGNYXu/yfepIB4paeglT
+	 i+9WDZLAbMNzWqzjhzp+zyInjCMFl9Ll9wekrkjXhGxyRaH/UH4Lj7rxfcVSg2auUCRi/
+	 HxY6M/LOia5QiUkcSbiS5Gw2a56tMyWcDosf8uEVCBnOISm6Hy0X6BJqsgSHQyQOLZf+f
+	 Vv9ZAT0tS4sQBVCtcGaO53uJvY+yyS6Nj6x0Z8bQLmeOz0/B5nr2mt10Cbw6cCB7yLmY5
+	 LxK6itkUUctiDTd8t0GryT8SD9tc/pzOplt/lhqL5Sajd62gv8PZ5tS8NQcRVCSnlKQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792695277;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=dovN6BL5FAn+zak2EvD6O7G0CJM/moSbGvOLpebY1ek=;
-	b=l6jPtOjJU5CD1LQAcegyPpgoc2yKxceTbvE++Nun3lurWVK0KcMXEwU5WUqw7TryL4/U
-	 dVrR/nPQbddagW0Rd9Ywp39DvGiKaUHbSc5gOi8lZprojnjbHyXw95kNUDN3kENLRZvYF
-	 Cto1tjKFu8wnA5zwKTlgL21DnwStHdmgzuMAFhMBhGkHtcIQQ01EpRue5AbDSlaJJST5U
-	 3y4ohc+I5ZW9HbIKQBsVSsPrE1TG4Cr3S9s9Pgj2ryGLa5jLbbMWsiPpKn9cdyBeqYexO
-	 PJdKDc/uQMIEf/X4NodTFTZ48PXl3F0Ct/dMfV74Vj3WblIdt8SeZrt9COpw6SY7Xtw==
+	bh=FugUTfP6os2SMkrCz7l/ffuyz7L5QQqtjSQ2DNFJmTo=;
+	b=NLJFidaU3XkbndK7tSfe3oX6yWzyr2b+by59ipd+hqP/Yw+a5tNp190hc7Vqy4TAk6py
+	 oomgF7RD5c/J65fbC7/l8+P3Urzi1iDdJS/CX+5S9GcdBEmmqocZHlafsAb58qWw6EDWO
+	 pWETx8upRHvX+iKfpOEkxAEawSjoEJfwXt0Nkxxwosz5PaSndq+ibfvFQ98CSZ+5LmP1Y
+	 1FdefoFMJAhjxMLPN9Twr4GOmszFWXrCOEQ+PuBkh22BNGtt1qwE1DdmjD4sIePB+nRyj
+	 tDLo2KviY4A+XGZYWvythYYSn6B6uj63a/qtdTpFJdQ7rBJo9YMcBxrsJgUl1oR2feQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A74B606A31A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA83606A31E;
 	Thu, 22 Oct 2026 18:54:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A74B606A31A
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8AA83606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xJxva-00029Z-00; Thu, 22 Oct 2026 20:54:14 +0200
+	id 1xJxva-00029b-00; Thu, 22 Oct 2026 20:54:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 9ABACC09F7; Thu, 22 Oct 2026 20:51:04 +0200 (CEST)
-Date: Thu, 22 Oct 2026 20:51:04 +0200
+	id 8312BC0AA8; Thu, 22 Oct 2026 20:51:45 +0200 (CEST)
+Date: Thu, 22 Oct 2026 20:51:45 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org,
+Cc: Bartosz Golaszewski <brgl@kernel.org>,
+	Linus Walleij <linusw@kernel.org>,
+	Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org,
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-media@vger.kernel.org, Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
+	linux-media@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Daniel Mack <daniel@zonque.org>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -47,10 +47,16 @@ Cc: Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org,
 	Hauke Mehrtens <hauke@hauke-m.de>,
 	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v1 6/7] MIPS: BCM63XX: Open code gpio_request_one()
-Message-ID: <atpbGHWohgb-bCk1@alpha.franken.de>
+Subject: Re: [PATCH v1 0/7] gpiolib: kill gpio_request_one()
+Message-ID: <atpbQV_qEoLyAG2J@alpha.franken.de>
 References: <20260715185112.1323510-1-andriy.shevchenko@linux.intel.com>
- <20260715185112.1323510-7-andriy.shevchenko@linux.intel.com>
+ <CAD++jL=prd1KDZQawqsRmW3qp1-cJ=18-yhp861CQirOOjE5Ag@mail.gmail.com>
+ <as4tep73cAI57Yk7@ashevche-desk.local>
+ <CAMRc=Mcc2b2Z0zrkNQ80NpV-H1MsihgeNtPD5dD5g9xcbiLg4w@mail.gmail.com>
+ <as44ROCHy-WeMdIZ@ashevche-desk.local>
+ <atjBsoY8mjGw9fQ8@alpha.franken.de>
+ <atjbpKxrW7x7Ohpq@ashevche-desk.local>
+ <atjfOrjsxnKe80zh@ashevche-desk.local>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -62,39 +68,40 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260715185112.1323510-7-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <atjfOrjsxnKe80zh@ashevche-desk.local>
 
-On Wed, Jul 15, 2026 at 08:46:46PM +0200, Andy Shevchenko wrote:
-> Open code the gpio_request_one() call to be able to kill that API
-> in the follow changes.
+On Wed, Oct 21, 2026 at 06:50:18PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 21, 2026 at 06:35:06PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 21, 2026 at 03:44:18PM +0200, Thomas Bogendoerfer wrote:
+> > > On Tue, Oct 13, 2026 at 04:55:16PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Oct 13, 2026 at 09:35:43AM -0400, Bartosz Golaszewski wrote:
+> > > > > On Tue, 13 Oct 2026 15:09:14 +0200, Andy Shevchenko
+> > > > > <andriy.shevchenko@linux.intel.com> said:
+> > > > > > On Fri, Jul 24, 2026 at 11:40:59PM +0200, Linus Walleij wrote:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> ...
 > 
-> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> index 57e916c06792..993341604439 100644
-> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-> @@ -903,8 +903,11 @@ int __init board_register_devices(void)
->  
->  	platform_device_register(&bcm63xx_gpio_leds);
->  
-> -	if (board.ephy_reset_gpio)
-> -		gpio_request_one(board.ephy_reset_gpio, GPIOF_OUT_INIT_HIGH, "ephy-reset");
-> +	if (board.ephy_reset_gpio) {
-> +		gpio_request(board.ephy_reset_gpio, "ephy-reset");
-> +		gpio_direction_output(board.ephy_reset_gpio, 1);
-> +		gpio_free(board.ephy_reset_gpio);
-> +	}
->  
->  	return 0;
->  }
-> -- 
-> 2.50.1
+> > > > > > Bart, anything needs to be done for this series to go in?
+> > > > > 
+> > > > > We don't have Acks from MIPS maintainers. :(
+> > > > 
+> > > > Hmm... Usually Thomas is quick. Thomas, can you give your Ack if you agree with
+> > > > the changes, please?
+> > > 
+> > > sorry, I was on vacation.
+> > 
+> > No problem, we now have more time :-)
+> > 
+> > > I'm fine with the changes, but I'm not, if they still apply cleanly...
+> > 
+> > Can you provide your formal Acked-by?
+> 
+> Maybe I misunderstood you, but FWIW I have applied it on top of today's Linux
+> Next and there is no conflicts.
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+ok good, I probably mixed things up :-/
+
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

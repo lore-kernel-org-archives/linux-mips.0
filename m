@@ -1,56 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792695277;
-	b=qdWvQmxti90NQ9qxgzWb6xZaAGby60sAiyY/wgZiJZzkh9FTv7iZ7I+3XuojW1TAiaX3
-	 oNVSx7G7P0IqwqHomYVb/YChHk9rV+Z5gXQvEaYwkmymuEyLpZeDgEUMWV62eMDKKiRVU
-	 VpXVJc94uLbpRhjYT06QDqRb+Sxsa+6naQjGHYwbndVI/0NosHd8xwzF7x+mChwDPL1Tm
-	 zczVzH+9mCF6fTQqWjaymkTr1rtrpx3X+W1YoMAiLYVDO05jqTe2p1UpHewB7DlV+esI8
-	 d1DBrFsYBghv+ZZQjvVQJhcspgnuiemmDfybIsAYge+icxzTIl7xfoogCg6Hl2q5yKg==
+	t=1792696071;
+	b=SP1QHDp3UlzCeu7N+FHSigmorDGWYfvBE3LSUICLnsNpJQ+qY4fjItnKACjWdgIAZwZx
+	 KO8ITtcJwQungU0IoDB4k8GSayxsFYc0sw2tpukUwy219hM3KiKih3HQDacrKZwF3ZOFC
+	 CJoPN9HQaalxSNH6np0Yt2dRwJd0wufCHCFEV+2VpXgibyBdbYFjhPgsJ1h6ksZsfyyzI
+	 2hz+jn3AkH5TAhwcTRycHw+/Bw3wi1JLNj3VL5kVn+0cnb5MFKuSfO3TbePMSOSWYlAdl
+	 8alo5TmPOzQjkmjSMfK+ojFeGK67RR4tw8FMufMuZoNvlUVUzrkqC0blBMGIo9jLd1w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792695277;
-	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=nKpgdfCWqF+9Q5MR5EBAQAUQb+BD1snzTotJ0iQU74U=;
-	b=AjMNGUVMBMLx0uFrhI4w1Ke9o43PzQw2erqCDBpQWBaKwCu4TFj8nkjIAAFWkRevUwHR
-	 n47reFI/EDYSQUbbOr7JjHn7BhqNS3pc92gxjWXulWLYDQkYWMGT38T2ZjsXzQM4I9uzG
-	 gyfB3sHg4T4/2wLSkU8jWA65tXQ2lCxrOMv7Wpos6JHo1mN5DtX5lVAGlZEHqgRrXlFXb
-	 QASCY0KIWALrBLQJoj6fWdsOlbuSIioj1EiRmI18SaIrIWv6Y7/XbU1HSCQ/leEQ+Wn+k
-	 N+R4rYLI7+IHokeEBqU/VO9KCAIkM1qFELYFWcggwL+etodyEwYWt17IL3E/syHd02A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792696071;
+	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
+	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
+	bh=3ljvcb14XNhLnHcOmJEx73K2+x2OStvM/Cj3DPoChpc=;
+	b=PaDhStsi62lnW7W6DZYdTod1U+Q70HT5rgGm5ZoogRUqhhXKmmGa5wqSYAjo+ipCztuR
+	 LR2ilK3pIw/5lXZfXAc4mISE9+vPj6O3cpxrR7uwOBYhnl2euOfhtcgV4yHXLR+DnLZOy
+	 sLv2T/kdVwS6ChFpWnf8rAXUZ1qh/iBsSDuHsMQuG2tR6KDOAKbW1QajjXnBJAAs4d0+G
+	 7kv/0iHvRFE9Yw9XfoJAASH5immbvA+e1189ZqO+tOdv4dYriEJJ12Seff8gTfolPbuq6
+	 J0qBbWkxtiHxuspKp4I/Saj3JxFN+bEnpJ4ErOFx1biJhZMF49bwBb4ZTWjxKmTLFvw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=alpha.franken.de;
-	spf=pass smtp.mailfrom=alpha.franken.de;
-	arc=none smtp.remote-ip=193.175.24.41
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54539606A319;
-	Thu, 22 Oct 2026 18:54:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 54539606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xJxva-00029V-00; Thu, 22 Oct 2026 20:54:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id E4FE9C0423; Thu, 22 Oct 2026 20:50:40 +0200 (CEST)
-Date: Thu, 22 Oct 2026 20:50:40 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-media@vger.kernel.org, Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>,
-	Hauke Mehrtens <hauke@hauke-m.de>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v1 4/7] MIPS: BCM47XX: Open code gpio_request_one()
-Message-ID: <atpbABKiC2KlCxeU@alpha.franken.de>
-References: <20260715185112.1323510-1-andriy.shevchenko@linux.intel.com>
- <20260715185112.1323510-5-andriy.shevchenko@linux.intel.com>
+	dmarc=none header.from=orcam.me.uk;
+	spf=none smtp.mailfrom=orcam.me.uk;
+	arc=none smtp.remote-ip=78.133.224.34
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDB9606A31B;
+	Thu, 22 Oct 2026 19:07:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BBDB9606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id B9A2692009E; Thu, 22 Oct 2026 21:07:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id B362F92009C;
+	Thu, 22 Oct 2026 20:07:47 +0100 (BST)
+Date: Thu, 22 Oct 2026 20:07:47 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Imre Kaloz <kaloz@kernel.org>
+cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: SGI-IP27: Install the cache error vector on every
+ CPU
+In-Reply-To: <20261021190253.30128-1-kaloz@kernel.org>
+Message-ID: <alpine.DEB.2.21.2610221953220.22065@angie.orcam.me.uk>
+References: <20261021190253.30128-1-kaloz@kernel.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,45 +51,36 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260715185112.1323510-5-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Jul 15, 2026 at 08:46:44PM +0200, Andy Shevchenko wrote:
-> Open code the gpio_request_one() call to be able to kill that API
-> in the follow changes.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/mips/bcm47xx/workarounds.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/mips/bcm47xx/workarounds.c b/arch/mips/bcm47xx/workarounds.c
-> index 745c6228eb2c..9148d2c219d1 100644
-> --- a/arch/mips/bcm47xx/workarounds.c
-> +++ b/arch/mips/bcm47xx/workarounds.c
-> @@ -9,11 +9,13 @@ static void __init bcm47xx_workarounds_enable_usb_power(int usb_power)
->  {
->  	int err;
->  
-> -	err = gpio_request_one(usb_power, GPIOF_OUT_INIT_HIGH, "usb_power");
-> -	if (err)
-> +	err = gpio_request(usb_power, "usb_power");
-> +	if (err) {
->  		pr_err("Failed to request USB power gpio: %d\n", err);
-> -	else
-> +	} else {
-> +		gpio_direction_output(usb_power, 1);
->  		gpio_free(usb_power);
-> +	}
+On Wed, 21 Oct 2026, Imre Kaloz wrote:
+
+> diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
+> index 62733e049570..0fef66b86959 100644
+> --- a/arch/mips/sgi-ip27/ip27-smp.c
+> +++ b/arch/mips/sgi-ip27/ip27-smp.c
+> @@ -133,6 +135,18 @@ static void ip27_init_cpu(void)
+>  	per_cpu_init();
 >  }
 >  
->  void __init bcm47xx_workarounds(void)
-> -- 
-> 2.50.1
+> +static void ip27_init_secondary(void)
+> +{
+> +	/*
+> +	 * The hub flips the low 128K of the attribute 0 uncached alias per
+> +	 * CPU slice and the cache error vector is fetched through that alias,
+> +	 * so the copy trap_init() made through TO_UNCAC() only serves slice 0.
+> +	 */
+> +	memcpy((void *)CKSEG1ADDR(0x100), (void *)TO_UNCAC(0x100), 0x80);
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+ This just copies instructions between the same physical memory locations, 
+from an XKPHYS mapping to its corresponding KSEG1 mapping, i.e. the bus 
+addresses are the same, so please give a more elaborate explanation how 
+this is supposed to work.  I guess I'm just missing something, but that 
+has to be obvious from the contribution itself, also for other people that 
+may come across this change in the repo in the future.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+ Also, please don't cc stable with submissions targeting mainline, fixes 
+will be picked up for backporting based on the Cc: tag in the commit 
+description.
+
+  Maciej

@@ -1,50 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792628600;
-	b=TwQvEuURldvmOOBo5G1g3y7tB80R1yzsCFLpnetycMIObCcmByoekKbTeVWUaERaaCFW
-	 5eNXx0RSlNsDJzg/1sFLyrF52heaeTihPm8U0gqNZ0IlQtHnDEIbbqJOAQiswm9m/rnNC
-	 ujVhdrP4WGhWJT2ENthLnlKQ0wB/+zl+qpKAthQv0MvRt4kiuxjlLsNbbQ+EPfYOyzrTy
-	 qdC5AE0ePi3b8b184IuoPHFi6aMUIfG/gWtOHsNXjmiCbWMPTgjWToYMdgGc4NmuCed9t
-	 JyBqymXzZCXAgKud+IS9+D7svAqZCprNrPjmkq34V0TZ2sckErQ1lPYmv+VHMi6DAgw==
+	t=1792647957;
+	b=Y0GkYt/nRShdUk+eai7ewQc3huQJkHEjsNhX345aLmSRuUigmFG556xCFeKyIkj7h1bc
+	 Lec+mVEqur+cPypsI+G8AlitubzxY4knsGSjWKEjxUNUy+wXJLRl0Z71H9cdD1X/5eFTC
+	 FPQjVjE0mGM6TZ9xSMyt5TeAFOMPs/eEZZo0ItdSiBemyLIDBynP8Ay1dIIhqwoYpKAsP
+	 uySyjsbiCH+omVS5At7Lcin0IBkFhNRyPDpEVkJ+rgMm4TpT6a+VIjKx6LleVorwD7Vg1
+	 UbV21yrDrg9DLpJ8wWBHXCaU0SvCbWbzlXhLI6FO3CcprUv9S73aRZKgxsFE0iRkz4w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792628600;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=n0nV+j/dwVCVw4w8NogiWN3728iwFrNuslJ8kYj71gg=;
-	b=idoqzKOnEWWoKgATopMGH/qfcILbsF+Bu1UK2B3eylVJnHB+X/WKcNw7BfrFjuFSTwd5
-	 yaoLWCn7FSDXXhxJ6kBPDsKiwh6Sv5RfyzTw5U/yr1IWlhrpYK9g5etJmry8+M9KS8fDI
-	 f9W57zyjm7E9m1ZDtEB/UiycpT+3aBpZpRcgFP0QxlfLTvEaq/L+1axIiTxLu/hhrjLAS
-	 0vaOIdlzOPNueQTDpd+UH6jjuAhT3msHo/uoOdMJuCxfuxW618TZus/YQ62SoGLjs0Du7
-	 zvUSx4lt5YxrsYseweHpo2OqH/mtIAciK6knXCPTP3X2mgIiJzyJrPvLepDCti5dltA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792647957;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=+DEgi/8NrTUM8tcUILyBiIkZL/IAs9wdlvFiHXOeDbE=;
+	b=BWbAH6hYkPhk+yVHwQK3l5Mncy8y8iVXTa9ZlP9NFXrvvW92Sae/DBd1YEKChwW+Z6O8
+	 7Xq0i0L7fu6b7lZWC4E/zZ/ZB2GHEC6WJkqrZxUdxX1RWOOFXZI8RKB5FuRiHGCwL4wj+
+	 LlWeEYb5CgBiSzcQ1Z1sHGQAJ0g6Jn+APdzH7MEKpQqYIh24YiUMvc2yG/FqUPRmISK49
+	 PWga2RtEMi7RdtWfsOWFKfJQSZxGMqJv1abJeBHu334TcNqwuNRi6c4A7w0kvc1H0A9Oh
+	 hxJRSicqMGYbYBoLaD2rKHDMrTPCQL6Jq+hPDcvcr1EzzZPbvbxlccLbZ18eYiPwFpg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40D3606A319;
-	Thu, 22 Oct 2026 00:23:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D40D3606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 9300392009C; Thu, 22 Oct 2026 02:23:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 9132392009B;
-	Thu, 22 Oct 2026 01:23:16 +0100 (BST)
-Date: Thu, 22 Oct 2026 01:23:16 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Florian Fainelli <f.fainelli@gmail.com>
-cc: linux-mips@vger.kernel.org, 
-    =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Bjorn Helgaas <bhelgaas@google.com>, 
-    open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Cobalt: Include legacy IDE ports in the PCI I/O
- window
-In-Reply-To: <5388e60d-6418-4b84-8a88-5e647248025d@gmail.com>
-Message-ID: <alpine.DEB.2.21.2610220034040.22065@angie.orcam.me.uk>
-References: <20261015203107.545047-1-f.fainelli@gmail.com> <alpine.DEB.2.21.2610201758400.22065@angie.orcam.me.uk> <5388e60d-6418-4b84-8a88-5e647248025d@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=byntnXkd;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2348606A31A;
+	Thu, 22 Oct 2026 05:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=byntnXkd
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 321F41F000C1;
+	Thu, 22 Oct 2026 05:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792647956;
+	bh=+DEgi/8NrTUM8tcUILyBiIkZL/IAs9wdlvFiHXOeDbE=;
+	h=From:To:Cc:Subject:Date;
+	b=byntnXkd2/OOaj8g+9r1MFRzXa8JRqoR3YbHK9gX3Q/E6LV1ksbBTx5bcwIlaPScV
+	 qvpwDrp1yEs3Wl2XxysQJqQYVt/6zkNPHGr0/16LxDUE4dSr0I50qxBYak1rYzb/9W
+	 6OmghZwwlM96UmMhYvC1fj8+sh5rBT9zs5REfJE5hvC/hjs9LkezBrJ1V7r01P8/jg
+	 kMPYr7UK1ilMR+1HQ0oiQt5cPcVIDHsiCwE+/kRyanFBmVyKwzHuwBDC4+P/Sik8mh
+	 o8n/aOpM+tAzukPM4Io+PIoyBU1yp8eBnju3lxXKsKwj4Cs2QzcivhOQud2G6xZscc
+	 8x64QvTQIUz7Q==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linux-mips@vger.kernel.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Eric Biggers <ebiggers@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH] lib/crypto: mips: Disable Octeon SHA code on little-endian kernels
+Date: Wed, 21 Oct 2026 22:44:50 -0700
+Message-ID: <20261022054450.20746-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,127 +62,95 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Wed, 21 Oct 2026, Florian Fainelli wrote:
+Kernels built for the MIPS64-based Cavium Octeon SoCs are normally
+big-endian, but little-endian builds are also supported.  Currently, the
+SHA-1, SHA-256, and SHA-512 code using the Octeon crypto co-processor is
+enabled in both builds.
 
-> > > Lower the PCI I/O window start to 0x100 so the fixed IDE resources can
-> > > be claimed. Keep the reserved ISA resources below 0x100 outside the PCI
-> > > window.
-> > 
-> >   Why not go with 0 (unless that's not what the system controller supports
-> > as the bottom of the PCI I/O space), and just set PCIBIOS_MIN_IO correctly
-> > as several platforms do instead?  Is there a southbridge in your system?
-> 
-> 0 does not work and gives me:
-> 
-> [    0.205993] Skipping PCI bus scan due to resource conflict
-> 
-> There is no south bridge AFAICT, the CPU connection to the GT-64111.
+This code is untestable without the hardware.  However, based on the
+code itself, it is implausible that it computes hash values correctly in
+little-endian builds.  Such builds write many incorrect values to COP2:
 
- Thanks.  The Galileo is the northbridge.  The conflict is due to:
+  - SHA-1 and SHA-256: The 64-bit integer that contains the last two
+    32-bit message words of each block is written to COP2 entirely
+    byte-reflected, due to missing endianness conversion in
+    octeon_sha1_start() and octeon_sha256_start() to compensate for
+    using native 64-bit loads from the message bytes.  This differs from
+    all the earlier message words which are written correctly.
 
-	/* These resources have been reserved by VIA SuperI/O chip. */
-	for (i = 0; i < ARRAY_SIZE(cobalt_reserved_resources); i++)
-		request_resource(&ioport_resource, cobalt_reserved_resources + i);
+    Furthermore, the state is written to COP2 with each 32-bit word
+    byte-reflected within each 64-bit integer, due to incorrect use of
+    64-bit endianness conversion in write_octeon_64bit_hash_dword() when
+    the state is kept in memory in native-endian 32-bit words.
 
-which clearly functions as the southbridge (there's also:
+  - SHA-512: All the 64-bit message words are written to COP2
+    byte-reflected, due to missing endianness conversion in
+    write_octeon_64bit_block_sha512() and octeon_sha512_start().  The
+    SHA-512 state words seem to be written correctly.
 
- * Also PCI-ISA bridge DMA controller is never used.
+Big-endian kernels aren't affected by these bugs.  These bugs also
+aren't new; this code has been broken on little-endian ever since it and
+Octeon little-endian support were first added in v4.1.
 
-earlier on) and these resources belong to PCI really.  What does:
+Commit d2a948d2db68 ("MIPS: Octeon: Make octeon-md5 driver
+endian-agnostic") made the MD5 code work on little-endian kernels by
+adding 64-bit endianness conversions to the COP2 macros used by MD5
+(some of which are shared by SHA-1 and SHA-256, despite those algorithms
+keeping the state words in native-endian instead of MD5's little-endian,
+causing some of the strange behavior described above).  However, SHA-1,
+SHA-256, and SHA-512 were never fixed to work on little-endian kernels.
 
-$ lspci -nn
+Therefore, disable the Octeon SHA-1, SHA-256, and SHA-512 code in
+little-endian kernels.  This causes the generic code that actually
+computes hash values correctly to be used instead.
 
-say?
+Fixes: 82be2dcfa6a1 ("crypto: octeon - add SHA1 module")
+Fixes: c3d0def62001 ("crypto: octeon - add SHA256 module")
+Fixes: fbaa4dfd51a0 ("crypto: octeon - add SHA512 module")
+Cc: stable@vger.kernel.org
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
 
- We had a similar regression with the Malta, except the resources were 
-claimed in the other order and therefore fixed in a straightforward way 
-with commit 1d5d1663619d ("MIPS: Malta: Fix PCI southbridge legacy 
-resource reservations").  Consequently /proc/ioport map now looks like:
+This patch is intended to be taken through libcrypto-fixes.
 
-00000000-00ffffff : MSC PCI I/O
-  00000000-0000001f : dma1
-  00000020-00000021 : pic1
-  00000040-0000005f : timer
-  00000060-0000006f : keyboard
-    00000060-0000006f : i8042
-  00000070-00000077 : rtc0
-  00000080-0000008f : dma page reg
-  000000a0-000000a1 : pic2
-  000000c0-000000df : dma2
-  00000170-00000177 : 0000:00:0a.1
-    00000170-00000177 : ata_piix
-  000001f0-000001f7 : 0000:00:0a.1
-    000001f0-000001f7 : ata_piix
-  000002f8-000002ff : serial
-  00000376-00000376 : 0000:00:0a.1
-    00000376-00000376 : ata_piix
-  00000378-0000037a : parport0
-  0000037b-0000037f : parport0
-  000003f2-000003f2 : floppy
-  000003f4-000003f5 : floppy
-  000003f6-000003f6 : 0000:00:0a.1
-    000003f6-000003f6 : ata_piix
-  000003f7-000003f7 : floppy
-  000003f8-000003ff : serial
-  00001000-0000103f : 0000:00:0a.3
-  00001040-0000105f : 0000:00:0a.2
-    00001040-0000105f : uhci_hcd
-  00001060-0000107f : 0000:00:0b.0
-    00001060-0000107f : pcnet32_probe_pci
-  00001080-000010ff : 0000:00:12.0
-  00001100-0000110f : 0000:00:0a.3
-  00001400-000014ff : 0000:00:13.0
-  00001800-0000180f : 0000:00:0a.1
-    00001800-0000180f : ata_piix
+ lib/crypto/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Previously it looked (incorrectly) like:
+diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
+index 56f308dd02731..83b4a211c15d6 100644
+--- a/lib/crypto/Kconfig
++++ b/lib/crypto/Kconfig
+@@ -237,7 +237,7 @@ config CRYPTO_LIB_SHA1_ARCH
+ 	depends on CRYPTO_LIB_SHA1 && !UML
+ 	default y if ARM
+ 	default y if ARM64
+-	default y if MIPS && CPU_CAVIUM_OCTEON
++	default y if MIPS && CPU_CAVIUM_OCTEON && CPU_BIG_ENDIAN
+ 	default y if PPC
+ 	default y if S390
+ 	default y if SPARC64
+@@ -255,7 +255,7 @@ config CRYPTO_LIB_SHA256_ARCH
+ 	depends on CRYPTO_LIB_SHA256 && !UML
+ 	default y if ARM && !CPU_V7M
+ 	default y if ARM64
+-	default y if MIPS && CPU_CAVIUM_OCTEON
++	default y if MIPS && CPU_CAVIUM_OCTEON && CPU_BIG_ENDIAN
+ 	default y if PPC && SPE
+ 	default y if RISCV && 64BIT && TOOLCHAIN_HAS_VECTOR_CRYPTO && \
+ 		     RISCV_EFFICIENT_VECTOR_UNALIGNED_ACCESS
+@@ -275,7 +275,7 @@ config CRYPTO_LIB_SHA512_ARCH
+ 	depends on CRYPTO_LIB_SHA512 && !UML
+ 	default y if ARM && !CPU_V7M
+ 	default y if ARM64
+-	default y if MIPS && CPU_CAVIUM_OCTEON
++	default y if MIPS && CPU_CAVIUM_OCTEON && CPU_BIG_ENDIAN
+ 	default y if RISCV && 64BIT && TOOLCHAIN_HAS_VECTOR_CRYPTO && \
+ 		     RISCV_EFFICIENT_VECTOR_UNALIGNED_ACCESS
+ 	default y if S390
 
-00000000-0000001f : dma1
-00000020-00000021 : pic1
-00000040-0000005f : timer
-00000060-0000006f : keyboard
-00000070-00000077 : rtc0
-00000080-0000008f : dma page reg
-000000a0-000000a1 : pic2
-000000c0-000000df : dma2
-00000170-00000177 : ata_piix
-000001f0-000001f7 : ata_piix
-000002f8-000002ff : serial
-00000376-00000376 : ata_piix
-00000378-0000037a : parport0
-0000037b-0000037f : parport0
-000003f6-000003f6 : ata_piix
-000003f8-000003ff : serial
-00001000-001fffff : GT-64120 PCI I/O
-  00001000-0000103f : 0000:00:0a.3
-  00001040-0000105f : 0000:00:0a.2
-  00001060-0000107f : 0000:00:0b.0
-    00001060-0000107f : pcnet32_probe_pci
-  00001080-000010ff : 0000:00:14.0
-  00001100-0000110f : 0000:00:0a.3
-  00001400-000014ff : 0000:00:13.0
-  00001800-0000180f : 0000:00:0a.1
-    00001800-0000180f : ata_piix
+base-commit: 4403278e4ea2f654f8130a5c03eb8b4516a0f201
+-- 
+2.56.0
 
-(I've lost the Galileo module, so the output isn't exactly like-for-like).  
-Note the old I/O start address of 00001000, exactly as with your system.  
-Also note the fixed i8042 driver registration; this is owing to commit 
-bf5570590a98 ("MIPS: Malta: Fix keyboard resource preventing i8042 driver 
-from registering"), but I guess you won't need such a change because:
-
- * Cobalt doesn't have PS/2 keyboard/mouse interfaces,
- * keyboard controller is never used.
-
- I'd suggest that you get this right and swap the ordering of resource 
-requests by registering the PCI controller first too, possibly by moving 
-southbridge resource reservations to cobalt_pci_init(), and similarly 
-using insert_resource() rather than request_resource().
-
- NB if you had no southbridge at all, then you could use PCIBIOS_MIN_IO of 
-4; cf. commit bb356ddb78b2 ("RISC-V: PCI: Avoid handing out address 0 to 
-devices").  Otherwise moving the existing allocation base of 0x1000 there 
-seems the proper way.
-
-  Maciej

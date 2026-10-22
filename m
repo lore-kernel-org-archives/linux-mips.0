@@ -1,56 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792692290;
-	b=U9pLtiUxBEniFSeuL3xfTihqUng0NyGF4ARSzRjF/G5MNk4WvAfdNwHNgxrMo1LNOOB2
-	 XpNZ3hKisqo7eJzPI4kVR3qPyuw+Y8LkKcydH6cBzPl4LsAGl9xn/rTFR/ya+2BQwhG16
-	 W4hXRzyP5Q5zPFfEzTrVdTERSlm/6FrSLjEm+q4imwBq36Eloz3+Vixs9SlkYpQg6FMc/
-	 gaMI2Y88xoTMpQ54Q4GwCYBdUu+UxKX0QwycJSM64YTubEHuxtK0swfHezjly5zR1deAT
-	 O/oZAd01uBRJjnJU304qoW5BwAYLBb5Sxsu3laswYt25bL8fVYVPrYZVPdb63nU7Whg==
+	t=1792695277;
+	b=mPOo8rmPL4Bo8oUfXszoOcjMKlA1Znl1b5CrarwZOY/QY0MZdTldxSZdbc1RZR/f6/d1
+	 FC16RxFQIdaLhN2VPkYbAHYYQtC2Xi1v0jTf+uHGzUyIOQhUZBuVFacr0t5UyvsyVOHmo
+	 G1KbC+TMujWpMbn1BsRRd8qdXYmSmdq/vp1TjEcsJK5XD9ESkYRlR9hO0HEy8bXJojdf5
+	 erwrMf6/nxoMSIqe5Wm+I85DMQgG7sG+JLWpjik4Mq3ALGO5s9R8i+i3FC9/7zW2E9YZg
+	 atEl90m2X9Cu3K0mZKqYeBWbuTsoY0wugj29/gDuwgKy0xWl8XKfmmm+mcBdf2kXTiA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792692290;
-	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=RhnfvKmfoxy+HUbDsORpInOXf0Z9ck2xlJJLmjkZQrQ=;
-	b=wKlFg5x+9IXxaqIqGze0znFrnDDWrdJLKX9zysd/fUOAIj/6I0bTUkeAS7pcyOsF6jN+
-	 d13sGMHbPzDSOpXNeCatRTqMSurXUet2tRqZX/y/NyIvPYbpD9AxRd4TeLdY2t+YhsxS9
-	 S839MWwjt1pOEmQfN3BbK70eCUlogtRAUhA7+Ht4YoYfQk6biCQIzJhrmJqBFnLhp6hzd
-	 6EplL86cYKNQv5biB2InnVQHXtLfwkdwHqwBqKeXwwIUUDH7yvlNx4KZ/Ph/mJL6Nyuqx
-	 bvo1FXqD9W95+qWeQhATG+K1MW/OBxdP0YMYMMJZiWgxEcZvQMzgAAnQS9y0H4SNHPg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792695277;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=RhKt16of56GSIqtS3K+XfsNEUpLs5ygGgmwiyfLWjSI=;
+	b=UfliiyExv7KvqRDciFChOwpaYcwuGxyzP0j37SoPKbXbwiZ11tsP7g0p2Ey/ZjMHF39U
+	 B6L+k8cHI/ZhT4z5n0eJzFI0y0TqL5OYuHrhh7m+fdXZAlr8pkBXGxDKrUZ9I/ZeINDIi
+	 gFecAtcO00TOf2igwssor5Tqs99GNGROI9v+6snP1YkeLUregMwjCGLvbI5/ad5Uh/MwM
+	 9yzEuydUB9mSU6HTtIiZ8DCS8+SnRAkn3u4dVDDs15OoonJFAl2D/hbD9UHFpyaXJzuVC
+	 skr0tzZzT5ClPDmz7VuFjYcOkgy0lLlVqnKKLQHleCMoSLlQi5dl9GfoLZSAqVmoMsw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=zytor.com;
-	spf=pass smtp.mailfrom=zytor.com;
-	dkim=pass header.d=zytor.com header.i=@zytor.com header.a=rsa-sha256 header.s=2026092801 header.b=wS32jOje;
-	arc=none smtp.remote-ip=198.137.202.136
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58917606A31B;
-	Thu, 22 Oct 2026 18:04:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 58917606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=zytor.com header.i=@zytor.com header.a=rsa-sha256 header.s=2026092801 header.b=wS32jOje
-Received: from [172.27.3.124] (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 69MI2jre822700
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 22 Oct 2026 11:02:46 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 69MI2jre822700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026092801; t=1792692174;
-	bh=RhnfvKmfoxy+HUbDsORpInOXf0Z9ck2xlJJLmjkZQrQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=wS32jOjeFWsFEs7/XC2lmhjx+vaso38Aa1yvVUAkT9A1W3myWjPjlKJ97J5iL0Ywq
-	 bPF69gGCe7jooHw6vT1puqfAAMWwIenPVsBB0BtjXDHBnYwO13DlDPhjiEozTqjEHM
-	 Tnne7bJIubMKnpcLaITiN/m+5GZf8SNZmR76JFs4RsiRgOXjXb7KnOu57Xbk4+jf0R
-	 res/2bYXDI5YQACu5N7auw0s2PeA2biV4pFQrygkfChnNdCyphEU5uiDFSgPKPiKVV
-	 mrz+yPrxO0ZpIXSlYj8frGR29U2PsHFm2Ceilf5VQYeo3Indd2RWAuBubWzuARjG4V
-	 DyvcySggronVQ==
-Message-ID: <9d875fab-fdad-413e-9737-6160fac2a406@zytor.com>
-Date: Thu, 22 Oct 2026 11:00:24 -0700
+	dmarc=none header.from=alpha.franken.de;
+	spf=pass smtp.mailfrom=alpha.franken.de;
+	arc=none smtp.remote-ip=193.175.24.41
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A777606A31D;
+	Thu, 22 Oct 2026 18:54:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A777606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xJxva-00029X-00; Thu, 22 Oct 2026 20:54:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 7C50EC0970; Thu, 22 Oct 2026 20:50:52 +0200 (CEST)
+Date: Thu, 22 Oct 2026 20:50:52 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bradford Love <brad@nextdimension.cc>, linux-gpio@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-media@vger.kernel.org, Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v1 5/7] MIPS: BCM63XX: Remove one time use
+ ephy_reset_gpio_flags
+Message-ID: <atpbDFIFtFCntTeU@alpha.franken.de>
+References: <20260715185112.1323510-1-andriy.shevchenko@linux.intel.com>
+ <20260715185112.1323510-6-andriy.shevchenko@linux.intel.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,73 +61,65 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
- indirection
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra
- <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller
- <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-        Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-        Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org> <20261022142425.3Wx-RrU5@linutronix.de>
- <20261022150235.V2CSdtmu@linutronix.de>
-Content-Language: en-US, sv-SE
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20261022150235.V2CSdtmu@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260715185112.1323510-6-andriy.shevchenko@linux.intel.com>
 
-On 2026-10-22 08:02, Sebastian Andrzej Siewior wrote:
-> On 2026-10-22 16:24:30 [+0200], To Thomas Gleixner wrote:
->> The test could be updated via the hunk below in case the new behaviour
->> is what is expected. hpa made the extension to the test in commit
->> 795e2a023b808 ("selftests/x86/syscall: Add tests under ptrace to
->> syscall_numbering_64").
->>
->> diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testing/selftests/x86/syscall_numbering.c
->> index ca0eca7b9dced..1435394fba022 100644
->> --- a/tools/testing/selftests/x86/syscall_numbering.c
->> +++ b/tools/testing/selftests/x86/syscall_numbering.c
+On Wed, Jul 15, 2026 at 08:46:45PM +0200, Andy Shevchenko wrote:
+> ephy_reset_gpio_flags exists solely to supply polarity to the reset GPIO.
+> But in practice it's kept all the same and currently only a single user
+> present. Drop the member and use hard coded GPIO flags instead.
 > 
-> Now I notice the fix depends on CONFIG_X86_X32_ABI=y (fails for =n).
-> But we want to get rid of it anyway so…
-> CONFIG_IA32_EMULATION is not affected (with the fix).
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  arch/mips/bcm63xx/boards/board_bcm963xx.c           | 7 +++----
+>  arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h | 3 ---
+>  2 files changed, 3 insertions(+), 7 deletions(-)
 > 
-It would be very simple to probe for by issuing a simple system call like
-getppid() with the x32 bit set.
+> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> index c5617b889b1c..57e916c06792 100644
+> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> @@ -42,7 +42,7 @@ static struct board_info __initdata board_cvg834g = {
+>  	.expected_cpu_id = 0x3368,
+>  
+>  	.ephy_reset_gpio = 36,
+> -	.ephy_reset_gpio_flags = GPIOF_OUT_INIT_HIGH,
+> +
+>  	.has_pci = 1,
+>  	.has_uart0 = 1,
+>  	.has_uart1 = 1,
+> @@ -903,9 +903,8 @@ int __init board_register_devices(void)
+>  
+>  	platform_device_register(&bcm63xx_gpio_leds);
+>  
+> -	if (board.ephy_reset_gpio && board.ephy_reset_gpio_flags)
+> -		gpio_request_one(board.ephy_reset_gpio,
+> -				board.ephy_reset_gpio_flags, "ephy-reset");
+> +	if (board.ephy_reset_gpio)
+> +		gpio_request_one(board.ephy_reset_gpio, GPIOF_OUT_INIT_HIGH, "ephy-reset");
+>  
+>  	return 0;
+>  }
+> diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+> index 830f53f28e3f..018a56cbc328 100644
+> --- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+> +++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+> @@ -46,9 +46,6 @@ struct board_info {
+>  
+>  	/* External PHY reset GPIO */
+>  	unsigned int ephy_reset_gpio;
+> -
+> -	/* External PHY reset GPIO flags from gpio.h */
+> -	unsigned long ephy_reset_gpio_flags;
+>  };
+>  
+>  #endif /* ! BOARD_BCM963XX_H_ */
+> -- 
+> 2.50.1
 
-	-hpa
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

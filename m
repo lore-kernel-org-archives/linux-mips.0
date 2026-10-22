@@ -1,73 +1,106 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792661489;
-	b=r7ww3MYP8b6nax4HK9st7z29EUmKobZAERCvHv4pVLdjGxcwBB15nClhF3xNHh0QA7eT
-	 k+a/mj5csYZrBWphsh63DjiTVRa5XmYDRnINoU4BtX3frEmejpng+M2sgOgS0UW7ha6hU
-	 614EbopuhBoMyZ5fWBYJ7eY+V3c9uCgpTSMOZX36+SAsw03svvEnKkmvRCFRnwR7nnrLM
-	 FQBf4dWBmR+rubwan87g1hlKxbKb3sTZytLvoGSokGz9v0gUPizg4T94cEmydvQBROszZ
-	 ScDGhei5nhA9/M2lj+LCQnfA3lNCi+iKxOXel5/BH2FwUmt4/eWvy/z4VTE+N9NxjOg==
+	t=1792679071;
+	b=RQBlRaSbTYSS84pBmWzvnhyqXq6SK3T6gissfIDc0TZguCV7xzjInskY6uLMeT5eTJYI
+	 OIHlmabFAdw7PJckhwmE0/1N8TFkf31hfOYo/VcK+v8qkScjzgibhsTGhUrySYDc1VNQK
+	 y0ihQqbL07un1RFovjWk6ukcf1gSW+FRir7yJfg9t/mop7cz9G/voFvKdWfwo6BwcxUw2
+	 BhA9w93u58cYh3yq1VKvodFWniQNlEhM5bXj/nu54fVzTIj5z4fSJFu/OG7O3O01wBO7B
+	 bNZjyzqv9WWrID1XIAFMAbt0OK2MAxp3pF9cnELGOcG7Ur5IIm1FP/hszbwigaaW+tQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792661489;
-	h=Received:DKIM-Signature:Received:Received:X-ME-Sender:
-	 X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type:Content-Transfer-Encoding;
-	bh=5RVGwZT8t4e1zVjXKKi0e2LIbMh0nK8upWy9XAQnYqk=;
-	b=xZBoH0YW77yLp9iFejZlBzyZmCimAHoMIyymvug5RJ5hLje4/bGxRngufSccBBGf1Q62
-	 9ngtapZ5aV6vYg28eS54eX/wfbSBl0RDCOH6NNsg9pbMj7vDxiYk7Q55lCSLaT4QrHwD6
-	 8ddAHHkn6+3OFiaqaz/SfnqopNEk1carJzPzAv3AfWLCYiFU9cIk6h5ji6z7qF4NqyQIS
-	 cqtnNFPXPj3KX/9hVGWgYnPpPqYxH4zhlYFMipIUpvuy1ciThBDSj8kCRI0pibkx1P5z4
-	 77et/a+WJ+8tLJjSkR35X8uyFeodF1Td+sejWW1zS9M+H0L8JbVLK2opmn3OH0AYYFQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792679071;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=;
+	b=irDu32suvnN4EXemnSeM0fzNA54HhnRBhTrwrhIQqKToK+rucxxhGIr5ZUiLm89pGgjM
+	 z3owYGQ7IadeYjDcbhsvShoi3IoSBot/igVtcA8fEd2ZIZfNuEe7gwYTETAvhoBx1IKw8
+	 7dt3vhUevadbXTLXYhFpx4E1JuJaJK7rZyXAhRTWPMqwGSCIEnY+kmgqC57oWoMtmpXLU
+	 kMaTuE9FvRw3cD3ZPko3CTowybRrkqelPdI7jA0X2Wx3PqH9qhjoin3enchjmSJJI++Or
+	 4qgFxN8DMkRLTkrstxCG/l0RjZMa6YRYhKCQlcgROy1cDmLFs7ovFI7VNDVMVQe09Yw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XFxrZI4K;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=tGPqmIoU;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=lrzd8ZGd;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3B9606A31B;
-	Thu, 22 Oct 2026 09:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0402F606A31A;
+	Thu, 22 Oct 2026 14:24:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0402F606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XFxrZI4K
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F541F000C2;
-	Thu, 22 Oct 2026 09:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792661487;
-	bh=5RVGwZT8t4e1zVjXKKi0e2LIbMh0nK8upWy9XAQnYqk=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=XFxrZI4KDUHJ5r7WGLaFrHG6vxCNwbHrTcvVV9q90uuCxSkdwG8bajQG2EvZT/qPK
-	 9IzfunmsTTm0+VAzTrqsBUQIgjJUYaiQZUNze/5y2JS53SddYU52paizZySzeGagpO
-	 0pUz5B7sqL2btYtNYrzHmUPh2IKNmw0km/TYOCAPWTwc2u0Hi2T+GuQvfhoIEyqJcN
-	 /r6k7K1srEmd3I6T2W/V8/I1zSKaZxezLjTzXaKrpysPYZc+3ywBEGU1GOjVGrEF9w
-	 ZqNQSOfP6ezr59ASwo7mzEIAp+jw4M4M0aYScf6+7sytlQ8E4aVyBV/q1wMwgmBIa8
-	 AyqjfweJLbVMQ==
-Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
-	by mailfauth.ams.internal (Postfix) with ESMTP id B8876198003A;
-	Thu, 22 Oct 2026 05:31:25 -0400 (EDT)
-Received: from ams-imap-11 ([10.64.2.31])
-  by ams-compute-02.internal (MEProxy); Thu, 22 Oct 2026 05:31:25 -0400
-X-ME-Sender: <xms:69fZaqQVwK1DFmdVlAoU2bxJ_E28AzXZnczp1Smr41RqUhpz-BLUlw>
-    <xme:69fZaqli-ZSdZd43vyDjdOc5PkJreKYp2Sm1xUHu51_HEVnMk7H2-aPFcVAvrTJs7
-    9qXLj3wGSSSAshC7Z8RXTG2wXOCo67StvEqIN6vfPQPUma5i3DhjLkdMw>
-X-ME-Proxy-Cause: dmFkZTG0yNsCHIv43dX9nlqrm6DZoOzZrDEcMcejC9UYmP2BqAxOZkNM5VrjFz5aZYVxdY
-    YJ0uxjzCchmGI0EEDIqUjVB95pRmB+py2X4nj3BTe8suTrDbq9sEbkO+dScUYAdp74FWbS
-    2eEhL2agWbq9FGXjhcju7qvhHIZljJCT+gwgGAreouqyKbrKFAEYLD1CxLN66+awuzbmFQ
-    y7nD6Sd3MnXPeBNFP5C24iqg5L/cA0VY0ws0QHOLEngMAkiA6MWBIXOc7jP1bo5qEsNuF7
-    hhk6J8Rk5mu8j4B/qBQq98Rj6xHZKoZaZykv6LbipCWV+GCWvPRjQvhHP4pD1jL18APaRD
-    fqU74uW5GFbgpWReW7YD5jTROrU55tWPWg1/ofw2dzG+X6ekUnK2hYuaQvMWB4ylVE7VTk
-    hvk4U5I/nRcdET2cnXxzCgUw+/PxYlmYxh024BMO2oTayUpotTU80psPK+/4yelcycPcJR
-    Hexny9E06HWl/icHwk/NtOs3fnUf/u7lulq/Kq4OmT/FjWGuWUkMwORPICHg15teBeroMw
-    GmLP2BJCY36TxT0PSSsl7gJmK34SjZ+zclc6jzlimyykmDl3oQdQKZQDvN2G4QRKHd/N2C
-    P35JkbKYy5PjCFnn2sb5WYtH8yBE/Iz+qEmos2wiX1J1eLSB1QCbjpkO4qXg
-X-ME-Proxy: <xmx:7dfZanyHPPsKIL31IXY9JXk8gnle0lL2d-6_kfCSgt1zGPM1Hex87w>
-    <xmx:7dfZar3-mkDMAMtXx5cZi50kORsKrYCtzKtRyxO5Xe2M02Lp319Q3g>
-    <xmx:7dfZalx9vvIMdmee0OzhAKwKdeexltv9Q2TQppeN7gCiaydrCMG6Cg>
-    <xmx:7dfZaoUJAQmNHQRaikfFM4qU7BB7GIYI_pdbuW3bnvRhTHWuoP02MQ>
-    <xmx:7dfZap9juDy-mV7hJBscy4KhOdwvEZrbGllpe9O7zxU86mFTvC_E-KhP>
-Feedback-ID: ice86485a:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id 82660F8008E; Thu, 22 Oct 2026 05:31:23 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=tGPqmIoU;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=lrzd8ZGd
+Date: Thu, 22 Oct 2026 16:24:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1792679067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=;
+	b=tGPqmIoU7flznKuVvSgOzo2yd+DVKg7D73Wllg9sFRm9CC/iaoJaE55c3a0xpncefiwTWe
+	D0DcbKw7j7YI7N9iAD68KUbumDWDB4zuYjNIkgHfr2v+H6DCtaJTi+ZtcPVrTjX8s8nNNi
+	XYrPBSHr+CwiWmUAbayRxd1rMqP3P1fTDl5O65hszJdwi1iKQ6myUH0U2igUoTF8eZn+8r
+	G1OdblBxDgssdpqEoIOChx+/YLJ7ntbq+IsNh3ReV+JtcimJTFUP2numV2/sYLdIC+zwnD
+	aAZ46jrqFXnXLMoMGXtXmyYgRF8JauAVkMkAXxtjJDC2ZDnhWCO79rWsa0e06A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1792679067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=;
+	b=lrzd8ZGdzEWmJjZ9aZOFY32BVENA3ocTIaS/QQU0/Sv8YYe+ynbKZ/LG3OiCiXRqC6uBBI
+	wYJIr0JLNWZ7aTBw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org,
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Richard Weinberger <richard@nod.at>,
+	Chris Zankel <chris@zankel.net>,
+	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
+ indirection
+Message-ID: <20261022142425.3Wx-RrU5@linutronix.de>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.493733289@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -77,69 +110,127 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Date: Thu, 22 Oct 2026 11:31:03 +0200
-From: "Ard Biesheuvel" <ardb@kernel.org>
-To: "Eric Biggers" <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
-Cc: "Jason A . Donenfeld" <Jason@zx2c4.com>,
- "Herbert Xu" <herbert@gondor.apana.org.au>, linux-mips@vger.kernel.org,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Aaro Koskinen" <aaro.koskinen@iki.fi>, stable@vger.kernel.org
-Message-Id: <40d8586f-6572-4d98-b271-ffef69d8f78b@app.fastmail.com>
-In-Reply-To: <20261022054450.20746-1-ebiggers@kernel.org>
-References: <20261022054450.20746-1-ebiggers@kernel.org>
-Subject: Re: [PATCH] lib/crypto: mips: Disable Octeon SHA code on little-endian kernels
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20260707190254.493733289@kernel.org>
 
+On 2026-07-07 21:07:01 [+0200], Thomas Gleixner wrote:
+> Invoking sys_ni_syscall() from a code path, which already knows that the
+> syscall number is invalid just to assign -ENOSYS to regs->ax is a pointle=
+ss
+> exercise. It's even redundant as the low level entry code already has set
+> regs->ax to -ENOSYS on entry.
+>=20
+> Remove the extra conditionals and the function calls.
 
-On Thu, 22 Oct 2026, at 07:44, Eric Biggers wrote:
-> Kernels built for the MIPS64-based Cavium Octeon SoCs are normally
-> big-endian, but little-endian builds are also supported.  Currently, the
-> SHA-1, SHA-256, and SHA-512 code using the Octeon crypto co-processor is
-> enabled in both builds.
->
-> This code is untestable without the hardware.  However, based on the
-> code itself, it is implausible that it computes hash values correctly in
-> little-endian builds.  Such builds write many incorrect values to COP2:
->
->   - SHA-1 and SHA-256: The 64-bit integer that contains the last two
->     32-bit message words of each block is written to COP2 entirely
->     byte-reflected, due to missing endianness conversion in
->     octeon_sha1_start() and octeon_sha256_start() to compensate for
->     using native 64-bit loads from the message bytes.  This differs from
->     all the earlier message words which are written correctly.
->
->     Furthermore, the state is written to COP2 with each 32-bit word
->     byte-reflected within each 64-bit integer, due to incorrect use of
->     64-bit endianness conversion in write_octeon_64bit_hash_dword() when
->     the state is kept in memory in native-endian 32-bit words.
->
->   - SHA-512: All the 64-bit message words are written to COP2
->     byte-reflected, due to missing endianness conversion in
->     write_octeon_64bit_block_sha512() and octeon_sha512_start().  The
->     SHA-512 state words seem to be written correctly.
->
-> Big-endian kernels aren't affected by these bugs.  These bugs also
-> aren't new; this code has been broken on little-endian ever since it and
-> Octeon little-endian support were first added in v4.1.
->
-> Commit d2a948d2db68 ("MIPS: Octeon: Make octeon-md5 driver
-> endian-agnostic") made the MD5 code work on little-endian kernels by
-> adding 64-bit endianness conversions to the COP2 macros used by MD5
-> (some of which are shared by SHA-1 and SHA-256, despite those algorithms
-> keeping the state words in native-endian instead of MD5's little-endian,
-> causing some of the strange behavior described above).  However, SHA-1,
-> SHA-256, and SHA-512 were never fixed to work on little-endian kernels.
->
-> Therefore, disable the Octeon SHA-1, SHA-256, and SHA-512 code in
-> little-endian kernels.  This causes the generic code that actually
-> computes hash values correctly to be used instead.
->
-> Fixes: 82be2dcfa6a1 ("crypto: octeon - add SHA1 module")
-> Fixes: c3d0def62001 ("crypto: octeon - add SHA256 module")
-> Fixes: fbaa4dfd51a0 ("crypto: octeon - add SHA512 module")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> ---
+Since this patch, tools/testing/selftests/x86/syscall_numbering_64
+throws in this:
+|[RUN]   Running tests under ptrace: modifying the default return
+|[RUN]       Checking system calls with msb =3D 0 (0x0)
+|[RUN]           Checking some common syscalls as 64 bit
+|[OK]                x64 syscall 0:0 returned 0 as expected
+|[OK]                x64 syscall 0:1 returned 0 as expected
+|[RUN]           Checking some 64-bit only syscalls as 64 bit
+|[OK]                x64 syscall 0:19 returned 0 as expected
+|[OK]                x64 syscall 0:20 returned 0 as expected
+|[RUN]           Checking out of range system calls
+|[FAIL]                  x32 syscall 0:-64 returned -9999, but it should ha=
+ve returned -ENOSYS
+=E2=80=A6
+|[FAIL]                  x32 syscall 0:-2 returned -9999, but it should hav=
+e returned -ENOSYS
+|[FAIL]              x32 syscalls 0:-64..-2 had 63 failure
+|[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expect=
+ed
+|[FAIL]                  x64 syscall 0:1073741760 returned -9999, but it sh=
+ould have returned -ENOSYS
+=E2=80=A6
+|[FAIL]                  x64 syscall 0:1073741823 returned -9999, but it sh=
+ould have returned -ENOSYS
+|[FAIL]              x64 syscalls 0:1073741760..1073741823 had 64 failure
+|[FAIL]                  x64 syscall 0:-64 returned -9999, but it should ha=
+ve returned -ENOSYS
+=E2=80=A6
+|[FAIL]                  x64 syscall 0:547 returned -9999, but it should ha=
+ve returned -ENOSYS
+|[FAIL]              x64 syscalls 0:512..547 had 36 failure
+|[RUN]           Checking some common syscalls as x32
+|[OK]                x32 syscall 0:0 returned 0 as expected
+=E2=80=A6
+|[RUN]           Checking out of range system calls
+|[FAIL]                  x32 syscall 1:-64 returned -9999, but it should ha=
+ve returned -ENOSYS
+|[FAIL]              x32 syscalls 1:-64..-2 had 63 failure
+|[OK]                x32 syscall 1:-1 returned MODIFIED_BY_PTRACE as expect=
+ed
+|[FAIL]                  x64 syscall 1:1073741760 returned -9999, but it sh=
+ould have returned -ENOSYS
+=E2=80=A6
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+and so on=E2=80=A6 The test has
+
+| #define MODIFIED_BY_PTRACE      -9999
+
+and the ptracer modifies the return code. However not always. Not sure
+if this was indeed a pointless exercise or not.
+
+The test could be updated via the hunk below in case the new behaviour
+is what is expected. hpa made the extension to the test in commit
+795e2a023b808 ("selftests/x86/syscall: Add tests under ptrace to
+syscall_numbering_64").
+
+diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testin=
+g/selftests/x86/syscall_numbering.c
+index ca0eca7b9dced..1435394fba022 100644
+--- a/tools/testing/selftests/x86/syscall_numbering.c
++++ b/tools/testing/selftests/x86/syscall_numbering.c
+@@ -250,6 +250,7 @@ static bool test_x32(void)
+ static void test_syscalls_common(int msb)
+ {
+ 	enum ptrace_pass pass =3D sh->ptrace_pass;
++	int expected_ret =3D -ENOSYS;
+=20
+ 	run("Checking some common syscalls as 64 bit\n");
+ 	check_zero(msb, SYS_READ);
+@@ -260,18 +261,22 @@ static void test_syscalls_common(int msb)
+ 	check_zero(msb, X64_WRITEV);
+=20
+ 	run("Checking out of range system calls\n");
+-	check_for(msb, -64, -2, -ENOSYS);
+ 	if (pass >=3D PTP_FUZZRET)
+-		check_for(msb, -1, -1, MODIFIED_BY_PTRACE);
+-	else
+-		check_for(msb, -1, -1, -ENOSYS);
+-	check_for(msb, X32_BIT-64, X32_BIT-1, -ENOSYS);
+-	check_for(msb, -64-X32_BIT, -1-X32_BIT, -ENOSYS);
+-	check_for(msb, INT_MAX-64, INT_MAX-1, -ENOSYS);
++		expected_ret =3D MODIFIED_BY_PTRACE;
++	check_for(msb, -64, -2, expected_ret);
++	check_for(msb, -1, -1, expected_ret);
++	check_for(msb, X32_BIT-64, X32_BIT-1, expected_ret);
++	check_for(msb, -64-X32_BIT, -1-X32_BIT, expected_ret);
++	check_for(msb, INT_MAX-64, INT_MAX-1, expected_ret);
+ }
+=20
+ static void test_syscalls_with_x32(int msb)
+ {
++	enum ptrace_pass pass =3D sh->ptrace_pass;
++	int expected_ret =3D -ENOSYS;
++
++	if (pass >=3D PTP_FUZZRET)
++		expected_ret =3D MODIFIED_BY_PTRACE;
+ 	/*
+ 	 * Syscalls 512-547 are "x32" syscalls.  They are
+ 	 * intended to be called with the x32 (0x40000000) bit
+@@ -279,7 +284,7 @@ static void test_syscalls_with_x32(int msb)
+ 	 * nonsense and should not work.
+ 	 */
+ 	run("Checking x32 syscalls as 64 bit\n");
+-	check_for(msb, 512, 547, -ENOSYS);
++	check_for(msb, 512, 547, expected_ret);
+=20
+ 	run("Checking some common syscalls as x32\n");
+ 	check_zero(msb, SYS_READ   | X32_BIT);
+
+Sebastian

@@ -1,47 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792696071;
-	b=SP1QHDp3UlzCeu7N+FHSigmorDGWYfvBE3LSUICLnsNpJQ+qY4fjItnKACjWdgIAZwZx
-	 KO8ITtcJwQungU0IoDB4k8GSayxsFYc0sw2tpukUwy219hM3KiKih3HQDacrKZwF3ZOFC
-	 CJoPN9HQaalxSNH6np0Yt2dRwJd0wufCHCFEV+2VpXgibyBdbYFjhPgsJ1h6ksZsfyyzI
-	 2hz+jn3AkH5TAhwcTRycHw+/Bw3wi1JLNj3VL5kVn+0cnb5MFKuSfO3TbePMSOSWYlAdl
-	 8alo5TmPOzQjkmjSMfK+ojFeGK67RR4tw8FMufMuZoNvlUVUzrkqC0blBMGIo9jLd1w==
+	t=1792696563;
+	b=HfAyZa+alXaQN+LNDIUfFeD++cMlKDv0VoR7Y6nc7yOtsQRUB0Zt92AZ2JPUrLxebeQ4
+	 tfQxwZO8TdK3C7R3tVuyTEmdkghq/MweXyOK1kq9kwpwdTcomaOlskGMylmFpKC3Vck3h
+	 z7VtBm4AzcI3ETrdeVk45lCqc78yAgJwsKB12vpyB4oipuOetEw7UPUveuJVnp0nYwvqY
+	 pn6iflOxu9mOkNlbT8npwKzGhI7lsQ3FL6LuaYicgIC8uZdFZ2krzZ1i522d5hDkalPfs
+	 ezoxAUE7hOVhKWgLkh7SFFZt+ZRDWvpnp4YHvmoNbg7cihyg3H6JSSzgNMoCPLnmggQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792696071;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=3ljvcb14XNhLnHcOmJEx73K2+x2OStvM/Cj3DPoChpc=;
-	b=PaDhStsi62lnW7W6DZYdTod1U+Q70HT5rgGm5ZoogRUqhhXKmmGa5wqSYAjo+ipCztuR
-	 LR2ilK3pIw/5lXZfXAc4mISE9+vPj6O3cpxrR7uwOBYhnl2euOfhtcgV4yHXLR+DnLZOy
-	 sLv2T/kdVwS6ChFpWnf8rAXUZ1qh/iBsSDuHsMQuG2tR6KDOAKbW1QajjXnBJAAs4d0+G
-	 7kv/0iHvRFE9Yw9XfoJAASH5immbvA+e1189ZqO+tOdv4dYriEJJ12Seff8gTfolPbuq6
-	 J0qBbWkxtiHxuspKp4I/Saj3JxFN+bEnpJ4ErOFx1biJhZMF49bwBb4ZTWjxKmTLFvw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792696563;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
+	 Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=zfF/h5yN+JN0JXoERjM1UOmD6YL51qlegqbjQ5IjJaw=;
+	b=yisF+d1m+E7vIaljbDjCjb0bCmnmDMdBaP77FAtYOJI5F4AW59kGTAfzdgUZyttgnngP
+	 UWsXOnMn1hev1UdKAVdfYsp2V81KRKVqzJA363Aaa0jZggJynSp8bEijV3RulrzC6Gcr5
+	 MtObWINWwc2qwa83rAWXzqmjoa/BGUDrRQkqrAzaGdAjz5bfefKxm80EUOixHrWqHVakj
+	 9fwoj+5ad03k1egP2xLmuS5Hab+GF6cXb85K4fi4QBGYltjTTmkDEZboU1b7YZnMAaWjY
+	 H38MR8iPMSHWjiptHGGp3k2YRVghrQBzRPbNVqTh/rMpoB+DwBTJ4zaJjAdZ6KNMSKQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDB9606A31B;
-	Thu, 22 Oct 2026 19:07:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BBDB9606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id B9A2692009E; Thu, 22 Oct 2026 21:07:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id B362F92009C;
-	Thu, 22 Oct 2026 20:07:47 +0100 (BST)
-Date: Thu, 22 Oct 2026 20:07:47 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Imre Kaloz <kaloz@kernel.org>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SGI-IP27: Install the cache error vector on every
- CPU
-In-Reply-To: <20261021190253.30128-1-kaloz@kernel.org>
-Message-ID: <alpine.DEB.2.21.2610221953220.22065@angie.orcam.me.uk>
-References: <20261021190253.30128-1-kaloz@kernel.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N5BvSZtD;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C86606A31A;
+	Thu, 22 Oct 2026 19:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N5BvSZtD
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CE1F1F01825;
+	Thu, 22 Oct 2026 19:16:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792696563;
+	bh=zfF/h5yN+JN0JXoERjM1UOmD6YL51qlegqbjQ5IjJaw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=N5BvSZtDsOnevI6N7z+hpnuDFwgb+Za20bBfcyPl1zdZ/RUM/vhVGgooCl8EukmyB
+	 v951DfxEQIGKmPlqDa47vEV9oOJpjd3jTdFHzFJ8cGbv5Ec+77S428dvBazQLk752d
+	 8oijRTx04uvdE5t0WJ3hFRzAydPhPUU1uC5jEb9/jBb3UCG/5+2vXEPMQ0qv3aaJy/
+	 fDrmEd5ydsQk2Juig/QI4K6qM7Xm060UN2bTZPYYJFIjTdDkBvnz/aEeUGpDN6dDMG
+	 QYnQUY/lk7t3H2ZOK5q9Ex67PolYwOb50JpOTpWf5Zn6NIH8OuYBLaiHmJRlGX+jMg
+	 L4eC2BtuFHQ4g==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
+ Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
+ <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
+ Henderson <richard.henderson@linaro.org>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
+ Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
+ <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
+ <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
+ <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
+ <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>
+Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
+ indirection
+In-Reply-To: <20261022142425.3Wx-RrU5@linutronix.de>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.493733289@kernel.org>
+ <20261022142425.3Wx-RrU5@linutronix.de>
+Date: Thu, 22 Oct 2026 21:15:59 +0200
+Message-ID: <87fqxx1r80.ffs@fw13>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -51,36 +87,68 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 21 Oct 2026, Imre Kaloz wrote:
+On Thu, Oct 22 2026 at 16:24, Sebastian Andrzej Siewior wrote:
+> On 2026-07-07 21:07:01 [+0200], Thomas Gleixner wrote:
+>> Invoking sys_ni_syscall() from a code path, which already knows that the
+>> syscall number is invalid just to assign -ENOSYS to regs->ax is a pointl=
+ess
+>> exercise. It's even redundant as the low level entry code already has set
+>> regs->ax to -ENOSYS on entry.
+>>=20
+>> Remove the extra conditionals and the function calls.
+>
+> Since this patch, tools/testing/selftests/x86/syscall_numbering_64
+> throws in this:
+> |[RUN]   Running tests under ptrace: modifying the default return
+> |[RUN]       Checking system calls with msb =3D 0 (0x0)
+> |[RUN]           Checking some common syscalls as 64 bit
+> |[OK]                x64 syscall 0:0 returned 0 as expected
+> |[OK]                x64 syscall 0:1 returned 0 as expected
+> |[RUN]           Checking some 64-bit only syscalls as 64 bit
+> |[OK]                x64 syscall 0:19 returned 0 as expected
+> |[OK]                x64 syscall 0:20 returned 0 as expected
+> |[RUN]           Checking out of range system calls
+> |[FAIL]                  x32 syscall 0:-64 returned -9999, but it should =
+have returned -ENOSYS
+> =E2=80=A6
+> |[FAIL]                  x32 syscall 0:-2 returned -9999, but it should h=
+ave returned -ENOSYS
+> |[FAIL]              x32 syscalls 0:-64..-2 had 63 failure
+> |[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expe=
+cted
+> |[FAIL]                  x64 syscall 0:1073741760 returned -9999, but it =
+should have returned -ENOSYS
+> =E2=80=A6
+> |[FAIL]                  x64 syscall 0:1073741823 returned -9999, but it =
+should have returned -ENOSYS
+> |[FAIL]              x64 syscalls 0:1073741760..1073741823 had 64 failure
+> |[FAIL]                  x64 syscall 0:-64 returned -9999, but it should =
+have returned -ENOSYS
+> =E2=80=A6
+> |[FAIL]                  x64 syscall 0:547 returned -9999, but it should =
+have returned -ENOSYS
+> |[FAIL]              x64 syscalls 0:512..547 had 36 failure
+> |[RUN]           Checking some common syscalls as x32
+> |[OK]                x32 syscall 0:0 returned 0 as expected
+> =E2=80=A6
+> |[RUN]           Checking out of range system calls
+> |[FAIL]                  x32 syscall 1:-64 returned -9999, but it should =
+have returned -ENOSYS
+> |[FAIL]              x32 syscalls 1:-64..-2 had 63 failure
+> |[OK]                x32 syscall 1:-1 returned MODIFIED_BY_PTRACE as expe=
+cted
+> |[FAIL]                  x64 syscall 1:1073741760 returned -9999, but it =
+should have returned -ENOSYS
+> =E2=80=A6
+>
+> and so on=E2=80=A6 The test has
+>
+> | #define MODIFIED_BY_PTRACE      -9999
+>
+> and the ptracer modifies the return code. However not always. Not sure
+> if this was indeed a pointless exercise or not.
 
-> diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-> index 62733e049570..0fef66b86959 100644
-> --- a/arch/mips/sgi-ip27/ip27-smp.c
-> +++ b/arch/mips/sgi-ip27/ip27-smp.c
-> @@ -133,6 +135,18 @@ static void ip27_init_cpu(void)
->  	per_cpu_init();
->  }
->  
-> +static void ip27_init_secondary(void)
-> +{
-> +	/*
-> +	 * The hub flips the low 128K of the attribute 0 uncached alias per
-> +	 * CPU slice and the cache error vector is fetched through that alias,
-> +	 * so the copy trap_init() made through TO_UNCAC() only serves slice 0.
-> +	 */
-> +	memcpy((void *)CKSEG1ADDR(0x100), (void *)TO_UNCAC(0x100), 0x80);
-
- This just copies instructions between the same physical memory locations, 
-from an XKPHYS mapping to its corresponding KSEG1 mapping, i.e. the bus 
-addresses are the same, so please give a more elaborate explanation how 
-this is supposed to work.  I guess I'm just missing something, but that 
-has to be obvious from the contribution itself, also for other people that 
-may come across this change in the repo in the future.
-
- Also, please don't cc stable with submissions targeting mainline, fixes 
-will be picked up for backporting based on the Cc: tag in the commit 
-description.
-
-  Maciej
+Hrmm. That's weird. Let me have a look.

@@ -1,85 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.48
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792765465;
-	b=h5Xf2Cl+pRGtPtBAj5JBEs/h/JvvUUbi76++5mfyI14hQ71DQ8I8SnNpYSsxHQX8zkgf
-	 uMXhawSeD+jw5KTdxKtANSwl/dY9f6h7amuhjD4rGY3PYkoDEM7y9VWy1bMI1I3CGcnt6
-	 AlIrEyT0ERwMyXxRRi7unUejL1yGtuW9OtxcaksNQIJSq3kPCkje/c92RRWLz9X/03TKa
-	 t+CqQnsUuQI9RyM4wrlikqtOqKK8ueb1km3Lnhr1uMztNc+g3nqEKovtOaBxKpob4w/Ur
-	 zQkrFxPxedQfTiZnxe83KhxEeaCJGiwBP8UD4vCinhF9CJ7nhyeFkVZE7VQNgW0rPGg==
+	t=1792768815;
+	b=ECQNjqely3i38JdBKj3396HAjoeyHqxCnIhR/+nx44OPODGrVEbNi3jhyA7WOK7elGC5
+	 t4US5m7ReTy21hqX/hcLqP2rH0fKd81bCJq6MeGH7r4s6oHOwCgIM30YsKr66VstYx/Vy
+	 RKquakS7MOUPlEvsh6YYn6RfQYGZzdnD0eYQsgB7blD7xt28ua6yqP0ljHMk9YPFTdbTa
+	 cMHUdNsGjlaXR7kjVaa3FZhkgdQxhkW/Tef2jE1bzxBZL1dfK4kUgFyCcGrAXmB7mRSnu
+	 Xhg3LXumr7z9CBN0D+OQUhK7Wykb0u2QWuPufT4UGyW8YDIFOKHZEH23O0R71lpxRpQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792765465;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
-	 Date:Message-ID:MIME-Version:Content-Type;
-	bh=5dVR3TN7s3BdKhx2Ut/LouYZioYZObIc2PPzWKi4iy0=;
-	b=IVzLLUvgti0enXxjDX4CLenjk8H6H8by6pynvCIB5QwXXRaAA6Zot2Bw0K7kKeTxRktJ
-	 kF4B5r5gwJOmDaxnooT0IgGcpyB6s0BuUkbK10HfJF0KJy+qIOMIchqo3ZCAzpxM3RNqq
-	 PHSnq3Oj1Vnif2TvIznLVjQ4Ie7mMbIgrQ7d75Wn1JZ66WLRkwFKUnMYtNYSXiCvEt583
-	 XHnpdrXSW2dSxGnVR27AI+BrDU1AJwKeCmCN+YtW4NZ22cmEsXveVIZYdV9Ol/VmZRxvK
-	 iwOUhnHkWXA2llKRgSVwLXsxmZrKAsXhAc5G0fXvnV6QHJiCKiplgVc9oPoIWfud4gA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792768815;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=MJuZYhGzc9bJ2iUoM+nb3+fAyF+q3KvA6Y/qH0NIzKI=;
+	b=GtuL4i27JoLlUYuxRaMMfnL5FVDIvpf/UqaDcCi7vDE8/hVyMbKPTV2ReSBE6Jdq+///
+	 wR8n/9xsLNyqBJmp3qf2InPaOjjgu5ZmWZ4ggpBWgwDeKZAKUOee8k8NfZOGcVqx01Idl
+	 7sR9sIb9Eb9noDz9WZd923Oy3UT6oCkE2NV85vXOMX1ppnErOJhEjJKF26J34AZl//qE5
+	 IPOvmop577SB/FdoIna3MZ07nq1hu20ShuMh0M9ZEr7Ji02Cjo6RWGmJm8R8va/FR74U5
+	 hT/vfZkHjSvNPLu4lBM8gLkRCxglbE8vQVXPCp2Ye5JrOb37V1LRzDHeAYbYcXg6HeA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QGNPKBGI;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=fail header.from=mgcrea.io;
+	spf=pass smtp.mailfrom=mg-crea.com;
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=jdhlR+lA;
+	arc=none smtp.remote-ip=209.85.128.48
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573FA606A31A;
-	Fri, 23 Oct 2026 14:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080F2606A31D
+	for <linux-mips@vger.kernel.org>; Fri, 23 Oct 2026 15:20:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 080F2606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QGNPKBGI
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B0661F01825;
-	Fri, 23 Oct 2026 14:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792765465;
-	bh=5dVR3TN7s3BdKhx2Ut/LouYZioYZObIc2PPzWKi4iy0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=QGNPKBGIM2nRqkKIph4PyfYBLDWc+lEnWMiWgVtxwooARZZ9SksPaTdnwkXyuu1hL
-	 nk1UY5lGPBZ7kPogJATkcg91O10/O55644Zn6yf5rahNDQfePsiARGjnGgHZ/RRNvM
-	 v2USrBHYe7FDy0YLLvQD6DXcJ/ItGULufyA+LwI+iOZPVLkyOrC+syuFQm9J2T/eLf
-	 4v3jT2c7tUqv4XJJd9a/ogzIpSbdMeU3iXMmcWRG3nOZGarZFTww/6QGrIblnPKTZ1
-	 ikA1j2sJ/lw2/ZIqvDAR0r9qjofZYtRynG/e/2di/XcOimoeGFqQqzI0vjpx4iDGhR
-	 hMbtJWz0jUwQw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
- indirection
-In-Reply-To: <871p9g1s3w.ffs@fw13>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
- <871p9g1s3w.ffs@fw13>
-Date: Fri, 23 Oct 2026 16:24:22 +0200
-Message-ID: <87y0boze95.ffs@fw13>
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=jdhlR+lA
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4a20b122af8so8944915e9.0
+        for <linux-mips@vger.kernel.org>; Fri, 23 Oct 2026 08:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792768813; x=1793373613; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=MJuZYhGzc9bJ2iUoM+nb3+fAyF+q3KvA6Y/qH0NIzKI=;
+        b=jdhlR+lAO7IDozcJvsMqFxmnm5Kt2++1YaEJ8/YCU2ez/29XM72x5C+baH4L4ooaWc
+         g9In6dGBnUFVkSvPwnJMyPuzEL8ZtoF5x6Njczf+b/EUnrjpV1Q/140BEchX45FuK5ed
+         188b9CMM6T4Q3sv+XwUYm41vij4jDLKv8kqCqQTdQwvJ5EJvbpyrdXMp1g2DddzRpaB8
+         cjqqe6Shxaag/YOpkdekQ+QU+7yEKkbC+6qhoIhjMNOu26Yz0GVDxLqyOZZUnjZCpbJ+
+         NKJQUsPiMKBGtXD4CYveFWD88fiEKHzoqgMmqm6O/rkA1OU3QF1F4egrAPeXgHlcGBtn
+         MOPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792768813; x=1793373613;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=MJuZYhGzc9bJ2iUoM+nb3+fAyF+q3KvA6Y/qH0NIzKI=;
+        b=Exypt+T5cimBpND9/ni+pEJrzx6GEipebkYLObV99/6JfVY88YXumuahLsf7Ms/0l0
+         cfCbuYw9JHgrO/I6kkodLzmMPWYQy7kNh7zKqRZC5dA8vmv5/P6KGD/V0dr4tV55jArk
+         H43NAZH162Ts81V85iAyM9xn/Paf4P4fWspnaTNPWLeNDazfO6a2OAfKUzjktu/5U26d
+         reIJ1cwMU+atZCTLyA04zU4GlFq1dOKUWlq5Thd0Puu/Q9WSBCMrnMYAqq1o266rMCde
+         +l4iLSueyUAQDAFxC1kPm51JoVLfPHxVSsS4bCLMoYMIqJTqw3g7hcMB4u1zIZkxulLS
+         qlzw==
+X-Forwarded-Encrypted: i=1; AKwUvByv8eZXi+MLmZrV3n//ZXA6SDtu7QGVH67hhnp6kmfQTueqqYhMXwKXJBBkQFRXmFxyyWhYhRrBzF86@vger.kernel.org
+X-Gm-Message-State: AFq9FYIK4d2bzmA5mdoVLOVBZ6vjA0TauKkT6pd9eErsFBfuaSxz7nY6
+	mY6HABt/Kd+Ss6zVK6Tijo/hH2EVowSd7WP7XnfCXasfVwmq/r+vwbcnOndqohs4ISM=
+X-Gm-Gg: AYBFou1Rccpmoi2xOvMN7DZ1gjlnEHyMQaf4lOPdv0omvKanOebCHX2QalqP4ICFEG+
+	SUdDmZ7TNpZ5Y/uoi7Btnm2HTRuROPsL9tjrdunaE3ZgG8it7Ea4PGk+Q6cNGP6SKjVJptb/OYA
+	+rVFnpIX28HsNazbokWDQyNO2/rENsO2upQPHbCQsNiorvoEUaak0sqNey5EEI4YsFAT/Nbigsr
+	YJd35ED9wBhzVJ4/YcvV/gkd1Vh6g+ecH/3lrlhdcleKyuZiM0aU1ic7xNjFEL8VEWJEChhPl5k
+	RTDiSgOYRl8nvn9ExsQ4Gq3ggaYlnqw7ACCQDz1rmi979a/Z26T+sTR6YvooWLcHAA2OXNIBBew
+	+W5L1yDkGwwGnJBkFHd5qWtsW9QRdEX/26Bu5q2SVzl545EIXVbndKh+YwTv9u4FUPuiP9rc1FR
+	ev9O2TwQ6r3ntw+cZ2iei4uSz2yZCwgwoPCUSdxNwzcnQBVbX+nWiiz1Zll/M+wnfV82rhR3hND
+	/4kzptRkM1AYY2ApQf0Lzlpo48ULOi9GkRZi0/E4JjtOSHNjOPhtWkFIRDuAuJ2pHTO5Rdo3jwB
+	E81oBTyUzzs=
+X-Received: by 2002:a05:600c:8b41:b0:4a1:e9c2:6c84 with SMTP id 5b1f17b1804b1-4a211efe1f2mr42623705e9.18.1792768813197;
+        Fri, 23 Oct 2026 08:20:13 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:9c3:9990:89bb:701c:1852:56c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a2a9062d50sm11683025e9.2.2026.10.23.08.20.12
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 23 Oct 2026 08:20:12 -0700 (PDT)
+From: Olivier Louvignes <olivier@mgcrea.io>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Olivier Louvignes <olivier@mgcrea.io>
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: ingenic,aic: Add the X1600
+Date: Fri, 23 Oct 2026 17:20:10 +0200
+Message-ID: <20261023152011.85407-1-olivier@mgcrea.io>
+X-Mailer: git-send-email 2.54.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -89,55 +101,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 23 2026 at 15:09, Thomas Gleixner wrote:
-> On Thu, Oct 22 2026 at 17:22, H. Peter Anvin wrote:
-> Tired brain misread the test output:
->
-> [RUN]   Running tests under ptrace: modifying the default return
-> [RUN]       Checking system calls with msb = 0 (0x0)
-> [OK]                x32 syscalls 0:-64..-2 returned -ENOSYS as expected
-> [OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expected
-> [OK]                x64 syscalls 0:-64..-1 returned -ENOSYS as expected
->
-> But that's because the "-1" on x32 is actually 0xFFFFFFFF while on x64
-> it's 0x7FFFFFFF.
->
-> The whole mess comes from using -1 as indicator for syscall abort which
-> is undistinguishable from a syscall(nr=-1).
->
-> Bah. Let me restore this nonsense.
+The X1600's AIC is the X1000's, but its bit clock divider register
+differs (see the next patch). Give it its own compatible, with no
+fallback.
 
-The real question is how we ended up there. By design or as an
-implementation detail which got later set in stone and the selftest was
-written to test the implementation instead of testing against a
-specification.
+Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+---
+Changes in v2: none, resent with 2/2.
 
-I went back in history and in 2.6.12 the behavior was for both i386 and
-x86_64:
+ Documentation/devicetree/bindings/sound/ingenic,aic.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-  regs->ax = -ENOSYS;
-  syscall_trace_enter();
-  if (syscall_nr < MAX)
-  	do_syscall();
-  ....
+diff --git a/Documentation/devicetree/bindings/sound/ingenic,aic.yaml b/Documentation/devicetree/bindings/sound/ingenic,aic.yaml
+index d15c000f14e1..9ca75fb80f45 100644
+--- a/Documentation/devicetree/bindings/sound/ingenic,aic.yaml
++++ b/Documentation/devicetree/bindings/sound/ingenic,aic.yaml
+@@ -24,6 +24,7 @@ properties:
+           - ingenic,jz4770-i2s
+           - ingenic,jz4780-i2s
+           - ingenic,x1000-i2s
++          - ingenic,x1600-i2s
+       - items:
+           - const: ingenic,jz4725b-i2s
+           - const: ingenic,jz4740-i2s
 
-IOW, a tracer modification of regs->ax is not overwritten when the
-syscall number is out of range.
-
-Between 2.6.19-rc2 and -rc3 x86_64 was changed to _always_ overwrite
-regs->ax when the syscall number is out of range.
-
-In the 3.8 merge window seccomp introduced the -1 == skip bogosity which
-got fixed up and made "consistent" in several changes afterwards. Just
-that it never reached a state of consistency due to the overloading.
-
-So are we stuck with this behavior or do we sit down and define what the
-correct behavior should be?
-
-Thanks,
-
-        tglx
-
+base-commit: 734bef548a96e8774d6eef5dfa2026c6edc4e80b
+-- 
+2.39.5
 

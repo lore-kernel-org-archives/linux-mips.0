@@ -1,99 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792877130;
-	b=G57yPCON0zzFouY9EGDVfjft1QUQL0Dc1G1v4chBuDHdCSO5jF5CdOConNLmvoLyfUD4
-	 g20ZR1i/+JyAIXTl4cGoQlESuMRTX300R5jj7rPxqVNE+dDCfl7FEKz9ze+JKpmUyb3qw
-	 RtcUMwWf0xXIkDbH4wnhGCXUCu7w/C0TWf6V3AZLhM0DCnQx114MnZmsKtj5UyvCQicFs
-	 CpikRCMJF8db4wwWx8RVkLflRe59TAsBlDWvPvqUG6EY3Tr4bo3oFQfFOSRORSeARejXV
-	 sX30d1T1XohqzbSvP0t50eQ98FAkOMuRJvo8h/rwnMbeb44MdgWBNyzKTRHDxM4ee+w==
+	t=1792877616;
+	b=OoPh+I83WrkPOdNtmOXHFbDuH9bupiO6+y9079zcwP6itDpwOMNQQ5cbHyCViwuwY0UU
+	 BSxAUs9TH+2aT+7ZwtSE4bGc5xX4JDlf2wrmQpZyWwXu1Q1SntmseSSjXH17N9KqVYzRE
+	 e4/QfYxIh7w0/PIR3WHSVKTcc5o2uepInBhRVZ/YLij2D6KNrWqD9AfruC48OzMSHhBhN
+	 aS8vKdHBsna/HiTtYMRb6tJcjeoCQyfR/yYjUUl+471Xgg2MtgmbhP4Ha3lj7ESkrX72z
+	 2iXOOW9zioj8C1e/hX9n/ydouVYEoF8Qc9g4RHy+THgKudLtY0a+CtD9pvl6I3ShApA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792877130;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792877616;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=RB/QFiAwZFPgogQWGkL0l25DXALwqoy/QmskzaMu3fY=;
-	b=Of8MNZ1WiGA4cwh5ep4gNhroINoOiuvZAv39E7YIkAZKBqZwx3Dh6xf6LVKHouOKlOID
-	 xjPLFi3YJQAGBGkdXVaBBG/Or4ZxR8DzdKswMSKSoBRXG6SmNFWLBlrBz8GppPYFjHAvl
-	 nWinkDq+KbjwEam/LIxAhI20tRJ+suaaZSpFLVvzgs/hlRZQM6hPk5bcvG6Baf2ySfYgO
-	 uvIVJbDzc3oXMIHCXXuR7c7fnzz4Ycv8s1MhNaJFSOHC6t9naHL6AsEHkfCxNRcj0oCjy
-	 BLhGoDWztfuD/bqDXzRXnaIESKIeRj8uU/2600LUT1C3YNcT+e9yvGjdISeWBTFF4Rw==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=0KswdmbKVSA5fjmS6TP3KWbeGyCgT1MgBNiKyDDfZYs=;
+	b=EW9BMYWjGBbD6cP9racMOyQeJB6zrsIIt3n4/H1ejTXeq0QPHc5woUODgVA2hxxTGLEU
+	 PO0WysM3ga5v8jWF9SnbszGeX/i/lIBBO/Ayp6S5N6zq2QRB0nRPaLIdX6nuiXc9AArgE
+	 OQo+arAFsiyEvTOeo97Df837V9NA1eRvgsGHXePLOT9eJ/OJsLPyoJo565CbK5GbTilIs
+	 CM6sQtp9pAb2oILpag/81awCBqfQtwxACBeUd8u7LzPqGpxE3u1SS83fAj0D+GqRmvb0C
+	 TKF6lszZ0T8iqtXRPpB4dfHmJiuHM1hrDVyI6ZO0Ahz1kUpUr9rFDYbTRiIjsQFY7EA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=Zvgo6i15;
-	arc=none smtp.remote-ip=209.85.128.42
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=zCt4oLyI;
+	arc=none smtp.remote-ip=209.85.128.53
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279C2606A31A
-	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 21:25:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 279C2606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C996C606A31D
+	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 21:33:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C996C606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=Zvgo6i15
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4a214af2076so12101145e9.0
-        for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 14:25:23 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=zCt4oLyI
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a20bdaf39cso19726995e9.1
+        for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 14:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792877122; x=1793481922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=RB/QFiAwZFPgogQWGkL0l25DXALwqoy/QmskzaMu3fY=;
-        b=Zvgo6i1589cIQqIk1mSPjEk9cn89c4NbZ3U8EmUe7UMtPnDkn/IB4x3IlE//XsR47q
-         A4Hp6Q9geaXji2lWuUS9eTVjtUaIk3AhPl3Glx0wam7vcVdRlXHKtxXN0XBbN9n626ei
-         4BMSKivumEOIVuu6PP/FPuIiRnIdNkTICg/UUDy/VfBbO3PcBoU9EYnl0SstdOvb7G+a
-         2HXT/DHEIdOXMBS2IGxrXwDEQSUFnyu01doDpIiKZprnEr/DlR38bfGr7s/ymjXs8oo0
-         L4ofMdhONoeyLzNJps+vsNDHggxQp7T1TGQdgB3TdfHgMNe8g0okSwHbjlehL4KmGEpz
-         RhiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792877122; x=1793481922;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792877614; x=1793482414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=RB/QFiAwZFPgogQWGkL0l25DXALwqoy/QmskzaMu3fY=;
-        b=NB/EbMUX8nyrvZo34ggMyj1HK5CBGciTRo4X8sB7y9djG74vVvmh3+L5qCK2yD1711
-         BFXfICokseneeFUIMyiKqP2aIX1CSD4Sa5CJtmYZKX5a/USgZwF4fDjOiGzmOxhXcwsI
-         q7BO/swqek9DF/NC9bADh1w+/d+ENebDjXf0czlOcpCOW+pueqls1ShHwMMJGzc7NPyN
-         g6/vTJ2Ti7+2l4o8qVhUiCNlbpSRpssPIFf5AulYNdJ8d6nGRhi9YX2nLAe11xadUL9k
-         yyv97HP3PdcleXD3YSO1CKXoWovbnxwaG0pWcbBxrUgaLDI1bCGOLAbaIWj8NFcZTFXv
-         TaeQ==
-X-Forwarded-Encrypted: i=1; AKwUvByUaErwI4i+hVyt7pa9T60Xoh1GShDzdx3fEfBUMnQsJjAaSrAZtV62gAVJO1dIjQ9XvNeyHS17tXKX@vger.kernel.org
-X-Gm-Message-State: AFq9FYIfjmGLF1yjAWYjzKIFYN57qNZQVI9VaHwwrFLUuj6dRQsSA9BN
-	HpA1Te72FzTXugTzcba0kSECDAAITw/wWfJxsKWtk32vrd8K8m+upRYd4UzdOE+LuoE=
-X-Gm-Gg: AYBFou0zQr8wlHz5TvnN/Ra9aOVZNr2u5kLGOluP2xpiGQb9dxTG3X7CFokKo5fuIO9
-	N/Y9THA6+x+u6VRSLf9vDAos/X57uChKP9cVGJs/S/11T6OmFNgJG4lIyTGhCxKhpRdwvQVti3K
-	qfag+M4gtfPwlMGQF3iTWankadGP+Rc13USJFunktaLkDMDeK1vtCt8SBMJ9WL2QBlES1vrk0LC
-	UCxWzD5DxBnLAOjiRPdZNhn9t4ExtH3WqR+gK9ol2nq1yTTK1Fedaoo9rpB/5VgyfGXG4t/gBIj
-	snIhc9v32qidvnJOiv4bA/yY1AaAz9Pfrq9NWWzEF0HWbMG8h+TFzMGLfVh0scJY2LwMiIY/FyR
-	hwUMj5hQ7Fd5rFIobjyT8+codOjeX3Zp4pGKFO8JusLD+aJVezaojOQ4NNF/sp8dfzAszaNsqGl
-	ciivoRYawX2pQgxjyNe2BcRmEUiyTUYNbxAmaxMdPynIB7yNvP7hgql18hoUEp1qmy+1xWml+8K
-	UfDCF+Z8apyCCl2+hxOydimrsccxSrmDGUBsFJccHwasxfM33LmiY8XbZgfj6WMCgaYsdEQ5zdv
-	Ghgh8ecbwKi8JSUVXQkr/kciQdStpI7P6Dui1YnfGO1BmMe4nsAsQfGdUYFxgHC2ds0VsMvKNA=
+        bh=0KswdmbKVSA5fjmS6TP3KWbeGyCgT1MgBNiKyDDfZYs=;
+        b=zCt4oLyIkkf1CqfeSXRB2mIw1vUURk2wMEQclBWujMGgge8xHAnWmq7H82vRauzL7y
+         FAoerBqlzYJKFOkvh9Ejj4giXXpdZn4i7Ev5wI7xnyezfGiOdsRZ+AAGQdEc8q9gaayV
+         k/cfAIp+VhKqscjhPf1Xn9g8odsIFHNKPHpCp6MFFGxo3Sip4v83pVWapXmdfIB2/ylu
+         456rlPZwb6DVAzRr26myyhB6+uPJOEain+cKR9mpOXVbs9jeMyzm3hcJcoEPX8+82wSj
+         k7H6pHmaYuMEbsDBCg5iqIEjpGworu3hpgfFHyvjNCu7joTAVwDp60xcOn8lZQvLwcby
+         P5aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792877614; x=1793482414;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=0KswdmbKVSA5fjmS6TP3KWbeGyCgT1MgBNiKyDDfZYs=;
+        b=POe2K0FfOBobLTtopfOwT9M5KuAS5XuAYVW/Os5TUgXtMzGsCHWfFGBL7BTZZEudBt
+         Fq36w/YCnzXJZpaG4iU6elNBZh49sWJ3R+0zMW9qb/KJfx2RM7Ve+H+3NdKxAnEsJp2y
+         Zh67EYmRyobUaDW/ZnT5OIEUVQ2t8zssWZ1/Vk8FBcj+UrF0lAid8Y6un/QbNz1HIdZA
+         1hsrtO7MfVYewPccibrclkWWKK89qNVv1djk2jS9Dqj1FUYPWBEdUo9CAPmc52v4uoRJ
+         1yJnCCXBlbJZFWeHxka+xLCKY7A/07vdfmTF298hiSLwgFoMy0+kWBLQ4R608pbXPLQN
+         V1sQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwBYlmPgwSUbWmXHV/NrM9z7JvxYCSELbHp9PSin0D4zSlhaEgzw7JtxbFI7l61PcnlY4IFVj+RYOKd@vger.kernel.org
+X-Gm-Message-State: AFq9FYLSatYKsi+G5XzfJI/4984jOWxDNqBMd2yjSCa6BhZGXxhaVPNA
+	xYT1pm8ydhZiFObaiVMfuCgfWRad0bFv+XcHzAQ1EtUa2dYFxTqwSAcZkIjSQUOM1kY=
+X-Gm-Gg: AYBFou2TJzlMcRHW+MhUoIqg2610TiWKN10U10jKkqvjMvN3xk0McOD2sAqIpPKpS4V
+	88wJYBBeSGLICMYYPt/SoKQ8N/NBkdfDmRwnvAm0QIWTxFuBvcOq4sZl5v48ljijNpTDIIk/SRA
+	60ugbkGJWwesanG8R1buMahd+yu5he0TBcnwaUfyT4KeLx5wC9EnU/P6SLq15XXyAc8TqeKPpvp
+	EgBGj2LNe1gCOETkbxSglh7FaluhhxG9CuEYaStMptKp29uYiFc+9nZROHb4aqSy2X1CXli3Ovm
+	fv62fJHeisQJoghdAZ71Tnm3hUF1Q+vFfNxOChTQQjfVNOw0w5pLhNFDDfWYoLug6bYkHrNAfDa
+	lE5LWYQDrCzstUY18utDMSyieVznEwLF6QLH+GhWVp8K0oMzNkHw2ZWVTFD/Du7ncPdhbxgnS1x
+	MnJYRtzWvNQz3sqWlEPZEmPcdPO4CMK6H/sDVoLobFbf15cdAS46yZxgcSiovkcuaXArqiT/duY
+	tbnagFlM2JhQRbMcDU1yMaUp2ByjBuk4cqh7zQzneEhzU3lGufqPcpthLq95iNiZbNrewIHjmie
+	PVzbf0lDJKzxoFIzwETPi0h2aCATcphUG2kogYlpmgJUlHuGCc4kZzlf8bAFQdvPH1kG37yUgqw
 	=
-X-Received: by 2002:a05:600c:6289:b0:49e:7c8c:361d with SMTP id 5b1f17b1804b1-4a35ac9f52cmr43172355e9.22.1792877122133;
-        Sat, 24 Oct 2026 14:25:22 -0700 (PDT)
+X-Received: by 2002:a05:600c:3b93:b0:4a2:397:73fd with SMTP id 5b1f17b1804b1-4a35ac96004mr48075955e9.12.1792877614164;
+        Sat, 24 Oct 2026 14:33:34 -0700 (PDT)
 Received: from localhost.localdomain (2a01cb060184ad00bcfbae5efa3e0f0b.ipv6.abo.wanadoo.fr. [2a01:cb06:184:ad00:bcfb:ae5e:fa3e:f0b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a2ed5a2sm79597135e9.15.2026.10.24.14.25.21
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a0bdd59sm50531495e9.4.2026.10.24.14.33.33
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Oct 2026 14:25:21 -0700 (PDT)
+        Sat, 24 Oct 2026 14:33:33 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Paul Cercueil <paul@crapouillou.net>,
+To: "H . Nikolaus Schaller" <hns@goldelico.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
 	linux-i2c@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v2 0/2] i2c: jz4780: Program the spike filter, add the X1600
-Date: Sat, 24 Oct 2026 23:25:18 +0200
-Message-ID: <20261024212520.91401-1-olivier@mgcrea.io>
+	Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+	Paul Boddie <paul@boddie.org.uk>,
+	Andreas Kemnade <akemnade@kernel.org>
+Subject: Re: [PATCH 2/2] i2c: jz4780: Add support for the X1600
+Date: Sat, 24 Oct 2026 23:33:33 +0200
+Message-ID: <20261024213333.51569-1-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <465127C9-AE28-4F01-8721-8D819258D45C@goldelico.com>
+References: <20261023081452.44118-1-olivier@mgcrea.io> <20261023081452.44118-2-olivier@mgcrea.io> <465127C9-AE28-4F01-8721-8D819258D45C@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -105,41 +109,38 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v1 said the X1600 moved the SDA set-up register from 0x94 to 0xa0. It
-didn't: as Nikolaus pointed out from the programming manuals, SDASU is
-at 0x94 on the X1000, X1830 and X1600 alike, and 0xa0 is the spike
-suppression length. v1 worked by accident, by writing the set-up value
-into the spike filter.
+Hi Nikolaus,
 
-What was wrong on the HiBy R1: started from the vendor kernel, the
-filter held 116 APB cycles, longer than SCL's high period at 400 kHz
-(102 cycles at 140 MHz), and every transfer lost arbitration. Setting
-the filter by hand before single reads, transfers work from 1 to 100
-cycles and fail from 110 up, whatever SDASU holds (1 to 100 tried). A
-cold boot leaves it at its reset value of 1 and works.
+On Sat, Oct 24, 2026 at 05:00:10PM +0200, H. Nikolaus Schaller wrote:
+> Comparing x1000 and x1600 programming manuals I was not able to  confirm
+> that the registers have moved or been replaced at all. They even look to
+> be the same as with the jz4780.
+[...]
+> So your problem seems to have a different reason than the setup time.
+> But spike filtering may have.
 
-So patch 1 programs the filter for every X1000-class SoC, to the 50 ns
-of the I2C specification, and the X1600 needs no driver change: patch 2
-adds its compatible with a fallback to ingenic,x1000-i2c.
+You are right, SDASU did not move. The write to 0xa0 only worked because
+it shortened the spike filter.
 
-Changes since v1:
-- Replace "Add support for the X1600" (wrong register) with a fix to
-  the spike filter for all X1000-class SoCs.
-- The binding now falls back to ingenic,x1000-i2c.
-- Rebased on i2c/i2c-next.
+Measured on the R1, driving single reads by hand with the filter set to
+each value: 1 to 100 APB cycles works, from 110 every transfer ends in
+TXABRT 0x1000. SCL is high for 102 cycles at 400 kHz (140 MHz APB), so a
+longer filter hides the controller's own clock. When I first hit this,
+the R1 had been started from the vendor kernel and the register read
+116. Its reset value of 1 works fine.
 
-v1: https://lore.kernel.org/all/20261023081452.44118-1-olivier@mgcrea.io/
+v2 drops the X1600 entry and programs the filter on the X1000 and later
+to 50 ns, with your Suggested-by:
+https://lore.kernel.org/all/20261024212520.91401-1-olivier@mgcrea.io/
 
-Olivier Louvignes (2):
-  i2c: jz4780: Program the spike suppression length
-  dt-bindings: i2c: ingenic,i2c: Add the X1600
+> But I recently have seen issues with i2c on x2600 above 100 kHz so there
+> may be a general bug in register programming which may affect all processors
+> with x1000 and above.
 
- .../devicetree/bindings/i2c/ingenic,i2c.yaml         |  3 +++
- drivers/i2c/busses/i2c-jz4780.c                      | 12 ++++++++++++
- 2 files changed, 15 insertions(+)
+Could be the same thing, worth reading what 0xa0 holds there. A value
+left by the boot loader or a vendor kernel that is longer than the SCL
+high period at 400 kHz does exactly this, and at 100 kHz the high period
+is several times longer, so the same value still passes.
 
-
-base-commit: 03a5cffc818695157414456dec695f7c30b9ffff
---
-2.39.5
-
+Thanks,
+Olivier

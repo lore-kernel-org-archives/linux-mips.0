@@ -1,84 +1,45 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792836769;
-	b=KrRaZevXMllYnZmNaXf9gHWAm94VjEATgELyCBVPFPbtEOHcV8ye8s6XO5kkgCgoLDxo
-	 7i2xV+Y1aq5JSLGviYQu0U16vRyqIecuvbMH0R1LE08YYbt632C99LvRO9EKlhW5xDrf1
-	 WEDQz9grcNraxFkOgWO0ZD2oCW0I3Fu2VacBMbVOL8TVc4QXBnLkk4idVG74+u3AuMhAO
-	 2lWjwhwAKQuVxHJ0/mkWYuIULYMLgxMLpZq30YcH1VEh/Kc+uW//9n2YisNK3mcFbVi6T
-	 UZIUpT+Din8UA7Bwo5nkc3j4IEBEcHmcIYiklGqoxTsaYV+C+gudh+uqmvYhcRrCCGg==
+	t=1792836954;
+	b=TlmtRHw7M3MDLuLyx8A29xI5zetuBbmW6KplhvGMWJpY5aUHENlhDVAcJ68PAwDYT3/5
+	 yf5JmLT1nbV9SdmJBOF30GPl0jaW3b6pBMM6dcOIuUevqXQ1dtBs06SacWRcSWwWGzy9X
+	 HtcJIjm3kT2IE6TDqNSTioqxYKNFNzMfye1Kh25+75A3LsIv2M+zQnolvV8Xg6AUOGXTM
+	 E5tZ7f1Ha3lBbCpl8b2n/DcDd+Qhi1vWAqCnRNH32n1+zCoDGqmpzVYJ8pZdfOU44Yxay
+	 7F36sKZI9okDCUw6jKoBT2EUb97tv6sJnZYRiXnKBaLsPWiO+UnXdulrfLWSKjbM69Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792836769;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:Organization;
-	bh=6qEolPCd+FIDEdvDW5rn9Pcg+lhQtBbgEWH4D9yZSJc=;
-	b=pAP1hL4W8lmjmPAVyc51EQGVtbkX4oCm7s3Z+l2eldPWQmaik/mDD2oSSuF0smfT+/pK
-	 SLpgQu1LM9KYPC/e8pelFTVl59vsOv8fnVixjxZbBA4vNY80HwmonEt0Tb/ZOBM5BNWYB
-	 09pAJFEd9cXtCSiuMuOpLSRfjnJ4dMt153tIuBZnwvb5nz/HQcIDNoBSqjz4r08FJHEwW
-	 hXWlZR+qddeIOAtL6EojmVAQt/Dfya/z4alm3qDKKUUymg0lJ0wiDGtuEPIu9goVJLRGn
-	 yCwGVULv7ZoyR/faQ89ntc+x7mcKBYe08nsJu7mo7dRGvZW4JQ/mtuenlZudmGLqGYQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792836954;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=JG3yz9TGL/T/zJk3WMhjx5ozEDaVJ/cW1kf3LazKGDU=;
+	b=KCMEaiLMhnKWql2zg1ti6p2qBNQHI9qDjbx53aRtzy9Hjkr5XqioF9KAz4NDvPSFI+le
+	 ilZBJTV1X5zRbhJq1xkB9x9J+xwFB7UzXPNvj1XYg6OhcOZ4IEi8kKEsv2sp5raDb56J0
+	 pe6arYp9MHQ1i1yadd54mRwlK48zsPK9AjZJr/as6LG6zSH4gICVnQMW1TD5hsx7iHs2d
+	 GC/d5ptrvMrF/zS0zNRGg2UfoNJLpX6MpQoFVrdWDZJXAfBScG4xpKX2/tA1wdeo6N7wU
+	 PiUurlbff043mIB8HartCwjuwhVf7A+gLYrz9d6sOP8qW3KVbBTqUsjamw1rgrB/uOw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=UpBtbyfD;
-	arc=none smtp.remote-ip=192.198.163.14
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D85606A31A;
-	Sat, 24 Oct 2026 10:12:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 35D85606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=UpBtbyfD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1792836768; x=1824372768;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Jmzw3oy5IsJnayq6obhuhIQ3HrlE0gEKvphfs8NF1/I=;
-  b=UpBtbyfDoBNZ0jO+ggSjP+FCoahuQCrreUGbGPSYuHMhi7/ivnNNIylB
-   YBNgi8CVfAy5G6P/4v3tKY42TTDwcGarGWVK1Imd5HhIEIJjQQgM4x35S
-   PU0tEWKnRRvmt7xZwp1+c8ucDg+hVkZiqd09pstW3ii43WNY+qA2UwpCA
-   0VVfaU8UX99u3ftWgKfD2KZpxqAGRCdsrJlLj/DSgyTJCBpdldEB7sSLD
-   8LgFBS/ZAj4M+l9qF54UP82KFjZZpROmP3kXqjj6mD+2NdC7t2ZpioM+Z
-   3USpj/tQQOLaNxXzeY3d91cHQFOuUevkZWdZB/mF5+wplc7i4cmGMQzSa
-   A==;
-X-CSE-ConnectionGUID: aeFSJlraQ82yBQH97eRMYA==
-X-CSE-MsgGUID: eufke7ahRYueM2oG7wdCFg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11944"; a="1598201"
-X-IronPort-AV: E=Sophos;i="6.27,176,1787036400"; 
-   d="scan'208";a="1598201"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2026 03:12:47 -0700
-X-CSE-ConnectionGUID: 2xeI12+9QAiNMSqDWYMpMA==
-X-CSE-MsgGUID: gLDQp0wbTtWmmfWLXsiEVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,176,1787036400"; 
-   d="scan'208";a="3907642"
-Received: from klitkey1-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.221])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2026 03:12:44 -0700
-Date: Sat, 24 Oct 2026 13:12:42 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Joshua Crofts <joshua.crofts1@gmail.com>
-Cc: Olivier Louvignes <olivier@mgcrea.io>,
-	Jonathan Cameron <jic23@kernel.org>,
-	David Lechner <dlechner@baylibre.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: adc: Add a driver for the Ingenic X1600 ADC
-Message-ID: <atyEmgH7jqY0cM7A@ashevche-desk.local>
-References: <20261024041357.34346-1-olivier@mgcrea.io>
- <20261024041357.34346-2-olivier@mgcrea.io>
- <20261024090006.00002720@gmail.com>
+	dmarc=none header.from=alpha.franken.de;
+	spf=pass smtp.mailfrom=alpha.franken.de;
+	arc=none smtp.remote-ip=193.175.24.41
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85112606A31B;
+	Sat, 24 Oct 2026 10:15:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 85112606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xKYn1-0005ZL-00; Sat, 24 Oct 2026 12:15:51 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id CE4A0C0423; Sat, 24 Oct 2026 12:12:17 +0200 (CEST)
+Date: Sat, 24 Oct 2026 12:12:17 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Imre Kaloz <kaloz@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v2 23/53] MIPS: SGI-IP27: xbow_probe(): recognize
+ KLTYPE_PBRICK_XBOW
+Message-ID: <atyEgXoWLanAHb5V@alpha.franken.de>
+References: <cover.1791890466.git.kaloz@kernel.org>
+ <052c08ad27b1b882b27b3ced51f56194ed670637.1791890466.git.kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -90,49 +51,37 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261024090006.00002720@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+In-Reply-To: <052c08ad27b1b882b27b3ced51f56194ed670637.1791890466.git.kaloz@kernel.org>
 
-On Sat, Oct 24, 2026 at 09:00:06AM +0200, Joshua Crofts wrote:
-> On Sat, 24 Oct 2026 06:13:57 +0200
-> Olivier Louvignes <olivier@mgcrea.io> wrote:
-
-Olivier, I also missed the cover letter, can you make sure it's there in v3,
-please?
-
-...
-
-> > +	case IIO_CHAN_INFO_RAW:
-> > +		ret = x1600_adc_read_raw_channel(adc, chan->channel, val);
-> > +		return ret ? ret : IIO_VAL_INT;
+On Tue, Oct 13, 2026 at 03:16:43PM +0200, Imre Kaloz wrote:
+> An IP35-family chassis records its crossbar board as KLTYPE_PBRICK_XBOW
+> rather than the KLTYPE_MIDPLANE8 an Origin 200/2000 midplane carries, so
+> xbow_probe() found no board record and never set up the crossbar. Fall
+> back to the brick type when the midplane lookup misses, and warn when
+> neither matches.
 > 
-> You can use the Elvis operator here.
+> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+> ---
+>  arch/mips/sgi-ip27/ip27-xtalk.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
+> index 10834880c261..baa937b474a8 100644
+> --- a/arch/mips/sgi-ip27/ip27-xtalk.c
+> +++ b/arch/mips/sgi-ip27/ip27-xtalk.c
+> @@ -159,8 +159,19 @@ static int xbow_probe(nasid_t nasid)
+>  	 * need to probe xbow
+>  	 */
+>  	brd = find_lboard((lboard_t *)KL_CONFIG_INFO(nasid), KLTYPE_MIDPLANE8);
 
-While true, Jonathan preference to open code this type of cases
+use
 
-		if (ret)
-			return ret;
+	brd = find_lboard_class(KL_CONFIG_INFO(nasid), KLCLASS_MIDPLANE);
 
-		return IIO_VAL_INT;
+instead, which looks for all midplane types.
 
-...
-
-> > +	/*
-> > +	 * Powered up for good: the keys poll it every few tens of milliseconds,
-> > +	 * and powering up takes 2 ms.
-> > +	 */
-> > +	writel(0, adc->base + X1600_ADC_REG_ENABLE);
-> > +	fsleep(2000);
-
-	fsleep(2 * USEC_PER_MSEC);
-
-(will require time.h to be included).
-
-> > +	writel(0, adc->base + X1600_ADC_REG_CTRL);
+Thomas.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

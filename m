@@ -1,85 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792879638;
-	b=HYvzI3Ev6IlyrchXTtP3cpkN4msSVa46EhMhWUWVhIsdPvIzJdh0uMWMO+8vWlQpsG4o
-	 ycFuncbw+iDZT9OsCXq5XaKu5cf6zeixg6/7UmNg6Tw3Mv+CTQVEi78hCREFqTZpvcgj8
-	 UfBEUvuyBa76KFGaEVCqC0/HgHm4S9GLfxw8OhLeDT6SlhvqB0ESDUOAlH8MDPUBK9WvD
-	 VkTYNCLJ6kNNn701eSpnCnZEUcukx+ZpcOzij9xrhpi5jrD40zC4TSgoMh5bkS+NmBelX
-	 TkKxWu5WZ0wVQ7VWaKQJewWePKV6ALJ84sq1+puYliyVJ/jLKYfC1HHF3PW5UboIhig==
+	t=1792879639;
+	b=yENVZxhtYInnUyOYFIflpfEa067v3EDo1yoQu5DHFELvslIb+5zkEE9e5pRaXQIJshP7
+	 6kmS0wZv8E+M+pq3TrgZKv0es41pbSCy7XvNtjg4/hbTOo6c4P4J0V6lMwoxpn8zpLsgJ
+	 d2wfVkjRagr7C2CzhjvsMuQcdMqLnDrODOcseGuEYbeC/IjCnSpl2A/o9TNCoJePzrCVW
+	 6ZcmVdkCn3fHt6sDE35MH46aFDvn5NsPaKjZirNZgykyg2r8ifMdNPsHTv0MTsVQr/msO
+	 TG/p9fX4NLl6ujuJqI0hmdrjnV+gqRS9Zs8RC87eyVciVw6R5oKm4kxCtd2AivSnVXA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792879638;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792879639;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=tQ3jUZJIzHj6BmefEU8b04rCHYVmSDvqexKo06XbRm0=;
-	b=tKpp4k+MOk2XxcO8Q2/f2Ezx9TfqGWq9NBgE25zUJEgXpgvsSK25oy+BuAFYFtjmSbwz
-	 LiVIrwS6imKuREe9KyN5jhiujU63ozKarZ4TTRnQnO8TJFfRRYWbsrEsPV9w1HZIOmZrm
-	 /4ykzsg5z0enJzTFvHDcvu12iGy2Kvwqfs4uvKYXF+Dos5zG0z7AGZfdIukISiK0aQxh7
-	 kn1yNjJIjkpXW7Z9D5STUBK8jTE84QHcmyUU+nxD0+fwhc0+Mr2qun/RO7P3oV+kZylv1
-	 1MEenL1/ZL9z/MVvD3FCGN52oC/yRoLSmbnbp3Cfd/HBCpXmZciRflgKVty2ZsFpDmQ==
+	bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
+	b=OwkoC460eouRUu4I++o4Roz4aaaT70NSIyeeDVIthhed3SCzDAX9B1eIVSOy1vXNZuW1
+	 qZF8bm/eYSn87pIIL44W81Y2OWGKaU1C8TN1eEGaBxoG7QRtHZM94weOey+AjksP1Xnrq
+	 KaU76cCwbvOpaMARWevnYSAKSlD2tgcr+ENajlhAZUpaFShGReWvAiZH8DqB8LdJeJRUj
+	 3R2ltLNjEijVxKJudvzSHGsazgvV9E+Mnke6HcnCx8cW/8BXfd/lYgYmwjbCtNvUK1sBG
+	 fu5ixfqld5qVKzIFhjp09Nh6titeAzR02EGbZcoEdATsqHt9g36ss6Tm8VRJ9AgD/9A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=J2pjKcHm;
-	arc=none smtp.remote-ip=209.85.128.42
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=bMCFuXIW;
+	arc=none smtp.remote-ip=209.85.128.52
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA9D606A324
-	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 22:07:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AAA9D606A324
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3D7606A327
+	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 22:07:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5A3D7606A327
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=J2pjKcHm
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4a20bdaf39cso19833395e9.1
-        for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 15:07:17 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=bMCFuXIW
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4a35d5d4a20so5772875e9.2
+        for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 15:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792879636; x=1793484436; darn=vger.kernel.org;
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792879637; x=1793484437; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=tQ3jUZJIzHj6BmefEU8b04rCHYVmSDvqexKo06XbRm0=;
-        b=J2pjKcHmpyNpyYak4hiq1SqLoHAF6XZ35w75hkj/BumakTFlBwBraSHF2PagBbWmip
-         W3Dk43oauZBfj1Nh2zbRvGi5ZPCe1peDeMDB1S1xj1IBuT5Ij2JhjA3cCE/su9ELlFMK
-         MiRaxrm1HSw5V8evkCV4PZLumnDDXTq8oTFpVesi9wv2CT41uB16F8mFkOWBui/lnjL+
-         pWNT9PKZox+11oMfnZOO9gGsZQzPxIdAhBL3d95XUuGIW33n+n9Fu4NPXThXPSORGoBi
-         O5E39mTTHrUQfoFbuhnXXKHz4DvtOBxe5/VsYbn4MBCFI3OHLKClt7luQKEnUaSCVleE
-         32bA==
+        bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
+        b=bMCFuXIW8WSLFTdO69RsRRj1TOG56FNvXFJDyPKPQCXvpDcbUqzwN5B7XZLTqwR0pQ
+         LhxaNIdIIsCo3fSitwA8UGcYqaF7HYfb7Kkc+I1OmOSlxW6jWJ9w9XVrRiL+01JuXA3/
+         SXcVpcXnls1i1R9b2RAcyjuJlJLZu4LxZeGfGd+xTn5rFEpta2FDYcwDKnulNcKrFhBW
+         53G5GOCh+TkA+UuSB9NdHoHiHQjTGPsxx/c78Vl9NXwkMjLg0hVdnpRVi3zepykbMAT7
+         aZapMts7o0kFqf8YmGfj2XBPq5mqc4eVwFL5aw7pcY8u72ghz0nKfBsejE3tkjA/fMnE
+         SpHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792879636; x=1793484436;
+        d=1e100.net; s=20260707; t=1792879637; x=1793484437;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=tQ3jUZJIzHj6BmefEU8b04rCHYVmSDvqexKo06XbRm0=;
-        b=Fce4O7jby+Gzh+e37Yl2kTjqjaea7kRuQ+lgr0iyt82KiBu2hFPCTArQv7ozS30/gG
-         3urLnQcyUcWnmmrrAGXiXsRreVWNyki3RnuhS0QHEpa4K5iMohmRQNR508NjsAi5tqQc
-         BZT2T16aP5n5Ge84YWI0Vk8c3V2L+dyzVoiNCPqrLnMGIL5RHYuoWhC9CuK2rT6ExPpa
-         n2wnq1JEQtTInNi75KxlDyR1QyV+kBdBKAUkevhNaDVu40HmT6lrIk+i7kRIF2o+IrRn
-         ZlGb1QmUCjv9dtBTkiv8LFbB0W8sVRcOpz9M8R0rGck5a3/HURClHGQLptM9jbnOUV0d
-         jWsg==
-X-Forwarded-Encrypted: i=1; AKwUvBxwTejw12zsaAinCSWP4dmXHa+U2xENhuzqkU8iuVM7/1aVkQlUMeJMDQhB7qin2CEE0C1Lfi/eYCeb@vger.kernel.org
-X-Gm-Message-State: AFq9FYLN2CHauDAJtSoBQGovieuNUablsrBIv29vdQEzqCmZ5yyjgvUf
-	En0oHAvaiVCjCGjEmU6VNLz/sAgIyO9sGmNNmVLCZiYPrW8cHULDIN8wr3AXkX/9eCoejWhpS77
-	GfChPeXA=
-X-Gm-Gg: AYBFou1hdGf+Vqo4DaW9Z0P8i7F9M8eJJDqbq5as3T3hP+XcBU5exm7gUqm5GS3EbRC
-	7320MGva2Xqhjvr5+8inNLUTByLYRM7GSOYY6c8CViG86bfZC17ToiR53wbHXu6Be+SLw80sjBk
-	KuoA8fLIOdg1cGH4g2oTzyGzK4Um0xTEJtnEYlutCxsG7SMmxsrhwPeCsUa9wt3hL+RoB3AC3Z2
-	cYj6vmqulGvKZ9IByaqZP95vojQjrBi2AV01MlNlikPXF8xL5MKq3QdV0Eo/Qxq8yJ3L14Bvjlx
-	q9kSYADIIzuoiSVA/CgRtrKKzjkEIqJ54JNxLAx/kNdFYo6j5yoDxTZhCuoJ8AKU8JawsuKYR8V
-	YTWZOy9bFQaGLhFwzO0kNFKvEwspdQwml0TozVDKCa0yj67wP7/F8Edzz+q++X2bgwkdf/JC+li
-	T076N7miBDrI8sFGU7YI/nbYKbaVjW7TlTKSvjriBobAYEoktY10o5UsJKzAY09AybxfLOTcK5t
-	msOYXvXkK0jbOBCHrWgVUzIR1WnGPkc4t8alZDwlCcWU1egc2NbabcQTbTIFKfP2PPffWHZf7ix
-	r82blB4GknCxn+oNxq6v9xce8N9sZjpa14+VeC9jfVy4o9IWdInE5rkbz3gDkawi06r3pPGoXZK
-	bG6SKSHOo4S6xsWk=
-X-Received: by 2002:a05:600c:4e87:b0:4a2:cbe:beac with SMTP id 5b1f17b1804b1-4a35aca73dfmr47824675e9.23.1792879635309;
+        bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
+        b=I3I2HIPl3cI9wT4CHQHTbRHaHwbXBQLC433h84lcV0W1Avjv2Hcy23SuNrB7Xn8RPq
+         PhPfkIhYijVEJXCrFm2xU9BpQUoTsliyvVuNjjxK0vYzKjnzOrY/9YmYjpMM6j+3aUqV
+         BnuGPxt8l/RArLA9fgqt9P7+OrjlaMcr+rks8Ro51DA6HuPQ7mEH1XcnQ3jRCtcQKYpb
+         h+t9fLQTmDkmv3tR8AWclVaXI4JF78vHW6hVnbCu5gT8BCra9Er0pKsYEu16LLTEaErn
+         TNDmTU9+3VX+eU2Vx1lPkHWuPgwJsREIgk+l953JVeAip7p0OBt2ioigapKguSObadez
+         4byA==
+X-Forwarded-Encrypted: i=1; AKwUvBxrj5lVfUETs19SbC7cBl7VOP6l1jOM7tr0mfKXn2qYu3XRRwvslO+CynCMyUGDlGyzVTWLnWgnNmZN@vger.kernel.org
+X-Gm-Message-State: AFq9FYLo46HmSisaGiOQ7XpXgu8EMdZ3a2KhZTfX9r+rLCHy3RRtU/Yn
+	LlRtY5xdq87hp8erjQVXj50ZL2LL+M2LfUHWyPRj/YuuGHuYQUOP1hv0T0Wi+lzmJPc=
+X-Gm-Gg: AYBFou1WYk9gGqPjxcjFWTdYIYA8qofHhqpTr8LlDMqsq8/qccJ1RshsnvOMR+etkEz
+	3hOqWGbnM5ezkka+mzUQJMWopCblOfy7uQ9m9sxozycvmq0ZxU4ynkuMRbRN8UuYi3Gjfangd23
+	xlg+UQ/lG2PZwxEfhjHK8DX/wYXTVjSgbqBvglVA46uSGhADowNrXMYz659I2m9XE5FIuVQO1xN
+	9OyjEokSISKtiw6fAOty1+Zr6GVHBnUvTsi+H4jjnECmFvywy3QDYbkm5I+F6y4i0crX8Zd37U6
+	lSxsD5AOrKS5bf9AIxEZU38qU40uCANaueeRS7+Ldci9KNaf07hs8UREteG2DbUYeGYcQVONhgm
+	O5x1qOd9MWLZ+tOCpLl5tgp6ERjBBJdlEfQzWCJTuDgLikAgH+YnJW/BqFV5793890QT4JmH8W2
+	aPWbmkg2gJGnQt+sUutFQv7iPE0ULghIXJE27lbopI7d6NmsIx/57hh4+iCT0zH1pVzKBeVW0BG
+	w22UgbPcKlO0khn9bwZO8wwfws062yUWUHCdhTnpViOCOzK5PGzPm2rqkmJ5FwZBNAvND+TZqlT
+	120DInQ96VafT1E4AXCUy8dB5hC3c3h+leiRiojBJpANhyPAiuKdCeG2GQNwu/Zy/dCh
+X-Received: by 2002:a05:600c:6212:b0:4a1:742e:3 with SMTP id 5b1f17b1804b1-4a35acdd912mr42496565e9.27.1792879635966;
         Sat, 24 Oct 2026 15:07:15 -0700 (PDT)
 Received: from localhost.localdomain (2a01cb060184ad00bcfbae5efa3e0f0b.ipv6.abo.wanadoo.fr. [2a01:cb06:184:ad00:bcfb:ae5e:fa3e:f0b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a06da5fsm53466635e9.3.2026.10.24.15.07.14
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a06da5fsm53466635e9.3.2026.10.24.15.07.15
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Oct 2026 15:07:14 -0700 (PDT)
+        Sat, 24 Oct 2026 15:07:15 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>,
@@ -93,9 +91,9 @@ Cc: Jiri Slaby <jirislaby@kernel.org>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v2 1/2] dt-bindings: serial: ingenic: Add the X1600
-Date: Sun, 25 Oct 2026 00:07:11 +0200
-Message-ID: <20261024220712.23250-2-olivier@mgcrea.io>
+Subject: [PATCH v2 2/2] serial: 8250_ingenic: Set UMR and UACR at probe
+Date: Sun, 25 Oct 2026 00:07:12 +0200
+Message-ID: <20261024220712.23250-3-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261024220712.23250-1-olivier@mgcrea.io>
 References: <20261024220712.23250-1-olivier@mgcrea.io>
@@ -110,28 +108,61 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The X1600's UARTs have the X1000's registers. Add ingenic,x1600-uart,
-with the X1000's as fallback.
+Ingenic UARTs have two registers beyond the 16550's: UMR, the number of
+clocks a bit takes, and UACR, which adds one clock to chosen bits of a
+frame, for fractional baud rates. The JZ4725, JZ4740, JZ4755, JZ4760,
+X1000, X1830, X2000 and X1600 programming manuals all have them at 0x24
+and 0x28. The divisor the 8250 core computes assumes 16 clocks a bit and
+none added.
+
+The driver never writes them, so a UART keeps whatever was there before.
+On a HiBy R1 (X1600) the vendor boot loader sets UMR to 8 on its console
+UART, and the vendor kernel had left 8 on UART0, which carries the
+Bluetooth chip: every rate came out doubled, and the chip never answered
+("command 0xfc18 tx timeout" from hci_bcm). Their reset value, 0, which
+the X1000 and X1600 manuals call normal mode, does not work on the X1600
+either: with UMR at 0 the same command times out.
+
+Set UMR to 16 and UACR to 0 at probe.
+
+Tested on a HiBy R1: with UMR at 0 or 8 the BCM43430A1 on UART0 fails to
+set up; with this patch it comes up at 1.5 Mbaud and streams A2DP audio.
 
 Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 ---
- Documentation/devicetree/bindings/serial/ingenic,uart.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/tty/serial/8250/8250_ingenic.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/serial/ingenic,uart.yaml b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-index d5f153bdeb0d..635342d43ddb 100644
---- a/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-@@ -32,6 +32,9 @@ properties:
-       - items:
-           - const: ingenic,jz4725b-uart
-           - const: ingenic,jz4740-uart
-+      - items:
-+          - const: ingenic,x1600-uart
-+          - const: ingenic,x1000-uart
-       - items:
-           - const: ingenic,jz4755-uart
-           - const: ingenic,jz4750-uart
+diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
+index 0cdadacd7019..ca45e74b999b 100644
+--- a/drivers/tty/serial/8250/8250_ingenic.c
++++ b/drivers/tty/serial/8250/8250_ingenic.c
+@@ -40,6 +40,10 @@ static const struct of_device_id of_match[];
+ #define UART_MCR_MDCE	BIT(7)
+ #define UART_MCR_FCM	BIT(6)
+ 
++/* Clocks a bit, and an extra clock for chosen bits */
++#define UART_UMR	9
++#define UART_UACR	10
++
+ static struct earlycon_device *early_device;
+ 
+ static uint8_t early_in(struct uart_port *port, int offset)
+@@ -298,6 +302,14 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 	}
+ 	uart.port.uartclk = clk_get_rate(data->clk_baud);
+ 
++	/*
++	 * The 8250 core's divisor assumes 16 clocks a bit. Whatever ran before
++	 * may have left another count, and on the X1600 even the reset value,
++	 * 0, does not give 16.
++	 */
++	writel(16, uart.port.membase + (UART_UMR << uart.port.regshift));
++	writel(0, uart.port.membase + (UART_UACR << uart.port.regshift));
++
+ 	data->uport = serial8250_register_8250_port(&uart);
+ 	if (IS_ERR(data->uport)) {
+ 		err = PTR_ERR(data->uport);
 -- 
 2.39.5
 

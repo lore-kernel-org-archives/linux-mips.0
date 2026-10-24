@@ -1,109 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792791838;
-	b=r32Jrd/M9lZcaK7lN03w6UTjBoDPL/J4KEH6CrTLxLFayDXMI5ro5PKKxQo0EmOHo0RV
-	 dVUFCULBggzSmpRjHmXHYJKBoDIDB9oAe1j7xAkTGbVWzaSUsy59Fn2bnutF1Ffijamk6
-	 rQmoElbok/YWTpbHaCaUfawnTOLMbVET/H6As/hgP/HKDTtVc98WN/Bx/8XKHBTCEh7fg
-	 QdZhohTHHA5iTG2be696BLONWbKG42L47xXo1bXDObwbn9EcaDffeztFnU4GPgc7TwB1S
-	 h2QL3rTLh+HSn5CUjEMtdeYFy6CtNPOuYqOZi4p+kAFfDTglfIkmE1+JMWVd078/Rmg==
+	t=1792806260;
+	b=Nsyq5MJbZwF3y37+FuDGJrGfXvc085YsZF6eo/Zp3zE3VcTa0udqSuyCY3iObv3win7s
+	 ghEcz3RWTSIki2G5temGMa6OqTvl+Wj6BKudLIWxTtnwCP+37Yii2jfOOZXb8mWsjNCo8
+	 p6+Qs+mMRqM3rrl8CFnZGMS1jgsh+vz7iRxx9bTMGeUkZ6mr9CWUOxtYniPb4cuei4I/y
+	 w7PtNUpn+Zo99n/QBDBTP1Qv+zfHtx4QJ3VzAs6rIUOwNjdI7uvZc00oe8oFz9VkIGSVe
+	 1J1Bzt/FbiUVXs3uenXOkMlNVJyNX326tbWamyk6sPDZHI1tfTHWaFXztUNmDOZV9JQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792791838;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=rBYqzhjRmnws8Rm/5IL7e+PRpdOctdJtXb4xboAMWSA=;
-	b=pS5RM2Ww289PLDgyM4bM+aq3w+A5rk/vYgG8CTP6Y3iMu7mjuTBwarVfU7R1Q7z1+IMf
-	 hL3GuFMkxMSZGOdxxJx8v5fOlcpWvthwDCCD/fW3iX7ezXWuOIU8IL0xba8EzrM8at9D6
-	 buuorBb+9rkg/Z536Rv1nMPlA4lyGJW8Ok7VhsmKMI2PeKqd7OEtS4sTpgWVogmG4XLOp
-	 12h4UdRXljPlm5czQ4btcmz7HGlHZWgLphOWWq0JqUro/0dzsQ5mXKN2NOoRoAoQmbOf2
-	 wot4EOUErBhmaGJAznWjRxkSLe8TYEV+zmdgQQsq/Enq/E+QYUYD81GwzCb8kCFw39w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792806260;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=RcA6NgDzwdyhPOZofiKPLepQmqwVn5qMh3MWdeVUR5Y=;
+	b=A2y/aYvSF6HT+KmHibxP7kjPwwKYFtv8K2SIPDeIscZ48BXaqdSJHKTigCQnT5xa/rXa
+	 baPtJXqnmA2UMbnYaj97g7KDeoEpaejsRF31Cjt6WenOwkMiQvT0D64HidkJGZBsBa5ov
+	 TQDYL45J2HV3SK/Snn/pQxObFED4yH3lsgM7WPqGZvg+r4BL+52Gm2r8O/2FlcjfWoI/w
+	 P3bFw9UDtXPNp5HcircZhPpUhd6uduiE8H3FAKsL6VONGgHrZoOWToEGbROCLZ2VS24k6
+	 nxF0OwdKDe5yPx+oh4jthAmWEcQdVYPVFFZZYnbzSkX21WdpikZO0qGY5mNtBskIYjw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b="hwASE/IL";
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=z943ERBm;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AeDgx7pC;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0854F606A31A;
-	Fri, 23 Oct 2026 21:43:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0854F606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6205E606A31B;
+	Sat, 24 Oct 2026 01:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=hwASE/IL;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=z943ERBm
-Date: Fri, 23 Oct 2026 23:43:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1792791835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rBYqzhjRmnws8Rm/5IL7e+PRpdOctdJtXb4xboAMWSA=;
-	b=hwASE/ILIfvsagU4ja9zJyp6NCW7nhDXBrLgESHYvZc9OlC/GQdmV72Hfw8lCHeCcJDiIT
-	xFBb+eSpeLzJx+wG16eGrTDnCizzsAb6w+YXHutGNF3HFzHQkD8tsZ70QSbXCrE553aTtc
-	FyBITEp8ynQwIVKmsTH4edb2ELcKOcjRqPKGeu5zad/jr9HszyeKdSGpYIGAdGmjIg04RH
-	fcQJvL7izNOg661T28mb7TFw7IIiiiTlruIEDWxOW6votoei6lPtMgLjCAwFAfW1s9CXqg
-	i8k5N81Ek/SnmSCRgWHVGbIsWAsCZb3iRBPHtLu5gtarfP+kYufKyE0FptRrgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1792791835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rBYqzhjRmnws8Rm/5IL7e+PRpdOctdJtXb4xboAMWSA=;
-	b=z943ERBmz9863Xr+14sVUMFBonUecgHEkMzxOZxtguvVf4IgWnapYNfN7FD67wKQCXc4NS
-	csUXXgLT71khc6BQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
- indirection
-Message-ID: <20261023214353.Q3pZID23@linutronix.de>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de>
- <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13>
- <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
- <871p9g1s3w.ffs@fw13>
- <87y0boze95.ffs@fw13>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AeDgx7pC
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A09811F01825;
+	Sat, 24 Oct 2026 01:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792806260;
+	bh=RcA6NgDzwdyhPOZofiKPLepQmqwVn5qMh3MWdeVUR5Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=AeDgx7pC74sQPUM3WGP4IayUX+OTFLBRFSjVjknZAHSNOCRAWTeHJVmJYR8sKUSVJ
+	 2Tb/dqrjJYjQII/XA3V0FQMO7VwIFEew1b6TeW638tuGqKfPODFW3kl0wMH3Aj1u7M
+	 oKYqLrfiYaw51fJtmGnzsbSQS/ec7sBjid0l0RJbidtnFflad2TGDs2fQhFHTnRzKA
+	 ywv0aHOe6LP+22ph93h0ql4Ljdh1QbO0ZuyXkQOGcv2BwNKXTRhFPrRTy5Q8XvemFq
+	 mifdyXfwIr8wwRKuZRIJO3q2GuUT11JlFEFtLeL882j656fMzz3U83+ShxJomlob+6
+	 pDOrj/EWq8hSg==
+Date: Sat, 24 Oct 2026 02:44:12 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: David Lechner <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] iio: adc: Add a driver for the Ingenic X1600 ADC
+Message-ID: <20261024024412.2fa37c17@jic23-hlaptop>
+In-Reply-To: <20261023204209.48556-2-olivier@mgcrea.io>
+References: <20261023204209.48556-1-olivier@mgcrea.io>
+	<20261023204209.48556-2-olivier@mgcrea.io>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -113,32 +64,220 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87y0boze95.ffs@fw13>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 2026-10-23 16:24:22 [+0200], Thomas Gleixner wrote:
-> IOW, a tracer modification of regs->ax is not overwritten when the
-> syscall number is out of range.
-> 
-> Between 2.6.19-rc2 and -rc3 x86_64 was changed to _always_ overwrite
-> regs->ax when the syscall number is out of range.
-> 
-> In the 3.8 merge window seccomp introduced the -1 == skip bogosity which
-> got fixed up and made "consistent" in several changes afterwards. Just
-> that it never reached a state of consistency due to the overloading.
-> 
-> So are we stuck with this behavior or do we sit down and define what the
-> correct behavior should be?
+On Fri, 23 Oct 2026 22:42:09 +0200
+Olivier Louvignes <olivier@mgcrea.io> wrote:
 
-I wouldn't say we are stuck. The test did reassemble the status we had
-at the moment. As you wrote yourself the behaviour changed a few times
-and not on purpose.
-I would say we define what correct behaviour should be and make sure it
-is consistent across all the architectures.
-
-> Thanks,
+> The X1600's SAR ADC has four auxiliary channels, each with its own start
+> bit, interrupt flag and 12-bit result, and none of the touchscreen or
+> battery engines of the JZ47xx ADCs that ingenic-adc drives. Add a small
+> driver that exposes the four channels as voltages against the 3.3 V
+> reference.
 > 
->         tglx
+> There is no datasheet here: the register layout and the clock dividers
+> come from the X1600 driver of the vendor's 4.4 kernel.
+> 
+> Tested on a HiBy R1, whose play/pause and volume keys sit on channel 0
+> behind adc-keys: all three read and report correctly.
+> 
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+Hi Olivier.
 
-Sebastian
+Very clean driver. Just a few really small things inline.
+
+Thanks,
+
+Jonathan.
+
+> diff --git a/drivers/iio/adc/ingenic-x1600-adc.c b/drivers/iio/adc/ingenic-x1600-adc.c
+> new file mode 100644
+> index 000000000000..d54f6d7989b6
+> --- /dev/null
+> +++ b/drivers/iio/adc/ingenic-x1600-adc.c
+> @@ -0,0 +1,227 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ADC driver for the Ingenic X1600 SoC
+> + *
+> + * The X1600's SAR ADC has four auxiliary channels, each with its own start
+> + * bit, interrupt and 12-bit result, and none of the touchscreen or battery
+> + * engines of the JZ47xx ADCs that ingenic-adc drives. The register layout
+> + * and the clock set-up were read from the vendor 4.4 kernel's driver.
+
+I'm not sure we need the comparison with the JZ47xx ADCs here.
+Keep that for the patch description / cover letter.
+
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/delay.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/mod_devicetable.h>
+
+Drop this. Now assumed to be coming via platform_device.h
+after that header got broken down into bus specific ones recently.
+
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +
+> +#define X1600_ADC_REG_ENABLE		0x00
+> +#define X1600_ADC_REG_CTRL		0x08
+> +#define X1600_ADC_REG_STATUS		0x0c
+> +#define X1600_ADC_REG_DATA(ch)		(0x10 + ((ch) / 2) * 4)
+> +#define X1600_ADC_REG_CLKDIV		0x20
+> +#define X1600_ADC_REG_STABLE		0x24
+> +
+> +/* ENABLE: bits 3..0 start a channel's conversion; bit 15 powers down. */
+> +#define X1600_ADC_ENABLE_POWER_DOWN	BIT(15)
+> +/* CTRL: bits 3..0 mask the channels' interrupts. STATUS: write 1 to clear. */
+> +#define X1600_ADC_CHANNELS_MASK		GENMASK(3, 0)
+> +#define X1600_ADC_DATA_MASK(ch)		(GENMASK(11, 0) << ((ch) % 2 * 16))
+> +#define X1600_ADC_CLKDIV_DIV0		GENMASK(7, 0)
+> +#define X1600_ADC_CLKDIV_DIV1		GENMASK(15, 8)
+> +#define X1600_ADC_CLKDIV_DIV2		GENMASK(31, 16)
+> +#define X1600_ADC_STABLE_TIME		GENMASK(15, 0)
+> +
+> +#define X1600_ADC_NUM_CHANNELS		4
+> +#define X1600_ADC_VREF_MV		3300
+
+Use _mV . Fine to use case for units in IIO at least.  Avoids
+us maybe thinking it's Mega Volts :)
+
+> +#define X1600_ADC_BITS			12
+> +/* The vendor kernel brings its 140 MHz APB clock down to about this. */
+> +#define X1600_ADC_CLK_RATE		1166667
+> +#define X1600_ADC_TIMEOUT_MS		20
+
+> +static irqreturn_t x1600_adc_irq(int irq, void *data)
+> +{
+> +	struct x1600_adc *adc = data;
+> +	u32 status = readl(adc->base + X1600_ADC_REG_STATUS) & X1600_ADC_CHANNELS_MASK;
+> +
+
+Split declaration and assignment given error check should be right next to assignment
+	status = readl();
+	if (!status)
+
+> +	if (!status)
+> +		return IRQ_NONE;
+> +
+> +	writel(status, adc->base + X1600_ADC_REG_STATUS);
+> +	complete(&adc->done);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int x1600_adc_read_raw_channel(struct x1600_adc *adc, unsigned int ch, int *val)
+> +{
+> +	u32 data;
+> +	int ret = 0;
+> +
+> +	guard(mutex)(&adc->lock);
+> +
+> +	reinit_completion(&adc->done);
+> +	writel(BIT(ch), adc->base + X1600_ADC_REG_STATUS);
+> +	writel(readl(adc->base + X1600_ADC_REG_ENABLE) | BIT(ch),
+> +	       adc->base + X1600_ADC_REG_ENABLE);
+> +
+> +	if (!wait_for_completion_timeout(&adc->done,
+> +					 msecs_to_jiffies(X1600_ADC_TIMEOUT_MS)))
+> +		ret = -ETIMEDOUT;
+> +
+> +	writel(readl(adc->base + X1600_ADC_REG_ENABLE) & ~BIT(ch),
+> +	       adc->base + X1600_ADC_REG_ENABLE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	data = readl(adc->base + X1600_ADC_REG_DATA(ch));
+> +	*val = (data & X1600_ADC_DATA_MASK(ch)) >> (ch % 2 * 16);
+
+Can that be field_get()?
+
+> +	return 0;
+> +}
+
+> +
+> +static int x1600_adc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct iio_dev *iio_dev;
+> +	struct x1600_adc *adc;
+> +	unsigned long rate;
+> +	u32 div0, reg;
+> +	int irq, ret;
+> +
+> +	iio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
+> +	if (!iio_dev)
+> +		return -ENOMEM;
+> +
+> +	adc = iio_priv(iio_dev);
+> +	init_completion(&adc->done);
+> +	ret = devm_mutex_init(dev, &adc->lock);
+> +	if (ret)
+> +		return ret;
+> +
+> +	adc->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(adc->base))
+> +		return PTR_ERR(adc->base);
+> +
+> +	adc->clk = devm_clk_get_enabled(dev, "adc");
+> +	if (IS_ERR(adc->clk))
+> +		return dev_err_probe(dev, PTR_ERR(adc->clk), "Unable to get clock\n");
+> +
+> +	/* Powered down, interrupts masked and cleared, as the vendor does. */
+> +	writel(X1600_ADC_ENABLE_POWER_DOWN, adc->base + X1600_ADC_REG_ENABLE);
+> +	writel(X1600_ADC_CHANNELS_MASK, adc->base + X1600_ADC_REG_CTRL);
+> +	writel(X1600_ADC_CHANNELS_MASK, adc->base + X1600_ADC_REG_STATUS);
+> +
+> +	rate = clk_get_rate(adc->clk);
+> +	div0 = clamp(DIV_ROUND_UP(rate, X1600_ADC_CLK_RATE), 1UL, 256UL) - 1;
+> +	/* DIV1 and DIV2 as the vendor kernel sets them. */
+> +	writel(FIELD_PREP(X1600_ADC_CLKDIV_DIV0, div0) |
+> +	       FIELD_PREP(X1600_ADC_CLKDIV_DIV1, 1) |
+> +	       FIELD_PREP(X1600_ADC_CLKDIV_DIV2, 99),
+> +	       adc->base + X1600_ADC_REG_CLKDIV);
+> +	reg = readl(adc->base + X1600_ADC_REG_STABLE) & ~X1600_ADC_STABLE_TIME;
+> +	writel(reg | FIELD_PREP(X1600_ADC_STABLE_TIME, 1),
+> +	       adc->base + X1600_ADC_REG_STABLE);
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	ret = devm_request_irq(dev, irq, x1600_adc_irq, 0, dev_name(dev), adc);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Failed to request irq\n");
+> +
+> +	/*
+> +	 * Powered up for good: the keys poll it every few tens of milliseconds,
+> +	 * and powering up takes 2 ms.
+> +	 */
+> +	writel(0, adc->base + X1600_ADC_REG_ENABLE);
+> +	usleep_range(2000, 3000);
+
+fsleep(2000);
+
+Lets us be lazy when thinking about what slack we
+should allow by standardizing it for us.
+
+
+> +	writel(0, adc->base + X1600_ADC_REG_CTRL);
+> +	ret = devm_add_action_or_reset(dev, x1600_adc_power_down, adc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	iio_dev->name = "x1600-adc";
+> +	iio_dev->modes = INDIO_DIRECT_MODE;
+> +	iio_dev->channels = x1600_adc_channels;
+> +	iio_dev->num_channels = ARRAY_SIZE(x1600_adc_channels);
+> +	iio_dev->info = &x1600_adc_info;
+> +
+> +	return devm_iio_device_register(dev, iio_dev);
+> +}
+

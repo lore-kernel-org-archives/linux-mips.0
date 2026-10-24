@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1792877125;
-	b=iupGF5odbjnL6PP1vNs8weAzs9eiF9QWn/4pusZTiatmhiSZ3PvFYi3ftKUTvM9G//1o
-	 YFE3lRZftEgNtPCGEGYdT/6beqJd9uovf0CpKGVbuO0v5UxDoF+7HMXZKU8Rn6Hvc3onj
-	 zX83LubJU6C78CPgpEhoBeqzeIcj07HPU0IJV+2Z1R8RG3i/cVM8z/sUlyErQko9dqclH
-	 uORXZVzKzTcm31iemLgM5IHV2QM9qNg+b9izmnorM7hn76M7l03jb3aMCP8tehalcuWvI
-	 MhZBVMq1qo+EudjzYvMjKkWDV8wL5zlmPrU586FcCmSlFHtg1w83pFxOQNM6Zm/Qrbg==
+	b=S6GD2aVH2gEyuEgLskZoeg3usxxGOzuVRLx7oZSDrvya1ju/swlpde/1FHUS6XPIBNp8
+	 5Nduqy4IENay/km6xNOkTkv0wR/GJv44vffv4i0y8BPn6YMnVzA4J6T+NZ4zPWp+NC5eT
+	 LpIJfRWjApuFPGFHrmMalLM8mpMwAzb5anGb3JVoC+BoiqciaRcFrNqeQP+A0ia13lRP6
+	 OxIV892FsTZemsyJFekftUgRZwN6pd74LeH1BBTJAFJTqq850KXkDjhfVhxf0mX+AcZQz
+	 l6Mqd+KVP+uzEw6aIDBuX0IrlsnHP49SwQqg9d5GmXPW/QR4eB06QZgckTjV6z1F6zQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792877125;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=nGZIgux4dcF0wxVmKrgwbkWNzR5F3QBaO3xEg5nVzkA=;
-	b=ZtKgk0UQzt+HeqpUv2+L522y+7rdEpsM90di436HKRxtmxypqqfrHfdMr6kCmUYJ8KYH
-	 LYZ0w6TIh9clls5R5PBsoqV2/bC7BCCfK7VC1Myd0ERKoQ1KBsVaQitht29Q9BJ2m1VyK
-	 x4anqCZQxEuVzLxUOUlrXa+j9XjLYGh+cG/WxhxTC0zPFeBdP+Zys4A96qkk9/tWZktuE
-	 G0zF4C1BvQ6y7ggfanohVh9N/QtuiDdg8A3z0F0D6WboUTXA5rKLaEEhhE3DCeha6eP+2
-	 gJgSGgupx3Vh5NCbwJl9arrwFnebIpcEwVhW+ClV40a3rPYonRrVvuWYMtu+fJAjGgQ==
+	bh=FT/A/DgEc/1PdtmIuuiz9qA/j5kLnlOWpR51oppuUm0=;
+	b=yfnMUD8wJl5zV7+ioLEsF1fV5AKZ9c8iRdlBLkFpwQRSfWtmG4pjWb4Cpssmqozlfx6T
+	 1tTvt35GWpQX0lRmhAlLKJ3XB8qJx2dYsOoxzUkdJGz7wjHrx0i1UtBnT+2RwE2FHqRJV
+	 6B0d04EWZoPWGeDbosSupI8h0gVXReKngkqOulPMigPynxbTmZxmiCViD4kb8b4aOhLgh
+	 qg1O/TqPPpbLzssM+z5xeOUVVSE+8DPEMNLM+udve78DjHxf6LM9qHdq4pF8bxMUgAPGX
+	 4wwaYyCytDmVOOJR3m+qIQv1mt84WWVyU6FaUgHNJpwN00mSCNqOECSC+JD3hbWLO7w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=Ywz6jNWt;
-	arc=none smtp.remote-ip=209.85.128.54
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=FFY9UXC4;
+	arc=none smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F20D606A323
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06180606A328
 	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 21:25:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5F20D606A323
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06180606A328
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=Ywz6jNWt
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4a5177d78c7so1161685e9.2
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=FFY9UXC4
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4a1b07c3c5fso17662425e9.1
         for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 14:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792877123; x=1793481923; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=nGZIgux4dcF0wxVmKrgwbkWNzR5F3QBaO3xEg5nVzkA=;
-        b=Ywz6jNWtzsxRtkyFVBhZshPwrQunRMgUPILFsH9evTboAM4skABoL/yKaEo5E0o+tb
-         xAOll3XcJQ0vKhHihRUGQ9EE+WJRcspfcTS16eR2rf9W2Xq7bRyS8PGHjbDfaeNwfgH4
-         j+GS4ApmTH2N3Y5F7Z8RtqhXrJ6aQMOj6fMBu2PZXsetcmZTcl49d3WO1AuJcxueokHr
-         AdCWEGD22+1xV1Q2b44q5EYWs91G/CnZVa+ZKJukfEt/Jw8bIdQtl4VjT1XGuH5oPa4c
-         FI8JypqIIwpUQ1LORLO3eE8dMNrthJdc5qJjS8sffwuMx0YrrTGDPF3ZfWfEkz8gVL8r
-         dmzA==
+        bh=FT/A/DgEc/1PdtmIuuiz9qA/j5kLnlOWpR51oppuUm0=;
+        b=FFY9UXC4nEgSwxaS/SuV8AKXzuWttgHbi8x3huR9cAIRIERXXxOiOL1H4056S67fKy
+         YHJyipd0Zk8OCh4mygo/AW5Zq4wNUSa0/srwX9oh9WnuMfdpOQpCL7idhjBfQhy4pBGH
+         by4wi+S8CG9zXPl8BkJXA9ZOB/bjoDoc9t7EjDySRlmH5FGqzzFnXZsiAdQFzD0biWxA
+         gxQL2k2L/AkwbBVc/RT3vdzBLteAzUV0wwaiEGrgXACrd/9+QHw4o94TgVrJS/8Y+8b3
+         CxFw7GgFGWvkbup+GIdekR39+ntWGKaXKmbhZHI0e2jCQGhigvdv/mQsQQRqkzhVACoD
+         Zcew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20260707; t=1792877123; x=1793481923;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=nGZIgux4dcF0wxVmKrgwbkWNzR5F3QBaO3xEg5nVzkA=;
-        b=FOavwMSbyezU20w8ku4l+jS/eKZ6Tav6T/qgfRJrc5Vv7KRmtJF0rOQZewju1VTt/d
-         LE9Z1ZGpG6GtrIBLTIPbn5157q2dgBwnnReOT3pCgUmoZVWX7JD5wsGc1AN63rNpxxmc
-         raVECB0J5BkwScMi5BnoGbsRRCnANMhnHqgOO11ia5F0i0xFJLDZQV150LddFKQg3fK6
-         jYQFclVLkI7OZaI5JF8+yapHWHFkeDdM5mCVvKxmBpGwmN2UN0GEKx6ft6ckN5Q/ktDT
-         0W/i4dmZ/CNFvRu3XOeR2rV+oXrA9JSxBs9XUnWy1Ihff5I3mRsBu/v4GaPeNVBbNcwe
-         qtAg==
-X-Forwarded-Encrypted: i=1; AKwUvBzX9Zv/MW1VJeHj3uCJ1xvmf33nqObJ/eVBtfLS33y3vo1Qe+UMBZvUyluI/zR7H4SOz4P/cwdSOkH1@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ3d4rXRIG5TlAPSiQsS2pMdeQj6vsEUuxWC97kkyUNmQX5gbwf
-	/e3xVuyowTB4/kS/cY4kr0ROVN18TyHU1ylN1dRZOyZwobhb7Elrk9vV+FmeSny4llU=
-X-Gm-Gg: AYBFou0nOAMY+i6mQD1PWrKcCq0ctFHSF41hQGUXxrT2bcm9GLJwQxErv3JriX7oTPV
-	W86J8UJpmdWniNkDVHUQ01rSSR/4WE3s4HP4p6ftNcmc3mC4+xFshm2imuyzv0De72FT4/Y76or
-	QB8SQWwwQx3PFARbQ7qgBm65PsRNAG7Pr3T/EOf6zr6Tcj8Z4Q/LWpYEuWn84wbvfjT4fyaE51F
-	OG5BQ2CN2F9lhiE+PVI+VXG6z7Z95eTJr0ctCHQFzBciFTIy0GYb/17EgBCAbjrmbVYEy8AX68D
-	RI1CVn8nm77TurxxQ5h0VKOQfx8kce0AWFit5StFI+b0m3riE75L5WGH30W4DKfTVTwiZOjVC7y
-	HP8TWjONfgU16ZV4K/s8IVyHbU1AUFQIaUYrxNFTNG2kfYpXy8aGimTjm8GN3cJmZ2XND6tdrKb
-	ma+wdal8oST1VLkRVGud2ZfBqDpq3ETedawR/D4c5YTlzfeDqgYyg4CmQStTbQrRqOxQxeAmfxx
-	dh7Vc9xd96Rkv2MMAE9tCAZ09pcuwg6Og+wcsMipO/FWx4NIPgiz/48yYQcckS+Bk+Wm2zA+uk9
-	q/Emoe/noYRxcKZoQvhi2ZXml1gNINp4ccPWFZLeBkGktaus8CPr51ub9cU/nLAF7y6YnVR/jPL
-	flLTykJbFNR2U7//HFUU=
-X-Received: by 2002:a05:600c:a00c:b0:4a1:fe55:88ef with SMTP id 5b1f17b1804b1-4a35aca4b9emr44250765e9.20.1792877122809;
-        Sat, 24 Oct 2026 14:25:22 -0700 (PDT)
+        bh=FT/A/DgEc/1PdtmIuuiz9qA/j5kLnlOWpR51oppuUm0=;
+        b=dQxumAdiZpBDGLqO+XeOBYCWrVY1gHM+9WLjb0nlpEpsE9Y6QW2Eqz8gXDT2Cl+LGF
+         wQPCs4qrlY67KM5XnR7J1RNVdTreHi0eNd6GK+q2Cf/bRSGYJ4XeQ2tmUpFjYvCmc3uO
+         xXnkaM3w8kETklWMksGwJ2W8buoZ6tHAN+iIDx6/x7x/jIe/q1aaHRGSApJLJmLcw41Z
+         Ay4Wog2g/9gp5+0WTvqLGi5bR5kHY925mqvc8qDzIjEOXw/aW9wtec+jU4hJ50Tp/fTL
+         DmGXc516oNsHRSdrw3Zw0cmiDZaWikly9E0OmeDGbA8/5eAZi0AfC2OTqvfXH/kNVMYH
+         5gZQ==
+X-Forwarded-Encrypted: i=1; AKwUvBz3cnnbu+yOGf2f2GOW8Lt3QCvZwYqXM7HMT4mlNinn92XqkYYwK/iRzf7vVCAc/bletpPlBOps+lJJ@vger.kernel.org
+X-Gm-Message-State: AFq9FYKivdmGkfqCN98MsYENYi2VuWVuK40N1Prwkohen+JbAJGrxTBz
+	ywPw5LmZmuDVgspF//CEC4jSPUEjntnS8qsB+loiTRN2wWKfsYOK+Y4VilWJLjGZ228=
+X-Gm-Gg: AYBFou3kv987xQ6QYlWV3yqGo8SFHRj2cASp+MYRP6fp0I5HnnZIEZ2TGnuiBaqZCQP
+	BELa3OkC4F+l9keEC8kIVFjz8Ex+Tc1hDJynHuOEoBc9/25R4E8Myfzz960aTZSX63BFZmvOvGL
+	ReotEYI5g60kBniwGWAixF6Sg3q+UPlB9cw5S5ZyuM5E/0wCkYfuoT0IZu+c8WO7emCqSNTcy+k
+	ntmfhJfhNA4op01A052m8tkt9N187Lrx8z5tekzzMwnhb64fPZsSrMdm4Oc5EdowN3YS/LU3caB
+	FDRpLmVQUimL7b8UxZRErWInOJMr6fPYLdZq6/aTQM7RFZD6tDjo1GMW7iCdiu1HQv9O6VSMvxe
+	pYv+2WaO2P8e056+Alj2LJTkOPSbiS1SsIu4a3MZbaih8aC/jrlibW8PnvVcTIff/wUY/KBzdON
+	EBtbKtpWBH9ZyAAU6o74wDU31DcDUPbAYOcfDhwYZZu0/lhalcfm2sraxUT5Doiapul/N93rW01
+	Ad15pCZzPmvW0RUVNNvjib+FkUAWrNDLRicWTsnvyA2s31N/R3TSr7hywY15ZjHSJVfSd46kULW
+	RBwFzBTxv+LOmFgRM/m2CnvWTb/vg5SHBQBedgdJO9UmBiIO8xSDA+aSfUhxmKuXm5C+Z5m1u+1
+	/RqFpvw0/7rZhRr8SFDQ=
+X-Received: by 2002:a05:600c:870c:b0:4a5:4589:24e2 with SMTP id 5b1f17b1804b1-4a545892686mr2153365e9.7.1792877123471;
+        Sat, 24 Oct 2026 14:25:23 -0700 (PDT)
 Received: from localhost.localdomain (2a01cb060184ad00bcfbae5efa3e0f0b.ipv6.abo.wanadoo.fr. [2a01:cb06:184:ad00:bcfb:ae5e:fa3e:f0b])
         by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a2ed5a2sm79597135e9.15.2026.10.24.14.25.22
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Oct 2026 14:25:22 -0700 (PDT)
+        Sat, 24 Oct 2026 14:25:23 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
 To: Andi Shyti <andi.shyti@kernel.org>
 Cc: Paul Cercueil <paul@crapouillou.net>,
@@ -91,9 +91,9 @@ Cc: Paul Cercueil <paul@crapouillou.net>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v2 1/2] i2c: jz4780: Program the spike suppression length
-Date: Sat, 24 Oct 2026 23:25:19 +0200
-Message-ID: <20261024212520.91401-2-olivier@mgcrea.io>
+Subject: [PATCH v2 2/2] dt-bindings: i2c: ingenic,i2c: Add the X1600
+Date: Sat, 24 Oct 2026 23:25:20 +0200
+Message-ID: <20261024212520.91401-3-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261024212520.91401-1-olivier@mgcrea.io>
 References: <20261024212520.91401-1-olivier@mgcrea.io>
@@ -108,70 +108,28 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The X1000 and the SoCs after it (X1830, X1600) have a spike suppression
-register at 0xa0: I2C_FLT in the X1000 programming manual, SMB_FLT in
-the X1830's, FS_SPKLEN in the X1600's. It holds the longest pulse on SCL
-or SDA, in APB clock cycles, that the controller filters out. It resets
-to 1, and the driver never writes it, so it keeps whatever ran before.
+The X1600's I2C controller has the X1000's registers, so it falls back
+to ingenic,x1000-i2c.
 
-On a HiBy R1 (X1600) started from the vendor kernel, the register held
-116. At 400 kHz with a 140 MHz APB clock, SCL is high for 102 cycles,
-so the filter hides the controller's own clock and every transfer ends
-in a lost arbitration (TXABRT 0x1000). Driving reads by hand on the R1
-with the filter set to each value: they work from 1 to 100 cycles and
-fail at 110 and above.
-
-Program the 50 ns the I2C specification sets as the longest spike to
-suppress in Fast-mode, rounded up to whole APB cycles (7 at 140 MHz).
-With it, the R1 reads back 7 on both controllers; after setting the
-filter to 116 by hand, the next transfer puts 7 back and 50 reads out of
-50 succeed.
-
-Suggested-by: H. Nikolaus Schaller <hns@goldelico.com>
 Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 ---
- drivers/i2c/busses/i2c-jz4780.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-jz4780.c b/drivers/i2c/busses/i2c-jz4780.c
-index 695be3b21460..d1bb75d9a102 100644
---- a/drivers/i2c/busses/i2c-jz4780.c
-+++ b/drivers/i2c/busses/i2c-jz4780.c
-@@ -58,6 +58,7 @@
- #define JZ4780_I2C_ENSTA	0x9C
- #define JZ4780_I2C_SDAHD	0xD0
- #define X1000_I2C_SDAHD		0x7C
-+#define X1000_I2C_FLT		0xA0
+diff --git a/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
+index b61fdc9548d8..9004f9799fd0 100644
+--- a/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
+@@ -24,6 +24,9 @@ properties:
+       - items:
+           - const: ingenic,jz4780-i2c
+           - const: ingenic,jz4770-i2c
++      - items:
++          - const: ingenic,x1600-i2c
++          - const: ingenic,x1000-i2c
  
- #define JZ4780_I2C_CTRL_STPHLD		BIT(7)
- #define JZ4780_I2C_CTRL_SLVDIS		BIT(6)
-@@ -253,6 +254,7 @@ static int jz4780_i2c_set_speed(struct jz4780_i2c *i2c)
- 	int cnt_period = 0;	/* period count of the SCL clock */
- 	int setup_time = 0;
- 	int hold_time = 0;
-+	int spike_len;
- 	unsigned short tmp = 0;
- 	int i2c_clk = i2c->speed;
- 
-@@ -356,6 +358,16 @@ static int jz4780_i2c_set_speed(struct jz4780_i2c *i2c)
- 			jz4780_i2c_writew(i2c, JZ4780_I2C_SDAHD, 0);
- 	}
- 
-+	/*
-+	 * The spike filter keeps whatever ran before left in it, and one longer
-+	 * than the SCL high period makes every transfer lose arbitration. Use
-+	 * the 50 ns the I2C specification sets for Fast-mode spikes.
-+	 */
-+	if (i2c->cdata->version >= ID_X1000) {
-+		spike_len = DIV_ROUND_UP(50 * dev_clk_khz, 1000000);
-+		jz4780_i2c_writew(i2c, X1000_I2C_FLT, clamp(spike_len, 1, 255));
-+	}
-+
- 	return 0;
- }
- 
-
-base-commit: 03a5cffc818695157414456dec695f7c30b9ffff
+   reg:
+     maxItems: 1
 -- 
 2.39.5
 

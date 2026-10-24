@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.84
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792862265;
-	b=PWyBzFvqM0B4tGuGXhXoa/VYQ8sgeJ8FFeITDiUp/g0jfH6CFLvL30dGYDxzB6Z+PfGk
-	 SVY2Xo1Vt4lNoxEB5LtJ9aPMvq6yC/zIZ4xWdfbHrNM+I+53gvuy5tIsCtMioR/jvej6f
-	 XTtcmd9M8F2Xj4t8rTVPROidJ+zT1ha2zqvfuK4ZnT+jnstO0YpW3tfKSN5rY8uXNq9Pz
-	 2MNGOVWj7YbfMq750IZeUxHhp3U2KcCtxRho2yCdNHU2vGaayHmN6kTiF5QZ/wvvPcyCc
-	 YGZ5Oq4FzdJYjy8lGIgMJrK/Ljn/Ar0TjqDt7YYDQHNe5P8nI5kp24dY16tnZmZSdRw==
+	t=1792862278;
+	b=aPdYXm6HYvA9JqlwRgx2AyJ1iNsmEjRZOZaBrk4dfInBY29AxGybGmWnHu9taoxwxjxf
+	 4kHpmm15Zj0Hw5j8ReIPFNc7Pjxf5ayAtylq2uXnQFassH1QEeaBxM/4qLK/3S9hU0JGa
+	 SBTm63Eg+o1aAsp2qsh6h5ontv6+zvdiSdTlEidSJTRZQZxnTmbTgyIO+8S+56v6htCg2
+	 xzicRA1EKDo0D81kOALJVpip6O4uUQ2GzfjAki56oXZ/pEDqLUmudZWp2xbE3obh7p57Y
+	 I0xjX8YwRuoOueHX8zjYXSHuPAM6P5TMh3fHa1wnoq4FKAiDJysmEMWKTpOENmd8kcg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792862265;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792862278;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
 	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=Jz4Cnd/nhouONlfQ/xSLSuMu4e8PJl5vjZF5FfVC+vg=;
-	b=0qDC+vObn7ScqBv896Gu6yEQoLpk92I/zu6WoryHuN2csBCTQb6vOuS6vPDnW5rIgrUi
-	 ybwnqjnE2JD8KARhR0Ol7uP1MxUgLWAjg4hEc92Xh2YzHEtcxKRcvWunLWrdF1R0QJ/k/
-	 DsP9pq6rQbu/xXnV3KyP1naB+b/NFSNCXk5DWzUmTTy2moDIVTGZhoAXTPaq3hxg02Nz8
-	 NpFysp/p1QqaIQ0vBojyQ8ydJIbEAmM7wiHZdb/Bu4ab6vwtKh9MW8SdLf3QuwHCzy+oG
-	 wsM9jY2m2Q6FYG1uxrYbFQvTQs/Y0ZHzaS7uDYyRwUclLFej6T3tHnPRWrmcERVbsvw==
+	bh=/QR3du3ZR7TxGnSlzBaOHpre8JHaWwlpkdHwAjzsG0E=;
+	b=FVp7QKTLQVTReQ2DanX8aNchQ7ifG23f28BzGBa+k0wB94mTfXMQlu1apYPSmizOL9e3
+	 C08EhlFj31pWAf1Qbrgv6jpBgHW74mmAbYSQRvoe7jo8imxUfxqImL0cmXN0CiVtWB9a7
+	 rbEWG7O6PWiEf5LsUcTgT8pDVSkBgoZCMcmrIwLKBVDnFMYo28FTxz0/nNFqSuOq5G31+
+	 HVCX5anf9iWkde98MMKCTbRRMODIW+rE5O7js9u+/NCN48E5YjmYRPqUJrz/rZRJNd9rf
+	 v30XnxaaC3lJyL6Q1PQCtTNlzHiYBV66wyrIXEU0T3ivZi1Yg6shWIvwcgqSz+dW9sQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=UUV6Y4Mv;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uyj2KSsT;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=VV3BUSos;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9w+QXjID;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.84
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316AD606A31A;
-	Sat, 24 Oct 2026 17:17:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 316AD606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D876D606A31A;
+	Sat, 24 Oct 2026 17:17:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D876D606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=UUV6Y4Mv;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uyj2KSsT
-ARC-Seal: i=1; a=rsa-sha256; t=1792862239; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=VV3BUSos;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9w+QXjID
+ARC-Seal: i=1; a=rsa-sha256; t=1792862257; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=SB8XZZrpIG6SFwH3MSks5cx+xyGlUX+Ypfd81+KKHWb9sU9b6EJdBNtKEl6ZrwG5wK
-    Q/Vvfu8FkcZZu3mWx51VrL565uoSpO7ofaTYo6c40SA6n9xCIe2iTluY/CX5H/2R1DMA
-    qmSYWut+aquMMSQTTN9AXfwcOst0f8ROoV/YvBvUmWzzxZDKYmMDxVwGWEB/kEUtOLM8
-    1gvBgILllwhAEe8niw8fkr/04Vq3YSJ6fptfWHvU/DXfN/Jbg/E9FpLFZY17BOHzCGep
-    KkbouDZyHqx9nHldSaphlqgL+3LfzKmCFgsWQBUvvNE+3NKTxJp/NnU+N/loYqCP3ZLQ
-    nxuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862239;
+    b=UpSOIFOuxxGSTuyq2/HHSepdOQXpQIdcCTw9aH6aChtN4C5AnbXAohQstrSpRxBnAr
+    4mn/wEwWUQaPIbazOTwlk+AKpU8TI1HoAiemJNRzNMFxxgginBzS7BP9gvToBwTg0Hzv
+    tocFd5e+zLFQmd/7BjgX9zh0wZ9gjm+vgtzpvE/vZqBIhpTSYO/2qaQ0EGNKxk3YfJFn
+    l33R2Af2C16PokJ3jMqgpEgMYMaeHIMcq6iBvMpXpzFnJtXRbW5gOdN4S3Tx5uwMihb1
+    R7vpZPZUVMPLDQ6tYY8Gl9AW9r6Nq9ziekX9sWBsJd7LkGqLxs/cF6B2Ul+PrQEkgYby
+    udpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862257;
     s=strato-dkim-0002; d=strato.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=Jz4Cnd/nhouONlfQ/xSLSuMu4e8PJl5vjZF5FfVC+vg=;
-    b=Jra9sXop+q5fbObrshwSaLYfc6YRGDps6bJiX0fmfWBRJEuTzaBu1nWmWwAXKdE9/z
-    w6f+F26YvoqHB8wzkTNYohgpTruuVb7DpNrc8IudBS182KFHV4+h9hI/dzu/N67eVw6X
-    uD5HrO2UnQlIPAS0y5aWNYYl9cG0PX7+oVdt7rc9OyG2To9Ea2kyBDqqeaCVoqlwu3UA
-    9TEbKLV9RqC21AoMSC7NnjlSsPdVM5MhDpfPGjBvgYZ5ZnuismPWBQoKmN54BOdYcoVi
-    9VFJievmln/hBHU9z6emWySunVnqKgXZc2t38ACYXnkdwcbx1uCe84zvxDBdqa1+qHl7
-    U5nA==
+    bh=/QR3du3ZR7TxGnSlzBaOHpre8JHaWwlpkdHwAjzsG0E=;
+    b=ZEWXGFrLNUN/s+PNjo2ZbhUe1KPCORZ1Dj7n0GocL/zmsIlgRv5UGyAQa+Gr30Yw7v
+    mD0OsIUtY2CH5ramvrmL8K+92co+RmgZ8TJXcqiw4kk6hzXapbHQhglFCw5j5ZAuAbEQ
+    uAQJb3nAih2grlFcbg3kyxoyHCw0VEVUSMCgv4jkMH33CnvGawYVw1LX1UjQKHzgEs7n
+    IfYUzpTxPqz46GwvY0xDBt8D0d7KrzC8zcc6uDaT+lh5B05JInkRkSdOyoigjxA+cGf+
+    vYtZznIpE+a9ijkWJft2c4YPZF6hgydEpEC4dp8RhIpHSAUP4rHKeeXXbJrReApLrrsq
+    zhkQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862239;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862257;
     s=strato-dkim-0002; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=Jz4Cnd/nhouONlfQ/xSLSuMu4e8PJl5vjZF5FfVC+vg=;
-    b=UUV6Y4Mv3ZMOQXx5JatK0g6hTe7VfU+r5qCKo3oYR9olahyEChj6Hh1avQBBNY8mLh
-    HNUEcVzOBgc9+piFEYkd37vfZT9MUp6e+CKig/pAkd4EzTc2nitdpAOsguPfCTFcO5z1
-    P3q7W3MQ9DqOtroJz+11pbcMBEE0ox+cOFVj6v+IM/FnfmnPxV/1UQT221tJ+TvLo1lA
-    Dxi7bgK1lY10Qs1tH/BWtIUHoMHdvGt0HXx6SWQtd3VlCGM4yEOWGUwttQ1Hr7ggw1r5
-    pwdHoc3PlW9ohYasKFAoyvPIs0iF3QMBeZee2jOlxPko1yNTPcFujC7N1Wm6NnNEl3RH
-    /QSA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792862239;
+    bh=/QR3du3ZR7TxGnSlzBaOHpre8JHaWwlpkdHwAjzsG0E=;
+    b=VV3BUSosD9xeDwCmwJgmrIpUdpc4TFkNnBYcv9H0vDvYGgIi5EhzEW9gq+zh6X+gVh
+    WvXsnyjB+KB4XKQg7g/FxK4e4wRrZdQ3fIUdVyQDTDjj0XrEc6W4NKlkeORpZA5Ot+2K
+    sHzZuOh0OPDV+oRVcEliOMiTHV73mMh0FvoVW+kWFQt6g4Es9DiNcYhz3NKX2ymSUGbm
+    bOQWx5XfhOgwp/L8LHS1gGLui2Yg2n6Uac/Z3HZZV0CtSveGbOoMX0WNGj1cso1v1zAr
+    Z3nF9j2oCugE/eZF4/bjadO5xno8kc/gVPUUR6QsNDVq4kYrQ8PXZ9AMjaTW+voxgA/6
+    Qiaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792862257;
     s=strato-dkim-0003; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=Jz4Cnd/nhouONlfQ/xSLSuMu4e8PJl5vjZF5FfVC+vg=;
-    b=uyj2KSsTvIPS4h1wX672U5aKGxQ1SUEA0IRBbemK8ZTZoeMmGVoodWKCFjigT7vsfT
-    ickwUHL3WbHQy/Jt2WCA==
+    bh=/QR3du3ZR7TxGnSlzBaOHpre8JHaWwlpkdHwAjzsG0E=;
+    b=9w+QXjIDX9jonH63ES/LXLFQ5VZBz9i0tdYw7MSrvIN/8ehBsVHr20OqeP6hlAXvp+
+    +RCLQBtQqmXmJhMSvxCw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV2poKzsiNzptYNlV1C1yk7253raiyx+O3Hxli"
 Received: from smtpclient.apple
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229OHHIwpn
+    with ESMTPSA id Qb56a229OHHbwpq
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
 	(Client did not present a certificate);
-    Sat, 24 Oct 2026 19:17:18 +0200 (CEST)
+    Sat, 24 Oct 2026 19:17:37 +0200 (CEST)
 Content-Type: text/plain;
 	charset=us-ascii
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -94,254 +94,125 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 2/2] ASoC: jz4740-i2s: Add support for the X1600
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261023152011.85407-2-olivier@mgcrea.io>
-Date: Sat, 24 Oct 2026 19:16:47 +0200
-Cc: Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Paul Cercueil <paul@crapouillou.net>,
+In-Reply-To: <20261023204209.48556-1-olivier@mgcrea.io>
+Date: Sat, 24 Oct 2026 19:17:07 +0200
+Cc: Jonathan Cameron <jic23@kernel.org>,
+ David Lechner <dlechner@baylibre.com>,
+ =?utf-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+ Andy Shevchenko <andy@kernel.org>,
  Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>,
  Conor Dooley <conor+dt@kernel.org>,
- linux-sound@vger.kernel.org,
+ Paul Cercueil <paul@crapouillou.net>,
+ linux-iio@vger.kernel.org,
  devicetree@vger.kernel.org,
  linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
  Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
  Paul Boddie <paul@boddie.org.uk>,
  Andreas Kemnade <akemnade@kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <396AA4F3-A78E-47E5-83E0-546A813D6738@goldelico.com>
-References: <20261023152011.85407-1-olivier@mgcrea.io>
- <20261023152011.85407-2-olivier@mgcrea.io>
+Message-Id: <998458A1-5304-40B1-947D-C268AA8C067A@goldelico.com>
+References: <20261023204209.48556-1-olivier@mgcrea.io>
 To: Olivier Louvignes <olivier@mgcrea.io>
 X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
-Hi,
+HI,
 
-> Am 23.10.2026 um 17:20 schrieb Olivier Louvignes <olivier@mgcrea.io>:
+> Am 23.10.2026 um 22:42 schrieb Olivier Louvignes <olivier@mgcrea.io>:
 >=20
-> The X1600's AIC is the X1000's, with two differences.
->=20
-> Its I2SDIV register holds the bit clock divider itself, not the =
-divider
-> minus one, and drops the lowest bit of what is written. The driver =
-writes
-> div - 1 and, from a 22.5792 MHz clock, asks for 44.1 kHz with 7: the
-> register keeps 6, and the stream plays at 58.8 kHz (measured on a HiBy =
-R1
-> from the PCM hardware pointer: 44,100 expected, 58,700 observed).
-
-In addition compared to the x1000 there are separate TX and RX dividers
-(RDIV and TDIV).
-
-x2000 has no comparable AIC.
-
-The x2600 has again a different divider setup in the I2SDIV register
-(5 bit MDIV and 9 bit TDIV) but shares the bus address with the x1000
-while the x1600 has a different one.
-
->=20
-> Its AICCR has a channel count in bits 27:24 that the driver never =
-wrote.
-
-x2600 has the same AICCR, but in programming manual of both, bit 27 is a
-Reserved bit? Bit 24:26 indeed define the number of channels and there =
-is
-mono (0x0) and stereo (0x1).
-
-> It held 1 (two channels) in every stream I saw, and with it a mono
-> stream is taken two samples per frame, as left and right, so it plays =
-an
-> octave high and ends in half the time even with MONO_TO_STEREO set.
-> Write the number of channels minus one, as for stereo, and mono plays =
-at
-> the right speed (a 6 s mono stream took 3 s before, and 8 s took 7 s
-> once the field was cleared after one second).
->=20
-> Add an X1600 entry that picks even dividers, writes them as they are =
-and
-> sets the channel field.
->=20
-> Tested on a HiBy R1 (Ingenic X1600) with a CS43131 DAC, on v7.3: 44.1
-> and 48 kHz run at the right rate.
-
-I can't test because our board has no audio codec.
-
+> The X1600's SAR ADC has four auxiliary channels and none of the
+> touchscreen or battery engines of the JZ47xx ADCs in
+> ingenic,adc.yaml, so it gets a binding of its own.
 >=20
 > Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 > ---
-> Changes in v2:
-> - Also write the number of channels, minus one, into AICCR bits 27:24
->   (X1600 only). I found after v1 that the driver never wrote that =
-field:
->   it held 1 in every stream I saw, and with it a mono stream is taken =
-two
->   samples per frame, so it plays an octave high and finishes in half =
-the
->   time. Measured on the R1 with silence: 6 s of mono took 3 s before =
-and
->   6 s with this, at 44.1 and 48 kHz; mono and stereo now have the same
->   pitch by ear. That the field is a channel count is my inference from
->   this, there is no datasheet here: if one of you knows the register,
->   please say so.
+> .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 60 +++++++++++++++++++
+> 1 file changed, 60 insertions(+)
+> create mode 100644 =
+Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
 >=20
-> sound/soc/jz4740/jz4740-i2s.c | 44 +++++++++++++++++++++++++++++------
-> 1 file changed, 37 insertions(+), 7 deletions(-)
->=20
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c =
-b/sound/soc/jz4740/jz4740-i2s.c
-> index d36bbc820618..5153fedc5978 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -38,6 +38,7 @@
-> #define JZ_AIC_CONF_SYNC_CLK_MASTER BIT(1)
-> #define JZ_AIC_CONF_ENABLE BIT(0)
->=20
-> +#define JZ_AIC_CTRL_CHANNEL GENMASK(27, 24)
-
-should be 26, 24
-
-> #define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE GENMASK(21, 19)
-> #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE GENMASK(18, 16)
-> #define JZ_AIC_CTRL_ENABLE_RX_DMA BIT(15)
-> @@ -71,6 +72,16 @@ struct i2s_soc_info {
-> struct reg_field field_i2sdiv_playback;
->=20
-> bool shared_fifo_flush;
-> + /*
-> + * I2SDIV holds the bit clock divider itself rather than the divider
-> + * minus one, and only keeps even values (X1600).
-> + */
-> + bool i2sdiv_even;
-> + /*
-> + * AICCR has the number of channels, minus one, in bits 27:24, which
-> + * the AIC uses to size a frame in the FIFO (X1600).
-> + */
-> + bool channel_field;
-> };
->=20
-> struct jz4740_i2s {
-> @@ -218,16 +229,17 @@ static int jz4740_i2s_set_fmt(struct snd_soc_dai =
-*dai, unsigned int fmt)
-> }
->=20
-> static int jz4740_i2s_get_i2sdiv(unsigned long mclk, unsigned long =
-rate,
-> - unsigned long i2sdiv_max)
-> + unsigned long i2sdiv_max, unsigned int step)
-> {
-> unsigned long div, rate1, rate2, err1, err2;
->=20
-> div =3D mclk / (64 * rate);
-> + div -=3D div % step;
-> if (div =3D=3D 0)
-> - div =3D 1;
-> + div =3D step;
->=20
-> rate1 =3D mclk / (64 * div);
-> - rate2 =3D mclk / (64 * (div + 1));
-> + rate2 =3D mclk / (64 * (div + step));
->=20
-> err1 =3D abs(rate1 - rate);
-> err2 =3D abs(rate2 - rate);
-> @@ -241,8 +253,8 @@ static int jz4740_i2s_get_i2sdiv(unsigned long =
-mclk, unsigned long rate,
-> */
-> if (div <=3D i2sdiv_max && err1 <=3D err2 && err1 < rate/20)
-> return div;
-> - if (div < i2sdiv_max && err2 < rate/20)
-> - return div + 1;
-> + if (div + step <=3D i2sdiv_max && err2 < rate / 20)
-> + return div + step;
->=20
-> return -EINVAL;
-> }
-> @@ -281,6 +293,12 @@ static int jz4740_i2s_hw_params(struct =
-snd_pcm_substream *substream,
-> ctrl &=3D ~JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE;
-> ctrl |=3D FIELD_PREP(JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE, sample_size);
->=20
-> + if (i2s->soc_info->channel_field) {
-> + ctrl &=3D ~JZ_AIC_CTRL_CHANNEL;
-> + ctrl |=3D FIELD_PREP(JZ_AIC_CTRL_CHANNEL,
-> +   params_channels(params) - 1);
-> + }
-
-looks ok.
-
+> diff --git =
+a/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml =
+b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> new file mode 100644
+> index 000000000000..7886836b10c6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ingenic,x1600-adc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> if (params_channels(params) =3D=3D 1)
-> ctrl |=3D JZ_AIC_CTRL_MONO_TO_STEREO;
-
-Hm. doesn't this logic contradict the above logic of having 1 channel?
-It should not be changed for the x1600 since this bit is x1000 only.
-
-Here the x1600 PM contradicts itself and talks about mono to stereo =
-expansion
-feature, but the MS bit is missing and "reserved"). Note: the x2600 also =
-lacks
-this feature.
-
-> else
-> @@ -305,13 +323,14 @@ static int jz4740_i2s_hw_params(struct =
-snd_pcm_substream *substream,
-> */
-> if (conf & (JZ_AIC_CONF_BIT_CLK_MASTER | JZ_AIC_CONF_SYNC_CLK_MASTER)) =
-{
-> div =3D jz4740_i2s_get_i2sdiv(clk_get_rate(i2s->clk_i2s),
-> -    params_rate(params), i2sdiv_max);
-> +    params_rate(params), i2sdiv_max,
-> +    i2s->soc_info->i2sdiv_even ? 2 : 1);
-> if (div < 0)
-> return div;
-> }
->=20
-> regmap_write(i2s->regmap, JZ_REG_AIC_CTRL, ctrl);
-> - regmap_field_write(div_field, div - 1);
-> + regmap_field_write(div_field, i2s->soc_info->i2sdiv_even ? div : div =
-- 1);
-
->=20
-> return 0;
-> }
-> @@ -382,6 +401,16 @@ static const struct i2s_soc_info =
-x1000_i2s_soc_info =3D {
-> .field_i2sdiv_playback =3D REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 8),
-> };
->=20
-> +static const struct i2s_soc_info x1600_i2s_soc_info =3D {
-> + .dai =3D &jz4740_i2s_dai,
-> + .field_rx_fifo_thresh =3D REG_FIELD(JZ_REG_AIC_CONF, 24, 27),
-> + .field_tx_fifo_thresh =3D REG_FIELD(JZ_REG_AIC_CONF, 16, 20),
-> + .field_i2sdiv_capture =3D REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 8),
-> + .field_i2sdiv_playback =3D REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 8),
-> + .i2sdiv_even =3D true,
-> + .channel_field =3D true,
-> +};
+> +title: Ingenic X1600 ADC
 > +
-> static struct snd_soc_dai_driver jz4770_i2s_dai =3D {
-> .playback =3D {
-> .channels_min =3D 1,
-> @@ -493,6 +522,7 @@ static const struct of_device_id =
-jz4740_of_matches[] =3D {
-> { .compatible =3D "ingenic,jz4770-i2s", .data =3D &jz4770_i2s_soc_info =
-},
-> { .compatible =3D "ingenic,jz4780-i2s", .data =3D &jz4780_i2s_soc_info =
-},
-> { .compatible =3D "ingenic,x1000-i2s", .data =3D &x1000_i2s_soc_info =
-},
-> + { .compatible =3D "ingenic,x1600-i2s", .data =3D &x1600_i2s_soc_info =
-},
-> { /* sentinel */ }
-> };
-> MODULE_DEVICE_TABLE(of, jz4740_of_matches);
+> +maintainers:
+> +  - Olivier Louvignes <olivier@mgcrea.io>
+> +
+> +description:
+> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input =
+channels
+> +  measured against a 3.3 V reference. Its clients select a channel by =
+index
+> +  through "io-channels".
+> +
+> +properties:
+> +  compatible:
+> +    const: ingenic,x1600-adc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: adc
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - '#io-channel-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    adc@10070000 {
+> +        compatible =3D "ingenic,x1600-adc";
+> +        reg =3D <0x10070000 0x30>;
+> +
+> +        clocks =3D <&cgu 28>;
+> +        clock-names =3D "adc";
+> +
+> +        interrupt-parent =3D <&intc>;
+> +        interrupts =3D <11>;
+> +
+> +        #io-channel-cells =3D <1>;
+> +    };
+>=20
+> base-commit: a3b3580713f3ac5a32dc2874ee546828977a1d68
 > --=20
 > 2.39.5
 >=20
+>=20
 
-Otherwise this looks reasonable and it might need some x2600 adjustments
-in the future.
+Good to get such a driver. Thanks.
 
 BR, H. Nikolaus Schaller <hns@goldelico.com>
+
 

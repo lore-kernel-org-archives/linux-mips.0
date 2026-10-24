@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.166
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.168
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792862638;
-	b=Yhm7qurJMayXU9lUf/NRaqHwnt3PF21X0lX6oYBNiIoJ3VcIxNY2f8GzpVuMKNJ8Ccbo
-	 Ge7RsDfNJF397jAgosP9KOXanTkoOsfrwl6eSGxG1eBuML5f5yWoChMacf72bzPnh3BA7
-	 uk6RJSsP3807VH9GZ0rqZfpIKK/0VasFHY95VJWXIN1N+tThk8NY0/K3Bhr0CoO0Tymbk
-	 mNpqqUXjkiPFadZFWcTYnuZVb2fu5OkDSLQc3+5DvL+xTToGcOv5a1GwEZWon8+vG3dXX
-	 qqidsHxjTtfsjfPmvWx7SqULltu+ZvgI+uvmqb1ajm224wQfI8UgntYPOwbcmDnPvkQ==
+	t=1792862667;
+	b=UYl9dNlqZYC9HRuH/tHwZgUR0koCe7vpkz18NyGOpLYpZj3jovTwPg3jY+nM394XgVoo
+	 f+OnGvk7n+BL6qu14Ip4dezrFH90BvBUeh1KG5rxDJLlhiz06l8NrRa7ZPl8UctwKAaDc
+	 ueTE1sHSx/1yGt29vYsseRkoQ+7OjzTtP8QnxlPsSXrCTyghWnNeZTiNmguvLnvbKlr7j
+	 VgOJ3tP6F1vbppEIjBKFnxSTxYLs2knJ3+Jn+r798WDuEZLERjexoYeQa3QMg+BPDHj5S
+	 5IXTKb9hMRxcDmbaAudd/loIDFgVYKitjrLq1A+xijbWq6XkjKrgzEkgK4nnMYACvDQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792862638;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792862667;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
 	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=M9m5zzaSa9x02c7lCxTqJXB+aAtIcTuE3vabyXJlYe0=;
-	b=Lhj5mnAjAGKY3EeseCs3U9nahSLSdcpKZSavCA8iPmogqGrensI830uzjlQHwuNl4qJg
-	 61V2YVEa8uMpHN+7vTTlhJUdAJ0ZKDHWf0xAcFWoKFTImbhdXdAMy2ZDD7X/JYyEmk5w/
-	 78XBW4jhim3c79lXpHI/kCWwXSf1pyR79Ixb53FZDHZ7zY2r4d/4E6mnA04b8SA//fgSQ
-	 q1e2vnneItTgHTSauMW2sMHHRXRWMU6C4jFzD5rbOi5D/HeN+cpTA30dByO/EDsr9oiGV
-	 fMFlCgsIPOZe+EqpLdb6z08z9/KYXghbf8Pu3Sxb2uiG5pjDEAqUfKzdYMaRB/eRQRA==
+	bh=NyHZ1WoLFJCbwQ2arInuj/P7au0hCeBBoItzKYMGoJc=;
+	b=IigrCUDopebSbquHB9zRUxK/qu9paNDG4/ZO5H0j5nm9VEpwDcMAaAa8tKkMROBdTQk4
+	 DuvY53LY5psLwvEmvt/1fRlf5rvXQv9oErbnl+pkgsf1hJkGtdkIXITMtKNtqEG+ON4gz
+	 wzPXgfbUm5cYBiQ59wJd/QuMkBLYdl8fTGndzafN3P/ts4Nm5uTlbyugTUpzlSmfkBlYE
+	 XxUkciWtkB53ZB9G0SoUtSS1+Hk/nMoAoCBdNl3SOetYA3uHPUNqgxoGeSbgP/pwUhf67
+	 9ciMq9pC1NcClibKEmR7+YP+k3FVdrnv09fJ9XFf44IsmpxLUJvZaG25j+Q4nPZlexg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="abwLC/p2";
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="2Jq7/VTT";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.166
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=i9TSvpbd;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=SPOQVknT;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.168
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205D2606A31A;
-	Sat, 24 Oct 2026 17:23:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 205D2606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D149D606A325;
+	Sat, 24 Oct 2026 17:24:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D149D606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=abwLC/p2;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=2Jq7/VTT
-ARC-Seal: i=1; a=rsa-sha256; t=1792862626; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=i9TSvpbd;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=SPOQVknT
+ARC-Seal: i=1; a=rsa-sha256; t=1792862649; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=bFjv2h8C9fooxwGDjur2bBKmhkxWD8iMQO71jSZpt03sGOm2pffpBjztslvGPXd8m8
-    oZPXAIEEfe9ISc/uoCoBfGXkkHP2E8mNYEgI0Ywx9R0x90XIdJprdRCowJQc+cR94tDR
-    plETGz9n9HiyHGvcjQZ0xIlAIqSYjgj02IBGIqYBZ05Mc4+ZiVBQUV/SIQ+WYy0THv3W
-    itSsSabToaDs9OpucpmGAXRCE+5vxcYUqH1h4JnqWZLYwUaoBApbomcd5L0oTA1lwL19
-    h7cP8D+rb3LkUpsKiVmDcBaDCfWrShmpENWaTiFZ6m8HCfBl7coHWIfzvOtRoVI7cAMF
-    2c3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862626;
+    b=jWrDuyazXjEy4vkpfI7W4/MDGM7AShl+mzr/jFNHg10kTrf3CE51oBMLp2hoXusWcZ
+    VAI+ZNw/HLCs5gBMXS3q1D+0IGNdcJhDd1VIQjMGSXs2gyMK3s4pNxQ5i/pyyzL+Y/mb
+    MNs+qOldJdnsuwRfl7spt93x3GQuxu0YxqpwKmea9jo+n8dYDv15p8ZBtJqKnfw1q050
+    r4IaER/JhYz5izunecNTHgJwCIZKDpauWNQxOw/kGRPOei6DIL8TnhQ6C0B3a71A5U9v
+    pHIRzy5QoI8TUQGP9S/WW4BgKKVHq1M3n8YgOFGZWoR9eYOcduSfGtSu5pGGUOnH10wr
+    tfvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862649;
     s=strato-dkim-0002; d=strato.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=M9m5zzaSa9x02c7lCxTqJXB+aAtIcTuE3vabyXJlYe0=;
-    b=OZ7CYd8vWN1/qtzIzCdltFCK2faWcP6Nf+5Qs8moEsK1Pa/h6K1r+BY1TyrDLEM+hC
-    1BstVBsvHtSX6nGxRgXttAasRwkhjJT/T0N4qFKRp5ajCYekEVZPX3hcgFbsIT63MSgh
-    kL1OLjK/2IQScK6iFFWZ1ycXKuT5MEhjkYNgAuTKDVZnMakuuAr3Wr7W3sokymVgaQW5
-    kJa2vSAtpli0k+OknqgEwqi9XXbbVGuRWeH8skEqnDmX7MvgFtyKV4zRe9HgpsU9r1Qb
-    80lFqX5cu5NqxrVOIYpY3RvhCbbpr9+D9pP7e+WPltTnAc/QZ6M3AsKWziqlxi1fl9e2
-    ga3w==
+    bh=NyHZ1WoLFJCbwQ2arInuj/P7au0hCeBBoItzKYMGoJc=;
+    b=Q+v2/y48Y3avZwrJBRPVcOFdHMCJ4vCjgFYZfoXfhCPRtEDJmUT3HZetjT4k+ZRcbs
+    8CCEkIagJepUJed9dCRnjgrr3ZdynI8tpaOAoiENlQE8PrUPVWIm6/87CnWR3KEFb8W4
+    3UJA56o2DjroCzAVDMNXT4L7NZrzRG4t0AseRyBmrPD3NpEDLYPT5EMHuks07p+ACsxX
+    YWug/O0t9Ne4CkwYHAms/QB92Z3gCPJQWCPZ7JWCa3eJKYps0zqzWburvSaZAT4gbZ3D
+    NM7wNKfic/nS0wFRaBdpa2+2C5AH6wfagS/kbMvFVANft1/1aoUwNQGxVn6jwGw5XKph
+    v4nA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862626;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792862649;
     s=strato-dkim-0002; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=M9m5zzaSa9x02c7lCxTqJXB+aAtIcTuE3vabyXJlYe0=;
-    b=abwLC/p2md+SjBsSzF62IL4A5mo0slDrCt8vw5V1Sm/mK0n3TIPqKI9YRsiQLhfPxF
-    /ZdjQuD7lx6EG+Yb3GEI9tFSAExuPiRT99odB6JX0SZBU1f2ZAXvU6jXUeKDqqFTkJYY
-    EbODiQqlJOax3AZvFBJTUK++J9WwR8d6YkF0DTFZLLnRqgKAepEHMM2GESdnBR1NPt2/
-    BpcM2Amx31zZJ239KnSPos1xq6T/NLAyn+NMJPUkfDOul0zqz+Xe3SZs84rIdlWO5VPq
-    n5ABZdhSMQOibpQngJfP6jnrM1jtoybryzHON+4RCL1T6fd+Un2dhoPb8N9fODnSOQdz
-    MZVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792862626;
+    bh=NyHZ1WoLFJCbwQ2arInuj/P7au0hCeBBoItzKYMGoJc=;
+    b=i9TSvpbd37gE6jfegnD3Z3erHiN4OvPF6zipTyh3t0onAFd2DBlYLbxirUZuZXB8HK
+    GGSlTbP18AoUJ1sxrvUovIeyDORgYMOIDGYXDF+GvbjUWMoPrXPp3C/gQz5aX66jBi6x
+    223wBrhSYhkL1W312PIIiYF/hDakgfXpjhC/zIImxobagaZw9QciRrvjxMjWB6Yjg2K2
+    HU+/r1jth9RCxBPhQ71y2NIabF404jRQwLTvSIeK2NYscY8CQh3INCrl193arnbhN5JC
+    +muAhJIBkoMEZSFQhh8pfNfCxLywZA6QKbYA9ihpwOPDnYlZFCe7avCFRhTxIzgy93c5
+    mbNA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792862649;
     s=strato-dkim-0003; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=M9m5zzaSa9x02c7lCxTqJXB+aAtIcTuE3vabyXJlYe0=;
-    b=2Jq7/VTTRVBfmbeXTT0xwzHULw34qqan+v9q3EK3vu4cGIS8ovV9nBfO2PAms/XgWJ
-    zUlWsSKtJqotPh+CfRBw==
+    bh=NyHZ1WoLFJCbwQ2arInuj/P7au0hCeBBoItzKYMGoJc=;
+    b=SPOQVknTUWL1nHVOqPBECoNFNFh1C/+eyHbPha2FX1ExbuVj8eLHIwnsCfupEHDvpZ
+    qillqK50DC8jlW09F8Cg==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV2poKzsiNzptYNlV1C1yk7253raiyx+O3Hxli"
 Received: from smtpclient.apple
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229OHNjwqO
+    with ESMTPSA id Qb56a229OHO8wqQ
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
 	(Client did not present a certificate);
-    Sat, 24 Oct 2026 19:23:45 +0200 (CEST)
+    Sat, 24 Oct 2026 19:24:08 +0200 (CEST)
 Content-Type: text/plain;
 	charset=us-ascii
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -94,165 +94,98 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH 2/2] serial: 8250_ingenic: Start the X1600 UART from 16
- clocks a bit
+Subject: Re: [PATCH] pinctrl: ingenic: Add the X1600's 32 kHz clock output
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261024051515.55639-2-olivier@mgcrea.io>
-Date: Sat, 24 Oct 2026 19:23:15 +0200
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
+In-Reply-To: <20261024051639.67806-1-olivier@mgcrea.io>
+Date: Sat, 24 Oct 2026 19:23:38 +0200
+Cc: Linus Walleij <linusw@kernel.org>,
  Paul Cercueil <paul@crapouillou.net>,
- linux-serial@vger.kernel.org,
- devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
  linux-mips@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
  Paul Boddie <paul@boddie.org.uk>,
  Andreas Kemnade <akemnade@kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <ACAE791A-545A-4AB7-842B-BD3F4ABE9208@goldelico.com>
-References: <20261024051515.55639-1-olivier@mgcrea.io>
- <20261024051515.55639-2-olivier@mgcrea.io>
+Message-Id: <51688C86-1907-4B89-8A65-2A90D4B59261@goldelico.com>
+References: <20261024051639.67806-1-olivier@mgcrea.io>
 To: Olivier Louvignes <olivier@mgcrea.io>
 X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
 Hi,
 
-> Am 24.10.2026 um 07:15 schrieb Olivier Louvignes <olivier@mgcrea.io>:
+> Am 24.10.2026 um 07:16 schrieb Olivier Louvignes <olivier@mgcrea.io>:
 >=20
-> The X1600 UART samples each bit with UMR clocks, adjusted per bit by
-> UACR, while the divisor the 8250 core computes assumes 16. The driver
-> never sets them, so the UART keeps what ran before it: on a HiBy R1 =
-the
-> vendor kernel leaves UART0's UMR at 8, which by the register's meaning
-
-So this patch adjusts a driver to a specific board and not the x1600 =
-chip?
-
-Then, this asks for a device tree property if it is really needed.
-
-Or it should be fixed in U-Boot. Otherwise, assuming now that UMR =3D 16 =
-is
-correct for all x1600 boards would introduce a big issue for other =
-boards
-which suddenly stop working at the previously correct rate.
-
-> doubles every rate set here (the line rate itself was not measured). =
-The
-> Bluetooth chip on that UART then never answers: "command 0xfc18 tx
-> timeout" from hci_bcm.
+> PC26's function 0 puts out the RTC's 32 kHz clock. The vendor device
+> tree calls that pin setting "rtc32k-enable" (function 5 is its
+> "rtc32k-disable"). Add an "rtc32k" group and function for it.
 >=20
-> Add an X1600 entry that writes UMR =3D 16 and UACR =3D 0 at probe. The
-> offsets come from Rockbox's X1600 register headers and match the UMR
-> read on the R1. The X1000, whose compatible the X1600's falls back to,
-> may have the same registers, but I could not check one, so it is left
-> alone.
-
-Well, it should be checked...
-
-... the x1000 has the same register.
-
-Of course it does not seem to be a standard 8250 register. Anyways,
-it should be checked is how other 8250 drivers handle special/private
-register setup.
-
-Or this should even become part of the clock setup?
-
->=20
-> Tested on a HiBy R1: UMR reads 16 and UACR 0 after probe, and the
-> BCM43430A1 on UART0 comes up at 1.5 Mbaud and streams A2DP audio.
+> Used on a HiBy R1, whose Bluetooth chip takes it as its sleep clock: =
+on
+> a cold boot without it the chip does not answer its reset, with it the
+> chip comes up. The clock on the pin was not measured.
 >=20
 > Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 > ---
-> The test on the R1 ran with the same reset placed in the X1000 entry; =
-the
-> R1's device tree lists "ingenic,x1600-uart" first, so it takes the =
-same
-> path with this version. Build-tested with W=3D1 on tty-next.
+> drivers/pinctrl/pinctrl-ingenic.c | 4 ++++
+> 1 file changed, 4 insertions(+)
 >=20
-> drivers/tty/serial/8250/8250_ingenic.c | 18 ++++++++++++++++++
-> 1 file changed, 18 insertions(+)
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c =
+b/drivers/pinctrl/pinctrl-ingenic.c
+> index 1aa6a6dc1209..ac6e2a152bdd 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -2452,6 +2452,7 @@ static int x1600_pwm_pwm6_b20_pins[] =3D { 0x34, =
+};
+> static int x1600_pwm_pwm7_b10_pins[] =3D { 0x2a, };
+> static int x1600_pwm_pwm7_b21_pins[] =3D { 0x35, };
 >=20
-> diff --git a/drivers/tty/serial/8250/8250_ingenic.c =
-b/drivers/tty/serial/8250/8250_ingenic.c
-> index 0cdadacd7019..40307189021b 100644
-> --- a/drivers/tty/serial/8250/8250_ingenic.c
-> +++ b/drivers/tty/serial/8250/8250_ingenic.c
-> @@ -25,6 +25,7 @@
-> struct ingenic_uart_config {
-> int tx_loadsz;
-> int fifosize;
-> + bool has_umr;
+> +static int x1600_rtc32k_pins[] =3D { 0x5a, };
+
+Yes, is PC26.
+
+> static int x1600_mac_pins[] =3D {
+> 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c,
+> };
+> @@ -2511,6 +2512,7 @@ static const struct group_desc x1600_groups[] =3D =
+{
+> INGENIC_PIN_GROUP("pwm7-b10", x1600_pwm_pwm7_b10, 1),
+> INGENIC_PIN_GROUP("pwm7-b21", x1600_pwm_pwm7_b21, 2),
+> INGENIC_PIN_GROUP("mac", x1600_mac, 1),
+> + INGENIC_PIN_GROUP("rtc32k", x1600_rtc32k, 0),
+
+Yes, it is on Function 0.
+
 > };
 >=20
-> struct ingenic_uart_data {
-> @@ -40,6 +41,10 @@ static const struct of_device_id of_match[];
-> #define UART_MCR_MDCE BIT(7)
-> #define UART_MCR_FCM BIT(6)
+> static const char * const x1600_uart0_groups[] =3D { "uart0-data", =
+"uart0-hwflow", };
+> @@ -2557,6 +2559,7 @@ static const char * const x1600_pwm6_groups[] =3D =
+{ "pwm6-b9", "pwm6-b20", };
+> static const char * const x1600_pwm7_groups[] =3D { "pwm7-b10", =
+"pwm7-b21", };
 >=20
-> +/* Clocks a bit, 16 for the divisor the 8250 core computes, and their =
-per-bit adjustment. */
-> +#define UART_UMR 9
-> +#define UART_UACR 10
-> +
-> static struct earlycon_device *early_device;
+> static const char * const x1600_mac_groups[] =3D { "mac", };
+> +static const char * const x1600_rtc32k_groups[] =3D { "rtc32k", };
 >=20
-> static uint8_t early_in(struct uart_port *port, int offset)
-> @@ -298,6 +303,12 @@ static int ingenic_uart_probe(struct =
-platform_device *pdev)
-> }
-> uart.port.uartclk =3D clk_get_rate(data->clk_baud);
->=20
-> + /* Whatever ran before may have left another count: 8 on a HiBy R1. =
-*/
-> + if (cdata->has_umr) {
-> + writel(16, uart.port.membase + (UART_UMR << uart.port.regshift));
-> + writel(0, uart.port.membase + (UART_UACR << uart.port.regshift));
-> + }
-> +
-> data->uport =3D serial8250_register_8250_port(&uart);
-> if (IS_ERR(data->uport)) {
-> err =3D PTR_ERR(data->uport);
-> @@ -344,6 +355,12 @@ static const struct ingenic_uart_config =
-x1000_uart_config =3D {
-> .fifosize =3D 64,
+> static const struct pinfunction x1600_functions[] =3D {
+> INGENIC_PIN_FUNCTION("uart0", x1600_uart0),
+> @@ -2581,6 +2584,7 @@ static const struct pinfunction =
+x1600_functions[] =3D {
+> INGENIC_PIN_FUNCTION("pwm6", x1600_pwm6),
+> INGENIC_PIN_FUNCTION("pwm7", x1600_pwm7),
+> INGENIC_PIN_FUNCTION("mac", x1600_mac),
+> + INGENIC_PIN_FUNCTION("rtc32k", x1600_rtc32k),
 > };
 >=20
-> +static const struct ingenic_uart_config x1600_uart_config =3D {
-> + .tx_loadsz =3D 32,
-> + .fifosize =3D 64,
-> + .has_umr =3D true,
-
-the x1000 has it as well. And even the jz4780. So correctly setting this
-flag (as it is named) for more SoC variants will break more boards...
-
-> +};
-> +
-> static const struct of_device_id of_match[] =3D {
-> { .compatible =3D "ingenic,jz4740-uart", .data =3D &jz4740_uart_config =
-},
-> { .compatible =3D "ingenic,jz4750-uart", .data =3D &jz4760_uart_config =
-},
-> @@ -352,6 +369,7 @@ static const struct of_device_id of_match[] =3D {
-> { .compatible =3D "ingenic,jz4775-uart", .data =3D &jz4760_uart_config =
-},
-> { .compatible =3D "ingenic,jz4780-uart", .data =3D &jz4780_uart_config =
-},
-> { .compatible =3D "ingenic,x1000-uart", .data =3D &x1000_uart_config =
-},
-> + { .compatible =3D "ingenic,x1600-uart", .data =3D &x1600_uart_config =
-},
-
-No, this is not special to the x1600, but a workaround of some peculiar
-setup of your bootloader.
-
-> { /* sentinel */ }
-> };
-> MODULE_DEVICE_TABLE(of, of_match);
+> static const struct ingenic_chip_info x1600_chip_info =3D {
+>=20
+> base-commit: f33a24cc012d34f25bb9942681bd478a1757b806
 > --=20
 > 2.39.5
+>=20
+>=20
 
-BR, H. Nikolaus Schaller <hns@goldelico.com>=
+Reviewed-By: H. Nikolaus Schaller <hns@goldelico.com>
+
+

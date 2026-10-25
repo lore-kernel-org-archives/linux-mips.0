@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792918701;
-	b=w6EDqCBdSPG+AE0kFIoFdAk3B6GuBx04Taj5kqwjku3fI0YPzFOB/l6N28t3bjSuz6Fs
-	 QEJvjF8+pSbzIiUZxIMkM9msqEEMeQN2xFLmwpUqD7c7i6WgsSEO9kyy7IUHg40nJPEfL
-	 T/mkphMOtFNOTAuI8KYSjsLlaqBkk0E38BQ82mHSW2S2vKe1mAgw5sYvGcIYTIEg9O50D
-	 nVLk9rgCQLbtkM0XUdOv0FoJTS42iHrvABsSOxP+iQuv3xC6iOJzU07MJE98mIgtyISgV
-	 52x0dFCaC31JgPZJ6DPIcqGs88FjIAziiCloKcZWvLA8FzsRwWmJS7oXoQafEaU/wFA==
+	t=1792918708;
+	b=r1VMPgRqDempsUHzIDMT8fGN6GzawMNMjywJQBjXrqlc8B6+DroZdToU5hHQycZ2rXKo
+	 YAoypwLhht5pyOo84J5+J/AFCWNlYSsk1hRgKlyeBRR47Cdi4jaMyfNgqH0mdwPq74PzG
+	 Jhj9i0eCeCEBAPuZR3kiC1gDigNm0vCNa3o/ox5feLMXKayB/nFO8YCzt/1WDjPjUfuqj
+	 ha0oFAufWh0lsNiCPxl6wEVotoBbBFi/jn12Ck4WrojHPwMLee7jjYLxdP7j4Vtk5wQoX
+	 vtIuPMInr4VKaXybraqXohND08+WJ8iRq/NPXgchGge/+hZpDvesDXRoZs53iKnx2Yw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792918701;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792918708;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=0eUvvq6t18C5RgJIwzh9hbYdswBGCIE7/yO5zUERv48=;
-	b=BEzckZw2k6fDs7fsBMsQantGxFaUbgZkNYEBazgdCB9qRZpm9XEFeBZxUv2ipR1UCk23
-	 gyv2R/L2kPbppZK3ODZ/ESBmkAsAr00EJlJlaYcnBfzqb1i8ABTPzie77xthKzNedFXYh
-	 kSHcLRFBV67Jb76nxQTU6dpv/Be0GATyFiJgm6vdJvCWwW7u/cvOwNKGQtHtt3K4urqA6
-	 q3MhbTkRwTqA44lPq0jLmz4wS5TQbvqtlDsUzGoD/+3baV9S5cyqF4DlTgqrz+wQi+aQd
-	 kqdKjwcA4CiOWC/Gfz8zirnmVz59x8QRZ3/ZEWufGRayiQntkfEStHyPqWeL2abi4eA==
+	bh=h//NBrBlTPDZB+A+b6lIo8U4diDkuBzgaFKaw1cfgXA=;
+	b=0Ta5FqNl6auenIe1gcqQ8sFRVZB2U291H5VNJlZm0zaNUyrHUE8+MJ/6WnRkT05lhmF2
+	 2nnQAnbSKtS2sgAey96Bwdh2AC0yXPuM9V5H8hmCgfdZXl5MATQU8/Ix5txXZqLGNapPb
+	 //E1W7HnBDQ7LujYwfAFD+QVQFKo7cGifpgkrF78ZXXHE2tn0WtW0jPDT7EW9dJHo3xZx
+	 jYdNu0fG/rdn2GQvL5qm5eIO/VzJOpT8YZO6232i0eKLwceDzLLORfXMvk07Ipt0CiiQ5
+	 Q+w07aw8QD72+sC+NTrE3CKntUy2CLGA6iLmcnlYZx+Kd69hg9gJBFFxGzTVx2QNJCQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=0h1zAkhN;
-	arc=none smtp.remote-ip=209.85.221.42
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=WCYC2F1e;
+	arc=none smtp.remote-ip=209.85.221.41
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0B5606A31E
-	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 08:58:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6D0B5606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8E8606A33A
+	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 08:58:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9F8E8606A33A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=0h1zAkhN
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-48dfdd0678dso1531779f8f.0
-        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 01:58:20 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=WCYC2F1e
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-48e0d1c095dso1247942f8f.1
+        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 01:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792918699; x=1793523499; darn=vger.kernel.org;
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792918701; x=1793523501; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=0eUvvq6t18C5RgJIwzh9hbYdswBGCIE7/yO5zUERv48=;
-        b=0h1zAkhNBCBfd+jMzU1ahmkYzTEgQQ7x+lhVNLUYDmjw3PIaPbGtlr0/DJDLJs9bB9
-         ZYYAk1ShE6Zc5Zg4Oj/TNh3II9+juLMnZ2qsq+qLNxiYqbDWIt6sJR38LvjuTjy7QJOB
-         Rd6HZvQiPCnAUQGNvPIuI8h7tIAjvUfBs1oI8W94xL2A4Zv4RSV2oOZLDG7bxKn177LY
-         WZze2MMpmOIYFbs6cJqjJpGefUvmDNhdhQIcgLZK5gJC0LEycMYe7T7wHSmiuBig+0Jf
-         gqLamkHFKXvEObKYGGu5MgYVKeVXl9Fqin2rBLu4T1WSt4hYmKSeUyaPNHOUsKLKu07s
-         0o5w==
+        bh=h//NBrBlTPDZB+A+b6lIo8U4diDkuBzgaFKaw1cfgXA=;
+        b=WCYC2F1eL7PSTWTewswlPoV+s/3gV54ijZwZdUij9tzdzSwuD4nnatlbxCrf81nbEk
+         oIJ1zjY9a1cDZOeow9P71jiNwROIRl+li5gpaOIiLJi0oniTVzlR9HoAFJVhtBoLb5Pn
+         YpeU8U2oL+HtPzoWnIKREM1gvua4fvpBQyrRmpt3L8z4VEzp1XYixHT7My0eFUBDzCSd
+         zJwa4SdBL5Z/iU6fc4CcMtp3aEBHE7K3ZBFuYbz9kIneycZGlp2nbzR3f0zV3H0VJOIf
+         AKX1CdPahbGqTRh99OIi5cJ1O/owNP0wKyMT53HVMZFBd22fwXeCu26pRB1j9ehisTBh
+         TFZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792918699; x=1793523499;
+        d=1e100.net; s=20260707; t=1792918701; x=1793523501;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0eUvvq6t18C5RgJIwzh9hbYdswBGCIE7/yO5zUERv48=;
-        b=uIa/P/rjiS/KR+G/vP6+JXkiGaE3kuYUBKi9BVXZ7zaW0F8P2FoIeoYQPORvesgOXT
-         EXDtXSE4u7ny+CV1sOZqaONDzVKbqqyiEkMNm5Ltij12ENIV8b/ewDLJroSf6OeD9ElZ
-         7OYlNNdPzXQbMbj2EjsXqTagVFfcoEoxiECdaLVW4YqTlsWuAmeiPcLg20sGHmTkzqCA
-         qsmbCtAoVaZIJMY/yWgahJHyYpgv0Yv5eEAPyFQ1Y805At7G/CqKPLyJGTuL5I09TCH1
-         W3YGs2bsxSK6rylKaKVCTxjUWzwciFUhpSg+LwQZLl56pFs3Pp0Pt024g4wV7WIVicA7
-         etyA==
-X-Forwarded-Encrypted: i=1; AKwUvBzd0Qal85ZND2cDhLXLHYAck2AV5iNbFAJMZghjnr4eHv1uyQGK9R9sqqkhdSOasoLiMhsOqEKzoFVi@vger.kernel.org
-X-Gm-Message-State: AFq9FYJxkzDj/LQa152MSRI7lCU4/az4yIma5ufo5UTfloR2swU+mwW4
-	Pb+UNsye6E+B7rG7QZdfvsKxLORPTLmRFjAoStHMq89fyRDlT9drtd5QdStSvVaBVe8=
-X-Gm-Gg: AYBFou2+ZzPNjj3Gc7sI1qKllFhKlPMtLf1sugdeXDsaymV+nX7Nx1qaN0LLAj8+8MP
-	P828N0UL/RVzKsiljY8uZh5IfeqUb0MzisvsKftEiAmz6HYtJG7AZBepJ6pewYtqtj8ockHzifY
-	2Vjd6cCcNc5FYJvYIqSexVLaPfE7WgMKNny8zxfSMvH4HDIWI1XeupL1R1NC1SqxxDQavCZjO++
-	Kd9Tbfap0fZuxRhfdYWc7uprpLyNRbPslhan6ezTNgNksrvcuah363XJGKc+knZLn1Q9E6IdFD2
-	ASrNM9PHrxnZniLlIsCYcDXCvAeuW1vYCKYTCAQogCvIPQhS2aKSb7hNuxM8DjKrKdkFkYRUHT/
-	shYqeR7EHMmyULJCx4ShSi5rfsRuNl3EFvduOoje5CPDnt0B5j1wA+o1296Fis5V8EtHTaVaQ1w
-	gVGbjsZXX8y9l/OmMyh7lhwJwKaFXWZwEdJKm2S3d0DD9x8wFJXnhWSibKCh9NVxQfv9l1Tcsft
-	UTxgCJWVhMuVKR8SNOJbn7szQy+hWc651yf0D7I+i0oXaWtSoq9ZTJ8ais/C7pTUkfc8uCQ9wqz
-	nLf+kKyxxWnVRqwESXAz3P2oH3t6zaCCdGNOAMfiNoIcmUk7Y7Urppc4Fg0U7WYPudeHG4xIf+M
-	H5hUctyfXmSCOSe/WE+c=
-X-Received: by 2002:a05:600c:5248:b0:4a2:150f:15fc with SMTP id 5b1f17b1804b1-4a35ac91242mr67013405e9.5.1792918698790;
-        Sun, 25 Oct 2026 01:58:18 -0700 (PDT)
+        bh=h//NBrBlTPDZB+A+b6lIo8U4diDkuBzgaFKaw1cfgXA=;
+        b=eOrM1HwpuRTjuzree35plCJovqeTaQXmQ/zlT2nrF99Lhu36f1l8KH90lzoDFKN/yd
+         N6gHcRdD7w+nnsW+cXNRXHIurvzoZeFvOFf9agkMMg6tZVF+B1lI2l2pbBUs0oVf5hpq
+         ps7GQptx3BuKxsGA+usHX2bcxAI0tSAZ9+fr6dfcVjt0O/YgX73dUDtyP3InEzi/iFak
+         Qm8IIkfhHAs+jDFJMSOYIBOp/0OoH2hWuhdUV3NlEXT5MV/8OGDy7ROXcMKZ/gaNQjTF
+         +v/irGuDnG2XDjMOgTOU8YcUWP1iGjFo1z44MPYGlug1ryzTo8pVrUDnaiJiBJKNfa1M
+         SKsQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwdxSYfBoTfWat+pSeiOhjfXVe32t2k/bFDTzBTRyKpVel9FxeX+R45v0oW0YGcnLkaF5As+1Mju1Z7@vger.kernel.org
+X-Gm-Message-State: AFq9FYJacB4sznzJevRjwyuoC6Eh35c2GLqhd3QLl/L1ebaOXghaaZDz
+	mnF0JlmundMleqkeu9Ja0/sbMHhEyaALnGeKXDYksjw/qAnET8CB0lQ6oYJlNxYsueQ=
+X-Gm-Gg: AYBFou3dFdpTE2FFSvgQGlRaLNJfJwRO2OY5i2dKFtSFSy+rXQAP66nNb1mv2q9cAr4
+	TbdY6w4PX+7uy+2vWt1AXCRTVOVokMqB1FohF5sdnoERbA0Ea/1HzhweT+MTqEIgOqiOllC8CD/
+	Q70CbN9hLJF4LKFMv/Eza1oyYG7R7N5LOmDV1ycM0bIuENTcNMYHo7VH81rwiuG9qVzRmFf4o01
+	msWgLHWLegw1aa/sZJhojNYCnDUlFrOjYMHWrM3Ss/t9RfvQFdSSHaf3U42p2QG4gYhxrSz6qt6
+	lAvx4OWw/URyFD6/yZTSYq/4H66uvbtLpS6+LahKBXQkL6xEoC9anRCPTZcSmw5WgdfSG2RmA5b
+	TRyUmWFHeAdsGzxGDJytVOJ3k1c2cOCpD1GggViTrttSPhKBPP3iPMefJXNAXIhXf8gBgdoLc75
+	PjSOdQXlJ8qJUaZw31SBZFlI5HQh3WC8oX31l3vLSzd0hH+VGvZCZKw7jLSYUm+51k+X4QTBAwV
+	rcrjsCQp9QGxlt/geFheLIeU5BIGyxarJYM5btJ1ybV/sU7IBs9L+w2vmUoDqH55S1m7CvRejGK
+	/+krwXnsAGmo/TTcIYFPIjJlyQqodpx7ZvmtgKbI5vttO7VLHYio0h53QqB9G1M5fLcGPXak0w=
+	=
+X-Received: by 2002:a05:6000:4a0a:b0:48d:de0f:b79 with SMTP id ffacd0b85a97d-48e3eac8e4bmr6815931f8f.0.1792918701100;
+        Sun, 25 Oct 2026 01:58:21 -0700 (PDT)
 Received: from localhost.localdomain (2a01cb060184ad00bcfbae5efa3e0f0b.ipv6.abo.wanadoo.fr. [2a01:cb06:184:ad00:bcfb:ae5e:fa3e:f0b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ebc3cfasm9094542f8f.17.2026.10.25.01.58.18
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ebc3cfasm9094542f8f.17.2026.10.25.01.58.20
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 25 Oct 2026 01:58:18 -0700 (PDT)
+        Sun, 25 Oct 2026 01:58:20 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Maxime Ripard <mripard@kernel.org>,
@@ -97,9 +97,9 @@ Cc: David Airlie <airlied@gmail.com>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH 1/5] dt-bindings: vendor-prefixes: Add HiBy
-Date: Sun, 25 Oct 2026 09:58:12 +0100
-Message-ID: <20261025085816.60405-2-olivier@mgcrea.io>
+Subject: [PATCH 4/5] dt-bindings: display: panel: Add the HiBy LG35583
+Date: Sun, 25 Oct 2026 09:58:15 +0100
+Message-ID: <20261025085816.60405-5-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261025085816.60405-1-olivier@mgcrea.io>
 References: <20261025085816.60405-1-olivier@mgcrea.io>
@@ -114,26 +114,109 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-HiBy makes digital audio players, among them the R1.
+The 480x800 parallel RGB panel of the HiBy R1, set up over a 3-wire SPI
+bus with 16-bit words.
 
 Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/display/panel/hiby,lg35583.yaml  | 71 +++++++++++++++++++
+ MAINTAINERS                                   |  5 ++
+ 2 files changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index ba2002969373..b5bb11c20471 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -722,6 +722,8 @@ patternProperties:
-     description: HEAD acoustics
-   "^hechuang,.*":
-     description: Shenzhen Hechuang Intelligent Co.
-+  "^hiby,.*":
-+    description: Guangzhou HiBy Technology Co., Ltd.
-   "^hideep,.*":
-     description: HiDeep Inc.
-   "^himax,.*":
+diff --git a/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml b/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
+new file mode 100644
+index 000000000000..19498910629c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/hiby,lg35583.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: HiBy LG35583 480x800 panel
++
++maintainers:
++  - Olivier Louvignes <olivier@mgcrea.io>
++
++description:
++  The 480x800 parallel RGB panel of the HiBy R1, which HiBy calls the
++  LG35583. It is set up over a 3-wire SPI bus with 16-bit words.
++
++allOf:
++  - $ref: panel-common.yaml#
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    const: hiby,lg35583
++
++  reg:
++    maxItems: 1
++
++  vcc-supply:
++    description: Panel power supply
++
++  vccio-supply:
++    description: I/O power supply
++
++  reset-gpios: true
++  backlight: true
++  port: true
++
++required:
++  - compatible
++  - reg
++  - vcc-supply
++  - vccio-supply
++  - reset-gpios
++  - port
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "hiby,lg35583";
++            reg = <0>;
++            spi-max-frequency = <1000000>;
++
++            vcc-supply = <&vcc_lcd>;
++            vccio-supply = <&vccio_lcd>;
++            reset-gpios = <&gpa 31 GPIO_ACTIVE_LOW>;
++            backlight = <&backlight>;
++
++            port {
++                panel_in: endpoint {
++                    remote-endpoint = <&lcd_out>;
++                };
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 57313163e59e..e65500a70c9d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8152,6 +8152,11 @@ S:	Maintained
+ T:	git https://gitlab.freedesktop.org/drm/misc/kernel.git
+ F:	drivers/gpu/drm/tiny/gm12u320.c
+ 
++DRM DRIVER FOR HIBY LG35583 PANEL
++M:	Olivier Louvignes <olivier@mgcrea.io>
++S:	Maintained
++F:	Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
++
+ DRM DRIVER FOR HIMAX HX8394 MIPI-DSI LCD panels
+ M:	Ondrej Jirman <megi@xff.cz>
+ M:	Javier Martinez Canillas <javierm@redhat.com>
 -- 
 2.39.5
 

@@ -1,90 +1,109 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.170
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792955935;
-	b=UWS9dLR5j+rxTgnVurFeGIHn7SLT2HOd9fWW3bkkghbbbnjGJ1OMM4yPjP17npiCX+v3
-	 jsNug+unKAfp1k1dXi1GIT7EMasD22b3l/4j8frNQyspJ762luplYYg093oxnpqwAkxG9
-	 uCWqmmG01CH5YIxsmIR5jb7/BKLcKKbL4fQn+s11NE0eje7Pz6YdQMRDoarXj7et2/3xF
-	 amtInSneT0+iVhVN4ABBVbwG1ijWizZ+6XUVawT6OMtpJdGyQJd6GQm9Ipcpb9BB7UE+/
-	 VvndC6+FjgoNbBEX9ZFMwpZqxYIzOEuo0g1zVUqvaQB6r2VtHy3xjWI10HoWxhLGOjg==
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.83
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792955941;
+	b=rIvkKrgBxQDdoP9Raf12i1MlTWF4of7R29cGI+dvspRks5DoUqqnFg0FI+7bpC42Sj4S
+	 XfLrm2tHyh+5ZSMXNYGr6F76TYF4TUN9dza/FxRw0dEIBRAYB2HeHr00uE28cl8eyQPTJ
+	 F5lN+9w3YVmk6wa4YGflXd61QNu3F8LLKLnVdBUSHCPaFd+puu4yUbA9XmlJ58dzSN0EX
+	 mEmhIUmvTXEwuO6+vLrSCPNBWM7lLUAWEmSim+hA4QSC7+zymMlOYWj4EwyIRKmoegEYv
+	 FzLQm51RD+RCsRiOwO+y2qiUHaGUTVe3GCyRJ9aRWJjdHnczzSrXthmEpi0fM2aHLwA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792955935;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792955941;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=w6uDrMg1SblksEId3NgX6hIaSXp3takMz6Z3EAPSHto=;
-	b=XBe/rh+3tXf4lAto22dPobotMh03XtefvzS44bmJCqd2irCyAyDjlaDZ1SVYx+QYSjlL
-	 E0pz0H/mbZQC9sAF9Glv+SaP+Ccjk5KTHE2sWLzUKOJlGyvNK2eRWisJVY8FMwJIDMtLr
-	 zhqvxczrdqUl/WhXxJRp9HP+4AcAx1hcunEZixE2CPrv1opyUWEPxMUw1zNvrfub/wLGx
-	 1bbqVrdvmGN9HRcsYoFO87R0ZLarDMmk6jltIbCXhOO4A2WOZ8x5d+KkkHn+zYsAEvsjc
-	 5m5xcU3yrPx2zbo3kj2H0Gt/CjPeXkJ3vvZmWqQirohP5Nfxaif/iwKzTonyF2CMKBw==
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=smoxO3UnUyM5rZ4tq7n6KvypgXtX3hnSKXBHknsMFtM=;
+	b=yNyzICzY137lysscXUjH9gCKPrSXrCPeNLvdiKLEr/olVc8carVb+mTrN7xx4ia+VJ3n
+	 IpsuUIZqRvPAxdOviAEFAIJfys0WpCqBJ3J2UgsmVawU1Y95HJ+3XQQ4ftMwTFfanId5d
+	 Oio/090Dpxywy9romJN67MGreRnBBDmkkDJ1YCyBoEgG/lMo9TWb/GO1WChAe+oX4eiqP
+	 j6juDKNx2FyRj3caJugoptc3S3lO+s4OqIg2A5xJThRdy7aAXof7B3mmHsWfVAH4moP7F
+	 5nd38odI9ApHzjI7O71VuwNuf5oo4Ce+M8cvVJn8mJqleMBhhawBwecDBZhngn5W+DQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Ogq6AmzH;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9oxDkwzA;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.170
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=KCZwqjE7;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=YqxZadmo;
+	arc=fail smtp.remote-ip=85.215.255.83
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5565F606A31A;
-	Sun, 25 Oct 2026 19:18:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5565F606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B95606A32C;
+	Sun, 25 Oct 2026 19:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B3B95606A32C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Ogq6AmzH;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9oxDkwzA
-ARC-Seal: i=1; a=rsa-sha256; t=1792955917; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=KCZwqjE7;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=YqxZadmo
+ARC-Seal: i=1; a=rsa-sha256; t=1792955915; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=mqWynaoOaLkuViaaiskG+Dk76BiydMQybb4JHkjNxzRuy4LEFXadAqqAGkSu2g+miP
-    fNpitHPUlHbZraVzVa/mWA9CcKkIepY7+6gA0BFRgLX+6lsbYG+PT48hKaouWJdbq2UE
-    F4OvsKtXT1U0B6huLmVnRCwRuTPtompbcqpG9ljl6WcImjSXWXUwfaTK7PbmfvmmCInB
-    viLYyklYc3Yshkp4VVJXg/1w/u4+a5TE43Y2/RM3xnGZjmWuZ/KLutwVT/+e/aMbuo6G
-    wrt6EUYiKPet+uVEogcqkzxY54SUfO/5QREBtlGH0lLQD16+3S3shPqQIAmNZAD14AJX
-    b7dQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792955917;
+    b=pMEJwb/yjYdeA1kw9TFiGsyD+O5PmYR1qKOQbR+NEK5g/mCqiKDxtWjUmJBNmmGouJ
+    m7Q/uy4iJB/FCmx8PcQBDI3315bPBp0s2goZoV7m67xAq4mkUj4z0h5IWojPfPwI2J1l
+    5nWO9bJ0Z7v9UYO1KihhapCP7E++GDvI9/8yjj8BxuE8bScOYyaUnDz74yA7tYT4oKqG
+    v8sHIqNw8YT/RV/UHnPYlBGUFfxu2JPXvfNWh9PBVSUAqE83nhBlXLI6K6AWv64TBblu
+    2GZZOo+E+HSLIg/bJw2KxGGeskuDuHzGfeXWXfBcd1lgP7ze3ADjP6m7npRQfHM2V3Iy
+    Am9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792955915;
     s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=w6uDrMg1SblksEId3NgX6hIaSXp3takMz6Z3EAPSHto=;
-    b=Wd3LeI24kZOizVif0MpAtqBOhw2Lma2nmLnfyHMDXeMjoGk4R7YQMDNeuxUkqN4KO/
-    4DbP9v3SFg7SFgu/UcHRUSjRNla+jC3la0AEvoxrIx8xceXrOSew0tywVYAvnZF9IJ3r
-    bmS7MAJ+BL4rMjHn3Y9/2ZioMMoYqn+2aGsx7PZ/iDVxTbW3a2+fqczZbux9ZnLo2J3A
-    9YCOSdvqdPZfy1K7cbsigy4piDTo0zQfnA+kEAi1zIq1/NwgQD21dfMePBCZMEk1J8wx
-    UL9VAegh2Uj9fL1rZ6bYEQYoPJIf7CTXVVjutWhe6JY3Dxmb2WuBQH/b7PN+QiDl5qWd
-    4liw==
+    bh=smoxO3UnUyM5rZ4tq7n6KvypgXtX3hnSKXBHknsMFtM=;
+    b=W6ve5AE+GhzIcyw7cfCrIcta+HU2j4QU2/PR3Vg5iB8sazHbt4moCqkv61Pvh0lXjg
+    R6daofQSa5Wcs6/EaA2i4VfDVlduktKzIMxcKE4lsne0opeL87wIHvkdg++ZAt91JA5F
+    p0X5t5LhkoBYGj/bGcWtGeDha9kQhZAps3cORh4paRuRfyd6v65DF/F9iW8B4O9X+DXl
+    HbW61mAaGe1GbBxlFoYmJczSUhEAulSvUyCNL8KaA7GgHPOyxGMPO0KqTl+FAZqTvwaY
+    tYdxIKkV898rDxkFYUwsjfQg0EWaCtVEmueCCVgbkcGpzTpjhtpFawJkt7ADs9I8KHJe
+    wRGQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792955917;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792955915;
     s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=w6uDrMg1SblksEId3NgX6hIaSXp3takMz6Z3EAPSHto=;
-    b=Ogq6AmzHR6/3rDMz/M2tis/qYOzbCexza0TvVjJxVB1st3YsI3myEAYkAu6zB26mbL
-    +plK+TSdE6pDBZAQ6VU6UY4Y6xbN1z1FpybzYxB7Cm0Q2Oq4B2Twm0qM1k3mi7rdkNTo
-    Hh3TDTdBLOvPzkiCE2OSQu6g/brf6V0CndlzxnQoiqfvkgxja5a5JLa4ZEnPdSi6YQcM
-    wCJCdIA+LnS2ItvajQG15C71MYh+qHBCCnH7wTX5G64GpjlXEOlWNhNHqdMfGwhgbdJ3
-    liieVYJN9lmqDByPAMCAIPHKaKy/cBkwA/tWYghYNo9nPTKFxDH/AJZYegyB8SrRVrjI
-    d+yw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792955917;
+    bh=smoxO3UnUyM5rZ4tq7n6KvypgXtX3hnSKXBHknsMFtM=;
+    b=KCZwqjE7nNq0GknvbGBxlLxapa+HRVHAUByzf2Ztx+2Y5cMUwq7fbzIf9l1agQkRgb
+    fg5d63xCn9pj7Bt20Ywquvf9+zfUUdvQYKy6Cip5bC8eMwWZMubWG7ZExGcxITobfB9x
+    92xrlAfWHRVr9fNZc6o806oP4mUdfFmTwwWhs+qLd4PMX7RkSBjz1BnGvj/gWHAQAyMP
+    SKt43yivvuxa4zqfcSdo/H2wPVXLB+7UN5mjVHRdG1hIMnAEVgfjKb8/YYjZyASoz5j7
+    hWM6ccwJ24OatRRIyf3DOH06r+/hAcO0dJzOp7aqL/tte5nF+m3KWj5VWWmNq/H1Ivjz
+    RZnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792955915;
     s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=w6uDrMg1SblksEId3NgX6hIaSXp3takMz6Z3EAPSHto=;
-    b=9oxDkwzAg1Ss4fn4wY2MixwFR+oxpxJCglhA7MK0T+tE2sDLtBs9jI/1jntvaeyaLo
-    jui0r/VN7WFe+SwlQwAg==
+    bh=smoxO3UnUyM5rZ4tq7n6KvypgXtX3hnSKXBHknsMFtM=;
+    b=YqxZadmohUxJyq0+4Wp7vlr7MbHUZ9VsqvOPY3xJ2PjfepnM6uW9Eew80rwTXeA+yI
+    IMovkLQr2NDuGB689VCg==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrS2poNy8iNoc+LWkugLIF0fnfvFgpgbBBt2w=="
-Received: from smtpclient.apple
+Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229PJIbzQs
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+    with ESMTPSA id Qb56a229PJIZzQr
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sun, 25 Oct 2026 20:18:37 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+    Sun, 25 Oct 2026 20:18:35 +0100 (CET)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Stephen Boyd <sboyd@kernel.org>,
+	Brian Masney <bmasney+clk@redhat.com>,
+	Jerome Brunet <jbrunet+clk@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>
+Cc: linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	letux-kernel@openphoenux.org,
+	kernel@pyra-handheld.com,
+	"H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 4/4] clk: ingenic: x1000-cgu: Adapt calc_m_n_od() to core framework changes
+Date: Sun, 25 Oct 2026 20:18:27 +0100
+Message-ID: <2ec3746549990bd4a2c1e1542d2b05777b5fd514.1792955907.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <cover.1792955907.git.hns@goldelico.com>
+References: <cover.1792955907.git.hns@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,104 +112,37 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH] phy: ingenic: Don't disable the supply in exit
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <7611B8A4-4CC4-43CA-B8D5-FCEA2F74FA72@goldelico.com>
-Date: Sun, 25 Oct 2026 20:18:06 +0100
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>,
- linux-phy@lists.infradead.org,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
- Paul Boddie <paul@boddie.org.uk>,
- Andreas Kemnade <akemnade@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <896398A4-264F-4D8C-A60D-0F1ADED6CC67@goldelico.com>
-References: <20261024051756.79342-1-olivier@mgcrea.io>
- <7611B8A4-4CC4-43CA-B8D5-FCEA2F74FA72@goldelico.com>
-To: Olivier Louvignes <olivier@mgcrea.io>,
- Vinod Koul <vkoul@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-By the way it turns out that this patch by Olivier duplicates my 2 years =
-old submission:
+The common Ingenic CGU core framework was updated to support a
+secondary post-VCO divider (OD1), which extended the signature of the
+calc_m_n_od() callback.
 
-=
-https://patchew.org/linux/96da5fe557f3b2501447358895bd78decc4633ef.1735482=
-146.git.hns@goldelico.com/
-https://lkml.iu.edu/hypermail/linux/kernel/2503.2/00226.html
-=
-https://lists.goldelico.com/pipermail/letux-kernel/2024-December/009881.ht=
-ml
+Update the X1000 CGU driver implementation to accept the new pod1
+argument, preventing compilation errors. The parameter remains unused
+on this specific SoC architecture.
 
-where there was never a feedback or merge and despite a resend it was =
-still lost again.
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/clk/ingenic/x1000-cgu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-BR and thanks,
-Nikolaus
-
-> Am 24.10.2026 um 19:35 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> Hi,
->=20
->> Am 24.10.2026 um 07:17 schrieb Olivier Louvignes <olivier@mgcrea.io>:
->>=20
->> The supply is enabled in power_on() and disabled in power_off(); =
-exit()
->> disabling it again unbalances it. dwc2 powers its PHY off before =
-exiting
->> it, which warns at every probe on an Ingenic X1600:
->>=20
->> WARNING: ... _regulator_disable
->> ...
->> ingenic_usb_phy_exit
->> phy_exit
->> dwc2_lowlevel_hw_disable
->> dwc2_driver_probe
->=20
-> Yes, I can confirm this problem and the solution:
->=20
-> https://github.com/goldelico/letux-kernel/commit/e757fd47d006b
->=20
->>=20
->> Fixes: 31de313dfdcf ("PHY: Ingenic: Add USB PHY driver using generic =
-PHY framework.")
->> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
->> ---
->> Tested on v7.3 on a HiBy R1 (X1600), whose PHY supply is a dummy
->> regulator: without this the warning above came at every probe, with =
-it
->> there is none and USB still enumerates at high speed. Build-tested =
-with
->> W=3D1 on phy next.
->>=20
->> drivers/phy/ingenic/phy-ingenic-usb.c | 1 -
->> 1 file changed, 1 deletion(-)
->>=20
->> diff --git a/drivers/phy/ingenic/phy-ingenic-usb.c =
-b/drivers/phy/ingenic/phy-ingenic-usb.c
->> index 7e62d46850fd..d8e5ef302b74 100644
->> --- a/drivers/phy/ingenic/phy-ingenic-usb.c
->> +++ b/drivers/phy/ingenic/phy-ingenic-usb.c
->> @@ -124,7 +124,6 @@ static int ingenic_usb_phy_exit(struct phy *phy)
->> struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->>=20
->> clk_disable_unprepare(priv->clk);
->> - regulator_disable(priv->vcc_supply);
->>=20
->> return 0;
->> }
->>=20
->> base-commit: 8f56fdf3d8cb9f1dbdc93bf9ac816698aa6f70b7
->> --=20
->> 2.39.5
->>=20
->>=20
->=20
-> Reviewed-By: H. Nikolaus Schaller <hns@goldelico.com>
-
+diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
+index d89bdfb7c219a..cb82d8e6470b6 100644
+--- a/drivers/clk/ingenic/x1000-cgu.c
++++ b/drivers/clk/ingenic/x1000-cgu.c
+@@ -173,7 +173,8 @@ static const struct clk_ops x1000_otg_phy_ops = {
+ static void
+ x1000_i2spll_calc_m_n_od(const struct ingenic_cgu_pll_info *pll_info,
+ 			 unsigned long rate, unsigned long parent_rate,
+-			 unsigned int *pm, unsigned int *pn, unsigned int *pod)
++			 unsigned int *pm, unsigned int *pn, unsigned int *pod,
++			 unsigned int *pod1)
+ {
+ 	const unsigned long m_max = GENMASK(pll_info->m_bits - 1, 0);
+ 	const unsigned long n_max = GENMASK(pll_info->n_bits - 1, 0);
+-- 
+2.56.0
 

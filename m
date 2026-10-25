@@ -1,102 +1,50 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792879639;
-	b=yENVZxhtYInnUyOYFIflpfEa067v3EDo1yoQu5DHFELvslIb+5zkEE9e5pRaXQIJshP7
-	 6kmS0wZv8E+M+pq3TrgZKv0es41pbSCy7XvNtjg4/hbTOo6c4P4J0V6lMwoxpn8zpLsgJ
-	 d2wfVkjRagr7C2CzhjvsMuQcdMqLnDrODOcseGuEYbeC/IjCnSpl2A/o9TNCoJePzrCVW
-	 6ZcmVdkCn3fHt6sDE35MH46aFDvn5NsPaKjZirNZgykyg2r8ifMdNPsHTv0MTsVQr/msO
-	 TG/p9fX4NLl6ujuJqI0hmdrjnV+gqRS9Zs8RC87eyVciVw6R5oKm4kxCtd2AivSnVXA==
+	t=1792896920;
+	b=WD5xMV8WDzAv1WBW9P5qKPeUAMo+WleBfPTjMaVnHQ+eyoot2SVSW4Hr8J446a13J8CR
+	 wjDw86hw/Uyt6EFqWP5VHUr3DhT5tTYfJ0Ctl4/w7oNscFJG6LDfiBZxW3jdIYNX3NBai
+	 /dCh3qLuXwOdRgheNdIa8GMntDVWm56V+eCFlYwZJA7RA2RWRXuWmfxN6QaID+wGLUq0B
+	 qislfD9F1+SPjMdGyspOU9BJ6syq8ufIbZgOnrJnm4MEj4XuTYXp3DWpiYetouF2yJScs
+	 H2dkR1LJFp3lup1GPAhOH2tzFMRcnuVf+3PeUhQZOT4QmdWdVwX9UWKnPnV12SvdTLQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792879639;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
-	b=OwkoC460eouRUu4I++o4Roz4aaaT70NSIyeeDVIthhed3SCzDAX9B1eIVSOy1vXNZuW1
-	 qZF8bm/eYSn87pIIL44W81Y2OWGKaU1C8TN1eEGaBxoG7QRtHZM94weOey+AjksP1Xnrq
-	 KaU76cCwbvOpaMARWevnYSAKSlD2tgcr+ENajlhAZUpaFShGReWvAiZH8DqB8LdJeJRUj
-	 3R2ltLNjEijVxKJudvzSHGsazgvV9E+Mnke6HcnCx8cW/8BXfd/lYgYmwjbCtNvUK1sBG
-	 fu5ixfqld5qVKzIFhjp09Nh6titeAzR02EGbZcoEdATsqHt9g36ss6Tm8VRJ9AgD/9A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792896920;
+	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
+	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
+	bh=/YytvGdk1zdZinqM6OZmmmHH8j1UW2iQ0JJCwjI5UG0=;
+	b=nvb7GU/U7UrBuHpcGaPhQP2yw+w540gKCJVavmqdI1wZM5+3SAkMP0iiIbFw9Xygg6On
+	 bwWtQ+v/rHsim5zknBLB7TB3ZwDapYBSwghuPAU5KOV0mMPA+/5n8chIp9jsq/2/FbHoY
+	 i1R5D0BokUy2rjeNvVS7iUVijZeWuCkrdLpRn7/1BJF+KIpE5ULkFQty7OE0uFj8qW/mb
+	 zQrmH73F6ioZ/GNztD21fQr8C6dY0jKMOQPVwlovJcGJ0jkySrAwaK9OLPtrW3IxV+RJE
+	 Xt12EIUyKh+TZX8LNIqnG5lJnaxjie7+OwlyFS3mIe0EcCezuEK6EDC2x7zgMhuOMdg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=mgcrea.io;
-	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=bMCFuXIW;
-	arc=none smtp.remote-ip=209.85.128.52
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3D7606A327
-	for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 22:07:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5A3D7606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=bMCFuXIW
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4a35d5d4a20so5772875e9.2
-        for <linux-mips@vger.kernel.org>; Sat, 24 Oct 2026 15:07:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792879637; x=1793484437; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
-        b=bMCFuXIW8WSLFTdO69RsRRj1TOG56FNvXFJDyPKPQCXvpDcbUqzwN5B7XZLTqwR0pQ
-         LhxaNIdIIsCo3fSitwA8UGcYqaF7HYfb7Kkc+I1OmOSlxW6jWJ9w9XVrRiL+01JuXA3/
-         SXcVpcXnls1i1R9b2RAcyjuJlJLZu4LxZeGfGd+xTn5rFEpta2FDYcwDKnulNcKrFhBW
-         53G5GOCh+TkA+UuSB9NdHoHiHQjTGPsxx/c78Vl9NXwkMjLg0hVdnpRVi3zepykbMAT7
-         aZapMts7o0kFqf8YmGfj2XBPq5mqc4eVwFL5aw7pcY8u72ghz0nKfBsejE3tkjA/fMnE
-         SpHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792879637; x=1793484437;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xpsIF/cfagR2zVFmuilPnUkqxjm9mv7XoS2i7FolaHE=;
-        b=I3I2HIPl3cI9wT4CHQHTbRHaHwbXBQLC433h84lcV0W1Avjv2Hcy23SuNrB7Xn8RPq
-         PhPfkIhYijVEJXCrFm2xU9BpQUoTsliyvVuNjjxK0vYzKjnzOrY/9YmYjpMM6j+3aUqV
-         BnuGPxt8l/RArLA9fgqt9P7+OrjlaMcr+rks8Ro51DA6HuPQ7mEH1XcnQ3jRCtcQKYpb
-         h+t9fLQTmDkmv3tR8AWclVaXI4JF78vHW6hVnbCu5gT8BCra9Er0pKsYEu16LLTEaErn
-         TNDmTU9+3VX+eU2Vx1lPkHWuPgwJsREIgk+l953JVeAip7p0OBt2ioigapKguSObadez
-         4byA==
-X-Forwarded-Encrypted: i=1; AKwUvBxrj5lVfUETs19SbC7cBl7VOP6l1jOM7tr0mfKXn2qYu3XRRwvslO+CynCMyUGDlGyzVTWLnWgnNmZN@vger.kernel.org
-X-Gm-Message-State: AFq9FYLo46HmSisaGiOQ7XpXgu8EMdZ3a2KhZTfX9r+rLCHy3RRtU/Yn
-	LlRtY5xdq87hp8erjQVXj50ZL2LL+M2LfUHWyPRj/YuuGHuYQUOP1hv0T0Wi+lzmJPc=
-X-Gm-Gg: AYBFou1WYk9gGqPjxcjFWTdYIYA8qofHhqpTr8LlDMqsq8/qccJ1RshsnvOMR+etkEz
-	3hOqWGbnM5ezkka+mzUQJMWopCblOfy7uQ9m9sxozycvmq0ZxU4ynkuMRbRN8UuYi3Gjfangd23
-	xlg+UQ/lG2PZwxEfhjHK8DX/wYXTVjSgbqBvglVA46uSGhADowNrXMYz659I2m9XE5FIuVQO1xN
-	9OyjEokSISKtiw6fAOty1+Zr6GVHBnUvTsi+H4jjnECmFvywy3QDYbkm5I+F6y4i0crX8Zd37U6
-	lSxsD5AOrKS5bf9AIxEZU38qU40uCANaueeRS7+Ldci9KNaf07hs8UREteG2DbUYeGYcQVONhgm
-	O5x1qOd9MWLZ+tOCpLl5tgp6ERjBBJdlEfQzWCJTuDgLikAgH+YnJW/BqFV5793890QT4JmH8W2
-	aPWbmkg2gJGnQt+sUutFQv7iPE0ULghIXJE27lbopI7d6NmsIx/57hh4+iCT0zH1pVzKBeVW0BG
-	w22UgbPcKlO0khn9bwZO8wwfws062yUWUHCdhTnpViOCOzK5PGzPm2rqkmJ5FwZBNAvND+TZqlT
-	120DInQ96VafT1E4AXCUy8dB5hC3c3h+leiRiojBJpANhyPAiuKdCeG2GQNwu/Zy/dCh
-X-Received: by 2002:a05:600c:6212:b0:4a1:742e:3 with SMTP id 5b1f17b1804b1-4a35acdd912mr42496565e9.27.1792879635966;
-        Sat, 24 Oct 2026 15:07:15 -0700 (PDT)
-Received: from localhost.localdomain (2a01cb060184ad00bcfbae5efa3e0f0b.ipv6.abo.wanadoo.fr. [2a01:cb06:184:ad00:bcfb:ae5e:fa3e:f0b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a06da5fsm53466635e9.3.2026.10.24.15.07.15
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 24 Oct 2026 15:07:15 -0700 (PDT)
-From: Olivier Louvignes <olivier@mgcrea.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v2 2/2] serial: 8250_ingenic: Set UMR and UACR at probe
-Date: Sun, 25 Oct 2026 00:07:12 +0200
-Message-ID: <20261024220712.23250-3-olivier@mgcrea.io>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261024220712.23250-1-olivier@mgcrea.io>
-References: <20261024220712.23250-1-olivier@mgcrea.io>
+	dmarc=none header.from=orcam.me.uk;
+	spf=none smtp.mailfrom=orcam.me.uk;
+	arc=none smtp.remote-ip=78.133.224.34
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF50A606A31A;
+	Sun, 25 Oct 2026 02:55:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF50A606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 231F692009C; Sun, 25 Oct 2026 03:55:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 1F43492009B;
+	Sun, 25 Oct 2026 02:55:11 +0000 (GMT)
+Date: Sun, 25 Oct 2026 02:55:11 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Florian Fainelli <f.fainelli@gmail.com>
+cc: linux-mips@vger.kernel.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    Bjorn Helgaas <bhelgaas@google.com>, 
+    open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] MIPS: Cobalt: Include legacy IDE ports in the PCI
+ I/O window
+In-Reply-To: <20261022163106.1410595-1-f.fainelli@gmail.com>
+Message-ID: <alpine.DEB.2.21.2610250247210.42255@angie.orcam.me.uk>
+References: <20261022163106.1410595-1-f.fainelli@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -106,63 +54,32 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Ingenic UARTs have two registers beyond the 16550's: UMR, the number of
-clocks a bit takes, and UACR, which adds one clock to chosen bits of a
-frame, for fractional baud rates. The JZ4725, JZ4740, JZ4755, JZ4760,
-X1000, X1830, X2000 and X1600 programming manuals all have them at 0x24
-and 0x28. The divisor the 8250 core computes assumes 16 clocks a bit and
-none added.
+On Thu, 22 Oct 2026, Florian Fainelli wrote:
 
-The driver never writes them, so a UART keeps whatever was there before.
-On a HiBy R1 (X1600) the vendor boot loader sets UMR to 8 on its console
-UART, and the vendor kernel had left 8 on UART0, which carries the
-Bluetooth chip: every rate came out doubled, and the chip never answered
-("command 0xfc18 tx timeout" from hci_bcm). Their reset value, 0, which
-the X1000 and X1600 manuals call normal mode, does not work on the X1600
-either: with UMR at 0 the same command times out.
+> Changes in v2:
+> 
+> - implement Maciej's suggestion to reserve PCI resources first
+>   and then the rest of the peripherals
 
-Set UMR to 16 and UACR to 0 at probe.
+ Thanks.
 
-Tested on a HiBy R1: with UMR at 0 or 8 the BCM43430A1 on UART0 fails to
-set up; with this patch it comes up at 1.5 Mbaud and streams A2DP audio.
+> diff --git a/arch/mips/cobalt/pci.c b/arch/mips/cobalt/pci.c
+> index 85ec9cc31d66..29fd052766b2 100644
+> --- a/arch/mips/cobalt/pci.c
+> +++ b/arch/mips/cobalt/pci.c
+> @@ -14,6 +14,8 @@
+>  
+>  #include <asm/gt64120.h>
+>  
+> +#include <cobalt.h>
+> +
 
-Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
----
- drivers/tty/serial/8250/8250_ingenic.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Hmm, why do you need it here now, a leftover from testing?
 
-diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
-index 0cdadacd7019..ca45e74b999b 100644
---- a/drivers/tty/serial/8250/8250_ingenic.c
-+++ b/drivers/tty/serial/8250/8250_ingenic.c
-@@ -40,6 +40,10 @@ static const struct of_device_id of_match[];
- #define UART_MCR_MDCE	BIT(7)
- #define UART_MCR_FCM	BIT(6)
- 
-+/* Clocks a bit, and an extra clock for chosen bits */
-+#define UART_UMR	9
-+#define UART_UACR	10
-+
- static struct earlycon_device *early_device;
- 
- static uint8_t early_in(struct uart_port *port, int offset)
-@@ -298,6 +302,14 @@ static int ingenic_uart_probe(struct platform_device *pdev)
- 	}
- 	uart.port.uartclk = clk_get_rate(data->clk_baud);
- 
-+	/*
-+	 * The 8250 core's divisor assumes 16 clocks a bit. Whatever ran before
-+	 * may have left another count, and on the X1600 even the reset value,
-+	 * 0, does not give 16.
-+	 */
-+	writel(16, uart.port.membase + (UART_UMR << uart.port.regshift));
-+	writel(0, uart.port.membase + (UART_UACR << uart.port.regshift));
-+
- 	data->uport = serial8250_register_8250_port(&uart);
- 	if (IS_ERR(data->uport)) {
- 		err = PTR_ERR(data->uport);
--- 
-2.39.5
+ With that removed, unless proved otherwise:
 
+Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
+
+  Maciej

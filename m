@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792966447;
-	b=EUKt+hJGza0Oifi+AbaPI1ba94Rw55gdrKA//hF6S/kwxRO9wkcVNJA0UloKJrPu/+i+
-	 EyL4AnZmyP8utNeBhpq4b1gXeQ2fv5Ux+VVhTRHYwmfOrtvOI05e9pz5GgBl0l7LGjRus
-	 Cci08mqp7uUraWvNQauraGejIY/RH7YcOOQpspugV1Au+MbBgC87rWZ1urDAbxM+4VjHh
-	 TLetxdHyLBLhhaMrZnOBv3P1G10joh3Emr1waLsXHLjsAzkPQePkNNsbmg6j7SQS8Ajjd
-	 rvEKRY50O/X+v7yNEcYfMve6zW+AGQaXlOrEkqgnOQfh3j/ftkVeon9bX1e3UrOpJxg==
+	t=1792966853;
+	b=Xgn1u/hIdbG+pDYKDqpAxxrxjSoe1jfKLNN0lFqTYoGrouDi5Mx2K37ayUyVNiwFR5a1
+	 ccyznz/AllTSG+xwnWWH3rM3oFyHXZ5RuIJqj5zvqCHRSTg2i46MRRGJ33SESFY81JoOf
+	 GpMgGxsE+1Kwsl4hF0F5TMmox7qCvtp4kwZkHDojwdSbY3fDxWirkM2odECwhqYnHEekQ
+	 OOdCfSZ7s2ufPVUzd5gH8TIaSZ662BClv1t2YrYm7UdfcojvNvc9j4AbUZclCgq087I5Z
+	 PoiVsxH1SfX2ieav+jdeb9OmcaR3Ur03AtfNKD9EXhNw6h4IPP+AkLWq4rd2+BhrXjA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792966447;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792966853;
 	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
 	 MIME-Version;
-	bh=z+OGvBaqXC2+1NVfUpcRsQ1hy6WHpkZO2inZyh4ifHs=;
-	b=dgeneKDphB8HzTFh7x/vQRyFrojCo/YsKcpa8jjyrLZeaXt0/MpjJ+Jmw/NEZqSMcw3E
-	 Vl3CrQF+dGTxrzzuCbCXZ5NOSDY70qhHkOL1DdlfIrscTMdK0Ejcez7trJ7wV+SG3jZnx
-	 bkhASYsP4crbxCkWOcM2cRNV+5jr0M5Pq98hTEYhkUp5Lh8cPN6l3pt0YyTU2xbkA7cgz
-	 ilAV0KXYjWeDjSt5HT8DJHgOiw4uXiXIiwX0Jhs/oBtgg62CkTK7pDREXd0H0quQGDShZ
-	 zgGDpZ4h6i64C4C3+QN2JfS2EBqJpt50dRJrTJEbMRdr5N5GqnGlhWrEs29lV0E75ZA==
+	bh=CldNzcrAzu3VWmHM+sbxb+ODtt2pdTx5Vl4nZT4d0qg=;
+	b=0H0NEZG/9vHbCd221IoqClkq/vFOv6q8vHzrF2+zPTDl2b2k+0az12mzu8W3WrT9Ueud
+	 5JTcxFkg8u3v4XY6uPvdt65ieMXMrBB+gXnQ5ZhGriYb+DnuIgsOmruwDrU25cO/WYPLT
+	 qXc/xKBTuLfgNp5kxy9MUcGiG3biUm+g2ST+7vaqEpnht+9uZRwNiCb1VvyiWS96ePWs8
+	 /m9zuUzGe9PRgK9x0jL9VjXkSzmjL0gNpJT8KVCPCUOg/ywXe1kt+94aw3t/229T575MP
+	 z5ypZ5Cj0TcVVElywRIUVyIQBHYc5pLHxK/fcNtihufLJJO/g9md73ypC4aFxmIRVaQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=crapouillou.net;
 	spf=pass smtp.mailfrom=crapouillou.net;
@@ -25,25 +25,27 @@ Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8242606A31A;
-	Sun, 25 Oct 2026 22:14:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E8242606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E3C606A31A;
+	Sun, 25 Oct 2026 22:20:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 35E3C606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <c930c184b1bcac3cfd76ecb329a8c478482d819d.camel@crapouillou.net>
-Subject: Re: [PATCH v2 2/2] serial: 8250_ingenic: Set UMR and UACR at probe
+Message-ID: <e2aa2eb589c1e1c651dd9aeb09acd378109a0515.camel@crapouillou.net>
+Subject: Re: [PATCH] MIPS: cpu-probe: Recognise the XBurst core of the
+ Ingenic X1600
 From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Greg Kroah-Hartman
-	 <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, "H . Nikolaus Schaller" <hns@goldelico.com>,
- linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Sun, 25 Oct 2026 23:13:59 +0100
-In-Reply-To: <20261024220712.23250-3-olivier@mgcrea.io>
-References: <20261024220712.23250-1-olivier@mgcrea.io>
-	 <20261024220712.23250-3-olivier@mgcrea.io>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>, "H. Nikolaus Schaller"
+	 <hns@goldelico.com>
+Cc: Olivier Louvignes <olivier@mgcrea.io>, Thomas Bogendoerfer
+	 <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Discussions about the Letux Kernel
+	 <letux-kernel@openphoenux.org>, Paul Boddie <paul@boddie.org.uk>, Andreas
+ Kemnade <akemnade@kernel.org>
+Date: Sun, 25 Oct 2026 23:20:46 +0100
+In-Reply-To: <alpine.DEB.2.21.2610250558190.42255@angie.orcam.me.uk>
+References: <20261023204205.48222-1-olivier@mgcrea.io>
+	 <F93B4D14-97DB-4F8E-988E-3C6803F5C850@goldelico.com>
+	 <alpine.DEB.2.21.2610250558190.42255@angie.orcam.me.uk>
 Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
  keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
  LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
@@ -69,87 +71,34 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Hi Olivier,
+Hi Maciej,
 
-Le dimanche 25 octobre 2026 =C3=A0 00:07 +0200, Olivier Louvignes a =C3=A9c=
+Le dimanche 25 octobre 2026 =C3=A0 06:00 +0000, Maciej W. Rozycki a =C3=A9c=
 rit=C2=A0:
-> Ingenic UARTs have two registers beyond the 16550's: UMR, the number
-> of
-> clocks a bit takes, and UACR, which adds one clock to chosen bits of
-> a
-> frame, for fractional baud rates. The JZ4725, JZ4740, JZ4755, JZ4760,
-> X1000, X1830, X2000 and X1600 programming manuals all have them at
-> 0x24
-> and 0x28. The divisor the 8250 core computes assumes 16 clocks a bit
-> and
-> none added.
+> On Sat, 24 Oct 2026, H. Nikolaus Schaller wrote:
 >=20
-> The driver never writes them, so a UART keeps whatever was there
-> before.
-> On a HiBy R1 (X1600) the vendor boot loader sets UMR to 8 on its
-> console
-> UART, and the vendor kernel had left 8 on UART0, which carries the
-> Bluetooth chip: every rate came out doubled, and the chip never
-> answered
-> ("command 0xfc18 tx timeout" from hci_bcm). Their reset value, 0,
-> which
-> the X1000 and X1600 manuals call normal mode, does not work on the
-> X1600
-> either: with UMR at 0 the same command times out.
+> > > diff --git a/arch/mips/include/asm/cpu.h
+> > > b/arch/mips/include/asm/cpu.h
+> > > index 0fd9f9bbd21f..ff7b63587daa 100644
+> > > --- a/arch/mips/include/asm/cpu.h
+> > > +++ b/arch/mips/include/asm/cpu.h
+> > > @@ -186,6 +186,7 @@
+> > > =C2=A0* These are the PRID's for when 23:16 =3D=3D PRID_COMP_INGENIC_=
+*
+> > > =C2=A0*/
+> > >=20
+> > > +#define PRID_IMP_XBURST_X1600 0x0000 /* XBurst=C2=AE1 in the X1600
+> > > (PRId 0x00d00000) */
+> >=20
+> > Well, XBURST is an MIPS CPU architecture and not a SoC. So there
+> > should be no X1600 in
+> > this macro name, especially if this ends up in a non-SoC-specific
+> > arch/mips/include.
 >=20
-> Set UMR to 16 and UACR to 0 at probe.
->=20
-> Tested on a HiBy R1: with UMR at 0 or 8 the BCM43430A1 on UART0 fails
-> to
-> set up; with this patch it comes up at 1.5 Mbaud and streams A2DP
-> audio.
->=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-> ---
-> =C2=A0drivers/tty/serial/8250/8250_ingenic.c | 12 ++++++++++++
-> =C2=A01 file changed, 12 insertions(+)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_ingenic.c
-> b/drivers/tty/serial/8250/8250_ingenic.c
-> index 0cdadacd7019..ca45e74b999b 100644
-> --- a/drivers/tty/serial/8250/8250_ingenic.c
-> +++ b/drivers/tty/serial/8250/8250_ingenic.c
-> @@ -40,6 +40,10 @@ static const struct of_device_id of_match[];
-> =C2=A0#define UART_MCR_MDCE	BIT(7)
-> =C2=A0#define UART_MCR_FCM	BIT(6)
-> =C2=A0
-> +/* Clocks a bit, and an extra clock for chosen bits */
-> +#define UART_UMR	9
-> +#define UART_UACR	10
-> +
-> =C2=A0static struct earlycon_device *early_device;
-> =C2=A0
-> =C2=A0static uint8_t early_in(struct uart_port *port, int offset)
-> @@ -298,6 +302,14 @@ static int ingenic_uart_probe(struct
-> platform_device *pdev)
-> =C2=A0	}
-> =C2=A0	uart.port.uartclk =3D clk_get_rate(data->clk_baud);
-> =C2=A0
-> +	/*
-> +	 * The 8250 core's divisor assumes 16 clocks a bit. Whatever
-> ran before
-> +	 * may have left another count, and on the X1600 even the
-> reset value,
-> +	 * 0, does not give 16.
-> +	 */
-> +	writel(16, uart.port.membase + (UART_UMR <<
-> uart.port.regshift));
-> +	writel(0, uart.port.membase + (UART_UACR <<
-> uart.port.regshift));
-> +
-> =C2=A0	data->uport =3D serial8250_register_8250_port(&uart);
-> =C2=A0	if (IS_ERR(data->uport)) {
-> =C2=A0		err =3D PTR_ERR(data->uport);
+> =C2=A0Is there a documentation reference available for this value of PrID=
+?
 
-
-This assumes that these registers are available on all Ingenic SoCs,
-which is not the case. Looking at the PM it looks like they were added
-in the JZ4725B.
+It's explicitly listed in the X1600's programming manual, yes.
 
 Cheers,
 -Paul

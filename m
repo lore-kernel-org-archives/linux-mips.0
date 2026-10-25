@@ -1,44 +1,50 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792968006;
-	b=eg9JhcPuVv21phBUQQPzKid3sXmgjyM3+TGm4ULeUNQbBzFh5z8nxykrZmYk0cVqqNqc
-	 awjTzDWseubhUnrKotEDAxL/XE2fn4KtfqeprdMG5l0HwdFb2sagjJYO6Pk1EOSeiRCQ5
-	 nwOqmdB6AnmMFOVMR7beIdw8Lr3ufDxgeSs60iJ1VI0HNsVzH/1aPbrIPJ91bzEsSiVNr
-	 Y3YtqqhqezGHNT1CrxVvXbymd+iLF14lbRmdOQpiaXse5q5ghvFzrzrjM484RDcIOlbnM
-	 sYQ6OjaiGnTx6QOmafHwX0rUrKjKam8FKFzNE0BrL1gMD0A3v0isG1wUBMS7tRo7A0g==
+	t=1792968904;
+	b=znNf/hMHw2PciepFYSOTW6IsyfcHHeLL8Q5Sg/cJqBCI9SLzj/m6bsnrgbhHNaiQEiQL
+	 S8VGmwh5NOvZeOsZcv6ZzWUs8uVeeQBFHoRH+oi5l3KSkMYEd3U3Num6XFfucXrmkNCLX
+	 OK1o+4trYr3/NeRzJAUX5EGGYoyOpIQlmacB2dP2/9bmyRjldrPF/GcjJd4HaQlAQivYB
+	 XrCgZY6OFWpqPa8HMoZyy6ehDPK1D5Zn6+AG/gnwsOYmMsWJvmBEWAlwpoOTM5UHTlXny
+	 gylH//7In2kCWucGx98VBlhN30+uEn6PES+bqDs7f71Go2vqAC9ltRaQ13XeVHUUmEw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792968006;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792968904;
 	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
 	 MIME-Version;
-	bh=BJFlHkjzZQkuZb2sYnE2Rmc5JG9Cgv9xdtkzLLy01dM=;
-	b=Bb7sSQDgXflGC4tBBxADBSJWNEvSz0Xm+YdNGA4DuVPdnkriezjPtZR+Xm3E/Cr27o7F
-	 r/yTOQXP//Qtc6fYWk+Am/7/eb9qNYkpc09jAjbBHwx8Dw8veKw7zF1KB0CZzIrgPMESB
-	 tz4TpA+1TxB5tMP8P1x6cBsPf0a35UiynICqLX1XgDF9EVTeJLwJzKIXmWOryCOrQHJ6i
-	 M4JPA1d7SEw0Bt5XCh56/khUKvyCi0Qjl81NNhoBuYgLnJOPuuSXSmp7OYbEBy0y9Bq3i
-	 LKEUqUt2WUti9sTLTxzm8ZnfsofU49fx634KoXwXqIHcivAh58UfFiT/zQ5C5iTvpkw==
+	bh=Vm//i3BWkJl3AkkwF5gC7SHrPbPShxtg/tUJT/ir0V0=;
+	b=AAGJHxul3Gs5J+NBNWMHyWQPk6PwJsGJDe00AoPVgT/LI0emFpFnhu5BDKI2wOjI5lc1
+	 N3L6kTGEpoDxHi8Il7J9J2u9Ee3CxPt5irwkz1o9UbFpzd/W0E/DdqSyZvBIbYtuOZGjQ
+	 ZQKj4CgmLTihxQJYidDWRSF2Ka3gwJjbbhC9y/tuGy4PUpcinKHENOLIm5DdUW9P6yooN
+	 9zjb3+7PcBN0XbxT+LQWZ1TtBQA9585sOR6wo/+d/1ZjgDwLTTzbHq3iBeOuVafP/wzkJ
+	 vd9XdDwW0og9jJENtPbQTT35hvmPCstVxVwh/1fU9AwTZIJ615fl8OvaxIZBtyz2vaQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=crapouillou.net;
 	spf=pass smtp.mailfrom=crapouillou.net;
 	arc=none smtp.remote-ip=185.119.170.32
 Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F09F606A31A;
-	Sun, 25 Oct 2026 22:40:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1F09F606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7AB606A31A;
+	Sun, 25 Oct 2026 22:55:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3C7AB606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <d14f055275701e9ff4cb024a9d2389de4a0014ef.camel@crapouillou.net>
-Subject: Re: [PATCH] pinctrl: ingenic: Add the X1600's 32 kHz clock output
+Message-ID: <c1591d63538946500b5939c385d624223495361e.camel@crapouillou.net>
+Subject: Re: [PATCH 3/4] clk: ingenic: jz4760-cgu: Adapt calc_m_n_od() to
+ core framework changes
 From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Linus Walleij <linusw@kernel.org>
-Cc: linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Sun, 25 Oct 2026 23:39:59 +0100
-In-Reply-To: <20261024051639.67806-1-olivier@mgcrea.io>
-References: <20261024051639.67806-1-olivier@mgcrea.io>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>, Stephen Boyd
+ <sboyd@kernel.org>,  Brian Masney <bmasney+clk@redhat.com>, Jerome Brunet
+ <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>,  Krzysztof
+ Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Date: Sun, 25 Oct 2026 23:54:57 +0100
+In-Reply-To: <a718b428cff741a2c14fe3c022026c8a88c28abe.1792955907.git.hns@goldelico.com>
+References: <cover.1792955907.git.hns@goldelico.com>
+	 <a718b428cff741a2c14fe3c022026c8a88c28abe.1792955907.git.hns@goldelico.com>
 Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
  keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
  LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
@@ -64,80 +70,48 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Hi Olivier,
+Hi Nikolaus,
 
-Le samedi 24 octobre 2026 =C3=A0 07:16 +0200, Olivier Louvignes a =C3=A9cri=
-t=C2=A0:
-> PC26's function 0 puts out the RTC's 32 kHz clock. The vendor device
-> tree calls that pin setting "rtc32k-enable" (function 5 is its
-> "rtc32k-disable"). Add an "rtc32k" group and function for it.
+Le dimanche 25 octobre 2026 =C3=A0 20:18 +0100, H. Nikolaus Schaller a
+=C3=A9crit=C2=A0:
+> The common Ingenic CGU core framework was updated to support a
+> secondary post-VCO divider (OD1), which extended the signature of the
+> calc_m_n_od() callback.
 >=20
-> Used on a HiBy R1, whose Bluetooth chip takes it as its sleep clock:
-> on
-> a cold boot without it the chip does not answer its reset, with it
-> the
-> chip comes up. The clock on the pin was not measured.
+> Update the JZ4760 CGU driver implementation to accept the new pod1
+> argument, preventing compilation errors. The parameter remains unused
+> on this specific SoC architecture.
 >=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+> =C2=A0drivers/clk/ingenic/jz4760-cgu.c | 3 ++-
+> =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/ingenic/jz4760-cgu.c
+> b/drivers/clk/ingenic/jz4760-cgu.c
+> index 372fe4b079927..52cc5ce150048 100644
+> --- a/drivers/clk/ingenic/jz4760-cgu.c
+> +++ b/drivers/clk/ingenic/jz4760-cgu.c
+> @@ -56,7 +56,8 @@ static const u8 jz4760_cgu_pll_half_div_table[] =3D {
+> =C2=A0static void
+> =C2=A0jz4760_cgu_calc_m_n_od(const struct ingenic_cgu_pll_info *pll_info,
+> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long rate, unsigned=
+ long
+> parent_rate,
+> -		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pm, unsigned int *p=
+n, unsigned
+> int *pod)
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pm, unsigned int *p=
+n, unsigned
+> int *pod,
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pod1)
+> =C2=A0{
+> =C2=A0	unsigned int m, n, od, m_max =3D (1 << pll_info->m_bits) - 1;
+> =C2=A0
 
-You're making two patch series in parallel to the same driver, that
-both add pin groups for the JZ4760? Next time consider grouping them
-into the same series.
-
-Anyway, this patch looks OK.
-
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Well you can't update a callback prototype in patch 2/4 then update the
+implementations in 3/4, the kernel has to be buildable after each
+patch.
 
 Cheers,
 -Paul
-
-> ---
-> =C2=A0drivers/pinctrl/pinctrl-ingenic.c | 4 ++++
-> =C2=A01 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 1aa6a6dc1209..ac6e2a152bdd 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -2452,6 +2452,7 @@ static int x1600_pwm_pwm6_b20_pins[] =3D { 0x34,
-> };
-> =C2=A0static int x1600_pwm_pwm7_b10_pins[] =3D { 0x2a, };
-> =C2=A0static int x1600_pwm_pwm7_b21_pins[] =3D { 0x35, };
-> =C2=A0
-> +static int x1600_rtc32k_pins[] =3D { 0x5a, };
-> =C2=A0static int x1600_mac_pins[] =3D {
-> =C2=A0	0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c,
-> =C2=A0};
-> @@ -2511,6 +2512,7 @@ static const struct group_desc x1600_groups[] =3D
-> {
-> =C2=A0	INGENIC_PIN_GROUP("pwm7-b10", x1600_pwm_pwm7_b10, 1),
-> =C2=A0	INGENIC_PIN_GROUP("pwm7-b21", x1600_pwm_pwm7_b21, 2),
-> =C2=A0	INGENIC_PIN_GROUP("mac", x1600_mac, 1),
-> +	INGENIC_PIN_GROUP("rtc32k", x1600_rtc32k, 0),
-> =C2=A0};
-> =C2=A0
-> =C2=A0static const char * const x1600_uart0_groups[] =3D { "uart0-data",
-> "uart0-hwflow", };
-> @@ -2557,6 +2559,7 @@ static const char * const x1600_pwm6_groups[] =3D
-> { "pwm6-b9", "pwm6-b20", };
-> =C2=A0static const char * const x1600_pwm7_groups[] =3D { "pwm7-b10", "pw=
-m7-
-> b21", };
-> =C2=A0
-> =C2=A0static const char * const x1600_mac_groups[] =3D { "mac", };
-> +static const char * const x1600_rtc32k_groups[] =3D { "rtc32k", };
-> =C2=A0
-> =C2=A0static const struct pinfunction x1600_functions[] =3D {
-> =C2=A0	INGENIC_PIN_FUNCTION("uart0", x1600_uart0),
-> @@ -2581,6 +2584,7 @@ static const struct pinfunction
-> x1600_functions[] =3D {
-> =C2=A0	INGENIC_PIN_FUNCTION("pwm6", x1600_pwm6),
-> =C2=A0	INGENIC_PIN_FUNCTION("pwm7", x1600_pwm7),
-> =C2=A0	INGENIC_PIN_FUNCTION("mac", x1600_mac),
-> +	INGENIC_PIN_FUNCTION("rtc32k", x1600_rtc32k),
-> =C2=A0};
-> =C2=A0
-> =C2=A0static const struct ingenic_chip_info x1600_chip_info =3D {
->=20
-> base-commit: f33a24cc012d34f25bb9942681bd478a1757b806

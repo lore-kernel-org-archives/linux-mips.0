@@ -1,50 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792968904;
-	b=znNf/hMHw2PciepFYSOTW6IsyfcHHeLL8Q5Sg/cJqBCI9SLzj/m6bsnrgbhHNaiQEiQL
-	 S8VGmwh5NOvZeOsZcv6ZzWUs8uVeeQBFHoRH+oi5l3KSkMYEd3U3Num6XFfucXrmkNCLX
-	 OK1o+4trYr3/NeRzJAUX5EGGYoyOpIQlmacB2dP2/9bmyRjldrPF/GcjJd4HaQlAQivYB
-	 XrCgZY6OFWpqPa8HMoZyy6ehDPK1D5Zn6+AG/gnwsOYmMsWJvmBEWAlwpoOTM5UHTlXny
-	 gylH//7In2kCWucGx98VBlhN30+uEn6PES+bqDs7f71Go2vqAC9ltRaQ13XeVHUUmEw==
+	t=1792971721;
+	b=LIVcXPbjya9tviIktxiykIAqD11dPVF1flyBWbFSeqVJsbexX+anExuaRsAgQLT1ZXt/
+	 hJ2D7AS2S+d0VjgmJziAJ0x4yA8mpTIO0FMxNTWWMGCX/+AQHr52j6CSnFL9nrgKtP+09
+	 HN5DqXU5Wy0VqxkCi0Ju4jKCnMsl9p5kabKmFJpCd1yqLv+1Yhy+b2tnt8pFBLtWhkUJQ
+	 quEIGUbAVS9wiS4Q95C8y04wF0tJexRhoUMktjJqYAo8oDPmJnTSZaLc4p1U1EiaY2eBn
+	 mrjdYJ+xVQj5pc5kaXVpVbhrW2G2h94NK7mjkbFo/KbxvTwxXd13aIfbdw7C8FqhlZg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792968904;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792971721;
 	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
 	 MIME-Version;
-	bh=Vm//i3BWkJl3AkkwF5gC7SHrPbPShxtg/tUJT/ir0V0=;
-	b=AAGJHxul3Gs5J+NBNWMHyWQPk6PwJsGJDe00AoPVgT/LI0emFpFnhu5BDKI2wOjI5lc1
-	 N3L6kTGEpoDxHi8Il7J9J2u9Ee3CxPt5irwkz1o9UbFpzd/W0E/DdqSyZvBIbYtuOZGjQ
-	 ZQKj4CgmLTihxQJYidDWRSF2Ka3gwJjbbhC9y/tuGy4PUpcinKHENOLIm5DdUW9P6yooN
-	 9zjb3+7PcBN0XbxT+LQWZ1TtBQA9585sOR6wo/+d/1ZjgDwLTTzbHq3iBeOuVafP/wzkJ
-	 vd9XdDwW0og9jJENtPbQTT35hvmPCstVxVwh/1fU9AwTZIJ615fl8OvaxIZBtyz2vaQ==
+	bh=UvpkNdofNcORp/+nKrUhMJFvycWlzFIV8ydP42YGg9o=;
+	b=GEKsQ/Y+LAwiDPUv9N5L1JZDyFyXgSWDTby12mpVVm7VTosKDuSCAnJA/2jWKF5qNMHn
+	 OG5DA8MC2BP27a6xOXhrMM8TFltDkBM5iveyWltNhHBeeZUDNhDiWkRAfV4ZVVuiuoB3g
+	 lCIxOviXB3CfIqatj8CUaiBdFtoDN3wFwR0p/qmlFBGibE4r/qDxBYW94TAOzU+rCWqeK
+	 6dBidIGspehB1b86m9FcgamW46DmJ4qLb2u2z2mt9tWwguYGY7JFRwf0PMIvocioDhEWb
+	 B145QekCzda35245fK17FmZ+fIymsKTjpGHAAcHvYvyku9EiRtP2Kpw/rQiN/eTgwaw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=crapouillou.net;
 	spf=pass smtp.mailfrom=crapouillou.net;
 	arc=none smtp.remote-ip=185.119.170.32
 Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7AB606A31A;
-	Sun, 25 Oct 2026 22:55:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3C7AB606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06FA0606A31A;
+	Sun, 25 Oct 2026 23:42:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06FA0606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <c1591d63538946500b5939c385d624223495361e.camel@crapouillou.net>
-Subject: Re: [PATCH 3/4] clk: ingenic: jz4760-cgu: Adapt calc_m_n_od() to
- core framework changes
+Message-ID: <089587a1ac49395ef5d15b59c5ff5c9bf8ab68f6.camel@crapouillou.net>
+Subject: Re: [PATCH 1/6] MIPS: Ingenic: Fix inverted MIPS_NO_APPENDED_DTB
+ logic in Kconfig
 From: Paul Cercueil <paul@crapouillou.net>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>, Stephen Boyd
- <sboyd@kernel.org>,  Brian Masney <bmasney+clk@redhat.com>, Jerome Brunet
- <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>,  Krzysztof
- Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+To: "H. Nikolaus Schaller" <hns@goldelico.com>, Thomas Bogendoerfer	
+ <tsbogend@alpha.franken.de>, Paul Burton <paulburton@kernel.org>, "Maciej
+ W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Date: Sun, 25 Oct 2026 23:54:57 +0100
-In-Reply-To: <a718b428cff741a2c14fe3c022026c8a88c28abe.1792955907.git.hns@goldelico.com>
-References: <cover.1792955907.git.hns@goldelico.com>
-	 <a718b428cff741a2c14fe3c022026c8a88c28abe.1792955907.git.hns@goldelico.com>
+Date: Mon, 26 Oct 2026 00:41:53 +0100
+In-Reply-To: <7733ca05b6a245e5a9ad414cc754ccc9ece6dc85.1792956055.git.hns@goldelico.com>
+References: <cover.1792956055.git.hns@goldelico.com>
+	 <7733ca05b6a245e5a9ad414cc754ccc9ece6dc85.1792956055.git.hns@goldelico.com>
 Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
  keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
  LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
@@ -72,46 +70,39 @@ MIME-Version: 1.0
 
 Hi Nikolaus,
 
-Le dimanche 25 octobre 2026 =C3=A0 20:18 +0100, H. Nikolaus Schaller a
+Le dimanche 25 octobre 2026 =C3=A0 20:20 +0100, H. Nikolaus Schaller a
 =C3=A9crit=C2=A0:
-> The common Ingenic CGU core framework was updated to support a
-> secondary post-VCO divider (OD1), which extended the signature of the
-> calc_m_n_od() callback.
+> Correct the inverted conditional selection of BUILTIN_DTB for
+> MACH_INGENIC.
 >=20
-> Update the JZ4760 CGU driver implementation to accept the new pod1
-> argument, preventing compilation errors. The parameter remains unused
-> on this specific SoC architecture.
+> Currently, the Kconfig logic forcefully selects BUILTIN_DTB when
+> MIPS_NO_APPENDED_DTB is enabled (i.e., when no DTB should be appended
+> to the image). This unintended behavior prevents turning off the
+> built-in DTB fallback, which is required when the kernel should use
+> a DTB provided directly by the bootloader.
 >=20
+> Fix this by reversing the polarity using the logical NOT operator.
+>=20
+> Fixes: f0f4a753079c ("MIPS: generic: Add support for Ingenic SoCs")
+> Fixes: 15205fc05482 ("MIPS: ingenic: Add support for appended
+> devicetree")
 > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
-> =C2=A0drivers/clk/ingenic/jz4760-cgu.c | 3 ++-
-> =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/ingenic/jz4760-cgu.c
-> b/drivers/clk/ingenic/jz4760-cgu.c
-> index 372fe4b079927..52cc5ce150048 100644
-> --- a/drivers/clk/ingenic/jz4760-cgu.c
-> +++ b/drivers/clk/ingenic/jz4760-cgu.c
-> @@ -56,7 +56,8 @@ static const u8 jz4760_cgu_pll_half_div_table[] =3D {
-> =C2=A0static void
-> =C2=A0jz4760_cgu_calc_m_n_od(const struct ingenic_cgu_pll_info *pll_info,
-> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long rate, unsigned=
- long
-> parent_rate,
-> -		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pm, unsigned int *p=
-n, unsigned
-> int *pod)
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pm, unsigned int *p=
-n, unsigned
-> int *pod,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int *pod1)
-> =C2=A0{
-> =C2=A0	unsigned int m, n, od, m_max =3D (1 << pll_info->m_bits) - 1;
-> =C2=A0
 
-Well you can't update a callback prototype in patch 2/4 then update the
-implementations in 3/4, the kernel has to be buildable after each
-patch.
+The original code is not an 'unintended behaviour', it works as it was
+designed to work: if the kernel is not configured for an appended DTB,
+then a DTB should be built-in. This is because on Ingenic SoCs at
+least, at the time this code was written no bootloader was passing the
+DTB to the kernel.
+
+I understand your usecase (which is very reasonnable) but this fix as-
+is only fixes things for you, while breaking every other board.
+
+I'd suggest to fix it by adding a proper description to BUILTIN_DTB (so
+that it can be selected from the UI or a defconfig), then update all
+arch/mips/configs/ for Ingenic based boards to enable
+CONFIG_BUILTIN_DTB=3Dy unless they rely on the appended DTB
+functionality. Then this "select BUILTIN_DTB if MIPS_NO_APPENDED_DTB"
+Kconfig dependency can be retired.
 
 Cheers,
 -Paul

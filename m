@@ -1,101 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792955789;
-	b=F2mWX9g044rriuBk89z4DEfUZ1SWzJsNf5dDvPSD1cz5mdx88fEwf24K3/h2hF0AZ0ND
-	 WPRE2anoWSQRo3+QbYqdsSqspm+HMTJ2HDH48kyIjdQ906CZhzfznqbASVG7+Ue40ZgRM
-	 4ItvtHCzhN19GV49Xk2R2PQadvWwD7+ccZBCZYjxQr2XpGhspSWba4kgAAuuQjuQwpRqo
-	 3tv6K3KKzSbFNrQ2fYivOvjCk8sTpddl69SJlvDxjjIoc3zU28r/IE4dU9bgSX3ZNiQuV
-	 +6p+HXKV/yf8eIplf81y/9JQmH94McrD45WjMx33EN+UNUAN1z7WLSAtRZjTUYv6vsw==
+	t=1792955803;
+	b=KmW9jcouX2wSaADDn/fzUth3VS767t0fN0LVffZxQNCwhNfL4q7wgWi82zYwn+POcF/j
+	 iY+myUTv5F6DcWrtaKQVHHFktJvnR1O1LAPA9jXLOfHdQXABVQ7uE0dITr8ouR1fKWdos
+	 cqpqJ7IdNV41wpaxRn60OPMHM+82jhXYHdvUB6Du0B9nTAkrOB7t6Io0taBqieZAbnKUV
+	 RPuNrMNrERlZYmuq6JA/Ms8T1m4aX6CIGid/idRIpnd7CeWMQYkyGJ4Np/C/uULdJCJuk
+	 P/K2CSnvajjMQCFVYW9G0IsiLdVzIASY5AGYz43yhEfBU93Z/tiS+dWg7EW3O/68l7Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792955789;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792955803;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=7DeFc9otasxZEGZwFUzRH8RX2baoMN1ocp4U5Fzi2nY=;
-	b=RICFD/qYpDpBHKNdd1N33SHzWhRs+IQnrWzi2BFb9z5OaoQ5Twst8xuHLAQCkuFkRYv0
-	 foglCuTXsa+KH12qDM4G/hOGCwdAc/M1i+vCclgiRzB0dylyqp83QTH2l4PtN0tZCFQxp
-	 3iZuA9Cgx+JWNqEWDL+0iZJSAS+wBe1xweLDPuZJaJKar9/YD0Q+D1BNroTtjKceGOAZl
-	 s75JiSewgMRDfSW8l8sJ1hXQ0vejNN0/e7YPOJCgwdELFjzVX9ENcEIH6WJEERyEnPxf8
-	 ybLZ0uqrpRdJxwveSzfYQwcpsg+0UHwqqdAZqpE3wiOrRbKncfLcdhbatVL3o/C6nnA==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=4nx2+DECqgeu/AGfuDB9I8gflqDb1c6vzu+N1VHtydM=;
+	b=rOp0yTEBecE86a9eQsfbvx+nWiowlaB/LHuCweNSt1aPaDAk8G+ZLVeUSa6crhX8BnwH
+	 eWM4w/CGGiWqH1QhluhfNZcx/qtuKsP7xAO3hCpIHDAlQxjva35QiNzt4I12f3ycDy68R
+	 8Pu4qQT8mQgwb6W+wKRGlt8t9PrhYMHp2skZEj0GC2LCDs0mKPFnaVRN+InGEqNQTgZy4
+	 fuZiebDaicEex19MXNIfO5w1ODz2JlIsEA3UsOhFcDzaJj6+ENNPqs4bZK+xPmeoKF0J8
+	 LxwEfMB3DQB2alvmIUyOeeQisAsUNwiXtv+Kz8WxnUkCqefGPuyP7F6dhdF20T5fMNg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=oh7valtr;
-	arc=none smtp.remote-ip=209.85.221.44
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=T6ddVQ7N;
+	arc=none smtp.remote-ip=209.85.128.53
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8884E606A322
-	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 19:16:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8884E606A322
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB4B606A325
+	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 19:16:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BCB4B606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=oh7valtr
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-48df4f540ebso1134439f8f.3
-        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 12:16:28 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=T6ddVQ7N
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a60f9474c4so2718895e9.0
+        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 12:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792955787; x=1793560587; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=7DeFc9otasxZEGZwFUzRH8RX2baoMN1ocp4U5Fzi2nY=;
-        b=oh7valtrkmKMdQvevEIpsbvmUYS2B86kxe5EKnfOszdH2bZ5JD/mQJdXd09w1JLvB1
-         Qt1vbg3Ag8vO2VyqUOg8spaLE9Nqrc+6dCGWuHUVb4MXjPWuoAJRqu25eCTysrd0lbdA
-         0NMw6g6MsvCMwt3BnY8Uua8CgnqlLA8TlLqL5jiY0Vk+Z94uq0caKIoBaVdRsfHK/xo/
-         E64RojtF55nfs9sE+8L7z3dxtzKnjbMkinWa9wtWlJ+r2gvs+NVqTmQ7mrozV5b/3cZ6
-         xIjZwiYjoAs4ZgGnwDpSG1hhuXxplXaeMIimJHEVDVT2tp1G71EcmMTTLBU1NF1GlkWW
-         ecCA==
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792955801; x=1793560601; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=4nx2+DECqgeu/AGfuDB9I8gflqDb1c6vzu+N1VHtydM=;
+        b=T6ddVQ7N41HrejcDkSqEKiLdWbytoiYFAaZQwJEhlWF+3UF5FgRjNSqseXWi8cw/Et
+         gT3TvWWwZqpgjKUlSI1ljMYSZ7gJK42IKYkn9RFzN5/mJ6hpQL5/5knbAwngdHKQo+rn
+         hDmOwP4IweQNApCHVexkl4AW/vLbkiw7rjgffY9VSSQLgmRLM6Mhki6FHGzJZ6T9jvpk
+         smOUxq/cvdGfmd8Ejo9l0K0NzOvqXjnFscI5Ml2HsYXWb2k0WgMMPGeAD1ReesA5TlHO
+         C41r4yifaN50gxYH0X2n+MQVy1XPhaoq7DqhHBOEp/WP/uNxJCtMUQWoklpiSQd+bE1u
+         XxUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792955787; x=1793560587;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=7DeFc9otasxZEGZwFUzRH8RX2baoMN1ocp4U5Fzi2nY=;
-        b=hg0zNzspXWN6WrKiuiegfOhd137T7Ij30n+C6xc6703ugMyXvTVWzi0LfpWkvDNlio
-         SNBPEvsBf8TdrZthA6yiL9g+/xc7Om4UzZJzrYknFjnkrlsRDKufYM67nVdgsG0qZh/5
-         qQgb7lOy/zTFOjWxJpffHioX/gCEUEPZOLrJ88fLkv7Nf2h6JVjAYE2rBSsAF8cNFrVm
-         GSWMMpNfFtfVOvBUyuxcRAX4+oJCAXS4+wuN+GAEJJoQcL27PwHABJ3PJgIUztTqyWmz
-         oRrr6/yQZ5zW59mNxCsHqfFVUvu1cK1fHsWRzZnmKtnCgurpsCaq9eI+FGpGXsahTOLR
-         i1Jg==
-X-Forwarded-Encrypted: i=1; AKwUvBxuB61Wi9OOHFMD2Q9oqz/ochmqC8gt13Jx6N8uLsCOde/sePw5THD1RRBkXxb7Gvkojml4SKX7RvhB@vger.kernel.org
-X-Gm-Message-State: AFq9FYLZpvBbzECvpscWqiR+p9XKMX0VC8Ds8/lKQnoga/jfAPuMm3WA
-	2Kfo0UmGBZREiphASg/nhyuYNiX6Kq8J2Z3tTMAP+TKNFsx/LO+khfu+2l4gvIFlYeo=
-X-Gm-Gg: AYBFou3xJQbk1eqWCJjeLUpLvgdSFf7CBpT/WFNbV/PCWFaUsn8cB6x5K5YsZtWcpA6
-	IHNyj1OAxhw/UFiP2w8IX8b+6AcwDF16nCJGJw8yENWdiWU/MXP0CCLEewJJ3CJw0nxNZab8lcK
-	b13m63hPwDyVBZ9ImxbLExq0pv18GwEAClLcNPEPtT9d6YLD1S448thXS7GryB3U6Z13B95oWHX
-	Y0fooPraRtl0+1SIbVjJ+PuaOaGG7ep5CCfcPFqTgSefeW3It5/XzpjaUKuYhlbiBxm0TAT7BdT
-	HL+o3Xg0QcQAX36F+zVFTHXnMrhTeiR3XrtaHK9GiZhhhASSQa1eLpjLOKatFsRNoplapH1I5Sq
-	Kkgs1dSsoJCEsBvbtPJ5Vcnq8T+04TLk3eeqex0Px6pw+nv3f/5MMGl5WqCW8hkAMUc0lVpO/zg
-	D5s869CJx0tQFg1DQhy5h9ayX01mkVFr+OIGShiSDvZJKvtte49VynxHe1M14wibXIbAJQ4Ek/J
-	O30xvopNzC0CirrjQO2pv6RavPAu+Yrrzeq8ADfTkLXfIBY3LE/VVYK/oV4+U5dgSVoib5AwzZJ
-	bGshQ+f1isabZeXuggV9S3g8RkpGO6vNutY=
-X-Received: by 2002:adf:ff81:0:b0:48d:f58f:c98 with SMTP id ffacd0b85a97d-48e3eb9e34amr6121463f8f.40.1792955786568;
-        Sun, 25 Oct 2026 12:16:26 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1792955801; x=1793560601;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4nx2+DECqgeu/AGfuDB9I8gflqDb1c6vzu+N1VHtydM=;
+        b=vRmyEWJxuL5ez9iAHHGPsFg9KuaYO+7F1jMMtd48KX9rV7sz4ntR87LHH/QJZMYKmA
+         vSSz3vZj5Zh2c8vO+mWOuWKtzfVz9hQ3oE4joYhc+wdtyqVyitgC/L0sJBfMYfb2/8PY
+         H3axVIjoZWpXUn7wOvmhqmcsrOlXycJDdiHzePpe7b8TYYfpMnP2roGVKYN5UNoUjt57
+         HafpxuZYwqyNMvIODm+sf8HJH954Dwli02zyEQ6jk2mU7jUl9V1GnxG3mEb2JbM1aneJ
+         JeMo2N+ylqlO9rcScBm6i/dL1i9NbJH8rYBgkyB+wHRKoWsDjdU8xyUIsupOV4zo3bCI
+         mmeQ==
+X-Forwarded-Encrypted: i=1; AKwUvByi0yUwhr4wiYV/JIQ7ZcqXU2UgsvKusRJ5L4+5U/82/cAMPn7B1H7K7jauerELRQlZMzRKUEOKVfnR@vger.kernel.org
+X-Gm-Message-State: AFq9FYIfm8B+dWaz4bDj0UoTsivfXAZCewuyV9KVb+1CLcvH5c+mu3/n
+	yDvaVYHyiXw+/+Go6+sw6iHIzgT8TLVw8xcHMJLWRM/QBwWQrD/i5Dzz2xdbG33vGLY=
+X-Gm-Gg: AYBFou3K6Zd1hp0Kfxbo5i5c8zdZryGO6Xf6rmQoDfq8919bxDkBIKapyCk8Z/5ebZ0
+	BYBiSwXL2eIjN0qlRsbfA1uul+f15WY0WdCQZMpOSTPIY/iYCr8NRkq5kzvYzfD/v7Xb7pzqB98
+	h8YrL0u3HJvHZIBdqvLu9eqieKNLcCTwnb4MfP9nb2Op4pTznl2rTLEi+DAEkccpjfn0ufjsSBJ
+	EvDCLlv8IN75TRfvT3m1r5kYJjjxxsnHdMUtiGP50AHnr6OrY9vmCuahRa4O78PZFkSZaA1zgzg
+	zENRr9f0+gqTe+XREr4usbz/yUqH3bydmQO2rwGuFqEk4nQLpJYXEJux8qgcoFHlGYyVyY5Y7NG
+	orlOaqVmE4WN7/UZ5nM3xauCww5p5gDbaIxINLZ+IjbKlC3jgpTV2m3SQzIxpgMzjGSqzHrXgxR
+	OaaN/M9uNrMP8wIRGQHhz7tDz7kTyo2rlpmh5YAJ4ZCMbG/gCBz+W/3oa6uWcl28UfQxJ42cAUV
+	P8xkgImwfG1xrh1kvMD/gjnBoW8TI9ZjDzE9IOJIO4XC4gfuHh2Ot34V8OQpywK/F+t7Gd6fBPp
+	xWIYaRUgzfHdNQ==
+X-Received: by 2002:a05:600c:4e87:b0:4a2:1867:10e8 with SMTP id 5b1f17b1804b1-4a35aca7643mr101451135e9.25.1792955801092;
+        Sun, 25 Oct 2026 12:16:41 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:6dfc:5715:ead7:7540])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ebc3bcdsm10082051f8f.13.2026.10.25.12.16.25
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a5822a7sm144560865e9.11.2026.10.25.12.16.40
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 25 Oct 2026 12:16:26 -0700 (PDT)
+        Sun, 25 Oct 2026 12:16:40 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
-Cc: Rob Herring <robh@kernel.org>,
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>
+Cc: David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jessica Zhang <jesszhan0024@gmail.com>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Paul Cercueil <paul@crapouillou.net>,
 	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	linux-pwm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v2 1/2] dt-bindings: pwm: Add the Ingenic X1600 PWM controller
-Date: Sun, 25 Oct 2026 20:16:23 +0100
-Message-ID: <20261025191624.9219-2-olivier@mgcrea.io>
+Subject: [PATCH v2 0/5] drm/ingenic: Add the X1600 LCD controller and the HiBy R1 panel
+Date: Sun, 25 Oct 2026 20:16:35 +0100
+Message-ID: <20261025191640.13592-1-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261025191624.9219-1-olivier@mgcrea.io>
-References: <20261025191624.9219-1-olivier@mgcrea.io>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,86 +110,78 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The X1600 has an eight-channel PWM controller of its own, separate from
-the TCU timers that drive the PWMs of earlier Ingenic SoCs
-(ingenic,tcu.yaml), so it gets a binding of its own.
+The display controller of the Ingenic X1600 is not the one ingenic-drm
+drives: it fetches frames through descriptors and keeps its interface and
+timings in register blocks of their own. It is the X2000's controller
+without the composer. This series adds a binding and a driver for it,
+then the panel of the HiBy R1, an X1600 audio player: 480x800 parallel
+RGB, set up over a 3-wire SPI bus.
 
-Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
----
- .../bindings/pwm/ingenic,x1600-pwm.yaml       | 47 +++++++++++++++++++
- MAINTAINERS                                   |  5 ++
- 2 files changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml
+The driver covers what the R1 uses and what could be tested: parallel RGB
+panels on a 24-bit bus and one full-screen RGB565 plane. The composer,
+smart panels and other pixel formats are left out.
 
-diff --git a/Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml b/Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml
-new file mode 100644
-index 000000000000..3ecaa92a5ca2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml
-@@ -0,0 +1,47 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/ingenic,x1600-pwm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ingenic X1600 PWM controller
-+
-+maintainers:
-+  - Olivier Louvignes <olivier@mgcrea.io>
-+
-+description:
-+  The eight-channel PWM controller of the Ingenic X1600 SoC, separate from
-+  the TCU timers that drive the PWMs of earlier Ingenic SoCs.
-+
-+allOf:
-+  - $ref: pwm.yaml#
-+
-+properties:
-+  compatible:
-+    const: ingenic,x1600-pwm
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    const: 3
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - "#pwm-cells"
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    pwm@134c0000 {
-+        compatible = "ingenic,x1600-pwm";
-+        reg = <0x134c0000 0x200>;
-+        clocks = <&cgu 21>;
-+        #pwm-cells = <3>;
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3a19da74d00c..c905aa13bcbc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12878,6 +12878,11 @@ F:	include/linux/mfd/ingenic-tcu.h
- F:	sound/soc/codecs/jz47*
- F:	sound/soc/jz4740/
- 
-+INGENIC X1600 PWM DRIVER
-+M:	Olivier Louvignes <olivier@mgcrea.io>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml
-+
- INJOINIC IP5xxx POWER BANK IC DRIVER
- M:	Samuel Holland <samuel@sholland.org>
- S:	Maintained
+Two things come from the vendor kernel rather than the manual. A flip
+also writes SRD_CHAIN_START, which the manual doesn't describe for a
+running controller; flips without it were not tried. The panel's set-up
+sequence is the vendor's too: HiBy calls the panel LG35583, its maker and
+controller are unknown, hence the hiby prefix.
+
+Changes in v2, all in 3/5 and all found by the Sashiko review of v1:
+- Commits wait for flip_done instead of a vblank before the planes are
+  cleaned up. A flip's event waits until the controller reports reading
+  the new descriptor, which can be a frame after the vblank that v1's
+  default commit_tail waited for, so the old framebuffer could be freed
+  while still scanned out.
+- A CRTC being enabled sends its event from atomic_enable(), once the
+  controller runs; v1 sent it from atomic_flush(), which runs first.
+- A plane that is not visible is rejected: the controller always scans
+  out a whole frame, so v1 would have read past the end of a small
+  framebuffer placed off-screen.
+- atomic_disable() returns early when atomic_enable() failed to start
+  the pixel clock, instead of touching an unclocked controller.
+
+Tested on a HiBy R1: the fbdev console and a player drawing through
+fbdev, blanking and unblanking, 60 page flips in 0.97 s at about 61 Hz,
+and the colour order (RGB order swaps red and blue on this panel). For
+v2 also: 120 fbdev pans in 1.95 s (one flip per frame, none timing out),
+three blank/unblank cycles, and a 64x64 framebuffer set on the primary
+plane just past the right edge through SETPLANE, which v1 accepted and
+v2 refuses with -EINVAL, while a full-screen one is still accepted.
+
+The X1600 has no device tree upstream yet; its support is being posted
+one subsystem at a time. The R1's backlight uses the X1600 PWM driver
+posted separately, now at v2:
+https://lore.kernel.org/r/20261025191624.9219-1-olivier@mgcrea.io
+
+v1: https://lore.kernel.org/r/20261025085816.60405-1-olivier@mgcrea.io
+
+Olivier Louvignes (5):
+  dt-bindings: vendor-prefixes: Add HiBy
+  dt-bindings: display: Add the Ingenic X1600 LCD controller
+  drm/ingenic: Add a driver for the X1600 LCD controller
+  dt-bindings: display: panel: Add the HiBy LG35583
+  drm/panel: Add the HiBy LG35583
+
+ .../bindings/display/ingenic,x1600-lcd.yaml   |  70 ++
+ .../bindings/display/panel/hiby,lg35583.yaml  |  71 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  12 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/ingenic/Kconfig               |  22 +
+ drivers/gpu/drm/ingenic/Makefile              |   1 +
+ drivers/gpu/drm/ingenic/ingenic-x1600-drm.c   | 744 ++++++++++++++++++
+ drivers/gpu/drm/panel/Kconfig                 |  10 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-hiby-lg35583.c    | 342 ++++++++
+ 11 files changed, 1276 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic,x1600-lcd.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
+ create mode 100644 drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
+ create mode 100644 drivers/gpu/drm/panel/panel-hiby-lg35583.c
+
+
+base-commit: cf61bef3801c3c9d0d8c39026b7b2fb242898a3a
 -- 
 2.39.5
 

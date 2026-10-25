@@ -1,105 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.171
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792954058;
-	b=UDj0TcLegPGIb+NSQdzEoX6ogJ/pr4JZ15juckc45Gny/W/8cpi3W0trsN9/eDJB4Ngi
-	 Jhr9Lmp+8LR6vlb7k7cmB/BwQ4/rGJQhV/cB0hrZ1N2tqq+AzT7DUxzkT5pU2/DPc4lE9
-	 ePqnxRa/woN6aaHN2BTtVXAMBVgWmp0QfyXR4mwJHgdX5afNC6xaVK3aIhknS5A0Gei5N
-	 v8r6UpsfWHUF54jbkplGLB/wJxEuhLIcUjtNh8JBLhcXc3W2q2FE1P9ZFzN9KMsoYE5wk
-	 0As0aK7GgXm3KlL6IhZ2JLAOym25oodAmg13NUYIWR0KX2eCItS1tfcZMpQutuIt4dw==
+	t=1792955783;
+	b=E4m4ml3K5eVHInvLSofhJCEZ/FoenPkjlwx7kUhaWlXY/QcUoW1Knww2ukj6HL6l4kX+
+	 4BalBX89NSF0omb3PJffB8FLND0gksnHb7vZj0oytC5ELXpw2IOtOAheMHp5kxSSPSRrx
+	 i5u+7f0uI8qdIZQtCeO3fFx2mLiY6hfwLIiq1yLrnZgW/Fv3+0aRo1vFGp4Co43zrKoTp
+	 8sUW8Ie6SATRgWst9XQFXkWyJltkkRCHgYIlsnngXBHGW9qUzVgfk1+spkJQ+oeStzzW9
+	 1VqX6e8M2VKARriBlfojO4QT1PznaSnDnEWW7zR9gaa5lXqT7XLw6/ey91P9DClikfQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792954058;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
-	b=oI8t25y2n3uUEUo5oZcz1ZhwNch0Zer9U2KJIUcGZxFJQlg09c+k01KATCClZitp7nVe
-	 QOpGuo43gqQs3bMRRJDQrc0EkmNQ/AmE9VzYDYqucXvSv2x/2i6lwiwrlZaagZ5mns35P
-	 1sgk98K5TOOrhJEM5poHi15RL2TVjhq2ow9zLUove1SWVRZslP3kwxpDa47ltRSE+mcP8
-	 J4LXWsvXDIIB+7wkS4snOpWPuollB6gV/R70FBmnrgnEhSSmIvSqQFZu2N1pZTAPw2FU1
-	 9wX1ISusI8e6nAL2kKacaN4zU39t2QY1pRbAmN0WczqXPPHMJW4pKsscU2Td1YKfpOw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792955783;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
+	b=HGLo1IfqkEf5xreP3Bmrixya4MIB9QcE73x3QM5ZGPE9wiIkQcqfWNnwttqxC6tFjUTg
+	 jFR2LauPpUW7olxOToVmaRBNB8ZklupnZrjBJIJWaQiN2CR5D3I4u5EwK/kQtUapw80ni
+	 WDQLaGOjTJn6EXY+gCkO9aTmcH5qJ0EKXgtcB3Ac6N/2ooqYhc1dIc6D+tC+ilx2Lt6Kl
+	 YApgNOeKz4rjiAx069kRciyF/xBzMcty6B4c+VsSii6ClNSsZdrGoOgwbzCAQGwVzf8ho
+	 9pMmx/oe3Rar1nwGoUkrsT06zoSRyJic7iDiTJfHTxzpmgBzOnPsMpAA4k+uGlm9zRw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LmQqjF89;
+	arc=none smtp.remote-ip=74.125.82.171
+Received: from mail-dy1-f171.google.com (mail-dy1-f171.google.com [74.125.82.171])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A60606A31B;
-	Sun, 25 Oct 2026 18:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A411606A31B
+	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 19:16:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5A411606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2E91F01828;
-	Sun, 25 Oct 2026 18:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792954057;
-	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=J6C08BAV+F3iiWM9FlcPNqjRNGrOHJtPKNVu3OUcI7HqHZFW2bJf7N0c8G+JK3kuC
-	 Q9nwKr5QZZOaBx04tv6bryafAtS3l8ddZSESLreLqFOuH9yUyY5YFa2WLyjKrfokOY
-	 I5aQbn4Z7ktlYAGGiVhADA+Z2owm484BBGS0MXEu9+8SJ1Xd+9nopeImLHezCjmbsI
-	 l+b9jyQmwALbi3HX0Fd2Od6jLx4uuOwo/I0r78SNRDtzRGmz0Z0w8l5bueq5IOCdWr
-	 lyimjYWJ1aQUhpScd4g5pAdhgA9k8TZ3KLStW1ngSWF9YCMs/TnFJYzxEr+8kDEq+3
-	 1F+kG3xlNHiHw==
-Date: Sun, 25 Oct 2026 19:47:34 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Srikar Dronamraju <srikar@linux.ibm.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Kees Cook <kees@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
-	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Pengjie Zhang <zhangpengjie2@huawei.com>,
-	Thierry Reding <treding@nvidia.com>, Xi Ruoyao <xry111@xry111.site>,
-	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Rong Bao <rong.bao@csmantle.top>, Hui Wang <hui.wang@canonical.com>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH] sched/hotplug: Remove unused idle_task_exit
-Message-ID: <at5OxorR-UUIxlIe@pavilion.home>
-References: <20261016095711.1364609-1-srikar@linux.ibm.com>
- <attjv8zOftf9Hlqe@localhost.localdomain>
- <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LmQqjF89
+Received: by mail-dy1-f171.google.com with SMTP id 5a478bee46e88-3645f0f3fcdso4561949eec.0
+        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 12:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792955782; x=1793560582; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
+        b=LmQqjF89Fdy3ENWR6BlHs9G6JK8iFLBDxSlyZjjqMxLW9ZCO5hSafen5NswiVziYha
+         CJHv36Xuddf4S3CSuuGZTxVoeKYYqfb5tWxGZH9Jkfc7XPH/14OYbuhgeSQY3R6DMK0S
+         8xgUD6I4XiDeS0XQ7j5bZR/we66S5VPbUda6Qia77GlsruZ+T0WVjQZtBEj/XVeOw+j3
+         061uYSESGZfU0Nh8d0Kuc+NejGMk6iIUQHQJMP+VN7yct+YTOF+5eyw3ZyteMtErbIVq
+         GZPxgr189fQzkZRyRcgwr1WA/ZImSXPlQBezsyvqMpt70WaRJ9zJQJwd4xnEhLo33ytt
+         0y0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792955782; x=1793560582;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
+        b=l+/HMoRNUhc9NzPeERltRVWIHER8Wyh93ggbYZkprp0LKgtVVUGITeU6rfEdgDXSAl
+         CxlcfkdG91WFpA2qw8PgDTalVGBlMLYs4o5SNvP9fAQj3T9swKYXgPWafE5pfymq/egQ
+         BRW5JfI9LfPkRIs9SFtBnQ0aPjdC7bgF+Lq7X3t8GO19wKKywCnbBmX+7qNdqR/e+nc1
+         K99Qyeut6NGr7V4Ph4ONeZbbUuQ54qITx8lJKmBySGDA5zZomR0SYCJLa03gy4SZ546K
+         8qiEZRos8yhgrCOzrY3w47jCuS8zYwDbg5TGVOdNmCr2ISLBJys/bIoUnpmhANnsd/Be
+         x+Kg==
+X-Gm-Message-State: AFq9FYItmrFyocyUrYw87i9tfKlH8DXuV5BNuFFmR0iqOa4+zS+0ubit
+	eW8t/b1Smh0BSFr4eifaZ6sh0aJ08hD1Gbl7rSXXo9iZ/ixuXgD7YyxT
+X-Gm-Gg: AYBFou01A0Iob4mJmUWG0dCzHASJ9KCKF/wvcY2JrPKbzrDSEMjIIRj1LMvO+KIRtDj
+	bExroqvhdVPX7pcvoRvZlLVxmLI0A3DlkR/2n+SoIy6ITcch6uUy+JO+idSJ5thlccMBOMm9gI9
+	mOyyuRAOZhSkAs/fjpPgEKnoy1DeY36S3rZ5xM2xmgVPzAhbUM4Z1+TNiXMK3k51U707CJWKSoe
+	W1m8h9yeEmGNbIjc5eZFvF42bUXJouFARHsTecu5N4MMOyNvI1gVh70cF6VbMstUBf/XKC3fpFJ
+	hQqPTj6c0MMVQOfhef2Pu64L6VzMucMJSPuEW2fMjwAB24K++p4ubtEyC0DdO855KqxEui9RWLd
+	sm1qEIo6wh75VFFItQC9zHkfumIfFPdmi4uxGmM2JDO77intuatOLlIchGxRmrUHkBoNflrHjHn
+	oc6lQl3VZ1lZKRd8Gr9tnU8OqdNGkJnWyybEzOkfutvt7EqAVkVhAFfaAyOOXOMdMS8BPwmGezb
+	00I4bZ1Vd9UcufXsz27C0c01C5LUf3JVT/keZMai50LnZskEqtIqYBkdSxaYVCYi8xbE84QrhLp
+	16iyGwoG/P0JHl22091Q9pOuZWB/70qyFox6zGMyws9weHPfmLBqw/yOqAOYQEgXrdSeRV3e8sN
+	M0v/5hHQimustgOMFbCCmHAGd
+X-Received: by 2002:a05:693c:4195:20b0:34e:c001:1486 with SMTP id 5a478bee46e88-369e84daa95mr8406622eec.8.1792955782167;
+        Sun, 25 Oct 2026 12:16:22 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:1f81:d121:605b:ad3:d032? ([2600:8802:b00:1f81:d121:605b:ad3:d032])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-369f44bd644sm10603999eec.15.2026.10.25.12.16.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Oct 2026 12:16:21 -0700 (PDT)
+Message-ID: <ff0e6a32-af88-432b-a976-2a432f625cb2@gmail.com>
+Date: Sun, 25 Oct 2026 12:16:20 -0700
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -109,33 +91,56 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] MIPS: Cobalt: Include legacy IDE ports in the PCI I/O
+ window
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, open list <linux-kernel@vger.kernel.org>
+References: <20261022163106.1410595-1-f.fainelli@gmail.com>
+ <alpine.DEB.2.21.2610250247210.42255@angie.orcam.me.uk>
+Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2610250247210.42255@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Le Fri, Oct 23, 2026 at 06:54:34PM +0200, Peter Zijlstra a écrit :
-> On Fri, Oct 23, 2026 at 03:40:15PM +0200, Frederic Weisbecker wrote:
-> > Le Fri, Oct 16, 2026 at 03:26:40PM +0530, Srikar Dronamraju a écrit :
-> > > Commit 21641bd9a7a7 ("lazy tlb: fix hotplug exit race with
-> > > MMU_LAZY_TLB_SHOOTDOWN") moved the handling previously performed by
-> > > idle_task_exit() into the scheduler CPU hotplug path using
-> > > sched_force_init_mm().
-> > > 
-> > > As a result, idle_task_exit() is now an empty stub and the remaining
-> > > architecture call sites have no effect.
-> > > 
-> > > Remove the calls to idle_task_exit() and the now unused stub.
-> > > 
-> > > Signed-off-by: Srikar Dronamraju <srikar@linux.ibm.com>
-> > 
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+
+On 10/24/2026 7:55 PM, Maciej W. Rozycki wrote:
+> On Thu, 22 Oct 2026, Florian Fainelli wrote:
 > 
-> Excellent; less is more and all that. Shall I take this through the
-> scheduler tree?
+>> Changes in v2:
+>>
+>> - implement Maciej's suggestion to reserve PCI resources first
+>>    and then the rest of the peripherals
+> 
+>   Thanks.
+> 
+>> diff --git a/arch/mips/cobalt/pci.c b/arch/mips/cobalt/pci.c
+>> index 85ec9cc31d66..29fd052766b2 100644
+>> --- a/arch/mips/cobalt/pci.c
+>> +++ b/arch/mips/cobalt/pci.c
+>> @@ -14,6 +14,8 @@
+>>   
+>>   #include <asm/gt64120.h>
+>>   
+>> +#include <cobalt.h>
+>> +
+> 
+>   Hmm, why do you need it here now, a leftover from testing?
 
-Yes please :-)
+Yes indeed it was a leftover from moving code around until I settled on 
+the current approach.
 
+> 
+>   With that removed, unless proved otherwise:
+> 
+> Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
+
+Thanks v3 incoming.
 -- 
-Frederic Weisbecker
-SUSE Labs
+Florian
+

@@ -1,51 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=46.165.236.26
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792937270;
-	b=yzOSEuoX+LnL3HerrwDpI3lKHfRWu8jaH8qgr59d7wfQUxqn6NYXauQ+u2CRy9VTpGPX
-	 Rib4KD9G4B9ZLS75uSM/ab7bd0D50pG54CEkpobrmLAL3r+oTg5uaoktVA5INyyvcsVmN
-	 /UFlwokOyIZV7r7PZSmyosM6E/1YYl7VVb+6YMAT86xocBWyl6Beg+ynDRaVfAVow6X2p
-	 8TQetIY1njDjUGJ3vZi6yADxjseUuAa/Wuqo0TJtOHyxPVAc2OuIj4Vr32vFlVrjZjODp
-	 I7RCLoztp2g5mTtj1Q5yzzWH6Icgjx2vHOVMn9mDJo/90s6DeRRZuvqlyMlnbj+haaw==
+	t=1792954058;
+	b=UDj0TcLegPGIb+NSQdzEoX6ogJ/pr4JZ15juckc45Gny/W/8cpi3W0trsN9/eDJB4Ngi
+	 Jhr9Lmp+8LR6vlb7k7cmB/BwQ4/rGJQhV/cB0hrZ1N2tqq+AzT7DUxzkT5pU2/DPc4lE9
+	 ePqnxRa/woN6aaHN2BTtVXAMBVgWmp0QfyXR4mwJHgdX5afNC6xaVK3aIhknS5A0Gei5N
+	 v8r6UpsfWHUF54jbkplGLB/wJxEuhLIcUjtNh8JBLhcXc3W2q2FE1P9ZFzN9KMsoYE5wk
+	 0As0aK7GgXm3KlL6IhZ2JLAOym25oodAmg13NUYIWR0KX2eCItS1tfcZMpQutuIt4dw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792937270;
-	h=DMARC-Filter:Received:DKIM-Signature:MIME-Version:Date:From:To:Cc:
-	 Subject:In-Reply-To:References:Message-ID:X-Sender:Content-Type:
-	 Content-Transfer-Encoding:X-Spam-Status;
-	bh=gk6KAUqpK5pmPDaFubx/3pMFW8AstroWAAfKJLA56kY=;
-	b=24U5a98klpkoy9ppOG4c5nur1OurqJ6wsnRNd/SOMAQE+YvUGivnERCNhId99nnEbFE5
-	 4Li19Vt9Z3cpU2V/AdeedhBIlAS2pbRmXlT5NhyiquNue4vVmgHHJFob6WpqxJFDvZQXk
-	 9ECCat7BJjMozCuFNn+iDbdKGmrjNrz9RgTU3WR8WiIuxnMrtfUI1Hj6lY7yzBpmSF5JD
-	 KtlufPKhRcWrb7Dn12cqwDWUS0prdhqEuuTfZCdB7LWZFeGoYoV32EM1P4+SVImw20r/E
-	 82sfHTuARz+RGTB9SxxDsKdWp3GTb6BC5PsgYp9Vxl82ErRvQd+WKG33K2UFGuNmgvw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792954058;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
+	b=oI8t25y2n3uUEUo5oZcz1ZhwNch0Zer9U2KJIUcGZxFJQlg09c+k01KATCClZitp7nVe
+	 QOpGuo43gqQs3bMRRJDQrc0EkmNQ/AmE9VzYDYqucXvSv2x/2i6lwiwrlZaagZ5mns35P
+	 1sgk98K5TOOrhJEM5poHi15RL2TVjhq2ow9zLUove1SWVRZslP3kwxpDa47ltRSE+mcP8
+	 J4LXWsvXDIIB+7wkS4snOpWPuollB6gV/R70FBmnrgnEhSSmIvSqQFZu2N1pZTAPw2FU1
+	 9wX1ISusI8e6nAL2kKacaN4zU39t2QY1pRbAmN0WczqXPPHMJW4pKsscU2Td1YKfpOw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=boddie.org.uk;
-	spf=pass smtp.mailfrom=boddie.org.uk;
-	dkim=pass header.d=boddie.org.uk header.i=@boddie.org.uk header.a=rsa-sha256 header.s=dkim header.b=b0oaNZd8;
-	arc=none smtp.remote-ip=46.165.236.26
-Received: from smtp1.de.opalstack.com (smtp1.de.opalstack.com [46.165.236.26])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443DF606A31B
-	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 14:07:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 443DF606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=boddie.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=boddie.org.uk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A60606A31B;
+	Sun, 25 Oct 2026 18:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=boddie.org.uk header.i=@boddie.org.uk header.a=rsa-sha256 header.s=dkim header.b=b0oaNZd8
-Received: from webmail.de.opalstack.com (webmail.de.opalstack.com [172.104.205.51])
-	by smtp1.de.opalstack.com (Postfix) with ESMTPSA id 1FBFD3F18B4;
-	Sun, 25 Oct 2026 14:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
-	s=dkim; t=1792937267;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gk6KAUqpK5pmPDaFubx/3pMFW8AstroWAAfKJLA56kY=;
-	b=b0oaNZd8aGnRGI5WhBdd4Vr279+qDVuRPnTeHUPwKF6yi6QM//lSqgM7zsGBR8OAmvZRpe
-	Hna966Ech3nmp2WLk8WMLPYG/Z/bDAm2K2Esr2mFLVMOWZFAfNBVuB2V3t18+d4BQa7Rcj
-	3qPC+Gpr5WzE7INphrHZXgErt7oekaM=
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2E91F01828;
+	Sun, 25 Oct 2026 18:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792954057;
+	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=J6C08BAV+F3iiWM9FlcPNqjRNGrOHJtPKNVu3OUcI7HqHZFW2bJf7N0c8G+JK3kuC
+	 Q9nwKr5QZZOaBx04tv6bryafAtS3l8ddZSESLreLqFOuH9yUyY5YFa2WLyjKrfokOY
+	 I5aQbn4Z7ktlYAGGiVhADA+Z2owm484BBGS0MXEu9+8SJ1Xd+9nopeImLHezCjmbsI
+	 l+b9jyQmwALbi3HX0Fd2Od6jLx4uuOwo/I0r78SNRDtzRGmz0Z0w8l5bueq5IOCdWr
+	 lyimjYWJ1aQUhpScd4g5pAdhgA9k8TZ3KLStW1ngSWF9YCMs/TnFJYzxEr+8kDEq+3
+	 1F+kG3xlNHiHw==
+Date: Sun, 25 Oct 2026 19:47:34 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Srikar Dronamraju <srikar@linux.ibm.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Scott Wood <oss@buserror.net>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Kees Cook <kees@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
+	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Pengjie Zhang <zhangpengjie2@huawei.com>,
+	Thierry Reding <treding@nvidia.com>, Xi Ruoyao <xry111@xry111.site>,
+	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Rong Bao <rong.bao@csmantle.top>, Hui Wang <hui.wang@canonical.com>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sched/hotplug: Remove unused idle_task_exit
+Message-ID: <at5OxorR-UUIxlIe@pavilion.home>
+References: <20261016095711.1364609-1-srikar@linux.ibm.com>
+ <attjv8zOftf9Hlqe@localhost.localdomain>
+ <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -55,59 +109,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Date: Sun, 25 Oct 2026 14:07:46 +0000
-From: Paul Boddie <paul@boddie.org.uk>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
- Discussions about the Letux Kernel <letux-kernel@openphoenux.org>, Andreas
- Kemnade <akemnade@kernel.org>
-Subject: Re: [PATCH] MIPS: cpu-probe: Recognise the XBurst core of the Ingenic
- X1600
-In-Reply-To: <12ECACDC-2C60-4D0B-A124-D08380A2AA00@goldelico.com>
-References: <20261023204205.48222-1-olivier@mgcrea.io>
- <F93B4D14-97DB-4F8E-988E-3C6803F5C850@goldelico.com>
- <alpine.DEB.2.21.2610250558190.42255@angie.orcam.me.uk>
- <00f33012e2f754e4dec0ec17a76d4285@boddie.org.uk>
- <12ECACDC-2C60-4D0B-A124-D08380A2AA00@goldelico.com>
-Message-ID: <74546676961851519601e828c3cbbb30@boddie.org.uk>
-X-Sender: paul@boddie.org.uk
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
 
-On 2026-10-25 12:14, H. Nikolaus Schaller wrote:
->> Am 25.10.2026 um 12:06 schrieb Paul Boddie <paul@boddie.org.uk>:
->> 
->> From the X1600 Programming Manual:
->> 
->> "2.2 PRID of X1600-CPU
->> Processor ID register (CP0 Register 15, select 0) in XBurst CPUs is a 
->> read-only register being
->> used to identify implementation detail of each SOC's CPU. Please refer 
->> to the programming
->> manual of XBurst CPU for detail of the register. For X1600, its value 
->> is 0x00D0000"
+Le Fri, Oct 23, 2026 at 06:54:34PM +0200, Peter Zijlstra a écrit :
+> On Fri, Oct 23, 2026 at 03:40:15PM +0200, Frederic Weisbecker wrote:
+> > Le Fri, Oct 16, 2026 at 03:26:40PM +0530, Srikar Dronamraju a écrit :
+> > > Commit 21641bd9a7a7 ("lazy tlb: fix hotplug exit race with
+> > > MMU_LAZY_TLB_SHOOTDOWN") moved the handling previously performed by
+> > > idle_task_exit() into the scheduler CPU hotplug path using
+> > > sched_force_init_mm().
+> > > 
+> > > As a result, idle_task_exit() is now an empty stub and the remaining
+> > > architecture call sites have no effect.
+> > > 
+> > > Remove the calls to idle_task_exit() and the now unused stub.
+> > > 
+> > > Signed-off-by: Srikar Dronamraju <srikar@linux.ibm.com>
+> > 
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 > 
-> This seems to be a typo as it has only 7 digits. I have read from the 
-> chip:
-> 
-> PRID table (as known from Programming Manuals)
-> jz4780 0x3ee1024f (confirmed 0x3ee1024f on CI20 board)
-> x1000 0x2ed1024f  (unconfimed)
-> x1600 0x00d00000  (confirmed 0x00d00000 on LX16 board)
-> X1830 0x00d00100  (unconfirmed)
-> X2000 0x00132000  (read out from LX20 board)
-> X2600 0x001320xx  (confirmed 0x00132000 on LX26 board)
+> Excellent; less is more and all that. Shall I take this through the
+> scheduler tree?
 
-Better references might be these:
+Yes please :-)
 
-XBurstÂ®1 CPU Core Programming Manual
-Section 2.3.1.8 Processor ID-PRId(CP0 Register 15, Select 0)
-
-XBurstÂ®2 CPU Core Programming Manual
-Section 3.3.1.7 Processor ID-PRId(CP0 Register 15, Select 0)
-
-However, they suggest a format which does not seem consistent with that 
-used by the XBurst 1 chips.
-
-Paul
+-- 
+Frederic Weisbecker
+SUSE Labs

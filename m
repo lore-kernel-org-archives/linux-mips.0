@@ -1,87 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.171
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.42
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792955783;
-	b=E4m4ml3K5eVHInvLSofhJCEZ/FoenPkjlwx7kUhaWlXY/QcUoW1Knww2ukj6HL6l4kX+
-	 4BalBX89NSF0omb3PJffB8FLND0gksnHb7vZj0oytC5ELXpw2IOtOAheMHp5kxSSPSRrx
-	 i5u+7f0uI8qdIZQtCeO3fFx2mLiY6hfwLIiq1yLrnZgW/Fv3+0aRo1vFGp4Co43zrKoTp
-	 8sUW8Ie6SATRgWst9XQFXkWyJltkkRCHgYIlsnngXBHGW9qUzVgfk1+spkJQ+oeStzzW9
-	 1VqX6e8M2VKARriBlfojO4QT1PznaSnDnEWW7zR9gaa5lXqT7XLw6/ey91P9DClikfQ==
+	t=1792955788;
+	b=wmf+lmN58MvWy2MoEE/ogiWcd0TggeaMsAogb2j3F8ffQ7AgUsN3fCUcIpbkNQaMRaPj
+	 VnyuJOVx/MMEkNMo0WxssVspeJ44quVHhM/ED9f4iayMLAuunDTxe5xxhmunyX3Pw/RPG
+	 UnDDnTtsRNGrgF2pBWno5oIoMH2eAztmWhGTgAiamkaJMal6+o2mBSo8jDoeSU7DqiS/6
+	 X6vVzUafJ8OyyTevG55go/j8OBuLkhexbsO5ZeCuatLjzc1gVGmeHt9TmqpEDHngv5kzw
+	 e8wQ9oG1lIl0OwePZlwKVEZPtdTTq3isvyH4dBXy3XSk7rdWGRwWOuB6JMzA1mQGOrg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792955783;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792955788;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
-	b=HGLo1IfqkEf5xreP3Bmrixya4MIB9QcE73x3QM5ZGPE9wiIkQcqfWNnwttqxC6tFjUTg
-	 jFR2LauPpUW7olxOToVmaRBNB8ZklupnZrjBJIJWaQiN2CR5D3I4u5EwK/kQtUapw80ni
-	 WDQLaGOjTJn6EXY+gCkO9aTmcH5qJ0EKXgtcB3Ac6N/2ooqYhc1dIc6D+tC+ilx2Lt6Kl
-	 YApgNOeKz4rjiAx069kRciyF/xBzMcty6B4c+VsSii6ClNSsZdrGoOgwbzCAQGwVzf8ho
-	 9pMmx/oe3Rar1nwGoUkrsT06zoSRyJic7iDiTJfHTxzpmgBzOnPsMpAA4k+uGlm9zRw==
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=dsKEoWn0J6eZRSfAvhzwhCyUkWA5eiqJ4y72mpKVBNU=;
+	b=o6sxe0sUuGN0mu9WsqZvXnPIe2doL5koQzqDo6+/3Mjc0qCC45QVZk7gWlOzLEYtNc3C
+	 6v//hGYdClojfi7PyIDdH3IYBk8o7kHFWgdwzcsYjQsaKoaMB5+HvgX20bdlA+IPFXHVq
+	 EedjPvKx64czAXIipRnt2Bmxv8a1uYDtkWimOo7ERJ+q4L2LiwwSkaD3+GpHPcd30Ckex
+	 C86ubRt6EZ0CyOcdJpNKhrLfg4mptnpXV+AMMaJrbRYrvsboI4cX7Sa5sZbUv2q1EEfWC
+	 UTRnnA6IGDOr15V8yMPZY/S9sIbfMKLTxSGLSHMKdqsQDaJkGinflV6w4H8u1TuSIzg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LmQqjF89;
-	arc=none smtp.remote-ip=74.125.82.171
-Received: from mail-dy1-f171.google.com (mail-dy1-f171.google.com [74.125.82.171])
+	dmarc=fail header.from=mgcrea.io;
+	spf=pass smtp.mailfrom=mg-crea.com;
+	dkim=pass header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=VTvXvSik;
+	arc=none smtp.remote-ip=209.85.221.42
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A411606A31B
-	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 19:16:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5A411606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B8D606A31B
+	for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 19:16:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 96B8D606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LmQqjF89
-Received: by mail-dy1-f171.google.com with SMTP id 5a478bee46e88-3645f0f3fcdso4561949eec.0
-        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 12:16:23 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20251104.gappssmtp.com header.i=@mg-crea-com.20251104.gappssmtp.com header.a=rsa-sha256 header.s=20251104 header.b=VTvXvSik
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-48e4831c028so731777f8f.0
+        for <linux-mips@vger.kernel.org>; Sun, 25 Oct 2026 12:16:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792955782; x=1793560582; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
-        b=LmQqjF89Fdy3ENWR6BlHs9G6JK8iFLBDxSlyZjjqMxLW9ZCO5hSafen5NswiVziYha
-         CJHv36Xuddf4S3CSuuGZTxVoeKYYqfb5tWxGZH9Jkfc7XPH/14OYbuhgeSQY3R6DMK0S
-         8xgUD6I4XiDeS0XQ7j5bZR/we66S5VPbUda6Qia77GlsruZ+T0WVjQZtBEj/XVeOw+j3
-         061uYSESGZfU0Nh8d0Kuc+NejGMk6iIUQHQJMP+VN7yct+YTOF+5eyw3ZyteMtErbIVq
-         GZPxgr189fQzkZRyRcgwr1WA/ZImSXPlQBezsyvqMpt70WaRJ9zJQJwd4xnEhLo33ytt
-         0y0Q==
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1792955786; x=1793560586; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=dsKEoWn0J6eZRSfAvhzwhCyUkWA5eiqJ4y72mpKVBNU=;
+        b=VTvXvSikLfJGslamcvpxzCJTu9WkCqjiJqpiEmRb3NyqMiAEDAZqGiMJOtgonAhvVe
+         ghVqAx1FnE16xEaww+LmUM3JTFBWGkrjBFsQlyG/IdXi2YGFwzny5206DDVamb8N1MGh
+         cAfRYHnoGVF63+UjNmuJm0Sn3D99fSfvJFaUV2DjMknY2UjvCIJL4FyhRSOrznDeFOBV
+         liWh36MSsxs/4AcMi2HmaxivN7SLlfqr/r5HQIp+4u0Asqk/CSyU+BluZIGLCmNB28TC
+         YEoChXByW7WkhkxR9+w3vExNtNv2TtfBR9fafQblnxFRZfD7O5NPhGQo187Ak4APjsFn
+         sBxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792955782; x=1793560582;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20260707; t=1792955786; x=1793560586;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=LM2FwdNguq/ImKJvR0xsuDikculPVtq7hMnmk6i3FnU=;
-        b=l+/HMoRNUhc9NzPeERltRVWIHER8Wyh93ggbYZkprp0LKgtVVUGITeU6rfEdgDXSAl
-         CxlcfkdG91WFpA2qw8PgDTalVGBlMLYs4o5SNvP9fAQj3T9swKYXgPWafE5pfymq/egQ
-         BRW5JfI9LfPkRIs9SFtBnQ0aPjdC7bgF+Lq7X3t8GO19wKKywCnbBmX+7qNdqR/e+nc1
-         K99Qyeut6NGr7V4Ph4ONeZbbUuQ54qITx8lJKmBySGDA5zZomR0SYCJLa03gy4SZ546K
-         8qiEZRos8yhgrCOzrY3w47jCuS8zYwDbg5TGVOdNmCr2ISLBJys/bIoUnpmhANnsd/Be
-         x+Kg==
-X-Gm-Message-State: AFq9FYItmrFyocyUrYw87i9tfKlH8DXuV5BNuFFmR0iqOa4+zS+0ubit
-	eW8t/b1Smh0BSFr4eifaZ6sh0aJ08hD1Gbl7rSXXo9iZ/ixuXgD7YyxT
-X-Gm-Gg: AYBFou01A0Iob4mJmUWG0dCzHASJ9KCKF/wvcY2JrPKbzrDSEMjIIRj1LMvO+KIRtDj
-	bExroqvhdVPX7pcvoRvZlLVxmLI0A3DlkR/2n+SoIy6ITcch6uUy+JO+idSJ5thlccMBOMm9gI9
-	mOyyuRAOZhSkAs/fjpPgEKnoy1DeY36S3rZ5xM2xmgVPzAhbUM4Z1+TNiXMK3k51U707CJWKSoe
-	W1m8h9yeEmGNbIjc5eZFvF42bUXJouFARHsTecu5N4MMOyNvI1gVh70cF6VbMstUBf/XKC3fpFJ
-	hQqPTj6c0MMVQOfhef2Pu64L6VzMucMJSPuEW2fMjwAB24K++p4ubtEyC0DdO855KqxEui9RWLd
-	sm1qEIo6wh75VFFItQC9zHkfumIfFPdmi4uxGmM2JDO77intuatOLlIchGxRmrUHkBoNflrHjHn
-	oc6lQl3VZ1lZKRd8Gr9tnU8OqdNGkJnWyybEzOkfutvt7EqAVkVhAFfaAyOOXOMdMS8BPwmGezb
-	00I4bZ1Vd9UcufXsz27C0c01C5LUf3JVT/keZMai50LnZskEqtIqYBkdSxaYVCYi8xbE84QrhLp
-	16iyGwoG/P0JHl22091Q9pOuZWB/70qyFox6zGMyws9weHPfmLBqw/yOqAOYQEgXrdSeRV3e8sN
-	M0v/5hHQimustgOMFbCCmHAGd
-X-Received: by 2002:a05:693c:4195:20b0:34e:c001:1486 with SMTP id 5a478bee46e88-369e84daa95mr8406622eec.8.1792955782167;
-        Sun, 25 Oct 2026 12:16:22 -0700 (PDT)
-Received: from ?IPV6:2600:8802:b00:1f81:d121:605b:ad3:d032? ([2600:8802:b00:1f81:d121:605b:ad3:d032])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-369f44bd644sm10603999eec.15.2026.10.25.12.16.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Oct 2026 12:16:21 -0700 (PDT)
-Message-ID: <ff0e6a32-af88-432b-a976-2a432f625cb2@gmail.com>
-Date: Sun, 25 Oct 2026 12:16:20 -0700
+        bh=dsKEoWn0J6eZRSfAvhzwhCyUkWA5eiqJ4y72mpKVBNU=;
+        b=yRg5M/OJAYM7T+oWIQWvaPCd3y/TOwczDCfCqBRdts1XgYD8jZuZ2lBMGLw0b5BfBE
+         LORkVB89JcTJiuvPZPmtYMk7dinEQWB12eSYCvKStoX5j/to5sjUwGzIYN6NnyxZbyQT
+         5Cj9oDnOKNf8rQPgKfIhgfDNJHxLyzH/savASeIWTRrPDJSEmSQobsQlDonsSyJwJBy8
+         gPU8yfb3CYiNUz0iYuxxpi7ryafC6oBXn6rJOBDBAr5jbUVn/2lLbnoZzNZRItSxSzoD
+         x3Zwwjj40S7sAl6Sq2ZGcTB9A+qOn9cWquD9YX6ILJfztjAVUxSIZzsaLJAbUwX0dSBs
+         yfiA==
+X-Forwarded-Encrypted: i=1; AKwUvBwQHXqUHSMnfIsXGEwFYHVE6bhXWwOy8Wy/3/Eq9Bb3UFc+jftOHD7PPz6lDMzt98WlqyQVX514AEaV@vger.kernel.org
+X-Gm-Message-State: AFq9FYKQZmpmqSyWAaZuOcdbujLpGNjc7LmLzmQM978E2CMpBLR8vhZ3
+	1dbnA8Dj39pP6I8E4CwNUaVzI0e+AAHJGE8lFDudwO5r6+DVm4YD3QDyLdElo0zWhxo=
+X-Gm-Gg: AYBFou2lL2in/ro5EaHbpkxI+ixNdyoIVJw13SK+FwOKzx3nwlDhB2JpT5GLeTq4aL3
+	jVXQDKn51VkBsnNBKHt72U9065XUQqiqSJGAt7WOAbhLC7q/dxOJeQmbNZn/j0LR59aeaOwxiEE
+	kq8nDlW3nuPYfOJwKwcvZbZhyA4gKJsPcnkFWfEp9GuzlshmWfKC9+TFmVb8QK5quz2pqsNI8hY
+	O9Q2vT6jaR/GLskhSP0My4AbwTlCZhWaFvDbin7ui+nVLMz0A2ENi0Z5u1E0CHaWdDxJlGLBUG3
+	c9+7OF4yXY8ulipKNLtGJM0TXkRTZ+uOO11FHRSKLe6qZ8F+1CLBZZyCM2q8WKFcNf7oYYrg5NK
+	0AS9aQyjn1JA9Sx2fa0Hcs7UCUrbm04GB+Zuf1S3rSqWSx0BoLwyqku29CwjItyF7jSgQJNmRzB
+	XD29JJwEH70U0ny0fXfvomW9IFfyLNHFHi3uMfYHjCq3dLwGiN6YTShnardPssU+73tlhMAsn5M
+	kJ/DM3YXiJD2VIe0ARTmH8h9lArSMSN1spT31KBFC+eW0/T/32N3SozZwJ1hS6MSd0i8TYp3fx8
+	NRszxvWfRf9HP0QNGgzg5xUN60UV8RRu4/Q=
+X-Received: by 2002:a05:6000:4b04:b0:48d:fbe1:bb17 with SMTP id ffacd0b85a97d-48e3eb7ca4emr8944736f8f.41.1792955785830;
+        Sun, 25 Oct 2026 12:16:25 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:6dfc:5715:ead7:7540])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ebc3bcdsm10082051f8f.13.2026.10.25.12.16.25
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sun, 25 Oct 2026 12:16:25 -0700 (PDT)
+From: Olivier Louvignes <olivier@mgcrea.io>
+To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	"H . Nikolaus Schaller" <hns@goldelico.com>,
+	linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Olivier Louvignes <olivier@mgcrea.io>
+Subject: [PATCH v2 0/2] pwm: Add the Ingenic X1600 PWM controller
+Date: Sun, 25 Oct 2026 20:16:22 +0100
+Message-ID: <20261025191624.9219-1-olivier@mgcrea.io>
+X-Mailer: git-send-email 2.54.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -91,56 +102,52 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] MIPS: Cobalt: Include legacy IDE ports in the PCI I/O
- window
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>, open list <linux-kernel@vger.kernel.org>
-References: <20261022163106.1410595-1-f.fainelli@gmail.com>
- <alpine.DEB.2.21.2610250247210.42255@angie.orcam.me.uk>
-Content-Language: en-US
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <alpine.DEB.2.21.2610250247210.42255@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+The Ingenic X1600 has a PWM controller of its own, separate from the TCU
+timers that pwm-jz4740 drives on the earlier Ingenic SoCs. This adds its
+binding and a driver built on the waveform callbacks.
+
+Changes in v2 (both found by the Sashiko review of v1):
+- A channel that is off with both counts still loaded, as one stopped
+  behind the driver's back leaves it, now reads back as disabled. v1 read
+  it as running, so asking for the same waveform again didn't switch it
+  on. A channel off with one count zero is how 0 and 100% are written; the
+  idle level gives which.
+- A clock rate of 0 is refused with -EINVAL when rounding a waveform and
+  when writing one, instead of switching the channel off silently or
+  dividing by zero in the update timeout.
+
+Tested on a HiBy R1 (X1600), whose backlight is channel 0, through
+pwm-backlight: brightness 1, 25, 50, 60 and 100% give the expected high and
+low counts, 0 and 100% switch the channel off at the right idle level,
+and an inversed 250 us of 1 ms on channel 1 reads back as INL 0, LOW
+9375 then HIGH 28125 with the clock divided by 8. PWM_DEBUG stayed
+silent. For v2 also: channel 1 running 250 us of 1 ms, switched off
+through ENC directly, then requested again through sysfs, reads back as
+disabled, and the same waveform asked again switches it back on; v1's
+driver read it as enabled and left it off.
+
+The X1600 has no device tree upstream yet; its support is being posted
+one subsystem at a time.
+
+v1: https://lore.kernel.org/r/20261025084643.93167-1-olivier@mgcrea.io
+
+Olivier Louvignes (2):
+  dt-bindings: pwm: Add the Ingenic X1600 PWM controller
+  pwm: Add a driver for the Ingenic X1600 PWM controller
+
+ .../bindings/pwm/ingenic,x1600-pwm.yaml       |  47 +++
+ MAINTAINERS                                   |   6 +
+ drivers/pwm/Kconfig                           |  11 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-ingenic-x1600.c               | 280 ++++++++++++++++++
+ 5 files changed, 345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/ingenic,x1600-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-ingenic-x1600.c
 
 
-
-On 10/24/2026 7:55 PM, Maciej W. Rozycki wrote:
-> On Thu, 22 Oct 2026, Florian Fainelli wrote:
-> 
->> Changes in v2:
->>
->> - implement Maciej's suggestion to reserve PCI resources first
->>    and then the rest of the peripherals
-> 
->   Thanks.
-> 
->> diff --git a/arch/mips/cobalt/pci.c b/arch/mips/cobalt/pci.c
->> index 85ec9cc31d66..29fd052766b2 100644
->> --- a/arch/mips/cobalt/pci.c
->> +++ b/arch/mips/cobalt/pci.c
->> @@ -14,6 +14,8 @@
->>   
->>   #include <asm/gt64120.h>
->>   
->> +#include <cobalt.h>
->> +
-> 
->   Hmm, why do you need it here now, a leftover from testing?
-
-Yes indeed it was a leftover from moving code around until I settled on 
-the current approach.
-
-> 
->   With that removed, unless proved otherwise:
-> 
-> Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-
-Thanks v3 incoming.
+base-commit: 00e917df050d79ac26ec700717680ad6421d2808
 -- 
-Florian
+2.39.5
 

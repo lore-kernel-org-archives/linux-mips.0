@@ -1,90 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792965987;
-	b=LENnVo0lxggw0Ib9nsofzrA1jq6km3TmFAiGFQvDe9JG4O2W3tmiSfh8Xm6KgeJqIDAo
-	 qNvUDb/aeFhvKWS3JZJvZth2mC4P5bGAw5AI7LJgNNw2JtnwPhoL0Fu26ItQ6kOibS7C/
-	 15EMEHxeN3tmac+RdWytizLY+lorCNetsK9LfCDGM1Ohxvc/9ucJdaR9cwdrK8+1G5nqd
-	 CVgTViaNmzSdMYq7XgW7qu+eko0+IAWeWtEApSKRYtF6Nu8HQGRi4VkdaX8bt2MAjUiPd
-	 PMj6DF5zNV792YcnlJ7S3Hq/KW+6x5jHGYrxpJVyUiCoDufGmqHj5I9ZipuN+qLGVIw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792965987;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=InTBVuYJDkDbarDfbmFiK7vMvKZsADS4capA79VR7aw=;
-	b=OUf3zgB2E7QpRMwEj4YaF2s4Ia1d2SaNDF2QTuafjOS+ZVnwTlKgRcUshWLiDgOVcg2+
-	 5GVrzD4rHlpOpjcQOmi6wgb91+AYFLlK2RcfdsTTjrQd7QDSA6Avp4/i7lGdnAVF5sjtm
-	 6244Hvym4XqpwSTOstialuw/tJS788TH3xEl2lpFNMmhVBsHE2MDu23vnqTIWsPL0fgDu
-	 dK/OFrGTTPy3ne8XjE/N5JIM3x+mnvywz4hTBOHh/6LdJECQXr96ltoCBh05daALqJ9eF
-	 Sw0/PVp+kak8U6lpACFA6JolqGqRhto4ZkIWlVPKejeq7AY/pYuCtkHjn5qCeXBXHBw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HHpzSW98;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="EUKfcOl/";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792966447;
+	b=EUKt+hJGza0Oifi+AbaPI1ba94Rw55gdrKA//hF6S/kwxRO9wkcVNJA0UloKJrPu/+i+
+	 EyL4AnZmyP8utNeBhpq4b1gXeQ2fv5Ux+VVhTRHYwmfOrtvOI05e9pz5GgBl0l7LGjRus
+	 Cci08mqp7uUraWvNQauraGejIY/RH7YcOOQpspugV1Au+MbBgC87rWZ1urDAbxM+4VjHh
+	 TLetxdHyLBLhhaMrZnOBv3P1G10joh3Emr1waLsXHLjsAzkPQePkNNsbmg6j7SQS8Ajjd
+	 rvEKRY50O/X+v7yNEcYfMve6zW+AGQaXlOrEkqgnOQfh3j/ftkVeon9bX1e3UrOpJxg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792966447;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version;
+	bh=z+OGvBaqXC2+1NVfUpcRsQ1hy6WHpkZO2inZyh4ifHs=;
+	b=dgeneKDphB8HzTFh7x/vQRyFrojCo/YsKcpa8jjyrLZeaXt0/MpjJ+Jmw/NEZqSMcw3E
+	 Vl3CrQF+dGTxrzzuCbCXZ5NOSDY70qhHkOL1DdlfIrscTMdK0Ejcez7trJ7wV+SG3jZnx
+	 bkhASYsP4crbxCkWOcM2cRNV+5jr0M5Pq98hTEYhkUp5Lh8cPN6l3pt0YyTU2xbkA7cgz
+	 ilAV0KXYjWeDjSt5HT8DJHgOiw4uXiXIiwX0Jhs/oBtgg62CkTK7pDREXd0H0quQGDShZ
+	 zgGDpZ4h6i64C4C3+QN2JfS2EBqJpt50dRJrTJEbMRdr5N5GqnGlhWrEs29lV0E75ZA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2CD606A31A;
-	Sun, 25 Oct 2026 22:06:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AB2CD606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HHpzSW98;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=EUKfcOl/
-ARC-Seal: i=1; a=rsa-sha256; t=1792965975; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ml4+SpjoPhGa+IJYKpsmlZ1yGnQT1EQ4VJR5jA27XQ6LrJc8kT8Bnbk/ut1U5adrK5
-    jOr6l82a4/7CQFpz+H9TkGZJihwidNPAioAIXar8o522MvdMiTkOdduI4+PghDC1cefn
-    4dk/7wGIrLz/xlqVMtLOwCV6opMjdoIuMhG9TiB6PN76L21eo18cfRwVOpmieGiHE6oz
-    UxtyPWG6a7rmH2v7hRPxC/jZSKBp77CaH03SpzShosRoNXidL1kPRGluRPbe2rJAFXCm
-    7LWhsZeszhxiHrHmCzgOVg5+RkpQBFGNTIywZFL1ou8G+KZjBPR9d3MKvS/Kt/p1694a
-    t/OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792965975;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=InTBVuYJDkDbarDfbmFiK7vMvKZsADS4capA79VR7aw=;
-    b=ZG+hEOZtsIGuF+RxL9ILUUaKTbUYnYnDjCkeF9HRJFxKzjsn8cYVlgq1AZ6cUyhRwa
-    TZ0CwTGoY6kz4tO8CXR1XrJadN5kVQGN4Ov8jDPGzZSUf2TiT4lap27Lh6wQFKZaWRpw
-    068l6cfM2Mt2l6BQIkPWbF8FODu7nqgEFX05AlNx0k4dFosxfTeh1ssT6QJGHZgzxyF7
-    6KtLpz7QnSXJ1ZXbBltaRxCiiHZRlN9PRpy3kPdPXOvv54USdDPJ/cvYSY/ZCWXa8je0
-    MyZmB+gOOT7WtAfYXo3bEKHiT9vHvv14RYthd1E4+vKw6Nu4J7vB4abJiSSMFlnQvQBK
-    u3hg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792965975;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=InTBVuYJDkDbarDfbmFiK7vMvKZsADS4capA79VR7aw=;
-    b=HHpzSW98/IZY1p5xvu/1iCg7Kqa8b8AH9nSJgAT14E/ZphDcyaAcpUa+C94XI4CZOO
-    xchCYe9EWFiGZJoBAQ0kegDX8PLWPnEQh7R5M/kxhJ+jB32pHt4wO7YrFlXW8qpIesAn
-    UEKWdXHbZHDNd+vMK9wiZCrWm6zJy1MyFzlaHXabV4UlRDbp7UfE1xT0gqmhco5ArSow
-    TCM4cebOdRDEzAI6FAsbMu75Cw5IgxplYq4wMDY0phEjouTjM0dZve9QyFbQAvCcKiLv
-    9WtCYSf5+PIu5wyb337ZH6xbbHgDJlZ7f1PFO26RuP1I1m1XljH+gAx/m6aqiBGEaGl2
-    m9hQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792965975;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=InTBVuYJDkDbarDfbmFiK7vMvKZsADS4capA79VR7aw=;
-    b=EUKfcOl/+UwfGj2YSIIwk5IRigAqzKvym5bL+5HEBPFo6FwwbXo5hkXOBuJAy96163
-    BcsY4N+Fr9zlAUB8IiCg==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrS2poNy8iNoc+LWkugLIF0fnfvFgpgbBBt2w=="
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229PM6Fzgm
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Sun, 25 Oct 2026 23:06:15 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8242606A31A;
+	Sun, 25 Oct 2026 22:14:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E8242606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <c930c184b1bcac3cfd76ecb329a8c478482d819d.camel@crapouillou.net>
+Subject: Re: [PATCH v2 2/2] serial: 8250_ingenic: Set UMR and UACR at probe
+From: Paul Cercueil <paul@crapouillou.net>
+To: Olivier Louvignes <olivier@mgcrea.io>, Greg Kroah-Hartman
+	 <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, "H . Nikolaus Schaller" <hns@goldelico.com>,
+ linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Sun, 25 Oct 2026 23:13:59 +0100
+In-Reply-To: <20261024220712.23250-3-olivier@mgcrea.io>
+References: <20261024220712.23250-1-olivier@mgcrea.io>
+	 <20261024220712.23250-3-olivier@mgcrea.io>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,113 +67,89 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 0/2] serial: 8250_ingenic: Set UMR and UACR, add the
- X1600
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261024220712.23250-1-olivier@mgcrea.io>
-Date: Sun, 25 Oct 2026 23:05:44 +0100
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- linux-serial@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <A1F59D84-765D-4363-A7A0-47E9312DCCB2@goldelico.com>
-References: <20261024220712.23250-1-olivier@mgcrea.io>
-To: Olivier Louvignes <olivier@mgcrea.io>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+MIME-Version: 1.0
 
-Hi,
+Hi Olivier,
 
-> Am 25.10.2026 um 00:07 schrieb Olivier Louvignes <olivier@mgcrea.io>:
-> 
-> Ingenic UARTs carry a bit clock count (UMR) and a per-bit adjustment
-> (UACR) that the driver never sets, so a UART runs with whatever was left
-> there. On the X1600 of a HiBy R1 neither the vendor's 8 nor the reset
-> value 0 gives the 16 clocks a bit the 8250 divisor assumes, and the
-> Bluetooth chip on UART0 fails to set up. Patch 2 sets 16 and 0 at probe.
+Le dimanche 25 octobre 2026 =C3=A0 00:07 +0200, Olivier Louvignes a =C3=A9c=
+rit=C2=A0:
+> Ingenic UARTs have two registers beyond the 16550's: UMR, the number
+> of
+> clocks a bit takes, and UACR, which adds one clock to chosen bits of
+> a
+> frame, for fractional baud rates. The JZ4725, JZ4740, JZ4755, JZ4760,
+> X1000, X1830, X2000 and X1600 programming manuals all have them at
+> 0x24
+> and 0x28. The divisor the 8250 core computes assumes 16 clocks a bit
+> and
+> none added.
+>=20
+> The driver never writes them, so a UART keeps whatever was there
+> before.
+> On a HiBy R1 (X1600) the vendor boot loader sets UMR to 8 on its
+> console
+> UART, and the vendor kernel had left 8 on UART0, which carries the
+> Bluetooth chip: every rate came out doubled, and the chip never
+> answered
+> ("command 0xfc18 tx timeout" from hci_bcm). Their reset value, 0,
+> which
+> the X1000 and X1600 manuals call normal mode, does not work on the
+> X1600
+> either: with UMR at 0 the same command times out.
+>=20
+> Set UMR to 16 and UACR to 0 at probe.
+>=20
+> Tested on a HiBy R1: with UMR at 0 or 8 the BCM43430A1 on UART0 fails
+> to
+> set up; with this patch it comes up at 1.5 Mbaud and streams A2DP
+> audio.
+>=20
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> ---
+> =C2=A0drivers/tty/serial/8250/8250_ingenic.c | 12 ++++++++++++
+> =C2=A01 file changed, 12 insertions(+)
+>=20
+> diff --git a/drivers/tty/serial/8250/8250_ingenic.c
+> b/drivers/tty/serial/8250/8250_ingenic.c
+> index 0cdadacd7019..ca45e74b999b 100644
+> --- a/drivers/tty/serial/8250/8250_ingenic.c
+> +++ b/drivers/tty/serial/8250/8250_ingenic.c
+> @@ -40,6 +40,10 @@ static const struct of_device_id of_match[];
+> =C2=A0#define UART_MCR_MDCE	BIT(7)
+> =C2=A0#define UART_MCR_FCM	BIT(6)
+> =C2=A0
+> +/* Clocks a bit, and an extra clock for chosen bits */
+> +#define UART_UMR	9
+> +#define UART_UACR	10
+> +
+> =C2=A0static struct earlycon_device *early_device;
+> =C2=A0
+> =C2=A0static uint8_t early_in(struct uart_port *port, int offset)
+> @@ -298,6 +302,14 @@ static int ingenic_uart_probe(struct
+> platform_device *pdev)
+> =C2=A0	}
+> =C2=A0	uart.port.uartclk =3D clk_get_rate(data->clk_baud);
+> =C2=A0
+> +	/*
+> +	 * The 8250 core's divisor assumes 16 clocks a bit. Whatever
+> ran before
+> +	 * may have left another count, and on the X1600 even the
+> reset value,
+> +	 * 0, does not give 16.
+> +	 */
+> +	writel(16, uart.port.membase + (UART_UMR <<
+> uart.port.regshift));
+> +	writel(0, uart.port.membase + (UART_UACR <<
+> uart.port.regshift));
+> +
+> =C2=A0	data->uport =3D serial8250_register_8250_port(&uart);
+> =C2=A0	if (IS_ERR(data->uport)) {
+> =C2=A0		err =3D PTR_ERR(data->uport);
 
-I am still not convinced that this is a x1600 kernel issue or something
-that should be solved in kernel code.
 
-On our LX16 board all 4 UARTs come up with UMR value 0x10.
+This assumes that these registers are available on all Ingenic SoCs,
+which is not the case. Looking at the PM it looks like they were added
+in the JZ4725B.
 
-> 
-> Changes since v1:
-> - Set UMR and UACR on every Ingenic UART rather than in an X1600 entry,
->  as Nikolaus asked: the JZ4725, JZ4740, JZ4755, JZ4760, X1000, X1830,
->  X2000 and X1600 programming manuals all have them at 0x24 and 0x28.
-
-That was not what I have suggested. I asked to a mechanism that allows to
-tailor this if the boot loader fails to provide the correct value.
-
-> - Write 16 rather than the reset value: with UMR at 0 the R1's Bluetooth
->  chip fails just as it does with 8.
-
-Ok, it would not harm our boards, but there we get the right value anyways.
-
-> - The binding keeps the X1600 compatible with the X1000's as fallback;
->  the driver needs no entry of its own.
-> - Rebased on tty-next.
-> 
-> I could only test the X1600. On the other SoCs this writes the value the
-> divisor already assumes.
-
-On our LX16 I find in U-Boot the default value 0x00 for UART0, 1 and 3 
-and 0x10 for UART2 (which is the serial console activated by U-Boot):
-
-lx16# 
-lx16# md.l 10030024 1
-10030024: 00000000                               ....
-lx16# md.l 10031024 1
-10031024: 00000000                               ....
-lx16# md.l 10032024 1
-10032024: 00000010                               ....
-lx16# md.l 10033024 1
-10033024: 00000000                               ....
-lx16# 
-
-But after booting into Linux (without your patch):
-
-root@letux-lx16v0-3:~# devmem2 0x10030024
-/dev/mem opened.
-Memory mapped at address 0x77e61000.
-Value at address 0x0x10030024 (0x77e61024): 0x10
-root@letux-lx16v0-3:~# devmem2 0x10031024
-/dev/mem opened.
-Memory mapped at address 0x77e05000.
-Value at address 0x0x10031024 (0x77e05024): 0x10
-root@letux-lx16v0-3:~# devmem2 0x10032024
-/dev/mem opened.
-Memory mapped at address 0x77eb0000.
-Value at address 0x0x10032024 (0x77eb0024): 0x10
-root@letux-lx16v0-3:~# devmem2 0x10033024
-/dev/mem opened.
-Memory mapped at address 0x77ea1000.
-Value at address 0x0x10033024 (0x77ea1024): 0x10
-root@letux-lx16v0-3:~# 
-
-So something is already setting the UMR register properly on our x1600
-without your patch.
-
-I am not at all a specialist for the 8250/16650 but I got the impression that
-what we call UMR in x1600 language could be the UART_XR_EFR register
-in 8250 language.
-
-There is a function called default_setup() in 8250_exar.c which says that
-some UARTs have an extra divisor register.
-
-This all sounds like some standard code might already be responsible to set
-the UMR registers to 0x10 for UARTs initialized on the x1600?
-
-But that needs deeper analysis than I have done for now.
-
-BR,
-Nikolaus
-
+Cheers,
+-Paul

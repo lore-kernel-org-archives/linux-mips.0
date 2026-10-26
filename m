@@ -1,73 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793048421;
-	b=r2u1QDsqm4FmmiFn+uloiiETihk9wqGZlT0d/ykEZ/fiv7GtzyZU2cAylM6S7zsYUHfa
-	 ZdsaLowOd1nx1przTOG83+kCsbhYbLZPpVktmj6ZU7SmpgPL6yP+FsXLq4qppUg7lYQBo
-	 6iazXzvjCx4L7IElmr9fGTfAJhZaR50UcRxSXRSYxWXtEZ9aJp5mGIN1V82xgYjV9t8qp
-	 14BHtSOp3nwqHVncDIcYA4MC0e1i2lDAYkeVASE5JBN6qF0lNUO7B1GI8LbyJKviYEYxc
-	 CqEoryHnMnXZxkxNeD0hwaWM4YeP6OFAp+H+t8E8E/g84SwM3nlAngJCIh27WEQe2OQ==
+	t=1793048745;
+	b=M2uioRzQ0DrNS4lHX29s8jgRl4JUANy6l97kYjDi03BHz6ynM670i+gV7S9U2qx8C+bd
+	 InugFZ5fdw2HP80m0MBrqJN4XZ9dIjbR6cxmVyHKGkh7htKE6WWxLppddWAJ1UkqkqhFA
+	 pHg6tsriXplDSHKVa5XFoX8UU2XXuTx3zW75Sk+WG9xikVy9BtQ+DcscYL7ani8Kft8qb
+	 Vq8sf1gakgehwnzL67Dy0xsA5PxT5iQlSwEy1PPEBpZsre6rXYZ/Krj5ipGnhLX2wyH67
+	 jPBWjsSJM3kKU7IR48N7TbFYWXH/ogBJtBy5HThNeCpbqJ6OhF/u21Mma4ZiJ1LsTfw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793048421;
-	h=Received:DKIM-Signature:Received:Received:X-ME-Sender:
-	 X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=wA3dkvMx7ooBWGULDvPGpqjcybJIGnUId/tTDSPNZFU=;
-	b=GBqrEODuHer3ZkRQGKd+QkHFAcJx95BMUl3k9aICXm2hUNtFre8QRGDLauPPAO7vfHUK
-	 LkKxPHaSE+NN3gqt4+AuzpmMe7oqmKGGpICvnfLBaATmzPBgWcQzwGi9/2ZukJsT5XAqt
-	 j1ooJouayuhlXU70EmypGScSnRaeQnBfkX/8ywpMRvVTrJ5YxOxX5Wu7QhkXticZT1FDg
-	 vV41XRaOKcF1qwmAO1JVZppwnQjfiCKwiFGnH3xd9RVxTVcS6Yh9vWu4hrwBXI1eVW2MC
-	 Hgh+pgKKwKlHAK1OLc+l5K/nPidqZQ24/84g4o/jRKMvNv9FuUtRN4cH948lwHXNtqQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793048745;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
+	b=CeOdvCfbXocF+p58pxwCpUZtcq4HqbdtdPOY/0xaxweNob8sWPs26VAjCFAvFX1bwN/5
+	 e00wn0xUZy9754/paE58GP0jo5yL51y4NL4lWX+2Z8KKBzwu9CGPvMHR/+Bb7zamKHVnz
+	 Vbsc6k2IfEOH+lVi7ILnt8coA2k1SHyrM8V6gqMxw0p+lU+nXLv+4+H5RxkRv6S3wLgSa
+	 J1WBEUF6iWY31GMsaOx96BY82+KGlYMQacD7gvNzPeitGPm/CLD9ZvmQ6+4M+/YL4Qmdl
+	 Us5jLdvLqDPs/X8s73OFZ+XrQBgpjO7Ry+3Kk6dBTTdY+DC/oh4XbZLSzZblq4QjhGA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cJKONane;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=fail header.from=mgcrea.io;
+	spf=pass smtp.mailfrom=mg-crea.com;
+	arc=none smtp.remote-ip=209.85.128.52
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D2E606A31B
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 21:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cJKONane
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AB6B1F01829;
-	Mon, 26 Oct 2026 21:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793048421;
-	bh=wA3dkvMx7ooBWGULDvPGpqjcybJIGnUId/tTDSPNZFU=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=cJKONane6TgSXf5vGWGaYINEYaq+YA4RduLwQ2UOnSEX+1trRRfK8b5Z1FYUHEbQK
-	 SEGsTP4AFI8seBnqsBa4UyPsLuPy4yARBuUCKGKv6lfReFlQX3PjXLfmU0XJgkBXL5
-	 qgExk3hPfGsGispwHC7yiI/BocIbhricKHLm/6J475yVnu5MoBeYW87gf6IWZ/GJB+
-	 TTtcYMKKuVGKdy+Zx1+ygf9Fn8hlNUTY0e9P0cpOIM32JiIO4BhlR9ATbSTfjVD3P4
-	 R736jTI8DFsfu8k2BcTr6CDbPjwKW/aCSDYvhsQDsL8gl1mYbiMXLsrInn/3rcJ++6
-	 OpHH7Y39esZnw==
-Received: from ams-compute-01.internal (ams-compute-01.internal [10.64.2.61])
-	by mailfauth.ams.internal (Postfix) with ESMTP id 50B38198003A;
-	Mon, 26 Oct 2026 17:00:19 -0400 (EDT)
-Received: from ams-imap-19 ([10.64.2.39])
-  by ams-compute-01.internal (MEProxy); Mon, 26 Oct 2026 17:00:19 -0400
-X-ME-Sender: <xms:Yb_fauslEmiAHdP0RB7krplIAliWtujTUxUhZWFcwn_cX_UiErcEBQ>
-    <xme:Yb_fauQa_jc37pCZbQscW_xN-QpchdRiKr3c0a_voKlv7P17-aY6AjovPbmtMtu-X
-    X45jnV_rHlRLc_rSTxah6X8SAOpj5a7ZGtKvucPTCFplqftPc0uiiA>
-X-ME-Proxy-Cause: dmFkZTGafdPjgwFd1AIrmJXuPCumIjgIQd4biuJOiOqTRtJoWwbuMpkjRKGfknjWslcVMe
-    lq3xRE+AA7UgBD4ulzS3m9aDamXRe2Hj9FytmQSF0qpzie4owzbZU9qlVpufYWWMtNIGw7
-    eW6ep3epm6tIVw1+yBUA4swczz2oG9EolqyaBAyqwfrw9cJ3PUamYy8SZGkMZoh1Epnlah
-    cpYNjscRtVDlPA475kujzKj0Xs1Pu1Cr3LBctsVq43q9NHWqVj/aUrcdufoJs8rZcI5pss
-    n+513xd1e0MfvSYr47/fhGSeu9a/0dqzfwoRBHEMbKdIcb+A6ahQ567AhL3n9KVt81guee
-    Lqt9pDbci5XAx5f+k/slUBMpiBp+48drozgd5ScQJksMAm8NNJ/ekj8aJFqipA+U6jD+VN
-    q+V9risGO39k71WDqJkKImlwQNQLBlpdfQd6xlq6VuiiD84nYeIDIe8lr0XdIKQoy6W3DT
-    CWPK0rHPXOUgYNVjMccKS4VkDkipMvALt8CGG+RcfdymIDDATugHmn9xRpgT0Sc5sY7H0Z
-    P3t8ylAp4iaZOQD5gbQO1yxdPOtQfTAjFXc1aa4g767BderS1u9fHHOTCHHjxPjriwJUXk
-    azr6FFaJP78ndf9pyQS/z9zbZEnBvCPFym7DMnqA/+3c6L/JfoTgKVGzkbDA
-X-ME-Proxy: <xmx:Y7_faoZ-t8FEEenwMbSXt73lYfaRVfiz7H1v5LinrGMqDwQ-l146Jg>
-    <xmx:Y7_fasuyQhIs_aDG8v2XXY7sJn9nuljH67q7V1jZYzYl19Qrfrtgbg>
-    <xmx:Y7_faqNRovaovvehOlpJS3NAT_z7GJGDwZeEvMIdrKAPdGEAlFpaMA>
-    <xmx:Y7_faj5T6QOePWHtp9aP6HViV6BaO_MqLPdr_tVc3E6pQPC0mmYc8A>
-    <xmx:Y7_fagScUtovsQu32V3KEUrwXg_n-NjL6ZhGU_Bs4PxE-vDEFlpD6sJu>
-Feedback-ID: ia3204a8f:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id 95A6A2F8005A; Mon, 26 Oct 2026 17:00:17 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A76606A31E
+	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 21:05:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32A76606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4a140e7405dso35219205e9.3
+        for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 14:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1793048743; x=1793653543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
+        b=x/O1osm5M7zxTA9jZpysosF+ofFJypdYJ1I154osDWAjKnFrYbUbVVNIvJGGGKAcC2
+         In0OXi44NjS3dGcRnDU0whIn+6EZR/bQz0DDCiPpWnkBnrmwKu+yLlf2i765eSxk7t2+
+         IvNVOfNN/tpz7PoFpKap5Zk/YOyaSnEp2YjoSxsu5guic+vpAou1T5ajAGW2TqWBUW+5
+         OVp2DSxhu9xgSSBJB7r2mxQrM62IXSAf9i/dahZ0qh8bZ18Sj9L5FnA0JGltkWcSfEnj
+         Tl1/BvDhhVig8/XdIUgu3ceScuqAvT1KSRZtHBUSlq5/JzFG3p5V9adFW46sMwtBhNdY
+         bEEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793048743; x=1793653543;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
+        b=BskBT6VolX4XYCLsHmwCQy4qMOotPFGqXGJem+X63m9/P3uQqBim/GBXUVaWfgRYNX
+         QEFaGpRI5yA7IzD3bzqCb5y+BaQ2x+zEiZJ+eVBhuaK6l8kWfUcHqeCeYVs4ufAIBuPa
+         gi+OBTcDqZXhv/ZYKffwm3FBZ5x9FjJcfi/sprwQtEitnnRr/jC0pnlL7t7C5nnGl+CI
+         LgwZ7NdFq7Pt/kfusqii46CX3xhiQcMaxlap+nFu+p0ci6T55MEwm9wX0lDGTLr7RADw
+         4C9xLESBAX3/0WIAZcP3qqrpIyjWE++cunXNv3wK7b3IYiZi5evD/xslMO/ZcDZiyylL
+         EL/w==
+X-Forwarded-Encrypted: i=1; AKwUvByagAmEXOQeaKVEQvQpaiWqLtcmhf5clAlEB1wivLAy3qhQaoblCkACw71bf7POG3HxvynSvO7fo51I@vger.kernel.org
+X-Gm-Message-State: AFq9FYJgm876qFavOo75kv6DYDzWJqtpigpH8/HINYP6pEKjzaNb3kEK
+	vlSkU6MA9H28HIyGXwPi6WhALLAFxRLfP332sy4LIOHbLkdfnrYONQEAtchzfzFcPtM=
+X-Gm-Gg: AYBFou3RINNl8k82vOH7RVu4+oANpLzBWgc6NTGbhIYcEyvuq1oqd+HQGFx9A1zaHN8
+	sBEXGzF6WGQrrQEpxDYfAfE0bcuzAENAmKoCfhz7oPBLElgHbPNo/gnGFeSsjQonwKUomL0FzUK
+	6bDfy28ty9/SLFecquND5ZJMjPYKvCvnPVd5HKsPYTTLUr2y+yr8ayAs80+BR0q3bgcM/G1MVGA
+	KxDZDLjFpZ79vgCHmc6zrFnY0WYH14pfJb+3FO+x/P11NyAnJprlcS993HH5zHX7D7JB0Rm76Nz
+	zv7fpJWxWTm58OCN/2B54l02xWSG1RY0e172tZYYc2tmchQ1TqVXYdLBGMa7iyixW9Cr9HgfYaf
+	nbOoAoOAgXNgYLU9tH3p6dPZ8swYQidhHsPVzyJT1E5PDI79qUIOo/qENcfT3JpABAdLZTmbfcN
+	35XV20HjRC8CNKQz0HlnIupARvsVjXY4rizkjOSUdvnSu5HPubfUW6KjZdDTZtF9EQTZF2OuF8N
+	560A2dE+q6MUpjnKk22P3YjDRZ1jvgfhwxBjM55BKhcoyPEEMFNrG0tdHQm1aIH3LvwcWa9H9fX
+	tk/FgKVU5/m2
+X-Received: by 2002:a05:600c:3114:b0:49d:34:420d with SMTP id 5b1f17b1804b1-4a35acc7716mr138556935e9.20.1793048743445;
+        Mon, 26 Oct 2026 14:05:43 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:258e:715a:5648:ed59])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a359ff2189sm258646975e9.1.2026.10.26.14.05.42
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 26 Oct 2026 14:05:42 -0700 (PDT)
+From: Olivier Louvignes <olivier@mgcrea.io>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Ulf Hansson <ulfh@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	Matt Fleming <matt@console-pimps.org>,
+	stable@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: jz4740: Remove the host before resetting the controller
+Date: Mon, 26 Oct 2026 22:04:27 +0100
+Message-ID: <20261026210427.14728-1-olivier@mgcrea.io>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <48976ce134e26877200e8e1ef8d3f5c66f4fdcf6.camel@crapouillou.net>
+References: <20261026083323.12301-1-olivier@mgcrea.io> <48976ce134e26877200e8e1ef8d3f5c66f4fdcf6.camel@crapouillou.net>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -77,48 +99,17 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: A5TOieuUj_0J
-Date: Mon, 26 Oct 2026 21:59:57 +0100
-From: "Imre Kaloz" <kaloz@kernel.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, "Ethan Nelson-Moore" <enelsonmoore@gmail.com>,
- linux-kernel@vger.kernel.org
-Message-Id: <bf2d5ac3-42e1-4c08-ac8c-d3b19fe5049a@app.fastmail.com>
-In-Reply-To: <alpine.DEB.2.21.2610261935230.42255@angie.orcam.me.uk>
-References: <20261026120430.13238-1-kaloz@kernel.org>
- <alpine.DEB.2.21.2610261935230.42255@angie.orcam.me.uk>
-Subject: Re: [PATCH v2] MIPS: c-r4k: Flush the cache error vector before writing it
- uncached
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 26, 2026, at 21:00, Maciej W. Rozycki wrote:
+Hi Paul,
 
-<snip>
+Right, my miss, adding stable now.
 
->  Hmm, I'd be tempted to call the hook flush_dcache_size() or suchlike for 
-> consistency with our existing nomenclature where "flush" stands for WB+INV 
-> and to signify that this function doesn't touch I$ (the *_range() suffix 
-> is already taken for interfaces using start/end rather than start/size for 
-> the boundaries), although our naming seems messy overall.
->
->  Any other suggestions, anyone?
+Ulf, could you add
 
-Fine with me. Unless someone has a better name, v3 will call the hook
-flush_dcache_size()
+Cc: stable@vger.kernel.org
 
-<snip>
->> @@ -1743,14 +1743,15 @@ void r4k_cache_init(void)
->>  
->>  	flush_icache_all	= r4k_flush_icache_all;
->>  	flush_data_cache_page	= r4k_flush_data_cache_page;
->> +	cache_wback_inv		= r4k_cache_wback_inv;
->
->  Please update arch/mips/mm/c-r3k.c accordingly.
-
-Will do.
-
+when applying? Or I can send a v2 with it after -rc1 if you prefer,
 
 Thanks,
-Imre
+Olivier

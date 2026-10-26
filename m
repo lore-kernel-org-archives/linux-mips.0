@@ -1,94 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.101
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793052549;
-	b=AP4nA9iRG/ZWuqMejbZpoeyGWgnDXZnqVB8/Ypf1FxdCGlV47oX5gm0WOz1kdpWY5Kzd
-	 AhFqFKCBjG2BxVhWnj7H51UHGavHfGItwCtXnaD36LnoZvLKUOp9zSVqAi7nljkqW6E28
-	 BNjvAO9xiwItZ8zlPsEj0XXbO+hBD6RFxrg4HoyXhlrZfhTRGBjLK2YpIjmewAAUfW8Bh
-	 Qb7kituiYVlKl/Fr5kvtVCt8gPbRg9INsS/lewt9C+3f3YSzXFNNtNLJ3jYDN7wU1EmdW
-	 OvyGDdEOCFE3XWlIeSKWwjj8vyla7RQLV9qiGRktb+aNWKi/gc2tHY8mLXtHpm7g1vg==
+	t=1793058838;
+	b=OhHDQFH4ucrLkd7WRGqahz0HkoOUbcoKCnAStrr2437NuHL6JDZSQZ/In4Dlb1/ID1Tu
+	 NLwAcONvzt9l5UbuBgNWJJmqTBSwhmL0nlhEbKdmvru1llQDX3xX3DwQsEcp7/Xe3v0B3
+	 eGBVQgttY1Lzx2N0MhYuiXZGXYbDfm85aW/5PxPEO11K5/EeTo2lG7aBJrq3ekNObX/8n
+	 fqe9eYdlMvL2ZO/hC0DV+yc+RIgcCIVIIonKSNWYAJIKvzYrULCR3t9yk0JfvArXamtHF
+	 VKFU9cNk+aUzheKftVfZOaCfyjx2zcrgljxAV07O86d2QXrk7ZulCTREd18+iKZTclg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793052549;
-	h=DMARC-Filter:Received:Received:X-Authority-Analysis:DKIM-Signature:
-	 Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:X-AntiAbuse:X-AntiAbuse:
-	 X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:X-BWhitelist:X-Source-IP:
-	 X-Source-L:X-Exim-ID:X-Source:X-Source-Args:X-Source-Dir:
-	 X-Source-Sender:X-Source-Auth:X-Email-Count:X-Org:X-Source-Cap:
-	 X-Local-Domain:X-CMAE-Envelope;
-	bh=FNwW0nyhMLg4KJlCauTn+tJuiWsniccUKxCVBBhuIX4=;
-	b=nnYYBFwxJyNLjxHW0RXkYjZkMOWs7M6abVPtoVtMtoXZFdhs3ahelUVHMY/XqLrFlY10
-	 lRun3jsWa7f9vHb0bvBnk/hO1U91StwlC6XCbSt8Hpeghdwe9p1+PxpdDqYfwVBXlHkBY
-	 GNAdK1L8fCWQPvgjj7owYbisleYdsJ16J6RLwJXR0at9V5/66N04McsxiLvzg/1E4ItfX
-	 yui8O5vzH97kbwurORH6YRKOeaHCAmoSaVDokyT4kTJzCnIBDJw1Ne/Zk+gEgLMFcB8L/
-	 1nTd42Qn9jcGl6gS6wXBK1cxYzIAO/YmHaktbwwnSY9aUmdg5Cffs7nHUOJzvoLa0ag==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793058838;
+	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
+	bh=xV/kApzEyLWCWdRIMRnSJSshFh34vPENMQ5p213FVss=;
+	b=hhbGfA0JPQ2kZk9IsakhmK4EjL5ZTfWdhsD+IMRDQYTsn1ShU27hzHKU3iKrNwGr/rZ2
+	 h7f9IR9zhnc6LmzaIrvmJEr9tFJPZW/zawa4tGAahHy6B6ICTUe0/0fiugLqmFpxxX/WB
+	 eHD7V4IchVeVNdFvoCO3e81lZG5/Po54G3p1niXmCgst+5rc0WC7rgRUngoQ4Zi37hs+j
+	 1yvFWGrVeR57hHaQjG8PflAXOkrs0l9HB/YPILFdEbxan+UEEm7oShvUX5hWzeDa/M/85
+	 pNeayitl9vqDvWND8Bd+g8fJD+6yA2fabHqfV4E+v7mgg9Zsnmo9nXzaRLCn+nOulxQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=roeck-us.net;
-	spf=fail smtp.mailfrom=roeck-us.net;
-	dkim=pass header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=KLA9HlDc;
-	arc=none smtp.remote-ip=44.202.169.35
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=mythread.it;
+	spf=pass smtp.mailfrom=mythread.it;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=ShNB6M89;
+	arc=none smtp.remote-ip=62.149.156.101
+Received: from smtpcmd10101.aruba.it (smtpcmd10101.aruba.it [62.149.156.101])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FED6606A31A
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 22:09:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8FED6606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=roeck-us.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB21D606A327
+	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 23:53:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AB21D606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=KLA9HlDc
-Received: from eig-obgw-5007b.ext.cloudfilter.net ([10.0.29.167])
-	by cmsmtp with ESMTPS
-	id LSjbx5plQLvgbLSsNxoYfr; Mon, 26 Oct 2026 22:09:07 +0000
-Received: from 162-215-252-36.unifiedlayer.com ([208.91.199.152])
-	by cmsmtp with ESMTPS
-	id LSsMx4WHfzVzKLSsMxIAnw; Mon, 26 Oct 2026 22:09:06 +0000
-X-Authority-Analysis: v=2.4 cv=As7u3P9P c=1 sm=1 tr=0 ts=6adfcf83
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=kj9zAlcOel0A:10 a=660iZSQnnn4A:10 a=M0FbrtG7MMAA:10 a=iXiyidbvAAAA:8
- a=pGLkceISAAAA:8 a=jdP34snFAAAA:8 a=TlQaE0Xuup0GS2m4uVgA:9 a=CjuIK1q_8ugA:10
- a=RVmHIydaz68A:10 a=pkPhiurjdwHc21woUKjd:22 a=jlphF6vWLdwq7oh3TaWq:22
- a=KPbNTLLc3YvdawN95zVk:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-	:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-	:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=FNwW0nyhMLg4KJlCauTn+tJuiWsniccUKxCVBBhuIX4=; b=KLA9HlDcosqcMx3+P89aMhhnBM
-	FY30E8r272wXeEO4yuTNNFr4pl3WYbFChCqoSde1BCNETiWN4TC+15KTc8OfyiNZPzA4CJaIRPe09
-	RlaVknXrF/qO9ZCkvussBA0IJSFhL0D7fXp+bZQutwKeWBe+9tr1zp3EkJBoKnXBPWzXCByXrfUBD
-	i0zWl2dxHayiuEDMreuRigWjqh/0eUyFls1Pvo1BohOfxiQhgQAUzYACd3bJaLon1lgUkG63sDoxl
-	VXmuIw/TxmXHfVju5G5gFZpWgf5VEFmiAau/u4CjSaaD6eJySjoC3nZDL2apsqs2ih+1pgzJqy9MQ
-	hLeS9YVA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:53900 helo=server.roeck-us.net)
-	by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.100.1)
-	(envelope-from <linux@roeck-us.net>)
-	id 1xLSsL-00000003sgJ-3QWo;
-	Tue, 27 Oct 2026 03:39:05 +0530
-Date: Mon, 26 Oct 2026 15:09:04 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mingyu Wang <25181214217@stu.xidian.edu.cn>,
-	Robert Marko <robert.marko@sartura.hr>,
-	"open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, manuel.lauss@gmail.com
-Subject: Re: [PATCH 5/5] watchdog: Remove the MTX-1 watchdog driver
-Message-ID: <ab0512df-8f98-4a8c-b27d-bdace0e7f6d0@roeck-us.net>
-References: <20261016221617.2223004-1-f.fainelli@gmail.com>
- <20261016221617.2223004-6-f.fainelli@gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=ShNB6M89
+Received: from [127.0.0.1] ([79.43.52.162])
+	by Aruba SMTP with ESMTPSA
+	id LUVexsCYFW41bLUVgxjBea; Tue, 27 Oct 2026 00:53:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
+	t=1793058829; bh=vnxKdlktPGPEkbhDNu2bx7SncaHDHmPQdqwJyVebjWk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:To;
+	b=ShNB6M89G5ZnWs8AYbcyHmXFKUUGUFpRhfLeoFYCGUExjyYIiGv9zuUIfLz0+TnHH
+	 vyyD11aEefcyYkXFMumPOdm4NFy41d3YIWTUpFI0D4Aq2UCIHFcxX/haa2+L5fPZkH
+	 ZQjj5zVt4UahcaUJ33Wmxr15l99e+G0lL+j+0rXhd1gF3eQaY05vORJ+juSizWBT/V
+	 IBJneQyaDYTk/hnHA2TYqt8xgUYzFxYPBib51E1PpqmV+ho58W6+tFoWQbREnSEY5L
+	 ewCChJt13r18LOiPPLzd7Y38CawNi1725Q/csj0SDiDeddt6byas01r3I+Eh2Suhmz
+	 4SGYi9mB2xZcg==
+From: Alessio Ferri <alessio.ferri@mythread.it>
+Date: Tue, 27 Oct 2026 00:53:46 +0100
+Subject: [PATCH wireless-next v2 3/8] bcma: pcie2: request HT on
+ BCM4352/BCM4360
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -98,330 +58,44 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261016221617.2223004-6-f.fainelli@gmail.com>
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1xLSsL-00000003sgJ-3QWo
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (server.roeck-us.net) [108.223.40.66]:53900
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 62
-X-Org: HG=direseller_whb_net_legacy;ORG=directi;
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDOTOaD03bnz46n4lCdS5F3KY+47x7BbK4uOjQ23Ufn5luo/QfhmZ5c2f89dI/fHm2dXUVB6XzgKp6D53GxVulBqNyeplAt2onlvuDTpi0RypuZANMuG
- Sv/fLtj+TvrFnymdL3Par0qlz8eEVVEm8WvYLctSpZ8iJzqK91GaszmfsxF4LKO3Z1DsNkPwACex9ZW3RoVgEloa3CvZg40/8pBDA6lPZRpD4kubs410ZCxP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261027-bcma-ac-rev1-v2-3-b69b61c31920@mythread.it>
+References: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
+In-Reply-To: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
+To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>
+X-Mailer: b4 0.15.2
+X-CMAE-Envelope: MS4xfJTF5XyttIODpSGvzr+IyNa5pZ6s2Iy93f1vGuHU8PAc+2JXCCQEW+VJahQHRKzZfMSpaIsScInpp4Undro0Spc37izaQYfBvFAPBlQNo89WRv+nuTjG
+ kITyRDM9iZU5OIkvS5gbAKWxP+yzx9AmUyCM4B4J/Ww6OaDA1q2rHLMsw9+Uq2JZaeIWm+oOthTEqx8wKINYYwO7d3Z05lIMo06PonQNuFRLWJQ+ANlXqvHd
+ K9Ukfqd/gfb1eUrLm7VO3SeEnU6Jm3gSRwK1dwjJ6Wy8FmshmJGvFlTEPLFEA4BT9ROpzH5aI4EOnGaa7P5hE3jv8FFgfdcUNPBn4F3dkUgDbhJuGTFJQ+VV
+ d0ZPgj44gQuvpaj6XmirDY1BNwcq8/5Cw5Ts4+wrhM4qYZuaHN4=
 
-On Fri, Oct 16, 2026 at 03:16:17PM -0700, Florian Fainelli wrote:
-> MTX-1 now uses the generic GPIO watchdog driver with board properties
-> describing its GPIO and heartbeat constraints. Remove the unused custom
-> driver and its Kconfig and Makefile entries.
-> 
-> The watchdog core now supplies the character device, keepalive scheduling,
-> timeout handling and close semantics previously implemented by this driver.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Set HAVEHTREQ in the PCIe2 core's clock control on chip rev 3, as
+Broadcom's driver does.
 
-Applied.
+Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
+---
+ drivers/bcma/driver_pcie2.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Guenter
+diff --git a/drivers/bcma/driver_pcie2.c b/drivers/bcma/driver_pcie2.c
+index cf889fc62..fd8fab982 100644
+--- a/drivers/bcma/driver_pcie2.c
++++ b/drivers/bcma/driver_pcie2.c
+@@ -170,6 +170,9 @@ void bcma_core_pcie2_init(struct bcma_drv_pcie2 *pcie2)
+ 	case BCMA_CHIP_ID_BCM4360:
+ 	case BCMA_CHIP_ID_BCM4352:
+ 		pcie2->reqsize = 1024;
++		if (ci->rev == 3)
++			pcie2_set32(pcie2, BCMA_CLKCTLST,
++				    BCMA_CLKCTLST_HAVEHTREQ);
+ 		break;
+ 	default:
+ 		pcie2->reqsize = 128;
 
-> ---
->  drivers/watchdog/Kconfig     |   7 -
->  drivers/watchdog/Makefile    |   1 -
->  drivers/watchdog/mtx-1_wdt.c | 245 -----------------------------------
->  3 files changed, 253 deletions(-)
->  delete mode 100644 drivers/watchdog/mtx-1_wdt.c
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index f50709c635e5..c884f86be4e3 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -1865,13 +1865,6 @@ config JZ4740_WDT
->  	help
->  	  Hardware driver for the built-in watchdog timer on Ingenic jz4740 SoCs.
->  
-> -config WDT_MTX1
-> -	tristate "MTX-1 Hardware Watchdog"
-> -	depends on MIPS_MTX1 || (MIPS && COMPILE_TEST)
-> -	help
-> -	  Hardware driver for the MTX-1 boards. This is a watchdog timer that
-> -	  will reboot the machine after a 100 seconds timer expired.
-> -
->  config SIBYTE_WDOG
->  	tristate "Sibyte SoC hardware watchdog"
->  	depends on CPU_SB1
-> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-> index 9ac406677aba..19cb25f51624 100644
-> --- a/drivers/watchdog/Makefile
-> +++ b/drivers/watchdog/Makefile
-> @@ -172,7 +172,6 @@ obj-$(CONFIG_BCM47XX_WDT) += bcm47xx_wdt.o
->  obj-$(CONFIG_RC32434_WDT) += rc32434_wdt.o
->  obj-$(CONFIG_INDYDOG) += indydog.o
->  obj-$(CONFIG_JZ4740_WDT) += jz4740_wdt.o
-> -obj-$(CONFIG_WDT_MTX1) += mtx-1_wdt.o
->  obj-$(CONFIG_SIBYTE_WDOG) += sb_wdog.o
->  obj-$(CONFIG_TXX9_WDT) += txx9wdt.o
->  obj-$(CONFIG_OCTEON_WDT) += octeon-wdt.o
-> diff --git a/drivers/watchdog/mtx-1_wdt.c b/drivers/watchdog/mtx-1_wdt.c
-> deleted file mode 100644
-> index f75426cfa425..000000000000
-> --- a/drivers/watchdog/mtx-1_wdt.c
-> +++ /dev/null
-> @@ -1,245 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0+
-> -/*
-> - *      Driver for the MTX-1 Watchdog.
-> - *
-> - *      (C) Copyright 2005 4G Systems <info@4g-systems.biz>,
-> - *							All Rights Reserved.
-> - *                              http://www.4g-systems.biz
-> - *
-> - *	(C) Copyright 2007 OpenWrt.org, Florian Fainelli <florian@openwrt.org>
-> - *      (c) Copyright 2005    4G Systems <info@4g-systems.biz>
-> - *
-> - *      Release 0.01.
-> - *      Author: Michael Stickel  michael.stickel@4g-systems.biz
-> - *
-> - *      Release 0.02.
-> - *	Author: Florian Fainelli florian@openwrt.org
-> - *		use the Linux watchdog/timer APIs
-> - *
-> - *      The Watchdog is configured to reset the MTX-1
-> - *      if it is not triggered for 100 seconds.
-> - *      It should not be triggered more often than 1.6 seconds.
-> - *
-> - *      A timer triggers the watchdog every 5 seconds, until
-> - *      it is opened for the first time. After the first open
-> - *      it MUST be triggered every 2..95 seconds.
-> - */
-> -
-> -#include <linux/module.h>
-> -#include <linux/moduleparam.h>
-> -#include <linux/types.h>
-> -#include <linux/errno.h>
-> -#include <linux/miscdevice.h>
-> -#include <linux/fs.h>
-> -#include <linux/ioport.h>
-> -#include <linux/timer.h>
-> -#include <linux/completion.h>
-> -#include <linux/jiffies.h>
-> -#include <linux/watchdog.h>
-> -#include <linux/platform_device.h>
-> -#include <linux/io.h>
-> -#include <linux/uaccess.h>
-> -#include <linux/gpio/consumer.h>
-> -
-> -#define MTX1_WDT_INTERVAL	(5 * HZ)
-> -
-> -static int ticks = 100 * HZ;
-> -
-> -static struct {
-> -	struct completion stop;
-> -	spinlock_t lock;
-> -	int running;
-> -	struct timer_list timer;
-> -	int queue;
-> -	int default_ticks;
-> -	unsigned long inuse;
-> -	struct gpio_desc *gpiod;
-> -	unsigned int gstate;
-> -} mtx1_wdt_device;
-> -
-> -static void mtx1_wdt_trigger(struct timer_list *unused)
-> -{
-> -	spin_lock(&mtx1_wdt_device.lock);
-> -	if (mtx1_wdt_device.running)
-> -		ticks--;
-> -
-> -	/* toggle wdt gpio */
-> -	mtx1_wdt_device.gstate = !mtx1_wdt_device.gstate;
-> -	gpiod_set_value(mtx1_wdt_device.gpiod, mtx1_wdt_device.gstate);
-> -
-> -	if (mtx1_wdt_device.queue && ticks)
-> -		mod_timer(&mtx1_wdt_device.timer, jiffies + MTX1_WDT_INTERVAL);
-> -	else
-> -		complete(&mtx1_wdt_device.stop);
-> -	spin_unlock(&mtx1_wdt_device.lock);
-> -}
-> -
-> -static void mtx1_wdt_reset(void)
-> -{
-> -	ticks = mtx1_wdt_device.default_ticks;
-> -}
-> -
-> -
-> -static void mtx1_wdt_start(void)
-> -{
-> -	unsigned long flags;
-> -
-> -	spin_lock_irqsave(&mtx1_wdt_device.lock, flags);
-> -	if (!mtx1_wdt_device.queue) {
-> -		mtx1_wdt_device.queue = 1;
-> -		mtx1_wdt_device.gstate = 1;
-> -		gpiod_set_value(mtx1_wdt_device.gpiod, 1);
-> -		mod_timer(&mtx1_wdt_device.timer, jiffies + MTX1_WDT_INTERVAL);
-> -	}
-> -	mtx1_wdt_device.running++;
-> -	spin_unlock_irqrestore(&mtx1_wdt_device.lock, flags);
-> -}
-> -
-> -static int mtx1_wdt_stop(void)
-> -{
-> -	unsigned long flags;
-> -
-> -	spin_lock_irqsave(&mtx1_wdt_device.lock, flags);
-> -	if (mtx1_wdt_device.queue) {
-> -		mtx1_wdt_device.queue = 0;
-> -		mtx1_wdt_device.gstate = 0;
-> -		gpiod_set_value(mtx1_wdt_device.gpiod, 0);
-> -	}
-> -	ticks = mtx1_wdt_device.default_ticks;
-> -	spin_unlock_irqrestore(&mtx1_wdt_device.lock, flags);
-> -	return 0;
-> -}
-> -
-> -/* Filesystem functions */
-> -
-> -static int mtx1_wdt_open(struct inode *inode, struct file *file)
-> -{
-> -	if (test_and_set_bit(0, &mtx1_wdt_device.inuse))
-> -		return -EBUSY;
-> -	return stream_open(inode, file);
-> -}
-> -
-> -
-> -static int mtx1_wdt_release(struct inode *inode, struct file *file)
-> -{
-> -	clear_bit(0, &mtx1_wdt_device.inuse);
-> -	return 0;
-> -}
-> -
-> -static long mtx1_wdt_ioctl(struct file *file, unsigned int cmd,
-> -							unsigned long arg)
-> -{
-> -	void __user *argp = (void __user *)arg;
-> -	int __user *p = (int __user *)argp;
-> -	unsigned int value;
-> -	static const struct watchdog_info ident = {
-> -		.options = WDIOF_CARDRESET,
-> -		.identity = "MTX-1 WDT",
-> -	};
-> -
-> -	switch (cmd) {
-> -	case WDIOC_GETSUPPORT:
-> -		if (copy_to_user(argp, &ident, sizeof(ident)))
-> -			return -EFAULT;
-> -		break;
-> -	case WDIOC_GETSTATUS:
-> -	case WDIOC_GETBOOTSTATUS:
-> -		put_user(0, p);
-> -		break;
-> -	case WDIOC_SETOPTIONS:
-> -		if (get_user(value, p))
-> -			return -EFAULT;
-> -		if (value & WDIOS_ENABLECARD)
-> -			mtx1_wdt_start();
-> -		else if (value & WDIOS_DISABLECARD)
-> -			mtx1_wdt_stop();
-> -		else
-> -			return -EINVAL;
-> -		return 0;
-> -	case WDIOC_KEEPALIVE:
-> -		mtx1_wdt_reset();
-> -		break;
-> -	default:
-> -		return -ENOTTY;
-> -	}
-> -	return 0;
-> -}
-> -
-> -
-> -static ssize_t mtx1_wdt_write(struct file *file, const char *buf,
-> -						size_t count, loff_t *ppos)
-> -{
-> -	if (!count)
-> -		return -EIO;
-> -	mtx1_wdt_reset();
-> -	return count;
-> -}
-> -
-> -static const struct file_operations mtx1_wdt_fops = {
-> -	.owner		= THIS_MODULE,
-> -	.unlocked_ioctl	= mtx1_wdt_ioctl,
-> -	.compat_ioctl	= compat_ptr_ioctl,
-> -	.open		= mtx1_wdt_open,
-> -	.write		= mtx1_wdt_write,
-> -	.release	= mtx1_wdt_release,
-> -};
-> -
-> -
-> -static struct miscdevice mtx1_wdt_misc = {
-> -	.minor	= WATCHDOG_MINOR,
-> -	.name	= "watchdog",
-> -	.fops	= &mtx1_wdt_fops,
-> -};
-> -
-> -
-> -static int mtx1_wdt_probe(struct platform_device *pdev)
-> -{
-> -	int ret;
-> -
-> -	mtx1_wdt_device.gpiod = devm_gpiod_get(&pdev->dev,
-> -					       NULL, GPIOD_OUT_HIGH);
-> -	if (IS_ERR(mtx1_wdt_device.gpiod)) {
-> -		dev_err(&pdev->dev, "failed to request gpio");
-> -		return PTR_ERR(mtx1_wdt_device.gpiod);
-> -	}
-> -
-> -	spin_lock_init(&mtx1_wdt_device.lock);
-> -	init_completion(&mtx1_wdt_device.stop);
-> -	mtx1_wdt_device.queue = 0;
-> -	clear_bit(0, &mtx1_wdt_device.inuse);
-> -	timer_setup(&mtx1_wdt_device.timer, mtx1_wdt_trigger, 0);
-> -	mtx1_wdt_device.default_ticks = ticks;
-> -
-> -	ret = misc_register(&mtx1_wdt_misc);
-> -	if (ret < 0) {
-> -		dev_err(&pdev->dev, "failed to register\n");
-> -		return ret;
-> -	}
-> -	mtx1_wdt_start();
-> -	dev_info(&pdev->dev, "MTX-1 Watchdog driver\n");
-> -	return 0;
-> -}
-> -
-> -static void mtx1_wdt_remove(struct platform_device *pdev)
-> -{
-> -	/* FIXME: do we need to lock this test ? */
-> -	if (mtx1_wdt_device.queue) {
-> -		mtx1_wdt_device.queue = 0;
-> -		wait_for_completion(&mtx1_wdt_device.stop);
-> -	}
-> -
-> -	misc_deregister(&mtx1_wdt_misc);
-> -}
-> -
-> -static struct platform_driver mtx1_wdt_driver = {
-> -	.probe = mtx1_wdt_probe,
-> -	.remove = mtx1_wdt_remove,
-> -	.driver.name = "mtx1-wdt",
-> -};
-> -
-> -module_platform_driver(mtx1_wdt_driver);
-> -
-> -MODULE_AUTHOR("Michael Stickel, Florian Fainelli");
-> -MODULE_DESCRIPTION("Driver for the MTX-1 watchdog");
-> -MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:mtx1-wdt");
+-- 
+2.34.1
+

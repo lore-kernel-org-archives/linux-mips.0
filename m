@@ -1,56 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793012171;
-	b=qshqY6jxv1iebs6F77gCdM6MebjMBAYUbPiyBJuTV3NvNfCC4rnkda2K/cu7dzv9xalu
-	 3VZq8SDLx3Uavbp/fX8syccXSmVHXLjn95UUuxzo2UnBpSlMHTZ3PahlF0vUq9mmJ8lu8
-	 +VsUeG1PK6J24NM8lbPS7oAiW9t8XY9jruaTEIgkTeykVFbYAectIkyfCzyhI2qv+Ow9v
-	 9HcnX1mqyECTocXcP4nN3ZM5PdKox8eMlicJHwJMD95SVBmmtzTKdQWHwza7pNDNhXOr7
-	 E1al6EPTjyK0sWRHMOWxswdNVWbbaVCF3KG25HK98hwxIT31zcskof2NBKoavKvQ8vQ==
+	t=1793012487;
+	b=a7tsTF11bY9lQ6v9auQexwFOdNe2xLP+eRZaZHqXea0Cytt0d641cbIhv9pwY1MGIFNp
+	 YgiWDGeffXF3hR55ll2A400s/pS9OmTZLxlU7xvXy16ndqqroN+6W8rxCFHTM48JPiuu7
+	 pJnRuGOb4FGCuIYNrG/pp6yHH3J0CSK5KpxEzjJAWXLDrSmDMuBUV48lMqpEkn+i5SwSQ
+	 Wpl2cHTdU65jLIR3n3Y66imjrdRsCVPSjCBD+qz8rWcOJIAe7eZSA6yKajtuNN1veyFaY
+	 v0rgLMZ7twcNNfC5u36pTnWXuomEwmMzVrnE3s6O0g94H3g2Czm6aMluq3YF6QYPOTQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793012171;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793012487;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=h3jtU7GdZhongGUdwg5/sigvzLdtk/MsVeihl8ihKII=;
-	b=4Iw9dLpuD6hKtWQ4RAwtXV7RaWivf+O9Kt6tz30e2rL4ZB1XVXfHKWK9mYWZLTZQfSVE
-	 pOwlZj7J/52nmkd3tN9j7QqVrAr0aBTT8xeYeoDxEfugsPhdI/lj1MFI79AfEuLUJcpkY
-	 hiKVJhznuGrQIsbbTKiUIDt/rRsFev/OiTCFgEWIwuyh81icsU4cN4QaBTbGrpr4RHPdj
-	 gFXNQiBYvgGAP8/5vw0cj8eS7WgTw+kACFrUa5Hgk7wSog8gGjt6wD/cbAocFmJH4ycWd
-	 QyzZuFBPrbzpvROuPr/z69OP7MrNrdsCJy//BXTflWkwn8mO+VoEnY1/ePr0MLlEoEA==
+	bh=e4iyrsilOoIaqQRR5s2r1PWNoBmgKZMvdEkIhqDbC54=;
+	b=Sgr+JcTQqdzcrO7jPjEW/hgiq39q1jh/6saX71GbzUqUex2+nsMnFo7hYXLbiz/ANUu2
+	 f16PyKUaV1Fz39hu3zixsVC0svUIp3sRAZ0otVCruSHpS3jqqTCHi2l7OXtWUExsf5rxG
+	 p2rYoAPIsSxl83CT7/LftYQJ1aKGfd7mW3b0lEJWIxVuRCkMCSYUQFAmW5WDPg7u8ZQd1
+	 xqIwzPTS7gMkku3BSDrhFChZo2991+N8HdZClITXAcY4Heo5LzUJRX+Dp8GDaskgbIQyn
+	 yc91AQ+3GYh9sAC/dSW8IT1mB3EZnxiAkXhCUqqL4Oq4bM1onXiCc9NHLrTkX8PL6Zw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=djnUBmBJ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3ASrSox;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3056E606A31B;
-	Mon, 26 Oct 2026 10:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD66606A31B;
+	Mon, 26 Oct 2026 11:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=djnUBmBJ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3E471F01825;
-	Mon, 26 Oct 2026 10:56:09 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3ASrSox
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C711F01825;
+	Mon, 26 Oct 2026 11:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793012170;
-	bh=h3jtU7GdZhongGUdwg5/sigvzLdtk/MsVeihl8ihKII=;
+	s=k20260515; t=1793012486;
+	bh=e4iyrsilOoIaqQRR5s2r1PWNoBmgKZMvdEkIhqDbC54=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=djnUBmBJjodsQZI9aMf9Q4GlGssaeOso+iijZD/+eEVGAs70ZwRDxM6zOme29aAYa
-	 VB5/OK5ADUqeoeJ+50Bua6XVHOnf+0oBn9Kv4hSsvEcAIkU2o228YG+RhFfWTxqTRp
-	 Zg5NbIP1ZsOPFemKZ962hncN7NOhT2vo3Bk3uGtG0nuofI7muCAMq1Eda5ktOQvZUB
-	 WRCrxJ/FyS3kaOs0fQNg7cTC2dpQ4iO+SRwA6/0KySujHbfwV09Xw2nxG6NYZ2zMPU
-	 neD8wHfkl4+Q7iLVwvdGU/i7pF/CBE1SIR4OVBE+tXvvoEoMmVhyZk08XR2MFkAglG
-	 ohQMug12niF6w==
-Date: Mon, 26 Oct 2026 11:56:07 +0100
+	b=S3ASrSox/gv+FHA71IZFlTDSdRER/g1ajQ+AVcwUsfB1b0MAJ60yFDnEwtr9C+Q+F
+	 MLgGFpvW107eWsBBZVzNI0L/x9r+7qrsPwxdqOMSKr1vtUbMTOVUnZvRfdxFa7zh2Q
+	 bz9QPbDSaMTvfBnyIKeor7N9yTnbh4oizD8grLzc7oQNQz7iji4F1OvJoXcu7zDOGG
+	 9Mo5nzQIny6DYH9HZ3Zz5Lhu1IS6FiSPyC7CHa9Oi91ni3joTUlbDbb0GE2PosqASA
+	 9rO+x05w3bc6lHPDGpfDJxn1PdVfi0iETLnbq8dRmaBq6S42nuhF9gsU5LLZiysLJa
+	 PnwPTXTTlGDnA==
+Date: Mon, 26 Oct 2026 12:01:23 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Olivier Louvignes <olivier@mgcrea.io>
-Cc: Jonathan Cameron <jic23@kernel.org>, 
-	David Lechner <dlechner@baylibre.com>, Nuno =?utf-8?B?U8Oh?= <nuno.sa@analog.com>, 
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>, 
+To: Joshua Crofts <joshua.crofts1@gmail.com>
+Cc: Olivier Louvignes <olivier@mgcrea.io>, 
+	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+	Nuno =?utf-8?B?U8Oh?= <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
 	Paul Cercueil <paul@crapouillou.net>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
-Message-ID: <20261026-fantastic-avocet-of-opportunity-ad80be@quoll>
+Subject: Re: [PATCH v2 2/2] iio: adc: Add a driver for the Ingenic X1600 ADC
+Message-ID: <20261026-monumental-adaptable-coucal-f7291b@quoll>
 References: <20261024041357.34346-1-olivier@mgcrea.io>
+ <20261024041357.34346-2-olivier@mgcrea.io>
+ <20261024090006.00002720@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -62,32 +64,18 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261024041357.34346-1-olivier@mgcrea.io>
+In-Reply-To: <20261024090006.00002720@gmail.com>
 
-On Sat, Oct 24, 2026 at 06:13:56AM +0200, Olivier Louvignes wrote:
-> +description:
-> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input channels
-> +  measured against a 3.3 V reference. Its clients select a channel by index
-> +  through "io-channels".
+On Sat, Oct 24, 2026 at 09:00:06AM +0200, Joshua Crofts wrote:
+> > +S:	Maintained
+> > +F:	Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> 
+> The changes above should go into patch 1 (checkpatch will
+> raise a warning if you're creating a new file and it's not
+> documented in MAINTAINERS).
 
-Drop last sentence. Here you describe hardware, not how DT works.
-
-> +
-> +properties:
-> +  compatible:
-> +    const: ingenic,x1600-adc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: adc
-
-Drop clock-names, not useful when repeats block name.
+That warning is irrelevant (false positive), so it is perfectly fine to
+add the complete entry here.
 
 Best regards,
 Krzysztof

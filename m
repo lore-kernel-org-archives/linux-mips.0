@@ -1,54 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793022422;
-	b=UPu8H7BA1xK6YM3wqW308/vL5Zyiq3vPMU/+XAkszAcMJ411xmwvriXLc5z/SnWxYw64
-	 j+98uRwuw+MfV8MaIvTfDxL2NdtA3pm6B1tFJlHPYgyrEVgkqjW1ZjrF0IRL+eOsRGm/Y
-	 AgFVJy2AOKjj0YFPueSHTaNAZli+VRCM/bSx7DPP0nOkFKg8bmsnDqhdhcXI5xOg1gTqt
-	 /9L6ogNlwm25JIZ5UR1JWKCWf4JqXhVKQYCrzMr1vw9r8yzmXCz07lHlwpRUZmxKS7tOE
-	 p+iZdzyOvUqW9CrhIVArB9JoqHPWuDHoJ9D0g7miUjwBaSkXcLEQ24ZzAf6zgFO1fxA==
+	t=1793024296;
+	b=3fKiiQt0A6oS/mPE/+MC70AlV0lK/OU9alFc5N7Z7j/HCEp+DSdcCfROcD+Ah/nrFh/z
+	 6VPrnZNX6QS7mTpHPV9Q/vWqEaI7eWaarxdcqEgQTKo07wEnyhNmbvFAET1Tq0+c4Euyp
+	 xCcO7UzlloBtnMRBBZPvfMQdq7pntIRHhcM8xDPGBUkTUegp3c20xUtIj9kw9L+XzGyCa
+	 8PyXVKlgPp/wMHSejSrSFzO1jjR0fbF9LcnGab95DIB5t/vAhGOGqea/3Ysi3UqdTeRCN
+	 lxZc1GN6mSN+hcUnyOncqRrMAYX3bnx6JZKW2ayo2UrcV42WTEqGsY9RriI/tmKHfoA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793022422;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=N02JM7+jqZay5FBQIpQf1LACX/mbr+RXj82lQnsUkN8=;
-	b=O30/Oop8Ny9VTERqJVpEeR4Kyez9NKJUzKofo4JXhE3INW0Q8StANc/birjiqPUPPsjD
-	 CogfjSY/F8YRW+/ffWW1//QgyWT8AbhKE199aJtCmapmkcetvoU10R90WHDruyJj7/pqw
-	 dUeup4aoocqsQVaiZ8hLmhXqB/lw4f2GQPzhvCviWHk8OqS6bLPlS3Q9sLhsEacBk+7Xg
-	 Pta1ub4CulfQfAZBfG20JVh9pIPUmn5H44ZEbob96Vdg9R+YVN4go9SNbfgDfcSXcBFEI
-	 Yg87JJOs/uhhIpBIcLhtLHxorRFQ6YpC6YAqxIlOQ+MYGBOXHYFz5ICWfhdJkipKMdg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793024296;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:X-Mailer:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=ifM+PXldux5sH2cm3CGnH/RRo/Iq9tlkwFAZTBnx4+Q=;
+	b=VsCxjjMoX+DIQ+TfGUBeIM9et/MSXzf5a4+QMfD6lgSWNJR7R239RRkts4SfNn3xMfxo
+	 W9gADjLOWQhQq3Y0tUvcLLLXmS706lyEjdgQndH3ydvemxKBgAOI7Lt92TCZI3CAP0XbC
+	 dQD11FEOqRVVF5osD7s6Hg7OLsROTrSpXAiti59R3nLAjm5hteYm6UPfso/R/TPG/Px7K
+	 xT7ACST0YsTbdEyxjHzSv6decLeY7mMZZviJlAH5c8ofL+/mWaTCjFDDRT3xotmI20eVD
+	 1fpDcVD3Ey4MT+ucIZOwTUAl2hVjt9yWkCjIeMsT947M8wyRNdXFJw6rLufV/o3tv7A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eGrrusl1;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=arAe2ryG;
+	arc=none smtp.remote-ip=209.85.128.49
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D7D60A2639;
-	Mon, 26 Oct 2026 13:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45C6606A322
+	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 14:18:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B45C6606A322
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eGrrusl1
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE84B1F01825;
-	Mon, 26 Oct 2026 13:47:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793022421;
-	bh=N02JM7+jqZay5FBQIpQf1LACX/mbr+RXj82lQnsUkN8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=eGrrusl12ud5krVFttJT8R22Gyz/llhtPZ7z5eTocm0pKDW56MJEI2WrCnE5t4COZ
-	 XeZfX1ACK2jatQlCvIfv5HY2dcA6JWHLM+nKPTDk5i6X/gm2V/N+fZx9TphYhT2svF
-	 g/gRSyTPJ6Y7FOYgINGLt+F1FMb3L/kxwO+C3Lq6k8q8uNXyjye9ndhFXxtBHLYJp0
-	 mx4I3Krczf+rNCcio83wQ5FjTjXayXWKBRMipYqi/74sMSunWSoBqs03P5WU9eUBNc
-	 1zPsOq4Sq7M8ZD1dSmuTi/HHsir3LvjIa0HmAnCnsrlcfbQ0HIShb/dLMdSb+vPd7S
-	 rRwY0P6UllBhA==
-From: Imre Kaloz <kaloz@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] MIPS: ip32_defconfig: drop dead options and add-in drivers, add audio
-Date: Mon, 26 Oct 2026 14:45:43 +0100
-Message-ID: <20261026134543.27207-6-kaloz@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261026134543.27207-1-kaloz@kernel.org>
-References: <20261026134543.27207-1-kaloz@kernel.org>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=arAe2ryG
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4a60f9474c4so11480715e9.0
+        for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 07:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1793024294; x=1793629094; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=ifM+PXldux5sH2cm3CGnH/RRo/Iq9tlkwFAZTBnx4+Q=;
+        b=arAe2ryGITQNaEOL6zbSb3LMwQmpaYIjaYHVlzJt+RwVkXz+ibO9s+qLO7YT1Dexse
+         wjEb/ve7fTopNBXX3YVni2GCZ+uWleeRmGhQOxUpH0OpM9W+4VuvjPijH+D66GQeaCKl
+         trLGCt7AqToC4FKcJ5oXvR4QIrkTuGShxtajFOcIIVcNVL0KlAw3RsgRa20lHE7EMgA+
+         pDpSpHcxEMQvzDhCfFJDZ5IP45budIblqKHrLqt9Fj8lrT/GY0hw7SfxT1pBYhc+6BRk
+         wZ1KYLk53bpOQLyS3knUrpi7z2H9z66bVOjWZg97H07dhGu531lOyOGQ571VIaKoWRSY
+         ImOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793024294; x=1793629094;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=ifM+PXldux5sH2cm3CGnH/RRo/Iq9tlkwFAZTBnx4+Q=;
+        b=XBzjzgx3TWwAJxO7kBFc6qmCgS32agmFlu4CIF7r70YGmSQbMIe4WYi8dRObjFcQnr
+         C//HNeT7+IEFYawWF+W+sBg4AlDzGyEwJk9c4fL5MU6tzE9f38PP1HGGtBREtHgAj7QQ
+         vA+lz/9NLHNb2S4R+DT+/kERlOP+ROF6H0O0FVvdkqCOCSjk2wjLNhEtHOeL3Ru0Hw0r
+         b9sF2i9Rp4tRHf6QWnj6LwgwfAvt9UXsLhLOnlju7TMUJbrwZwm3vZEuNuxxlY67gD14
+         Cs8D//dlOH8BL0YD2yk7zcKCsXnXCJyyV1qqy/EmyIqb2Ukxt+41NY0FnxexYzp9qbEC
+         mYqQ==
+X-Forwarded-Encrypted: i=1; AKwUvByCVu6M+7+K0IZ3BIT/AUIgtxU8f0He42DKZdeJoYwb0hB0fwAMOLDGfbyak0acgZcVEFqe7yBO0kPj@vger.kernel.org
+X-Gm-Message-State: AFq9FYJl5wTlRdDl38RtXFveDw21htikhYn5UD3msvxMsh3on3+XdNed
+	CFf467+xkhYIRbnN+JTBAiFLIv6gM5NCDF4HZsjZ6Dk285f8y5QudpzC
+X-Gm-Gg: AYBFou2gJleUjJo9NanT3D4/zgtIGVykHlWbN57thBQMiSe8r0naNQmZxjxusWE1o31
+	nCtVxg6eJUL/IicV8NHcc4iI8w9xH1MYqvQXYT3LDjfxqp8Ztz4j1BX1vUMuhdEdBDjEvH88NKP
+	UBbWtF8XWm/NWFgEzGD83T9idXm1MBV2mYewpuwUiz2wdgyXdgGtSr1wZHQi6vERbdLSi4DEcEF
+	eIDPAonwNPIz8JGO8C9uaL10Pk8ZsRQWHhUczfLs6ZrqZA6QArrk3Nbi9y6W218KmNj/39efFIX
+	UqZRuquyT/RYCIU/4U/VvsnYLrqb+Y06gRgMNU47svyo4on+a/GgbuwOvTunqrjkhaKiEjvFWKM
+	kGNcRRO5yOocltSmD5EGUkNUhRv2sEIMD1HoITdSM6AXKXiuxcW37PKPQv0S4QD2NeTueWgzjrk
+	e5PI/OteJm4idA6FE1tOjvGtC3yIxq/XAN6HNLhm0+VEA7YltfJA4QmbOXNsZwhnhM5/qDfhZyx
+	03HZmHqTbigdzxjJ2+J3rTwR/4Grn7EXy0gisja2UsPR+xoG9i98p22nQ/sB5ZaYqzX8nCBD9ui
+	3ShrebFMwu+JabCPd5oH/WT+sktdJxggCHS8Qrqx+9e63xvJFPY/TAQWLYjGzKcfx7qB3L7S5X1
+	12LTUB47sGlxoMLhffwCi7PqcZ67EvLz3lP5Hm57qoOtwDUrrSBd6sTdm+WV1QL9OiS2lU9JSqF
+	6rWjxaNhvIJLnwLPZshYReNhquumZ6AASeqPXN4KwwKaGAoGD27YPXPFo0WL3+7mH3ksmsuLOy0
+	/PIHoH+0As=
+X-Received: by 2002:a05:600c:a318:b0:4a3:5aee:2c25 with SMTP id 5b1f17b1804b1-4a35aee2cfdmr95663085e9.31.1793024293964;
+        Mon, 26 Oct 2026 07:18:13 -0700 (PDT)
+Received: from localhost (90-182-112-124.rcp.o2.cz. [90.182.112.124])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a35a58a0e2sm246428935e9.13.2026.10.26.07.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2026 07:18:13 -0700 (PDT)
+Date: Mon, 26 Oct 2026 15:18:11 +0100
+From: Joshua Crofts <joshua.crofts1@gmail.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Olivier Louvignes <olivier@mgcrea.io>, Jonathan Cameron
+ <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, Nuno
+ =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Andy Shevchenko
+ <andy@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Paul Cercueil
+ <paul@crapouillou.net>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+Message-ID: <20261026151811.00002233@gmail.com>
+In-Reply-To: <20261026-hungry-masked-anaconda-7fadb6@quoll>
+References: <20261024041357.34346-1-olivier@mgcrea.io>
+	<20261024083809.000026e5@gmail.com>
+	<20261026-hungry-masked-anaconda-7fadb6@quoll>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.51; x86_64-w64-mingw32)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -58,115 +109,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Drop requests that no longer take effect: symbols whose dependencies are
-no longer met (the obsolete ciphers need CRYPTO_USER_API_ENABLE_OBSOLETE)
-and lines savedefconfig omits as defaults. Also drop the Tulip network
-drivers and SAS/RAID transport classes, which belong to PCI cards.
+On Mon, 26 Oct 2026 11:50:44 +0100
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-Enable the O2 audio driver. The file is regenerated with savedefconfig.
+> On Sat, Oct 24, 2026 at 08:38:09AM +0200, Joshua Crofts wrote:
+> > On Sat, 24 Oct 2026 06:13:56 +0200
+> > Olivier Louvignes <olivier@mgcrea.io> wrote:
+> >   
+> > > The X1600's SAR ADC has four auxiliary channels and none of the
+> > > touchscreen or battery engines of the JZ47xx ADCs in
+> > > ingenic,adc.yaml, so it gets a binding of its own.
+> > > 
+> > > Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> > > ---  
+> > 
+> > Please use a cover letter when submitting a patch series.  
+> 
+> It's fine for two patch series. Please do not make it more difficult,
+> than necessary.
 
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/configs/ip32_defconfig | 36 ++++++++------------------------
- 1 file changed, 9 insertions(+), 27 deletions(-)
+I'm not trying to make it difficult. The cover is usually a good place
+where to describe your motivations for a new driver, plus with a cover
+it's easier to pull via b4 and Sashiko will treat the two patches as
+part of one series, not separately.
 
-diff --git a/arch/mips/configs/ip32_defconfig b/arch/mips/configs/ip32_defconfig
-index 5ddbaa0aafaf..e43a6a1913e0 100644
---- a/arch/mips/configs/ip32_defconfig
-+++ b/arch/mips/configs/ip32_defconfig
-@@ -9,10 +9,9 @@ CONFIG_RELAY=y
- CONFIG_EXPERT=y
- CONFIG_PROFILING=y
- CONFIG_SGI_IP32=y
--# CONFIG_SECCOMP is not set
--CONFIG_PCI=y
- CONFIG_MIPS32_O32=y
- CONFIG_MIPS32_N32=y
-+# CONFIG_SECCOMP is not set
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_PARTITION_ADVANCED=y
-@@ -40,10 +39,10 @@ CONFIG_INET6_ESP=m
- CONFIG_INET6_IPCOMP=m
- CONFIG_IPV6_TUNNEL=m
- CONFIG_NETWORK_SECMARK=y
-+CONFIG_PCI=y
- CONFIG_CONNECTOR=y
- CONFIG_BLK_DEV_LOOP=m
- CONFIG_BLK_DEV_NBD=m
--CONFIG_RAID_ATTRS=y
- CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_BLK_DEV_SR=y
-@@ -51,16 +50,11 @@ CONFIG_CHR_DEV_SG=m
- CONFIG_SCSI_CONSTANTS=y
- CONFIG_SCSI_LOGGING=y
- CONFIG_SCSI_SCAN_ASYNC=y
--CONFIG_SCSI_SAS_LIBSAS=y
- CONFIG_SCSI_AIC7XXX=y
- CONFIG_AIC7XXX_RESET_DELAY_MS=15000
- CONFIG_NETDEVICES=y
- CONFIG_BONDING=m
- CONFIG_DUMMY=m
--CONFIG_NET_TULIP=y
--CONFIG_DE2104X=m
--CONFIG_TULIP=m
--CONFIG_TULIP_MMIO=y
- CONFIG_SGI_O2MACE_ETH=y
- CONFIG_INPUT_EVDEV=m
- CONFIG_SERIO_MACEPS2=y
-@@ -72,12 +66,12 @@ CONFIG_HW_RANDOM=y
- CONFIG_WATCHDOG=y
- CONFIG_FB=y
- CONFIG_FB_GBE=y
--# CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
--# CONFIG_LOGO_LINUX_MONO is not set
--# CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
-+CONFIG_SOUND=m
-+CONFIG_SND=m
-+CONFIG_SND_SGI_O2=m
- # CONFIG_USB_SUPPORT is not set
- CONFIG_RTC_CLASS=y
- # CONFIG_RTC_HCTOSYS is not set
-@@ -149,29 +143,17 @@ CONFIG_NLS_ISO8859_15=m
- CONFIG_NLS_KOI8_R=m
- CONFIG_NLS_KOI8_U=m
- CONFIG_NLS_UTF8=m
--CONFIG_KEYS=y
- CONFIG_CRYPTO_NULL=y
--CONFIG_CRYPTO_CBC=y
--CONFIG_CRYPTO_ECB=y
--CONFIG_CRYPTO_LRW=y
--CONFIG_CRYPTO_HMAC=y
--CONFIG_CRYPTO_XCBC=y
--CONFIG_CRYPTO_MD4=y
--CONFIG_CRYPTO_SHA1=y
--CONFIG_CRYPTO_SHA256=y
--CONFIG_CRYPTO_SHA512=y
--CONFIG_CRYPTO_WP512=y
--CONFIG_CRYPTO_ANUBIS=y
--CONFIG_CRYPTO_ARC4=y
- CONFIG_CRYPTO_BLOWFISH=y
--CONFIG_CRYPTO_CAMELLIA=y
- CONFIG_CRYPTO_CAST5=y
- CONFIG_CRYPTO_CAST6=y
- CONFIG_CRYPTO_DES=y
--CONFIG_CRYPTO_KHAZAD=y
- CONFIG_CRYPTO_SERPENT=y
--CONFIG_CRYPTO_TEA=y
- CONFIG_CRYPTO_TWOFISH=y
-+CONFIG_CRYPTO_LRW=y
-+CONFIG_CRYPTO_MD4=y
-+CONFIG_CRYPTO_WP512=y
-+CONFIG_CRYPTO_XCBC=y
- CONFIG_CRYPTO_DEFLATE=y
- CONFIG_FONTS=y
- CONFIG_FONT_8x8=y
 -- 
-2.47.3
-
+Kind regards,
+Joshua Crofts

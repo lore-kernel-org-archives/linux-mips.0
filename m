@@ -1,47 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793004165;
-	b=Xgsu+fMMcnFCsS2Vor6qrAMi3VlrGy3zxxu9mUMhjv8toW7gQ6Z/A4naZjaskNOCmC/f
-	 INAcvAq1hUpl2WcmNpvUD4+uPB0091LXJnXdyHgRtka6CWeK8tdJuoQIETGC4CPytGaq2
-	 AYm65TKNai1gTnjiTnSo/N/pMtkd3EHa1qoc5V//b1GvddDOPlVQ8h1GCc3fPv+aDEjuJ
-	 QzjmsOH1K5/srVwj3B2y/qLjadWmTe8Xbuo7gmEx62ehIUe6JvJkdBtK4fZZphqBJm3qk
-	 h2TwLYd3Rzb/t2PShEc9VIT8dfhKBONVlsmY2hxIPx4h3tSbIdbVflRPfpERk3JfB4w==
+	t=1793008494;
+	b=DRBYgFJK0ofIK7P7C93D+UPquJhCtn7+jeAXCPlhjxLNrzL+OOIAxRHJcAkkz4pvLxrx
+	 /ENOyr7If6jHO0SQw5ueTVgbdLCHiuy54E7kq+P23jrI60LLI9wGiJ5NvgO2P/rn9ZTmv
+	 L2kgxHz9qBvUZKIOnZP5+t6tbDc+DvtYIALf/DLtJBFbtZAVIulPYoffonyt8qHQ/YRwC
+	 b2KZJHd/pD7A90VuGxjvm3PUQJi4bWdqOfx+ncrwaa031hr9dyHe0o3rkwhL4kjqsZR2n
+	 fDFjvPsi7hPmSm8RPjXwz2RVawAvVU78BTsKCp7uKAH3qicMqeEz1XDINDnIwuGuXQA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793004165;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=E1nL2/Vfk4pnrbVLCTirKX2aylDFGWUjxOEqPVE/VhU=;
-	b=nR++INgiTcJLWNd+6oc4d28jHRmKBqwrqqsRoK7LntIhJTPfEbldUXf6nCoA3FlNOhDT
-	 uE+SbDP7dsijCTT4jOaR69yIFFaV1ckp3zcClI1BOCdZFB0wiVQoHT6jf5xivC6/HSOvb
-	 je0LXIrjtQmWPiQ0DVUuXXn7u9OZ8joC9zyx/vbDsa98N0LgWqOmTdpp4BDpjwKmqztKf
-	 hScAA3kv957nPf7C2hDYuNXhZMicv4Kn1x/IJ+gc3MF7J8qbaiFpSkK0rdOzfNMLdEykr
-	 dXUcuMAvMQseLwr9LycPklSDzzvL2aUtTbCy96yV5b4RHpeuuNCnKrqPZzefatFPHjw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793008494;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=bq3zPEguHOLASpI8QxkTmM4iRLkFLnGxgfe/hzF7Y3g=;
+	b=P5hhJZfsMebaaX3iYY3JKyzRDDRH0ojyETtdWXXqkB6HdyTJ6jGrYRzRanSMzxetQAW7
+	 62jTNJKh+2Zgg+VvkcUmv461f5lDQGYvMxjEUFYPVpFTSPeYg6XlEnLHl1IMwP21oDmQO
+	 +XtWpGemIKCnUXToIATe69CnfW48i3nQU/HbT5yirN/fNBhi60Rw6tIB/uolROEabGj4i
+	 zUrNZZ6x6NoLNW81zpYrV1kiOKgoaoVAuldxtIWT+z+o85f7reS9kEZ/KnqckyaUMurvA
+	 UGFl7mfo/TogvjdaesJtkQLWLJT+IqF35+RmolBes+x5GtXsLKZ449Fz2UE0mWewGng==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DFqs9IXa;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C249606A31A;
-	Mon, 26 Oct 2026 08:42:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6C249606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <48976ce134e26877200e8e1ef8d3f5c66f4fdcf6.camel@crapouillou.net>
-Subject: Re: [PATCH] mmc: jz4740: Remove the host before resetting the
- controller
-From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Ulf Hansson <ulfh@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Matt Fleming
- <matt@console-pimps.org>, 	linux-mmc@vger.kernel.org,
- linux-mips@vger.kernel.org, 	linux-kernel@vger.kernel.org
-Date: Mon, 26 Oct 2026 09:42:32 +0100
-In-Reply-To: <20261026083323.12301-1-olivier@mgcrea.io>
-References: <20261026083323.12301-1-olivier@mgcrea.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69303606A31F;
+	Mon, 26 Oct 2026 09:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DFqs9IXa
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A121F01825;
+	Mon, 26 Oct 2026 09:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793008494;
+	bh=bq3zPEguHOLASpI8QxkTmM4iRLkFLnGxgfe/hzF7Y3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=DFqs9IXayJ5aG4W9CHaQ8mjAbVOvOVkjN4A/N3DZ5baFydkrqmMqo03MQG5Aah7U6
+	 phmJ5jctUvRg04ogP+cRXXRjUPdxMMkEslDsUAPHk9uMyZ5w8+dYjzpCyrDElxVSLk
+	 Ox0RAVeHUG7k5vWIedhPDkjoVN8DM4deEAQhiesHFCCHUwGAdoowS/a4Zk0Qn8kFhA
+	 Ndz7M98RVOcBbzP4yp+JqcPEEV/5p7u8yMG288b9Ay/C+PlH2/hnVsx9n0rYTy5gh5
+	 ReY94MnjKefOrfReYrDIyQxm0zMpQINSMatScJiJBziIqDdAFAoWMKZYqYY0YddGUb
+	 bAY431dsHprdg==
+Date: Mon, 26 Oct 2026 10:54:49 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Olivier Louvignes <olivier@mgcrea.io>, 
+	Paul Cercueil <paul@crapouillou.net>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	"H . Nikolaus Schaller" <hns@goldelico.com>, linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: i2c: ingenic,i2c: Add the X1600
+Message-ID: <at8jCGfp9dKjieoo@zenone.zhora.eu>
+References: <20261024212520.91401-1-olivier@mgcrea.io>
+ <20261024212520.91401-3-olivier@mgcrea.io>
+ <33b5ee36-e293-4356-9906-54e99ba3557e@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -51,62 +61,38 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33b5ee36-e293-4356-9906-54e99ba3557e@kernel.org>
 
-Hi Olivier,
+Hi,
 
-Le lundi 26 octobre 2026 =C3=A0 09:33 +0100, Olivier Louvignes a =C3=A9crit=
-=C2=A0:
-> jz4740_mmc_remove() masks every interrupt and resets the controller
-> before mmc_remove_host(), which removes the card and lets the card's
-> driver send its last commands. Those commands then run on a controller
-> that was just reset, and can wait out the driver's 5 s request timeout.
->=20
-> With an SDIO card that cost 5 s on every unbind: on a HiBy R1 (Ingenic
-> X1600, a BCM43430A1 driven by brcmfmac), the CMD52 that
-> sdio_release_irq() sends from brcmfmac's remove waited 5.1 s. The
-> command had finished (END_CMD_RES set in MSC_STAT), but MSC_IMASK read
-> 0xffffffff although the request had unmasked END_CMD_RES. MSC_STAT can
-> still show IS_RESETTING after jz4740_mmc_reset() returns, so the reset
-> most likely completed after that write and undid it.
->=20
-> Remove the host first, then quiesce the controller, as other host
-> drivers do. On the R1, unbinding the Wi-Fi's MSC now takes 0.65 s.
->=20
-> Fixes: 61bfbdb85687 ("MMC: Add support for the controller on JZ4740 SoCs.=
-")
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+On Mon, Oct 26, 2026 at 09:06:43AM +0100, Krzysztof Kozlowski wrote:
+> On 24/10/2026 23:25, Olivier Louvignes wrote:
+> > The X1600's I2C controller has the X1000's registers, so it falls back
+> > to ingenic,x1000-i2c.
+> > 
+> > Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> 
+> Why changing order of patches? Previous was correct one.
+> 
+> 
+> Please organize the patch documenting the compatible (DT bindings)
+> before the patch using that compatible.
+> See also:
+> https://elixir.bootlin.com/linux/v6.14-rc6/source/Documentation/devicetree/bindings/submitting-patches.rst#L46
 
-If you have a Fixes: tag, you need to Cc the stable@vger.kernel.org list.
+I can swap the patches before applying if they are OK. Next time,
+please, follow Krzysztof's instructions.
 
-Cheers,
--Paul
+I'll wait for Nikolaus ack/r-b for applying the patches.
 
-> ---
-> =C2=A0drivers/mmc/host/jz4740_mmc.c | 5 +++--
-> =C2=A01 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.=
-c
-> index 6a3c26b7c82d..923cf1450de5 100644
-> --- a/drivers/mmc/host/jz4740_mmc.c
-> +++ b/drivers/mmc/host/jz4740_mmc.c
-> @@ -1151,12 +1151,13 @@ static void jz4740_mmc_remove(struct platform_dev=
-ice
-> *pdev)
-> =C2=A0{
-> =C2=A0	struct jz4740_mmc_host *host =3D platform_get_drvdata(pdev);
-> =C2=A0
-> +	/* The card's driver may still send commands as it goes */
-> +	mmc_remove_host(host->mmc);
-> +
-> =C2=A0	timer_delete_sync(&host->timeout_timer);
-> =C2=A0	jz4740_mmc_set_irq_enabled(host, 0xff, false);
-> =C2=A0	jz4740_mmc_reset(host);
-> =C2=A0
-> -	mmc_remove_host(host->mmc);
-> -
-> =C2=A0	free_irq(host->irq, host);
-> =C2=A0
-> =C2=A0	if (host->use_dma)
->=20
-> base-commit: fd9af27f6c2319713bb23832066585f8a59a1771
+Thanks,
+Andi
+
+> With this fixed:
+> 
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> 
+> Best regards,
+> Krzysztof

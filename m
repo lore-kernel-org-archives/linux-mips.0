@@ -1,95 +1,92 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=35.89.44.33
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793048745;
-	b=M2uioRzQ0DrNS4lHX29s8jgRl4JUANy6l97kYjDi03BHz6ynM670i+gV7S9U2qx8C+bd
-	 InugFZ5fdw2HP80m0MBrqJN4XZ9dIjbR6cxmVyHKGkh7htKE6WWxLppddWAJ1UkqkqhFA
-	 pHg6tsriXplDSHKVa5XFoX8UU2XXuTx3zW75Sk+WG9xikVy9BtQ+DcscYL7ani8Kft8qb
-	 Vq8sf1gakgehwnzL67Dy0xsA5PxT5iQlSwEy1PPEBpZsre6rXYZ/Krj5ipGnhLX2wyH67
-	 jPBWjsSJM3kKU7IR48N7TbFYWXH/ogBJtBy5HThNeCpbqJ6OhF/u21Mma4ZiJ1LsTfw==
+	t=1793052478;
+	b=uCOYC1OHZbaIi359j5msnvstCOn2a3mhXYbQq0B57EbDmBW8uDA4Q/xeOa+xVkSLXO0b
+	 r67naJH70k/DXYZxw1cSmYRYfhrCJEQpBNJZS0PJld5sWS7t6Yuyy3dVqTZzZcapdBEa6
+	 lfnAtz8ONPVHRueSUm4FDWzQnB0kSpN/8Vs13EiTMTFxiUx+zOL4dRJtc735LXMsFxg4a
+	 psL90foeJvJx3fCw5oS0HQfI9zT6eKJgccCIHVOJi0I2Ic2QaIfMicHxsoielthjcFLSG
+	 PANaXKhMx8X9M41C5waDynQmxlCBzzQpXtuMk6W5lZxHV7ZLCG1JXB++ie8G84a7aPQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793048745;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
-	b=CeOdvCfbXocF+p58pxwCpUZtcq4HqbdtdPOY/0xaxweNob8sWPs26VAjCFAvFX1bwN/5
-	 e00wn0xUZy9754/paE58GP0jo5yL51y4NL4lWX+2Z8KKBzwu9CGPvMHR/+Bb7zamKHVnz
-	 Vbsc6k2IfEOH+lVi7ILnt8coA2k1SHyrM8V6gqMxw0p+lU+nXLv+4+H5RxkRv6S3wLgSa
-	 J1WBEUF6iWY31GMsaOx96BY82+KGlYMQacD7gvNzPeitGPm/CLD9ZvmQ6+4M+/YL4Qmdl
-	 Us5jLdvLqDPs/X8s73OFZ+XrQBgpjO7Ry+3Kk6dBTTdY+DC/oh4XbZLSzZblq4QjhGA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793052478;
+	h=DMARC-Filter:Received:Received:X-Authority-Analysis:DKIM-Signature:
+	 Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:X-AntiAbuse:X-AntiAbuse:
+	 X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:X-BWhitelist:X-Source-IP:
+	 X-Source-L:X-Exim-ID:X-Source:X-Source-Args:X-Source-Dir:
+	 X-Source-Sender:X-Source-Auth:X-Email-Count:X-Org:X-Source-Cap:
+	 X-Local-Domain:X-CMAE-Envelope;
+	bh=FTKggi0RacZ9ZRgKp/gx5uvsP4Zzh5sa3f9zHGmidIc=;
+	b=f35AsazlZnwCi8Mxw8LVuusvb2h9L7SyOzZ6W0hvyaJ/wgOMA9FvRkAKb3zu96JD0duC
+	 rOSWWgUlCfS6Q42EGLOA2DN4JBFjBvzE6e88OVU5B1ld4MoCVPbknUxwK3t6rdEWsSKI9
+	 fnMCxAqKSlEArDk8DTeLaLxft56smB8FJGwIFRW0Ri5MOkeThiukPVQLhspx7OnY0gi+5
+	 z0PjQwxkvCaB0IG8o35C+rCMjOTLk2TL4U6WzN4QkLhww7FbzzwxkXIolSRhg/hQ3hJJH
+	 sSLB9fDKZI8nLYq9UuSxIjUX9NP15ElQXgv/AsJCTAQYu/tYRIyKfroowve86hiuqlA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=mgcrea.io;
-	spf=pass smtp.mailfrom=mg-crea.com;
-	arc=none smtp.remote-ip=209.85.128.52
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=none header.from=roeck-us.net;
+	spf=fail smtp.mailfrom=roeck-us.net;
+	dkim=pass header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=MdY20Q+9;
+	arc=none smtp.remote-ip=35.89.44.33
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A76606A31E
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 21:05:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32A76606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4a140e7405dso35219205e9.3
-        for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 14:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20251104.gappssmtp.com; s=20251104; t=1793048743; x=1793653543; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
-        b=x/O1osm5M7zxTA9jZpysosF+ofFJypdYJ1I154osDWAjKnFrYbUbVVNIvJGGGKAcC2
-         In0OXi44NjS3dGcRnDU0whIn+6EZR/bQz0DDCiPpWnkBnrmwKu+yLlf2i765eSxk7t2+
-         IvNVOfNN/tpz7PoFpKap5Zk/YOyaSnEp2YjoSxsu5guic+vpAou1T5ajAGW2TqWBUW+5
-         OVp2DSxhu9xgSSBJB7r2mxQrM62IXSAf9i/dahZ0qh8bZ18Sj9L5FnA0JGltkWcSfEnj
-         Tl1/BvDhhVig8/XdIUgu3ceScuqAvT1KSRZtHBUSlq5/JzFG3p5V9adFW46sMwtBhNdY
-         bEEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793048743; x=1793653543;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=rD32K7ekISuMljF5aUzSzqVha+tq2S5F0ssjFpcpNiU=;
-        b=BskBT6VolX4XYCLsHmwCQy4qMOotPFGqXGJem+X63m9/P3uQqBim/GBXUVaWfgRYNX
-         QEFaGpRI5yA7IzD3bzqCb5y+BaQ2x+zEiZJ+eVBhuaK6l8kWfUcHqeCeYVs4ufAIBuPa
-         gi+OBTcDqZXhv/ZYKffwm3FBZ5x9FjJcfi/sprwQtEitnnRr/jC0pnlL7t7C5nnGl+CI
-         LgwZ7NdFq7Pt/kfusqii46CX3xhiQcMaxlap+nFu+p0ci6T55MEwm9wX0lDGTLr7RADw
-         4C9xLESBAX3/0WIAZcP3qqrpIyjWE++cunXNv3wK7b3IYiZi5evD/xslMO/ZcDZiyylL
-         EL/w==
-X-Forwarded-Encrypted: i=1; AKwUvByagAmEXOQeaKVEQvQpaiWqLtcmhf5clAlEB1wivLAy3qhQaoblCkACw71bf7POG3HxvynSvO7fo51I@vger.kernel.org
-X-Gm-Message-State: AFq9FYJgm876qFavOo75kv6DYDzWJqtpigpH8/HINYP6pEKjzaNb3kEK
-	vlSkU6MA9H28HIyGXwPi6WhALLAFxRLfP332sy4LIOHbLkdfnrYONQEAtchzfzFcPtM=
-X-Gm-Gg: AYBFou3RINNl8k82vOH7RVu4+oANpLzBWgc6NTGbhIYcEyvuq1oqd+HQGFx9A1zaHN8
-	sBEXGzF6WGQrrQEpxDYfAfE0bcuzAENAmKoCfhz7oPBLElgHbPNo/gnGFeSsjQonwKUomL0FzUK
-	6bDfy28ty9/SLFecquND5ZJMjPYKvCvnPVd5HKsPYTTLUr2y+yr8ayAs80+BR0q3bgcM/G1MVGA
-	KxDZDLjFpZ79vgCHmc6zrFnY0WYH14pfJb+3FO+x/P11NyAnJprlcS993HH5zHX7D7JB0Rm76Nz
-	zv7fpJWxWTm58OCN/2B54l02xWSG1RY0e172tZYYc2tmchQ1TqVXYdLBGMa7iyixW9Cr9HgfYaf
-	nbOoAoOAgXNgYLU9tH3p6dPZ8swYQidhHsPVzyJT1E5PDI79qUIOo/qENcfT3JpABAdLZTmbfcN
-	35XV20HjRC8CNKQz0HlnIupARvsVjXY4rizkjOSUdvnSu5HPubfUW6KjZdDTZtF9EQTZF2OuF8N
-	560A2dE+q6MUpjnKk22P3YjDRZ1jvgfhwxBjM55BKhcoyPEEMFNrG0tdHQm1aIH3LvwcWa9H9fX
-	tk/FgKVU5/m2
-X-Received: by 2002:a05:600c:3114:b0:49d:34:420d with SMTP id 5b1f17b1804b1-4a35acc7716mr138556935e9.20.1793048743445;
-        Mon, 26 Oct 2026 14:05:43 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:258e:715a:5648:ed59])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a359ff2189sm258646975e9.1.2026.10.26.14.05.42
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 26 Oct 2026 14:05:42 -0700 (PDT)
-From: Olivier Louvignes <olivier@mgcrea.io>
-To: Paul Cercueil <paul@crapouillou.net>,
-	Ulf Hansson <ulfh@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
-	Matt Fleming <matt@console-pimps.org>,
-	stable@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: jz4740: Remove the host before resetting the controller
-Date: Mon, 26 Oct 2026 22:04:27 +0100
-Message-ID: <20261026210427.14728-1-olivier@mgcrea.io>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <48976ce134e26877200e8e1ef8d3f5c66f4fdcf6.camel@crapouillou.net>
-References: <20261026083323.12301-1-olivier@mgcrea.io> <48976ce134e26877200e8e1ef8d3f5c66f4fdcf6.camel@crapouillou.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A95C606A31A
+	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 22:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1A95C606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=MdY20Q+9
+Received: from eig-obgw-5006b.ext.cloudfilter.net ([10.0.29.217])
+	by cmsmtp with ESMTPS
+	id LSk3xnkGoaC0ULSrFxZyo7; Mon, 26 Oct 2026 22:07:57 +0000
+Received: from 162-215-252-36.unifiedlayer.com ([208.91.199.152])
+	by cmsmtp with ESMTPS
+	id LSrFxpW3lVnUjLSrFx2k5e; Mon, 26 Oct 2026 22:07:57 +0000
+X-Authority-Analysis: v=2.4 cv=AMDybF65 c=1 sm=1 tr=0 ts=6adfcf3d
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=kj9zAlcOel0A:10 a=660iZSQnnn4A:10 a=M0FbrtG7MMAA:10 a=pGLkceISAAAA:8
+ a=V4Dx7h__d2wgc-tc1C8A:9 a=CjuIK1q_8ugA:10 a=KPbNTLLc3YvdawN95zVk:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+	:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+	:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=FTKggi0RacZ9ZRgKp/gx5uvsP4Zzh5sa3f9zHGmidIc=; b=MdY20Q+9CL1J71KupKdI+SnPrO
+	SzurKl9K7p6xIIb2j8tDVeeMTLPjlzg9ZHcHj3YZD14A2BAaOidqgGpFHZN4IlCaox9NgtRhTLEz5
+	QAS5NQyAKWxPB2wiKQwm7JITkbU8yJ3UWWwk7J6Idro4ZBxxNHKWHnATJHQI3WStxNDlTZ/P9yBiU
+	gmH3UWPtZg2j59RUNXxSdI38O2RWW6aWyod/tle6r0rlIq5tmOpHHYHcmW9NmhjxjtTJYadCS9PLl
+	zRF46coEz/A1QguHCgBafIl3RmjYbmLljJ85WYXuRfwgOcn/AF1zVnlSj8t1vmEnHuBw6yAkQDRl0
+	4Rpnq8CQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:48554 helo=server.roeck-us.net)
+	by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.100.1)
+	(envelope-from <linux@roeck-us.net>)
+	id 1xLSrE-00000003s0a-248u;
+	Tue, 27 Oct 2026 03:37:56 +0530
+Date: Mon, 26 Oct 2026 15:07:55 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
+	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mingyu Wang <25181214217@stu.xidian.edu.cn>,
+	Robert Marko <robert.marko@sartura.hr>,
+	"open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, manuel.lauss@gmail.com
+Subject: Re: [PATCH 4/5] MIPS: Alchemy: Use the GPIO watchdog driver on MTX-1
+Message-ID: <25597f7a-2972-44bc-aec5-76e81519af31@roeck-us.net>
+References: <20261016221617.2223004-1-f.fainelli@gmail.com>
+ <20261016221617.2223004-5-f.fainelli@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -99,17 +96,50 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261016221617.2223004-5-f.fainelli@gmail.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1xLSrE-00000003s0a-248u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (server.roeck-us.net) [108.223.40.66]:48554
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 42
+X-Org: HG=direseller_whb_net_legacy;ORG=directi;
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfJyJUvFkDtJSKI6PY8VJydNV9f/MN16fvfSlJLwaeoDUEOR5jo9uPW+5SFbqHoOCG9H65beXTeYoozYt8GQjiC6n+dQHKzQRVdmFDzeAIvG0TM0r4Mgw
+ JD91xu0YvWIYZ40qnRfTGC+CKzlUc+9O0UIZpGZbNAsuR5iyTM43mIqjz/BSb3zcPEc+t9L3T4IYSwUwTR20/ugyeG08+URWU4xc3ORh7NGAsDubG5hFv196
 
-Hi Paul,
+On Fri, Oct 16, 2026 at 03:16:16PM -0700, Florian Fainelli wrote:
+> The MTX-1 watchdog is serviced by toggling GPIO 215. Describe its toggle
+> algorithm and 1.6-second minimum interval through the existing software
+> node properties, and register gpio-wdt instead of mtx1-wdt.
+> 
+> The nominal 100-second circuit reset the test board about 82 seconds after
+> starting an unclean-close test over the serial console. Allow for circuit
+> tolerance and console transmission time with a conservative 70-second
+> hardware service margin. Keep a 100-second initial userspace timeout and
+> let the core schedule keepalives for the longer userspace timeout.
+> 
+> Mark the watchdog always-running so the core services it before userspace
+> opens the device and after a clean stop, without trying to disable the
+> hardware by tristating the GPIO. Enable GPIO_WATCHDOG in the MTX-1
+> defconfig.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Right, my miss, adding stable now.
-
-Ulf, could you add
-
-Cc: stable@vger.kernel.org
-
-when applying? Or I can send a v2 with it after -rc1 if you prefer,
+Applied.
 
 Thanks,
-Olivier
+Guenter

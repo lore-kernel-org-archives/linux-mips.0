@@ -1,51 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793022416;
-	b=vf9gTKh5IaQHAjxdijxBS4m29Gb1oAtAW5mqU7ptG8RASmNUPMDnZaipjo9VWA/7QlUw
-	 ETDpaprhgWEPVwUdi8OAxRoVsLpmEPmaKWUo+ueia6J40mdw4HqnnnCMms4uCMO2GrX3o
-	 SahH9dB37ipd3uZcmFCedYtthl1YYUaIkRF6hAC5nudOR3SWvydPMfoXKk2SI1484MWZY
-	 aqD0KPwts1NVAY+2gVCNV5cX+maOUmKTY8bEND+tqCLGLqlZQYe5dREHAY5zVUyzGPahN
-	 vMeZS8LMOrAdJfqFM5ZvsvsjEzAjBcGsvX5SH0FWuAc+rBazHPWEltfjclB8tq5irrw==
+	t=1793022418;
+	b=P5z9/RwJym7ff5tB1Qi+BGso5Hm09Dhr9pKFEp8NFovLRrZ1Nn4kREQwloTPR+YmHfqW
+	 pypp2nowbAkCQ5ejh6kPumCNO4euJFYQ3wm/W5JJpRIxZlFv+TPHdVKg0/CwJoRScP3Yy
+	 lbYM/vKN5C0UxJwlL2egR2QSqldLLjBQyZpez0lOR3xr9cvGXhlzRdBhUjTlXXbt7N0bz
+	 rEj3D9bHCPWb2DBK8lLsfU4gOLcGriFZxeYNp6li+nW7IGo4rp9CMUf5BSfl9eZlM/Ncr
+	 H3/dTW8n9hPow82HfBBfg13VO6hcmPKticdnY37jNrOXJUZrj2TKVI6MWAklwfOApbw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793022416;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793022418;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=bmwv4gigpUDMy3A8o+L3RtROVo0l7agY1BTDAkgMEEY=;
-	b=nx6LaKex5IcFj/Z47De1cRBU9jmi1cIKpqHYpUtw7CztAU4LX2Y6XJFGLtpjiAJcIWeO
-	 UdKNq0uKkvW/n563S/kufSdV7XVeu59RNefYvcYB4sk09SXOu1sKwOkahHq0SSw9SF3Jm
-	 kzAcU/URXlxQUu0Obw43Bck4qbXYO2KI5usXeIVP7IuUbnvICw60EGXSf0NvmuHGfkvCz
-	 +pbTHBNNfTDD1X/CgzRjoGMOx0hHZb26/8IG3sUnJgJcGIjhgHttokRxHVlRSyZJyqmN9
-	 FdmNM3HvuAjriFs60C8DboZXreG1C3p9Nob+sEkkHMyjylOoWSiFMAWxtBEE9Ez8Syg==
+	bh=XAQesoN4INxI95pV89i5nL2OkEzTPFK57+fNoMpVjaM=;
+	b=E2ljdtReM/6snVtf8evrfkQrLP/JWV2XpPPCHyHwGpvqfcmXBl4GW+Ye/rDUTPaJLJnh
+	 dHfvmDgbqLOHEHVZhX/bFO2z3Z7rwo1PlgdJGWL0PoEJB5SJwhzmDBta8eXDWA7h9CsP7
+	 cfGatkL1shwa2CKie6mZv88cOZPTgWyV+BOmBcET2UdY60TbAXv1XdtbzwuqpjD3sDJrt
+	 rAb9SZ7Ljvz2Z8KMismRz5lPKMYVe/1IDJf8pj1HhDEyhumEsMl8eZZbYLlPkR+PwUMm3
+	 87O1tV45jCaa0XIOvKvFZS7kGLVcajCRP4WnNz4L9atnMK6Se0XfDriv1aaJqOQ37+A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fpTYI5fU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JupDmn0O;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6DD606A331;
-	Mon, 26 Oct 2026 13:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB9C60A2601;
+	Mon, 26 Oct 2026 13:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fpTYI5fU
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D28801F01828;
-	Mon, 26 Oct 2026 13:46:54 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JupDmn0O
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498591F01825;
+	Mon, 26 Oct 2026 13:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793022415;
-	bh=bmwv4gigpUDMy3A8o+L3RtROVo0l7agY1BTDAkgMEEY=;
+	s=k20260515; t=1793022417;
+	bh=XAQesoN4INxI95pV89i5nL2OkEzTPFK57+fNoMpVjaM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fpTYI5fUOxcG3qLGrT9NaJrGTo4p0A/4zQdzG3WwvCOVpK6N/BYXNR7A4ehtt+Ygi
-	 1senAsUBe0gvf3ryOg8hBxd7S/ydVrbWikRj2ugfTDNIKwS4JYpI8uxf2YcF1Yhkc3
-	 0NVnUc65OW4teWxmC63QLmn9G/CcNpb6qXAB87R9sCbzz4VBXmZ3sT9t5ArtXEYm0T
-	 eRvI5ZWXaVvBsIOOcTrevOo+wJyKJT5hYf5awxAOkyN+yATkZbQw22x+H1/fDJmy8P
-	 k+UBrhz4rjavRV7B6rxwcg7gaM9TjYR/7maP4smGAZdVlysv6b8PGKJ1/LP0zD167/
-	 7Sv8YQIta6l0Q==
+	b=JupDmn0OPG+eCQNMx/JvKZaDnFKkC2MySeoTmc1YptnR8pBmmSzE77MPjLW977x7h
+	 UL9RI6AeSC8EkyBrPGE8QHzK7ggKejEcRD3EzIYudHQAeXvwUs5W0TmQ4/bv5l8wv5
+	 nqhlbjHwWqM69lPzVoLPNbH7SXG/GnlnxvPlrFhK5qzajfSUsT57kNQOlggwHmEFFB
+	 d5H1evMdyj689DohX8NurOnxWmGtr2JB40qpMgAPlfphSs9qvpMzKNxDhKOqfsdf66
+	 jI5B67jEZHgwdeFpk53xLV6NA7vfHV2F6JkD7PTLHn12ooV5WNRinyXZ1141KsVJCN
+	 rdK91Fv3lIxbg==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] MIPS: lib/uncached: fix run_uncached()'s stack switch
-Date: Mon, 26 Oct 2026 14:45:39 +0100
-Message-ID: <20261026134543.27207-2-kaloz@kernel.org>
+Subject: [PATCH 2/5] MIPS: sgi-ip22: Add prototype for ip22_eisa_init() to header
+Date: Mon, 26 Oct 2026 14:45:40 +0100
+Message-ID: <20261026134543.27207-3-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261026134543.27207-1-kaloz@kernel.org>
 References: <20261026134543.27207-1-kaloz@kernel.org>
@@ -60,37 +60,40 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-run_uncached() derives the uncached stack pointer for FUNC from $sp and
-then spills $16 and $31 into a frame of its own. The compiler may read
-$sp before the prologue that allocates that frame, in which case FUNC's
-stack starts at the caller's sp and its frame overlaps the saved
-registers.
+This fixes the following build warning with CONFIG_EISA=y:
 
-Move the uncached stack pointer down by the two spilled registers.
+arch/mips/sgi-ip22/ip22-eisa.c:95:12: warning: no previous prototype for 'ip22_eisa_init' [-Wmissing-prototypes]
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/lib/uncached.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/mips/include/asm/sgi/ip22.h | 1 +
+ arch/mips/sgi-ip22/ip22-int.c    | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
-index f80a67c092b6..acfc489698f0 100644
---- a/arch/mips/lib/uncached.c
-+++ b/arch/mips/lib/uncached.c
-@@ -56,6 +56,13 @@ unsigned long run_uncached(void *func)
- 		BUG();
- 		usp = sp;
- 	}
-+
-+	/*
-+	 * "sp" may have been read before the prologue allocated the slots
-+	 * for $16 and $31 spilled below; keep FUNC's stack clear of them.
-+	 */
-+	usp -= 2 * sizeof(long);
-+
- 	if (lfunc >= (long)CKSEG0 && lfunc < (long)CKSEG2)
- 		ufunc = CKSEG1ADDR(lfunc);
- #ifdef CONFIG_64BIT
+diff --git a/arch/mips/include/asm/sgi/ip22.h b/arch/mips/include/asm/sgi/ip22.h
+index 57942afb5c86..4bb2e2d38927 100644
+--- a/arch/mips/include/asm/sgi/ip22.h
++++ b/arch/mips/include/asm/sgi/ip22.h
+@@ -79,5 +79,6 @@ extern unsigned short ip22_nvram_read(int reg);
+ extern void ip22_be_interrupt(int irq);
+ extern void ip22_be_init(void) __init;
+ extern void indy_8254timer_irq(void);
++extern int ip22_eisa_init(void);
+ 
+ #endif
+diff --git a/arch/mips/sgi-ip22/ip22-int.c b/arch/mips/sgi-ip22/ip22-int.c
+index 11f8adc98cb5..89a3e8e8f0fd 100644
+--- a/arch/mips/sgi-ip22/ip22-int.c
++++ b/arch/mips/sgi-ip22/ip22-int.c
+@@ -30,8 +30,6 @@ static char lc1msk_to_irqnr[256];
+ static char lc2msk_to_irqnr[256];
+ static char lc3msk_to_irqnr[256];
+ 
+-extern int ip22_eisa_init(void);
+-
+ static void enable_local0_irq(struct irq_data *d)
+ {
+ 	/* don't allow mappable interrupt to be enabled from setup_irq,
 -- 
 2.47.3
 

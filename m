@@ -1,55 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.101
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793058838;
-	b=npggA9nOD9YuAvw1pH1q1L2p1jTYE9ymsG4lHbGI/bmLtCOx4zo6ljAY0WYNnQOFr9DJ
-	 PJxKGIhdNv69nO2mTQf0f2vucmp1WyrZ0m63fnlmos4dLKexwYIx9BUBRRB09Ath+Wx6X
-	 4OitkMO5KQtPNC2XcKp/E8nX6/1tZDiZLXAl4QVRQKeXCCOtldPitrl78euSkbdVee90+
-	 biooU/RryQ0RivW6HmIsKhDKlrRqObLqK8JTPr0Grw0DDOJWObahOrrvIjaAQLKXk5oFr
-	 jQTdWrTailvvvlfNqV1Ohy70zpW4LX2SDs2up/wobeJnBwe/rfOfRd7hAgtxSvDYZZA==
+	b=G6l2Ix/ylgP62uAUNE57I1K9Xw0i8LWF+Z8I0jTvXyDa31iUYfLR3VSi/eF2Y/uNIBBK
+	 TR5IIVHEUJrbiQz4TyFld0rO/4Lvn28CAWvtQFdMlozKgDwHlSDkvT8iNQI9lTy26VK9G
+	 gUk+PwaMmGO0V5crqulkCBd/AZpQuvHzGC7QO5Xb1dzxSmZEq/s2oDGYOiNe5+5r3Su+7
+	 QYkxFvO/Pdm9P6wGsh3x7V2yzqOHGf7+VOKeGMs+gn834CVF4XYAOyBJiAoj24BI7/vCt
+	 vsNjG5TJNJhmucmf/VyOHQbl80ytRAu/L6cCibQvE+maVV1WTUOYr+IEFI2PQWDrqeg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793058838;
-	h=DMARC-Filter:Received:DKIM-Signature:From:Subject:Date:Message-Id:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
-	 X-Change-ID:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=DbLagvg0jRmrztO9r4kvqZ5QLfCw4O2QtXbNUxwpg50=;
-	b=TSsJyeJ5pHGCS4Z+sspPQM6t5RLqJ/+DGYMzQPWwr5UWCgVqUenYCIijSXZlyBLH+nQ6
-	 xe9dtaUd74OAQCMRmw3G3gt5IXzX/v+8SSz2S/cw+R8XTRdbPTURPZP6EWapqPk8WMHR0
-	 6AEPq/McnEEDsbjUxk00QaTlXdOdT/CSVI0Bkgn1Yom2l5b9T6mqmgcJxEvVROW3ca+pi
-	 kt9y5KYslgPqn761XtzqUwRHyc++5wqCGkOO0B4qG5mao8KjJBsyAclRnTjRTsb/zVWDO
-	 b+0PpMGeEFNVNazo3OUe1I38HDfxgQwAy9KCZrMTouV0QqwArPl0oJ3zkuHSeaCfyOA==
+	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
+	bh=4XltKv9j08futEKwreOKMozha5nBa7yYaFGpBttg/Vk=;
+	b=JXp10J56dPx5DtPlG28YX2yfT/763QyF7LlFy3zfXCT/AaL46rHmhGKACgRmkshPv9TQ
+	 MXjpNU7opqT9xE1ZOZGxjaeZq87+UqfX6y3KpERDZcBIUqRV5GBterDzmGTXll56U+gvs
+	 kStF/vDIILRc2krdhzWF7Cck+U92kkg3yvDTMVrLyx4u53azfhiE88NiARjdf/0HX8z+S
+	 YrUwUtuAPGXm5A3IqJnU/3+us88MhCEp19KlhTOdHun5VySL/BpunqdR6AJOR3jvzgyuJ
+	 wZUlLbVNjAyIT8wevwYeBRD5N7QfKhuhmKmvMkKLffgiGwKjHaKzHlawDsM+MC/3dwg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mythread.it;
 	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=R45Ekib9;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=MIPyDcE8;
 	arc=none smtp.remote-ip=62.149.156.101
 Received: from smtpcmd10101.aruba.it (smtpcmd10101.aruba.it [62.149.156.101])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CB0606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E48606A325
 	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 23:53:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 28CB0606A320
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 28E48606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=R45Ekib9
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=MIPyDcE8
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id LUVexsCYFW41bLUVgxjBdj; Tue, 27 Oct 2026 00:53:48 +0100
+	id LUVexsCYFW41bLUVgxjBdu; Tue, 27 Oct 2026 00:53:48 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793058828; bh=mWbqmlXCyS4JkdDtJqjhI9Ulp/HmHGa+a5cO3F0/UfA=;
-	h=From:Subject:Date:MIME-Version:Content-Type:To;
-	b=R45Ekib9IYcjD36qyxAD2FDRSkM2Rttok8c4AyZeAcx/QmMtKBt5Ud2BDddRqQRFv
-	 ffezA/u3qcd4EmWO6woaD62E9yq/dq5T2Hl4n4uLx2yG0nDIqjYKaV+cjh08ii9jQJ
-	 gsSgnxo/I89tIo+svJRVmq/jXutucMCSaaGz6svg5XtveWdb+KvOTbhO+34L8VKZqk
-	 saxPVoxJqUiJ5nqPOBU4++mPtFyeH+c9+cq1zKXvXGHXrIjEKXTuYNbOvxwFsZn90O
-	 M2+qqfiK3vVME9r0Ku5VO7RdWGxtqFnAthWxv94XtKRRqCOM8Pfpj6dqWVAB5ryrXl
-	 3L66XKx5z26fA==
+	t=1793058828; bh=vKCGoYZkyy2tX3DnxdaTcewcIzz4/PetZAI2mHkxFSg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:To;
+	b=MIPyDcE8rAf3M7DB81P3TrVyQXXjJErzL3cxcyR8d7Yx4khx+aroxfc/yY4TlrOoQ
+	 GJ1OwAkEjeSyqBxedsjlJnmKt6bzftJTU7jvAH+V+zoja+REnrn8Oho5SHb3ATbfu+
+	 vLYBVk4GNE5N7nPCO1+SENl+IXf78odYwGIbVk9Dc35FnRyFdU1fnrc5/4ih9DqHna
+	 UWZBLVWs0xBpjLNQ9gtgD2M6X7xnS5DJUJ6YT9pcdrr9g0tIzU3/9nwjBRYaG5JOkv
+	 sSW1WKg+YIiijOn6c3oBgQe47UN9UZqqYhSM639cfPQsLaIjy117y9NQWnWBLMS9R5
+	 cOcvfpn1kXH8w==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Subject: [PATCH wireless-next v2 0/8] bcma-ac-rev1: support 4352/4360 rev3
- chips
-Date: Tue, 27 Oct 2026 00:53:43 +0100
-Message-Id: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
+Date: Tue, 27 Oct 2026 00:53:44 +0100
+Subject: [PATCH wireless-next v2 1/8] bcma: core: clear only FORCEHT for
+ BCMA_CLKMODE_DYNAMIC
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,12 +59,10 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAAfo32oC/22NQQ6CMBBFr0JmbU1bEakr72FclHaQMQKmUxFCu
- LsFtyaz+Zn/3p+BMRAynLMZAg7E1Hcp6F0GrrHdHQX5lEFLXSipclG51grrRCor4W1pcpXrk5E
- 1JOQVsKZx013hQwGfyCw6HCPcfm9+Vw90cVWuQEMc+zBt84PasP9L6aSoClmiMf5QH4tLO8Umo
- PV7SvJlWb56GzVvywAAAA==
-X-Change-ID: 20261014-bcma-ac-rev1-da894142790f
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261027-bcma-ac-rev1-v2-1-b69b61c31920@mythread.it>
+References: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
+In-Reply-To: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
  Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
 Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -76,57 +73,28 @@ X-CMAE-Envelope: MS4xfOP1m5cBT0mHWlN8umXGisWkEp9/jgvHoBa7uIoBF1B+yIlT9XDT3/9JKUG
  CIvo3Xe+Le3oqi9DSL7CPINhRx1MqkcWj7UDIcujgNSpLFRRcVMQl/WYV7GSh4HjuTgiac/6gG8REsrmiZ/WVI0SqUsSUfvlzcxQejDKye4m2ym+jy7uD90k
  3MmkKopY7n1KVxz9wmyunHSTEkQEHgTtxq1IOrTABKqY4GjpJW4=
 
-Preparatory work in the bring up of AC family rev1 chips, in particular,
-the bcm4352 rev3 and bcm4360 rev3. I don't own nor I can find any mmio 
-captures for other revs, so everything is gated on rev3 of the two chips
- except for the CORECTL_ASYNCGPIO taht is gated on cc rev >= 21.
-
-Initialize the PMU, the PCIe2 core and chipcommon of the BCM4352/BCM4360
-family on chip rev 3, parse SPROM revision 11, read the NVRAM variables
-the family's boards set on top of the SPROM, and bind bcma-pci-bridge to
-the BCM4352.
+Clear FORCEHT with bcma_mask32() and leave the other CLKCTLST bits as
+they are.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
-Changes in v2:
-- gated chipcommon behaviour on its own revision instead of chip rev as
-  pointed out by Vitaly
-- Link to v1: https://patch.msgid.link/20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it
+ drivers/bcma/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-To: Rafał Miłecki <zajec5@gmail.com>
-To: Michael Buesch <m@bues.ch>
-Cc: linux-wireless@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
+diff --git a/drivers/bcma/core.c b/drivers/bcma/core.c
+index 37a5ffe67..f4246689e 100644
+--- a/drivers/bcma/core.c
++++ b/drivers/bcma/core.c
+@@ -100,7 +100,7 @@ void bcma_core_set_clockmode(struct bcma_device *core,
+ 			bcma_err(core->bus, "HT force timeout\n");
+ 		break;
+ 	case BCMA_CLKMODE_DYNAMIC:
+-		bcma_set32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
++		bcma_mask32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
+ 		break;
+ 	}
+ }
 
----
-Alessio Ferri (8):
-      bcma: core: clear only FORCEHT for BCMA_CLKMODE_DYNAMIC
-      bcma: pmu: init PLL and resources on BCM4352/BCM4360
-      bcma: pcie2: request HT on BCM4352/BCM4360
-      bcma: chipcommon: enable asynchronous GPIO interrupts
-      bcma: extract SPROM revision 11
-      firmware: bcm47xx_sprom: read ledbh4..ledbh15 from NVRAM
-      firmware: bcm47xx_sprom: read boardflags3 and AvVmid_c0..2 from NVRAM
-      bcma: add the BCM4352 PCI ID
-
- drivers/bcma/core.c                         |   2 +-
- drivers/bcma/driver_chipcommon.c            |   3 +
- drivers/bcma/driver_chipcommon_pmu.c        |  41 ++++++
- drivers/bcma/driver_pcie2.c                 |   3 +
- drivers/bcma/host_pci.c                     |   1 +
- drivers/bcma/sprom.c                        | 204 +++++++++++++++++++++++++++-
- drivers/firmware/broadcom/bcm47xx_sprom.c   | 118 +++++++++++++---
- include/linux/bcm47xx_sprom.h               |  15 ++
- include/linux/bcma/bcma_driver_chipcommon.h |   5 +
- include/linux/ssb/ssb.h                     |  62 +++++++++
- include/linux/ssb/ssb_regs.h                |  94 +++++++++++++
- 11 files changed, 524 insertions(+), 24 deletions(-)
----
-base-commit: 0fcb05b72344f40806cbe810de8872f1698bf053
-change-id: 20261014-bcma-ac-rev1-da894142790f
-
-Best regards,
---  
-Alessio Ferri <alessio.ferri@mythread.it>
+-- 
+2.34.1
 

@@ -1,65 +1,65 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.133.124
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793013556;
-	b=CPPlERo0+dYAUQEMM3bPEe2phqzfzI05hzMFHaCYaW7HJIvcoMvvRvxp8tVxnhbADpLX
-	 m0zblWrgm+tJPHt5fCurCKhcME1fiR+ELp7sCwovp1qFvXYV+MJ/l43XiFGSfOTLuGQaf
-	 1qLYtSA6ElujxOGe9+k7sZsqK15xgq5vxKQKIUrSeoHC5sAfYJ8SAeyZgGfEwmmxOX7yS
-	 l4AIxAh9hpk0ocBeOvTN54pOH4EGNmgQaDrAmy1xKo3mDykS3o6bfeutc/xc37BuYYsBt
-	 x41P2WbvJ+Rx9cGPFsATxCDtiE33iTaCqqv7UkePQ45TsxaPx5IxVjVrDraAdYOqGZw==
+	t=1793013560;
+	b=1a5qvoZ1yIxy6Xdk58/HobtyD8uEzVilnAuCmdPrGJNN9xSZoZJI4rf0I5He883CMTel
+	 neZ/MSXaKpiuctfI4usB19yTW7kyzKa5VYqLbGEROS1BU9YQFGh3Dm08puaBz7R5ixPS8
+	 MAqH+jnI03ONtZ5huSMQXYdIOLeRkxzVO0RFg5/Ijjn7WkLKwLOaItlV4m4h6bbe00Ba7
+	 k4PaInVYvADJ31POxttDGYvdjZjqcOaitQ2s8HQNyRkeSSydDz30St/yuNpU4y8nCsqHH
+	 f0cXdhtj0IEPofHXGnSLIR9MYvF0i7KhZMnGnWutFyje4YNCR1soZnlVC6CmpcADTuQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793013556;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793013560;
 	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
 	 X-Mimecast-MFC-AGG-ID:Received:Received:From:To:Cc:Subject:Date:
 	 Message-ID:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding:X-Scanned-By;
-	bh=bM61ehpgyizAvovaUdB8zXiHVxWcqVnRNJf7TtcRJMI=;
-	b=2bc1ZtSDOOXQq/3wKgvGI8gndWT0BtCoMDHw3fxVoKakPMQVtPynQxUt0rMSmj7Sda7N
-	 K+8SyFj1eZKHSjfHoSEcbOT2gCBHBirtvNmuBrk5EFo0HSz13kjjvxx+emydD6FIr3YkB
-	 MFIPvG6SIBqIp1KNf081w4Oze/e8c1nNx37J6Nf5uHFRFvCvjUe0Tg4YSfJviCn9hUnpO
-	 WwAes5Hwn9tdJk+FnJPCa5JSxfWVfcj2b0DO4L0iK2EhLZJoy/yALqhlnPqwkWYBbsP6m
-	 yf0a2E/lFjNnWCP8kSpB4dQrqM6FrJmrN1zelwC+W7jHZkWxMikZljbnUT29TEGkcFQ==
+	bh=Jsb8n2PnG62q8kRquOJFB0kDepBKTWthhPmFyD+4b2I=;
+	b=ENR/AWt2ILc1R5vjcqeeYgTd2QdFFs5+83EURpMapfj4XQC+NMaj3MHBfFb/vgOmFYND
+	 u+4lraxJFxE/0pjnRnAh4t+5wUe4rytC89rol9hTNWf5BDbD+0CvaOcSc865VV2o7Uf6h
+	 dqOSwVX1LrpPI7IDcka8/pxvgDFsBBKY3b+ygGl3I1OeVafVERGbaeT5ijgPPphVl3/nZ
+	 086ihO2alNSAawqmxLMi4AKM2N+HtePI9q38cLpN9ZAbBKbyu+xehFfe+9qflonYMfDGP
+	 r+JLIpsI04s1NKxseqtsxIxqvVgCI5sWCOEzjNZSKEJuAVPZ1l+iOpl7RJnSUE56X1A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=redhat.com;
 	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=c3RAloDM;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=JyZoyzrJ;
 	arc=none smtp.remote-ip=170.10.133.124
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70709606A33B
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 11:19:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 70709606A33B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30022606A323
+	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 11:19:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 30022606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=c3RAloDM
+	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=JyZoyzrJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1793013555;
+	s=mimecast20190719; t=1793013559;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bM61ehpgyizAvovaUdB8zXiHVxWcqVnRNJf7TtcRJMI=;
-	b=c3RAloDMEcq72mi5KfpJ20vTP84yXvP4zedSsZvFi2ArA0jH+kTmwCF6cr5YgHm25ZeUwd
-	Ds2jInuTAvjaA4iYxhg1GcRw4yc8PHaS+8PUXgu76ByGX1gZWVGKxPxYPfCTMmkiFp/zOJ
-	cQL5JnRwUxUvrduD/xzf4c3CO9bCTHI=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=Jsb8n2PnG62q8kRquOJFB0kDepBKTWthhPmFyD+4b2I=;
+	b=JyZoyzrJoxcckkCRJBS/w8FzP7lJ/Jdp+o1gS5Qxh1sdupIYT9D229iO/reDLbwygZDnQx
+	tvHX/3as7WBV6RaJBV2tGut0JxZxayS0xH5HuG23rqJliDp67rab/CdTs4hSbFvcNq3VA+
+	ZFuQrmcxbc8Wnu8I3S85dSMpFF8RRJA=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-582-CumeemOmOJOuBM2QvMTNQw-1; Mon,
- 26 Oct 2026 07:19:10 -0400
-X-MC-Unique: CumeemOmOJOuBM2QvMTNQw-1
-X-Mimecast-MFC-AGG-ID: CumeemOmOJOuBM2QvMTNQw_1793013547
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-664-Bu33x-t4PUy_yTIIX_4dyA-1; Mon,
+ 26 Oct 2026 07:19:16 -0400
+X-MC-Unique: Bu33x-t4PUy_yTIIX_4dyA-1
+X-Mimecast-MFC-AGG-ID: Bu33x-t4PUy_yTIIX_4dyA_1793013553
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3E64C1956094;
-	Mon, 26 Oct 2026 11:19:07 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D97671800632;
+	Mon, 26 Oct 2026 11:19:12 +0000 (UTC)
 Received: from jmarchan-thinkpadx1carbongen9.tpbc.csb (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 44ADF1956087;
-	Mon, 26 Oct 2026 11:19:01 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9ABDE1956087;
+	Mon, 26 Oct 2026 11:19:07 +0000 (UTC)
 From: Jerome Marchand <jmarchan@redhat.com>
 To: Richard Henderson <richard.henderson@linaro.org>,
 	Matt Turner <mattst88@gmail.com>,
@@ -84,9 +84,9 @@ Cc: linux-alpha@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-arch@vger.kernel.org,
 	Jerome Marchand <jmarchan@redhat.com>
-Subject: [PATCH 6/7] asm-generic: Remove the unused non-atomic local_t functions
-Date: Mon, 26 Oct 2026 12:18:21 +0100
-Message-ID: <20261026111822.458404-7-jmarchan@redhat.com>
+Subject: [PATCH 7/7] asm-generic: Remove the unused non-atomic local64_t functions
+Date: Mon, 26 Oct 2026 12:18:22 +0100
+Message-ID: <20261026111822.458404-8-jmarchan@redhat.com>
 In-Reply-To: <20261026111822.458404-1-jmarchan@redhat.com>
 References: <20261026111822.458404-1-jmarchan@redhat.com>
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -108,29 +108,46 @@ fact that this function was utterly broken for so long, decades for
 some arches makes me thing that those functions have not been used for
 a long time, if ever.
 
-Anyway, they're not used now, so remove them.
+The local64_t non-atomic functions aren't used either, so remove
+them too.
 
 Signed-off-by: Jerome Marchand <jmarchan@redhat.com>
 ---
- include/asm-generic/local.h | 7 -------
- 1 file changed, 7 deletions(-)
+ include/asm-generic/local64.h | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/include/asm-generic/local.h b/include/asm-generic/local.h
-index 7f97018df66fe..4bb458b57d470 100644
---- a/include/asm-generic/local.h
-+++ b/include/asm-generic/local.h
-@@ -47,11 +47,4 @@ typedef struct
- #define local_add_unless(l, _a, u) atomic_long_add_unless((&(l)->a), (_a), (u))
- #define local_inc_not_zero(l) atomic_long_inc_not_zero(&(l)->a)
+diff --git a/include/asm-generic/local64.h b/include/asm-generic/local64.h
+index 14963a7a62538..b30ae05f42b95 100644
+--- a/include/asm-generic/local64.h
++++ b/include/asm-generic/local64.h
+@@ -56,13 +56,6 @@ static inline bool local64_try_cmpxchg(local64_t *l, s64 *old, s64 new)
+ #define local64_add_unless(l, _a, u) local_add_unless((&(l)->a), (_a), (u))
+ #define local64_inc_not_zero(l)	local_inc_not_zero(&(l)->a)
  
 -/* Non-atomic variants, ie. preemption disabled and won't be touched
 - * in interrupt, etc.  Some archs can optimize this case well. */
--#define __local_inc(l)		local_set((l), local_read(l) + 1)
--#define __local_dec(l)		local_set((l), local_read(l) - 1)
--#define __local_add(i,l)	local_set((l), local_read(l) + (i))
--#define __local_sub(i,l)	local_set((l), local_read(l) - (i))
+-#define __local64_inc(l)	local64_set((l), local64_read(l) + 1)
+-#define __local64_dec(l)	local64_set((l), local64_read(l) - 1)
+-#define __local64_add(i,l)	local64_set((l), local64_read(l) + (i))
+-#define __local64_sub(i,l)	local64_set((l), local64_read(l) - (i))
 -
- #endif /* _ASM_GENERIC_LOCAL_H */
+ #else /* BITS_PER_LONG != 64 */
+ 
+ #include <linux/atomic.h>
+@@ -95,13 +88,6 @@ typedef struct {
+ #define local64_add_unless(l, _a, u) atomic64_add_unless((&(l)->a), (_a), (u))
+ #define local64_inc_not_zero(l)	atomic64_inc_not_zero(&(l)->a)
+ 
+-/* Non-atomic variants, ie. preemption disabled and won't be touched
+- * in interrupt, etc.  Some archs can optimize this case well. */
+-#define __local64_inc(l)	local64_set((l), local64_read(l) + 1)
+-#define __local64_dec(l)	local64_set((l), local64_read(l) - 1)
+-#define __local64_add(i,l)	local64_set((l), local64_read(l) + (i))
+-#define __local64_sub(i,l)	local64_set((l), local64_read(l) - (i))
+-
+ #endif /* BITS_PER_LONG != 64 */
+ 
+ #endif /* _ASM_GENERIC_LOCAL64_H */
 -- 
 2.56.0
 

@@ -1,51 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793022419;
-	b=ZFvNe9aait9xMroE9IdXbqwlwNYrapWwP8/pLJfcKYnjcSZ6ardVTeyatq2e5Vyvu0hp
-	 4gFNk6TrbuNLjyj0dAbVziho79T4yLyaB9OOAUXdUVYh9ICSMa1Kviw1hh4GlsmrxvPXp
-	 4En8is/m95kAT3gWgVLOn6Bbro2+1Wp5+oFkJOXWRox3R+NOnHo8UpVPTC0OuyJaVj+N4
-	 mR4I741jAqmvCPmhhgcos0RYsL1PE+LKw9nkXp1bRYrzBbRyWVLMO5I1YyJSlnoEFzxnh
-	 N/kmcA0CXdk7JT3q6Sfbynl8bigPsZla54qG+rTUt+y7e1H1FiWMkOY0/1Dgngl8M7Q==
+	t=1793022420;
+	b=KRZD+LfTG+j4ygR3cgEUEc3csBxV2se0U5ge1b2/r+gGaa7U/BHstb1SDoLHgKUimn4y
+	 Jalv+ubA9srLc6Q3DVdcGgWUdp21aCnASH7ulYYYAlTYzFiXiDTHOvzhXGpPXwgDBrmth
+	 sHJ/SLuR6PZqLe8ULIxyXRJXIf3i0XAiRn+FHPKlpxp/qVgt/O+LclHgRioEb4kOn16pk
+	 lxalZtDppTzEJ9b9XH9EkrCbYILVXgz4D2nMPmNXjeNjt4ZKzN+y8i/sPKqNdnC94qvQ1
+	 w/Ev7o4VYzlHQ5X9okzh1FTer1StlmWDnNniuc3fScbiJhAdfAkkXOVtWyZkYUCzrAQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793022419;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793022420;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=4OY4UAG9ASV3OQ5AZrh10V28dLujQ0WVUwV2HJB+390=;
-	b=tpAf6gv6HFpku8EnlVeh81KDsRASEK4x+ZoOHN2AvxSagMEmWoBDUjm9nJcWtpQaiGBy
-	 NpYTOfwL4qFypZM2joFCElfvl67F2CYgQDLNUUBliMO8p0t0AHTvII3AnN3YtcryukuO5
-	 IVvR33n8+HgdpQbaKULJKXV6qMd6ohz7gVAorVGK8kMEn75NYmKJxCJ/xR7ijS0+5Xc/l
-	 LmH0lifXOLx5xzK3vecjZvKWr48htwNRtulKP/A5HrLlray3+CcVvW2Xc3G1wLwb3ggii
-	 VOIoFouIaITielEElObcGvVy06+HXLZXd7n5E3yN8+6HKSAJfvKb2yr1qhTEqt+dkcg==
+	bh=xtpNtxxzwczsdqYoEJnlowfF1SSH9QOn2RGAY4lCzBk=;
+	b=HlvXfjVet3kTPu4BVugYe32DZ9pTKgj45kmPOEgI/4XS9ZkH+VIMC13ehBga5TF/hLwH
+	 W3cNJF47h0QCMLacw87YaCqMhNQ1Xr3Kze88z4vENyTmIYGcphH3Fmp/HPZdd+jhH4YeN
+	 ZO74OAFV3IwzdqMztgzQCgh7l4TdmfY5EB02LNVfqmhWo/5bl5DEDDthJ7GLiqcE8JiXf
+	 ejo5najYpa5IKyZcaBRpJAHfbBFWNpvGc2x3SHGYeG4/oFpvEM7Z2AZFaIK0RasLUH5US
+	 8IDaeNPkqHwNVt7WhE4yU6RwKMzB/2tyxlBiCbsSC/+aysNsFoOr9/iDJ81Rb4nNyrg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dhfRVqML;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KLWZhnlB;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B30860A260E;
-	Mon, 26 Oct 2026 13:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937F760A2625;
+	Mon, 26 Oct 2026 13:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dhfRVqML
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC3E61F01828;
-	Mon, 26 Oct 2026 13:46:57 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KLWZhnlB
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533421F031E1;
+	Mon, 26 Oct 2026 13:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793022418;
-	bh=4OY4UAG9ASV3OQ5AZrh10V28dLujQ0WVUwV2HJB+390=;
+	s=k20260515; t=1793022420;
+	bh=xtpNtxxzwczsdqYoEJnlowfF1SSH9QOn2RGAY4lCzBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=dhfRVqML6gFayeVk+XYSydXMsz3pBOlM6JTf6whSJ6cSdRnxiAEnODktmNVn+hiFh
-	 GkZYxeYXdhSQKTAN0Q8OborRKkjjsAKISrKqg/Zsij01NIwydlLhJeLcuqutegbzY5
-	 ciVKSv0OErAjp6Z/YCKQJKeI2OGXA/Kv+qocUvY7X/AaUGhdjfpL4a2YW4C+TFuQbC
-	 a+XXEZJSCXEr3BBfMxhL8pjPEa6xGDjsLnbbt5QjzeStCCD2GYnM6oE3XMaom15FQH
-	 zapr8abF/qB23/DlB24wbK7BTBIIvL+3Q0lns9AyqdXGoe9KZzJh1vadHpFxN4QqPj
-	 OyOCHRX1IcO5A==
+	b=KLWZhnlBwNRLzTPLMCsVaksWOSGdJF1FjqBgUgcomvVtao/3fwMVs2piDhHzjVmN8
+	 eqr3KwXkGfz4rxEZJQHqmPgOW3qErtNFqLf42CqceDU+SO1o0jM4LMBwDC9ACcY/mZ
+	 opzeG36hHzQ4YF35ZKHmc0KYwcKzZC6vTQVT/8LNN1taWo1ATTv2FQnb9r15NwlKqg
+	 nHvjw+RTlbVdxxoQCQzY8/6i8S/5A8QlAmm4T/tPvxTR52LtMr35Fo/abv2WQKvrku
+	 1RJYgPbQENgmI0Oa7FfT5EfaGMelotxCI77oD3OJok56dwstZSDAF8YbD8plPkUhDE
+	 AErw4LDwLQY8Q==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] MIPS: ip22_defconfig: correct CPU type, add EISA and refresh config
-Date: Mon, 26 Oct 2026 14:45:41 +0100
-Message-ID: <20261026134543.27207-4-kaloz@kernel.org>
+Subject: [PATCH 4/5] MIPS: ip30_defconfig: drop add-in drivers, enable the LED driver
+Date: Mon, 26 Oct 2026 14:45:42 +0100
+Message-ID: <20261026134543.27207-5-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261026134543.27207-1-kaloz@kernel.org>
 References: <20261026134543.27207-1-kaloz@kernel.org>
@@ -60,203 +60,72 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Most machines were sold with R4x00 CPUs so use that as default. Enable
-EISA, HAL2 and the required Zilog serial.
+Drop the Fibre Channel HBA, UIO PCI card, Nozomi, Altera PS/2 and timer
+I/O random number drivers and OMFS_FS, none of which has a use on an
+Octane.
+
+LEDS_IP30 was not enabled. It depends on the LED class, so enable
+NEW_LEDS and LEDS_CLASS along with it.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- arch/mips/configs/ip22_defconfig | 79 ++++++--------------------------
- 1 file changed, 14 insertions(+), 65 deletions(-)
+ arch/mips/configs/ip30_defconfig | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/arch/mips/configs/ip22_defconfig b/arch/mips/configs/ip22_defconfig
-index 09a77e5b249c..36eb6a0e4166 100644
---- a/arch/mips/configs/ip22_defconfig
-+++ b/arch/mips/configs/ip22_defconfig
-@@ -1,7 +1,6 @@
- CONFIG_SYSVIPC=y
- CONFIG_NO_HZ=y
- CONFIG_HIGH_RES_TIMERS=y
--CONFIG_PREEMPT_VOLUNTARY=y
- CONFIG_IKCONFIG=y
- CONFIG_IKCONFIG_PROC=y
- CONFIG_LOG_BUF_SHIFT=14
-@@ -9,10 +8,8 @@ CONFIG_NAMESPACES=y
- CONFIG_USER_NS=y
- CONFIG_RELAY=y
- CONFIG_EXPERT=y
--# CONFIG_COMPAT_BRK is not set
- CONFIG_SGI_IP22=y
- CONFIG_ARC_CONSOLE=y
--CONFIG_CPU_R5000=y
- CONFIG_HZ_1000=y
- # CONFIG_SUSPEND is not set
- CONFIG_PM=y
-@@ -22,6 +19,7 @@ CONFIG_MODVERSIONS=y
- CONFIG_MODULE_SRCVERSION_ALL=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_BINFMT_MISC=m
-+# CONFIG_COMPAT_BRK is not set
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-@@ -65,15 +63,11 @@ CONFIG_NF_CT_NETLINK=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
- CONFIG_NETFILTER_XT_TARGET_CONNMARK=m
- CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=m
--CONFIG_NETFILTER_XT_TARGET_DSCP=m
- CONFIG_NETFILTER_XT_TARGET_MARK=m
- CONFIG_NETFILTER_XT_TARGET_NFLOG=m
- CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
--CONFIG_NETFILTER_XT_TARGET_TPROXY=m
--CONFIG_NETFILTER_XT_TARGET_TRACE=m
- CONFIG_NETFILTER_XT_TARGET_SECMARK=m
- CONFIG_NETFILTER_XT_TARGET_TCPMSS=m
--CONFIG_NETFILTER_XT_TARGET_TCPOPTSTRIP=m
- CONFIG_NETFILTER_XT_MATCH_COMMENT=m
- CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
- CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=m
-@@ -123,31 +117,7 @@ CONFIG_IP_NF_IPTABLES=m
- CONFIG_IP_NF_MATCH_AH=m
- CONFIG_IP_NF_MATCH_ECN=m
- CONFIG_IP_NF_MATCH_TTL=m
--CONFIG_IP_NF_FILTER=m
--CONFIG_IP_NF_TARGET_REJECT=m
--CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_ECN=m
--CONFIG_IP_NF_TARGET_TTL=m
--CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
--CONFIG_IP_NF_ARPFILTER=m
--CONFIG_IP_NF_ARP_MANGLE=m
--CONFIG_IP6_NF_MATCH_AH=m
--CONFIG_IP6_NF_MATCH_EUI64=m
--CONFIG_IP6_NF_MATCH_FRAG=m
--CONFIG_IP6_NF_MATCH_OPTS=m
--CONFIG_IP6_NF_MATCH_HL=m
--CONFIG_IP6_NF_MATCH_IPV6HEADER=m
--CONFIG_IP6_NF_MATCH_MH=m
--CONFIG_IP6_NF_MATCH_RT=m
--CONFIG_IP6_NF_TARGET_HL=m
--CONFIG_IP6_NF_FILTER=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_MANGLE=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_PHONET=m
- CONFIG_NET_SCHED=y
--CONFIG_NET_SCH_CBQ=m
- CONFIG_NET_SCH_HTB=m
- CONFIG_NET_SCH_HFSC=m
- CONFIG_NET_SCH_PRIO=m
-@@ -156,15 +126,12 @@ CONFIG_NET_SCH_SFQ=m
- CONFIG_NET_SCH_TEQL=m
- CONFIG_NET_SCH_TBF=m
- CONFIG_NET_SCH_GRED=m
--CONFIG_NET_SCH_DSMARK=m
- CONFIG_NET_SCH_NETEM=m
- CONFIG_NET_SCH_INGRESS=m
- CONFIG_NET_CLS_BASIC=m
- CONFIG_NET_CLS_ROUTE4=m
- CONFIG_NET_CLS_FW=m
- CONFIG_NET_CLS_U32=m
--CONFIG_NET_CLS_RSVP=m
--CONFIG_NET_CLS_RSVP6=m
- CONFIG_NET_CLS_FLOW=m
- CONFIG_NET_CLS_ACT=y
- CONFIG_NET_ACT_POLICE=y
-@@ -176,6 +143,8 @@ CONFIG_NET_ACT_PEDIT=m
- CONFIG_NET_ACT_SIMP=m
- CONFIG_NET_ACT_SKBEDIT=m
- CONFIG_RFKILL=m
-+CONFIG_EISA=y
-+# CONFIG_EISA_NAMES is not set
- CONFIG_CONNECTOR=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_RAID_ATTRS=m
-@@ -197,16 +166,6 @@ CONFIG_MACVLAN=m
- CONFIG_TUN=m
- CONFIG_VETH=m
- CONFIG_SGISEEQ=y
--CONFIG_SMC91X=m
--CONFIG_MDIO_BITBANG=m
--CONFIG_PHYLIB=m
--CONFIG_CICADA_PHY=m
--CONFIG_DAVICOM_PHY=m
--CONFIG_LXT_PHY=m
--CONFIG_MARVELL_PHY=m
--CONFIG_QSEMI_PHY=m
--CONFIG_REALTEK_PHY=m
--CONFIG_HOSTAP=m
- CONFIG_INPUT_MOUSEDEV=m
- CONFIG_MOUSE_PS2=m
- # CONFIG_MOUSE_PS2_ALPS is not set
-@@ -214,19 +173,19 @@ CONFIG_MOUSE_PS2=m
- CONFIG_MOUSE_SERIAL=m
+diff --git a/arch/mips/configs/ip30_defconfig b/arch/mips/configs/ip30_defconfig
+index a8b1a492f20c..8b5c4bf5e2b4 100644
+--- a/arch/mips/configs/ip30_defconfig
++++ b/arch/mips/configs/ip30_defconfig
+@@ -87,10 +87,7 @@ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SCAN_ASYNC=y
+ CONFIG_SCSI_SPI_ATTRS=y
+-CONFIG_SCSI_FC_ATTRS=y
+-CONFIG_LIBFC=m
+ CONFIG_SCSI_QLOGIC_1280=y
+-CONFIG_SCSI_BFA_FC=m
+ CONFIG_SCSI_DH=y
+ CONFIG_SCSI_DH_RDAC=m
+ CONFIG_SCSI_DH_HP_SW=m
+@@ -119,14 +116,11 @@ CONFIG_INPUT_MATRIXKMAP=y
+ CONFIG_INPUT_EVDEV=y
+ CONFIG_SERIO_SGI_IOC3=y
  CONFIG_SERIO_RAW=m
- CONFIG_VT_HW_CONSOLE_BINDING=y
--CONFIG_SERIAL_IP22_ZILOG=m
-+CONFIG_SERIAL_IP22_ZILOG=y
-+CONFIG_SERIAL_IP22_ZILOG_CONSOLE=y
- # CONFIG_HW_RANDOM is not set
+-CONFIG_SERIO_ALTERA_PS2=m
+ # CONFIG_VT is not set
+ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+ CONFIG_SERIAL_8250_MANY_PORTS=y
+ CONFIG_SERIAL_8250_IOC3=y
+-CONFIG_NOZOMI=m
+-CONFIG_HW_RANDOM_TIMERIOMEM=m
+ # CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_W1=y
+ CONFIG_W1_MASTER_SGI=y
+@@ -134,12 +128,12 @@ CONFIG_W1_SLAVE_DS250X=y
  # CONFIG_HWMON is not set
  CONFIG_THERMAL=y
- CONFIG_WATCHDOG=y
- CONFIG_INDYDOG=m
--# CONFIG_VGA_CONSOLE is not set
- CONFIG_SGI_NEWPORT_CONSOLE=y
- CONFIG_LOGO=y
--# CONFIG_LOGO_LINUX_MONO is not set
--# CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
--CONFIG_HIDRAW=y
-+CONFIG_SOUND=m
-+CONFIG_SND=m
-+CONFIG_SND_SGI_HAL2=m
+ CONFIG_SGI_MFD_IOC3=y
++CONFIG_NEW_LEDS=y
++CONFIG_LEDS_CLASS=y
++CONFIG_LEDS_IP30=y
  CONFIG_RTC_CLASS=y
- CONFIG_RTC_INTF_DEV_UIE_EMUL=y
- CONFIG_RTC_DRV_DS1286=y
-@@ -250,9 +209,7 @@ CONFIG_VFAT_FS=m
- CONFIG_PROC_KCORE=y
+ CONFIG_RTC_DRV_DS1685_FAMILY=y
+ CONFIG_UIO=y
+-CONFIG_UIO_AEC=m
+-CONFIG_UIO_SERCOS3=m
+-CONFIG_UIO_PCI_GENERIC=m
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT2_FS_XATTR=y
+ CONFIG_EXT2_FS_POSIX_ACL=y
+@@ -159,7 +153,6 @@ CONFIG_PROC_KCORE=y
  CONFIG_TMPFS=y
  CONFIG_TMPFS_POSIX_ACL=y
--CONFIG_EFS_FS=m
- CONFIG_MINIX_FS=m
+ CONFIG_SQUASHFS=m
 -CONFIG_OMFS_FS=m
- CONFIG_UFS_FS=m
- CONFIG_NFS_FS=m
- CONFIG_NFS_V3_ACL=y
-@@ -299,26 +256,18 @@ CONFIG_NLS_ISO8859_15=m
- CONFIG_NLS_KOI8_R=m
- CONFIG_NLS_KOI8_U=m
- CONFIG_NLS_UTF8=m
--CONFIG_KEYS=y
+ CONFIG_NFS_FS=y
+ CONFIG_SECURITYFS=y
  CONFIG_CRYPTO_CRYPTD=m
--CONFIG_CRYPTO_GCM=m
--CONFIG_CRYPTO_CTS=m
--CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_XTS=m
--CONFIG_CRYPTO_HMAC=y
--CONFIG_CRYPTO_XCBC=m
--CONFIG_CRYPTO_RMD160=m
--CONFIG_CRYPTO_WP512=m
--CONFIG_CRYPTO_ANUBIS=m
- CONFIG_CRYPTO_BLOWFISH=m
--CONFIG_CRYPTO_CAMELLIA=m
- CONFIG_CRYPTO_CAST5=m
- CONFIG_CRYPTO_CAST6=m
--CONFIG_CRYPTO_KHAZAD=m
--CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
-+CONFIG_CRYPTO_LRW=m
-+CONFIG_CRYPTO_XTS=m
-+CONFIG_CRYPTO_HMAC=y
-+CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_WP512=m
-+CONFIG_CRYPTO_XCBC=m
- CONFIG_CRYPTO_LZO=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_DEBUG_MEMORY_INIT=y
 -- 
 2.47.3
 

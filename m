@@ -1,73 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793047215;
-	b=mJrVBa5BecnHhfnMvwhmoLWT+DrRFMuzbS2c0XvIkZ3NdCKgZLDW0C2M43ZKnOLQQV81
-	 Uw41POzz+gGDy8o+rVm9l/nHwsZGpAGBMIBFr7BH849vcTgrGjCQTgat1UvJeD/xsXtyN
-	 l+IMrBQ7sbEalvN5Zxmhvx30OBF1rqwQNoo2LHqEX3Kqcs/2jEd5mobNmXnnMGCquEGuh
-	 Smgn1tlX7kzRVCYvKLqR3W6rj775fDQScvoGfSAUZTT18pvLO5xwSYDVDa/PExE1wtIxa
-	 obklzHf4Uqh6tF8YUHkkyX/tJuQk2RmZXR2Ls9cJ6f8nqN0EdU8k3Wo4fpXCTybXxSQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793047215;
-	h=Received:DKIM-Signature:Received:Received:X-ME-Sender:
-	 X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=8BgiAGOUwi4MAq+usDyvckohLHEfK3Wwix9qVbEIIFE=;
-	b=lqnb2rJ5fP/NXR3SpSpMG8XCm0YlCsdlyAj+FJgiGV9wvt0ydgTL/jUsEUdzil9ceJCc
-	 A5bXSAlrxWDFFCnqBBdWsvqfcpYVVsiNnQ7VOFQ2xmvWuYGZff/vD6Bh9pIyPJJjbZwCs
-	 ffpIuZKojUQdOT0Zo7cKCgRwIMlFq4MuGjz5R90Kwc9ojK0rXFzV8e7vy5K70vexspJq/
-	 NzSZoJ/BJOMpd8L4qMEVC5WIabmgqio2wweG182QqXxKLg8vK+r30db4lbTi+3L4daK0n
-	 5OcFhMnahAF9W+a2OWMi+yyi6Psfao1mVMGqSQSQpqbzftnw5BuIiJSDcc6D1CJFtmA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QINZ7av4;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.69.44
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793047801;
+	b=BTYrVYFk2R4QO8buRG517owRptLZhJeqVdjwdnqSEUKqJLzCRIdCFpXKZhB1q0H6d99a
+	 hv3VbGV9gjajR2xrTiULyGzZ82ui8e78uHzZxptcqLWWGdfqMSH5WG6BVqVxWcUhKtkNa
+	 WJgRZW7KmOiCpTFF+sAVluFlyepXa4vSjAs1TAsBCbFaYA/FKMHnbTOmB+27XCFSp9Q5T
+	 6nSMa4JGzM4HtSzxgz+h6qu7VAo8G5J4Bq0z3sLAlFjVnDcSNYSYiMRCH/4Nv2K4/hfBS
+	 MgfhKRofKfPvG1H0A1fmqMzIlp4gGUt7ZLCeJpZcvX5Uyb4Xo2P2AA4AainzOD5dvrA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793047801;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=H5iRjnbzQaAlrwhwVAeO6f65ic0C/2RcyjbvUamc928=;
+	b=VnOJAzEyM4T8frzRNnhMMTNMQdo3FkWkW1HuTHSLEEKqWenj//Ynnx9X9KU0MyEQHJPg
+	 jZl6RMF1hkCvLJ/xDanDM87wpTey6pFvZk4sL36Hyzh1CucSGZ/BOxN3NPGVmsePk2y0l
+	 y5tlwmYWl9upT8MUxVioD1TlXuR/wLCztD23kFrLvWA5XH/sZbycZR9kCtNkImHVf0Ixg
+	 G74m8VRuSG9p+17zUgSdUvHx+lS6B/s5AATFxoQGrvrzlQAvlIF/bEh221FE/vfMrYBMO
+	 +7EGC2KsBifDunLo5+YA/17Qh3CPHgnUHncjUMev+zvUc1IIYxV904EeXD6vpX01tAw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=oss.nxp.com;
+	spf=pass smtp.mailfrom=oss.nxp.com;
+	dkim=pass header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b="m/4KHbWL";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.69.44
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010044.outbound.protection.outlook.com [52.101.69.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F105606A31B
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 20:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55849606A31B;
+	Mon, 26 Oct 2026 20:50:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 55849606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QINZ7av4
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88051F01825
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 20:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793047215;
-	bh=8BgiAGOUwi4MAq+usDyvckohLHEfK3Wwix9qVbEIIFE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=QINZ7av4stTWQM9nIjT9Z1yCBcRiCzwj63MFF+45R/kHUgvXIN6iiRh1S8ZGzk9T6
-	 R7QgdIfdYpIxPhGEyCWulfV72j6mzwds0ZA7f+wgWNTDDuOPNn8f/c8E3sAXk5pl/6
-	 kZf8jNOAHUJYOpwQjNL+If3TsiCggzhHIjAindPvHnhqRmwpmTj7XC5cFxKQB93VXC
-	 l2hWWzqHBKtCqfekyNIfwvOcGt81R8UBDNfCHwenx8ZSfYXzx73yTAzjEkjFAZjEDZ
-	 z9uz8Zh7kP5LaS6F4ncHW7LP6LjdrmjN+lb7Pu3sP0c64OznYfauGOQMM3zSamjTxC
-	 qOuLjTgve7oTA==
-Received: from ams-compute-01.internal (ams-compute-01.internal [10.64.2.61])
-	by mailfauth.ams.internal (Postfix) with ESMTP id 383981980047;
-	Mon, 26 Oct 2026 16:40:13 -0400 (EDT)
-Received: from ams-imap-19 ([10.64.2.39])
-  by ams-compute-01.internal (MEProxy); Mon, 26 Oct 2026 16:40:13 -0400
-X-ME-Sender: <xms:q7rfasY7M3-GFea8ByRSVr4bsSrXzimB8InuEDCEy53A4Wuet0uFyw>
-    <xme:q7rfaiMrm9p0NyyDcAfSBN631U3YjeVPy1K99-gLor6DRZOFghMazgDX5TY1JLR6m
-    g2_1aTlSGMGOhcb1eeYVX-shKK8AeEqzlLBvFmtw60uC_omuFK9oref>
-X-ME-Proxy-Cause: dmFkZTFV0Orw4tg1xJQn/0UXTnHxurVk5H+ED3GXySdAiGs/PgiAlC4NN7ZmCVLXIlbC04
-    ZEIA9yPFnTsivSmObgBFGdV8/puHt0g2BA+gFwg2zgC8LhNJjwW5g2jZWZaxogcqvbaY5q
-    mRNiGMifOST46O6ExemHXigU9tvcS37UgTuWKptdBh6s0Lwb5jDAQD0/jAlIscFXlYl8lY
-    roI4zJSWhwkFc1ruNjQ+azg092A3JcyIs2Sen5/a2C1WNRQ059p1SHtaEtwComMTkFZzyl
-    7fvYfR+G/nsJgGfY7O/Ne4Wqlp4ybGetQ3cwBGSuvCq8y/cCCw18p3VF0S/5Pw+2g+vecu
-    tOy8RGMMQZro8+zHI7lII5r2X98LecLz5RyDgBTOBfano2Hrdu+Ust/PhZb6/jWesJczNM
-    dtQExevFYPOPrK6OLDPOgSUBoh+57chWmBEdKDtTthoyRa6QAnhMQuVahODzygKTZZhj2/
-    WDht1yuFNTwO7JtcOzBIxwyFJZyn6N16eTLMWnCqU+Gmw8Gp1Fe12bxRIyvDZ6zwXKrUct
-    DKzwkZoBOB6EtY682dMeCWzqq10fp6/b6i6ugWs237zT5HAg608N5G3rdY6Ldzbh6qcVJy
-    RTeTMigB3Lqy8GUbaARgpk1u+3It/fo/9CrcQgmq3gDTttxHHaJ8dsnNeAnw
-X-ME-Proxy: <xmx:rbrfaocPnNCiIfxtwKWoGu81PqOROW948fumRMxq6WVcAam5WkSvbw>
-    <xmx:rbrfarsQe_Citl9W98k8-8hWHz2se-jTwJHhtCW6gGiOJH4d9Ya8uw>
-    <xmx:rbrfapne58BBullySJXjGYyOli_efHZKDlDUoVKVgrFOeLQ4Ab1q-w>
-    <xmx:rbrfatyWv1sGU8l3BLWGqmDaDJRCJyustJnh-o9j_xwwty0RIrYfNA>
-    <xmx:rbrfarMrJmNggi0Xw7yNqmcC498uS9qvm9QUR5jdbVv2dJ3407n6cCw9>
-Feedback-ID: ia3204a8f:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id BE19D2F8005A; Mon, 26 Oct 2026 16:40:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key, unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=m/4KHbWL
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=abgaNksmyrhQARTjwsBjvIoKAWTYZ6ZQ9gjwlZt+KSJhoaEm4x2UIYWwN9QUH/EXfq+43RylEJGMU1OcRaXkTI+Ix4JUnY9QcUQygXcm3AypTD2STzOsn6JdREBxWf2PNeh1NUiLUMNWonc4J3FkXjXLy2BYBghtJGl4st+qetKhtwrTnGE24wPZ4DkDibkLLnfeuS5Zjf1pj8kB8s+k/N4M6H/sQSpE/c2dYSRy/dQFfTnyQYPo84De0rNj8sbyDKdqkpwSV0Jtxq5/jGnDZnOj9MVoHRizVAsWjqgD7bnimwLWRxeteWLlKGFE40dKyscq89O3YGOnpYxBVrvHow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H5iRjnbzQaAlrwhwVAeO6f65ic0C/2RcyjbvUamc928=;
+ b=TOn4D6hoAE19tfLE7+NBWL3vfjc1IdaQgZGMwdi1Z1Du5+ghMdVEKOmT9izeWv8HcS5oyo16ppBs+huzofxGPIYoxCYf+COSs+3CpVmt9nOelcHuTiMwfQF8vbRVVXzHEUPu8OYvc7mgdJXiY4ouLsHRq1su+7MXMGa9hkJpm3ZW1o8s7J1odrn/dnMY0Ro/9FexGL3NeOSrnEWllpKtDGde0AsHRlSrTxPnsnTZMDKVSSixlk5BfYFXe/uQJrfHhiQmQQsGFGRZpM67sFlazwXPTLMDGvipACL1auyai2Ox93z+VqaHxSLSRnzLFortPrBclbniDRYpycQkuZnYow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H5iRjnbzQaAlrwhwVAeO6f65ic0C/2RcyjbvUamc928=;
+ b=m/4KHbWLABRO1leY31sHYvk0nQY9AtITTvjAcZwbTiYRxaIazCGIMPvoHmPAEhBRPoF9iAm5W+/FsHhXxw9xRiC2WkR/yYhHfWZjEak8cKC4T6ioeboBWCrpNEvdL51GEQ2tEW3B+JwHoOoEvh/zm4Sm0Oc+aJfJ3HdMxr+6gQ54IAtxrYO2cORpb0QxmwI+bhUXUjqCdPkNSO55RMhTi8hheiEGVgHa+l66hCiUa8JngKlDkwfZYo+9fib2yLhNYnHaHz1v/TZG1QxZqj7pLUMjn8spkRXKpdC1nVy6PcO05l9k8dOig1ytUpvN51RX26tvaCkh0JnXDUoSs6EjcA==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
+ by PA1PR04MB10501.eurprd04.prod.outlook.com (2603:10a6:102:44e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.22; Mon, 26 Oct
+ 2026 20:49:55 +0000
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b%6]) with mapi id 15.21.0546.021; Mon, 26 Oct 2026
+ 20:49:55 +0000
+Date: Mon, 26 Oct 2026 15:49:48 -0500
+From: Frank Li <Frank.li@oss.nxp.com>
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: Vinod Koul <vkoul@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+	Frank Li <Frank.Li@kernel.org>, dmaengine@vger.kernel.org,
+	linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: dma-jz4780: Fix NULL dereference in tx_status
+ after terminate
+Message-ID: <at-87AHdnoWz5M9Y@SMW015318>
+References: <20261023080953.16963-1-olivier@mgcrea.io>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261023080953.16963-1-olivier@mgcrea.io>
+X-ClientProxiedBy: DM6PR07CA0089.namprd07.prod.outlook.com
+ (2603:10b6:5:337::22) To MI3PR04MB12438.eurprd04.prod.outlook.com
+ (2603:10a6:290:76::14)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -77,46 +97,125 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: A1EdMpTYANwc
-Date: Mon, 26 Oct 2026 21:39:27 +0100
-From: "Imre Kaloz" <kaloz@kernel.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <4dfca688-b091-40df-9158-003383338282@app.fastmail.com>
-In-Reply-To: <alpine.DEB.2.21.2610262005340.42255@angie.orcam.me.uk>
-References: <20261026120011.24675-1-kaloz@kernel.org>
- <alpine.DEB.2.21.2610262005340.42255@angie.orcam.me.uk>
-Subject: Re: [PATCH v2] MIPS: SGI-IP27: Install the cache error vector on every CPU
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|PA1PR04MB10501:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5017a8e9-8bea-447d-1989-08df33a2b101
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|19092799006|23010399003|376014|366016|1800799024|261026121527099003|11063799006|56012099006|261021123027099003|261021121427099003|261022075727099003|261021135927099003|261022105027099003|261009223027099003|10067099003|22082099003|18002099003|261026140227099003;
+X-Microsoft-Antispam-Message-Info:
+	7Gg+oe4uQYaE6cZ1CWhL9McQvTU7yAVElVOdm01mCKoCMxzsqnwvhigvTQ+iQ/tYWG95WpDqVqy2+JGmf0UoFEWZR66xeirb3dPaQIeGdVozy0PP6sVesHMgj1t0PMAv3anzTtqJym6jsTlUe91zKwPnnzsKo7M2RvT2V7PE8S6MsR+bmYjDq3ZKjFgDs42zEMWdmG4gDd8BVpsDV6JqL47W71KhbryNKRVltYEIrA/WefZEH7X17gfrD/V5b3k8zJPfCaqYUgwOtgpLwsGX6ZdZ7OIaIk+gw9wV751zTTD5qsuCOP5yIfjpTEk136idtqadYjkAebCM/O/Pjly8Y0pcIgh0z90E6DkMVKL1jrQD1ZOsiMWhNbAoUkdMpX1u4WtEp3LolvyWtmnkL0nHS0fIvVVmgY1PJwHVbHL05awJsUAmKIaqXzwiD/9YGxUtKRYa38h0OPWL/gJndVuBZ1EwTZlzSuBISKBtF1Wwx4yZ/ckwInuhD61tkpH3rTKIEXk+KIVHBm6v2DbuKDQz2F1Es7ad8TIh52ut1l7fwJuSFNCJ/FjeGBTTP8tlGVtZ+LfFo10PVKykJYGVddGRPn/GJyawvAfzBotLLEjOM9Qc1jFPNBNu7yAsf7E/aZ2z3Nvh4Q0LLMBBOZKRjRE65Zs29WKjVeET/5hsUBOik7Q=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(23010399003)(376014)(366016)(1800799024)(261026121527099003)(11063799006)(56012099006)(261021123027099003)(261021121427099003)(261022075727099003)(261021135927099003)(261022105027099003)(261009223027099003)(10067099003)(22082099003)(18002099003)(261026140227099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?rTcKCuJ3hv7hsP7/BdZWVXxKhFc1QyhpFtJBkr95gPCEnRNl+ILUZi0382n0?=
+ =?us-ascii?Q?52QE81pPpiuB+ZLcWoNEM4kD2tQdFdMAawn2vFVszRKm00WKAMvVtF9opeSa?=
+ =?us-ascii?Q?zaPtwQPQQYkP+Q/2rRJzNvmgegTIQ3Hp1gOiNqI8IrV+BgGfkQrpR8+2E74h?=
+ =?us-ascii?Q?NSQjB56bdz9O1AcRFNzZSFbewmvNr98YLIosIRcxDn4AmSahskUmYBh+cWgr?=
+ =?us-ascii?Q?SfTgOtH4JL9rgd+ILhjjTzM2kY4RBoPGfyHFSj/n+BUnffVvDjsmo3Mwus9S?=
+ =?us-ascii?Q?Jj4g9FLh1NDzZW4CC43KvPT2o+q+hceyK7GjWMe+MvaLeiNV5p6lWrnymQo0?=
+ =?us-ascii?Q?qRT+PorPzCgB3SrjBHxGsfwmLaxAnqxXsVHQ+NpjtVP3cZ3B4+2fwf65Exda?=
+ =?us-ascii?Q?2voQvr1vAXLmp4tfr6HBc40V2qqxdyWqnCGeMkM21/eSmA+48OhpjYwS9Ni6?=
+ =?us-ascii?Q?+/SBdWfBcBPfCi/jHJG5n1BQevHqYSkkRxKbiTM/t8mcC+HAlIPK06cytmww?=
+ =?us-ascii?Q?DOrdQWlsgtCDUUkXjEpdAt49yy6TCMFDkGVBAonuJs0jslzNXPtZnnfG0o5M?=
+ =?us-ascii?Q?hhjJpP1qcj31Qf1znEK2wFaPQqrTALEdavMODRFhtamXy+bouo/33SQ+/3Wf?=
+ =?us-ascii?Q?qyea9drSjGKdRx4OlcSC3xyfmeIcbx7ZErSf8nVmXbPotg+2/2PsjJJDWNrj?=
+ =?us-ascii?Q?xsI8JeL1ga4p7xsO3IaHrPYzZg/SIpQoD0ZT1O6XBfZ7ZkEWGEfnQXpSVRmQ?=
+ =?us-ascii?Q?56TXjTHEAB83YUlRmUUEiUKgNjanyKnmT77ICJ7uHtbFv2Q//HZ0n9+KyLlV?=
+ =?us-ascii?Q?2INZUkTCei9bZBrCzYxSlYTuUiCamIaM4L2aNDJhLGvY5WO2jFQX4OAetqVr?=
+ =?us-ascii?Q?LKCAZ93IG9HcUglnIsO4jQ6h7XDeWXBJYIALkKA69hAzxQaYlK3WfK3zdXm0?=
+ =?us-ascii?Q?0thw0YEQrn1XlcdaISlBJS2JWQ3WSrFUz659TNNrYifP2UZ5zruIJQw1uhn0?=
+ =?us-ascii?Q?XvIRHIfRtvZettc3CkcETTazKo19F+zkfqgWreYpVYFoaa4GJrORign86JHw?=
+ =?us-ascii?Q?D+2olGLz3lYdmjMr6yIuvec5luSXG9NWAM5VkwN/XT+8FzOTR0HnQFDCG9Su?=
+ =?us-ascii?Q?mMhXufQga4yfQ+Z/hId+cOGZ8nOtjvNBvGvYUpwEiV8JTfvcezjhzXtreMbN?=
+ =?us-ascii?Q?dnen1I1eL99pxLN468erWhGT0zzcmybWzPA7cmhg+0U0HGwiRUe3QxnDS5fq?=
+ =?us-ascii?Q?+ZWWre9wz48YCh3lyFxCF9r8GAfFUOIRl30mP+zDyyxjfUsAEP+Odcdg3vt/?=
+ =?us-ascii?Q?/Bk6CssLLharS0tQncBUbwQp4rp19/GzHA8fz8V6KhlpaFzw/IK13rgFU/lA?=
+ =?us-ascii?Q?mzppvqQ4wQoyjAdULYkybnyHXjo8TlYu+qXkTkgrSqRt4WKF1JEaZHXsx+1J?=
+ =?us-ascii?Q?Q9LCDIC0V0BHBSQC/XYaN3Pay+ZqWWXL0p6eHrimkS/Gz0vaj1jInXZp0yD5?=
+ =?us-ascii?Q?NNVM9Rg694zHqtzz+Ycgt6DGrN+7qcH4tkG8jUldBJYvKTdvSxaB5mPxTPdE?=
+ =?us-ascii?Q?8rI0iyDZhBdwcItohkokzyRR/XHkoPfmY5aFrAsIbIxPyBzrLo5KJ5hc+vU3?=
+ =?us-ascii?Q?X7zeUzNTNKW8F5zKNwEPwttDUWmapiAGR1qfJjj2KilG+uyAKYUQ5E7ls63a?=
+ =?us-ascii?Q?dfYZG/trLNMGJrcbRPDC9WfoA5SA3FLdFAQHFXih3V1QFl3sh6p3ijwrkHBN?=
+ =?us-ascii?Q?ZOJqptdeoS7HWbkBcOQErC/G0yadS83zf5vx3BjYsBsfUfvz/0N1?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5017a8e9-8bea-447d-1989-08df33a2b101
+X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2026 20:49:55.9048
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yyjUAVl/9ud3wc+rN0j3GV/mQxsHyLKaSOw03Fcdix82uwm9sd13TtQbmedxT04+rvEOiVqQSsgSwE4NHVNs9/w+ppZw1hcojJTb3+L76IRe79EGYXqNQMH8vtw1tBRZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR04MB10501
 
-
-
-On Mon, Oct 26, 2026, at 21:15, Maciej W. Rozycki wrote:
-> On Mon, 26 Oct 2026, Imre Kaloz wrote:
+On Fri, Oct 23, 2026 at 10:09:53AM +0200, Olivier Louvignes wrote:
+> [You don't often get email from olivier@mgcrea.io. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
 >
->> The R10000 drives an uncached attribute on the bus, decoded by the hub.
->> CKSEG1 uses attribute 0, UALIAS, whose low 128K is flipped by CPU slice
->> (UALIAS_FLIP_BIT), so slice 1 reads CKSEG1 0x100 from node memory
->> 0x10100. trap_init() writes the vector only through TO_UNCAC(),
->> attribute 3, unflipped. Copy it on each secondary.
+> jz4780_dma_terminate_all() sets jzchan->desc to NULL. The cookie of a
+> cyclic transfer never completes, so a later jz4780_dma_tx_status() call
+> with that cookie finds no descriptor on the channel's lists, takes the
+> else branch and reads jzchan->desc->vdesc.tx.cookie through the NULL
+> pointer.
 >
->  OK, slice 1 gets 0xffffffffa0000100 virtual mapped to 0x10100 physical.
+> The driver has always allowed this, but it only shows once something
+> calls tx_status() on a terminated cyclic channel, as
+> snd_dmaengine_pcm_sync_stop() does since commit 88e98af9f4b5 ("ALSA:
+> pcm_dmaengine: Don't synchronize DMA channel when DMA is paused").
+> Closing a playback stream then oopses:
 >
->  So does slice 0 get 0xffffffffa0000100 virtual mapped to 0x100 physical?  
+>   epc : jz4780_dma_tx_status+0x184/0x210
+>   Call Trace:
+>   [<8048e104>] jz4780_dma_tx_status+0x184/0x210
+>   [<805804d8>] snd_dmaengine_pcm_sync_stop+0x4c/0x94
+>   [<8058f068>] snd_soc_pcm_component_sync_stop+0x80/0xc0
+>   [<805775b8>] do_hw_free+0x20/0x6c
+>   [<80577650>] snd_pcm_release_substream+0x4c/0x9c
+>   [<805781ac>] snd_pcm_release+0x48/0x9c
+>
+> Only compare the cookie with the current descriptor's when there is one.
+>
+> Fixes: d894fc6046fe ("dmaengine: jz4780: add driver for the Ingenic JZ4780 DMA controller")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> ---
 
-Yes, only slice 1 is flipped. UALIAS is node-local, tho: slice 0 on node N
-reads node N's 0x100 and slice 1 node N's 0x10100.
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-> How about other slices?  "Each secondary" suggests there are more than 2.
+> Apologies to the stable list: two copies of this patch reached it earlier
+> today from test sends, with the Cc trailer still in place. Please ignore
+> those. This is the real submission, and it is the same patch.
 
-A hub has two slices, so the flip is the only difference within a node;
-"each secondary" means every non-boot CPU across all nodes. trap_init()
-writes node 0's 0x100, and per_hub_init() already copies node 0's low
-0x200 bytes into every other node, so slice 0 is covered everywhere and
-slice 1 on every node was not. Doing the copy on every secondary keeps
-it simple; on a slice 0 CPU it rewrites what per_hub_init() put there.
+Please bump version when send this one.
 
+Frank
 
-Imre
+>
+> Seen on an Ingenic X1600 (HiBy R1, compatible "ingenic,x1830-dma" as
+> fallback) on v7.3; the code is shared by all the SoCs this driver
+> supports. The patch is build-tested on 734bef548a96 (v7.3-7363).
+>
+>  drivers/dma/dma-jz4780.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index 6070dfdb7114..7f827be502f1 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -658,7 +658,7 @@ static enum dma_status jz4780_dma_tx_status(struct dma_chan *chan,
+>                 /* On the issued list, so hasn't been processed yet */
+>                 residue = jz4780_dma_desc_residue(jzchan,
+>                                         to_jz4780_dma_desc(vdesc), 0);
+> -       } else if (cookie == jzchan->desc->vdesc.tx.cookie) {
+> +       } else if (jzchan->desc && cookie == jzchan->desc->vdesc.tx.cookie) {
+>                 residue = jz4780_dma_desc_residue(jzchan, jzchan->desc,
+>                                         jzchan->curr_hwdesc + 1);
+>         }
+>
+> base-commit: 734bef548a96e8774d6eef5dfa2026c6edc4e80b
+> --
+> 2.39.5
+>

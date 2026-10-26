@@ -1,54 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793022189;
-	b=YgqsXemSt1SNlNHGjXwMuuc9Vg724ZPssZ72cFCedPF4+XNEW0LhNPr8VHm/N2RC9EAT
-	 Xw7LyKYbUHDeSkH2OQLDSB5SeBFdEpeNW1aD4Mu5VGh3BtHR89t4+9GRb1VPJX4akBql2
-	 jrZ7ML+2DOcIN7MHM7piHgBVhV9XuNEZJ4ZzJvaDrBdFQ7hLhvmAFxhqPxL2KI5MdhqV+
-	 MsV4ALUyt9bUZGk9EyssqETJ2tcXOFPxjGntfUSzPcXH2I3YCO2NCR7ExIQcf3AcDmq3K
-	 8JXPzEAdSAP1fyiKk4vvrhD/zurHUFArUJVhUS18me+sS+sXaY2y9dwMb6xxqOq/uAQ==
+	t=1793022415;
+	b=eV5NHt3M/1QaeymloaERHXq3ggLg/NifTg5eBxQveVt0YPPBLV7XWLCxCtKERD365SHz
+	 bii9d9yUgWsw3xZsLIZaEeo6kPla9b4XnksnW54kODUrLsccGS8ASwtq41tOLpxtiPfX9
+	 vzKRzx+hfh7BofQUv4Umlz8+1UNwxCMZyTzy3tKQQMR3q+J0CKpQ53DwtfcYylOEASvhs
+	 Y4Gmyp/a8OkpsTqEEzp6yg0Sl8VEXBNfDFD8yp/wd7Qj3SKg0P1Psa7jvBxtCx2rsoUV5
+	 4NffL51VLvi4UD5YBZ+DkEGgibNWznlWqPk3vwlRpcqbtamUMfzb6vtpX9BtKBRnOCw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793022189;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793022415;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=omn91hQo60CwrWkL1ph6Rrj3EfCqmsBmKr35VAcMp5E=;
-	b=FGHbh0ofiffJinLiyFjiQrW8JnWaaZDXdQ8KaPLC+cJqwo+QPJTYSO3Z7VmrxNRnc46w
-	 cHFDX90UtnL1xLumug6YdzC2U11f0I89hoYe2guBZI4OZ+15civ3mt8oyblaEO+lyCfzg
-	 mH/XNzGc3RZRc2oy0XmXxdZGeWkRP8jNnajXU0/I4lubLnU7yMZYGaZfso+PLYEigd0nr
-	 opdWAOEQ5M2Io9fiA0yPJjLcny1ySn8zbNSgR3WDIQyRipp60aHYXQXoIz+Ng4Okt5P5I
-	 Cbz09b9Hgu2bQkh3mQd96QdpW4AQmC5+Exv09SPYgIMsZj5SRrgDdo2xGaq/yjDdgew==
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=GScuJt2ZF2Qt/7El7LqTygBhAAaRi9MPcqNYoaNSDFI=;
+	b=tjY1reMSIO6JrSF8JjUP9oS39uhY6e7iSoENfyrcGfDn0rV1V3Lzy8ZhHwx1qSQbHiQo
+	 2QlkyExG62CkA7TT3uQDChlxD/q2YeTY3Jy0LxxUUqrW5XFzMb03mwOLfJngK5r+QsbqV
+	 B/DpucZEgjGvPjVSIGukfWYV8SvnBzJ/4rwXl2xf5ceBeUIFgvxwf+cXdroPY80UJxmT+
+	 HI6bor3oiSH67zxcuiaeV+/mk2n5gcuBWemk7W/Ja4EkYMNHx07dKfytEQiIpQYuYmyw0
+	 tPXGcjj5z7zfUtzL/oX4LxNSmjMqvEEND/4Pg63gF52Oemo8Rjqkyd/jTPPWLTZoSFA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NsoYcBGu;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ClMZhMTf;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919C5606A327;
-	Mon, 26 Oct 2026 13:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1877606A329;
+	Mon, 26 Oct 2026 13:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NsoYcBGu
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC001F01829;
-	Mon, 26 Oct 2026 13:43:08 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ClMZhMTf
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671C01F01825;
+	Mon, 26 Oct 2026 13:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793022189;
-	bh=omn91hQo60CwrWkL1ph6Rrj3EfCqmsBmKr35VAcMp5E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=NsoYcBGuo/dUOBOpmmngq3bnDxJLhHYWzaUqtaKy488WrzqtoJYE1y/60Gd7NgKwg
-	 p4NeCBcc1f6nYvXbP6e5FlB0eueLA804wqghV9jLe88+4y2Jt9bzTDa2dPpfP9t4Bb
-	 AQ65RN35mK0UtLtmnE72pqPkWdNvYo0anMNuWzXdVP7ZviFt+7aPCSivsqmOps/LVY
-	 MtbRVK9OCOdssp7sw5353vBUOCQTwmpsGo/sE+FtyoLmtzTK1/tC2/Svbg95Q/YCIP
-	 PS9AUuxcaN6BRMj5S26ed23pkHwG442thEut/SpgxOJuOlRP5z2TNfw74dpZlBLWp+
-	 dbT88twvLrmGw==
+	s=k20260515; t=1793022414;
+	bh=GScuJt2ZF2Qt/7El7LqTygBhAAaRi9MPcqNYoaNSDFI=;
+	h=From:To:Cc:Subject:Date;
+	b=ClMZhMTfOpOcdEjulKJXZSQoEv7ad8ZW5BkIcgouAfl7OAW4w2jDjGZBUDHkItqvl
+	 YAmkJpUUYJDwvHGj2ILat9wa1SjCtaYt2QrTIJ7Zo9F5Z/8XWeyDQ8qaP0OYBNZBFW
+	 6y/VVHNNBVY1UNEaMnMBL8GY55kKX1+KBY6A6g3eoYKMisGjHAgXK2JyzAFsXDeb6S
+	 YOwIJxA8gqEcuJy4HXLBgyMmhTlB06F+GcMewSG6xA0gSdj07L5bzBJvw7zd8ln8kq
+	 bbxrQgDnX4TSFN1L0a8cbetzY3JZiPCbmfZ5s+zpUYrXN8RLSmEp5f7AhZiG9O4Od3
+	 eEmfgMBixJltQ==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] MIPS: tlbex: Follow the boot-time R10000 LL/SC choice
-Date: Mon, 26 Oct 2026 14:41:44 +0100
-Message-ID: <20261026134147.15988-5-kaloz@kernel.org>
+Subject: [PATCH 0/5] MIPS: SGI updates
+Date: Mon, 26 Oct 2026 14:45:38 +0100
+Message-ID: <20261026134543.27207-1-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261026134147.15988-1-kaloz@kernel.org>
-References: <20261026134147.15988-1-kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,36 +58,39 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The TLB handlers are generated after the boot-time R10000 LL/SC
-choice. Emit the branch-likely in their ll/sc loop only when the
-workaround is in use.
+A stack fix for run_uncached(), a missing prototype and defconfig
+updates for the SGI machines. Applies on top of "MIPS: SGI fixes"
+(<20261013094554.16804-1-kaloz@kernel.org>).
 
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
----
- arch/mips/mm/tlbex.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Patch 1 keeps the stack that run_uncached() gives its callee clear of
+the registers it saves in its own frame.
 
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 69ea54bdc0c3..32ce99dc90a0 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -35,6 +35,7 @@
- #include <asm/mipsregs.h>
- #include <asm/mmu_context.h>
- #include <asm/regdef.h>
-+#include <asm/r10k-llsc.h>
- #include <asm/uasm.h>
- #include <asm/setup.h>
- #include <asm/tlbex.h>
-@@ -95,7 +96,7 @@ static inline int __maybe_unused bcm1250_m3_war(void)
- 
- static inline int __maybe_unused r10000_llsc_war(void)
- {
--	return IS_ENABLED(CONFIG_WAR_R10000_LLSC);
-+	return r10k_llsc_war;
- }
- 
- static int use_bbit_insns(void)
+Patch 2 declares ip22_eisa_init() in asm/sgi/ip22.h, so that enabling
+EISA on IP22 does not add a -Wmissing-prototypes warning.
+
+Patches 3 to 5 clean up ip22_defconfig, ip30_defconfig and
+ip32_defconfig. They enable EISA, HAL2 audio and the Zilog serial
+console on IP22, the front panel LEDs on IP30 and the audio driver on
+IP32. Patch 3 also switches ip22_defconfig to the R4x00 CPU type,
+which most of these machines shipped with.
+
+Imre Kaloz (5):
+  MIPS: lib/uncached: fix run_uncached()'s stack switch
+  MIPS: sgi-ip22: Add prototype for ip22_eisa_init() to header
+  MIPS: ip22_defconfig: correct CPU type, add EISA and refresh config
+  MIPS: ip30_defconfig: drop add-in drivers, enable the LED driver
+  MIPS: ip32_defconfig: drop dead options and add-in drivers, add audio
+
+ arch/mips/configs/ip22_defconfig | 79 ++++++--------------------------
+ arch/mips/configs/ip30_defconfig | 13 ++----
+ arch/mips/configs/ip32_defconfig | 36 ++++-----------
+ arch/mips/include/asm/sgi/ip22.h |  1 +
+ arch/mips/lib/uncached.c         |  7 +++
+ arch/mips/sgi-ip22/ip22-int.c    |  2 -
+ 6 files changed, 34 insertions(+), 104 deletions(-)
+
+
+base-commit: f2633ae2cb94428d310ad359a8d4016712133e90
 -- 
 2.47.3
 

@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793110455;
-	b=UvbxcmEfo7Nawdv3hovDWzSfMvaNSwlNCTNXqnvWHaX3t291cU5v5GLLViU0BpcTOVHg
-	 ssAFgD2oAUoqw0h2/HP+rUr2u5mRmb1v9xCnHQVXu0YXBnGbJuR64TajeZbWIUXQu0v1j
-	 +6sRPj6C/XA3lXpfUoguJUvrQsNEEQosd2k6dDO58Ufw0Cgz1d1jIZ62paNuvLxUqaC2f
-	 iR0h5zgctv4VC96Hu6vP6cCWct7yq7Mxp+/VEL0Qx+9oV2wetMQ41tF/ocdGwRiL/ijCn
-	 gk32pJfWrASZGgSkLSAzFo16a4Gp1q356jAk6fZQtYdOUyJtlcGWNftvMFirnO1VSyA==
+	t=1793110492;
+	b=VFm5h3v9w2rMxxbibXfoOTxdOwmSMh3Y4kuM5viGLzJxr5e4FZuORmYp8Ee2nbFRztDO
+	 8/Ed/aWmLRoPBhLoX05JvPOJUWMccHuj9oAhSA8dmnyFMy0H0G06VbOqxC+ByIUwjk/0W
+	 6eMlEhsc8O8pyEoUisfjGCtgZ3iJTBAMcHnUnX94fbg9M8SzufHv96y0OU5Hi1GYNovaB
+	 7rih9DDQHHwZrxi0f6JcvZcvTjkNok6f9fSzNWDaT8Bv7L2aknc9y6YZWCHnOsrPCusOK
+	 cjH+Ulj5Lt46tHW07iGF8LZw7evW63tw7uhWsurG+iEnp2sAujr0UBX0NmJUdQ7LzRQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793110455;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793110492;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=ULtd9LbkaeiBjJrJ74ty1dyVfksSuVPpssfCtnxbGQs=;
-	b=VkwRUCcC6TnW4KbnejFjeb481CXTeslEabRB0QAeCIGaqmQK2S6ft9Ej+0+HVyv1pyub
-	 riet8JjjRP5TcIJf9SrL0Al4Xm2Cs8Gus66HgGl84DXekfSDZ7Ke4c8GmMf9/nhma0wQv
-	 sxL+FTJq/9pJ+uTtgqQ49/uACwjT+4V8xyGqKoSh5S2IJFEsns0YlZSj8c+wmSHzKzFNw
-	 2RB/PJthLvOR7YDfrONH5s5obc+HJSYA7OPTC2gHHfKo8z/soLn80DwkHc2Y0zFj+9q3A
-	 XQUqLRNquNpSlH9zlzWwJ73DDoS16NyaEaUg/B09fZHlvZVbpAuW5USGG4B5sOMcUZA==
+	bh=GaS9DIAzMYp6Tb26jgRNliWQoK7YtOPDgti3i8/xKo0=;
+	b=awP0TcKsx2P2QWHBMC6hlBHpWISyS1Wv2LTvlO8NDKWdR/MQaqkXY9kgfwVa6cqBOsbR
+	 UlGhCL3FL9u6w0a3NC2ilgKF/3jzDvJIeXAUo8xkVh8nW6tLXbT1o26ym6BXEboKyY67D
+	 nnHgUWveQFpaKJKI6bm7aL37CEpPDhfYhNuFONCVSRD3/LlUb4p1VmsXGJLlNwmI6AEPF
+	 tkcBS0VjDZR+FVERB3d3WingzQclYnu6BMXEZsHh6AHTcuHLQdvEZ6+3vOZ62efind6VV
+	 Zcw5GiD2+rcuaLB0nJjTtPcQPlkF+JCxrUaVHKg/fy8JhDifb4Bw4M5CD96hJM7h1Tw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nOHXFD9i;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VexdIKwR;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B99606A31D
-	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDEE606A31D
+	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nOHXFD9i
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFA891F01825
-	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:14 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VexdIKwR
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C5CC1F031F7
+	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793110454;
-	bh=ULtd9LbkaeiBjJrJ74ty1dyVfksSuVPpssfCtnxbGQs=;
+	s=k20260515; t=1793110492;
+	bh=GaS9DIAzMYp6Tb26jgRNliWQoK7YtOPDgti3i8/xKo0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=nOHXFD9io0Ru2PaYz+V6smtGs0WntNANVygH/FG21ay5l6eXVd/Fv0/Tv/05f5lHN
-	 ro4iu7gr3151Nom7znD+w9DtyJZyWfUd1ugqFnU4sroYLuBrr059kaYzOqg3LHyBNE
-	 Nq5slenfftrhf+jQMKg2z4tHzFnbsIy48BStIJ4xgz9ShxnCKOCF83cSRLUB1U0tDm
-	 g3peUTLWKcVDShNXN+mUP1xR1HMK/LuErofPe2xUAZAdWO0fFLSPuWwNBeF/MoBv5J
-	 AbW/DgyYr644yxz8kE3Ve5Rjs1Wa91W5XlLBIEfFPMWntO1C6QOqcmg7216oQhQAET
-	 L21vjkzNFgP8A==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-4a6f2825dd6so1073000fac.2
-        for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 07:14:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBx6xJ1IxTOw9Vz/mvXcH5AVNWoaw2PCUQuGjoSsuBZlM2thHk4Vfbb9oJCKKnd23EDqcKSUUYe/qUEG@vger.kernel.org
-X-Gm-Message-State: AFq9FYJvTg8qV/co6tmnj728J2tlJDr2XHTHA6EJQqAovDzhrS3FiSus
-	Lt89m92JrUEjjJ6FS0cG6NJr88eQBg8hJcbftLsIHwzVTEmJ9OILZ3h8+ql0aWc4IvjctcUVsNl
-	IUrUSmpJO9pNyEkRGX0zCbtERYRXPhXc=
-X-Received: by 2002:a05:6870:c69e:b0:49d:c8ab:967b with SMTP id
- 586e51a60fabf-4a83f542697mr5910295fac.47.1793110453054; Tue, 27 Oct 2026
- 07:14:13 -0700 (PDT)
+	b=VexdIKwRzOvQEEgvmO8caE4nbf6xorObDq11NXYDvDa2mjeHckRll+Nx4EKxJD8ht
+	 W4KblFOO6y2af+SJ9nHUVFfDbKNeYcztIFgJWMAPsIy9N1QOvtFFKP0BwXuQ+Pz1Oq
+	 PU638njjn8Fyn5tTjko7v2pOLaNRMNrq1KUOtcwLu54gCfmwSIJkMaA3Tt4mtBszUY
+	 jK4rZKNgVSfkDM6vYqEpQDMMbEruHEMg4wX16UMopLSeUCvdYbUshewmZdxFr4vMsQ
+	 k2dDIfevo2EjeDJmoMRMUFEBreWAsQ6h7m2er3IkNb2RpM4W6NQJkmSB+FLbqt353i
+	 k7gwr/P6ceULQ==
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-4877837890fso2093286fac.2
+        for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 07:14:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBx/MfMAffXZL+KqDPxag13nDBxrsnpOtrJtk13siGpySUbgvMkjCxLC3aEX5I8P8tPLYxxtPTaTqmyI@vger.kernel.org
+X-Gm-Message-State: AFq9FYJ85aRKWpGmlF0lOiIqCroc8RJe4YPlyFOiH5Xujx5MVkkKpvBD
+	WzCiMpjiADKyxmiViCp20UY/7NXHOF3IK9r21Ev2e46mM0UbJI8B4aE0yQrOse7n4hRBxBj92bw
+	/0tRN9XASz1DoifnG1GqwRyEFr+DvupI=
+X-Received: by 2002:a05:6870:2189:b0:4a7:5508:c526 with SMTP id
+ 586e51a60fabf-4a83f42f572mr6040267fac.21.1793110491448; Tue, 27 Oct 2026
+ 07:14:51 -0700 (PDT)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,14 +59,14 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com> <20261026-drm-panel-funcs-v1-9-5e3070a3478f@oss.qualcomm.com>
-In-Reply-To: <20261026-drm-panel-funcs-v1-9-5e3070a3478f@oss.qualcomm.com>
+References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com> <20261026-drm-panel-funcs-v1-10-5e3070a3478f@oss.qualcomm.com>
+In-Reply-To: <20261026-drm-panel-funcs-v1-10-5e3070a3478f@oss.qualcomm.com>
 From: Linus Walleij <linusw@kernel.org>
-Date: Tue, 27 Oct 2026 15:13:57 +0100
-X-Gmail-Original-Message-ID: <CAD++jL=2zsU8xOQWURD7HFOiCYwCNwW9ece1=PoVci2qNM8Ykw@mail.gmail.com>
-X-Gm-Features: AclHuK8ruqZCGkf4O-7fY-Pys0rgaueWTZBuD-NGSUOyqWUpd7La4hdhioD434w
-Message-ID: <CAD++jL=2zsU8xOQWURD7HFOiCYwCNwW9ece1=PoVci2qNM8Ykw@mail.gmail.com>
-Subject: Re: [PATCH 09/35] drm/mcde: use drm_panel_bridge_add()
+Date: Tue, 27 Oct 2026 15:14:29 +0100
+X-Gmail-Original-Message-ID: <CAD++jLnmuXaoKDLyCsPzUBYohOxqjVGVndz0047vmhZFgvvo6A@mail.gmail.com>
+X-Gm-Features: AclHuK9bjg1W8yVOv6xb18mY_G1euLOiDqjDsy95KUm0kaVExInNMT0MB46F2ok
+Message-ID: <CAD++jLnmuXaoKDLyCsPzUBYohOxqjVGVndz0047vmhZFgvvo6A@mail.gmail.com>
+Subject: Re: [PATCH 10/35] drm/pl111: use drm_panel_bridge_add()
 To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
 	Jessica Zhang <jesszhan0024@gmail.com>, 
@@ -134,8 +134,6 @@ On Mon, Oct 26, 2026 at 12:10=E2=80=AFPM Dmitry Baryshkov
 > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 
 Reviewed-by: Linus Walleij <linusw@kernel.org>
-
-Thanks for driving this patch series Dmitry!
 
 Yours,
 Linus Walleij

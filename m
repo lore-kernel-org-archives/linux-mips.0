@@ -1,53 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.101
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793058891;
-	b=oL61tVsuh1vYp/6Egfw6unrP7zJDA+aQuACaAWHXVCRer28xuRhu7VWD8Qiw2uGhhgfO
-	 MxFBPSTlfU0Yik7EZ1TPodRLzp6APnnkq755xuUAXWICtkomZKHqpG0+n0rY9YeGJXWYf
-	 LqoGuzfJLUu0TXMAPB2Oiz1NlBabq9cz3RMIQdrCMuvrR4c9ASVUlQYbvaFC/FeuO5zWj
-	 7mOAgfcsDd6CsgeVyXEfAtzWqYasWaFnIoBQHhRP+AY6XTLPhduD/s4T+BdKxw7pcxv0n
-	 MjSW0FmMCQmZ67epjDdbGOi4bGylNqQFzgNxIx3e/MgjZWV+Fpryu+ZV+33A4S3T6Hg==
+	t=1793063756;
+	b=4WfjL8SLySOiou0lc+GSScw1Rk7xCVcv436rmpQCe4Pdo+E9Louwy5eWVoXAeB95FhWJ
+	 fVC6gXmen0J75JTgReSOTlgkZ0zmNg2BB1BZdRGy0rm+olTozVs8llfEHnY+t5NtxyqFF
+	 xi5a1G8m4B8LluQrHiwqsepKDikpxZLMMUt5P9RcfcUkMb8E7/somWgyo3CdVltTDaozx
+	 bj/MNC+Sl8eXpd9NGFNORXIRgQDTGbgeAc8QlSasgpqbfDkbzqS5PgZ8iGoIEPxej4zQy
+	 byTV3ZIXL7TTBUwdPLAyWGzJD9k3srQZXfsXf4yUFZonv4lVexSZ5drIl2Hti8EcP/g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793058891;
-	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=1rbZZM92EewBFIKqO25Z+Fr2+4X/GzpJedO6dI13tck=;
-	b=w6dskJrCqAmmCo5uhqrlsH8dLzOXLOfO0l0FN3MDeyQT17ogFCRkxciLCTRccQyMY/Uc
-	 34uJY1beQF6dFxWMJxQzZ20v9HoPGyWGDcRdOCr3halQDljaeTlgd2IbTf6kUbKhY+2TN
-	 g0uXpUlDCrC3D4qde8cr64q3I/PYgfNrmJrDxjm3AWMMqH7mOVXPaqjdhv03AxeEaLqSw
-	 WIaS6Hmq+WVQ2Oh/OKD7k0SylIHcGdnduw2RX1YTQot3VqdU5mnW/wezevNaBkgYzSDkw
-	 Mq/cNtWnAcurqCE6zAi6IErqrEaJtbfE2cvltdhFNVKdVV0474HgUJWmzqK0UkXVrTg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793063756;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=qkIrICFESu5+p9IdHsK2lcfxMULnjI90Aj6TvpKsBdg=;
+	b=bJERFPF1Wc83UNJyvGjE8Zh7WF8y/VZxG+Wx2HwG0EEDZbOSXjIsaUQ/1RrjctNjrY/3
+	 3EGk+4cgVZV2fMR/COWLC/YtFhcaRMRLnmK6JqEHsm0KngAdK1sLTHsUxapuZBdiu5qJr
+	 9Avawxb3tVQNsDFZH74U0sJij1tbL8HN9LSkdb+CQzoEjBBUMzPDfGCg8FGqbuGYvmAZF
+	 r+VQkYcwtkuxRjRlnJCK4ann6mYh6SgElel6xUtKpklmvJB2YdOM0oVfu4XTiiJMFDqpc
+	 V9l84aGIuOtXnMm3GEzX5BKP98on4KlsMQRtwHDrDW9LazNRG3wREjafzCpCGCpgrdg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mythread.it;
-	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=Syled8T6;
-	arc=none smtp.remote-ip=62.149.156.101
-Received: from smtpcmd10101.aruba.it (smtpcmd10101.aruba.it [62.149.156.101])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z5LSgVLb;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62730606A31F
-	for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2026 23:54:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 62730606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489F0606A31A;
+	Tue, 27 Oct 2026 01:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=Syled8T6
-Received: from [127.0.0.1] ([79.43.52.162])
-	by Aruba SMTP with ESMTPSA
-	id LUVexsCYFW41bLUVixjBgD; Tue, 27 Oct 2026 00:53:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793058830; bh=5iUEvhleMNRhgFjox1R6x5dcIaCScRIRYb5QDa3E5AM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=Syled8T6PSideLz6f71TVMd3nZ0LvPMRaK2S4MBxXG6vXhQ7QP/IcAm4aD+4zRYs0
-	 mwumCKiAegekS5T1omLmTA7Fxl7BrkQY4Bqmxi2SR6VqdPkBwNVw1EXskcHEnyRqfz
-	 pZIBtlEdq/BsJzB53Qa5+oFqmr30A52i1fm31l8bJy0l2DrQt51lYcB5lp7KHVfxjb
-	 YjmeC/Su7c1UG2Utj+kHrkc+8IlUq+7cQ2cXVgtzeU9n1GSWcsm3aX1Hxm9a72oTkp
-	 Ia0F1qQPfR5grt8bd/f1kCK3TfMGeWygS1+MFkZWTfSE9ou+cV5mM6xujPfTaVHGnf
-	 iKpTf1radmpOg==
-From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Tue, 27 Oct 2026 00:53:51 +0100
-Subject: [PATCH wireless-next v2 8/8] bcma: add the BCM4352 PCI ID
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z5LSgVLb
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7C4A1F01825;
+	Tue, 27 Oct 2026 01:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793063756;
+	bh=qkIrICFESu5+p9IdHsK2lcfxMULnjI90Aj6TvpKsBdg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=Z5LSgVLbx+/HJNW1MXc2vjiTu+QzPIvMP999KzcgwrmSOf6ehZ+iAwB+lzk3VHjFt
+	 X7ZZJuGEb+WXwhWXt+X6Gphv31gC1eL7HN91YC3O0CsE0jsq+fOUfkzcOAj9u+Eo/s
+	 ELCCrrWJb/fg39G61hPaGLdvmAdrwP5KUXPTZUG5uL3ThnA1LxQl6FdTeuZ/x7XspK
+	 z6/8LO/n19heSr827Q6zI4d4g9K5vcO7UhjqTK7Ol/14t9Uthbbtgdn+zP0OhxItcM
+	 F6ALXdAxiJyLPeIwh9DZyP0hNRiS5nB5X7s+DRfYBSN5MjXQ1BkwyC0TH4+cqV4bN6
+	 47nL3wJ4J+0lw==
+Date: Tue, 27 Oct 2026 01:15:47 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: David Lechner <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Paul Cercueil <paul@crapouillou.net>, "H . Nikolaus
+ Schaller" <hns@goldelico.com>, Joshua Crofts <joshua.crofts1@gmail.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] iio: adc: Add the Ingenic X1600 ADC
+Message-ID: <20261027011547.191101b7@jic23-hlaptop>
+In-Reply-To: <20261026083631.48406-1-olivier@mgcrea.io>
+References: <20261026083631.48406-1-olivier@mgcrea.io>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,41 +64,26 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261027-bcma-ac-rev1-v2-8-b69b61c31920@mythread.it>
-References: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
-In-Reply-To: <20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it>
-To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
- Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>
-X-Mailer: b4 0.15.2
-X-CMAE-Envelope: MS4xfGKOy2UZ5BM+jnYiTwLEWzZm9Bqn9y/XHLMt91Xe039y1mbDS6zN0sl+Ucfo/cVe5tkuNjlp6Rw5hN+pifebbZjZn2Ot8f5D3LabQYjPCd/QfoiIkk2z
- JRJRI98Ftv5kvfHOqcJ1mtIfbRgImpA+peqL7328E84g79omkE9gdyAGEk2JXHETX2SDT04LEZH/kbK507b5ZcEL7VoJ38S47JO1LyQfbEB7UNOtNEZiRvGv
- vvXnSdrxqhHJY0KqsWG1LTLCbhu75G2uAsRslHmkmNgWC99Gu/V4nYcdiRUV2aLrl537YzJvKQybbZt8yxAgZ4dcX2fuvGRKgnGYwPFNpFScuw+o8SNY9+l6
- gQ11Azqo6whfTqXDkAFnfhVyHKz3Tn6hteUXv2jso0pvDihPObU=
 
-Bind bcma-pci-bridge to the BCM4352, 0x43b3.
+On Mon, 26 Oct 2026 09:36:29 +0100
+Olivier Louvignes <olivier@mgcrea.io> wrote:
 
-Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
----
- drivers/bcma/host_pci.c | 1 +
- 1 file changed, 1 insertion(+)
+> A driver for the SAR ADC of the Ingenic X1600: four auxiliary channels,
+> 12 bits, one interrupt per channel. Tested on a HiBy R1, whose keys are on
+> channel 0 behind adc-keys.
+> 
+> By their programming manuals, the X1830 (3 channels, 10 bits) and the
+> X2000 (5 channels, 10 bits, one more data register) have the same
+> register layout, two results to a data register. As Jonathan said on v2,
+> the X1600 name stays, and supporting them now is welcome but not
+> required: I have neither to test on, so this version is X1600-only, and
+> a chip_info with the channel count and the resolution can add them
+> later. Nikolaus, if Letux has either at hand, adding them on top with a
+> test would be welcome.
 
-diff --git a/drivers/bcma/host_pci.c b/drivers/bcma/host_pci.c
-index 3dc298506..f6cf722a3 100644
---- a/drivers/bcma/host_pci.c
-+++ b/drivers/bcma/host_pci.c
-@@ -298,6 +298,7 @@ static const struct pci_device_id bcma_pci_bridge_tbl[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a9) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43aa) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b1) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4727) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43227) },	/* 0xa8db, BCM43217 (sic!) */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43228) },	/* 0xa8dc */
+Nothing to add from me for this version but perhaps wait a few days to
+see if this suggestion gets more feedback.
 
--- 
-2.34.1
-
+Jonathan

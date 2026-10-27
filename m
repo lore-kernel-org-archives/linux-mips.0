@@ -1,45 +1,45 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793098363;
-	b=fXAuAQg7qBhTbLkhBxl5OU40z8YORRICmpFNf4B8SfAf00dOrUdU2clDA5S0t+U7gDpi
-	 GbusLL8dWkPtTOms5iPrIP2V9E4X0NP3CGf4lFRi7u9YTJsJJNVTtF4fF8VaSGnrQCvz6
-	 pEAICe5lb/BxNBVWfXP3lvGX/A373lZCaV/FLUFOkc9d5UhLI+6mZSQbiKGqvDB6azSHm
-	 JOOMeIl9hIAmzAafcFoZXf3R/hq9KFNFMVAhFvtZND5nX7oUtZEUwTBagmfqBPnVppqHM
-	 SmQFpunpvJuMC26mVpcFXalGHLTGln1j9rw1Q2/WFOAjnTzoUFoldkSEtod30pF2xpA==
+	t=1793098574;
+	b=RQwOHuVHz3IqX+xvtK/UwltiNj9Hc2UZRBQD1ZCl5GCEfQAqy+mj/yFiYCOmgll05iTA
+	 u7QXx6M03twUIy1DtYZb3IjQ80mCKDh+UTJ9aOT+9Ri4nlHLyPmIijtVeRCIio0TTFBgI
+	 +vVfKXqATVkOvX+DPPKa4NSJfTEopb6OgmEqEd0GOn7SxtvjJWAf5aRug0n5D3occmKTE
+	 gJqos/MAufnEGmqYsiGBOlLIegbu9cUJewl1CkhsV1Bf4aXNsESDRG0YvtYjFKwtFFGZn
+	 L13Z692jpDboE8U9RQnWJfAOuvq9YyWzYkFWVwOVCjMuEyFL8SrQYzEyRe9AEIbQvDQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793098363;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793098574;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=nb0Lf50bJgBV2CiWucdnoIYSpgrOvc7UWebGORq0ITo=;
-	b=Qm6nvCDKtKNj52MREOVPOELUceOQpq3e0i+oocpSczFPDYioEA4XCMTv0Wu+JOyj/uIS
-	 vOkj1aBDwt/dSFN68aHmrMMvd8rMxlx/p7EozDKEg3eo994Rd8D+fQF3QhoHTFGHZHD8f
-	 hH2ugghidrXVvBnlI+EjZMvIh9EsJtpOBQwW1AdqFzzBtatp+ORKO4mNbZUS0atekCAGR
-	 0itph/DmqUjzzPEev8h3aOyYG7aYh6N3X0Bf1BmgESHrCfs09qTzLwm5ShaIF4QXurfn1
-	 0fnDAZiv1c6cpPMfNDNXG7jgbYSAwlJxsf/LcWnSzQqVLM5ic7pGt/vK6DKepUtOyYQ==
+	bh=sUXQlqgovseDKztSQZpstPbPoIlLA77jlJhheOYXXt8=;
+	b=KfeH5BSwkiRML/hodKI5Rwt01tA6mq5NhjscH6KIYBQbqWaTZuLNlsVkAmweUqn2tC1I
+	 vgTMdY1xGnzMTV84mIbdM3VweI95qlNJEVx91piuUAimPvBmZnOH3BFCcuiceKQvO8yir
+	 kNSX2KSoJftaN/2nCmUt8ulWILe76NYf9PXo/AtUmYWCRjqqaVVluegsNV0pYi1DH/yN9
+	 80eVL9B/O9SH6cEpPyB9rhsKTodYqZkkoHsTypoQ/572PFpElsMOG61PauEmguf+/Xd0A
+	 azFQ3msxUksMeSxYF2oZXYbt4+8X+J4qoouYKYlaerXAxRLeavZGcve5uxs6ZEI7KNA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hO5a0BFI;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U71+2ftv;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7CA606A335;
-	Tue, 27 Oct 2026 10:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF023606A31B;
+	Tue, 27 Oct 2026 10:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hO5a0BFI
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC7971F01200;
-	Tue, 27 Oct 2026 10:52:41 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U71+2ftv
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BF931F01200;
+	Tue, 27 Oct 2026 10:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793098362;
-	bh=nb0Lf50bJgBV2CiWucdnoIYSpgrOvc7UWebGORq0ITo=;
+	s=k20260515; t=1793098573;
+	bh=sUXQlqgovseDKztSQZpstPbPoIlLA77jlJhheOYXXt8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=hO5a0BFILnam2QbREVi5eYsEJ2yGN9Fu8pd1BwNmJxgglAb0Kvy+s5dFQA8TUzzWo
-	 rVsCIrUJ4vBurRfdkj+TnguSgQxfIs95ppVRFzB4UQhx9Dri0WAxOXyGz+WidlFPBr
-	 whuQ7NkP/WPc7GrU/LRS+3+kGYyW+vhJEFEOHZUPp/p/uvBpj3C1gkijHHEaMP/WK2
-	 HlGLkEfbjeW5A4LH9wQtiiaRoTDinQ+tbsAIpWV4ocxjkhIho/p2+Kah4niflqGgGU
-	 ij7viDDpCf9BPdLJRckq8Z/tHj9EVwdqEYq996qNY3FOc0yylAdldh/xhNB7BuWAbr
-	 r1FHlA2p+JK7g==
-Date: Tue, 27 Oct 2026 11:52:39 +0100
+	b=U71+2ftvkQK1TI9RF0Q9MEJ4RtFyhwMmA7Dd71F/UNwYWnNi0beQscvuSx35tB675
+	 tCq+FdF0CdyvqUd5J2lKZmv6r8oNWS+LKMhrLUAQONUiyA6DHiGO0yWkPhi81jWis7
+	 tl0iOU5mM5IREvfi9gHUQ9So2L271Si2EN4Cp1rGrZUocM0fGwEZbb4rwS3jlB+LHj
+	 5B7opp3Cf1fl5qhYZthrwMXDHzUjlH9crN3EF3QrXq5dScdDmwqTekv0iTJ+0Hdkvb
+	 MUo+GiNua9wYDCcS7+jxTFbc5/yRxo4XXLR4C/qacTLn/t14N9jnaLoTQoI1x2Ax4K
+	 7bZJyEw5vG/nw==
+Date: Tue, 27 Oct 2026 11:56:09 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Olivier Louvignes <olivier@mgcrea.io>
 Cc: Jonathan Cameron <jic23@kernel.org>, 
@@ -49,9 +49,10 @@ Cc: Jonathan Cameron <jic23@kernel.org>,
 	Paul Cercueil <paul@crapouillou.net>, "H . Nikolaus Schaller" <hns@goldelico.com>, 
 	Joshua Crofts <joshua.crofts1@gmail.com>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] iio: adc: Add the Ingenic X1600 ADC
-Message-ID: <20261027-fractal-unbreakable-parrot-224dc2@quoll>
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+Message-ID: <20261027-grumpy-stingray-of-acceptance-43029e@quoll>
 References: <20261026083631.48406-1-olivier@mgcrea.io>
+ <20261026083631.48406-2-olivier@mgcrea.io>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -63,40 +64,31 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261026083631.48406-1-olivier@mgcrea.io>
+In-Reply-To: <20261026083631.48406-2-olivier@mgcrea.io>
 
-On Mon, Oct 26, 2026 at 09:36:29AM +0100, Olivier Louvignes wrote:
-> A driver for the SAR ADC of the Ingenic X1600: four auxiliary channels,
-> 12 bits, one interrupt per channel. Tested on a HiBy R1, whose keys are on
-> channel 0 behind adc-keys.
+On Mon, Oct 26, 2026 at 09:36:30AM +0100, Olivier Louvignes wrote:
+> The X1600's SAR ADC has four auxiliary channels and none of the
+> touchscreen or battery engines of the JZ47xx ADCs in ingenic,adc.yaml,
+> so it gets a binding of its own.
 > 
-> By their programming manuals, the X1830 (3 channels, 10 bits) and the
-> X2000 (5 channels, 10 bits, one more data register) have the same
-> register layout, two results to a data register. As Jonathan said on v2,
-> the X1600 name stays, and supporting them now is welcome but not
-> required: I have neither to test on, so this version is X1600-only, and
-> a chip_info with the channel count and the resolution can add them
-> later. Nikolaus, if Letux has either at hand, adding them on top with a
-> test would be welcome.
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> ---
+>  .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 60 +++++++++++++++++++
+>  MAINTAINERS                                   |  5 ++
+>  2 files changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
 > 
-> Changes since v2:
-> - Cover letter (Andy, Joshua).
-> - MAINTAINERS: no list line; the binding's path in patch 1, the driver's
->   in patch 2 (Joshua).
-> - Includes for what the driver uses, copyright line, MODULE_AUTHOR(),
->   reverse xmas tree, open-coded return, no message after
->   devm_request_irq(), a blank line (Joshua; Andy on the return).
-> - fsleep(2 * USEC_PER_MSEC) (Andy).
-> - The ADC clock divider is now even, as the X1600 programming manual
->   has it; v2 wrote the divider minus one, as the vendor kernel does. The
->   divider fields are named as in the manual, and the two clocks only
->   repeated sampling uses stay at their reset values.
-> - The probe comment on staying powered up no longer names the keys
->   (Jonathan).
-> 
-> v2: https://lore.kernel.org/all/20261024041357.34346-1-olivier@mgcrea.io/
 
-Please keep here complete changelog, so also v1 etc.
+<form letter>
+This is a friendly reminder during the review process.
+
+It seems my or other reviewer's previous comments were not fully
+addressed. Maybe the feedback got lost between the quotes, maybe you
+just forgot to apply it. Please go back to the previous discussion and
+either implement all requested changes or keep discussing them.
+
+Thank you.
+</form letter>
 
 Best regards,
 Krzysztof

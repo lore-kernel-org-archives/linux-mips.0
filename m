@@ -1,55 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793110492;
-	b=VFm5h3v9w2rMxxbibXfoOTxdOwmSMh3Y4kuM5viGLzJxr5e4FZuORmYp8Ee2nbFRztDO
-	 8/Ed/aWmLRoPBhLoX05JvPOJUWMccHuj9oAhSA8dmnyFMy0H0G06VbOqxC+ByIUwjk/0W
-	 6eMlEhsc8O8pyEoUisfjGCtgZ3iJTBAMcHnUnX94fbg9M8SzufHv96y0OU5Hi1GYNovaB
-	 7rih9DDQHHwZrxi0f6JcvZcvTjkNok6f9fSzNWDaT8Bv7L2aknc9y6YZWCHnOsrPCusOK
-	 cjH+Ulj5Lt46tHW07iGF8LZw7evW63tw7uhWsurG+iEnp2sAujr0UBX0NmJUdQ7LzRQ==
+	t=1793123264;
+	b=mpv+wKhYKiAN5hNz/mAjX2n37/+dDkU0bRByzZiYTULDyP1DYqr8FeSdRoFhxdQsaSNM
+	 5DGPTJjoosUDCjBLEtIFZu88sQswcx7S7Di1SqaPTGd2yY49MoUVSqchzeDAZs/rDwtqP
+	 on+UurVP4/W8560AcUmoTYbFHKBqmuVUvT0clFSz29coG3o0acbDXE90xKih0CpeViwk1
+	 JTcp94FddKb7gPCXKDrb2XXR00gY2H6xnlBrVdRbmQgW/1SKUVuwOOD3+eFEkyhngNBl5
+	 ygliovs1IN/zwvot+reM31nEOv0EOWHv4xmqWI8SC5GImV7eC9TG8xtrBU6InOU2W0Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793110492;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=GaS9DIAzMYp6Tb26jgRNliWQoK7YtOPDgti3i8/xKo0=;
-	b=awP0TcKsx2P2QWHBMC6hlBHpWISyS1Wv2LTvlO8NDKWdR/MQaqkXY9kgfwVa6cqBOsbR
-	 UlGhCL3FL9u6w0a3NC2ilgKF/3jzDvJIeXAUo8xkVh8nW6tLXbT1o26ym6BXEboKyY67D
-	 nnHgUWveQFpaKJKI6bm7aL37CEpPDhfYhNuFONCVSRD3/LlUb4p1VmsXGJLlNwmI6AEPF
-	 tkcBS0VjDZR+FVERB3d3WingzQclYnu6BMXEZsHh6AHTcuHLQdvEZ6+3vOZ62efind6VV
-	 Zcw5GiD2+rcuaLB0nJjTtPcQPlkF+JCxrUaVHKg/fy8JhDifb4Bw4M5CD96hJM7h1Tw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793123264;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=l7VNpg2kRwd5b+144/iE+6hpJCf1dqpyVWjx64qc4l0=;
+	b=DTBUAFJ1cGEi8N3SMPAWrcxSScBNzKbb3MZ9qC3shmFBQ11LJI15uBL0X1/lPEPazU5s
+	 tWXub8jN+XQA5LwyAi0dkbfwjLUiPEb3kjXcYTUncewm5IQVlCMPiEghkv64QHrxacm4+
+	 WLpGAmVOSdG0Sx5It+hBj2BwKZxp2L8+VtXajh0vvzKPSG6wogU7eaghxKeK0w4RCPT9j
+	 7wZiQBkaJp43/uhY1X+hjpbYWdBhzA5C0lwL2xM9pOkPz9JfCGrbinN/Uv3w3kHO1GuIU
+	 Qnq94A+1PRJauBKLj7uH/nofqa0XI1L6VXCia56YbpMgQhKS5eWhiVcohY3GissexdQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VexdIKwR;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nxx8rD+n;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDEE606A31D
-	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8287606A31A;
+	Tue, 27 Oct 2026 17:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VexdIKwR
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C5CC1F031F7
-	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:14:52 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=nxx8rD+n
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2F3A1F01825;
+	Tue, 27 Oct 2026 17:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793110492;
-	bh=GaS9DIAzMYp6Tb26jgRNliWQoK7YtOPDgti3i8/xKo0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=VexdIKwRzOvQEEgvmO8caE4nbf6xorObDq11NXYDvDa2mjeHckRll+Nx4EKxJD8ht
-	 W4KblFOO6y2af+SJ9nHUVFfDbKNeYcztIFgJWMAPsIy9N1QOvtFFKP0BwXuQ+Pz1Oq
-	 PU638njjn8Fyn5tTjko7v2pOLaNRMNrq1KUOtcwLu54gCfmwSIJkMaA3Tt4mtBszUY
-	 jK4rZKNgVSfkDM6vYqEpQDMMbEruHEMg4wX16UMopLSeUCvdYbUshewmZdxFr4vMsQ
-	 k2dDIfevo2EjeDJmoMRMUFEBreWAsQ6h7m2er3IkNb2RpM4W6NQJkmSB+FLbqt353i
-	 k7gwr/P6ceULQ==
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-4877837890fso2093286fac.2
-        for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 07:14:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBx/MfMAffXZL+KqDPxag13nDBxrsnpOtrJtk13siGpySUbgvMkjCxLC3aEX5I8P8tPLYxxtPTaTqmyI@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ85aRKWpGmlF0lOiIqCroc8RJe4YPlyFOiH5Xujx5MVkkKpvBD
-	WzCiMpjiADKyxmiViCp20UY/7NXHOF3IK9r21Ev2e46mM0UbJI8B4aE0yQrOse7n4hRBxBj92bw
-	/0tRN9XASz1DoifnG1GqwRyEFr+DvupI=
-X-Received: by 2002:a05:6870:2189:b0:4a7:5508:c526 with SMTP id
- 586e51a60fabf-4a83f42f572mr6040267fac.21.1793110491448; Tue, 27 Oct 2026
- 07:14:51 -0700 (PDT)
+	s=k20260515; t=1793123263;
+	bh=l7VNpg2kRwd5b+144/iE+6hpJCf1dqpyVWjx64qc4l0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=nxx8rD+nror4YxninkczUDa2I1XrwE4PQI2duzB6BvO+3EYvOaufFAvzZ2Gj9nES5
+	 m2zhP7itgsRY8ByszH9+QY7e9oymBBzxIfJ3zvBXW3w7bS6/kqkm6HK9EIP2hRF3gx
+	 hmOiOawrr2NgRfzq2VABkINRuQlPg0a+bna9PAWyTbUKUg2DYcYwVY5G62OPWiiqC0
+	 cqXPw4Ti6rzYnpvSwsqPFTPY3B5TNQYlaXC3wYiszTVKqykpL5QqmAYXK9OJ0TFckC
+	 JKJ0i0m5eOlPsX6OEZ8okOsW/w8f3mni5EbM2CUucBT4uAj2MoFNgzkAtZFEU8ibdM
+	 AdUSHht44XH2w==
+Date: Tue, 27 Oct 2026 17:47:38 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	David Lechner <dlechner@baylibre.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+Message-ID: <20261027-crunching-outsmart-deb81d2c4d6c@spud>
+References: <20261023204209.48556-1-olivier@mgcrea.io>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,81 +63,126 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com> <20261026-drm-panel-funcs-v1-10-5e3070a3478f@oss.qualcomm.com>
-In-Reply-To: <20261026-drm-panel-funcs-v1-10-5e3070a3478f@oss.qualcomm.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Tue, 27 Oct 2026 15:14:29 +0100
-X-Gmail-Original-Message-ID: <CAD++jLnmuXaoKDLyCsPzUBYohOxqjVGVndz0047vmhZFgvvo6A@mail.gmail.com>
-X-Gm-Features: AclHuK9bjg1W8yVOv6xb18mY_G1euLOiDqjDsy95KUm0kaVExInNMT0MB46F2ok
-Message-ID: <CAD++jLnmuXaoKDLyCsPzUBYohOxqjVGVndz0047vmhZFgvvo6A@mail.gmail.com>
-Subject: Re: [PATCH 10/35] drm/pl111: use drm_panel_bridge_add()
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jyri Sarha <jyri.sarha@iki.fi>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>, 
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
-	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Sandy Huang <hjc@rock-chips.com>, 
-	=?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Alison Wang <alison.wang@nxp.com>, Paul Kocialkowski <paulk@sys-base.io>, 
-	Yannick Fertre <yannick.fertre@foss.st.com>, 
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
-	Philippe Cornu <philippe.cornu@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, 
-	Samuel Holland <samuel@sholland.org>, Thierry Reding <thierry.reding@kernel.org>, 
-	Mikko Perttunen <mperttunen@nvidia.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Igor Reznichenko <igor@reznichenko.net>, 
-	Michael Walle <mwalle@kernel.org>, Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
-	Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
-	=?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
-	Purism Kernel Team <kernel@puri.sm>, Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
-	Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
-	Michael Trimarchi <michael@amarulasolutions.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	Casey Connolly <casey.connolly@linaro.org>, Michael Tretter <m.tretter@pengutronix.de>, 
-	Cristian Cozzolino <cristian_ci@protonmail.com>, Junjie Cao <junjie.cao@linux.dev>, 
-	Ryan Brue <ryanbrue.dev@gmail.com>, Nickolay Goppen <setotau@mainlining.org>, 
-	Stefan Mavrodiev <stefan@olimex.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-	Robert Chiras <robert.chiras@nxp.com>, Alexander Koskovich <akoskovich@pm.me>, 
-	Markuss Broks <markuss.broks@gmail.com>, Artur Weber <aweber.kernel@gmail.com>, 
-	David Heidelberg <david@ixit.cz>, Dzmitry Sankouski <dsankouski@gmail.com>, 
-	Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="IVzTkKMFsWARD4NZ"
+Content-Disposition: inline
+In-Reply-To: <20261023204209.48556-1-olivier@mgcrea.io>
+
+--IVzTkKMFsWARD4NZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 26, 2026 at 12:10=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@oss.qualcomm.com> wrote:
+On Fri, Oct 23, 2026 at 10:42:08PM +0200, Olivier Louvignes wrote:
+> The X1600's SAR ADC has four auxiliary channels and none of the
+> touchscreen or battery engines of the JZ47xx ADCs in
+> ingenic,adc.yaml, so it gets a binding of its own.
+>=20
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> ---
+>  .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,x16=
+00-adc.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.=
+yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> new file mode 100644
+> index 000000000000..7886836b10c6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ingenic,x1600-adc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ingenic X1600 ADC
+> +
+> +maintainers:
+> +  - Olivier Louvignes <olivier@mgcrea.io>
+> +
+> +description:
+> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input channe=
+ls
+> +  measured against a 3.3 V reference. Its clients select a channel by in=
+dex
+> +  through "io-channels".
+> +
+> +properties:
+> +  compatible:
+> +    const: ingenic,x1600-adc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: adc
 
-> The connector type passed to drm_panel_bridge_add_typed() has been
-> ignored since commit b7797081ccfe ("drm/panel: embed a drm_bridge into
-> every drm_panel"), the bridge always has the type of the panel.
->
-> Assisted-by: LLM
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+This clock name is pointless, but also probably wrong? The name of a
+clock should be the name of the port/function in the device being
+documented, not the name of the clock at the provider.
 
-Reviewed-by: Linus Walleij <linusw@kernel.org>
+But it's not useful when you only have one clock, just like you do not
+have reg-names or interrupt-names.
 
-Yours,
-Linus Walleij
+Otherwise, this looks fine.
+pw-bot: changes-requested
+
+Thanks,
+Conor.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - '#io-channel-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    adc@10070000 {
+> +        compatible =3D "ingenic,x1600-adc";
+> +        reg =3D <0x10070000 0x30>;
+> +
+> +        clocks =3D <&cgu 28>;
+> +        clock-names =3D "adc";
+> +
+> +        interrupt-parent =3D <&intc>;
+> +        interrupts =3D <11>;
+> +
+> +        #io-channel-cells =3D <1>;
+> +    };
+>=20
+> base-commit: a3b3580713f3ac5a32dc2874ee546828977a1d68
+> --=20
+> 2.39.5
+>=20
+
+--IVzTkKMFsWARD4NZ
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCauDjugAKCRB4tDGHoIJi
+0rHiAQDJqflN11vFOAQL32ZMWC+E2VMahLfw+dfMccVcVRCF9wD/b4ROSm7WtF59
+puNa4dwEMEvAxnNVq+n1mo1WhBFgQgo=
+=1Ief
+-----END PGP SIGNATURE-----
+
+--IVzTkKMFsWARD4NZ--

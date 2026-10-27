@@ -1,101 +1,108 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793135380;
-	b=s1RkMwjEyZnJbRwIFNMEjyzlB20YB4BkeJXeRS4SXCYWIGJRMIpRKdRisIugZbDX3JbI
-	 9pgoKzzpCib9w0FhEzDcV2FVBGc/0nUa5P99r73Fhi0LwgIid+qnZXj4rh2ceM2HYMkcg
-	 Aji9ttAdP40hKXddOr93V/8TeEEvtV7atiYNAiE81zABjH9KCxu/nzaHiJB4Xs1QxboTJ
-	 cgQgUAna5fjdp2V+REexJ5XA9qJd0Wu/uraD2+aVotMZ5AX7vLzjC/FMaIsSK8zC51Xje
-	 NC3HGYEStyTnnZ9Q139azxKfle78AxelMHcmxWnfV2dpdbbnCZyFYxBkdknW/lgoTPQ==
+	t=1793138960;
+	b=4d+VFHAjy17NLV/fqRLNmnPfUMi7WAHS1fAriGA9gZHZTTRiiyqszDtlGdrLyncjGde1
+	 bKQUTgEk/wUmNZTbTgcUjcE+Va5JtLz3xm6ayUo9a3CHDeSNhvdETOtyypR1+cPxLmNqe
+	 xB6YeGBD6aOHS2Afz/fKTH0JJ5WrXHnUFYKaT2gXCcyHfOaNhRVGfmrEpHx65us2tb4LE
+	 beb0ty8EpEc1kqns9wXvyD6Nk9y8vM2vkVg7qsM2pL3N6jWpwzlOQTxx9HVHcJfeS0wIp
+	 A8EzLSMsnYKLUaovsX2tw9kLsTqX+96cNUc9vLoyDuTgeahLYwreJmqUUEfE/H+GILA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793135380;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793138960;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=5xjzIYr+bH8hlCaoTxpmkLS6NjvJyW6sNrJ1hHd5rJ8=;
-	b=AMiBJxIXUapGPrVWzwF+q96CH9mqGXLhUfZyxfQT1KxY3Ag7KcGVLUl/rAxWNACXcahZ
-	 wnZPlwnnn+9fOrQdrjp/UKZ0pJFZvIofkqp6oKaBqvFOS6JC5sIfg9DTSQTiGE21Z13FW
-	 OJ3ufAIxmSebJ4cFfPPyzutdzgqdIbhpbQlBg0kchwMJbJlPVEK+o6x1je55WxYnkd8yM
-	 +E8GTykZNSluzQ1PF7w0S3OqM+7yzgj2TyUfCzcJsA1Zw5BWnDOWdCvW1yEbDzm4MLhWr
-	 Q6bTZJBtU1+P5loHuwI0E+9apeQzpuECLLyeF+6p57wlmKmc8MjvDtdMNp9kNgzaKyg==
+	bh=/PLmL+V/SYmlIq7ZPKJzSVA7G2MVgEzQyQAcifW2km0=;
+	b=s8HW/70YffnW0qWJK1clhkU8ok6e/r7pA93Re3XiFmi1bcD4ryhrsqxapEdo8adPMGbY
+	 742hbIfRoGk5JMYhZYnE16lQ0SYiRDAbF5ZziLPmiiIO1qsLfPjE7EEFE7VyUZ/VZ8FX9
+	 /ucxVyEczttn+Tkwe3h6JzW6QaF3y1cvxyIXOrlQv1pR0xLsKrEBAaIEEh6JEBVZKr7w0
+	 nbFwbEA/rVsQWUrmLNrolUjU0aUWHtur1TLUVWCTKCLk9lud/P6EGuFOweOVbyVDebG5N
+	 xFunAYIoXy6r5mg3bcNmNOuHqbfAqB/JJHsgRX9I/uW7MLlOMtv+smjT3nnNh931yQQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=c4f9gxA9;
-	arc=none smtp.remote-ip=209.85.221.43
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=PdkMk9ke;
+	arc=none smtp.remote-ip=209.85.221.41
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FD8606A31A
-	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 21:09:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3FD8606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDE9606A333
+	for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 22:09:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2CDE9606A333
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=c4f9gxA9
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-48e10a70540so191908f8f.1
-        for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 14:09:39 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=PdkMk9ke
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-48dfaa3fa12so1101707f8f.0
+        for <linux-mips@vger.kernel.org>; Tue, 27 Oct 2026 15:09:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793135378; x=1793740178; darn=vger.kernel.org;
+        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793138958; x=1793743758; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=5xjzIYr+bH8hlCaoTxpmkLS6NjvJyW6sNrJ1hHd5rJ8=;
-        b=c4f9gxA9gFBSUh0oJBf053KSbkujgNmeShZvYgLYY2/Y/MjA78j5OIYZ/bPiI8JcyK
-         VjpVUOHlivKbXVx+g1cUv6I6+l+S7rowgRSvSOEZ5soXIqixdTMJlyHFcWLBaTLmoo6V
-         RMN3C7Zd5+LUwQcRVeZXTjqMkjUVtCQoMgSbe0e8tVJ9pjOYr/I3E2U5s/SSeUppUtOc
-         +Z7eMw5HLLS8bu7cB9FVKdyW6c2Tisvm2HiGpBJBRiJBragyR1zbS/JIUpuxM46OAL2P
-         VNk5ilLHefUlsi3KwRisMDvpYhmNxfAGXvSUZy0Ty5wU/dRTAu6Jcb1yYnYqvBfmh0om
-         ufbw==
+        bh=/PLmL+V/SYmlIq7ZPKJzSVA7G2MVgEzQyQAcifW2km0=;
+        b=PdkMk9kewIP8utyRGSc4jW43jNTAMvQDKKnT3gKuktZwVf28pYzlLA/+8SiuCRAfrI
+         iTP6Wp32ZYmkYmhcNHY+LWMn13O7ReplBh3xR1RTmCprKzhXgsxWqnqvaqpUJ8giL+V1
+         +xe0jxSNWptp05NM6xsnj84Gham/RG7I0v7BixpSZKpen9On/xnh5L/fo/U7koThVBIs
+         HkAGjIXALNX70uCl3tdEmETxOS2rCvbb6GpILbnhsIveWjpCvtJ7r+xzlfu8vNUfNXfp
+         uI9APCpJhu2wiO6jOdmntGI32eOTlFJirCXh5Dkr1AW6sJNNS0tkpH1V/MPuBRsJjy0s
+         UL5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793135378; x=1793740178;
+        d=1e100.net; s=20260707; t=1793138958; x=1793743758;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=5xjzIYr+bH8hlCaoTxpmkLS6NjvJyW6sNrJ1hHd5rJ8=;
-        b=yTsUY+HutpvbH+cOvW9PZnz5kW3G1Y2OOkALKx02gl5UMdfZedUly4lfbaM28vdTzN
-         5DMCwuC9Htld+YMeQEnohdlO9SYUm0hkaF0PNkuQXHZzO+ME/lKvbtGkRw53hkECwlVY
-         dm41mkTdigESjqky+CicRqfQLF7zBbnH9kzXcQuH7Nd9K1RhLSp8iPF3JZ7BcE4lscK8
-         wtbW67MZuu/PoR6QiCvYpMqKX10D+Dz0+4FIH/xV97lhasNwBBH+OChl0bwIxpmp/XJw
-         a6JXv4Hpc5opI3LYKWzYXQA+byPB+OdhPuphiiT2yCHMX/zb6k/bNBbOMvQ4niLmtqJq
-         tk+A==
-X-Forwarded-Encrypted: i=1; AKwUvBzUghfUuYUpYvr76gJ6gQvM7BcKWxVY3MWaABAQ9IaVENbXOkol6hlI8K0Pcyn/HysV3QpDuNYzM5+D@vger.kernel.org
-X-Gm-Message-State: AFq9FYIB6Qsxjkei7d3XGgDqIgIA0EAa0QtBLlkvgxc/v1PP2ufHe82R
-	zXBkdpe/3D/Agz2Mon5Q9+7EVocUah8WSudW6s5TZqY6MLIVo0WiDyX0pBVt3ot5GSRs2zVvKlL
-	x+VcnNR8=
-X-Gm-Gg: AYBFou3b69uaYkE3C9auFs4IRWrSZ/KOyPFHVRVhPQZO0mqs+fOMUCnnkg8VfleGqJZ
-	2EwCWmxVg/gamBWDOrdibvoJCABBXBwOFNjT6Jw20omMs1/ESrAw55purCPs+B4Oz1Spw3R9onQ
-	MCUoADqwBVzH5ZFH4kPTfoaH30XmMk1mDRCGg1AMslkLsXFtaZqxQjnjsc2082r7B+GlO2htLpk
-	lwozbgu12DluwcHU3UC+BtsduxE+2PdKN/Ugh9rVavMjR5TpDkCPVNqIpQDgXs8f3bOewWmk2Lv
-	0PNL4FI5aMRdtEDni15ulGJHFtLl40jcqSRSDUCyKzNj8MnJSL4XBh0RwhP9hV4l1MIoQu1JKCq
-	BEgavt11SpoztjhYYWHFnI0twHzlSvleXOoxHANPtO1g+VVlDWLjM7m5wZoTT5tbfvMbqV4oTfQ
-	4VrFPjdU4X6qcolWQGD+MIbTF1xwKDNk3YWOFBaE87XXKb+v3QOCRK/7TiMOkkCnofk11HrhyIk
-	ckOJGv4wx2xs/zfXiEB6YA0QtwAal6oU70C3IAE3wSl7jc18X4TSam9I7ht3uLZGky30bjBM8zA
-	rxNevw8jGojn
-X-Received: by 2002:adf:e011:0:10b0:48e:43a:1d9c with SMTP id ffacd0b85a97d-48e5d5d9158mr1044256f8f.48.1793135377892;
-        Tue, 27 Oct 2026 14:09:37 -0700 (PDT)
+        bh=/PLmL+V/SYmlIq7ZPKJzSVA7G2MVgEzQyQAcifW2km0=;
+        b=THlSCOjGqgPMVQZj2ONpJNVEfpZj0RtjIuqaq750luHsxaP2K2KhgZpAu5LeWsJIIQ
+         Qcu5VH7k1izlQizDeVzWN3wMdu8y7v1Hac7G4AEz+j+TRbbSfepVoM/5jo9CHimrl9jf
+         awGcWCjwl+NbL7+rAaUxZn8u48b4C8IMBTLXT6AZTxuGP3faskkeIeN5uuD1a5d9ms3P
+         O4v12yAli1g0dtUpjVvzXipoQGpFX+XSz8WohdGoBPeTrlSJRwOuUQbrEA4+r3uAaVAY
+         0v0j7j8XcS4G6jsr9mpWDRTI7CNH1zHT0NbYePDNpfTvVwfY53ajjH2S8/64DGZCkCwH
+         4fxw==
+X-Forwarded-Encrypted: i=1; AKwUvBxfsogJRHQPXDN07JrNNupKTuxUhQM/BRvSY54Z7kpr95Ms3G7YdAOagCb5EQPDhR6MNKmg8NP8ZaFK@vger.kernel.org
+X-Gm-Message-State: AFq9FYI9vMYCgB9t9eUH/OOa3A8TNYFqmocZHpb/KipcJUlXyrXbfytK
+	j7DkrylNpwv7qGSedHTrCIdR0gDc4By5WytgKJ/ECw2W+QSZUP1TvghPcxNLHdge4FE=
+X-Gm-Gg: AYBFou3L9PBdtJGrkAOBHsjOJ7WHSfmNNjXTiFHt2XxP8vIvvY9EM88bMBZ7ZyeB/sL
+	rk9wwqmAeQZwbUrTMb4a6Ekl39FKx7RXCxaR6spwUSzfIG2oZM1RSfzLV1/FQKKya0WAH91AJW3
+	Bsq0lEFODIESYMOcAwwMt/p4vHS/RRZoLNTvebe0POe/RL85uMAnUCHXsGf5H8TzOFLOfK90qg7
+	e96+ZT9ZtltfthDdiTSqeEqN1AWG9xtjcy7/Yf6Yjh9G/It9EpmpqJUKZ4M3JuGp4PniJPaz2Zu
+	CYg9QnFe4Uf3ml8syBkLpOa07jx1ffUB68OwyfuOJ9R1tIAsx9U1urU3rXiXik63KKSGWk43pfd
+	R3TV7G47fwRsnKxihjk2EZiFlEROmTlel6OYgfQj06cOtUpzQxJYlSNL2mAJOAvs0u2Re+/WOxf
+	cIjl+FIhGbUBJns+Qf7E9FCPlXTyPAvWrYZ8Tsp6d+GVeftpRxUQFZJqrb+HeyrIU2AiN1PX3YK
+	E8m44nRdzetyv9sB9EF7s+4MYWhp5zcEfmHYBEi1Ex69YiM678PBZNAlSHyrub6dyExK+6TDKoj
+	k6tugcBzQv4y
+X-Received: by 2002:a05:6000:46c6:b0:48e:6f:19b2 with SMTP id ffacd0b85a97d-48e55a51a7dmr5924445f8f.25.1793138958515;
+        Tue, 27 Oct 2026 15:09:18 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:5cfb:af57:9834:741b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ecd8dcfsm24488905f8f.50.2026.10.27.14.09.37
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ebcb958sm25306661f8f.21.2026.10.27.15.09.17
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 27 Oct 2026 14:09:37 -0700 (PDT)
+        Tue, 27 Oct 2026 15:09:17 -0700 (PDT)
 From: Olivier Louvignes <olivier@mgcrea.io>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Cercueil <paul@crapouillou.net>,
-	Paul Burton <paulburton@kernel.org>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Jessica Zhang <jesszhan0024@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	letux-kernel@openphoenux.org,
-	kernel@pyra-handheld.com,
 	Olivier Louvignes <olivier@mgcrea.io>
-Subject: Re: [PATCH 0/6] MIPS: Ingenic: Add XBurst / XBurst II infrastructure and SoC support
-Date: Tue, 27 Oct 2026 22:08:21 +0100
-Message-ID: <20261027210821.21612-1-olivier@mgcrea.io>
+Subject: Re: [PATCH v2 2/5] dt-bindings: display: Add the Ingenic X1600 LCD controller
+Date: Tue, 27 Oct 2026 23:08:02 +0100
+Message-ID: <20261027220802.56348-1-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <cover.1792956055.git.hns@goldelico.com>
-References: <cover.1792956055.git.hns@goldelico.com>
+In-Reply-To: <465cb935-2648-458b-9cfc-9b7fd5dc53c5@kernel.org>
+References: <270ef5220fdd5ec3e0b88ba5c4ce044992fca41a.camel@crapouillou.net> <465cb935-2648-458b-9cfc-9b7fd5dc53c5@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,26 +114,17 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Nikolaus, Thomas,
+Hi Krzysztof,
 
-Patches 2 and 3 overlap my cpu-probe v2, sent the same day with
-Nikolaus' Co-developed-by:
-https://lore.kernel.org/all/20261025073146.25326-1-olivier@mgcrea.io/
+No, it does not. The X1600's controller fetches its frames from memory
+itself, through its own descriptors and DMA (programming manual,
+section 10.3.1 and Figure 10-1: AXI -> DMA -> async FIFO -> TFT/SLCD),
+and the manual has no IPU or other block in front of it.
 
-Both add PRID_IMP_XBURST (0x0000), so only one of them can be applied
-as it is.
+So the only link in its datapath is the output, to the panel or bridge,
+which the binding's port describes.
 
-They also handle the X1600 differently. Mine puts PRID_IMP_XBURST on
-the PRID_IMP_XBURST_REV2 path (write-combine through
-_CACHE_CACHABLE_WA, as for the X1830), as the Letux commits
-ee3e4e8baeb6 and b799b9a5e4d3 do. Patch 3 here gives it a case of its
-own with _CACHE_UNCACHED_ACCELERATED.
-
-Tested on a HiBy R1 (X1600) with the REV2 path: it reports "00d00000
-(Ingenic XBurst)" and boots to userspace.
-
-Nikolaus, which handling do you want for the X1600? If it is yours, I
-will drop my patch.
+Will send a v3 with your other points after -rc1.
 
 Thanks,
 Olivier

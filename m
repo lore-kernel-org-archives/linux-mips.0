@@ -1,90 +1,107 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793174066;
-	b=GcHNTS/0frer4Q8dDOCUnl9fUCC9FnSfh3CrrYseljChuSiHlGDqvqNhXPjyyWBUEYfo
-	 5iCiW3rJcakhhP0LDhQhcz9JCNnd6ZDRg15s/yCkzzIv+8yeA68rV+LhYg6pBOIj5qMmW
-	 cyoZ41WO7Hz4aHgPTujMDHNCxLGoRTcumegiPXJAIvENZ0meWf/MseCqt1fSy5HfKeDZV
-	 nmFwJ0GHVkPxKEFxom5tACafP/qhtPb7CjPVd01GHXX684beue13NkymcGbgS3qM2Twnq
-	 XmWpmEoRclFW5ZbwGNmvLCqV2Lk85K27u/fYik8C44jwQZo2temOOxhIbHCvSA53l9w==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793174066;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=KJx6BcmEV1tIJp5/fThVmRGj444L6tF3gP2AUIIXUNE=;
-	b=xCUxH7HtGCMammhZUI29SifY2b2MbV/strhHdwbX5tkINlX1TxI2yKVABBSfXpk8RADo
-	 oJu9wxjKIJMijCryv2fqMmxOJgg7em2T1lxB3wtNcJySFX/jqs4MJZh+AP3B4goTT8tFv
-	 nw573KYTg5HncRSKriQ0REgSF6cRbe8YjvZkViTm2n5ftylJtr/cizfMRmseJikwwdX/N
-	 FXH42b092KxdxkIzVtBsvAvC7B7vxAkJzquBDxfAQaPLFSq9QE2GUu8XCdVNVL3yqimbs
-	 kmdU1xczcTW+Nl42gdqZv6oVOvaXl15ADeeRZEW2YpO5gaQqPPAqsSJ7KtnJuJA7y9A==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YrtaeSUZ;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=HsYoRumw;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.8
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793174662;
+	b=tM1eKuiw+qZaW4h3XGvCwYkS/XfKug7dbHF76lC2dbk1ug8xvnamlAHLNUcKtRyY6Ym4
+	 WYSsTQIX2BzC9RjIZF9e7G+SozvIngByaQVo1G6c6LCXwHlnSVlvy15fxiTtns1I82D32
+	 hcpatUDoZmlV8TDtUtAPz80kIA8/AvPLzxw/3n9GZLWEEWFGY4yD9stkyyQArwbGrnEXy
+	 mfvgUDn/FQ+xfCyDjnVf6xdZGKZbmhs58AlRad0r58Xr7Crrpi+P6ycYzq8gw1jlvHm31
+	 TkBSix9Gbj1UM15RkLylsq5suBK4hROOFbTlOf09oudsg+b/8LcGcyPFOYPZuja9R7w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793174662;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:Organization;
+	bh=QYUY+SzuyzidMIs5wvcWQ+wJedzQHVpapr2RX4nAS3g=;
+	b=aTCP8atxdM5BlUJgkAlpC5uZTrCgJHVEntngJprjERh8IqtrmZQTX6Spl4k2QvqHOpie
+	 LJIH5i0ircn2R92jq5tpC6OWcT5VTdAXRV0Ocfyj1JS5+OaMWQwEvVaaFxdBCLF5cUDI8
+	 z5MCvTzAZ0FsltTlBjh5Yp2A14Hc0fHInMlil+Wr7F4lfgbXwd5mfgBVLOLoML2naUpXo
+	 Lj+FzrCZih+dwmV9bfoBWG9GHo1HRd539Ooeu8L9QtALEO8WEANTAKSDFptRd8FK7sB5O
+	 iAIXiUfiMndIfnoEKgrfMwfwTCZt8rBBpFjmqtIhqaXmDDNzoBq5mOVN9I+T09HaPDg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=PSBniF0w;
+	arc=none smtp.remote-ip=192.198.163.8
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80168606A31A;
-	Wed, 28 Oct 2026 07:54:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 80168606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E841606A31D;
+	Wed, 28 Oct 2026 08:04:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8E841606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YrtaeSUZ;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=HsYoRumw
-ARC-Seal: i=1; a=rsa-sha256; t=1793174043; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=QEROafXO7EkB1NgajBC1qiQZ3+JwfvvJf/Vxhm3dHpaGicq6fBlYOW1xs9xB+3Ahh0
-    JidhsathV85RxH+1m7hD+4Qfbh+Dtk4I9EK7l8cg9tu2fU7sIBbiqnznKwokGld0Crcv
-    OCrwsEtolAjpW3HiVHbpyaSl4/xA/dqbHb097HD1eVOXXusUl42R3FYVlbnfXkV3mXnC
-    MC6Gq7tF875/jc4WRK1i5ct6JQgFthSRhomFw9LDSTNVsbi2DEmDEYY4WbUpUgeR8eep
-    0WW+kKV8T0tvJeGl62qn090FPPwXhnAnirerdBz5Emo44uhvaN5JV1wWQ7m1UW2YZzRo
-    msSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793174043;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=KJx6BcmEV1tIJp5/fThVmRGj444L6tF3gP2AUIIXUNE=;
-    b=dcs7KfpwkPQGX7aZcGP47FsCQUwqTib3nTyNT/qHDfMU3HvbjyTOaI05y4Rb/VENxt
-    9ozX6UDvFYWtSxgGHaIC/eNFBmASPlP+1S6ueo4aNiqwkwlg5KKs3o4/9i+XZZ8FWSmH
-    +Vqdw8FXGPF40ZnUzqZMCLvDlQQMQgXV9UfWgQD62Tz+3aMsCU08639om9GLxkqAeNG8
-    fn9kkZHkz+PA2/P+iolk0QQl8FldnIquNofb/HkK6QHpwnXH1HbeX1SkzNWDJH/71HWA
-    ctif2/5kjSXVAYr1L2FEh9LE/v0Re8DtKZJOpRz5OPUcpKxBNBEgg3dTADbfGOh6FlJg
-    lR0A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793174043;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=KJx6BcmEV1tIJp5/fThVmRGj444L6tF3gP2AUIIXUNE=;
-    b=YrtaeSUZbF7NtCYcwVDCCJlPb0BkCzK9tAR4+y1JhjxrbK98sDgBO3FfVAcsx9t1ee
-    pKBUpi2sZe9zkyY9v7Kqtp8aYBAYnVw1FvyrV3MvsOb56N5afYHoVfi8QUbPSNG7S5S0
-    o0eK/DkYa4r65jWksjMDbebbjA5i83m2WDZZap4sUXhd6dbpoD9TrBUvFfPlkGsxkS+E
-    W0zGpYXKtarpj1Xc4eXKMzkFdo4YklHZOkSicu4/veeJUU/BefTyuKL4zGGj703hKvQ9
-    47jH8mkTbVXxc585yckTMjtXVVtjg9DRoVbx9BkCcOVJV5PbLNp97fmZIMtm7dkiXsNy
-    ajyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793174043;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=KJx6BcmEV1tIJp5/fThVmRGj444L6tF3gP2AUIIXUNE=;
-    b=HsYoRumwIQQiQ4zeOPPpps9EZsuoO0yup73s5LYGEuyMxEgxiqk4TWr0XADlOtYEAe
-    CkrH3O6FL7yG75jX1fDg==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrTj5oHnsiN8oToSJQKZjl88YAGFDRn84+aVUM="
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229S7s3B5i
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Wed, 28 Oct 2026 08:54:03 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=PSBniF0w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793174661; x=1824710661;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GlCrv/Z8ykZTWKLkjrgizpbqqqsL18IOZ9JsGj4pQww=;
+  b=PSBniF0wd7ppMixld2UUoEB73b1yiGoF8vRXQw+G1YSVuOdfGa10kRy1
+   PP038b2/20WyHj8Za8s3lOK6A5CKledqp9kljtVsDUOiHC+eGA3zA2vlM
+   MT+/FAI3eBlmS2C57vmTMY/nyWjYUaQySkZWV1rFyvAhDua/Nh3xd3GdY
+   sWwjrfJ8DDi7yQFTihVA+9UVxHpxbl2/Ir0XbFIFvaF+ALvnRLsnNW4NV
+   s/AYwI6IkDwqYskbzcKE+gmmy5RrHX+JztLgLKfgdsnx3gKVSDAKY0OQJ
+   fttgekcrMV59ncuafHN6jde7skpkm3TP+u/EPoo8Z96VcipDy/1yMDhB8
+   Q==;
+X-CSE-ConnectionGUID: VvuNxWhBR5mRVIB/1sqpXw==
+X-CSE-MsgGUID: S9P5R5nJQ4GOca9bIDys7w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11948"; a="1780746"
+X-IronPort-AV: E=Sophos;i="6.27,182,1787036400"; 
+   d="scan'208";a="1780746"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2026 01:04:20 -0700
+X-CSE-ConnectionGUID: 3U2XXT5qQFSCkgAuKxEChg==
+X-CSE-MsgGUID: XN/qcR2yR4S9jibXAKAjrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,182,1787036400"; 
+   d="scan'208";a="4852263"
+Received: from abityuts-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.117])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2026 01:04:11 -0700
+Date: Wed, 28 Oct 2026 10:04:08 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: James Hilliard <james.hilliard1@gmail.com>
+Cc: Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Zhou Wang <wangzhou1@hisilicon.com>,
+	Longfang Liu <liulongfang@huawei.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Keguang Zhang <keguang.zhang@gmail.com>,
+	Binbin Zhou <zhoubinbin@loongson.cn>,
+	Taichi Sugaya <sugaya.taichi@socionext.com>,
+	Takao Orito <orito.takao@socionext.com>,
+	=?iso-8859-1?Q?Am=E9lie?= Delaunay <amelie.delaunay@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>, dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org, imx@lists.linux.dev,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Frank Li <Frank.li@oss.nxp.com>
+Subject: Re: [PATCH v3 1/2] dmaengine: virt-dma: share the DMAengine
+ synchronization callback
+Message-ID: <auGseGw39K115Zfi@ashevche-desk.local>
+References: <20261027-submit-mtk-uart-dma-synchronize-v1-v3-0-aad7a6b3c62e@gmail.com>
+ <20261027-submit-mtk-uart-dma-synchronize-v1-v3-1-aad7a6b3c62e@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,65 +110,34 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH 0/6] MIPS: Ingenic: Add XBurst / XBurst II infrastructure
- and SoC support
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261027210821.21612-1-olivier@mgcrea.io>
-Date: Wed, 28 Oct 2026 08:53:32 +0100
-Cc: Paul Cercueil <paul@crapouillou.net>,
- Paul Burton <paulburton@kernel.org>,
- "Maciej W. Rozycki" <macro@orcam.me.uk>,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- letux-kernel@openphoenux.org,
- kernel@pyra-handheld.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <8F150A92-1C7F-4F5E-A02D-2730ADA5C917@goldelico.com>
-References: <cover.1792956055.git.hns@goldelico.com>
- <20261027210821.21612-1-olivier@mgcrea.io>
-To: Olivier Louvignes <olivier@mgcrea.io>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Boddie <paul@boddie.org.uk>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261027-submit-mtk-uart-dma-synchronize-v1-v3-1-aad7a6b3c62e@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Hi Olivier, Thomas,
-
-> Am 27.10.2026 um 22:08 schrieb Olivier Louvignes <olivier@mgcrea.io>:
+On Tue, Oct 27, 2026 at 12:22:26PM -0600, James Hilliard wrote:
+> Several virt-dma drivers implement device_synchronize with a wrapper that
+> only converts the DMA channel and calls vchan_synchronize(). Provide
+> vchan_dma_synchronize() with the DMAengine callback signature so these
+> drivers can assign it directly.
 > 
-> Hi Nikolaus, Thomas,
-> 
-> Patches 2 and 3 overlap my cpu-probe v2, sent the same day with
-> Nikolaus' Co-developed-by:
-> https://lore.kernel.org/all/20261025073146.25326-1-olivier@mgcrea.io/
-> 
-> Both add PRID_IMP_XBURST (0x0000), so only one of them can be applied
-> as it is.
-> 
-> They also handle the X1600 differently. Mine puts PRID_IMP_XBURST on
-> the PRID_IMP_XBURST_REV2 path (write-combine through
-> _CACHE_CACHABLE_WA, as for the X1830), as the Letux commits
-> ee3e4e8baeb6 and b799b9a5e4d3 do. Patch 3 here gives it a case of its
-> own with _CACHE_UNCACHED_ACCELERATED.
+> Document the requirement to stop the channel and prevent new callbacks
+> before synchronization, and the context in which the callback wait may
+> run. Replace the equivalent wrappers in the existing drivers with the
+> shared helper, preserving their callback-wait and descriptor-cleanup
+> behavior.
 
-and in addition presents a different __cpu_name.
+...
 
-I am not sure yet which one is better and more correct regarding the
-_CACHE handling. Maybe Paul Boddie can comment?
+>  drivers/dma/hsu/hsu.c                          |  9 +--------
+>  drivers/dma/idma64.c                           |  9 +--------
 
-> 
-> Tested on a HiBy R1 (X1600) with the REV2 path: it reports "00d00000
-> (Ingenic XBurst)" and boots to userspace.
-> 
-> Nikolaus, which handling do you want for the X1600? If it is yours, I
-> will drop my patch.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com> # hsu, idma64, virt-dma
 
-I am currently working in the feedback that we have received and
-the plan is to submit a V2 soon.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-The same is planned for the CGU series where I want to also include
-jz4730/x2000/x2600 patches.
-
-Best regards,
-Nikolaus
 

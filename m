@@ -1,47 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.3
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793163675;
-	b=AK2sfcfKPhnMtuZTQh6joOd1OvZPTUonQvXDP5OIakH1L5eJyv5Dl4oLIOLzHKCztVls
-	 +vKi0bNHb1KcYKDaiK9AyWhyRkj/CPmqF+D1MOGSz7fWYyiCS74FfQHdE0uRZhRtangnu
-	 M0tMZ1vkwUHUcShgl3YIO1PrWi0vnrDI5KOgLrtwaqBlpbIJbwucD8f9bGmGEV5Oo/3Nk
-	 FUCWPjVNdFVWs0DF95SB3eL/eVSnOCTq4O+d0h+r8mYn0p6WVVakqxcIY/hOmF0nhT08E
-	 ek+UID0gdksAtXbH5oxRCsmKSUQ5IhJ8VSn3gfdUCtTBVa2e8/4Vshxcv2jyLxR3H2w==
+	b=pKZSyNEy813TkaL3HmUaH8qLMzrWqwB+55pR+FcHfpliYhDUODglhoOF0UMD6eSDgjX8
+	 rqPf3yunkGrCJmCEXhEeBKtI/mdVeQKx/ksDT4sx8wJnbeAqmmSwTe4riOdtMwQAkS3rA
+	 oJ0lPvhTEM3O96dtjbXpBH8R8XLeY0jhx3RYTyThdIrddvFpu2toZVv9MiLjyZaPaQpJY
+	 cy/9rIL34Ohqa6qcD9xgWrRV2i9JHprS5Lqz7Od6ldL5LBO6F3PSuXo7nz19J1Op+unsd
+	 XP/kSOquz9KfpF1PwXoIoI7J5eqo4uphRhynI4NFZIRlHGPfIAH9kHuJkc7Tf7sXx6Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793163675;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
 	 X-CM-SenderInfo;
-	bh=KxVNeIJrGr9qlmIQvjAJsM9SSTFfUCnp2tPgwkRft/4=;
-	b=12DzTjViVoqWQpId2yNhkDr5Kkqcwg1+i1oAn92zJdicpq0KDfP5qFU4yOg8b2riHwfd
-	 Ie01JSEcCkCdBculTEGBf3IvEPkC4Ws34tB8UvyTwobo9FGUBYgf5TDewOqCQMUkTXMzy
-	 zDp4BgMnS4udgz4GJthqHoLaMWgcxVaffKVB+xl8FXo5XdDMVlblddOvSAJ6KFzlVsRzg
-	 t/6ZQX7pWds3C644zIEO/VmJyWrRZGi5FJy/cCbF5cxXrn6912z9D4IS71xoXx6MDDh73
-	 5qMFAGcjyuWPKz0NwFdA/awHuXfOhOoIE/EPvSPagHeqKIazcSQETCIMGeHezCHeW+Q==
+	bh=ymr+0yCui/4JCxO03GbrK6xdmJta7Ectz0jTg964RpU=;
+	b=mWVF3Gl0tHAYXSZOdwI+9YWvhzNqccLNUuruiziyxzT4454kj3szn2L+m5TC86waqU2r
+	 EvwsOw5Ced7HyywsOWk9qIDGUPvwyyXpxV1jiUrXNC2LuP4aUBGdhQwB2gcz8H7qdzmet
+	 YWtv4CcQ98pMfBH2OkZIJHVPfceh9n3D05SGexAYrBh5kMMpDdE517akc9En1z8OgDxK6
+	 EbIGmjxk/+qfEj1vG4+a2TcKwvxKjit5cMCpGo/9II9HXb+PG8BpB40rrWfT49d+yFvjj
+	 oc7eEu5lc8mBwKe30xEp7PEvJ6D6o4BJr9xX0Vcw5bqSDtelGJMZVKVw0Ex/ynox6/Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=163.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b="HG4sy2A/";
-	arc=none smtp.remote-ip=220.197.31.4
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=oZffLyjd;
+	arc=none smtp.remote-ip=220.197.31.3
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F65606A31E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CB5606A320;
 	Wed, 28 Oct 2026 05:01:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 92F65606A31E
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A5CB5606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=HG4sy2A/
+	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=oZffLyjd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Kx
-	VNeIJrGr9qlmIQvjAJsM9SSTFfUCnp2tPgwkRft/4=; b=HG4sy2A/u+9RAt4kne
-	YiPpvjeiq8OW+A/yQtRmsB2xcvFi8hKc26BU93FlrYhOBZye4zXQlWRWyFHZ9iyN
-	crMQw7FY6zpHextZtdZn/BRK2kYKpv4MPgaXfFo7IzRZHvKn528lWF3t3wYsPjeE
-	rBI1tuCrT2CvO41Tm2/YrL6ws=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=ym
+	r+0yCui/4JCxO03GbrK6xdmJta7Ectz0jTg964RpU=; b=oZffLyjdgY/FBIc/5g
+	9vihCjkkEGQHHBSvZsId5W+o45hv39GVpliQ/VgT3ke9WB0ZLg3ioaPrdUWxlQBr
+	nMOfGHNIHY5g2KUQXDIY3NMKC3tT9J77Fmis5MjJYInXllyKcFMV8yxlc+bzKFj8
+	HI2JHu0GoA/eTNGRnDkANByh4=
 Received: from pc.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD31_V5geFquXTKDA--.16748S11;
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD31_V5geFquXTKDA--.16748S10;
 	Wed, 28 Oct 2026 13:00:50 +0800 (CST)
 From: Jiale Yao <yaojiale02@163.com>
 To: Huacai Chen <chenhuacai@kernel.org>,
@@ -53,9 +53,9 @@ To: Huacai Chen <chenhuacai@kernel.org>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: stable@vger.kernel.org
-Subject: [PATCH 09/12] irqchip/loongson-htvec: validate MADT MSI-PIC entries
-Date: Wed, 28 Oct 2026 13:00:36 +0800
-Message-Id: <20261028050039.121080-10-yaojiale02@163.com>
+Subject: [PATCH 08/12] irqchip/loongson-htvec: validate MADT BIO-PIC entries
+Date: Wed, 28 Oct 2026 13:00:35 +0800
+Message-Id: <20261028050039.121080-9-yaojiale02@163.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20261028050039.121080-1-yaojiale02@163.com>
 References: <20261028050039.121080-1-yaojiale02@163.com>
@@ -69,14 +69,14 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD31_V5geFquXTKDA--.16748S11
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw4DuFWrGrWfJF1fCF18uFg_yoWDCrbEkr
-	n29rs7GryUuF4xJ340yry3XFyaqw48u3Z09F4SqFy8X340yr1rArnrAr4fGF4UGw1SyF93
-	GrZ8CryFkw4IyjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbkhL5UUUUU==
-X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbC8AOTzWrhgYNWgAAA3y
+X-CM-TRANSID:_____wD31_V5geFquXTKDA--.16748S10
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw4DKFyxtr4rWryfKrW3Jrb_yoWDCrbEkr
+	nFvrZ7try8uF48trySyr13ZFWaqw4093ZY9F4SqFy5X34rtr1rArnrAr4fWF47Gr1SvF93
+	GrZ8CryFkr1IyjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbyCJPUUUUU==
+X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbC8AKTzWrhgYJWZgAA3U
 
-The HT-vector cascade callback passes a typed MSI-PIC record to
+The HT-vector cascade callback passes a typed BIO-PIC record to
 initialization code without checking that the complete structure is
 present. Reject truncated entries before dispatching them.
 
@@ -88,17 +88,17 @@ Signed-off-by: Jiale Yao <yaojiale02@163.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-index 725f30b7574b..1f5bf01c3183 100644
+index 75e40ba6069d..725f30b7574b 100644
 --- a/drivers/irqchip/irq-loongson-htvec.c
 +++ b/drivers/irqchip/irq-loongson-htvec.c
-@@ -280,6 +280,9 @@ static int __init pch_msi_parse_madt(union acpi_subtable_headers *header,
+@@ -269,6 +269,9 @@ static int __init pch_pic_parse_madt(union acpi_subtable_headers *header,
  {
- 	struct acpi_madt_msi_pic *pchmsi_entry = (struct acpi_madt_msi_pic *)header;
+ 	struct acpi_madt_bio_pic *pchpic_entry = (struct acpi_madt_bio_pic *)header;
  
-+	if (BAD_MADT_ENTRY(pchmsi_entry, end))
++	if (BAD_MADT_ENTRY(pchpic_entry, end))
 +		return -EINVAL;
 +
- 	return pch_msi_acpi_init(htvec_priv->htvec_domain, pchmsi_entry);
+ 	return pch_pic_acpi_init(htvec_priv->htvec_domain, pchpic_entry);
  }
  
 -- 

@@ -1,60 +1,82 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.5
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793163704;
-	b=eGZ7lDO/xA0MGCPR1S7us+vxtbmKCARgrKQmQu/ZUFdWSo/BFMEeXKyjJSgjO06zmn1T
-	 RxexMNGkn6TcjAFVNopah65GHRpwVMw0hhnzOXBpBFE1d0l995+jvReQF7obu1et208F4
-	 HhiMDvXGNVARhqcJm2ozsS5XoOscHshMUWT22MmPd3qsHhu8PIHofjSd3pYjvEEMIZMQr
-	 hic+WFGhF+6WK1OqnQFuRljfop98lO+BelFmgnWcb+q7VyZXs7V4KZybX2DDZh0Uwtofm
-	 Npp9anNGFGDBczmSa+wAEL5+mUD36Hc3AqL2UO23jvMTlSEj2jhuWrLAKxDdEkLPJag==
+	t=1793163742;
+	b=sE9/KHRtgmd87sNmClnJoykflf6wV6fLFTnPp6C+9gq7TgvcG7nNbzHMaho466ETOQ3Q
+	 OWHz5i0qr18G7werO6kR2pbaJ4+4lZ0YI9FgZED01AgWO+m8Qaao1jW0butPqPzgC6oJX
+	 o2RQpvVqYX3DydccWIOwp+R1gmoFBSGu2Pep3dMndvi8jR+r4fOvBwOYfjAEiR3Ec9uGL
+	 xDYMhESOq8cvG2jCcc8wzvqssGeQ2an49SNgSJWiVMHYoHMqt3a5z4yywKO3qPcSkw4Nm
+	 JulnAL1v003IA5WB+BZVwqtAH77/CdRw6xj8qsivoLp1JvAXz77Pa5uBsRRKFI882RQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793163704;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
-	bh=YGf46adzam7uLIFI8ht//dQytCRtYBHLyOFw2qVtmWw=;
-	b=qDYU5ojCY0TFAosbwH5/dCDpiJ6Lf8sLLs3gjDK9QjIdTJO2LYPGbDIbKOpW569hVREx
-	 actDqK2TjBgXGGqVcWwqKYkNXiaE4vNtC6s/WXFSXWNYc+cHNL0jmdZO+n7DTSUiKVWh2
-	 m2KsSDd8HyJaqEipDIEh+w/kwgisriKUacu17EKrdlN6fOJHdtwJdhjAuJmgFEfPSSbNv
-	 fL92TGxURws2Ni6vH8csI5r4/s/HN3C+lwOX2v20mUaxohuBLd+Ar6fvR6mmMfiWZcJnF
-	 qafsqm343GOf+B1A76cteIfCvPcY2eL6XquNxGSGXa9uISnH/mY38YjdonFyxNkcoNw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793163742;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
+	 X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=zLz0pazdOfTsdwtCAGyvlkZm5M8fg99B0g197ylxLwk=;
+	b=U5k4CXGsEXID91yeXHBiFH6e7L7b2WXA/VMo6mn/37syU5ExIJkwUWknNF1s+QaWMujw
+	 6+1RiQ45AqR4nQ6ixPJDrKxXOk6vFoh5T1/njSitrvNNeFA3DQixIlEdg1vDbRGJhYPDZ
+	 sV59HLfnVsf55DXnMgltKO+IMWOh621qq1J2YttFh3dosxIgfe0E+ifnjSB42IXAS2AYp
+	 q4sXZVKKs8+GLrJ9pZcv3Nhg+0xlWQ+fnjGdeRyfnRmRWiB6c20SuAaWl5OPEWmoVuMwp
+	 ex6mwRRKEDQozh0sDlMbfhQRABebdfTaz4goqLUgx9XFyHgOngH/2EgXGbZ/cQGN2cQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=163.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=d25ZTego;
-	arc=none smtp.remote-ip=117.135.210.4
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=cvOsB5qB;
+	arc=none smtp.remote-ip=220.197.31.5
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A0C606A32C;
-	Wed, 28 Oct 2026 05:01:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56A0C606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D9F606A31F;
+	Wed, 28 Oct 2026 05:02:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D8D9F606A31F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=d25ZTego
+	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=cvOsB5qB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=YG
-	f46adzam7uLIFI8ht//dQytCRtYBHLyOFw2qVtmWw=; b=d25ZTego774FWoIM+T
-	GK+ePFd9rczgnY+B8ip28umFvw+ER6wv+dnWXQK73feQVGupf/lLD9FiGWbbYDxy
-	h0etVwTd/zH9OZxE/P3Q2U2dluIl2rfkxEzcrLpysR8s1yDTuuhc0EwpH2WDEqtn
-	Bbj40cc9Qh0gGhZKqI3fThsDc=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=zL
+	z0pazdOfTsdwtCAGyvlkZm5M8fg99B0g197ylxLwk=; b=cvOsB5qB2Wj0hI7UKh
+	cXipRRM+LqlaGC7zY6lk5NhWTd/Fk4JoYV1WoHQFW2yGikSPLyrb+nbEMzsuHn3x
+	KEKyXypvLKwXWCHdhELadpwFBJe8I8jQp97Pz56Nn87m11JYg8+A2XoxD6VfZaUy
+	d1OwkiDViz6VKQ2r33g0xjJvM=
 Received: from pc.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3X2CggeFqRyhQDA--.12044S2;
-	Wed, 28 Oct 2026 13:01:21 +0800 (CST)
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD31_V5geFquXTKDA--.16748S2;
+	Wed, 28 Oct 2026 13:00:43 +0800 (CST)
 From: Jiale Yao <yaojiale02@163.com>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+To: Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Marc Zyngier <maz@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
 	Thomas Gleixner <tglx@kernel.org>,
 	Radu Rendec <radu@rendec.net>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Anup Patel <anup@brainfault.org>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Tomasz Nowicki <tomasz.nowicki@linaro.org>,
+	Grant Likely <grant.likely@linaro.org>,
+	Jason Cooper <jason@lakedaemon.net>,
+	Robert Richter <rrichter@cavium.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Liupu Wang <wangliupu@loongson.cn>,
+	Tianyang Zhang <zhangtianyang@loongson.cn>,
 	Jianmin Lv <lvjianmin@loongson.cn>,
-	Marc Zyngier <maz@kernel.org>,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH 11/12] irqchip/loongson-pch-pic: validate MADT LPC-PIC entries
-Date: Wed, 28 Oct 2026 13:01:19 +0800
-Message-Id: <20261028050119.122424-1-yaojiale02@163.com>
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org
+Subject: [PATCH 00/12] irqchip: validate remaining MADT records before use
+Date: Wed, 28 Oct 2026 13:00:27 +0800
+Message-Id: <20261028050039.121080-1-yaojiale02@163.com>
 X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -66,38 +88,52 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3X2CggeFqRyhQDA--.12044S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xry3Aw45WFW3AF1DGw1kAFb_yoWDZrXE9F
-	1YvFs3AryUCF4Iqr4Iyry5XFyaqF4F93ZY9r4SqFy5G3y8X3WfArnrAr4fXa1UGF1FvFn3
-	G398ur9ayrW2kjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjGjg3UUUUU==
-X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbCzgGb1WrhgaHVWQAA3m
+X-CM-TRANSID:_____wD31_V5geFquXTKDA--.16748S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Cr45CF4DXr17tryDKF1Utrb_yoW8Cr4kpF
+	W5ua4Fyry5CFW7CwnxAw1UZFy5Jr1rKrW2qa93tw13ZrZ7K3WDXay7AFWrXF4xJw1xW3Wj
+	9F4FgFW7CF98uaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07URCJQUUUUU=
+X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbC7xuRy2rhgXvKVwAA3C
 
-The PCH-PIC cascade callback passes a typed LPC-PIC record to
-initialization code without checking that the complete structure is
-present. Reject truncated entries before dispatching them.
+Several ACPI interrupt-controller callbacks cast generic MADT subtable
+headers to controller-specific records and access typed fields without
+first checking that the firmware supplied the complete structure. A
+truncated entry can therefore cause an out-of-bounds read during early
+interrupt-controller and CPU discovery.
 
-Fixes: bcdd75c596c8 ("irqchip/loongson-pch-pic: Add ACPI init support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jiale Yao <yaojiale02@163.com>
----
+Add the missing minimum-size checks at the callback boundaries. Records
+which are passed from a probe validator to an initialization callback are
+validated once in the validator, before either callback accesses them.
+
+The issues were found by code inspection and have not been tested on real
+hardware.
+
+Jiale Yao (12):
+  riscv: acpi: validate RINTC entries before use
+  irqchip/gic-v5-irs: validate MADT GICC entries
+  irqchip/gic-v5-irs: validate MADT IRS entries
+  irqchip/gic-v5: validate MADT IRS records
+  irqchip/gic: validate MADT distributor records
+  irqchip/loongarch-avec: validate MADT MSI-PIC entries
+  irqchip/loongarch-ir: validate MADT MSI-PIC entries
+  irqchip/loongson-htvec: validate MADT BIO-PIC entries
+  irqchip/loongson-htvec: validate MADT MSI-PIC entries
+  irqchip/loongson-liointc: validate MADT HT-PIC entries
+  irqchip/loongson-pch-pic: validate MADT LPC-PIC entries
+  irqchip/riscv-intc: validate MADT RINTC entries
+
+ arch/riscv/kernel/acpi.c               | 3 +++
+ drivers/irqchip/irq-gic-v5-irs.c       | 6 ++++++
+ drivers/irqchip/irq-gic-v5.c           | 3 +++
+ drivers/irqchip/irq-gic.c              | 3 +++
+ drivers/irqchip/irq-loongarch-avec.c   | 3 +++
+ drivers/irqchip/irq-loongarch-ir.c     | 3 +++
+ drivers/irqchip/irq-loongson-htvec.c   | 6 ++++++
+ drivers/irqchip/irq-loongson-liointc.c | 3 +++
  drivers/irqchip/irq-loongson-pch-pic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/irqchip/irq-riscv-intc.c       | 5 ++++-
+ 10 files changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-index 98fc1770e2a5..49eb81add098 100644
---- a/drivers/irqchip/irq-loongson-pch-pic.c
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -432,6 +432,9 @@ static int __init pch_lpc_parse_madt(union acpi_subtable_headers *header,
- {
- 	struct acpi_madt_lpc_pic *pchlpc_entry = (struct acpi_madt_lpc_pic *)header;
- 
-+	if (BAD_MADT_ENTRY(pchlpc_entry, end))
-+		return -EINVAL;
-+
- 	return pch_lpc_acpi_init(pch_pic_priv[0]->pic_domain, pchlpc_entry);
- }
- 
 -- 
 2.34.1
 

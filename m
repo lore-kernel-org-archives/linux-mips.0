@@ -1,76 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.69
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793214192;
-	b=Ap4tFMcgX3hVPqeNfwBbCO0U05Mqq4lS6oHZL5wSuyIVn0U0xQfHtoqlU1DPCV3tEjbd
-	 bnhTudI3qG6dG6XR85SoZAh1FQTKK6+9qB4T7DTz5wO8P3Ty1YJ2OyxP9b7RCPdsYb8nJ
-	 IH2ojVpJQNUbNNmgRUllV+Wr+iSIXFVtbXnEc1NdK28Y7lcAPv7WUbGUIx1QN4YjPgcg2
-	 O7KBCiykwDwbAUc4vpnnn/bM/2/MIb5aaGGgmZwbJnT2hSxpV4e3zhSXP/aTn5oa7jfqc
-	 REESxf5yH6nySvk0Tcy00jB6U8oR1UkfUwN1TsXM2Hi6j5QBhGJ4HFJi3VxuAzWXk5Q==
+	t=1793217909;
+	b=F2lM43tk1lbJ+7en6x/QzT//5h2w1F1YbFt0fgYBUYxHqPzPmB1I8AQ+phW1NnmCuTZ+
+	 /2T5WCkntPZNvaMMn0Kku91UxvFDhVLXHwvIIePdVxjAsYHCUa/0ghVVEsB/PpAsugO0c
+	 wG3Z4E6f5aiAyh/hIzSMI+N9l+8+meIBUo0J5JFbDoCIq9ObI1Q/446/iV+I64plmZ+8S
+	 aN4h8nRihyOTmLY/Hr1WbnvNfBe2hhj4A7FiiidwJHpkSH/C7VMDpo/xNlATEBf/rOp9H
+	 wGbeGT+uSzp8FAiG1aIZxddu35RKwrKvTljsYAxpBBI/2UIWN6SfctWGYVg6AUvejbg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793214192;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Reply-To:Date:
-	 In-Reply-To:Mime-Version:References:X-Mailer:Message-ID:Subject:From:
-	 To:Cc:Content-Type;
-	bh=jCCEmu80ia44kI2vyDb6i59VDXRIs93I0WproZ1Xw/A=;
-	b=BkIbzS33nfN95093Yfd0Oft6PO1CHw1WSQGCf6PS+gxqS8d+Q0gWfZNlw03otLmTd726
-	 0gK19cWi5+jm4MHXHRUHckX/0CpnZOPUCZEfnrULrtyygyTl4wMNl9uPodrw9JUvSla1r
-	 amswk3PMgD/qvSq7w/1iZ77bKqN4gP+KVKcijTNbGUT21boqP3X7Wq+/E4bwjtfUHJ1Lh
-	 3EB6Bb0Ye8tqzcXmF6YX9WrTETmo/yGldpmGkHZegXPMmyPW+v1EhQslFk0zPj4klkyM2
-	 4vOAB99Fal3YsV/uFn89pSdk4C+FEk8XIcVZxHeBmhN2yo4u1ZescJ/17cuF0W9W/bQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793217909;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
+	 Date:Message-ID:MIME-Version:Content-Type;
+	bh=o49wDZezadbzzhjMZXVo1RNTg8xkSKbSUV93QZ7B39c=;
+	b=aM0qXwvTYBZhnsFz7UHhbYQ4iYPTu4BEIHm6wAwMqTAQ3EC0SePyK0biy4oYssB5am3Y
+	 xD+7wwnMEC17UIg5yGdkG5oTgoxLDBf/mf4TNYpxWuE7pieHkoE6S/Rj84Na8qV+/qo50
+	 C+DWH716dSe0UWjohmymokWVGXP5s0VcAjlZV+Nex0iNyINdTwBBILXk3t9yZ+MocUjYS
+	 oJ0GcxDOlMDJWG1wzN29NC78CqkCL140yPnI6Bux7wRPvJWRPYbA0AEia1LRIiqteXy8h
+	 wEnwJY6QkIPA7Mzmur1HMw9RVdtcy4pF5mGAExeJ8yx0bu0NAVOrgGFU4xkcB2kl+uw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=google.com;
-	spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com;
-	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=VKCoKKaW;
-	arc=none smtp.remote-ip=209.85.216.69
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IdwFqAwu;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA1D60A6F43
-	for <linux-mips@vger.kernel.org>; Wed, 28 Oct 2026 19:03:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4EA1D60A6F43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF68606A32C;
+	Wed, 28 Oct 2026 20:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=VKCoKKaW
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3abb4c24125so1234681a91.3
-        for <linux-mips@vger.kernel.org>; Wed, 28 Oct 2026 12:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20260707; t=1793214191; x=1793818991; darn=vger.kernel.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:reply-to:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=jCCEmu80ia44kI2vyDb6i59VDXRIs93I0WproZ1Xw/A=;
-        b=VKCoKKaWzE2ZwVdJNmZ2sHfiG+KYy5lqQ6i0TsdahSfguB8+ESncbH3xe7BAm5PMEr
-         Q2jNZybsr8T/OPE4rcgH6TJFsrEHx25QQodbvFRK9rmyThmhDrBShJEtAZPC5lf7Dw6Z
-         n0j2lj1MdfRpm2YvS/mAQC7pHLFF02JaJLFKDf/j/2o6AD5FxpQ2Mykl2OvaoWH/q5SO
-         11SmykgHIBFTO4Wqjb/oz7PvUtp0kSs/YxJVlLruwf+/gTk9MyKnG/GmkJvBgumlE//6
-         +vR0EfuEnrgATAOhzav2N012MxlYmtHXZiPybtbyC9U5lzJn9XmnQ3/lZZ+pED1y9sIm
-         /ArA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793214191; x=1793818991;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:reply-to:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=jCCEmu80ia44kI2vyDb6i59VDXRIs93I0WproZ1Xw/A=;
-        b=vlGuHJIuoWIvbwE8H7QO86K4qr6K3vUjhnnA6y6txUO0/xf5rUkkVjYZ3e8qa80X4U
-         oGRm6nEPnXJzUYfT1rlP73fC1oFrttlwjI2GlqGiMfsG2skZjjQhzWpNAFHOUEy4LYX/
-         piOdYypjI05Nfa+WCVCzW/vkbMTSVe3d2iEHywhWsEJrQmCE8Z7WXX/Q8H94kylDLqWI
-         CV9ctJ7+gdDNhfCWaBzfzyKc5Y9kD6S3O5U3tqi5tv8hGN5B96mnq9k90DIDdHr/ClYW
-         1+/GHFyhjpD4skBS6wA2KObzqziiu6HwH6h+ELwOk8g+Km/d+d9xzs9ejhOdVX98nnyE
-         r/BA==
-X-Forwarded-Encrypted: i=1; AKwUvBxpOYLQb5VVpNZMVEegpKEdt9ldJg8AUQwXz+mMmrVXIhV/4wfetfSE/pn+S0T2pMP39mSijWYxk8Bd@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ68w5PWKUpWz6y3CwVMF1Bod95ySMUHDvWnbIo2qgFrt0MBlfe
-	W1htYS5V/aQTV4ux52VS1ygt/myDXHwTbMdaI0Ng5bz5P/Ke/di/8V8qV+6WdOnIGuLZ4xuW5LV
-	VF+tK9g==
-X-Received: from pghv3.prod.google.com ([2002:a63:f203:0:b0:cd6:b233:e4aa])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:4b06:b0:3ab:b64:5893
- with SMTP id 98e67ed59e1d1-3ae581bc654mr2418362a91.53.1793214190430; Wed, 28
- Oct 2026 12:03:10 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed, 28 Oct 2026 12:02:59 -0700
-In-Reply-To: <20261028190259.1819571-1-seanjc@google.com>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IdwFqAwu
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE27D1F01828;
+	Wed, 28 Oct 2026 20:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793217908;
+	bh=o49wDZezadbzzhjMZXVo1RNTg8xkSKbSUV93QZ7B39c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=IdwFqAwutRj3c1H1zBUuYH5f2PLuZAa4ubgYBNMRF+S8wFRIeffvXolezNulLDtjf
+	 pzlBElszJZLBSSsRp/cgyXFf9qw47M66RpV1bz4KiGp2u30MXodtYZJpYCxgInxOEb
+	 jrhgAtKrcTMHPUxO61lVycnaZsxoLqwbO6Gg5AGQ1rxLKf6viCjsU8trmYrUrknNWK
+	 f/gtEuZ3a8mMME7Ifd9ijXhB7qJ+b841AVZ3flk4XDcxOW3xKWt8Oxp/oCMdQDPe7j
+	 8yZ0l3+CUBtqTFpwkBSdW21JnWjQFfV3UIBJI7c8vivLj0UMEyfZmzzL9CH2Xvv2Iy
+	 5SOfGfP2V3EEA==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, Vladimir Kondratiev
+ <vladimir.kondratiev@mobileye.com>, =?utf-8?Q?Beno=C3=AEt?= Monin
+ <benoit.monin@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>, Radu
+ Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: Re: [PATCH 2/4] irqchip: irq-eyeq5-msi: add EyeQ5 PCIe MSI
+ controller driver
+In-Reply-To: <20261028-eyeq5_msi-v1-2-c464752fb55f@bootlin.com>
+References: <20261028-eyeq5_msi-v1-0-c464752fb55f@bootlin.com>
+ <20261028-eyeq5_msi-v1-2-c464752fb55f@bootlin.com>
+Date: Wed, 28 Oct 2026 21:05:05 +0100
+Message-ID: <87v76ly4jy.ffs@fw13>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -79,104 +65,176 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-References: <20261028190259.1819571-1-seanjc@google.com>
-X-Mailer: git-send-email 2.56.0.313.g2479322e68-goog
-Message-ID: <20261028190259.1819571-8-seanjc@google.com>
-Subject: [PATCH 7/7] KVM: Drop kvm_vcpu_should_kick() and use kvm_request_needs_ipi()
-From: Sean Christopherson <seanjc@google.com>
-To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oupton@kernel.org>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
-	Huacai Chen <chenhuacai@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Anup Patel <anup@brainfault.org>, Paul Walmsley <pjw@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: Fuad Tabba <fuad.tabba@linux.dev>, Joey Gouly <joey.gouly@arm.com>, 
-	Steffen Eiden <seiden@linux.ibm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Nicholas Piggin <npiggin@gmail.com>, 
-	Atish Patra <atish.patra@linux.dev>, Alexandre Ghiti <alex@ghiti.fr>, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	kvm@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Stefan Teodorescu <fane@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Drop kvm_vcpu_should_kick() in favor of kvm_request_needs_ipi() to fix a
-bug where KVM will fail to wait for a vCPU to exit guest mode if the vCPU
-was already marked as EXITING_GUEST_MODE by a concurrent non-waiting kick.
-Because kvm_vcpu_should_kick() (was kvm_arch_vcpu_should_kick()) only waits
-(and sends an IPI to do so) if the target vCPU is fully IN_GUEST_MODE, the
-sending task will proceed even though it hasn't actually guaranteed the
-vCPU as fully exited the guest.
+On Wed, Oct 28 2026 at 16:58, Gregory CLEMENT wrote:
+> +/*
+> + * The caller must hold msi->lock.
 
-The flaw is most problematic for SNP VMSA invalidation with in-place gmem
-conversion, as KVM invokes kvm_gmem_invalidate_start() => rmp_make_shared()
-(via kvm_gmem_make_shared() in quick succession when in-place conversion is
-enabled.  I.e. if the target has been marked as EXITING_GUEST_MODE but has
-not yet received the other kicker's IPI, then updating the RMP will fail as
-the VMSA is still in-use and subsequent accesses to the page will encounter
-unexpected RMP #PFs.
+Instead of a non-enforcable comment can you please put a
+lockdep_assert_held() into the code.
 
-Note, the bug exists and affects VMSA invalidation even without in-place
-conversion, but is significantly more difficult to hit as PUNCH_HOLE and
-.release() have to wade through a lot more code and several locks to get
-from invalidation to kvm_gmem_free_folio().
+> + */
+> +static void __eyeq_msi_mask_irq(struct eyeq_msi *msi, unsigned int bit)
+> +{
+> +	u16 value;
+> +
+> +	value = readw(msi->gcsr_base + GCSR_IRQMASK);
+> +	value &= ~FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
+> +	writew(value, msi->gcsr_base + GCSR_IRQMASK);
+> +}
 
-Note #2, currently only x86 uses kvm_make_request_and_kick(), i.e. this is
-a glorified nop for all other architectures as the KVM_REQUEST_WAIT path is
-never taken.
+> +static struct irq_chip eyeq_msi_irq_chip = {
+> +	.name			= "EyeQ5-MSI",
+> +	.irq_mask		= eyeq_msi_mask_irq,
+> +	.irq_unmask		= eyeq_msi_unmask_irq,
+> +	.irq_compose_msi_msg	= eyeq_msi_compose_msg,
+> +};
+> +
+> +static void eyeq_msi_isr(struct irq_desc *desc)
+> +{
+> +	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
+> +	struct eyeq_msi *msi = irq_desc_get_handler_data(desc);
+> +	void __iomem *status_reg;
+> +	unsigned long pending;
+> +	unsigned int bit;
+> +	int ret;
+> +
+> +	chained_irq_enter(parent_chip, desc);
+> +
+> +	status_reg = msi->gcsr_base + GCSR_IRQSTATUS;
+> +
+> +	while (true) {
+> +		pending = FIELD_GET(GCSR_IRQSTATUS_MASK,
+> +				    readw(status_reg));
+> +		if (!pending)
+> +			break;
+> +
+> +		/*
+> +		 * Write-one-to-clear status register.
+> +		 */
+> +		writew(FIELD_PREP(GCSR_IRQSTATUS_MASK, pending),
+> +		       status_reg);
+> +
+> +		for_each_set_bit(bit, &pending, msi->num_vectors) {
+> +			ret = generic_handle_domain_irq(msi->msi_domain, bit);
 
-Fixes: 309d28576f0a ("KVM: SVM: Fix SNP AP destroy race with VMRUN")
-Fixes: d1a3c2162334 ("KVM: SEV: Forcefully invalidate SNP VMSA if its backing gmem page is zapped")
-Reported-by: Stefan Teodorescu <fane@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- virt/kvm/kvm_main.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+You want to look at generic_handle_demux_domain_irq() and related
+functionality so you can actually provide a irq_set_affinity() callback
+for these demultiplexed interrupts. 
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index f1792256576b..f99a714698e3 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -191,7 +191,6 @@ void vcpu_put(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_FOR_KVM_INTERNAL(vcpu_put);
- 
--/* TODO: merge with kvm_vcpu_should_kick */
- static bool kvm_request_needs_ipi(struct kvm_vcpu *vcpu, unsigned req)
- {
- 	int mode = kvm_vcpu_exiting_guest_mode(vcpu);
-@@ -209,11 +208,6 @@ static bool kvm_request_needs_ipi(struct kvm_vcpu *vcpu, unsigned req)
- 	return mode == IN_GUEST_MODE;
- }
- 
--static int kvm_vcpu_should_kick(struct kvm_vcpu *vcpu)
--{
--	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
--}
--
- static void ack_kick(void *_completed)
- {
- }
-@@ -3935,7 +3929,7 @@ void __kvm_vcpu_kick(struct kvm_vcpu *vcpu, int req, bool force)
- 
- 	/*
- 	 * Note, the vCPU could get migrated to a different pCPU at any point
--	 * after kvm_vcpu_should_kick(), which could result in sending an
-+	 * after kvm_request_needs_ipi(), which could result in sending an
- 	 * IPI to the previous pCPU.  But, that's ok because the purpose of the
- 	 * IPI is to force the vCPU to leave IN_GUEST_MODE, and migrating the
- 	 * vCPU also requires it to leave IN_GUEST_MODE
-@@ -3944,7 +3938,7 @@ void __kvm_vcpu_kick(struct kvm_vcpu *vcpu, int req, bool force)
- 	 * check also modifies vcpu->mode and KVM PPC needs to avoid that side
- 	 * effect for unknown historical reasons.
- 	 */
--	if (force || kvm_vcpu_should_kick(vcpu)) {
-+	if (force || kvm_request_needs_ipi(vcpu, req)) {
- 		cpu = READ_ONCE(vcpu->cpu);
- 		if (cpu != me && (unsigned int)cpu < nr_cpu_ids && cpu_online(cpu)) {
- 			/*
--- 
-2.56.0.313.g2479322e68-goog
+> +			if (ret)
+> +				pr_err_ratelimited("unmapped MSI interrupt %u\n",
+> +						   bit);
 
+No line break required. You have 100 characters. Otherwise this needs
+curly brackets around the "two-liner".
+
+> +		}
+> +	}
+> +
+> +	chained_irq_exit(parent_chip, desc);
+> +}
+> +
+> +static int eyeq_msi_domain_alloc(struct irq_domain *domain,
+> +				 unsigned int virq,
+> +				 unsigned int nr_irqs,
+> +				 void *args)
+
+100 characters... All over the place
+
+> +{
+> +	struct eyeq_msi *msi = domain->host_data;
+> +	DECLARE_BITMAP(reserved, EYEQ_MSI_MAX_VECTORS);
+> +	unsigned long bit = 0;
+> +	unsigned int i;
+> +
+> +	bitmap_zero(reserved, EYEQ_MSI_MAX_VECTORS);
+> +
+> +	scoped_guard(raw_spinlock_irqsave, &msi->lock) {
+> +		for (i = 0; i < nr_irqs; i++) {
+> +			bit = find_next_zero_bit(msi->used, msi->num_vectors, bit);
+> +			if (bit >= msi->num_vectors) {
+> +				/*
+> +				 * Roll back this call's allocations: on error the
+> +				 * core does not call .free().
+> +				 */
+> +				for_each_set_bit(bit, reserved,
+> +						 EYEQ_MSI_MAX_VECTORS) {
+> +					clear_bit(bit, msi->used);
+> +					__eyeq_msi_mask_irq(msi, bit);
+> +				}
+> +
+> +				return -ENOSPC;
+> +			}
+> +
+> +			set_bit(bit, msi->used);
+> +			__eyeq_msi_unmask_irq(msi, bit);
+> +			set_bit(bit, reserved);
+> +			bit++;
+> +		}
+> +	}
+> +
+> +	i = 0;
+> +	for_each_set_bit(bit, reserved, EYEQ_MSI_MAX_VECTORS)
+
+  for....() {
+
+> +		irq_domain_set_info(domain, virq + i++, bit,
+> +				    &eyeq_msi_irq_chip, msi,
+> +				    handle_simple_irq, NULL, NULL);
+> +
+
+  }
+
+See documentation.
+
+> +	return 0;
+> +}
+> +
+> +static void eyeq_msi_domain_free(struct irq_domain *domain,
+> +				 unsigned int virq,
+> +				 unsigned int nr_irqs)
+
+....
+
+> +{
+> +	struct irq_data *data;
+> +	struct eyeq_msi *msi;
+> +	irq_hw_number_t hwirq;
+
+Reverse fir tree ordering please. See documentation. And please move
+these declarations into the scope where they are used.
+
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr_irqs; i++) {
+
+  for (unsigned int i = 0; ...)
+
+> +		data = irq_domain_get_irq_data(domain, virq + i);
+> +		if (WARN_ON_ONCE(!data))
+> +			continue;
+> +
+
+
+> +static int eyeq_msi_parse_dt(struct eyeq_msi *msi,
+> +			     struct device_node *node)
+> +{
+> +	int ret;
+> +
+> +	ret = of_property_read_u32(node, "num-vectors",
+> +				   &msi->num_vectors);
+
+        int ret = of....();
+
+> +	if (ret) {
+> +		pr_err("missing or invalid num-vectors property\n");
+> +		return ret;
+> +	}
+> +
+
+Thanks,
+
+        tglx

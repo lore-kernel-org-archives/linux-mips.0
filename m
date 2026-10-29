@@ -1,65 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793238278;
-	b=alCaMyPWBIAlWnbEvKj41y+chEOLLr3MUBOkDMTeBpFEAyKUPnsUa69ho8TIOSFclctH
-	 BsmiG3ZWrt9R2/GNcQ4j8Blgs4GbJHZimjHzsI/iWGx/QmEFif6NtQcOCrLqH/qsooRWh
-	 cCvjglM9v34GZUJX9qOXMjwSY4F3O9Aly80IPO+UkTPFtwZQIWfFnNdtfFizTmVu/BmI2
-	 ump35hCh1kFTyOM/pWkp4E+7mIJf9wZy6o8ndg3LYJ2xE3T2+4dKtnAI8t9jpvtD0NiTg
-	 ywTt1NdM82dRo3lEqa7N4XEwjHXN8vLP1fnf5URQWgOJPm4BBQX2hKDFYQpnkJP3VtA==
+	t=1793246012;
+	b=H24sjqk5lPFj640Dzib0iayUqe+GR0QFIR5wducd66+IU8SSGBod47xy2Kk3xLBfItxk
+	 AQZJXZqo91xAsf6sb/eHPEH5BQsjhgHZ5p4wAJPUx5HNQcqjlx2TneJsWuDVZ/ZsrK9Gf
+	 t6n3WGDK2pydiFSivCpubJhSRcL7GWz6O0wbML7ht7VjTIVt1IzAh7BBjfztAWK1vyZrO
+	 OOWHzC3GEq0O0C/NC9LYQnRHLQVqhM/kkTEKXZgxBoT6R+cl/HzhKQ4hiJQA8oz0upim7
+	 Jte302f61i6mfMvM8HmBEedo1fY8Vs67S/9N0G3P8sW4VEbOraQaA97rr7S2ungnU9A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793238278;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793246012;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=fi0YROWxKAfCaR/6RwO5ahpQ059B/d1L1wzMqOaDnTI=;
-	b=Y2lohxiIZtaQMXMA+6r01N9iMy3j6LVJ/FhOQ+tU8xIXqS24EYhsn5x+Db6h1nq/mGUc
-	 w6dLgIhAsm+FuHCWUmkyyr8qgS3yp+4Cmf4UX/uGs7OZc5lWLPPlhAwy3dIgLCQwEvSnn
-	 mFKOCDMtlicSca1ckFzCFEIlJR0pDgb23NKqaaP1PIrKo6th5+Fb5vecqP8fFYn9Y4BbC
-	 yXmkv7+IorHjhMNW6YYv888WBxSLLfsrwxqJDcdP8Qgy2an+EuXyGE2dAwi9zk67wuviB
-	 hFVZ8DBNgvQGZfw2wE4NYRHti7fSH/Z/m2WWSRx3uoOwIBSdM0ld53KhLm8/8EpJYVg==
+	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
+	 X-CM-SenderInfo;
+	bh=QHE+UHIk8uhs1bNGgsBBl+NelMRjuvlA6zpwrIo4BCk=;
+	b=mH+Efl4PAvmMl/bJjLFyYxQsWbSnQTqHmiNqCZoxDMASScQFFsd8Ln3pp0mYr819EJtT
+	 4EB+Besi5UPvuTMe9XTiuwoJdokOl+9MDnP+5YZ0oAuAuzIwglLNBBp4BYng2mjqX9L13
+	 LZahOutrgOibv18V10xOB+w0VwbMOjUJt19RgYXkFOvb7QNKhOkzrjoj1sAt9WEXk4/lX
+	 OKwUVLo6OTqnt9c24oq+osQ4CeSBnI+otDsshcEzyFvRubPTLCx7TQSMJgANK15XGU54b
+	 Mh7CEHIDnySERyihhqknDzRrjqm/+8z0QsrGM2mL6XuuJZmQz7lMHn27jOsVVPvKZHQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=pass smtp.mailfrom=infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d27Okpss;
-	arc=none smtp.remote-ip=198.137.202.133
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dmarc=pass header.from=163.com;
+	spf=pass smtp.mailfrom=163.com;
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=JEJE37r1;
+	arc=none smtp.remote-ip=220.197.31.4
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2D3606A31A;
-	Thu, 29 Oct 2026 01:44:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9F2D3606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D6D606A31C;
+	Thu, 29 Oct 2026 03:53:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 44D6D606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d27Okpss
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=fi0YROWxKAfCaR/6RwO5ahpQ059B/d1L1wzMqOaDnTI=; b=d27OkpssG9O6lP1E7oerEdfH0g
-	z7N/Rr5eBE9xEsAt2M6rs0WCWpqSmP1faavvIMguqsvRoZmSVPxCnfvxQB09I2F6PoKhXZrXdhoG6
-	28w0z6d+Z3+hmeh9CSQDXVkqvvAA/13yKn5oR3LYaNrfXXLNJ1znSQIMmXS4Fjuh881mv0pjXqtxl
-	d8VTscXgeXdsTJUHeYglj/o6VtJ4ocjf7GPaBlaW5HbFjnlBWjKC+T0exMLzw8KX2EgczukbsT+yJ
-	SOPhPf9owCueDa9eNZ/gUB46zAc9MgjXS/e8udYx8TXrY6vZI14l0kz1N4c7n09RW83pL40VtyyLs
-	B6PybQKA==;
-Received: from [50.53.43.113] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMFBt-000000089ch-2gZz;
-	Thu, 29 Oct 2026 01:44:29 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-crypto@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Subject: [PATCH] hwrng: octeon: add missing MODULE_DESCRIPTION()
-Date: Wed, 28 Oct 2026 18:44:27 -0700
-Message-ID: <20261029014427.2364317-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.56.0
+	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=JEJE37r1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=QH
+	E+UHIk8uhs1bNGgsBBl+NelMRjuvlA6zpwrIo4BCk=; b=JEJE37r1QVJBjWOjeU
+	HR5h0xcHWWHS/jISAb1AWqqgm/JM8FC/kLTZXgQzKZ8KpQC+R+FyjOfNUmc6fEQt
+	fIqfEJyXxahn+WylahzthI247JFleqMaEoP0kFdlHzQCEGs7Dv1oAXGZezzkJE4g
+	QKb8/tuhOAO2euPZ9r0fHStg0=
+Received: from pc.localdomain (unknown [])
+	by gzsmtp3 (Coremail) with SMTP id PigvCgCnsSkVw+JqTWv_Cg--.16381S8;
+	Thu, 29 Oct 2026 11:53:03 +0800 (CST)
+From: Jiale Yao <yaojiale02@163.com>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Radu Rendec <radu@rendec.net>,
+	Marc Zyngier <maz@kernel.org>,
+	Jianmin Lv <lvjianmin@loongson.cn>,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH v2 06/20] irqchip/loongson-eiointc: validate MADT BIO-PIC entries
+Date: Thu, 29 Oct 2026 11:52:37 +0800
+Message-Id: <20261029035253.2333852-7-yaojiale02@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20261029035253.2333852-1-yaojiale02@163.com>
+References: <20261029035253.2333852-1-yaojiale02@163.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -70,26 +69,49 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PigvCgCnsSkVw+JqTWv_Cg--.16381S8
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww18tF15KFWrZryDWF1kAFb_yoW8XFy3pF
+	W5Ca9Iyr4UJrW5Grn2ka1DXFyrZas5Zay7tFWfuayfZwnxXr1UuFyUAFn8Xry0y3y7Ga42
+	vr4FqFWUu3W5AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UP9N3UUUUU=
+X-CM-SenderInfo: x1dryxhdohiji6rwjhhfrp/xtbCzR9LhWriwx-jkwAA34
 
-Add missing MODULE_DESCRIPTION() that is now required.
+The BIO-PIC MADT callback reads the controller address before checking
+that firmware supplied the complete fixed-size record. A truncated entry
+can therefore cause an out-of-bounds read while selecting the parent
+domain.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Validate the BIO-PIC record before accessing its address or passing it
+to the initialization helper.
+
+Fixes: dd281e1a1a93 ("irqchip: Add Loongson Extended I/O interrupt controller support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jiale Yao <yaojiale02@163.com>
 ---
-Cc: Olivia Mackall <olivia@selenic.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+ drivers/irqchip/irq-loongson-eiointc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
- drivers/char/hw_random/octeon-rng.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20261028.orig/drivers/char/hw_random/octeon-rng.c
-+++ linux-next-20261028/drivers/char/hw_random/octeon-rng.c
-@@ -116,3 +116,4 @@ module_platform_driver(octeon_rng_driver
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+index ba6e8480e383..1b90edef5a52 100644
+--- a/drivers/irqchip/irq-loongson-eiointc.c
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -454,8 +454,14 @@ static int __init pch_pic_parse_madt(union acpi_subtable_headers *header,
+ 					const unsigned long end)
+ {
+ 	struct acpi_madt_bio_pic *pchpic_entry = (struct acpi_madt_bio_pic *)header;
+-	unsigned int node = pa_to_nid(pchpic_entry->address) & 0xf;
+-	struct irq_domain *parent = acpi_get_vec_parent(node, pch_group);
++	struct irq_domain *parent;
++	unsigned int node;
++
++	if (BAD_MADT_ENTRY(pchpic_entry, end))
++		return -EINVAL;
++
++	node = pa_to_nid(pchpic_entry->address) & 0xf;
++	parent = acpi_get_vec_parent(node, pch_group);
  
- MODULE_AUTHOR("David Daney");
- MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Cavium Octeon HW random number generator");
+ 	if (parent)
+ 		return pch_pic_acpi_init(parent, pchpic_entry);
+-- 
+2.34.1
+

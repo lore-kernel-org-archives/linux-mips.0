@@ -1,62 +1,65 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793217909;
-	b=F2lM43tk1lbJ+7en6x/QzT//5h2w1F1YbFt0fgYBUYxHqPzPmB1I8AQ+phW1NnmCuTZ+
-	 /2T5WCkntPZNvaMMn0Kku91UxvFDhVLXHwvIIePdVxjAsYHCUa/0ghVVEsB/PpAsugO0c
-	 wG3Z4E6f5aiAyh/hIzSMI+N9l+8+meIBUo0J5JFbDoCIq9ObI1Q/446/iV+I64plmZ+8S
-	 aN4h8nRihyOTmLY/Hr1WbnvNfBe2hhj4A7FiiidwJHpkSH/C7VMDpo/xNlATEBf/rOp9H
-	 wGbeGT+uSzp8FAiG1aIZxddu35RKwrKvTljsYAxpBBI/2UIWN6SfctWGYVg6AUvejbg==
+	t=1793238278;
+	b=alCaMyPWBIAlWnbEvKj41y+chEOLLr3MUBOkDMTeBpFEAyKUPnsUa69ho8TIOSFclctH
+	 BsmiG3ZWrt9R2/GNcQ4j8Blgs4GbJHZimjHzsI/iWGx/QmEFif6NtQcOCrLqH/qsooRWh
+	 cCvjglM9v34GZUJX9qOXMjwSY4F3O9Aly80IPO+UkTPFtwZQIWfFnNdtfFizTmVu/BmI2
+	 ump35hCh1kFTyOM/pWkp4E+7mIJf9wZy6o8ndg3LYJ2xE3T2+4dKtnAI8t9jpvtD0NiTg
+	 ywTt1NdM82dRo3lEqa7N4XEwjHXN8vLP1fnf5URQWgOJPm4BBQX2hKDFYQpnkJP3VtA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793217909;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
-	 Date:Message-ID:MIME-Version:Content-Type;
-	bh=o49wDZezadbzzhjMZXVo1RNTg8xkSKbSUV93QZ7B39c=;
-	b=aM0qXwvTYBZhnsFz7UHhbYQ4iYPTu4BEIHm6wAwMqTAQ3EC0SePyK0biy4oYssB5am3Y
-	 xD+7wwnMEC17UIg5yGdkG5oTgoxLDBf/mf4TNYpxWuE7pieHkoE6S/Rj84Na8qV+/qo50
-	 C+DWH716dSe0UWjohmymokWVGXP5s0VcAjlZV+Nex0iNyINdTwBBILXk3t9yZ+MocUjYS
-	 oJ0GcxDOlMDJWG1wzN29NC78CqkCL140yPnI6Bux7wRPvJWRPYbA0AEia1LRIiqteXy8h
-	 wEnwJY6QkIPA7Mzmur1HMw9RVdtcy4pF5mGAExeJ8yx0bu0NAVOrgGFU4xkcB2kl+uw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793238278;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=fi0YROWxKAfCaR/6RwO5ahpQ059B/d1L1wzMqOaDnTI=;
+	b=Y2lohxiIZtaQMXMA+6r01N9iMy3j6LVJ/FhOQ+tU8xIXqS24EYhsn5x+Db6h1nq/mGUc
+	 w6dLgIhAsm+FuHCWUmkyyr8qgS3yp+4Cmf4UX/uGs7OZc5lWLPPlhAwy3dIgLCQwEvSnn
+	 mFKOCDMtlicSca1ckFzCFEIlJR0pDgb23NKqaaP1PIrKo6th5+Fb5vecqP8fFYn9Y4BbC
+	 yXmkv7+IorHjhMNW6YYv888WBxSLLfsrwxqJDcdP8Qgy2an+EuXyGE2dAwi9zk67wuviB
+	 hFVZ8DBNgvQGZfw2wE4NYRHti7fSH/Z/m2WWSRx3uoOwIBSdM0ld53KhLm8/8EpJYVg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IdwFqAwu;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=infradead.org;
+	spf=pass smtp.mailfrom=infradead.org;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d27Okpss;
+	arc=none smtp.remote-ip=198.137.202.133
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF68606A32C;
-	Wed, 28 Oct 2026 20:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2D3606A31A;
+	Thu, 29 Oct 2026 01:44:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9F2D3606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IdwFqAwu
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE27D1F01828;
-	Wed, 28 Oct 2026 20:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793217908;
-	bh=o49wDZezadbzzhjMZXVo1RNTg8xkSKbSUV93QZ7B39c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=IdwFqAwutRj3c1H1zBUuYH5f2PLuZAa4ubgYBNMRF+S8wFRIeffvXolezNulLDtjf
-	 pzlBElszJZLBSSsRp/cgyXFf9qw47M66RpV1bz4KiGp2u30MXodtYZJpYCxgInxOEb
-	 jrhgAtKrcTMHPUxO61lVycnaZsxoLqwbO6Gg5AGQ1rxLKf6viCjsU8trmYrUrknNWK
-	 f/gtEuZ3a8mMME7Ifd9ijXhB7qJ+b841AVZ3flk4XDcxOW3xKWt8Oxp/oCMdQDPe7j
-	 8yZ0l3+CUBtqTFpwkBSdW21JnWjQFfV3UIBJI7c8vivLj0UMEyfZmzzL9CH2Xvv2Iy
-	 5SOfGfP2V3EEA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>, Vladimir Kondratiev
- <vladimir.kondratiev@mobileye.com>, =?utf-8?Q?Beno=C3=AEt?= Monin
- <benoit.monin@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>, Radu
- Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: Re: [PATCH 2/4] irqchip: irq-eyeq5-msi: add EyeQ5 PCIe MSI
- controller driver
-In-Reply-To: <20261028-eyeq5_msi-v1-2-c464752fb55f@bootlin.com>
-References: <20261028-eyeq5_msi-v1-0-c464752fb55f@bootlin.com>
- <20261028-eyeq5_msi-v1-2-c464752fb55f@bootlin.com>
-Date: Wed, 28 Oct 2026 21:05:05 +0100
-Message-ID: <87v76ly4jy.ffs@fw13>
+	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=d27Okpss
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=fi0YROWxKAfCaR/6RwO5ahpQ059B/d1L1wzMqOaDnTI=; b=d27OkpssG9O6lP1E7oerEdfH0g
+	z7N/Rr5eBE9xEsAt2M6rs0WCWpqSmP1faavvIMguqsvRoZmSVPxCnfvxQB09I2F6PoKhXZrXdhoG6
+	28w0z6d+Z3+hmeh9CSQDXVkqvvAA/13yKn5oR3LYaNrfXXLNJ1znSQIMmXS4Fjuh881mv0pjXqtxl
+	d8VTscXgeXdsTJUHeYglj/o6VtJ4ocjf7GPaBlaW5HbFjnlBWjKC+T0exMLzw8KX2EgczukbsT+yJ
+	SOPhPf9owCueDa9eNZ/gUB46zAc9MgjXS/e8udYx8TXrY6vZI14l0kz1N4c7n09RW83pL40VtyyLs
+	B6PybQKA==;
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xMFBt-000000089ch-2gZz;
+	Thu, 29 Oct 2026 01:44:29 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linux-crypto@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org
+Subject: [PATCH] hwrng: octeon: add missing MODULE_DESCRIPTION()
+Date: Wed, 28 Oct 2026 18:44:27 -0700
+Message-ID: <20261029014427.2364317-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,175 +69,27 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 28 2026 at 16:58, Gregory CLEMENT wrote:
-> +/*
-> + * The caller must hold msi->lock.
+Add missing MODULE_DESCRIPTION() that is now required.
 
-Instead of a non-enforcable comment can you please put a
-lockdep_assert_held() into the code.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+Cc: Olivia Mackall <olivia@selenic.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 
-> + */
-> +static void __eyeq_msi_mask_irq(struct eyeq_msi *msi, unsigned int bit)
-> +{
-> +	u16 value;
-> +
-> +	value = readw(msi->gcsr_base + GCSR_IRQMASK);
-> +	value &= ~FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
-> +	writew(value, msi->gcsr_base + GCSR_IRQMASK);
-> +}
+ drivers/char/hw_random/octeon-rng.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> +static struct irq_chip eyeq_msi_irq_chip = {
-> +	.name			= "EyeQ5-MSI",
-> +	.irq_mask		= eyeq_msi_mask_irq,
-> +	.irq_unmask		= eyeq_msi_unmask_irq,
-> +	.irq_compose_msi_msg	= eyeq_msi_compose_msg,
-> +};
-> +
-> +static void eyeq_msi_isr(struct irq_desc *desc)
-> +{
-> +	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
-> +	struct eyeq_msi *msi = irq_desc_get_handler_data(desc);
-> +	void __iomem *status_reg;
-> +	unsigned long pending;
-> +	unsigned int bit;
-> +	int ret;
-> +
-> +	chained_irq_enter(parent_chip, desc);
-> +
-> +	status_reg = msi->gcsr_base + GCSR_IRQSTATUS;
-> +
-> +	while (true) {
-> +		pending = FIELD_GET(GCSR_IRQSTATUS_MASK,
-> +				    readw(status_reg));
-> +		if (!pending)
-> +			break;
-> +
-> +		/*
-> +		 * Write-one-to-clear status register.
-> +		 */
-> +		writew(FIELD_PREP(GCSR_IRQSTATUS_MASK, pending),
-> +		       status_reg);
-> +
-> +		for_each_set_bit(bit, &pending, msi->num_vectors) {
-> +			ret = generic_handle_domain_irq(msi->msi_domain, bit);
-
-You want to look at generic_handle_demux_domain_irq() and related
-functionality so you can actually provide a irq_set_affinity() callback
-for these demultiplexed interrupts. 
-
-> +			if (ret)
-> +				pr_err_ratelimited("unmapped MSI interrupt %u\n",
-> +						   bit);
-
-No line break required. You have 100 characters. Otherwise this needs
-curly brackets around the "two-liner".
-
-> +		}
-> +	}
-> +
-> +	chained_irq_exit(parent_chip, desc);
-> +}
-> +
-> +static int eyeq_msi_domain_alloc(struct irq_domain *domain,
-> +				 unsigned int virq,
-> +				 unsigned int nr_irqs,
-> +				 void *args)
-
-100 characters... All over the place
-
-> +{
-> +	struct eyeq_msi *msi = domain->host_data;
-> +	DECLARE_BITMAP(reserved, EYEQ_MSI_MAX_VECTORS);
-> +	unsigned long bit = 0;
-> +	unsigned int i;
-> +
-> +	bitmap_zero(reserved, EYEQ_MSI_MAX_VECTORS);
-> +
-> +	scoped_guard(raw_spinlock_irqsave, &msi->lock) {
-> +		for (i = 0; i < nr_irqs; i++) {
-> +			bit = find_next_zero_bit(msi->used, msi->num_vectors, bit);
-> +			if (bit >= msi->num_vectors) {
-> +				/*
-> +				 * Roll back this call's allocations: on error the
-> +				 * core does not call .free().
-> +				 */
-> +				for_each_set_bit(bit, reserved,
-> +						 EYEQ_MSI_MAX_VECTORS) {
-> +					clear_bit(bit, msi->used);
-> +					__eyeq_msi_mask_irq(msi, bit);
-> +				}
-> +
-> +				return -ENOSPC;
-> +			}
-> +
-> +			set_bit(bit, msi->used);
-> +			__eyeq_msi_unmask_irq(msi, bit);
-> +			set_bit(bit, reserved);
-> +			bit++;
-> +		}
-> +	}
-> +
-> +	i = 0;
-> +	for_each_set_bit(bit, reserved, EYEQ_MSI_MAX_VECTORS)
-
-  for....() {
-
-> +		irq_domain_set_info(domain, virq + i++, bit,
-> +				    &eyeq_msi_irq_chip, msi,
-> +				    handle_simple_irq, NULL, NULL);
-> +
-
-  }
-
-See documentation.
-
-> +	return 0;
-> +}
-> +
-> +static void eyeq_msi_domain_free(struct irq_domain *domain,
-> +				 unsigned int virq,
-> +				 unsigned int nr_irqs)
-
-....
-
-> +{
-> +	struct irq_data *data;
-> +	struct eyeq_msi *msi;
-> +	irq_hw_number_t hwirq;
-
-Reverse fir tree ordering please. See documentation. And please move
-these declarations into the scope where they are used.
-
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr_irqs; i++) {
-
-  for (unsigned int i = 0; ...)
-
-> +		data = irq_domain_get_irq_data(domain, virq + i);
-> +		if (WARN_ON_ONCE(!data))
-> +			continue;
-> +
-
-
-> +static int eyeq_msi_parse_dt(struct eyeq_msi *msi,
-> +			     struct device_node *node)
-> +{
-> +	int ret;
-> +
-> +	ret = of_property_read_u32(node, "num-vectors",
-> +				   &msi->num_vectors);
-
-        int ret = of....();
-
-> +	if (ret) {
-> +		pr_err("missing or invalid num-vectors property\n");
-> +		return ret;
-> +	}
-> +
-
-Thanks,
-
-        tglx
+--- linux-next-20261028.orig/drivers/char/hw_random/octeon-rng.c
++++ linux-next-20261028/drivers/char/hw_random/octeon-rng.c
+@@ -116,3 +116,4 @@ module_platform_driver(octeon_rng_driver
+ 
+ MODULE_AUTHOR("David Daney");
+ MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Cavium Octeon HW random number generator");

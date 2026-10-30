@@ -1,55 +1,92 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=207.54.90.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793329631;
-	b=E/h7aySmtSgMJcf1zdKmLa0g2QGDV/6f/KffGSJNxFfnwEYjKrojjdYLDre2wChpnNoK
-	 qjXTxlLtKKfsluunitQE9YTe/n53+45hy0D6MB5EUlqcWjgK36I1NYEIts+kg6rgw7mi4
-	 xT5guu1AryoZ2bAlX3XurvPnT/WmsVHLnnoCnN0gd0NgZytehs8MemGtEIIngrpMELLxz
-	 OElGkjLW4WRz77L9YIrojji9pQM2jetMLwv/kbJKkZreEspGeIqWmEKMUPdKAa6ppXv+C
-	 2Ti0EV8iCeB5jc7XEvTe+EiK4uDET8q6OxkOqaDjS33P8KKhDVh5bNFQpX/8neFy4yA==
+	t=1793357437;
+	b=kjji1KTRKRaX+eS2fzoIDIJFSCsGF8yazuqpYEX8W7QIrC79XJ+W4roAmL8NbOeVD/F7
+	 zz3bcVsUVZ4LmlHgA1rwvBQgAaIfCKaNtoqSmGY2wjJVH2tUs/YgjVXtig6ahgVJql8D6
+	 N4AVLZVFOBDpG7ybKpQXD3SvI22BaZ0fd5hbWZA9/bOzei886MNWidHfZhdkccotHFi2c
+	 vX5Q8NHA9sPrwmFhyVdc+0BxznfMJi1o2PvcLqBtL8Y2mJAqJipnIlmgO3ppZv8k5Z029
+	 +WecV4LU49x+5T6qEKxDkCfxJvBjP6vdBD8cbU69bRFJCMB7ztjIet7zz7yr40K2SGw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793329631;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 Reply-To:From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=/uSzGTnG/yOJTh9JMU3hh2HWfIlei95qLPy/XlUKvmg=;
-	b=Ep+TornJSKABg4q6QQ7BD4pKt8iIMPHV7oa26WlRD9W39ibcxBTZADEiCf4AwcmAQH8c
-	 HpBOY7Reeq7/E78YLqqsokqmUgaqjJHRKLxZ2X1YYmuKVygUlWstXzmxd1vFV9IMv8eOG
-	 3aCwyZff6IKVS0kKfY77zSokXzPGP7znKQpkskqE6v1n+JISgM0DJpgPV3YvGo7T0n8gS
-	 k8qpZjRk3v8ZiUl207zGVYn4TB1rfqEy0FrBgTuZjyA4sj95wrZXRcn6z/gP+5dX0opq0
-	 Re0/y0WT/s8tCRmcS/ao5OHX4qUj93THWbNeBHPYWJULOUkZLpIJ1GG6h9x/ZqWhPBA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793357437;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=MZqMRfPEVUiuMNxLqgmTIf03oB0BvArhy/TSmIC7oCY=;
+	b=mI+5y4lWo+kgJEslYEYsNwoAO1XD0NugJij5vOS9JSDf0rgtHFvf8lGnWGkbpugSQZR/
+	 mK1vYqWb2qxu3SrXXu+0JwHx9j1ChSNW7WNkiZ/j6d6iH4uWLMx21Tk4jT71KtgZIn5rq
+	 5N+bPa/qAjpqg+2uAUzZg+YCSz7UfD1m4HIEDTLK4XpWg7/aFarU/AH+GGg21Pkfd2+/W
+	 izA+icoKhzUH/fh+jlMV+WEHNr835fkm8TL0Jk+5ueNIbs0zgHeHHt4wpyIhxtkhpfxF8
+	 PA5aZzxA6Ct972Mk59pnIe/7EaxhP3kwVuIwrKICnCTwa08HPwpf7IQViX5a4TQ7z3g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XDr8h+wd;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=fujitsu.com;
+	spf=pass smtp.mailfrom=fujitsu.com;
+	dkim=pass header.d=fujitsu.com header.i=@fujitsu.com header.a=rsa-sha256 header.s=fj2 header.b=mQOzLOqZ;
+	arc=none smtp.remote-ip=207.54.90.49
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F334606A31D
-	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 03:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3972160A2630;
+	Fri, 30 Oct 2026 10:50:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3972160A2630
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XDr8h+wd
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E05701F00A1A
-	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 03:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793329630;
-	bh=/uSzGTnG/yOJTh9JMU3hh2HWfIlei95qLPy/XlUKvmg=;
-	h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc;
-	b=XDr8h+wdqN3k9+vgByB7Vbhg7345ysk14eIc3sd5KUIYcVKQC5RJGLzyp390r8sFz
-	 rcXzURqK5IhY2hsQeHPq00WUOJlWzTYwkzydcJ/sPL0F90xo8u9/bPEm65G1c+yYFy
-	 IFWPrGVH6/o1j/NzpNSW3kb4TU+B0yY7O7lEdmNZ3127avD47mYnYz6oD4FKi9uOdN
-	 Lvrg9TUleeyF/ZrbVduymNyzAkUNeRwdbq/GwrOs7him1Pj9LSEjrZgTlErSbA/TTu
-	 Mz6pLK2WaacedtZnSplUNeT6ixl/3tjJQIU7mmGVHFKQyLeJZsexHDOf7UhaqrU9hu
-	 TJwKxNXd7bP3A==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-3a9e87ba696so2340661fa.0
-        for <linux-mips@vger.kernel.org>; Thu, 29 Oct 2026 20:07:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxpIeqmgvJpbh7RXbzcXZUiMqtPx5B4vDknsxJgLG7V4iISDB6pZ1BRutjttfvZuoQhVuSuU2X+LhpU@vger.kernel.org
-X-Gm-Message-State: AFq9FYKKUnpkUKh59leqdLfHtDeEyGv/vXTLKXhBAP6ucKJoKY4xU5fE
-	V/aHyM8Xby8j0HJ2b746IFLgUv5KVEJrclitqZgniqgS142+THA7LjG5OvBulhl8ia1Vsq8gxTu
-	hksT4XGIMtwygcWndO+ic4zQLRZZuAf0=
-X-Received: by 2002:a05:651c:2120:b0:3aa:f617:5c85 with SMTP id
- 38308e7fff4ca-3acb7aa5561mr1702801fa.12.1793329629127; Thu, 29 Oct 2026
- 20:07:09 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=fujitsu.com header.i=@fujitsu.com header.a=rsa-sha256 header.s=fj2 header.b=mQOzLOqZ
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1793357437; x=1824893437;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8Bk02kov5eXaN4fQMM0pbL4dj5jWKbTsBzV8w285UiE=;
+  b=mQOzLOqZghPqjPfvrqnK/5Y35rROQztIuU4EyC5XFxjQ9N6/ClVLhT6j
+   9jXCKGdak9HrbI6ImiktplMzc7Iy6T3bBuxuzdpefRJfTDGXkiWaw91m1
+   9OwAnC1TmLx4JKNGm1uXvK9vRZkU9KfAuJvuvqwEZoMoqmYpFP4drssSY
+   7dpYM9s0pwwWomcqH595uQGfjUFFtBhZIW3pu4pt5aSwscf2STUwHpms7
+   OLrFMy7ZRWaFOsi6t4lFfpBy2PBf5hZAabTqZetEYShS84Xl0ukvB8Qqr
+   wSbguWJlR+LC0kXP8r4SBEHezIEO0eA7A7FCWxUZoLHyhO+dECB7V3Fh0
+   A==;
+X-CSE-ConnectionGUID: PrbQclnpQVq9jN08gysTzQ==
+X-CSE-MsgGUID: T7jqwKNdQTWsrTu6cn1pIQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11950"; a="260016297"
+X-IronPort-AV: E=Sophos;i="6.27,186,1786978800"; 
+   d="scan'208";a="260016297"
+Received: from gmgwnl01.global.fujitsu.com ([52.143.17.124])
+  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2026 19:50:30 +0900
+Received: from az2nlsmgm4.fujitsu.com (unknown [10.150.26.204])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gmgwnl01.global.fujitsu.com (Postfix) with ESMTPS id C6A9D404812;
+	Fri, 30 Oct 2026 10:50:28 +0000 (UTC)
+Received: from az2uksmom2.o.css.fujitsu.com (unknown [10.151.22.203])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by az2nlsmgm4.fujitsu.com (Postfix) with ESMTPS id 79CA71000392;
+	Fri, 30 Oct 2026 10:50:28 +0000 (UTC)
+Received: from FCCLS0092175.localdomain (unknown [10.9.203.66])
+	by az2uksmom2.o.css.fujitsu.com (Postfix) with SMTP id EC18C140769F;
+	Fri, 30 Oct 2026 10:50:23 +0000 (UTC)
+Date: Fri, 30 Oct 2026 19:50:20 +0900
+From: Kohei Enju <enju.kohei@fujitsu.com>
+To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	x86@kernel.org
+Subject: Re: [PATCH v6 6/8] dma: swiotlb: Centralize memory-encryption pool
+ sizing
+Message-ID: <auR0fT1yrKQ9wbm8@FCCLS0092175.localdomain>
+References: <20260924060756.1325156-1-aneesh.kumar@kernel.org>
+ <20260924060756.1325156-7-aneesh.kumar@kernel.org>
+ <asVs3doaJ4WrT3M2@willie-the-truck>
+ <asYZFXGyafRjjBS0@arm.com>
+ <asYiOgskwi8JYLe_@willie-the-truck>
+ <yq5awlrt3dwo.fsf@kernel.org>
+ <yq5av77c92oo.fsf@kernel.org>
+ <aseRzPshcoys7AJS@arm.com>
+ <yq5ao6d48dqr.fsf@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,119 +96,146 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com> <20261026-drm-panel-funcs-v1-20-5e3070a3478f@oss.qualcomm.com>
-In-Reply-To: <20261026-drm-panel-funcs-v1-20-5e3070a3478f@oss.qualcomm.com>
-Reply-To: wens@kernel.org
-From: Chen-Yu Tsai <wens@kernel.org>
-Date: Fri, 30 Oct 2026 11:06:54 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66GV0mu+iKHs2+mZPxJmbdgm60j8srtKLuux7BdAC9BZQ@mail.gmail.com>
-X-Gm-Features: AclHuK9xiSETdonY9_QkznCRV7eL1jeHCdIOBKyx8OeAMXLApY8qfRj6-NRV9No
-Message-ID: <CAGb2v66GV0mu+iKHs2+mZPxJmbdgm60j8srtKLuux7BdAC9BZQ@mail.gmail.com>
-Subject: Re: [PATCH 20/35] drm/sun4i: set the panel orientation on the connector
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jyri Sarha <jyri.sarha@iki.fi>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>, 
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
-	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Linus Walleij <linusw@kernel.org>, 
-	Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Alison Wang <alison.wang@nxp.com>, Paul Kocialkowski <paulk@sys-base.io>, 
-	Yannick Fertre <yannick.fertre@foss.st.com>, 
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
-	Philippe Cornu <philippe.cornu@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Samuel Holland <samuel@sholland.org>, 
-	Thierry Reding <thierry.reding@kernel.org>, Mikko Perttunen <mperttunen@nvidia.com>, 
-	Jonathan Hunter <jonathanh@nvidia.com>, Jagan Teki <jagan@amarulasolutions.com>, 
-	Ondrej Jirman <megi@xff.cz>, Javier Martinez Canillas <javierm@redhat.com>, 
-	Igor Reznichenko <igor@reznichenko.net>, Michael Walle <mwalle@kernel.org>, 
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>, Jagan Teki <jagan@edgeble.ai>, 
-	Jianhua Lu <lujianhua000@gmail.com>, =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
-	Purism Kernel Team <kernel@puri.sm>, Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
-	Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
-	Michael Trimarchi <michael@amarulasolutions.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	Casey Connolly <casey.connolly@linaro.org>, Michael Tretter <m.tretter@pengutronix.de>, 
-	Cristian Cozzolino <cristian_ci@protonmail.com>, Junjie Cao <junjie.cao@linux.dev>, 
-	Ryan Brue <ryanbrue.dev@gmail.com>, Nickolay Goppen <setotau@mainlining.org>, 
-	Stefan Mavrodiev <stefan@olimex.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-	Robert Chiras <robert.chiras@nxp.com>, Alexander Koskovich <akoskovich@pm.me>, 
-	Markuss Broks <markuss.broks@gmail.com>, Artur Weber <aweber.kernel@gmail.com>, 
-	David Heidelberg <david@ixit.cz>, Dzmitry Sankouski <dsankouski@gmail.com>, 
-	Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <yq5ao6d48dqr.fsf@kernel.org>
 
-On Mon, Oct 26, 2026 at 7:11=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@oss.qualcomm.com> wrote:
->
-> The panel is used directly, without the panel bridge, so nothing sets
-> its orientation on the connector apart from the workaround in the
-> get_modes() of some panel drivers, which runs too late.
->
-> Assisted-by: LLM
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+On 10/08 20:02, Aneesh Kumar K.V wrote:
+> Catalin Marinas <catalin.marinas@arm.com> writes:
+> 
+> > On Thu, Oct 08, 2026 at 11:03:27AM +0530, Aneesh Kumar K.V wrote:
+> >> Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
+> >> > Will Deacon <will@kernel.org> writes:
+> >> >> On Wed, Oct 07, 2026 at 11:04:05AM +0100, Catalin Marinas wrote:
+> >> >>> On Tue, Oct 06, 2026 at 10:49:17PM +0100, Will Deacon wrote:
+> >> >>> > On Thu, Sep 24, 2026 at 11:37:54AM +0530, Aneesh Kumar K.V (Arm) wrote:
+> >> >>> > > @@ -496,7 +516,8 @@ swiotlb_select_pool_policy(unsigned int flags)
+> >> >>> > >  	if (swiotlb_force_disable)
+> >> >>> > >  		return SWIOTLB_POOL_NONE;
+> >> >>> > >  
+> >> >>> > > -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> >> >>> > > +	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+> >> >>> > > +	    !restricted_dma_pool_present)
+> >> >>> > >  		return SWIOTLB_POOL_CC_GUEST;
+> >> >>> > 
+> >> >>> > I think this check on the restricted DMA pool is too general -- the pool
+> >> >>> > could be tied to a specific DMA-capable peripheral and so treating its
+> >> >>> > presence as a global property isn't right.
+> >> >>> 
+> >> >>> I agree it's a hack but that was the simplest way to avoid the pVMs
+> >> >>> getting a bounce buffer after this patch. More than happy to leave it
+> >> >>> out and reduce the buffer on cmdline or we come up with some better
+> >> >>> heuristics.
+> >> >>
+> >> >> Hrm, that does mean that reverting just this part will regress pVMs
+> >> >> because they'll suddenly be allocating a tonne more memory for an
+> >> >> entirely unused swiotlb buffer. So I think I'd prefer to drop the entire
+> >> >> series until this has been worked out properly.
+> >> >>
+> >> >>> Another option could be the arch code passing another flag that it
+> >> >>> doesn't want an encrypted pool (e.g. when running in a pKVM guest) but I
+> >> >>> don't particularly this either. The arch code doesn't know whether
+> >> >>> there's an alternative pool.
+> >> >>
+> >> >> At that point, the default size may as well be driven by the
+> >> >> drivers/virt/coco driver.
+> >> >>
+> >> >>> That said, such heuristics should have been a separate patch to make it
+> >> >>> easier to review/drop.
+> >> >>
+> >> >> I think the only right way to get a semi-accurate heuristic is to take
+> >> >> into account the set of dma-capable devices that will use the swiotlb
+> >> >> pool, but that's fiddly and should probably be tackled as a separate
+> >> >> series. Maybe a simpler hack in that direction would be to take the
+> >> >> SWIOTLB_POOL_CC_GUEST if _any_ device is going to use swiotlb? You'll
+> >> >> run into the usual problem of not being able to tell if a device is
+> >> >> DMA-capable or not, but you could probably look for a global restricted
+> >> >> DMA pool and, if that doesn't exist, check for per-device restricted pools
+> >> >> on dma-coherent devices (since restricted DMA isn't supported by ACPI) as
+> >> >> a reasonable approximation.
+> >> >
+> >> > So, something like this?
+> >> >
+> >> > 	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+> >> > 	    swiotlb_cc_guest_needs_default_pool())
+> >> > 		return SWIOTLB_POOL_CC_GUEST;
+> >> >
+> >> 
+> >> Detecting a DMA-capable device is not straightforward, and if we get it
+> >> wrong, we will enable SWIOTLB_POOL_CC_GUEST unnecessarily. Would the
+> >> code below be a reasonable approximation of what you suggested?
+> >> 
+> >> Another option would be to make swiotlb_cc_guest_needs_default_pool() a
+> >> weak function that architectures can override. arm64 pKVM could then use
+> >> a different scheme (for this patch series default to false). Would that
+> >> be preferable?
+> >
+> > Even the rmem check for each device is still a hack that may bite us in
+> > the future (private devices for example would not need swiotlb). I'm
+> > thinking more and more of leaving the sizing an arch-specific decision,
+> > don't bother generalising it at all.
+> >
+> > On pKVM vs CCA guests, there's really nothing specific here to pKVM
+> > guests. The only difference is that confidential guests that so far have
+> > run without a swiotlb buffer will regress if their memory is tight. For
+> > confidential guests without dedicated rmem (either CCA or pKVM), I think
+> > our options are either command line swiotlb sizing or dynamic swiotlb.
+> >
+> > Could you respin your series while leaving out the generic sizing? IOW,
+> > no x86 code generalisation. We can discuss the best strategy on sizing
+> > later (I haven't checked how much of this series still makes sense
+> > without the generic sizing).
+> >
+> 
+> It would mostly consist of the first three cleanup patches, followed by
+> three patches that replace the addressing_limit argument with flags.
+> 
+> #define SWIOTLB_VERBOSE	(1 << 0) /* verbose initialization */
+> /* Initialize a pool for devices with limited DMA addressing. */
+> #define SWIOTLB_INIT_ADDRESSING_LIMIT	(1 << 1)
+> /* Initialize a pool that requires architecture remapping. */
+> #define SWIOTLB_INIT_REMAP		(1 << 2)
+> /* Initialize a pool for DMA to memory-encrypted host or guest memory. */
+> #define SWIOTLB_INIT_MEM_ENCRYPT		(1 << 3)
+> /* Initialize a pool for unaligned kmalloc bouncing. */
+> #define SWIOTLB_INIT_KMALLOC		(1 << 4)
+> /* Do not initialize a pool unless SWIOTLB is explicitly required. */
+> #define SWIOTLB_INIT_DEFAULT_OFF		(1 << 5)
+> 
+> This results in the large change below. I'm not sure we want to do this
+> for no real benefit other than making swiotlb_should_init() slightly
+> easier to follow.
+> 
+> static bool __init swiotlb_should_init(unsigned int flags)
+> {
+> 	if (swiotlb_force_disable)
+> 		return false;
+> 
+> 	if (swiotlb_force_bounce)
+> 		return true;
+> 
+> 	if (flags & (SWIOTLB_INIT_REMAP | SWIOTLB_INIT_MEM_ENCRYPT)))
+> 		return true;
+> 
+> 	/* Explicit requirements override an architecture's default opt-out. */
+> 	if (flags & SWIOTLB_INIT_DEFAULT_OFF)
+> 		return false;
+> 
+> 	return flags & (SWIOTLB_INIT_ADDRESSING_LIMIT | SWIOTLB_INIT_KMALLOC);
+> }
+>  [...]
 
-Acked-by: Chen-Yu Tsai <wens@kernel.org>
+Hi Aneesh,
 
-> ---
->  drivers/gpu/drm/sun4i/sun4i_lvds.c | 2 ++
->  drivers/gpu/drm/sun4i/sun4i_rgb.c  | 2 ++
->  2 files changed, 4 insertions(+)
->
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_lvds.c b/drivers/gpu/drm/sun4i/s=
-un4i_lvds.c
-> index 6b98d20a8890..448e8a70b1aa 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_lvds.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_lvds.c
-> @@ -153,6 +153,8 @@ int sun4i_lvds_init(struct drm_device *drm, struct su=
-n4i_tcon *tcon)
->                         goto err_cleanup_connector;
->                 }
->
-> +               drm_connector_set_orientation_from_panel(&lvds->connector=
-,
-> +                                                        lvds->panel);
->                 drm_connector_attach_encoder(&lvds->connector,
->                                                   &lvds->encoder);
->         }
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_rgb.c b/drivers/gpu/drm/sun4i/su=
-n4i_rgb.c
-> index 3da9a9283c6e..5414afcb10b5 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_rgb.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_rgb.c
-> @@ -245,6 +245,8 @@ int sun4i_rgb_init(struct drm_device *drm, struct sun=
-4i_tcon *tcon)
->                         goto err_cleanup_connector;
->                 }
->
-> +               drm_connector_set_orientation_from_panel(&rgb->connector,
-> +                                                        rgb->panel);
->                 drm_connector_attach_encoder(&rgb->connector,
->                                                   &rgb->encoder);
->         }
->
-> --
-> 2.47.3
->
+I can reproduce the CCA regression discussed in this thread:
+  https://lore.kernel.org/all/yq5azeyxyfol.fsf@kernel.org/#t
+
+The guest runs out of SWIOTLB slots, causing disk I/O to fail and
+preventing the guest from booting.
+
+I would like to test the fix on real CCA hardware. Could you please Cc
+me when you respin the series? I follow LKML, but I may still miss the
+posting by chance.
+
+Thanks,
+Kohei

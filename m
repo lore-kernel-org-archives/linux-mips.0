@@ -1,65 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793378832;
-	b=TPk170MsPBm6WQs/nFSc+rVyR4jCwDwwNO0wXQYiikgo6CPpyv/iI78So1WXpJjKdo3H
-	 neEnWWzWybHryfhzpP2gB7I8OH+XcTw8qz3rMMxLLExkUP3gPHZNXT+IcxYqZiZEHgrhy
-	 uqxr0qBmPEO0ksV9w9ejp1cPp38IL+1bK75XzFgKH0KkLOIY7sKqU/Cqm2rIbm8ebGUjH
-	 1fMNZ/uHtCSzOb0cCqF0o2cPSuEWqf8c7w7xaLOHbXRLx/TqxIA7Q8zVj9OQFwpTdo4Kx
-	 0IDrd77xGPEe29SkLPLHwVL/YzqtjYW50JhMHGFBb6gYTh/SOlvolQdwBGifANY3aOA==
+	t=1793381350;
+	b=nZuui9yiaFy7aGIkROs2QhGwAFZQOwRbhYv5+Yi2C+P4d9txoQHK1wBx4AGg3kw041+s
+	 /80cOqQDYonEH7nPbdJTYYwC0fohbJMN4w26sbitZ1DyQ9bsLwriq/QO39ji9YZG86raQ
+	 2nA7mOU5oA66mqX15k649XVLuBi6yCSXgrIb8jRl9n9/AE0UAWv67FIz1HAYyhe9DYhFn
+	 uC361oF2eFBbNbyz8TI43zVlhPdICpSS/md1MJSSrbXFLUG8Ju0lPXkN1lreQ9ewfzuP+
+	 SXZZ2KpXKNXboeGxLCHxVxgZIX8d1DrniD5ErPOZUJq3yloLPl9WtAxZYenIvkjtRNQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793378832;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=04m83N1IlMXq6WsWOtwZxzl6XD+UtNwFu0qMu14VGqw=;
-	b=WnqIOffW1tYECaUwgwMX9u69t11zVonSKu6d8OsNIyrkmxwGN47jRKYCMfPDXl+sszVO
-	 Oe3HUBwtDtL4CSYR0vi2rnWEHfAm9Q68d3AJEj/E1gr/k/29ThtpWGO8ha45b9c2WjHIU
-	 cY99SsmGle7tecbGLoqlFy1AQjicQwedi76uKqFktOsKAT7DA9Ub7Y9aGhkzJc5akArDv
-	 RjGtpClgXL0Hp64ydwsmX+bl989AzIaIDaWvL/wnKAaqu7ql8ev/9qczFz+2MoUzhN7jW
-	 pwU++52Pox9Jz1dzCrTLG6/HEUhCq8U2P9K6GlWn6H95izviebFOOyRn4a52r9fR1MQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793381350;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id:X-Mailer:X-Last-TLS-Session-Version;
+	bh=EP5Qg4kA7YkpBNe+5FytJYCH0Xni6F9c0BjnYp2EtOk=;
+	b=El+qlNRyalCGTQY9VThE2wsEGJ/hvaEX7FSh/2U8DwsVXU+eT2YTNvodWqr5oOB0Dyop
+	 6Cp3fXByxk/aWo7gIXSF6hzqd1L8dYqYOexHodRhBDDEjaidOlUHJB22m1a4ddi2JUs6R
+	 +0sBPO2aDan3ssZI24r/pf7ogD/xyH24m+dj4MN/jt4igQdqcSpJ/F/HKKFolGWz5LAcw
+	 CHEXNdXnFCXY5GYEnU6ZCLztVY/wXOdBvZDFnrUpgjoDGt+bww045QNq4FRK90IZNK9MP
+	 bH/m7qEoHtFAZ+3s+QhfS8cs6NWGcJ44gOEMq8dN7byc50K0hWoWXvanVucBBO51Nkw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=pass smtp.mailfrom=infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ZsoFnbxB;
-	arc=none smtp.remote-ip=198.137.202.133
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dmarc=pass header.from=bootlin.com;
+	spf=pass smtp.mailfrom=bootlin.com;
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=man1ZzCg;
+	arc=none smtp.remote-ip=185.246.85.4
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9DB606A31A;
-	Fri, 30 Oct 2026 16:47:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C9DB606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B3A606A31D;
+	Fri, 30 Oct 2026 17:29:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E6B3A606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ZsoFnbxB
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=04m83N1IlMXq6WsWOtwZxzl6XD+UtNwFu0qMu14VGqw=; b=ZsoFnbxBAlkv+KtUpwfdoQ1oqu
-	PwHtH5qveZ4+fvoA28RY6ONzg317zLbVCQhlsOPo8gjYpjppyl2AjZFvTy+3chdl9ZDoNvc3Ewojr
-	+bVVfNRfTJabWoeo2O6q1SBCoBK+gCdFlHS5H7rY/EjojYYD/hTIFyh8iSKbfz2ARmLVtpz4vbBPi
-	gCc+6vIfCR22w0uvzG5f455/TLUcoswsav6z6lpWDlu8hfT3pCDHLx9YC1N6WKE/3vOKIcdhI4VxQ
-	tfg7eyue/9XsapnDV8QxKRhexud+dlk2EzSDVIGgLvnFIPR7O1pIGcPACVitCdmy090Ei1RaAU2Xz
-	vwgLglzw==;
-Received: from [50.53.43.113] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMpko-0000000C9vQ-3mhG;
-	Fri, 30 Oct 2026 16:46:58 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: patches@lists.linux.dev
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	linux-watchdog@vger.kernel.org
-Subject: [PATCH 1/8] MIPS: mm/c-octeon: fix missing function prototype warnings
-Date: Fri, 30 Oct 2026 09:46:50 -0700
-Message-ID: <20261030164657.2808262-2-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261030164657.2808262-1-rdunlap@infradead.org>
-References: <20261030164657.2808262-1-rdunlap@infradead.org>
+	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=man1ZzCg
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2BCB54E413A2;
+	Fri, 30 Oct 2026 17:29:06 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C48FE6076B;
+	Fri, 30 Oct 2026 17:29:05 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7157410328D09;
+	Fri, 30 Oct 2026 18:28:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793381338; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=EP5Qg4kA7YkpBNe+5FytJYCH0Xni6F9c0BjnYp2EtOk=;
+	b=man1ZzCgBezoTOgt0FHPVjh/CIVwcOSzEDfVqdfhmcK4lyIuelFADmw1OdPt5Qmi+L9xn0
+	CbkZ8EYJMp5JLvq/AZykdWTBgBeTt7DiIc1LhG2yPIm/xxPpNCPeErkzEYlmkfGT30bmNf
+	GDzXSWk/J6wiChEPIM6stPXccXq4t7C0yOvoLZrDuhGFLrNe8nUitRtHmv9x4einGaHDZz
+	4Lz3wuBOrycCH2vU23aZw+RDywbSEpy37zW3YNdOLz/fkVYP8D8kxmxBw9b/tPS/S09ij+
+	lIJDHXXRttC/Ko+7Yi7R3vEw3GWdoexeJWWH7ugbfvNNAyNxelvyrNXY+nXjpQ==
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -69,52 +59,102 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 01/35] drm/panel: remove the get_timings() callback
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Cc: Douglas Anderson <dianders@chromium.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <jesszhan0024@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+ Jyri Sarha <jyri.sarha@iki.fi>, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+ Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+ Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, 
+ Stefan Agner <stefan@agner.ch>, Frank Li <Frank.Li@nxp.com>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, 
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+ Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+ Linus Walleij <linusw@kernel.org>, Sandy Huang <hjc@rock-chips.com>, 
+ =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+ Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, Inki Dae <inki.dae@samsung.com>, 
+ Seung-Woo Kim <sw0312.kim@samsung.com>, 
+ Kyungmin Park <kyungmin.park@samsung.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Peter Griffin <peter.griffin@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, Alison Wang <alison.wang@nxp.com>, 
+ Paul Kocialkowski <paulk@sys-base.io>, 
+ Yannick Fertre <yannick.fertre@foss.st.com>, 
+ Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
+ Philippe Cornu <philippe.cornu@foss.st.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Samuel Holland <samuel@sholland.org>, 
+ Thierry Reding <thierry.reding@kernel.org>, 
+ Mikko Perttunen <mperttunen@nvidia.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
+ Javier Martinez Canillas <javierm@redhat.com>, 
+ Igor Reznichenko <igor@reznichenko.net>, Michael Walle <mwalle@kernel.org>, 
+ Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
+ Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
+ =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
+ Purism Kernel Team <kernel@puri.sm>, 
+ Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
+ Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
+ Michael Trimarchi <michael@amarulasolutions.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ Casey Connolly <casey.connolly@linaro.org>, 
+ Michael Tretter <m.tretter@pengutronix.de>, 
+ Cristian Cozzolino <cristian_ci@protonmail.com>, 
+ Junjie Cao <junjie.cao@linux.dev>, Ryan Brue <ryanbrue.dev@gmail.com>, 
+ Nickolay Goppen <setotau@mainlining.org>, 
+ Stefan Mavrodiev <stefan@olimex.com>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Robert Chiras <robert.chiras@nxp.com>, 
+ Alexander Koskovich <akoskovich@pm.me>, 
+ Markuss Broks <markuss.broks@gmail.com>, 
+ Artur Weber <aweber.kernel@gmail.com>, David Heidelberg <david@ixit.cz>, 
+ Dzmitry Sankouski <dsankouski@gmail.com>, 
+ Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+ linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
+ linux-tegra@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+In-Reply-To: <20261026-drm-panel-funcs-v1-1-5e3070a3478f@oss.qualcomm.com>
+References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com>
+ <20261026-drm-panel-funcs-v1-1-5e3070a3478f@oss.qualcomm.com>
+Date: Fri, 30 Oct 2026 18:28:25 +0100
+Message-Id: <179338130509.3009485.3123201175903177487.b4-review@b4>
+X-Mailer: b4 0.16.0
+X-Last-TLS-Session-Version: TLSv1.3
 
-Add missing cache function prototypes to <asm/r4kcache.h> and remove
-2 local prototypes from the edac driver to eliminate build warnings:
+> Nothing has ever called get_timings() since it was introduced in commit
+> 2938931f3732 ("drm/panel: Add display timing support"). Remove it
+> together with its three implementations.
 
-arch/mips/mm/c-octeon.c:297:5: warning: no previous prototype for 'register_co_cache_error_notifier' [-Wmissing-prototypes]
-  297 | int register_co_cache_error_notifier(struct notifier_block *nb)
-arch/mips/mm/c-octeon.c:303:5: warning: no previous prototype for 'unregister_co_cache_error_notifier' [-Wmissing-prototypes]
-  303 | int unregister_co_cache_error_notifier(struct notifier_block *nb)
-arch/mips/mm/c-octeon.c:342:17: warning: no previous prototype for 'cache_parity_error_octeon_recoverable' [-Wmissing-prototypes]
-  342 | asmlinkage void cache_parity_error_octeon_recoverable(void)
-arch/mips/mm/c-octeon.c:351:17: warning: no previous prototype for 'cache_parity_error_octeon_non_recoverable' [-Wmissing-prototypes]
-  351 | asmlinkage void cache_parity_error_octeon_non_recoverable(void)
+Ah, interesting!
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-edac@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
+Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
- arch/mips/include/asm/r4kcache.h |    3 +++
- drivers/edac/octeon_edac-pc.c    |    4 +---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
---- linux-next-20261028.orig/arch/mips/include/asm/r4kcache.h
-+++ linux-next-20261028/arch/mips/include/asm/r4kcache.h
-@@ -31,6 +31,9 @@ extern int mips_sc_init(void);
- extern void (*r4k_blast_dcache)(void);
- extern void (*r4k_blast_icache)(void);
- 
-+extern int register_co_cache_error_notifier(struct notifier_block *nb);
-+extern int unregister_co_cache_error_notifier(struct notifier_block *nb);
-+
- /*
-  * This macro return a properly sign-extended address suitable as base address
-  * for indexed cache operations.  Two issues here:
---- linux-next-20261028.orig/drivers/edac/octeon_edac-pc.c
-+++ linux-next-20261028/drivers/edac/octeon_edac-pc.c
-@@ -19,9 +19,7 @@
- 
- #include <asm/octeon/cvmx.h>
- #include <asm/mipsregs.h>
--
--extern int register_co_cache_error_notifier(struct notifier_block *nb);
--extern int unregister_co_cache_error_notifier(struct notifier_block *nb);
-+#include <asm/r4kcache.h>
- 
- extern unsigned long long cache_err_dcache[NR_CPUS];
- 

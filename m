@@ -1,55 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.84.56
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793381479;
-	b=wvOXcWS4tMcyiKsb0mTeKpUkdFExXaST9Uh/K6p5DKXLT27uJ22aG7yBtazADl1tk2dy
-	 XhKv5ECRhH/tvJgSB3tkzKihnfj1vWzm9HduY1vOxoz3hXiy/XtLKx6kej8Gl+y6XbtB8
-	 oohqgeasOb0/OAVpFbiBq1TozKvwHJBOCl6ywm4PRCmcHrhTqVe0/1fRbHXt6a/ZkzMj9
-	 ruLydcXDk2XJ1+zBcPYE2cXqVa183DZOf5kGF+l4oIzvfAudGQjLAeP+RHB1ynGSxNOH8
-	 RzBvbqYKdCoNV3s10zE4I/wUeVLJPcudtDzkXEu0GRLrD+uGC2k0a6igsG0n0gPwjHQ==
+	t=1793381493;
+	b=0i2RFW+LbUup/BJHuiJNLoIVklyAdLZOVQPE7pC+lqRj8LPzkBILWq1mxrxfW5fPnau7
+	 sX9ghXEOJbg6hKTnb7+1B4nLGgrJcHFiL+j+lCfO2ZEYcX824x/7V7/tT9H9QKdLZEN9P
+	 5hzp8pad/68zjAj6ypqn97nJOC6UkR84wfq78YIL26/Aio4RjWg6DS1I4yjj4iiHjzYHA
+	 jpPprqzrJr2IME57NuSzLE/pRqRSfPENjFBT3cJy03mOrbOFGvQZkveLTYqUrcuLpXHog
+	 zykAreYBnGutsHqLdKpq6bJKI2I+VymrN+qHIuVAVhjV2Rx+3t1tDn4kMmKb+ZdNtVQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793381479;
-	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Subject:From:To:Cc:In-Reply-To:
-	 References:Date:Message-Id:X-Mailer:X-Last-TLS-Session-Version;
-	bh=lRmyLXcd0AekLQ/v2+PcTStGKOT1K2BsRAt76YP3cr8=;
-	b=LU/AAQMUa1eYH4QtTJ4wX0M6hTvAvkjWljrb6ZOXbiaCTA9nO5Ir5OfUy0PNchpwCFPG
-	 0/aKWwG5LhAGfkbxBOq+K5WTzw/7pihgn3aUJGunZumQvgYf2q6+801/451Zi/R74u5A/
-	 mdcFx2p3EBXQBT0d79vc287R+QGz13Jk2R98tE/oo29HfVgEKIrl0Md1sTXeMmU9jkIL1
-	 3m6NIILSYwsZizsB1X2YWjmUSKOR3Y2rTAe1uLYd/OHwoKp5q6LvNSma42g/7ucJYu/yW
-	 Q88vs31PuYwsBVG+m0Du/cUo54p30WujOcwq1fgfHPYYeftWOcyqg8Rqq/FbOluF3pw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793381493;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:Mime-Version:
+	 Content-Transfer-Encoding:Content-Type:Date:Message-Id:Cc:To:From:
+	 Subject:X-Mailer:References:In-Reply-To:X-Last-TLS-Session-Version;
+	bh=lg0kgxHUKFzjiXY6CFOjM8mcZ+WYoVq2CQlrIXQSExI=;
+	b=gaEaipGEA4JkT6V6WeuOVosUYzeYh9h+9xqbPiIgf5bAJOuuKWm86Q/LKQvKYQxpBVLr
+	 g3xO9glWJgT9/NTbMtaIXPeDqAN+XtP4Ocl02JAFPGbXdsDvxxUl3Brt0xIaCgKR4t/VS
+	 Fvp9fO21dK19ErSo69bn36CFAGkk+MuU8shqHe458OSdZmdIj34hdfakn8sLEKK89YF9N
+	 5j1gBHUbZOgtkb0hhIG2R25ILGjDOj+ReUyUztfo7RFD5msB82jhGLW6BIXZxDX9U2sBJ
+	 5QHQMfvcyFdbVtHBrrIKn+s8cGD9+jtuA+Vz+hZmSwcYU5ze2RCy6aSB/48JCwznAPg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=bootlin.com;
 	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=BIGpS8NQ;
-	arc=none smtp.remote-ip=185.171.202.116
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Sd14mJMc;
+	arc=none smtp.remote-ip=185.246.84.56
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8415E606A31A
-	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 17:31:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8415E606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1622606A321
+	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 17:31:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C1622606A321
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=BIGpS8NQ
+	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Sd14mJMc
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 28D26C49F6C;
-	Fri, 30 Oct 2026 17:32:20 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 54A0D1A13DF;
+	Fri, 30 Oct 2026 17:31:31 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 3EFA66076B;
-	Fri, 30 Oct 2026 17:31:17 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4D41A103290EE;
-	Fri, 30 Oct 2026 18:30:44 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1AACC603C2;
+	Fri, 30 Oct 2026 17:31:31 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C43DF10329127;
+	Fri, 30 Oct 2026 18:31:02 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793381466; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1793381485; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=lRmyLXcd0AekLQ/v2+PcTStGKOT1K2BsRAt76YP3cr8=;
-	b=BIGpS8NQIFv4zezi7Uhs6V3wAcwUdEh09Ku0BjPnOJ1z1RsTyC7v70zvo8jdKGTQdRmVZd
-	V/QDpL5cqLtk7+dsQaD7EHoV+O6r4K5Gt36QQP1lG/pkxL2bL+m6FJbT8Iq80kVfpgIy/z
-	n49DiPRYEW3MHcDqYuik9xlBty+YxlICHQC3XtS+68h63TjfPo/6h0bbA+j9iXEVw0p1BM
-	YHF+9HVOeOAAom1TCVdzPtuK/CxiY0l7QKsnPTZnX+IGOmrB1lS9uFMn0SlfswiHZG+OaR
-	8E4/4tYqwJ9SnuxPoCojfMs99pGzOVaFBHEik5UiUWstDGISJOsISXeUfw2ViQ==
+	bh=lg0kgxHUKFzjiXY6CFOjM8mcZ+WYoVq2CQlrIXQSExI=;
+	b=Sd14mJMcVMS3sOmQ2BRP/Yu27JyNaplvycxZT/sUbjYugorR3C5K7ebD0EIYqmrAIAN91+
+	FRNv2vEt72dF438Dcgvt+/81ygxJN+sBh1LbP2ri3aRyIt+vnasNOrhK09Ec5zoI/msld6
+	2J8HnJxSrBm74asVssFdeUzcikjyEmZkRY48/ikGuxsB9r8bqxUQjZNu2ROt2rQWE9la0o
+	wjL8CWYXEBOHplUPlRUhEnbfGB+nsQR2542d2e/8X6vnD9ZRfuPojJvtYZwBfktqkS3o+e
+	fgNUZTQ4Eww+aJUgZifIz687VPiGnsT3xVSNvC5qUf7felDCsf5sWg7oRh9q1g==
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -58,102 +58,179 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 06/35] drm: mxsfb: use devm_drm_panel_bridge_add()
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Cc: Douglas Anderson <dianders@chromium.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Jessica Zhang <jesszhan0024@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Jyri Sarha <jyri.sarha@iki.fi>, 
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
- Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, 
- Stefan Agner <stefan@agner.ch>, Frank Li <Frank.Li@nxp.com>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, 
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
- Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
- Linus Walleij <linusw@kernel.org>, Sandy Huang <hjc@rock-chips.com>, 
- =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
- Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, Inki Dae <inki.dae@samsung.com>, 
- Seung-Woo Kim <sw0312.kim@samsung.com>, 
- Kyungmin Park <kyungmin.park@samsung.com>, 
- Krzysztof Kozlowski <krzk@kernel.org>, 
- Peter Griffin <peter.griffin@linaro.org>, 
- Alim Akhtar <alim.akhtar@samsung.com>, Alison Wang <alison.wang@nxp.com>, 
- Paul Kocialkowski <paulk@sys-base.io>, 
- Yannick Fertre <yannick.fertre@foss.st.com>, 
- Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
- Philippe Cornu <philippe.cornu@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Chen-Yu Tsai <wens@kernel.org>, Samuel Holland <samuel@sholland.org>, 
- Thierry Reding <thierry.reding@kernel.org>, 
- Mikko Perttunen <mperttunen@nvidia.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
- Javier Martinez Canillas <javierm@redhat.com>, 
- Igor Reznichenko <igor@reznichenko.net>, Michael Walle <mwalle@kernel.org>, 
- Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
- Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
- =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
- Purism Kernel Team <kernel@puri.sm>, 
- Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
- Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
- Michael Trimarchi <michael@amarulasolutions.com>, 
- Sumit Semwal <sumit.semwal@linaro.org>, 
- Casey Connolly <casey.connolly@linaro.org>, 
- Michael Tretter <m.tretter@pengutronix.de>, 
- Cristian Cozzolino <cristian_ci@protonmail.com>, 
- Junjie Cao <junjie.cao@linux.dev>, Ryan Brue <ryanbrue.dev@gmail.com>, 
- Nickolay Goppen <setotau@mainlining.org>, 
- Stefan Mavrodiev <stefan@olimex.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Robert Chiras <robert.chiras@nxp.com>, 
- Alexander Koskovich <akoskovich@pm.me>, 
- Markuss Broks <markuss.broks@gmail.com>, 
- Artur Weber <aweber.kernel@gmail.com>, David Heidelberg <david@ixit.cz>, 
- Dzmitry Sankouski <dsankouski@gmail.com>, 
- Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
- linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
- linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
- linux-tegra@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-In-Reply-To: <20261026-drm-panel-funcs-v1-6-5e3070a3478f@oss.qualcomm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 30 Oct 2026 18:31:02 +0100
+Message-Id: <DMICO60J4G03.1QBH2T9SQ7XEZ@bootlin.com>
+Cc: <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, <imx@lists.linux.dev>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-renesas-soc@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
+ <linux-doc@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>, <linux-sunxi@lists.linux.dev>,
+ <linux-tegra@vger.kernel.org>, <linux-rpi-kernel@lists.infradead.org>
+To: "Dmitry Baryshkov" <dmitry.baryshkov@oss.qualcomm.com>, "Douglas
+ Anderson" <dianders@chromium.org>, "Neil Armstrong"
+ <neil.armstrong@linaro.org>, "Jessica Zhang" <jesszhan0024@gmail.com>,
+ "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>, "Maxime Ripard"
+ <mripard@kernel.org>, "Thomas Zimmermann" <tzimmermann@suse.de>, "David
+ Airlie" <airlied@gmail.com>, "Simona Vetter" <simona@ffwll.ch>, "Jyri
+ Sarha" <jyri.sarha@iki.fi>, "Tomi Valkeinen"
+ <tomi.valkeinen@ideasonboard.com>, "Andrzej Hajda"
+ <andrzej.hajda@intel.com>, "Robert Foss" <rfoss@kernel.org>, "Laurent
+ Pinchart" <Laurent.pinchart@ideasonboard.com>, "Jonas Karlman"
+ <jonas@kwiboo.se>, "Jernej Skrabec" <jernej.skrabec@gmail.com>, "Luca
+ Ceresoli" <luca.ceresoli@bootlin.com>, "Paul Cercueil"
+ <paul@crapouillou.net>, "Marek Vasut" <marex@denx.de>, "Stefan Agner"
+ <stefan@agner.ch>, "Frank Li" <Frank.Li@nxp.com>, "Sascha Hauer"
+ <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
+ <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "Laurent
+ Pinchart" <laurent.pinchart+renesas@ideasonboard.com>, "Tomi Valkeinen"
+ <tomi.valkeinen+renesas@ideasonboard.com>, "Kieran Bingham"
+ <kieran.bingham+renesas@ideasonboard.com>, "Geert Uytterhoeven"
+ <geert+renesas@glider.be>, "Magnus Damm" <magnus.damm@gmail.com>, "Biju
+ Das" <biju.das.jz@bp.renesas.com>, "Linus Walleij" <linusw@kernel.org>,
+ "Sandy Huang" <hjc@rock-chips.com>, =?utf-8?q?Heiko_St=C3=BCbner?=
+ <heiko@sntech.de>, "Andy Yan" <andy.yan@rock-chips.com>, "Jonathan Corbet"
+ <corbet@lwn.net>, "Shuah Khan" <skhan@linuxfoundation.org>, "Randy Dunlap"
+ <rdunlap@infradead.org>, "Inki Dae" <inki.dae@samsung.com>, "Seung-Woo Kim"
+ <sw0312.kim@samsung.com>, "Kyungmin Park" <kyungmin.park@samsung.com>,
+ "Krzysztof Kozlowski" <krzk@kernel.org>, "Peter Griffin"
+ <peter.griffin@linaro.org>, "Alim Akhtar" <alim.akhtar@samsung.com>,
+ "Alison Wang" <alison.wang@nxp.com>, "Paul Kocialkowski"
+ <paulk@sys-base.io>, "Yannick Fertre" <yannick.fertre@foss.st.com>,
+ "Raphael Gallais-Pou" <raphael.gallais-pou@foss.st.com>, "Philippe Cornu"
+ <philippe.cornu@foss.st.com>, "Maxime Coquelin"
+ <mcoquelin.stm32@gmail.com>, "Alexandre Torgue"
+ <alexandre.torgue@foss.st.com>, "Chen-Yu Tsai" <wens@kernel.org>, "Samuel
+ Holland" <samuel@sholland.org>, "Thierry Reding"
+ <thierry.reding@kernel.org>, "Mikko Perttunen" <mperttunen@nvidia.com>,
+ "Jonathan Hunter" <jonathanh@nvidia.com>, "Jagan Teki"
+ <jagan@amarulasolutions.com>, "Ondrej Jirman" <megi@xff.cz>, "Javier
+ Martinez Canillas" <javierm@redhat.com>, "Igor Reznichenko"
+ <igor@reznichenko.net>, "Michael Walle" <mwalle@kernel.org>, "Dario
+ Binacchi" <dario.binacchi@amarulasolutions.com>, "Jagan Teki"
+ <jagan@edgeble.ai>, "Jianhua Lu" <lujianhua000@gmail.com>,
+ =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, "Purism Kernel Team"
+ <kernel@puri.sm>, "Jerry Han" <hanxu5@huaqin.corp-partner.google.com>,
+ "Joel Selvaraj" <jo@jsfamily.in>, "Icenowy Zheng" <icenowy@aosc.io>,
+ "Michael Trimarchi" <michael@amarulasolutions.com>, "Sumit Semwal"
+ <sumit.semwal@linaro.org>, "Casey Connolly" <casey.connolly@linaro.org>,
+ "Michael Tretter" <m.tretter@pengutronix.de>, "Cristian Cozzolino"
+ <cristian_ci@protonmail.com>, "Junjie Cao" <junjie.cao@linux.dev>, "Ryan
+ Brue" <ryanbrue.dev@gmail.com>, "Nickolay Goppen" <setotau@mainlining.org>,
+ "Stefan Mavrodiev" <stefan@olimex.com>, "Florian Fainelli"
+ <florian.fainelli@broadcom.com>, "Broadcom internal kernel review list"
+ <bcm-kernel-feedback-list@broadcom.com>, "Robert Chiras"
+ <robert.chiras@nxp.com>, "Alexander Koskovich" <akoskovich@pm.me>, "Markuss
+ Broks" <markuss.broks@gmail.com>, "Artur Weber" <aweber.kernel@gmail.com>,
+ "David Heidelberg" <david@ixit.cz>, "Dzmitry Sankouski"
+ <dsankouski@gmail.com>, "Yedaya Katsman" <yedaya.ka@gmail.com>
+From: "Luca Ceresoli" <luca.ceresoli@bootlin.com>
+Subject: Re: [PATCH 00/35] drm/panel: let the panels use the atomic state
+X-Mailer: aerc 0.22.0
 References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com>
- <20261026-drm-panel-funcs-v1-6-5e3070a3478f@oss.qualcomm.com>
-Date: Fri, 30 Oct 2026 18:28:25 +0100
-Message-Id: <179338130515.3009485.7125694218038298027.b4-review@b4>
-X-Mailer: b4 0.16.0
+ <cxsgo7u2hfb4jskscqcbeaaneiyfh7bdmlvku2wxwtduekwhxz@3vsizgxvekw7>
+In-Reply-To: <cxsgo7u2hfb4jskscqcbeaaneiyfh7bdmlvku2wxwtduekwhxz@3vsizgxvekw7>
 X-Last-TLS-Session-Version: TLSv1.3
 
-On Mon, 26 Oct 2026 13:09:55 +0200, Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com> wrote:
-> The connector type passed to devm_drm_panel_bridge_add_typed() has been
-> ignored since commit b7797081ccfe ("drm/panel: embed a drm_bridge into
-> every drm_panel"), the bridge always has the type of the panel.
+Hi Dmitry,
 
-Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+On Tue Oct 27, 2026 at 1:02 PM CET, Dmitry Baryshkov wrote:
+> On Mon, Oct 26, 2026 at 01:09:49PM +0200, Dmitry Baryshkov wrote:
+>> The panel is the only element of the display pipeline which never sees
+>> the atomic commit. Its prepare() and enable() callbacks get nothing but
+>> the panel, so a panel which has to be programmed differently depending
+>> on the mode can only guess it. The NT35950 driver, for example, saves
+>> the connector in get_modes() and reads connector->state->crtc->state
+>> while being prepared: without the locks, from the current state rather
+>> than from the one being committed, and with no way to reject a mode it
+>> doesn't know.
+>>
+>> Every panel has a struct drm_bridge embedded into it, and the bridge
+>> already has all the missing parts: atomic_check(), a state object which
+>> can be subclassed and the commit passed to the callbacks. Rather than
+>> growing struct drm_panel_funcs into a copy of that, let the panel driver
+>> provide struct drm_bridge_funcs for the embedded bridge. This is opt-in:
+>> the panels which have no use for the atomic state keep using struct
+>> drm_panel_funcs and are not touched by it.
+>>
+>> To get there the bridge callbacks become the entry point to the panel,
+>> with drm_panel_prepare() and friends calling them rather than the other
+>> way around. The panel core still has to track the panel state, notify
+>> the panel followers and handle the backlight, so the driver doesn't fill
+>> in the power callbacks directly, it wraps its functions with the macros
+>> doing that part. NT35950 is converted as the first user.
+>>
+>> The bulk of the series is the cleanup of what the panel core and the
+>> bridge need from the panel driver, so that a panel providing the bridge
+>> callbacks doesn't need struct drm_panel_funcs for anything:
+>>
+>> - get_timings() had no callers.
+>>
+>> - The connector type was stored both in the panel and in its bridge, and
+>>   the display drivers could override it while creating the panel bridge.
+>>
+>> - The orientation was read from the DT, stored and returned by nearly
+>>   identical code in more than twenty panel drivers, and some of them
+>>   also had to set it on the connector from get_modes(), with a TODO
+>>   asking for a better place. The core reads it now. It is applied to the
+>>   connector from the new connector_init() bridge callback, which is not
+>>   specific to the panels: other bridges have properties to set up on the
+>>   connector being created too (HDCP, DP link properties), and currently
+>>   have nowhere to do it.
+>>
+>> - disable() and unprepare() returned an error which nobody could act on.
+>>   Worse, a failed unprepare() left the panel marked as prepared, so it
+>>   was never initialised again.
+>>
+>> Behaviour changes worth knowing about:
+>>
+>> - Panels with the rotation property whose driver ignored it now get the
+>>   orientation property. In the tree this is the Motorola Mapphone panel
+>>   (panel-dsi-cm).
+>>
+>> - sun6i_mipi_dsi, sti_dvo and the Tegra DSI get their panel after the
+>>   DRM device has been registered, which is too late to create the
+>>   property, so they lose the orientation which the panel drivers used to
+>>   set from get_modes(). None of the rotated panels in the tree are used
+>>   with them.
+>>
+>> - A panel implementing atomic_check() can only be driven through the
+>>   bridge chain. The display drivers calling drm_panel_prepare() directly
+>>   have no commit to pass.
+>>
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+>> ---
+>> Dmitry Baryshkov (35):
+>>       drm/panel: remove the get_timings() callback
+>>       drm/panel: remove the unused struct panel_bridge
+>>       drm/tidss: get the panel type from the embedded bridge
+>>       drm/bridge: lvds-codec: use devm_drm_panel_bridge_add()
+>>       drm/ingenic: use devm_drm_panel_bridge_add()
+>>       drm: mxsfb: use devm_drm_panel_bridge_add()
+>>       drm: rcar-du: use devm_drm_panel_bridge_add()
+>>       drm: rz-du: use devm_drm_panel_bridge_add()
+>>       drm/mcde: use drm_panel_bridge_add()
+>>       drm/pl111: use drm_panel_bridge_add()
+>>       drm/rockchip: lvds: use drm_panel_bridge_add()
+>>       drm/rockchip: rgb: use drm_panel_bridge_add()
+>>       drm/panel: remove the _typed() panel bridge functions
+>
+> Gmail barked at me for sending too many emails for too many recipients
+> in the middle of the series. I guess, I'll have to split the series into
+> smaller parts. Please consider reviewing the posted patches, letting me
+> split / land the series in parts.
 
--- 
+The first 13~14 patches are nice and fairly independent cleanups. I guess
+they can be sent separately, or just be applied. However I'd still want to
+review patch 14 and do some testing next week before I consider them ready
+for applying.
+
+Luca
+
+--
 Luca Ceresoli, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
-

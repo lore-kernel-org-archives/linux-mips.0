@@ -1,90 +1,118 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.22
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793362078;
-	b=QD3ffsr0xUdd46bZdw/+5B7MaQUXXC9qJ0rteHtcLB36FFXQNfs5MSyNkQ/SK8jMOUZx
-	 nkhAqwYs+r2ETmjpBodmWEvTZCDS359KUQJ/JGHR9Alrv8xMMY+wIxdwz1wyqyQqZKNDa
-	 lO4B3mtFFJD8Yj3PMp6yuubQLb/cqdZ9b4HFVh6t+OxM2Obpz0S6hGWhsean7SdnmAgi/
-	 6uKAH5RYiRY8NKeUzHcWTINRNNk/g74EcgYxmmd9Srij1oTMO1tVVyUw1HaAQFn7coc23
-	 FJcD5BNjJLrHzbwRvkR6fJRxDFQ8VGsh2ZxdPQYJQpVHM5RvZKvs5F/rcavWI7OFnQg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793362078;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=x1S44Gd3bkRw1trvloAtMhdCb8IDY/HgNqZBXiQtrcg=;
-	b=SSSEL+gbLxgNotkbpCeoEoq0No7oZkZ+FIexRX8xGmvqS0eBTWyN4ntQPYhc8q+rF5AC
-	 s5r2og3idq0nr9MKVBmTGb7wpW1WtSyo+t5U1wBsXI2R5OTn5QQ6URCA/XoUw77s32mG0
-	 rDt8znh+Wsd4fQ36YjGGozi21xqcYcoXec4hLBiRXq13dRkUkUiK/9VohW3rNf31qUzOJ
-	 2kmJ+BCcOn28LD3aGn/JCnrb0Gc8WyWTHASsYKUkgFjvrwaTW4o/QVZCJaPEY5HWWaHZH
-	 Iz/YsdL1VUnvVzIvygCbb8IvvCVKD6HPK/ppzbTf69/ebZ5tCaqRZXW/rAUk3CwV3qg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=PpJTGwco;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=v6qgZt86;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.22
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.42.244.94
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793366994;
+	b=KITLk868xANVPlXQjCxsYcohC4PQ4FTtRK/rE4Yp+G8hdqYefJ69rlVW8ontzFGuAEZw
+	 /ekRclvU5SAx6dLu/zUXw5ScDdL6HsbOeJpNWcmfW/VQPkceClVhdrkR8EfWAGI+nONbc
+	 6ElWuzDo64Artr/cVS51oL+lc/u5Q5ETb4yldAbeDI4iEMlfnM1XnGkUW9x835/FSsOQs
+	 oWT+6xZAJ5ncZB6hj/ntH0Vdf+QeuId4i3vtW2GUm9nflflvXfeRE4LWeNiX4J41lHg+j
+	 BUjeQKDRytVCQUeydKsL5LmWI9m6nkr5yLsK/YhMZ9s+2tNhO+IiXKx1FmnJQr+grZQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793366994;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:Organization:x-ms-reactions:
+	 X-purgate-ID:X-purgate-type:X-purgate-size:X-Notice:X-purgate:
+	 X-purgate:X-pfmilter;
+	bh=QpUKaSoVRoEgdKmoyk8G7l81p1qWRtQXTZ0eVa1XsI0=;
+	b=f6IDDM4NhbwiFYS1LPPUgfuV6ppKu5XuPxXLtW7xeqN9V1JOseEiUh9Ym+JHytrC3ri8
+	 niXReb0ZZpep/ay+qqNUMlQqLw5ywqp1kDK50usUApkWS2AowDj4KChpaXhYAW1JqyuTK
+	 bRks7wyIOVdnrE0CzfF2YwVAR6xsge6tCQhIDoDHPFYw7CURjXO0ttpQwCsfgiu9yKiei
+	 5IE/ce36xBl3He+xzzi4Ud+JiM05GpuIn/yCQO9rx7UvRJMZ+bxJpHb10mrYdVLt0Vdr+
+	 YVhbGt++F9QmDr7NmacCzl89Ya9GELVFZcZcUDpk7//VlbyC/t/sgSBvI6x9xPFnVKA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=fritz.com;
+	spf=pass smtp.mailfrom=fritz.com;
+	dkim=pass header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=AmiP1sdZ;
+	arc=none smtp.remote-ip=212.42.244.94
+Received: from mail.avm.de (mail.avm.de [212.42.244.94])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44BD606A31C;
-	Fri, 30 Oct 2026 12:07:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A44BD606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99AC606A31C;
+	Fri, 30 Oct 2026 13:29:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E99AC606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fritz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fritz.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=PpJTGwco;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=v6qgZt86
-ARC-Seal: i=1; a=rsa-sha256; t=1793362035; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=kKTd6wCEsaht8DbjluO95Vu6WSDHJ6o5troCPVmvsYJq8FSY0Optbt+eu0arUPBPRV
-    2iqdhH9BRwBc5M507SxDoP0e9qu91YdkDBEY3NFhSxD1yaXWH3L9dV4OMiJ5i0TrJy1k
-    wVtOD8G4L6Smt76F7ZfowAl9L34eN4AtuzJmsLFt/33z3kcfjgds4K3OPJWbBiuf3ALo
-    fUSawWjqsHx9KiiY4C+op7BRh99hkIDicwthyEV2XE+EOUJFCvoEdbBddkCB7/0p/7xi
-    u20Io1Px+tNJziR/m1qi0tL+qn0na4K1owoB7erXsCUV8I9Ec90umb9xEAjG0WXkUlLj
-    Edpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793362035;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1S44Gd3bkRw1trvloAtMhdCb8IDY/HgNqZBXiQtrcg=;
-    b=Bf4DjswHC0fUbXiR0xn4retlmRuehiE/ZLQPywtkBVVCwYeH0Wb8hH9hg+X+0TFQMH
-    Wst/QcjHK9CPFj/plrziiWmibyjQlGupMlWXWZjQmSTss/zAd+dQVZ7xrpEDYL+z11jH
-    JgW9EdYGEq55n7fc9cJ3i+dBE43lUJau6W0gV0UnxC5FMQ0e3OiCxZN88PtUmqr1G++3
-    FmgRVao9UVc1obHrrXUe4nGyUVlAN/s3xj5nHprIt1LUxP8q7360xZA618qJ21OdQo0r
-    P7V6XspKR6PJ314aNxTOGFJ1GF+zH3YYQ6hg1KjQo7daeyBjwC1GcRRLKfjeClxl2pVa
-    Wveg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793362035;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1S44Gd3bkRw1trvloAtMhdCb8IDY/HgNqZBXiQtrcg=;
-    b=PpJTGwcolYfx2nhhfO/kzOu/NjUgT2Uz/zFooNukjIdg5T/4/RXKJPbhMdaD7kp1XJ
-    KJX7Os6Cjf9urwpdkZzjcN5q9a6nMmtXkvuBf1jajfWdEo5lh1xHn8p/fsJykW8Xst3e
-    WbnH+sw7sl74PnZTsyQY9zKV5V127MaHopb053N6wsvyw8zV6/0/qL41hs/sZ6Zr9suZ
-    kfFlrFpnCjxihocqloiSm2O600bNbOLdJTIJEgqTNECr6GwmQLuCmUixqgIljRSaVgTf
-    881qa0Sahi5l6gc+OmO9vN/m4uCu2OFWddCBfZaZpOpKtvqOLWHkyHvQ39KGTe1RDRWK
-    I/fg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793362034;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=x1S44Gd3bkRw1trvloAtMhdCb8IDY/HgNqZBXiQtrcg=;
-    b=v6qgZt8616eIV00fEc7N64eRxtN+OyU6Jk+wf2PQma88enlaZ6g9HZg57IXgf11VmD
-    4Dq6BBhfAvvsrJDkJKCQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV2poKmsiNhq7KtjfW47fObhZWSYR4XVi/U0fw"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a229UC7EKvi
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Fri, 30 Oct 2026 13:07:14 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key, unprotected) header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=AmiP1sdZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fritz.com; s=mail;
+	t=1793366980; bh=a/fEt90n+2smzc8tULN5m3m/hMMA3WQXHcvWhcoynLc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AmiP1sdZKE4ipmV9XkFzIAg6sDdTc8piKssit8JG5M7jVm+wWoA9HNBcL6nnioxmf
+	 UtVWmWL8HC8cipXhGGKFKn344d7QBy4BigwXDhd9cibHOOYqfnPwcm+wl7S8LyH40H
+	 PIcRpdlbp12mkcZ/qVoxVXxHxdsVB4yBgm4K8e8Gb7j8o5MGT6HVOS52CCT1ImUgYM
+	 rC8fGm5esO5fYtQK82TXSmpyrCUdX6hUkhNuydSuiEjRPAEuIkSRJ3Vr5CzOMuVEiE
+	 +YmeA56zTDNX6G2v3XBcddEQclfpxGdALH3GP+htSNoKgdV3GvyPoPiSSRu1+yw2Ux
+	 Cmo8WDvejZ5Lw==
+Received: from [212.42.244.78] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.57.1)
+	(envelope-from <n.schier@fritz.com>)
+	id 6ae49bc4-23c8-7f0000032729-7f0000019972-1
+	for <multiple-recipients>; Fri, 30 Oct 2026 14:29:40 +0100
+Received: from mail-auth.fritz.com (unknown [212.42.244.78])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Fri, 30 Oct 2026 14:29:40 +0100 (CET)
+Date: Fri, 30 Oct 2026 14:29:39 +0100
+From: Nicolas Schier <n.schier@fritz.com>
+To: Thomas Huth <thuth@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Luis Augenstein <luis.augenstein@tngtech.com>,
+	Maximilian Huber <maximilian.huber@tngtech.com>,
+	Anup Patel <anup@brainfault.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andy Lutomirski <luto@kernel.org>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, soc@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Mark Rutland <mark.rutland@arm.com>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Atish Patra <atish.patra@linux.dev>,
+	Sean Christopherson <seanjc@google.com>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-efi@vger.kernel.org,
+	netdev@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v5 13/13] treewide: Stop defining __ASSEMBLY__ for
+ assembler files
+Message-ID: <20261030-dexterous-manatee-of-honor-eac4eb@l-nschier-z2>
+References: <20261023064908.66707-1-thuth@redhat.com>
+ <20261023064908.66707-14-thuth@redhat.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,73 +121,78 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH 1/4] dt-bindings: clock: Add Ingenic X1600 CGU bindings
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261030-zippy-crocodile-of-enhancement-9fb0f0@quoll>
-Date: Fri, 30 Oct 2026 13:06:43 +0100
-Cc: Stephen Boyd <sboyd@kernel.org>,
- Brian Masney <bmasney+clk@redhat.com>,
- Jerome Brunet <jbrunet+clk@baylibre.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org,
- letux-kernel@openphoenux.org,
- kernel@pyra-handheld.com,
- Paul Boddie <paul@boddie.org.uk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FhzCQO4A3K0b968D"
+Content-Disposition: inline
+In-Reply-To: <20261023064908.66707-14-thuth@redhat.com>
+Organization: FRITZ! Technology GmbH
+x-ms-reactions: disallow
+X-purgate-ID: 149429::1793366980-1E7C8EE4-1E744FE6/0/0
+X-purgate-type: clean
+X-purgate-size: 2843
+X-Notice: Whitelisted
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
+X-pfmilter: host: postfix-mx-03  mail-id: E6A11A07A2  external: no
+
+--FhzCQO4A3K0b968D
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <FE4330E9-6C27-478A-9097-3588D9DB9897@goldelico.com>
-References: <cover.1792955907.git.hns@goldelico.com>
- <13abd95aaab56ce5c9dc565db7f0198162b0c166.1792955907.git.hns@goldelico.com>
- <20261030-zippy-crocodile-of-enhancement-9fb0f0@quoll>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
-Hi Krzysztof,
-
-
-> Am 30.10.2026 um 12:24 schrieb Krzysztof Kozlowski <krzk@kernel.org>:
+On Fri, Oct 23, 2026 at 08:48:50AM +0200, Thomas Huth wrote:
+> All spots have been changed to __ASSEMBLER__ (i.e. the macro that
+> gets defined by the compiler), so we don't have to manually define
+> __ASSEMBLY__ anymore.
 >=20
-> On Sun, Oct 25, 2026 at 08:18:24PM +0100, H. Nikolaus Schaller wrote:
->> Add the device tree bindings and the clock ID definitions for the
->> Clock Generation Unit (CGU) of the Ingenic X1600 SoC.
->>=20
->> The clock layout features specific I2S handling. To properly support
->> the I2S controllers on the X1600 without relying on complex compound
->> dividers that are not yet natively supported by the drivers, split
->> the structures to explicitly describe the additional I2S divider
->> fields. This design accounts for the current driver limitations
->> regarding division encoding while matching the hardware's internal
->> gating architecture.
->>=20
->> Furthermore, introduce dedicated I2S0 RX and TX clock definitions to
->> allow independent and precise routing for I2S stream usage.
->>=20
->> Co-developed-by: Paul Boddie <paul@boddie.org.uk>
->> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
->> Co-developed-by: H. Nikolaus Schaller <hns@goldelico.com>
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  Makefile                                             | 2 +-
+>  arch/alpha/boot/compressed/Makefile                  | 2 +-
+>  arch/arm64/kernel/vdso32/Makefile                    | 1 -
+>  arch/loongarch/vdso/Makefile                         | 2 +-
+>  arch/mips/boot/compressed/Makefile                   | 2 +-
+>  arch/mips/vdso/Makefile                              | 2 +-
+>  arch/powerpc/boot/Makefile                           | 2 +-
+>  arch/powerpc/platforms/cell/spufs/Makefile           | 2 +-
+>  arch/s390/Makefile                                   | 2 +-
+>  arch/x86/boot/Makefile                               | 2 +-
+>  arch/x86/boot/compressed/Makefile                    | 2 +-
+>  arch/x86/realmode/rm/Makefile                        | 2 +-
+>  arch/xtensa/kernel/Makefile                          | 2 +-
+>  drivers/firmware/efi/libstub/Makefile                | 2 +-
+>  drivers/net/wan/Makefile                             | 2 +-
+>  scripts/Makefile.build                               | 2 +-
+>  scripts/gfp-translate                                | 2 +-
+>  scripts/headers_install.sh                           | 1 -
+>  scripts/sbom/tests/cmd_graph/test_savedcmd_parser.py | 2 +-
+>  tools/testing/selftests/kvm/lib/riscv/handlers.S     | 4 ----
+>  tools/testing/selftests/vDSO/vgetrandom-chacha.S     | 2 --
+>  21 files changed, 17 insertions(+), 25 deletions(-)
 >=20
-> One more nit:
->=20
-> A nit, subject: drop second/last, redundant "bindings". The
-> "dt-bindings" prefix is already stating that these are bindings.
-> See also:
-> =
-https://elixir.bootlin.com/linux/v7.1-rc7/source/Documentation/devicetree/=
-bindings/submitting-patches.rst#L23
->=20
-thanks for both suggestions!
 
-A V2 is in preparation covering the previous and this comment
-and other aspects as well.
+Reviewed-by: Nicolas Schier <n.schier@fritz.com>
 
-BR nd thanks,
-Nikolaus
 
+--FhzCQO4A3K0b968D
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEDv+Fiet06YHnC6RpiMa8nIiabbgFAmrkm8MACgkQiMa8nIia
+bbgYnhAAoBtAI6CuFq9HQy+0LMEBBrZiObTja20n/nhSog1KoLUqfiUozqhmkZ/q
+CT6UauaVVL+guGjUkQd4MU9Y4sF+qy0kKmfzavbo/MIofHFX6fypq5WinV83BS4k
+PfHvku6pkGUFMvVkCliG3iiJVbANl4MGycOY5VxIXI9veRse6+SRuWaP5fqRD0dv
+XZHNc+ZmLOMmkijTKgYUq7fUIdBhxmeq4Px5Q0aq0cESHCORoGOcUcdASB8KRxr/
+S2whk42NUvuQxJF/S68XDQ9N3LdkhPBY2Y0GHdcJ+esswGxGJVb7rfY38dRXkz8R
+a/X59L/D+n6k/1v/xfmmj36rd/INoushZOa+gNXEg5KPwORqTYICzhwVlfZz5mdv
+0XgTKePC+FBeKnCHfJjMK1P6SAnag5q59vu8MXmzNGH9HIhm2PzyPhRrPYA4lwBl
+N1Hh9kQBBwy4oEdLX69syKiLtIA3mDxbo80VqRIUm6MpUjxkTbkAgLQgfXDRz2M0
+Wa9/fDB/O1tJKj8IR8V+jbjPqz5/6/fNkpD9/6fpqvBgeD2vkjOk3q/IvTq5gvHK
+ApKpaLY5DYJBXdX80Rm5ofEmFac0/p9C+eX3ovHAHFIG7JPR5kTF3fwDtbSbP7z6
+ghTZsJCcqEgyM22oqOSpskYbUmxnPEnUkGMg6K1a7KZPgUJQ9zA=
+=Pwya
+-----END PGP SIGNATURE-----
+
+--FhzCQO4A3K0b968D--

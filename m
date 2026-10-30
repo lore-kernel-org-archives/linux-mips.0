@@ -1,92 +1,123 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=207.54.90.49
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793357437;
-	b=kjji1KTRKRaX+eS2fzoIDIJFSCsGF8yazuqpYEX8W7QIrC79XJ+W4roAmL8NbOeVD/F7
-	 zz3bcVsUVZ4LmlHgA1rwvBQgAaIfCKaNtoqSmGY2wjJVH2tUs/YgjVXtig6ahgVJql8D6
-	 N4AVLZVFOBDpG7ybKpQXD3SvI22BaZ0fd5hbWZA9/bOzei886MNWidHfZhdkccotHFi2c
-	 vX5Q8NHA9sPrwmFhyVdc+0BxznfMJi1o2PvcLqBtL8Y2mJAqJipnIlmgO3ppZv8k5Z029
-	 +WecV4LU49x+5T6qEKxDkCfxJvBjP6vdBD8cbU69bRFJCMB7ztjIet7zz7yr40K2SGw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793357437;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:Received:Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=MZqMRfPEVUiuMNxLqgmTIf03oB0BvArhy/TSmIC7oCY=;
-	b=mI+5y4lWo+kgJEslYEYsNwoAO1XD0NugJij5vOS9JSDf0rgtHFvf8lGnWGkbpugSQZR/
-	 mK1vYqWb2qxu3SrXXu+0JwHx9j1ChSNW7WNkiZ/j6d6iH4uWLMx21Tk4jT71KtgZIn5rq
-	 5N+bPa/qAjpqg+2uAUzZg+YCSz7UfD1m4HIEDTLK4XpWg7/aFarU/AH+GGg21Pkfd2+/W
-	 izA+icoKhzUH/fh+jlMV+WEHNr835fkm8TL0Jk+5ueNIbs0zgHeHHt4wpyIhxtkhpfxF8
-	 PA5aZzxA6Ct972Mk59pnIe/7EaxhP3kwVuIwrKICnCTwa08HPwpf7IQViX5a4TQ7z3g==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=fujitsu.com;
-	spf=pass smtp.mailfrom=fujitsu.com;
-	dkim=pass header.d=fujitsu.com header.i=@fujitsu.com header.a=rsa-sha256 header.s=fj2 header.b=mQOzLOqZ;
-	arc=none smtp.remote-ip=207.54.90.49
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=205.220.168.131
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793358059;
+	b=KoE/bFeonq0CeXkJ1bh8SeYa4/0DolTI1YszL6ZqqCkDhbHcPPW8B7gToIpoyfShNFeB
+	 iOftgX29beD78k9zCr/xDqMAsrD7ZR8okRQayvnFB7UfyIZy6mFFxFNVJGJhbr3hXZpLW
+	 pb98YuSrMLFRnJH7uzeLC//8Ehl5AClB8uxacFRLW2nzxsDCute5tgcZ1bcuSWjy27y9E
+	 XqRSIKA691nGU3kToy5bsg7TWJS4T9Q2UpyEZu1a1OERp8GrjQ1ah9HaSBP5y6KXG5yFR
+	 +3qo8ffytAN9epBNuhVb4l+LUy8BnuSeiteRidGVJV5IZck4TmpLB+pqVVlnLwz3B0A==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793358059;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:
+	 DKIM-Signature:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:
+	 Cc:Content-Type:Content-Transfer-Encoding:X-Proofpoint-GUID:
+	 X-Authority-Analysis:X-Proofpoint-Spam-Details-Enc:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Spam-Info:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
+	bh=dAJ/hdUbWhcFTxamLR0wIqhORt4vEbGpFTQmQv3h7+g=;
+	b=vNFurUmmhOR7M+qP+fusCtqVohYo11dssEHzzuTaqVE96GC6cXYfmTzW1/Wv6jUEKgJU
+	 LcZY6Vsz+2eXxoIZSTe8GhBtmB4gCSXPz1TF+sr7+0kD/wuhbZ8q19Hgpd5hdU4Wo5FqP
+	 0WhHc/l3uTADeA/4z+KiubqQ0raaXBsv/YpL4ZnewlSC9cnVYrz2H09P+B2vtkJwLxOE1
+	 L1R8XztfbtB4Vtg4HAQSo9Gbs2QcVHnDZNolwlOVkV4GaPhtVsiWWUyQizcS5Vz/jk4xt
+	 r+GliddiWFizmZ/Zx+pKFT0UzC69/EuyYAI6X/GdyCgCFrcZnQ4MeShf3/HG9FajjfQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=oss.qualcomm.com;
+	spf=pass smtp.mailfrom=oss.qualcomm.com;
+	dkim=pass header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=SRSz+U2n;
+	dkim=pass header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=FI7QLv6B;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=205.220.168.131
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3972160A2630;
-	Fri, 30 Oct 2026 10:50:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3972160A2630
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518CD606AC01
+	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 11:00:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 518CD606AC01
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=fujitsu.com header.i=@fujitsu.com header.a=rsa-sha256 header.s=fj2 header.b=mQOzLOqZ
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1793357437; x=1824893437;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8Bk02kov5eXaN4fQMM0pbL4dj5jWKbTsBzV8w285UiE=;
-  b=mQOzLOqZghPqjPfvrqnK/5Y35rROQztIuU4EyC5XFxjQ9N6/ClVLhT6j
-   9jXCKGdak9HrbI6ImiktplMzc7Iy6T3bBuxuzdpefRJfTDGXkiWaw91m1
-   9OwAnC1TmLx4JKNGm1uXvK9vRZkU9KfAuJvuvqwEZoMoqmYpFP4drssSY
-   7dpYM9s0pwwWomcqH595uQGfjUFFtBhZIW3pu4pt5aSwscf2STUwHpms7
-   OLrFMy7ZRWaFOsi6t4lFfpBy2PBf5hZAabTqZetEYShS84Xl0ukvB8Qqr
-   wSbguWJlR+LC0kXP8r4SBEHezIEO0eA7A7FCWxUZoLHyhO+dECB7V3Fh0
-   A==;
-X-CSE-ConnectionGUID: PrbQclnpQVq9jN08gysTzQ==
-X-CSE-MsgGUID: T7jqwKNdQTWsrTu6cn1pIQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11950"; a="260016297"
-X-IronPort-AV: E=Sophos;i="6.27,186,1786978800"; 
-   d="scan'208";a="260016297"
-Received: from gmgwnl01.global.fujitsu.com ([52.143.17.124])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2026 19:50:30 +0900
-Received: from az2nlsmgm4.fujitsu.com (unknown [10.150.26.204])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by gmgwnl01.global.fujitsu.com (Postfix) with ESMTPS id C6A9D404812;
-	Fri, 30 Oct 2026 10:50:28 +0000 (UTC)
-Received: from az2uksmom2.o.css.fujitsu.com (unknown [10.151.22.203])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by az2nlsmgm4.fujitsu.com (Postfix) with ESMTPS id 79CA71000392;
-	Fri, 30 Oct 2026 10:50:28 +0000 (UTC)
-Received: from FCCLS0092175.localdomain (unknown [10.9.203.66])
-	by az2uksmom2.o.css.fujitsu.com (Postfix) with SMTP id EC18C140769F;
-	Fri, 30 Oct 2026 10:50:23 +0000 (UTC)
-Date: Fri, 30 Oct 2026 19:50:20 +0900
-From: Kohei Enju <enju.kohei@fujitsu.com>
-To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	x86@kernel.org
-Subject: Re: [PATCH v6 6/8] dma: swiotlb: Centralize memory-encryption pool
- sizing
-Message-ID: <auR0fT1yrKQ9wbm8@FCCLS0092175.localdomain>
-References: <20260924060756.1325156-1-aneesh.kumar@kernel.org>
- <20260924060756.1325156-7-aneesh.kumar@kernel.org>
- <asVs3doaJ4WrT3M2@willie-the-truck>
- <asYZFXGyafRjjBS0@arm.com>
- <asYiOgskwi8JYLe_@willie-the-truck>
- <yq5awlrt3dwo.fsf@kernel.org>
- <yq5av77c92oo.fsf@kernel.org>
- <aseRzPshcoys7AJS@arm.com>
- <yq5ao6d48dqr.fsf@kernel.org>
+	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=SRSz+U2n;
+	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=FI7QLv6B
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69U8ExP32682223
+	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 11:00:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	dAJ/hdUbWhcFTxamLR0wIqhORt4vEbGpFTQmQv3h7+g=; b=SRSz+U2nRlJjrKpd
+	Q6yg7Bis+ATQdENbDuC3boFhFxQXruNNjF5GKAiOHMK1ZUkeGa4oqcl2AyzInRiF
+	VNCXoz5L6+6oBpNwKard8J79jfQNHTRU0sI01CQtej2l9OgXwHgJxOvUTU1BXQ8Z
+	SG8jfDxeMq76H/ituJS90fLE0lzYD6AxWMxJFOjUAJyQ/H+TmlVEn+vZoJM2WAXa
+	dPtZQK2eftP1JhV9QYnMD19qhDhvEUj+vV1N8WchYs8SwxmO3qW5ea3Hh5CVY+Cz
+	p9hfWCQGVPPtA+HY5cEqo1yoQlSZ3fHYxWA87/oUD521A8wMEs5tiBK0HVTsG6Ym
+	hN9rTg==
+Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com [209.85.222.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hme6qjkeu-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 11:00:58 +0000 (GMT)
+Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-97e8be2221eso110846241.2
+        for <linux-mips@vger.kernel.org>; Fri, 30 Oct 2026 04:00:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1793358058; cv=none;
+        d=google.com; s=arc-20260327;
+        b=ODVN0gxk85JBFAwhRs51Vw1vA75lIjVro1BzoqUOy0yPrLPswHeJq74Bb+eCw7z066
+         3QGhJ+Xdc4XgHMZ0RUrOJWIVGcho7SsNJ9BEg6i0hX2qXzFEemPaOOolJzl5RHH5sY6d
+         tr2ILRMS5fxnvPAyIeaD/zfkby5rVtBm6wrCW3rv10bGmSRduQj1dooQREEQVR5IwEua
+         f9QdzSJBoRtgUXF88WE4Q6VBQE9AsVD8gNPKRyxcNgM2t51WSwXRL3RkRcmC1dnqN4cU
+         Q/aaxl1fAKe4NPQ//60GaTFKWc7U5ygvIlLWUVzFU9AnEb/RcZ3syfWY5/20UF/+7uoq
+         1fKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=dAJ/hdUbWhcFTxamLR0wIqhORt4vEbGpFTQmQv3h7+g=;
+        fh=o1DW/YxKZc18FGOMnzjk1zvHlGB6BRIKM42PDWc9LB0=;
+        b=IaTbl15wS+YLf7i7AAtKZR9ILp1po96OXMl8XFdCsS540pg0kF29rIzXGuMDWeEXQh
+         4inrJCcG4sNXAyp6u2rfExVi9XPoWHS/lZMKVE+L8jOA5JOKuh56lzEjAaXDx/ZBiNTT
+         uYGkydY+L4EU8lebM7jaPXfEnNYGfS9d+ObHdshcCu5yZAyISebqbSct4mQkhw22byCm
+         UiIeqaGuCe4Oq8as3kRaQ+V/tW76inMOThoWI21KY4dYbiugsrxuy+Jkdh25UQx4R6Y0
+         sxqL1XIQJQaqkem4cFga7TSWaLxTGjpz57jMAAC5rSj8LrICEZXOq0V+hZlCtdtwR/V1
+         dMTw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1793358058; x=1793962858; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=dAJ/hdUbWhcFTxamLR0wIqhORt4vEbGpFTQmQv3h7+g=;
+        b=FI7QLv6BE1G2fQvhlC+AOZ/OSC7c63qEEjRaA2KtyShM0uhc38YdUeDxEUky99oGXa
+         V2dIMQ5caqR+YYt8jxtsnCdp7X9F3lVPcOX2B3cymNdfiXhIkQhpmzMpvHnydZhwiqUG
+         jsHYpVvlord+lrqLX/Vw3ZVTFGbl3MKNAQx9kYJHzq6BA82ucmHYjbjf5YBSjva0vPi0
+         4gcZmzrgpZqEHKOHmX9Nb0kqcr46dzDivh1NRHh2sYOHKjydS6ep7lRGY5Yj/qKPpzF+
+         TnVYDZb7ohuQQQwtU8xAw9H2ODkpSdFSWKinTLwnNGiNe4u+lfS+GSQIocWQYSuH7p+/
+         0xbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793358058; x=1793962858;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=dAJ/hdUbWhcFTxamLR0wIqhORt4vEbGpFTQmQv3h7+g=;
+        b=EP+fnWPlRqEJVNdjeA77U4ZH87eHp5wtg89g9AwH25ANRahDZRcEZYJFYY24M/MPzA
+         KFAQIcQa8POBjIya62y27Zc/xFbq2XsITU/SwwBMaCmpmigtTj9ZRTB5l0Kg4zrpBgxY
+         YW3suqVO6bmweY8IfcqfK8OmcDkjFi3FvwmQPg4B/W0RTgup6JUXUH/lOAFU5G6HHael
+         XEp7wGdJ+7CTiJR3ieW/22ul2rc5MKHPjFQkg+IRIMJ8FABbo6eN8bdcHPS2oIGhBiLR
+         s0YnlgP2A571FxpmysBuk9Pj37vdAxbd/z8uL1KaQKvFn6qDw1iJ4a7uJzrFn2nPaMv0
+         UCKg==
+X-Forwarded-Encrypted: i=1; AKwUvByCQhg2aWaIAdU3Ad7/o2McVAdqc35XPR8j2ySErQUDK+ILRkJ7HJdLlUXLTsAj4PdvVYmOt8VVUGa7@vger.kernel.org
+X-Gm-Message-State: AFq9FYLhZpx2GP3ZLWigv6eJli0ckMCj89fiRFH/EdH+iAhB2s7qXOje
+	K4LiSXV2ZcLR4yEdyT8oXZULkac9uBoIRJKS9Ul0LOnU/4qfaMx0yqVb6yiPLiw1R9YPdQASB/u
+	Am6/mjOwvQX8six3lKvgLd+Y+RgKnIeJUhman7sTVvxiLojnOFrctC7u+giXah9rpsKAmXHLzVB
+	NbqXucSndUWb6RjfWWP7ftRlGQF5iWEnqbPydgTuc=
+X-Gm-Gg: AYBFou1SFpEl5bvRkEWdZunDWeP+y8Cm1Eto3sIZb30An9DZwCQOCAKXjyg8Iq2V7OP
+	4ktYAxSBDV2yYThwMj+AGWBSxJ1kD6r2ip0GUAqaDe6Y8A2T7Z9u6GIshXchxw2qQW7MVEUmFZk
+	3VXyOUeRrJkdDP63zhpm5Satlg9MOVGCe/WSP/1IEtCCfkcn7Asacelt3KHA==
+X-Received: by 2002:a05:6102:f86:b0:7c1:8aa5:36d6 with SMTP id ada2fe7eead31-7d072baa420mr807236137.11.1793358057277;
+        Fri, 30 Oct 2026 04:00:57 -0700 (PDT)
+X-Received: by 2002:a05:6102:f86:b0:7c1:8aa5:36d6 with SMTP id
+ ada2fe7eead31-7d072baa420mr807207137.11.1793358056590; Fri, 30 Oct 2026
+ 04:00:56 -0700 (PDT)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -96,146 +127,105 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <yq5ao6d48dqr.fsf@kernel.org>
+References: <20261026083323.12301-1-olivier@mgcrea.io>
+In-Reply-To: <20261026083323.12301-1-olivier@mgcrea.io>
+From: Ulf Hansson <ulf.hansson@oss.qualcomm.com>
+Date: Fri, 30 Oct 2026 12:00:43 +0100
+X-Gm-Features: AclHuK-AAb62Ju0lDchg6Zmy0m7PPdxFmDlZjEld1Ivf9CvuOqz-27SR1i_D8JE
+Message-ID: <CAPx+jO_ZxVn3kRiWpQEZ+RcbMG-wKznXo+F-2v2Yc4WpHQzqFw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: jz4740: Remove the host before resetting the controller
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: Ulf Hansson <ulfh@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Matt Fleming <matt@console-pimps.org>, linux-mmc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-GUID: -cP60eW_DohYqNU2fbofROmhneNniUd8
+X-Authority-Analysis: v=2.4 cv=KLzPn1Fo c=1 sm=1 tr=0 ts=6ae478ea cx=c_pps
+ a=KB4UBwrhAZV1kjiGHFQexw==:117 a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10
+ a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22
+ a=yOCtJkima9RkubShWh1s:22 a=2DRyhdssraMOevLgf_oA:9 a=QEXdDO2ut3YA:10
+ a=o1xkdb1NAhiiM49bd1HK:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDMwMDA0MyBTYWx0ZWRfX1v8ANJFIy68k
+ 7XP2ND9ksPP7I912dayqMxlg47J4BRRRrLOZmOW8ilHskM4TUSuK4PvBxX+xwoCUvUXE6QRaGtZ
+ YoixLsetIAexwfTL0bgNkDz4LqmXwhDirqc1l/bE8JNMNo0I6ANXWm+PFgCOUCIPYQ3jXD9MPiI
+ 8DAY7t27CZQoL49b8Gg2+DnO6h0S5hDtbc/QuxgXj+ZdLUVUXoHHYuRspBkhXZBVYacSLuDSw3/
+ FxzGwyyQj2y4K/EvCIqnQDCAxpvD9rkWnUy0VktMEUJuUaM2AIT4E3F0OW1kcgUD3xUXUT7n9Wm
+ w1/K76XKpEqbipNv6Pe1nS1Ov3TluJ1ECBDe876yGYIqjGnN9JIqgHhc/LGGJjrhdbDt/0jgjAQ
+ CxY3uMM1zjpC1rScYU9FHZR6uYCgHAFtyK7NWbTq2D9PJLJtJ3kN/GMb/8SPoaqgXXoreP+aVZ8
+ 2GTj1fgQk40CIpofIOg==
+X-Proofpoint-ORIG-GUID: -cP60eW_DohYqNU2fbofROmhneNniUd8
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDMwMDA0MyBTYWx0ZWRfX6KAIK7aUocQw
+ BYfOJYdWb2I8mvamuUW+1sQchq/wk7+CSDEcCOsGip+bkLSo1qcnK5WEeXlrzerSP9r/AHjB3Ou
+ nsVdZD+M8JW57Io2Gl1ta/j0CJ6qACM=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-10-30_03,2026-10-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 adultscore=0 spamscore=0 malwarescore=0 impostorscore=0
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610190000
+ definitions=main-2610300043
 
-On 10/08 20:02, Aneesh Kumar K.V wrote:
-> Catalin Marinas <catalin.marinas@arm.com> writes:
-> 
-> > On Thu, Oct 08, 2026 at 11:03:27AM +0530, Aneesh Kumar K.V wrote:
-> >> Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
-> >> > Will Deacon <will@kernel.org> writes:
-> >> >> On Wed, Oct 07, 2026 at 11:04:05AM +0100, Catalin Marinas wrote:
-> >> >>> On Tue, Oct 06, 2026 at 10:49:17PM +0100, Will Deacon wrote:
-> >> >>> > On Thu, Sep 24, 2026 at 11:37:54AM +0530, Aneesh Kumar K.V (Arm) wrote:
-> >> >>> > > @@ -496,7 +516,8 @@ swiotlb_select_pool_policy(unsigned int flags)
-> >> >>> > >  	if (swiotlb_force_disable)
-> >> >>> > >  		return SWIOTLB_POOL_NONE;
-> >> >>> > >  
-> >> >>> > > -	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> >> >>> > > +	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
-> >> >>> > > +	    !restricted_dma_pool_present)
-> >> >>> > >  		return SWIOTLB_POOL_CC_GUEST;
-> >> >>> > 
-> >> >>> > I think this check on the restricted DMA pool is too general -- the pool
-> >> >>> > could be tied to a specific DMA-capable peripheral and so treating its
-> >> >>> > presence as a global property isn't right.
-> >> >>> 
-> >> >>> I agree it's a hack but that was the simplest way to avoid the pVMs
-> >> >>> getting a bounce buffer after this patch. More than happy to leave it
-> >> >>> out and reduce the buffer on cmdline or we come up with some better
-> >> >>> heuristics.
-> >> >>
-> >> >> Hrm, that does mean that reverting just this part will regress pVMs
-> >> >> because they'll suddenly be allocating a tonne more memory for an
-> >> >> entirely unused swiotlb buffer. So I think I'd prefer to drop the entire
-> >> >> series until this has been worked out properly.
-> >> >>
-> >> >>> Another option could be the arch code passing another flag that it
-> >> >>> doesn't want an encrypted pool (e.g. when running in a pKVM guest) but I
-> >> >>> don't particularly this either. The arch code doesn't know whether
-> >> >>> there's an alternative pool.
-> >> >>
-> >> >> At that point, the default size may as well be driven by the
-> >> >> drivers/virt/coco driver.
-> >> >>
-> >> >>> That said, such heuristics should have been a separate patch to make it
-> >> >>> easier to review/drop.
-> >> >>
-> >> >> I think the only right way to get a semi-accurate heuristic is to take
-> >> >> into account the set of dma-capable devices that will use the swiotlb
-> >> >> pool, but that's fiddly and should probably be tackled as a separate
-> >> >> series. Maybe a simpler hack in that direction would be to take the
-> >> >> SWIOTLB_POOL_CC_GUEST if _any_ device is going to use swiotlb? You'll
-> >> >> run into the usual problem of not being able to tell if a device is
-> >> >> DMA-capable or not, but you could probably look for a global restricted
-> >> >> DMA pool and, if that doesn't exist, check for per-device restricted pools
-> >> >> on dma-coherent devices (since restricted DMA isn't supported by ACPI) as
-> >> >> a reasonable approximation.
-> >> >
-> >> > So, something like this?
-> >> >
-> >> > 	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
-> >> > 	    swiotlb_cc_guest_needs_default_pool())
-> >> > 		return SWIOTLB_POOL_CC_GUEST;
-> >> >
-> >> 
-> >> Detecting a DMA-capable device is not straightforward, and if we get it
-> >> wrong, we will enable SWIOTLB_POOL_CC_GUEST unnecessarily. Would the
-> >> code below be a reasonable approximation of what you suggested?
-> >> 
-> >> Another option would be to make swiotlb_cc_guest_needs_default_pool() a
-> >> weak function that architectures can override. arm64 pKVM could then use
-> >> a different scheme (for this patch series default to false). Would that
-> >> be preferable?
-> >
-> > Even the rmem check for each device is still a hack that may bite us in
-> > the future (private devices for example would not need swiotlb). I'm
-> > thinking more and more of leaving the sizing an arch-specific decision,
-> > don't bother generalising it at all.
-> >
-> > On pKVM vs CCA guests, there's really nothing specific here to pKVM
-> > guests. The only difference is that confidential guests that so far have
-> > run without a swiotlb buffer will regress if their memory is tight. For
-> > confidential guests without dedicated rmem (either CCA or pKVM), I think
-> > our options are either command line swiotlb sizing or dynamic swiotlb.
-> >
-> > Could you respin your series while leaving out the generic sizing? IOW,
-> > no x86 code generalisation. We can discuss the best strategy on sizing
-> > later (I haven't checked how much of this series still makes sense
-> > without the generic sizing).
-> >
-> 
-> It would mostly consist of the first three cleanup patches, followed by
-> three patches that replace the addressing_limit argument with flags.
-> 
-> #define SWIOTLB_VERBOSE	(1 << 0) /* verbose initialization */
-> /* Initialize a pool for devices with limited DMA addressing. */
-> #define SWIOTLB_INIT_ADDRESSING_LIMIT	(1 << 1)
-> /* Initialize a pool that requires architecture remapping. */
-> #define SWIOTLB_INIT_REMAP		(1 << 2)
-> /* Initialize a pool for DMA to memory-encrypted host or guest memory. */
-> #define SWIOTLB_INIT_MEM_ENCRYPT		(1 << 3)
-> /* Initialize a pool for unaligned kmalloc bouncing. */
-> #define SWIOTLB_INIT_KMALLOC		(1 << 4)
-> /* Do not initialize a pool unless SWIOTLB is explicitly required. */
-> #define SWIOTLB_INIT_DEFAULT_OFF		(1 << 5)
-> 
-> This results in the large change below. I'm not sure we want to do this
-> for no real benefit other than making swiotlb_should_init() slightly
-> easier to follow.
-> 
-> static bool __init swiotlb_should_init(unsigned int flags)
-> {
-> 	if (swiotlb_force_disable)
-> 		return false;
-> 
-> 	if (swiotlb_force_bounce)
-> 		return true;
-> 
-> 	if (flags & (SWIOTLB_INIT_REMAP | SWIOTLB_INIT_MEM_ENCRYPT)))
-> 		return true;
-> 
-> 	/* Explicit requirements override an architecture's default opt-out. */
-> 	if (flags & SWIOTLB_INIT_DEFAULT_OFF)
-> 		return false;
-> 
-> 	return flags & (SWIOTLB_INIT_ADDRESSING_LIMIT | SWIOTLB_INIT_KMALLOC);
-> }
->  [...]
+On Mon, Oct 26, 2026 at 9:34=E2=80=AFAM Olivier Louvignes <olivier@mgcrea.i=
+o> wrote:
+>
+> jz4740_mmc_remove() masks every interrupt and resets the controller
+> before mmc_remove_host(), which removes the card and lets the card's
+> driver send its last commands. Those commands then run on a controller
+> that was just reset, and can wait out the driver's 5 s request timeout.
+>
+> With an SDIO card that cost 5 s on every unbind: on a HiBy R1 (Ingenic
+> X1600, a BCM43430A1 driven by brcmfmac), the CMD52 that
+> sdio_release_irq() sends from brcmfmac's remove waited 5.1 s. The
+> command had finished (END_CMD_RES set in MSC_STAT), but MSC_IMASK read
+> 0xffffffff although the request had unmasked END_CMD_RES. MSC_STAT can
+> still show IS_RESETTING after jz4740_mmc_reset() returns, so the reset
+> most likely completed after that write and undid it.
+>
+> Remove the host first, then quiesce the controller, as other host
+> drivers do. On the R1, unbinding the Wi-Fi's MSC now takes 0.65 s.
+>
+> Fixes: 61bfbdb85687 ("MMC: Add support for the controller on JZ4740 SoCs.=
+")
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 
-Hi Aneesh,
+Applied for fixes and by adding a stable tag, thanks!
 
-I can reproduce the CCA regression discussed in this thread:
-  https://lore.kernel.org/all/yq5azeyxyfol.fsf@kernel.org/#t
+Kind regards
+Uffe
 
-The guest runs out of SWIOTLB slots, causing disk I/O to fail and
-preventing the guest from booting.
 
-I would like to test the fix on real CCA hardware. Could you please Cc
-me when you respin the series? I follow LKML, but I may still miss the
-posting by chance.
-
-Thanks,
-Kohei
+> ---
+>  drivers/mmc/host/jz4740_mmc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.=
+c
+> index 6a3c26b7c82d..923cf1450de5 100644
+> --- a/drivers/mmc/host/jz4740_mmc.c
+> +++ b/drivers/mmc/host/jz4740_mmc.c
+> @@ -1151,12 +1151,13 @@ static void jz4740_mmc_remove(struct platform_dev=
+ice *pdev)
+>  {
+>         struct jz4740_mmc_host *host =3D platform_get_drvdata(pdev);
+>
+> +       /* The card's driver may still send commands as it goes */
+> +       mmc_remove_host(host->mmc);
+> +
+>         timer_delete_sync(&host->timeout_timer);
+>         jz4740_mmc_set_irq_enabled(host, 0xff, false);
+>         jz4740_mmc_reset(host);
+>
+> -       mmc_remove_host(host->mmc);
+> -
+>         free_irq(host->irq, host);
+>
+>         if (host->use_dma)
+>
+> base-commit: fd9af27f6c2319713bb23832066585f8a59a1771
+> --
+> 2.39.5
+>

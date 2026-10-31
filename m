@@ -1,54 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793438191;
-	b=wIHfAPNwLmX5/hYusyEyzqzVUtEJITpBWqEUCZb5AC4YXuYiHwEI/UdrcKW/smpSRjtI
-	 8GJiaUmN6HbkY06aDPcvs8S4N7+9j520pFeXpikpX1Tcqx1H56Y2dNMZ7cTe+sELnAuxo
-	 CpPwJUsKWGkAzhtEzp9AHl8obHpgrlIH/7zizkcPNoR63BajxSWycGbtjdCdl2Hne/Hl4
-	 0ZxFHfv0mu5F4rzXpVxVSNIXfju11gO9CZChE0YHGIOrUHFiM+awTXCosJvk4gHHZFaav
-	 jc+zNMQCA1FtJazbQXX4f8w+Sts6BWEYwsIYSGdtcnrfqKFYAQvC90Y7UwI9H6ebO7Q==
+	t=1793443789;
+	b=oyXkEuu267yOjjYC1GG3clGUYH2bfaALhMaWGLFMYzmEDfy0oKROC4OPEkRSRzPyZvgA
+	 M5//ZWW42dmKQUduIxDbyTezItD4zypmkG6HI+JlItmEc/mPYR6q8hLyO4hsEeV2cbuV+
+	 Cev54IdePkZk3fXpK/JgXQBo+2lNp4xkiZ2ftM+6ejDhUmZTZL/KUUvz8sHPo6vNBEnAX
+	 UVtmhwLrX/IXZBDzPkQy0AIsoDdoZy5nVXn/ZLtZ34wTIk2SsLB1uAQtW+azLmpVJTLc0
+	 3x6GXYycp/fGMj/BJaW1gQPlpGKe3eNWxG7JO6E/I5BKhIDWdIj9hLZ0AEH4wn561lQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793438191;
-	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=2AhR0cicJfzpklKfCA03JPeN0llr819XE8fFB0cfqOM=;
-	b=JK4Q8kAVoWKEHuAAO7CvcOVB3DABYvkMoZeACqqFtqtqh6BAcJoaPkDD4+GOhPNr+pQc
-	 vfsky4byptqWjy7V30c8QeC1SQN0qpdJRqt3kS4DCWKR9AWblxPJNkkPD86Jkv/hmD7gy
-	 +6i59WeGrjJJYFMOyjWItJMetyKIqAu71dvgPdK8gxxygkDUgjEdnm3cPE1qXyJFRwTZH
-	 cM2yWLrqHbNbJpMhlHgbjRKf2P3Lo2lUdG1VrojwA0H5breFxCc15oFAuavRGs/klQcrz
-	 xjMUYKkzU1lLyKo8Ngu2UnmYkwSoZ2A2MJ6gUDnRYaICyNCWGOeIukhC15Qlkm9qIMw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793443789;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id:X-Mailer:X-Last-TLS-Session-Version;
+	bh=Pem4c/xVlXIJMXRu8hbS7XQANQwY9xNX3xjHyyNsujU=;
+	b=eh14rFDCe1ZQUBKng3btij5cuwqGcSVxxGngHFw35b7t0DTfyKRDqulgMaNuJd3yKAiF
+	 eP0dEcRYrCFWTKV1FXK/Hxh5kc3oFFmI97NOqCUJtrLnyO/fmoDY1IqGzq/poVxKWJmdm
+	 y/zKJv4vMjHwbl5XQgxRiojaht+ecTvTheTwjw04lvTkT9gPzN4GLDL9d9zOQjp1iPsj0
+	 q/zz5wj4TSGhH49H7TMwQ4TS1r5ZFqy57YEBuQF6VjQiOv38Oo2kSgvqlr99Cz97LKzv6
+	 Ie8aejswf6GYFGiLX2fLNXTOvfkyZW7BZOU4Bmd7xCUrrzx4FjfMFii/p7u+bZS7hTA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mythread.it;
-	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b="Yi/gzTL6";
-	arc=none smtp.remote-ip=62.149.156.86
-Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
+	dmarc=pass header.from=bootlin.com;
+	spf=pass smtp.mailfrom=bootlin.com;
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=wkQOT8xc;
+	arc=none smtp.remote-ip=185.246.85.4
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7A8606A323
-	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:16:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A7A8606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C85D606A31F;
+	Sat, 31 Oct 2026 10:49:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6C85D606A31F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=Yi/gzTL6
-Received: from [127.0.0.1] ([79.43.52.162])
-	by Aruba SMTP with ESMTPSA
-	id N5BMx1hYL6q8sN5BRxVoVO; Sat, 31 Oct 2026 10:15:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793438130; bh=6bx59o3Z5Zhr3o5yP5KkMPMyyTXDqNwsakUJWRv9Yz4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=Yi/gzTL61M60I+hjJn3fMJLn6k8UtcrrkwOr15fKf+2cTogglI2isbwxXwiuZgxV9
-	 GvUlR8w4iZkqcfDr6Z//vgTXTePsDa9Qn9qK5MRLoYQKHnTgA/V2uflihto1/JVI1n
-	 diZGsx0OhIBfhPehwaeDkyj5kGJQ2GB2C+sOCd1kQQDEkGaesI9Cbnd0SqjRxr2zTh
-	 M04ZjG82BmKQsxuyyhlt+UuYzKTHcYYSrD1OPQZFfylhthsAHhNaRrVsY5pzqgxHj0
-	 DNjJ+IbMCi4F/kMZwgrMX937vBQUG5aloDylziG9wRO3A/Hc8z/p+sdTsmiEp58ZSS
-	 GmkCc4Nc4HVlg==
-From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Sat, 31 Oct 2026 10:15:31 +0100
-Subject: [PATCH wireless-next v3 09/10] bcma: add the single-band
- BCM4352/BCM4360 PCI IDs
+	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=wkQOT8xc
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 187114E413AA;
+	Sat, 31 Oct 2026 10:49:40 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B225460771;
+	Sat, 31 Oct 2026 10:49:39 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AD62810329038;
+	Sat, 31 Oct 2026 11:48:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793443772; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=Pem4c/xVlXIJMXRu8hbS7XQANQwY9xNX3xjHyyNsujU=;
+	b=wkQOT8xcyHQMWB9OEmtZKxKhcla8pzW8jvSZA/x2hal0q4bLz0JU8/AbA0mawe0Dw0DjnF
+	smQsxRHd8gGm24wPOPzLXmCZOappY+s574tn+Ot15X2CQkrhTntBbO7WXDMyU49KLQRkPK
+	h7j1KZhmVf/R/GTl4Nzp+pwdSzjR8YnlT4C4yRqR8NJdg7sSMxL2polFsLUci29G6I7az2
+	G7ZI9YBVzBbECQbXbEM5LUBOA60ZJjLIvJem/gBhbilhA1IJfKFkoP2+xvNFFD3XbHemx8
+	LfFG9kdrLGcZHm6vFXW8AM+Avi0U48paCXRSVpt60+sl7VTB7Aq1IEg3H56QDA==
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,51 +61,122 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261031-bcma-ac-rev1-v3-9-1fbe38e8179b@mythread.it>
-References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
-In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
-To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
- Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>, 
- b43-dev@lists.infradead.org
-X-Mailer: b4 0.15.2
-X-CMAE-Envelope: MS4xfPBZNLEo71l/QFE82efaGzWt4iqwpfNEwXROuM2bg59CONH1IJq3AxNNmSxPglw/dZLw03jjAo6BQVJ67qxc0knWYrpo2bXZF0BwhGj3xuE6bWolradr
- 0XyUXfvGxcNf9qgaIO8aj8Xg940oIeY3xqpjwGQlsUcvBdLIdHFyHxcjs1TAMVxki4ZcivUnFVOeAbf8VcUVzOaJBDQs+hAaDGgo/13vrPztWASl83/LgZlB
- eFI5HyLFmvlBuApDenByz9pDtmJYuljaqII2+BC0Z8BabjD4+9qQOBLjHZKg/gStorIyM/x8YP+EyAHfunDwz/qEDdOH/obgMxinALeFv5iG92zUow1k/vMG
- IrfAojJ9yZLxDH88G7pWbt52BiTLMm04bpTud3K6AZL9Nqo3U8g61yIQl2ip6dkHMywCVNkG/JoUh6PPbbag01HeyyXcRw==
+Subject: Re: [PATCH 15/35] drm/bridge: anx6345: set the panel orientation
+ on the connector
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Cc: Douglas Anderson <dianders@chromium.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <jesszhan0024@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+ Jyri Sarha <jyri.sarha@iki.fi>, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+ Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+ Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, 
+ Stefan Agner <stefan@agner.ch>, Frank Li <Frank.Li@nxp.com>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, 
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+ Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+ Linus Walleij <linusw@kernel.org>, Sandy Huang <hjc@rock-chips.com>, 
+ =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+ Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, Inki Dae <inki.dae@samsung.com>, 
+ Seung-Woo Kim <sw0312.kim@samsung.com>, 
+ Kyungmin Park <kyungmin.park@samsung.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Peter Griffin <peter.griffin@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, Alison Wang <alison.wang@nxp.com>, 
+ Paul Kocialkowski <paulk@sys-base.io>, 
+ Yannick Fertre <yannick.fertre@foss.st.com>, 
+ Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
+ Philippe Cornu <philippe.cornu@foss.st.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Samuel Holland <samuel@sholland.org>, 
+ Thierry Reding <thierry.reding@kernel.org>, 
+ Mikko Perttunen <mperttunen@nvidia.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
+ Javier Martinez Canillas <javierm@redhat.com>, 
+ Igor Reznichenko <igor@reznichenko.net>, Michael Walle <mwalle@kernel.org>, 
+ Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
+ Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
+ =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
+ Purism Kernel Team <kernel@puri.sm>, 
+ Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
+ Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
+ Michael Trimarchi <michael@amarulasolutions.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ Casey Connolly <casey.connolly@linaro.org>, 
+ Michael Tretter <m.tretter@pengutronix.de>, 
+ Cristian Cozzolino <cristian_ci@protonmail.com>, 
+ Junjie Cao <junjie.cao@linux.dev>, Ryan Brue <ryanbrue.dev@gmail.com>, 
+ Nickolay Goppen <setotau@mainlining.org>, 
+ Stefan Mavrodiev <stefan@olimex.com>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Robert Chiras <robert.chiras@nxp.com>, 
+ Alexander Koskovich <akoskovich@pm.me>, 
+ Markuss Broks <markuss.broks@gmail.com>, 
+ Artur Weber <aweber.kernel@gmail.com>, David Heidelberg <david@ixit.cz>, 
+ Dzmitry Sankouski <dsankouski@gmail.com>, 
+ Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+ linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
+ linux-tegra@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+In-Reply-To: <20261026-drm-panel-funcs-v1-15-5e3070a3478f@oss.qualcomm.com>
+References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com>
+ <20261026-drm-panel-funcs-v1-15-5e3070a3478f@oss.qualcomm.com>
+Date: Sat, 31 Oct 2026 11:48:44 +0100
+Message-Id: <179344372467.9825.11469688608855257522.b4-review@b4>
+X-Mailer: b4 0.16.0
+X-Last-TLS-Session-Version: TLSv1.3
 
-Bind bcma-pci-bridge to the 2.4 GHz and 5 GHz variants of the BCM4360
-(0x43a1, 0x43a2) and BCM4352 (0x43b2, 0x43b3), next to the dual-band
-0x43a0 and 0x43b1, and name the chip and band of each.
+> The panel is used directly, without the panel bridge, so nothing sets
+> its orientation on the connector apart from the workaround in the
+> get_modes() of some panel drivers, which runs too late.
+>
+> Assisted-by: LLM
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> index 407834a03b63..91ce1a877bf8 100644
+> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> @@ -525,6 +525,11 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
+>
+>  	anx6345->connector.polled = DRM_CONNECTOR_POLL_HPD;
+>
+> +	err = drm_connector_set_orientation_from_panel(&anx6345->connector,
+> +						       anx6345->panel);
+> +	if (err)
+> +		goto connector_cleanup;
 
-Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
----
- drivers/bcma/host_pci.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Muy understanding is that this driver, and those in patches 15-21, should
+be eventually converted to use the bridge API instead of the panel API, but
+that's a significant work and so for now this small change is enough to get
+to patch 22 (workaround removal).
 
-diff --git a/drivers/bcma/host_pci.c b/drivers/bcma/host_pci.c
-index 3dc298506..27f6cc10a 100644
---- a/drivers/bcma/host_pci.c
-+++ b/drivers/bcma/host_pci.c
-@@ -294,10 +294,14 @@ static const struct pci_device_id bcma_pci_bridge_tbl[] = {
- 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_DELL, 0x0018) },
- 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_FOXCONN, 0xe092) },
- 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_HP, 0x804a) },
--	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a0) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a0) },	/* BCM4360 */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a1) },	/* BCM4360, 2.4 GHz */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a2) },	/* BCM4360, 5 GHz */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a9) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43aa) },
--	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b1) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b1) },	/* BCM4352 */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b2) },	/* BCM4352, 2.4 GHz */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b3) },	/* BCM4352, 5 GHz */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4727) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43227) },	/* 0xa8db, BCM43217 (sic!) */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43228) },	/* 0xa8dc */
+Correct?
+
+Luca
 
 -- 
-2.34.1
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 

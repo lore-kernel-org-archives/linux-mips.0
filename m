@@ -1,85 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793387502;
-	b=FDJ+31hkmfnpaxL+Pr+u0PtJEOWFFBU10R+/XwL0NWr1VOUGaPrhPuGX665bCzGU2Dip
-	 xrgY38MTA7DTKG2xSejXbfsLMXhUHMzWbyA1siRHINqVOPytHNEIOOS0UaLXs7oISZrby
-	 BoRjr7XVBxZo6/cWiu01+73J0Fz6ldekKckWkkAo9kJRFzk3It41ezaNU9w6+rGoPwfUW
-	 XuTZxtPuq0R4zfQLEgdOoMlW6iRZ4XoCxOXJz2rxxn+n8SarQNPApn34yooxWckiLI7bF
-	 0sFdm2a9eic6AQze1XSTa4qVebyLa5O6v++3xqn3Yy6eQOWWuxj8YqKfRvnQpvLOYPw==
+	t=1793438138;
+	b=uzShOiwaVvulR17A7YubbUKLtpoMKhz07Bac2e/03uONmOEeQsWlAQZ9mlEcrdQhaa0T
+	 sSqJ3F5kra3moMLE4jSIEV29W9jh3+tUukm+E5nRH8Cmoa8TDCOvBQQ/03VyemAekJW6K
+	 G3hpPvpvPb+9F1grm9RzyozYG1fUUfK36bwSV3M8bAJIeJWQmUtETEHZ3qeH25RATt1dK
+	 6ZbkIZFqSWPjxPkVCqrt+UF/bYrx6UYG7MC4zlKjjtUdUyEftVHEcuh/vsV6EI9O+53xM
+	 KQdCoAIT4JqEInJpxV4bTeV1y0CIe1uRJ+H2wzvSi05VctSuoLBi6rgzq2hXD8FoVBQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793387502;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
-	 Date:Message-ID:MIME-Version:Content-Type;
-	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=;
-	b=y+MoYQ5cHEl5xfNV7/ZaXfb13bFP5+MFZB66uUJZ52ucFUuaCvRFwBWSctjWuQfHV2DP
-	 2ZeL3YSEFdnpNKl1VfGe3LBR0qb2xIG43GTFz0OCFSQ9HxqvL2F2j+CivfgNxzn6hOM8G
-	 hpZNg3DhJTe7dZCxElvZn5/OByn9uggFBbBYjZykcLAPtoFLdBKLpSGkSTDd1xXtc5l86
-	 og4+CtWYYoSZnML+tKndMchLgcfsA28PmRpNYea54eQdCQdUo+pug2sdKxuC6AMU2zPqk
-	 6Jv14mZkuP2D6LoMdP3tFW5IS/+ahYaInhz5k6j0to7JgGN3luUZ9Stn0R2Hl87c57g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793438138;
+	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
+	bh=WvG0kClh0TtoSxBVHbwJqxA9jzJi1q8SGW5f3Mvk2Ls=;
+	b=H6houHRh/yw6oZ7ijEaReV0DBOHsHlMVe9k1qPOLJmsfsXhRSk+6KHy3MgeH0qykEL78
+	 UycA+jHUKk6x68Hg8c5SA8fjUxhIyLNgCvE/lgSxdpDL7TB4YbCjBAYxPnjMq6sIWMQad
+	 +MpqdaJfoPa2uiIqUxM1t64XWTNg/mLt1EWtfORLYOifICD6nBpzoH/DL2ogmHG47a2qe
+	 Mblpcyc+g0mQGWlmHZFlAieQV34FI6Bj756OlwDxYkZKqFiHnod6K31RTNPb7gtDEM9Li
+	 g+ZUYuLT4FcOGg8N3WcmD2ZZA+C3bWSM35NiW4gClTqp/qvqQkSoxLG6CcUnWIpiAQg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="cJGl/G/2";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=mythread.it;
+	spf=pass smtp.mailfrom=mythread.it;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=kLYFVlG+;
+	arc=none smtp.remote-ip=62.149.156.86
+Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B620E606A31A;
-	Fri, 30 Oct 2026 19:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4261D606A325
+	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:15:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4261D606A325
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cJGl/G/2
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856D71F000C1;
-	Fri, 30 Oct 2026 19:11:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793387501;
-	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=cJGl/G/2fQF1yJWHTie2xk6HB608xeSGry+Y/uMzkiv7mSAAvI/rgcFa2ycf1BTVh
-	 d35A0kNRaV1SESzGWirJvsignzKFJjZo7LJ49bkaLS5abOu8oYwNJDowAY4LXAaFk3
-	 1qvBtDFkFqlDjn51/ADmcGHjG88Z10ZTRm9cloeKGen2Fvgbp7EvWKP7Fs/k+w7w7I
-	 N+Bpq3UQzRBk81FGdRpPvr/G8hUKlkAznQ9epCS9WohqPLXX6ImGQB2IoLMbeTEcsI
-	 X7PFkJetPPJchwZrSKjuCFkEbuOgCvp7lXiZPRZWxHOpx5mbgnJHdFUTifU5ObrOgF
-	 1vyrUAqP9m8pA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH] x86/entry: Fix ptrace regression
-In-Reply-To: <87se1wyvs8.ffs@fw13>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
- <871p9g1s3w.ffs@fw13> <87y0boze95.ffs@fw13>
- <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com> <87se1wyvs8.ffs@fw13>
-Date: Fri, 30 Oct 2026 20:11:37 +0100
-Message-ID: <87mrrvxaty.ffs@fw13>
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=kLYFVlG+
+Received: from [127.0.0.1] ([79.43.52.162])
+	by Aruba SMTP with ESMTPSA
+	id N5BMx1hYL6q8sN5BQxVoTY; Sat, 31 Oct 2026 10:15:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
+	t=1793438128; bh=oLRFKUwHbKhCHiC98MhkOwsf0J/5kYlXvF/Sbi45IsU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:To;
+	b=kLYFVlG+VuwFQuO/+rVyYamfoQH+7fPZs3AI7Bg3WlQxVSFGSlvj+5Thvd07S/vlJ
+	 U+Eai+VTOGA02m+KmFTGaK0npTANJ9OqaHRPgtS2oAuYjZ+uMlTW0W6IjSNsDlHQND
+	 iXwsn9D0bevkfsLBuWDHi7j3GRCFNBoiyU6RCcQPxcGcjCc4b6JFmnPmXYrIKvSbS0
+	 kspBPp26qA7QwnV74mjKiTxOjY8EZQ7UQU94Zej5p106PswubQntxXqLTPHA6+Ov9Y
+	 WJAF9yrtNAKFGINKPhHBt26FWdK2g1Qdp3ZBMqvKTs6hcIn3C/6GBrC+GxAWSMZIaG
+	 CMHtK3f6SmASg==
+From: Alessio Ferri <alessio.ferri@mythread.it>
+Date: Sat, 31 Oct 2026 10:15:25 +0100
+Subject: [PATCH wireless-next v3 03/10] bcma: pcie2: request HT on
+ BCM4352/BCM4360
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -89,83 +58,45 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261031-bcma-ac-rev1-v3-3-1fbe38e8179b@mythread.it>
+References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
+In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
+To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>, 
+ b43-dev@lists.infradead.org
+X-Mailer: b4 0.15.2
+X-CMAE-Envelope: MS4xfLXXc5T4eu0nzpLMSWy+X5gfVikXSiNlEnMUR1sGQcqxa6SVj1y5a5wd0dIRkGGZoqwr4hPUxi5I4aohl7w1Fu6FJI/2ZDNSe1Yw8QD+5xrg5es9zSJq
+ bG+l3GjKmx7dKTLLx7M7sZ5GB8o518feW0DT5e1Gbqh73uDSat3ZS31rlwytDhnVIuz/dxTbmbY1u4PXnwAWDn/INFjf9kjwXgPedXc4p/k7acy9mAhR033H
+ SDXhXP/V5eYCEg50yMUi52TFaydiMm7Xx46MXbDqHcmG2OQ9Eup0t0G5MMnN1ooBkh2IkNMS9DZg/FMEN6nTP7nJD/fp78DT+kp96s0AXXHj6ZtkxVcJi4Il
+ NnoIGNBrsJS+ImjydHvTtXFfYTb6w7/MKLrrg75LPB+xXp4AV3u+XHLYiJZtY9f5ULRWNX0/Pm6ox4B4yPuRQibKbgtm6A==
 
-The recent rework of the syscall entry code missed the historical detail of
-the abuse of syscall number -1L to abort a syscall and keep modifications
-by tracers to the return value, while a rewrite of the syscall number to an
-invalid value undoes eventual tracer modification to the return value and
-overwrites it with -ENOSYS.
+Set HAVEHTREQ in the PCIe2 core's clock control on chip revs before 4,
+as Broadcom's driver does.
 
-Restore the original behaviour.
-
-Fixes: 1b1f3b3e1b39 ("x86/entry: Get rid of the sys_ni_syscall() indirection")
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: stable@vger.kernel.org
-Closes: https://lore.kernel.org/all/20261022142425.3Wx-RrU5@linutronix.de
+Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- arch/x86/entry/syscall_32.c |    2 ++
- arch/x86/entry/syscall_64.c |   26 ++++++++++++++++++++++----
- 2 files changed, 24 insertions(+), 4 deletions(-)
+ drivers/bcma/driver_pcie2.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/x86/entry/syscall_32.c
-+++ b/arch/x86/entry/syscall_32.c
-@@ -77,6 +77,8 @@ static __always_inline void do_syscall_3
- 	if (likely(nr < IA32_NR_syscalls)) {
- 		nr = array_index_nospec(nr, IA32_NR_syscalls);
- 		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
-+	} else {
-+		regs->ax = -ENOSYS;
- 	}
- }
- 
---- a/arch/x86/entry/syscall_64.c
-+++ b/arch/x86/entry/syscall_64.c
-@@ -64,15 +64,20 @@ static __always_inline bool do_syscall_x
- 	return false;
- }
- 
--static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
-+static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned long nr)
- {
-+	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
-+		return false;
-+
- 	/* Adjust the starting offset of the table */
- 	nr -= __X32_SYSCALL_BIT;
- 
--	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
-+	if (likely(nr < X32_NR_syscalls)) {
- 		nr = array_index_nospec(nr, X32_NR_syscalls);
- 		regs->ax = x32_sys_call(regs, (unsigned int)nr);
-+		return true;
- 	}
-+	return false;
- }
- 
- /* Returns true to return using SYSRET, or false to use IRET */
-@@ -81,8 +86,21 @@ static __always_inline void do_syscall_x
- 	if (likely(syscall_enter_from_user_mode_randomize_stack(regs, &nr))) {
- 		instrumentation_begin();
- 
--		if (!do_syscall_x64(regs, nr))
--			do_syscall_x32(regs, nr);
-+		if (unlikely(!do_syscall_x64(regs, nr))) {
-+			/*
-+			 * The special treatment of syscall number -1 is a
-+			 * historical bogosity as the original code used -1 to
-+			 * indicate syscall abort, which is not distinguishable
-+			 * from a syscall which is invoked with syscall number
-+			 * -1. The historic behavior is to keep the return value
-+			 * in regs->ax unmodified in that case, which means it's
-+			 * either the preset value -ENOSYS or a value which was
-+			 * written by a tracer. If the syscall number is invalid
-+			 * but not -1 then overwrite any tracer modification.
-+			 */
-+			if (!do_syscall_x32(regs, nr) && nr != -1L)
-+				regs->ax = -ENOSYS;
-+		}
- 
- 		instrumentation_end();
- 	}
+diff --git a/drivers/bcma/driver_pcie2.c b/drivers/bcma/driver_pcie2.c
+index cf889fc62..54daeaa43 100644
+--- a/drivers/bcma/driver_pcie2.c
++++ b/drivers/bcma/driver_pcie2.c
+@@ -170,6 +170,9 @@ void bcma_core_pcie2_init(struct bcma_drv_pcie2 *pcie2)
+ 	case BCMA_CHIP_ID_BCM4360:
+ 	case BCMA_CHIP_ID_BCM4352:
+ 		pcie2->reqsize = 1024;
++		if (ci->rev < 4)
++			pcie2_set32(pcie2, BCMA_CLKCTLST,
++				    BCMA_CLKCTLST_HAVEHTREQ);
+ 		break;
+ 	default:
+ 		pcie2->reqsize = 128;
+
+-- 
+2.34.1
+

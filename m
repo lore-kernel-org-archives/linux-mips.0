@@ -1,54 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793438138;
-	b=RjR8gRoVSYsChfOuhqguv6QKS/mvRiXemo9OSDosbMoUqTV4ZPlN6FHn5kGZmRLwTS3f
-	 KxM2iQBMzC6JR07PZBvA7G17U1r8ZMqc2ADHV8zCqbp6GTv9YPHI8go5o4L/gvWGIyWGL
-	 VxGcsHWGPlgSJANkq0QUsd3MpcYwXDqQA4mLw7D5iHZZC1br+fBTaU5VkpHcBXM66Stw1
-	 +rvkguBVa7eOzLmlfYRIRov+qOwcvweagSGvnsbPMjxDVTyEjbOBcTBgXHHWUG5twEVd7
-	 +bN9AWPN9Sdl+2smXrHOjtd/bT1CfmfFWgvh87S8aOzkXr/iRyhYQKROjlg6OthRF4g==
+	b=xxkajKRxrNJowlQ4WCy150o9V8xJvshqJon14oB0qwF+p8dEbyhwjjpbhf6CN0J+sxi4
+	 yuv+OUk1jQrlU99hiCQvhliKkXmXfQljoL4RJFJlAu9uPRHNs1vlYy6CtDqs9prICQl6r
+	 f9mvhdjnKAgwmSCs9URHcnrtz/TmsOdW83k8Z7jJ688vq0Gga/JBU/3TDtralytddYgZX
+	 0JZccap5vRCRxNpx/1nisadOSY3+zt4e6nM/Tzsy2daCBDErwD7QTVtGgEWKkUdl1sgFv
+	 70ekZYICJz02/OgXitO8epUlO2x3iF/S/x2MG8NLhIalSXvZqEKH1Uavj/80PnZkDYw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793438138;
-	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=booAr/VIPNb7/GaKhnpwxUMe+Y647ltggJTGqGKJiHM=;
-	b=c0z/sajX5Pk+wvXCbm9dXXboX3P5lig6C49a2pEJ7XgR1R8w9JW/XSw38uDfjj+dqpcP
-	 3nLy9T9Q5uBZAuvS5JjGyo+u2nl4GK6O0wGRtDNZ/ewNEopzbBXlTVNM/LBVrpvQpPSp0
-	 jCZHkiHZ8inQqVCn6a3pmXx6b0diVGTYqqfR9EysccuBW676rDW4vQY8k8L/rs+EanGZh
-	 CZBc7bsjqDn1uznoukfINHHYqoEvt0fSN9kQkjhQgyuE1mGgNNb1gy4JICqKLv8f61LqF
-	 Gayiki2Z80INmOKI0IABP++H6SNswRTCyFfPKU7ntAgNW3R41hLqWagP2Vzp1i0MVxg==
+	h=DMARC-Filter:Received:DKIM-Signature:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
+	 X-Change-ID:To:Cc:X-Mailer:X-CMAE-Envelope;
+	bh=adFeSo6LiWLBq4ge/dKAXyxOGLioJz7noYoprivxhPQ=;
+	b=XBD25Xyt3NVQCgDpCsZhFlKNc91b0Sa9L9RvsdVsrPmNO6oOhYtUSxkNnMaG670f9opM
+	 KrluJynPwEPpq0MpXNm19ynsJ+9OU3l9PFp7lSDEG5872tDnC5ymQsakfeEXCP9gfa10D
+	 yQsgjx0QJvce0N3BWu5Erf/Ti0yOwrGDb/BSPza1K1Wz3graFkddvvmvinvz+/x8vnvm/
+	 zZWxxdXhb3iDEK/W1YSlqh4WyDufCq7PHYbwjqh+s9xFKLycmmYu291BEd23S7tNn1lWM
+	 zcYA+9P6egCsJtqmMVXc8gQ+WrBcYJjB0gLqy6z7jmgc5u1GPbgQE7yj6Tt6GeClrVA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mythread.it;
 	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=OVAbiVTG;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=AZkLuA0r;
 	arc=none smtp.remote-ip=62.149.156.86
 Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85CD606A329
-	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:15:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A85CD606A329
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432A1606A326
+	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:15:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 432A1606A326
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=OVAbiVTG
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=AZkLuA0r
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id N5BMx1hYL6q8sN5BRxVoUP; Sat, 31 Oct 2026 10:15:29 +0100
+	id N5BMx1hYL6q8sN5BPxVoSe; Sat, 31 Oct 2026 10:15:27 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793438129; bh=vQj2dadXi9jYVFjk5KIYBm+5WFjDqCBY3eEUQlvYcnA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=OVAbiVTGiZ8X6W5I9Qq5Gq2bvg9BtfBwgNehzVExOMMFAbctFZVA+ElgqH1qA58RH
-	 7yoRXR17VjCy2ujO977gHDj61TEDDt4xWQ91c5va9kUzfWjxFeFSy0eMBsZbyaY4LW
-	 zBP4tC/T9E4jNKMqwK0/u3C9I1CQdBpL5I0D5C9QrxWa6R7yvacbO7vtqC9ZEsfqVm
-	 oPFTU7GT47amYSMOptcTg+i3wJaeqadL3ombRIWKDnlX4cDP87u3Ho2mXfsbb0pP7g
-	 tOdE8fRETuJCbTw6t6t/zlMkj29Hg02XoJrMF5tMNEnlauX0I5sI6/PwDfUgu0sMzy
-	 EvhuMqH8wmv7Q==
+	t=1793438127; bh=HfN5B1zdByBYfML7ECe9pT8WMCncWhH5/RQHDDrcjxM=;
+	h=From:Subject:Date:MIME-Version:Content-Type:To;
+	b=AZkLuA0r9WxOjrHLimI+vPJqJyNjPmlZpHxgZ+mctxf+OZ2JfF8bGdBwJgQjDbaN9
+	 MV7BcFLFJ8HhFzjXJRO5euGpdzi/H5a07TzwHbjLR8VbNh2OAb4bcEOsbXajmw+nSO
+	 iCJe9TJwlAsoEPCfiEjbJahxlUQBtyrJoxH2Hr2mky3DjwTAq5myBOlGuF5ZQQDEDC
+	 e21O/4dpxa7i+0IbRcdcKDOVDs0goO/2LGd8PRQgVBKutmE9bOcrAyc5OtQBu01qzN
+	 7S+QSGcaFH9DZ774MsMFp/iZfwmFWkeCtBjQs7lJsRWkTXHldsVo62HaOQj5OL2G6r
+	 ooBjR7PBYwbLg==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Sat, 31 Oct 2026 10:15:28 +0100
-Subject: [PATCH wireless-next v3 06/10] firmware: bcm47xx_sprom: read the
- SPROM revision 11 fields from NVRAM
+Subject: [PATCH wireless-next v3 00/10] bcma-ac-rev1: support 4352/4360
+ rev3 chips
+Date: Sat, 31 Oct 2026 10:15:22 +0100
+Message-Id: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,239 +60,86 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261031-bcma-ac-rev1-v3-6-1fbe38e8179b@mythread.it>
-References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
-In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKqx5WoC/23NTQ6CMBAF4KuQrq1pCxbqynsYF/0ZpEbAtBUhh
+ LtbykaNyWxeZr43M/LgLHh0zGbkYLDe9l0M+S5DupHdFbA1MSNGGKeEFljpVmKpcTym2MhKFLR
+ gpSA1iuThoLZjqjujl3VwB+9xB2NAl23tn+oGOqyVK2isD72b0vuBJvb/UxyCFScVCGHy+sBP7
+ RQaB9Ls7VY+sA/Oyh/OEheKU51Twcg3X5blDUxa3gQKAQAA
+X-Change-ID: 20261014-bcma-ac-rev1-da894142790f
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
  Michael Buesch <m@bues.ch>, vit9696 <vit9696@protonmail.com>
 Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>, 
  b43-dev@lists.infradead.org
 X-Mailer: b4 0.15.2
-X-CMAE-Envelope: MS4xfBquXWVKbtw0SEhOKbdbXouZGKYZ2kXTor0QTiJO8zQvI85TLhqBw8PYg59AlNu1D76ywnY2MifXuPuhC8YHJRxx9Gadh1YXjDH/n70ilvRUd/nX5cgp
- LYOORtmUFcp1/HKwJDjHpM4WIggOKfwQ5MKsUM5uxr+9xszmNkdAjcu0zp/5Mw8LwyPyQVn2YO+689yVat7rW3goCXT0VbKBfdJ7c5Q2z7YyTrLJ9Fl6A0Og
- C0wY2Cx87zgQOYQn4QmwkZkBC+dm+tiRm5ZSDGTJa5miqfLDJQGQ1TiJUY1TApotFzYS22MXgKnD7kdhfXR1bi5PyW6E51WFFrRo7GOkNVA/IEWllvTfPWn5
- +dhg94o/yhFLdqpi1Gb3ZQxqMKuBeO33GWQtQnLuV4O4IFqY2lXyJ3zmcQzUSE8MpdG5z+l3KXxZQd0OWS+TflwWSLEEOw==
+X-CMAE-Envelope: MS4xfOd7s3KzrSBYunUKqXBlJDC83HYowjIiUewPkbHeW9ZVuORYU494wfI6zThqAswEdw4W9F3uYvmFFKgX6oDzXxCorpkXWuE+5kvRCyqw8UtJqpYiBXZl
+ 5Zla5aRRVNnGEYNMdqqoHsJcnxqrH4NZvZvzxllFK7YBntGCG3UAtBd/qb76nhvfMWgSuXrp+bGS9/cpK9r2lwxihU+ibQRkSoLhfEYtC/VE8qp61GrlLI6M
+ BIlaYhpSoA1zrZkmVPpVbaJsJip9e9OFVMRtqRAE815UJlFMxDluOV+zgMKZ8zKGbx64nkrhQSgHOujtwqFClvGncJrJ9/fPfK/C/cKzmyWBnb9mV+BQQVm6
+ qRcVnNDQjIS7CMIoomNQhu6W2pqcz145DmEHpc/BrJvcAOt9QVxXBJrlD3OVTKtmwTwtkWH73ruilBTQMKW5SjR3TgcQew==
 
-For sromrev=11, read from NVRAM the fields bcma_sprom_extract_r11()
-fills, under the names Broadcom's driver uses: the scalars along with
-the other revision-dependent entries, and the per-chain power info, rx
-gains and power detector offsets, tssifloor5g and the antenna gain in
-bcm47xx_fill_sprom_path_r11(). Read there the rx gain errors and noise
-levels too, which rev 11 keeps per chain, with one list for the 5 GHz
-sub-bands. A list is taken only if it parses whole.
+Preparatory work in the bring up of AC family rev1 chips, in particular,
+the bcm4352 rev3 and bcm4360 rev3. When public sources were found, the 
+same gates applied for operations were ported in this code.
 
-Boards that keep the SPROM of their radios in NVRAM, such as Northstar
-routers with BCM4360, get these fields through the SPROM fallback.
+Initialize the PMU, the PCIe2 core and chipcommon of the BCM4352/BCM4360
+family on chip based on the open source version of broadcom driver, parse 
+SPROM revision 11, read the NVRAM variables set on top of the SPROM, and 
+bind bcma-pci-bridge to the BCM4352.
+
+Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/firmware/broadcom/bcm47xx_sprom.c | 164 +++++++++++++++++++++++++++++-
- 1 file changed, 162 insertions(+), 2 deletions(-)
+Changes in v3:
+- regated most of the checks on the proper version/flag present
+  instead of forcing everything to be rev3 only, as Vitaly suggested
+- Added nvram parsing for all params found in a real northstar router
+- Removed AvVmid parsing from nvram, as it doesn't seems to be useful
+- Added missing pci ids for 4352/4360 variants
+- Link to v2: https://patch.msgid.link/20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it
 
-diff --git a/drivers/firmware/broadcom/bcm47xx_sprom.c b/drivers/firmware/broadcom/bcm47xx_sprom.c
-index bca03fd85..d0303f2ee 100644
---- a/drivers/firmware/broadcom/bcm47xx_sprom.c
-+++ b/drivers/firmware/broadcom/bcm47xx_sprom.c
-@@ -94,6 +94,38 @@ NVRAM_READ_VAL(u32)
- 
- #undef NVRAM_READ_VAL
- 
-+/* A comma-separated list of n values, taken only if it parses whole. */
-+#define NVRAM_READ_ARRAY(type)						\
-+static bool nvram_read_ ## type ## _array(const char *prefix,		\
-+					  const char *postfix,		\
-+					  const char *name, type val[],	\
-+					  unsigned int n, bool fallback)	\
-+{									\
-+	char buf[128], *p = buf, *tok;					\
-+	type var[12];							\
-+	unsigned int i = 0;						\
-+									\
-+	if (n > ARRAY_SIZE(var))					\
-+		return false;						\
-+	if (get_nvram_var(prefix, postfix, name, buf, sizeof(buf),	\
-+			  fallback) < 0)				\
-+		return false;						\
-+	while (i < n && (tok = strsep(&p, ",")) != NULL) {		\
-+		if (kstrto ## type(strim(tok), 0, &var[i]))		\
-+			return false;					\
-+		i++;							\
-+	}								\
-+	if (i != n)							\
-+		return false;						\
-+	memcpy(val, var, n * sizeof(val[0]));				\
-+	return true;							\
-+}
-+
-+NVRAM_READ_ARRAY(u8)
-+NVRAM_READ_ARRAY(u16)
-+
-+#undef NVRAM_READ_ARRAY
-+
- static void nvram_read_u32_2(const char *prefix, const char *name,
- 			     u16 *val_lo, u16 *val_hi, bool fallback)
- {
-@@ -368,7 +400,50 @@ static void bcm47xx_sprom_fill_auto(struct ssb_sprom *sprom,
- 	ENTRY(0x00000600, u16, pre, "legofdm40duppo", legofdm40duppo, 0, fb);
- 	ENTRY(0x00000700, u8, pre, "pcieingress_war", pcieingress_war, 0, fb);
- 
--	/* TODO: rev 11 support */
-+	ENTRY(0xfffff800, u8, pre, "subband5gver", subband5gver, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "tssiposslope2g", tssiposslope2g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "epagain2g", epagain2g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "pdgain2g", pdgain2g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "tworangetssi2g", tworangetssi2g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "papdcap2g", papdcap2g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "femctrl", femctrl, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "tssiposslope5g", tssiposslope5g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "epagain5g", epagain5g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "pdgain5g", pdgain5g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "tworangetssi5g", tworangetssi5g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "papdcap5g", papdcap5g, 0, fb);
-+	ENTRY(0xfffff800, u8, pre, "gainctrlsph", gainctrlsph, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "tssifloor2g", tssifloor2g, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "rpcal2g", rpcal2g, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "rpcal5gb0", rpcal5gb[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "rpcal5gb1", rpcal5gb[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "rpcal5gb2", rpcal5gb[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "rpcal5gb3", rpcal5gb[3], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "dot11agofdmhrbw202gpo", dot11agofdmhrbw202gpo, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "ofdmlrbw202gpo", ofdmlrbw202gpo, 0, fb);
-+	ENTRY(0xfffff800, u32, pre, "mcsbw805glpo", mcsbw805glpo, 0, fb);
-+	ENTRY(0xfffff800, u32, pre, "mcsbw805gmpo", mcsbw805gmpo, 0, fb);
-+	ENTRY(0xfffff800, u32, pre, "mcsbw805ghpo", mcsbw805ghpo, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "mcslr5glpo", mcslr5gpo[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "mcslr5gmpo", mcslr5gpo[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "mcslr5ghpo", mcslr5gpo[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in40hrpo", sb20in40hrpo, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in40lrpo", sb20in40lrpo, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160hr5glpo", sb20in80and160hr5gpo[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160hr5gmpo", sb20in80and160hr5gpo[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160hr5ghpo", sb20in80and160hr5gpo[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160lr5glpo", sb20in80and160lr5gpo[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160lr5gmpo", sb20in80and160lr5gpo[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb20in80and160lr5ghpo", sb20in80and160lr5gpo[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80hr5glpo", sb40and80hr5gpo[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80hr5gmpo", sb40and80hr5gpo[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80hr5ghpo", sb40and80hr5gpo[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80lr5glpo", sb40and80lr5gpo[0], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80lr5gmpo", sb40and80lr5gpo[1], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "sb40and80lr5ghpo", sb40and80lr5gpo[2], 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "dot11agduphrpo", dot11agduphrpo, 0, fb);
-+	ENTRY(0xfffff800, u16, pre, "dot11agduplrpo", dot11agduplrpo, 0, fb);
-+
- 	ENTRY(0x00000700, u8, pre, "rxgainerr2ga0", rxgainerr2ga[0], 0, fb);
- 	ENTRY(0x00000700, u8, pre, "rxgainerr2ga1", rxgainerr2ga[1], 0, fb);
- 	ENTRY(0x00000700, u8, pre, "rxgainerr2ga2", rxgainerr2ga[2], 0, fb);
-@@ -388,7 +463,6 @@ static void bcm47xx_sprom_fill_auto(struct ssb_sprom *sprom,
- 	ENTRY(0xfffffe00, u8, pre, "sar2g", sar2g, 0, fb);
- 	ENTRY(0xfffffe00, u8, pre, "sar5g", sar5g, 0, fb);
- 
--	/* TODO: rev 11 support */
- 	ENTRY(0x00000700, u8, pre, "noiselvl2ga0", noiselvl2ga[0], 0, fb);
- 	ENTRY(0x00000700, u8, pre, "noiselvl2ga1", noiselvl2ga[1], 0, fb);
- 	ENTRY(0x00000700, u8, pre, "noiselvl2ga2", noiselvl2ga[2], 0, fb);
-@@ -481,6 +555,89 @@ static void bcm47xx_fill_sprom_path_r45(struct ssb_sprom *sprom,
- 	}
- }
- 
-+static void bcm47xx_fill_sprom_path_r11(struct ssb_sprom *sprom,
-+					const char *prefix, bool fallback)
-+{
-+	const struct {
-+		const char *band;
-+		struct ssb_sprom_rxgains *rx;
-+	} rxgains[] = {
-+		{ "2g",  &sprom->rxgains_2g },
-+		/* rxgains5g* is the low 5 GHz sub-band */
-+		{ "5g",  &sprom->rxgains_5gl },
-+		{ "5gm", &sprom->rxgains_5gm },
-+		{ "5gh", &sprom->rxgains_5gh },
-+	};
-+	char postfix[2], name[sizeof("rxgains5gmtrelnabypa")];
-+	u8 agbg0 = 0, aga0 = 0, v5g[4];
-+	int i, b;
-+
-+	for (i = 0; i < ARRAY_SIZE(sprom->pdoffset40ma); i++) {
-+		struct ssb_sprom_core_pwr_info *pwr_info;
-+
-+		pwr_info = &sprom->core_pwr_info[i];
-+
-+		snprintf(postfix, sizeof(postfix), "%i", i);
-+		nvram_read_u8(prefix, postfix, "maxp2ga",
-+			      &pwr_info->maxp2ga, 0, fallback);
-+		nvram_read_u16_array(prefix, postfix, "pa2ga", pwr_info->pa2ga,
-+				     ARRAY_SIZE(pwr_info->pa2ga), fallback);
-+		nvram_read_u8_array(prefix, postfix, "maxp5ga",
-+				    pwr_info->maxp5ga,
-+				    ARRAY_SIZE(pwr_info->maxp5ga), fallback);
-+		nvram_read_u16_array(prefix, postfix, "pa5ga", pwr_info->pa5ga,
-+				     ARRAY_SIZE(pwr_info->pa5ga), fallback);
-+		nvram_read_u16(prefix, postfix, "pdoffset40ma",
-+			       &sprom->pdoffset40ma[i], 0, fallback);
-+		nvram_read_u16(prefix, postfix, "pdoffset80ma",
-+			       &sprom->pdoffset80ma[i], 0, fallback);
-+
-+		nvram_read_u8(prefix, postfix, "rxgainerr2ga",
-+			      &sprom->rxgainerr2ga[i], 0, fallback);
-+		if (nvram_read_u8_array(prefix, postfix, "rxgainerr5ga", v5g,
-+					ARRAY_SIZE(v5g), fallback)) {
-+			sprom->rxgainerr5gla[i] = v5g[0];
-+			sprom->rxgainerr5gma[i] = v5g[1];
-+			sprom->rxgainerr5gha[i] = v5g[2];
-+			sprom->rxgainerr5gua[i] = v5g[3];
-+		}
-+		nvram_read_u8(prefix, postfix, "noiselvl2ga",
-+			      &sprom->noiselvl2ga[i], 0, fallback);
-+		if (nvram_read_u8_array(prefix, postfix, "noiselvl5ga", v5g,
-+					ARRAY_SIZE(v5g), fallback)) {
-+			sprom->noiselvl5gla[i] = v5g[0];
-+			sprom->noiselvl5gma[i] = v5g[1];
-+			sprom->noiselvl5gha[i] = v5g[2];
-+			sprom->noiselvl5gua[i] = v5g[3];
-+		}
-+
-+		for (b = 0; b < ARRAY_SIZE(rxgains); b++) {
-+			struct ssb_sprom_rxgains *rx = rxgains[b].rx;
-+
-+			snprintf(name, sizeof(name), "rxgains%selnagaina",
-+				 rxgains[b].band);
-+			nvram_read_u8(prefix, postfix, name, &rx->elnagain[i],
-+				      0, fallback);
-+			snprintf(name, sizeof(name), "rxgains%strisoa",
-+				 rxgains[b].band);
-+			nvram_read_u8(prefix, postfix, name, &rx->triso[i],
-+				      0, fallback);
-+			snprintf(name, sizeof(name), "rxgains%strelnabypa",
-+				 rxgains[b].band);
-+			nvram_read_u8(prefix, postfix, name, &rx->trelnabyp[i],
-+				      0, fallback);
-+		}
-+	}
-+
-+	nvram_read_u16_array(prefix, NULL, "tssifloor5g", sprom->tssifloor5g,
-+			     ARRAY_SIZE(sprom->tssifloor5g), fallback);
-+
-+	nvram_read_u8(prefix, NULL, "agbg0", &agbg0, 0, fallback);
-+	nvram_read_u8(prefix, NULL, "aga0", &aga0, 0, fallback);
-+	sprom->antenna_gain_qdb[0] = ssb_sprom_antgain_qdb(agbg0);
-+	sprom->antenna_gain_qdb[1] = ssb_sprom_antgain_qdb(aga0);
-+}
-+
- static bool bcm47xx_is_valid_mac(u8 *mac)
- {
- 	return mac && !(mac[0] == 0x00 && mac[1] == 0x90 && mac[2] == 0x4c);
-@@ -586,6 +743,9 @@ void bcm47xx_fill_sprom(struct ssb_sprom *sprom, const char *prefix,
- 	case 9:
- 		bcm47xx_fill_sprom_path_r4589(sprom, prefix, fallback);
- 		break;
-+	case 11:
-+		bcm47xx_fill_sprom_path_r11(sprom, prefix, fallback);
-+		break;
- 	}
- 
- 	bcm47xx_sprom_fill_auto(sprom, prefix, fallback);
+Changes in v2:
+- gated chipcommon behaviour on its own revision instead of chip rev as
+  pointed out by Vitaly
+- Link to v1: https://patch.msgid.link/20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it
 
--- 
-2.34.1
+To: Rafał Miłecki <zajec5@gmail.com>
+To: Michael Buesch <m@bues.ch>
+To: vit9696 <vit9696@protonmail.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: b43-dev@lists.infradead.org
+
+---
+Alessio Ferri (10):
+      bcma: core: clear only FORCEHT for BCMA_CLKMODE_DYNAMIC
+      bcma: pmu: init PLL and resources on BCM4352/BCM4360
+      bcma: pcie2: request HT on BCM4352/BCM4360
+      bcma: chipcommon: enable asynchronous GPIO interrupts
+      bcma: extract SPROM revision 11
+      firmware: bcm47xx_sprom: read the SPROM revision 11 fields from NVRAM
+      firmware: bcm47xx_sprom: read ledbh4..ledbh15 from NVRAM
+      firmware: bcm47xx_sprom: read boardflags3 from NVRAM over the SPROM
+      bcma: add the single-band BCM4352/BCM4360 PCI IDs
+      wifi: b43: add the 2.4 GHz BCM4352/BCM4360 to the supported bands
+
+ drivers/bcma/core.c                         |   2 +-
+ drivers/bcma/driver_chipcommon.c            |   3 +
+ drivers/bcma/driver_chipcommon_pmu.c        |  81 +++++++++
+ drivers/bcma/driver_pcie2.c                 |   3 +
+ drivers/bcma/host_pci.c                     |   8 +-
+ drivers/bcma/sprom.c                        | 200 +++++++++++++++++++++-
+ drivers/firmware/broadcom/bcm47xx_sprom.c   | 253 +++++++++++++++++++++++++---
+ drivers/net/wireless/broadcom/b43/main.c    |   6 +
+ include/linux/bcm47xx_sprom.h               |  15 ++
+ include/linux/bcma/bcma_driver_chipcommon.h |  15 ++
+ include/linux/ssb/ssb.h                     |  70 ++++++++
+ include/linux/ssb/ssb_regs.h                |  94 +++++++++++
+ 12 files changed, 722 insertions(+), 28 deletions(-)
+---
+base-commit: 0fcb05b72344f40806cbe810de8872f1698bf053
+change-id: 20261014-bcma-ac-rev1-da894142790f
+
+Best regards,
+--  
+Alessio Ferri <alessio.ferri@mythread.it>
 

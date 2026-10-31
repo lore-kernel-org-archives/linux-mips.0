@@ -1,54 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793438138;
-	b=uzShOiwaVvulR17A7YubbUKLtpoMKhz07Bac2e/03uONmOEeQsWlAQZ9mlEcrdQhaa0T
-	 sSqJ3F5kra3moMLE4jSIEV29W9jh3+tUukm+E5nRH8Cmoa8TDCOvBQQ/03VyemAekJW6K
-	 G3hpPvpvPb+9F1grm9RzyozYG1fUUfK36bwSV3M8bAJIeJWQmUtETEHZ3qeH25RATt1dK
-	 6ZbkIZFqSWPjxPkVCqrt+UF/bYrx6UYG7MC4zlKjjtUdUyEftVHEcuh/vsV6EI9O+53xM
-	 KQdCoAIT4JqEInJpxV4bTeV1y0CIe1uRJ+H2wzvSi05VctSuoLBi6rgzq2hXD8FoVBQ==
+	b=jT9O0Utks1rt6VlyAQV3aLv+BGZyAncus1Ao3BL7wvgH2Qwnoeq0jUevYCUrvbPqwsfE
+	 LxoLR733sOrepf6YwSAixoqepQpjWsJ7IXFoqUa6eNCechwfJdPlqIHzgMEkDqf0kZxsN
+	 9FA+/G86zlwm3ozw0b5TrZPUm3cnhPhL/Ie3iOfyIabtZJtMzwRACea1Qin8j/5KpBy+n
+	 pJ1frYFulGc7VknQoA1C/Yg1bXIIuNcuVkO1Rz0yP5qfe/SaOCxn7Tzum9sCR5UZUClw8
+	 fmtO/y+FtS67MCUc/18stBD+ptChJtibxylNZo4Gc9jxJaHNp1iRrsZDRQ18TOrhwsQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793438138;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=WvG0kClh0TtoSxBVHbwJqxA9jzJi1q8SGW5f3Mvk2Ls=;
-	b=H6houHRh/yw6oZ7ijEaReV0DBOHsHlMVe9k1qPOLJmsfsXhRSk+6KHy3MgeH0qykEL78
-	 UycA+jHUKk6x68Hg8c5SA8fjUxhIyLNgCvE/lgSxdpDL7TB4YbCjBAYxPnjMq6sIWMQad
-	 +MpqdaJfoPa2uiIqUxM1t64XWTNg/mLt1EWtfORLYOifICD6nBpzoH/DL2ogmHG47a2qe
-	 Mblpcyc+g0mQGWlmHZFlAieQV34FI6Bj756OlwDxYkZKqFiHnod6K31RTNPb7gtDEM9Li
-	 g+ZUYuLT4FcOGg8N3WcmD2ZZA+C3bWSM35NiW4gClTqp/qvqQkSoxLG6CcUnWIpiAQg==
+	bh=4XltKv9j08futEKwreOKMozha5nBa7yYaFGpBttg/Vk=;
+	b=KZf60xuTKeaeHug+NQ3zYZ2amPCgpHMyKJtDpNEydRMtBhZNJZdApUulz+9Q8MH8mCtA
+	 Fct8vwZuN90KtzDdPFTOzpL8b6aVD5bl3goLmqmJL4sqK46BIHDnIu+oW7zRS5wqvLBWI
+	 esRGxyWhHzCPmKembSID3ug75GEPtXtVJowkPSbZ2byEosVsaz9eGReuKiGw5yMN1otaD
+	 /UxGKAwbLJtRh6oEFpnCES+3gshCDM7H07stlCAHMb3wVtuRJ6tSSrh13j2YdnGTTdN8q
+	 urNrSUEHoy1J3guIEEtFjMeSfmm3bofZDbmG45pydIycDj9BCucr6yjYtEE90S6Iy8w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mythread.it;
 	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=kLYFVlG+;
 	arc=none smtp.remote-ip=62.149.156.86
 Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4261D606A325
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5F8606A31F
 	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:15:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4261D606A325
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3D5F8606A31F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=kLYFVlG+
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id N5BMx1hYL6q8sN5BQxVoTY; Sat, 31 Oct 2026 10:15:28 +0100
+	id N5BMx1hYL6q8sN5BQxVoSt; Sat, 31 Oct 2026 10:15:28 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793438128; bh=oLRFKUwHbKhCHiC98MhkOwsf0J/5kYlXvF/Sbi45IsU=;
+	t=1793438128; bh=vKCGoYZkyy2tX3DnxdaTcewcIzz4/PetZAI2mHkxFSg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=kLYFVlG+VuwFQuO/+rVyYamfoQH+7fPZs3AI7Bg3WlQxVSFGSlvj+5Thvd07S/vlJ
-	 U+Eai+VTOGA02m+KmFTGaK0npTANJ9OqaHRPgtS2oAuYjZ+uMlTW0W6IjSNsDlHQND
-	 iXwsn9D0bevkfsLBuWDHi7j3GRCFNBoiyU6RCcQPxcGcjCc4b6JFmnPmXYrIKvSbS0
-	 kspBPp26qA7QwnV74mjKiTxOjY8EZQ7UQU94Zej5p106PswubQntxXqLTPHA6+Ov9Y
-	 WJAF9yrtNAKFGINKPhHBt26FWdK2g1Qdp3ZBMqvKTs6hcIn3C/6GBrC+GxAWSMZIaG
-	 CMHtK3f6SmASg==
+	b=d9o1l+fk8P8nuxa5q8jjFctB1N1Q8HFUh70i0a2bSDbjKTdRCbZAsVdAIYByeJQfN
+	 hfjMQRxBdXM3hMVAWhJ1dhD+xNilq+Y55iuThPnhFxpCaATBinBhmG44xro2liP+Zf
+	 LPJy+bu/6c3YxhlLd1VbXQ5cHceE+wha8UUG9LxsT2Ric3+BbxwQLIo9ZAczZuidv5
+	 ayjxW3Tka6aZvaVeJ6mcg0tMV1VT89QSXpUFxkQjzVo+p+oG5Thuu3IrBZQn6axhOp
+	 RrChLhXcMpYiMSzEw9yUBEu+17/s8xYUeaYaCobpSWkc32wX//C5DyenPqF6Sk3+5G
+	 8ROzCoQA0rJYQ==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Sat, 31 Oct 2026 10:15:25 +0100
-Subject: [PATCH wireless-next v3 03/10] bcma: pcie2: request HT on
- BCM4352/BCM4360
+Date: Sat, 31 Oct 2026 10:15:23 +0100
+Subject: [PATCH wireless-next v3 01/10] bcma: core: clear only FORCEHT for
+ BCMA_CLKMODE_DYNAMIC
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,7 +57,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261031-bcma-ac-rev1-v3-3-1fbe38e8179b@mythread.it>
+Message-Id: <20261031-bcma-ac-rev1-v3-1-1fbe38e8179b@mythread.it>
 References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
@@ -74,28 +71,27 @@ X-CMAE-Envelope: MS4xfLXXc5T4eu0nzpLMSWy+X5gfVikXSiNlEnMUR1sGQcqxa6SVj1y5a5wd0dI
  SDXhXP/V5eYCEg50yMUi52TFaydiMm7Xx46MXbDqHcmG2OQ9Eup0t0G5MMnN1ooBkh2IkNMS9DZg/FMEN6nTP7nJD/fp78DT+kp96s0AXXHj6ZtkxVcJi4Il
  NnoIGNBrsJS+ImjydHvTtXFfYTb6w7/MKLrrg75LPB+xXp4AV3u+XHLYiJZtY9f5ULRWNX0/Pm6ox4B4yPuRQibKbgtm6A==
 
-Set HAVEHTREQ in the PCIe2 core's clock control on chip revs before 4,
-as Broadcom's driver does.
+Clear FORCEHT with bcma_mask32() and leave the other CLKCTLST bits as
+they are.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/bcma/driver_pcie2.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/bcma/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bcma/driver_pcie2.c b/drivers/bcma/driver_pcie2.c
-index cf889fc62..54daeaa43 100644
---- a/drivers/bcma/driver_pcie2.c
-+++ b/drivers/bcma/driver_pcie2.c
-@@ -170,6 +170,9 @@ void bcma_core_pcie2_init(struct bcma_drv_pcie2 *pcie2)
- 	case BCMA_CHIP_ID_BCM4360:
- 	case BCMA_CHIP_ID_BCM4352:
- 		pcie2->reqsize = 1024;
-+		if (ci->rev < 4)
-+			pcie2_set32(pcie2, BCMA_CLKCTLST,
-+				    BCMA_CLKCTLST_HAVEHTREQ);
+diff --git a/drivers/bcma/core.c b/drivers/bcma/core.c
+index 37a5ffe67..f4246689e 100644
+--- a/drivers/bcma/core.c
++++ b/drivers/bcma/core.c
+@@ -100,7 +100,7 @@ void bcma_core_set_clockmode(struct bcma_device *core,
+ 			bcma_err(core->bus, "HT force timeout\n");
  		break;
- 	default:
- 		pcie2->reqsize = 128;
+ 	case BCMA_CLKMODE_DYNAMIC:
+-		bcma_set32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
++		bcma_mask32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
+ 		break;
+ 	}
+ }
 
 -- 
 2.34.1

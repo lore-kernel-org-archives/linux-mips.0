@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793438139;
-	b=3Sof9H42eDwePZSL/FS71vhUxKzTTIVYyMJZ18pyfSQaGS/bsKsdbsaaGYExMbW8420f
-	 wvVERmbss7lViqYeLVNuPuqmNVwjS4c2I9uoPWpK+cgY1Q2XGR/SY0CbIlIjnJ5Szb4WH
-	 f7S3pfJCpNKT3ourNPrAkUS0XRyIKxjryj3Pze5DT7eAvyGeW3pyYlLQp1Eh+7EIbC+Xv
-	 vMEzzav2++RnOooqy1eJPxsknpiVRaX7d6zJ9CY5rkfzsACrbOPX1JrgqKvPePcD4W2F9
-	 GVSGZC/BVwBZSOseNEv7wSRb8BT2+UOeWtHU8yrTeGpn628OYHAOks8J3bXvsrIkxXg==
+	t=1793438190;
+	b=igQ0Yz+C0MZTPfHsErHXiBY7+1C9rMm1cJvWyOn+qdwvTjc1IpQfXJ5Uy96LeVZBSMAd
+	 GAhxUqkblBZg8lU0vz8M4a7mxwKJyU+hpmcSkxM8+4JZ+or0IujORZgihFOtr0geiJ/GD
+	 /e8sA97ytPd3oRsp4JacEKQ9NggTnmKCdxl4cWsrD/kWnuS+ACP0WXSEYJZworCfGm8k2
+	 iDJrRDF8VPUQY86vBgVpXGUC1zMsedryFuD3P8NIHMUEmGLPkavoKcRxb3UcVCX8t0Vu8
+	 Y3frsSJT9L/3dYsdSxgUzCitvUqaZE0VyfXC8VIEm9BOBRhmfCWgUFiiLNUsuF5dzxg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793438139;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793438190;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=zrja8EfzhNwVxcvFfot4BI2Qx5xO8+yUBu2o21YSgFo=;
-	b=pFNyPA+0NbJ3i0Zl5nhLi6lZgsPOQkpkGDgjAFFfYwtf+K3FBvRJHSPdxQGI2Wm7Excc
-	 +lL99Rb5SpygI+FuQEuNgQqsVeKNSQXrip8EnsfBUNKmc5qIX9DduX+sUj7hSMRmpXqXu
-	 t/N5931zE9nggA0CAYV5qHRWVQR7QegkI+i/te2BU/IcOlQlpc19Qx8ohJ3x7pPl66eOS
-	 q1X6F0TzrWaQAiBnL9+OS8NunQFUTOS/ysu+Zbaoq/7cDcQgwIwofr4kD3NQCSfS47Tsc
-	 OfC4B+uObOtyX/E1PB/75LgdLflArVALWDNLSTxVnyxgiGs6lNZrXOgeZyFuAzgePhQ==
+	bh=ZT5ES7iCUGrHfIPoUjMqyjrbW06HQNL08TDdLmdJ9bA=;
+	b=NrXJ3dGESCMXeKxq4kWmVP6ZOjjZi80mJgxWAKPlY3EWj+enkmzs0lGnXFcfqkzGur1v
+	 pLLqXwIKkKjoBISgtOQ8UdaaAGgJqdW5H90K7jW3Mtnp53ONZyG0rKaQLMziSTDXo7v7V
+	 IxEPOQV3fq//Mv6P56IY4J7pD4mSzvcgaG0U3uktEFQGi7bCqzX6gzdasiAkg2rUXXVLB
+	 SbWo44P5RUHXK/egNp25AyWA5VHryLZgZ3INCciXudkbgiEzK3h80fvUU9eXIf4oYRlMr
+	 inrrOUx8d9zI1GSz2O7cDHvzHWlaDN4hP5Fk+jz0SzJfvwfo40ufWqMEMCU8TRUirlQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mythread.it;
 	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=DTAxr4Om;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=VmEeVKJq;
 	arc=none smtp.remote-ip=62.149.156.86
 Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0E7606A331
-	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:15:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AE0E7606A331
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4AF606A31D
+	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:16:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3B4AF606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=DTAxr4Om
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=VmEeVKJq
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id N5BMx1hYL6q8sN5BQxVoTp; Sat, 31 Oct 2026 10:15:28 +0100
+	id N5BMx1hYL6q8sN5BRxVoV4; Sat, 31 Oct 2026 10:15:29 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793438128; bh=8fZI2lXxC8ogDCARFPexqgWvoMA8iZm/DndUACcPEas=;
+	t=1793438129; bh=sPLveYh2c5dZKVXqFU1dIE01tkyk2MNNwMVes4PnLCM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=DTAxr4OmeQgKxqJqvfBEMu7wy0x5r0+sV/eoVy7EcpWItwA+E/sZMslMwRPO7OmZf
-	 xNIMVkFkT2aJduygBcqgW7psaeChTW8tX3wibkGngZ2PeDIdBcMBoMELiiMfa0Aidg
-	 8FTaeinXIGflb1s7JVM56rNVa8REndzZ9Qsn7P+vpju+Frsj3Xb8D4NbBkKQGGjmLo
-	 khMMA65jcMPvgAgZQxb9x4fIl0lDP5BFfdfRtq/PSug5ZFzJ8dQ05MnmW/r47rnl02
-	 K6VuD4jISAPzlh9wZGFm56/Bi1Ug0tWStmq2gK2gNzs73kXNmj6rgPhAopXFOmUdl0
-	 xqidBWwY9RX+Q==
+	b=VmEeVKJqjxrRZdtUa4Sxp5IEDYBJPir/hBtS2w9dTJez/KM6ZmVZGglQD4yM8fzp7
+	 A2Fu7C5X25TQx3YgTLPbvM6oMrREuFzzpil6GYN3ZpnKLnH4Z5IOqFei9BnQwJxsWT
+	 R3a8hfxc+jzqfF6nZkNhNvw0ee2VfFTrTE7F4EuOhx8PLRvP6OwqFvqamA22++WSkp
+	 me88Oli24rPqaFdivsyGApT5m+6287MgAZ09PmYZFjzxABdsBZ/u5qldWpvL/vsYP/
+	 fbSUfORqgjkUFl6jMbYvXQEiMztp6t73goiqmP+/I+sasroXkYn67FRVnGCVFtaRyN
+	 dz/EwrpMau4pA==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Sat, 31 Oct 2026 10:15:26 +0100
-Subject: [PATCH wireless-next v3 04/10] bcma: chipcommon: enable
- asynchronous GPIO interrupts
+Date: Sat, 31 Oct 2026 10:15:30 +0100
+Subject: [PATCH wireless-next v3 08/10] firmware: bcm47xx_sprom: read
+ boardflags3 from NVRAM over the SPROM
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,7 +60,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261031-bcma-ac-rev1-v3-4-1fbe38e8179b@mythread.it>
+Message-Id: <20261031-bcma-ac-rev1-v3-8-1fbe38e8179b@mythread.it>
 References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
@@ -69,47 +69,33 @@ Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>, 
  b43-dev@lists.infradead.org
 X-Mailer: b4 0.15.2
-X-CMAE-Envelope: MS4xfLXXc5T4eu0nzpLMSWy+X5gfVikXSiNlEnMUR1sGQcqxa6SVj1y5a5wd0dIRkGGZoqwr4hPUxi5I4aohl7w1Fu6FJI/2ZDNSe1Yw8QD+5xrg5es9zSJq
- bG+l3GjKmx7dKTLLx7M7sZ5GB8o518feW0DT5e1Gbqh73uDSat3ZS31rlwytDhnVIuz/dxTbmbY1u4PXnwAWDn/INFjf9kjwXgPedXc4p/k7acy9mAhR033H
- SDXhXP/V5eYCEg50yMUi52TFaydiMm7Xx46MXbDqHcmG2OQ9Eup0t0G5MMnN1ooBkh2IkNMS9DZg/FMEN6nTP7nJD/fp78DT+kp96s0AXXHj6ZtkxVcJi4Il
- NnoIGNBrsJS+ImjydHvTtXFfYTb6w7/MKLrrg75LPB+xXp4AV3u+XHLYiJZtY9f5ULRWNX0/Pm6ox4B4yPuRQibKbgtm6A==
+X-CMAE-Envelope: MS4xfBquXWVKbtw0SEhOKbdbXouZGKYZ2kXTor0QTiJO8zQvI85TLhqBw8PYg59AlNu1D76ywnY2MifXuPuhC8YHJRxx9Gadh1YXjDH/n70ilvRUd/nX5cgp
+ LYOORtmUFcp1/HKwJDjHpM4WIggOKfwQ5MKsUM5uxr+9xszmNkdAjcu0zp/5Mw8LwyPyQVn2YO+689yVat7rW3goCXT0VbKBfdJ7c5Q2z7YyTrLJ9Fl6A0Og
+ C0wY2Cx87zgQOYQn4QmwkZkBC+dm+tiRm5ZSDGTJa5miqfLDJQGQ1TiJUY1TApotFzYS22MXgKnD7kdhfXR1bi5PyW6E51WFFrRo7GOkNVA/IEWllvTfPWn5
+ +dhg94o/yhFLdqpi1Gb3ZQxqMKuBeO33GWQtQnLuV4O4IFqY2lXyJ3zmcQzUSE8MpdG5z+l3KXxZQd0OWS+TflwWSLEEOw==
 
-Set CORECTL_ASYNCGPIO on chipcommon rev 21 and later, as Broadcom's
-driver does at attach, so that GPIO interrupts are generated without the
-backplane clock.
+Read boardflags3 along with ledbh4..ledbh15, so that a value in NVRAM
+replaces the word of a SPROM read from the device.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/bcma/driver_chipcommon.c            | 3 +++
- include/linux/bcma/bcma_driver_chipcommon.h | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/firmware/broadcom/bcm47xx_sprom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/bcma/driver_chipcommon.c b/drivers/bcma/driver_chipcommon.c
-index fd91a39f0..f5e1b5415 100644
---- a/drivers/bcma/driver_chipcommon.c
-+++ b/drivers/bcma/driver_chipcommon.c
-@@ -227,6 +227,9 @@ void bcma_core_chipcommon_init(struct bcma_drv_cc *cc)
- 			((leddc_on << BCMA_CC_GPIOTIMER_ONTIME_SHIFT) |
- 			 (leddc_off << BCMA_CC_GPIOTIMER_OFFTIME_SHIFT)));
+diff --git a/drivers/firmware/broadcom/bcm47xx_sprom.c b/drivers/firmware/broadcom/bcm47xx_sprom.c
+index 46a817d71..39d7ac8c7 100644
+--- a/drivers/firmware/broadcom/bcm47xx_sprom.c
++++ b/drivers/firmware/broadcom/bcm47xx_sprom.c
+@@ -217,6 +217,9 @@ static void bcm47xx_sprom_fill_nvram_only(struct ssb_sprom *sprom,
+ 		nvram_read_u8(prefix, NULL, name, &sprom->gpio_ext[i], 0xff,
+ 			      fallback);
  	}
 +
-+	if (cc->core->id.rev >= 21)
-+		bcma_cc_set32(cc, BCMA_CC_CORECTL, BCMA_CC_CORECTL_ASYNCGPIO);
- 	cc->ticks_per_ms = bcma_chipco_watchdog_ticks_per_ms(cc);
++	nvram_read_u32(prefix, NULL, "boardflags3", &sprom->boardflags3, 0,
++		       fallback);
+ }
  
- 	cc->setup_done = true;
-diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
-index 525155658..c7d69d583 100644
---- a/include/linux/bcma/bcma_driver_chipcommon.h
-+++ b/include/linux/bcma/bcma_driver_chipcommon.h
-@@ -54,6 +54,7 @@
- #define BCMA_CC_CORECTL			0x0008
- #define  BCMA_CC_CORECTL_UARTCLK0	0x00000001	/* Drive UART with internal clock */
- #define	 BCMA_CC_CORECTL_SE		0x00000002	/* sync clk out enable (corerev >= 3) */
-+#define  BCMA_CC_CORECTL_ASYNCGPIO	0x00000004	/* GPIO IRQs without backplane clock */
- #define  BCMA_CC_CORECTL_UARTCLKEN	0x00000008	/* UART clock enable (rev >= 21) */
- #define BCMA_CC_BIST			0x000C
- #define BCMA_CC_OTPS			0x0010		/* OTP status */
+ /* This is one-function-only macro, it uses local "sprom" variable! */
 
 -- 
 2.34.1

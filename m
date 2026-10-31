@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.86
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793438191;
-	b=MY3Zzfe75QC+sr9TKo9wh7P9fenOQ4h5SzJV9/BL9blAM5kyaUO/q8YRhQ72vYybzCA7
-	 s8+n6TlHPxRIDzGqoD+dnR8rsdbi4lCfucS3/KqPGWoN6u6H5an9w25z3Np5YFS5x/Gjf
-	 PD5LRPU1WQhbowZbetCU7b1TJLrzJE0ipnG698Q0DpU4ZVto3RENoSJcoS5qdIPASu91Z
-	 lz/5eUCQiTccNwGFa93jlcQtavY2zh2HHk3gNKeZhfyJTOSFJngIyy09PUFar/Hl2I7be
-	 EUk9/qiwtkT2HIWvw2m0O24DWsSO637yJY7wR5Ww9LUdaAS+7JtTWbsMevqFlDp3Y5Q==
+	b=wIHfAPNwLmX5/hYusyEyzqzVUtEJITpBWqEUCZb5AC4YXuYiHwEI/UdrcKW/smpSRjtI
+	 8GJiaUmN6HbkY06aDPcvs8S4N7+9j520pFeXpikpX1Tcqx1H56Y2dNMZ7cTe+sELnAuxo
+	 CpPwJUsKWGkAzhtEzp9AHl8obHpgrlIH/7zizkcPNoR63BajxSWycGbtjdCdl2Hne/Hl4
+	 0ZxFHfv0mu5F4rzXpVxVSNIXfju11gO9CZChE0YHGIOrUHFiM+awTXCosJvk4gHHZFaav
+	 jc+zNMQCA1FtJazbQXX4f8w+Sts6BWEYwsIYSGdtcnrfqKFYAQvC90Y7UwI9H6ebO7Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793438191;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-CMAE-Envelope;
-	bh=0yfNB7BetGJUPFCGgRETSxE53+j8qHGLWT2yboJbayA=;
-	b=bVNGqP9ha/mJgLoiU4qw3JyZLHxHyX13qfP9Y2+iOBIbn6+xKELbj674JCvFiyb8zAIX
-	 i0iGrMsbnCNnLHBY/HYnRaSlbWJd2sGtsIB6DtJBIv2n59qFfjFdozfLhXIQTqF1vMI4g
-	 nT4VeApT3B7Zdb3mf+aw1IDyEhErU56Fnld+vI4EwqOTKRSpIGVDXnTN4dbzsLPZeLSGo
-	 HST1yCQg482bTtJPspY3igebFOrCMOzpiHmTAc3Eb3pTyhmw4GVocBMQa90ZKilosRnsH
-	 Ut5SUPZkitawgnnSQ62XN8+UIE6Wy3EJwxFdNblIPvxflGmC1zt02wBz14hEZwHWl2A==
+	bh=2AhR0cicJfzpklKfCA03JPeN0llr819XE8fFB0cfqOM=;
+	b=JK4Q8kAVoWKEHuAAO7CvcOVB3DABYvkMoZeACqqFtqtqh6BAcJoaPkDD4+GOhPNr+pQc
+	 vfsky4byptqWjy7V30c8QeC1SQN0qpdJRqt3kS4DCWKR9AWblxPJNkkPD86Jkv/hmD7gy
+	 +6i59WeGrjJJYFMOyjWItJMetyKIqAu71dvgPdK8gxxygkDUgjEdnm3cPE1qXyJFRwTZH
+	 cM2yWLrqHbNbJpMhlHgbjRKf2P3Lo2lUdG1VrojwA0H5breFxCc15oFAuavRGs/klQcrz
+	 xjMUYKkzU1lLyKo8Ngu2UnmYkwSoZ2A2MJ6gUDnRYaICyNCWGOeIukhC15Qlkm9qIMw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mythread.it;
 	spf=pass smtp.mailfrom=mythread.it;
-	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=JfWrNDPi;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b="Yi/gzTL6";
 	arc=none smtp.remote-ip=62.149.156.86
 Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C83E606A327
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7A8606A323
 	for <linux-mips@vger.kernel.org>; Sat, 31 Oct 2026 09:16:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3C83E606A327
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A7A8606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=JfWrNDPi
+	dkim=pass (2048-bit key, unprotected) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=Yi/gzTL6
 Received: from [127.0.0.1] ([79.43.52.162])
 	by Aruba SMTP with ESMTPSA
-	id N5BMx1hYL6q8sN5BSxVoVi; Sat, 31 Oct 2026 10:15:30 +0100
+	id N5BMx1hYL6q8sN5BRxVoVO; Sat, 31 Oct 2026 10:15:30 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
-	t=1793438130; bh=YvD/5o0kIL8eg+UeJCLpfHxjhPtXaJEyfsbOW6bzSO4=;
+	t=1793438130; bh=6bx59o3Z5Zhr3o5yP5KkMPMyyTXDqNwsakUJWRv9Yz4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:To;
-	b=JfWrNDPiS2/l4AtTV4VjPHKPKgRZdhYr6vumFTyIcQgPXjXClul1nVK3Rx/GcO4Ny
-	 ylFzOyYSHPoonWhsiqJqXdXfewnLX4A8/AilndYpM9tvjbsTJPp00O5Ta8CKBV7km8
-	 p6FAysZSogVd60kE4S5DvlZHIE1EKdSsVTvQmF+a7OT0VUHgoHln4WaxBoD/O2hump
-	 zMjjc/ppIm3O12Jc9xRDWM1aMkYW8fEpsAhXR06Cjs5FdmqffEOTeJyI3Q5UyK92fj
-	 T983h7ydK24mJH7Xhqt6o+MLbOcC5mahaa0ZN3Cyujnl3vlU5eOg418hPSzLyp63Ep
-	 juW+F4sG31wpw==
+	b=Yi/gzTL61M60I+hjJn3fMJLn6k8UtcrrkwOr15fKf+2cTogglI2isbwxXwiuZgxV9
+	 GvUlR8w4iZkqcfDr6Z//vgTXTePsDa9Qn9qK5MRLoYQKHnTgA/V2uflihto1/JVI1n
+	 diZGsx0OhIBfhPehwaeDkyj5kGJQ2GB2C+sOCd1kQQDEkGaesI9Cbnd0SqjRxr2zTh
+	 M04ZjG82BmKQsxuyyhlt+UuYzKTHcYYSrD1OPQZFfylhthsAHhNaRrVsY5pzqgxHj0
+	 DNjJ+IbMCi4F/kMZwgrMX937vBQUG5aloDylziG9wRO3A/Hc8z/p+sdTsmiEp58ZSS
+	 GmkCc4Nc4HVlg==
 From: Alessio Ferri <alessio.ferri@mythread.it>
-Date: Sat, 31 Oct 2026 10:15:32 +0100
-Subject: [PATCH wireless-next v3 10/10] wifi: b43: add the 2.4 GHz
- BCM4352/BCM4360 to the supported bands
+Date: Sat, 31 Oct 2026 10:15:31 +0100
+Subject: [PATCH wireless-next v3 09/10] bcma: add the single-band
+ BCM4352/BCM4360 PCI IDs
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,7 +60,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261031-bcma-ac-rev1-v3-10-1fbe38e8179b@mythread.it>
+Message-Id: <20261031-bcma-ac-rev1-v3-9-1fbe38e8179b@mythread.it>
 References: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 In-Reply-To: <20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it>
 To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
@@ -74,31 +74,36 @@ X-CMAE-Envelope: MS4xfPBZNLEo71l/QFE82efaGzWt4iqwpfNEwXROuM2bg59CONH1IJq3AxNNmSx
  eFI5HyLFmvlBuApDenByz9pDtmJYuljaqII2+BC0Z8BabjD4+9qQOBLjHZKg/gStorIyM/x8YP+EyAHfunDwz/qEDdOH/obgMxinALeFv5iG92zUow1k/vMG
  IrfAojJ9yZLxDH88G7pWbt52BiTLMm04bpTud3K6AZL9Nqo3U8g61yIQl2ip6dkHMywCVNkG/JoUh6PPbbag01HeyyXcRw==
 
-Report the 2.4 GHz BCM4360 (0x43a1) and BCM4352 (0x43b2) as 2.4 GHz
-only devices, as their 5 GHz variants are reported as 5 GHz only.
+Bind bcma-pci-bridge to the 2.4 GHz and 5 GHz variants of the BCM4360
+(0x43a1, 0x43a2) and BCM4352 (0x43b2, 0x43b3), next to the dual-band
+0x43a0 and 0x43b1, and name the chip and band of each.
 
 Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
 ---
- drivers/net/wireless/broadcom/b43/main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/bcma/host_pci.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/b43/main.c b/drivers/net/wireless/broadcom/b43/main.c
-index 817448e58..2620210bf 100644
---- a/drivers/net/wireless/broadcom/b43/main.c
-+++ b/drivers/net/wireless/broadcom/b43/main.c
-@@ -5366,6 +5366,12 @@ static void b43_supported_bands(struct b43_wldev *dev, bool *have_2ghz_phy,
- 		*have_2ghz_phy = false;
- 		*have_5ghz_phy = true;
- 		return;
-+	case 0x43a1: /* BCM4360 */
-+	case 0x43b2: /* BCM4352 */
-+		/* 2.4 GHz only devices */
-+		*have_2ghz_phy = true;
-+		*have_5ghz_phy = false;
-+		return;
- 	}
- 
- 	/* As a fallback, try to guess using PHY type */
+diff --git a/drivers/bcma/host_pci.c b/drivers/bcma/host_pci.c
+index 3dc298506..27f6cc10a 100644
+--- a/drivers/bcma/host_pci.c
++++ b/drivers/bcma/host_pci.c
+@@ -294,10 +294,14 @@ static const struct pci_device_id bcma_pci_bridge_tbl[] = {
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_DELL, 0x0018) },
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_FOXCONN, 0xe092) },
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_BROADCOM, 0x4365, PCI_VENDOR_ID_HP, 0x804a) },
+-	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a0) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a0) },	/* BCM4360 */
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a1) },	/* BCM4360, 2.4 GHz */
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a2) },	/* BCM4360, 5 GHz */
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43a9) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43aa) },
+-	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b1) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b1) },	/* BCM4352 */
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b2) },	/* BCM4352, 2.4 GHz */
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x43b3) },	/* BCM4352, 5 GHz */
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4727) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43227) },	/* 0xa8db, BCM43217 (sic!) */
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43228) },	/* 0xa8dc */
 
 -- 
 2.34.1

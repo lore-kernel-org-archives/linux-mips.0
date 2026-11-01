@@ -1,49 +1,65 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793571430;
-	b=oKxuzMXTnd4zzWO5PM1kDd1lE0E03q8yCc1DsrIPSN9lsxeyYL0rPssaKTOZNl1v3QBq
-	 E3eeDHT36GhGg8KcWmTrsEhy2iI3mBYvGRLFqJig2skcjsqxWG4+5IfHTmPIucFKMgkNf
-	 agVnw9Fnlrx/HiJ/6om6c5eTeXnx2am9+5SpDnX/sVxsw95iDkyB1guFs+vvGNQPC/c+H
-	 k40L3GES8ikw/cnrUiMqeMidMQPkugCz/Kh6er8zE+5CT88QTw32ZaMD9HEZtYuWjypEq
-	 e3clH+PPeyg3js9PLvivcMMKIiyULlLvcHJk7vi4TZb7ivtQxvWWq1cMq/kMTRHcnjA==
+	t=1793576829;
+	b=sp+oc+ydnHxIvQYEakR48wRw91bl522+GLxymPMbcBxUXfgwtydVdyEfWIvHw/xJ+pSk
+	 kcAx4CqZXggOeXeWsDf6nPSyMB+b4sDOmpnSuCeqho8qzneIpbZ/ShO7n8ELRGyGimMJr
+	 yynKmoivC/G1+bnkLM6+6kq9exAQsJSvLsK0C62RCiGA/8BPUl+IxR/iDdSAqVpMtK29T
+	 4klHm+ZKe5h/zKt2t8jyFdJIPgpjTYufOKMVMLhzRygaqBKp/b2bQ2t3O9kh99jiPTJgK
+	 kijOsN7IRRhSd2lkwazwafSxg78stfT7gBcaFNlcFAvxrFAS/6+Fp7iCU1Rig1k960w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793571430;
-	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc;
-	bh=Fv8sMlP8O3GHUSoY8MBfh8MY+kr37FDNK89rZQzSXdU=;
-	b=rBteBwPDPvJv0DmTb97Aus+2XeZWsietlrL9iTsmEysyVCpeiXitA/UEBoPQOEkkcBfM
-	 QId8gaYpQKkt3HgI+AJVbkn/pFAWBt4T1OJnC/bS5PveeR6iORa/XBwriuh9ssdRu2eRR
-	 9spo1/pe+pTTkhK6SzRY39abY8Tkg/tURSA/BRtj9t+A/RCJd7jIOWEGLPnZqSZtcx5Gu
-	 0z3Y/YizZSsGF2uwIs8QRJeDIXFdUloFPVNmqW6ivmIP4JdmdHnZgqXtAW8sGe+Z0dxxc
-	 6Zb9/hh2UP641CjU6QItE/aPVcj7CUEf7w9Z1mBTnquzdp0wQ7H/36qWqjATML8FgoA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793576829;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=hcnX4djeYK0SpDsVXHlBjeqFMbrAduZsiPbBTsAkWkM=;
+	b=EodJZc8kgBj9cHyS/TenTyb2YmteW4Ly8JsG+lRRYT58Ffwphtvjc7kszMrDgbRdMuPR
+	 eRjl+3BWazi+ZjI9BGYKkzBe1pfN94wgcsM1YN0M4CERD7ShdbA3TZEiBq+xFSWIIwI2x
+	 Vd2n3ZMtbrr2ZwSpbeXKrr9BYR6r2BCelA/f+BKOCNarPNC+PEoxQzuNuXx0eFhFAgX4J
+	 SAv8+10r9EBcI1NudwoRFASjr1+7IH/TXPWZjPVzZtxaie1NZhsnxF5glAW9qfjR5vk5H
+	 BvGQfvfzuH7AMqZpUnbtvZwV0kZfgUTqASz37UDjxrcsB1cIOps0dAUq1x7EMTWiy+w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VlnlOoUU;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=infradead.org;
+	spf=pass smtp.mailfrom=infradead.org;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b="AiwLAjp/";
+	arc=none smtp.remote-ip=198.137.202.133
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3086074B53;
-	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF03606A326;
+	Sun,  1 Nov 2026 23:47:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0BF03606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VlnlOoUU
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A0F1F00A15;
-	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793571429;
-	bh=Fv8sMlP8O3GHUSoY8MBfh8MY+kr37FDNK89rZQzSXdU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=VlnlOoUUEu9V0plLi4Kke52P9Sf7LmnCXI3/r9nD/EkLF8dgcbn/b70x7s8xOpjzM
-	 vBDpICruAngiVNvxs7IVSzf2GH3D+B5AcFg6C/1RMLmTfGWgGqs0LmJd92jQOeIJaF
-	 wsK9MssC5+2tsvQklkL07S8F2Zzqk3PTJHN1zfusMqgsbvhB+jUERHRUHHZskloFPo
-	 yl/WabE6HiCKHMwoMCYwf1B+T0vXDZWAeuYQt311a5PVRX3ugUcvRN0wyZzbvYibPV
-	 2TlmBTOm6MSHm2nJI9gJKa3Redvt//yKNi/XBo/uFCvCdVwIZi6hXO14jaV0sdhUS0
-	 kunSJJwhwyeCQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA5B438003B8;
-	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=AiwLAjp/
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
+	:Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=hcnX4djeYK0SpDsVXHlBjeqFMbrAduZsiPbBTsAkWkM=; b=AiwLAjp/DAEdzOXU+CKmbn5VeV
+	xyT3mYpYORLB5b/ABK5o2PqvLdgiCpZNMAKc8+N8JbKZZSbAGvoIGWEQuISb0L2WBjNo4ntondEAA
+	WGHapz/ttXKIWVSvsNW+Q/bHBaCjXnnJXDkiByHDxwrTzXwTlxe6c2CGntE8LtL5h26dLqb3h79o4
+	WlX5QqlfomKF7HCJ/Y1XrPfnwhzqDeBhf6X04GARdHzTU7Uhf+/HHk5oXXk+QyZSm8SbwhRAITWZi
+	4NQXrNORx+DKvr0O763LH/Pt87ZVWno8vI06qGDE0RhtgQejj8qdP+Hv0bLFEgt4afXUEmFgoYEqk
+	CKV1tYQA==;
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xNfGP-0000000FGD8-1c7g;
+	Sun, 01 Nov 2026 23:47:01 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: patches@lists.linux.dev
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	linux-watchdog@vger.kernel.org
+Subject: [PATCH v2 5/8] MIPS: Octeon: octeon-platform: fix missing function prototype warning
+Date: Sun,  1 Nov 2026 15:46:54 -0800
+Message-ID: <20261101234657.1820661-6-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261101234657.1820661-1-rdunlap@infradead.org>
+References: <20261101234657.1820661-1-rdunlap@infradead.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,45 +70,43 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2] lib/crypto: Use size_t lengths for Poly1305 and
- ChaCha
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <179357142829.2624073.2124484665042168888.git-patchwork-notify@kernel.org>
-Date: Sun, 01 Nov 2026 22:17:08 +0000
-References: <20261014152604.323310-1-ebiggers@kernel.org>
-In-Reply-To: <20261014152604.323310-1-ebiggers@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-crypto@vger.kernel.org,
- ardb@kernel.org, Jason@zx2c4.com, herbert@gondor.apana.org.au,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
- vladimir@genproof.com
 
-Hello:
+Add the missing octeon_fill_mac_addresses() function prototype to
+<asm/octeon/octeon.h> and remove the local prototype from setup.c to
+eliminate a build warning:
 
-This series was applied to riscv/linux.git (fixes)
-by Eric Biggers <ebiggers@kernel.org>:
+arch/mips/cavium-octeon/octeon-platform.c:701:13: warning: no previous prototype for 'octeon_fill_mac_addresses' [-Wmissing-prototypes]
+  701 | void __init octeon_fill_mac_addresses(void)
 
-On Wed, 14 Oct 2026 17:26:02 +0200 you wrote:
-> This series upgrades the Poly1305 and ChaCha functions to use size_t
-> lengths, matching the rest of the crypto library.
-> 
-> It also fixes the (not currently reached) handling of lengths above
-> S32_MAX bytes, and (not currently known to matter in practice) the
-> assembly functions depending on unspecified high register bits.
-> 
-> [...]
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+v2: no change
 
-Here is the summary with links:
-  - [1/2] lib/crypto: poly1305: Use size_t length
-    https://git.kernel.org/riscv/c/0b58c136c2f9
-  - [2/2] lib/crypto: chacha: Use size_t length
-    https://git.kernel.org/riscv/c/e42003dba6dd
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ arch/mips/cavium-octeon/setup.c       |    2 --
+ arch/mips/include/asm/octeon/octeon.h |    1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-
+--- linux-next-20261028.orig/arch/mips/include/asm/octeon/octeon.h
++++ linux-next-20261028/arch/mips/include/asm/octeon/octeon.h
+@@ -48,6 +48,7 @@ extern void octeon_user_io_init(void);
+ extern void octeon_init_cvmcount(void);
+ extern void octeon_setup_delays(void);
+ extern void octeon_io_clk_delay(unsigned long);
++void __init octeon_fill_mac_addresses(void);
+ 
+ #define OCTEON_ARGV_MAX_ARGS	64
+ #define OCTEON_SERIAL_LEN	20
+--- linux-next-20261028.orig/arch/mips/cavium-octeon/setup.c
++++ linux-next-20261028/arch/mips/cavium-octeon/setup.c
+@@ -1156,8 +1156,6 @@ void __init prom_free_prom_memory(void)
+ 	}
+ }
+ 
+-void __init octeon_fill_mac_addresses(void);
+-
+ void __init device_tree_init(void)
+ {
+ 	const void *fdt = NULL;

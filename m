@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793571392;
-	b=eLxcl05CbRRCkS+vUVPMr9Ia5+2g4VRrNudk5/HPwKclxw8uIjxirl5pkVXmaDUfl6Oy
-	 b7a34Xref5iNTkakHWZpDrvg2NQEw6RDxTUXcXuP56PzN85nptoQ3lyLSdnYUS9lopWBb
-	 qqyvQwWOzxDTPoS3qMyqoub0iGn9YLJk3yAgE/NpLCXjHrF5nU1FdWz3SmZzycHH8cr19
-	 8/svyYxbWcbJXT2sa1oWaA/w9yXKGCQGbVPVR8w2darXvcwwt7cFHe9Uj+RI4ESedXQei
-	 G0l5slWoo4exY7aKHeNP41XXVKA02HzeEKKLhOTOkkji6CYve78k82AwqzmEML8RLBQ==
+	t=1793571430;
+	b=oKxuzMXTnd4zzWO5PM1kDd1lE0E03q8yCc1DsrIPSN9lsxeyYL0rPssaKTOZNl1v3QBq
+	 E3eeDHT36GhGg8KcWmTrsEhy2iI3mBYvGRLFqJig2skcjsqxWG4+5IfHTmPIucFKMgkNf
+	 agVnw9Fnlrx/HiJ/6om6c5eTeXnx2am9+5SpDnX/sVxsw95iDkyB1guFs+vvGNQPC/c+H
+	 k40L3GES8ikw/cnrUiMqeMidMQPkugCz/Kh6er8zE+5CT88QTw32ZaMD9HEZtYuWjypEq
+	 e3clH+PPeyg3js9PLvivcMMKIiyULlLvcHJk7vi4TZb7ivtQxvWWq1cMq/kMTRHcnjA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793571392;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793571430;
 	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
 	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
 	 In-Reply-To:To:Cc;
-	bh=7jMaG7E0faIciRuA0j8698KDnNXPdfgqG5SZCjrpwFM=;
-	b=v/MZbUthF9+Jdc4t5l5H4AQQIMWFhoxdOOoUJQlREtiuEX2rcAVAbBmR7FNY/j9oIbts
-	 zVKpkwmQfqpBvj1t17rEtetATynziVj3CYz8rZue17bD4JrtIU+wdAczgoOKxEyPKLpQD
-	 MvV1y2BZggk/UrjKdmXZcKYA1L1lQ2VbgTtN/ZJmHBlMELFQUBZRACXFaEcAE6B+Gs4w1
-	 cmMkt7MN0yL/y55SUWCFXepem3gLE+KH5XOjzKyBsve6pYSg1BGEAlK/jurnUeC/Q/8Gx
-	 C/Hi6N4GbwNnXKjVATYh9NZ/oqJ+GNj38bHK1U0WRjKmTjHcJ7C/UWmHUQmBOm8Av0w==
+	bh=Fv8sMlP8O3GHUSoY8MBfh8MY+kr37FDNK89rZQzSXdU=;
+	b=rBteBwPDPvJv0DmTb97Aus+2XeZWsietlrL9iTsmEysyVCpeiXitA/UEBoPQOEkkcBfM
+	 QId8gaYpQKkt3HgI+AJVbkn/pFAWBt4T1OJnC/bS5PveeR6iORa/XBwriuh9ssdRu2eRR
+	 9spo1/pe+pTTkhK6SzRY39abY8Tkg/tURSA/BRtj9t+A/RCJd7jIOWEGLPnZqSZtcx5Gu
+	 0z3Y/YizZSsGF2uwIs8QRJeDIXFdUloFPVNmqW6ivmIP4JdmdHnZgqXtAW8sGe+Z0dxxc
+	 6Zb9/hh2UP641CjU6QItE/aPVcj7CUEf7w9Z1mBTnquzdp0wQ7H/36qWqjATML8FgoA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RI6vqfud;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VlnlOoUU;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8573C606E500;
-	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3086074B53;
+	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RI6vqfud
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D4D81F000C1;
-	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VlnlOoUU
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A0F1F00A15;
+	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793571392;
-	bh=7jMaG7E0faIciRuA0j8698KDnNXPdfgqG5SZCjrpwFM=;
+	s=k20260515; t=1793571429;
+	bh=Fv8sMlP8O3GHUSoY8MBfh8MY+kr37FDNK89rZQzSXdU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=RI6vqfudUDAPQJyogDLl2CpARmQSYi02Z/r+Di8qbeK3KcSdM0cWSldHGeHFd7Wmg
-	 oZkcWTzbyfmhEOg5tcfCHfhpf6iaGm+isSH86qaujprBW88A0OM503IaD8+WPv9717
-	 bpcrsoSfdrv6EFgcaHxAfgeqBVd+9Lh2jlei+lTKhKmrMmF1DDRxKwuNJ2YAzniH64
-	 bTK3lBMxJ6uc9UCiWTe96qjtjhpAxsSnnRxROmumhMt3+M7z/8Bl4vxi21IO/fXVoH
-	 wUHNq2epY1lAcTmYzulW8paMq9f4RX7rYBp2SAoAq4o7yj3fGB1UzuSY/Wrq1aK7S0
-	 zpB9EvUeVfZow==
+	b=VlnlOoUUEu9V0plLi4Kke52P9Sf7LmnCXI3/r9nD/EkLF8dgcbn/b70x7s8xOpjzM
+	 vBDpICruAngiVNvxs7IVSzf2GH3D+B5AcFg6C/1RMLmTfGWgGqs0LmJd92jQOeIJaF
+	 wsK9MssC5+2tsvQklkL07S8F2Zzqk3PTJHN1zfusMqgsbvhB+jUERHRUHHZskloFPo
+	 yl/WabE6HiCKHMwoMCYwf1B+T0vXDZWAeuYQt311a5PVRX3ugUcvRN0wyZzbvYibPV
+	 2TlmBTOm6MSHm2nJI9gJKa3Redvt//yKNi/XBo/uFCvCdVwIZi6hXO14jaV0sdhUS0
+	 kunSJJwhwyeCQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 5347838003B8;
-	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id BA5B438003B8;
+	Sun,  1 Nov 2026 22:17:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -54,62 +54,41 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/8] mm: Drop pxd_ERROR()
+Subject: Re: [PATCH 0/2] lib/crypto: Use size_t lengths for Poly1305 and
+ ChaCha
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <179357139104.2624073.10186400247460209292.git-patchwork-notify@kernel.org>
-Date: Sun, 01 Nov 2026 22:16:31 +0000
-References: <20260831054331.625505-1-anshuman.khandual@arm.com>
-In-Reply-To: <20260831054331.625505-1-anshuman.khandual@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-riscv@lists.infradead.org, linux-mm@kvack.org,
- samuel.holland@sifive.com, david@kernel.org, rppt@kernel.org,
- akpm@linux-foundation.org, ljs@kernel.org, ysato@users.sourceforge.jp,
- dalias@libc.org, glaubitz@physik.fu-berlin.de,
- James.Bottomley@HansenPartnership.com, deller@gmx.de, chenhuacai@kernel.org,
- kernel@xen0n.name, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+ <179357142829.2624073.2124484665042168888.git-patchwork-notify@kernel.org>
+Date: Sun, 01 Nov 2026 22:17:08 +0000
+References: <20261014152604.323310-1-ebiggers@kernel.org>
+In-Reply-To: <20261014152604.323310-1-ebiggers@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-riscv@lists.infradead.org, linux-crypto@vger.kernel.org,
+ ardb@kernel.org, Jason@zx2c4.com, herbert@gondor.apana.org.au,
+ linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+ vladimir@genproof.com
 
 Hello:
 
 This series was applied to riscv/linux.git (fixes)
-by Andrew Morton <akpm@linux-foundation.org>:
+by Eric Biggers <ebiggers@kernel.org>:
 
-On Mon, 31 Aug 2026 11:13:22 +0530 you wrote:
-> pxd_ERROR() macros have been provided by all platforms, which are very much
-> identical and can be dropped off completely if these pgtable printing could
-> be moved to callers in generic MM aka all pxd_clear_bad().
+On Wed, 14 Oct 2026 17:26:02 +0200 you wrote:
+> This series upgrades the Poly1305 and ChaCha functions to use size_t
+> lengths, matching the rest of the crypto library.
 > 
-> But first cleanups and re-organizations are required in some platforms that
-> are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
-> macros have been completely dropped from the entire tree.
+> It also fixes the (not currently reached) handling of lengths above
+> S32_MAX bytes, and (not currently known to matter in practice) the
+> assembly functions depending on unspecified high register bits.
 > 
 > [...]
 
 Here is the summary with links:
-  - [1/8] mm: Make ptval_to_str() generally available
-    (no matching commit)
-  - [2/8] mm: Stop using pxd_ERROR()
-    https://git.kernel.org/riscv/c/0666fc9d4432
-  - [3/8] loongarch/mm: Stop using pte_ERROR()
-    https://git.kernel.org/riscv/c/ea8763ac3af7
-  - [4/8] parisc/mm: Directly use generic [pmd|pgd]_clear_bad()
-    https://git.kernel.org/riscv/c/94d6c5466d1a
-  - [5/8] sh/mm: Stop using pte_ERROR()
-    https://git.kernel.org/riscv/c/6858e42cc2bc
-  - [6/8] sh/mm: Stop using [p4d|pud|pmd]_ERROR()
-    https://git.kernel.org/riscv/c/3b225ce37f62
-  - [7/8] sh/mm: Stop using pgd_ERROR()
-    https://git.kernel.org/riscv/c/66a0441a1791
-  - [8/8] mm: Drop pxd_ERROR()
-    https://git.kernel.org/riscv/c/c970236c300f
+  - [1/2] lib/crypto: poly1305: Use size_t length
+    https://git.kernel.org/riscv/c/0b58c136c2f9
+  - [2/2] lib/crypto: chacha: Use size_t length
+    https://git.kernel.org/riscv/c/e42003dba6dd
 
 You are awesome, thank you!
 -- 

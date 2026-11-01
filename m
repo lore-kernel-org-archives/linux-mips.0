@@ -1,45 +1,86 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793531241;
-	b=Fg4ObzIt9vbpOKnRF0vZu62YNeyPq+hjYFaKQqcii0JW7D7M7JpXY8KxY93x+IeAeHvf
-	 ufanZOz7njmaBhIwfbfBKCAJK6bTAfk4BrfJBAHGS3HzbYyPYtU/sodeUPYc51Qb4881+
-	 iLFTHZJTwkDaVl/B+iwSt47ok0Gjh2+8YfIyKE3gTeCwHuwldpuqNS5/Q+1UNWwyzhiI8
-	 h8QEbxZ7LkZDY2HSt0renwbWbnq6Iap6WS68Dojok2LfB5HZYXQrODfVM2M05egwwDQNe
-	 vkF8EINdNntdHowAsNNgT9YaaMkL4g0XiOM5lDe3nwW/9j+hXxEhVFvuvCoWeHAP/Eg==
+	t=1793555892;
+	b=FXIcFh7dOmBvLkccW6Pmtfk9UNfYtnbK2nFMIYfF7USaK2GOjNjmgWTIdZjYXK+JpG44
+	 tqyZ0MOuwDi/WYZxJq2vyrGUGsUtRFafjL2GebWj4/sufLRJsJBbyPOS6g+vpKQG2jOz/
+	 d08Nm6+1MdAl4XDfljYFpgteSVYmPyBNOrbjeYKAN+utLcDzRv7EtRP6sfdU3WPwggRhZ
+	 gt3pmB2dbX842tC4cXpO8qbDFq+1x+3GWd36mGLP3BDbxJG2s/y43YRQSG4BX8G3FL/JH
+	 VKpfCGNTp1Hz0GdDcZARYpLUn5L45Fh2eEljXH2E7aR2A95SjzD1/7WJ45Hy9hXQgLg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793531241;
-	h=Received:DKIM-Signature:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Subject:From:To:Cc:In-Reply-To:References:
-	 Date:Message-Id:X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=hlNY/PV8DGVOaVDQ87qnWmiDTqBZhpUgMHIAxp3ZzvA=;
-	b=kDV0yax5owKij1hQk9q2bckEk6oKah6Y/a1B4/hV6SJSDihYvziLwZe9e/7CCBJphwM3
-	 9gGZFnYcIhWZ1J2BwAYgXQDMM2SZNsuk2g30iLIqCxb5mMNhAjoaesuBShs1dENCVRgwo
-	 aHXF0av7pYaFOznNf7SEjw/IVcRElNCEsSI9CfWhh+np4FkxdbViG0XIm4OfmcIdjm6i9
-	 oDlNhQXdOHW7PU+/TCcR5jEy/wtXx9dWrMk8DcsqZ9FFmpTop2sA1AZsoQDS0MZkrgdO8
-	 8IScwDSXR1N95vXBAvErC/fz52+SQfAsacJeQZwGekK252jKyfniVy6tlwg746DT3dA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793555892;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
+	 Date:Message-ID:MIME-Version:Content-Type;
+	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=;
+	b=e5Xj0w/BMboK2HQTrlV3GC9nl6B4wY2eIhjnYKaxYXq6FcqHV6g/4o/4sNm7Yk8pIt1P
+	 GubvDHoF3P9IfIZ64kH/SrqXU+FvyHXCkHkydGw4xIZVnM3zDZaDNVHLokOm3NLlUV5tz
+	 aj4+LvcdpZFGZawmh6JY5Sc8UMl8DTlgnC93b6QJ43JQmcZCXaa6LIvDPp3rJjDHQ9p1g
+	 0TPGTX3jwWN/n+YsCLlKSua75jB7b+KM3N/9V45vjViVZa2NwK1GRGCfVyEyuhkhDNWdl
+	 O1P/fPfVoq1Z7ZkCr6dgNpsYtUuNmhKMMMu5ivftXcMwLcIVwKssjyXi+rzxGn1H6MQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e+qDYpEv;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FkpyzqH8;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820D9606A324;
-	Sun,  1 Nov 2026 11:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155C7606A338;
+	Sun,  1 Nov 2026 17:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=e+qDYpEv
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 017741F000C1;
-	Sun,  1 Nov 2026 11:07:18 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FkpyzqH8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 388A21F00A17;
+	Sun,  1 Nov 2026 17:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793531241;
-	bh=hlNY/PV8DGVOaVDQ87qnWmiDTqBZhpUgMHIAxp3ZzvA=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Date;
-	b=e+qDYpEvupV2f4QI+ABCnWxY7QIYk/8tszNFxOaWNecB5AM34b8uv2iIq4abolxIM
-	 BpL8WabsJF7IFYUW+iD14mWdApn1fy4w6+sn7437wyjCjZEFMCzJDolzQuEnxy7ZLr
-	 N7Dbgr6ny5HsgGN8285AkM0x58KVd8NVhmiH4YuQr4aEyhStF520jaBogDpUX6kCUR
-	 mjiykSaF1mWYN43WOol+ROXLJyflx9TgHUOd4tVJDrS+7Rlg99KaygWyn51UHPFdq+
-	 xJ7/fqqcsjA3pIAV3Bp5WshWmbdslIV4l2ll6XqxdO4l2NmYbVSwtNFrIa5e/xa3a4
-	 w5OX2w8X+l7DQ==
+	s=k20260515; t=1793555891;
+	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=FkpyzqH892Y24Bf4MzJaxg0GENU+W3h1HrKoje37+gLiStKVwoHULfobDtcxPd97k
+	 O7yDPvc5mWSjJBu8vqqdIiJljIIY/6Z6d8PFXXCg74LTEn4DannL5V6rcy3NiVl7Cu
+	 DnutKq7d2bLfY2EkKJcg1fiS7Qvebb0UQQu9SHDSugPX5Tba1NEXcVGdUEzB6sw+y5
+	 V2z/p2t+EDUDEUhm+YjJeNELsgmzPgXTja1HpGoACFV2HxgapWeRjmaKUW4P/rTSol
+	 vGE0a3SiPbMJFefI/JNfVFZ/R4iCFJ+Rd4uFfOaqAIzWd7mtslcqNYqP4841tBmpOx
+	 x3REifKbTPuGQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
+ Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
+ <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
+ Henderson <richard.henderson@linaro.org>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
+ Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
+ <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
+ <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
+ <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
+ <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH V2] x86/entry: Fix ptrace regression
+In-Reply-To: <87mrrvxaty.ffs@fw13>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.493733289@kernel.org>
+ <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
+ <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
+ <871p9g1s3w.ffs@fw13> <87y0boze95.ffs@fw13>
+ <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com> <87se1wyvs8.ffs@fw13>
+ <87mrrvxaty.ffs@fw13>
+Date: Sun, 01 Nov 2026 18:58:08 +0100
+Message-ID: <87ecd4xwlr.ffs@fw13>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -49,50 +90,87 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] phy: ingenic: Don't disable the supply in exit
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Olivier Louvignes <olivier@mgcrea.io>
-Cc: Vinod Koul <vkoul@kernel.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Manivannan Sadhasivam <mani@kernel.org>, 
- Paul Cercueil <paul@crapouillou.net>, linux-phy@lists.infradead.org, 
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20261024051756.79342-1-olivier@mgcrea.io>
-References: <20261024051756.79342-1-olivier@mgcrea.io>
-Date: Sun, 01 Nov 2026 16:37:16 +0530
-Message-Id: <179353123621.2955.1763925677067862965.b4-reply@b4>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=640; i=mani@kernel.org;
- h=from:subject:message-id; bh=/AyMrrTg8Y397zc3NTnyqQqqDGUCh56bFnIUP/Ey9GQ=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBq5x1mQ+/vqLmjlLlj7D/J+HKB89tHLr4pP2XBo
- tc2ISXp6MKJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCaucdZgAKCRBVnxHm/pHO
- 9Xw1B/9ieynVZm2Z2sQAMUegzCNku6ctqgBumbhH6y9X0wsbZVMD/qiu3Jywa/jY/iPnJTl5dA9
- wWX0vuIRwDwJhQnYmnht7GMj29L/944OvD1zCrIJkQOjp66r0TyA9ZFI8PiZMN33sRIHmvlo5Pi
- bgEB7RpUJpCpDBD3wvvMU+U6JR8EIeEvpJaWmlWUOlQ9l/CZeOgVYW9VDfWt9M+MXaGVbvGT6Hn
- 0xDqpj8+iH1rSV48wjE96QCh4Xt+T21veUGZuAqazHMjhvTPvPyVgzXt47B3A/upAqCD8tzi7x5
- A7V8QT5SgegqoUHECrrqt7Y9yKfS7ET2dI0cbymQyt3Kfpts
-X-Developer-Key: i=mani@kernel.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+Content-Type: text/plain
 
-On 2026-10-24 07:17 +0200, Olivier Louvignes wrote:
-> The supply is enabled in power_on() and disabled in power_off(); exit()
-> disabling it again unbalances it. dwc2 powers its PHY off before exiting
-> it, which warns at every probe on an Ingenic X1600:
-> 
->   WARNING: ... _regulator_disable
->   ...
->   ingenic_usb_phy_exit
->   phy_exit
->   dwc2_lowlevel_hw_disable
->   dwc2_driver_probe
-> 
-> Fixes: 31de313dfdcf ("PHY: Ingenic: Add USB PHY driver using generic PHY framework.")
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+The recent rework of the syscall entry code missed the historical detail of
+the abuse of syscall number -1L to abort a syscall and keep modifications
+by tracers to the return value, while a rewrite of the syscall number to an
+invalid value undoes eventual tracer modification to the return value and
+overwrite it with -ENOSYS.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+Restore the original behaviour.
 
-- Mani
+Fixes: 1b1f3b3e1b39 ("x86/entry: Get rid of the sys_ni_syscall() indirection")
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+Cc: stable@vger.kernel.org
+Closes: https://lore.kernel.org/all/20261022142425.3Wx-RrU5@linutronix.de
+---
+V2: Add the missing -1 check in the 32bit path - sashiko
+---
+ arch/x86/entry/syscall_32.c |    4 ++++
+ arch/x86/entry/syscall_64.c |   26 ++++++++++++++++++++++----
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
-
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -77,6 +77,10 @@ static __always_inline void do_syscall_3
+ 	if (likely(nr < IA32_NR_syscalls)) {
+ 		nr = array_index_nospec(nr, IA32_NR_syscalls);
+ 		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
++	} else {
++		/* See comment in do_syscall_64() */
++		if (nr != -1UL) {
++			regs->ax = -ENOSYS;
+ 	}
+ }
+ 
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -64,15 +64,20 @@ static __always_inline bool do_syscall_x
+ 	return false;
+ }
+ 
+-static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
++static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned long nr)
+ {
++	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
++		return false;
++
+ 	/* Adjust the starting offset of the table */
+ 	nr -= __X32_SYSCALL_BIT;
+ 
+-	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
++	if (likely(nr < X32_NR_syscalls)) {
+ 		nr = array_index_nospec(nr, X32_NR_syscalls);
+ 		regs->ax = x32_sys_call(regs, (unsigned int)nr);
++		return true;
+ 	}
++	return false;
+ }
+ 
+ /* Returns true to return using SYSRET, or false to use IRET */
+@@ -81,8 +86,21 @@ static __always_inline void do_syscall_x
+ 	if (likely(syscall_enter_from_user_mode_randomize_stack(regs, &nr))) {
+ 		instrumentation_begin();
+ 
+-		if (!do_syscall_x64(regs, nr))
+-			do_syscall_x32(regs, nr);
++		if (unlikely(!do_syscall_x64(regs, nr))) {
++			/*
++			 * The special treatment of syscall number -1 is a
++			 * historical bogosity as the original code used -1 to
++			 * indicate syscall abort, which is not distinguishable
++			 * from a syscall which is invoked with syscall number
++			 * -1. The historic behavior is to keep the return value
++			 * in regs->ax unmodified in that case, which means it's
++			 * either the preset value -ENOSYS or a value which was
++			 * written by a tracer. If the syscall number is invalid
++			 * but not -1 then overwrite any tracer modification.
++			 */
++			if (!do_syscall_x32(regs, nr) && nr != -1L)
++				regs->ax = -ENOSYS;
++		}
+ 
+ 		instrumentation_end();
+ 	}

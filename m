@@ -1,54 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793612542;
-	b=Rfc5sww+qSys48eLolcUInJgajc1oyYMOMtps1iG06jDwAjsfP2TLO+Ln0EeEFsWUf01
-	 cWeG/phoDgJai+0UIv7BWW8Mvv7pjm5pDO/guRV9gcNXCIs5qegeX2yHgsvEw1+2kZzJK
-	 kFbv4GkI6CNLkN5bm8zqYSqLo44KikVkzS16qUCMYtCbvRC55nnAWttyl1asTu6R7DsxM
-	 fRtRN1gnHQF2pMvzsrGS5UxSKkeF9vkN6Yz2BQxl54QjoWGles7uIU5V/ShE7VmJp7NJV
-	 8vhCVTOEfOg0ysy6VDmH8iuvna6EnST/gBJllFKryhg7YCqCHFcDVr/4PUCaTwLqj+g==
+	t=1793612544;
+	b=KoTnOckFZtbZOLTlPiE73RsxJUK5KmgkUp9yjaUzkSsN2w8tek3ScvpHbaGiAosJWTfy
+	 sLD49cNwfzyQG1m7pvF5Fe8UNCuUH8Km1J9IpGtOdbqZTuTVelzqFiWcjDlkxUbWxf0WP
+	 nZxq1SsuNeZOHP53okqpltIu5tjFX827DYuqeEmT2Fo3DQ+jur/Xal0EOGTNc8J/3OSwB
+	 VqD3OhkSd+CHR8w2C7Yuv9OjQtpeEGPVHDwZ44gbMFQSMPh6xAWGMXOmAFogMRSIKj8oq
+	 TAjeokYIB8Pw7suffwil++53unQ+hfQOz1ns/9NWSzDsJAr3pHGukSGwXwFx9zojYeA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793612542;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793612544;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=PYlyse4le/dgjm/MY/0rBhG+Z5H7yxQFmMu0lC/crqY=;
-	b=F1vbAh1OF94AeNcsHPpYyfIUs+88aQ2sEythWMegu6Mi6QvcE61G20dD3YzA8Dmeo8VT
-	 hDJvokpFMxjgCI48lbLShCC3aeMf+JkiZr533sopMnd480ZIa18Gl9ZBKSvs3JHBO1tTL
-	 3LieFiUJ/bZt14MwZC4zjb/OLm20El82CKptyNvzqUDmhC+VEkwMbJZPextTerE56vrl9
-	 6v+mib/xrwOrZqpwwMzugHtVmJIBChIZOxF62F70KWNtyM9SnnBSX5eCCww7zVMPLo7ND
-	 8fzGDeq//gHRzcjswf8XV4h+QuW0Ec7JHh6Q3W67Ly04/kc+tuGobNIUZDozBOs5nmg==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=ha0p3uAWuMJixuS3xtaX7rx9I/bXe6vzg6SDabXVMCc=;
+	b=xQoz5mpSZpkClQqBkTq2MeI/chZC2DVsIjaow825kfkVdkuA7I2c2lpW8bXITy6TKYqn
+	 G6TiCoQcDejVE7O12dw5pB10QY5HT82+uNmFMhevPYHNp4hFMk3Cei8+Q6Rlk/Hm57Dih
+	 XEQW+sUuSepqccqHjSR0/zZEQLnxtvIK6VIrbsaHL4qDJL6y+z4Tiof5RZFJXElVdLAwh
+	 H/MZ59cKqxmaW7l7Qnj6XZOFd0UDWnpHJz7UA5AzIAR5I4Uk331gH4gHl+14eD0uQbTBf
+	 sq1Wc/zymqb+k1Lhwm23CDcmk+Z40oztLBXqADe5ng61RgxguNINsjowROUmyO2fKyw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iYJOBYCY;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hj3TtwT6;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C3C606A324;
-	Mon,  2 Nov 2026 09:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68777606A337;
+	Mon,  2 Nov 2026 09:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iYJOBYCY
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C24841F000C1;
-	Mon,  2 Nov 2026 09:42:20 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hj3TtwT6
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C597C1F000C1;
+	Mon,  2 Nov 2026 09:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793612542;
-	bh=PYlyse4le/dgjm/MY/0rBhG+Z5H7yxQFmMu0lC/crqY=;
-	h=From:To:Cc:Subject:Date;
-	b=iYJOBYCYoEtMmCDIu07v+IC7rSwgeciMbF2PsEcsvYUHzzl9DXuhaWnxjKA2HM7I6
-	 t/X5OxcVKejJpcGEw3sHZQ0Iob9T+Ez5ms+hKJJ4I5UlEYGy3HDT6RtIRa/wCAJPHS
-	 vGgDy8Tas4OW7yWgl4eCkRvq1hRK/SUaHhOFGl+dce+uW/joDnQHi0raWrgD++x/Vx
-	 0zwTxJ2lbafDdWDkr6euVUiz1wQKcd3ul7x8DdXyrakgbsnzhNGmnqYP1weDxAGY+T
-	 MMJoo+CHJV8RMh9unylVkqCjPyx4FvapFNiaZ7VrLZajfHH6L7GbcoIGvqMqgTUb9Y
-	 EXZqRPm9T+uyQ==
+	s=k20260515; t=1793612544;
+	bh=ha0p3uAWuMJixuS3xtaX7rx9I/bXe6vzg6SDabXVMCc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=hj3TtwT6MTXnwBj2o6VRecSN/mTvMA4JDFPBTBLGtKqONXJsOxCob4o0RjES9EZYp
+	 1myBCXjn228C/AS3iH9aQIqdXshIDK98aZws3k4JvfwWx65TMknZY3qPLzHdczkG8D
+	 FWZhb54gxTHxWgSNip6iKyIOwb+9BpiD0XQ24Y6oWjITflg5LOiREraFPkTW/OihzM
+	 IlXTD+U6Zt6cxMDVHD16nzEULJ578N+46/7GoySSuzb/jQ8Cpp4kbu9hXe+/NtP0C/
+	 8KytiEqAcTqwbaE5TgXL73uUEXsFVqkITarbX7vTMulp64iQUSefGTSFkTaA8tw4B0
+	 AbWR/IzPxdw3Q==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>,
-	mfd@lists.linux.dev
-Subject: [PATCH v2 0/2] MIPS: SGI-IP30: power off through the RTC
-Date: Mon,  2 Nov 2026 10:41:03 +0100
-Message-ID: <20261102094106.21300-1-kaloz@kernel.org>
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH v2 1/2] MIPS: SGI-IP30: power off through the DS1687 RTC
+Date: Mon,  2 Nov 2026 10:41:04 +0100
+Message-ID: <20261102094106.21300-2-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261102094106.21300-1-kaloz@kernel.org>
+References: <20261102094106.21300-1-kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,42 +61,71 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Octane's power supply is switched by its DS1687 RTC. Patch 1 uses
-it for power-off and halt. Patch 2 turns a power button press into an
-orderly power-off, and adds the hook to the IOC3 RTC platform data in
-drivers/mfd/ioc3.c.
+The Octane's power supply is switched by its DS1687 RTC. Use
+ds1685_rtc_poweroff() for power-off and halt, with all HEART interrupts
+masked first, instead of leaving the machine halted.
 
-Both take effect only with CONFIG_RTC_DRV_DS1685_FAMILY=y, which
-ip30_defconfig sets with "MIPS: SGI-IP30: fix the defconfig defaults
-for the Bridge PROM and RTC" from the "MIPS: SGI fixes" series. They
-build without it. Patch 2 drives the RTC with interrupts disabled, so
-at run time it needs "rtc: ds1685: do not sleep in the power-off
-handler" from the rtc-ds1685 v2 series sent to the RTC tree.
+Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+---
+ arch/mips/sgi-ip30/ip30-power.c | 34 +++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-v1 was tested on an Octane with poweroff, one and two power button
-presses, and a stalled shutdown.
-
-Changes in v2:
-- Patch 1: drop the device reference when the RTC has no driver data.
-- Patch 2: only the first power-off drives the RTC and later callers
-  wait for the power to drop; the 120 second timeout holds the device
-  lock against an unbind of rtc-ds1685. The RTC's power-off message
-  is printed from the power-off context, as the console thread cannot
-  run once interrupts are off.
-
-v1: https://lore.kernel.org/all/20261013115820.13293-1-kaloz@kernel.org/
-
-Imre Kaloz (2):
-  MIPS: SGI-IP30: power off through the DS1687 RTC
-  MIPS: SGI-IP30: shut down cleanly on a power button press
-
- arch/mips/include/asm/sgi/heart.h |  2 +
- arch/mips/sgi-ip30/ip30-power.c   | 94 +++++++++++++++++++++++++++++++
- drivers/mfd/ioc3.c                |  6 ++
- 3 files changed, 102 insertions(+)
-
-
-base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+diff --git a/arch/mips/sgi-ip30/ip30-power.c b/arch/mips/sgi-ip30/ip30-power.c
+index 66851e17c5a7..b1b33c9cfd76 100644
+--- a/arch/mips/sgi-ip30/ip30-power.c
++++ b/arch/mips/sgi-ip30/ip30-power.c
+@@ -15,6 +15,7 @@
+ #include <linux/delay.h>
+ #include <linux/rtc/ds1685.h>
+ #include <linux/interrupt.h>
++#include <linux/platform_device.h>
+ #include <linux/pm.h>
+ 
+ #include <asm/reboot.h>
+@@ -31,10 +32,43 @@ static void __noreturn ip30_machine_restart(char *cmd)
+ 	unreachable();
+ }
+ 
++static void ip30_machine_power_off(void)
++{
++	struct device *dev;
++	int cpu;
++
++	if (!IS_REACHABLE(CONFIG_RTC_DRV_DS1685_FAMILY))
++		return;
++
++	dev = bus_find_device_by_name(&platform_bus_type, NULL, "rtc-ds1685");
++	if (!dev)
++		return;
++	if (!dev_get_drvdata(dev)) {
++		put_device(dev);
++		return;
++	}
++
++	/* Devices losing power may still interrupt; keep their handlers out. */
++	for (cpu = 0; cpu < HEART_MAX_CPUS; cpu++)
++		heart_write(HEART_CLR_ALL_MASK, &heart_regs->imr[cpu]);
++	heart_write(HEART_ACK_ALL_MASK, &heart_regs->clear_isr);
++
++	ds1685_rtc_poweroff(to_platform_device(dev));
++}
++
+ static int __init ip30_reboot_setup(void)
+ {
+ 	_machine_restart = ip30_machine_restart;
+ 
++	/*
++	 * The DS1687 RTC switches the power supply off.  Halt powers off
++	 * too, as the power button needs a running kernel.
++	 */
++	if (IS_REACHABLE(CONFIG_RTC_DRV_DS1685_FAMILY)) {
++		_machine_halt = ip30_machine_power_off;
++		pm_power_off = ip30_machine_power_off;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.47.3
 

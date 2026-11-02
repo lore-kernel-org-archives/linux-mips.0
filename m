@@ -1,110 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793636479;
-	b=l6ZGJcJj8o7YWTS+Ehxlrwfn+wpYr1ZPoVFjN9MVpDn0eehgJBZY/wEn36oDjCBf+msY
-	 U9n4GZTgAR+eQ+GtPL9Nw4BJLs/YU15r2vwTmGcz1Az4pkol7VgnjaFoNUf5kFfdAkxr4
-	 ldJ2Ku2I/E0EwTXqL2IYL/VSn14YRkHqg7qqw87Vpm3yVA6yeuNwSoClmpjCDsNzo0XfC
-	 yJ7UgLROT2k4AT/SEg6lSYTaYC8erHjsDOIJUI9xhNn9gxt02jY6Cv8ruvajh04OJjeXM
-	 myFlJ1MfCku3pu/Jx6b/TBTVOe6aCyscefIak1LJRgOb9S2Pz0v6L4ETMAi6aKTVIeA==
+	t=1793638265;
+	b=XTOsWQvRbY8e9P0Js5GNPD1Qy2emwJQwxFWLxZpgxCrvWsIcduoej36uG/jq+Ozg3VuB
+	 CvQM2uDnE798Qbxo4BL3uaH7z2TrrXv7WdhoXTlrIdDmg/W03BRSJyS5Ed00x5xSvm8Ap
+	 TbeyfamAEaPH24f4qp1tc5r5oSzVTk1WkgtOA4Rr7kU2ZOB07Wnp58lWCXZL+dVC6m8Fq
+	 V+agAPDj0XNvfDbQTkW2qrcd2GLIy23z2F7eHhEjlTU4lS95NlbDs3pwHn4rXZj5IDkJp
+	 AAFNT/Bklv3EIVmSf4dA4RzyRLBMq5dZWfwsIHGGu+QXDIYN1ybQ52Y6NbO78ZqsAQg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793636479;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=CAbnxO0/qUW9BHgq0s5afN/fwZolzjrBJaRnSuaEmAo=;
-	b=0Cusf0XnW+shSFcHbBPfz4IzSUYm7AQSVQFq7lZ39KIOlrDeT/t84flHjrnrSnE5HW/B
-	 IPH6XsSR5ENwdMAfvrOgwQ6OW1OX37PW4OV6IAv7DLAaSUaitPFrscFgcdVJJDJg8FP3l
-	 EMBiiUMvPZt4UqzC2eYznkTtDkJvc8afIoOVqu7O4O4aZtlPiOCV35NXrZvra3JfOZpsI
-	 KvVOgJFJGYXSCcLRuWnQePW6xG8O8K9ESLCEBtcv9VWjunrxcB39RfBzjP6F5JiR82Zr1
-	 2avQymkMBsp8vihNum3JPWMxAzaMuCC/7fRv1deTbV1Z75HaFuo1HI/6zQPARy/cQEw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793638265;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:Subject:
+	 Date:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:X-Last-TLS-Session-Version;
+	bh=N10zmkk/NQJ0l2/PcerXN/v257tgPcSx6+Q0OxuGl+I=;
+	b=pB7dwiAeJ27Btftf+cPhdfRJ/AYxfahD1TegOcrcGM3Pmn/5Cld8k279BeKIjS1AwXgs
+	 AImFmqI1CMUill7k6JO9Q2DaanHQ3bq2Anr94uM2U01tyxcjfHusVDzSKUMW7PDO+KUaM
+	 xPDmGR5O/4IEebYhKJ9aZqy6pS/ji1Y1l2CnCMY5kZRAr1qQqjraE2TFOJ7SyiD0ZtfS8
+	 ovGqCtiMmd0Ym3uvYpUpyJOZW+oj3+aPTzeD1CIw0DWX3sZhzjhd2uDPuag4oynUtChlT
+	 C2Ylt3uE1dWF1i7OLWOxgXzma0HxSRY2MTv9yJs0hPaoB7pJiBDTdKcpENeMdbJIQ3w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=Bkvlc9Uh;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=no3DkXB1;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dmarc=pass header.from=bootlin.com;
+	spf=pass smtp.mailfrom=bootlin.com;
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=i+SqVPvb;
+	arc=none smtp.remote-ip=185.246.85.4
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FBBF606ABA6;
-	Mon,  2 Nov 2026 16:21:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7FBBF606ABA6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB57606A336
+	for <linux-mips@vger.kernel.org>; Mon,  2 Nov 2026 16:51:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DBB57606A336
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=Bkvlc9Uh;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=no3DkXB1
-Date: Mon, 2 Nov 2026 17:21:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1793636476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CAbnxO0/qUW9BHgq0s5afN/fwZolzjrBJaRnSuaEmAo=;
-	b=Bkvlc9UhhyCv5ZdWUMU6G9Li+R2BVAADYWwZuoqUAyqvUjCoGYGxXIn4ALH8UCKwa4wXF8
-	oraU/gZ8eujvwMvYkEcPGl9LoaQ4y8L5gTwgvEqTaLIOKyYpw0Vt21vSoLNR9nGu5XUZGy
-	Ei+jDbIPpRtvYxUN3n40OXfMZKwhjOcptRjzclaFhqfaMjZ4DnPJp2kIUEARXrDA2lfCj7
-	Xc9td9/O5azqjpJ09IA+6VHzOt3kgO7Q3tW3z+AQm8NXUA0NJY3SKFbPnSH3MoCGBJlCpq
-	9SKkxdgYMHfQI6T9cHJ58WWsIb3edmk7YJmf4hhOdiwEorZM3Pu5QhcHBVRk7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1793636476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CAbnxO0/qUW9BHgq0s5afN/fwZolzjrBJaRnSuaEmAo=;
-	b=no3DkXB1ZRbLOBdX8Sfg5H+HK/netv5lLDsnHm2NNe1d6SMQE1Lawcr4U1D9QbHBAGIkXh
-	QAa36tqetUjJ21Dw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH V2] x86/entry: Fix ptrace regression
-Message-ID: <20261102162113.LEAhpzer@linutronix.de>
-References: <20261022142425.3Wx-RrU5@linutronix.de>
- <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13>
- <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
- <871p9g1s3w.ffs@fw13>
- <87y0boze95.ffs@fw13>
- <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com>
- <87se1wyvs8.ffs@fw13>
- <87mrrvxaty.ffs@fw13>
- <87ecd4xwlr.ffs@fw13>
+	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=i+SqVPvb
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 25C594E413C5;
+	Mon,  2 Nov 2026 16:51:01 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E5418603D7;
+	Mon,  2 Nov 2026 16:51:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B55D81032919F;
+	Mon,  2 Nov 2026 17:50:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1793638255; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=N10zmkk/NQJ0l2/PcerXN/v257tgPcSx6+Q0OxuGl+I=;
+	b=i+SqVPvba+YJb654B/HVMQ+s0KKU2N0ZNurvs+q3kiwwNS+L8/ZJF97keyBVyPgeunwBco
+	Huvo3ZeDQndAYbo0xjmOQvOVRpCgdAWRczd+dgiRVbHJA1iESESDIBI7vMQxiKsE3U9mG+
+	N2UaroCnAX61zjsd6G+SX7VhS69xCxMIK+fRy87o+tFkkdCM4EnEb5yJO5SgRqGayAAn6u
+	vdRYfWfKWVkNfuOqjcRROv8OMarDC6evVDNnIpY6TCTPYAGvT48tnLklG8UAEwEtys+L3+
+	LTt9zKrisPRK8zCI17gbXTdOvw8wyprFQ/A66vxCXg1ZModSfNYyHbNzlvurww==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v2 0/4] irqchip: add EyeQ5 PCIe MSI controller
+Date: Mon, 02 Nov 2026 17:50:37 +0100
+Message-Id: <20261102-eyeq5_msi-v2-0-4aa3d3608064@bootlin.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -114,29 +62,111 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87ecd4xwlr.ffs@fw13>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/22NQQ6CMBAAv0L2bE3b0Iqe/IchhpZF1kirXSQSw
+ t8FvHqcZDIzAWMiZDhlEyQciCmGBfQuA99W4YaC6oVBS22V1IXAEV/m2jGJwlaVqs1R2iKHxX8
+ mbOiztS7lj/nt7uj7NbAaLXEf07jNBrV6/7qDElL43OYHoxtnTHN2MfYPCnsfOyjnef4ClVv4g
+ bYAAAA=
+X-Change-ID: 20261028-eyeq5_msi-86aa1d590684
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
+X-Mailer: b4 0.16.0
+X-Last-TLS-Session-Version: TLSv1.3
 
-On 2026-11-01 18:58:08 [+0100], Thomas Gleixner wrote:
-> --- a/arch/x86/entry/syscall_32.c
-> +++ b/arch/x86/entry/syscall_32.c
-> @@ -77,6 +77,10 @@ static __always_inline void do_syscall_3
->  	if (likely(nr < IA32_NR_syscalls)) {
->  		nr = array_index_nospec(nr, IA32_NR_syscalls);
->  		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
-> +	} else {
-> +		/* See comment in do_syscall_64() */
-> +		if (nr != -1UL) {
-> +			regs->ax = -ENOSYS;
+Hello,
 
-A curly closing bracket here and then it compiles for me. Or remove the
-one in the "if" line.
+This series adds support for the MSI controller present in the
+Mobileye EyeQ5 PCIe ports.
 
->  	}
->  }
+Although the driver uses the standard MSI library, the EyeQ5 hardware
+has several specific features. First, each PCIe port has its own MSI
+controller, which snoops the MSI write TLPs that the port receives. A
+port supports a maximum of 4 MSI vectors, and the memory-region
+property gives the base address of the doorbell window. In addition,
+the GCSR mode selects the role: in root complex mode the driver
+registers a PCI MSI parent, while in endpoint mode it registers a
+platform MSI parent. The last specific point is that the driver uses
+the snooper domain as a chained controller on one GIC interrupt.
 
-With either of the suggested changes:
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+The series adds the binding document, the irqchip driver, the EyeQ5
+DTS changes, and the MAINTAINERS entry. In particular, the DTS changes
+add the two MSI controllers to the EyeQ5 SoC.
 
-Sebastian
+I tested the series on two EyeQ5 SoCs that have a PCIe link. One SoC
+acted as the host and the other SoC acted as the endpoint. The
+pci_endpoint_test kselftest passed the MSI-X and DOORBELL_TEST cases.
+The MSI test uses one vector because the controller does not support
+standard Multi-MSI. An additional test made sure that each MSI-X vector
+uses its target CPU (using affinity).
+
+Grégory
+
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+Changes in v2:
+- Address review comments from Krzysztof Kozlowski, Thomas Gleixner and
+  sashiko.
+- dt-bindings: drop the num-vectors property (all ports have four
+  vectors) and simplify the example.
+- irqchip: use the fixed four-vector count, add lockdep assertions, and
+  dispatch through generic_handle_demux_domain_irq() with a redirect-based
+  irq_set_affinity() callback.
+- irqchip: drop MSI_FLAG_MULTI_PCI_MSI (standard Multi-MSI cannot work
+  with the address-based vector decoding) and MSI_FLAG_NO_AFFINITY; add
+  MSI_FLAG_PCI_MSI_MASK_PARENT.
+- irqchip: keep vectors masked during allocation, mask all vectors and
+  clear pending status before installing the chained handler, and reject
+  of_irq_get() returning 0.
+- MIPS: dts: drop the num-vectors property from both MSI nodes.
+- Reformat the driver for the 100-column limit.
+- Link to v1: https://patch.msgid.link/20261028-eyeq5_msi-v1-0-c464752fb55f@bootlin.com
+
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+To: Benoît Monin <benoit.monin@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Théo Lebrun <theo.lebrun@bootlin.com>
+To: Thomas Gleixner <tglx@kernel.org>
+To: Radu Rendec <radu@rendec.net>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzk+dt@kernel.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+
+---
+Gregory CLEMENT (4):
+      dt-bindings: interrupt-controller: add Mobileye EyeQ5 PCIe MSI controller
+      irqchip: irq-eyeq5-msi: add EyeQ5 PCIe MSI controller driver
+      MIPS: dts: eyeq5: add MSI controllers
+      MAINTAINERS: add EyeQ5 MSI controller entry
+
+ .../interrupt-controller/mobileye,eyeq5-msi.yaml   |  90 +++++
+ MAINTAINERS                                        |   2 +
+ arch/mips/Kconfig                                  |   1 +
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  28 ++
+ drivers/irqchip/Kconfig                            |   5 +
+ drivers/irqchip/Makefile                           |   1 +
+ drivers/irqchip/irq-eyeq5-msi.c                    | 439 +++++++++++++++++++++
+ 7 files changed, 566 insertions(+)
+---
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+change-id: 20261028-eyeq5_msi-86aa1d590684
+
+Best regards,
+--  
+Grégory CLEMENT, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+

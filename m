@@ -1,100 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793650578;
-	b=zJRQyMgs2NvGLVV+yIsWW/7XRLXwVR6kr7PrNgXIVfOFaL2/hacGticIeH6M427SbCkm
-	 En32EBxNF2qtR4Img53Wyqo7Y28zMMPbcmWNggKmC7u0ogv4+9QxMuCNBQp86kYIXz1ix
-	 apvzMfSI7TaJC8gDXBcvyVDfTF1czRJT/5CzX063RPPkFUiVfh813pjliIhQDuoGNBW2e
-	 Okh7kgnO5mF382gWnn2P1ymA56bk21Q4atsvrtwqNT/fm4nGAjt3uzTYsyABaWHV2Cwvn
-	 sjU5BPPq0ZaHOnp+5St+KlMcGu9gNuyP9Y1wpDzC4daxe7W/7t3r5g2bYVOKCWL1NsQ==
+	t=1793652491;
+	b=t9duYaYXFKbnkGRfnVLigIlXRR3O0ARvorxadMdGPLtl4cx1MH5GkQwZVfy37JQpurOM
+	 bZslCfeCGwylzYYD+Ev4CaGi7rW9EXrbOJ/0skQDqr7jp0JWwYTEFNNQitqgtZumMaYuO
+	 6L29sRBJaP2HYdxxsP+dBGOQ34e+U6Yd5KWVexCVmhy16X/qTzeNbpGnETAOfhydRwPhr
+	 MDDA3e7lJpUDV792BUI/BJSO4pOe0Xoq8DU9HOUDs8V6xKwpCUGrF+7DLwPuv67gvMW2N
+	 2hTbY4AN+x7kmhTQL7ZrgrKjb3aR0zLlUlbF5SKF/osyVkLZlfj6hCy8yc3Z+EdQ6Bw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793650578;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=dkGbvUDyeeZ1ewkhAMtnGT8VJqpJVXFal/OdRewYEcs=;
-	b=q09nHn5G/h7iqsuEKMiafKI5/tfXICnKow5Kd1jEVyDTFC5JN48YqqFUJa4sooN2uXTK
-	 loJdd+Llx6mgqu4VRcyDAG3KPwGtmkkZcG9rHIw43QwhnVmL3Y2x6qILjXvQL1N5rCSVt
-	 9DsyR2u7eEmxClUp0AMcXNOQ1THQPIIS1XdKGxyDmATNkJscak9XCGixal/qEAVLo/T0c
-	 u3bPyrsL4Y4m4R87BMuLpRIy5R7XXorjyU+LB/Xks8BBPP+b4KsPjdeTXNc8mYujs6GhK
-	 SZ+ewP1zvd6T8Ed0itzEgJk0z4bzJIpV0etilVVHVXBdxBrTrDdViAHhC0zlhXxH+4A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793652491;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=6xddysbA9HgFqkLFd1E0uqGDoPhRvcZXwufnklq7AKw=;
+	b=3drzxr8J3j52g7gBvRxTyM4T0PiJ/C+vjkhzaKt0lUDVkkmfKM/Ph8Zmh0TYGR1XfwHl
+	 ufF23KSw+kYdsriuvT9N/JM/CGZFKQFggP+g23ojCT10ggK1iPFjt0Ql0l38wxx66aAsx
+	 mpY6XanjxueISlMcNKnkAF0KhwLcrsTXiM4Kz2MI0xp8prc+WR2ZGHWn/gKlwwQj1J1ZG
+	 7Nff32XG/BC7SKqBt8sx1qypShbJZlVsIqYwlBoZ2X4yAY7zPRtQOoQLh4uzDMc2OoNwt
+	 fxneHbVuNLc9kzv6ruusg3xyiQXeExfqYBWbepnVljYJ7fkyrUCRGNi97Sm13F11BOw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=mgcrea.io;
-	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=Ph8O0va6;
-	arc=none smtp.remote-ip=209.85.128.47
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mLi60mjn;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F99606A336
-	for <linux-mips@vger.kernel.org>; Mon,  2 Nov 2026 20:16:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68F99606A336
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDECE606A326;
+	Mon,  2 Nov 2026 20:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=Ph8O0va6
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4a4dc547987so17813245e9.0
-        for <linux-mips@vger.kernel.org>; Mon, 02 Nov 2026 12:16:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793650576; x=1794255376; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=dkGbvUDyeeZ1ewkhAMtnGT8VJqpJVXFal/OdRewYEcs=;
-        b=Ph8O0va69qi5KtzeMAZfOR+XDswm9owVaSD7cGWwAQOJ96+cj8DyDmSW9R9AqpSRi4
-         qSmxp5fV32iyNS0bzLuXiMm6IDaPiIah9HKWcvPAspPHdsBu+4ga08lN5JkARu5OneY+
-         WtcH1ltRJI1RFnuHq4mqfFog7/KanXx6yxLLcYS+/YiINNRA99O5eekCF1o1hw8+KROh
-         fyQYMFqDXUnzrsODZWc+ntNXOGuWG7+3u/aocO/UAbmc62K1R464txfBlM31BxpZ5BfL
-         j3gkGR6vZ1v65LHnizKzbdOttle62TxIbDRLXj4tPqG8eWMB0++KkAsyZeaRiBaMyjD/
-         cC6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793650576; x=1794255376;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=dkGbvUDyeeZ1ewkhAMtnGT8VJqpJVXFal/OdRewYEcs=;
-        b=c7AnD8878XebbCpDgcskv1dxuahGh8/RatIgkDsXYxj+/kh00CjJZFN16GLTHIPe8+
-         vo9u7Gn5AlwiDCU+blK0SyAe8WeoYZdz1W+NU0m6BjzjzMpxYvOkm29QtZtwG+gIzNN7
-         eYdash68WvvEQp2/k30fhU2cUUWHRmlOkXWKq4lCvrT3ynwCT/3jD2OuMrno3zjqmC6/
-         uwCpi2b9Tr+On+eK0+Vmv0VvJ54DIshZAwsYLTbwmx7G79+J8hRriT/D0YcP6+j2A+6v
-         ho/P+YwUgwstEasqQZ6Ks1h5/wTE+LD5BHwjZ9so0bw6qD/xUjO8W3uEHsLv3qiiBOnP
-         5JeA==
-X-Forwarded-Encrypted: i=1; AKwUvBxPXDd07oljuLyIZOCxoZP7rtEsZywGONllvQ+iAm+3VZvHE6GNdPXFl9GnGwbVP0jDvzjHDW/TLIWg@vger.kernel.org
-X-Gm-Message-State: AFq9FYIL3AJnVM0ZZML9JT+ipfd1WtjgkKXKLsycHU+c9c3DZPjA5os0
-	ykf+7mLZg+fWLdm5TpQbzZi5Oq3eIyD20BGqLtSHholGVfaeN9deGExMQmNPufXakus=
-X-Gm-Gg: AYBFou1CEygVM+atQl4CXWE4H/tuozZ+lpK2rhcgKQ2GsqXMd/Dp0sCLAcuVcOJiFry
-	5YFqRDGDsGsavKFWaosynRUTXd8541n9LS+o4c2LP2b373M4PaN2daMcB9PlaOxGePpbr2ChV+t
-	OS4+4QYCfEmx1h9jgtn3RROqmDexECmzOydF8oHUmx8sOxRzAdn8KWYBWJC54ZpRRrNVhN1wx/T
-	/MU6rH8+gtJWH93Yfn/MyzOUJcxLExX3WHbksSHkW64XZxQULhyq79FDfclpux7EB91DT+DFTFg
-	bnJTVXmH4PvKzx669gooHjjkcEj5qgr3LxHHgDNDW211lDIu+wa81hzdeTbCopefKSpzkjGXg9c
-	X4CS9VFE3KtJ2q+VRP9ADxe7lDgpQ4BsA+rQqCbsxNh4REN1JZbYX8XnEgGAFWHlSG+JSQCu1ik
-	c9CL3q8kqndo5+dLLmJYKSnLHhnL2JS7qE26HXUJQ9vuSd5ON93sMmTIwA4ntAjhjUZmuJ+yf5T
-	jUsiwkEQTZQFvzTNPeT8DoqjB0exRjBvq2k0aA0hKRuthv42rT4ZPgoss50Pr450MgQxtnG/mct
-	oczCeVGBQSB++Kt3T5dgOF0JmR60Y5+BB5cAzhaFg7i0tB6wsP+JMc7puM9r
-X-Received: by 2002:a05:600c:4752:b0:4a1:9661:14b5 with SMTP id 5b1f17b1804b1-4ac18e5d4d0mr269807015e9.29.1793650575803;
-        Mon, 02 Nov 2026 12:16:15 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:6412:7406:ded:3229])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4ac09bcc967sm220013905e9.3.2026.11.02.12.16.15
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 02 Nov 2026 12:16:15 -0800 (PST)
-From: Olivier Louvignes <olivier@mgcrea.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Rob Herring <robh@kernel.org>,
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mLi60mjn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 958691F00A16;
+	Mon,  2 Nov 2026 20:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793652490;
+	bh=6xddysbA9HgFqkLFd1E0uqGDoPhRvcZXwufnklq7AKw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=mLi60mjnzwIDAfg8Z77TOtGj++a1B0tdHNieMumnaMy8uY0MuCNafh/FBUKUWD7NG
+	 YViiwaIZ9OYLnB6tcLch7QRqd8/hZ+CYBYPRsrwGWBBMc1Y+2d+euZJVaUX0zP81em
+	 z4c2k7h+0o5Ud1Jjet2GpwdfA1vBhGrXTi4bAjUzN55po0epU5o9v9YglfHvHm9nij
+	 iGoEGtA3+ykAukpfpdby3fkNsaGlHzwwgkZgv+mAH8YHgA+//nIA0MrWFByIZS9uTP
+	 8vXvVjatSPgoRCSzjK1E5ZFm8HSQUrrwZlbnF+ljz2l9ac2XZcFPfchJLi3yxpJpAP
+	 EA4FK/JKe9y8A==
+Date: Mon, 2 Nov 2026 20:48:05 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	David Lechner <dlechner@baylibre.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Paul Cercueil <paul@crapouillou.net>,
 	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Olivier Louvignes <olivier@mgcrea.io>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: [PATCH v3] dt-bindings: serial: ingenic: Add the X1600
-Date: Mon,  2 Nov 2026 21:14:59 +0100
-Message-ID: <20261102201459.49284-1-olivier@mgcrea.io>
-X-Mailer: git-send-email 2.54.0
+	Joshua Crofts <joshua.crofts1@gmail.com>, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+Message-ID: <20261102-salute-cylinder-22c9a8896ca9@spud>
+References: <20261102201155.10948-1-olivier@mgcrea.io>
+ <20261102201155.10948-2-olivier@mgcrea.io>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -104,46 +66,132 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6qWinq+OBSPdtkNb"
+Content-Disposition: inline
+In-Reply-To: <20261102201155.10948-2-olivier@mgcrea.io>
 
-The X1600's UARTs have the X1000's registers and 64-byte FIFOs. Add
-ingenic,x1600-uart, with the X1000's as fallback.
+--6qWinq+OBSPdtkNb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
----
-Changes since v2:
-- Drop the driver patch that set UMR and UACR at probe. After a reset
-  the X1600's UMR already reads 16: the 0 the manual gives is what a
-  clock-gated UART reads, which is also what Nikolaus saw from U-Boot.
-  What needs fixing is a value a boot loader leaves (the HiBy R1's sets
-  8 on UART2, its console), which is the boot loader's business, as
-  Nikolaus said, not the X1600's.
-- Move the new entry last, sorted by fallback (Krzysztof).
-- Add Krzysztof's Acked-by.
+On Mon, Nov 02, 2026 at 09:11:54PM +0100, Olivier Louvignes wrote:
+> The X1600's SAR ADC has four auxiliary channels and none of the
+> touchscreen or battery engines of the JZ47xx ADCs in ingenic,adc.yaml,
+> so it gets a binding of its own.
+>=20
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> ---
+>  .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 53 +++++++++++++++++++
+>  MAINTAINERS                                   |  5 ++
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,x16=
+00-adc.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.=
+yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> new file mode 100644
+> index 000000000000..f6356ea97980
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ingenic,x1600-adc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ingenic X1600 ADC
+> +
+> +maintainers:
+> +  - Olivier Louvignes <olivier@mgcrea.io>
+> +
+> +description:
+> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input channe=
+ls
+> +  measured against a 3.3 V reference.
 
-v2: https://lore.kernel.org/all/20261024220712.23250-1-olivier@mgcrea.io/
-v1: https://lore.kernel.org/all/20261024051515.55639-1-olivier@mgcrea.io/
+The wording here makes me wonder if a 3v3 supply is missing here? Or is
+this some internal supply on the soc?
 
- Documentation/devicetree/bindings/serial/ingenic,uart.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Otherwise, this looks fine really.
 
-diff --git a/Documentation/devicetree/bindings/serial/ingenic,uart.yaml b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-index d5f153bdeb0d..0c452f20e103 100644
---- a/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/ingenic,uart.yaml
-@@ -35,6 +35,9 @@ properties:
-       - items:
-           - const: ingenic,jz4755-uart
-           - const: ingenic,jz4750-uart
-+      - items:
-+          - const: ingenic,x1600-uart
-+          - const: ingenic,x1000-uart
- 
-   reg:
-     maxItems: 1
+> +
+> +properties:
+> +  compatible:
+> +    const: ingenic,x1600-adc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - interrupts
+> +  - '#io-channel-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    adc@10070000 {
+> +        compatible =3D "ingenic,x1600-adc";
+> +        reg =3D <0x10070000 0x30>;
 
-base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
--- 
-2.54.0
+That said, the 0x30 looks suspiciously small - but the region is aligned
+neatly so I suppose it's probably not problematic..
 
+Cheers,
+Conor.
+
+> +
+> +        clocks =3D <&cgu 28>;
+> +
+> +        interrupt-parent =3D <&intc>;
+> +        interrupts =3D <11>;
+> +
+> +        #io-channel-cells =3D <1>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ecc22d1149d1..fd4bb5c6bf16 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12925,6 +12925,11 @@ F:	include/linux/mfd/ingenic-tcu.h
+>  F:	sound/soc/codecs/jz47*
+>  F:	sound/soc/jz4740/
+> =20
+> +INGENIC X1600 ADC DRIVER
+> +M:	Olivier Louvignes <olivier@mgcrea.io>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
+> +
+>  INJOINIC IP5xxx POWER BANK IC DRIVER
+>  M:	Samuel Holland <samuel@sholland.org>
+>  S:	Maintained
+> --=20
+> 2.54.0
+>=20
+
+--6qWinq+OBSPdtkNb
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCauj3BQAKCRB4tDGHoIJi
+0m8HAQC5fMDxvkrjUejVaTLi/E/rwAz2L7R0fnR1vob61z4DhwD/bO9L0839+IN3
+BXxrFlk9Kl+2bcLK5VW8G+xNp/LlRQU=
+=7Eap
+-----END PGP SIGNATURE-----
+
+--6qWinq+OBSPdtkNb--

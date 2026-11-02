@@ -1,62 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.224.46
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793652491;
-	b=t9duYaYXFKbnkGRfnVLigIlXRR3O0ARvorxadMdGPLtl4cx1MH5GkQwZVfy37JQpurOM
-	 bZslCfeCGwylzYYD+Ev4CaGi7rW9EXrbOJ/0skQDqr7jp0JWwYTEFNNQitqgtZumMaYuO
-	 6L29sRBJaP2HYdxxsP+dBGOQ34e+U6Yd5KWVexCVmhy16X/qTzeNbpGnETAOfhydRwPhr
-	 MDDA3e7lJpUDV792BUI/BJSO4pOe0Xoq8DU9HOUDs8V6xKwpCUGrF+7DLwPuv67gvMW2N
-	 2hTbY4AN+x7kmhTQL7ZrgrKjb3aR0zLlUlbF5SKF/osyVkLZlfj6hCy8yc3Z+EdQ6Bw==
+	t=1793661171;
+	b=XQd55UB/z0Wz3MdoWEBZXXKofBDZLMmsU66HxnS8z/EFM9XrmiGQ/+PbUbCoPRqrvb+y
+	 9WKVqnp36mz7JyfY7jx+uK9sjztxJicUKQuzVQM0rhe9lxV8nTfJJeB1LBYD3ePfmcX0U
+	 trZSMqsPZOV655vOkmnjwakwPYkZDo4U3TmvAnXGMkWjPtr+QxI/hE5Xb64TgucxaMS92
+	 i84Sw2eYWeEvWwHYsXMgQhhoYBq1Sm2C/jhvYTqaAMSuEcI+7tbkRveQ12z3TCA3YlrCG
+	 42ycMHknoKzTc/6H0lHVvhpGsKn47+iBiM92mORQJOt7PGIZa256Y34iKhIlsK+SNhg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793652491;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=6xddysbA9HgFqkLFd1E0uqGDoPhRvcZXwufnklq7AKw=;
-	b=3drzxr8J3j52g7gBvRxTyM4T0PiJ/C+vjkhzaKt0lUDVkkmfKM/Ph8Zmh0TYGR1XfwHl
-	 ufF23KSw+kYdsriuvT9N/JM/CGZFKQFggP+g23ojCT10ggK1iPFjt0Ql0l38wxx66aAsx
-	 mpY6XanjxueISlMcNKnkAF0KhwLcrsTXiM4Kz2MI0xp8prc+WR2ZGHWn/gKlwwQj1J1ZG
-	 7Nff32XG/BC7SKqBt8sx1qypShbJZlVsIqYwlBoZ2X4yAY7zPRtQOoQLh4uzDMc2OoNwt
-	 fxneHbVuNLc9kzv6ruusg3xyiQXeExfqYBWbepnVljYJ7fkyrUCRGNi97Sm13F11BOw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793661171;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer;
+	bh=EamzdbmCJd/tsLqc1Uf5xYkgzwxHOHLxwnt7C9IRutQ=;
+	b=qEUqHFeyUNINJJTXC7mYz75cWs6nRWxdIQg90Q3lnu6Pf/DJh/AHHfl0WWPlae7nYXDl
+	 pYVyTSBG+N0vfuy6BsaQ6WtEUkuG5DgmGMnTzzA95GegtTrBfKk1zLmYoCgR6beFfSLCV
+	 dSgmaffsvOMlwI8QK/qG93K4AcdOrx0qAjpTB9OG8sWX8/v97YcDxwGqMfdLMljyWpdrD
+	 pGJ0lC2O66TfRSOLcJ8oSS677NLD2c4fDJf++pjbIBVBNAH8+dSiLMJgggpPGEGLRzQNA
+	 MpavTKlv2yql21kPFLhwaUtwJAZsQO71ig3Ife+bVtz9GwbhmJo3QlqNIKtZnP8ZwwA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mLi60mjn;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=none header.from=amutable.com;
+	spf=pass smtp.mailfrom=amutable.com;
+	dkim=pass header.d=amutable-com.20260707.gappssmtp.com header.i=@amutable-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b="rx8b/Fy+";
+	arc=none smtp.remote-ip=74.125.224.46
+Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDECE606A326;
-	Mon,  2 Nov 2026 20:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8AD606A32D
+	for <linux-mips@vger.kernel.org>; Mon,  2 Nov 2026 23:12:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2C8AD606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amutable.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amutable.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mLi60mjn
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 958691F00A16;
-	Mon,  2 Nov 2026 20:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793652490;
-	bh=6xddysbA9HgFqkLFd1E0uqGDoPhRvcZXwufnklq7AKw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=mLi60mjnzwIDAfg8Z77TOtGj++a1B0tdHNieMumnaMy8uY0MuCNafh/FBUKUWD7NG
-	 YViiwaIZ9OYLnB6tcLch7QRqd8/hZ+CYBYPRsrwGWBBMc1Y+2d+euZJVaUX0zP81em
-	 z4c2k7h+0o5Ud1Jjet2GpwdfA1vBhGrXTi4bAjUzN55po0epU5o9v9YglfHvHm9nij
-	 iGoEGtA3+ykAukpfpdby3fkNsaGlHzwwgkZgv+mAH8YHgA+//nIA0MrWFByIZS9uTP
-	 8vXvVjatSPgoRCSzjK1E5ZFm8HSQUrrwZlbnF+ljz2l9ac2XZcFPfchJLi3yxpJpAP
-	 EA4FK/JKe9y8A==
-Date: Mon, 2 Nov 2026 20:48:05 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Olivier Louvignes <olivier@mgcrea.io>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	David Lechner <dlechner@baylibre.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	Joshua Crofts <joshua.crofts1@gmail.com>, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
-Message-ID: <20261102-salute-cylinder-22c9a8896ca9@spud>
-References: <20261102201155.10948-1-olivier@mgcrea.io>
- <20261102201155.10948-2-olivier@mgcrea.io>
+	dkim=pass (2048-bit key, unprotected) header.d=amutable-com.20260707.gappssmtp.com header.i=@amutable-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=rx8b/Fy+
+Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-679334baa1fso3871161d50.2
+        for <linux-mips@vger.kernel.org>; Mon, 02 Nov 2026 15:12:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amutable-com.20260707.gappssmtp.com; s=20260707; t=1793661170; x=1794265970; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=EamzdbmCJd/tsLqc1Uf5xYkgzwxHOHLxwnt7C9IRutQ=;
+        b=rx8b/Fy+NjWKy9Kt9BkYBTAgAdfsrCjtSJw8M4hgKdPwSbdNWSPDWS+qzcv7PpS2X0
+         5GpXVRoxUaZ06rvZROEMQEK8Mttmw9rGPzF93KOiP9W3KhIAYixd7e7GNOgC4Fr334R+
+         ZMd7FukI1GTj1DTuhU9+GULRf5Xbb/LNWXhyf+MMw2FwhCJ82Zi4Ko0jgs9VZCKtAS5x
+         oaNuyuW9O/UX3/pzgRC6JwSMVmrAnNCPfmYE8DdZzfw6boqxFs9vrYo7Ge/Mx04wtHt3
+         oH7W5UO7A+o2/swON24J9mUTxAOGRp+JLyPEKuWH7Od/aF95WucAzIhYr4/n/eokeaGH
+         ubDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793661170; x=1794265970;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=EamzdbmCJd/tsLqc1Uf5xYkgzwxHOHLxwnt7C9IRutQ=;
+        b=wXUkwEBxdzjxlTQ/yjEdKFX3dIzsjS5/8SJi+RRVt6cHo88mWX1Pu4t5NvqLSUIqiR
+         0Kmuxb6SvTPIII809L2Eg3qfiW+KZFXH4z9AIkL3uM6uLzj04NLDzDGAPMnROu6USMxm
+         pBd+d0W0EG4BNFrB4pM9Q65cAFjczHqgN3cHSvGYSho2jfZUGuMAdCWVauaOrgKM1+rN
+         QYMYpxDNbmghCBAuD12fga5j3KFbY3ie2XG39F484lvX4tzjLzoqdLttyTFfu0oV3g9Z
+         4zEqJnen9yZDOaiQzjGAzC8dQSQKFI1Hwa4QTU3vqPFOAuYh7Jpk5092AHnl397cGzAD
+         kgnw==
+X-Forwarded-Encrypted: i=1; AKwUvByfDQMEqO8XDwyNRew3msueWEMtfDbghkR2apIlZgsaVXGYUO+i9cGoy+ZR82wDIm1zdZTuudjP2KO0@vger.kernel.org
+X-Gm-Message-State: APuU4Z+/ey+Hrvh5umoeqebWiPbx4muGKeBGHtGiprRhkMkRbNne0A0T
+	VBTovIqB9+EykPOBGQCwCNvsx+GDrAIg8iJMq/SYfpzSkHunmBjum9bKF5JpntAwRMjt
+X-Gm-Gg: AYBFou0oPRDS2AgpNH3RnbFP1J2Vr8A4imLE0G/0la6465KSb3UP8KWD0Y6IYkJFj4+
+	CoVjr3/2rHUWTEE/4aSI4e9TqZxwd1vz8s1kEc0XItliP13H5vqo+PlbcPndc7iPIaIdNrIesDH
+	OJ2wSiA9G/8ZGry1v5TYwSdiSbw70qqYobAnkfuT1AT+roJvKX1dP8hl9VX89nyulLRhIVdqyy/
+	9SjLsYXj/DwH1Nd5YXTq1dsQh0L1Kzomwj5FTW6h9S42D2G8ad6x/0L6YnNadGryqGxIEgy8E34
+	vAxW3yJvwGgqJjeJ8WAY79yDeqkcshfZ/b1UiMTo1Q2IW6JuKRdOykqEWI+jtah4bcrdqrJverR
+	WBUUHH5hXVi2Ph1yjk46GGOFIzG9kywieGIZR0dGUVlMvIhdTQUCB14y/A2eQolR9klxFeLbK0r
+	foiwD5wTHH2qRjHoWqNP5pTHE5Okh1oRc0mi7PZ3UKsMZVmkGPqbHdtm1CDyqa41Y/a4zp7gMgS
+	upO1S37DUlI4SWJDYt7gQ27dAh6u5T+y/w7DFiRuSxe4ifMz1NGs1vDdtx0lX7o2gnErQW3s3Ha
+	RicryUL6VDT88sTUvWWO2OePpRpC7ioYfjK1RJ+cZ4SJL894EHWLTPVsPQzvG1oEOpRzTdjU0y5
+	eUpyhMhHVEIHtVgOg6IGeILEqUpL6ixw=
+X-Received: by 2002:a05:690e:1094:10b0:66f:c1bc:408f with SMTP id 956f58d0204a3-67ba50187demr4711928d50.82.1793661169876;
+        Mon, 02 Nov 2026 15:12:49 -0800 (PST)
+Received: from [192.168.1.110] (104-53-165-62.lightspeed.stlsmo.sbcglobal.net. [104.53.165.62])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-67baf3303ebsm5946481d50.18.2026.11.02.15.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2026 15:12:49 -0800 (PST)
+From: Andrew Halaney <andrew@amutable.com>
+Subject: [PATCH net-next 0/3] net: add SO_PASSCRED_THREAD to get a
+ thread-specific SCM_CREDENTIALS
+Date: Mon, 02 Nov 2026 17:12:33 -0600
+Message-Id: <20261102-halaney-scm-creds-thread-v1-0-0b4d75dbf35f@amutable.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,132 +93,79 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6qWinq+OBSPdtkNb"
-Content-Disposition: inline
-In-Reply-To: <20261102201155.10948-2-olivier@mgcrea.io>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MwQrCMAyA4VcZORtoC27DVxEPJc1sQKMkRSZj7
+ 76y43f4/w2cTdjhNmxg/BOXj3bEywBUsz4ZpXRDCmmMISas+ZWV/+j0RjIujq0a54JTnMI4h2W
+ mK0HPv8aLrOf6DsoNldcGj30/AKCaSmZ0AAAA
+X-Change-ID: 20261012-halaney-scm-creds-thread-7170680f8c5c
+To: Kuniyuki Iwashima <kuniyu@google.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Christian Brauner <brauner@kernel.org>, 
+ Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, 
+ Willem de Bruijn <willemb@google.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, 
+ Andrew Halaney <andrew@amutable.com>
+X-Mailer: b4 0.14.3
 
---6qWinq+OBSPdtkNb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently, SCM_CREDENTIALS carries the pid of the thread-group leader,
+despite carrying the uid/gid of the actual sending thread.
+SO_PASSPIDFD_THREAD lets a receiver identify the sending thread, but
+only through a pidfd. If you just want to know what the tid of the
+sending thread is you have to do something like:
 
-On Mon, Nov 02, 2026 at 09:11:54PM +0100, Olivier Louvignes wrote:
-> The X1600's SAR ADC has four auxiliary channels and none of the
-> touchscreen or battery engines of the JZ47xx ADCs in ingenic,adc.yaml,
-> so it gets a binding of its own.
->=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-> ---
->  .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 53 +++++++++++++++++++
->  MAINTAINERS                                   |  5 ++
->  2 files changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,x16=
-00-adc.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.=
-yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
-> new file mode 100644
-> index 000000000000..f6356ea97980
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/ingenic,x1600-adc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ingenic X1600 ADC
-> +
-> +maintainers:
-> +  - Olivier Louvignes <olivier@mgcrea.io>
-> +
-> +description:
-> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input channe=
-ls
-> +  measured against a 3.3 V reference.
+    1. Setup SO_PASSPIDFD_THREAD on the socket
+    2. ioctl(thread_pidfd, PIDFD_GET_INFO) per message
+    3. close(thread_pidfd) per message
 
-The wording here makes me wonder if a 3v3 supply is missing here? Or is
-this some internal supply on the soc?
+For example systemd-journald wants to log the tid as "trusted field"
+(aka provided by the kernel) but doesn't have a great way to do so
+right now, unlike the options for uid/gid/pid which are covered by
+SO_PASSCRED currently.
 
-Otherwise, this looks fine really.
+So add SO_PASSCRED_THREAD as a sibling of SO_PASSCRED. It delivers
+SCM_CREDENTIALS_THREAD whose ucred carries the tid of the sending
+thread instead of the thread-group leader. This is completely
+independent of SO_PASSCRED, so a receiver can ask for both. Use
+a new cmsg rather than changing SCM_CREDENTIALS because users
+expect ucred.pid in that context to be the thread-group leader.
 
-> +
-> +properties:
-> +  compatible:
-> +    const: ingenic,x1600-adc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  '#io-channel-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - interrupts
-> +  - '#io-channel-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    adc@10070000 {
-> +        compatible =3D "ingenic,x1600-adc";
-> +        reg =3D <0x10070000 0x30>;
+As with SO_PASSPIDFD_THREAD, recvmsg() on SOCK_STREAM sockets stops
+merging data at a thread boundary once SO_PASSCRED_THREAD is set.
 
-That said, the 0x30 looks suspiciously small - but the region is aligned
-neatly so I suppose it's probably not problematic..
+Signed-off-by: Andrew Halaney <andrew@amutable.com>
+---
+Andrew Halaney (3):
+      selftests/net: pass socket options to the scm_pidfd test flows
+      net: add SO_PASSCRED_THREAD to get a thread-specific SCM_CREDENTIALS
+      selftests/net: Add tests for SO_PASSCRED_THREAD
 
-Cheers,
-Conor.
+ arch/alpha/include/uapi/asm/socket.h            |   2 +
+ arch/mips/include/uapi/asm/socket.h             |   2 +
+ arch/parisc/include/uapi/asm/socket.h           |   2 +
+ arch/sparc/include/uapi/asm/socket.h            |   2 +
+ include/linux/socket.h                          |   1 +
+ include/net/sock.h                              |   4 +-
+ include/uapi/asm-generic/socket.h               |   2 +
+ net/core/scm.c                                  |  32 ++--
+ net/core/sock.c                                 |  14 ++
+ net/unix/af_unix.c                              |   6 +-
+ tools/testing/selftests/net/af_unix/scm_pidfd.c | 229 ++++++++++++++++++++----
+ 11 files changed, 242 insertions(+), 54 deletions(-)
+---
+base-commit: 4dd16e31135ea8437a720222df34e8745f385d6d
+change-id: 20261012-halaney-scm-creds-thread-7170680f8c5c
 
-> +
-> +        clocks =3D <&cgu 28>;
-> +
-> +        interrupt-parent =3D <&intc>;
-> +        interrupts =3D <11>;
-> +
-> +        #io-channel-cells =3D <1>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ecc22d1149d1..fd4bb5c6bf16 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12925,6 +12925,11 @@ F:	include/linux/mfd/ingenic-tcu.h
->  F:	sound/soc/codecs/jz47*
->  F:	sound/soc/jz4740/
-> =20
-> +INGENIC X1600 ADC DRIVER
-> +M:	Olivier Louvignes <olivier@mgcrea.io>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
-> +
->  INJOINIC IP5xxx POWER BANK IC DRIVER
->  M:	Samuel Holland <samuel@sholland.org>
->  S:	Maintained
-> --=20
-> 2.54.0
->=20
+Best regards,
+-- 
+Andrew Halaney <andrew@amutable.com>
 
---6qWinq+OBSPdtkNb
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCauj3BQAKCRB4tDGHoIJi
-0m8HAQC5fMDxvkrjUejVaTLi/E/rwAz2L7R0fnR1vob61z4DhwD/bO9L0839+IN3
-BXxrFlk9Kl+2bcLK5VW8G+xNp/LlRQU=
-=7Eap
------END PGP SIGNATURE-----
-
---6qWinq+OBSPdtkNb--

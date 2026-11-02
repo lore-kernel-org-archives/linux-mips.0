@@ -1,62 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793623297;
-	b=QZDsEsFqLNkZJSCbGQtUVVZJSwizBhe/2NuWgNx9GY8MAt2re3Tx36GDIE5CQQM9/bAo
-	 xwEiEB+J9/nKsnw5YyMrhVFYRoiWyWyA1EOy8DzolXTR2VcODTwRzbh8SvyVT+fNiexz5
-	 3kGuXABDODXhJssHa4JCJRnL2hkQTukfxowkRmJtVc/FPyP1Z0stiTno80ln0LtnIAkp/
-	 4exXXQC6f5K0JE7Uy7I5QXy9SGCYyvURyXdtNW35PCzmWYJY69u5xuan0LYIwfreczkZI
-	 hnEVopnk40mETa0pjCrbkYEqq76EtNozDEhzH7U+d83tQ51woZTSnnlh1wo3pH9uSGQ==
+	t=1793629435;
+	b=cheWR5l28r8UcsG9eXHs6F+8gnQet/xJ/wi9l0SjmXfmv52X1pXn05xGLt+Rruk83fFx
+	 MUfMbQVvyiYMSRekAjgmKwQmwZ/mIb/4UpOMRYwTO24b8tlIbTDxPcFqtgt3HkqJJlpgy
+	 +mC+URuwIlRO6rEmfU69Zf+ewh3IdvqeWWRRIqnadDMRt+u592eqo5JD4rXUF34CuQgRc
+	 bL3jT1Z/4OeKhV7fLiok93x9ti/DlV2O/Y9vaKiWvV77/SYOBh1idkWGgaP2QAhrG+Ley
+	 CI2foEdqO6f0BdvJJUmPDnygrLdjCBiIqeQEeQTiBFjY4mRHNdxBAKhr1/EuSFzafqQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793623297;
-	h=Received:DKIM-Signature:Received:From:To:Cc:In-Reply-To:References:
-	 Subject:Message-Id:Date:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key;
-	bh=/ctRInFLIXM8Zr3UG7MbiXc1PIk/A2Vn0/3BPZ0Lpqo=;
-	b=KZykSY2Fgg/o0zn7+7Ta35fKcvUZQB8UwPXgrmJPK7OrQC7foCPF8ZwbhHXicAzheCOm
-	 3eV3swObp6AUtjxDwcYiC+97be94okixd5/G8/pMEqHw5lYruVm3nsJk+xUgCCDn/hM8K
-	 jS01XNJDk5zrPR+1WcuU22FPlGlGFPUBBEfiXS3DWR1HinPaetKlV5ATpwOllJ20TjsZo
-	 ucqnheaDH1q2Lygd9epky8bfwbxgsTjgxK6Mi0aY31/8cr/va74KgaDmiYHTMn0faK22a
-	 fINQQq7pE9iqT18uID6H9C5UsyyMNQirU/FnSNwmaqx+vpC/9swyaJV1zvxpcGQY6EA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793629435;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=kXhg0tNcz/XggPQ5n4ztmniJcr2/pUza6Nt9tHp8FTw=;
+	b=PpKamwIygmbG3PZ3Jal/Ajz1TGDiInlqqUJ6PMfCYV3fhUvz61M15/PY/nWjwxXdtfnh
+	 3hK6Zc/e2MpOXdAZ/lJaSsPQVH4a+pLBJVICE6V82RhS47SBVB3et46EX6MbH3VZZOU/Z
+	 vNrQeBoML4hlv3NoFdQLeuwtrPxQDcPqGruVSr8aHwbH4gMXo6dKiYK3PCFpNKzQ2py+n
+	 7MQaKg6RsckNvh70byJQq64FTrWe1OY+TXG3KQttFzGxRAdwUb+3wzhk68BtZ+6gbMljl
+	 6YaGj0ETdZgvZL8HJH5gnHGfktlYfD77h+b2dJ/To4pcwX9tSVaY9M2VGRGz+JpUFMA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Ow/lmMas";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="jr1Hy/e7";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B905606A33A;
-	Mon,  2 Nov 2026 12:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9840160A6F57
+	for <linux-mips@vger.kernel.org>; Mon,  2 Nov 2026 14:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ow/lmMas
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53FC1F00A16;
-	Mon,  2 Nov 2026 12:41:36 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jr1Hy/e7
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A9A1F00A26
+	for <linux-mips@vger.kernel.org>; Mon,  2 Nov 2026 14:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793623296;
-	bh=/ctRInFLIXM8Zr3UG7MbiXc1PIk/A2Vn0/3BPZ0Lpqo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=Ow/lmMashqonWLQc6FSl7bUZJZOZt0tAbwhoY+idh6Y0EGFBRa3GmLrUTi4xg03c7
-	 RS0HRijW/viK6wvskhxFFZZhsMn0MQ2RGTwbRW7YW9jDtDzwDNnZjE1soUz6LDdhkg
-	 zeyAYo+NF5/nDvi1GxAIDn9cPeNGAUxeQ/SElzHEVCDaBpYLUFPf9YYh5ynACKqew8
-	 bBKJGAixjHw0qQYRXsU5sWMw9ZawV+P1G76taYeCHP6m2DA9j17T0S/dt1s1fKPrhd
-	 jph05npTy2JtSbotkgzplsGgb5q40T6YgsVKLfDoix0hJuZIFnMzHSz6h3wdiCTBAb
-	 YKShdjhZxNV7g==
-Received: from traversing.sirena.org.uk (localhost [IPv6:::1])
-	by traversing.sirena.org.uk (Postfix) with ESMTP id 006CA23103C5;
-	Mon, 02 Nov 2026 12:41:35 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Olivier Louvignes <olivier@mgcrea.io>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, 
- Paul Cercueil <paul@crapouillou.net>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- "H . Nikolaus Schaller" <hns@goldelico.com>, linux-sound@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-mips@vger.kernel.org
-In-Reply-To: <20261024214438.33342-1-olivier@mgcrea.io>
-References: <20261024214438.33342-1-olivier@mgcrea.io>
-Subject: Re: [PATCH v3 0/2] ASoC: jz4740-i2s: Add the X1600
-Message-Id: <179357847400.1716893.15741515093171614557.b4-ty@b4>
-Date: Mon, 02 Nov 2026 00:14:34 +0000
+	s=k20260515; t=1793629435;
+	bh=kXhg0tNcz/XggPQ5n4ztmniJcr2/pUza6Nt9tHp8FTw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=jr1Hy/e7gI3GUs274WWSQ5hTdQ5yWc90zb48gWhLb60/4pEmfw9+9uWVsm/HzyOl4
+	 MufpNBrSMEcHPhe58T6Fh5Gu9hgsP5p01G0u9dfUHlKSUWJU410IysY5UkUw7IUQHP
+	 o0OV61MWiAuIHSvjPLVOcWRf6jvD07M24AIJk9dFVb/gg3u/iLjCxyhiztczxiuZUP
+	 OD1AE0rQ3KWFQvaZRA9wHMWSz4913505VrD3fjoW5TimJK16316TKfKXDhIOzn0hvC
+	 iZomX8ra50oamAdBLDYq4OSrZUxsIEWTBwp3Sv49gLiulo6vqtrPa6ZRJcjGqcSRXm
+	 61IsqfbQiwnOQ==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6b1ec41d8e9so3287715a12.0
+        for <linux-mips@vger.kernel.org>; Mon, 02 Nov 2026 06:23:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBz/SXC1USLuPtWxWhjKMctmgH4scAXHHJX64BBkZ1IZy4WSbXVhE9wBRBnAGTTXJ97ussVG8aTTTLqf@vger.kernel.org
+X-Gm-Message-State: APuU4Z//fjbwFmm7/iGxUJOs8Ysj06r2on4pPKyt1TdBb4j+0AfwlABv
+	z1uzKrdIHTPnM8PaSP/lsueWBNJOnOIvL6bofb3vnOnC1hy5VW78AVJmmr7gj423h/wld+wDCU0
+	WkofX/xojkfptDS4VfuvlKj6IXyl++w0=
+X-Received: by 2002:aa7:d901:0:b0:6b3:8456:e891 with SMTP id
+ 4fb4d7f45d1cf-6b4d339252cmr5593796a12.6.1793629433728; Mon, 02 Nov 2026
+ 06:23:53 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,64 +59,171 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1916; i=broonie@kernel.org;
- h=from:subject:message-id; bh=SV4jhlUiBxMInjzzpsP03roHQSvpTpye4nevuuAn7d4=;
- b=owGbwMvMwCWm/754w+YLFp2Mp9WSGLJetPzrrLxUKqKXbrhRtOJ9mLv9Is2/6tfW6KlFnsvg6
- PXj007vKGVhEONikBVTZInL4n5ZX/J6Dd/BhW0wc1iZQIYwcHEKwET+bWL4w8ekeG/fl/ojbyOi
- 85SrepJXTRfqiOaUn+rREdqWWht9jJFhfqrhEiPV9xWLTjm9SxHvUt9R1h+961n1ukrp1a/Vn/9
- jBAA=
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+References: <20261029035253.2333852-1-yaojiale02@163.com>
+In-Reply-To: <20261029035253.2333852-1-yaojiale02@163.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Mon, 2 Nov 2026 22:23:40 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H65Pz=9Oy5MND4XCEWUxXkt3WDuW8pUFZBKt5Ysr3_aNA@mail.gmail.com>
+X-Gm-Features: AclHuK9o0PutAsPpj7EOwjdyA0-9FdNtllxsLhyG2MkS5DpLOschCOnx7vBo5lY
+Message-ID: <CAAhV-H65Pz=9Oy5MND4XCEWUxXkt3WDuW8pUFZBKt5Ysr3_aNA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/20] ACPI/irqchip: validate MADT entries before use
+To: Jiale Yao <yaojiale02@163.com>
+Cc: Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Sunil V L <sunilvl@ventanamicro.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+	Radu Rendec <radu@rendec.net>, Lorenzo Pieralisi <lpieralisi@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, Anup Patel <anup@brainfault.org>, 
+	Hanjun Guo <guohanjun@huawei.com>, Tomasz Nowicki <tn@semihalf.com>, 
+	Julien Grall <julien.grall@arm.com>, Christoffer Dall <christoffer.dall@linaro.org>, 
+	Jonathan Cameron <jic23@kernel.org>, Jianmin Lv <lvjianmin@loongson.cn>, 
+	Conor Dooley <conor.dooley@microchip.com>, Andrew Jones <andrew.jones@linux.dev>, 
+	Grant Likely <grant.likely@linaro.org>, Jason Cooper <jason@lakedaemon.net>, 
+	Robert Richter <rrichter@cavium.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Tianyang Zhang <zhangtianyang@loongson.cn>, Liupu Wang <wangliupu@loongson.cn>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 24 Oct 2026 23:44:36 +0200, Olivier Louvignes wrote:
-> ASoC: jz4740-i2s: Add the X1600
-> 
-> The X1600's AIC differs from the X1000's in its bit clock divider (the
-> divider itself, even values only) and in how it plays mono (a channel
-> count in AICCR, no MONO_TO_STEREO). Tested on a HiBy R1.
-> 
-> Changes since v2:
-> - The channel field is bits 26:24, not 27:24 (bit 27 is reserved), as
->   Nikolaus pointed out from the X1600 programming manual.
-> - Don't set MONO_TO_STEREO on the X1600: bit 11 is reserved there.
->   Listened to on the R1, a mono stream sounds the same with it set or
->   clear, held clear from before the stream starts included.
-> - Commit messages say what the manual says, and the X1000 is left as
->   it is.
-> - Rebased on broonie/for-next.
-> 
-> [...]
+Hi, Jiale,
 
-Applied to
+Why can't I see a full list of all Loongson-specific patches in
+https://lore.kernel.org/loongarch/ ?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.5
+Huacai
 
-Thanks!
-
-[1/2] ASoC: dt-bindings: ingenic,aic: Add the X1600
-      https://git.kernel.org/broonie/sound/c/c9b80010a8af
-[2/2] ASoC: jz4740-i2s: Add support for the X1600
-      https://git.kernel.org/broonie/sound/c/318260c84945
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+On Thu, Oct 29, 2026 at 11:53=E2=80=AFAM Jiale Yao <yaojiale02@163.com> wro=
+te:
+>
+> ACPI interrupt-controller setup passes firmware-supplied MADT subtables
+> to architecture and irqchip callbacks.  The common table walker only
+> guarantees that a generic subtable header is readable.  A number of
+> callbacks cast that header to a larger controller-specific structure and
+> read typed fields before checking that the complete record is present.
+> Truncated records can therefore cause out-of-bounds reads during early
+> CPU and interrupt-controller discovery.
+>
+> This series combines the previously posted generic/irqchip series [1],
+> the RISC-V series [2], and the remaining MADT callback checks into one
+> set.  The common irqchip probe path first rejects entries whose declared
+> range leaves the table.  Each parser then validates the minimum size of
+> the concrete record before its first typed access.
+>
+> Testing
+> =3D=3D=3D=3D=3D=3D=3D
+>
+> The RISC-V cases were tested with qemu-system-riscv64, EDK2 pflash
+> firmware, a KASAN-enabled kernel, CONFIG_ACPI_TABLE_UPGRADE=3Dy, and an
+> uncompressed initramfs containing an overriding MADT.  The malformed
+> table is one page long and ends with a three-byte RINTC entry, while a
+> complete struct acpi_madt_rintc is 36 bytes.
+>
+> On an unpatched kernel the override was accepted and setup_smp() faulted
+> in acpi_parse_rintc() while reading processor->flags four bytes from the
+> start of the truncated record.  The record starts three bytes before the
+> end of the mapped page, so that read entered the following unmapped page:
+>
+>   Unable to handle kernel paging request
+>   epc : acpi_parse_rintc+0x46/0x206
+>   cause: 000000000000000d
+>   Kernel panic - not syncing: Attempted to kill the idle task!
+>
+> Applying only the old arch/riscv/kernel/acpi.c and
+> drivers/irqchip/irq-riscv-intc.c checks produced the same fault because
+> the setup_smp() parser runs first.  With patch 7 moving the existing
+> BAD_MADT_ENTRY() check before the flags read, plus patches 9 and 20, the
+> out-of-bounds access disappeared.  The malformed table was rejected and
+> the kernel later stopped at the existing acpi_init_rintc_map() BUG for a
+> machine with no valid RINTC entries.  This is the current fail-closed
+> behavior; it is not an out-of-bounds access.
+>
+> The LoongArch LPC-PIC case was exercised with an overriding MADT ending
+> in a three-byte LPC-PIC entry.  Temporary diagnostic instrumentation in
+> pch_lpc_parse_madt() reported:
+>
+>   decl_len=3D3 sizeof=3D14 beyond_end=3D11
+>
+> This confirms the field accesses covered by patch 19 extend eleven bytes
+> beyond the supplied record.  LoongArch maps this early table directly,
+> so the read did not itself cause a page fault.
+>
+> Dynamic test coverage by patch is therefore:
+>
+>   7       RISC-V RINTC fault reproduced; the early check prevents it.
+>   9       The malformed RINTC is rejected in acpi_init_rintc_map().
+>   19      LoongArch LPC-PIC over-read observed with instrumentation.
+>   20      Included in the complete RINTC fix; the boot stops at the
+>           existing fail-closed BUG before irqchip probing reaches it.
+>   1-6,
+>   8,
+>   10-18 No dynamic claim.  The required GICv5, AVEC, redirect-int,
+>           HTVEC, and related controller models are not available in the
+>           QEMU configurations used for this test.
+>
+> All twenty patches were checked with scripts/checkpatch.pl and were
+> applied both individually where independent and as the complete series
+> to the base commit below.
+>
+> Changes in v2:
+> - Combine and supersede the six-patch irqchip series [1], the two-patch
+>   RISC-V series [2], and the remaining MADT checks.
+> - Add the RISC-V QEMU/EDK2 truncated-RINTC reproduction and fixed-kernel
+>   result.
+> - Retain the setup_smp() RINTC fix: testing showed that the later RISC-V
+>   checks alone do not prevent the early boot fault.
+> - Document the LoongArch LPC-PIC instrumentation result and the QEMU
+>   hardware-model limitations for the other callbacks.
+> - Rebase on the current tree and keep Fixes and stable trailers on every
+>   patch.
+>
+> [1] https://lore.kernel.org/r/20261021144524.364143-1-yaojiale02@163.com
+> [2] https://lore.kernel.org/r/20261016141249.2791819-1-yaojiale02@163.com
+>
+> Jiale Yao (20):
+>   ACPI: irqchip: validate MADT entry bounds before probing
+>   irqchip/gic-v3-its: validate MADT ITS entries
+>   irqchip/gic-v3: validate MADT records before use
+>   irqchip/gic-v5-its: validate MADT translate frames
+>   irqchip/loongarch-cpu: validate MADT LIO-PIC entries
+>   irqchip/loongson-eiointc: validate MADT BIO-PIC entries
+>   riscv: validate RINTC entries before use
+>   ACPI: riscv: validate interrupt controller MADT entries
+>   riscv: acpi: validate RINTC entries before use
+>   irqchip/gic-v5-irs: validate MADT GICC entries
+>   irqchip/gic-v5-irs: validate MADT IRS entries
+>   irqchip/gic-v5: validate MADT IRS records
+>   irqchip/gic: validate MADT distributor records
+>   irqchip/loongarch-avec: validate MADT MSI-PIC entries
+>   irqchip/loongarch-ir: validate MADT MSI-PIC entries
+>   irqchip/loongson-htvec: validate MADT BIO-PIC entries
+>   irqchip/loongson-htvec: validate MADT MSI-PIC entries
+>   irqchip/loongson-liointc: validate MADT HT-PIC entries
+>   irqchip/loongson-pch-pic: validate MADT LPC-PIC entries
+>   irqchip/riscv-intc: validate MADT RINTC entries
+>
+>  arch/riscv/kernel/acpi.c               |  3 +++
+>  arch/riscv/kernel/smpboot.c            |  6 +++---
+>  drivers/acpi/riscv/irq.c               |  6 ++++++
+>  drivers/acpi/scan.c                    |  7 +++++++
+>  drivers/irqchip/irq-gic-v3-its.c       |  3 +++
+>  drivers/irqchip/irq-gic-v3.c           | 15 +++++++++++++++
+>  drivers/irqchip/irq-gic-v5-irs.c       |  6 ++++++
+>  drivers/irqchip/irq-gic-v5-its.c       |  3 +++
+>  drivers/irqchip/irq-gic-v5.c           |  3 +++
+>  drivers/irqchip/irq-gic.c              |  3 +++
+>  drivers/irqchip/irq-loongarch-avec.c   |  3 +++
+>  drivers/irqchip/irq-loongarch-cpu.c    |  3 +++
+>  drivers/irqchip/irq-loongarch-ir.c     |  3 +++
+>  drivers/irqchip/irq-loongson-eiointc.c | 10 ++++++++--
+>  drivers/irqchip/irq-loongson-htvec.c   |  6 ++++++
+>  drivers/irqchip/irq-loongson-liointc.c |  3 +++
+>  drivers/irqchip/irq-loongson-pch-pic.c |  3 +++
+>  drivers/irqchip/irq-riscv-intc.c       |  5 ++++-
+>  18 files changed, 85 insertions(+), 6 deletions(-)
+>
+> base-commit: 65ba8f34ec886ec72b2c07ddc8cf3d815c32869d
+> --
+> 2.34.1
+>

@@ -1,55 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793612703;
-	b=ZaQl5psC0FvWXLoQaBKqSMgEjX4WmBrg5tFfDZvQZc4HybGZYkc7RFsk+Iyp+G2p2K0f
-	 5Jwz6oo1EAwV/8kGnd30G1HB7DXQNMcDK4Du0PooTig/4xSYKziqYm3ah9dCxtZBYObhx
-	 uv+Lg2F1pMv3M6au1Lv0o7rYKJawpswu7r2hFRuZZuQK9IN0nfPHu0dwMiiJxI/hsN2Lp
-	 rwdN/JjHmaTtaQqwCbnu+mvgTU8mrJtwuJ+pdnorvBMgbhCUTLCv2yniUCdirgFmo8G0z
-	 60Fx/L9DvNhjhswou0EBDFgTDmoUzpcvJY3MO4JnYAcnG8SXGR4XDh/+g7g6HVABpDQ==
+	t=1793618498;
+	b=TP/YVqYYo6b5RiGOHubmogmLuFA4zJlzDtoiqOCaYl4yxEQAWnWwu2hbnrgltGNaaQMB
+	 eClsOz4mBISpA8vcdpuAn9J2B/syr1vCWp/xxcnHapp8+pHwk7r/feD1Da/oZ2E0yiW59
+	 MJ/17qedo+maXmI+RB1GDv+Waqf/Y6Dw5nuXTabXlTjGZ8TGs7Es6yLKyKdE+AGMJZZB/
+	 u1yYQm5nSkLPw9GJ99efUnQzn/Qm0LNLE7csGiW0uSuaZzpbbQL2jRXwZnrQKUSbwtxGg
+	 t48sZZbC/FspscSshxEJuWqH1AbaJQNfEQVMZ+g87HyQkOtxkgJAOkvTgf2QHdIPzYg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793612703;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=CKiEFEvoAV37kTlieYx5EENYcbPCljmecF7v8qsd2AM=;
-	b=bBpd9EjtkvQQZMlBk4QoQQgq63U1V1EmRKugw8p22ob0SUKYFLZgvML2QKhDILxw66Bi
-	 JSLetdQQl0ucRftnG1zMO5cTnmZ4zqH/C9a0zAv37QCGaaqMzNeczvBN7q/TDSJw199co
-	 7nKwHM/XVA0f3djdYB3wJQARnwi3lZ5S0TW3X1OKc+wlmHte2b7y9tJ57hkD9cHVSYRJF
-	 +viX4Xl/nkKW73/rfAZK7Uln1G5OuprWNhVQnLl/Umk0EXyi7GxCws+qbCUK1hGmJXhg5
-	 +Q5IaSswpdTgzVH6jQnrQWymZpWMp17CSoq1k9PlF7s1HSDXSeeSpWHmPhriBWuLyJA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793618498;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Subject:Date:
+	 Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
+	bh=cVUAn3Erh6GVaXy4+Ny9Vsau+0XQpUr/dkWQ56dYm2c=;
+	b=xCbMbLc8myMERkj0XM+CxVk/pQgOkHMtcXCeLts4yZ5qaOLhel+T9+tvZHuH+cVExB2V
+	 9OqllZTenBO8TaiT9JpIFJ4NHJM1F+kU9+FnWjh47/QW3MG/vbfDB7dM/yYet57SqcIN4
+	 jH7UjjAFH+4u+HmGUvQKvzLoxSuq8xVEyrCc/T4P/jqO8Ykz8oMWltyEEmPw7ZTOrS1L0
+	 QrHTHnycqojNnEwH90SsOEUfTncLG9gLxh/+ILr1UQOknLDKvuBeG4Ws0oO3F4i4Z78PC
+	 cQAs72Pm6gmmKulqPejban9n6ZtOtpzkRonw3xxT8J+y+t7qM37mj9D0hEtuYmiY7JA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=D2JYbBDI;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BB9606A324;
-	Mon,  2 Nov 2026 09:45:03 +0000 (UTC)
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=V7VvM+lW;
+	arc=none smtp.remote-ip=217.140.110.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9B3606A332;
+	Mon,  2 Nov 2026 11:21:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0D9B3606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=D2JYbBDI
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 640A31F000C1;
-	Mon,  2 Nov 2026 09:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793612702;
-	bh=CKiEFEvoAV37kTlieYx5EENYcbPCljmecF7v8qsd2AM=;
-	h=From:To:Cc:Subject:Date;
-	b=D2JYbBDIdO/Vdy4SxYK6DcLo3KVd5oZv+YavK5I4rGIwcbmLz3SCaeAnROUfb7brF
-	 taiMMZUf5dJS3UptE4we8mJt+VUNYdHsrzQYFdoWBRrQXDTAJm/rcujMBB7irKRk3e
-	 eYrnkgb2bt46Yg/d71Ue6Qpldj6q8nYqw3UYNPstB8lJnW2mtOdfJFutYP8rAJ5gfb
-	 5me1GGNqyMCv9G1gowyqj/ejWGe/8ozok6LxKjkpEptoOCyn2N3rOffNgzI4zHdfrd
-	 Fyz/nJiub2InQrH5LaXI15raQkqMVvcuBw4t9ovHv8b1ot32+PND+OfTqQcJgVLxvb
-	 gn27Z37fYbxGA==
-From: Imre Kaloz <kaloz@kernel.org>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v3] MIPS: c-r4k: Flush the cache error vector before writing it uncached
-Date: Mon,  2 Nov 2026 10:43:45 +0100
-Message-ID: <20261102094345.27840-1-kaloz@kernel.org>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=V7VvM+lW
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C2CE293B;
+	Mon,  2 Nov 2026 03:21:33 -0800 (PST)
+Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9ED443F632;
+	Mon,  2 Nov 2026 03:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1793618496; bh=/ruFYOoOTay1qEU1I9vLoOZvo4kBoLe4bydBgAUldIM=;
+	h=From:Subject:Date:To:Cc:From;
+	b=V7VvM+lWDJekSuT/hkgXofb9gun7LFwcNGEYS37jK1NqeJtv8R48/P7bPp7Ar0Coo
+	 I1UBkdVSh0gbZAonjF7NLsmikGhfOqvpNeUInVXZAIF3YAdtMttuR2fHAEXfJNOFIr
+	 UfRZl0BVyhYGHjWllmIqZTcqHdC7vJ+opOCIygrA=
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+Subject: [PATCH RESEND v2 00/21] mm: change behavior of
+ pXdp_get()/pXd_page() in compile-time folded pgtable
+Date: Mon, 02 Nov 2026 11:21:13 +0000
+Message-Id: <20261102-dummy_ptxp3-v2-0-78840b2ec73c@arm.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,154 +56,268 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACly6GoC/23QTU/DMAwG4L8y5bwix/nmxIFdOcARIZQ6yZZD1
+ 6od1aZp/52oEmyQHe3oeR37zKY45jixx9WZjXHOU+73pcD1itHO77exyaHUDAE1GMQmfHXd6XM
+ 4HAfRCCN5MJbIQGJFDGNM+bikvbPXzdvm5Zl9lP4uT4d+PC1DZlxe7+bN2EATXJStD4JH8E9+7
+ B6o75aUWdxK+1eKIlvS0CaPMYrwK9c/fxe8FtaTcEFayxVVwoKshdHBCQBrIKZa8DsiUtlHgVD
+ BQy1Q1YILo4lrZwXVMxxgLVSwSbXcEN7ssdyMX2/m8N8FeJEUJFDSFiXGq7xcLt+3EQ0LGgIAA
+ A==
+To: Russell King <linux@armlinux.org.uk>, 
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, 
+ Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, Barry Song <baohua@kernel.org>, 
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, 
+ Wei Xu <weixugc@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+ David Hildenbrand <david@kernel.org>, Michal Hocko <mhocko@kernel.org>, 
+ Lorenzo Stoakes <ljs@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+ Bibo Mao <maobibo@loongson.cn>, Anup Patel <anup@brainfault.org>, 
+ Atish Patra <atish.patra@linux.dev>, Paul Walmsley <pjw@kernel.org>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexandre Ghiti <alex@ghiti.fr>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>, "Liam R. Howlett" <liam@infradead.org>, 
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org, 
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+ linux-openrisc@vger.kernel.org, Muhammad Usama Anjum <usama.anjum@arm.com>, 
+ Yeoreum Yun <yeoreum.yun@arm.com>, Sohil Mehta <sohil.mehta@intel.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9979; i=yeoreum.yun@arm.com;
+ h=from:subject:message-id; bh=/ruFYOoOTay1qEU1I9vLoOZvo4kBoLe4bydBgAUldIM=;
+ b=owEB7QES/pANAwAKAW3Vw9FaxTEzAcsmYgBq6HIu8iIogGpWNmbGycs83LrN4wqYzMOwUWq+P
+ 2GNvhAAinSJAbMEAAEKAB0WIQQtg+CS3QUzuFh1pJ1t1cPRWsUxMwUCauhyLgAKCRBt1cPRWsUx
+ M1ByC/kBIkBwShwNjoaNGzcdmLl/xxFhoSzIJmefzm5Xe9CleW6f41U4wOe9hbpWNEXEsWUnyav
+ k+4T8+9Ege+ooH+lUXgpiNSpKtlBXTbp+s532UaXDc33iJZ+9hLCTdQOy64HeSdiusYTT0qnwGT
+ nRrutkljrlVQv7aFrt1tUuBI9zItCbGE+LhqbLyY96YmJ59W4SYX4qQrUQKK7+Vheqw6fnrxMEf
+ ObkxQMS2sWd+xrLrlsFUMd+uUWcfv1SKBWr/R5KmAGiM1FEmxa3r8oP/1xq1QVaeOFeNxoSkrbT
+ +Fj1YTNWK2OojSmkKy0ZgpqilzPW12eT15OGR37rpHDAswe6QuPvkVYmYxu4R3DRtrkcO38Pa9L
+ oy70CHn/JrUxCWyI729qJ0uhWYdk9FD2hHEKMuAwWOqrAnIafmQC4/6VtFTEy9rM6LoBXthH4GW
+ qvmtkBwX145zHNkac+J9tIDyKxaUjPX3+YyKA0wedux8BSYWYZCzwWLDXf5v7U0VTAlLE=
+X-Developer-Key: i=yeoreum.yun@arm.com; a=openpgp;
+ fpr=2D83E092DD0533B85875A49D6DD5C3D15AC53133
 
-On R10000-class CPUs, a store prefetch while copying the preceding
-vector can leave a dirty line whose write-back overwrites the uncached
-cache error handler.
+Using ptep_get() and its counterparts in common code is suboptimal on
+kernel configurations with generic compile-time folded page tables.
+By default, ptep_get() and its friends expands to READ_ONCE(),
+forcing the compiler to emit a load even when the value is not used afterwards.
 
-Write back and invalidate that line in set_uncached_handler() before
-the copy, through a new flush_dcache_size() hook. c-r4k and c-r3k
-provide it with r4k_dma_cache_wback_inv() and r3k_dma_cache_wback_inv(),
-renamed as they are no longer DMA-only.
+This issue was recently reported by Christophe Leroy [1] for ppc32
+preventing futher code conversion to ptep_get()/pmdp_get()/... helper
+and the same behavior can also be observed on arm64 when built with
+2- or 3-level page tables
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+e.g) perf_get_page_size() in arm64 with CONFIG_PGTABLE_LEVEL=3:
+
+00000000000052a0 <perf_get_page_size>:
+    ...
+    52dc: d53b4234     	mrs	x20, DAIF
+    52e0: d50343df     	msr	DAIFSet, #0x3
+    ...
+    52fc: d35e9a69     	ubfx	x9, x19, #30, #9        /* pud_offset_lockless() */
+    5300: f9403508     	ldr	x8, [x8, #0x68]
+    5304: f869790a     	ldr	x10, [x8, x9, lsl #3]   /* pudp_get() */
+    5308: f90007ea     	str	x10, [sp, #0x8]
+    530c: f8697908     	ldr	x8, [x8, x9, lsl #3]    /* pudp_get() */
+    ...
+    5360: 90000009     	adrp	x9, 0x5000 <perf_prepare_sample+0x548>
+    5364: 92746908     	and	x8, x8, #0x7ffffff000
+    5368: d3557675     	ubfx	x21, x19, #21, #9       /* pmd_offset_lockless() */
+    ...
+    5394: f8757ac8     	ldr	x8, [x22, x21, lsl #3]  /* pmdp_get() */
+
+Though PGTABLE_LEVEL=3, since the pudp_get() still remain with
+READ_ONCE(), there's redundant load for the pud which is folded.
+
+To prevent generating suboptimal code, make pXdp_get() return a dummy
+entry for compile-time folded page tables, make the helpers such as
+pXd_offset()/pXd_offset_lockless(), set_pXd() validate dummy entries
+at compile time to catch the wrong usage and prohibit calls to
+pXd_page() in pgtable-nopXd.h.
+
+This series does not change the behaviour of existing code that directly
+manipulates folded page-table levels using set_pgd(), pgd_page_vaddr(), and
+related helpers. Those helpers continue to behave as before.
+
+The new restrictions only apply to code that adopts the pXdp_get()-based
+access model for compile-time folded page tables.
+
+As the pXdp_get() can return *dummy* entry, some of code using
+the stack value where saves the pXdp_get() could be a problematic:
+
+  1. Passing address of stack value where saves the pXdp_get() result
+     to pXd_offset() for example:
+
+       pud_t *pudp, pud;
+       pmd_t *pmdp;
+
+       pud = pudp_get(pudp, address);
+       pmdp = pmd_offset(&pud, pud, address);
+
+     (e.g. host_pfn_mapping_level() in loongarch).
+
+  2. Using the pXdp_get() result to use as argument of pXd_val() and
+     to check prot without checking pgtable is folded.
+     for example, x86's effective_prot().
+
+  3. Using set_pXd() with pXdp_get() will set problematic dummy entry
+     in folded page table like:
+
+       set_pXd(pxdp, pXdp_get(pxdp_k));
+
+  4. Using pgd_page_vaddr() to get the first-level pgtable.
+     passing dummy pxdp_get() for pgd_page_vaddr() will return wrong
+     address. Therefore, make pgd_page_vaddr() and pXd_pgtable() to
+     trigger the error for improper usage with folded dummy entry in the
+     generic compile-time folded pgtable.
+
+Thanksfully, above cases are rare since (1) most of usage using
+pXd_offset() with result of upper pXd_offset(), (2) it's extreamely
+rare to use pXd_val() for non-leaf entry in the kernel,
+(3) is to handle the vmalloc_fault or set the first level of page table
+and (4) to setup early page table and etc.
+
+Therefore, properly handle this uncommon and problematic pattern, and
+document the current design of compile-time folded page tables.
+
+This patch is based on mm-unstable.
+
+Future work
+===========
+ - print_bad_page_map() and show_pte() still prints dummy values
+   instead of printing the same content for all generic compile-time
+   folded page tables. We might want to skip printing dummy values later.
+
+ - We currently catch abuse of dummy values on the stack at compile-time by
+   relying on constant propagation by the compiler. Usama's work [3] on using
+   distinct types for sw vs. hw PTEs could help here as well."
+
+ - Clean up vmalloc fault handling by synchronizing the vmalloc entry on
+   32-bit architectures. This code is almost identical across architectures.
+
+ - Unfortunately, the current design of compile-time folded page tables appears
+   to be internally consistent but confusing. For example,
+   when CONFIG_PGTABLE_LEVELS is 2, p4d, pud, and pmd are expected to
+   be folded into pgd. However, the architecture code uses set_pmd()
+   to update the top-level page-table entry, even though it includes pgtable-nopmd.h.
+
+   In the future, it would be good to eliminate this source of confusion,
+   possibly by treating all folded upper levels consistently as dummy wrappers
+   around the highest real page-table level:
+
+         NOPGD
+   --> +------+           P4D
+       | ptr0 |-------> +------+           PUD
+       +------+         | ptr0 |-------> +-----+
+                        | ptr1 |-        | ptr | -------> ...
+                        | ptr2 | \       | ptr |
+                        | ptr3 |  \        ...
+                          ...      \
+                                    \        PUD
+                                     +----> +-----+
+                                            | ptr | -------> ...
+                                            | ptr |
+                                              ...
+
+Link: [1] https://lore.kernel.org/all/0019d675-ce3d-4a5c-89ed-f126c45145c9@kernel.org/
+Link: [2] https://lore.kernel.org/all/20251113014656.2605447-1-samuel.holland@sifive.com/
+Link: [3] https://lore.kernel.org/r/74182e50-b54f-4d2d-a27f-3a59a538d6bc@arm.com
+
+Patch History
+=============
+from v1 to v2:
+  - fix docutils warning.
+  - Link to v1: https://lore.kernel.org/r/20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com
+
+from RFC v3 to v1:
+  - Drop and rebase for CONFIG_X86_DIRECT_GBPAGES and use the Dave's
+    patch (https://lore.kernel.org/all/20260902194718.E1FF3041@davehans-spike.ostc.intel.com/)
+  - Link to RFC v3: https://lore.kernel.org/r/20260902-dummy_ptxp3-v3-0-5d8f5b17c25c@arm.com
+
+from RFC v2 to RFC v3:
+  - repasre commit message
+  - move ptdump_pgtable_first_level() into pgalloc.h
+  - skip the huge pud operation when CONFIG_X86_DIRECT_GBPAGES is disabled
+  - docuemtns compile-time folded page table
+  - drop the applied patch.
+  - Link to RFC v2: https://lore.kernel.org/all/20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com/
+
+from RFC v1 to RFC v2:
+  - Restore slient fallback to next pXd in set_pXd() and pXd_pgtable()
+    and add check whether they're called with dummy entry.
+  - Add some comment for returning first entry of pgd in arm with
+    2 pgtable-level
+  - Link to RFC v1: https://lore.kernel.org/all/20260713135614.1618183-1-yeoreum.yun@arm.com/
+
 ---
-Changes in v3:
-- Renamed the hook to flush_dcache_size() and the c-r4k implementation
-  to r4k_flush_dcache_size().
-- r3k_dma_cache_wback_inv() becomes r3k_flush_dcache_size() and is
-  installed as the hook as well.
+Dave Hansen (1):
+      x86/mm: Introduce helper for checking direct map 1G page support
 
-Changes in v2:
-- Fixes: 1da177e4c3f4 instead of e01402b115cc.
-- Moved the write-back into set_uncached_handler(), for every caller.
-- Renamed r4k_dma_cache_wback_inv() to r4k_cache_wback_inv().
+David Hildenbrand (Arm) (13):
+      ARM: mm: make nommu pgd_t a scalar
+      ARM: mm: make 2-level pgd_t a scalar
+      ARM: mm: remove custom pgdp_get()
+      LoongArch: mm: define pud_leaf() only when PUD exists
+      MIPS: mm: define pud_leaf() only when PUD exists
+      mm/pgtable: define (pgd|p4d|pud)_leaf() for folded page tables
+      mm/pgtable: define (pgd|p4d|pud)_offset_lockless() for folded page tables
+      openrisc/pgtable: drop __pmd_offset()
+      mm/pgtable: optimize pmdp_get() and friends for folded pagetable levels
+      mm/pgtable: catch abuse of folded dummy pgd_t/p4d_t/pud_t
+      mm/pgtable: disallow calling (pgd|p4d|pud)_page, pgd_page_vaddr() and (p4d|pud)_pgtable with dummy
+      mm/pgtable: disallow calling folded set_pgd/set_p4d/set_pud with dummy
+      Documentation: mm: clarify behaviour of compile-time folded page tables
 
-v2: https://lore.kernel.org/r/20261026120430.13238-1-kaloz@kernel.org
+Yeoreum Yun (7):
+      mm: vmscan: remove stack copy address of pud/pmd pass in walk_pud/pmd_range()
+      loongarch: kvm: remove stack copy address of pXd in pXd_offset()
+      riscv: kvm: remove stack copy address of pXd in pXd_offset()
+      riscv: mm: use proper set_pXd() for generic compile-time folded patable in vmalloc_fault()
+      mm/pgtable: redefine PGTABLE_LEVEL enum with ascend order from PGD
+      x86: mm: use pgtable_level enum in effective_prot_pXd()
+      x86: mm: carve out the generic compile-time folded pgtable case in effective_prot()
 
- arch/mips/include/asm/cacheflush.h |  1 +
- arch/mips/kernel/traps.c           |  6 ++++++
- arch/mips/mm/c-r3k.c               |  9 +++++----
- arch/mips/mm/c-r4k.c               | 11 ++++++-----
- arch/mips/mm/cache.c               |  1 +
- 5 files changed, 19 insertions(+), 9 deletions(-)
+ Documentation/mm/page_tables.rst            | 84 +++++++++++++++++++++++++----
+ arch/arm/include/asm/page-nommu.h           |  4 +-
+ arch/arm/include/asm/pgtable-2level-types.h | 20 +++++--
+ arch/arm/include/asm/pgtable.h              |  2 -
+ arch/arm64/include/asm/pgtable.h            | 23 --------
+ arch/loongarch/include/asm/pgtable.h        |  2 +
+ arch/loongarch/kvm/mmu.c                    | 20 ++++---
+ arch/mips/include/asm/pgtable.h             |  2 +
+ arch/openrisc/include/asm/pgtable.h         |  3 --
+ arch/riscv/kvm/mmu.c                        | 20 ++++---
+ arch/riscv/mm/fault.c                       | 52 +++++++++++-------
+ arch/x86/include/asm/pgtable.h              | 14 +++++
+ arch/x86/kernel/cpu/common.c                |  2 +-
+ arch/x86/kernel/machine_kexec_64.c          |  2 +-
+ arch/x86/mm/dump_pagetables.c               | 18 ++++---
+ arch/x86/mm/init.c                          |  2 +-
+ arch/x86/mm/pat/set_memory.c                |  6 +--
+ include/asm-generic/pgtable-nop4d.h         | 54 +++++++++++++++----
+ include/asm-generic/pgtable-nopmd.h         | 54 +++++++++++++++----
+ include/asm-generic/pgtable-nopud.h         | 56 +++++++++++++++----
+ include/linux/pgtable.h                     | 69 +++++++++++++++++-------
+ mm/vmscan.c                                 |  4 +-
+ 22 files changed, 371 insertions(+), 142 deletions(-)
+---
+base-commit: 34f88a114888c9dba49e45f2b0c2a3e83c4c871c
+change-id: 20260722-dummy_ptxp3-3741d78cc70f
 
-diff --git a/arch/mips/include/asm/cacheflush.h b/arch/mips/include/asm/cacheflush.h
-index 5099c1b65a58..fb8eeb205897 100644
---- a/arch/mips/include/asm/cacheflush.h
-+++ b/arch/mips/include/asm/cacheflush.h
-@@ -120,6 +120,7 @@ extern void copy_from_user_page(struct vm_area_struct *vma,
- 
- extern void (*flush_icache_all)(void);
- extern void (*flush_data_cache_page)(unsigned long addr);
-+extern void (*flush_dcache_size)(unsigned long start, unsigned long size);
- 
- /* Run kernel code uncached, useful for cache probing functions. */
- unsigned long run_uncached(void *func);
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 8ec1e185b35c..19a8946e14ae 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2305,6 +2305,12 @@ void set_uncached_handler(unsigned long offset, void *addr,
- 	if (!addr)
- 		panic(panic_null_cerr);
- 
-+	/*
-+	 * A store prefetch or speculative store may have left a dirty line of
-+	 * the cached view; write it back and invalidate it first, or its later
-+	 * write-back overwrites the handler.
-+	 */
-+	flush_dcache_size(ebase + offset, size);
- 	memcpy((void *)(uncached_ebase + offset), addr, size);
- }
- 
-diff --git a/arch/mips/mm/c-r3k.c b/arch/mips/mm/c-r3k.c
-index 5869df848fab..a1be13775d2c 100644
---- a/arch/mips/mm/c-r3k.c
-+++ b/arch/mips/mm/c-r3k.c
-@@ -270,7 +270,7 @@ static void r3k_flush_kernel_vmap_range(unsigned long vaddr, int size)
- 	BUG();
- }
- 
--static void r3k_dma_cache_wback_inv(unsigned long start, unsigned long size)
-+static void r3k_flush_dcache_size(unsigned long start, unsigned long size)
- {
- 	/* Catch bad driver code */
- 	BUG_ON(size == 0);
-@@ -299,10 +299,11 @@ void r3k_cache_init(void)
- 	__flush_kernel_vmap_range = r3k_flush_kernel_vmap_range;
- 
- 	flush_data_cache_page = r3k_flush_data_cache_page;
-+	flush_dcache_size = r3k_flush_dcache_size;
- 
--	_dma_cache_wback_inv = r3k_dma_cache_wback_inv;
--	_dma_cache_wback = r3k_dma_cache_wback_inv;
--	_dma_cache_inv = r3k_dma_cache_wback_inv;
-+	_dma_cache_wback_inv = r3k_flush_dcache_size;
-+	_dma_cache_wback = r3k_flush_dcache_size;
-+	_dma_cache_inv = r3k_flush_dcache_size;
- 
- 	pr_info("Primary instruction cache %ldkB, linesize %ld bytes.\n",
- 		icache_size >> 10, icache_lsize);
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index d8aadd3dc057..8b600de64dff 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -743,9 +743,7 @@ static void r4k_flush_icache_user_range(unsigned long start, unsigned long end)
- 	return __r4k_flush_icache_range(start, end, true);
- }
- 
--#ifdef CONFIG_DMA_NONCOHERENT
--
--static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
-+static void r4k_flush_dcache_size(unsigned long addr, unsigned long size)
- {
- 	/* Catch bad driver code */
- 	if (WARN_ON(size == 0))
-@@ -786,6 +784,8 @@ static void r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
- 	__sync();
- }
- 
-+#ifdef CONFIG_DMA_NONCOHERENT
-+
- static void prefetch_cache_inv(unsigned long addr, unsigned long size)
- {
- 	unsigned int linesz = cpu_scache_line_size();
-@@ -1743,14 +1743,15 @@ void r4k_cache_init(void)
- 
- 	flush_icache_all	= r4k_flush_icache_all;
- 	flush_data_cache_page	= r4k_flush_data_cache_page;
-+	flush_dcache_size	= r4k_flush_dcache_size;
- 	flush_icache_range	= r4k_flush_icache_range;
- 	local_flush_icache_range	= local_r4k_flush_icache_range;
- 	__flush_icache_user_range	= r4k_flush_icache_user_range;
- 	__local_flush_icache_user_range	= local_r4k_flush_icache_user_range;
- 
- #ifdef CONFIG_DMA_NONCOHERENT
--	_dma_cache_wback_inv	= r4k_dma_cache_wback_inv;
--	_dma_cache_wback	= r4k_dma_cache_wback_inv;
-+	_dma_cache_wback_inv	= r4k_flush_dcache_size;
-+	_dma_cache_wback	= r4k_flush_dcache_size;
- 	_dma_cache_inv		= r4k_dma_cache_inv;
- #endif /* CONFIG_DMA_NONCOHERENT */
- 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index ad9b0430a28e..b69b87c6c0cb 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -51,6 +51,7 @@ EXPORT_SYMBOL_GPL(__flush_kernel_vmap_range);
- /* MIPS specific cache operations */
- void (*flush_data_cache_page)(unsigned long addr);
- void (*flush_icache_all)(void);
-+void (*flush_dcache_size)(unsigned long start, unsigned long size);
- 
- EXPORT_SYMBOL(flush_data_cache_page);
- EXPORT_SYMBOL(flush_icache_all);
-
-base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+Best regards,
 -- 
-2.47.3
+Sincerely,
+Yeoreum Yun
 

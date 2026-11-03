@@ -1,90 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.166
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793743281;
-	b=n2S9bZB3Db6iknQUFemddnyQuSvURvmQJLuKV7yGeENYyqsQ+z5Y5zC5Pw51gfxKlsOZ
-	 tcNBIDnN8hNgP43o4aPhT0abDxEC7HHkG46p4EfFBhjMAvuQYj30FvhSLiSRQEtYNw68+
-	 q8yymXcQxJ+q1vV8fY4gNOdryVs7OdEJWYtnoTeiNVhK+hyrEiv2mM/P7DCUjGADObSnB
-	 Mwho2RVwtM2duvk7GnZg/VdwIBeIdof0w1p2BDcnaMS59h4AtDtiddkic5RyJSVKpRMvT
-	 UxzamiTCMdabh8a3Xc89zIGaQ22X+BsD0jeOzOHl9RB29e1Nvdvjn8cPrU9/EWIDc2A==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793743281;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=0K7c2SWrjNpVZZvIFiWuTHz1VbqNfiLeX75RpOaIbCI=;
-	b=jO0wYQ8YgVkz1zm1qPZ+ctz0MvGoSzDbjj63TtoPbn5zG+qvDLj34a7ana+wYnbPC1h+
-	 +j7hCpEHYtR18/xoQWTE34eXuNAvXzpYPYOoWPXk3GCzIs2pmHLdMd5RxgeyPaCwqY5XS
-	 anSwpf+mzG/6e+BLtYsCqGs/Pxqltdg6m6/nop//WAZDo9E/Z/rqTmFNCF8nwDmjMte5d
-	 AE0hOUfOSB0C31GOktaX58g22QQrANFDOnpRrWdSMU9TlDeEYYBa1+FmwXRlYeiNRFz5p
-	 /dIwB/4bSdWTNzi3/M8VK9b3PVzrUo4OVYBbTFGYwR7h5ws6EbQuLScn+zplRzsNzBg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o3wlplCz;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=GkLBUkVI;
-	arc=fail smtp.remote-ip=81.169.146.166
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.160.176
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793743577;
+	b=xNv1Nxp5/9YBKojcT0cOHWr0eqGW/u10UazEaVZxqhKyDU9PKsGb2z8Z1GYNVKAnKqf4
+	 f/NGeuiyoxeTF3yBd4QSIx/PuinUM1t8flhKGmHqz4ncBTQc03QyR5wusmVDG79NpOVXK
+	 mcMHmzAJpT6XuLut8g/m2c1/yJ7pIGSWtsDMz6rVseQtpFOGyX9RgIs13bUZwbgRxc0Zf
+	 Po+aLvQaCwlphIK9JFDo18rUCREWkcS+vunbwFXgevRyjzpBYXuIZ5P2MWebXQvha1tp0
+	 GGVfXBSshnN8yvJLC9EzXw/maCBk60O3/5b4ex55swajddeo4D7DqjSlhDQR65qGyuQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793743577;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=hv0Uio0iKv6YWg4emi8XyGAuTMh6jvPk4JOtOEL/kqI=;
+	b=1dzwI0p+V/sjHELr6PPp+vjlYRfVgyZWkSvKy44EkEqygehjRwBc+664a1e8kerKCaSg
+	 qDsXMEUIy7qQTLP6dFAC4NglfApRGojxcbTw95QFGEIpTjVtdDAudLuqnpomL80W8NFh9
+	 zXB6WllnlCxu0iS0ZxQJPf6i7aHvf8S4d/TF++Q1rlTZ0UGTbXgNvCwCtg28sFZtayB4Y
+	 JpIZgSgKgztXThTRVKUe+m5gJgSyaFijlCEkdZzR6uteFQS2HqzUoYgY4A402G+M3penE
+	 YuWR0cUNi7vb6rTnZfZyXsW70YXPverU9e6aeYnbdD0ymiU/kfPxdNoBuFC7RK9JTXA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VWPaHvnX;
+	arc=none smtp.remote-ip=209.85.160.176
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9665F606A324;
-	Tue,  3 Nov 2026 22:01:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9665F606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB77606A32D
+	for <linux-mips@vger.kernel.org>; Tue,  3 Nov 2026 22:06:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7AB77606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o3wlplCz;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=GkLBUkVI
-ARC-Seal: i=1; a=rsa-sha256; t=1793743269; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=cWJ2X1qUnVoIwy6mXG9UWOLlxSh0nvpjMjuOCrk3ksf6AuVgFL5vbA0aZLBW8Q5wXH
-    bsozsdKJKiqbb73lsMRXc3QG0kUvSfvXSmgoycCUJBpgbOjwXi3LYNWnfR6V0fZ0Pu7m
-    U433+40dSr03Zves4GyDScFffOTuSQQVPM/Ck5Z2NRWDskzxQGFsi7DqjExmLMZA/F2/
-    weaZrlv19cvy+kNkOWnpE2x1bAqkX8q/JBdYgfrnycZJrvYBxL7KKlVEPOzAWTeVLd2b
-    5mJhVTZlwuA2F9gB34XGRVUFIoc9B7RxkBmb9zhcTGPmxhntGE0WHIQtRUvaOzAE8jAn
-    caAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793743269;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=0K7c2SWrjNpVZZvIFiWuTHz1VbqNfiLeX75RpOaIbCI=;
-    b=BMDdVZY9Zlrjf96EBNMvg4iwsnepjre9ZYxhotJFq1Wg4ZPBHPS0I4cbdi1diiI+qL
-    +vab4aNozaz9W221SshUw5nlQGIAHy9oNBv0pOXZg8NSp80DHSL/1FfZfCHnVt89xN5w
-    /qbTTTrXWNOk9cajPvkjwkw+4l+b+ykkKB9yBNi+zuOX8TSjzHnfdn5TXnXDe8raDNVI
-    k2hRt1X5Wybl3eg7nDRXT49ZbHk0UGc+HtfAWymI2VfBRWWROxhJgmJc553emxQTwaFB
-    efz9TZQlGg1VATAJZOhkhOMALasHjwU/EGgIAzHlAolK5SA1SX02CKhh1hn1ALh/s0Qn
-    M0jA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793743269;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=0K7c2SWrjNpVZZvIFiWuTHz1VbqNfiLeX75RpOaIbCI=;
-    b=o3wlplCzsr3nVISrQ9rcWITxX5WFf5e1Oy6I6gUj2+mQ460cB8Cpe4OuJLC2fhiiZb
-    xqzHEZg3tQ2JdC9lbmMjM0Y9FzbEBKQKrxXXJhtJ/Ii4dvP4pRt+tJqA2+hvYVulYTCm
-    ifcM5zFyTiW3KqRTCoIVoySa4dRqUF7OFsmoalgD4RzNs68A9t7YlQLL7OZ5HdVNvR4+
-    rtF3nEVos90CwjaUiiioX7Mqt9ERuQxMgl0bY2tl3HPHEupMlGxp32HbNPlYLJVDZWyR
-    oeJq9MDlGZ1YN2qIn9rFQrELpsU+8UWqepnCwzEZWpdMr0MsI1M1ydWyRf9axaekv84l
-    ZRoQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793743269;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=0K7c2SWrjNpVZZvIFiWuTHz1VbqNfiLeX75RpOaIbCI=;
-    b=GkLBUkVIBTJr9bqdozfb/DPt0TFnd9rutfAq262NF8d4s5mUxgE3PGWtbrlSORajJd
-    RV5BaNa8sYv14PuZF7DA==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrTippensiNHh5GQdF5Gj7a+zmR6WbRdXRV8k3u"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22A3M18bYE
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Tue, 3 Nov 2026 23:01:08 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VWPaHvnX
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-5364648ae07so64571cf.1
+        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 14:06:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793743576; x=1794348376; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=hv0Uio0iKv6YWg4emi8XyGAuTMh6jvPk4JOtOEL/kqI=;
+        b=VWPaHvnXR4QbSC5IyHVKu5R88jNYS/0KrZk5ghuorRGJARgbf8FsaNzpnVC2zLJEdX
+         pa9OJ3WVP+4YhQdgWFAwTzIJTVifMCP1ol6riFYHBz7ZMlHr3lBDY9A/+PsoKRCNQFOx
+         sligINswxDpSji18Eb/9ET++sAXIUl3P+I9AqvOXKCmnXaWp9JZOO8bgk/K2DZHWGkkP
+         CswXp/YDWUFeWiCLCNzlSzODJQBe+lBNurqJxHZAJTVuav4ZUcsx+KO6BOJcYlC+8AEV
+         M4+nGfRIKClahBvqOlhLzMDiENOkewQ+hn24ujf1KlZJgz71U8BMNYZnDJwZVIbtu8Zs
+         jSwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793743576; x=1794348376;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=hv0Uio0iKv6YWg4emi8XyGAuTMh6jvPk4JOtOEL/kqI=;
+        b=UInuvG+yXghNwJ0+zEWu3r1iF5eq1jAOzYNgDv6AENy2zjTCnVnhBV/vfVaOGf8FNm
+         jBuDNOnCB8Fbrr0iwUyzzQS2uP0uHnA1/02wYo/bl2E8c6gMj/9VNxDodV5KrQNWB7H4
+         reQmSJJye4FRPtN08lwepuO08EmT84fMwedOmPSPlpB/Qk4qkQPhGQFoDZRDE3j3z4OO
+         MZvFQEPmc101TvcC6aK7GVueh82VrRW3Y53YwDhmUwNheyu/BfVd7L85AvqZFTZe5yfn
+         zkUxIPoevN0v4/6iLN6iXM/E3Wny1hmi4csqOPLL6p+vgrMZ3Vk1qxAHWWvYL3n9Hlsm
+         +GUQ==
+X-Gm-Message-State: APuU4Z+CEaIzJ26bjJY9fFTvZ/TkmJnZx0adHY6mu4I2fpMPoG2ahOon
+	yl45pRRyijb4R7C2cwgS0IrdYF//BnnHysu/izKWX2booPQ0x3bkc0cG
+X-Gm-Gg: AYBFou01RPOSDiyWzsEEuJzQ7NM6aiaXqwuyVmhPFzm6v3f6fWFPlHctYbEVGTHnYim
+	2IpZLRi7H6IvDVVVb9+nQ85+b3zwWYNFmCk96EYHuYMqjRRUB8TgDsgiA5RjTFLPN6phMpPuMnW
+	5sybF/0X67wjZ5wQ324lrqqRRAKRvE9EToADZjCxqqXcH520bwfZqvlep1WoYPzvvXU8QkelDHp
+	25bDR6EWSSXksXPAFgqqmM+Q42wRIjX0ef68wgHlV9150rGvAU5Gv9OUbrwDOpoUmH9JekHwkPf
+	ksSZJQSYikEHuLFgPIID0dJM0hdDgIM9kd6gUaY91cmniSJXMyuVc1pjfwAWTZSvbbSyb+uh2+M
+	KI53zkjiGBeDn0D7lb+QNjej0WshqY8PDysfk1t8x9f83yuW0sgTG+1Id4LUWkxU6tv1wXyEDTz
+	16rEB33Yr90mzpM8fN1KcmuGKhmnG7bo5mq3BJ/D+6zDzIMS3OdpkKh/CTHhI++VBJgaLc2SlmI
+	mxJTbo3DhHCXbgeShqVyw9S4GR8QD9hwvVLSoCy+JkF5/NHf7+zOjwaUDGuU4X3EdqzRoKXN8TR
+	akrhZLID9D6ao++4U3ZCV55hcLAiY6ib9AmEmRLKZnwaUfiedalXfaQ=
+X-Received: by 2002:a05:622a:1f90:b0:535:a5fb:645b with SMTP id d75a77b69052e-542b83f7705mr214523681cf.70.1793743576258;
+        Tue, 03 Nov 2026 14:06:16 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-54b10cf31desm6749061cf.23.2026.11.03.14.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2026 14:06:15 -0800 (PST)
+Message-ID: <9a6429d6-ecd5-45df-bcb3-6bfa235008a9@gmail.com>
+Date: Tue, 3 Nov 2026 14:06:13 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,74 +89,49 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.700.51.1.3\))
-Subject: Re: [PATCH 03/10] pinctrl: ingenic: Fix element type of
- x1600_sfc_funcs array
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261103213002.1673560-4-lee@kernel.org>
-Date: Tue, 3 Nov 2026 23:00:56 +0100
-Cc: Paul Cercueil <paul@crapouillou.net>,
- Linus Walleij <linusw@kernel.org>,
- Paul Boddie <paul@boddie.org.uk>,
- zhouyanjie@wanyeetech.com,
- Andreas Kemnade <andreas@kemnade.info>,
- linux-mips@vger.kernel.org,
- linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2BA2B26F-C0A2-4E25-A612-D9DA513D6217@goldelico.com>
-References: <20261103213002.1673560-1-lee@kernel.org>
- <20261103213002.1673560-4-lee@kernel.org>
-To: Lee Jones <lee@kernel.org>
-X-Mailer: Apple Mail (2.3864.700.51.1.3)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] serial: sb1250-duart: Fix console message
+ clobbering at channel resets
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2608060322360.55540@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2608060337580.55540@angie.orcam.me.uk>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2608060337580.55540@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 8/6/26 03:54, Maciej W. Rozycki wrote:
+> Ensure any characters outstanding have been sent before issuing channel
+> resets so as to prevent messages issued to the bootconsole from getting
+> clobbered.
+> 
+> Contrary to device documentation at the time the transmitter empty bit
+> is set only the transmit FIFO has been drained and there is still data
+> outstanding in the transmitter shift register, so wait an extra amount
+> of time for that register to drain too.  This also prevents subsequent
+> messages produced to the console from getting clobbered, owing to what
+> seems a transmitter synchronisation issue.
+> 
+> When called from sbd_serial_console_init() it is too early for fsleep()
+> to work and even before lpj has been calculated, and therefore neither
+> udelay() works.  Therefore delay by hand, observing that roughly 170
+> iterations over an Input Port Register read are sufficient for the
+> transmitter to drain with the BCM1250 SoC clocked at 800MHz, so using
+> 2048 iterations should give enough margin including in particular for
+> the faster BCM1480 SoC clocked at 1GHz.
+> 
+> Fixes: b45d52797432 ("sb1250-duart.c: SB1250 DUART serial support")
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v2.6.23+
 
-> Am 03.11.2026 um 22:29 schrieb Lee Jones <lee@kernel.org>:
->=20
-> ingenic_pinmux_set_mux() treats grp->data as a u8 array of per-pin mux
-> modes (u8 *pin_modes =3D grp->data), and every other *_funcs array in =
-the
-> Ingenic pinctrl driver is declared as u8[].  Because x1600_sfc_funcs[]
-> was declared as int[], indexing pin_modes[0..6] reads the first seven
-> bytes of the int array (0, 0, 0, 0, 0, 0, 0) instead of reading mode 2
-> for the seventh pin.
->=20
-> Change the element type of x1600_sfc_funcs[] from int to u8.
->=20
-> Fixes: 4da56f9c6f14 ("pinctrl: ingenic: add x1600 support")
-> Closes: =
-https://sashiko.dev/#/bug/linux-5dccd0ae-9450-440a-87d0-44cc86d1af45
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lee Jones <lee@kernel.org>
-> ---
-> drivers/pinctrl/pinctrl-ingenic.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c =
-b/drivers/pinctrl/pinctrl-ingenic.c
-> index 1aa6a6dc1209..5c06208b8854 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -2456,7 +2456,7 @@ static int x1600_mac_pins[] =3D {
-> 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c,
-> };
->=20
-> -static int x1600_sfc_funcs[] =3D { 0, 0, 0, 0, 0, 0, 2, };
-> +static u8 x1600_sfc_funcs[] =3D { 0, 0, 0, 0, 0, 0, 2, };
-
-Yes, that appears to be the correct fix. All other =
-INGENIC_PIN_GROUP_FUNCS()
-use u8 arrays.
-
-I can not test as our x1600 board does not use the SFC interface.
-
->=20
-> static const struct group_desc x1600_groups[] =3D {
-> INGENIC_PIN_GROUP("uart0-data", x1600_uart0_data, 0),
-> --=20
-> 2.56.0.385.gac671c819a-goog
-
-Reviewed-by: H. Nikolaus Schaller <hns@goldelico.com>
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
 

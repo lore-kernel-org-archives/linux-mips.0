@@ -1,89 +1,62 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793741412;
-	b=Wpz7FC+CABes7lqS/tEbSHwEiWkzpFcZEi0K56CVNpmEkhiPy5Aar8SGP9ui8SZ0Hw2g
-	 vGl1Jk1Z4SQOvmcEXck1Uwd9aG5p4QAtO8cqcpiPAZQmMMtuxuNIPmRID5ns6I4VR6pgK
-	 ylYs1uxBEp2OzKoEdGIvevaNo5TwsnNnO7tAoQ1+Bu2om0DeC1QCV7Fl1e3z9bhZF0hRJ
-	 fzuW+EwhwjP+BfY7DP7e+yiKiKbjRGUeHPE6nMUiw8HT+GUXmxz9iiK5rGl3foaM3qDfq
-	 nWpPEtlONqQ7cwASXuM1d52vVuesT+DF2Io2tEgM9TwpmqxZdCvDNnDObYbTCIwbmjA==
+	t=1793741432;
+	b=E8FQaL/jqFkeJ0IKnPnNniE9rRTu86K9jCo0oVcZF9JOjsWzDX42weZD1FZQXsxqpdcz
+	 0QdNcLQh7ltPbQpZoL7QPgtG7U4wNGAFl13DTITL9Vv1kby6p45WPHheJIsJqE4xRjllf
+	 jIj47gLwoip/ahQNTps7TN8NygHC7yabtmIbcXm2iihJmf2F3nbMnC8f9KxkhQTh4/WNX
+	 YQCcgJJTaysDq54dseBexN9WEMBnHjyUhroFHX/o0f7DE/7r0wxuIcwvPCe/E5B7+wcUa
+	 U5YxhVp1BsS/PdpZtHJLCX3PAi21+B9SIrxlt7hYR5YHTLudlCLwxJmqLx+PmUpCCpw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793741412;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793741432;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=hSCaaw++8I656zFNy7LQRd8ABGr7mMB4uT74hb/cMaA=;
-	b=XutGZzeXOrPLVaiChsjSfST0UU9ln2y102HQyLPd/wA/gch3KmEyd8bGTsGmdf2nT/Ne
-	 XMp0tFX9tx8h5ocD9OCYJtmyGRS0VuUR3NiuGvInTt5Uur0GzjX2DolpX9+PnXRuT6CGi
-	 cr8/JWn3oWkuHcqTerQwDTlmjSJRn6BHGkhPjFUcoUCteQYhS1f7fKts6IT5ZcjoXRVeH
-	 5+gDbkNtlyI4S3yYKhuj2WwIDMBhjjTuH5ukxRRE1cWq1RsxeAK/a3e9nKNeUpBpeqjyj
-	 w2xebRIFCNh/Xwmo/UXoCuh8EZ6xJ1sMDbTXcFVoliJtpfPGDp6dMH23DmgWagEdeig==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=X7RhpAKffCHdzvQoGlwptm12a7CFvyWWIGsH6qxaK7Y=;
+	b=yHOJWU4HK4d64wG6NRYp3wOg0iSlZSoq25tYcRwk31YYeGUvpwQmcNRZyjNkJQEzjJ1g
+	 i5ZIEptt/vsc9b4Pnqv4oLIBGNBbRwExCy7w8U42066+8jJd0FOSsaO8pGsDdlpsJNMCc
+	 Sz0Id8qbkLUbW5w3d0K8OVvUya09NUyHuhN2TKp8rkUsZMxtqf7eHRJ9nGX/mfAl6iRzc
+	 KB4ZnGg42XGDfYIoUFA1Zc4M2xwvYMMXXGKOKBZ6PrIsYjMLq24d75sPK6/eFuV7Ch2m+
+	 Cyz8SviBzcfSOw1xdlc6zN7Mx9lYlck1PN4D3AyPl5UesXztNDBFrYVhsmwxdEPcSTg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=M7IOfJvX;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cz6mfIPX;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96115606A328;
-	Tue,  3 Nov 2026 21:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17423606A32C;
+	Tue,  3 Nov 2026 21:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=M7IOfJvX
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D5071F000C1;
-	Tue,  3 Nov 2026 21:30:05 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Cz6mfIPX
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB1F81F000C1;
+	Tue,  3 Nov 2026 21:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793741411;
-	bh=hSCaaw++8I656zFNy7LQRd8ABGr7mMB4uT74hb/cMaA=;
-	h=From:To:Cc:Subject:Date;
-	b=M7IOfJvX4tS+cjxfv8hnjjn4ahQi/zSlCAzZpqOgV5iftbC/NJ4KlHvuPE0DJA+c+
-	 MTjlkr/LW9q203SjetCZ8ymojJw1xErc2I/C00BOgA97La+kkxFTeF/pstxISoVrDY
-	 aiMQhaNQXI9SLKqHJ8lLe5yWcxRmSBCsZnkUb8ySJwl8bLUo6yWTpU92W4YFYsQE+r
-	 R0lI9CalC2dBG5yOkxJhvOz4wNb6eXUweZz3xXJ9jut1Ny1P/GPSo+kop5W/WviWZM
-	 VE1n9S//CUEqIrm3cKlGQm6MgvaJrMIYLGmyxxFH1VEQrILd7I5MDI/hDSx4Q+GcYB
-	 oJ/WyJL+KuUnQ==
+	s=k20260515; t=1793741431;
+	bh=X7RhpAKffCHdzvQoGlwptm12a7CFvyWWIGsH6qxaK7Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Cz6mfIPX7rxR45LHlTnWumxGl4kaXg8apWoF14/m0XGYtUZkxLydEDVc0bFsWvb8W
+	 X2vQs0fPg0QQPvWgEYH/FXF9d5ZRgSpQCMh4mhaZdoyFxN1smEUOHJF1KkqOhZkX11
+	 sRthbGtjj8ul53JJYjzpmSZ6RmqCwfswP7EKFV6setmiMwqCmixpMJFYaBnbIbq6ew
+	 OOgImbIQEMsqbMRp7pZp/KlQR4TIuNGvFm0sXFMADaAyCXyZchD3oa/STEDEf+k6Mz
+	 dcm3ut+qK7dhZPP8L39KhHeGW0Y5zemSTA1ys8fXO/LbmFR5seVeWD+qIBawwDeWJ6
+	 Caei25XIKA0Ww==
 From: Lee Jones <lee@kernel.org>
 To: lee@kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Cc: Aaron Kling <webgeek1234@gmail.com>,
-	Ajay Kishore <akisho@codeaurora.org>,
-	=?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.com>,
-	Andreas Kemnade <andreas@kemnade.info>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Chen-Yu Tsai <wens@kernel.org>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Hao Chang <ot_chhao.chang@mediatek.com>,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	James Tai <james.tai@realtek.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Linus Walleij <linusw@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-realtek-soc@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	Paul Boddie <paul@boddie.org.uk>,
 	Paul Cercueil <paul@crapouillou.net>,
-	Qingliang Li <qingliang.li@mediatek.com>,
-	Rob Herring <robh@kernel.org>,
-	"Ryder.Lee" <ryder.lee@mediatek.com>,
-	Sam Shih <sam.shih@mediatek.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sean Wang <sean.wang@kernel.org>,
-	Thierry Reding <thierry.reding@kernel.org>,
-	Tzuyi Chang <tychang@realtek.com>,
-	Yu-Chun Lin <eleanor.lin@realtek.com>,
-	zhouyanjie@wanyeetech.com
-Subject: [PATCH 00/10] pinctrl: Fix out-of-bounds accesses, divide-by-zero, and error handling
-Date: Tue,  3 Nov 2026 21:29:05 +0000
-Message-ID: <20261103213002.1673560-1-lee@kernel.org>
+	Linus Walleij <linusw@kernel.org>,
+	Paul Boddie <paul@boddie.org.uk>,
+	zhouyanjie@wanyeetech.com,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	Andreas Kemnade <andreas@kemnade.info>,
+	linux-mips@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH 03/10] pinctrl: ingenic: Fix element type of x1600_sfc_funcs array
+Date: Tue,  3 Nov 2026 21:29:08 +0000
+Message-ID: <20261103213002.1673560-4-lee@kernel.org>
 X-Mailer: git-send-email 2.56.0.385.gac671c819a-goog
+In-Reply-To: <20261103213002.1673560-1-lee@kernel.org>
+References: <20261103213002.1673560-1-lee@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,78 +66,38 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-These issues were reported by Sashiko.
+ingenic_pinmux_set_mux() treats grp->data as a u8 array of per-pin mux
+modes (u8 *pin_modes = grp->data), and every other *_funcs array in the
+Ingenic pinctrl driver is declared as u8[].  Because x1600_sfc_funcs[]
+was declared as int[], indexing pin_modes[0..6] reads the first seven
+bytes of the int array (0, 0, 0, 0, 0, 0, 0) instead of reading mode 2
+for the seventh pin.
 
-Cc: Aaron Kling <webgeek1234@gmail.com>
-Cc: Ajay Kishore <akisho@codeaurora.org>
-Cc: "Andreas Färber" <afaerber@suse.com>
-Cc: Andreas Kemnade <andreas@kemnade.info>
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Bartosz Golaszewski <brgl@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Chen-Yu Tsai <wens@kernel.org>
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>
-Cc: Hao Chang <ot_chhao.chang@mediatek.com>
-Cc: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: James Tai <james.tai@realtek.com>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Linus Walleij <linusw@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-msm@vger.kernel.org
-Cc: linux-gpio@vger.kernel.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-realtek-soc@lists.infradead.org
-Cc: linux-sunxi@lists.linux.dev
-Cc: linux-tegra@vger.kernel.org
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Paul Boddie <paul@boddie.org.uk>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: Qingliang Li <qingliang.li@mediatek.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: "Ryder.Lee" <ryder.lee@mediatek.com>
-Cc: Sam Shih <sam.shih@mediatek.com>
-Cc: Samuel Holland <samuel@sholland.org>
-Cc: Sean Wang <sean.wang@kernel.org>
-Cc: Thierry Reding <thierry.reding@kernel.org>
-Cc: Tzuyi Chang <tychang@realtek.com>
-Cc: Yu-Chun Lin <eleanor.lin@realtek.com>
-Cc: zhouyanjie@wanyeetech.com
+Change the element type of x1600_sfc_funcs[] from int to u8.
 
-Lee Jones (10):
-  pinctrl: sunxi: Fix out-of-bounds irq_bank index when first bank has
-    no IRQs
-  pinctrl: tegra186: Fix out-of-bounds register bank index for AON drive
-    groups
-  pinctrl: ingenic: Fix element type of x1600_sfc_funcs array
-  pinctrl: mediatek: mt7981: Add missing entries to mt7981_ant_sel_funcs
-  pinctrl: realtek: Prevent out-of-bounds access in
-    rtd_pinctrl_find_config()
-  pinctrl: realtek: Fix bit shift when configuring RTD_HIGH_VIL
-  pinctrl: realtek: Initialise omitted offset fields to NA in config
-    macros
-  pinctrl: mediatek: Clean up partially initialised hw->eint on error
-  pinctrl: mediatek: Prevent divide-by-zero for pins with fixed drive
-    strength
-  pinctrl: qcom: Check qcom_scm_io_readl() return value in
-    msm_gpio_irq_set_type()
+Fixes: 4da56f9c6f14 ("pinctrl: ingenic: add x1600 support")
+Closes: https://sashiko.dev/#/bug/linux-5dccd0ae-9450-440a-87d0-44cc86d1af45
+Cc: stable@vger.kernel.org
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/pinctrl/mediatek/pinctrl-mt7981.c     |   2 +-
- .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  |  24 ++++-
- drivers/pinctrl/pinctrl-ingenic.c             |   2 +-
- drivers/pinctrl/qcom/pinctrl-msm.c            |  10 +-
- drivers/pinctrl/realtek/pinctrl-rtd.c         |   5 +-
- drivers/pinctrl/realtek/pinctrl-rtd.h         |   5 +
- drivers/pinctrl/sunxi/pinctrl-sunxi-dt.c      |  11 +-
- drivers/pinctrl/tegra/pinctrl-tegra186.c      | 102 +++++++++---------
- 8 files changed, 93 insertions(+), 68 deletions(-)
-
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 1aa6a6dc1209..5c06208b8854 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -2456,7 +2456,7 @@ static int x1600_mac_pins[] = {
+ 	0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c,
+ };
+ 
+-static int x1600_sfc_funcs[] = { 0, 0, 0, 0, 0, 0, 2, };
++static u8 x1600_sfc_funcs[] = { 0, 0, 0, 0, 0, 0, 2, };
+ 
+ static const struct group_desc x1600_groups[] = {
+ 	INGENIC_PIN_GROUP("uart0-data", x1600_uart0_data, 0),
 -- 
 2.56.0.385.gac671c819a-goog
 

@@ -1,104 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=148.163.156.1
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793706394;
-	b=oPLExkgNdXTTxx9iOioVrVqtZsEk15LhbLYTzN7D3cmHrnRtiQOi61PlHtuIT9yJmNiS
-	 FxqcrPywp//bdNPN8fWtIEbLEPvDoOLZG2QJMzxgLFlrX1gZGslS5TMgXthMFr0IxqiKT
-	 RBflMdJrKlvb7bCJ/1QdsyQbGfZBf+PMos8G1CW9H4s/a+BRBhMcpwpq0Y+0jUg34usuL
-	 L6Qh+HPec4EdEt8wxUHZKfKqhThJnElpB0b291LC1WWYyH3moGVWXLCNL82yGUPKWYnjK
-	 ukCmRq+PCMJTANrO8Il2gS6ACq4c4Ybl0alEVmoVM6VJY1SHZjw7CdAWIkgmqtx8jAQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793706394;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Received:
-	 Received:Received:Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-TM-AS-GCONF:X-Proofpoint-Reinject:X-Proofpoint-GUID:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Spam-Details-Enc:
-	 X-Proofpoint-Spam-Info:X-Authority-Analysis:
-	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
-	bh=rQNgYgRzwbgahGLohNvZBfs82BLnKvw2G9BPFntd+2Y=;
-	b=A7TL/eScqzYeicA/7trCDc9nCSH4bfeO4JFG7f8IEcYMH/4JWRDLEhVoV3fFdEfwgmy5
-	 Ma6Qgjb4mbciZnf/G1BpO0jzSB6JlVkM6zU7WUVkDRNj1BT9YabNmwoEFHL/HxEohdoam
-	 xa11nWyOF1QrOJnZVa5EqBxQplZeaddKhLUxjYyQ4aInE4l2d/s62zoQTke2P2O4i8TzX
-	 KpTsQYAGggQL3Kl3Bv0AGs4/HbkAloplXOzOg45reLVeDzOt0tRAZmSsqYWvG62UJB0LX
-	 2kdtna9aXuaayBlxSpiQVfxxSsqjDOol+E6r8MkOI81iF1CScN2oBuUPV9vhhTQ61lg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.ibm.com;
-	spf=pass smtp.mailfrom=linux.ibm.com;
-	dkim=pass header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=XBPDSV6U;
-	arc=none smtp.remote-ip=148.163.156.1
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.69.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793718698;
+	b=IzT881iirwEBkMeWONyuX+Hw8NwuX2clFNePGBolTxjAAvfNebXaBFGfUoapuM0vlxj7
+	 FGiGyrhGsPnpnO3T8KWildrh7aeFjAIyENOd3usGXOwiSb9XTO0uu2O91Rz7ZpjyUOYGJ
+	 MlkTh8yM373w8M2TxTmJ2HRWwD5stAp9RUH/DI4Cyor+cfRMqmgQkYUOe5DeT/qY2kEr4
+	 N3L1EcvB55qzn8B5da8zqffBVnY18mRKj7LKv6cyDhcRmE3Xk1Otbir13g2TOIV34+LVH
+	 gvfYuuy4/jfYTmDTffR5hwlZKkJpLzACHKU9i2aPd9Wsw0MQsn7zOxWJftQoU1tRTQA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793718698;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=idrNoi6VfIRiaPCVqzjTLarE45/cOlSZ3/PfbIBtSxg=;
+	b=CjBPdiFue+CbVRPyTEPG8xaWr8u2pfrdqtr5QW9kP3l77IFR+bsK3xALCbnk4aLi7cIR
+	 Nf6juaARRZaW4sbIU3vr3A9tVbk79D04qiUd2Y1rovngdbn2cLxLbv1gmAWKE/GNQTNB/
+	 ZB6s2VBIUHp5aA0IRrmbWRIuzlDU2NGS89Pcyis5gVqvswfr2yOMLXcMQL9tKcxyXh990
+	 b1NerZAM3SzWE9iTtVBy8/iXBg2g8Gkm7nTpFrY7QLQ95IADNON+8viQOHut3RZc6/qdu
+	 N1vQlHrmU/lMLh2mpLpF+f7ZeYIzt43U1q4/WQh+8oyppZjKGpaWt3kX5bAe0D91+SA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=oss.nxp.com;
+	spf=pass smtp.mailfrom=oss.nxp.com;
+	dkim=pass header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=YEywif0o;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.69.13
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010013.outbound.protection.outlook.com [52.101.69.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E65606A330;
-	Tue,  3 Nov 2026 11:46:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 04E65606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1536A606A79C;
+	Tue,  3 Nov 2026 15:11:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1536A606A79C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=XBPDSV6U
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6A3AEnqC4045893;
-	Tue, 3 Nov 2026 11:45:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=rQNgYgRzwbgahGLohNvZBfs82BLnKv
-	w2G9BPFntd+2Y=; b=XBPDSV6U1ByAfT/2HXWiYPBImtoE06l1RsLvOPr+Mg1Wdg
-	5bb7Q4UvH0mEeFRj51IZNVX9NifoIpA9L056gpcpDJYHk5VjyO/RQmX944rPTcqT
-	lza8DMAA2sFbSnKXHJIeLKs+Q8G1+3X9B+dEQMrLtkOkjp4pNJTbzJPAiDcZXVUE
-	p6Db6wAKv27p8hT6TDeMeXOr4Vk2Xpp7upRB50EYJzqoLgx5W9PMpVDKF0KnA/eX
-	bnd0mHKF4Ty7FsZMzKSxZD1WU4h6XYV6jH6M4KptIOxivjveMfPtf8UA4FEmQ1NM
-	hLDM5ogor5Zfi+YhNntcsukL5xZcXKcEJ/fYDveQ==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hn80snd8h-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 03 Nov 2026 11:45:57 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6A3AK5Iq2350043;
-	Tue, 3 Nov 2026 11:45:56 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4hqbqk8stp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 03 Nov 2026 11:45:56 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6A3BjoS127460120
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 3 Nov 2026 11:45:50 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 770852004D;
-	Tue,  3 Nov 2026 11:45:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9A1B320040;
-	Tue,  3 Nov 2026 11:45:49 +0000 (GMT)
-Received: from osiris (unknown [9.111.24.158])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  3 Nov 2026 11:45:49 +0000 (GMT)
-Date: Tue, 3 Nov 2026 12:45:48 +0100
-From: Steffen Eiden <seiden@linux.ibm.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oupton@kernel.org>,
-        Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Anup Patel <anup@brainfault.org>, Paul Walmsley <pjw@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>, Fuad Tabba <fuad.tabba@linux.dev>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>, Nicholas Piggin <npiggin@gmail.com>,
-        Atish Patra <atish.patra@linux.dev>, Alexandre Ghiti <alex@ghiti.fr>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Stefan Teodorescu <fane@google.com>
-Subject: Re: [PATCH 1/7] KVM: s390: Drop unused and unreachable
- kvm_arch_vcpu_should_kick()
-Message-ID: <20261103114548.119911-B-seiden@linux.ibm.com>
-References: <20261028190259.1819571-1-seanjc@google.com>
- <20261028190259.1819571-2-seanjc@google.com>
- <20261102153228.240804-H-seiden@linux.ibm.com>
- <auitiPKnFueBJzPA@google.com>
+	dkim=pass (2048-bit key, unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=YEywif0o
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=TTCA9wZHAZb953jLqANVZPNgdXa77DF8jn9A65ZJzN7QO4RLAQtOQUtOjq91/6sOm5zAbinO0ISUFf5pWfNMZWyqUiaQEbqoJlJJ8g8qoJIjGYSP+rDrgJ4/uCtzhUe6vzNIFiLLYXp62tjVaC/ILKdTSdT3MK3rICTABc8ka+IPfsC1PMiEm7oJlp8Mz1jG701oP7OcA9kRQUrMcTR1soxqPCOmqF51McpaMrf/Y0hAcxVbCISmAzejnR3p1iRAM+Tf4zexWoYe2i/5VhFZ+66h3quIUhoySSkOrhYgZGkfLjcmuTHDWiz59AYuDUks+2brvMA76xygzvY4fC13cQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=idrNoi6VfIRiaPCVqzjTLarE45/cOlSZ3/PfbIBtSxg=;
+ b=XgZbrJ67MK6jQEj9hnh6thyyIvN01BZdvqv3hHZALBSNEHRzpGpAwmXPkjgErdeRJ0qE2260rLxXtxDVgYTEDK+0dNZg8uaiW2z0tLWiC5WTG85FHE9F+PgEWPMKbp5l4+wLNeaK25A9j7tQ7IiOijflmBy6vWxr0MYy/t6J3SkumQKquu/so+eq2A9zokR7Jq10cl5PRVFY632o6rfgub4u+m/PSa1wJ3D8TlQwAwJLz94avW5Czzdt6nNe30c2JuFQm0d7kuO2vu5/7RkFAzw8wcgQVbVF2QrHJBQhX7xKpFc9ld/H7ZcVevBrrFIbVMfh1e+z3YPZqBYT4RNnow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=idrNoi6VfIRiaPCVqzjTLarE45/cOlSZ3/PfbIBtSxg=;
+ b=YEywif0osdxZXhD0nee5zQ2g6a+ldayrWNx72amlRqaRwzC2fQov8QSWU8OHdUCI7ZOwHhoR/b8vUZI2X16+vPhWLuwDc5UiF+qwc6mgvSUohEwQhjhZmosD+b6hPvj+aqldpzMXavJjrFKfFYa8AWz7m4vhEE+6T8RmgNY/5nUAusKFfa7S/oj5HD9rZIIusQemDRedplDkAkC0F1aN70zqmwz7gsgjUhVMrEwS6BAvRVswhjrQquGB/vq63Zk6k+VJgruh8grXzLMRDVacfN4qR/5HXUptG11ytmY77xliDbIgGHr5ndFb1m9lsjNkUx1wKXnZt3KiKKId43JFDw==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
+ by DU2PR04MB8759.eurprd04.prod.outlook.com (2603:10a6:10:2e2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.569.12; Tue, 3 Nov
+ 2026 15:11:34 +0000
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b%6]) with mapi id 15.21.0592.007; Tue, 3 Nov 2026
+ 15:11:34 +0000
+Date: Tue, 3 Nov 2026 09:11:26 -0600
+From: Frank Li <Frank.li@oss.nxp.com>
+To: Li Ximo <lixicaicai@gmail.com>
+Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@kernel.org>, linux-mips@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Wang Haoran <haoranwangsec@gmail.com>
+Subject: Re: [PATCH v2 1/2] dmaengine: loongson1: reject zero-length sg
+ requests in prep_slave_sg
+Message-ID: <aun5niTJg-qCa6ht@SMW015318>
+References: <20261103084638.1190232-1-lixicaicai@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261103084638.1190232-1-lixicaicai@gmail.com>
+X-ClientProxiedBy: PH0PR07CA0060.namprd07.prod.outlook.com
+ (2603:10b6:510:e::35) To MI3PR04MB12438.eurprd04.prod.outlook.com
+ (2603:10a6:290:76::14)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -108,54 +98,102 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <auitiPKnFueBJzPA@google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: pVpgdP1XGIbnstN6hf1_H30Mry2kEc8w
-X-Proofpoint-ORIG-GUID: l9khr2_nw7GEkBcFn3H6-NSEwUfuIP0C
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTAzMDA0NiBTYWx0ZWRfX1XmGS9lHsUL0
- R/pqFn7OS4O6sIvO6xkJJLw7ub5XYBJJ8rT4n7ytkLsrM+nXxJ8ALAk6IZ7cxaLgxzx/sz6YekU
- QUQNLzCc+AcEIzFSIIId4SI+3jZ4xWcemIVFHv+lYM846eTlTDBy/sVfsO3lwE4suzbkGudS2Kb
- gxPBGGgvMaIVdytp/A39MMoe5QDoT7CkGj5SGrkaqTAe4eTeD+SzsmTdUt/UyjY9TJC3JseqnJa
- QEo75BJzfvgqw3u+U+2wRBpyO7uPflzaZ5caj2HokpnoTurGkxzXBgpUXpjVDxTHjuBmXjI8rPa
- vxWDAmBlV9AhIXjL/sn+6LcGLT5sIIA/1vfGnxBH9hGUn2tSE9JXdCrUFdxql4RE+ZLXgJZ4H1I
- Kt9BEBx2jKRF/wavIUPm0bKdaAiukt/xqjNHAoSCxYurQjxD+KTis8S/8SmPNJktwNxtQkMBgIp
- 7SZvF2lkFSgtvQ77a7g==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMTAzMDA0NiBTYWx0ZWRfX8KXTgj3ZDXIb
- rszJKiaYCEhjwddi22AWOUixDabzaYbTZeZqW4OyLHY9z/7j8facbJ5/xv2IRGOBpQn4thL/pQY
- S1fxrlzI0e+Xs7MM8Gx7oKdd53KSVec=
-X-Authority-Analysis: v=2.4 cv=FIqOVOos c=1 sm=1 tr=0 ts=6ae9c975 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=14yfDfNcGX1pIiSJYtUA:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
- definitions=2026-11-03_02,2026-11-02_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610300000 definitions=main-2611030046
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|DU2PR04MB8759:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4886a404-53e4-4819-db84-08df39bcbfba
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|19092799006|1800799024|23010399003|366016|6133799003|10067099003|18002099003|261102123227099003|22082099003|56012099006|11063799006|261022105027099003|261026121527099003|261022075727099003|261026140227099003|261009223027099003|261028144727099003|261021121427099003;
+X-Microsoft-Antispam-Message-Info:
+	PBu9pxoelEznO1PGmRJLDN1MoQXNfwKm4apw53AeTX4uzv9PtM4Tkykx3YgGYZEPkZLXj8r1L52T4g4SGhD8AFqgfMQYuG1nqUeZJ6qaS7EVmrbrzPNBBGt3hgTuAFVQPR+U3XhSZnGeIwxTAxt6/OAKoSH4x3KAwXwLlpgyDIbld7tPXMb+3Lv0sda9CFe6td4JRXsFTtqIsdh4FIqZ4mB7z4+ZEG2XA6oYycwRJJnIm+lbDv648SwORKb3uDSvJBbowVW5oujvSOCe5aMPfBUX4ZxsqzQ+sbJRhY64uwI/lz8IKEsWKSoUdAVUNdjcPuPeHYj+XTfbW/alvmaNG60L05LrbT1pd6vuwT0lOqzoHlBKgv2VzLVokRAqjmG4If/S3P/1cuhZC9j85HqjQS1R/nVQ3go5mB6ZEc/vMgVaM+fPG9N9hNA7aK3yBAXXECfetdbZVoVHtzKLUJ2Dl/cl0sykmNFLhfgXwli6dkdlsMbSUNp2lz67UAgtL0r2Pr3/5M27/N5QunSO1AgcgM8uIBSkWiX9jdd4Uhb1P9G7lRPNTGcUmw0CGhXfxiIajiADGeWPJjt1MTUMlS6FlBATFNv94tEVdYdOKlMq5Tpkf7k32PEqRq4pH2ZbfzYC
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(19092799006)(1800799024)(23010399003)(366016)(6133799003)(10067099003)(18002099003)(261102123227099003)(22082099003)(56012099006)(11063799006)(261022105027099003)(261026121527099003)(261022075727099003)(261026140227099003)(261009223027099003)(261028144727099003)(261021121427099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dRpDIg7PuhhL4xF2iXTtuOIMHIE1BmJRxIFMej4tFQs4NgQ3j3rZCEEQ2xfk?=
+ =?us-ascii?Q?HVqGLIMgimerORX0vPvJy0hmdVnmMmrF36rq8pBnYYgetSWGwBxxJ/xt6GUS?=
+ =?us-ascii?Q?rzyNe7Hr3gqpwBPCWQW4fro0X/zfxI/kV6YR2sGlLRJ4toEM3jIbQXZlPrVo?=
+ =?us-ascii?Q?A22JQev4K+krXINRudNGu/d5waO+C5fPaLfWKM3NgwL5+x0XKLxWgsgkjyaX?=
+ =?us-ascii?Q?PkN9OCV65pRTfFLaxvAc6BLll9c9bbpc1EvFRPigV+XzdhO1fGfQ8Q+obqZJ?=
+ =?us-ascii?Q?XUnFbYB+vsJe5xrQqjS5yBiuViXMQqhwXYYorWFwEEiTY6Hf2/pHsDnR88VR?=
+ =?us-ascii?Q?x5PnMm8ttcd/GMjpln/fb0pv95t7vyn3Vu8QuBvYWOk6ba4T3xw516DmE2P1?=
+ =?us-ascii?Q?SIcCqQquzbOanPRk9rDeHkTYihFuntf//YkMdBvcrQUyGsUwnkDgYjaJBu5U?=
+ =?us-ascii?Q?gfhP8/9oUyU8I1lGMzgtq+JxhqwdGqHnpuQ/mFKnwgtPg01yHsqHWiUfDHOZ?=
+ =?us-ascii?Q?KQPvUzsaGF/V9MTSLiDf075Z8YzIiM28bTI3eSOqPgGmeIMnQsi9X+P5fPna?=
+ =?us-ascii?Q?47JG01/mY1KO5MJY6BCqOuscAacySyB/9k5XvnZiQ0uNnpu5hL2BAizhVXIL?=
+ =?us-ascii?Q?GAH2ow1L65z9T6MbU3pqfwRA65ye+Yz3H8E+2/08LPtOutbodb6iRRrCkwUj?=
+ =?us-ascii?Q?HT9wPBKhUdVlCuDLmKHT3vuwo4v8isI6LeDiWN+NmC+Zb7N3dzCgeT9EwfSE?=
+ =?us-ascii?Q?yHDgFjuLP8w/gdPlZgJuHs2LXB6psZmAw38EMZFqj+o66nzoZ/2E0G+S0qt0?=
+ =?us-ascii?Q?h0gfapZ4mDm/EMVWYh8j3yihPLBlLHznAo9TV+so3zO98xK66V8JdhJlC922?=
+ =?us-ascii?Q?pHoDbmE+U4zkrJoZg0JdC/6Y1YvhNms58tcqy5uIycrKSFf1najsDXvZYbie?=
+ =?us-ascii?Q?foVXJtfl6J0ImPHuUnXN4p4GG3zWGpbTuB0rnZi+XW78X0+83MAljy6BzjcC?=
+ =?us-ascii?Q?BsxxR8goOJ0YQgML1DM6pEDKRjVjeK+cDx1YFOTlMtOoQMrHtV5USr51hfVS?=
+ =?us-ascii?Q?77NVERCuHsR/2AjK2T5zGCsju+oZW46Hr5IkuLmNzenRLhCe49tlGf0K7jOI?=
+ =?us-ascii?Q?qj5XokYq41z+QyaNz3c4wln0p0WwcYWKeNILOkKKD81Lfo+Gzr0smPQmkQGb?=
+ =?us-ascii?Q?h+DkVkV8XHmueCJl83JP85Ij4v1E7uKAI1SB1uawpIy1iJ3qcYoE2nC/wztb?=
+ =?us-ascii?Q?0yUq9hqHUXhMRBVCMUvRnbV9BFkR6sMNaQMobL5VAyH8zANO/8zoeyi7a6C+?=
+ =?us-ascii?Q?N5EmduYm+aUx+unVxZEaKv1/7Ac8Rlckg1aMNmpVGQYbDpJ4PnHGyUdhectS?=
+ =?us-ascii?Q?OsxuWrMuxTF/SwmkHxhWymOjpX+WyUm7ZUJgOmHH5uDFF1KI/GwYz9Wmfyyp?=
+ =?us-ascii?Q?Z8DU77gUu6BLRA9HHDNVip22GWTVzNLltc9vaVfsMOYhv8InYOZlY4LnmuWY?=
+ =?us-ascii?Q?BuBMuDFNHfFQ1o9XKb0spPJ5DoISsSCFpQQ1rQap8PW7WHynRKQowyPyIM0g?=
+ =?us-ascii?Q?BfvO77mBvUU+jA1WewwYw3ATlXI1hFkLvwKCWDCsS8cK02igvmYgdmLJNyK3?=
+ =?us-ascii?Q?L9q/F5Yk8pT5a3O3XvIyRHxDgD1KK/Ky16Fnznpv6biCXztNP2bIDBRM3IdD?=
+ =?us-ascii?Q?OAA9zXSehVRXZqobFQIjn5RUXEPDjuzHHaskPtGP0eMlkcSrigRqw2yDtvt7?=
+ =?us-ascii?Q?xI4FwN1gfQnJEbepEduR045s6jVDDYf2+Wykm5CDDxMLdt5LyfOk?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4886a404-53e4-4819-db84-08df39bcbfba
+X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2026 15:11:34.5226
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nY7vWJ2PCii5Fz29DZTDSWS9H/9qjv3XrtTwd7tV1JAD764iIiZ5m9ic8KhIn6aSiy7pE04qxn3MZYmRnxCimpBYMyhQ0tIC7fjckXy12YNljK30RRAe0oiS4PhPZe97
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8759
 
-On Mon, Nov 02, 2026 at 07:34:32AM -0800, Sean Christopherson wrote:
-> On Mon, Nov 02, 2026, Steffen Eiden wrote:
-> > On Wed, Oct 28, 2026 at 12:02:53PM -0700, Sean Christopherson wrote:
-> > > Drop s390's kvm_arch_vcpu_should_kick() stub as the one and only call site
-> > > is wrapped with "#ifndef CONFIG_S390".
-> > 
-> > In the somehow near future I'll remove those #ifdefs and use the kick
-> > stuff for kvm_arm64. The native s390 KVM then must at least keep an
-> > (unused) symbol at hand. It seems that the compiler could not optimize
-> > those calls away. So let's keep it there so I do not have to re-add it
-> > soon.
-> 
-> Please read the rest of the series.  kvm_arch_vcpu_should_kick() goes away
-> entirely.
+On Tue, Nov 03, 2026 at 04:46:37PM +0800, Li Ximo wrote:
+> From: Wang Haoran <haoranwangsec@gmail.com>
+>
+> dmaengine_prep_slave_sg() forwards an sg_len of 0 to the driver
+> unmodified. ls1x_dma_prep_slave_sg() does not reject it, and
+> ls1x_dma_prep_lli() then builds no LLIs (the for_each_sg() loop body
+> never executes) yet still returns success, producing a descriptor with
+> an empty lli_list that is queued as a valid transfer.
+>
+> Reject sg_len == 0 requests early; a zero-length transfer is meaningless
+> anyway.
+>
+> This issue was found by static analysis.
+>
+> Reported-by: Wang Haoran <haoranwangsec@gmail.com>
+> Reported-by: Li Ximo <lixicaicai@gmail.com>
+> Signed-off-by: Wang Haoran <haoranwangsec@gmail.com>
+> ---
 
-Sorry for that. This patch just jumped to my attention and I had no time
-yet to read the rest. 
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-	Steffen
+> v1: https://lore.kernel.org/r/20261026115113.3359939-1-lixicaicai@gmail.com
+> v2: split the two independent fixes into separate patches as requested
+> by Frank Li; no code change.
+>
+>  drivers/dma/loongson/loongson1-apb-dma.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/dma/loongson/loongson1-apb-dma.c b/drivers/dma/loongson/loongson1-apb-dma.c
+> index 89786cbd2..e7eb40584 100644
+> --- a/drivers/dma/loongson/loongson1-apb-dma.c
+> +++ b/drivers/dma/loongson/loongson1-apb-dma.c
+> @@ -302,6 +302,9 @@ ls1x_dma_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
+>  	dev_dbg(chan2dev(dchan), "sg_len=%u flags=0x%lx dir=%s\n",
+>  		sg_len, flags, dmaengine_get_direction_text(dir));
+>
+> +	if (!sg_len)
+> +		return NULL;
+> +
+>  	desc = ls1x_dma_alloc_desc();
+>  	if (!desc)
+>  		return NULL;
+> --
+> 2.30.2

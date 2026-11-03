@@ -1,52 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=194.117.254.33
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793731474;
-	b=IZOsCZJcj7rYfbthn5lKmsSxvuDPdpmeVs66FVzcQCbdyLy8BmI2u+MY+H+0qzCSQbwH
-	 XA2+VAjmzyoGtUUa6+hA7nLvu1y2hUg6xF/Fk4/EIA44OPAIx18nlbmGq1S/6a86vxle4
-	 QJJpaKVN8BJaRlAGWwfZx7huRwU/LrVmw1iFCeUQfTvQBP7iE5b/mx/udtAdk9SLVVLj5
-	 F2jlndD52bk21Tq50v61h6/wpDGMZL0ds1XN86ug26XvYz8Vqdiy/WcsmEzVdNKPEThFu
-	 o6H2trYnSMLRQRbSfJYQYDUg4PyRNkXjuqacFGfSFOfvRH07IrM0sckjoXIwgL2jgxw==
+	t=1793731486;
+	b=dHHubakI9x8JqE3K4GSeSIo73eYgtMXSDAdw6aXMKKpypt2uV1OOAT5gkqp7/mZ8LEs9
+	 yXBEItfoEvzYWlsL0QJnQwDRMz1gCf9WmGhNaiw9bLWaowUHWI7JrLLKPL2kSI/+QnlWn
+	 ZWQ7ah093P16Ep+ROqCI2bf2ROu6pcBCKKPQQjTcB/ZZkpL3vDhTlKUpWHb7b1miZoxDW
+	 aADeWMCHY8l36uVa08gR2TRRb2KjLIDrvwr+fkIYRhIIbG8j9twjK429N8ziG0sJfdKui
+	 Cm6F80FdM8SAzyedbm/6chFu9JbO0gBKLtkAf6AuYeXtT9JFc5A3aq4qnsfxKbOJ4SQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793731474;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793731486;
 	h=DMARC-Filter:DKIM-Signature:Received:Received:X-UD-Smtp-Session:Date:
 	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=WjL+BboDzTnCr05d4B3GVddTa6hoTsb2Q7/tMkgbEgE=;
-	b=Z8gUw28wCJD1pUJeLZY8c+qArOU3KWzfd20x9XG/gSWqR0owoROeTlxoxkASd3MD7n4e
-	 CRnl5gydlWQZeWMm9ujc8e03q9q7g+Kt1qrkm6sQFjGlRIKl6xHvr9Mz0RtFZd60T80Qo
-	 /jilCaQPeK5knU7ojPocN37BVdaLyDyxDv9RR5qI26CMvyrsjJLnm4nzLnycRIkc2riwc
-	 w41TvBIJXAyfg3L8Afph1u/98hPcHMiJQbQGbTGM6WUq21gdWx9Uxm1f1l/JVPamNdBfE
-	 CrBSeiCCkjv7fg0gYYAJBX6ro7xUnnS2S1zDLHNk5FQUg/hN/CeSmzbHD5ar57Lxwhw==
+	bh=W6/JYFIS2gBbrryXL8wBsd9TWGVGmS+61AzczLDlVL8=;
+	b=iZNtoEiQMRw9THDmcWfvNXQR7ljSGEC7+q2mFLDs32g928FYhhTIwu+mBYXIc+v4vvUi
+	 n0LWLyc0B7ssmdBv3qcUbaUPvWFB+IvIBfr0cw4rWTkvenegLMVasW1bqTaO3lyWGD8YS
+	 rWyRd6joil65k5tQ/4sC6kIrGDQ9CRgY5Rm3atxs6BmWftymVSBH7YmB8wVszkrYxJyuS
+	 EnXt2rs2g7DftOWzn5ZmV32akNe9YA+na9nZWZTQ8/2v0jtQ4LJL4FDzwJZAltwBIGj4y
+	 w4r6mgKsN/8sfyBLYTWEAqyUT4e1hZ/q74WUtTgtc9F3RxvAZHcJ/o/+Hbc9c9kA7cg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=sang-engineering.com;
 	spf=pass smtp.mailfrom=sang-engineering.com;
-	dkim=pass header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b="k4/TTGvn";
+	dkim=pass header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b="Bx4jN+/C";
 	arc=none smtp.remote-ip=194.117.254.33
 Received: from mail.zeus03.de (zeus03.de [194.117.254.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E1A606A32C
-	for <linux-mips@vger.kernel.org>; Tue,  3 Nov 2026 18:44:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 48E1A606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A5E606A329
+	for <linux-mips@vger.kernel.org>; Tue,  3 Nov 2026 18:44:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C4A5E606A329
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b=k4/TTGvn
+	dkim=pass (2048-bit key, unprotected) header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b=Bx4jN+/C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=WjL+
-	BboDzTnCr05d4B3GVddTa6hoTsb2Q7/tMkgbEgE=; b=k4/TTGvn6KawElXEg9Bb
-	qOZDns6dw9rlO8RAcyEW+R5LtiRWK3EUb1xjy1qv5PY7vclfnx0g2zpyRZVQHBQk
-	hS2cYY6dvAjl+vRiET3GcojY3mYknjggYIDCmsAOOODL5DWB24RiBNfTVe+sFXwA
-	ovDhC3fDMR0XK9MmSAXBVkPFBg3Z543a0Vc/+0kETuPaPFpyl6SYJO91d3WVkD9r
-	pcnEavNArnqZDMUAJXlOdMLBl2JLVqQbbmzKs9lmkKUVXbte2zMVrK+98TXCdCn4
-	V6761POK1dz1bRaU6iLEQZpFTg9RwZwQW5Ad0pqtUf4KdwYhnZT7/Jhg+CIIFitj
-	Ug==
-Received: (qmail 389364 invoked from network); 3 Nov 2026 19:44:13 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Nov 2026 19:44:13 +0100
-X-UD-Smtp-Session: l3s3148p1@m+AWpmNfMLbAwtcC
-Date: Tue, 3 Nov 2026 20:44:13 +0200
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=W6/J
+	YFIS2gBbrryXL8wBsd9TWGVGmS+61AzczLDlVL8=; b=Bx4jN+/CUlNIFrFEfcZT
+	DWnp8D3KgQ3RUAi57jaWHne3umwEazqItZQTPk90jcrkdqvvhubVubpT5CCmNEfB
+	/g+w2DyTRdx1uo22fhbin0kux9Y9nu8VuHWZqX+a31npXbTs3OfVVmVnJi5o97lI
+	3cpudOMSylHj4AcWjU71IcIr+OL4GFnE1e72JJgFfMSTdKQ3jTL5Qwp9+KgvUy98
+	Vrughpyl3hyO1Y88CTAL/ng8Mz4lzYKHQi99Rat4dkK7EQx7ZMusfrnEfipTR9lZ
+	PIIjBVDl7Zwwkfvv018HuF4t98uVkT44kwuLhDn7IY0jseMG18KhPTggId27cesU
+	mA==
+Received: (qmail 389850 invoked from network); 3 Nov 2026 19:44:34 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Nov 2026 19:44:34 +0100
+X-UD-Smtp-Session: l3s3148p1@KfVXp2NfZqnAwtcC
+Date: Tue, 3 Nov 2026 20:44:34 +0200
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 Cc: Douglas Anderson <dianders@chromium.org>,
@@ -137,10 +137,10 @@ Cc: Douglas Anderson <dianders@chromium.org>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
 	linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 07/35] drm: rcar-du: use devm_drm_panel_bridge_add()
-Message-ID: <auorffiFkpqbhotm@shikoro>
+Subject: Re: [PATCH 08/35] drm: rz-du: use devm_drm_panel_bridge_add()
+Message-ID: <auorkq3_lHY-rc1D@shikoro>
 References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com>
- <20261026-drm-panel-funcs-v1-7-5e3070a3478f@oss.qualcomm.com>
+ <20261026-drm-panel-funcs-v1-8-5e3070a3478f@oss.qualcomm.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -152,9 +152,9 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261026-drm-panel-funcs-v1-7-5e3070a3478f@oss.qualcomm.com>
+In-Reply-To: <20261026-drm-panel-funcs-v1-8-5e3070a3478f@oss.qualcomm.com>
 
-On Mon, Oct 26, 2026 at 01:09:56PM +0200, Dmitry Baryshkov wrote:
+On Mon, Oct 26, 2026 at 01:09:57PM +0200, Dmitry Baryshkov wrote:
 > The connector type passed to devm_drm_panel_bridge_add_typed() has been
 > ignored since commit b7797081ccfe ("drm/panel: embed a drm_bridge into
 > every drm_panel"), the bridge always has the type of the panel.

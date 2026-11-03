@@ -1,86 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793742156;
-	b=LbK8WqMLZROPoGaOK7PkTJxrKQTl8q3DvviNthrbgpGWbEFDGHwd3HUfNBzqed4m3DGH
-	 3ltdcqALYzaE31y7ZtEaefKM9rdb96+nTNX7cWF9Wo6/eClcU46DCdAKkpAds7cZnwiv8
-	 sQldMqfOBMw7m2/OgO/iYSMUiGL581FoHmjjldr1VATuxrzcidJikNQ5LLRBmwNPKkMbN
-	 zc5tpvF/OTqAtZNWnl4KF8u5hUCmR5PqcndohzN9pWSrCpNyFENytRQkr4rW7miAfPE64
-	 4LF5rpEEtLkhqLkZQmNty7i7avcvBaaA20WLK4FoW9XEfYT7f2rMQHzRqg4Ofp1KZxw==
+	t=1793742651;
+	b=nUzF6+TVEyJZRyuM3Sfit2pRhGbiLqU47MuhCeREMETRT6Mjabg9aRtjdMeLiGUsH3LK
+	 Hd10l/z7Nqxw6HHqMxnXdJYbqbZjF1DG44Kyw4LG+KoXIk79ZCW1xEGuQHNAw6YXzs+Zm
+	 F1jW3Ms7fN+0P5Q44+cnt6UyTRbd9crgLyRUb0/XIGTeipTFRFzPfeF+m+jC5kIPCKPjM
+	 Rtj58rNgqBCKRWJj7vbzAZ6G8BIsXM9zSezb8Erg2ttKSUbqMl6nFn+BL8Qn3et+uwqrB
+	 0OuMKoUMgohCycF4daEjU5J9WpAdzwuJ+QL34+JjeEjGvondF8JIXaXOVuB+gVGr5nQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793742156;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793742651;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=azPPo8H7+DKD17rL0rWwBjVEKBbc6amwqtN9WdKwMgc=;
-	b=zh3ZCp2QcoTcgWU0PoJ7zP3RAS8VjG686H9DiFTAzH4cN5E6KsaynegxvzI1U4R0B2FV
-	 qw+HOucLoRLDq95AalwEEHdyEzUNjCbiW+KKYOrGNrkDxSqwFv8XAbOwE1B8KlamzwvW9
-	 fpFDgsGFFoKxZ45bRVE5A3vSoy+m7mgwr33hNWgsZyKio5zeE/2uhfXz5jq1dGS0xOvXQ
-	 Mi9wddNqpi4baSYAR9A2uAe2hcFBQjgwZFFbDF9S4gZYzlc3Cntr73ZiI03JZgNDq66+r
-	 yrvtFWjsn/K2DAVIh6H/wD7eMGCATBJCiCkVsGs7Cb9RavFldTitvY1VHqewXUkrT+g==
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=9h9kWdl4UuQD3zSaTMBwk6BIuE+01bV25xA/FSfWtZo=;
+	b=FY/u+OKgwVe0xybicS4OhXfdqP0fG2/fcT6Q0STu89xFTwAALsE/iHWLK6t9cM4/wQCA
+	 Xoyf25LeDA0FBASjHMCGe98O06DXoGplk3qFpo3uUHgFYeoKpVxEh/9FtjWAEhzloeU4D
+	 IwGzn4VoKbrx/aPlt5Gypvj638Dwfue3Qqpd//6uAjx+Ae0gDjhydkTOZMPmPHMeWFG18
+	 uAoV3ycevnluT8jDmKD1ov05VlH7Of3BLM3yRDzrJ+5E5VxirRNcqMNL6sB/1Pw29JQTq
+	 ycslZokP+rObDOk7HHx953wHCdCFin+vn9d1PSld3BiePVGHGv0icgH4IDDcLN2pZZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uG0kV9tr;
-	arc=none smtp.remote-ip=74.125.82.49
-Received: from mail-dl1-f49.google.com (mail-dl1-f49.google.com [74.125.82.49])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Or0e9dZ8;
+	arc=none smtp.remote-ip=74.125.82.41
+Received: from mail-dl1-f41.google.com (mail-dl1-f41.google.com [74.125.82.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAEA606A333
-	for <linux-mips@vger.kernel.org>; Tue,  3 Nov 2026 21:42:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4BAEA606A333
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED89E606A326
+	for <linux-mips@vger.kernel.org>; Tue,  3 Nov 2026 21:50:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ED89E606A326
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uG0kV9tr
-Received: by mail-dl1-f49.google.com with SMTP id a92af1059eb24-1b244fb7fffso139235c88.1
-        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 13:42:36 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Or0e9dZ8
+Received: by mail-dl1-f41.google.com with SMTP id a92af1059eb24-19305bcb72cso79881c88.1
+        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 13:50:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793742155; x=1794346955; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=azPPo8H7+DKD17rL0rWwBjVEKBbc6amwqtN9WdKwMgc=;
-        b=uG0kV9trF+tpH5NGG08X2nXLCYrNuuLYjRzsFhR+KujNcKwgdzFodzwzUBThLeO40q
-         bFtlq26uYDUXkvc+hIE/0/HJE0PHd8x92/AmZQEDmueeUixdh1+ORtHEJtJym0HCvpbk
-         O1FRmG1pWdQ+4Y8DQD9eF9sO1K4IZvEk2XebYJVfvCd2haUghPNIfioNcdJCeSztKlgH
-         lx18/3kxQ6WxcLja3A8ZpVfnwCY0hBGaYu3BJhU7I4Pk/omDVcKwZ1WvjsK3dnLp6Jy/
-         Rhpn4FhzTB865NMRltmKeeOwlgPwk3q+Xe0QazrIkT7TyVn53BjOE4Jd9dgRsE2Q0myk
-         eESg==
+        d=gmail.com; s=20260707; t=1793742650; x=1794347450; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=9h9kWdl4UuQD3zSaTMBwk6BIuE+01bV25xA/FSfWtZo=;
+        b=Or0e9dZ8H5dVBMFVLgOI0FokeolSMzfR8Bv2+18x/RMttwmjYXCnBwKgZrWhkfI+6z
+         FhRT0mw1DsQze2rn8D9m9lIB0v2Ku0IYyTf7y879F7np+zbnfKNRvf+/EHFzbnzlZYwD
+         v0VjEtOYfhpOu97/rBapk3hkzuWtqy4/XY+hAUWqWHrukFFJgZjjXvYYeVXzxkwO+t8t
+         mBKtAy7Ax3fgkH8oSfeEqeiZ9PcRW1xFS1iLArJy8LTnIGUYRQZQWJg4ORR8Af1Bitkq
+         Lc2Z7dRt5zmy/7QxqMQD5+rFsF1K9H5bUIVhd2AFf8+R1SghPNN7jYWPlJLlMhrMB7E+
+         sPCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793742155; x=1794346955;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20260707; t=1793742650; x=1794347450;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=azPPo8H7+DKD17rL0rWwBjVEKBbc6amwqtN9WdKwMgc=;
-        b=afRKR82XzcZXeXVwhq3cN8O6MZ/BNEiaowx79zNiTUx3u23vt3FZ2kWDXY+0Cb2e6K
-         hGBVnjknfz3bk9Pl4kE0UGmmxVOP6O8a0jzTg88tUYdZPd/JlBmSNjrWf3Zf2O+BRvuY
-         E2A7gFgHu2RoKuvr5x8iKpsljnESoeWUPYdoWcDHVrcTw4un5Dlhz5pnGQjGArTq7vX6
-         kvoAlwMvn+DjT/TyzDQLW1YngZn1LmFxRmCxUVC50hN/F61lVBlwUdHC34g4LSRDirSC
-         zxhmjr1zlY1A5/ZM1Ev6T9AEy01RqgYfa/z9UBbkGszYFf7xgFPc5QjkSJP3A0j8x2E2
-         pjDg==
-X-Gm-Message-State: APuU4Z/XCyw4+pnBaUKQTg0UeE4IC0z4jymp4eAEPnHmaB0jdmJb+htp
-	0UBxqkchUAsbRntwW7v4/jBz3KuhxLmkGv3bwx8XcYZS/qJbyXxG87Ce
-X-Gm-Gg: AYBFou3zIg3gTvkLvcmXAwQxrFGnLzsdBzq70u8cOc9aXPQTZaYLUx8AWqsyYDTY70n
-	RVJVNhY4XbMi8CgcmKMBDOdDXRrlF1URD1lxckDsfAJQGvVTUILFosmrNbOdK/LOmoldyGdqHNc
-	wZOVYz47ZEMWCawAnCJ987KxV8rYC4BoVOLJ7C2BdUCuKZ/wqmcvVAdq4oZAp99Xguw1pHqfqdv
-	ceDr9aAaHy3UwTl+N8V9qNlgrcq+htwyoeaV8kmsSIvd9BBqFKDPSHdP6t0tADIOhXLPdHVm7Kg
-	ZTzbdVolg9m8+Af4nBspWrEoEkUJ/ozv7YVOW/AV4ikom6v0vP2Dh2Q6qPL5Qr3yPYtkGxB0Dqp
-	2HU31wZGGO0vXE/G41fmB/FWOUZnFWMruFyfxGNUNNmIgw1+EolKFOzk6bcJu9Zq9szwS+nBw7k
-	u5m7DpWGBhxIXsa5GkViQoZdA4RCAk4+uUoPJk6T3nwwR/SXiavbsNd5H3Omemw9YgTFTGAlvw+
-	sQReiKbD4iGXni5inqyP6oYQavm8OYEkv+AJrH9wpoiSODEmGaoX0oDCCzhQqvCZ84wtI41pTOM
-	Y34m92DvyJ1NhHS4y5jCURnz3N17tGDr9hfNnp6PoAppeO2xv3clgms=
-X-Received: by 2002:a05:701b:4349:b0:1a9:d04f:1b55 with SMTP id a92af1059eb24-1ac5d0da4acmr20007496c88.26.1793742155167;
-        Tue, 03 Nov 2026 13:42:35 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b245c69c3fsm1460505c88.20.2026.11.03.13.42.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2026 13:42:34 -0800 (PST)
-Message-ID: <e211bf3f-d696-4bc5-baff-e27b933a89ae@gmail.com>
-Date: Tue, 3 Nov 2026 13:42:33 -0800
+        bh=9h9kWdl4UuQD3zSaTMBwk6BIuE+01bV25xA/FSfWtZo=;
+        b=RxPJI+o47TVXTaV7vWKrnf1D2wDY1joEODaL5kBlfCN6hu3vFBPEienYDrKW8Oj7HC
+         559myTVq1tu7KOqIl4/8U/uFHCGPfdBAZVnTZR+LObM2TluDEhmODS2v0fVf/KmbUfvJ
+         wKIfBKylBwqmfMll7hIE+h9YXegkvovNqPz/58Z1ZUiR1utQ/JVbk/8gPkZvMlNRAcVU
+         embSoPzGxnNbJXAViB45KWle0ibRZRpCdawuIH0vu5jaUUZlXeHt9tJjD7/GfbDtnS1R
+         kkW9HI9RxSH1LLE+jtT8bG/Lyktnq5iWFfJO86k/wztLPJum1eWZLbXMob1FZJoshwex
+         Pzxw==
+X-Gm-Message-State: APuU4Z/Jd+My+WiKALdrfx2byprbbqK2I+xU3X3deC8L89cA6bxwl02M
+	Zu6wUq7jLDpOiSKN1KX+e9Jkya12pHvAv7av6wFdWram+kwNourOvMyTw/vJww==
+X-Gm-Gg: AYBFou1CLgIJ8Yd1lhFjdODZk1yzfvEjxVNqZJ85Kn16P/+vEJGEibzdn8oqAVJe4ms
+	GGyleaiyu6SGFVetdyxU/VYIRO3yQ7RCyj2i7hPqD6O39H0VgLbFhUVm8v5sPG3FCAoXG6FnGS/
+	8Twk00vACZikZSERgMbTweghsT45szkwiuXHvfG6/1pNa8TmxFuGdhx97nJHNfEXQTtocZ3YvgF
+	sFiLUfQ2vcsuJyRfwSg918MeLxf1+WN/GQAUJLzC+hOO0VF53gxtJ2KRgPs3pUTdoSYRgRIGM9i
+	0lxlS8WkkUQOw60SoX5kq2GgRf9mHYJAPyq19BLY+5sB+Yjccty1i/eZQZeFbBfAWswuXemiph9
+	hGB66rabmv3zt5qcRlrLf72wjDW9AWCcJ7Su1PF0cZJWBxTCG4uuSmprZObPu3hPHRicJVGL72M
+	LPRhe4bVIe9ZriRkWdEL9/SRJ91pyax6EsiYlCH+NQarpips03F7FKsRy+PmXNgvRy8bOupsmlg
+	o6j69dqzuFx0g2Vh6wNgW9YkItVTZNl/gf48DPeRGdq7uopcH/ajjvr0gVD9V+mgV2c+BnYZq3T
+	lRMeizNy
+X-Received: by 2002:a05:701b:21db:b0:1b1:251f:d732 with SMTP id a92af1059eb24-1b23f20d4b8mr4609129c88.31.1793742649905;
+        Tue, 03 Nov 2026 13:50:49 -0800 (PST)
+Received: from eldorado ([2600:8802:b00:1f88::287])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b245c1c272sm1583934c88.8.2026.11.03.13.50.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2026 13:50:49 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: macro@orcam.me.uk,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] MIPS: SB1250: Validate and update IRQ affinity
+Date: Tue,  3 Nov 2026 13:50:40 -0800
+Message-ID: <20261103215043.1190947-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -90,104 +95,46 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] serial: sb1250-duart: Convert to use a platform
- device
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <alpine.DEB.2.21.2608060322360.55540@angie.orcam.me.uk>
- <alpine.DEB.2.21.2608060406470.55540@angie.orcam.me.uk>
-Content-Language: en-US, fr-FR
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <alpine.DEB.2.21.2608060406470.55540@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 8/6/26 03:54, Maciej W. Rozycki wrote:
-> Prevent a crash from happening as the first serial port is initialised:
-> 
->    pata-swarm: PATA interface at GenBus slot 4
->    workingset: timestamp_bits=62 max_order=18 bucket_order=0
->    Block layer SCSI generic (bsg) driver version 0.4 loaded (major 253)
->    CPU 1 Unable to handle kernel paging request at virtual address 0000000000000208, epc == ffffffff8067f8f8, ra == ffffffff80666330
->    Oops[#1]:
->    CPU: 1 UID: 0 PID: 1 Comm: swapper/0 Not tainted 6.19.0-dirty #27 NONE
->    $ 0   : 0000000000000000 0000000014001fe0 0000000000000020 ffffffff80666130
->    $ 4   : 0000000000000000 a800000100e6f118 ffffffff8112cbc0 0000000000000000
->    $ 8   : 0000000000000002 0000000000000000 0000000000000000 0000000001a80000
->    $12   : 0000000000000000 ffffffff809fd488 000000004ddf14dd ffffffff00000000
->    $16   : a800000100e6f000 0000000000000000 ffffffff8112c1d0 a800000100e6f000
->    $20   : 0000000000000000 00000000000004d0 0000000000000004 ffffffff8112c1d0
->    $24   : 0000000000000001 0000000000000003
->    $28   : a80000010007c000 a80000010007fcb0 00000000000000ef ffffffff80666330
->    Hi    : fffffffffffffdb9
->    Lo    : 0000000000000035
->    epc   : ffffffff8067f8f8 __dev_fwnode+0x0/0x8
->    ra    : ffffffff80666330 serial_base_ctrl_add+0xb8/0x180
->    Status: 14001fe3	KX SX UX KERNEL EXL IE
->    Cause : 80800008 (ExcCode 02)
->    BadVA : 0000000000000208
->    PrId  : 03040102 (SiByte SB1)
->    Process swapper/0 (pid: 1, threadinfo=(____ptrval____), task=(____ptrval____), tls=0000000000000000)
->    Stack : 0000000000000000 ffffffff80cd5178 ffffffff80cd0000 ffffffff8112c1c8
->            0000000000000260 ffffffff806655c4 a800000100275bc0 ffffffff8064ac88
->            004000408112c000 0000000000000002 0000000000000000 ffffffff801965d0
->            a800000100786ba0 ffffffff80cd5178 a800000100786ba0 0000000000000004
->            a800000100275bc0 0000000000000000 0000000000000000 ffffffff80cd5178
->            0000000000000000 ffffffff8112c1c8 0000000000000260 00000000000004d0
->            0000000000000004 ffffffff80bf0000 00000000000000ef ffffffff80d171dc
->            ffffffff80d17120 ffffffff80d25658 0000000000000000 ffffffff80d50000
->            ffffffff80d2f928 ffffffff80d50000 ffffffff80d25698 ffffffff80cfcecc
->            00ffffff80b84428 0000000000000000 0000000000000006 0000000000000006
->            ...
->    Call Trace:
->    [<ffffffff8067f8f8>] __dev_fwnode+0x0/0x8
->    [<ffffffff80666330>] serial_base_ctrl_add+0xb8/0x180
->    [<ffffffff806655c4>] serial_core_register_port+0x174/0x8e0
->    [<ffffffff80d171dc>] sbd_init+0xbc/0xf4
->    [<ffffffff80cfcecc>] do_one_initcall+0x64/0x150
->    [<ffffffff80cfd284>] kernel_init_freeable+0x25c/0x30c
->    [<ffffffff809ff6e4>] kernel_init+0x24/0x118
->    [<ffffffff80112d20>] ret_from_kernel_thread+0x14/0x1c
->    
->    Code: 67bd0010  03e00008  2402ffea <03e00008> dc820208  67bdffa0  ffbe0050  ffb70048  ffb60040
->    
->    ---[ end trace 0000000000000000 ]---
-> 
-> -- where a pointer is dereferenced that has been derived from a null
-> pointer to the port's parent device.
-> 
-> Since no device is available with legacy probing and it's not anymore a
-> preferable way to discover devices anyway, switch the driver to using a
-> platform device and use it as the port's parent device.
-> 
-> Use platform_driver_probe() because SB1250 DUART devices are embedded
-> onchip the SoC and therefore not that straightforward to remove.
-> 
-> An unfortunate consequence of the switch to a platform device is we now
-> hand the console over from the bootconsole much later in the bootstrap.
-> The CFE console handler appears good enough though to work so late and
-> in particular with interrupts enabled.
-> 
-> Conversely, only starting the console device so late lets the port
-> initialisation code always use fsleep() for transmitter draining, so
-> drop the other variant since it is now dead code.
-> 
-> Since there is one way only remaining to reach sbd_init_port() now, drop
-> the port initialisation marker as no longer needed and go through the
-> channel resets unconditionally.
-> 
-> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Cc: stable@vger.kernel.org # needs to use .remove_new for <= 6.10
+sb1250_set_affinity() selects the first online CPU in the requested
+affinity mask without checking whether such a CPU exists. If the
+intersection is empty, the resulting CPU index is invalid and must
+not be passed to cpu_logical_map().
 
-On BCM91250E (Sentosa):
+Reject affinity masks containing no online CPU with -EINVAL before
+accessing the CPU mapping or interrupt mapper registers.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Also update the effective affinity mask to reflect the single logical
+CPU selected as the interrupt target.
+
+Fixes: 421d1563c662 ("mips: Validate online cpus in irq_set_affinity() callbacks")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/mips/sibyte/sb1250/irq.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/mips/sibyte/sb1250/irq.c b/arch/mips/sibyte/sb1250/irq.c
+index 2f08ad267a11..d7a656cd7ec0 100644
+--- a/arch/mips/sibyte/sb1250/irq.c
++++ b/arch/mips/sibyte/sb1250/irq.c
+@@ -76,6 +76,8 @@ static int sb1250_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 	unsigned long flags;
+ 
+ 	i = cpumask_first_and(mask, cpu_online_mask);
++	if (i >= nr_cpu_ids)
++		return -EINVAL;
+ 
+ 	/* Convert logical CPU to physical CPU */
+ 	cpu = cpu_logical_map(i);
+@@ -103,6 +105,7 @@ static int sb1250_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 		____raw_writeq(cur_ints, IOADDR(A_IMR_MAPPER(cpu) +
+ 					R_IMR_INTERRUPT_MASK));
+ 	}
++	irq_data_update_effective_affinity(d, cpumask_of(i));
+ 	raw_spin_unlock_irqrestore(&sb1250_imr_lock, flags);
+ 
+ 	return 0;
 -- 
-Florian
+2.53.0
 

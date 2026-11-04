@@ -1,59 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793797108;
-	b=hkN+arxyAxFSMxRkJpefBpzYB6srldk/ufzOIejEs6HV1FZyXmQfTKypZTYPQp7JUgmy
-	 6Y1a7tRw0d98PPHsxGd9ZztZjl35pcObaRt72BwsNLwiDhM+tutOBQHPhZr2tVd2Ejm/C
-	 mGNdTZMwvcN+atOplYTEp9/8R2NVHy0Z1uHGdBHxYStRW8xMIfnH5+gad7JjzXwkdlG4/
-	 7XXxUHHpSfGV6iNuackOVwbg0PPvD8KRTvsJZSigsN6UakVGBbkaNrCvqvMgkDvsLEZLO
-	 ObScOIQqBAUs6wz8YmSaD0rdLuiQO32DTdCh20k18P0Radhn6PwiT5uZgae+Wt4I/Cw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793797108;
-	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:Date:
-	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Last-TLS-Session-Version;
-	bh=7f2hzo/dOBTufspJmPFdaPlSMDROy4acygZbmp25eMQ=;
-	b=hzLOa4QulahW31QFB3SglixWM1x5PyZJ6uTNSzCevuJUY0XSEvZDBpQhgElK+DNvND14
-	 xK+5VBSSFWTITCmTcYDnXRuj4dibXPr10GXPyhJxOu6MToQrkN1nXWAm4r0bgDWcigrzb
-	 P+LV3Rktu2q0Gzfkp26Os1i0rCJV+c8KueY/JKvFrGDFwop6cZ4PqYVBZ4OTMrdycW3XS
-	 a/RVUU8FinNuGPsusPVXFsJpZIdN3dgR1HYXwf7eJqS1AmEn88mDPnWZHXbRGrQUjXdsc
-	 DzoJmHKDf3eYimVDyZaSHPL0zAeJUkfFLl+bZAUNIbe/OkWVANErS3Ts3zdG5khLK9g==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=bootlin.com;
-	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=ppmQog05;
-	arc=none smtp.remote-ip=185.246.85.4
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=209.85.161.41
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1793799154;
+	b=rphG/X1H6412xDVmOgt5tpPG0s7fVnh4AM2brz1B5w58sDBFw5xDMnjBawm/V4zJWm9F
+	 q/EK7nZdRar5frOgO/SXiFJwe5Y0s1rlJbWTKZZLeroYxcaxTvKnifaWxvRfjUA+KzqHi
+	 5MK4nvIzrWDiidxL6zuSbSk87mFBf9dgHm3a0H2DA1GNu74abULI8ZUlNH2PKqy8EoeDk
+	 sWks6utbicdwGfUoGDvqMif91SUIX1sVIQsVF5DnmhT4DxfrWnGJaCbB9x+mL9iLZON5v
+	 /ydnBwkRYRKQiUuiGsEEWchZa2lTQiUktJxRAb3K2Z5w8P7Rmjov+0i4rS9pRBiwlnA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793799154;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
+	b=3BSkB/BLtVTp0A0Iyspd78Jpfj0Y4pcQ8bUBA5OZlG8SHjU4wENepz4PoOwYuvfZju0b
+	 aBd+nJtaB+JCVU2oQ/bQh6t/TbHTGk/OimTImTN/arbBX1YHkCNtE2R9uxw4sjeSnshoV
+	 mneQmPQfzxZ/dwrBq8iB/GYosCqo++0yjkHheFXPc0hTdp/zC2mKAH3Z1w5OGSB9qCR92
+	 eVV7klV0gM4CQQ8gVy45aPXkjxFhnbBBXnglXBK2/Dq80ARqupR3VQHKMxyuz432HaBB7
+	 1WOvT4B/zsU9jz9m6mvKPl2fChwDQ+Sr417dFsd06j0agZ3MlHvwx8vQWxif6y+JH4g==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qy9pS4bp;
+	arc=fail smtp.remote-ip=209.85.161.41
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E58606D82A;
-	Wed,  4 Nov 2026 12:58:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 39E58606D82A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4C2606A32D
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 13:32:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AD4C2606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=ppmQog05
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id E8DC84E41392;
-	Wed,  4 Nov 2026 12:58:26 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id B8DAE60770;
-	Wed,  4 Nov 2026 12:58:26 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7F1FB103291F6;
-	Wed,  4 Nov 2026 13:58:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1793797105; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=7f2hzo/dOBTufspJmPFdaPlSMDROy4acygZbmp25eMQ=;
-	b=ppmQog0544qg+PHX483FrjV21nuhSQoV2zqTyxCmraipWI9SzdBN6fsg0rAlfv3EptugsJ
-	BIYh6L/sEaRtYuKt6sTBNy6xSo1XOhKj5Q83/az1xGMVWVpIz9iNrAGYntkr1l5ubVmSyj
-	nMkbG4jzpT5DEdsNC0FYTtJdHupuzLLkT1gmyKcVAXHdapfd2Y8gcxMngQ+VWmGPCZRQDc
-	XDCGWI5bFBTNexwBv2v6S+3hnLHI3uIfYDP+ndsFejOj5tIuHFf2JDLn55E9Q+E2gR53l2
-	MQTUOINAqq5PTjhlMwxUdhd/2MFFZni9ce4fQ2rCJVwCCc2CthQf1LQi2o2awg==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-Date: Wed, 04 Nov 2026 13:58:04 +0100
-Subject: [PATCH v3 4/4] MAINTAINERS: add EyeQ5 MSI controller entry
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qy9pS4bp
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-6d290b10a35so283202eaf.2
+        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 05:32:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1793799153; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Xv5pEdNTA7jcxAj0YPe8X7yB0vEhxrkJRZDI3BlAYHtoIFJgi0FZZiHzcN+zWKf8Ht
+         V2yRMRJ4OHWWhOwxNsTBzfoKGb/vEz2rTQAgPRc/UVyGfcDzbTg7gsBlcN9O/alQ1SnA
+         swuxUKUPjNpHmLLrkrNgWPdIjL0g2T1TZTs6nAfyr9HRhsJeL/J9C68YHt4PoB1YWcFL
+         bB3+bmbbeN+jvLmMy4Rw4PQ3DZq0kLSufpbCAfzTkwTC46+unTvXGJg//9hGD3isdu7g
+         Be1U7fVuO9363vHFTVx2GJKs6ep+FhbYh9Nliw6zgUPyCKI1LU9FH6qKtKzW6KAp41vM
+         mdyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
+        fh=0eLH80NB7lEnqgxTeQfkedNgMjxnzxNQ1lC/NhjoyX0=;
+        b=OtcOEphIMC1Yy35CCEDFsBDEdnasaGSfvl/KPL2FhVskU8zWe/oBau3/JUOEUzIj3k
+         EZvVtPZmJq+yH9lzOFU39JLL4Zvb9VCleyntH34WCm/cNTIQNYBwZ9jMoLTx+Pllkr+u
+         +tIoGZXCfhTLq56Ep30t2O7z3ZWBYeUM9mysJ23PWVgGNDVT37Se1yfNXx9y9LZJa9bF
+         S61pXLLC+ZcbznwSzb5a6zHTI4oikbEo96m9j8FDS1fviH6vq0/2WMTc+LiZNZxN61/n
+         jFCBRrzmEjCU0pXMADBpf1JeOuMiLz0LDpQXY1qellozNHgd1RbRGotPYCvqNgd4+tyN
+         tH+A==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793799153; x=1794403953; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
+        b=qy9pS4bprOjTsWRvlH9jkM15Jb6X9A27TdRPIVsM3h3dXuLNkrkluEELmjTLBM+V3P
+         ncmegftrX1Jbf48M/GIiWSkyr9c2afUzcpyDNVJUxw2kErAFuFuiYBM0d4r2Z2WVe8/P
+         mryc8gKuoM+SPz7kBRJsT3vcNUF1prKGEyid+vyji8hwjKqA/XununEaEOmNqxRbF7Ik
+         Ay6P0FIY9Xe7oHKlx6qraSAP9Dbjx59WRcXWsOznu+IpcBB6lS5xl7kIb0TV6bN2rGXy
+         D2jjv2adUgO9gp2wR1eQZMN2kZBuWpiOMzIW4Nth+vi0fpGicG3Y+McnpRkp2x+TqdRj
+         /FeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793799153; x=1794403953;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
+        b=ybmx6EB2i1dErXj7E+fpfewAFO/+1eY41Sd9ufQzfzzUJNu+yESNUDpjwp03puLBcZ
+         ok+n6nJWK3yjoCCxdQUXHyrbIYwIIphICLEA/8OxcWEZ5n1QERre8xYhdvEYmBKomSq+
+         xKQuAoW5DY/XIdKOTczDracZn74SYa5PXEUmdCiYEpCohpX2kRmpNO8ktdr+M9F/UXPY
+         yO/3ppAjy+7R0CJlskUJq9MNbd38YV1ONUjqgPghMvEAym6waPTkDIv0XVE17EeN/6Ss
+         WW2NH2rPffk4hqO//jWAt6g9B/pluysg2xhcV4ayjYkG7UxnhUndsOmvvIAqRhcFGP1b
+         DOkg==
+X-Forwarded-Encrypted: i=1; AKwUvBzWvI2SQypUvBLu8y1LK4PLM6PgdyOU9dzFM36zkO3tlx9Qk2cFizwK/ePjQFy/S6RVYr5Wu+mn+Zjl@vger.kernel.org
+X-Gm-Message-State: APuU4Z82y+TJOL/EIYdBwHivAyR+Qau0r+H1TjKHjeza9gtBTrhnoSR1
+	vh99PMTZikySt+D/wMmiJ5EBzbg1JXQXdYq3Menl0gg6+049VDYry1+psbvf/Ve9YVACGMdfxEh
+	SkQbkiWvgo1gZZqcx4TJwziFi2AOQkiw=
+X-Gm-Gg: AYBFou2hBVRrZV07Wq9jHHvbo7LHbBJGd/+dNTq1pURer4sXXRRTZY+ZQCBWjpb0rmM
+	Dz5Se144gR/f30YKcmIDi+7ImDhLyhEbuIuCstu3AyFnr2aO8WiV+A/2tfrJSwaYIWzQDBhc4vf
+	IdhwtyinhJaZy5j5Y1HqF7mupTsituaoS+Igv1w2UsAKB4wvHUTGPk8KkGJSJGcfPE8FBKIQoV6
+	yx5gn32aXW0i9FUzMMTeTWb5oKPdglnnq6+1EC+ZFjHHi/UkKG5qU+Yg8jnukW60h/D3DNjDmW/
+	dYFhx9494RCVLp5OlNC8gN8D1g9q4L/xrUvF8d3+yNSveI03oN966TGFwHKcrtluHYNansSLtSa
+	dlBP/+C2At4LS8Hcx/BiYXLBf5yGCLMubhT9gL4Bjeb8scRGQ+6t4Ym5a3wdOTQ==
+X-Received: by 2002:a05:6820:55d4:10b0:712:c3fb:b4dd with SMTP id
+ 006d021491bc7-714f2a07b44mr6865589eaf.58.1793799152650; Wed, 04 Nov 2026
+ 05:32:32 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -63,51 +104,55 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20261104-eyeq5_msi-v3-4-2866f732cd38@bootlin.com>
-References: <20261104-eyeq5_msi-v3-0-2866f732cd38@bootlin.com>
-In-Reply-To: <20261104-eyeq5_msi-v3-0-2866f732cd38@bootlin.com>
-To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
-X-Mailer: b4 0.16.0
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20261104-sf19a2890-sysm-v1-0-a4fac07df823@telaak.dev> <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
+In-Reply-To: <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Wed, 4 Nov 2026 21:32:20 +0800
+X-Gm-Features: AclHuK9KjWGPhCZrdzN2zSc99IwcSQrcSlYV4KRQtVdLRgeo4bHU_zFbKSD1vFk
+Message-ID: <CAJsYDVJ+FWHJ9AaJCmQwwfdsVJJC5mPw-fXzr2n6OAsZFHJbEA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] clk: siflower: Add SF19A2890 peripheral clock and
+ reset manager driver
+To: joseph@telaak.dev
+Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
+	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Yao Zi <me@ziyao.cc>, linux-mips@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the EyeQ5 MSI controller binding document and driver.
+On Wed, Nov 4, 2026 at 3:21=E2=80=AFPM Joseph Telaak via B4 Relay
+<devnull+joseph.telaak.dev@kernel.org> wrote:
+>
+> From: Chuanhong Guo <gch981213@gmail.com>
+>
+> Add a platform driver for the peripheral clock and reset manager (CRM)
+> block found on Siflower SF19A2890 and compatible SoCs.
+>
+> Each CRM block manages a group of APB peripherals through three registers=
+:
+> a reset register, a clock gate register, and a shared Bus Output Enable
+> (BOE) register that must be asserted for any peripheral in the block to
+> respond to bus transactions.
+>
+> The driver registers a clock gate controller and a reset controller from
+> a single DT node. A shared spinlock protects all read-modify-write
+> accesses across both. BOE is managed automatically: asserted when the
+> first clock gate is enabled and deasserted when the last one is disabled.
+>
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> [jt: from Chuanhong's siflower-7.1 branch; one compatible per block with
+>  its gate bits, critical gates and reset masks in tables here instead of
+>  the siflower,valid-gates, siflower,critical-gates, siflower,reset-masks
+>  and siflower,num-resets properties
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+Why? This block is one used repeatedly inside this SoC and SF21,
+I think a generic binding with clock & reset description in dt makes it
+reusable without further changes and also results in a shorter driver
+without a table. This table in driver aren't simplifying the dt bindings
+anyway since it still needs one block per node.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 93abbb315065d..ca3a32790261d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18769,12 +18769,14 @@ M:	Gregory CLEMENT <gregory.clement@bootlin.com>
- M:	Théo Lebrun <theo.lebrun@bootlin.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/interrupt-controller/mobileye,eyeq5-msi.yaml
- F:	Documentation/devicetree/bindings/mips/mobileye.yaml
- F:	Documentation/devicetree/bindings/soc/mobileye/
- F:	arch/mips/boot/dts/mobileye/
- F:	arch/mips/configs/eyeq*_defconfig
- F:	arch/mips/mobileye/board-epm5.its.S
- F:	drivers/clk/clk-eyeq.c
-+F:	drivers/irqchip/irq-eyeq5-msi.c
- F:	drivers/phy/phy-eyeq5-eth.c
- F:	drivers/pinctrl/pinctrl-eyeq5.c
- F:	drivers/reset/reset-eyeq.c
-
--- 
-2.53.0
-
+--=20
+Regards,
+Chuanhong Guo

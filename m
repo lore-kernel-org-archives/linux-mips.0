@@ -1,84 +1,84 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793771948;
-	b=gaoOPLgk13CnM2+K1xzCIMeoqNdKF0/Ol+kTbx6ETrLkAj2jYDNussrROaBfTdxJd6yr
-	 FgEVIOLk83GMphDj7/3LZJ/A31H7yC/UEU+fHgueMKnSEeQl2wCcFofjK4IG0+fPlU50w
-	 044EVQjdJrenTsON/k+YL9AF5YuDTCFK/0NWJ0v+wJHWitM2Yz6WKTCTqjphdQF3LGbjj
-	 gkGuH9KhdUTg/RcQoKEK50rvoMxKZzsU3/MtxPvbbD/INGwujpaR/6dWrKOV+FyIZliiZ
-	 fqQuXWnOIVe9JRCVRgafsQrGeBtR0ZGOlT9S43F4yhnaIAHoowt7tP84Qpdask6lSug==
+	t=1793771946;
+	b=zL/EPzJG7zLF1PiWOCt4xi/UA6WRZqf6W9iDiQo+grt3aFMHlsRBGGiVHUbeCKMjFWPV
+	 9Js7XT3VLM+Du8JcELttH088giHC5cBVFUUr0KdMm0Bc+udMk5ygm+7ZPGIu1jYLLcwDW
+	 kiQ2vNSG8AujBVQrCFuVmgadv69VKTkr3Z+x8kdW0EvS6X7PRX3mK7hgLNOQPd0f9gelo
+	 qT4dOW3jSnniTxpgxKyW6R3706RXgLu3DErN8ROmHFDpDFxvZke4wrTj8r6nZSr7xZV4D
+	 Dq5oG1hcmoNnldBXVfq7I4nCI46kaDjRCTlgTPOa5Lo10TwzXr4ak0CHaqtbAcZ8KcQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793771948;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793771946;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=vcGVtTeRbNMuJZikTeTy/aVLP/b0ijAI9oZ17pCLwwI=;
-	b=HWiAlTBfPyoPqNQnu8j/Rb4YkLmSI/Bjrg0UqZgadBZD2uMsZKOpFwomFhiF9CQuYWsU
-	 lpYsY8nhHwmYA+8fDUaqdoqP0DNRyYYvYUUwjS8vG9Ver4jVJmNfi0HLlBzqiXrX0QjA0
-	 T1mINswFRHUPBdmILjlqTtp1D56h9DsFEz9Q7r4nag1rjZASCMHLvZyoes76aSk2Jk/Bh
-	 9RuxjjfUScI7Y/4KOO9Jl4GZDLep5j8oe/LNl0kly94DbkXr0AHXyEGUngvUYteVu1lOA
-	 gtIwCrX+ARxJTc0ZvEbZYY5ZHqZzs8V/lTXuSruyoIuaKqTb4qHSKBi4BQiS7dyz99w==
+	bh=2Rp4lizZz5ZPmQTX2hVm2ac2qWYjm/C0ch6Hu7hghw4=;
+	b=jadJwRJZiFBQvntn7JVWbijrh9zQW0v+4PyauONZm/5CNEJvaFfkb0lqdO8gok1cDlF4
+	 HgTUHnjXSvWz6U3j2H1x+xfubopc7xdyzPoKHoLetTVvT0M+PtYnmw8OTr4lEcf45WY+f
+	 bZ3xCU+tkhsyvNDekLgFBW1AwjSR9R+u1IhtRYcICg3UMdhV5cjDHRIk8m/1XlWko6qg+
+	 HKmCTUd1jZcyKleon4yCghxHR1b+6oiR98gnNaJqjQn+EPL78syZMAPK6ALi/THQkJDdP
+	 qmcU5XIabeBl0ZsdYOllL8PcvQfyRLJPCp2I8fu49GAhfg1xiVzXvDzrnIDJRr8lL6A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RQyqnqA3;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zJQylyrI;
 	arc=none smtp.remote-ip=209.85.216.41
 Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE49E606A332
-	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 05:59:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CE49E606A332
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E38606A334
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 05:59:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 98E38606A334
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RQyqnqA3
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3ad2b3b1c02so199392a91.1
-        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 21:59:07 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zJQylyrI
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3ac91ac8924so259253a91.1
+        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 21:59:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793771947; x=1794376747; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1793771945; x=1794376745; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=vcGVtTeRbNMuJZikTeTy/aVLP/b0ijAI9oZ17pCLwwI=;
-        b=RQyqnqA323GdSXTNNSSZ/xZ3K5TQwCzL5RgcVHfFdyzLb1ZFGAiIF0HXmzRwsq+imI
-         FFCfZomhVZVCkzKYYVmVgHs/d3Sx4t4jPoIPKkn4xXMvILrRVc59mtjMx3+y2ZxCLfe1
-         YAurjNgVZbwp8opPTwOzjp/0S1oR3Gb27pc+BsHW0/3GyTDswDDC1bJ4C7/MGzt+OJTV
-         rjTDThLzl3ChKJcGWlZDilc2Nc02UCMyGPW6mpYCf4TGLvvcebV9fXMoeT6FfjDtkqak
-         sjWYNbkdMlWbxPaWS0Bj9qeyzizqFxcFxE79aHH2jBn+gWTRjYfawW7YEvd4R+5kmk5z
-         G9tQ==
+        bh=2Rp4lizZz5ZPmQTX2hVm2ac2qWYjm/C0ch6Hu7hghw4=;
+        b=zJQylyrIaxkJ6qh/3H/fp8MxqtGJ/b8X2+J0P9MIJk71Xfz1vz299bZXbYwzp6c/MV
+         d+5X7dTslB2r3icSDTd0zICkWYZJ/YFmLE52MaiHL/RBHNAoM66Efgq/QPYemCyKy1Ao
+         F894GPvtqxZYVFnZYLTd4BokScEzWecc4p8n9OKIzLwUfv9QdyFOMUb9CEL64Wj5dzUf
+         ZjvBBEb5anuFvYIIxztm8MdAJi9RQIekHlRHrpeW6Sfeo5/kR47lSwf8RX1GrL4GJkYW
+         yXY1dX9gDARf33ZA9Pv+gN2yguvFlT2OkuYsfeSOZucvZmED752iWg4ZuazqomnOtWMG
+         lX0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793771947; x=1794376747;
+        d=1e100.net; s=20260707; t=1793771945; x=1794376745;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=vcGVtTeRbNMuJZikTeTy/aVLP/b0ijAI9oZ17pCLwwI=;
-        b=XgAZYHwFkdVYzRaViKxYEK3FMTAtxZSHk1XG+8ggP0LE4QcHksw3QcmapRodIMVaDp
-         lrvAzWtyz+DWKnDX+hxGjFp7fE4hUzKhimfe1RRiipBQ5WVOYrHwuqvwboEXnMR1jn82
-         SS3AIQ0LuGie7iNCnhUJKo4kBJ4kCsxcvo8dPDJCq/4laqZ6Od8tjzOCp23z5nbbxw1l
-         Aw0w+VEnm3Wdd/qCMUzfxxNw0PyCSJl5Rs0XUYOyKmGLt6dfQU3sHRiPek1m4VWiURNY
-         pXdDGUY0ZSqspSMK9DxR311VuR9rXxg/3wlSEWIuz90hdhZ45WG40m3ejcV0nRAJZBPL
-         g8GA==
-X-Gm-Message-State: APuU4Z9be87IAFxFHsyZqQIyfjeI5pehLB8oiJ90qLoiq1s3khqEZWUm
-	w5D2m4EV6HnSc5PHNz/tTC9J0MvBxHGpqYnShRSJngygYAK9OU0b4LSoUzCkyQ==
-X-Gm-Gg: AYBFou0v6bXLkvEm4P2/lpSj+d3GSFJZQonPU0w7R4NLK+/YMe9n43Ym+QEkEutyZ0O
-	H2EawyYLxM0CARq0jMyT9Mt39tXeyU3zvmGSPRGSADCw6NH2eYuQlv+a57nnDjM9lFW2oRpc0po
-	q/YCTp+7eHSBsJbhaNpWNiZpGtRDLFQ5xcJuvsIfz4CHhSAlmGwal3MCc76z/M3kEBD2AcF2Bum
-	Box/IZJ4MB2w+mt98/66yjPwSqAriSVXguMXmbAHSKEelXqdO26fphiOTbcqIE+yJ7rsunlgYd4
-	7xMTzqJfe/Tv1Jw2NwmjopNMSEiH141K9TyamQqa8bu6IoNYujAA9QlqhNaNK2CANzhQGFehJrE
-	dxYeuiQT508rbWCh9MoxzrWDft1vodxJ5sUrhrnkDEhmZrxWOu1pXPnDMFhOo6uge+YyUmhJY1z
-	ARCOZdNoD8lB3qIbOGJT8dbeSthHi3p/JPnMOut+XDTrsJSXKu6TmtQ+zcdZ/CwziYMXbXkgcau
-	UEa6jfBmMO1PjPYIP3IlGTBV6DCu/83lz74gjTyd8E9p9wWE0ypGPAK9HXiU+976PaxE/K8Kz1k
-	TxmwatLIXh4c7qIKldkzdEnEkvG5Ysz5ypBkC6mwP5Q3Sgv+766G136ma8YX+Eo4pQokTAoDt0x
-	ktmwa6QwpKfHS8W8zNGSGg63wbcnVXTDLEZ3GO/m9q4kAwY3czUVVckpuHVw2IoclPpc/UJqluj
-	WoLhWz9FY55tpUDmTtjh0nkY4=
-X-Received: by 2002:a17:90a:d887:b0:3ac:8af9:4a77 with SMTP id 98e67ed59e1d1-3ae897c94e8mr13520420a91.10.1793771947282;
-        Tue, 03 Nov 2026 21:59:07 -0800 (PST)
+        bh=2Rp4lizZz5ZPmQTX2hVm2ac2qWYjm/C0ch6Hu7hghw4=;
+        b=d3f1eH3g2ZDobseaTMhVjilWsBMCJqhnmu2TT6XlUJ3yS+5JLuiArgarw0Ks2GEYaU
+         hb8hZ4g0AojE3DrFyZ2c2WNt+iLQqShKMvdkuPbYO+jWod8bFfZ6JwcPAn/5Q39YWp35
+         X0pFHLb33WF7X1mypLclfdufHfulPbF1ORRnCtODHhVcawadUefhBIrtByGmeVfuAnwa
+         NZeKP7NMCpAOt3im+yKp5s1iIm7iWi0cpM9lrliDsiQR8BEbMOdUtWqtN1xI1xIgoM+8
+         IC38g3Y6HUNXR9UVZHdpILSOWFSm29xjjXeCYz/aqjV0JtTnv6P8Dd0ylDJUu4/XeQq/
+         bU2Q==
+X-Gm-Message-State: APuU4Z/JL733HJN1NlS5mPDrsk8geyaNdkAmqUxxUx3mag9Y0drlg+22
+	p3wfX6BS/b0s4Zpehu/54HWRlPEPpx99RWYQIZ5sr7hvD83niXXAw2tiENoRgg==
+X-Gm-Gg: AYBFou2YnJcPZJ/oCilk5AbhNKuIe99L9Ualsm334QvADS1bRCqPEwkD48Eqe0edlna
+	mJcnPAdP0yg4vTykCbuaGyQNkGtCBwg+2OTB9HSeeuv0Prve9zmDmujLx1xcfi5MbPyBuCYO22m
+	FKaUYRjbV4Ot9A5vNqVZz5nCpZg68s2JV6nWWboKXsubf1UYoZHEimuLq9knzAbz3tmp5ab2c4N
+	8Came5+Gc7u3mOnV9aWu5Y5hwbZsmXrGNfUL5uv8BCBqS6tlHJcs917PneFqp7sSXG7bCyBTdWM
+	LosivorB4GHFnIcXZbvBaIJrXoKt2mQvKJutbviJo5tv/LlVVyVF4NRecJ0SHg1MFzHjzuPULvk
+	o3hlVpSUA2rMYt+B8Nnq38ngOqSKpfUzhRryPUHwLp0Lf6V08C0xEa5XaWUEwHY0sFoL+ap4/eG
+	5b320GfK0QUycbD8FjcSHiufw7ZmJ8fP+2pvdD1XmCGJGJA0LEHwg++EJLH7nCAmw0YfYeIzXfC
+	u4I2lqjsJ4qaVSyQUhkF9JEwk9psZ+bF9paXLjvyQJ9jHS1q2ZZ5PJhYCvRt8q9jh0FRzy8830H
+	FSAr1Xm9m1h8UiU8NBlrV28ubJcoQydNcQGuttuDA37J+rEBIoZss8aJiUVoJAjbbouu2onPY24
+	4QCuP/3KaJq75+mu3LBJPdjE8cHccGcdCnAtrwZQF/4T8vPYgN/zWxy5VUt8ONsmHwHzRtVr/Ae
+	eL0Q==
+X-Received: by 2002:a17:90b:2247:b0:3ac:7c4d:8be6 with SMTP id 98e67ed59e1d1-3ae89836523mr12002205a91.40.1793771944775;
+        Tue, 03 Nov 2026 21:59:04 -0800 (PST)
 Received: from ryzen.lan ([2601:644:8000:37f::e34])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b07c9928c4sm7840110a91.15.2026.11.03.21.59.04
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b07c9928c4sm7840110a91.15.2026.11.03.21.59.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2026 21:59:05 -0800 (PST)
+        Tue, 03 Nov 2026 21:59:04 -0800 (PST)
 From: Rosen Penev <rosenp@gmail.com>
 To: linux-mips@vger.kernel.org,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -89,9 +89,9 @@ Cc: Brian Masney <bmasney+clk@redhat.com>,
 	Antony Pavlov <antonynpavlov@gmail.com>,
 	linux-kernel@vger.kernel.org (open list),
 	linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK)
-Subject: [PATCH 8/8] clk: ath79: share the fractional PLL calculation
-Date: Tue,  3 Nov 2026 21:58:52 -0800
-Message-ID: <20261104055852.152340-9-rosenp@gmail.com>
+Subject: [PATCH 7/8] clk: ath79: give each compatible its own init function
+Date: Tue,  3 Nov 2026 21:58:51 -0800
+Message-ID: <20261104055852.152340-8-rosenp@gmail.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261104055852.152340-1-rosenp@gmail.com>
 References: <20261104055852.152340-1-rosenp@gmail.com>
@@ -106,138 +106,113 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-AR934x, QCA953x and QCA955x compute their CPU and DDR PLL rates with the
-same formula, ref / ref_div * (nint + nfrac / frac) / 2^out_div, written
-three different ways. Use one helper for all of them, with 64-bit
-intermediates.
-
-That fixes the QCA955x DDR PLL rate, whose nfrac * ref product could
-overflow 32 bits: with a 40 MHz reference clock it did for any nfrac
-above 107, and with 25 MHz for any above 171. The other rates are
-unchanged, as checked against the old code with random register values.
+Every compatible already has its own CLK_OF_DECLARE(), yet they all
+shared one init function, which then matched the compatible again to
+pick the SoC code. Have each CLK_OF_DECLARE() call a small wrapper
+that passes the SoC init function to the common code instead.
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/clk/clk-ath79.c | 47 +++++++++++++----------------------------
- 1 file changed, 15 insertions(+), 32 deletions(-)
+ drivers/clk/clk-ath79.c | 72 +++++++++++++++++++++++++++--------------
+ 1 file changed, 47 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/clk/clk-ath79.c b/drivers/clk/clk-ath79.c
-index 8086b4f6378c..f9a8c9b9aa24 100644
+index 768c9e410b59..8086b4f6378c 100644
 --- a/drivers/clk/clk-ath79.c
 +++ b/drivers/clk/clk-ath79.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/bitfield.h>
- #include <linux/kernel.h>
-+#include <linux/math64.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/err.h>
-@@ -21,7 +22,6 @@
- #include <linux/slab.h>
- #include <dt-bindings/clock/ath79-clk.h>
- 
--#include <asm/div64.h>
- 
- #include "clk-ath79.h"
- 
-@@ -189,24 +189,17 @@ static int __init ar933x_clocks_init(void __iomem *pll_base)
- 				 ref_div * out_div * ahb_div);
+@@ -504,11 +504,12 @@ static int __init qca956x_clocks_init(void __iomem *pll_base)
+ 	return ath79_set_clks(cpu_rate, ddr_rate, ahb_rate);
  }
  
--static u32 __init ar934x_get_pll_freq(u32 ref, u32 ref_div, u32 nint, u32 nfrac,
--				      u32 frac, u32 out_div)
-+/* a fractional PLL: ref / ref_div * (nint + nfrac / frac) / 2^out_div */
-+static unsigned long __init ath79_pll_rate(unsigned long ref, u32 ref_div,
-+					   u32 nint, u32 nfrac, u32 frac,
-+					   u32 out_div)
+-static void __init ath79_clocks_init_dt(struct device_node *np)
++static void __init ath79_clocks_init_dt(struct device_node *np,
++					int (*soc_init)(void __iomem *pll_base))
  {
--	u64 t;
--	u32 ret;
-+	unsigned long rate;
+ 	struct clk *ref_clk;
+ 	void __iomem *pll_base;
+-	int ret = -ENODEV;
++	int ret;
  
--	t = ref;
--	t *= nint;
--	do_div(t, ref_div);
--	ret = t;
-+	rate = div_u64((u64)ref * nint, ref_div);
-+	rate += div_u64((u64)ref * nfrac, ref_div * frac);
+ 	clk_data = kzalloc_flex(*clk_data, hws, ATH79_CLK_END);
+ 	if (!clk_data)
+@@ -534,21 +535,7 @@ static void __init ath79_clocks_init_dt(struct device_node *np)
+ 		goto err_clk;
+ 	}
  
--	t = ref;
--	t *= nfrac;
--	do_div(t, ref_div * frac);
--	ret += t;
--
--	ret /= (1 << out_div);
--	return ret;
-+	return rate >> out_div;
+-	if (of_device_is_compatible(np, "qca,ar7100-pll"))
+-		ret = ar71xx_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,ar7240-pll") ||
+-		 of_device_is_compatible(np, "qca,ar9130-pll"))
+-		ret = ar724x_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,ar9330-pll"))
+-		ret = ar933x_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,ar9340-pll"))
+-		ret = ar934x_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,qca9530-pll"))
+-		ret = qca953x_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,qca9550-pll"))
+-		ret = qca955x_clocks_init(pll_base);
+-	else if (of_device_is_compatible(np, "qca,qca9560-pll"))
+-		ret = qca956x_clocks_init(pll_base);
++	ret = soc_init(pll_base);
+ 
+ 	/* the rates are fixed, so the registers aren't needed any more */
+ 	iounmap(pll_base);
+@@ -578,11 +565,46 @@ static void __init ath79_clocks_init_dt(struct device_node *np)
+ 	clk_data = NULL;
  }
  
- static int __init ar934x_clocks_init(void __iomem *pll_base)
-@@ -243,8 +236,7 @@ static int __init ar934x_clocks_init(void __iomem *pll_base)
- 		frac = 1 << 6;
- 	}
- 
--	cpu_pll = ar934x_get_pll_freq(ref_rate, ref_div, nint,
--				      nfrac, frac, out_div);
-+	cpu_pll = ath79_pll_rate(ref_rate, ref_div, nint, nfrac, frac, out_div);
- 
- 	pll = __raw_readl(dpll_base + AR934X_SRIF_DDR_DPLL2_REG);
- 	if (pll & AR934X_SRIF_DPLL2_LOCAL_PLL) {
-@@ -263,8 +255,7 @@ static int __init ar934x_clocks_init(void __iomem *pll_base)
- 		frac = 1 << 10;
- 	}
- 
--	ddr_pll = ar934x_get_pll_freq(ref_rate, ref_div, nint,
--				      nfrac, frac, out_div);
-+	ddr_pll = ath79_pll_rate(ref_rate, ref_div, nint, nfrac, frac, out_div);
- 
- 	iounmap(dpll_base);
- 
-@@ -325,9 +316,7 @@ static int __init qca953x_clocks_init(void __iomem *pll_base)
- 	nint = FIELD_GET(QCA953X_PLL_CPU_CONFIG_NINT, pll);
- 	frac = FIELD_GET(QCA953X_PLL_CPU_CONFIG_NFRAC, pll);
- 
--	cpu_pll = nint * ref_rate / ref_div;
--	cpu_pll += frac * (ref_rate >> 6) / ref_div;
--	cpu_pll /= (1 << out_div);
-+	cpu_pll = ath79_pll_rate(ref_rate, ref_div, nint, frac, 1 << 6, out_div);
- 
- 	pll = __raw_readl(pll_base + QCA953X_PLL_DDR_CONFIG_REG);
- 	out_div = FIELD_GET(QCA953X_PLL_DDR_CONFIG_OUTDIV, pll);
-@@ -335,9 +324,7 @@ static int __init qca953x_clocks_init(void __iomem *pll_base)
- 	nint = FIELD_GET(QCA953X_PLL_DDR_CONFIG_NINT, pll);
- 	frac = FIELD_GET(QCA953X_PLL_DDR_CONFIG_NFRAC, pll);
- 
--	ddr_pll = nint * ref_rate / ref_div;
--	ddr_pll += frac * (ref_rate >> 6) / (ref_div << 4);
--	ddr_pll /= (1 << out_div);
-+	ddr_pll = ath79_pll_rate(ref_rate, ref_div, nint, frac, 1 << 10, out_div);
- 
- 	clk_ctrl = __raw_readl(pll_base + QCA953X_PLL_CLK_CTRL_REG);
- 
-@@ -388,9 +375,7 @@ static int __init qca955x_clocks_init(void __iomem *pll_base)
- 	nint = FIELD_GET(QCA955X_PLL_CPU_CONFIG_NINT, pll);
- 	frac = FIELD_GET(QCA955X_PLL_CPU_CONFIG_NFRAC, pll);
- 
--	cpu_pll = nint * ref_rate / ref_div;
--	cpu_pll += frac * ref_rate / (ref_div * (1 << 6));
--	cpu_pll /= (1 << out_div);
-+	cpu_pll = ath79_pll_rate(ref_rate, ref_div, nint, frac, 1 << 6, out_div);
- 
- 	pll = __raw_readl(pll_base + QCA955X_PLL_DDR_CONFIG_REG);
- 	out_div = FIELD_GET(QCA955X_PLL_DDR_CONFIG_OUTDIV, pll);
-@@ -398,9 +383,7 @@ static int __init qca955x_clocks_init(void __iomem *pll_base)
- 	nint = FIELD_GET(QCA955X_PLL_DDR_CONFIG_NINT, pll);
- 	frac = FIELD_GET(QCA955X_PLL_DDR_CONFIG_NFRAC, pll);
- 
--	ddr_pll = nint * ref_rate / ref_div;
--	ddr_pll += frac * ref_rate / (ref_div * (1 << 10));
--	ddr_pll /= (1 << out_div);
-+	ddr_pll = ath79_pll_rate(ref_rate, ref_div, nint, frac, 1 << 10, out_div);
- 
- 	clk_ctrl = __raw_readl(pll_base + QCA955X_PLL_CLK_CTRL_REG);
- 
+-CLK_OF_DECLARE(ar7100_clk, "qca,ar7100-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar7240_clk, "qca,ar7240-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9130_clk, "qca,ar9130-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9330_clk, "qca,ar9330-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9340_clk, "qca,ar9340-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9530_clk, "qca,qca9530-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9550_clk, "qca,qca9550-pll", ath79_clocks_init_dt);
+-CLK_OF_DECLARE(ar9560_clk, "qca,qca9560-pll", ath79_clocks_init_dt);
++static void __init ar71xx_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, ar71xx_clocks_init);
++}
++
++static void __init ar724x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, ar724x_clocks_init);
++}
++
++static void __init ar933x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, ar933x_clocks_init);
++}
++
++static void __init ar934x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, ar934x_clocks_init);
++}
++
++static void __init qca953x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, qca953x_clocks_init);
++}
++
++static void __init qca955x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, qca955x_clocks_init);
++}
++
++static void __init qca956x_clocks_init_dt(struct device_node *np)
++{
++	ath79_clocks_init_dt(np, qca956x_clocks_init);
++}
++
++CLK_OF_DECLARE(ar7100_clk, "qca,ar7100-pll", ar71xx_clocks_init_dt);
++CLK_OF_DECLARE(ar7240_clk, "qca,ar7240-pll", ar724x_clocks_init_dt);
++CLK_OF_DECLARE(ar9130_clk, "qca,ar9130-pll", ar724x_clocks_init_dt);
++CLK_OF_DECLARE(ar9330_clk, "qca,ar9330-pll", ar933x_clocks_init_dt);
++CLK_OF_DECLARE(ar9340_clk, "qca,ar9340-pll", ar934x_clocks_init_dt);
++CLK_OF_DECLARE(ar9530_clk, "qca,qca9530-pll", qca953x_clocks_init_dt);
++CLK_OF_DECLARE(ar9550_clk, "qca,qca9550-pll", qca955x_clocks_init_dt);
++CLK_OF_DECLARE(ar9560_clk, "qca,qca9560-pll", qca956x_clocks_init_dt);
 -- 
 2.56.0
 

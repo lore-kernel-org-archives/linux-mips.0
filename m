@@ -1,121 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=170.10.129.124
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793799787;
-	b=quY1Uu6VBEeEdZtpdlTEWK8sZHf0xCoRt7UYi2nTyPhC04MyKf3ktkFa31tFIgCBbCwQ
-	 BaBWKLY/WLwwmwFwEDj5V7YyIUwWboZrg/YgRtcqX3hzHnP+24QweEmQn+FrZ0X8MIX2+
-	 IrPalaDJ2v+zB86m3GQx2Bai5f0pos3ZWZs3VWIw22uYdHNa5ln3vFDXggQwD8nXxltmw
-	 S3Nr8U1ryzmvbA0uVX1DsGHmMkn/7Z0a6Q4WJrhdtfxkYB5je5k0ECX0VQera2J5KMqiJ
-	 MWdsQFyp/cjU43s9+RE2ua1Sp9TqPKbO4FxlDYVPLKKeRdutqtmyb2onxcI+gQoCTVg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793799787;
-	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
-	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 X-Received:MIME-Version:References:In-Reply-To:From:Date:
-	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=JLATmvImDg/5VrDBag7NLO/Ra27QQfElNkmu7cHAdiY=;
-	b=Gyu1LEeFbpnnX+LdZ2MmoMKnV6skU/xpHRcswmK9Fvgd4KVsuQ4LR4WCV3JV7GDD6zuw
-	 tggQ/NxnnyunAvChtJrug39zfj+shRWeCn62n49Q4WIAXk9Nr06sZVlIotewNommkD3qN
-	 p9kOrvhViLUpyFKhPk7zVQt3Ym46iVdyLsePAnlpxECqDvQSKSKyQ7H0qrOi7zeqWFdjF
-	 LUjgC3RlY7+qHRbI0YLBMda1u0YT+0oTCjVIkR/Y0B0UUp8hEpd69PgdY7HujCzQ96R5a
-	 aZh4jkL0dBu0iVwgugzNlapsDLgw3nHlAgxbgnLqgTi7b3Q/0RaiVXPQ8yiDdg5/S6g==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=redhat.com;
-	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=apDpBAmV;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Mouu1XSq;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=170.10.129.124
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793801258;
+	b=wr9WXccx/RGh4503N7GG9EuZfVJn43y1tD7NpZ6sn2MaolhKE2r9D5sK9vwXJ5YE6rkI
+	 s0DlXPtSVB63+M5hiJcYXk633wKenjG3YkVhdmaEMdpM9CAYNhkNA4H413NrWIAx9LkHq
+	 jU3p87CtgI/UiKhocWxa0Vom8mKJmW7e2KxmB2DObACxA29DBWPjtx+L0ovirODT3SKM/
+	 mP6oyHsIgouIsa8oqzlnWGzHSPCnegkEtrEs8j+fPgvH8pgq9Er9oH1ic6uzhX80ZDhbx
+	 LBlwoctA04OzwqBnoQWLCM1kT+6e8X6sXMFKRH7Pz0/arlF53S6rBDBK07++MdVCg5Q==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793801258;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:Content-Language:Autocrypt:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=lu+By1tioveqgXijEvnKTH9hPcb3YW7+OPvZU2YHEqU=;
+	b=fNdBoxtcsO4cARk7xkpYCAu+BEhkSqAOrD0baBYUumhCfajq1bkfB7Xrk9/VoqvGA8ja
+	 9Naml6dBynrFAD5USGGMYkeYluEaIVcYdRFal9jErhew3w24oSE2ocDrHQ6LBgYH05YXP
+	 wBxRiyHx/Y1A25gCilF0oFS1TtB0JUP8hAW2LHooymz6qLHQ/Fr/YvZrMYSTM5wEU2wPl
+	 1OhkS3fOPZ6hg9RXTe4W5EglFPDFxNqx5daXTu2fDQaR+pimU5F7wZT6sfNj7n1akFlgt
+	 oM3Pw2DqAcpLXc+I7XHQCjB8BlRKcF3lmRHerIOl9x24gc4v+INybjwhK5YiMTl5pkg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Xtq1rXDH;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8995A606A333
-	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 13:43:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8995A606A333
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4B6606A32C;
+	Wed,  4 Nov 2026 14:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=apDpBAmV;
-	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Mouu1XSq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1793799780;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JLATmvImDg/5VrDBag7NLO/Ra27QQfElNkmu7cHAdiY=;
-	b=apDpBAmVyHsE8c3Flsxy9Ca82GUT6I+55gzpzWCTdUXVsJI9n3ccEwuf4/Obnn4yWBkAem
-	HqBD5dLRmJdJxj8R2GQC20jDlFRwYnvfSKyGcVECq60ENLzqVljorLRXl3T1yOpIX/xvrC
-	d+bSQqkg0EFxXymI/5arWzTYgt9yAJo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-6qyCrH1mP2aWpCg16-Y_bg-1; Wed, 04 Nov 2026 08:42:59 -0500
-X-MC-Unique: 6qyCrH1mP2aWpCg16-Y_bg-1
-X-Mimecast-MFC-AGG-ID: 6qyCrH1mP2aWpCg16-Y_bg_1793799778
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-c42394d1e41so85416366b.3
-        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 05:42:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1793799778; cv=none;
-        d=google.com; s=arc-20260327;
-        b=eFnlpaeJ696qDrMQQdQ/uJdo2HYPXVwH7rtwSQbzYancgImZ1+2TQ4grCz35ROl8u7
-         q/ARjDOXwJFyqi+4dHAUzDoY62uwPQ59sxDMJtfIvCplRid8RCTXk83AymTQ/SmHtpJO
-         1OJqyK6uNQX+xf6M4LewFNx1n+r4/IlrjnIaT1/i4fss2bP6F+rYyfVOis84x2WvDoPj
-         MsVDgzuycEptq6VrV3HYdTsJotqCSym6GgrXCMg0JsmRlO3t7YgDV8VSXB5htjYUdJSz
-         hYaBBaledeSR/cyZwuPwRL76mdUE1IjZnYAlIHfmBk6YC4q+yEOrMLZnIjMaO75uLxdc
-         57Pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=JLATmvImDg/5VrDBag7NLO/Ra27QQfElNkmu7cHAdiY=;
-        fh=fnyWeH5p6ZFUO/Mwg+g7lCils/hy+E1Ng2ZO8yIiKXY=;
-        b=QzJM7/QJpOcik7wGl51DpJY80/e2vk+osoWfDil9Kau6WSchoili2/QFcWma5iS56w
-         Mom/Kl3RMjbqcAffG3VidGVhIpnYYhO8A4TiOLv/QnGx79jpxgIMfFs+QQcAma6F5VJK
-         jAhSdB3bKq8nXtrtlTqaRJrQYgm7kVa+6Rt3RfSuIBas3YsIp2l2lsLpmvbe1Xu9FPjy
-         kFSticWAdypbBCRudiuSozljZwdk3PZ8bQq62CZnX/blSX0/RxYtquPoIskbYlM6fh2F
-         b026E2n6G9NnliWPk6lcG4WIkUxbmTiSF25Brlymy0UfoXNrpwWyEnMyniPUapL5LkCp
-         2PKA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1793799778; x=1794404578; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=JLATmvImDg/5VrDBag7NLO/Ra27QQfElNkmu7cHAdiY=;
-        b=Mouu1XSquusTnpfBvStFzeTN87Vx2zKs0FoEY5SevuYiOSnWt13aiH+f4QP1nefFjN
-         bwfvfwVDenTxSc8Ohnkem1H17b4LundNCijbYaIAUcQNAY3l9xb5ksqEC4f6Z0cL5fRA
-         xNQeCDtNJvCH87SLQgARz7InVVv6L0tlELNSUxXik0wyk4894QFXRxG6ccRAtEW0LHKe
-         THJnGdreJEIFTFpGet+lyfmvPE85xw5pgU74TXo42+1aVRehgiL3n4FUvqXowAs6156M
-         o0mbE4QPzv8Fl1z8PH+X5bYTvPRcqdU8Fdi8z+HRncDyBsgEgiGZAnMawcFzMWiu0GGR
-         D9IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793799778; x=1794404578;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=JLATmvImDg/5VrDBag7NLO/Ra27QQfElNkmu7cHAdiY=;
-        b=wYyy9U1d9tTRkYjEWoOQhGU1PghtiXR3ImMnFXCCORIwvbypP9hKQqJfG44xClQgdl
-         yeM3XPMOYmOmBfMsy7D6I6t6l/74mogMskBUS3GKzSY69oKtKEB8HJICYOIRQCNwS/vl
-         EkI5sLVzrhVCQ3mycuBf3ia47VBB/vHCQKCQODJ8FkkBZUqG3vs3+a9tVXy6SUueiJQZ
-         1uBG0icElqcr+mVb0QWIFvsJG+vR0RNgA/uxep1REKVLHcJUFRhTEutacSEUC7ti10AI
-         UkZ+Y/aGKk7TnD+t5W7uy80WeKn226Jv+sB4s7x4HN7OnMKnFwMn5gaJmfnKJ4SYVvww
-         OWuA==
-X-Forwarded-Encrypted: i=1; AKwUvBwr6SmAsDaYm3UKDTXSljZCVdfUW8PV1J+93Gq/p4EXvHP2oCpx4mA2pkYr2ApJnQFGh6HaxNJasNpm@vger.kernel.org
-X-Gm-Message-State: APuU4Z+qIh0H+KyA1llaHzrE+myI+l4OvcGw7KuTnlSW2u9UwnFq3MV5
-	J3XbGn5Fn/eMmKb9si1hBxv5VlnUnFTH8d/r7edMKUcwLgeY1DRhDV7wXVT8w//3VmEPDgT5pJC
-	HXdmF8IO/U5BCASJ7OkygI9RVwjtUjLFaD7rs5Iwa6yCGxjFXWmSa2ZmcxFC91Y/FrAjnzI1zRp
-	N+Ygam9EYwMK3ge2LJSolqPmuXlIqSULy2oE+7oA==
-X-Gm-Gg: AYBFou2QfBsdQgYoNgmaWYwMrK81w5JlIWXuTbLQGAJBxxW2nyLiXxnGd6U3QMQ9NdU
-	ur7dYOh/4xWkLzz/pNa0v4SNzoZ9Cak6/7CFSdCvgQQSI2L6j6QN6flbW7+dnYtorGrsgrcQ40r
-	WeWvEOkDtaRole/B7F13pXQbH9x7zSJXFcrHLdwYdH5V/Ku5nnqav9HDPgNSchsZ1MnVVcO5V4J
-	HTAR9xE2CGB/2BaVOwbRnJjA1hW9B0RLGjgrQdfn75SNQ==
-X-Received: by 2002:a17:907:1ca4:b0:c24:adf4:5c73 with SMTP id a640c23a62f3a-c4ca795d0cemr1327720966b.1.1793799778110;
-        Wed, 04 Nov 2026 05:42:58 -0800 (PST)
-X-Received: by 2002:a17:907:1ca4:b0:c24:adf4:5c73 with SMTP id
- a640c23a62f3a-c4ca795d0cemr1327717466b.1.1793799777447; Wed, 04 Nov 2026
- 05:42:57 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Xtq1rXDH
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7652A1F00919;
+	Wed,  4 Nov 2026 14:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793801257;
+	bh=lu+By1tioveqgXijEvnKTH9hPcb3YW7+OPvZU2YHEqU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Xtq1rXDHtjUtiz8ZQNhGl864CXHsKzFi7B8tvlmfWu7TR4c8iU1QQ7cE7+ej14qL7
+	 pS6JNOtv23O1/J8qhN2eLLxNFn2kbXGEqpCY8pZ1HAwQNIaSurSyvEUbjql/gPvPal
+	 T61iZnGV/vR2e3ac0Bw20MADsSnu4thaTB1LlycSD0uxm/ysKcL7IDveGbARhJDu2n
+	 UqqT1++qFKe5w5mHs/I5Tz0WsPNt65ShBsotTQGk4N2WWfr9HhScOOyEFInpetJXft
+	 htHQMU8YKPJgBdeZNHOobv7YqLUCZLSGPQa21XFzFhn26VdaOrT6x53EJ8UNTJmbov
+	 BccP2EIaWfYYA==
+Message-ID: <64b74093-541c-4f32-8ea4-c8007067eeea@kernel.org>
+Date: Wed, 4 Nov 2026 15:07:16 +0100
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -125,104 +51,289 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <cover.1790088067.git.rrobaina@redhat.com> <CAHC9VhQ=FFYVNmQdiMsqg+5KDDrSC3SZS+H2=r_GkhfwQox8tg@mail.gmail.com>
- <CAABTaaBL=TScs8Qqu3b8F6KZPGMyvwy6cBC3teDaBL6MGMucNg@mail.gmail.com>
- <CAHC9VhROsmzbm+AP63Sm7mqCokgEy6Zu0AVMY0gxp8qY75Pqiw@mail.gmail.com>
- <CAABTaaBOrPknzdxc5S6L9hGu7hbFu2e1RZG=Sxjb_B1Cs4Sixw@mail.gmail.com> <CAHC9VhQ4U-Z2KkGurfMihJgzGgwD3miWSW4wWAjWvUdDxLpH7Q@mail.gmail.com>
-In-Reply-To: <CAHC9VhQ4U-Z2KkGurfMihJgzGgwD3miWSW4wWAjWvUdDxLpH7Q@mail.gmail.com>
-From: Ricardo Robaina <rrobaina@redhat.com>
-Date: Wed, 4 Nov 2026 10:42:46 -0300
-X-Gm-Features: AclHuK9fArBl2NqgMDWGc__kMOSMhBxMeP1FQYdilvQJHUxXbryD-TLWb0XsxW4
-Message-ID: <CAABTaaAYn1oBwHSkoGm0a98c9YUZKf6ie=yUOtR4FQuSjrusjg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] audit: log all six syscall arguments in the
- SYSCALL record
-To: Paul Moore <paul@paul-moore.com>
-Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, bpf@vger.kernel.org, eparis@redhat.com, 
-	sgrubb@redhat.com, oleg@redhat.com, richard.henderson@linaro.org, 
-	mattst88@gmail.com, linmag7@gmail.com, linux@armlinux.org.uk, 
-	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, monstr@monstr.eu, 
-	tsbogend@alpha.franken.de, jonas@southpole.se, 
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
-	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
-	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
-	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
-	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v2 00/21] mm: change behavior of
+ pXdp_get()/pXd_page() in compile-time folded pgtable
+To: Yeoreum Yun <yeoreum.yun@arm.com>, Russell King <linux@armlinux.org.uk>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>,
+ Kairui Song <kasong@tencent.com>, Qi Zheng <qi.zheng@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Barry Song <baohua@kernel.org>,
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
+ Anup Patel <anup@brainfault.org>, Atish Patra <atish.patra@linux.dev>,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, "Liam R. Howlett" <liam@infradead.org>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+ linux-openrisc@vger.kernel.org, Muhammad Usama Anjum <usama.anjum@arm.com>,
+ Sohil Mehta <sohil.mehta@intel.com>
+References: <20261102-dummy_ptxp3-v2-0-78840b2ec73c@arm.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20261102-dummy_ptxp3-v2-0-78840b2ec73c@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Nov 3, 2026 at 9:41=E2=80=AFPM Paul Moore <paul@paul-moore.com> wro=
-te:
->
-> On Fri, Oct 23, 2026 at 8:45=E2=80=AFAM Ricardo Robaina <rrobaina@redhat.=
-com> wrote:
-> > On Tue, Oct 20, 2026 at 1:39=E2=80=AFPM Paul Moore <paul@paul-moore.com=
-> wrote:
-> > > On Tue, Oct 13, 2026 at 8:36=E2=80=AFAM Ricardo Robaina <rrobaina@red=
-hat.com> wrote:
-> > > > On Thu, Oct 1, 2026 at 6:06=E2=80=AFPM Paul Moore <paul@paul-moore.=
-com> wrote:
-> > > > > On Tue, Sep 22, 2026 at 3:21=E2=80=AFPM Ricardo Robaina <rrobaina=
-@redhat.com> wrote:
-> > >
-> > > ...
-> > >
-> > > > > * As pointed out by Sashiko, when you were converting all of the
-> > > > > arches, it looks like you missed alpha.  I took a quick look and =
-it
-> > > > > appears that it should be a pretty straightforward conversion lik=
-e
-> > > > > most of the others.
-> > > >
-> > > > I've actually dropped the alpha patch as per Magnus's request [1].
-> > > >
-> > > > [1] https://lore.kernel.org/audit/CA+=3DFv5T4826T2sd0Gbh-nfZsqcWK_p=
-hdBKy4BLWOvDTt92t5Eg@mail.gmail.com/
-> > >
-> > > The problem is that as things stand, this patchset breaks the build o=
-n
-> > > Alpha.  Perhaps this gets resolved during the current merge window,
-> > > but as you know we can't break the kernel build ...
-> > >
-> > > https://lore.kernel.org/oe-kbuild-all/202610041836.6TatRQSm-lkp@intel=
-.com
-> >
-> > Of course, you're absolutely right that we can't break the build. I
-> > was afraid that this dependency might cause trouble.
-> >
-> > I noticed Magnus posted a pull request a few days ago containing the
-> > "alpha: enable GENERIC_ENTRY" series [1]. It seems this will get
-> > resolved during the current merge window.
->
-> ... and it has, or at least it appears to me to be resolved.  I
-> rebased the audit/dev-staging branch against v7.4-rc1 and Alpha does
-> indeed appear to be using the generic syscall entry/exit code in v7.4.
-> I think we should be all set here wrt Alpha, thanks.
+On 11/2/26 12:21, Yeoreum Yun wrote:
+> Using ptep_get() and its counterparts in common code is suboptimal on
+> kernel configurations with generic compile-time folded page tables.
+> By default, ptep_get() and its friends expands to READ_ONCE(),
+> forcing the compiler to emit a load even when the value is not used afterwards.
+> 
+> This issue was recently reported by Christophe Leroy [1] for ppc32
+> preventing futher code conversion to ptep_get()/pmdp_get()/... helper
+> and the same behavior can also be observed on arm64 when built with
+> 2- or 3-level page tables
+> 
+> e.g) perf_get_page_size() in arm64 with CONFIG_PGTABLE_LEVEL=3:
+> 
+> 00000000000052a0 <perf_get_page_size>:
+>     ...
+>     52dc: d53b4234     	mrs	x20, DAIF
+>     52e0: d50343df     	msr	DAIFSet, #0x3
+>     ...
+>     52fc: d35e9a69     	ubfx	x9, x19, #30, #9        /* pud_offset_lockless() */
+>     5300: f9403508     	ldr	x8, [x8, #0x68]
+>     5304: f869790a     	ldr	x10, [x8, x9, lsl #3]   /* pudp_get() */
+>     5308: f90007ea     	str	x10, [sp, #0x8]
+>     530c: f8697908     	ldr	x8, [x8, x9, lsl #3]    /* pudp_get() */
+>     ...
+>     5360: 90000009     	adrp	x9, 0x5000 <perf_prepare_sample+0x548>
+>     5364: 92746908     	and	x8, x8, #0x7ffffff000
+>     5368: d3557675     	ubfx	x21, x19, #21, #9       /* pmd_offset_lockless() */
+>     ...
+>     5394: f8757ac8     	ldr	x8, [x22, x21, lsl #3]  /* pmdp_get() */
+> 
+> Though PGTABLE_LEVEL=3, since the pudp_get() still remain with
+> READ_ONCE(), there's redundant load for the pud which is folded.
+> 
+> To prevent generating suboptimal code, make pXdp_get() return a dummy
+> entry for compile-time folded page tables, make the helpers such as
+> pXd_offset()/pXd_offset_lockless(), set_pXd() validate dummy entries
+> at compile time to catch the wrong usage and prohibit calls to
+> pXd_page() in pgtable-nopXd.h.
+> 
+> This series does not change the behaviour of existing code that directly
+> manipulates folded page-table levels using set_pgd(), pgd_page_vaddr(), and
+> related helpers. Those helpers continue to behave as before.
+> 
+> The new restrictions only apply to code that adopts the pXdp_get()-based
+> access model for compile-time folded page tables.
+> 
+> As the pXdp_get() can return *dummy* entry, some of code using
+> the stack value where saves the pXdp_get() could be a problematic:
+> 
+>   1. Passing address of stack value where saves the pXdp_get() result
+>      to pXd_offset() for example:
+> 
+>        pud_t *pudp, pud;
+>        pmd_t *pmdp;
+> 
+>        pud = pudp_get(pudp, address);
+>        pmdp = pmd_offset(&pud, pud, address);
+> 
+>      (e.g. host_pfn_mapping_level() in loongarch).
+> 
+>   2. Using the pXdp_get() result to use as argument of pXd_val() and
+>      to check prot without checking pgtable is folded.
+>      for example, x86's effective_prot().
+> 
+>   3. Using set_pXd() with pXdp_get() will set problematic dummy entry
+>      in folded page table like:
+> 
+>        set_pXd(pxdp, pXdp_get(pxdp_k));
+> 
+>   4. Using pgd_page_vaddr() to get the first-level pgtable.
+>      passing dummy pxdp_get() for pgd_page_vaddr() will return wrong
+>      address. Therefore, make pgd_page_vaddr() and pXd_pgtable() to
+>      trigger the error for improper usage with folded dummy entry in the
+>      generic compile-time folded pgtable.
+> 
+> Thanksfully, above cases are rare since (1) most of usage using
+> pXd_offset() with result of upper pXd_offset(), (2) it's extreamely
+> rare to use pXd_val() for non-leaf entry in the kernel,
+> (3) is to handle the vmalloc_fault or set the first level of page table
+> and (4) to setup early page table and etc.
+> 
+> Therefore, properly handle this uncommon and problematic pattern, and
+> document the current design of compile-time folded page tables.
+> 
+> This patch is based on mm-unstable.
+> 
+> Future work
+> ===========
+>  - print_bad_page_map() and show_pte() still prints dummy values
+>    instead of printing the same content for all generic compile-time
+>    folded page tables. We might want to skip printing dummy values later.
+> 
+>  - We currently catch abuse of dummy values on the stack at compile-time by
+>    relying on constant propagation by the compiler. Usama's work [3] on using
+>    distinct types for sw vs. hw PTEs could help here as well."
+> 
+>  - Clean up vmalloc fault handling by synchronizing the vmalloc entry on
+>    32-bit architectures. This code is almost identical across architectures.
+> 
+>  - Unfortunately, the current design of compile-time folded page tables appears
+>    to be internally consistent but confusing. For example,
+>    when CONFIG_PGTABLE_LEVELS is 2, p4d, pud, and pmd are expected to
+>    be folded into pgd. However, the architecture code uses set_pmd()
+>    to update the top-level page-table entry, even though it includes pgtable-nopmd.h.
+> 
+>    In the future, it would be good to eliminate this source of confusion,
+>    possibly by treating all folded upper levels consistently as dummy wrappers
+>    around the highest real page-table level:
+> 
+>          NOPGD
+>    --> +------+           P4D
+>        | ptr0 |-------> +------+           PUD
+>        +------+         | ptr0 |-------> +-----+
+>                         | ptr1 |-        | ptr | -------> ...
+>                         | ptr2 | \       | ptr |
+>                         | ptr3 |  \        ...
+>                           ...      \
+>                                     \        PUD
+>                                      +----> +-----+
+>                                             | ptr | -------> ...
+>                                             | ptr |
+>                                               ...
+> 
+> Link: [1] https://lore.kernel.org/all/0019d675-ce3d-4a5c-89ed-f126c45145c9@kernel.org/
+> Link: [2] https://lore.kernel.org/all/20251113014656.2605447-1-samuel.holland@sifive.com/
+> Link: [3] https://lore.kernel.org/r/74182e50-b54f-4d2d-a27f-3a59a538d6bc@arm.com
+> 
+> Patch History
+> =============
+> from v1 to v2:
+>   - fix docutils warning.
+>   - Link to v1: https://lore.kernel.org/r/20260921-dummy_ptxp3-v1-0-cd40cf68242e@arm.com
+> 
+> from RFC v3 to v1:
+>   - Drop and rebase for CONFIG_X86_DIRECT_GBPAGES and use the Dave's
+>     patch (https://lore.kernel.org/all/20260902194718.E1FF3041@davehans-spike.ostc.intel.com/)
+>   - Link to RFC v3: https://lore.kernel.org/r/20260902-dummy_ptxp3-v3-0-5d8f5b17c25c@arm.com
+> 
+> from RFC v2 to RFC v3:
+>   - repasre commit message
+>   - move ptdump_pgtable_first_level() into pgalloc.h
+>   - skip the huge pud operation when CONFIG_X86_DIRECT_GBPAGES is disabled
+>   - docuemtns compile-time folded page table
+>   - drop the applied patch.
+>   - Link to RFC v2: https://lore.kernel.org/all/20260722-dummy_ptxp3-v2-0-d9e4bad31e0a@arm.com/
+> 
+> from RFC v1 to RFC v2:
+>   - Restore slient fallback to next pXd in set_pXd() and pXd_pgtable()
+>     and add check whether they're called with dummy entry.
+>   - Add some comment for returning first entry of pgd in arm with
+>     2 pgtable-level
+>   - Link to RFC v1: https://lore.kernel.org/all/20260713135614.1618183-1-yeoreum.yun@arm.com/
+> 
+> ---
+> Dave Hansen (1):
+>       x86/mm: Introduce helper for checking direct map 1G page support
+> 
+> David Hildenbrand (Arm) (13):
+>       ARM: mm: make nommu pgd_t a scalar
+>       ARM: mm: make 2-level pgd_t a scalar
+>       ARM: mm: remove custom pgdp_get()
+>       LoongArch: mm: define pud_leaf() only when PUD exists
+>       MIPS: mm: define pud_leaf() only when PUD exists
+>       mm/pgtable: define (pgd|p4d|pud)_leaf() for folded page tables
+>       mm/pgtable: define (pgd|p4d|pud)_offset_lockless() for folded page tables
+>       openrisc/pgtable: drop __pmd_offset()
+>       mm/pgtable: optimize pmdp_get() and friends for folded pagetable levels
+>       mm/pgtable: catch abuse of folded dummy pgd_t/p4d_t/pud_t
+>       mm/pgtable: disallow calling (pgd|p4d|pud)_page, pgd_page_vaddr() and (p4d|pud)_pgtable with dummy
+>       mm/pgtable: disallow calling folded set_pgd/set_p4d/set_pud with dummy
+>       Documentation: mm: clarify behaviour of compile-time folded page tables
+> 
+> Yeoreum Yun (7):
+>       mm: vmscan: remove stack copy address of pud/pmd pass in walk_pud/pmd_range()
+>       loongarch: kvm: remove stack copy address of pXd in pXd_offset()
+>       riscv: kvm: remove stack copy address of pXd in pXd_offset()
+>       riscv: mm: use proper set_pXd() for generic compile-time folded patable in vmalloc_fault()
+>       mm/pgtable: redefine PGTABLE_LEVEL enum with ascend order from PGD
+>       x86: mm: use pgtable_level enum in effective_prot_pXd()
+>       x86: mm: carve out the generic compile-time folded pgtable case in effective_prot()
+> 
+>  Documentation/mm/page_tables.rst            | 84 +++++++++++++++++++++++++----
+>  arch/arm/include/asm/page-nommu.h           |  4 +-
+>  arch/arm/include/asm/pgtable-2level-types.h | 20 +++++--
+>  arch/arm/include/asm/pgtable.h              |  2 -
+>  arch/arm64/include/asm/pgtable.h            | 23 --------
+>  arch/loongarch/include/asm/pgtable.h        |  2 +
+>  arch/loongarch/kvm/mmu.c                    | 20 ++++---
+>  arch/mips/include/asm/pgtable.h             |  2 +
+>  arch/openrisc/include/asm/pgtable.h         |  3 --
+>  arch/riscv/kvm/mmu.c                        | 20 ++++---
+>  arch/riscv/mm/fault.c                       | 52 +++++++++++-------
 
-I'm happy to hear it.
+To move forward with this we need an ACK from riscv folks. All other arch
+changes are fairly trivial.
 
->
-> > For future reference, what's the best way to handle dependencies on
-> > other subsystem changes like this?
->
-> Generally speaking communication and coordination :)  Talk with the
-> subsystem devs/maintainers to understand what they are doing, let them
-> know what you want to do, and find the best way to order things so
-> that it all lands in Linus' tree without making a mess.  In this
-> particular case, with the syscall arg audit patchset not being ready
-> (missing maintainer ACKs) and the Alpha changes going into v7.4 it
-> turns out to be quite easy, which is an important lesson: sometimes it
-> is better to defer a new feature for a release just to ease the
-> coordination burden, enable better testing, etc.
->
-> --
-> paul-moore.com
->
+@Riscv people, any comments?
 
-Thanks, Paul!
+-- 
+Cheers,
 
+David

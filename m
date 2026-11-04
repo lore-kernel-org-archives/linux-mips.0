@@ -1,63 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.181
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793757860;
-	b=J4PSI523p3mF3QHQitt/2+KDspC8eoIZYhzSgcATEbav/nFVjL0cIlqjKZB3sBO2qjot
-	 6aRTEjqy3O1sVPsNy/aINT2KUBZqEPqIvHmGu7T0wE10FJyym43NJ9khNbSKlX9QXc6t3
-	 2WH2I2rwBmwztRMEdHQCH46TvbMGrB7Wg3RFzX9FByjAkVOOQ+YF5eBBIydtx+t+5Fa8S
-	 gIbNjCCsabyZ0rNKX4NgRFAK0INppDCBDrsnfu0UIxALok9TGVwJMagGBQnf+VQedN8Iq
-	 vaEjCMhnirxkJ2QB+Fian+C2zDwnCyeI7K3x98FQSFqXaLhKlNpKbPRWHCOJyPd/9vw==
+	t=1793761316;
+	b=suPHdTssJKdvd1EP1CNVUGcBRqSXdDwCbzRcdM1e9NhXssPjwteGGjTeU28AErscut87
+	 Izkl6Jhra9CNH+cfz3O9Dg/fSwW1nsSYkn3GAb/O8vR3eEnmHqQFGQ3dlbqTcBQLehsws
+	 XvAc7+p/7ORpQL4I4e9O1V4nj29xRWhebsYIdKKwIPxoM3H+7yDxi2CUkj8Y2Oqr2b7vf
+	 nlfPyXM43TZe56zlcB7GVAF0/JjxtjsB8IR84sNAG7qnJ+nKnS7H+rmCkMjj7/wYT4va2
+	 JSrR6t873IyINh5/U4O1njgrOVRHX2xUfx1eXQjGiXDcJTZlcWGwzuvOoY8xae+jVsA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793757860;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
+	a=rsa-sha256; c=relaxed/relaxed; t=1793761316;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=E3dxUxhVcbrBYug1uib0e6cBnVXo5pgOi0YOtDVoFUo=;
-	b=ydaM+nYHVEKKKhQmlOaP4nlF/YZmUwXEuWFrOgcTe3MJj4t6H5Dqe8UjJ7Yh0Yihywcl
-	 2hNwYv14k9pdo21f2XNGp3y/bjFQQijXwio4vRR+nQPj+dgYfDNzwieA5XBeIYsThTkXK
-	 PbUXJ9IUyd9mPE21K/CpgND301NNVX4BYCEkvkMw7CvisttmCkv4luJvhaSbBArVpsb/2
-	 jUwBmzx+tYC70uog7gLzNyc7QbusGNjexOgaAAGD9gYRNTdXufqlYNCQ075XzzGvisu25
-	 0cqT/fNS5McRFf1BHHTkZjjK2zAjS7bnhQk19TQvuONPdheyTR2Fr4Z40JSyhrNEhBA==
+	bh=YlterDeN6T+DiNtjdG/tEDnVKD1WZhlw9rJO8gzsf8k=;
+	b=qoQHTBY+0Niw5Ae3hkxZTfIKvtEsL3JtygWZxer3Lfp1gNZzJ2RbchuhLqixyyscUuqa
+	 UDqk5UrMkzbkiiIXiyTU02VhIq55qXYpJ8eSveSNRu0Tohzuvn4luqASPl7uPYn23DQIl
+	 BJWA8xt1Db6dZFdV4J+DIjxkbn5IK0dssdeaIMGVHcGNUczKHBNPf7Hh+2Tv8jGt2oEfR
+	 rrL1HYFeOz0bnYQscATN4075L43QgXp/V0zapTnOqlmfy64ukLXCset60aQuWzI2g4oTG
+	 MZMwFy/eXsEgCNfwvBpWIQso4jTzQFDu6HrkHev07CmYpR3Zo+GywM223prpLocKEBg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iktoxgKP;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RIep7yVw;
+	arc=none smtp.remote-ip=74.125.82.181
+Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0555C606A31B;
-	Wed,  4 Nov 2026 02:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1894B606A31B
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 03:01:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1894B606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iktoxgKP
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E2711F000C1;
-	Wed,  4 Nov 2026 02:04:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793757859;
-	bh=E3dxUxhVcbrBYug1uib0e6cBnVXo5pgOi0YOtDVoFUo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=iktoxgKPUoPoBIf9gyHxjSub5uOdQ2apo7LTavHKPjZH23wVnL3IMKpkGCdN1VzZ3
-	 jXTOkp1CvOvY+3Chi5uzl4zjqEZ5ylzI4WZLXFnmytWNNtXHV17zousGCezrdSYh3w
-	 AucSlQoqjISkX9x22qiotc5WfYbKAO0tTb1Lhu8c37FhF0xKqdIm5pyKymMf/hGWnl
-	 1IA5x4IBCdajb+rzQvh7QRKMwo+2bd3UjjaJYLua+bLokKbz+/b1fv26lulSKgSzF9
-	 fSdhM1BGWN6/gYRWKiPg0OGXjVxOFnhAjnFrtZPJGJxTiXFYpvWTZzavqxr0d22ird
-	 mCEyfPedc+TcQ==
-Date: Wed, 4 Nov 2026 02:04:11 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Olivier Louvignes <olivier@mgcrea.io>, David Lechner
- <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
- Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Paul
- Cercueil <paul@crapouillou.net>, "H . Nikolaus Schaller"
- <hns@goldelico.com>, Joshua Crofts <joshua.crofts1@gmail.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] iio: adc: Add a driver for the Ingenic X1600 ADC
-Message-ID: <20261104020411.5adb2e2f@jic23-hlaptop>
-In-Reply-To: <aum7smuAHnSSb69e@ashevche-desk.local>
-References: <20261102201155.10948-1-olivier@mgcrea.io>
-	<20261102201155.10948-3-olivier@mgcrea.io>
-	<aum7smuAHnSSb69e@ashevche-desk.local>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RIep7yVw
+Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-3514b90bb89so409271eec.1
+        for <linux-mips@vger.kernel.org>; Tue, 03 Nov 2026 19:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793761315; x=1794366115; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=YlterDeN6T+DiNtjdG/tEDnVKD1WZhlw9rJO8gzsf8k=;
+        b=RIep7yVwoDzeBBxgcbtGvwlWBpSX5H1e2N2jeaBtOEl6VxNxmOiZmizOCCtWQC0JIE
+         IuoP/hp4Gnb2kmcoZ/wFoHDoyEBvzHClcePOKyOxhypKzd035JTLc3Wf83BdO9XP+1Ye
+         L1Jpnaxbgb7gjNgN7fGBJiRKdbCx17YOmp6JQb3wj/UK75EJaMJ5J1AWrexy9/14u4m+
+         Gcy/xGPuXx5ZRA95ELCAL99ndeTPdkM7ka93/x/agtvz0NhWnogLby3KuV9azjVB145c
+         JLaQZ/2Qd4PVUE/5R3LcV8oWMBlU1XU9Cmp1duo7kiDQOvlbiv4hC1kJylHCmunDQFYo
+         EARQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793761315; x=1794366115;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=YlterDeN6T+DiNtjdG/tEDnVKD1WZhlw9rJO8gzsf8k=;
+        b=ynPHtkG2TViYrP59Y0Y2C6+gjvBOvbPWsQIQ7Bhui3pOVGN3LS7be0VOQT3T/EbiHJ
+         omm8IiPUESMeSRGvCQgT2UAoEMrfI2LF703+c6ZjLPrALeAc0a6ooZvKa6BB2Y8Aqm8v
+         rbFQN/hJDqbc85XXdbf/2u2BLyFCcEXKCZml70thdf/r4+xqmFFxAkn7CPpkM3En/jDQ
+         Ursw6sPdG28R7lCmb52Jo4ET/DMrYao5TsN70CmOxokaO1PmmSz7QOFfc3BhGXUbK9Xm
+         wVuJAPwe/94JE/8cqSgLADoeEPPj25zVmhT+xWHSOydrIGlI//thjFok9lWC/kFg6jEU
+         ksNA==
+X-Forwarded-Encrypted: i=1; AKwUvBw1mKnSZw4mpT4cVH4c4VipygGICbEOXTKBxpeUwe0wDZE5ABgQ3vUOxqmz54CncP+C+Toqi+OIJuTK@vger.kernel.org
+X-Gm-Message-State: APuU4Z8SMR9FwTYbdr+ACChgBHhXw1sSX3tL0AD06upzwNE6Rctuw3Jg
+	861U3UpdtosgEsvEttXe99P8Ey7hNGhbdJ4f/OBLqaskjh6cDbtdhUPi
+X-Gm-Gg: AYBFou1DgD6KQq1iEDQ/b25F8xMLueQGO77O+nWsOcpBFQD8TAD8BSy7GDvYWa1Zxqc
+	9YVHcwkGSPuMmsZgTItpZSTGMJuZQj5vbDg8KUnuGUX7RT+bn8xwST36MbDn+3ThfOzoX6qf2F2
+	FceKxBxJJT8noqNSTaP4ZTAsIPGeS2tcQR/d0UW7153otJMfFWIfSpk1dvmnC+7nFAzzyzk2rP3
+	5I/zmY3CyBMWhPEq/vs257Ag0iQP11eDLC3a46oaY6g+SfWp9/9ymm1pMW1FXn9GdCGolfBh+SC
+	1/MwajLfraJhvzwHC64VqG2SpEQ2fL61bPHdnQ4m/uhLyVGK84da/XK1jkXvl7QIMAAwCGjwP+i
+	CxSIVCzwrF1vPilPQa+u6I00zUNWkAIU3qJ608oHX3HHEPKPuqF1SWmHBK4C0pwBqjmokXaDxca
+	2xMC4vi/deGGp4jYtu3uJMEs6zX6tJpAcs7YBMxNzTx77p0pXNjf2yV6QyTwQUZC2QRUutg/mx8
+	Hh/DxH3s/gZZICjoGbbP/LYDQoc+1kFfcAyZmLC7FXbKqPb45nCL5fAImdT+rKej+Hf38sbk6Wc
+	KpzVNlN4uw/nPvWeeybNFAYuRKXltnBZ7/LGPLPRgX9leGca+HJgx3g=
+X-Received: by 2002:a05:7300:8813:b0:36c:49a7:86ac with SMTP id 5a478bee46e88-36c49a78c8cmr4600001eec.37.1793761314951;
+        Tue, 03 Nov 2026 19:01:54 -0800 (PST)
+Received: from arm-a100.. ([140.112.28.118])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36ca392abe4sm2951819eec.19.2026.11.03.19.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2026 19:01:54 -0800 (PST)
+From: Tzu-Ching Yang <shingekinocore@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-mips@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] MIPS: Fix genex.S build with LLVM before 21
+Date: Wed,  4 Nov 2026 11:01:47 +0800
+Message-Id: <20261104030147.3117325-1-shingekinocore@gmail.com>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -67,33 +104,110 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Tue, 3 Nov 2026 12:47:14 +0200
-Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+Since commit 56651128e2fb ("MIPS: Fix idle VS timer enqueue"),
+BUILD_SKIPOVER_PROLOGUE uses label differences as the immediates of ORI
+and PTR_ADDIU. The LLVM integrated assembler accepts such an immediate
+only from LLVM 21 on, so LLVM=1 builds of every MIPS configuration fail
+with LLVM 17 to 20 unless LLVM_IAS=0 is set:
 
-> On Mon, Nov 02, 2026 at 09:11:55PM +0100, Olivier Louvignes wrote:
-> > The X1600's SAR ADC has four auxiliary channels, each with its own start
-> > bit, interrupt flag and 12-bit result, and none of the touchscreen or
-> > battery engines of the JZ47xx ADCs that ingenic-adc drives. Add a small
-> > driver that exposes the four channels as voltages against the 3.3 V
-> > reference.
-> > 
-> > The registers are in chapter 19 of the X1600 programming manual. The
-> > ADC clock divider is even, as the manual has it (an odd value divides
-> > by one less); the vendor kernel writes the divider minus one, which
-> > gives a slightly faster clock than it asks for.
-> > 
-> > Tested on a HiBy R1, whose play/pause and volume keys sit on channel 0
-> > behind adc-keys: all three read and report correctly.  
-> 
-> A few nit-picks below, otherwise feel free to add
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+  <instantiation>:7:11: error: expected an immediate
+   ori $26, r4k_wait_idle_size - 2
+            ^
+  <instantiation>:10:14: error: expected an immediate
+    addiu $26, r4k_wait_exit - r4k_wait_insn + 2
+               ^
 
-FWIW I took another quick look and don't have anything to add.
-So given this is clearly approaching being applied, feel free
-to send a new version once you've addresses the questions from
-Conor.  No need to wait the normal period under these circumstances.
+Wrap both expressions in %lo(). For that operator, LLVM 17 to 20
+emit a LO16 fixup instead of rejecting the operand, and resolve it when
+writing the object, since both expressions are constants by then; no
+relocation is left. Both values are between 2 and 30, so %lo() does
+not change them. GNU as and LLVM 21 to 23 emit the same code as
+before, except on microMIPS, where GNU as now uses the 32-bit ADDIU in
+the delay slot instead of the 16-bit one. With GCC, the 2 extra bytes
+replace the 16-bit NOP that padded the end of the prologue, so all
+symbols keep their addresses; with Clang and LLVM_IAS=0, except_vec_vi
+and the code after it, up to nmi_handler, move by 4 bytes.
 
-Jonathan
+Fixes: 56651128e2fb ("MIPS: Fix idle VS timer enqueue")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202505071331.Z0N2eSkr-lkp@intel.com/
+Link: https://github.com/llvm/llvm-project/commit/b65e0947cade9bd39036a7700b54c1df4ec00756
+Cc: stable@vger.kernel.org # 6.18.x: 2b6d718c8dbe: MIPS: Fix whitespace damage in r4k_wait from VS timer fix
+Cc: stable@vger.kernel.org # 6.18.x
+Signed-off-by: Tzu-Ching Yang <shingekinocore@gmail.com>
+---
+No MIPS hardware here. Against mips-fixes (v7.4-rc1). All builds use
+W=1 and kernel.org toolchains.
+
+- genex.o, before and after, with GCC 8.1 to 16.2 and with LLVM 17 to
+  23, both with the integrated assembler and with LLVM_IAS=0. Configs:
+  64r6el, 32r6el, 64r2el, 32r2el, eyeq5, eyeq6, malta (little and big
+  endian, MIPS32r1, microMIPS little and big endian), ip22, ip27,
+  loongson3 and cavium_octeon.
+  - The objects are byte-identical before and after with GCC, with
+    LLVM_IAS=0 and with LLVM 21 to 23. The only exception is the
+    microMIPS ADDIU above. The 4-byte move with LLVM_IAS=0 is harmless:
+    set_vi_handler() computes the offsets and the length of the vectored
+    handler from symbols before copying it, and ejtag_debug_handler and
+    nmi_handler are only referenced through their symbols.
+  - LLVM 17 to 20 now assemble genex.o for all of these configs except
+    microMIPS and Octeon, which the integrated assembler rejects for
+    other reasons. For malta (little and big endian, MIPS32r1), ip22
+    and ip27, these objects are byte-identical to the LLVM 21 genex.o.
+- vmlinux of 64r2el, 32r2el and malta, built with GCC 8.1 and 16.2,
+  LLVM 17, 20, 21 and 23, and LLVM 17 with LLVM_IAS=0. Where both sides
+  build, vmlinux is byte-identical before and after. With LLVM 17 and
+  20, genex.o was the only object that failed before, and vmlinux links
+  after. No new warnings.
+- The malta kernels built with GCC 8.1 and 16.2, LLVM 17, 20 and 23, and
+  LLVM 17 with LLVM_IAS=0 boot under QEMU 6.2 -cpu 24Kf. That CPU uses
+  r4k_wait(), so interrupts go through skipover_handle_int. Each kernel
+  boots to an init that keeps the CPU going in and out of idle and then
+  reboots; a QEMU trace shows every interrupt that lands in the idle
+  region resuming at r4k_wait_exit. A microMIPS kernel does not boot
+  under QEMU -cpu M14Kc with or without this patch, so the microMIPS
+  change was not run.
+
+In the 2025 thread [2], Nathan suggested requiring LLVM 21 for MIPS in
+min-tool-version.sh, and Maciej an #error for older Clang. Both would
+also stop LLVM 17 to 20 builds with LLVM_IAS=0, which work today, and
+the stable trees would need the same change before 56651128e2fb could
+go back to them.
+
+On 6.18.y, which also allows LLVM 15 and 16, the patch applies after
+2b6d718c8dbe, and LLVM 15 and 16 fail and are fixed the same way.
+
+The 56651128e2fb backport was dropped from the 6.14, 6.12 and 6.6
+stable queues because of this build failure [1], so 6.12.y and 6.6.y
+still lack that fix.
+
+[1] https://lore.kernel.org/r/2025051415-unloader-likely-b0e6@gregkh/
+[2] https://lore.kernel.org/r/20250521224450.GA2412476@ax162/
+
+ arch/mips/kernel/genex.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index be1b049d856f..ef27965f6ad9 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -146,10 +146,10 @@ r4k_wait_exit:
+ 	MFC0	k0, CP0_EPC
+ 	/* Subtract/add 2 to let the ISA bit propagate through the mask.  */
+ 	PTR_LA	k1, r4k_wait_insn - 2
+-	ori	k0, r4k_wait_idle_size - 2
++	ori	k0, %lo(r4k_wait_idle_size - 2)	/* %lo() for LLVM < 21 */
+ 	.set	noreorder
+ 	bne	k0, k1, \handler
+-	 PTR_ADDIU	k0, r4k_wait_exit - r4k_wait_insn + 2
++	 PTR_ADDIU	k0, %lo(r4k_wait_exit - r4k_wait_insn + 2) /* ditto */
+ 	.set	reorder
+ 	MTC0	k0, CP0_EPC
+ 	.set pop
+
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+-- 
+2.34.1
+

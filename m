@@ -1,78 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.175
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793781181;
-	b=OgWGIpxcLwncpjTKYYHGbgKo6sLgErrzUmbTvxUh/U9KKO7xXiLxG+T80ZER06oeeynG
-	 vpbRX8xCHK13UwyHJWysOeHuW5IzUD9QlHLxWlLN7nXlpFQOJ1T9gOiBwF+Jr5nLteNOb
-	 6PHdQ0+Q74uv8DFZkaz2SJdb9hcIR32FHtikhMCyeZczkxwDfKTBhKJH0duAN1yH0DCTm
-	 P6wN7D4d4bHWdsGVA5XJSr2Y+LcLkC3vpxOqCLL65/btBl2Qn1E5D4AMDaIc1L58lMd+g
-	 x37sQCQM6VELLqhVY3t3r9Z5vOOQm3JXb+fwGt4lQ9Bwx5E1PEunylZmBI6NXpLvZKQ==
+	t=1793781498;
+	b=sjVwxfmW2cZ24M16MX1X7LSj2+Zu4Fdtkzd3ZluxjSQg+LoF4F0ImXPeedTqX2GRX2Bt
+	 fZtB1H9vCI2V+Ad1nG2lbfHTAzABHQwdnFjYyDLygMLvvWxryQzpqEZOh6K4I6aLvEuO+
+	 NRH8qROw+l5y3dlCi8PBVK/I3yTJIDVU/md4ZxMSNYz1KRTGmpgtAkjEMvJDN+Ort/j20
+	 KxLyFJqqtDlPdI5cEtssrNmfuXD3OTrd6cvgd4X+lQdaIZ53btkC2j3kXZhjIQSBkxoai
+	 JiP3T1W7XWr3lI44gPmZE+UYwRVSR4mDn51YXX4f1YEC4y2VE1SZPPB7f+8pTfrEYiw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793781181;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793781498;
 	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
 	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=v+la3jMKr6nPIrYEiR5T+L2vDOYUs+pDzg8N/ii9g/I=;
-	b=brfiw8QECwg72nOQjv4HseRYPC3d0xggh/ZEboaIv31XkKUBm1rencPjHa1WDV+7fWD9
-	 3ZNCIuH8rLVB4QWiJREhWSmTnsB+NTRu/GpUUFu8T5+UM8BHh+BvQyGCgb3wEl+WEBlzg
-	 QB2KoP/+qaDS+WWyRIZESKIMXdiWvWDJLtXeME7dWw0KEJkjqIkOQVtIfCMvFqKhyGUsY
-	 906uA0Zix3GN9SVMc14XFMkGqh67nNF06xVttUYHnGFYHHZvmTo2IIQ79QndjDBFZycFd
-	 5CNWMZIX82+zWTJWwDAsyIM5RmDcvAMYFIrghNuhhjGSlQj7St7Jdo8jUGDHz0vDDyg==
+	 Subject:To:Cc:Content-Type;
+	bh=u9aM0DNq25EEfmak0NV0wfOge7EWo+oCPkidJK9hcP4=;
+	b=kIg/LGjjYf4ZrvE9u4kcdBB+59YJsjePiq/ka0vup9UfpmrvvHWbxhoHlHHLVCzaSPff
+	 LnHv4ElrmEr2SJaAERbDAlu0pVBKipKJyo8TCUT8Zxka+Bsxn0aUkug2J6QU2UspT3ncw
+	 nYdCUzH4elS1PDgJ5gmWYm1qawhlOUgS/TdlxnkMEh4UhZz9sANiJL9QiWSKG3zIDwXbj
+	 jV2z6aUl8q+y+OTdiNzVvY+Fyhsjo//JzL1j095458vEptYKEQlEbHh8MvRWDC0nCbdZ7
+	 IFLy8jwqUeuVzwy6zyZXg23koOJeLNd9tu75NdoMor1LJkZ1hEGxtN90mZit6gAT6HQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=telaak.dev;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.215.182
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	arc=none smtp.remote-ip=209.85.214.175
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF35606A326
-	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 08:33:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7CF35606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA612606A328
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 08:38:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CA612606A328
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-cd6acc50b8dso176534a12.3
-        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 00:33:00 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2e96502e447so3586215ad.1
+        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 00:38:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793781180; x=1794385980;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=v+la3jMKr6nPIrYEiR5T+L2vDOYUs+pDzg8N/ii9g/I=;
-        b=sMs7HKdNJxYJbqlB5b34N5lWipGxlpPUhNdcYUVf0XvDEUzfdl88E62OcXvUG2BNvf
-         nFksI19MrShEplwo/oVsx+sfKQCQnyGzwQh26YrYHCuaLg0V7eNss/SmumpecaQsE8pM
-         rC15btS8sZkoFEVF5gzcL2wJdNoD9v7iGDi85/FqccvKlf/4yLpmaNcUQaySN6+ur9Ip
-         l0s8uYr5YN4hHmmzRvKu5LzFLCaUfD8s751uGk76KVdFFwwFMrP2wI35EM2SAyi4l8A9
-         i8ZEl6waRWzc/6wegU4ikCMY2VGSD1V3b0XrlOjz093oJMnFLU0Lu3jeSpg3cxWfcBZX
-         Rq4g==
-X-Forwarded-Encrypted: i=1; AKwUvBzjFJzaXL2usLusJlEsRHiweGet+bmWU0rvvIBbE3c8BEARKDmtvbbl0c6ajcF4tvrt/aNHp/9W241H@vger.kernel.org
-X-Gm-Message-State: APuU4Z8/3OJffwL3J3qxt9wng/6TQqs4sr4voeLow9T6R8GDlec+P7BO
-	1bfL8tW9Xz/9TmpSCapwRXXS+gMYz+4drLBNiFvWGAVhWP6OZCTzTt54z+LpNW9F
-X-Gm-Gg: AYBFou0YLCjQNiUbWvaPHB7NHlTA/JeH4qfZdXwvDJDldscZ5DnWx1P+CQ3om1AKcaR
-	bylVvzz6xU46mmzBy/nkgBRvxDQu3LbBnH6Y2u+EaRlyWBCulkaWBS3qP/eFIT6ircpeghMCzcZ
-	56gxPFjUeIO43LaKbzHaaPOsWON5QOpn3Ph52GYxXfgNbsLN/ZAxlvR2XCcXIc80byfjAr5XqfJ
-	20dMnGlSN/LB5xbKjn7pUywGCzTjyd8ESXycyxCkNJuLyhd2yVLQix5UDOS9liDyAWcbkzvH9uw
-	j4jn3EBGYK4mg20ROY9F+/IEGrblVatGCWdHGP8eU3F3oLSt3d7ozI6mleVdlZztLsd+w6eyA4b
-	zfrLiqI128n3bMIZBy1QOh5U/nMPyuggXcUZFHpyoJ8b2zAWANEI7MNFigrG4DP0w0rzTTx2KP5
-	zlYidMfXOMZ4+3xNzdRZgLVI0QqEO6kd0S4jJ552kMF3w2dFjYcz9iiehMcKCmMaE6RzPhSHB3D
-	PtBo+oq52CnrL7XneiJmY8rdpOHYnOK7YclFfO3kpzOGHVSGK49AP3S+S2r9wZw8AGZQM2Aay/q
-	w7glbTYD8LmE4zOMe6NdjAaOmCorZ2CBG/K1ZpRU1BwivWpMjKl/ykulVPv6yMVlb7KlfxK3Yn6
-	sMJ2AZEVbxQOUL7gU6OprUFKJ9Lm35oIY5slghQIq/XY=
-X-Received: by 2002:a17:90b:4a84:b0:3b0:97bc:62d with SMTP id 98e67ed59e1d1-3b097bc076emr1262126a91.32.1793781179725;
-        Wed, 04 Nov 2026 00:32:59 -0800 (PST)
-Received: from mail-dy1-f170.google.com (mail-dy1-f170.google.com. [74.125.82.170])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cdb467f798esm759563a12.10.2026.11.04.00.32.59
+        d=1e100.net; s=20260707; t=1793781497; x=1794386297;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=u9aM0DNq25EEfmak0NV0wfOge7EWo+oCPkidJK9hcP4=;
+        b=B/mDahI9g44MuZVMCZGCyNhBu42mV8KbtR8ElzoX9eDbLSuvT+xCoPQnDrVMDs5KV2
+         pfoVM76VmCVVaXRqzLUIhjMWj/Vk4K0uJQfZHyBhSXkjH7p0zsMRyOpYgBAYB1aNK3t7
+         6iASAL8Pdpam0xPt3r3sgFDUC1DgufrMwqgLOW6cS9gFT938TPHIzxldTszPtlzRvRn5
+         xjMBu+9LqInrowrrtAAmiP3c7+D1ACb3glvEcxP8o09d3nEJdJPRbj+mOXGroX2/gzcL
+         JWk9EUIuQDVvKoRqDlvMsL5iZdFKdZO3/TTEl4ALRFtM/p0g4sPZ+GVAnPdohRbuvP/p
+         dsEg==
+X-Forwarded-Encrypted: i=1; AKwUvByB20r0sD/h4NdHhEwDptM7SSbHiHuO4fx8xW0wlBMm0BiKjYyY4Fxw4r2C1DvgtwjKjIjcJ/fy+LrG@vger.kernel.org
+X-Gm-Message-State: APuU4Z9cxitfNO9KXkwP69t/1LfT9Ipt9Mi2833OwJg6HnN4TodFX/Bz
+	VfeH8HjTkL+HkMtKHc4aLV7SA1JdtlPrbXMPPjw8xxfmQjcVKQcW0YZVIPkAbFPB
+X-Gm-Gg: AYBFou2cw/BVXQkPPHNsKcVglPuL7f6raLsyt8GeFnlRbSSdAgsuaTPgkuSi1pdalVK
+	PgsYTTSaFZqxegxBYrOkn+D12v2p+EwJqEO3pwSPuZSZJq9S1UsYS0SeDTwdpBIppgLOg2UgrlQ
+	5WbJIaLxkmarXOO7jqX2SPEW8aT2imGip/M4KBnBymK3gmYkUyJIehEenTg0pR3UWwa8SlB3yZI
+	Cprfa477DPe13Uijf+cPZnAwi5o4l3uebqDJ+ihAJsHqEbE1aLs9CCg6dFMWQCK0Zgph5TW6zpS
+	xTrxO5JprG19Fir7nQfPPq/K/akhLkmoavYvanNndOxzfo/45oj9cA59Nd2atDz9UUuFID3IxJd
+	Acbv9eyclEBjsbKCDLs3P0dAZS/aRTo/qxRR9mmkMG6/PgxVBaVFFQkRJCfei3VestNmCV/FNkL
+	w7JF3ZCKg6bSNK57L8SRNpme3rMhsfA/FjLxRDzzIR+T1qwpbM64RunfXmY+3gft1r2Dqz4lvZY
+	eHdEC9vRKoGcIZB/JOc4v/aYcJI74mfyK5UFsf1nMA3kqJzRhm/PBTlRUicXY74r43yVOQW4U2G
+	ZzxgcPwcCCDG5fovWgIuyNqTdEwwB582HG1Ck9ehEvbV9ZWXKY3xdO/zTR/2AlesmGxd856ZeIv
+	itXkG0wI3NLSQEbCNpYOjnEnTF6UVVCSmUaXiy/7CP/AfRw==
+X-Received: by 2002:a17:902:fda7:b0:2e9:c569:7050 with SMTP id d9443c01a7336-2eb365116demr149986075ad.47.1793781497115;
+        Wed, 04 Nov 2026 00:38:17 -0800 (PST)
+Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com. [74.125.82.175])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ed0906c514sm4863595ad.29.2026.11.04.00.38.16
         for <linux-mips@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2026 00:32:59 -0800 (PST)
-Received: by mail-dy1-f170.google.com with SMTP id 5a478bee46e88-369f33df08eso730619eec.0
-        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 00:32:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBy6yi0q5yYXoYlyqOJuJBuaJnhvHa63duKa3R/CQQ5DvKe9mEF+nosqBquw7THGWemO5XECSjG3Atr5@vger.kernel.org
-X-Received: by 2002:a05:7301:f09:b0:35c:ba31:6fef with SMTP id
- 5a478bee46e88-36a424438d2mr23103058eec.36.1793781178690; Wed, 04 Nov 2026
- 00:32:58 -0800 (PST)
+        Wed, 04 Nov 2026 00:38:16 -0800 (PST)
+Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-36d6765756fso17472eec.1
+        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 00:38:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBxPY0S5X5xxqdu1Hp/t5qN2DvO2PMnq/VgGzmGUoP04iqoAT3DTj+X5GPnIds37FeuhycnrONnzzxFC@vger.kernel.org
+X-Received: by 2002:a05:693c:69d5:b0:369:7c:bfce with SMTP id
+ 5a478bee46e88-36a423c6223mr23977690eec.14.1793781495997; Wed, 04 Nov 2026
+ 00:38:15 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,57 +82,30 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 References: <20261104-sf19a2890-gpio-v1-0-45e463c48728@telaak.dev>
- <20261104-sf19a2890-gpio-v1-1-45e463c48728@telaak.dev> <fc273wsjhyvtoqjnuiipramnvjvti4n26yxgvr23neuawnz2zp@krm4cfn6pfkb>
-In-Reply-To: <fc273wsjhyvtoqjnuiipramnvjvti4n26yxgvr23neuawnz2zp@krm4cfn6pfkb>
+ <20261104-sf19a2890-gpio-v1-2-45e463c48728@telaak.dev> <tjadgdqzbvjj7kn4ubibqonrk7nod2gxknzzvdtr5vzs5gv6n5@bvue2t5y4ks7>
+In-Reply-To: <tjadgdqzbvjj7kn4ubibqonrk7nod2gxknzzvdtr5vzs5gv6n5@bvue2t5y4ks7>
 From: Joseph Telaak <joseph@telaak.dev>
-Date: Wed, 4 Nov 2026 03:32:47 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ4-voYM1Uw8+0pYArJoHknyyg5CMB-mbG=qn89agxxYug@mail.gmail.com>
-X-Gm-Features: AclHuK9LKKTlOPvX59pIytGyTkFgOT4Kv7Bs2y1OMNJDw7pUXgmS8KoRNSgAgSU
-Message-ID: <CAPY4CJ4-voYM1Uw8+0pYArJoHknyyg5CMB-mbG=qn89agxxYug@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: gpio: Add Siflower SF19A2890 GPIO controller
+Date: Wed, 4 Nov 2026 03:38:04 -0500
+X-Gmail-Original-Message-ID: <CAPY4CJ67=tJyiWYNf5UJWF98OUY5Ytq-kyjJKJs4FRseuy15ng@mail.gmail.com>
+X-Gm-Features: AclHuK9iITvqHHty7IqgPcA0y5Bp8oR0AxaQXRkiXUsTXH1SHKpldLZV4qph5bo
+Message-ID: <CAPY4CJ67=tJyiWYNf5UJWF98OUY5Ytq-kyjJKJs4FRseuy15ng@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: Add Siflower GPIO controller driver
 To: Bartosz Golaszewski <brgl@kernel.org>
 Cc: Linus Walleij <linusw@kernel.org>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
 	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, 
 	Qingfang Deng <dqfext@gmail.com>, linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Qingfang Deng <qingfang.deng@siflower.com.cn>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-> If you're a co-developer, please add your Co-developed-by: prefixed with
-> a list that looks more like:
-> [...]
-> The above is completely unreadable.
+> Same comment as for the DT binding patch.
 
-Thanks, v2 will use Co-developed-by with the changes listed that way.
+Will do.
 
-On Wed, Nov 4, 2026 at 3:12=E2=80=AFAM Bartosz Golaszewski <brgl@kernel.org=
-> wrote:
->
-> On Wed, Nov 04, 2026 at 02:21:37AM -0500, Joseph Telaak via B4 Relay wrot=
-e:
-> > From: Chuanhong Guo <gch981213@gmail.com>
-> >
-> > Document the GPIO controller found on the Siflower SF19A2890 and other
-> > Siflower MIPS and RISC-V SoCs.
-> >
-> > Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-> > [jt: from Chuanhong's siflower-7.1 branch; Joseph Telaak as the binding=
-'s
-> >  maintainer, GPL-2.0-only for the deprecated GPL-2.0 SPDX identifier,
-> >  example indented by four spaces, commit message, subject]
-> > Signed-off-by: Joseph Telaak <joseph@telaak.dev>
-> > ---
->
-> If you're a co-developer, please add your Co-developed-by: prefixed with
-> a list that looks more like:
->
-> [Joseph Telaak:
->   - did foo
->   - did bar]
->
-> The above is completely unreadable.
->
-> Thanks,
-> Bartosz
->
+> More common pattern is to retrieve the address of priv with
+> gpiochip_get_data(). You already pass that address to
+> devm_gpiochip_add_data().
+
+Thanks for the review. v2 will use gpiochip_get_data(), drop both else
+branches and add the blank line after the header comment.

@@ -1,100 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=209.85.161.41
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793799154;
-	b=rphG/X1H6412xDVmOgt5tpPG0s7fVnh4AM2brz1B5w58sDBFw5xDMnjBawm/V4zJWm9F
-	 q/EK7nZdRar5frOgO/SXiFJwe5Y0s1rlJbWTKZZLeroYxcaxTvKnifaWxvRfjUA+KzqHi
-	 5MK4nvIzrWDiidxL6zuSbSk87mFBf9dgHm3a0H2DA1GNu74abULI8ZUlNH2PKqy8EoeDk
-	 sWks6utbicdwGfUoGDvqMif91SUIX1sVIQsVF5DnmhT4DxfrWnGJaCbB9x+mL9iLZON5v
-	 /ydnBwkRYRKQiUuiGsEEWchZa2lTQiUktJxRAb3K2Z5w8P7Rmjov+0i4rS9pRBiwlnA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793799154;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
-	b=3BSkB/BLtVTp0A0Iyspd78Jpfj0Y4pcQ8bUBA5OZlG8SHjU4wENepz4PoOwYuvfZju0b
-	 aBd+nJtaB+JCVU2oQ/bQh6t/TbHTGk/OimTImTN/arbBX1YHkCNtE2R9uxw4sjeSnshoV
-	 mneQmPQfzxZ/dwrBq8iB/GYosCqo++0yjkHheFXPc0hTdp/zC2mKAH3Z1w5OGSB9qCR92
-	 eVV7klV0gM4CQQ8gVy45aPXkjxFhnbBBXnglXBK2/Dq80ARqupR3VQHKMxyuz432HaBB7
-	 1WOvT4B/zsU9jz9m6mvKPl2fChwDQ+Sr417dFsd06j0agZ3MlHvwx8vQWxif6y+JH4g==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qy9pS4bp;
-	arc=fail smtp.remote-ip=209.85.161.41
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793799325;
+	b=Jmg+NxBHIzJdawpC9nx3Whn0yI1n5QB006z5YCFxaKeRjxYIlafbim5ChtcsH8OfZDxn
+	 qn5Fmohnt12vg7HvqTC1y0m7MXIQn9NTRrAFA1TOL5C4vMV2GpkX+5jeJcKJbD2surWrk
+	 OuNv0lyZz7JuftFl9qRbHoTS98C5ckjjni6YXbcI0WsR1wEzftFeMSZA6Rzep5ud+wjCK
+	 v0Ms8e10IMC3H8o+B9fCc2mCrg/QhcYz2N7g6GpNiXc+0rgneNudLtiPAc0RNtOo1itKx
+	 J00Z7A847gJdRLwtJjT1TNCP36UbOQKn5MjuhYRmpwOfApjnhYyw0PrqvClFUCiSF1w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793799325;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=wQ2DQuZujCN0+Kyae46DtEB2+ByGVe2zWqmti4Oq8FE=;
+	b=LZv3+ukMm9QTj0hp5BScAurW1INRLJMEBIX1+2O2zFCGuPEWiJcY+nBDVhSlhFyku+jx
+	 ef94gEinNQM5oeyQ+YPVZgb5wHFCoOes4xxaVmxu+Y0Gb2BBvkVLAebbspn9uYP8eDM0o
+	 2lzX7lJc6H+WIRVOVSZdSZRex3gVuHmzSL6XWRIDZY0fQNVrqTbse0AMhOTgBBrSZl/1m
+	 2rcPyfc9ZPshCxAqb+yG+wdrpbOEGTgFipptyHj0zw3wQQtZewZbpNlHAmK60jS0fyzag
+	 ZLH08G8XoNbAix2Rh6mNCYiMLnbTb5vnNkKNIzzNxqpA8oOWWCSRCJmbjvHl2vZvErw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bRQT11lp;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4C2606A32D
-	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 13:32:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AD4C2606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A59F606A333
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 13:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qy9pS4bp
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-6d290b10a35so283202eaf.2
-        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 05:32:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1793799153; cv=none;
-        d=google.com; s=arc-20260327;
-        b=Xv5pEdNTA7jcxAj0YPe8X7yB0vEhxrkJRZDI3BlAYHtoIFJgi0FZZiHzcN+zWKf8Ht
-         V2yRMRJ4OHWWhOwxNsTBzfoKGb/vEz2rTQAgPRc/UVyGfcDzbTg7gsBlcN9O/alQ1SnA
-         swuxUKUPjNpHmLLrkrNgWPdIjL0g2T1TZTs6nAfyr9HRhsJeL/J9C68YHt4PoB1YWcFL
-         bB3+bmbbeN+jvLmMy4Rw4PQ3DZq0kLSufpbCAfzTkwTC46+unTvXGJg//9hGD3isdu7g
-         Be1U7fVuO9363vHFTVx2GJKs6ep+FhbYh9Nliw6zgUPyCKI1LU9FH6qKtKzW6KAp41vM
-         mdyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
-        fh=0eLH80NB7lEnqgxTeQfkedNgMjxnzxNQ1lC/NhjoyX0=;
-        b=OtcOEphIMC1Yy35CCEDFsBDEdnasaGSfvl/KPL2FhVskU8zWe/oBau3/JUOEUzIj3k
-         EZvVtPZmJq+yH9lzOFU39JLL4Zvb9VCleyntH34WCm/cNTIQNYBwZ9jMoLTx+Pllkr+u
-         +tIoGZXCfhTLq56Ep30t2O7z3ZWBYeUM9mysJ23PWVgGNDVT37Se1yfNXx9y9LZJa9bF
-         S61pXLLC+ZcbznwSzb5a6zHTI4oikbEo96m9j8FDS1fviH6vq0/2WMTc+LiZNZxN61/n
-         jFCBRrzmEjCU0pXMADBpf1JeOuMiLz0LDpQXY1qellozNHgd1RbRGotPYCvqNgd4+tyN
-         tH+A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793799153; x=1794403953; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
-        b=qy9pS4bprOjTsWRvlH9jkM15Jb6X9A27TdRPIVsM3h3dXuLNkrkluEELmjTLBM+V3P
-         ncmegftrX1Jbf48M/GIiWSkyr9c2afUzcpyDNVJUxw2kErAFuFuiYBM0d4r2Z2WVe8/P
-         mryc8gKuoM+SPz7kBRJsT3vcNUF1prKGEyid+vyji8hwjKqA/XununEaEOmNqxRbF7Ik
-         Ay6P0FIY9Xe7oHKlx6qraSAP9Dbjx59WRcXWsOznu+IpcBB6lS5xl7kIb0TV6bN2rGXy
-         D2jjv2adUgO9gp2wR1eQZMN2kZBuWpiOMzIW4Nth+vi0fpGicG3Y+McnpRkp2x+TqdRj
-         /FeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793799153; x=1794403953;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=flt7oH/ETh3Es2fb8h9unV+oYzs4yKusapEzarwUpgQ=;
-        b=ybmx6EB2i1dErXj7E+fpfewAFO/+1eY41Sd9ufQzfzzUJNu+yESNUDpjwp03puLBcZ
-         ok+n6nJWK3yjoCCxdQUXHyrbIYwIIphICLEA/8OxcWEZ5n1QERre8xYhdvEYmBKomSq+
-         xKQuAoW5DY/XIdKOTczDracZn74SYa5PXEUmdCiYEpCohpX2kRmpNO8ktdr+M9F/UXPY
-         yO/3ppAjy+7R0CJlskUJq9MNbd38YV1ONUjqgPghMvEAym6waPTkDIv0XVE17EeN/6Ss
-         WW2NH2rPffk4hqO//jWAt6g9B/pluysg2xhcV4ayjYkG7UxnhUndsOmvvIAqRhcFGP1b
-         DOkg==
-X-Forwarded-Encrypted: i=1; AKwUvBzWvI2SQypUvBLu8y1LK4PLM6PgdyOU9dzFM36zkO3tlx9Qk2cFizwK/ePjQFy/S6RVYr5Wu+mn+Zjl@vger.kernel.org
-X-Gm-Message-State: APuU4Z82y+TJOL/EIYdBwHivAyR+Qau0r+H1TjKHjeza9gtBTrhnoSR1
-	vh99PMTZikySt+D/wMmiJ5EBzbg1JXQXdYq3Menl0gg6+049VDYry1+psbvf/Ve9YVACGMdfxEh
-	SkQbkiWvgo1gZZqcx4TJwziFi2AOQkiw=
-X-Gm-Gg: AYBFou2hBVRrZV07Wq9jHHvbo7LHbBJGd/+dNTq1pURer4sXXRRTZY+ZQCBWjpb0rmM
-	Dz5Se144gR/f30YKcmIDi+7ImDhLyhEbuIuCstu3AyFnr2aO8WiV+A/2tfrJSwaYIWzQDBhc4vf
-	IdhwtyinhJaZy5j5Y1HqF7mupTsituaoS+Igv1w2UsAKB4wvHUTGPk8KkGJSJGcfPE8FBKIQoV6
-	yx5gn32aXW0i9FUzMMTeTWb5oKPdglnnq6+1EC+ZFjHHi/UkKG5qU+Yg8jnukW60h/D3DNjDmW/
-	dYFhx9494RCVLp5OlNC8gN8D1g9q4L/xrUvF8d3+yNSveI03oN966TGFwHKcrtluHYNansSLtSa
-	dlBP/+C2At4LS8Hcx/BiYXLBf5yGCLMubhT9gL4Bjeb8scRGQ+6t4Ym5a3wdOTQ==
-X-Received: by 2002:a05:6820:55d4:10b0:712:c3fb:b4dd with SMTP id
- 006d021491bc7-714f2a07b44mr6865589eaf.58.1793799152650; Wed, 04 Nov 2026
- 05:32:32 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bRQT11lp
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68E871F00A16
+	for <linux-mips@vger.kernel.org>; Wed,  4 Nov 2026 13:35:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793799325;
+	bh=wQ2DQuZujCN0+Kyae46DtEB2+ByGVe2zWqmti4Oq8FE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=bRQT11lp4jELhMDanVhWxxaqAnDFtBpqKiA3RNTO6IlAYMZ1e0TDHUjPtSiNxfSWM
+	 4VbNUC9pQ5SIFXGq/n4ecmQRE0KWMLxjn8CI0bzcAjFvnJKoKNu2FvczmXlDsa+lN8
+	 8IK+UKyefYKznvaIYKPuJAsuBWRQX6Ys7B5bH/1nyFyejvXFTIkla/5MxXWdlkfKQ+
+	 3jkUMnuQoRpZSp5tqW8LzvHpanWj8769B/BUTQMvwBvSh0OUvddXDDr85sXquvu+NU
+	 gkZv+zw2wEI063W6XI4P+F2N50S+UDUS66rqO+wNyL+FPI8cq1iA8oKjXtoMsDAGC2
+	 65uQ2i/Mbdtvg==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5bfc2ae6e9dso545246e87.0
+        for <linux-mips@vger.kernel.org>; Wed, 04 Nov 2026 05:35:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBycmBeUmkgJFEUBUTGlnfpTBUvjSgb77NcbTp+gY8dSJHvUxqnd/DCRfXWou5kvTUUH2wxthIyMUREn@vger.kernel.org
+X-Gm-Message-State: APuU4Z+MyR6MGrsoq9Dak28J7/EE7XPiAvkCTs3y0x9WpFvp3H7ZcWL/
+	OOVMh/guOczKWKb17MXRBHB+lpPwZBo8WH0rcoLINCeO3t77zVflW7C3xWRO0pGG2wn0j716eDk
+	W7RakHx4rnd2TqPiMIoaZ9zYuzN5Ov98=
+X-Received: by 2002:a05:6512:31cf:b0:5bf:b96b:bce6 with SMTP id
+ 2adb3069b0e04-5bfd94ccb81mr5298607e87.0.1793799324268; Wed, 04 Nov 2026
+ 05:35:24 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -104,55 +59,34 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261104-sf19a2890-sysm-v1-0-a4fac07df823@telaak.dev> <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
-In-Reply-To: <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Wed, 4 Nov 2026 21:32:20 +0800
-X-Gm-Features: AclHuK9KjWGPhCZrdzN2zSc99IwcSQrcSlYV4KRQtVdLRgeo4bHU_zFbKSD1vFk
-Message-ID: <CAJsYDVJ+FWHJ9AaJCmQwwfdsVJJC5mPw-fXzr2n6OAsZFHJbEA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: siflower: Add SF19A2890 peripheral clock and
- reset manager driver
-To: joseph@telaak.dev
-Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
-	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Yao Zi <me@ziyao.cc>, linux-mips@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20261024051639.67806-1-olivier@mgcrea.io>
+In-Reply-To: <20261024051639.67806-1-olivier@mgcrea.io>
+From: Linus Walleij <linusw@kernel.org>
+Date: Wed, 4 Nov 2026 14:35:12 +0100
+X-Gmail-Original-Message-ID: <CAD++jLkYXYkqk==52CZ1gNPV+eUf+DC8NFjoQuiOcALQ7ip+pQ@mail.gmail.com>
+X-Gm-Features: AclHuK9C-S9DBBoaZ5P4feHaKF3nMSq1BJe9p_BTWVci8vcRZ0ncVj6tNlA8_ec
+Message-ID: <CAD++jLkYXYkqk==52CZ1gNPV+eUf+DC8NFjoQuiOcALQ7ip+pQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: ingenic: Add the X1600's 32 kHz clock output
+To: Olivier Louvignes <olivier@mgcrea.io>
+Cc: Paul Cercueil <paul@crapouillou.net>, linux-gpio@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 4, 2026 at 3:21=E2=80=AFPM Joseph Telaak via B4 Relay
-<devnull+joseph.telaak.dev@kernel.org> wrote:
->
-> From: Chuanhong Guo <gch981213@gmail.com>
->
-> Add a platform driver for the peripheral clock and reset manager (CRM)
-> block found on Siflower SF19A2890 and compatible SoCs.
->
-> Each CRM block manages a group of APB peripherals through three registers=
-:
-> a reset register, a clock gate register, and a shared Bus Output Enable
-> (BOE) register that must be asserted for any peripheral in the block to
-> respond to bus transactions.
->
-> The driver registers a clock gate controller and a reset controller from
-> a single DT node. A shared spinlock protects all read-modify-write
-> accesses across both. BOE is managed automatically: asserted when the
-> first clock gate is enabled and deasserted when the last one is disabled.
->
-> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-> [jt: from Chuanhong's siflower-7.1 branch; one compatible per block with
->  its gate bits, critical gates and reset masks in tables here instead of
->  the siflower,valid-gates, siflower,critical-gates, siflower,reset-masks
->  and siflower,num-resets properties
+On Sat, Oct 24, 2026 at 7:17=E2=80=AFAM Olivier Louvignes <olivier@mgcrea.i=
+o> wrote:
 
-Why? This block is one used repeatedly inside this SoC and SF21,
-I think a generic binding with clock & reset description in dt makes it
-reusable without further changes and also results in a shorter driver
-without a table. This table in driver aren't simplifying the dt bindings
-anyway since it still needs one block per node.
+> PC26's function 0 puts out the RTC's 32 kHz clock. The vendor device
+> tree calls that pin setting "rtc32k-enable" (function 5 is its
+> "rtc32k-disable"). Add an "rtc32k" group and function for it.
+>
+> Used on a HiBy R1, whose Bluetooth chip takes it as its sleep clock: on
+> a cold boot without it the chip does not answer its reset, with it the
+> chip comes up. The clock on the pin was not measured.
+>
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
 
---=20
-Regards,
-Chuanhong Guo
+Patch applied!
+
+Yours,
+Linus Walleij

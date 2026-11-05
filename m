@@ -1,100 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793910952;
-	b=uq4Z3Ht88mYDtwwr9QlKex6DfaocZ0g525g+AK6EZpqA1yeBH66wD04fYt50EbFQO8wq
-	 3FaYkBi3q7wVMzQQvpucrjRAhDWp5oxR0iGN6lcNFBlHlhnG4dGS/255c3t+EbXdqyf0z
-	 MmZVyoc0PlW1UleIUiublvHHLEDEf6QuLD6MPYf/tHxPYCHLNKN2XUxlgMAELVN9uThjY
-	 M0rgeDAfDUY1YJqGrf/7xdeiNZK7RGlTNz/0QDGkajUdxJZmsUjpM+VNSFXJTBd8a5+pu
-	 OcS9qtjRRDgXLjOO5Dq69cICWVMhv7Bo0AXws7mE6yPq/Ctazz7lxb2IMiYyP0JpIyg==
+	t=1793910976;
+	b=PmXUDgzvOnkIvMX30xAzzBFiKllojkRYLH5ENTapYEfDGVpgHenN4IfJWXyInDxB6ncO
+	 bFX4bO7wLkbW1k68SdXbjfOSzpO80WxwVCUgJVQM9BHWE8qRMLkB59Q41XIZS0Fyk5RWZ
+	 lZ3XB375mdLo7WxLG83Vtz4VZHMDFGObbqJl1UV20SQGvndHPjGYzGZYtU/oKJ1dN8sNc
+	 yUXv1MIQyW7SzGfTspFzhONrGAibMWUH9xZOKGKSfxnKagY37lHiAMBGknyk66SzXq/mP
+	 OfkRnHC7PQpPVDPvu4JOMwgKaPpPqV9LHtnNPSyTlwnT0NmXL4XK4F9V6ama9I3Leww==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793910952;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=sJJKjK0K6EALIuHLfHejOsTyjBZ8Ozdl83llEgi1uXM=;
-	b=MXViGkjiHO7q1OGcnGBeeencclsiiFsAl9BkRM1tYOHGm27sO2zd2YVmy3oiSMHw1izr
-	 lXHmCQh50Y+SNYTZ3MUsPhYKId16n+B7qxYuVRn31YWYyHIoPtSBxv8X6ve49MwPjjwRB
-	 yC/XgR/Yvq+bAb1vAp+5clMESznviQGFRG1Z1vVRHHae6C7o8LvZ6fgQb76uxsGjNOEL4
-	 mFTWGSy6+fk6YQsSCJzueWTrD7qiZ9uzxinFKvKMVhqAo98XNwka8/ygiCYHL7igI55fq
-	 6/P7CCuTENrpiCBl2pPj/9GwYeRz6+LGXPT4ynh6b64PTGm1z/IFmR6fJQ2REme9X2Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793910976;
+	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
+	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type;
+	bh=QQl1ERSY4wmOR1OEbq5mx2PtZRC9i6q9Gw0tuk7z0Is=;
+	b=J6K3qD7fWFvg7p8o2EAcS4lJNJeJc9w6bkiJo3+1lfHK560zL/jUvW1Heh2/hsxUtEzx
+	 LqOMJ43YqJYJVx0DqBZHunGg9+jps0ocAyGbAQ+/TaGubRzYnEs44l/Yyw2Tfn//MQvU2
+	 xsWsc4VIo0s9e25zyUN4flkyg3eabgn9xyM5yi9o71PqIS+Ssdv6amGDwtazuiIZ6Ed77
+	 qYFOFYy7lQpHutGBMYYLvl+ggkRjyxQ2f2tKkjfn4K9sUNvuYV/Z8deWpkMQ32ZUd6C3g
+	 kUH+EDBIGKL8rFISGjlXcZ/kg1HOvSE8UpMRm/+4WW3j4z9f6PKNBz5414osPiC8lhQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
+	dmarc=none header.from=telaak.dev;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sEWgQ7Ic;
-	arc=none smtp.remote-ip=74.125.82.52
-Received: from mail-dl1-f52.google.com (mail-dl1-f52.google.com [74.125.82.52])
+	arc=none smtp.remote-ip=209.85.216.52
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF4D606A329
-	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 20:35:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7FF4D606A329
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD46606A32D
+	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 20:36:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5FD46606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sEWgQ7Ic
-Received: by mail-dl1-f52.google.com with SMTP id a92af1059eb24-1a8cc11ac42so976c88.0
-        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:35:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793910951; x=1794515751; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=sJJKjK0K6EALIuHLfHejOsTyjBZ8Ozdl83llEgi1uXM=;
-        b=sEWgQ7IccBR8y2XoZ0jYxksrEQgEAurbrwXNLDu2AJ9F1k0EOio/gJbIMRwGpCB1PH
-         nfvNzqOtVmtR/+4zCPenK/g7S2MVPkjxYJLWn7Tw5Bx8S8dZh6jgWlcNKOlCkREJ5JTC
-         aFVilgJfBkr6Q2EPZ/heFkP2iQlYED9D4tWg5Rc9yUPg2JYNELhxVmtsNB9A9cYt3Jpc
-         gn439p6ieYPFU25PKAM34TRI3iyTro+YqHi53KpYDbNzjQRWCTI/9mfvDF3LAJuGSFI7
-         sp1o9i8lZG4S/Rby8WOdtVpfi6dlgZ1fW6C/0h8wh+YA99bPrPpJ8z6SbOC609EqkDOY
-         qZww==
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3ae7626d14aso1309061a91.2
+        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:36:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793910951; x=1794515751;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=sJJKjK0K6EALIuHLfHejOsTyjBZ8Ozdl83llEgi1uXM=;
-        b=ECa3NCHY1bEO+Q5Oz4aQLai++1qddjQIOY6yV6rjEwPOhsvHdHjQL5/wiqnaYzZdCZ
-         g1HVnvosIgsW7qU7bAcZaRr3P5sL6UGCkLHgcNEyx3A6JL/6E2s822N6hZxqbt5DMvZH
-         3CI+iFqZWv65vGXkCuvKsrV5ok1dM7fcd1BE95jsywL7n7qUAMbqbR0NXy1n6dYXdcNj
-         +7ZoN7HVjvc2oyLbv3Gujxk/iaHbqPV/iFhicbd4W72CnHoxziQJl8gsHJPYqw0zp5m5
-         ZYSgfddHVAs13RM+Dvj01NoTALg/PcCBub+OoD3CVYRZvvQWirYfLvMSKjAd7BUfWkBj
-         0w5A==
-X-Forwarded-Encrypted: i=1; AKwUvBz2bgkD5ddK6DfK3UqNOHThhKU+vUG0OUIIELdkqMr702aiSyIt2VMyNSW0JDk8iKgg9aomtUpo4rlN@vger.kernel.org
-X-Gm-Message-State: APuU4Z8QrU5eEfj2z6ekg4f4kOrlvhijPFBHbaHfk/j7+rwdjLh/R42a
-	exjoAEnNdM6ooEU4rdp8XCY9VVHuLbm/kfzCWV/BM87sslCSpVUoOQQa
-X-Gm-Gg: AYBFou0gl78Gmm7huGN3oSou4/hMyLxQzNJ1AI9X8gCoVAXbyP2wg5zyTbO7XUQlN15
-	7oPd97OPwSXiuqnv0keRWxVOHExN0ZX8vCWicgRbBWOjTEAdS9Kfw3UokQWOVaecP4s3Ud87xP/
-	h/PIa+s/jpuji/33lOBkO4EhXkseuTnhuTYQnv1NCc8Qtz3CFlJAlrNxrMZD+3zswNX34mRyl/o
-	S1nwmF+iemh1UDiEnMrgk+fy/a4oE+s2Osi4W0L3BAUhDsRFtL1LKj6HmD0MGkC5m0ddYmV+bul
-	hYxH9Q/QFVa1zINsc0mzvLlYqgQ1Y3xLDeGCWyfnlSFF4CD9ZZ49JM8LqycAiNSaBemB1xKBXjZ
-	K2vPnZNPeYy5reOvBik0dP51MhqBA+sY8WmSGZRQDav516B4BZcq0osJ77iXGRwihL/OTjwHTEl
-	BC25T0YRsO36MbteVJ8DxMFwzPhsfpt7lh8suGvQy5pFXbN8q/W2xMvLgHtvfrnrkDTHmDybL4b
-	pDhXh7adR8I4SWy6aDYbz6jAIsYHXUmZFOeCrpnmljuxYy/SVbTnVy9Jzgjy3tbEh3zG5FdI1V7
-	AN3fLlec
-X-Received: by 2002:a05:701a:c90a:b0:15b:7f7a:730d with SMTP id a92af1059eb24-1b25d342861mr126756c88.28.1793910951382;
-        Thu, 05 Nov 2026 12:35:51 -0800 (PST)
-Received: from eldorado ([2600:8802:b00:1f88::287])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b245b86fbesm19778365c88.1.2026.11.05.12.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2026 12:35:50 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	Paul Boddie <paul@boddie.org.uk>,
-	paul@crapouillou.net,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	linux-mips@vger.kernel.org (open list:INGENIC JZ47xx SoCs),
-	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-Subject: [PATCH] drm/ingenic: Allocate and register the internal bridge separately
-Date: Thu,  5 Nov 2026 12:35:17 -0800
-Message-ID: <20261105203517.2293404-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        d=1e100.net; s=20260707; t=1793910976; x=1794515776;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=QQl1ERSY4wmOR1OEbq5mx2PtZRC9i6q9Gw0tuk7z0Is=;
+        b=czxhzRawQmJU6/uNfKR68RYxXKK0QVXiPq60Gy5A5vmdRPNafehGeVQDVaYS6GFGMq
+         /vuGtFm9qGCABsxZwEiuvWFvXN/p3teGnOSyiVkd/VkJtOxWxnBaM4GdDxX3d8qAc/6l
+         BunZNE1QPAMMD1DDYEXNAl0IGzykCnRr9qZF0F09mQD7OzEcKRmi1jgv34PjYFQ88Ceu
+         dL0rFjbjHJUpqu0qxMDIapduM1y4ontbmgimYLxsZUe6nvW/ZEySJyPIoG8k6I/JDzZj
+         va68tuJNmbzNF4AWbyv86PtkTGQPluRpiIXuCeV5p2K+WxQRtje7gmtkV+jyPuhuBBbH
+         rigg==
+X-Forwarded-Encrypted: i=1; AKwUvBwZqlpU5QU9mEX6cOc/tz/PoG2fDf49bWvtYmofsZyXM3X6y9H5g7ont4Fw5rvL9JqB2oYEQWzLX5B5@vger.kernel.org
+X-Gm-Message-State: APuU4Z+PgVPaUFN7dxAOFZp/f34u0b+rOTnF8bfixr/K619f8vCawVXg
+	ksv8qLPZRBUwS+tXcqv74erEPpNcr5Z7K93WhJYNyIFjmexM0aJiil+7nDKKglwv
+X-Gm-Gg: AYBFou0NxGUEfdhv7AyM9Kl6kVqdfcw/2PFvf9gDQh9SwrgIHWGCELfQBX22+HdNsjN
+	YSjjk88UxmYAiPFv7N1dwFnQlKOWx7ycXpf9iWh+W7xIczLnTNJ3XSEU0FdxUsbOCpSbf4ptgrx
+	HRVunOlrfqFWRTksYxqQyYfBhXxt0XJGIizPLQ40LQE+yTIyKHxRshoftTYNBpuBdZuQ5j9fqIN
+	ytPXCDYeRDF6hBvjJlzy5H3Lx80DWaOnpt1bE2LieyIVj8g7C56KUjWi0C0bbXt+OWqD8ucjS+7
+	FEYss1dgWHv4eET48oFE2QlNmOpt+kiMyhoEXfWWWNtyRyt/MHt/h+eqLYga/0YInTSdx18Wjur
+	Cl482qz3WEbM/JhbrW1BlEWRPQ73+vZAfW6WSU2EmzSRGzL6IvCOtgWMs37QViIq8Ffa/y53ULe
+	NQKAdVIYIKzsPZZihI1u4pAdRLA6kiBU+v7EdKEF/pdK/OISlNeC9KBrYkuX8x3wFc7L32uM21u
+	iV4s1zhAoePL44/kRNz6pUvgf2V3OXijNXb1sUnQiW1kyeHPUlSr7jpI4n70wqZQGHQWNVV2P65
+	QTVRmypEr4ETKmLEdg9CDqOQJ6VEVkHhYI6bJCrXa1jVTsW4QZzBL4XvIpONzMPFsWNnVMGz0Zy
+	nNo2VAnRKLir1/2qxp0T1EBC8pGpsG4L03et9hKQMGg8=
+X-Received: by 2002:a17:90b:3c04:b0:3b0:968f:fdee with SMTP id 98e67ed59e1d1-3b0db7190d8mr151723a91.55.1793910975572;
+        Thu, 05 Nov 2026 12:36:15 -0800 (PST)
+Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com. [74.125.82.174])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b09699c0fdsm4908034a91.2.2026.11.05.12.36.14
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2026 12:36:14 -0800 (PST)
+Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-3514b90bb89so4479833eec.1
+        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:36:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBzIiubBPn/H6AaUjNeGmI4SiboH8POiRWE8ZlPWj37WPZCVmReGcl+7soFALhRXvru/Jg3dh69xPh/M@vger.kernel.org
+X-Received: by 2002:a05:693c:8008:b0:369:d486:457f with SMTP id
+ 5a478bee46e88-36f73e72d61mr409769eec.2.1793910973768; Thu, 05 Nov 2026
+ 12:36:13 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -104,116 +81,25 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20261104-sf19a2890-gpio-v1-0-45e463c48728@telaak.dev>
+ <20261104-sf19a2890-gpio-v1-2-45e463c48728@telaak.dev> <CAD++jL=Bhbm3eNafdRTSKcnjyivhdmp0Mk1iHZ=HKN9sy_3Ozg@mail.gmail.com>
+In-Reply-To: <CAD++jL=Bhbm3eNafdRTSKcnjyivhdmp0Mk1iHZ=HKN9sy_3Ozg@mail.gmail.com>
+From: Joseph Telaak <joseph@telaak.dev>
+Date: Thu, 5 Nov 2026 15:36:01 -0500
+X-Gmail-Original-Message-ID: <CAPY4CJ4ExRTFJ+1q7GDw8ow=_ekk8urUqfC7ZtcYckwf1uO+vw@mail.gmail.com>
+X-Gm-Features: AclHuK_D3HUaJCQYumF5y8SooLOqbAC7H10kZ7apqTopxHnLZbvIW5XAq_-o6t4
+Message-ID: <CAPY4CJ4ExRTFJ+1q7GDw8ow=_ekk8urUqfC7ZtcYckwf1uO+vw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: Add Siflower GPIO controller driver
+To: Linus Walleij <linusw@kernel.org>
+Cc: Bartosz Golaszewski <brgl@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, 
+	Qingfang Deng <dqfext@gmail.com>, linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Qingfang Deng <qingfang.deng@siflower.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 
-The LCD controller's internal bridge is embedded in an object allocated
-with drmm_encoder_alloc(). This initializes the encoder but leaves the
-bridge's reference count at zero. Since drm_bridge_attach() takes a
-reference, probing the CI20 display produces addition-on-zero and
-underflow warnings and fails to attach the HDMI bridge chain.
+> Completely pointless indirection, drop these functions, just use
+> readl/writel directly in the code.
 
-Allocate the internal bridge with devm_drm_bridge_alloc() and register
-it with devm_drm_bridge_add() before attaching it. Keep the encoder in a
-separate DRM-managed allocation: encoder cleanup can drop the final
-bridge reference before it has finished accessing the encoder. Find
-the internal bridge through the encoder's bridge chain during mode
-setting, and use the bridge argument directly in bridge callbacks.
-
-Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in drm_bridge_attach/detach()")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++--------
- 1 file changed, 21 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 625ec76cf04d..520912f9ed0d 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -121,16 +121,15 @@ struct ingenic_drm {
- };
- 
- struct ingenic_drm_bridge {
--	struct drm_encoder encoder;
- 	struct drm_bridge bridge, *next_bridge;
- 
- 	struct drm_bus_cfg bus_cfg;
- };
- 
- static inline struct ingenic_drm_bridge *
--to_ingenic_drm_bridge(struct drm_encoder *encoder)
-+to_ingenic_drm_bridge(struct drm_bridge *bridge)
- {
--	return container_of(encoder, struct ingenic_drm_bridge, encoder);
-+	return container_of(bridge, struct ingenic_drm_bridge, bridge);
- }
- 
- static inline struct ingenic_drm_private_state *
-@@ -738,7 +737,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- {
- 	struct ingenic_drm *priv = drm_device_get_priv(encoder->dev);
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
--	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(encoder);
-+	struct drm_bridge *first_bridge __free(drm_bridge_put) =
-+		drm_bridge_chain_get_first_bridge(encoder);
-+	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(first_bridge);
- 	unsigned int cfg, rgbcfg = 0;
- 
- 	priv->panel_is_sharp = bridge->bus_cfg.flags & DRM_BUS_FLAG_SHARP_SIGNALS;
-@@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
- 				     struct drm_encoder *encoder,
- 				     enum drm_bridge_attach_flags flags)
- {
--	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
- 
- 	return drm_bridge_attach(encoder, ib->next_bridge,
- 				 &ib->bridge, flags);
-@@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
- 					   struct drm_connector_state *conn_state)
- {
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
--	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge->encoder);
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
- 
- 	ib->bus_cfg = bridge_state->output_bus_cfg;
- 
-@@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 			drm_panel_put(panel);
- 		}
- 
--		ib = drmm_encoder_alloc(drm, struct ingenic_drm_bridge, encoder,
--					NULL, DRM_MODE_ENCODER_DPI, NULL);
-+		ib = devm_drm_bridge_alloc(dev, struct ingenic_drm_bridge, bridge,
-+					   &ingenic_drm_bridge_funcs);
- 		if (IS_ERR(ib)) {
- 			ret = PTR_ERR(ib);
-+			dev_err(dev, "Failed to allocate bridge: %d\n", ret);
-+			goto err_drvdata;
-+		}
-+
-+		encoder = drmm_plain_encoder_alloc(drm, NULL,
-+						   DRM_MODE_ENCODER_DPI, NULL);
-+		if (IS_ERR(encoder)) {
-+			ret = PTR_ERR(encoder);
- 			dev_err(dev, "Failed to init encoder: %d\n", ret);
- 			goto err_drvdata;
- 		}
- 
--		encoder = &ib->encoder;
- 		encoder->possible_crtcs = drm_crtc_mask(&priv->crtc);
- 
- 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
- 
--		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
- 		ib->next_bridge = bridge;
- 
-+		ret = devm_drm_bridge_add(dev, &ib->bridge);
-+		if (ret)
-+			goto err_drvdata;
-+
- 		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
- 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 		if (ret) {
--- 
-2.53.0
-
+Thanks, v2 will drop them and use readl() and writel() directly.

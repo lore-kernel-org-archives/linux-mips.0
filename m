@@ -1,44 +1,43 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793893543;
-	b=ltHopKWmwK/uEjNHg4BsJJXE+n70mbSFaRZunCjILbvAh4zMPrRPvPmH1/yNDKam1Ydq
-	 WqLxlUv9TyXXGOXsrQHGC7U4oHAcQz0xe2WgPziNONDIP4KZlslcbzLZK1Ue9be4Zhikw
-	 HBmvoXZuxcUEcl4rEn2a18OXcmgON4lB1JlXJQOI4zwzabfK4fskEzoPWjU8Zz4LKmHrU
-	 sC892ZMm8lpjbyOF5s6QOBLLHaVqM1t5EY60aqK392Slh+SiMJu68RsBxwJUr9Or7Fbd+
-	 0oThT0sXmeDl7M3sLumG72gBsr0HLl9HuOWaG4Oz2AFi8djKzPgRbxSqyt+R18Sw0/w==
+	b=3uQtJABbIjPZzY+9S3+Vhkh2Jl/+uYk4nx0AMd4PSojFdfJCsyaj8xKV9i/W1VoV680C
+	 vwR20Lxykk5SxQQS0j1w42eJMxdvH4/QqWUWivCw59CS7dYtxEDZlckjwN6kwBWfMey2d
+	 kP0iJezecEO7BZjLor1RShtDNyQc0K9eCxFg6lzZ/Aa0UDE2Cl2NDMTj93uP+A20GCHta
+	 xMzpFdkvEIbBqBifkNwugTM9pMpPhMLpL51Cw4ymmhtwn8AZT1lJy3YSCnLwXxIuMEynr
+	 Fp/k2dHMf1dBUrapjnmQG8YeHpiVpbG1fc4/ucyNVQjJKr7uUfB6ifl8C6lk16VHs1A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793893543;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=4EsP1Q9uHl9zcUo4J/SAhFK4CP2OnQlLM8lM1bBsfbA=;
-	b=lXsA2+YGNRIkTgJQrrvQQVAmPIxXRgBJ0WNdZ3TzYdBFC5Pu4/G8JS4a/OJ8e53eWbG7
-	 cf9cInwhdFWbD6lqBmv3gO2Z4iczCwQLEMuiwfmJtVj4lVFe0lUYasuxevuY5PJda4X5/
-	 Tv+wSKEor0XLj8QRvwPC/oZClKhZcAVXtXlvLQePC+I/v/yOui/BEONJiechPCdGlV80R
-	 xAlGzXr46s9FhdzfyArVvDqdpwc9ZSoevnktNUMuPnjJEhNruuC8guO8Qh6q8JDD/UOy7
-	 IvfLI4MowDjGoPYKHLLF6g373OgLIskFja/GfkcVXlJkz/ptHvKZfS2f5OEtVZWzupA==
+	bh=g21C3sy1bQZxJVsDcdsLz31GdcTKG8ycPzj6lFSJ+wI=;
+	b=mTlC73MgN00PgOMEaTAxUzJouUyf6KvKacPQrFhCJdpubE66H70mTUCEnWUkaQRIi5wd
+	 CnJU0iYZ0NFxCaIgumxR1d4GamqEhSJyNO6NRtuoVjfas54Igp80TF8KHjsgELg9bxIS6
+	 mY4QDBK1ZsGe4DhntqF9N0kHsLl4JleT+F9KlfSD3Spx1JslGY5XPYSYPf6M1W1xsQjt1
+	 6Fff2q5tKTevzjvTqCatZ4ATgHofCy7N2c8DZnM3w9Lj7rgiv7r8FpTch+WRvrYyIpA9C
+	 FaGBSBWnN+kZF2M30QTTqeyWJZV+U5+V9HRWpCwed7H7iXlvDQCC7VQ/iO722qXOKFg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B57A606A32E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F714606A337;
 	Thu,  5 Nov 2026 15:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B57A606A32E
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9F714606A337
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xOzeg-00071C-00; Thu, 05 Nov 2026 16:45:34 +0100
+	id 1xOzeh-00071b-00; Thu, 05 Nov 2026 16:45:35 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id A2DDFC0508; Thu,  5 Nov 2026 16:22:21 +0100 (CET)
-Date: Thu, 5 Nov 2026 16:22:21 +0100
+	id 545DFC06DD; Thu,  5 Nov 2026 16:26:45 +0100 (CET)
+Date: Thu, 5 Nov 2026 16:26:45 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Imre Kaloz <kaloz@kernel.org>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] MIPS: SGI-IP30: fix the defconfig defaults for the
- Bridge PROM and RTC
-Message-ID: <auyfLWftx35e-Bk2@alpha.franken.de>
-References: <20261013094554.16804-1-kaloz@kernel.org>
- <20261013094554.16804-4-kaloz@kernel.org>
+Subject: Re: [PATCH 3/4] MIPS: sgi-ip32: Report the real CRIME revision
+Message-ID: <auygNcDhWoK7CRpF@alpha.franken.de>
+References: <20261021192418.7246-1-kaloz@kernel.org>
+ <20261021192418.7246-4-kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -50,27 +49,18 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261013094554.16804-4-kaloz@kernel.org>
+In-Reply-To: <20261021192418.7246-4-kaloz@kernel.org>
 
-On Tue, Oct 13, 2026 at 11:45:54AM +0200, Imre Kaloz wrote:
-> The Bridge probe reads its part number from the 1-wire PROM and defers
-> until the SGI 1-wire master and DS250x slave are present, so without
-> them there is no PCI bus and no serial console.
+On Wed, Oct 21, 2026 at 09:24:17PM +0200, Imre Kaloz wrote:
+> CRIME_ID's low nibble reads 1 on both rev 1.1 and 1.4 chips, so it does
+> not give the revision. ID 0xa has it in bits 63:32, and ID 0xb is rev
+> 1.5. Decode it, and drop the unused CRIME_ID_REV.
 > 
-> The IP30 RTC is a DS1685-family part, but the defconfig, derived from
-> ip27_defconfig, has the M48T35 driver, so there is no RTC.
-> 
-> Enable the 1-wire drivers and select the DS1685 family.
-> 
-> Also drop four lines that savedefconfig removes, as CRYPTO_CAMELLIA,
-> CRYPTO_CTS and CRYPTO_HMAC are selected built-in and IPV6_SIT=m is the
-> default.
-> 
-> Fixes: bb2d63500b5c ("MIPS: config: Add ip30_defconfig")
 > Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 > ---
->  arch/mips/configs/ip30_defconfig | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>  arch/mips/include/asm/ip32/crime.h |  2 +-
+>  arch/mips/sgi-ip32/crime.c         | 26 +++++++++++++++++++++-----
+>  2 files changed, 22 insertions(+), 6 deletions(-)
 
 applied to mips-fixes
 

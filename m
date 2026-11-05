@@ -1,45 +1,46 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793893544;
-	b=puCqfc10g79GgW/HYWkvF9DKidUfjRepz8nqw2n1FEsuETqlG9CAy/Xv7QxoGFnMB4x5
-	 clKSR1UTQDsZjHmNT4XJ9wZCC6LfhGnszEb6bWpkMa7MYEPoygT+Ywb/YpHJGCi9GcDqr
-	 9Bz7537P6lryhldh0ewlav1pWHS4gr+3kH8pHwjbTbM1TAjSA5VWZDWW3iHfpzqbseM0z
-	 cOfYz4dZMV4mtu4+naWC4I1acR09TMe79fcWIlILdEpMIsEkJEU3nnzEoHKDBe57TXqNC
-	 vS7JvqTCC79ThxpwzxftLNg6t4FVcZOiFsHvxeQcaBhd975dpqMuMUVvaezZThIX1uQ==
+	b=Rb8NNKahSe61fxGZjWbV9dQnIGSkdXc/y/o/lqsCGi5cgcJlStMuiOkpgGlWrSv5pdi1
+	 W6x0xOHYN4fTrhv1a7/et8ui2J5JaLLmD/eaDZmJoDplA9ipus+WcacA7FdmicxN4xwPe
+	 Rokheb2dYFG4cedlY7XvMHINU3rDZFv4hcrPrWwC9jUJGqpqvANK4z+zen/W41vzcDUYA
+	 dfWzJnjceGUNW+exMyV4rIiHzao/YLGCu5y46Cs7eUMk+3kNOSSfYX1qd0aNteySNIivm
+	 f/0ezkeAb3Nwj5P+7eR23bBN1Nr1sHquDOa0qPItY+NAtp3FA8MQ+ccF6UqIkbFKPBg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793893544;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=KYFfEzPSkLd+vp7+a4R/fnMFNlM/Tj87Skq1X+PiAfo=;
-	b=QzjDzpOf1FBh2UqAAbVyBGnRTYoQiP/xF8UBYR+lHegHCYxBOAQjc+W/ykY5IAq+WUns
-	 NuUrUf8z1x7oDlNM/IQHwt0AINZ1TiBOXIAzk7kdCGTmMai1l+jjX2h0Fs3gZlNCvQgiT
-	 fJ8AHyZTzTIgze/uC+44n565H4uOrG7cExczcrHsRpkCiVrZBh1GxavPDT3A0GgbHnsLe
-	 pR48Sb0nnvc3Cn7AMwMzTGThYkr/P6EpnoJYl4IBPm5tDW5/D4idOgNRnOyVJnyY4wCSx
-	 ZVNBc+9V9pFYQWmReehwTNbc/89BXaPShyUaYGsLy9CHKlWQAnopSwbIREhBN7wpZaQ==
+	bh=gtjV7Lleo2+ONnpavg8cztU4m7vyzoQjZh5qfVTQ3aA=;
+	b=Z1fR8XUo2jx3qzUkN1ARkOXN+HE4GZesNbXfMrv/X+rjDVk8yuZCF02rKCNZE2YDAmdt
+	 an9+/5GW/5RAz8pn1pbU8tsHN2CYGLP65Lyfso+xIuJCGcjIUuQMwwBVU96kQdR2+4ojr
+	 OPfswcv4oTAdv/zayMUYO1BhAaLzrhincQgD8jzs4QIlJPvWW8xJXHx6VnwawDV9KjleW
+	 Uq5mgctu3yvSRM1iI10VMoJFIvVtY6Xfe4vR6Tmtjzu6epm7aBrrivuc4zT/kDwSa4Iu1
+	 5eQq++NzTPeItTJkpLJqSLE6qlCU3CyYNmmCN7r/yU7GeVCBTGVd+E6ZTeoFEmIJINA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E936606A336;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4BD606A32D;
 	Thu,  5 Nov 2026 15:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9E936606A336
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B4BD606A32D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xOzeh-00071j-00; Thu, 05 Nov 2026 16:45:35 +0100
+	id 1xOzeg-000716-00; Thu, 05 Nov 2026 16:45:34 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 43714C0669; Thu,  5 Nov 2026 16:26:24 +0100 (CET)
-Date: Thu, 5 Nov 2026 16:26:24 +0100
+	id CF5BCC01A0; Thu,  5 Nov 2026 16:20:07 +0100 (CET)
+Date: Thu, 5 Nov 2026 16:20:07 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Imre Kaloz <kaloz@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 2/4] MIPS: sgi-ip32: Leave MACE PCI control alone in
- config accesses
-Message-ID: <auygIGW4c9_eBTT7@alpha.franken.de>
-References: <20261021192418.7246-1-kaloz@kernel.org>
- <20261021192418.7246-3-kaloz@kernel.org>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@vger.kernel.org, manuel.lauss@gmail.com,
+	Thierry Reding <treding@nvidia.com>,
+	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Dmitry Ilvokhin <d@ilvokhin.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: Alchemy: Register interrupt chips with the IRQ core
+Message-ID: <auyepzYMrbQNmAad@alpha.franken.de>
+References: <20261016181602.2152632-1-f.fainelli@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -51,23 +52,27 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261021192418.7246-3-kaloz@kernel.org>
+In-Reply-To: <20261016181602.2152632-1-f.fainelli@gmail.com>
 
-On Wed, Oct 21, 2026 at 09:24:16PM +0200, Imre Kaloz wrote:
-> mace_pci_read_config() clears the master abort interrupt enable in the
-> MACE PCI control register around each config read. A register read
-> followed by two register writes can hang CRIME 1.1 under DMA load.
+On Fri, Oct 16, 2026 at 11:15:59AM -0700, Florian Fainelli wrote:
+> Alchemy initializes its interrupt chips through the set-type callbacks,
+> which use irq_set_chip_handler_name_locked() to assign the chip and flow
+> handler. This bypasses irq_set_chip() and its descriptor registration.
 > 
-> Ack master aborts in the error register instead, and follow every
-> write with a read so back-to-back accesses cannot form that sequence.
+> Since /proc/interrupts switched to iterating the IRQ descriptor maple tree,
+> the statically allocated Alchemy descriptors are no longer found. On an
+> MTX-1, the file contains only the CPU header and ERR counter even though
+> the timer, serial, Ethernet and PCI wireless interrupts work.
 > 
-> Fixes: c990081bf87b ("[MIPS] Fix IP32 breakage")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+> Register each IC0/IC1 interrupt chip through irq_set_chip() before setting
+> the initial trigger type. Do the same for the Au1300 GPIC. Keep the locked
+> set-type callbacks for later trigger changes.
+> 
+> Fixes: 171cc0d9eed1 ("genirq/proc: Speed up /proc/interrupts iteration")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
->  arch/mips/pci/ops-mace.c | 26 +++++++++++++++++++-------
->  arch/mips/pci/pci-ip32.c |  2 ++
->  2 files changed, 21 insertions(+), 7 deletions(-)
+>  arch/mips/alchemy/common/irq.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 
 applied to mips-fixes
 

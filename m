@@ -1,78 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793894313;
-	b=YClfgs65OpK6Gyx17ZTDaqFwxJUEHTPIPG6bdkjgmckRJ7svN7WT6Tap8GGJCnUU2z18
-	 THPUop7SQ15x2IgURgJPEHgk6Mwu/sdMi84yA+Ypr4ejbsRM9oYUecrGc30/gkSWJlyBz
-	 820tvhhnrrnaztdczmkqCd6+ChOtaudsP77yvcDJ3LhGU6HqF9uwfLyhldsNaWLU3rChG
-	 jwR1Uav0fDEUyEpUxToDrst2PSPtQBY614wtFyYzBEqlZGLT9QGGBqqadnpQZXhOCiUc3
-	 Gql2rCfoUC90uN8gt+hKYeVneX68Jw2dZvbWzoltqkFJ6JwSeNCMthxc5j+WSONG/aQ==
+	t=1793896354;
+	b=PWnqkSlXI8AaDZtkLhwyTgviSr9lN1gb8SFKbgxTdwGYE+2SKkmVrgVdUbEpD+JdwLKR
+	 jB+lqnjGbh9j1rmUQ6S28jF3k9WzW1Du4TtsIYLXq2hbiweKP01oWprAlbJRM2MeDr0iN
+	 s5K5iFgQYBBqtBgWMWZkfYrifw7Us/dNlAoWDpWgCyBR5HkDz83tDTD9BpKZ0Pq9Hw5FA
+	 SjkwpVDTrgB/QaWolYimyow3Mln7uByh7HotBBdzXczNfF4QzlBo2EZpBR7wuLy0YgMBK
+	 6Gki3S0PdAepWB+ICkCKD6urzln/rDVvc5yL413Nq6lsOdu2FPSZAi6GOdst6nmtb+g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793894313;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=GfbFkrlXGTj8hINUijGxcgmVVtZ3dmfEWvTEJmaVTgU=;
-	b=l8fduf10v2QciI2bCQawzP2q0SWAm2PIvSgStaHab4jN0YeKmSGTmShESgCZSOI7Y5Jn
-	 nZxPWLsYCjQwiQwp2hwovgUnAMIYzL3hbuY1ovjW9btxnVudd8UqKaf2e70TZfk5ILQN7
-	 QmFiyUMYcwwgrI4Iue33jrJLXysATFRWtm0JyRmv0kgepKdpOpgC4Wui8TtEMB2l6DHJ3
-	 +s2K6Uaa0RpgHkKHvG3lss6SI2TGjWxtlIUCetQSlNMq5FEi5PNyCtWTvsHpsX3PIkoSk
-	 fvE02Yin5cNN96boOB23QuKKxLbkeAVjZnO6srYnsm4ddloOstWLaXS8XJOlAiCgK3Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793896354;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=Ki+nqmBhZXGuZnbX7u9v3sUjNAWL+MTXgec4H0qVAJg=;
+	b=c2Xmkjzl7xqW4l1EOGBZSiJRwdNH+71fmXO2yk7TPf481JwADCOKEMU8QTaRC82ac5fB
+	 IgtjMMxPhjvTfW/tX8i9gqy1+jAh0uI31NzuNwbhg7uwgcektAetWrLt1RU3eTjI5xgdE
+	 +lUA4Lz6+8np11GCLvSy5qBdraYPaaT61bJ2JPYfbbHxJhw1JAFrBYIpOcOMcigAXKEID
+	 6dWWsCvynY3/AilVaYs3pFm2svUZMc9613iQFpNrVNdkWk6MEZCmh1mE5jvtJzkgAqzM0
+	 09uJNc0Nzr9VMRfNTeN+E3XqJPH/fULHDfuuPeFqVY1dseG0XmP0pNSIjogHl7HLssw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=lunn.ch;
-	spf=pass smtp.mailfrom=lunn.ch;
-	dkim=pass header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=DRzi4VEy;
-	arc=none smtp.remote-ip=156.67.10.101
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iri2nVqZ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2030F606D818;
-	Thu,  5 Nov 2026 15:58:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2030F606D818
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFE3606BF18;
+	Thu,  5 Nov 2026 16:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=DRzi4VEy
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=GfbFkrlXGTj8hINUijGxcgmVVtZ3dmfEWvTEJmaVTgU=; b=DRzi4VEyFWHD2rFzpj6PhsP3kN
-	F39iwasjm7/8Ev+0a46CatRL0nzjNA0i4Q/FX+iV8pcMaHXoAGnwk81GdGZCth5ndauFChEK3PP8D
-	raYGuwthMY9TYT5rL30Bcn9SJ6LBRUDjIv2InceHI9uxm3ZPO9K24pQpfMKXtkaLHjw8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1xOzqx-00EbKh-DA; Thu, 05 Nov 2026 16:58:15 +0100
-Date: Thu, 5 Nov 2026 16:58:15 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Joseph Telaak <joseph@telaak.dev>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Chuanhong Guo <gch981213@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, linux-mips@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: Add Siflower SF19A2890
- GMAC
-Message-ID: <ba32cd69-23a3-464f-a74b-68a29e7b8202@lunn.ch>
-References: <20261104-sf19a2890-gmac-v1-0-a15965a49574@telaak.dev>
- <20261104-sf19a2890-gmac-v1-1-a15965a49574@telaak.dev>
- <e134193f-ba1b-47c1-9a06-419b1b796ea0@lunn.ch>
- <CAPY4CJ74O1tFVCpcN9seoeWDF0VR9GNfKuE+rWODQamN2sjL3g@mail.gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iri2nVqZ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2DE51F00A02;
+	Thu,  5 Nov 2026 16:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793896354;
+	bh=Ki+nqmBhZXGuZnbX7u9v3sUjNAWL+MTXgec4H0qVAJg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=iri2nVqZNV5FH5m/Q9Pp1HS9ybF/Aug2n36P8Ay8387Pj2NtJ3OT7B+33jfxG162f
+	 R1EeL/d0v1A9/V+EKpvN3uT5PWJBFJk3hKa9txHB05PdhgAxpOH+rx0hRD2iqSQ4NS
+	 7dUHKum/D2Ptd8aqla6oBzxsL/4yALvsewYDheiGMw0zF6tpqQP2vdmJcTcJN/Mm1I
+	 29exXjRYyEQ1NHqjx9yLO1+2ZXaR6ooRaFUjTj3OMY9SGvWczb/r6Ca0kUlpqmSPmK
+	 QpKajS4zD11ZZiQlqSJ36bc8dU607bUcQWid37/FNnw4BwF03BI5LxXZKbqYSBg4za
+	 +jOZPK9hURIgg==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Phil Auld <pauld@redhat.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	linux-mips@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 32/47] clocksource/drivers/mips-gic-timer: Move CPUHP_AP_MIPS_GIC_TIMER_STARTING post stop_machine()
+Date: Thu,  5 Nov 2026 17:30:30 +0100
+Message-ID: <20261105163045.38862-33-frederic@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261105163045.38862-1-frederic@kernel.org>
+References: <20261105163045.38862-1-frederic@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -82,42 +66,50 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPY4CJ74O1tFVCpcN9seoeWDF0VR9GNfKuE+rWODQamN2sjL3g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 04, 2026 at 05:16:14PM -0500, Joseph Telaak wrote:
-> > Please add minimum, and multipleOf.
-> >
-> > I've not looked at the code yet, but default: 0 would also be good.
-> 
-> Will do: minimum 0, multipleOf 55 and default 0.
-> 
-> > These values are odd. The RGMII standard says 2ns is required. Where
-> > is the rest coming from.
-> 
-> They are the values the vendor bootloader programs, and I checked them
-> against the hardware. Sweeping each delay over its 256 steps at
-> 1000 Mb/s, TX works from 0 to about 2.8 ns and RX from 0 to about
-> 1.5 ns; 935 and 550 ps sit inside both windows, and a 2 ns RX delay in
-> the MAC fails.
-> 
-> The rest of the skew is not programmed anywhere: the switch's PCDU
-> register for this port reads back 0, and with the MAC's delays at 0 as
-> well the link still passes traffic. So it comes from the board routing
-> or the chips themselves, which I can't separate from software.
+Between CPUHP_TEARDOWN_CPU and CPUHP_AP_OFFLINE, stop_machine executes
+all the teardown callbacks while stopping all CPUs in the system. This
+doesn't mix-up well with running RT or isolated tasks.
 
-Do you have access to another board which has a PHY connected, not a
-switch?
+In order to transition smoothly from global stop_machine to finer
+grained synchronization between teardown callbacks and the other CPUs,
+a new stop machine post function has been introduced to be executed
+after the main one with IRQs still disabled while other CPUs can exit
+stop_machine().
 
-There are unexplained delays here. Is it the switch, this MAC, or the
-PCB?
+The teardown callback here simply performs IRQ disablement, which can
+run concurrently with other CPUs.
 
-We need to understand if tx-internal-delay 0 really means 0, or it
-actually means 1065ps.
+Move it to post stop_machine() accordingly.
 
-Just because it works does not mean it is correct. We could be in a
-two wrongs makes a right situation, and as soon is it is a different
-device on the other end, it all falls apart.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/cpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-       Andrew
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 9a3936cd6d79..4451c5997cc6 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1275,7 +1275,7 @@ void clear_tasks_mm_cpumask(int cpu)
+ static int take_cpu_down(void *_param)
+ {
+ 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+-	enum cpuhp_state target = max((int)st->target, CPUHP_AP_LOONGARCH_ARCH_TIMER_STARTING);
++	enum cpuhp_state target = max((int)st->target, CPUHP_AP_MIPS_GIC_TIMER_STARTING);
+ 	int err, cpu = smp_processor_id();
+ 
+ 	/* Ensure this CPU doesn't handle any more interrupts. */
+@@ -1303,7 +1303,7 @@ static int take_cpu_down_post(void *_param)
+ 	enum cpuhp_state target = max((int)st->target, CPUHP_AP_OFFLINE);
+ 	int cpu = smp_processor_id();
+ 
+-	WARN_ON(st->state != CPUHP_AP_LOONGARCH_ARCH_TIMER_STARTING);
++	WARN_ON(st->state != CPUHP_AP_MIPS_GIC_TIMER_STARTING);
+ 	/*
+ 	 * Invoke the former CPU_DYING callbacks. DYING must not fail!
+ 	 */
+-- 
+2.53.0
+

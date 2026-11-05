@@ -1,90 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.168
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793875189;
-	b=xAUTzTLvDmcia3uJDpwusQsWnkLfs5p4nQc01C0RsVVTiTQDcUcML+v/Kua6hZnLJ5P2
-	 SUuiy0EuDCVGr6sD5qcKp+rC64Q1WAtYdAOozKeWAAqkeq0NsLOHwBvg3fGJ5r/2hP8hA
-	 7Qqmd0zrJ7uhqP4gPkFihBunW46mjyOlvsBj1E+VC8Q0m1ToqT6zjIfKXD5KVMwCIhYe0
-	 EsJsj0XLrKE4tiRxXnICt0kWwF7m7hYQmkTPYTp2/ubVks5X/oU91AOX8xJSsMDGs6WHm
-	 yUzDakgtj+Zjr3rP8eMOoga7j1Tyhn5PJAT5bl3K08vaFUXyh1ZxJPLEmHkMYzioX+g==
+	t=1793884497;
+	b=0g0pucARmpLdw3IRCeXz2osuhBGuOXBvX5sVqBuw6fPhFsFtj2/XsuryTvLhZGr79ICW
+	 xsUBzkmtJr1BE3Us8bqwIeKcESkkjaQTBTGPpgHH7J6JdwJqStpbNBncMgarpKv5Pg8tv
+	 ctpTdQMEFcIqN/HVW17PHkKo51rNezhuWxf7FMp1dG9pH5W9KXjZhYM0g9f44kHZ5WO46
+	 wgbxMuwni5fG1zExMJA+2+Drla9uoh/MnqdNBa9HItJYFmOVlx1UtCQb1CiY7ekJGKW1/
+	 ZvQo64EUQPXKcbQ0Bv+XxkVauf36O49p2PCmGCbg9d2H4QQ46rE2HMVDXa9DYqlt+pw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793875189;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=QOY1/Aph5M+b+uiCncBnpfm/tHXQ4aDgVh2l56B30Yc=;
-	b=HRSG0tPr0pViNDJDHBcquyMUbwromPObOigFH+2p+jaN/Cz5cXFqbIpARIPezsmG9CsA
-	 Y5Pbdy0ggg8kYmkwYUu811/je81B7k1scFwsFA8vGSduktZZghoLu8sfreakNe/YtzmU6
-	 NEKRcUE70hdxellXlBcBU+oCwWtD14sMoHmhksk4TKlKuPm2MnTrh9uSQ2tnvQpZ5Tf1Q
-	 M4dhw3mhVHdyLW7VP7IOq5aB/YdR2DouAokYJbOK0uSo1K/iedFnlo1WGqhFmT520Qn67
-	 yfP2yje83nzX5n2IKmesxdj4qt+XMU6RzFVJik6j7Y8R5ubdjp8xjJdj9zxOiQ08ckA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793884497;
+	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Subject:From:To:Cc:
+	 Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
+	 User-Agent:MIME-Version;
+	bh=GiQksdeFR/nSX2v2JYhf8JRjzUbVsY29jogJxq3oHcI=;
+	b=o8DZ7cFGHnqWYVjBtNMdxaJgjQK7r17Q743HVU3yOyLxe6vtE3ESSO6JNoqJ0OAd2mtq
+	 ZFn0Yg4qK9McOZs2DkUrogk3GtxGZr0mrrAe4l5i4/TcdaJoklKvKfjgWPGbehYYXbzvl
+	 ErJmQi8Eavq2G3OXDjjKdpkRaMb7Z0igGdVul2JnakUnMKni9Y5SX2bgczKaH8d8UQ/Y0
+	 czWfK9zC3UWUszgyLiEk0LSYkf9TZCn8ukk9jnkFyYDov4i3aOFew5ldNbot7Jo9V8vGR
+	 InXPN+CGJ492EU40tNF/QXZ1UFyTSu3OYfsZ3sqPrTNA7Em+CV+IxGroZqKJ/zhYFzQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="m1189d/x";
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=fKDLwEQv;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.168
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NwIx0qeb;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC917606A329;
-	Thu,  5 Nov 2026 10:39:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EC917606A329
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999FA606A31B;
+	Thu,  5 Nov 2026 13:14:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 999FA606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=m1189d/x;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=fKDLwEQv
-ARC-Seal: i=1; a=rsa-sha256; t=1793875171; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=fqZXSa3JLwhAJbmgfOUrRrxwkeIGE3lE1q20elPby10KpnbZHXfL/LB/MGl4b+OOnJ
-    b/knkOhtNSolKY9ApR+hWNd5tj3WVjHJOmt+xQVqmbtrtv3MqiZOr8685NdBE41iMByD
-    vIU/DVOkK2FAdmTZNTQKm9olRgmR6E0WRxfwUCl2ecIKSOiQTs0+Omhih9RCPl7YUaN6
-    I+tCNY654skNsyJedk8wKex26tUm9DQMYDb7t0qoHz6/8L21ffS7Q4n9CT3fZOFM/fGr
-    6vQO+2Qk246vIpXWmX/rRYTC1xxypoVwAoO0mZNczGubHpregv3bdtas3u9M78V95tvN
-    sRCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793875171;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=QOY1/Aph5M+b+uiCncBnpfm/tHXQ4aDgVh2l56B30Yc=;
-    b=G3Foc2BD79VIefqwHGNlNBhfO/7j6snsfirdyZYxqkIrkuIrTmwvPH0Ri77DQbpXkn
-    hjbEsq6Gp9q6/qt8Twod/VYwJCkdIMokM9yOeJJcCfOLaEpsWawrH1giZyMzgzcBwZX0
-    joKM53tXFM2WPOb2rDTMKbDDCbvr33RSKOIGFMIN/J9FrlA0J5EqJ7qlrn52S2S/r2Kf
-    CwvPv0DTnEqLuynw6en+wZzKIJ9h/PlrKlk8rwz8IEz9muGdKjRpTzXVfpJ7Z+2aCQtj
-    x/uftRMIHeuxb9hfYlgNxGYMNTUrFVKan/qkuJSY/0vaAzx9ZEUkmFJLPXMuApEjCsJm
-    /1xQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793875171;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=QOY1/Aph5M+b+uiCncBnpfm/tHXQ4aDgVh2l56B30Yc=;
-    b=m1189d/xqAFdGFmoXldTi0i5Eo27ENr6L5NVWGBWy53nCDyx/E1PcbNKdPmHSKl5Ge
-    eSMl4N0lco2K431q6nLjKZZHRf+9862H7kk4uK7DU22xiliR//KmqT+wjMKHUZCWMSh5
-    w0vHc5I/e8kcULkNETzI84JuAs+fzmHUqrBRGVDb42u2T/JAVWvIf49wmnT+nhiIANuf
-    QxrZHHvtqaLUvMXyLzlpka4HLtpdjEZGlLSey/ZfvGJNzNDCi5T4s6t/znDRWm/A9wYY
-    wBrWjfYDxPezQHlehb7SAyRbWsAOkCfVFsk07/jHos7UhCuKKNO7wWgt1ARDv25431M0
-    F/+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793875171;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=QOY1/Aph5M+b+uiCncBnpfm/tHXQ4aDgVh2l56B30Yc=;
-    b=fKDLwEQvq/Rg2H4E/PZr7f233E8WJCFHd8QaYBjs3JX2jUjAKLBhNa/w6eIIGAtuBV
-    LF1DWtLmOAIo+0LIE1Cw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV25oGlMiNUOZNJoYXSTSpu/Ae46f1NE9YxyvD"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22A5AdUiJQ
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Thu, 5 Nov 2026 11:39:30 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NwIx0qeb
+Received: from [IPv6:2a0a:edc0:0:900:1d::4e] (lupine.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::4e])
+	(Authenticated sender: pza@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7ECF4202007;
+	Thu, 05 Nov 2026 14:14:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793884489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GiQksdeFR/nSX2v2JYhf8JRjzUbVsY29jogJxq3oHcI=;
+	b=NwIx0qebySam+VAZB/sZ8AHoewiMlnJdvUSzcSnKyCjCIp6cFtT/q6s/bPQQIqCgeUXZrN
+	JCScPIXI1eCeR0xAhu0+U3M8bXVra/sMtrmP7V/LD7Mqg47n0bcdX5kzNNozrdVkJdARy6
+	65tWXlXK6IluxcpbVbyA1kGZjJ3DbWkhzEPXPVh9twbIJF4Uz4taO7K/aAQHksgezmsuzN
+	L9ZZ6nIKQN1FgxFRob+FmfoGLoFTdYc0U4QmgzYNx1XFs8Qf2N1WAcBG1t1RNCqUbtL1xA
+	bndJmKgGSiaKYgVGrWQ7obrdqouLIojrediA8eAewGyOzXVQPxJUVY/kxUA4CA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793884489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GiQksdeFR/nSX2v2JYhf8JRjzUbVsY29jogJxq3oHcI=;
+	b=YKBmZA1THUV1MZWPdgtHUs4BKRZ5cEkIktwPi/WIcGXMz0wElSXa3L1CriPdfGZyWqI1UT
+	vT5NIts2JVkYlKZ1Xl2StrSWwCCEG6kWsZCOQTJbWE2g2yWDsTnMIcqqOCmz8f6d26D/3e
+	qzyCKKwBAkC5QNOxmgmPj18Xph69BnxrMoQNLgrOYxkl0QlFdkIjP8Wl2uVzS4OTk6SOkJ
+	q8B+DCg0GSOwObaLikvIyrC7KxT365SoL1o5cXGe4vCmM64jkQL+Oc2LILiv44VPukJkqp
+	8X5/DcivdudvoR1ft7Xiq8M5n2gDRPa32b+1FQDbgRNJjWOa7sbGSBbV30MVaw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=pza@pengutronix.de smtp.mailfrom=p.zabel@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793884489; a=rsa-sha256;
+	cv=none;
+	b=Ea6uyhHbv7vUSVbVBpdkYpH0vz7uJhd/EBB2S+0iWRwzn+WKesEOubDSbrlkpyOaP7j42Q
+	nhidZ2ULG/TJou+0sU3Mipto4is5gKLyYXdtkwbZzjjzU+x+/J8WgVbWfmUHJJUup+AIL5
+	+QiSghC2bAeumwrlVQggkEIpcPJiFglK2m/ZvrAAKtNCzS5ntStlMkcog6wxYp4sfAwF61
+	CE3WeCFWp9JEtkJP5Vys5/51oCyKJR/QwWS7flIm+hZPXRphQMBNFo5gFltwZ/UuDKpnzZ
+	UtzQxx0TsZGGJroHim/JcX6//h5xLpxHpMoEUS9I7sVn/XCSqVT3jSzIuDuE/A==
+Message-ID: <7905740841dd0f47273b63dd28ee504b6fdf8084.camel@pengutronix.de>
+Subject: Re: [PATCH 2/2] phy: siflower: Add SF19A2890 USB 2.0 PHY driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: joseph@telaak.dev, Vinod Koul <vkoul@kernel.org>, Neil Armstrong	
+ <neil.armstrong@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley	 <conor+dt@kernel.org>
+Cc: Chuanhong Guo <gch981213@gmail.com>, linux-mips@vger.kernel.org, 
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 05 Nov 2026 14:14:49 +0100
+In-Reply-To: <20261104-sf19a2890-usb-phy-v1-2-db0cad937614@telaak.dev>
+References: <20261104-sf19a2890-usb-phy-v1-0-db0cad937614@telaak.dev>
+	 <20261104-sf19a2890-usb-phy-v1-2-db0cad937614@telaak.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-0+deb13u1 
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,160 +96,54 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 4/5] dt-bindings: display: panel: Add the HiBy LG35583
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261025191640.13592-5-olivier@mgcrea.io>
-Date: Thu, 5 Nov 2026 11:39:00 +0100
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>,
- Jessica Zhang <jesszhan0024@gmail.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6DFF1C7F-E1B7-4B06-BA1C-372F5C5984E2@goldelico.com>
-References: <20261025191640.13592-1-olivier@mgcrea.io>
- <20261025191640.13592-5-olivier@mgcrea.io>
-To: Olivier Louvignes <olivier@mgcrea.io>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+MIME-Version: 1.0
 
-Hi,
-
-> Am 25.10.2026 um 20:16 schrieb Olivier Louvignes <olivier@mgcrea.io>:
+On Mi, 2026-11-04 at 02:21 -0500, Joseph Telaak via B4 Relay wrote:
+> From: Chuanhong Guo <gch981213@gmail.com>
 >=20
-> The 480x800 parallel RGB panel of the HiBy R1, set up over a 3-wire =
-SPI
-> bus with 16-bit words.
+> Add a driver for the USB 2.0 PHY of the Siflower SF19A2890. Powering it
+> on enables its reference clock, releases its two resets and takes it
+> out of sleep.
 >=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> [jt: from Chuanhong's siflower-7.1 branch, the SF19A2890 PHY only; reset
+>  names "por" and "phy", dev_err_probe() for the resets, drop the unused
+>  includes and drvdata, Kconfig dependencies and help, commit message,
+>  subject]
+> Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 > ---
-> .../bindings/display/panel/hiby,lg35583.yaml  | 71 +++++++++++++++++++
-> MAINTAINERS                                   |  5 ++
-> 2 files changed, 76 insertions(+)
-> create mode 100644 =
-Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
+>  drivers/phy/Kconfig                      |   1 +
+>  drivers/phy/Makefile                     |   1 +
+>  drivers/phy/siflower/Kconfig             |  12 +++
+>  drivers/phy/siflower/Makefile            |   2 +
+>  drivers/phy/siflower/phy-sf19a2890-usb.c | 143 +++++++++++++++++++++++++=
+++++++
+>  5 files changed, 159 insertions(+)
 >=20
-> diff --git =
-a/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml =
-b/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
-> new file mode 100644
-> index 000000000000..19498910629c
+[...]
 > --- /dev/null
-> +++ =
-b/Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/hiby,lg35583.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/drivers/phy/siflower/phy-sf19a2890-usb.c
+> @@ -0,0 +1,143 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +title: HiBy LG35583 480x800 panel
+> +#include <linux/clk.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/phy/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset.h>
 > +
-> +maintainers:
-> +  - Olivier Louvignes <olivier@mgcrea.io>
+> +#define USB_SLEEPM 0x4
 > +
-> +description:
-> +  The 480x800 parallel RGB panel of the HiBy R1, which HiBy calls the
-> +  LG35583. It is set up over a 3-wire SPI bus with 16-bit words.
+> +struct sf19a2890_usb_phy {
+> +	struct device *dev;
+> +	struct clk *phy_clk;
+> +	struct reset_control *usb_phy_rst;
+> +	struct reset_control *power_on_rst;
 
-I have discussed with the Google AI and it hints at that the controller
-is a Novatek NT35510 / NT35580 family or derivative.
+Since these two resets are always toggled together, consider using the
+reset_control_bulk API for both.
 
-It is possible to locate data sheets for comparing the lg35583_init[]
-table...
-
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: hiby,lg35583
-
-But based on the scarce information I think it is the best solution to
-stay with the hiby,lg35583 compatible.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  vcc-supply:
-> +    description: Panel power supply
-> +
-> +  vccio-supply:
-> +    description: I/O power supply
-> +
-> +  reset-gpios: true
-> +  backlight: true
-> +  port: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - vcc-supply
-> +  - vccio-supply
-> +  - reset-gpios
-> +  - port
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    spi {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        panel@0 {
-> +            compatible =3D "hiby,lg35583";
-> +            reg =3D <0>;
-> +            spi-max-frequency =3D <1000000>;
-> +
-> +            vcc-supply =3D <&vcc_lcd>;
-> +            vccio-supply =3D <&vccio_lcd>;
-> +            reset-gpios =3D <&gpa 31 GPIO_ACTIVE_LOW>;
-> +            backlight =3D <&backlight>;
-> +
-> +            port {
-> +                panel_in: endpoint {
-> +                    remote-endpoint =3D <&lcd_out>;
-> +                };
-> +            };
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 57313163e59e..e65500a70c9d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8152,6 +8152,11 @@ S: Maintained
-> T: git https://gitlab.freedesktop.org/drm/misc/kernel.git
-> F: drivers/gpu/drm/tiny/gm12u320.c
->=20
-> +DRM DRIVER FOR HIBY LG35583 PANEL
-> +M: Olivier Louvignes <olivier@mgcrea.io>
-> +S: Maintained
-> +F: Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
-> +
-> DRM DRIVER FOR HIMAX HX8394 MIPI-DSI LCD panels
-> M: Ondrej Jirman <megi@xff.cz>
-> M: Javier Martinez Canillas <javierm@redhat.com>
-> --=20
-> 2.39.5
-
-
-BR and thanks,
-Nikolaus
-
+regards
+Philipp

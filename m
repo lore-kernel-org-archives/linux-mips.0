@@ -1,64 +1,63 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793905737;
-	b=MBFHi6i2LENk8/uCZ0j3wzKhPZ4UyQ9SPYiIhbujC2zCYDuaDIbiLxA0/5lZprDY6X7f
-	 smbdtovwRa0mLGcxor+HgxFSSSsNE9fS8zHDhhT45vrWX2gKyxm0qbQn9KrgN1lgTxj+b
-	 7wn+eEZQzAQEktHA7bqGOOv43Ndl4dUDH+dxJo9UpuRrfwQy255INVsmM37VOxk+VKjya
-	 P1o5q4lf5dT0Siw/LLBiMjIFiud9K732NP8MHf8Ricm0Au65myqn9WjUOoetraV5IMU06
-	 lDHvExCn/fWsRabfyg6vlZkPhhCS+NZ9/zoD8Vv7/WOBUmdFM1G06j1/uzgAenYlE6w==
+	t=1793906298;
+	b=3tJXLhYQ+idr8KFOHX1iEQ4Lz/MmbK5yMjPxKhEhSM6HNbLb2yZ3VVpNL/hFxyTulRfK
+	 s9rjylFAO+sWNnwxUGdgH7lFbOtbzhVOtoMr8nkLtG29fZGZ6FqcMHxdn8tIQN1uwi+/i
+	 M3HXv24XFHHkZAByqeKHCM/BqzNWblSMMJsvoIciQJIhwGANrQD+hE2UW6BZS9vcl6ZEN
+	 4CC6sczk2epngG2GPkHAdJAj4blnd/VuonzsLDDs89PbFV9IewKTuacGsnvR8ZDkmF6wu
+	 Ak19nkNWmSNZjMQXBPnj4iErirxSBn52zpZmzn3LeeYRj9llbgkVgZBqWKEOmH2EtNQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793905737;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906298;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=V7cpDqfJH1y1hZnJH2Vx1+b0eI4492tyg6A/STECMPY=;
-	b=b3B/rdzArL09GGzEZNnuPTUZRP+uLJGHEY8LXSAJdvA/hbyDSeGTiPqLjRQyIwJLoYz7
-	 B4fsdZc1Koc80mXH50+/HbSx5NtVtULNa3x/bGIkFTafYh42O/FAMRpAcnChBQ29HL2Sj
-	 fmftHmzpS05ATerx65kslk9v7qtvfBvX0LDOkxJEqQgwExHmFb3s0ezfGjiYlEIslx9F1
-	 8gRVSnRc439PkexCDd6c1y8NGKbYlbGYJy8JTf4Yjc8OrC7ePgFzPAYousJCu1OlU7cFu
-	 ixFbF/uPr0cjqhnC1+0YdjWYSPMbGOYhIXIRbL7rlFzBbZAqut1j+dhiwzJtDVbRgoA==
+	bh=XD1Rm+iGqF06DKo2ufDJiE26layU8M+F3N4dQIPcMnQ=;
+	b=Yu5mCVY4opQz3yJrL5BVrmXvBp7S4gUSujVg1KtjtmK1FxGt39fRloqR1M48LqEq55o6
+	 f4eo1upm5Tvhc4wQn4p5LzHk28EEoQFXXbEpC6ozezFdCQFWwOEhscXJptNxrZFdjwmSe
+	 9ZmHNQYyXb/uugEvrvXPNsqK4l8mcJYW+TKJRe9mW5ORFXmMQiDKeShjHLjwwqR20StBG
+	 0OPuQ8eR3VAZwn2IfPpmCH+N+qZ45hHtvkNrF6gCahEnX7Qq0ROw6HruCdBO+uX2U9VKL
+	 1xllFDX/7zghxd1zihtj8pKGVplZC2iAz/Q5tD8/niGBj471abeBO4NWTSXPhGjopig==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LET9d5GD;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lL5hLUwk;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C0F606A326;
-	Thu,  5 Nov 2026 19:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944B0606A31B;
+	Thu,  5 Nov 2026 19:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LET9d5GD
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD3D1F000C1;
-	Thu,  5 Nov 2026 19:08:53 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lL5hLUwk
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01A21F000C1;
+	Thu,  5 Nov 2026 19:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793905736;
-	bh=V7cpDqfJH1y1hZnJH2Vx1+b0eI4492tyg6A/STECMPY=;
+	s=k20260515; t=1793906298;
+	bh=XD1Rm+iGqF06DKo2ufDJiE26layU8M+F3N4dQIPcMnQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=LET9d5GDd0AI7Q3ARWLfcNkSwf/TfYOAsmLg3K5t6xVeJvx7g/INQOasebQmjLKkg
-	 /PGg3W9WCO3J8LYuq3Ob6Qwl4zr6hU3JsTir091SentB8bi7EC0N6YmdGU1QJg8vAo
-	 aeKWauZcS849c6OH1T8KQXyEttfsdWBE7ndjjVcmZ5RQbrEzdz+8gw2VJm0IFdwdT7
-	 XQ3Sabv0bmNxxbgqxBlpZOUrQIuoZPlBgkRcPn+H9KwwM4mynp96WyjtOHn9pMg+en
-	 9xHWepFf4IQld04OQqXn+lg16EyR0quVDOQb4R5kzVixrOzEp41GyDZiPqjwpgfbZL
-	 umqHfLuBo+CAQ==
-Date: Thu, 5 Nov 2026 19:08:51 +0000
+	b=lL5hLUwkxIEo+DdtEPhhyGUDjYZ/mqvi7E1mpsRNbQY6sAmzotey2EfNE84CYdqeA
+	 n8MRfrJrjOAwcNBinA0i2s//nahSVK+0tD9WboGj6Hb66RtNJDJz7nRFfvRXV4TvN/
+	 FMxdDfN4G0CN1M2wHB8VynPd8ULeTEwfi7zUwGWxNPYgawFCNbdphIx9V8kzSjZTns
+	 AN2VsJ/5biQ8mfSA//Gx7Fu3kf9Mw+2T1whck9xyZdOOCoalUm0JHsfb7Kh/Lp7Opj
+	 KIPjiep9zOAODo2OjWuF+3zgLbdg35OpG8IsXKkHsUAbz4MaOFREJLQAVntAzWa3f+
+	 FoXQwxrLeNBow==
+Date: Thu, 5 Nov 2026 19:18:13 +0000
 From: Conor Dooley <conor@kernel.org>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Olivier Louvignes <olivier@mgcrea.io>,
-	Jonathan Cameron <jic23@kernel.org>,
-	David Lechner <dlechner@baylibre.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh@kernel.org>,
+To: Joseph Telaak <joseph@telaak.dev>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Joshua Crofts <joshua.crofts1@gmail.com>, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Chuanhong Guo <gch981213@gmail.com>, linux-mips@vger.kernel.org,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
-Message-ID: <20261105-pregame-ditch-cb9fb68a0040@spud>
-References: <20261102201155.10948-1-olivier@mgcrea.io>
- <20261102201155.10948-2-olivier@mgcrea.io>
- <20261102-salute-cylinder-22c9a8896ca9@spud>
- <C0C6F46A-45B7-4B1E-9398-71CD8A26FBD5@goldelico.com>
+Subject: Re: [PATCH 1/2] dt-bindings: phy: Add Siflower SF19A2890 USB 2.0 PHY
+Message-ID: <20261105-shampoo-osmosis-6975c7cf734d@spud>
+References: <20261104-sf19a2890-usb-phy-v1-0-db0cad937614@telaak.dev>
+ <20261104-sf19a2890-usb-phy-v1-1-db0cad937614@telaak.dev>
+ <20261104-unscented-armory-4dc756ab95cb@spud>
+ <CAPY4CJ5g+e4iu8p5s+Vf7XmEjB9cYX9xYyzHd0Fz8GEbmFm4hw@mail.gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -69,90 +68,50 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5rHQxFgV20QGdNEt"
+	protocol="application/pgp-signature"; boundary="fkTf2+Z1l1LqlU4y"
 Content-Disposition: inline
-In-Reply-To: <C0C6F46A-45B7-4B1E-9398-71CD8A26FBD5@goldelico.com>
+In-Reply-To: <CAPY4CJ5g+e4iu8p5s+Vf7XmEjB9cYX9xYyzHd0Fz8GEbmFm4hw@mail.gmail.com>
 
---5rHQxFgV20QGdNEt
+--fkTf2+Z1l1LqlU4y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 05, 2026 at 10:57:58AM +0100, H. Nikolaus Schaller wrote:
-> Hi Olivier, Conor,
+On Wed, Nov 04, 2026 at 07:39:32PM -0500, Joseph Telaak wrote:
+> > > +        reg =3D <0x19e0c040 0x60>;
+> >
+> > That's a weird offset and size.
+> > What lies in the regions around this device?
 >=20
-> > Am 02.11.2026 um 21:48 schrieb Conor Dooley <conor@kernel.org>:
-> >=20
-> > On Mon, Nov 02, 2026 at 09:11:54PM +0100, Olivier Louvignes wrote:
-> >> The X1600's SAR ADC has four auxiliary channels and none of the
-> >> touchscreen or battery engines of the JZ47xx ADCs in ingenic,adc.yaml,
-> >> so it gets a binding of its own.
-> >>=20
-> >> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-> >> ---
-> >> .../bindings/iio/adc/ingenic,x1600-adc.yaml   | 53 +++++++++++++++++++
-> >> MAINTAINERS                                   |  5 ++
-> >> 2 files changed, 58 insertions(+)
-> >> create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,x=
-1600-adc.yaml
-> >>=20
-> >> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-a=
-dc.yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
-> >> new file mode 100644
-> >> index 000000000000..f6356ea97980
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,x1600-adc.yaml
-> >> @@ -0,0 +1,53 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/iio/adc/ingenic,x1600-adc.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Ingenic X1600 ADC
-> >> +
-> >> +maintainers:
-> >> +  - Olivier Louvignes <olivier@mgcrea.io>
-> >> +
-> >> +description:
-> >> +  The SAR ADC of the Ingenic X1600 SoC, with four auxiliary input cha=
-nnels
-> >> +  measured against a 3.3 V reference.
-> >=20
-> > The wording here makes me wonder if a 3v3 supply is missing here? Or is
-> > this some internal supply on the soc?
+> It sits in the 1 KiB from 0x19e0c000 up to the next block at
+> 0x19e0c400. At 0x0, 0x4 and 0xc are the reset, clock gate and bus output
+> enable registers of the USB clock and reset manager, which the clk
+> series describes as siflower,sf19a2890-usb-crm; 0x8 holds a value I
+> have no documentation for. The OpenWrt port gives the PHY 0x40-0x9f,
+> and its driver only uses 0x44, the PHY's sleep control. Read from
+> U-Boot, registers between 0x40 and 0x8f hold non-zero values I have no
+> documentation for either, and the rest reads as 0. The GMAC's
+> configuration registers sit the same way, at 0x40 past its clock and
+> reset manager at 0x19e04400.
 >=20
-> It is an external SADC_VREFP input pin (ball P12) which is usually connec=
-ted to
-> the 3v3 supply. But it is specified to be min=3D0V .. typical=3D3.3V ... =
-max=3DVADC
-> voltage levels.
->=20
-> VADC is indeed the power supply for the SADC on a separate ball. It must
-> be in the range of 2.97V .. 3.3V .. 3.63V so that it is extremely likely =
-to be
-> connected to the system 3.3V rail.
+> If you'd prefer one node for the whole region, providing the clocks,
+> resets and the PHY, I'll restructure it that way for v2.
 
-Probably there should be at least an optional supply then, in case it
-has a dedicated one for $reasons.
-pw-bot: changes-requested
+No, not asking for that. Just making sure this wasn't some sort of
+syscon being hidden by the offsets and size.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+pw-bot: not-applicable
 
-Thanks,
-Conor.
 
->=20
-> Therefore I do not see a necessity to require a separate regulator refere=
-nce here.
-
---5rHQxFgV20QGdNEt
+--fkTf2+Z1l1LqlU4y
 Content-Type: application/pgp-signature; name=signature.asc
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCauzUQwAKCRB4tDGHoIJi
-0r8CAQCHI9gqXrfjEz8CofeFY5j+Ga0itdM/tPS1ksd1H+qUsAEA1KxEDpDfxkas
-NnICKTM6EXj60ZHCA3zoEw8srW6ZJA4=
-=0+bX
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCauzWdQAKCRB4tDGHoIJi
+0htFAQCpfD/ATW+Oh8iIXCWIFJJ9g6tE4XFONhEBugZlFfDZ8gD9GLc6+0RrUu63
+KYjkd0LAmVIcn/ACklIrnrIlzsL5sQ4=
+=PI9i
 -----END PGP SIGNATURE-----
 
---5rHQxFgV20QGdNEt--
+--fkTf2+Z1l1LqlU4y--

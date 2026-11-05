@@ -1,45 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793893544;
-	b=5MOr5JQH1Dt88wiDrUVFVZW6NYc2x4knlSgxPi8ZBrnVOIwvqmdg2CN4GY6lNh0KO783
-	 ueyniLjlEbDOFzIZdRgQpZjm85rGqkilYAhxDIGe8vtAVhEpuO8xfYa4KZjyoKPFWrfPZ
-	 nrT6BhzowLxkmxIMAdzsuzwdeuOBDdtCyo9yJ4gAmEJd+hveE1QlRi5svCGQkuIFsBGYG
-	 +NWwuYNgIK8Ppi6gXlSgzemq/NYojEbsUsRVb4+qNwhyItfjQtL5qOvcp8TKidX4jV24H
-	 qUzKn7leytde/XsHk1SbfVTqqHIcG5nnY9Aua01XhMVw0pBYHeVY1miTzYWU88+pccA==
+	b=CEVzwdCRv04Rpjwj6fFrkbifQ6XhjbTeSwf3IrySGUqX6Or+n2QXQ/lkfaTNjiE9jkdM
+	 /lBqP8N5NVzXJJNAQeHcfatI0Hmln5cCQROBDs8H0dgQk/ZMlJn/5sLu/Jh1lDoPIEAyM
+	 ltmhxHbqk3Jozm6PkAmS9L9scrl2/HdvIyWRDjHs/jHAHAptRVcnwUjn6TeWUAlxISDm4
+	 kR28/0XOz19YSanXuDrCG4kEkATWfqfoReU1epcFQzyZhUhp0KfN+AW5wzPTXR3HdhmKG
+	 Rzaeazg4txnTQkomnrw9CA01mzDwcZVBDCG4iuxHxwAP6XOkHBP0qMZp/sCBVxctI2g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793893544;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=AKweYcaA3h7dBYyOM9H36OLhS4uCknlLo0A8Hm3XVj4=;
-	b=1QqzGMBGuMonNZ/5OMOiwHZ2sNdi5thJ3c/ljteXHFqxzrlEfuMehsNpOYEYhhGWFwgN
-	 tA+F8K7d74UAc+iVSLL7n4XJaWFa2NMN9VzDQLpa/HDz9CH9ZuSXTH3CylXhFD2ImzI0B
-	 QBZ7FuJP5vTc90OBGc93cL7pQxmRhdJm+nJfBQU6ATJdEUAj3TrEhSMmfOUIxeXOw0bkx
-	 tgcUe37/xZx0AnnKa5gX5Ijj4j8OF6tjkbbKOVbZ7sTLFWXoGTTKPsaYAW/3Xsy4fXntN
-	 DU7qjanXtzKp+LJ+aNb2597TI5ZkVOAf+ot072LtUvCGvZZu1TK3qOm7oY6c2j57AZg==
+	bh=GVHNrdryi/sJD46YeZLt7AdRQrcbfvfhDSsM1Un3HaY=;
+	b=d+02olmoEAzHnNfxGuWsyyfZ2kfH4ia6sr9oTHbhgH16iu4OOBYHlXIH0bmt7SRSxCkM
+	 qJTrMpsV9Y86M5JWwcbXn9n7o5kEr5FS3FKsTZaugJJeQO2YPzR5CeqP6p9Wo0/jT50qi
+	 05RBU1V+mRKHgh64bN1kqkdWvpzvsfz7WQfI4F9uwWAVyPwoydhOVPslrYC5Aou9HdV+i
+	 MUycOZ3aaZbWh7ntYRfzjLQvpa22GL3mshV8RNYpN0n63joYK8BjpYqI5AUhQ5bhBYndI
+	 f/MBUPQ1sKwnqpXukh6iiVKwwyDWCYVqMT8GiaFOFtwBtYwq+80UU2mM/BXrzVZiPgQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C948606A331;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C985606A333;
 	Thu,  5 Nov 2026 15:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C948606A331
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C985606A333
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xOzeh-00071f-00; Thu, 05 Nov 2026 16:45:35 +0100
+	id 1xOzeg-00071U-00; Thu, 05 Nov 2026 16:45:34 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 0907FC063B; Thu,  5 Nov 2026 16:25:59 +0100 (CET)
-Date: Thu, 5 Nov 2026 16:25:59 +0100
+	id 8ADC9C0558; Thu,  5 Nov 2026 16:24:21 +0100 (CET)
+Date: Thu, 5 Nov 2026 16:24:21 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Imre Kaloz <kaloz@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 1/4] MIPS: sgi-ip32: Mask MACE PCI interrupts in CRIME
- only
-Message-ID: <auygB8VkI7rQMzX_@alpha.franken.de>
-References: <20261021192418.7246-1-kaloz@kernel.org>
- <20261021192418.7246-2-kaloz@kernel.org>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:CLANG/LLVM BUILD SUPPORT:Keyword:b(?i:clang|llvm)b" <llvm@lists.linux.dev>
+Subject: Re: [PATCH] MIPS: boot: compressed: place .rodata.* and discard
+ .MIPS.abiflags
+Message-ID: <auyfpUxm9KPmBXO8@alpha.franken.de>
+References: <20261009232857.655265-1-rosenp@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -51,21 +54,56 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261021192418.7246-2-kaloz@kernel.org>
+In-Reply-To: <20261009232857.655265-1-rosenp@gmail.com>
 
-On Wed, Oct 21, 2026 at 09:24:15PM +0200, Imre Kaloz wrote:
-> Masking PCI interrupts in the MACE PCI control register overwrites the
-> error and arbitration enables set at init, and a read-modify-write can
-> hang CRIME 1.1 machines under DMA load. Enable the slot interrupts once
-> and mask them in CRIME.
+On Fri, Oct 09, 2026 at 04:28:57PM -0700, Rosen Penev wrote:
+> The decompressor linker script only collects .rodata. Clang emits the
+> decompressor's strings in .rodata.str1.1 and also produces a
+> .MIPS.abiflags section. GNU ld places such orphans next to similar
+> sections, but ld.lld puts them after .bss:
 > 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+>   [ 5] .bss            NOBITS   809246c0 5346b8 402010
+>   [ 6] .MIPS.abiflags  ...      80d266d0 9366d0 000018
+>   [ 7] .rodata.str1.1  PROGBITS 80d266e8 9366e8 000164
+> 
+> This pulls the 4 MB of .bss (mostly the boot heap) into the file and
+> leaves the strings beyond _end. For BCM47XX vmlinuz grows from 5.4 MB
+> to 9.6 MB.
+> 
+> Collect .rodata.* with .rodata, and discard .MIPS.abiflags and
+> .gnu.attributes as arch/mips/kernel/vmlinux.lds.S does.
+> 
+> Assisted-by: LLM
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
 > ---
->  arch/mips/pci/pci-ip32.c      |  7 ++++--
->  arch/mips/sgi-ip32/ip32-irq.c | 45 +++--------------------------------
->  2 files changed, 8 insertions(+), 44 deletions(-)
+>  arch/mips/boot/compressed/ld.script | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/boot/compressed/ld.script b/arch/mips/boot/compressed/ld.script
+> index 0ebb667274d6..c45be18c6f0d 100644
+> --- a/arch/mips/boot/compressed/ld.script
+> +++ b/arch/mips/boot/compressed/ld.script
+> @@ -17,7 +17,7 @@ SECTIONS
+>  	/* . = VMLINUZ_LOAD_ADDRESS; */
+>  	.text : {
+>  		*(.text)
+> -		*(.rodata)
+> +		*(.rodata .rodata.*)
+>  	}: text
+>  	/* End of text section */
+>  
+> @@ -50,7 +50,9 @@ SECTIONS
+>  
+>  	/* Sections to be discarded */
+>  	/DISCARD/ : {
+> +		*(.MIPS.abiflags)
+>  		*(.MIPS.options)
+> +		*(.gnu.attributes)
+>  		*(.options)
+>  		*(.pdr)
+>  		*(.reginfo)
+> -- 
+> 2.56.0
 
 applied to mips-fixes
 

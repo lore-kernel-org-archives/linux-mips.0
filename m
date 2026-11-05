@@ -1,77 +1,74 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.197
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793910976;
-	b=PmXUDgzvOnkIvMX30xAzzBFiKllojkRYLH5ENTapYEfDGVpgHenN4IfJWXyInDxB6ncO
-	 bFX4bO7wLkbW1k68SdXbjfOSzpO80WxwVCUgJVQM9BHWE8qRMLkB59Q41XIZS0Fyk5RWZ
-	 lZ3XB375mdLo7WxLG83Vtz4VZHMDFGObbqJl1UV20SQGvndHPjGYzGZYtU/oKJ1dN8sNc
-	 yUXv1MIQyW7SzGfTspFzhONrGAibMWUH9xZOKGKSfxnKagY37lHiAMBGknyk66SzXq/mP
-	 OfkRnHC7PQpPVDPvu4JOMwgKaPpPqV9LHtnNPSyTlwnT0NmXL4XK4F9V6ama9I3Leww==
+	t=1793911778;
+	b=2Kx5lX98CAl98AFe3G0nYQ/6x3Vv8dN5irqiRbaGdjdslah6Cwut2UfawnS83M3J6N5X
+	 uj5ILlFPef38axtjCyrFpWZ0p9j67/8FrnVLavisF6d0rWJMYKy0t+b03zfzvnc7tvHPX
+	 8yL24yOlL9Iz+QCFwJXTXkjQnmPHB9gIRvG409fXvM4gCug/233sTQ1Sg5Q1v34xUidTB
+	 rd9wxUXyUR4TGxkvb2F27Mu6Tl8hqJbudVA0fjmKfcZ67IjbBRt0Hvz1Qm6EyZLYvl8Ye
+	 U8nICn3NK1YU72nxfaHuplAe84K42uMBsR/R3T3u0h9EAMowPN6rlUufzFTP+ykadSg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793910976;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=QQl1ERSY4wmOR1OEbq5mx2PtZRC9i6q9Gw0tuk7z0Is=;
-	b=J6K3qD7fWFvg7p8o2EAcS4lJNJeJc9w6bkiJo3+1lfHK560zL/jUvW1Heh2/hsxUtEzx
-	 LqOMJ43YqJYJVx0DqBZHunGg9+jps0ocAyGbAQ+/TaGubRzYnEs44l/Yyw2Tfn//MQvU2
-	 xsWsc4VIo0s9e25zyUN4flkyg3eabgn9xyM5yi9o71PqIS+Ssdv6amGDwtazuiIZ6Ed77
-	 qYFOFYy7lQpHutGBMYYLvl+ggkRjyxQ2f2tKkjfn4K9sUNvuYV/Z8deWpkMQ32ZUd6C3g
-	 kUH+EDBIGKL8rFISGjlXcZ/kg1HOvSE8UpMRm/+4WW3j4z9f6PKNBz5414osPiC8lhQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793911778;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:In-Reply-To:
+	 Mime-Version:References:Message-ID:Subject:From:To:Cc:Content-Type;
+	bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+	b=SaC5Hi9eXh2SCYcGzbVrJSgI3Md+aiDkanwazdsA6zE/nNLMktWfJ/Mn714ttxcT683R
+	 YaAhScrFv6yYRG7RMhT2Ngh99XzeH/b0t22Ci5EslgIvpSBV6sB64eVtJ1Zk9UQwxR18v
+	 gS5dc+GkTosQVW+ND7cbZ9FjVUj9+hWm8xBubZLIYGzcSMeEv+uRsNRSbhq4FLWxz1KUw
+	 /ITyccTLbTcsHLHobvIeVVqq3SqJZHtu7XJvMOTkDZyeOjscuNpfNq9c6j29rrxh2raPY
+	 gVNHcgtwrTSs4TPAmoEhjSTQuvlUXRIYgD6X0sSAJpfuawrJYsQMWPbwnnE9vposYtQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=telaak.dev;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.216.52
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=dxBFD7eg;
+	arc=none smtp.remote-ip=209.85.210.197
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD46606A32D
-	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 20:36:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5FD46606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3ae7626d14aso1309061a91.2
-        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:36:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFF3606A328
+	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 20:49:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9EFF3606A328
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=dxBFD7eg
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-8b32efd7ec4so288607b3a.3
+        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20260707; t=1793911777; x=1794516577; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+        b=dxBFD7egkald1diEtbXOBXzH+9cQFK2KeCaFgwFJNeVqQ39GNskIoMvqgylgnntMH9
+         o6cgkIhz7VeqRWc76fFeuaZBrUrsO0KbXGQDOo8UnmsNxd5DuGBZMTkVsx2LFZXyCFih
+         xLmHM8Mx07KTStSbatLB7JBcE69i+TN4sfwyGum4R7QrkX6GMQsP7QDdZp7bkXe4WTSN
+         kjH+OioEJh4aowCsawhV76CFmgsNb84NAEAQfXPTtwRjk+/N+4OfpAi+RPh6ypf7I9Ji
+         LwRr227XUyaN5rK5df3trhjeaIYVx8XGIDVL5DDAgaeqxIBb9EXYuq3EuqROZW7d5HLq
+         L0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793910976; x=1794515776;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=QQl1ERSY4wmOR1OEbq5mx2PtZRC9i6q9Gw0tuk7z0Is=;
-        b=czxhzRawQmJU6/uNfKR68RYxXKK0QVXiPq60Gy5A5vmdRPNafehGeVQDVaYS6GFGMq
-         /vuGtFm9qGCABsxZwEiuvWFvXN/p3teGnOSyiVkd/VkJtOxWxnBaM4GdDxX3d8qAc/6l
-         BunZNE1QPAMMD1DDYEXNAl0IGzykCnRr9qZF0F09mQD7OzEcKRmi1jgv34PjYFQ88Ceu
-         dL0rFjbjHJUpqu0qxMDIapduM1y4ontbmgimYLxsZUe6nvW/ZEySJyPIoG8k6I/JDzZj
-         va68tuJNmbzNF4AWbyv86PtkTGQPluRpiIXuCeV5p2K+WxQRtje7gmtkV+jyPuhuBBbH
-         rigg==
-X-Forwarded-Encrypted: i=1; AKwUvBwZqlpU5QU9mEX6cOc/tz/PoG2fDf49bWvtYmofsZyXM3X6y9H5g7ont4Fw5rvL9JqB2oYEQWzLX5B5@vger.kernel.org
-X-Gm-Message-State: APuU4Z+PgVPaUFN7dxAOFZp/f34u0b+rOTnF8bfixr/K619f8vCawVXg
-	ksv8qLPZRBUwS+tXcqv74erEPpNcr5Z7K93WhJYNyIFjmexM0aJiil+7nDKKglwv
-X-Gm-Gg: AYBFou0NxGUEfdhv7AyM9Kl6kVqdfcw/2PFvf9gDQh9SwrgIHWGCELfQBX22+HdNsjN
-	YSjjk88UxmYAiPFv7N1dwFnQlKOWx7ycXpf9iWh+W7xIczLnTNJ3XSEU0FdxUsbOCpSbf4ptgrx
-	HRVunOlrfqFWRTksYxqQyYfBhXxt0XJGIizPLQ40LQE+yTIyKHxRshoftTYNBpuBdZuQ5j9fqIN
-	ytPXCDYeRDF6hBvjJlzy5H3Lx80DWaOnpt1bE2LieyIVj8g7C56KUjWi0C0bbXt+OWqD8ucjS+7
-	FEYss1dgWHv4eET48oFE2QlNmOpt+kiMyhoEXfWWWNtyRyt/MHt/h+eqLYga/0YInTSdx18Wjur
-	Cl482qz3WEbM/JhbrW1BlEWRPQ73+vZAfW6WSU2EmzSRGzL6IvCOtgWMs37QViIq8Ffa/y53ULe
-	NQKAdVIYIKzsPZZihI1u4pAdRLA6kiBU+v7EdKEF/pdK/OISlNeC9KBrYkuX8x3wFc7L32uM21u
-	iV4s1zhAoePL44/kRNz6pUvgf2V3OXijNXb1sUnQiW1kyeHPUlSr7jpI4n70wqZQGHQWNVV2P65
-	QTVRmypEr4ETKmLEdg9CDqOQJ6VEVkHhYI6bJCrXa1jVTsW4QZzBL4XvIpONzMPFsWNnVMGz0Zy
-	nNo2VAnRKLir1/2qxp0T1EBC8pGpsG4L03et9hKQMGg8=
-X-Received: by 2002:a17:90b:3c04:b0:3b0:968f:fdee with SMTP id 98e67ed59e1d1-3b0db7190d8mr151723a91.55.1793910975572;
-        Thu, 05 Nov 2026 12:36:15 -0800 (PST)
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com. [74.125.82.174])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b09699c0fdsm4908034a91.2.2026.11.05.12.36.14
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2026 12:36:14 -0800 (PST)
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-3514b90bb89so4479833eec.1
-        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:36:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBzIiubBPn/H6AaUjNeGmI4SiboH8POiRWE8ZlPWj37WPZCVmReGcl+7soFALhRXvru/Jg3dh69xPh/M@vger.kernel.org
-X-Received: by 2002:a05:693c:8008:b0:369:d486:457f with SMTP id
- 5a478bee46e88-36f73e72d61mr409769eec.2.1793910973768; Thu, 05 Nov 2026
- 12:36:13 -0800 (PST)
+        d=1e100.net; s=20260707; t=1793911777; x=1794516577;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+        b=gWo7Zn2XukJNdOmKcgO2no8zCYOQhXeRGX7Jcr/8JqGwhKOTtq/gF7yiwy8NwhyAJc
+         KtzHs5yosufRoJBBNa5PMV8cG8+czZnEQuVcugZlNFR8G/R7Frv1I736nP9w6hnHRNt6
+         nmhZHWjuMJsUZlt6m4QcmYhWNb0Lk6z0T03HWSu30YVyYshoKV5I2/G2yyw5ODFqWhaB
+         sfKCKNZP6axpVrUilSmIpwhQ7ic/ClsFL5e87FfN6UZ9D+f0g4Kflh7SICI9w6LbRXQL
+         IsYaemsaiwlqzWDKBm/kO8bK/QRWD6yCbNziWELxwbvZq8J6oLXtgJCBJFEnu/f7DOUV
+         b4wg==
+X-Forwarded-Encrypted: i=1; AKwUvBybrQv9qf9XuEAoBNMn+RjIUgUbUWvWKjAfbtYueVv1wINtC8SfY5PG0SER8Wj5bAV3ptV2vpAfqvGs@vger.kernel.org
+X-Gm-Message-State: APuU4Z95Z3MhlGrrEaSMWtzd+tK2YHPASPyEYeuhP206Na8Vqk6dkdpw
+	lF73DXzVfseLTUlE276CpY2f5aUgiedkFQtwt9AIZAvw8UR6/V7DC1s5dknQ9kEdAEyZBlgkpzc
+	b5MtfpQ==
+X-Received: from pfbkr9.prod.google.com ([2002:a05:6a00:4b49:b0:8a0:70d8:a2ef])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:4f95:b0:89e:89f5:18eb
+ with SMTP id d2e1a72fcca58-8b37aaa87f1mr220362b3a.15.1793911776710; Thu, 05
+ Nov 2026 12:49:36 -0800 (PST)
+Date: Thu, 5 Nov 2026 20:49:36 +0000
+In-Reply-To: <20261102-halaney-scm-creds-thread-v1-1-0b4d75dbf35f@amutable.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -80,26 +77,33 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-References: <20261104-sf19a2890-gpio-v1-0-45e463c48728@telaak.dev>
- <20261104-sf19a2890-gpio-v1-2-45e463c48728@telaak.dev> <CAD++jL=Bhbm3eNafdRTSKcnjyivhdmp0Mk1iHZ=HKN9sy_3Ozg@mail.gmail.com>
-In-Reply-To: <CAD++jL=Bhbm3eNafdRTSKcnjyivhdmp0Mk1iHZ=HKN9sy_3Ozg@mail.gmail.com>
-From: Joseph Telaak <joseph@telaak.dev>
-Date: Thu, 5 Nov 2026 15:36:01 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ4ExRTFJ+1q7GDw8ow=_ekk8urUqfC7ZtcYckwf1uO+vw@mail.gmail.com>
-X-Gm-Features: AclHuK_D3HUaJCQYumF5y8SooLOqbAC7H10kZ7apqTopxHnLZbvIW5XAq_-o6t4
-Message-ID: <CAPY4CJ4ExRTFJ+1q7GDw8ow=_ekk8urUqfC7ZtcYckwf1uO+vw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: Add Siflower GPIO controller driver
-To: Linus Walleij <linusw@kernel.org>
-Cc: Bartosz Golaszewski <brgl@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, 
-	Qingfang Deng <dqfext@gmail.com>, linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Qingfang Deng <qingfang.deng@siflower.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20261102-halaney-scm-creds-thread-v1-0-0b4d75dbf35f@amutable.com> <20261102-halaney-scm-creds-thread-v1-1-0b4d75dbf35f@amutable.com>
+Message-ID: <auzr1F0HNh1mazaS@google.com>
+Subject: Re: [PATCH net-next 1/3] selftests/net: pass socket options to the
+ scm_pidfd test flows
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Andrew Halaney <andrew@amutable.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Magnus Lindholm <linmag7@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Willem de Bruijn <willemb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-> Completely pointless indirection, drop these functions, just use
-> readl/writel directly in the code.
+On Mon, 02 Nov 2026 17:12:34 -0600, Andrew Halaney wrote:
+> pidfd_flow() and leader_flow() take booleans that pick between
+> SO_PASSPIDFD and SO_PASSPIDFD_THREAD. Make them take a zero-terminated
+> list of socket options for the receiver to enable instead, so tests for
+> further SO_PASS* options can reuse the same flows rather than copying
+> them just to muck with options.
+> 
+> Signed-off-by: Andrew Halaney <andrew@amutable.com>
 
-Thanks, v2 will drop them and use readl() and writel() directly.
+Reviewed-by: Kuniyuki Iwashima <kuniyu@google.com>

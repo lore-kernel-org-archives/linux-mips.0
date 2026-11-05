@@ -1,46 +1,42 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793893544;
-	b=Rb8NNKahSe61fxGZjWbV9dQnIGSkdXc/y/o/lqsCGi5cgcJlStMuiOkpgGlWrSv5pdi1
-	 W6x0xOHYN4fTrhv1a7/et8ui2J5JaLLmD/eaDZmJoDplA9ipus+WcacA7FdmicxN4xwPe
-	 Rokheb2dYFG4cedlY7XvMHINU3rDZFv4hcrPrWwC9jUJGqpqvANK4z+zen/W41vzcDUYA
-	 dfWzJnjceGUNW+exMyV4rIiHzao/YLGCu5y46Cs7eUMk+3kNOSSfYX1qd0aNteySNIivm
-	 f/0ezkeAb3Nwj5P+7eR23bBN1Nr1sHquDOa0qPItY+NAtp3FA8MQ+ccF6UqIkbFKPBg==
+	b=uaimJ3SnxUCLtLbDQ35xYRZISnIAyaG5G1osu1UKcFAQfGFquu01uaEMmZRv4536/gp2
+	 cVHPH4bKJQGg5cLLAWWNtRucOXZQ9bahIJur/CrLIs3UCUveGhVHXALN1Zs2HThUpcaeG
+	 V4jb7zHDsVzOZOp9O25c/HCvfbkci7WAPLAWARriiIGCDHjYbhVHoUc6K/fskTcP+fM5w
+	 u6h5qYWzFUCRQuAMGZ5m4ocYPGLGUMn3r6WgOiRFnFymbauL0ujSLZxxHb3PCBkjed+dq
+	 DC46fXEbIdoDgNTr3tKkK0JRuJu3OWcDW1xBoqWqIagL4rqWgjOPU9Pju8+wXQtretA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793893544;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=gtjV7Lleo2+ONnpavg8cztU4m7vyzoQjZh5qfVTQ3aA=;
-	b=Z1fR8XUo2jx3qzUkN1ARkOXN+HE4GZesNbXfMrv/X+rjDVk8yuZCF02rKCNZE2YDAmdt
-	 an9+/5GW/5RAz8pn1pbU8tsHN2CYGLP65Lyfso+xIuJCGcjIUuQMwwBVU96kQdR2+4ojr
-	 OPfswcv4oTAdv/zayMUYO1BhAaLzrhincQgD8jzs4QIlJPvWW8xJXHx6VnwawDV9KjleW
-	 Uq5mgctu3yvSRM1iI10VMoJFIvVtY6Xfe4vR6Tmtjzu6epm7aBrrivuc4zT/kDwSa4Iu1
-	 5eQq++NzTPeItTJkpLJqSLE6qlCU3CyYNmmCN7r/yU7GeVCBTGVd+E6ZTeoFEmIJINA==
+	bh=fKKMZ1cRIJOjEVSTfu+ryep2x0XwX80JB3I/g7wFdCE=;
+	b=brQsHe06b9UO6c5hkf+ffvLVRxdAE4sFdAOHuZp4m6EdFSJECibcOnOTjZzkv0F9Ssfc
+	 Mc59KOL+90gFDuXx228/K0FA0D/v78cFauuh22hp1ZExq6lM/lw6xi2vSc1qqgctd4tN5
+	 mMWMoR2+Dn58qT/emUfvV4zD1VZEo3E12TzyrynWP2zqb0Eg0MAqrI458a8LMHB4wHJyp
+	 FNo0rRfyc9JLd9JXJVSsq24ZsLVnPBgBNpNyMCxry4yvYw+WFsgXEk4B1biEKGXSrfZuW
+	 o/yYz/wLfslJ2iWk37ijTyFIzT7mpMlptcrLFECovk2W4wU+Q6HB9tT9HNgjSsfLMJA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4BD606A32D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8FC606A32F;
 	Thu,  5 Nov 2026 15:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B4BD606A32D
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C8FC606A32F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xOzeg-000716-00; Thu, 05 Nov 2026 16:45:34 +0100
+	id 1xOzeg-00071G-00; Thu, 05 Nov 2026 16:45:34 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id CF5BCC01A0; Thu,  5 Nov 2026 16:20:07 +0100 (CET)
-Date: Thu, 5 Nov 2026 16:20:07 +0100
+	id 65CD5C055C; Thu,  5 Nov 2026 16:24:40 +0100 (CET)
+Date: Thu, 5 Nov 2026 16:24:40 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@vger.kernel.org, manuel.lauss@gmail.com,
-	Thierry Reding <treding@nvidia.com>,
-	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>, Dmitry Ilvokhin <d@ilvokhin.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Alchemy: Register interrupt chips with the IRQ core
-Message-ID: <auyepzYMrbQNmAad@alpha.franken.de>
-References: <20261016181602.2152632-1-f.fainelli@gmail.com>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: boot: compressed: fix the vmlinuz link with ld.lld
+Message-ID: <auyfuLr4Vdc40uzt@alpha.franken.de>
+References: <20261009232923.655907-1-rosenp@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -52,27 +48,56 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261016181602.2152632-1-f.fainelli@gmail.com>
+In-Reply-To: <20261009232923.655907-1-rosenp@gmail.com>
 
-On Fri, Oct 16, 2026 at 11:15:59AM -0700, Florian Fainelli wrote:
-> Alchemy initializes its interrupt chips through the set-type callbacks,
-> which use irq_set_chip_handler_name_locked() to assign the chip and flow
-> handler. This bypasses irq_set_chip() and its descriptor registration.
+On Fri, Oct 09, 2026 at 04:29:23PM -0700, Rosen Penev wrote:
+> ld.lld cannot link a 32-bit executable at a sign-extended address. With
+> a sign-extended ZBOOT_LOAD_ADDRESS, such as the BCM47XX default of
+> 0xffffffff80400000, the vmlinuz link fails:
 > 
-> Since /proc/interrupts switched to iterating the IRQ descriptor maple tree,
-> the statically allocated Alchemy descriptors are no longer found. On an
-> MTX-1, the file contains only the CPU header and ERR counter even though
-> the timer, serial, Ethernet and PCI wireless interrupts work.
+>   ld.lld: error: section .text at 0xffffffff80400000 of size 0x35a4
+>   exceeds available address space
 > 
-> Register each IC0/IC1 interrupt chip through irq_set_chip() before setting
-> the initial trigger type. Do the same for the Au1300 GPIC. Keep the locked
-> set-type callbacks for later trigger changes.
+> arch/mips/Makefile already avoids this for vmlinux by linking at
+> LINKER_LOAD_ADDRESS, which drops the upper 32 bits on 32-bit kernels.
+> Do the same for vmlinuz. The address computed by calc_vmlinuz_load_addr
+> is already derived from LINKER_LOAD_ADDRESS, which is why only an
+> explicit ZBOOT_LOAD_ADDRESS is affected.
 > 
-> Fixes: 171cc0d9eed1 ("genirq/proc: Speed up /proc/interrupts iteration")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Assisted-by: LLM
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
 > ---
->  arch/mips/alchemy/common/irq.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  arch/mips/boot/compressed/Makefile | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+> index e0b8ec9a9516..ee554eaaa18f 100644
+> --- a/arch/mips/boot/compressed/Makefile
+> +++ b/arch/mips/boot/compressed/Makefile
+> @@ -96,12 +96,20 @@ VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
+>  endif
+>  UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
+>  
+> +# Like LINKER_LOAD_ADDRESS in arch/mips/Makefile: ld.lld cannot link a
+> +# 32-bit executable at a sign-extended address, so drop the upper 32 bits.
+> +ifdef CONFIG_64BIT
+> +VMLINUZ_LINK_ADDRESS = $(VMLINUZ_LOAD_ADDRESS)
+> +else
+> +VMLINUZ_LINK_ADDRESS = $(subst 0xffffffff,0x,$(VMLINUZ_LOAD_ADDRESS))
+> +endif
+> +
+>  vmlinuzobjs-y += $(obj)/piggy.o
+>  
+>  targets += ../../../../vmlinuz
+>  
+>  quiet_cmd_zld = LD      $@
+> -      cmd_zld = $(LD) $(KBUILD_LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
+> +      cmd_zld = $(LD) $(KBUILD_LDFLAGS) -Ttext $(VMLINUZ_LINK_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
+>  quiet_cmd_strip = STRIP   $@
+>        cmd_strip = $(STRIP) -s $@
+>  
+> -- 
+> 2.56.0
 
 applied to mips-fixes
 

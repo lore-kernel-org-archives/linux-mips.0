@@ -1,44 +1,48 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793893543;
-	b=jpQ0IRVJeb1SzXRHMKtzYOVbrABcociLXowCGP7fyRdd47Qq+G5Wn2/ke08mj6obVncq
-	 5a/8hzkcewXSrLUv1eIMpFj2u2PgQHuklGfZDaq3C2Nhnwsj3PnmU/HKMEwOjpoeUAjNC
-	 RrO0vs88f4MgNTI4QjAaUUsKepO7nXIwyMSnoz8l2iXWVHR1JP4elI365YFK615xuTzxu
-	 84PNwvwvjQyQU1/C9V8M87DzzIKvYzRVQ3avgRofPOeEGwEeXLd4PwDteW8yzY2mN65IA
-	 Bphp8S5jGkm5Ve9ioIMv0fYHTgQBnFR9JmEhJsMhZmDxC1WIPAlXqES7rU5uxbE+QEw==
+	t=1793894194;
+	b=IamIONC+NAXVf32XoCz/0qbyFfzDTrwrbQ+Ou8EVF/CEJeknUUJEDGV0PvvErKSQaMo6
+	 GKQv0/uolBPgHE2qwDm9AZETwWeWS2oqi8k4qD2fRtmXQCFwRSDbNwnKQCeNTQRZApc0m
+	 W2trsvll1KBsx6aw3ADZxPAtUS8wkvBsD5b1d33UieyjCfol2LH3YW7MFjo0pmQnvS4VE
+	 Vqnwko8O59wUxNOjPvvI3BQfWJx3N4XzpDsSdmPoZfmTTqUFpOhfU8441reJJHn47/syi
+	 UDAiKNHw0to0BGReG5ykXQCuw6vhpAKf2buAkNoMhqQJ06/IcVqOzcjgguf+oxR7AVw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793893543;
-	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=7SeedL6hQESLthQ7VnwGJ/wWVq56RBH0P2R4DH0oBMo=;
-	b=1W5mGQyl7WzHpCOBbPD5hr6q8zBtNyYiypZ8W+2bqqsQEkFttRCfsNkZ4SjpHamXsJMp
-	 AV6sKV/Zk5aP0lK8HnRlNrPxmaMIToqGdNJ7R/ULrRG1sC5PaXLWhuCiH64fNSsI6cP+M
-	 Xlnpm1PaE4i+eFFSNNXT1XP1Is78uQ5Iyc48fpquTAYrPkkrE0Y4rjf3nH3+Kqu2nTkO6
-	 W1wy9gxL19c5FjypRlibHUewhcRp+AGKFPVmfOsC6kF7h5eca64CRaaqtGXRp32bjLTNw
-	 tE5X2dBMOwDE/V7jdYGVgOFKncaJfm28DqJTm6/4vvyIjghBpHg67fKF2g27spFNQng==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793894194;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=8Iox7NAPaqGf7NrTaIiGesEBgoGc56bzMRgUxarbxT4=;
+	b=spsKHb5T66X+xBG+dJTAoFvXxMLXBftpm93jZ7fD6HSb9lMUIITWWTrf9vZ0vbbhZDwo
+	 ZARcsaNuYnbzuHFulv/YUFJc4omEyWDwELZnY7M6kEMYbjl2kmCda8g7P+SbIPZboA/Gv
+	 MWOHQmK7PYR8mmySrS8F+ay3xU5aV9GqH7q0swoxXZwUyDkn5Neg9hO4EppWUvmU5cWnI
+	 BnLH3BT+n333uXAJsjxFOxglCfnetYJ+l39coakkWTwfbpKJHKDLMO7/Qs/lIA6olNPNq
+	 RLoFY7ebL2VMWG1SftbwWRoMcUFf2kVx4PuDhO6/EbTSi8+ssvhUQLmLrnCLO45vgpg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=alpha.franken.de;
-	spf=pass smtp.mailfrom=alpha.franken.de;
-	arc=none smtp.remote-ip=193.175.24.41
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9A9606A334;
-	Thu,  5 Nov 2026 15:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C9A9606A334
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xOzeg-00071Z-00; Thu, 05 Nov 2026 16:45:34 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 4927FC05F8; Thu,  5 Nov 2026 16:25:29 +0100 (CET)
-Date: Thu, 5 Nov 2026 16:25:29 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Imre Kaloz <kaloz@kernel.org>
-Cc: linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: mm: Fix the cache error vector jump for XKPHYS
- kernels
-Message-ID: <auyf6aVT0_KuAm2r@alpha.franken.de>
-References: <20261021185709.22561-1-kaloz@kernel.org>
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2680060720CD
+	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 15:56:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2680060720CD
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <2d31acc5153863872ef0574748860670972fe311.camel@crapouillou.net>
+Subject: Re: [PATCH RESEND 20/83] drm/ingenic: Switch to
+ drm_mode_config_create_initial_state
+From: Paul Cercueil <paul@crapouillou.net>
+To: Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Simona Vetter
+ <simona@ffwll.ch>, Thomas Zimmermann	 <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org
+Date: Thu, 05 Nov 2026 16:56:21 +0100
+In-Reply-To: <20261105-drm-no-more-config-reset-v1-20-1f58d1e33380@kernel.org>
+References: <20261105-drm-no-more-config-reset-v1-0-1f58d1e33380@kernel.org>
+	 <20261105-drm-no-more-config-reset-v1-20-1f58d1e33380@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -48,28 +52,49 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261021185709.22561-1-kaloz@kernel.org>
 
-On Wed, Oct 21, 2026 at 08:57:09PM +0200, Imre Kaloz wrote:
-> except_vec2_generic jumps to cache_parity_error with a j, which cannot
-> leave the vector's 256MB region. An XKPHYS kernel such as IP30's, linked
-> at 512MB, is outside it, so the j targets an unbacked address and its
-> speculative fetch raises bus errors on unrelated fetches. Jump to the
-> handler's uncached XKPHYS address instead.
-> 
-> Fixes: 7505576d1c1a ("MIPS: add support for SGI Octane (IP30)")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
+Hi Maxime,
+
+Le jeudi 05 novembre 2026 =C3=A0 16:29 +0100, Maxime Ripard a =C3=A9crit=C2=
+=A0:
+> drm_mode_config_reset() has a dual role: it creates the initial KMS
+> state at probe time, and resets hardware and software state during
+> suspend/resume cycles.
+>=20
+> Since the two roles need different behaviors (notably for objects like
+> drm_private_obj that must persist across suspend/resume),
+> drm_mode_config_create_initial_state() was introduced to handle only
+> the initial state creation at probe time.
+>=20
+> Switch to drm_mode_config_create_initial_state().
+>=20
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
 > ---
->  arch/mips/mm/cex-gen.S | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-
-applied to mips-fixes
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> Cc: Paul Cercueil <paul@crapouillou.net>
+> Cc: linux-mips@vger.kernel.org
+> ---
+> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 4 +++-
+> =C2=A01 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 625ec76cf04d..63198fd59498 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -1355,5 +1355,7 @@ static int ingenic_drm_bind(struct device *dev, boo=
+l
+> has_components)
+> =C2=A0	}
+> =C2=A0
+> -	drm_mode_config_reset(drm);
+> +	ret =3D drm_mode_config_create_initial_state(drm);
+> +	if (ret)
+> +		goto err_drvdata;
+> =C2=A0
+> =C2=A0	ret =3D clk_prepare_enable(priv->pix_clk);

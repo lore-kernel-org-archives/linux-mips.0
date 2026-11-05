@@ -1,49 +1,99 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793887757;
-	b=KF+rJ/PLIYFUomnIjtSwXC/Irex3BHGKsTogk7AQ34oCwuGtEFa+JNti+Qk2SAyxpPhw
-	 V2mnkJTZw2slKmTPkDLeF2YHXiOvVV2lGUqqMJu/nUjz3ezrM7zZAMsqsoam6vp1sDafu
-	 D370+A/vEYXcTiNMNdcjQkmS6cRJZmlczQXI/Qn5P02oSoC2Sxki6T2i1lzTnlFUTvO6J
-	 1quO4BsSKPHsroPGUP4EhZwXWz7iB8yjnTE6IYMYVbh7yB83af7H3DIJmUXJjqL9iL5vz
-	 mgsmqqcICbkg0AZi56RttPHCdQj7QqBeUu/BuxIYxJwo+WxwuZTZ/bQM7lXr4wOSB8A==
+	t=1793892183;
+	b=GBdNC6rmNtkSNVdrjVtIxmy4AqtmDUKcqPM+udIJfYRSko4ZhLcvEYdl005qn9r+QbFQ
+	 /4jcOH6KUhuVYusMUJDQVhIA/NBL0fMoJuNtD+FsS3Ohx94mX8DFq8miFJxM7Q0sv98N6
+	 AlIcr4aJC5KS8M1J+p7oscaXK7/sTtBsTefA5vDagpzpgbFcxvTl5PsPAYBgqLGmgYzQY
+	 irDXMG+HwGSgkb7zGTYBKqnFkBpSBBupKsqEkl4i5w/aGkD8PSZKA22y21rOLQdGGW8ce
+	 7NO+Qp0glC8a9dR+h1KT/yJMyoztwq9WDRPHIx11SoSe26YghfGYaCzUk4kJOhBYNZg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793887757;
-	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
-	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=/RuyPDJSOQkSvtGZQ699xnBIKRw+fZZ9SK+IyRUFhM0=;
-	b=ZeUYil2vl6OM4+lOXD9PYVBS4dtj4psq3MEHkFaEAJNgBSnodnXkl6i4ATJQ3RlqQoMo
-	 0u5Lr2DTP5am1GUOQ70mBFAAslyOhveOyeBlI25IxtqPZlirnjuZVfVdxucn+wxIQcLx/
-	 pNW/AKD9RByDSrOyadTVqFcAhlN2v5gc6Fg78zR9493bkOFB4oNQm54yOWBWRcNQPGCzd
-	 +ejd/viu/JoIIlmj0yvyLH+9Wic2UznUY106Om1FiB6XQ/InWbHnWcD8p0TEY8qdXvk+9
-	 Bqpgv/q33ErBLxrPFSHHAroLlmyFE46CdXBDQ238W4PCRuPdzk+nohiI2+FS4utL8gg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793892183;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=7v4V8/4X0TjPkcYr+xi2naJa0ss/5ymYdMLn3Qm3uOs=;
+	b=JZdUGveRPlT/7JqXKbpyCl0G++t1pxPZRggYlEhESCSSJrFcqin85sTpSrHszPUzkGKh
+	 S3ZR2NHRDKK1ljGi5tgZH8J3CJqyqmZ3jEDjBifOgj1mW3HTGM5DQwmGBv5UlEnQ+vY11
+	 dSfpmfy2iKts2Ef7GN4AFTTlEQNnbX1HWHluqQCYynP1fP/+eOxYCK+zofrVXrL2A574T
+	 6J6gRb9V/rVd3Q3RcAnBsPXUN56Ue5VB0SD5QOlrM8PPsDpePLhAntbeNn/LDnjK8PEDT
+	 eJr2J+uvl4Dgy+Wa65Zxlmzi3qAAkku63AbMHrZAtm2HLlG/vOGfgaw4JwV0loZz6RQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="hZmhZ/2/";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XEZbSxVP;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F74606A31B
-	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 14:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49430606A329;
+	Thu,  5 Nov 2026 15:23:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hZmhZ/2/
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 893061F00A18;
-	Thu,  5 Nov 2026 14:09:16 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XEZbSxVP
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E0B21F000C1;
+	Thu,  5 Nov 2026 15:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793887757;
-	bh=/RuyPDJSOQkSvtGZQ699xnBIKRw+fZZ9SK+IyRUFhM0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=hZmhZ/2/szfewsamcJfMZ86kqEsICe2KyctZ7ARHd+zafsXO6O5bItREVxpUC30Ok
-	 a1stXR+cLTJ/5ieN06ngR2ToAUsqw+MIt918VQS0CB37YULeDURMVg3hAkkonaaXGf
-	 L4Mf5ls1JTBJl6yG7R0hEeXmtknIa+BepwvGl9rfvHsSRRLUnZm9HGAjU/ahnO+s3/
-	 j9qVtJGkzzxIfnwaGAwwQxa/epM8/SQ6D3etf4nGechdStjqK9+vHqOGLhB34+D39n
-	 uMw5BUTcx8vcUHsGnEn1uLf4oGvdnAbo22n9zIu7yJ+raMe3Remfq24xB9OdDpPdoK
-	 p3SuJws+Uv4lQ==
+	s=k20260515; t=1793892182;
+	bh=7v4V8/4X0TjPkcYr+xi2naJa0ss/5ymYdMLn3Qm3uOs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=XEZbSxVPp7P+6DCvBeS1fYcBTKKFA8Ha7Jl4bhp/kBeJ54vGatjc+bX6k0kObz436
+	 CtPqzd+USA6qX5S1JHghC/mr7XsPM49vwBPA16wkGqmmeKQyES5OJNLYzYo3wZTQhb
+	 Tin5ClkzUFqrLlL8Fq9wLBDURSGpbKOpheR4ywJBmZjfHFE7slfW94G3B6wTCDyKpN
+	 Yblpifrc40qgpV2v2Y0e3U+8UngGO6t2tzPs8pZml9XwqwrafVxnDSh95z7CTTAF5u
+	 sa71q+OIVZ3i1ZoRXRHp0l35vB4tCkO30gN9LLgRP4rYSnybLSamdn6kjtVuGbSuUl
+	 yhtA+C90f8gFw==
+Date: Thu, 5 Nov 2026 16:22:59 +0100
 From: Maxime Ripard <mripard@kernel.org>
-Date: Thu, 05 Nov 2026 15:07:37 +0100
-Subject: [PATCH 20/83] drm/ingenic: Switch to
- drm_mode_config_create_initial_state
+To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Cc: Douglas Anderson <dianders@chromium.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <jesszhan0024@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jyri Sarha <jyri.sarha@iki.fi>, 
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, Paul Cercueil <paul@crapouillou.net>, 
+	Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, Linus Walleij <linusw@kernel.org>, 
+	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
+	Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
+	Kyungmin Park <kyungmin.park@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Alison Wang <alison.wang@nxp.com>, Paul Kocialkowski <paulk@sys-base.io>, 
+	Yannick Fertre <yannick.fertre@foss.st.com>, Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
+	Philippe Cornu <philippe.cornu@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, 
+	Samuel Holland <samuel@sholland.org>, Thierry Reding <thierry.reding@kernel.org>, 
+	Mikko Perttunen <mperttunen@nvidia.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Igor Reznichenko <igor@reznichenko.net>, 
+	Michael Walle <mwalle@kernel.org>, Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
+	Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, 
+	Jerry Han <hanxu5@huaqin.corp-partner.google.com>, Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
+	Michael Trimarchi <michael@amarulasolutions.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	Casey Connolly <casey.connolly@linaro.org>, Michael Tretter <m.tretter@pengutronix.de>, 
+	Cristian Cozzolino <cristian_ci@protonmail.com>, Junjie Cao <junjie.cao@linux.dev>, 
+	Ryan Brue <ryanbrue.dev@gmail.com>, Nickolay Goppen <setotau@mainlining.org>, 
+	Stefan Mavrodiev <stefan@olimex.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Robert Chiras <robert.chiras@nxp.com>, 
+	Alexander Koskovich <akoskovich@pm.me>, Markuss Broks <markuss.broks@gmail.com>, 
+	Artur Weber <aweber.kernel@gmail.com>, David Heidelberg <david@ixit.cz>, 
+	Dzmitry Sankouski <dsankouski@gmail.com>, Yedaya Katsman <yedaya.ka@gmail.com>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-doc@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 27/35] drm/bridge-connector: let the bridges set up the
+ connector
+Message-ID: <auyfJAn3f-is-eXX@houat>
+References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com>
+ <20261026-drm-panel-funcs-v1-27-5e3070a3478f@oss.qualcomm.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -53,56 +103,63 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261105-drm-no-more-config-reset-v1-20-763560c2cc3f@kernel.org>
-References: <20261105-drm-no-more-config-reset-v1-0-763560c2cc3f@kernel.org>
-In-Reply-To: <20261105-drm-no-more-config-reset-v1-0-763560c2cc3f@kernel.org>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1219; i=mripard@kernel.org;
- h=from:subject:message-id; bh=9SWtkslaqOuBdZr7dXYA3MFs+LezwP69O0+5JcuvqD4=;
- b=owGbwMvMwCmsHn9OcpHtvjLG02pJDFlvepfcZfT2O5q5ci/3Ng/H4CVijhdvt+Uwf+Vz2nF3o
- nq81171jqksDMKcDLJiiixPZMJOL29fXOVgv/IHzBxWJpAhDFycAjCRsguMDYvqdHf9czvmuGeS
- YYFRSvyTmv8/RaKaTtikPtV8d9H9mfOqHqWG855ti5Z616bv/eujz1hf+HuL3dc7636ceavN/Eb
- opWR+/L3e0udbTEsTymfM5Hk25b7WR0uljTXBRYkKV+TOJIsAAA==
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="nvlajszkdnqh6lds"
+Content-Disposition: inline
+In-Reply-To: <20261026-drm-panel-funcs-v1-27-5e3070a3478f@oss.qualcomm.com>
 
-drm_mode_config_reset() has a dual role: it creates the initial KMS
-state at probe time, and resets hardware and software state during
-suspend/resume cycles.
 
-Since the two roles need different behaviors (notably for objects like
-drm_private_obj that must persist across suspend/resume),
-drm_mode_config_create_initial_state() was introduced to handle only
-the initial state creation at probe time.
+--nvlajszkdnqh6lds
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 27/35] drm/bridge-connector: let the bridges set up the
+ connector
+MIME-Version: 1.0
 
-Switch to drm_mode_config_create_initial_state().
+On Mon, Oct 26, 2026 at 01:10:16PM +0200, Dmitry Baryshkov wrote:
+> Call drm_bridge_chain_connector_init() once the connector is initialized,
+> so that the bridges implementing the connector_init callback get to set
+> up their part of it.
+>=20
+> Assisted-by: LLM
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+> ---
+>  drivers/gpu/drm/display/drm_bridge_connector.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/display/drm_bridge_connector.c b/drivers/gpu=
+/drm/display/drm_bridge_connector.c
+> index 81f3e26f6fdf..2d982c7109b5 100644
+> --- a/drivers/gpu/drm/display/drm_bridge_connector.c
+> +++ b/drivers/gpu/drm/display/drm_bridge_connector.c
+> @@ -1141,6 +1141,10 @@ struct drm_connector *drm_bridge_connector_init(st=
+ruct drm_device *drm,
+>  		connector->polled =3D DRM_CONNECTOR_POLL_CONNECT
+>  				  | DRM_CONNECTOR_POLL_DISCONNECT;
+> =20
+> +	ret =3D drm_bridge_chain_connector_init(encoder, connector);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+>  	if (panel_bridge)
+>  		drm_panel_bridge_set_orientation(connector, panel_bridge);
 
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I don't really mind this change, but we should have a user for it and it
+doesn't look like you have any in this series?
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 625ec76cf04d..63198fd59498 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -1355,5 +1355,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	}
- 
--	drm_mode_config_reset(drm);
-+	ret = drm_mode_config_create_initial_state(drm);
-+	if (ret)
-+		goto err_drvdata;
- 
- 	ret = clk_prepare_enable(priv->pix_clk);
+Maxime
 
--- 
-2.55.0
+--nvlajszkdnqh6lds
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCauyfTAAKCRAnX84Zoj2+
+dlpBAX9vmlt6LO/z8/cZ2e9AdKjYtQICZ+l2BzUxUnN/1vgtuPBo4ZauhGowfRnu
+dCnXGMoBf0dGFfOI0idM2rRpYmxj//Dz342c5BaFpa3YCCrW5V+qnd1vuLuKWMX4
+8+jAJrTriw==
+=Icn+
+-----END PGP SIGNATURE-----
+
+--nvlajszkdnqh6lds--

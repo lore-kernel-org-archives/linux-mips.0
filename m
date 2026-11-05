@@ -1,77 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793912279;
-	b=ZWF2z1dty9PBSPCAzyBE1dV8mXrkgO44Voluhq4oGsKFBAj1UYI9BN4M1lmH6VPOBvuy
-	 8wY7kvSOdyWJoh5tsFuectfGY/k46HOUejjY5QVIF7WtPaNpPB1f17Vuml+Ufw6c9SJ5l
-	 RyS0dTY2rQSI+g2BBunX77aFWSN8e6GhqQS92JrQCDpabWL34HKK4U5TU46so8taKmgjm
-	 IS9xd/kdZ9PeUc3CRD/XtCjzIzubrqnSkz/a4qT5597OmK9zJJrYYW5E8HhVX0jjC8WVq
-	 Sxq5J/NPb4G9Bg6+HHgvCDvkNQ7Sm4zwPDf+FtCQzBrE6DsdgEDvLpQ9BOxjJZYrqJg==
+	t=1793912462;
+	b=Oxsn2xPHfXn+QSUdIUy5SV0Trwz8hibANkjm8VGdxnX7XEKfxKJQko7ptwJh76jB9nz1
+	 59t2g+DadoPRDpvcWOtzTmKgUgfyGLA0Eb/SQC5hLQAnAsbIWvPNjyYti1JFpv0T6+sTs
+	 MOKgtkwW1Gs2rp7jCltS1FgM7FQrMmLMFlMLSc81NW0pxS4BjWA0sQ3augi53SpGlsiFF
+	 AcLhcleRPD0GHrEaJhGrxwK0BsMwedD3U0snAbitPtdnYyDgOme8uOIfRE1iMrRmBZR7Q
+	 6EvDmsoOmSq5NBA5xKmU5VXLMrMqIV0GYuiS8LM76PylFaDysbHIQDXIKeNr1pwojiA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793912279;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793912462;
 	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
 	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type;
-	bh=y3OwD37SrGJresbxUK3F5nIZp/tIcgjb7IQgtuSfY9s=;
-	b=wbbzW2LpV9nyIIbTo6dkG2JZFVX4bpBctQenh1NZw1lrAePjj6jupZ8b2iFlKvW7ZCEA
-	 fGKu58qyE4YsTm2OpHEZNDByonkQ3aLtO409ZgJu0lSnS8sRR5NXYgDOUOgOI6fjncbrS
-	 R+4csFcrlirA0j440BLdWyy2GiSzV/1z/i5sAzKH1aSMpLQPPFxqG8ZznSyydkiIs5xc0
-	 +mzz2RabRoBt/xLim6GYia5+ETCnTl/LfZW3NT9lsx4oae9j5ck+8RIxOUUWusUDiE5D8
-	 Lhnuqld3SdBZQZVImx9gbJMbNKkqGCzyfL07Ebmb9VN2IV32GA8hVlBUOo0CDRS9+GA==
+	bh=7b+CfX8248YTc0cB7f90DTUeLWviHqXuubKAwrMY9UM=;
+	b=st+B5tRq8RqQtQ7D9I0SOzHAETchFmGVBAHKmRuloXqmWAcJ3SAR2pNWElwf31MmvQMl
+	 iKUnDKnJ+3vZjQ4pwpLdnEkZFQ1wLwmXRgAg/aOSyoStGQ/Fp7wQn42l3Sj7R9AIP4FyT
+	 VmX0XuyCSVtOUxVBn61hDmstBrTdTQjNaqT7+7df8Zu04MQHnIy/DScIjTwqhSTdFvd86
+	 AadydysGbKoDcNXwSwmXXIZG3k6Q4S1TvmG0rP5cYdFLFbJbQgf6agRRsuFCtyRyLf796
+	 EXp1JKhyiSMeCkQk7SPFNY680MwfMzIYJDp6g1q3vYeBdZWWsn38AgJsXjHgX+ZNQtA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=telaak.dev;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.216.50
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	arc=none smtp.remote-ip=209.85.214.172
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E6E606A326
-	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 20:57:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E6E6E606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF26B606A32D
+	for <linux-mips@vger.kernel.org>; Thu,  5 Nov 2026 21:01:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF26B606A32D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-3b09a65c76dso1799695a91.1
-        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:57:58 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2ed3d8877e6so2772425ad.3
+        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 13:01:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793912278; x=1794517078;
+        d=1e100.net; s=20260707; t=1793912461; x=1794517261;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=y3OwD37SrGJresbxUK3F5nIZp/tIcgjb7IQgtuSfY9s=;
-        b=bEEpbCNZ3T0u7jWcyxekVy6c+4RdITuMljKyE8C0NlKO8T63qE0qUJRvffJ04lYkwL
-         ZzpspkYA0LQ9bbNrUczA1BMCxlCQ2H8EhF+0tz7EwPVG6ylZKFbuhNUSvXoPdcdDUWN6
-         z5lVxBJe1NNnl3jlA9l3HQzEtmJWR18kSjkbv4YpjWFdo/KQpB5Fw1QOSVNd6Jq+5tm0
-         dRCnEU6jZ87i/ADO0RC0TZOkwc27oKoMLviAfsjXuuo1ea8GqYoIv3nEtpN6F9GN/5B2
-         /ff6zne4MkT4gyXnYXxVQ1f8PdVSZxsqmxA+hMSHMHhJHvqDE3y98pZMlVvmSubJsCJe
-         w+wQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwu2alpPiHbDlcBtlrSuOXveMCp2cZPH5KBeIR+tUMqT84Uw95HLIfZL1QSxaqsHD1XmdWkq8osD912@vger.kernel.org
-X-Gm-Message-State: APuU4Z+hrn8H2FY/qXV2c10ygdweS615Zd9fDiwpfBja8t5+ZjwQ5uXu
-	sDzoclP2nZQjQJgaRyDIxzq48T9RYYBSP07d/BNa1oWEnfRdzDc2SAyrnlPHE4d1
-X-Gm-Gg: AYBFou2wdmu7qznvPozGJKoFQoWKJVblmJZVY35jNAey0XkBb8bRvsitiKwGuLABi4A
-	9dKvUfvZ2gRO94U2ReBT+2I4HNn3+wLedGxl/80Ey91ATtQSrszMQoF0kdhFCot05a83/B0O9Mk
-	d3zYP82AnRa5nIIe4SLxZ0yUXs6R6fEVKyyf03T0kkoJiu+jzcqMoVhPiN/zcux1NKSUzk7hHRt
-	pfTyAg5RaRw4MrWTBx9knh1PqSvwhljnuiFVl/OFh9rIiVQY1MEducqw9SkEleemveNR0VVBEP3
-	wQFo9Pd0VX6EYi24nkYykD3LvBEHWNo0VJvUfnFPGODNsll/M03wcZacohTIcumLHzZgiQh79lN
-	Fac1OEmDDMq4qGr3tMOrntFF/EIOPIuDfOLmivFMr0jW9h29sPl7l2FqZtRt8Hs1AdQPvH1zY1F
-	75TtepGZFFBq9pzn5DHFkw0VoxP6da1/bW9juXvRpeKyq+RUXKGNONLJ7l5+DgIpVOnA4azQjHo
-	5gilf3qtGWA42CM/4U61HWPoTzS+WMCgGaqCxri72Pngvx3501FQcjR3gdsmTrWi7NdoUX/QCNr
-	G1TdrfG5Qbpl7ulF5bUga1Mnq71mBfo1/ketev8zYLEZQXW6jc6nvT9Uelp8YILWlfsc48FbX99
-	bbaieMUD170fGxnPOYbm58sGrdfnNzwLvtNs8Ff0HNSQ=
-X-Received: by 2002:a17:90b:1a91:b0:3b0:ae41:2707 with SMTP id 98e67ed59e1d1-3b0db6fe133mr216018a91.45.1793912278337;
-        Thu, 05 Nov 2026 12:57:58 -0800 (PST)
-Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com. [74.125.82.180])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b0d7c8ff96sm625289a91.13.2026.11.05.12.57.57
+        bh=7b+CfX8248YTc0cB7f90DTUeLWviHqXuubKAwrMY9UM=;
+        b=R4JfsZfXdsaVwW3UHqpS/y8WNeMXKQ0MmmS2wKitndMWlMFp/QAQ/IDVvNG/6m4g6E
+         n60S8e/EwPXgc61iKFnLfvMuR3QbMeUi+voldujSjl4u1gc7D3su9AHzbvXKm21dWpNG
+         5RxkAVgn3XOnfHMN0RpDlXQE5Ukmf4Z1XWxKgXOsclE3eFOg36sTgdgAU7t4axG9KcGT
+         A3pJy9cpR6/xV9+4x4CK2+f4UK7KW9vAMB7orrFZlq+eFSVpvd9aspWmjB6pzN9v2CoT
+         wfB3IUaa7L73zdivBYDszIlcF8vUN917AfZYRLOEKiUvAR4+zKNiwR+hjNYfHdz10fem
+         HjIg==
+X-Forwarded-Encrypted: i=1; AKwUvBxgu1cZsMu9ON3IvU4bHHZu5E/iFQszNAGWJW9WIfSLrfVfSIETtZdme5EE1+0Z6oqEBB4uVRbeUR/B@vger.kernel.org
+X-Gm-Message-State: APuU4Z+GuHGgDeeQEHRQYd0kY3xy5KXqwyqO8Hi9B7AeTS8Y93PfYv7I
+	SFLUKYtjXzAGcV83XDLZpGZnlJ7RAZ51+RMQn+2Djl3Gl3s9wxaeS2BKMtoPSiOx
+X-Gm-Gg: AYBFou2Aw1FCXd6zKgnpFAcn5H3FwNQdBfm8xKERZbrb8usS7iwZb98lUj2VJhOvCkr
+	BjG/Hj4hMFy2aQ8zoaLDLWClHHY/XQvxZouJR1k8cYGuXVgSVuCoVYW3szkgzi2mhHI0iRojfRg
+	H+00e/R2tsavG7vF0TIV04ntS46ESAldvUdRklrstZbQVzlpfdQz0y2yVPTwoQ9UFM4Knr1O8ft
+	Z4Z4pXYWwM4vVv8Qr2mQsTPEfRAiyQWb8ga9qXGa0czARxg8BRmZys1iH5hzl9ENrQP12Yamx4Y
+	6DEmBvj03UF/b/q1+UK6LGzpPhEYZ9rRlyakMUYfxzmtmOUIv57A0DDgZNukcWulxGj1MKUbnzy
+	VdFVapkiVfQJ2OQdVfFuHd1C+r7ip+ARRnWqPLyI6smhR4kS+katsjgZyg4AnaWLawVtPQF1Nf0
+	zYFwoyds0CPmSfohM8aWOKp0QN0a7UqETNFvIqaevnp1zcezj3e98iYgjZFFm4qjSJEUlUSsHZa
+	O1Ux1nvcXTndImOQenCFf7Yono+KAPtp7CTOmxZ1/u/HgAJdo5Kfe5y2lMILuITp9+sEdL7kfl1
+	nVL9mt2dqQ9UcpXaSjBkWwYPqEz0n63+oSWWtb3K78xJhYFWvF7crp8FvtmpVVHzi2PQo4oSCCC
+	P2SeZAaYSuqgoI3qwB0WCwjQdsY8FA7RNbD1MlFu/uLE=
+X-Received: by 2002:a17:90b:17c8:b0:3b0:9e2c:9b57 with SMTP id 98e67ed59e1d1-3b0db605b27mr220727a91.4.1793912461108;
+        Thu, 05 Nov 2026 13:01:01 -0800 (PST)
+Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com. [74.125.82.173])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b0b32baf86sm5015899a91.17.2026.11.05.13.00.59
         for <linux-mips@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2026 12:57:57 -0800 (PST)
-Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-36d6765756fso3048965eec.1
-        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 12:57:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBwpKy4DhXYcZ+Ihf7x0fVvanhWnpwgbfzrj+UaWp79MVNfQ4G12qS7VaIV/tscHZmuRlh6nDn1ao8yb@vger.kernel.org
-X-Received: by 2002:a05:7300:ea91:b0:36a:6d52:e16c with SMTP id
- 5a478bee46e88-36f75253924mr438929eec.12.1793912277153; Thu, 05 Nov 2026
- 12:57:57 -0800 (PST)
+        Thu, 05 Nov 2026 13:01:00 -0800 (PST)
+Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-3282db206d3so156956eec.0
+        for <linux-mips@vger.kernel.org>; Thu, 05 Nov 2026 13:00:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvByRD8jGg/3XqPDnGERfGVeQQL4zaWHrl2C12WK2s/gLyc4bUBylfBNqNdOiZF85rfj2IyXeMvfSHID3@vger.kernel.org
+X-Received: by 2002:a05:7301:7187:b0:36f:4569:7392 with SMTP id
+ 5a478bee46e88-36f77103af4mr423739eec.41.1793912459132; Thu, 05 Nov 2026
+ 13:00:59 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -81,49 +81,25 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261104-sf19a2890-gmac-v1-0-a15965a49574@telaak.dev>
- <20261104-sf19a2890-gmac-v1-1-a15965a49574@telaak.dev> <e134193f-ba1b-47c1-9a06-419b1b796ea0@lunn.ch>
- <CAPY4CJ74O1tFVCpcN9seoeWDF0VR9GNfKuE+rWODQamN2sjL3g@mail.gmail.com> <ba32cd69-23a3-464f-a74b-68a29e7b8202@lunn.ch>
-In-Reply-To: <ba32cd69-23a3-464f-a74b-68a29e7b8202@lunn.ch>
+References: <20261104-sf19a2890-usb-phy-v1-0-db0cad937614@telaak.dev>
+ <20261104-sf19a2890-usb-phy-v1-2-db0cad937614@telaak.dev> <7905740841dd0f47273b63dd28ee504b6fdf8084.camel@pengutronix.de>
+In-Reply-To: <7905740841dd0f47273b63dd28ee504b6fdf8084.camel@pengutronix.de>
 From: Joseph Telaak <joseph@telaak.dev>
-Date: Thu, 5 Nov 2026 15:57:45 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ6mCc5HgQUZd2Mq3C=Tsmwp=-acAV8dsWcpO_J87Pr6rg@mail.gmail.com>
-X-Gm-Features: AclHuK9hGSAdRKsJYKbyzOuaSV6hdi58LXaj_oUeX5Eo9bGiXxx_BR0j2WjKwyM
-Message-ID: <CAPY4CJ6mCc5HgQUZd2Mq3C=Tsmwp=-acAV8dsWcpO_J87Pr6rg@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: Add Siflower SF19A2890 GMAC
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Richard Cochran <richardcochran@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Chevallier <maxime.chevallier@bootlin.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Chuanhong Guo <gch981213@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-mips@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org
+Date: Thu, 5 Nov 2026 16:00:47 -0500
+X-Gmail-Original-Message-ID: <CAPY4CJ5kwLxQZCRF9+ywSavP0G3K0ytvB5+NbmrWGrtLbOnw=Q@mail.gmail.com>
+X-Gm-Features: AclHuK9lRGyMU734A3a1_3WSwAPLqlbO5flD8SV-l9TZ_P6sYsnX4mVcOu8Aedc
+Message-ID: <CAPY4CJ5kwLxQZCRF9+ywSavP0G3K0ytvB5+NbmrWGrtLbOnw=Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] phy: siflower: Add SF19A2890 USB 2.0 PHY driver
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vinod Koul <vkoul@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Chuanhong Guo <gch981213@gmail.com>, linux-mips@vger.kernel.org, 
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-> Do you have access to another board which has a PHY connected, not a
-> switch?
+> Since these two resets are always toggled together, consider using the
+> reset_control_bulk API for both.
 
-No. The GL-SFT1200 is the only SF19A2890 board I have, and the only
-other one I know of, the vendor's evaluation board in OpenWrt, also has
-a fixed-link on this port.
-
-> There are unexplained delays here. Is it the switch, this MAC, or the
-> PCB?
->
-> We need to understand if tx-internal-delay 0 really means 0, or it
-> actually means 1065ps.
-
-I can't tell that from this board. The sweeps measure the sum of the
-MAC's delay line, the switch and the PCB, and I have no documentation
-of the line's own delay at step 0.
-
-What they do show, in the MAC's steps: the windows repeat every 8 ns,
-which puts the start of both eyes about 4 steps (0.2 ns) below 0. TX
-ends at step 51 and RX at step 28. So with every delay at 0 the link
-works, but right at the early edge of both eyes.
-
-Until that is known, how would you like v2 to describe this board?
+Thanks, v2 will get and toggle both with the reset_control_bulk API.

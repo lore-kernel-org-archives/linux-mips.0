@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793966913;
-	b=gDcSH1ZIRj68GzxvqcfF6sxjb0NyQNWhmYiyQvqv/ET32Yp7kWXSTe3WkVZCNd8kDX+k
-	 qU5vrWy9Kv+s6wXdBsrExHPH+D1WTG1vcqmO1Dug0V8PdFNtuZf68u1ikAef6sDxLNA9C
-	 Y+PJ4z11NS9EGeiv1HM0uVq+6SfmVeXUTmsaccaLFTrtIx782XJtqRmMWkrZEA3M1FOYe
-	 HrrTS8QRfNSSJqOrwtWkMpElbUAEEe33wJciCEGCpYNX+qUJ7WlgK+W9/6ovbhpvwK/M0
-	 iw81RCqnnjqqToIRc+H5xyeHIRWWcnVOQpxhYBmGK+HDRKPc61oL+ZozttKqkMo1Xzg==
+	t=1793967116;
+	b=CSKwNT1s7kombexokNFkgB9Wp/QKc9Nvh+d6WiF50qJAoF/0930ouhysgAiac0KnAp1j
+	 o2XoJwhQ4dmTYTn2YISHnzXITy+F3ov5pCbU1Ed9CVXqxpWTU4DZmodJtcDU60wxAngR3
+	 N2fIOIDeBJxtx3sQtq9r2khwXjOvg8VlV1ho2R/W/Bfmg4tOX8kfCcIppvTdxAs68O3l5
+	 DU0vX13AaN8pWIpdmx3xmVCEIv8lX5qG5nDZSSgMHlCQRSA8z98y/iFoYHBkY0RDqzLZU
+	 ZEf14tlKR1GqytIKi/njLXVeuRfaIZoqBzZuChLm8jMRHjRXqyD3nxbR0D4ihuP9bLg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793966913;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793967116;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
 	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=E9DyaOqiw31jn8Ne81wrLsB3uIQ8LtKMZtFF5QEWE+M=;
-	b=X8QDHgZqRE/m/pIvAjYCsgNVlrg5BPnsCsXdbFNTteWt4qv69YpzsnTOxGzpVBOaNdEq
-	 +GKOHvslhzCO2y4hzdGuGMrkOoFrIhYek87i8Qm7D9B+ydVycDc6mZ0RTAVI3tRhIdXfK
-	 ccc5g5j42Bs/YTPQ6VkF7UREo6HUpI5XtkMXGZt5ShNBuBe3131JyJu9FHwDfpdmPXrag
-	 osYYZ1qfijrQqmQ7uJ0hmCWa1Lr574Vq5tdJ5wFdY54IDUxMcIp4SC2gGQbJ9q+KcGPWR
-	 qIL35Ey+ZuWRHq16fdtAfJEFF0ylfGrLqaU2IUa9IdOCLzeNBP/2lVDHehVOaDq7v/w==
+	bh=iq60MpWWr1FHZNJdGeNZTv+roUBF0vhdran7YFHQ1so=;
+	b=xMOOL0/S+bJPEOfO/XDGBVeDIDHba6XqD65YLun8zfiK1GFD5MlSSw+3mrmcG0ZOFwGC
+	 vBDyXj3FfSEQhpVys9gFiKC3M8Fq8CBn1zmkHIgWNLU5GZ2u0kQX4ZboKbdbphXcrubCL
+	 dNOjrvgVgPZI0IpH1f27CZ1EgEeg3BKz6xuMUUSfVd+z/agfwJdsc2tPuNfAig0n8ODCG
+	 M0VEv43NDb+lvccpf+LBmlZJt49EL6cm+4PhgiUEuZAnoVaJQ16LC4oS1cQH5veBYfsjG
+	 5TcsOimGOmXOIne0KlDlWOJDIY1pQITvp4gffTYs5G71mn8++h0Yw3Jj6y+xHFUa0oA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o9rmqepd;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=qS28xxyN;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gAMW9fXr;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=QNnH08J2;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE6A606A32E;
-	Fri,  6 Nov 2026 12:08:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BDE6A606A32E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF34C606D824;
+	Fri,  6 Nov 2026 12:11:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF34C606D824
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o9rmqepd;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=qS28xxyN
-ARC-Seal: i=1; a=rsa-sha256; t=1793966901; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gAMW9fXr;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=QNnH08J2
+ARC-Seal: i=1; a=rsa-sha256; t=1793967069; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=JDAPGUGRPdUSvJn4Wu8v0f1eTCPjRVx2NF6ILteEuirA9XncE3YverJYaLCxiZCysp
-    32mAUqyi7VPMeiEvulp38kOKprTPOGwXfsQxvf5K17qlZ923Uo0hehkalFYDrb8b6YTk
-    ecnI8J5jYhfuLLg1yKC4mrXTn3PJT7nG8VhPwMcDKP2vjGNt4wIRiQwmkGTkIzU3ynOy
-    X3itaWFFY4+IvKbUqYn8EK/Xghl23VW24Ud2ZOBU4vhikXLy92ppq7EtnF5L0B/YfBaj
-    9yeEQM1ylOY3cUG/v49cLodxlNIHzlsZW0MYbDfD/hcsbs2DzN2CaTxJhdUWCZJ0MLMa
-    R9zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793966901;
+    b=aKMLhHyAjDV2B0Kd5fN7uWTUYmUIqv7oUH20rrwDJWK4yWpydOGsDcNtTjavVRtn7Z
+    03zeLW+aoU5rEt5pGYnIMBtQnavgYvocg98sYDLA0oy5ZL5GFxlmJCpozpcgvifMb3nY
+    QJccqrrb3vSWJ9XtuB9pYSaBfR2pzvB40dmNwndtREGllP+BS7e/G56hqf8IYJbq7Vpk
+    YsmVkl86/is2bJ0V7V3QOZxj8kGFIRbklr7nF4CrV5N/6lLZV+x5I2YLnx5LOK6VEmRM
+    sI6TfAXjvkT4YD8D5e/J019M4+2q0bk9zrTMOcmSSFu/xL4awsva11FQ9IQidE7/dZEs
+    QqzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793967069;
     s=strato-dkim-0002; d=strato.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=E9DyaOqiw31jn8Ne81wrLsB3uIQ8LtKMZtFF5QEWE+M=;
-    b=lNGqd9gz1manGZIRqWmVtVCwxatG0vUQWNVJqKdx5KuHf9Gg2UAN8xkP4kSjPLfS6C
-    VIXfFuiebt4U6UoytOV7e8+/X4JRAp1hojpCW5rtD7xUqsNEIueaiSUzDwERWSPp08Pp
-    i4JYqffktuPZ/Nn+D+GHRW6gi0pQldlW+bPeS4XsvEoJkVz2So1F2RVnsmuy02KCr4vr
-    XtP7JXQiKBZcvbY5wgoYDhAQvkW5ezHEbdPXgbZC0A0G3FWCFEx0TtL/GUe4uu5nR2KY
-    5XsglSPH2NTYWtI6Brpw0vhH0IKJtjZpEVdVC++v4TruF/pylSw+MdTrn8K8vsEjGnyO
-    gbrA==
+    bh=iq60MpWWr1FHZNJdGeNZTv+roUBF0vhdran7YFHQ1so=;
+    b=MVJkQOBm4cfv+5I02uhULJCU+MBhU636GaWl0lNOawnAK2UD6oO5r1+nokbLVFNPhw
+    DYGFq/IKXqOWxJjBhD9D4xH5kILd4Y+/aQU0nDNW180gdo/iwCzyuDe+2bF1GoR/Ia80
+    5MXz0FPn/tS681kJeC/rcVTCHQk0rmDIwntvrbGntOJEcr01iWfguSxRk3k7W81UOKEp
+    2wVh1Ptk7n9Jh6nYAA0Xo6gdh7IVS7aUYHDb5mp0JBDMtclCk77/wq04TlL6cZ6rWWKo
+    DkdlRD+kmXDGvpPEdV//gaQoxu66TPP8/gvJxaFbgzkVVm4RdNdsH/Ocxu1mi4a+qzW/
+    PU6w==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793966901;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793967069;
     s=strato-dkim-0002; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=E9DyaOqiw31jn8Ne81wrLsB3uIQ8LtKMZtFF5QEWE+M=;
-    b=o9rmqepdfAPTt8aI0tMoKKkAJ6J2ZVGfy7Nhbyx0MZAgWIwN/Y69GeDXez64nSlhTJ
-    WIU+Nd2Gh5Ipjtganfk1jOQq1OwR3f0OkrnnHdbWSgQHcfHQo46eBAqyqod4ZeEKrzsI
-    mD1Nbr/AjwL3nAEaAUT8SVbYmFSqYE0fep2nJ3RFkZZ0jY3RIHGKIfxvbJfuS2O0Y92o
-    HDBcmMRcaFFc3e73OZ3HtnHn3ULMGopNM9Z4MvCMjHDYjwTvLE/tiBnXDDYfn9JbU+2b
-    PgitfGbDGVw6OxG2uW0N6Zs/i5Hn026p9DlLRTGfvRAcOnsX3CyiHLJTnbo7De+NRdub
-    /5BQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793966900;
+    bh=iq60MpWWr1FHZNJdGeNZTv+roUBF0vhdran7YFHQ1so=;
+    b=gAMW9fXrUqZXT4FEQgwE//sTU0b9ZDAoCznBXEg5W9zudQT89Kv/KDTyJv8jIfwU9o
+    Fq2xzWb034iJAUaceQdmsiN3qpwN3VUjxhW8OyFmFpNXr6IQsDruqlFxjLGj6VGw1fXh
+    2KaWpOZNd1DfIkARye2XnaOJIXg6nQG9xX9JfH5KVl8avHhCnnuhC/LjHPS6muhfDGcq
+    8AUT0MlXMB0YUhseE8pcGsAwQL1Kq51F8psGjroeljB0gZJ9OeO9uhvXmHP7njPBIKj2
+    R1WzTQILQVl6fywDy9Rp3Cq+Raq4VC9wuajSsO85AZazk/VKM0Ql5m8jKy1bj2gdpMHb
+    6BSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793967069;
     s=strato-dkim-0003; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=E9DyaOqiw31jn8Ne81wrLsB3uIQ8LtKMZtFF5QEWE+M=;
-    b=qS28xxyN+IL3tnsQy1w6FGAyEUpwJI9p/qJtcOtFTfgvZhggwms4zIPfuApSsFmYQT
-    oLQdge3SQG9uufzZbbDw==
+    bh=iq60MpWWr1FHZNJdGeNZTv+roUBF0vhdran7YFHQ1so=;
+    b=QNnH08J2KaocksIeZkmonMhg/dsaysJfwokZuc2yQn6canlLi1NBwz2Yvf22XBD4ZZ
+    IWr0clWIUrl9g4Cn4dBw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrVjZoMy8iN4frnsPsBQ4l+mfK4O7kvgww6TmAq"
 Received: from smtpclient.apple
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22A6C8JnIv
+    with ESMTPSA id Qb56a22A6CB7nJj
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
 	(Client did not present a certificate);
-    Fri, 6 Nov 2026 13:08:19 +0100 (CET)
+    Fri, 6 Nov 2026 13:11:07 +0100 (CET)
 Content-Type: text/plain;
 	charset=us-ascii
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -94,103 +94,45 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 2/5] dt-bindings: display: Add the Ingenic X1600 LCD
- controller
+Subject: Re: [PATCH 2/3] MIPS: Ingenic: Add JZ4780 SMP support to the generic
+ platform
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261106112128.14213-1-olivier@mgcrea.io>
-Date: Fri, 6 Nov 2026 13:07:48 +0100
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>,
- Jessica Zhang <jesszhan0024@gmail.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org,
+In-Reply-To: <55de1cf30758cdc46c38f87520e6570d6e851a9b.camel@crapouillou.net>
+Date: Fri, 6 Nov 2026 13:10:36 +0100
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
  linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ =?utf-8?B?IuWRqOeQsOadsCAoWmhvdSBZYW5qaWUpIg==?= <zhouyanjie@wanyeetech.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Burton <paulburton@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Brian Masney <bmasney+clk@redhat.com>,
+ Jerome Brunet <jbrunet+clk@baylibre.com>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+ Paul Boddie <paul@boddie.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <875B7793-58C3-4659-B115-1B759D4F8C50@goldelico.com>
-References: <20261025191640.13592-3-olivier@mgcrea.io>
- <09A3F895-9007-414E-8EE0-17BD18E63F53@goldelico.com>
- <20261106112128.14213-1-olivier@mgcrea.io>
-To: Olivier Louvignes <olivier@mgcrea.io>
+Message-Id: <AA66E3B9-DDEA-4D1D-86CB-1ACDDA1B9434@goldelico.com>
+References: <20261105203243.2292647-1-f.fainelli@gmail.com>
+ <20261105203243.2292647-3-f.fainelli@gmail.com>
+ <55de1cf30758cdc46c38f87520e6570d6e851a9b.camel@crapouillou.net>
+To: Paul Cercueil <paul@crapouillou.net>
 X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
-Hi Olivier,
 
-> Am 06.11.2026 um 12:21 schrieb Olivier Louvignes <olivier@mgcrea.io>:
+
+> Am 06.11.2026 um 12:07 schrieb Paul Cercueil <paul@crapouillou.net>:
 >=20
-> Hi Nikolaus,
+> Zhou's v8 supported the 4 mailboxes, this feels like a regression.
 >=20
-> On Thu, Nov 05, 2026 at 11:27:12AM +0100, H. Nikolaus Schaller wrote:
->> The manual for the x1600 is a bit ambiguous, but the x2000 and x2600
->> documentation identifies this block as the "DPU (Display Processing =
-Unit)
->> Display Controller" (located at base address 0x13050000 on all three =
-SoC).
-> [...]
->> Please update the compatible string to "ingenic,x1600-dpu" (with =
-"ingenic,dpu"
->> as the fallback) and rename the file to ingenic-dpu.c to reflect that =
-this is
->> a scalable DPU driver not limited to "LCD".
->=20
-> Agreed on the name, v3 uses ingenic,x1600-dpu. The X1600 manual says
-> DPU too in its register and clock names, and when I checked the driver
-> against the X2000 manual it came out as the X2000's DPU without the
-> composer.
->=20
-> No ingenic,dpu fallback though: writing-bindings.rst asks for SoC
-> compatibles rather than family names, so an X2000 would be
-> ingenic,x2000-dpu, with the X1600's as its fallback if its registers
-> allow.
->=20
-> The driver keeps its file name for now. It only drives what the X1600
-> has and what I can test (parallel RGB from one plane), so the split
-> between the core and the interfaces, and the X2600's rotation, is =
-better
-> shaped by whoever adds the X2000 with a board to test it on.
+> I understand that we can't really test a quad-core system (unless =
+Nikolaus can?)
+> so I won't object, but that might need to change in the future.
 
-So we will have:
+Well, I am not aware that a quad core Xburst processor exists... I can
+try to ask Lumissil staff next week on the Electronica Trade Fair.
 
-$ ls -1 drivers/gpu/drm/ingenic/*.c
-drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-drivers/gpu/drm/ingenic/ingenic-drm.mod.c
-drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-drivers/gpu/drm/ingenic/ingenic-ipu.c
-drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
-
-What about ingenic-dpu-x1600.c then? I.e. make the DPU variant a suffix?
-
->> However, this approach triggered a kernel lockup during boot
->> right after successfully running lg35583_get_modes().
->=20
-> I can't reproduce it here, the R1 comes up with its panel at every =
-boot
-> (with v3 again today). With nothing on the pins I don't know yet where
-> it would hang. If you get a log of it (the last lines with
-> initcall_debug) I'll have a look.
-
-Indeed. What I have done is to hack some return 0; into the driver =
-because
-probe fails without missing SPI client - as it should and likely does if
-you disconnect the panel.
-
-So I should try to locate a non-SPI panel and pretend in the device tree
-it is connected...
-
->=20
-> v3: https://lore.kernel.org/r/20261106112000.1612-1-olivier@mgcrea.io
->=20
-> Thanks for the review,
-> Olivier
-
-You are welcome,
-Nikolaus
-
+BR,
+Nikolaus=

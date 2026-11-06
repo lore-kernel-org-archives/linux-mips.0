@@ -1,48 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793947745;
-	b=JpX83hIwDjmUPZ14juBKWU/m70PcSgGSsH2QLVye5XifV21gmvbSADMVh9j+iYHeB3dd
-	 1cdjNRV8B4wFz7OWAK6k8M6Fkc8RnVtsmnScn9+PMXYxiYiSp9vwXdLVM9t1g4CP6LiQj
-	 7ShPlsN4niG7oqhUpixhk1iVy2zfYlaA27rqtZbbbf3FI+VQBqI7jXzChcs/d8z1QZEav
-	 I8HErB4yVSdbnwDNige+4njBlLSUUKZP8Oq6Dl96EdoREbk0MLQoZYGL7S0KEY32Fhg1h
-	 0KwmUoGQ8nw/A6SkmJCirh4eUWtZFYnJHiTWABeLGaUxsWqY8houPH4It10h9JBT75w==
+	t=1793948742;
+	b=nEXpX3VV3kdkVurFI/RIfZSnDuKXnDWwJqAXVYvlPEGFXS/jQWBd9dPaxXKj4vWZATRe
+	 rSbNfHL5m4RmHi977SPVfzCUhBkOkXc6RkZ0rdPeE9OGwIM8FJBi2+6qzs7KlyQ4rDdu1
+	 t4dP9pbwIOyI/QigRStoVcYto5RX+bQpOI3Ai7i57havvqo8Q0B58/cPj1fSX6hOxIPL5
+	 vjUu1MAe+SRPoE6aO/tEEGZlumEg4SeiHZIn3hg4BsMSMVP9sz3M/CvrcxZMrGd9qR+NP
+	 /sBX/nkwSUH4WrC4dSSLjrxivvr+FRCshvqjr4qbMq9OobxEUvaw4+0DjlVpVW0AWmQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793947745;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=wu1oQVOgc/20Z0C7YFsmJAp66/PX07S+eX43UkLI+xg=;
-	b=KTrJ9kuQIuG3H5vibDHNy6Lmlg6omGUYXLNjTBUFtNoqU4IB5+HXngR7TmItoNqH9sq2
-	 5rSL/+90zMIsxn9UrmtSXEKfwuMYaIqumFXVujxHWvp9Sdy7O0Xremce7s+fFLnncRxPA
-	 KcRj5dYT81YKnFbYiwswzEUOIhaAKOmWKvm223kXPJBucjS6V/1Pt4BxaN1qln2APyDQH
-	 5pl6QNoAibkiA15QmjuKxarlgjRxtLJrDkgozCO7Vvkcu2BEde4eEGPTzNheq/EseX/hP
-	 f9GbLJZ4Dunh2FB7yJR6RchDSJqI0k41IgPZ5Xc6ot4PKZAWvyeL4QKWROkFZeyYzfQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793948742;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:Content-Language:Autocrypt:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=DZ596oEiL+BgBLqvrnJ41jJk4D1AhYHhFGHSgX+w92w=;
+	b=eO/euOevoWJBE4K895b2unXHt29qfDw2K723VkT27DLHeM/oNCeSiovstvKAi2yehszd
+	 EsHNGZ6RmW7jY4QgXngP3xHwyv1Yih8wq6PTnKI8eq/rdRUyazV85olukthvUpJFyLRch
+	 BXCqvWcBxaU7Re8kpd/+5jdpPg2BbLLBTjS4FNVagf2OKj4ihipsUuTfO5Ox5lLLLQyNk
+	 LUtDCYbhQ1gQ4ascCmhODSvBKuSWXyzdIleJiQBQEFnVll//LiRcD3vIxYMK8Ad0i5evZ
+	 MCzDTAHD8iJMjPteD1d8qFpGix8geiso0tCUo8gEh/t8Ut1LSbIDOvbGfVuSgbnuXDA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DCF606A326;
-	Fri,  6 Nov 2026 06:49:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C2DCF606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 256CE92009E; Fri,  6 Nov 2026 07:49:02 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 1E1CD92009C;
-	Fri,  6 Nov 2026 06:49:02 +0000 (GMT)
-Date: Fri, 6 Nov 2026 06:49:02 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Imre Kaloz <kaloz@kernel.org>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>, 
-    linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: mm: Fix the cache error vector jump for XKPHYS
- kernels
-In-Reply-To: <20261021185709.22561-1-kaloz@kernel.org>
-Message-ID: <alpine.DEB.2.21.2611060611100.17804@angie.orcam.me.uk>
-References: <20261021185709.22561-1-kaloz@kernel.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=afIzeqfW;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1A6606A326;
+	Fri,  6 Nov 2026 07:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=afIzeqfW
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB731F0089F;
+	Fri,  6 Nov 2026 07:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793948741;
+	bh=DZ596oEiL+BgBLqvrnJ41jJk4D1AhYHhFGHSgX+w92w=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=afIzeqfW+Kgs4BW3uaAPGcSdEL1qpcDBHdmbiKWNd5XdK/vzj15SRcZe87XXlnXeG
+	 /eT084nTL2OwHX7fHAoqSvytxS48T3VEUcDmMFzRKccy5xVeAa+lsHvM6ty03jzkc7
+	 CrJG8jGDuINgDYveo8evpD9CHZSI35SnAoaLBztmcEjsQwte8CElORetTOijgDJN+u
+	 l99FpzocUUZU+nYBeakzrJQf3lHRm/vDr2kPv8qy93ahcXw/2nHGuPsSpxHkI7FwwN
+	 r70vfg+ZMSe18Q70LZf1WYYQ7oZydcCaRHjpCcKvRqRwJyVKogDEr/x5o1wD+UgXzM
+	 Yc/NO/cU4jqBw==
+Message-ID: <49e69d9c-6cb1-453f-bbf5-e2202f97e4ef@kernel.org>
+Date: Fri, 6 Nov 2026 08:05:35 +0100
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -52,52 +51,79 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+To: Olivier Louvignes <olivier@mgcrea.io>, Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>, =?UTF-8?Q?Nuno_S=C3=A1?=
+ <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+ "H . Nikolaus Schaller" <hns@goldelico.com>,
+ Joshua Crofts <crofts@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20261105213210.87457-1-olivier@mgcrea.io>
+ <20261105213210.87457-2-olivier@mgcrea.io>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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
+In-Reply-To: <20261105213210.87457-2-olivier@mgcrea.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 21 Oct 2026, Imre Kaloz wrote:
+On 05/11/2026 22:32, Olivier Louvignes wrote:
+> The X1600's SAR ADC has four auxiliary channels and none of the
+> touchscreen or battery engines of the JZ47xx ADCs in ingenic,adc.yaml,
+> so it gets a binding of its own.
+> 
+> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # LX16 - driver only, no real world test
 
-> diff --git a/arch/mips/mm/cex-gen.S b/arch/mips/mm/cex-gen.S
-> index e528583d1331..6989fe274aab 100644
-> --- a/arch/mips/mm/cex-gen.S
-> +++ b/arch/mips/mm/cex-gen.S
-> @@ -37,6 +38,21 @@
->  	nop
->  	nop
->  
-> +#if defined(CONFIG_64BIT) && VMLINUX_LOAD_ADDRESS >= XKPHYS && \
-> +    VMLINUX_LOAD_ADDRESS < XKSEG
+Drop, did not happen. Even comment says it did not happen!
 
- Not VMLINUX_LOAD_ADDRESS < CKSEG0 to take care of CONFIG_MAPPED_KERNEL?
-Of course we'd have to switch caching in the wired TLB entry then too, but 
-at least we won't crash outright...
+Otherwise please explain me how this code was executed on a device.
 
-> +	/*
-> +	 * An XKPHYS kernel may lie outside the 256MB region a j from the
-> +	 * vector reaches, so jump to the handler's uncached XKPHYS address.
-> +	 */
-> +	PTR_LA	k0, cache_parity_error
-> +	PTR_LI	k1, TO_PHYS_MASK
-> +	and	k0, k0, k1
-> +	PTR_LI	k1, UNCAC_BASE
-> +	or	k0, k0, k1
-> +	jr	k0
-> +	nop
-
- Given that this runs at ERL, a much shorter sequence could look like:
-
-	LEAF(except_vec2_generic)
-0:
-	[...]
-	PTR_L	k0, %lo(0x100 + (1f - 0b))(zero)
-	jr	k0
-	 nop
-1:
-	.quad	cache_parity_error
-	[...]
-	END(except_vec2_generic)
-
-but I guess it doesn't matter that much as long as we don't overrun the 
-exception handler slot, since this is obviously not a hot path.  Still it 
-could be considered neater, couldn't it?
-
-  Maciej
+Best regards,
+Krzysztof

@@ -1,62 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.12
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793976176;
-	b=nuIZ9tMiW9nuZxSIciB0aACF3AkOFR5UP1xEG9zPpXosCnKCFr3qjj/Lnc/wdKCByJHz
-	 fX36FZoBWQ/41rLFT0HFl+cmLL6oeDz16fUc2ePIHUKL5eZWohPP8fafwc9E10mDfx5uH
-	 iZhloB//TVWEnQGa2JTtSkthmTh8SO0zdSBSMRKvmMDcoiLJ9azY5Dpa/S/O+8oQZQUit
-	 KVTF9ODdq8U4jCDiCxL4WoeU6s0dfd9WS2Xr/xlXDnxEvVMNXGpmGDc8OOxRNx/n8cugD
-	 lPs4xTjY5oIpqvHxkBctYhWx0dpo83NpMf0zBQG8rqx2Cm+GQC4jN7Y0m07LfDhmTVw==
+	t=1793976183;
+	b=T5/NYrTra0TvPE4R3IYFcnAodTCXocA1dW5sheXCZd7zBCHNgbSqyd44AqHQx4MEXhxY
+	 ADtCIED48FZNqvPeJpZuhTbPeyO77Mx2lkuU+INb2TGTr9g/BZJpAxpBcMJkHQ6NHbHS7
+	 VOmhC2enC1c1glzfzhhVRi8rjSngL/ZbzGi4FauR5hkSuQrQ8Kol/o3kKsIiCoBwMN8M6
+	 NtfJG52N5Arc5DlXOzuDc4zieJXvf0k5K8zs0gUDgL7pelJvl0MAokO9SLm18waHsPpXT
+	 deSArhZpgaieh7yGJjXgQnL16Km6eAS7rGly0wcXV43wvqHtk9rf4DfOxna26sT726g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793976176;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793976183;
 	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
 	 From:Date:Subject:MIME-Version:Content-Transfer-Encoding:Message-Id:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 X-CMS-MailID:X-Msg-Generator:Content-Type:X-RootMTR:X-EPHeader:
 	 X-CMS-RootMailID:References;
-	bh=Rj8Y5qafYFutHkOlAoJ29LhMDQuxrVln4aCNYyECpsA=;
-	b=1MVDk/HQ9tbacEwE4TqYZDoA4T1qxNERLJqveGt5tCO7x6NmxNm0Vicmn732ee/YUuIH
-	 nGkzcYzwkbHoA/57zR+ih8TCgf7KrjD9QmK1alNfNA/HLTd2LSMO5grPuG9pEWGUetzyq
-	 X204cAu1ashH3CtcBVte7km3ANO9gTtg7g3RO7EM2r+DYXyGuBCMvopR7tBfxUiGmeTjg
-	 lLviYJdx6/gMEUYsMWrGg0mmbx3jBmMOIXfSiOZUvzkgvVDLIYb0+V8mLkrnTF9C9oaDV
-	 aSl9wIpyhwcAsEFpiuu2plEEKIYSRxKWORN6CiUwobDodveeWTtiQO+syQ4PYajt72A==
+	bh=6rJNUO6E54sMvUs2WMIZbbBsdevweP1GURHzVXhYi9c=;
+	b=bCpuMbbbeBs0+e679q/YM3SrNed1hxy+HoR0axocG9lHZWiDXC0h2kT14pslP1DqQFkp
+	 PTHiXkI6EVnqfAlxU0Fp/jYpYJNq+CX7LvTkQAl96x52F9GMpBJ+KCKRxGdDWPfj8dJJ2
+	 7rTI2ka1jlAbaSgGtQceyirkZ4mAN1MY6fTQadCsp1RJ7RTN7UrMw3lsrCtEFvATY17Tr
+	 zGo6WPx6wmEmUrWCDjg2rYsUZOrYEm7sEyEP1TWE05r9FE7p+3PMNxc/4KqjueQeLWncd
+	 ghwHvTox0UWdB+AFJfVpzS+1MsfWyXtXftpUbvwgSoKe2vYRQ96pN+qeLzt5q88+7ZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=samsung.com;
 	spf=pass smtp.mailfrom=samsung.com;
-	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=BwI5Raqt;
-	arc=none smtp.remote-ip=210.118.77.11
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=vQL1Kemy;
+	arc=none smtp.remote-ip=210.118.77.12
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC4C606A331;
-	Fri,  6 Nov 2026 14:42:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1FC4C606A331
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAE3606EE8C;
+	Fri,  6 Nov 2026 14:43:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5BAE3606EE8C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=BwI5Raqt
+	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=vQL1Kemy
 Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20261106144253euoutp01c796104744657935f58418ab7ccdf555~le9Ma35rb2317823178euoutp01R;
-	Fri,  6 Nov 2026 14:42:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20261106144253euoutp01c796104744657935f58418ab7ccdf555~le9Ma35rb2317823178euoutp01R
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20261106144300euoutp022fe9ba632879a263b59dd1be5c370c27~le9Tgddn21426614266euoutp02X;
+	Fri,  6 Nov 2026 14:43:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20261106144300euoutp022fe9ba632879a263b59dd1be5c370c27~le9Tgddn21426614266euoutp02X
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1793976173;
-	bh=Rj8Y5qafYFutHkOlAoJ29LhMDQuxrVln4aCNYyECpsA=;
+	s=mail20170921; t=1793976180;
+	bh=6rJNUO6E54sMvUs2WMIZbbBsdevweP1GURHzVXhYi9c=;
 	h=From:Date:Subject:In-Reply-To:To:Cc:References:From;
-	b=BwI5RaqtVBatHQ9FvOJ55uoIz+fe2relbWKFywd/iJ7UxbiAUExJDGgQBwVqMgvPP
-	 UdvBd8K2ekwzyndtRORpmlbATxLqEG3g6AEgKFZhuL/6kzMA4waA9KfpwPcfkUWCJj
-	 a5io1KFq5kFQHiWaTDkEAwAoTjw/BLEsdPnf7/6o=
+	b=vQL1KemyUL/i8iZISuvadb7LjWhfk9xrjaC2sDcM8Owe+O9RHy1wFufNoIOF94jcf
+	 p0JVcTX5g5tl+FMQDx9m1nv0Tf+LPOvYWUH9EP9PPWO7X7w1rERwDHFqKFiq4V0yTk
+	 PQ3uwEgwyYh+n8/Yo016rsYHh9MLBaxuU9NrIFjU=
 Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
 	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20261106144252eucas1p272c9e37d66ad385db070f941879aecb1~le9MI3J6I2474624746eucas1p2Q;
-	Fri,  6 Nov 2026 14:42:52 +0000 (GMT)
+	20261106144259eucas1p27d26efbc44beac102c03ec07ebed4310~le9SqiDiy1206212062eucas1p2V;
+	Fri,  6 Nov 2026 14:42:59 +0000 (GMT)
 Received: from AMDC4942.eu.corp.samsungelectronics.net (unknown
 	[106.210.136.40]) by eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20261106144250eusmtip1dcd97a2c5f23d834ade7b24072cbbacb~le9KHGP180491304913eusmtip1T;
-	Fri,  6 Nov 2026 14:42:50 +0000 (GMT)
+	20261106144258eusmtip1a717ab7164c31bdd835911116d976388~le9RHsKmV0111901119eusmtip1_;
+	Fri,  6 Nov 2026 14:42:58 +0000 (GMT)
 From: Michal Wilczynski <m.wilczynski@samsung.com>
-Date: Fri, 06 Nov 2026 15:42:43 +0100
-Subject: [PATCH v2 03/15] zram: lz4hc: reset the dictionary stream once, not
- per page
+Date: Fri, 06 Nov 2026 15:42:47 +0100
+Subject: [PATCH v2 07/15] lib/lz4: backport upstream's match length limit
+ fix
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -67,7 +67,7 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261106-lz4-vendor-upstream-v2-3-ee04c3f0d7dc@samsung.com>
+Message-Id: <20261106-lz4-vendor-upstream-v2-7-ee04c3f0d7dc@samsung.com>
 In-Reply-To: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
 To: Michal Wilczynski <m.wilczynski@samsung.com>,  Nathan Chancellor
 	<nathan@kernel.org>,  Nick Desaulniers <ndesaulniers@google.com>,  Bill
@@ -95,59 +95,67 @@ Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
 	<m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org, 
 	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org
 X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1522;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2240;
 	i=m.wilczynski@samsung.com; h=from:subject:message-id;
-	bh=gf0d0kp9GnHtSKcTtEhuhYTslttbHXb7E32RSfsFkrk=;
-	b=owGbwMvMwCGWumv6zndzRCIZT6slMWS9fZ5ySyUrfX9+cLNFzLn3MVV/N4i6Nzut7uWYFaCyg
-	Kc99EZURykLgxgHg6yYIsvZjdFGkv8YnpYff/wLZg4rE8gQBi5OAZhI/SSG/1kvExcURfNONrvu
-	ra3M/fXc+ijtu01371vME1PUVXXQZ2dkOLuw/PC7Sw6c1RFJLws3fLXnv6L+4+/39Xt/Bfx8EiS
-	lwg0A
+	bh=FeGwjLLCi9r5jO0sT4c2oOMQI6pybsCaTl5iiV1XLg0=;
+	b=owGbwMvMwCGWumv6zndzRCIZT6slMWS9fZ56U0Pa67C9pl5js81Djt4t++e+Y9b7J3lW8Y3NG
+	r1sg6NpHaUsDGIcDLJiiixnN0YbSf5jeFp+/PEvmDmsTCBDGLg4BWAi79MZGWakV6Uz+5RNvHEk
+	zKojQjHywl3bTtHiJs+mSS+WF12fZsHwTzdo44JtE7fGf1/aYSV3LyD68iubAoVt21jaD0zI/xv
+	xkw8A
 X-Developer-Key: i=m.wilczynski@samsung.com; a=openpgp;
 	fpr=CDB15B3219FE00E577C7E3FA65BA97B9EE9C1459
-X-CMS-MailID: 20261106144252eucas1p272c9e37d66ad385db070f941879aecb1
+X-CMS-MailID: 20261106144259eucas1p27d26efbc44beac102c03ec07ebed4310
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20261106144252eucas1p272c9e37d66ad385db070f941879aecb1
+X-RootMTR: 20261106144259eucas1p27d26efbc44beac102c03ec07ebed4310
 X-EPHeader: CA
-X-CMS-RootMailID: 20261106144252eucas1p272c9e37d66ad385db070f941879aecb1
+X-CMS-RootMailID: 20261106144259eucas1p27d26efbc44beac102c03ec07ebed4310
 References: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
-	<CGME20261106144252eucas1p272c9e37d66ad385db070f941879aecb1@eucas1p2.samsung.com>
+	<CGME20261106144259eucas1p27d26efbc44beac102c03ec07ebed4310@eucas1p2.samsung.com>
 
-With a dictionary, lz4hc_compress() calls LZ4_resetStreamHC() and then
-LZ4_loadDictHC() for every page. LZ4_loadDictHC() re-initialises the
-stream itself and keeps the level, so one reset at creation is enough.
+v1.10.0 lets a match length's extension bytes run to four bytes before
+the end of the block, which leaves room for only a token and three
+literals where the format requires five. The fork rejected such blocks,
+v1.10.0 decodes them: 1f 41 01 00 ff 00 30 7a 7a 7a decodes to 278
+bytes instead of failing.
 
-The reset is cheap today, but upstream LZ4, which lib/lz4 moves to later
-in this series, clears the whole 256K state in both calls. Reset once in
-lz4hc_create() instead.
+Upstream fixed this in 587ed9557708 ("add comments explaining
+read_variable_length() ilimit bounds, fix match length limit"), on top
+of a read_variable_length() rework v1.10.0 does not have. Both versions
+accept the same final ip for a given limit, so change the limit at the
+two match length call sites to iend - (1 + LASTLITERALS), as upstream
+does. This is one byte stricter than the fork; no compressor produces
+the blocks it newly rejects.
+
+This goes away at the next re-sync.
 
 Signed-off-by: Michal Wilczynski <m.wilczynski@samsung.com>
 ---
- drivers/block/zram/backend_lz4hc.c | 4 ++--
+ lib/lz4/upstream/lz4.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/zram/backend_lz4hc.c b/drivers/block/zram/backend_lz4hc.c
-index d8aa01bb258fec760b597a88296dfaa4e0049693..06286c805cf7c56bd760f460cc854dc4014f293b 100644
---- a/drivers/block/zram/backend_lz4hc.c
-+++ b/drivers/block/zram/backend_lz4hc.c
-@@ -72,6 +72,7 @@ static int lz4hc_create(struct zcomp_params *params, struct zcomp_ctx *ctx)
- 		zctx->cstrm = kzalloc_obj(*zctx->cstrm);
- 		if (!zctx->cstrm)
- 			goto error;
-+		LZ4_resetStreamHC(zctx->cstrm, params->level);
- 	}
+diff --git a/lib/lz4/upstream/lz4.c b/lib/lz4/upstream/lz4.c
+index ee69d57aae112f4057c050bbdab4cc0f2d30f9d9..a45f3828141eec9baea59a5e97a3ff37d6474d6e 100644
+--- a/lib/lz4/upstream/lz4.c
++++ b/lib/lz4/upstream/lz4.c
+@@ -2120,7 +2120,7 @@ LZ4_decompress_generic(
+             DEBUGLOG(7, "  match length token = %u (len==%u)", (unsigned)length, (unsigned)length+MINMATCH);
  
- 	return 0;
-@@ -92,8 +93,7 @@ static int lz4hc_compress(struct zcomp_params *params, struct zcomp_ctx *ctx,
- 				      req->dst_len, params->level,
- 				      zctx->mem);
- 	} else {
--		/* Cstrm needs to be reset */
--		LZ4_resetStreamHC(zctx->cstrm, params->level);
-+		/* Reloading the dict resets cstrm and keeps its level */
- 		ret = LZ4_loadDictHC(zctx->cstrm, params->dict,
- 				     params->dict_sz);
- 		if (ret != params->dict_sz)
+             if (length == ML_MASK) {
+-                size_t const addl = read_variable_length(&ip, iend - LASTLITERALS + 1, 0);
++                size_t const addl = read_variable_length(&ip, iend - (1 + LASTLITERALS), 0);
+                 if (addl == rvl_error) {
+                     DEBUGLOG(5, "error reading long match length");
+                     goto _output_error;
+@@ -2338,7 +2338,7 @@ LZ4_decompress_generic(
+ 
+     _copy_match:
+             if (length == ML_MASK) {
+-                size_t const addl = read_variable_length(&ip, iend - LASTLITERALS + 1, 0);
++                size_t const addl = read_variable_length(&ip, iend - (1 + LASTLITERALS), 0);
+                 if (addl == rvl_error) { goto _output_error; }
+                 length += addl;
+                 if (unlikely((uptrval)(op)+length<(uptrval)op)) goto _output_error;   /* overflow detection */
 
 -- 
 2.34.1

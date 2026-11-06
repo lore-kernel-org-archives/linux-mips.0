@@ -1,56 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793977617;
-	b=Y/UC9Xzyug02scilTNtMhGDA/2mpgbLtLDqLjM5ZqBRvqX/1Ss3LJJPE7HKkqogCosGw
-	 YHmKGOl76YrdKoqk2zDPyFlpgPKpQTwfPU/o3tyFPCieADSNsUtAoolxCw+m5c83zZ3L+
-	 x1G5hVcWskCqloPiO9FoZnIkCOQNAWjVn1Ey87qMz0tRzTsJXFMxCsiLZW80D8vKtqJ7/
-	 oqcwCObR+L/PQJmpkHy226hyJ/9kFeq8EqnzanW0TSXi4jpxXrStRt1bcAqeBfCyfzsi9
-	 mWSg8Y3gtF6jT5aeN62fxiqDqdE6dK9qeEUlo+YEpl1qXq/wY3tYX6XgZRO+U5S4EXw==
+	t=1793984429;
+	b=EoZhBTwryhAwc4Bbspjo/OQXCQc/yjgGv2tdCxoc3Uhdx6JhVjqjc0g9hJVGaDJxov4M
+	 1nsB6b3m0V4pG9GHZdGYRbwnaAQtRuD244jUxuC01Rqg+DOjuMH1M13KD1XWybdU40fJQ
+	 gBkf5vo15cAvsis7/y/BaESSUyPgECosWiEH7CEAadqz4Vg8hTPFLoKJrMM8W/irYdqtU
+	 eNft57q95tKyeoarvatywpnIY7SvL+yEnaiqdJyh2Q0IqmcTrXj7h52BHfqHyeZC6tbuN
+	 FaB4D05eyu/BkzikxcD16mUlKqgTvXyfPRkINE8WnneHNtGjAlIeTrtpMnE/Ogg5r+Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793977617;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=gqJdpxgraavV9cayMwotUN97OO7P7jUb+2s38dDaeHo=;
-	b=33eMxmeW6/Guszm/7g4kxeiYd49H1vIP91d068658HvekUQbclzjxSJYEDUDgjkQX2z5
-	 3NfIvqMx535uZ8DhIrw7NHSYqu4DE1AATshUizfbTqmj5YLPCYrw3mjYHxE7yzK9yBRLH
-	 r3ZOXEQeyETwVPZGhmm8Y2n2w3lvHDZ5MloId8vuKg0FP5KsrNovwFcKwPBNtFNDLKWva
-	 OyuhdoARXmqF/WfmUn6O+AQvLPwc/ADsz7MUNvT0gTO7fiSj/mfeb89QSeKwsL+ptCeTH
-	 WUu3SGWOiqcN82XbxqlWuDh0YsKoVvj82WwQJe2L087AlojQSAAMRiM8pAhTXw/ENTw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793984429;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To;
+	bh=jFUBP+/4oDZDg3dkMLyOSSMyY5qeYxFYJPP06gApAfM=;
+	b=rOCHH/DWhBfR5+8Q2ax2B7bo3sqPEUlKl2jkzC+HH4sQmhjC4xBG07dj643UmfduuYDk
+	 Ke6zE92Ado+AWIo38WdXoPCjI2ActZuIfxrjAiBrL974LrYUWiuGWLx19O9ZnlxQ2n38j
+	 UP1OMenGFGnwPOIcai/0eHsHgLWPNzT6dFyXbbiJGw8S2ZjPniBe1qSXQjw3Fe+16t6qV
+	 NEDTjVGAygiwO8x93vcFd23qGJ2NOvz4xDvukmyMAk51vjbYu3G3MHFSSAXGdCOSBE9Je
+	 Vc/6aC/BrBGX5gmiH4bVr+UBP2gXPI27f2HleuMBOOJOgJ7tAZGmezdo4ExpUBbXOVg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=none header.from=baylibre.com;
+	spf=pass smtp.mailfrom=baylibre.com;
+	dkim=pass header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=MRPFEpLM;
+	arc=none smtp.remote-ip=209.85.221.51
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC864606A32C;
-	Fri,  6 Nov 2026 15:06:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC864606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <71aa432f71144f446dba2037ab5664eea3569fdc.camel@crapouillou.net>
-Subject: Re: [PATCH v3 3/5] drm/ingenic: Add a driver for the X1600 display
- controller
-From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, Neil Armstrong
- <neil.armstrong@linaro.org>
-Cc: David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Jessica Zhang <jesszhan0024@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>, "H . Nikolaus Schaller" <hns@goldelico.com>, Thomas
- Petazzoni	 <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org,
- 	devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1ED606A330
+	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 17:00:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AA1ED606A330
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=MRPFEpLM
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-492fcbfaa87so498677f8f.3
+        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 09:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1793984427; x=1794589227; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=jFUBP+/4oDZDg3dkMLyOSSMyY5qeYxFYJPP06gApAfM=;
+        b=MRPFEpLMHBiOhevWNNFBWNmChmSf9amwu9QOajBFX+0euSNnRYDCXlICEjk/SuLhs3
+         NFK0ucD7IEzaiwwvD/bsceRIiiqnY2kquXNffVws1stKsQzqZ3CtCWQqiRg6VfazVwMH
+         ZNe7sPwfjBakP8bL4YWXAoqj3lCYXv8+ZMeAXUkp9uLUyfCO8Akh8ZnLtaN0Ldj/lXkx
+         AktNUSoS9425652OCNe6JlohitzRbL/4fjeLLtVREhFVQmMl4je7LqUdfd6QoMD/tkJt
+         bHuQeK3c0DbcoU7MjsDywS6xGrfQzh2PVe/OlIWsbjmVaqUtOXi2v4/2NukMjJwKW6Ch
+         EAJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793984427; x=1794589227;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=jFUBP+/4oDZDg3dkMLyOSSMyY5qeYxFYJPP06gApAfM=;
+        b=ss7JeBqjXgzBGUuIH1eWI+xunxQdLcgeKoQGspa2UXSunVUxPWg5rd49tZ8URbqTvz
+         kepxVCLG9ohsg/F077NwN5sPIUoJDa2VC+cfdJgNfB5522t2OkHI1ImmPQ8sezbeEbiT
+         mKcKPP6fW50hDki+XQoGZeNhZ5iu9nHr/D3jvI+yQ1MQp19bkjGx8sK9GLvhOZquR5nj
+         vaf5kzEYXl05KEdL0wi08dM6LkdfMrzArha+54MUannc5QzYlWm2jBhbK0/gb+0fHvYI
+         OL7L6M7oga/E/sIzAXtFLNyuEKc2zFT/mulyuSpz3OEkO5LW5CWRpcbMKWvhFnZe+8v9
+         U8Gw==
+X-Forwarded-Encrypted: i=1; AL+hErHkVe1ZHWxP9LYmpKBRSE8CCQOFGV/Af/ZR0ZdfXDZu+HqhkwBYAr/2xh5upiE1G0gViNXhxFHJrwyW@vger.kernel.org
+X-Gm-Message-State: APuU4Z/Ta9fPurqpnqgiJiKPG5MdPo0G0Zzp+3sK3BzeH5SwYFSgX+Jq
+	bSwMwNTeGk9/iHKXazXRaurzHlfOvANDo3cjqSHQp/38KIue5VpwdjO/PVbZVaMyHCI=
+X-Gm-Gg: AYBFou1INnE36fVgNhN6XaMRZQbvcSH1fyiSd0FnT6WGpHZHeUC8GCshz+WjIiME63x
+	Xv3RkatY6zDql+NtfOE+V9zaAUsZ105s/+u1e9CjSk3Ni9R3Z5w98T3NIPFO+tE0T7Nws3Jl7CK
+	TyAmm/kMZZV7jQHiZXAqPiXpttDIFKJazGVKIvEHZxBeW+jJNer9OnwE9XBcFOCZg3unPCGNvQq
+	H0Zq8QPSJYoQmkvLgOwmz4qj5SbS7j6l/yDceI+jb1T1uN0XQ3Pva2uVvf8nCqL7hb8DDEQ+bHP
+	EatEPIR7TvXAJLLnQ6duHpNX7Fhg/IXm1Fnb/RHzShQgY+G9dbeCrJVxkbkM+pdMNIbIKFLWl5V
+	IU3URdRMMI9rIvw98AnUPUqa/Y3f4ED1kKT9lDj2/u3MMeabESTgs1Cgis+ap2pb5xLK01Xm6Dx
+	lWXrcPT48PffjLPL6x/4iIHcF/kkI0NEssiRMhHtfnnEGZsfHkRlJ4FImhD204nS/b0z6Piq0Ds
+	zUzf7MB9FhwzENuQk7rbp61+uP9BFxK+vNEziKsPm2gEsAAsxFEDAOUc8AXsEUVng/ahzZZoNLy
+	Rkczu4KUtUDQ1J4LeoWnuShMb9uKO5vF5A==
+X-Received: by 2002:a05:6000:41c2:b0:492:c53e:2ea8 with SMTP id ffacd0b85a97d-492c53e3120mr4511725f8f.49.1793984426953;
+        Fri, 06 Nov 2026 09:00:26 -0800 (PST)
+Received: from localhost ([2a02:8071:56d1:2de0:1d24:d58d:2b65:c291])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-492d8472969sm4866752f8f.58.2026.11.06.09.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2026 09:00:26 -0800 (PST)
+Date: Fri, 6 Nov 2026 18:00:25 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+To: Joseph Telaak <joseph@telaak.dev>
+Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
+	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, Yao Zi <me@ziyao.cc>, 
+	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Date: Fri, 06 Nov 2026 16:06:50 +0100
-In-Reply-To: <20261106143827.15926-1-olivier@mgcrea.io>
-References: <20261106112000.1612-4-olivier@mgcrea.io>
-	 <0a2e8ea782fa819a547e0a3075303bd74a7fde72.camel@crapouillou.net>
-	 <20261106143827.15926-1-olivier@mgcrea.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 4/4] clk: siflower: Add SF19A2890 peripheral clock and
+ reset manager driver
+Message-ID: <au4Hc7LAXH-ujDPj@monoceros>
+References: <20261104-sf19a2890-sysm-v1-0-a4fac07df823@telaak.dev>
+ <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,112 +102,68 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t4rhlzyxszxfhcxv"
+Content-Disposition: inline
+In-Reply-To: <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev>
 
-Le vendredi 06 novembre 2026 =C3=A0 15:38 +0100, Olivier Louvignes a =C3=A9=
-crit=C2=A0:
-> Hi Paul,
->=20
-> On Fri, Nov 06, 2026 at 02:34:08PM +0100, Paul Cercueil wrote:
-> > > +	struct drm_display_mode *mode =3D &crtc->state->adjusted_mode;
-> >=20
-> > This bothers me a bit, shouldn't it be using 'crtc_state'?
->=20
-> Yes. v4 takes the mode from crtc_state.
->=20
-> > > +	writel(readl(lcd->base + X1600_LCD_ST), lcd->base +
-> > > X1600_LCD_CLR_ST);
-> >=20
-> > Not fond of the writel(readl()) nesting here.
->=20
-> OK, a local in v4, here and in probe.
->=20
-> > > +	writel(val, lcd->base + X1600_LCD_DISP_COM);
-> >=20
-> > This whole block above looks like out of place. Why not do it in
-> > x1600_lcd_encoder_atomic_mode_set()?
-> >=20
-> > Bonus point, you wouldn't need the 'bus_flags' and 'color_order' variab=
-les.
->=20
-> The controller only takes register writes while its clock runs, and the
-> clock is off when atomic_mode_set() is called: on a full modeset the
-> CRTC's atomic_disable() has stopped it, and atomic_enable() starts it
-> again afterwards. I checked it on the R1: with the clock gated (CLKGR0
-> bit 23), every register reads 0x80, and a write to TFT_HSYNC is lost,
-> the register still holds the old value once the clock is back.
->=20
-> So moving the block means starting the clock in atomic_mode_set() too,
-> or leaving it running while the CRTC is off. I'd rather keep the writes
-> in atomic_enable(), next to clk_prepare_enable(), and look the bus
-> format up in the new connector state there, so the two fields go
-> anyway. Would that work for you?
 
-Is there really a point in enabling the clock on-demand? Why not keep it en=
-abled
-always? It makes the driver more complex and I don't see a real benefit.
+--t4rhlzyxszxfhcxv
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH 4/4] clk: siflower: Add SF19A2890 peripheral clock and
+ reset manager driver
+MIME-Version: 1.0
 
->=20
-> > > +	if (pixels > X1600_LCD_MAX_PIXELS)
-> > > +		return MODE_MEM;
-> >=20
-> > The max resolution is 1280x720 so you should check mode->hdisplay / mod=
-e-
-> > > vdisplay individually. Otherwise bogus resolutions like 1920x480 woul=
-d be
-> > accepted.
->=20
-> Right for 1920x480, but 720 per side would refuse the R1's own panel,
-> which is 480x800 in portrait. The manual only says "frame size up to
-> 720p". v4 can bound each side by 1280 and keep the 1280x720 pixel count,
-> would that do?
+On Wed, Nov 04, 2026 at 02:21:01AM -0500, Joseph Telaak wrote:
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
 
-Ok. Then I guess keep the current check.
+Please don't use <linux/mod_devicetable.h>. <linux/platform_device.h> is
+good enough to provide of_device_id already. If you insist on full iwyu,
+please use <linux/device-id/of.h> instead.
 
-> > > +		spin_lock(&lcd->drm.event_lock);
-> >=20
-> > spin_lock() can sleep with CONFIG_PREEMPT_RT so it looks wrong in an IR=
-Q
-> > handler. I *think* you don't need to lock it here anyway, as the spinlo=
-ck is
-> > locked in other places using spin_lock_irq().
->=20
-> On PREEMPT_RT the handler doesn't run in hard IRQ context:
-> force_irqthreads() is always true there, and the IRQ is requested
-> without IRQF_NO_THREAD, so the handler runs in a thread, where a
-> spinlock_t is fine (Documentation/locking/locktypes.rst).
->=20
-> And it needs the lock: drm_crtc_send_vblank_event() wants the caller to
-> hold event_lock, and lcd->event is shared with queue_event() and
-> atomic_disable(). Their spin_lock_irq() only keeps the handler off the
-> CPU they run on. armada, omapdrm and malidp take event_lock the same way
-> in their handlers. So I'd keep it.
+> +static const struct of_device_id sf19a2890_periphcrm_dt_ids[] = {
+> +	{ .compatible = "siflower,sf19a2890-gmac-crm", .data = &sf19a2890_gmac_crm },
+> +	{ .compatible = "siflower,sf19a2890-gpio-crm", .data = &sf19a2890_gpio_crm },
+> +	{ .compatible = "siflower,sf19a2890-i2c-crm", .data = &sf19a2890_i2c0_crm },
+> +	{ .compatible = "siflower,sf19a2890-pwm-crm", .data = &sf19a2890_pwm_crm },
+> +	{ .compatible = "siflower,sf19a2890-rf-crm", .data = &sf19a2890_rf_crm },
+> +	{ .compatible = "siflower,sf19a2890-spi-crm", .data = &sf19a2890_spi_crm },
+> +	{ .compatible = "siflower,sf19a2890-timer-crm", .data = &sf19a2890_timer_crm },
+> +	{ .compatible = "siflower,sf19a2890-uart-crm", .data = &sf19a2890_uart_crm },
+> +	{ .compatible = "siflower,sf19a2890-usb-crm", .data = &sf19a2890_usb_crm },
+> +	{ .compatible = "siflower,sf19a2890-wdt-crm", .data = &sf19a2890_wdt_crm },
+> +	{ .compatible = "siflower,sf19a2890-wlan24-crm", .data = &sf19a2890_wlan24_crm },
+> +	{ .compatible = "siflower,sf19a2890-wlan5-crm", .data = &sf19a2890_wlan5_crm },
+> +	{ /* sentinel */ },
 
-Ok.
+Please drop the trailing , after the list terminator.
 
-> > You enable it later in the probe, so you could just use
-> > devm_clk_get_enabled()
-> > here.
->=20
-> Probe only enables it to stop what the boot loader left running, and
-> disables it again before drm_dev_register(). From then on atomic_enable()
-> and atomic_disable() gate it. devm_clk_get_enabled() would keep it
-> running for as long as the driver is bound, display off included.
+> +};
+> +
+> +static struct platform_driver sf19a2890_periphcrm_driver = {
+> +	.probe	= sf19a2890_periphcrm_probe,
+> +	.driver = {
+> +		.name		= "sf19a2890-periph-crm",
+> +		.of_match_table	= sf19a2890_periphcrm_dt_ids,
+> +	},
+> +};
+> +builtin_platform_driver(sf19a2890_periphcrm_driver);
 
-Yeah, I forgot that the devm action would cause a clk_disable_unprepare() t=
-o be
-called on unprobe, which wouldn't work here. So ignore that.
+--t4rhlzyxszxfhcxv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-As for the clock running for as long as the driver is bound, I don't think
-that's much of a problem.
+-----BEGIN PGP SIGNATURE-----
 
-> > I saw a patch from Maxime replacing these - you should be calling
-> > drm_mode_config_create_initial_state(drm) here (and handle the error).
->=20
-> Will do, it's in drm-misc-next already.
->=20
-> I'll leave v3 a few more days for the drm-misc side before sending v4.
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmruB6YACgkQj4D7WH0S
+/k7+kQf7Bfwba+pB8VQAImJsoI9nkvjYio2wmtjnDf+tDu84xWgQjB1NbQpNvz5V
+3y7UDyK2deoH4CY8KBCBTRT7cDaxITXkF1a0HhwFJjQzDdqTdHEY4A8Y2+kwtaFE
+XtG+i/38jjNC4FlZcl5XsIWsdXDJdmBVAQKyUIcufiTuxj7l++dfH+kC6Ex1M06H
+ScbOsMnUQvQkOWUgbwbEI3sNWya0aIIYp10+UtnzXQTaMbZhUSviiwshdzpvF+We
+ph8X0cK0eb1Xzob0dAIaL/GXyoeOmriWS7iJsLMed0+8cgUxySH9/PS2BUvFBWRt
+gsqT7bKiL8d2E9MAbWotEFMpAA8JNw==
+=PDSn
+-----END PGP SIGNATURE-----
 
-Great.
-
-Cheers,
--Paul
+--t4rhlzyxszxfhcxv--

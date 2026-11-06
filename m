@@ -1,55 +1,126 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.12
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793972057;
-	b=jNBkv48pd8JgsQ38cxqqnIPlOof/ZKaF7CszSX9hKoA23GcKFgkAblETP2orqNlJRAco
-	 0q3AxwtU2fHFAcsOP0rds+WCS2sQkzYrWX9qYyRZIkwsBNi3QISljyH1uO9wgugJvc2PI
-	 xP08Z+H4XUksu1wf+O0+9u+nMoDTr7gtB5k96fDkuFy1JeK8NVDOot216iee/yUF7dSvh
-	 2HtAig0tZcbY0H4O8qpigWLo+l5mn9v70FEUKL7KCMGH3/FT2kQtLqpyQJD1ubJM26qk4
-	 rK0YmQcm173ebu6LkGtjHNaQzlJPLpj382Ec1uGRlqz/RiiFklAujadKDivY70fJzxQ==
+	t=1793972724;
+	b=bfrSihhx6XNWwfl1f0eHwT/ZKI5AZbMmtJ/DfDCn3eMAC2odIKL9NpucqS14nWdLcGNm
+	 l3m2UBLsgHDOE5HqyTIGenSNUwJSGfsFkjlIkOdkshFyWYdN+3Xp3qZ6HezLd1PTwHxf5
+	 QaS+vQdIAr3AEDnLSigJiL3pkbRnjqdFENfYtRZO6KylHhF1/NkO7k2Rht8eYc0UlGG7d
+	 kHgTjDLuIUjYz2c+R5wsLSiEPJDSKEfOWwd12/yv1WvWpo2bb6VfDToKgZerFymzFqxH1
+	 AFUu5oFHqDe8bs99UbfJQ4iOVhp2jCMywaiQiWd9qyK8lbeqeLMFwPNMYaQaehKbb1A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793972057;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=XlyCuiYCYLYiAhem7h2HxbH+Am1L/zBAHUBkoLtrrX8=;
-	b=DvO7A6qGKPH2t/nzQ7zBCPrg0EZj3CpEVodVo8j+EYEo8iDTREn7r5w91ss9R216JXXu
-	 zev4EUV0XOb50Y/mj82/WqwtkNVs2hfuFMtWgP/bjwUmZqPsYVUagNhgd81ZBZ+5wn27C
-	 oh08PTaTfql/AeZvuTZznekvMmDKMe0HfrDCgaKNYHpuCINSukmKKiTSDcHfKQcSpUcw0
-	 ckIYWrEP2cqQ20xDEjHDHLWRRNtv/tRD6YpizK6nVaichcUU5+Xnanh0of2iSZTzmrnhJ
-	 f0CzYz2kXyyrfwQlbcOuKi6Jq6nr+F9owU2SaA83Lm+jgPaJqsgrSbOZmuQJL3srwsA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793972724;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=rx7gGWe+qVjnuJYaCuf3PNKK+ddgMsbwCNHflbLARwg=;
+	b=gvher7n2lihMWZImEVdOEnH1XdJDWiTtML7FsPU3qw+gXqWUywP0SfyjzPghwiBCUCYh
+	 xxdU1GU82o2AORvbFinSMMtcSsdf/BiKnd6SYtAQNjEM+8A2jM6NGr+9Gt8BgrI6pU9RK
+	 M6qIj9X5IgGP7Wh3g+IPnkpGKdoD/G3Z+Oium+5FYSaWdM1uES9DArGboaW52DwmHjCe3
+	 Fr4jnbJAJWsv90G0WNZgiiu0FB8S52F7kD1R6Wpbrt1D2PLBfbJwJWzOzyJkVYCBubOSw
+	 g6kmhuyPM9cNotohPN4ZqUelSl7mOqu9eiNFuwvtmu6QHfrRVeZdtLVd/sBxuNoLRjQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=linux.intel.com;
+	spf=pass smtp.mailfrom=linux.intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y;
+	arc=none smtp.remote-ip=198.175.65.12
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1609606A32C;
-	Fri,  6 Nov 2026 13:34:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F1609606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <0a2e8ea782fa819a547e0a3075303bd74a7fde72.camel@crapouillou.net>
-Subject: Re: [PATCH v3 3/5] drm/ingenic: Add a driver for the X1600 display
- controller
-From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, Neil Armstrong
- <neil.armstrong@linaro.org>
-Cc: David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Jessica Zhang <jesszhan0024@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>, "H . Nikolaus Schaller" <hns@goldelico.com>, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Petazzoni	
- <thomas.petazzoni@bootlin.com>
-Date: Fri, 06 Nov 2026 14:34:08 +0100
-In-Reply-To: <20261106112000.1612-4-olivier@mgcrea.io>
-References: <20261106112000.1612-1-olivier@mgcrea.io>
-	 <20261106112000.1612-4-olivier@mgcrea.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D522606A333;
+	Fri,  6 Nov 2026 13:45:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5D522606A333
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793972723; x=1825508723;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=T4yGvXzWmKxa4531S1rrSDgyYW3DGI1nzB/fVYkEmEs=;
+  b=Et9fL52Y0qNFm43atOHmpqnkysvJjlR1imntmkfbmHuUZKnzRm0NfqC6
+   O87vhL6kYC0iCyFQ47FypBFP25XAzr7t0OEcpaVhvpNFMu2anmHdGaJ2c
+   PlymsfapV006otXYS/cV4wgzu6pTTDH48mPnxAuf2hIBMIO6omGvWxyBG
+   KsHRy0fydf3aLhEXncLShyXGlgN/vHqMFeyKeO59E2Ds7IVPUyUerwEry
+   JFm7B6009qIP6y73O3mfGrVax0kaimSYqPnHZRAbe7FSmEYBUmsyw/rOC
+   PUdlla89QOoGfJAsbqbZRm/UQK6GWnl8lm3XzNLTlhPPy1Kip6YHjHQB8
+   Q==;
+X-CSE-ConnectionGUID: vOh0j7LsRE6mWUzhLBZ0fw==
+X-CSE-MsgGUID: cE8Anu/hTZm3lGTdMUTLpA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2662035"
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="2662035"
+Received: from fmviesa012.fm.intel.com ([10.60.135.152])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:22 -0800
+X-CSE-ConnectionGUID: BsGBMQ4JR6GY88O+RbhffA==
+X-CSE-MsgGUID: SaRM3n8vRAqJ564RAPZjFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="9028391"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.104])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:07 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Maciej Grochowski <Maciej.Grochowski@sony.com>,
+	Geramy Loveless <gloveless@jqluv.com>,
+	Eric Auger <eauger@redhat.com>,
+	Alexey Fomenko <alexey.fomenko@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Mesih Kilinc <Mesih.Kilinc@sony.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	David Airlie <airlied@redhat.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Simona Vetter <simona@ffwll.ch>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sh@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org
+Cc: Sashiko <sashiko-bot@kernel.org>
+Subject: [PATCH v5 08/14] PCI: Honor alignment overrides
+Date: Fri,  6 Nov 2026 15:43:29 +0200
+Message-ID: <20261106134341.39493-9-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
+References: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,998 +130,476 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Olivier,
+pci=resource_alignment argument can override the default alignment for
+the resource. The remainder code introduced in the commit 9036bd0efcb6
+("PCI: Align head space better") can move remainder space (non-aligning
+part of the size) before the aligning left edge which results in
+violating the requested alignment.
 
-Le vendredi 06 novembre 2026 =C3=A0 12:19 +0100, Olivier Louvignes a =C3=A9=
-crit=C2=A0:
-> The X1600's display controller has none of the registers ingenic-drm
-> programs: it fetches each frame through a descriptor whose address it
-> takes from SRD_CHAIN_ADDR, and keeps its interface, TFT timings and smart
-> panel set-up in separate register blocks (X1600 programming manual,
-> chapter 10; the X2000's controller without the composer). This driver
-> handles parallel RGB panels on a 24-bit bus, with one full-screen RGB565
-> plane, and takes the colour order (RGB or BGR) from the panel's bus
-> format.
->=20
-> Each descriptor points at itself, so a frame repeats until a flip hands
-> the controller the other one. The controller takes it "at appropriate
-> time", so a flip's event waits until the descriptor-site register
-> reports the new descriptor at the end of a frame, and a commit waits for
-> that event rather than for a vblank before the old framebuffer is
-> released: the controller can keep reading it for a frame after the flip.
->=20
-> Tested on a HiBy R1 with its 480x800 panel: the fbdev console and
-> r1player, blanking and unblanking, and 60 fbdev pans in 0.97 s, one flip
-> per frame at about 61 Hz, none timing out.
->=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-> ---
-> v3:
-> - ingenic,x1600-dpu; the clock taken unnamed, as the binding no longer
-> =C2=A0 has clock-names (Krzysztof).
-> - "display controller" in the Kconfig prompt, the header and the
-> =C2=A0 descriptions.
->=20
-> v2:
-> - A commit_tail that waits for flip_done, not for a vblank, before the
-> =C2=A0 planes are cleaned up.
-> - A CRTC being enabled sends its event once the controller runs, not
-> =C2=A0 from atomic_flush() before atomic_enable().
-> - Reject a plane that is not visible.
-> - atomic_disable() leaves the controller alone when atomic_enable()
-> =C2=A0 could not start the clock.
->=20
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0 1 +
-> =C2=A0drivers/gpu/drm/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
-=C2=A0=C2=A0 1 +
-> =C2=A0drivers/gpu/drm/ingenic/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 22 +
-> =C2=A0drivers/gpu/drm/ingenic/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-x1600-drm.c | 744 +++++++++++++++++=
-+++
-> =C2=A05 files changed, 769 insertions(+)
-> =C2=A0create mode 100644 drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a5160860ae26..5d992133e0d5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13180,6 +13180,7 @@ INGENIC X1600 DRM DRIVER
-> =C2=A0M:	Olivier Louvignes <olivier@mgcrea.io>
-> =C2=A0S:	Maintained
-> =C2=A0F:	Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml
-> +F:	drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
-> =C2=A0
-> =C2=A0INJOINIC IP5xxx POWER BANK IC DRIVER
-> =C2=A0M:	Samuel Holland <samuel@sholland.org>
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 2c6bc093a923..37dc781761d6 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -206,6 +206,7 @@ obj-$(CONFIG_DRM_STM) +=3D stm/
-> =C2=A0obj-$(CONFIG_DRM_STI) +=3D sti/
-> =C2=A0obj-y=C2=A0			+=3D imx/
-> =C2=A0obj-$(CONFIG_DRM_INGENIC) +=3D ingenic/
-> +obj-$(CONFIG_DRM_INGENIC_X1600) +=3D ingenic/
-> =C2=A0obj-$(CONFIG_DRM_LOGICVC) +=3D logicvc/
-> =C2=A0obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek/
-> =C2=A0obj-$(CONFIG_DRM_MESON)	+=3D meson/
-> diff --git a/drivers/gpu/drm/ingenic/Kconfig b/drivers/gpu/drm/ingenic/Kc=
-onfig
-> index 987ed42f6f7a..85ac9ca62d7d 100644
-> --- a/drivers/gpu/drm/ingenic/Kconfig
-> +++ b/drivers/gpu/drm/ingenic/Kconfig
-> @@ -20,6 +20,28 @@ config DRM_INGENIC
-> =C2=A0
-> =C2=A0	=C2=A0 If M is selected the module will be called ingenic-drm.
-> =C2=A0
-> +config DRM_INGENIC_X1600
-> +	tristate "DRM support for the Ingenic X1600 display controller"
-> +	depends on MIPS || COMPILE_TEST
-> +	depends on DRM
-> +	depends on OF
-> +	depends on COMMON_CLK
-> +	select APERTURE_HELPERS
-> +	select DRM_BRIDGE
-> +	select DRM_CLIENT_SELECTION
-> +	select DRM_PANEL_BRIDGE
-> +	select DRM_KMS_HELPER
-> +	select DRM_DISPLAY_HELPER
-> +	select DRM_BRIDGE_CONNECTOR
-> +	select DRM_GEM_DMA_HELPER
-> +	help
-> +	=C2=A0 Choose this option for DRM support for the display controller of
-> +	=C2=A0 the Ingenic X1600 SoC. It drives parallel RGB panels on a 24-bit
-> +	=C2=A0 bus from one full-screen RGB565 plane; the controller's smart pa=
-nel
-> +	=C2=A0 interface is not supported.
-> +
-> +	=C2=A0 If M is selected the module will be called ingenic-x1600-drm.
-> +
-> =C2=A0if DRM_INGENIC
-> =C2=A0
-> =C2=A0config DRM_INGENIC_IPU
-> diff --git a/drivers/gpu/drm/ingenic/Makefile
-> b/drivers/gpu/drm/ingenic/Makefile
-> index f10cc1c5a5f2..90072ad13158 100644
-> --- a/drivers/gpu/drm/ingenic/Makefile
-> +++ b/drivers/gpu/drm/ingenic/Makefile
-> @@ -2,3 +2,4 @@ obj-$(CONFIG_DRM_INGENIC) +=3D ingenic-drm.o
-> =C2=A0ingenic-drm-y =3D ingenic-drm-drv.o
-> =C2=A0ingenic-drm-$(CONFIG_DRM_INGENIC_IPU) +=3D ingenic-ipu.o
-> =C2=A0obj-$(CONFIG_DRM_INGENIC_DW_HDMI) +=3D ingenic-dw-hdmi.o
-> +obj-$(CONFIG_DRM_INGENIC_X1600) +=3D ingenic-x1600-drm.o
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
-> b/drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
-> new file mode 100644
-> index 000000000000..e69c968ebcd9
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ingenic/ingenic-x1600-drm.c
-> @@ -0,0 +1,744 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * DRM driver for the display controller (DPU) of the Ingenic X1600
-> + *
-> + * Copyright (c) 2026 Olivier Louvignes <olivier@mgcrea.io>
-> + *
-> + * The X1600's display controller (X1600 programming manual, chapter 10)=
- is
-> + * the simple read channel of the X2000's, without its composer. It shar=
-es no
-> + * registers with the JZ47xx and X1000 controllers that ingenic-drm driv=
-es:
-> it
-> + * fetches each frame through a descriptor whose address is in
-> SRD_CHAIN_ADDR,
-> + * and its interface and timings sit in register blocks of their own. It
-> + * drives parallel RGB (TFT) panels and smart panels; this driver handle=
-s
-> + * parallel RGB panels on a 24-bit bus, from RGB565 framebuffers.
-> + */
-> +
-> +#include <linux/aperture.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/completion.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/media-bus-format.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include <drm/clients/drm_client_setup.h>
-> +#include <drm/drm_atomic.h>
-> +#include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_bridge.h>
-> +#include <drm/drm_bridge_connector.h>
-> +#include <drm/drm_crtc.h>
-> +#include <drm/drm_drv.h>
-> +#include <drm/drm_encoder.h>
-> +#include <drm/drm_fb_dma_helper.h>
-> +#include <drm/drm_fbdev_dma.h>
-> +#include <drm/drm_fourcc.h>
-> +#include <drm/drm_framebuffer.h>
-> +#include <drm/drm_gem_dma_helper.h>
-> +#include <drm/drm_gem_framebuffer_helper.h>
-> +#include <drm/drm_of.h>
-> +#include <drm/drm_plane.h>
-> +#include <drm/drm_print.h>
-> +#include <drm/drm_probe_helper.h>
-> +#include <drm/drm_vblank.h>
-> +
-> +#define X1600_LCD_SRD_CHAIN_ADDR	0x1000
-> +#define X1600_LCD_SRD_CHAIN_START	0x1004
-> +#define X1600_LCD_CTRL			0x2000
-> +#define X1600_LCD_ST			0x2004
-> +#define X1600_LCD_CLR_ST		0x2008
-> +#define X1600_LCD_INTC			0x200c
-> +#define X1600_LCD_INT_FLAG		0x2010
-> +#define X1600_LCD_COM_CONFIG		0x2014
-> +#define X1600_LCD_CHAIN_SITE		0x2204
-> +#define X1600_LCD_DISP_COM		0x8000
-> +#define X1600_LCD_TFT_HSYNC		0x9000
-> +#define X1600_LCD_TFT_VSYNC		0x9004
-> +#define X1600_LCD_TFT_HDE		0x9008
-> +#define X1600_LCD_TFT_VDE		0x900c
-> +#define X1600_LCD_TFT_TRAN_CFG		0x9010
-> +
-> +/* CTRL: stop the simple read channel at the end of the frame. */
-> +#define X1600_LCD_CTRL_GEN_STP_SRD	BIT(4)
-> +
-> +/* ST; CLR_ST (write 1 to clear), INTC and INT_FLAG have the same bits. =
-*/
-> +#define X1600_LCD_ST_WORKING		BIT(0)
-> +#define X1600_LCD_ST_STOP_SRD_ACK	BIT(7)
-> +#define X1600_LCD_ST_TFT_UNDR		BIT(8)
-> +#define X1600_LCD_ST_DISP_END		BIT(17)	/* a frame was
-> displayed */
-> +
-> +#define X1600_LCD_COM_CONFIG_BURST_LEN	GENMASK(5, 4)
-> +#define X1600_LCD_BURST_LEN_32		3
-> +
-> +#define X1600_LCD_DISP_COM_IF		GENMASK(1, 0)
-> +#define X1600_LCD_DISP_COM_IF_TFT	1
-> +#define X1600_LCD_DISP_COM_DITHER_EN	BIT(4)
-> +#define X1600_LCD_DISP_COM_TFT_CLKGATE	BIT(5)
-> +#define X1600_LCD_DISP_COM_SLCD_CLKGATE	BIT(6)
-> +
-> +/* TFT_HSYNC, TFT_VSYNC: sync length and total; TFT_HDE, TFT_VDE: active
-> area. */
-> +#define X1600_LCD_TIMING_START		GENMASK(27, 16)
-> +#define X1600_LCD_TIMING_END		GENMASK(11, 0)
-> +
-> +#define X1600_LCD_TFT_COLOR_EVEN	GENMASK(21, 19)
-> +#define X1600_LCD_TFT_COLOR_ODD		GENMASK(18, 16)
-> +#define X1600_LCD_TFT_PIX_CLK_INV	BIT(10)
-> +#define X1600_LCD_TFT_DE_DL		BIT(9)
-> +#define X1600_LCD_TFT_HSYNC_DL		BIT(8)
-> +#define X1600_LCD_TFT_VSYNC_DL		BIT(7)
-> +#define X1600_LCD_TFT_MODE		GENMASK(2, 0)
-> +#define X1600_LCD_TFT_MODE_24BIT	0
-> +#define X1600_LCD_TFT_COLOR_RGB		0
-> +#define X1600_LCD_TFT_COLOR_BGR		2
-> +
-> +#define X1600_LCD_DESC_CFG_FMT		GENMASK(22, 19)
-> +#define X1600_LCD_DESC_FMT_RGB565	2
-> +/* An interrupt at the end of the frame: DISP_END needs this and INTC se=
-t. */
-> +#define X1600_LCD_DESC_CTRL_EOD_MSK	BIT(17)
-> +
-> +#define X1600_LCD_MAX_PIXELS		(1280 * 720)
-> +/* A smaller frame breaks a continuous descriptor chain (manual, 10.7). =
-*/
-> +#define X1600_LCD_MIN_PIXELS		500
-> +#define X1600_LCD_STOP_TIMEOUT_MS	100
-> +
-> +/*
-> + * The controller reads a descriptor at the start of each frame and then
-> + * follows its next field. Each descriptor points at itself, so a frame
-> + * repeats until SRD_CHAIN_ADDR names another one.
-> + */
-> +struct x1600_lcd_desc {
-> +	u32 next;
-> +	u32 addr;
-> +	u32 stride;	/* in pixels */
-> +	u32 cfg;
-> +	u32 ctrl;
-> +} __aligned(64);
-> +
-> +struct x1600_lcd {
-> +	struct drm_device drm;
-> +	struct drm_plane plane;
-> +	struct drm_crtc crtc;
-> +	struct drm_encoder encoder;
-> +
-> +	void __iomem *base;
-> +	struct clk *clk;
-> +
-> +	struct x1600_lcd_desc *desc;
-> +	dma_addr_t desc_phys;
-> +	unsigned int cur;		/* the descriptor last handed over */
-> +	bool running;
-> +	struct completion stopped;
-> +	/* Serialises the read-modify-writes of INTC. */
-> +	spinlock_t irq_lock;
-> +
-> +	/* Under drm.event_lock: sent once the controller reads event_desc.
-> */
-> +	struct drm_pending_vblank_event *event;
-> +	u32 event_desc;
-> +
-> +	u32 bus_flags;
-> +	u32 color_order;
-> +};
-> +
-> +static const u32 x1600_lcd_formats[] =3D {
-> +	DRM_FORMAT_RGB565,
-> +};
-> +
-> +static struct x1600_lcd *to_x1600_lcd(struct drm_device *drm)
-> +{
-> +	return container_of(drm, struct x1600_lcd, drm);
-> +}
-> +
-> +static dma_addr_t x1600_lcd_desc_addr(struct x1600_lcd *lcd, unsigned in=
-t i)
-> +{
-> +	return lcd->desc_phys + i * sizeof(*lcd->desc);
-> +}
-> +
-> +static void x1600_lcd_irq_enable(struct x1600_lcd *lcd, u32 mask, bool
-> enable)
-> +{
-> +	unsigned long flags;
-> +	u32 val;
-> +
-> +	spin_lock_irqsave(&lcd->irq_lock, flags);
-> +	val =3D readl(lcd->base + X1600_LCD_INTC);
-> +	if (enable)
-> +		val |=3D mask;
-> +	else
-> +		val &=3D ~mask;
-> +	/* Seen on the R1: a bit still set when it is masked keeps the line
-> up. */
-> +	writel(mask, lcd->base + X1600_LCD_CLR_ST);
-> +	writel(val, lcd->base + X1600_LCD_INTC);
-> +	spin_unlock_irqrestore(&lcd->irq_lock, flags);
-> +}
-> +
-> +/* Stops at the end of the frame; false if the controller did not report=
- it.
-> */
-> +static bool x1600_lcd_stop(struct x1600_lcd *lcd)
-> +{
-> +	unsigned long left;
-> +
-> +	reinit_completion(&lcd->stopped);
-> +	x1600_lcd_irq_enable(lcd, X1600_LCD_ST_STOP_SRD_ACK, true);
-> +	writel(X1600_LCD_CTRL_GEN_STP_SRD, lcd->base + X1600_LCD_CTRL);
-> +	left =3D wait_for_completion_timeout(&lcd->stopped,
-> +					=C2=A0=C2=A0
-> msecs_to_jiffies(X1600_LCD_STOP_TIMEOUT_MS));
-> +	x1600_lcd_irq_enable(lcd, X1600_LCD_ST_STOP_SRD_ACK, false);
-> +	return left;
-> +}
-> +
-> +static u32 x1600_lcd_timing(unsigned int start, unsigned int end)
-> +{
-> +	return FIELD_PREP(X1600_LCD_TIMING_START, start) |
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 FIELD_PREP(X1600_LCD_TIMING_END, e=
-nd);
-> +}
-> +
-> +/* Sends the commit's event once the controller has read the new descrip=
-tor.
-> */
-> +static void x1600_lcd_queue_event(struct x1600_lcd *lcd, struct
-> drm_crtc_state *crtc_state)
-> +{
-> +	struct drm_pending_vblank_event *event =3D crtc_state->event;
-> +	struct drm_crtc *crtc =3D &lcd->crtc;
-> +
-> +	if (!event)
-> +		return;
-> +
-> +	crtc_state->event =3D NULL;
-> +
-> +	/*
-> +	 * The controller takes a new descriptor "at appropriate time"
-> (manual,
-> +	 * 10.6.4): wait until it reports reading the one just handed over.
-> +	 */
-> +	spin_lock_irq(&crtc->dev->event_lock);
-> +	if (lcd->running && !WARN_ON(lcd->event) && drm_crtc_vblank_get(crtc)
-> =3D=3D 0) {
-> +		lcd->event =3D event;
-> +		lcd->event_desc =3D x1600_lcd_desc_addr(lcd, lcd->cur);
-> +	} else {
-> +		drm_crtc_send_vblank_event(crtc, event);
-> +	}
-> +	spin_unlock_irq(&crtc->dev->event_lock);
-> +}
-> +
-> +static void x1600_lcd_crtc_atomic_enable(struct drm_crtc *crtc,
-> +					 struct drm_atomic_commit *state)
-> +{
-> +	struct drm_crtc_state *crtc_state =3D
-> drm_atomic_get_new_crtc_state(state, crtc);
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(crtc->dev);
-> +	struct drm_display_mode *mode =3D &crtc->state->adjusted_mode;
+Introduce struct pci_resreq_data to hold device and user-given alignment
+to be able to honor it in pci_align_resource(). When user-given alignment
+is found, any remainder movement is skipped.
 
-This bothers me a bit, shouldn't it be using 'crtc_state'?
+PowerNV will not be able to use the current remainder logic after this
+change because on it pcibios_default_alignment() always results in
+setting min_align but this code is in a transient state and the problem
+will be fixed by an upcoming change that rewrites the resource
+placement algorithm with a more generic approach.
 
-> +	unsigned int hde =3D mode->htotal - mode->hsync_start;
-> +	unsigned int vde =3D mode->vtotal - mode->vsync_start;
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret =3D clk_set_rate(lcd->clk, mode->crtc_clock * 1000);
-> +	if (ret)
-> +		dev_warn(lcd->drm.dev, "Unable to set the pixel clock: %d\n",
-> ret);
-> +	ret =3D clk_prepare_enable(lcd->clk);
-> +	if (ret) {
-> +		dev_err(lcd->drm.dev, "Unable to start the pixel clock:
-> %d\n", ret);
-> +		x1600_lcd_queue_event(lcd, crtc_state);
-> +		return;
-> +	}
-> +
-> +	writel(readl(lcd->base + X1600_LCD_ST), lcd->base +
-> X1600_LCD_CLR_ST);
+Fixes: 9036bd0efcb6 ("PCI: Align head space better")
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Link: https://lore.kernel.org/linux-pci/20260923133202.07DF61F000FF@smtp.kernel.org/
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
 
-Not fond of the writel(readl()) nesting here.
+Jani Nikula <jani.nikula@intel.com> did ack this with a condition that
+there is a proper review done by somebody else so I've not yet included
+his tag.
 
-> +	val =3D readl(lcd->base + X1600_LCD_COM_CONFIG) &
-> ~X1600_LCD_COM_CONFIG_BURST_LEN;
-> +	writel(val | FIELD_PREP(X1600_LCD_COM_CONFIG_BURST_LEN,
-> X1600_LCD_BURST_LEN_32),
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lcd->base + X1600_LCD_COM_CONFIG);
-> +
-> +	/* In the manual's order: timings, output format, then the interface.
-> */
-> +	writel(x1600_lcd_timing(mode->hsync_end - mode->hsync_start, mode-
-> >htotal),
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lcd->base + X1600_LCD_TFT_HSYNC);
-> +	writel(x1600_lcd_timing(mode->vsync_end - mode->vsync_start, mode-
-> >vtotal),
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lcd->base + X1600_LCD_TFT_VSYNC);
-> +	writel(x1600_lcd_timing(hde, hde + mode->hdisplay),
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lcd->base + X1600_LCD_TFT_HDE);
-> +	writel(x1600_lcd_timing(vde, vde + mode->vdisplay),
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lcd->base + X1600_LCD_TFT_VDE);
-> +
-> +	val =3D FIELD_PREP(X1600_LCD_TFT_COLOR_EVEN, lcd->color_order) |
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 FIELD_PREP(X1600_LCD_TFT_COLOR_ODD, lcd-=
->color_order) |
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 FIELD_PREP(X1600_LCD_TFT_MODE, X1600_LCD=
-_TFT_MODE_24BIT);
-> +	if (lcd->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
-> +		val |=3D X1600_LCD_TFT_PIX_CLK_INV;
-> +	if (lcd->bus_flags & DRM_BUS_FLAG_DE_LOW)
-> +		val |=3D X1600_LCD_TFT_DE_DL;
-> +	/* The *_DL bits set the level outside the pulse. */
-> +	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
-> +		val |=3D X1600_LCD_TFT_HSYNC_DL;
-> +	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
-> +		val |=3D X1600_LCD_TFT_VSYNC_DL;
-> +	writel(val, lcd->base + X1600_LCD_TFT_TRAN_CFG);
-> +
-> +	/* No dithering: it only applies to 888 sources. */
-> +	val =3D readl(lcd->base + X1600_LCD_DISP_COM);
-> +	val &=3D ~(X1600_LCD_DISP_COM_IF | X1600_LCD_DISP_COM_DITHER_EN);
-> +	val |=3D FIELD_PREP(X1600_LCD_DISP_COM_IF, X1600_LCD_DISP_COM_IF_TFT) |
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 X1600_LCD_DISP_COM_TFT_CLKGATE |
-> X1600_LCD_DISP_COM_SLCD_CLKGATE;
-> +	writel(val, lcd->base + X1600_LCD_DISP_COM);
+ arch/alpha/kernel/pci.c          |  3 ++-
+ arch/arm/kernel/bios32.c         |  5 +++--
+ arch/m68k/kernel/pcibios.c       |  4 ++--
+ arch/mips/pci/pci-generic.c      |  5 +++--
+ arch/mips/pci/pci-legacy.c       |  5 +++--
+ arch/parisc/kernel/pci.c         |  5 +++--
+ arch/powerpc/kernel/pci-common.c |  5 +++--
+ arch/sh/drivers/pci/pci.c        |  5 +++--
+ arch/x86/pci/i386.c              |  5 +++--
+ arch/xtensa/kernel/pci.c         |  5 +++--
+ drivers/char/agp/intel-gtt.c     |  5 ++++-
+ drivers/gpu/drm/i915/i915_gmch.c |  5 +++--
+ drivers/pci/pci.c                |  4 ++--
+ drivers/pci/pci.h                |  2 ++
+ drivers/pci/setup-res.c          | 33 ++++++++++++++++++++++++++------
+ include/linux/pci.h              | 15 +++++++++++++--
+ 16 files changed, 79 insertions(+), 32 deletions(-)
 
-This whole block above looks like out of place. Why not do it in
-x1600_lcd_encoder_atomic_mode_set()?
+diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
+index 11df411b1d18..c5d725a9781f 100644
+--- a/arch/alpha/kernel/pci.c
++++ b/arch/alpha/kernel/pci.c
+@@ -128,7 +128,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_controller *hose = dev->sysdata;
+ 	unsigned long alignto;
+ 	resource_size_t start = res->start;
+diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+index ac0e890510da..3e61826f07fb 100644
+--- a/arch/arm/kernel/bios32.c
++++ b/arch/arm/kernel/bios32.c
+@@ -564,7 +564,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 	struct pci_host_bridge *host_bridge;
+ 
+@@ -578,7 +579,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				start, size, align);
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+index 7a9e60df79c5..3024408412bc 100644
+--- a/arch/m68k/kernel/pcibios.c
++++ b/arch/m68k/kernel/pcibios.c
+@@ -31,14 +31,14 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
+ 	resource_size_t start = res->start;
+ 
+ 	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
+ 		start = (start + 0x3ff) & ~0x3ff;
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
+index c2e23d0c1d77..7f3ecb91b85b 100644
+--- a/arch/mips/pci/pci-generic.c
++++ b/arch/mips/pci/pci-generic.c
+@@ -25,7 +25,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       const struct resource *empty_res,
+ 				       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 	struct pci_host_bridge *host_bridge;
+ 
+@@ -39,7 +40,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				start, size, align);
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index dae6dafdd6e0..82d4b01db64e 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -55,7 +55,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_controller *hose = dev->sysdata;
+ 	resource_size_t start = res->start;
+ 
+@@ -70,7 +71,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 		/* Make sure we start at our min on all hoses */
+ 		if (start < PCIBIOS_MIN_MEM + hose->mem_resource->start)
+diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
+index 96950fe9c2b7..36a3a439f609 100644
+--- a/arch/parisc/kernel/pci.c
++++ b/arch/parisc/kernel/pci.c
+@@ -193,7 +193,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t alignment)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t align, start = res->start;
+ 
+ 	pci_dbg(dev, "%pR: pcibios_align_resource(%lx, 0x%llx, 0x%llx)\n",
+@@ -205,7 +206,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 	if (align > alignment)
+ 		start = ALIGN(start, align);
+ 	else
+-		start = pci_align_resource(dev, res, empty_res, size, alignment);
++		start = pci_align_resource(rr, res, empty_res, size, alignment);
+ 
+ 	return start;
+ }
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index 4fc52c21fe5d..23594759cfe2 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -1131,7 +1131,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -1140,7 +1141,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+index 878a27a1acfb..279f2770ff4b 100644
+--- a/arch/sh/drivers/pci/pci.c
++++ b/arch/sh/drivers/pci/pci.c
+@@ -172,7 +172,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_channel *hose = dev->sysdata;
+ 	resource_size_t start = res->start;
+ 
+@@ -186,7 +187,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/arch/x86/pci/i386.c b/arch/x86/pci/i386.c
+index e2de26b82940..4178ae4380c2 100644
+--- a/arch/x86/pci/i386.c
++++ b/arch/x86/pci/i386.c
+@@ -156,7 +156,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -165,7 +166,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 		/* The low 1MB range is reserved for ISA cards */
+ 		if (start < BIOS_END)
+diff --git a/arch/xtensa/kernel/pci.c b/arch/xtensa/kernel/pci.c
+index 305031551136..4e8ad4a3c9fe 100644
+--- a/arch/xtensa/kernel/pci.c
++++ b/arch/xtensa/kernel/pci.c
+@@ -42,7 +42,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -55,7 +56,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
+index bcc26785175d..06990fad8e48 100644
+--- a/drivers/char/agp/intel-gtt.c
++++ b/drivers/char/agp/intel-gtt.c
+@@ -1038,10 +1038,13 @@ static struct agp_memory *intel_fake_agp_alloc_by_type(size_t pg_count,
+ 
+ static int intel_alloc_chipset_flush_resource(void)
+ {
++	struct pci_resreq_data rr;
+ 	int ret;
++
++	pci_init_resreq_data(&rr, intel_private.bridge_dev);
+ 	ret = pci_bus_alloc_resource(intel_private.bridge_dev->bus, &intel_private.ifp_resource, PAGE_SIZE,
+ 				     PAGE_SIZE, PCIBIOS_MIN_MEM, 0,
+-				     pcibios_align_resource, intel_private.bridge_dev);
++				     pcibios_align_resource, &rr);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/i915/i915_gmch.c b/drivers/gpu/drm/i915/i915_gmch.c
+index b0ef6ef577a3..f11ed5509095 100644
+--- a/drivers/gpu/drm/i915/i915_gmch.c
++++ b/drivers/gpu/drm/i915/i915_gmch.c
+@@ -38,6 +38,7 @@ static int mchbar_reg(struct drm_i915_private *i915)
+ static int
+ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
+ {
++	struct pci_resreq_data rr;
+ 	u32 temp_lo, temp_hi = 0;
+ 	u64 mchbar_addr;
+ 	int ret;
+@@ -55,12 +56,12 @@ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
+ 	/* Get some space for it */
+ 	i915->gmch.mch_res.name = "i915 MCHBAR";
+ 	i915->gmch.mch_res.flags = IORESOURCE_MEM;
++	pci_init_resreq_data(&rr, i915->gmch.pdev);
+ 	ret = pci_bus_alloc_resource(i915->gmch.pdev->bus,
+ 				     &i915->gmch.mch_res,
+ 				     MCHBAR_SIZE, MCHBAR_SIZE,
+ 				     PCIBIOS_MIN_MEM,
+-				     0, pcibios_align_resource,
+-				     i915->gmch.pdev);
++				     0, pcibios_align_resource, &rr);
+ 	if (ret) {
+ 		drm_dbg(&i915->drm, "failed bus alloc: %d\n", ret);
+ 		i915->gmch.mch_res.start = 0;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 7c6f2aba8144..8c40f86d75ee 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -6507,8 +6507,8 @@ static DEFINE_SPINLOCK(resource_alignment_lock);
+  * RETURNS: Resource alignment if it is specified.
+  *          Zero if it is not specified.
+  */
+-static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+-							bool *resize)
++resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
++						 bool *resize)
+ {
+ 	int align_order, count;
+ 	resource_size_t align = pcibios_default_alignment();
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 77efa4c5c960..e6e2afcceb33 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -515,6 +515,8 @@ void devm_pci_alloc_host_bridge_release(void *data);
+ struct device *pci_get_host_bridge_device(struct pci_dev *dev);
+ void pci_put_host_bridge_device(struct device *dev);
+ 
++resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
++						 bool *resize);
+ void pci_resize_resource_set_size(struct pci_dev *dev, int resno, int size);
+ int pci_do_resource_release_and_resize(struct pci_dev *dev, int resno, int size,
+ 				       int exclude_bars);
+diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
+index 376f09630a4a..9c55b9f9462c 100644
+--- a/drivers/pci/setup-res.c
++++ b/drivers/pci/setup-res.c
+@@ -248,6 +248,20 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
+ 	return 0;
+ }
+ 
++/*
++ * TODO: Improve PCI resource assignment interface so that callers outside PCI
++ * core do not need to know about this detail.
++ */
++void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev)
++{
++	bool dummy;
++
++	memset(rr, 0, sizeof(*rr));
++	rr->dev = dev;
++	rr->min_align = pci_specified_resource_alignment(dev, &dummy);
++}
++EXPORT_SYMBOL_GPL(pci_init_resreq_data);
++
+ resource_size_t pci_resource_alignment(const struct pci_dev *dev,
+ 				       const struct resource *res)
+ {
+@@ -265,17 +279,21 @@ resource_size_t pci_resource_alignment(const struct pci_dev *dev,
+  * before res->start if there's enough free space there. This enables
+  * tighter packing for resources.
+  */
+-resource_size_t pci_align_resource(struct pci_dev *dev,
++resource_size_t pci_align_resource(struct pci_resreq_data *rr,
+ 				   const struct resource *res,
+ 				   const struct resource *empty_res,
+ 				   resource_size_t size,
+ 				   resource_size_t align)
+ {
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t remainder, start_addr;
+ 
+ 	if (!(res->flags & IORESOURCE_MEM))
+ 		return res->start;
+ 
++	if (rr->min_align)
++		return res->start;
++
+ 	if (IS_ALIGNED(size, align))
+ 		return res->start;
+ 
+@@ -306,18 +324,21 @@ resource_size_t __weak pcibios_align_resource(void *data,
+ 					      resource_size_t size,
+ 					      resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
+ 
+-	return pci_align_resource(dev, res, empty_res, size, align);
++	return pci_align_resource(rr, res, empty_res, size, align);
+ }
+ 
+ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 		int resno, resource_size_t size, resource_size_t align)
+ {
+ 	struct resource *res = pci_resource_n(dev, resno);
++	struct pci_resreq_data rr;
+ 	resource_size_t min;
+ 	int ret;
+ 
++	pci_init_resreq_data(&rr, dev);
++
+ 	min = (res->flags & IORESOURCE_IO) ? PCIBIOS_MIN_IO : PCIBIOS_MIN_MEM;
+ 
+ 	/*
+@@ -329,7 +350,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	 */
+ 	ret = pci_bus_alloc_resource(bus, res, size, align, min,
+ 				     IORESOURCE_PREFETCH | IORESOURCE_MEM_64,
+-				     pcibios_align_resource, dev);
++				     pcibios_align_resource, &rr);
+ 	if (ret == 0)
+ 		return 0;
+ 
+@@ -341,7 +362,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	     (IORESOURCE_PREFETCH | IORESOURCE_MEM_64)) {
+ 		ret = pci_bus_alloc_resource(bus, res, size, align, min,
+ 					     IORESOURCE_PREFETCH,
+-					     pcibios_align_resource, dev);
++					     pcibios_align_resource, &rr);
+ 		if (ret == 0)
+ 			return 0;
+ 	}
+@@ -354,7 +375,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	 */
+ 	if (res->flags & (IORESOURCE_PREFETCH | IORESOURCE_MEM_64))
+ 		ret = pci_bus_alloc_resource(bus, res, size, align, min, 0,
+-					     pcibios_align_resource, dev);
++					     pcibios_align_resource, &rr);
+ 
+ 	return ret;
+ }
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index aa3765a20a96..c945f5753e7c 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1221,12 +1221,23 @@ int __must_check pcibios_enable_device(struct pci_dev *, int mask);
+ /* Architecture-specific versions may override this (weak) */
+ char *pcibios_setup(char *str);
+ 
+-/* Used only when drivers/pci/setup.c is used */
++/**
++ * struct pci_resreq_data - Data passed to pcibios_align_resource()
++ * @dev: PCI device
++ * @min_align: Minimum alignment bound (from pci=resource_alignment or arch)
++ */
++struct pci_resreq_data {
++	struct pci_dev *dev;
++	resource_size_t min_align;
++};
++
++void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev);
++
+ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       const struct resource *empty_res,
+ 				       resource_size_t size,
+ 				       resource_size_t align);
+-resource_size_t pci_align_resource(struct pci_dev *dev,
++resource_size_t pci_align_resource(struct pci_resreq_data *rr,
+ 				   const struct resource *res,
+ 				   const struct resource *empty_res,
+ 				   resource_size_t size,
+-- 
+2.47.3
 
-Bonus point, you wouldn't need the 'bus_flags' and 'color_order' variables.
-
-> +
-> +	writel(x1600_lcd_desc_addr(lcd, lcd->cur), lcd->base +
-> X1600_LCD_SRD_CHAIN_ADDR);
-> +	writel(1, lcd->base + X1600_LCD_SRD_CHAIN_START);
-> +	lcd->running =3D true;
-> +
-> +	drm_crtc_vblank_on(crtc);
-> +	x1600_lcd_queue_event(lcd, crtc_state);
-> +}
-> +
-> +static void x1600_lcd_crtc_atomic_disable(struct drm_crtc *crtc,
-> +					=C2=A0 struct drm_atomic_commit *state)
-> +{
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(crtc->dev);
-> +
-> +	/* atomic_enable() could not start the clock: nothing runs. */
-> +	if (!lcd->running)
-> +		return;
-> +
-> +	if (!x1600_lcd_stop(lcd))
-> +		dev_warn(lcd->drm.dev, "The controller did not stop\n");
-> +	lcd->running =3D false;
-> +
-> +	spin_lock_irq(&crtc->dev->event_lock);
-> +	if (lcd->event) {
-> +		drm_crtc_send_vblank_event(crtc, lcd->event);
-> +		drm_crtc_vblank_put(crtc);
-> +		lcd->event =3D NULL;
-> +	}
-> +	spin_unlock_irq(&crtc->dev->event_lock);
-> +
-> +	drm_crtc_vblank_off(crtc);
-> +	clk_disable_unprepare(lcd->clk);
-> +}
-> +
-> +static int x1600_lcd_crtc_atomic_check(struct drm_crtc *crtc,
-> +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_atomic_commit *state=
-)
-> +{
-> +	struct drm_crtc_state *crtc_state =3D
-> drm_atomic_get_new_crtc_state(state, crtc);
-> +
-> +	/* Only when enabled: drm_atomic_helper_shutdown() disables both at
-> once. */
-> +	if (!crtc_state->enable)
-> +		return 0;
-> +
-> +	return drm_atomic_helper_check_crtc_primary_plane(crtc_state);
-> +}
-> +
-> +static void x1600_lcd_crtc_atomic_flush(struct drm_crtc *crtc,
-> +					struct drm_atomic_commit *state)
-> +{
-> +	struct drm_crtc_state *crtc_state =3D
-> drm_atomic_get_new_crtc_state(state, crtc);
-> +
-> +	/* The planes come first: a CRTC being enabled sends it once started.
-> */
-> +	if (crtc_state->active && drm_atomic_crtc_needs_modeset(crtc_state))
-> +		return;
-> +
-> +	x1600_lcd_queue_event(to_x1600_lcd(crtc->dev), crtc_state);
-> +}
-> +
-> +static enum drm_mode_status
-> +x1600_lcd_crtc_mode_valid(struct drm_crtc *crtc, const struct
-> drm_display_mode *mode)
-> +{
-> +	unsigned int pixels =3D mode->hdisplay * mode->vdisplay;
-> +
-> +	if (mode->htotal > FIELD_MAX(X1600_LCD_TIMING_END) ||
-> +	=C2=A0=C2=A0=C2=A0 mode->vtotal > FIELD_MAX(X1600_LCD_TIMING_END))
-> +		return MODE_BAD;
-> +
-> +	/* The sync pulses' end points must not be 0. */
-> +	if (mode->hsync_end =3D=3D mode->hsync_start)
-> +		return MODE_HSYNC_NARROW;
-> +	if (mode->vsync_end =3D=3D mode->vsync_start)
-> +		return MODE_VSYNC_NARROW;
-> +
-> +	if (pixels > X1600_LCD_MAX_PIXELS)
-> +		return MODE_MEM;
-
-The max resolution is 1280x720 so you should check mode->hdisplay / mode-
->vdisplay individually. Otherwise bogus resolutions like 1920x480 would be
-accepted.
-
-> +	if (pixels < X1600_LCD_MIN_PIXELS)
-> +		return MODE_BAD;
-> +
-> +	return MODE_OK;
-> +}
-> +
-> +static int x1600_lcd_enable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(crtc->dev);
-> +
-> +	x1600_lcd_irq_enable(lcd, X1600_LCD_ST_DISP_END, true);
-> +	return 0;
-> +}
-> +
-> +static void x1600_lcd_disable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(crtc->dev);
-> +
-> +	x1600_lcd_irq_enable(lcd, X1600_LCD_ST_DISP_END, false);
-> +}
-> +
-> +static irqreturn_t x1600_lcd_irq(int irq, void *data)
-> +{
-> +	struct x1600_lcd *lcd =3D data;
-> +	u32 st =3D readl(lcd->base + X1600_LCD_INT_FLAG);
-> +
-> +	if (!st)
-> +		return IRQ_NONE;
-> +
-> +	writel(st, lcd->base + X1600_LCD_CLR_ST);
-> +	if (st & X1600_LCD_ST_STOP_SRD_ACK)
-> +		complete(&lcd->stopped);
-> +
-> +	if (st & X1600_LCD_ST_DISP_END) {
-> +		drm_crtc_handle_vblank(&lcd->crtc);
-> +
-> +		spin_lock(&lcd->drm.event_lock);
-
-spin_lock() can sleep with CONFIG_PREEMPT_RT so it looks wrong in an IRQ
-handler. I *think* you don't need to lock it here anyway, as the spinlock i=
-s
-locked in other places using spin_lock_irq().
-
-> +		if (lcd->event &&
-> +		=C2=A0=C2=A0=C2=A0 readl(lcd->base + X1600_LCD_CHAIN_SITE) =3D=3D lcd-
-> >event_desc) {
-> +			drm_crtc_send_vblank_event(&lcd->crtc, lcd->event);
-> +			drm_crtc_vblank_put(&lcd->crtc);
-> +			lcd->event =3D NULL;
-> +		}
-> +		spin_unlock(&lcd->drm.event_lock);
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int x1600_lcd_plane_atomic_check(struct drm_plane *plane,
-> +					struct drm_atomic_commit *state)
-> +{
-> +	struct drm_plane_state *plane_state =3D
-> drm_atomic_get_new_plane_state(state, plane);
-> +	struct drm_crtc_state *crtc_state;
-> +	int ret;
-> +
-> +	if (!plane_state->crtc)
-> +		return 0;
-> +
-> +	crtc_state =3D drm_atomic_get_new_crtc_state(state, plane_state->crtc);
-> +	if (WARN_ON(!crtc_state))
-> +		return -EINVAL;
-> +
-> +	/* The plane covers the whole screen: no scaling, no position. */
-> +	ret =3D drm_atomic_helper_check_plane_state(plane_state, crtc_state,
-> +						=C2=A0 DRM_PLANE_NO_SCALING,
-> +						=C2=A0 DRM_PLANE_NO_SCALING,
-> +						=C2=A0 false, true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* The controller scans out a whole frame from the framebuffer. */
-> +	if (crtc_state->enable && !plane_state->visible)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static void x1600_lcd_plane_atomic_update(struct drm_plane *plane,
-> +					=C2=A0 struct drm_atomic_commit *state)
-> +{
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(plane->dev);
-> +	struct drm_plane_state *plane_state =3D
-> drm_atomic_get_new_plane_state(state, plane);
-> +	struct drm_framebuffer *fb =3D plane_state->fb;
-> +	unsigned int next =3D lcd->running ? !lcd->cur : lcd->cur;
-> +	struct x1600_lcd_desc *desc =3D &lcd->desc[next];
-> +
-> +	if (!fb)
-> +		return;
-> +
-> +	desc->next =3D x1600_lcd_desc_addr(lcd, next);
-> +	desc->addr =3D drm_fb_dma_get_gem_addr(fb, plane_state, 0);
-> +	desc->stride =3D fb->pitches[0] / fb->format->cpp[0];
-> +	desc->cfg =3D FIELD_PREP(X1600_LCD_DESC_CFG_FMT,
-> X1600_LCD_DESC_FMT_RGB565);
-> +	desc->ctrl =3D X1600_LCD_DESC_CTRL_EOD_MSK;
-> +
-> +	if (!lcd->running)
-> +		return;
-> +
-> +	/*
-> +	 * The manual hands over a descriptor by writing SRD_CHAIN_ADDR; the
-> +	 * vendor kernel also sets SRD_CHAIN_START, and so does this.
-> +	 */
-> +	wmb();
-> +	writel(x1600_lcd_desc_addr(lcd, next), lcd->base +
-> X1600_LCD_SRD_CHAIN_ADDR);
-> +	writel(1, lcd->base + X1600_LCD_SRD_CHAIN_START);
-> +	lcd->cur =3D next;
-> +}
-> +
-> +/*
-> + * Panels with 18 data lines take the top six bits of each colour of the
-> + * 888 mode: in the 666 mode, the HiBy R1's panel shows wrong colours.
-> + */
-> +static int x1600_lcd_color_order(const struct drm_display_info *info)
-> +{
-> +	if (!info->num_bus_formats)
-> +		return X1600_LCD_TFT_COLOR_RGB;
-> +
-> +	switch (info->bus_formats[0]) {
-> +	case MEDIA_BUS_FMT_RGB666_1X18:
-> +	case MEDIA_BUS_FMT_RGB888_1X24:
-> +		return X1600_LCD_TFT_COLOR_RGB;
-> +	case MEDIA_BUS_FMT_BGR666_1X18:
-> +	case MEDIA_BUS_FMT_BGR888_1X24:
-> +		return X1600_LCD_TFT_COLOR_BGR;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int x1600_lcd_encoder_atomic_check(struct drm_encoder *encoder,
-> +					=C2=A0 struct drm_crtc_state *crtc_state,
-> +					=C2=A0 struct drm_connector_state
-> *conn_state)
-> +{
-> +	const struct drm_display_info *info =3D &conn_state->connector-
-> >display_info;
-> +
-> +	if (x1600_lcd_color_order(info) < 0) {
-> +		drm_dbg_kms(encoder->dev, "Unsupported bus format 0x%04x\n",
-> +			=C2=A0=C2=A0=C2=A0 info->bus_formats[0]);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void x1600_lcd_encoder_atomic_mode_set(struct drm_encoder *encode=
-r,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc_state
-> *crtc_state,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_connector_state
-> *conn_state)
-> +{
-> +	struct x1600_lcd *lcd =3D to_x1600_lcd(encoder->dev);
-> +	const struct drm_display_info *info =3D &conn_state->connector-
-> >display_info;
-> +
-> +	lcd->bus_flags =3D info->bus_flags;
-> +	lcd->color_order =3D x1600_lcd_color_order(info);
-> +}
-> +
-> +static const struct drm_plane_funcs x1600_lcd_plane_funcs =3D {
-> +	.update_plane		=3D drm_atomic_helper_update_plane,
-> +	.disable_plane		=3D drm_atomic_helper_disable_plane,
-> +	.atomic_create_state	=3D drm_atomic_helper_plane_create_state,
-> +	.destroy		=3D drm_plane_cleanup,
-> +	.atomic_duplicate_state	=3D
-> drm_atomic_helper_plane_duplicate_state,
-> +	.atomic_destroy_state	=3D drm_atomic_helper_plane_destroy_state,
-> +};
-> +
-> +static const struct drm_plane_helper_funcs x1600_lcd_plane_helper_funcs =
-=3D {
-> +	.atomic_check		=3D x1600_lcd_plane_atomic_check,
-> +	.atomic_update		=3D x1600_lcd_plane_atomic_update,
-> +};
-> +
-> +static const struct drm_crtc_funcs x1600_lcd_crtc_funcs =3D {
-> +	.set_config		=3D drm_atomic_helper_set_config,
-> +	.page_flip		=3D drm_atomic_helper_page_flip,
-> +	.atomic_create_state	=3D drm_atomic_helper_crtc_create_state,
-> +	.destroy		=3D drm_crtc_cleanup,
-> +	.atomic_duplicate_state	=3D
-> drm_atomic_helper_crtc_duplicate_state,
-> +	.atomic_destroy_state	=3D drm_atomic_helper_crtc_destroy_state,
-> +	.enable_vblank		=3D x1600_lcd_enable_vblank,
-> +	.disable_vblank		=3D x1600_lcd_disable_vblank,
-> +};
-> +
-> +static const struct drm_crtc_helper_funcs x1600_lcd_crtc_helper_funcs =
-=3D {
-> +	.atomic_check		=3D x1600_lcd_crtc_atomic_check,
-> +	.atomic_enable		=3D x1600_lcd_crtc_atomic_enable,
-> +	.atomic_disable		=3D x1600_lcd_crtc_atomic_disable,
-> +	.atomic_flush		=3D x1600_lcd_crtc_atomic_flush,
-> +	.mode_valid		=3D x1600_lcd_crtc_mode_valid,
-> +};
-> +
-> +static const struct drm_encoder_helper_funcs x1600_lcd_encoder_helper_fu=
-ncs =3D
-> {
-> +	.atomic_check		=3D x1600_lcd_encoder_atomic_check,
-> +	.atomic_mode_set	=3D x1600_lcd_encoder_atomic_mode_set,
-> +};
-> +
-> +/*
-> + * drm_atomic_helper_commit_tail(), waiting for the flip instead of a vb=
-lank:
-> + * the old framebuffer stays in use until the controller reads the new
-> + * descriptor, which can be a frame later.
-> + */
-> +static void x1600_lcd_commit_tail(struct drm_atomic_commit *state)
-> +{
-> +	struct drm_device *drm =3D state->dev;
-> +
-> +	drm_atomic_helper_commit_modeset_disables(drm, state);
-> +	drm_atomic_helper_commit_planes(drm, state, 0);
-> +	drm_atomic_helper_commit_modeset_enables(drm, state);
-> +	drm_atomic_helper_fake_vblank(state);
-> +	drm_atomic_helper_commit_hw_done(state);
-> +	drm_atomic_helper_wait_for_flip_done(drm, state);
-> +	drm_atomic_helper_cleanup_planes(drm, state);
-> +}
-> +
-> +static const struct drm_mode_config_funcs x1600_lcd_mode_config_funcs =
-=3D {
-> +	.fb_create		=3D drm_gem_fb_create,
-> +	.atomic_check		=3D drm_atomic_helper_check,
-> +	.atomic_commit		=3D drm_atomic_helper_commit,
-> +};
-> +
-> +static const struct drm_mode_config_helper_funcs
-> x1600_lcd_mode_config_helpers =3D {
-> +	.atomic_commit_tail	=3D x1600_lcd_commit_tail,
-> +};
-> +
-> +DEFINE_DRM_GEM_DMA_FOPS(x1600_lcd_fops);
-> +
-> +static const struct drm_driver x1600_lcd_driver =3D {
-> +	.driver_features	=3D DRIVER_MODESET | DRIVER_GEM |
-> DRIVER_ATOMIC,
-> +	.name			=3D "ingenic-x1600-drm",
-> +	.desc			=3D "DRM driver for the Ingenic X1600 display
-> controller",
-> +	.major			=3D 1,
-> +	.minor			=3D 0,
-> +	.fops			=3D &x1600_lcd_fops,
-> +	DRM_GEM_DMA_DRIVER_OPS,
-> +	DRM_FBDEV_DMA_DRIVER_OPS,
-> +};
-> +
-> +static int x1600_lcd_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct drm_connector *connector;
-> +	struct drm_bridge *bridge;
-> +	struct drm_device *drm;
-> +	struct x1600_lcd *lcd;
-> +	int irq, ret;
-> +
-> +	lcd =3D devm_drm_dev_alloc(dev, &x1600_lcd_driver, struct x1600_lcd,
-> drm);
-> +	if (IS_ERR(lcd))
-> +		return PTR_ERR(lcd);
-> +
-> +	drm =3D &lcd->drm;
-> +	platform_set_drvdata(pdev, lcd);
-> +	init_completion(&lcd->stopped);
-> +	spin_lock_init(&lcd->irq_lock);
-> +
-> +	lcd->base =3D devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(lcd->base))
-> +		return PTR_ERR(lcd->base);
-> +
-> +	lcd->clk =3D devm_clk_get(dev, NULL);
-> +	if (IS_ERR(lcd->clk))
-> +		return dev_err_probe(dev, PTR_ERR(lcd->clk), "Unable to get
-> clock\n");
-
-You enable it later in the probe, so you could just use devm_clk_get_enable=
-d()
-here.
-
-> +
-> +	irq =3D platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
-> +
-> +	bridge =3D devm_drm_of_get_bridge(dev, dev->of_node, 0, 0);
-> +	if (IS_ERR(bridge))
-> +		return dev_err_probe(dev, PTR_ERR(bridge), "Unable to get the
-> panel\n");
-> +
-> +	lcd->desc =3D dmam_alloc_coherent(dev, 2 * sizeof(*lcd->desc),
-> +					&lcd->desc_phys, GFP_KERNEL);
-> +	if (!lcd->desc)
-> +		return -ENOMEM;
-> +
-> +	ret =3D drmm_mode_config_init(drm);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Framebuffers, not modes: fbdev's double buffer is taller than
-> 720p. */
-> +	drm->mode_config.max_width =3D FIELD_MAX(X1600_LCD_TIMING_END);
-> +	drm->mode_config.max_height =3D FIELD_MAX(X1600_LCD_TIMING_END);
-> +	drm->mode_config.funcs =3D &x1600_lcd_mode_config_funcs;
-> +	drm->mode_config.helper_private =3D &x1600_lcd_mode_config_helpers;
-> +
-> +	ret =3D drm_universal_plane_init(drm, &lcd->plane, 1,
-> &x1600_lcd_plane_funcs,
-> +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 x1600_lcd_formats,
-> ARRAY_SIZE(x1600_lcd_formats),
-> +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NULL, DRM_PLANE_TYPE_PRIMARY, N=
-ULL);
-> +	if (ret)
-> +		return ret;
-> +	drm_plane_helper_add(&lcd->plane, &x1600_lcd_plane_helper_funcs);
-> +
-> +	ret =3D drm_crtc_init_with_planes(drm, &lcd->crtc, &lcd->plane, NULL,
-> +					&x1600_lcd_crtc_funcs, NULL);
-> +	if (ret)
-> +		return ret;
-> +	drm_crtc_helper_add(&lcd->crtc, &x1600_lcd_crtc_helper_funcs);
-> +
-> +	ret =3D drmm_encoder_init(drm, &lcd->encoder, NULL,
-> DRM_MODE_ENCODER_DPI, NULL);
-> +	if (ret)
-> +		return ret;
-> +	lcd->encoder.possible_crtcs =3D drm_crtc_mask(&lcd->crtc);
-> +	drm_encoder_helper_add(&lcd->encoder,
-> &x1600_lcd_encoder_helper_funcs);
-> +
-> +	ret =3D drm_bridge_attach(&lcd->encoder, bridge, NULL,
-> +				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> +	if (ret)
-> +		return ret;
-> +
-> +	connector =3D drm_bridge_connector_init(drm, &lcd->encoder);
-> +	if (IS_ERR(connector))
-> +		return PTR_ERR(connector);
-> +	drm_connector_attach_encoder(connector, &lcd->encoder);
-> +
-> +	ret =3D drm_vblank_init(drm, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	drm_mode_config_reset(drm);
-
-I saw a patch from Maxime replacing these - you should be calling
-drm_mode_config_create_initial_state(drm) here (and handle the error).
-
-> +
-> +	/* Take over from a boot framebuffer, and stop what it left running.
-> */
-> +	ret =3D aperture_remove_all_conflicting_devices(x1600_lcd_driver.name);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D clk_prepare_enable(lcd->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* No interrupt from what the boot loader left enabled or pending. */
-> +	writel(0, lcd->base + X1600_LCD_INTC);
-> +	writel(readl(lcd->base + X1600_LCD_ST), lcd->base +
-> X1600_LCD_CLR_ST);
-> +
-> +	ret =3D devm_request_irq(dev, irq, x1600_lcd_irq, 0, dev_name(dev),
-> lcd);
-> +	if (ret) {
-> +		clk_disable_unprepare(lcd->clk);
-> +		return dev_err_probe(dev, ret, "Unable to request the
-> IRQ\n");
-> +	}
-> +
-> +	/*
-> +	 * Seen on the R1: after an underrun (TFT_UNDR) the controller can
-> stop
-> +	 * answering GEN_STP_SRD, and only a reset brings it back.
-> +	 */
-> +	if (readl(lcd->base + X1600_LCD_ST) & X1600_LCD_ST_WORKING &&
-> !x1600_lcd_stop(lcd))
-> +		dev_err(dev, "The controller did not stop%s\n",
-> +			readl(lcd->base + X1600_LCD_ST) &
-> X1600_LCD_ST_TFT_UNDR ?
-> +			" after an underrun" : "");
-> +	clk_disable_unprepare(lcd->clk);
-> +
-> +	ret =3D drm_dev_register(drm, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	drm_client_setup_with_fourcc(drm, DRM_FORMAT_RGB565);
-> +	return 0;
-> +}
-> +
-> +static void x1600_lcd_remove(struct platform_device *pdev)
-> +{
-> +	struct x1600_lcd *lcd =3D platform_get_drvdata(pdev);
-> +
-> +	drm_dev_unregister(&lcd->drm);
-> +	drm_atomic_helper_shutdown(&lcd->drm);
-> +}
-> +
-> +static void x1600_lcd_shutdown(struct platform_device *pdev)
-> +{
-> +	struct x1600_lcd *lcd =3D platform_get_drvdata(pdev);
-> +
-> +	drm_atomic_helper_shutdown(&lcd->drm);
-> +}
-> +
-> +static const struct of_device_id x1600_lcd_of_match[] =3D {
-> +	{ .compatible =3D "ingenic,x1600-dpu" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, x1600_lcd_of_match);
-> +
-> +static struct platform_driver x1600_lcd_platform_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "ingenic-x1600-drm",
-> +		.of_match_table =3D x1600_lcd_of_match,
-> +	},
-> +	.probe =3D x1600_lcd_probe,
-> +	.remove =3D x1600_lcd_remove,
-> +	.shutdown =3D x1600_lcd_shutdown,
-> +};
-> +module_platform_driver(x1600_lcd_platform_driver);
-> +
-> +MODULE_AUTHOR("Olivier Louvignes <olivier@mgcrea.io>");
-> +MODULE_DESCRIPTION("DRM driver for the Ingenic X1600 display controller"=
-);
-> +MODULE_LICENSE("GPL");
-
-Cheers,
--Paul

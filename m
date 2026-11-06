@@ -1,83 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1793964080;
-	b=HNw2ImfakT5yqB31ezMPtVFRH5txe4vC6yay3PgoG6avAT+9ubfgm9aZ73pqRXSKJ4pk
-	 fdQqjrASQIegJ93t99Z7Ag5jIs8nrDJJAM5A7JxqRiVtSPeJswggY7pxcFHjxObfZJ9g7
-	 ss6Hz+6zGeCVuJe5hBXf1K53O+BS7hdyda/sScaW0zFxcorMhAe5Bh5uwHgrlWe1CB6vx
-	 bl7ctokOCT8DO/LX2Z9wJFAvpynaXL3YCLa8HScMUGYAYtmFzXo0RLRxn0vN3PD+unFrC
-	 eMCxVg+Cw+Z9ys+wOt7HPPgPq6XLoGjYfaIZRn0+pu2+bxBvyNG6zNzAKYkAWWlzYug==
+	b=aQbHtk7/7zqSG+jm2LL+O/aiFhfSLDNxcOrb+H14rlgLQyl4WTai7Wfz012yVtoMtPKp
+	 7fQ/0df7ChX1viyaS7wMRKKMVJh54tIcDjbcMCHeWYr5Mv58M/Pw8OVkO9RgYvsNrLVdW
+	 mChAienH7tixMcb28TtOkPNnT3pXnPUAovSHlZTSqpculQeibNTbJciF3vZxlyTYkrCBH
+	 KhNkjW1Fcxd2mgEC7dGJy3bveTHmhdcfXF5kWyMgl0ShwfWg49ZAe9dgURlvZo9HkfQI/
+	 Yfcg3Pwxmkb3sg+GyKAAv3hywfRzeIt+jK6tN0ljTZ+vv9vDTn8/457VuyxFMZj6C3Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793964080;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=g2yTl4PVSyd+fgLTgPgtlO0e+H5KFW8y2uBPZ5q/jBQ=;
-	b=RkESxsOyxa6aKn4j7gJTEgNgEos22zvJUrhluRBOIoEgvNN8mLz+7mjNeLLqmkjcvxmH
-	 alVwRkNCCgawlivRgNV6Wd1ATacrjFflxBuqTuT45NSqJQtbsaTm3he7kC/dFofJHWg27
-	 hO++IWUAvIdGRYY+2VDbwXvgClGdfPghYGRtik4sS2g1iBwuNXEwUNvYu/2irjkqpQJRJ
-	 2cAmQ/TYJU4vjDsx8o443Js4rw8k6p9FKUI0enDuLa2pwP79awyivVUWJoyQIXTNiPESC
-	 RcokbTt/1P/ci9EUdU63Me+3qQJY6mA3mScz+dbRABVEOgVuNFVPR1kZDXIzl8EC8Qw==
+	bh=uXU0cGie9RgBAnl9s8QiGJKFP3ILXbj0HPLmva/mBOw=;
+	b=RWb16wh6adBBCo0/H/fxPE5cS85ADquW8K8DbGuOxJQRPMvieVb2QW37KbHixnobao39
+	 8kB20wfMzpOK8spDKVR2fw4oAHx82ecjgAQWYEMZQCGknzOPjqYrFOdxy296oEMa4BMgs
+	 N2wSJxtY38cBsKrDaltI8LbdQn5rQ0KP/loyzOf0KJPPJkYXg6BgaBQc1e57JmnQJAnIt
+	 pg2n1WyevwiGNO5L6kTanxV1seZFCs2HQnpeiuAxayaEZGqSa7CYtmBxlyrkLtViH75IC
+	 L/obymHHyusvhyetzo5T76IY4/+HV7ZDNjfBJQZXfetnGL+5ISRhvmQonsjV48ympTQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=bmWTSGeD;
-	arc=none smtp.remote-ip=209.85.128.53
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=m+dGSZY8;
+	arc=none smtp.remote-ip=209.85.128.52
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBBE606A32F
-	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 11:21:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ABBBE606A32F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E06B606A33F
+	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 11:21:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7E06B606A33F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=bmWTSGeD
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a5036bbac7so3002415e9.3
-        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 03:21:19 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=m+dGSZY8
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4a214af2076so3365005e9.0
+        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 03:21:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793964078; x=1794568878; darn=vger.kernel.org;
+        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793964079; x=1794568879; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=g2yTl4PVSyd+fgLTgPgtlO0e+H5KFW8y2uBPZ5q/jBQ=;
-        b=bmWTSGeDEyRgw3Rr66WU71/HBLPF++E77hiVxVe5mQUGqMlvwX4en0t5YLXeCl/LZK
-         LmUf1MywC1/4VKgZRiTSmty35QLyBqr5/5CkKIsTNGZokKe2LtFmjMtz+S7ni2H8xZBd
-         38uid3mLVNQdJHng0L0lA71yHJtG6KK1IMrhqnSTCq5spCmstYPxpbJHu0QQupb2ZuTu
-         9cZA15ZBFUTUTwLCvPSM3+nku+epbwYDA21+hsx7ECFiKXawrZTSBHckAEXeSutOl8hD
-         6zmZfEyQDuGUDrBRw1MqoinhTvoUFBRa4FJ0H6U8udsZ9/mqEYKNRhY7l+VlILdZWZjb
-         TntQ==
+        bh=uXU0cGie9RgBAnl9s8QiGJKFP3ILXbj0HPLmva/mBOw=;
+        b=m+dGSZY8I7BFHE9ZqLrBdaji+3TUwf2E5oxwOjMXV3vQw6gBmFHgHkX5RMiUPTOQJp
+         aligg5TaGhgbBl/eEUJCSmnZs3Pa813OCUNLwvGhU4y7UwiDDxxObJ4Grte4uUnAuFfO
+         udvGdfgXID2U0oFAhDhS57IlLal/Rg/kQx1B7KtnBcNXQeMW1YGsN/u9oFYC5968jNFy
+         ZxQkiLwa8oZ5kVM3iUuLUNRqP2S+2Z3s84XG5JtHg6vz3AaqS20tu+rafvVH7UmEAirL
+         J7jNcX+/98pfrWcfATNKcvfj8vSPOnGH0D7AGOXQblVdeEvlA7CDazpm4jaoNolF4I5a
+         W6Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793964078; x=1794568878;
+        d=1e100.net; s=20260707; t=1793964079; x=1794568879;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=g2yTl4PVSyd+fgLTgPgtlO0e+H5KFW8y2uBPZ5q/jBQ=;
-        b=xlGU91X/5dlo1bTHeYqFrmSX9DEOjTyYpckc5civwEWmXhTsefgO7w1ihcClArnrwW
-         sLSTvWn2VZbmUtDq8oIvgabnXCiXkOtO1YdgRsicFsKgeke/8hfu4j2zGGRoVvEHrkno
-         9UljNvuQFYE6SsUVxidkHb7QZorRtCVH6Idc0sGn88+bHwBP5W4bT4Me8F6UDEBJe3Ba
-         oGSqmnNz1/stKypxCVnYxxR+o98aR59sbvaIN1qLyx1XqE6r3QVIf8kVWahrPhorN4ce
-         j6v7o4mzXYT5A2dL/VoLqn7tWGFmFqbmrTqFFqLRHr6OssRda1xSd5Cek5YRt6wliW8X
-         siYg==
-X-Forwarded-Encrypted: i=1; AKwUvByGdjue3JaBTywj+tzfx5rEJQuvP52wdQ4eoF0OUnPOO2Wd1FYfwWEQDRxqW5MuFhrmX7c1JdWYlXsV@vger.kernel.org
-X-Gm-Message-State: APuU4Z+hkHFwZ83SeJz1tNdW8HLvhmkKr9P/6NMI+Z1KRIHc/CEFwgJG
-	jiqR0iPDxMhg5ejQ35NGvpnai0gKXoSXYRIL+Fv6tKWlSZEYC8ngCc4RSuVGyvVMPR0=
-X-Gm-Gg: AYBFou0KTGbVmLiK9Qzl5CDvhSw2EqdNlZm2iIie0wMVSD83wlr759qurZ4CnsduYRN
-	1WTtCGHsTq3SCdKMHnONKAA3N7jYECEUPfHBF62TktRsE8Dr9YkrNz4XofbaUsNQqwjMIZatX+E
-	FTI4Ko01aR7ka/ziReNAa6bjsOJLlQOzgfvHACEIZG3wsvyUSBo85wTqXmPrsKlN9fM4bM6CVry
-	pf6ladUvxP91rbAzTXCNaKxb5V2x2dx0V/ca1NT6mnW0FUyTWZ/v1Pq26K5Un/AXHKMzzHXOG6R
-	9Zh9TX2ldof3VYQPYeAi2+rhSHcWZbnh8gRPqDBz4NDIvFvfOovLvkNvzwOOeyIYRSzA94AZrsv
-	lnJRX6KWLPMWESdZMqc1j4whTd81jNzVHoHw/HirEVwvWmlUPKK8nVPBplXlWr3ied3nbCyIT8M
-	7sb9U6RKaUE6LEm+cWJrzwOb1o09w/i7ogUiWurP404jUjc97Lj8H5Sfa/zPmo0da7v6U4yzk3w
-	GfNmSyFv122zESa3Y/PbBQR8ry2TsQWiGcWSktHsT8qNxTSNTnqQvDX1D6FieJKes6cYdzmDZ6Z
-	9ZRuIY2fOBK2SYYIENpj5DrMqkSVOUy7UhOhq5/fOExbTm5dFnJZHt65skyjP3M=
-X-Received: by 2002:a05:600c:a015:b0:4a2:1612:6367 with SMTP id 5b1f17b1804b1-4b6df11d637mr31306905e9.15.1793964078175;
+        bh=uXU0cGie9RgBAnl9s8QiGJKFP3ILXbj0HPLmva/mBOw=;
+        b=RT4whaWOT0jrEFMIwgBCyeHhqil4gFdKU9940572SPBxZtxXX5vkri8wGrB6v5KAlG
+         zwI68wewLrwuHlX0Ie8ODhQ0aFQn6WfS4TVClTjvQf9FEqBF7vKYhT9ydk+FZC3238xN
+         D4FnLS4gNWLlW78nzlxWptd2m2F+z5WwDaQCcg+dDjiJW2z9NWdXuHWcfmRQ3KKhXnoY
+         MDnHKb/Bni8iaQiK6u17+ZJ7LCgivRcl9rtYpyUn+66I4iumj/B0u4vcHV2E+oXf+CDn
+         bt43qzI8x+qdFYxZ4fpIRiuXgJfGBTsPMtGhPwbxHAQxvNJ2njyjaOfRxLVzM/vGzwN5
+         /Lxg==
+X-Forwarded-Encrypted: i=1; AKwUvBzMFmSwv/pJGFPT30v3/TsBB0NAp8bXlBHG6il2aePgKO0t7JN20y2e1KBNeUTg2emrh4eUH2bGwNEl@vger.kernel.org
+X-Gm-Message-State: APuU4Z8pEV947Ik6T9p/Kbpg24+7IinmloAiLMdood27AseRTvwgzeIH
+	TmGD+yREeutz/54JDPDmPrlCdapJHc6a0L7exzBKjhS1U6izijgCG4jVSPt9Cm+a5rw=
+X-Gm-Gg: AYBFou24+Nw1THIE15WeDDrypsWuxVHTeLwws7riBI5S171M+JCMO7lXzLBy8pq4IMU
+	S7XxVZHkHr8LQNDDV71/PmbyFdOLbCqdPWpKyz76RywilgyZbYlXnIfdcTKEPzyepa3ieoEmGHO
+	2durirYfsv9DrdFy5SXKp+/CKMapD36qRGVbkgbKWjmCfXmn1Sp4s3QqruesO6JOZ3DxGovRL6f
+	ZS5KY4/0PBrFzkndB4BZCHBIoFAXJWR9D7VE/aSZtb6JS78RAN0lo915TQJEInWJ4iu4NW7tGys
+	z9/Spa0gcY2PAEWl2b1gt1hY9tUD9G5HwSOs0DBQpsSOyKrnDGGu13XrXQ9T5eUad+CmN1n5Zzg
+	nixAeyIvE+E5qumxlj/ZRFIGxQMyag+qSQigFHZPlD3M1mD7hpFygfX4zEGAJXu7ugtfc/1Ub2O
+	REFwJ9eLsflyUyWpL5BVRDLNTOOPnQUjE3jFmx7HdBX4o0o8hU5VRHgOPO+IkeWmS3+7bEuX6Qv
+	LM92RBc/m6OoLLxmdz365xoKzrMMLdX37teHD7/aTf1ZNipaBkIWSULlrc9qtoQ33PuAAdISB2o
+	3p0Ic6cXjzTABJxtxLiKFSw3jsxfjdpLvA+GNBmC36ejVXVngMldcD5AG6cIzrk=
+X-Received: by 2002:a05:600c:530d:b0:4a1:88de:9e8b with SMTP id 5b1f17b1804b1-4b6dd82ab4bmr29802925e9.5.1793964078897;
         Fri, 06 Nov 2026 03:21:18 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:5c25:f8d1:d9d7:54c1])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b6e2028d9bsm102404695e9.9.2026.11.06.03.21.17
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b6e2028d9bsm102404695e9.9.2026.11.06.03.21.18
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 06 Nov 2026 03:21:17 -0800 (PST)
+        Fri, 06 Nov 2026 03:21:18 -0800 (PST)
 From: Olivier Louvignes <olivier@mgcrea.io>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Maxime Ripard <mripard@kernel.org>,
@@ -95,11 +95,10 @@ Cc: David Airlie <airlied@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Olivier Louvignes <olivier@mgcrea.io>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: [PATCH v3 1/5] dt-bindings: vendor-prefixes: Add HiBy
-Date: Fri,  6 Nov 2026 12:19:56 +0100
-Message-ID: <20261106112000.1612-2-olivier@mgcrea.io>
+	Olivier Louvignes <olivier@mgcrea.io>
+Subject: [PATCH v3 2/5] dt-bindings: display: Add the Ingenic X1600 display controller
+Date: Fri,  6 Nov 2026 12:19:57 +0100
+Message-ID: <20261106112000.1612-3-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20261106112000.1612-1-olivier@mgcrea.io>
 References: <20261106112000.1612-1-olivier@mgcrea.io>
@@ -114,27 +113,109 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-HiBy makes digital audio players, among them the R1.
+The X1600's display controller fetches frames through descriptors and
+keeps its interface and timings in register blocks of their own (X1600
+programming manual, chapter 10), so it shares nothing with the
+controllers ingenic,lcd.yaml describes. Its registers are those of the
+X2000's display controller without the composer, which the X2000 and
+X2600 manuals call the DPU, as the X1600 manual does in its register and
+clock names: hence ingenic,x1600-dpu, which an X2000 binding can extend.
 
 Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+v3:
+- ingenic,x1600-dpu, titled "display controller (DPU)" (Nikolaus).
+- No $nodename, no clock-names (Krzysztof); example node
+  display-controller@.
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 7602034374d7..0bbab57d6c25 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -732,6 +732,8 @@ patternProperties:
-     description: HEAD acoustics
-   "^hechuang,.*":
-     description: Shenzhen Hechuang Intelligent Co.
-+  "^hiby,.*":
-+    description: Guangzhou HiBy Technology Co., Ltd.
-   "^hideep,.*":
-     description: HiDeep Inc.
-   "^himax,.*":
+ .../bindings/display/ingenic,x1600-dpu.yaml   | 61 +++++++++++++++++++
+ MAINTAINERS                                   |  5 ++
+ 2 files changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml b/Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml
+new file mode 100644
+index 000000000000..0e9f4442e4b9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/ingenic,x1600-dpu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ingenic X1600 display controller (DPU)
++
++maintainers:
++  - Olivier Louvignes <olivier@mgcrea.io>
++
++description:
++  The display controller of the Ingenic X1600 SoC, the DPU of the X2000
++  without its composer. It fetches frames through descriptors in memory
++  and drives a parallel RGB panel or a smart panel; its registers have
++  nothing in common with the controllers described in ingenic,lcd.yaml.
++
++properties:
++  compatible:
++    const: ingenic,x1600-dpu
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: The pixel clock, whose gate also gates the controller
++
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++    description: The output, to the panel or bridge.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    display-controller@13050000 {
++        compatible = "ingenic,x1600-dpu";
++        reg = <0x13050000 0x10000>;
++
++        interrupt-parent = <&intc>;
++        interrupts = <31>;
++
++        clocks = <&cgu 16>;
++
++        port {
++            dpu_out: endpoint {
++                remote-endpoint = <&panel_in>;
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c10342aa32f3..a5160860ae26 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13176,6 +13176,11 @@ F:	include/linux/mfd/ingenic-tcu.h
+ F:	sound/soc/codecs/jz47*
+ F:	sound/soc/jz4740/
+ 
++INGENIC X1600 DRM DRIVER
++M:	Olivier Louvignes <olivier@mgcrea.io>
++S:	Maintained
++F:	Documentation/devicetree/bindings/display/ingenic,x1600-dpu.yaml
++
+ INJOINIC IP5xxx POWER BANK IC DRIVER
+ M:	Samuel Holland <samuel@sholland.org>
+ S:	Maintained
 -- 
 2.39.5
 

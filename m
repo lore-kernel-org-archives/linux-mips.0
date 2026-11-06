@@ -1,70 +1,73 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=178.63.66.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.11
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793995176;
-	b=QU/1PkWmQj+0TOvJK1XRVCyctTRII06byVoPygsck1MYRQf5ghfw5i9b5iSlHXvN0t0m
-	 t+NCdTfN0RrdnwgnFjejomSPd4Lz7vQnLTBRdROCRHnRtCi3bTthjKmJ1p0zoJZ+ezehT
-	 TrOqHbEDYLPpO747fj7OO1bvwpP9aJSHzhuSJy/9jO2SKyFzV+DIxXViLm+BOjtryre7L
-	 DYiXkO16FNAlsjR6wf966acYrIXBgYwIwx2myZfmffHsRffYvWmLy5GT/Z/bjwJsx2T3s
-	 GoWdEV2P1IxvxGLkKlKk6vI0tXFzKR19SIREV1UAJKtCZVkkeAO+979llTqiO81SCnA==
+	t=1794005813;
+	b=N+jnj4/qm5rqpgaZlOIGZqUOj5h1WXlzxbTr9rx+WqG8jAnvKt/5fyZkKiH/8JeAd2ZS
+	 EDNH3FzD87XtjVNnOGZz10b6Mpqe+0NhB/CCVIRGbu3/9EFouBDpOKtoo/rnuqz0bPL07
+	 GChmbJl1fizJYKneOmjCBw4/h/cHrOQQkf8HwKCwFeeAmGF6bBBLON6DhHFmMBc4fbx9/
+	 nXbRtQ2eiXAhxSiR9ifaGKHZxJvU/CiklQAhH8uvnLtFirFJuQfinGuHf3dz+zMtSVmuw
+	 u9FDraFL7sewA5zdZCJfzmjfQzghK0T+Qy0fcad8BQSi+IrBnkAW2/IYFxYftTsohyQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793995176;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=4JJO7J4fojnA0nt5hwOEl9UDSFikUampjKz664dNgaI=;
-	b=UxnQ84L8ykdngxvojz6bpdDPZBcvEsOUcuYs6V8KAlg6/05+Q3a8uJQ6HUxutiGevRXg
-	 I9Gurp536qurXsqKQ7UNZKYRCFm8mfhGTAbNyTpBZxlt7zQzPIR0vkAlePJd58Nk3v8PT
-	 iGIOk18LL55kD3jaSD8kSNlpQFBNmXVugofDcYEnajulfWdh+G5yboLx4fgMMQUPcxRa+
-	 wU+y9i6gGs5SCO3Y1eHh/shT0+rkHCMOdHwL8LckWqijxqmFwzVPl4JyNmsttJRtq+TSp
-	 Y91av6Xqotm7R3s0f15DVn3IQjf7u1McZhFNNOxcl20t/8HWLe4VHibHnE1BpcilsHQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794005813;
+	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:X-CMS-MailID:X-Msg-Generator:Content-Type:
+	 X-RootMTR:X-EPHeader:X-CMS-RootMailID:References;
+	bh=6ox8H2SB0a9cHlZt4WIpVZ59gqLnArKdF1x3visfTJw=;
+	b=13Y310K0Pl6vR1AQ4dWT//5XMtlXnQlUcWbYpRyshgmFsVPPxXs9PwItQV5Fw0opISvd
+	 js9+iX/oq/JnOd5uzgnv1iqkOLWu01f2CUn1kaxW8Xl4t4bhHPNZ67wBZmvkgo784QJiX
+	 jKb2jF2v/pJQcQdYCjlETOMUvwbJFEZrLqePGSyN5QX5iP715Y4McHhk6LNpHxDTYkC5i
+	 hKyrM5Ydx0D+bUoLsYtLf0mmFzKLpJeqav9maX2LqB0AWgrqY29rhahS917Q/q4UL2mLJ
+	 fu5ooFEA9mRukHyGf5NLQiKtwa/NqwM79XRKKn/bfa/M5GiVFnZI3t/s2036o2NKZxw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hallyn.com;
-	spf=pass smtp.mailfrom=hallyn.com;
-	dkim=pass header.d=hallyn.com header.i=@hallyn.com header.a=rsa-sha256 header.s=mail header.b=Opz9o4VQ;
-	arc=none smtp.remote-ip=178.63.66.53
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=samsung.com;
+	spf=pass smtp.mailfrom=samsung.com;
+	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=IZM7+FZh;
+	arc=none smtp.remote-ip=210.118.77.11
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92459606A326;
-	Fri,  6 Nov 2026 19:59:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 92459606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hallyn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hallyn.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 701A1606A326
+	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 22:56:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 701A1606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hallyn.com header.i=@hallyn.com header.a=rsa-sha256 header.s=mail header.b=Opz9o4VQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=hallyn.com; s=mail;
-	t=1793995173; bh=I8hBdflsjy5ULST78omV7Oaz6W+NqRtKI6XBIEd0n60=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Opz9o4VQjwN9tzX/hO5eSaQ5FQr2WLZl2g1ulAKlt/I2IxmzJ07EHL9LiEfJOVcZ1
-	 cx+7z1Uy5uM+BDh9hDXSmu4+YnsGU3op5jSCjUG33hSaM+zPGOjky5ElfFMhbwHAT1
-	 13EStbhliD7a6DbxEWKx0jLosOxuuYIn/Huix4qegeXUbaoah8N3m625DbjOYsK+4f
-	 7JNeWuVf9y2lKTxVFGvq2lheqSxd7h16n+LxptqmB8cjs41rJd9N/v+1Wiv0Up6Dmz
-	 pIMe67tgdd44TRJhG2FM9jstawe6mBUAFw5k4oHUGNTZOPLyKwPUmef05sBb2tl67/
-	 +C8idkqAnfGOQ==
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-	id 952DC8B5; Fri,  6 Nov 2026 13:59:33 -0600 (CST)
-Date: Fri, 6 Nov 2026 13:59:33 -0600
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Aaron Tomlin <atomlin@atomlin.com>
-Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com,
-	casey@schaufler-ca.com, longman@redhat.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com,
-	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io,
-	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com,
-	nick.lange@gmail.com, cgroups@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] security: Expand task_setscheduler LSM hook
-Message-ID: <au4xpT1D8WzBxdvY@hallyn.com>
-References: <20261105172210.76706-1-atomlin@atomlin.com>
- <au4ovp/Ghd25rtfZ@hallyn.com>
- <kn57okulm7cmodzdzvzqqswzafu3vopsatfcsptyrz5ztknx4w@ngwh6si3zgpo>
+	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=IZM7+FZh
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20261106225649euoutp0105032664c321ba06ca6a293b29367433~llsdXa7m-1250812508euoutp01H
+	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 22:56:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20261106225649euoutp0105032664c321ba06ca6a293b29367433~llsdXa7m-1250812508euoutp01H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1794005809;
+	bh=6ox8H2SB0a9cHlZt4WIpVZ59gqLnArKdF1x3visfTJw=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=IZM7+FZh8nsiweFEbAr0S3ZBsmbv8xwZ4jOUX8inhKF5v/yJTgP1akoT3Aj2jFMgx
+	 Eji0XU5WCYKJhcEaNstqcJZVqsMW7E+w40TXJDosvfiUQrIZcYvoTDcOhrVrErgUpK
+	 ik4cCX3X6Kl32h0Urj/VJsYCneZ/8WsyAvpX56IE=
+Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20261106225648eucas1p27da7cef5cdecc76ee6a3e0c1f0a20dfc~llscO712W1955019550eucas1p2p;
+	Fri,  6 Nov 2026 22:56:48 +0000 (GMT)
+Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20261106225647eusmtip2ed800cd9a277538d08247abe06f701a8~llsbgLFSy2228922289eusmtip2P;
+	Fri,  6 Nov 2026 22:56:47 +0000 (GMT)
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+To: linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
+	<robin.murphy@arm.com>, Christoph Hellwig <hch@infradead.org>, Thomas
+	Bogendoerfer <tsbogend@alpha.franken.de>, Madhavan Srinivasan
+	<maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+	Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
+	<chleroy@kernel.org>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH/RFC 0/7] dma-mapping: DMA_ATTR_NO_KERNEL_MAPPING related
+ fixes
+Date: Fri,  6 Nov 2026 23:56:20 +0100
+Message-ID: <20261106225628.215319-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -74,62 +77,69 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <kn57okulm7cmodzdzvzqqswzafu3vopsatfcsptyrz5ztknx4w@ngwh6si3zgpo>
+Content-Transfer-Encoding: 8bit
+X-CMS-MailID: 20261106225648eucas1p27da7cef5cdecc76ee6a3e0c1f0a20dfc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20261106225648eucas1p27da7cef5cdecc76ee6a3e0c1f0a20dfc
+X-EPHeader: CA
+X-CMS-RootMailID: 20261106225648eucas1p27da7cef5cdecc76ee6a3e0c1f0a20dfc
+References: <CGME20261106225648eucas1p27da7cef5cdecc76ee6a3e0c1f0a20dfc@eucas1p2.samsung.com>
 
-On Fri, Nov 06, 2026 at 02:50:34PM -0500, Aaron Tomlin wrote:
-> On Fri, Nov 06, 2026 at 01:21:34PM -0600, Serge E. Hallyn wrote:
-> > > This change updates all in-tree security modules (capabilities, SELinux,
-> > > and Smack) to accommodate the new parameters mechanically, while
-> > > providing LSMs with the necessary context to enforce strict scheduling
-> > > and affinity policies.
-> > > 
-> > > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> > 
-> > This seems misleading - Casey explicitly said "for the smack bits".  This
-> > makes it seem like he reviewed and approved of the whole set.
-> 
-> Hi Serge,
-> 
-> Apologies for that, it was not my intention to misrepresent the scope of
-> Casey's review. The qualifier line was dropped when collecting the trailer.
-> I will update the tag in the next revision to explicitly scope it:
-> 
->     Reviewed-by: Casey Schaufler <casey@schaufler-ca.com> # Smack
-> 
-> > I see no issues with the commoncap.c and security.c changes, but as
-> > Paul said two versions ago in
-> > https://lore.kernel.org/lkml/CAHC9VhSROg6RGUN4_ZVBoEwYjRnKvyjnkbx2D88c09KiTgY3KQ@mail.gmail.com/
-> > nothing appaers to be using these.  Where is the user?
-> 
-> The intended consumer is the BPF LSM (via the generated
-> bpf_lsm_task_setscheduler() hook and the __nullable BTF annotations in
+Hi All,
 
-Ah, I see, thanks.
+arch_dma_prep_coherent() is called by the generic DMA code on pages
+which may be located in highmem: dma_direct_alloc() forces the remap
+path for a highmem page returned from CMA and calls this hook on it
+before creating the uncached mapping. However, the hook has never been
+documented and some implementations assume that the page has a kernel
+linear mapping. This issue affects MIPS, xtensa and PowerPC. It gets
+fixed by patches #2-#4.
 
-> include/linux/lsm_hook_defs.h). As discussed with Peter and Paul in the v3
-> thread [1], when sched_setaffinity() is called, the cpuset controller
-> silently intersects and truncates the requested mask without surfacing the
-> original request, and seccomp cannot safely dereference the __user cpumask
-> or sched_attr pointers without TOCTOU races. Exposing the copied-in
-> sched_attr and cpumask to task_setscheduler allows BPF LSM programs to
-> audit or mediate the actual userspace request before it is sanitised or
-> applied.
-> 
-> In my reply to Paul on v3 [1], I mentioned that once the MIPS prerequisite
-> landed, I would include a concrete in-tree demonstration alongside the hook
-> expansion, which I neglected to include in v4 and v5.
-> 
-> Would adding a BPF LSM selftest (under tools/testing/selftests/bpf/) that
-> attaches to lsm/task_setscheduler and exercises both the sched_attr and
-> cpumask parameters (including NULL and non-NULL paths) be sufficient as an
-> in-tree user/test?
+xtensa also only invalidates the cache, which discards the zeroes
+written by the dma_direct_alloc(). Patch #1 switches it to a
+writeback+invalidate.
 
-Self-tests are good :)
+Patch #5 documents that arch_dma_prep_coherent() must write back dirty
+lines and must accept highmem pages. With that in place, patch #6 drops
+the PageHighMem() check in dma_direct_alloc_no_mapping(), which so far
+skipped cache maintenance for highmem CMA pages allocated with
+DMA_ATTR_NO_KERNEL_MAPPING.
 
-> [1]: https://lore.kernel.org/lkml/ozsngetxq44lahategdi43sqrwdnpotsrebssczymqtkbh7snl@u6ytkznmpne5/
-> 
-> Kind regards,
-> -- 
-> Aaron Tomlin
+Patch #7 makes dma_direct_alloc_no_mapping() always return zeroed
+memory, like all other dma_alloc_* paths. Passing __GFP_ZERO is not
+enough there, because CMA ignores.
+
+The analysis and the patchset was prepared with the help of an LLM. The
+code compiles fine, but it has not been runtime tested on any of the
+affected architectures yet. Testing on real hardware would be
+appreciated. I've reviewed the resulting changes.
+
+Best regards
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
+
+Patch summary:
+
+Marek Szyprowski (7):
+  xtensa: write back dirty lines in arch_dma_prep_coherent()
+  xtensa: handle highmem pages in arch_dma_prep_coherent()
+  MIPS: mm: handle highmem pages in arch_dma_prep_coherent()
+  powerpc/mm: handle highmem pages in arch_dma_prep_coherent()
+  dma-mapping: document that arch_dma_prep_coherent() must handle
+    highmem
+  dma-direct: do not skip cache maintenance for highmem pages in
+    no-mapping allocations
+  dma-direct: zero memory allocated with DMA_ATTR_NO_KERNEL_MAPPING
+
+ arch/mips/mm/dma-noncoherent.c    | 10 +++++-----
+ arch/powerpc/mm/dma-noncoherent.c |  4 +---
+ arch/xtensa/kernel/pci-dma.c      | 12 +++++++++++-
+ include/linux/dma-map-ops.h       | 10 ++++++++++
+ kernel/dma/direct.c               |  9 +++++++--
+ 5 files changed, 34 insertions(+), 11 deletions(-)
+
+-- 
+2.43.0
+

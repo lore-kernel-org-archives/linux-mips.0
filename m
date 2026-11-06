@@ -1,72 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793957325;
-	b=3fVUAiURTS44TjoGQ1pv7Aah/a8VEbAoBZOvCycNWlZ7OS8BJnUrrie5ZBrScP0hMF0p
-	 21zxSlKDIN8nbmfH1cwHmKY9uhWV3hDvnQbYRtwEk/WeQ9bxn7w+Qg4LdUvUB9HQ1hMHT
-	 kR3xtJJDPXCM2Xe0OYOWPR0HCm19hnKOht/swRQRtld0VOqdOJNFZS3u6Gvnbn8z/7YTX
-	 Z2+2dQK2BRqdEOAYdQeGZbFClZq+zLnqnPGEJvAw8Jpl00vWjnV5roS0ZBYIa0r5Vduwr
-	 LGGGEYsINPWjWnjQHYAAlFLdxMd9YRUkQ2LPIwi3dOT/bsb/9JG1joYP7HdZTCLO38g==
+	t=1793959228;
+	b=WET18I4JQtwK8Jxyn1kZh61xv5Kv0UwCh1qj75bTjhtnbTei0+LCWO4CFpTmgafvrfE3
+	 sbgXoJqJ+O6zuTaA2f1qyMh5/uMcVSgKJlzPXxPN+VQyQJtM2vSobK0YV4cWVYR50UCP1
+	 sAOTSfR90yDEklNGKZ9o0D+JGJf4teIFb6bMpPzYbV0svONelCrOjabWH5lePbrgV2lY1
+	 DIri2cSXzmNpZPVPm5RGQlQbzdo3Bgtsji8VKPrAWPe+sLr18RcjT7gPu9upT9CwqQ4ed
+	 OCTUL1yOli/qy8/MFINNeZmvr8PqeGSZgupKiDJOJRHeKhd57CR/zYd/7z09L6mBVPA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793957325;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 X-Developer-Signature:X-Developer-Key:Content-Transfer-Encoding;
-	bh=VC16RfQ/Ch74ykYoajUZJ+R1KFdW7fHzBmB94MytVlk=;
-	b=WzQxChkHI14oFq4yEbBaoozusuAfMETEJqHgsvIlbbrk3f7FJMyKM0h0ede1zTF2wlNW
-	 tPdrK3zRAHQnUUaHigveEg5wBUFkPF8iMzTIFCABBZfq0zm3T3FZj+jIkGjxYZUtFZaCX
-	 W7v5YMGtmIOevBz4VVk1l18Xfj3sKMz+K/AnlFyMQFaTf7V1KRgfvFL+bNwPJxxra0WvX
-	 3rDyoKisrYk0d63aKxIdNezjdauRpVXfh3viFfcJUHrNXINP7TwO8D52bIJzEbZVsHZOC
-	 LQkd3+5+VkpH+w5+o7L0fPzhMuQqVMR4z4+VgzaN1tWoqXO/l910xeghKnN2lvUgqkA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793959228;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=yCBgBKMY+oy3XViUBHf7wx1cUIY9nYtt/kQ1CMxL0X8=;
+	b=S1jntvcR+3TxQcOYz3Y9KJ64uDNZ5xorVU+l26TqcQcnRDSE4ijTaZI2ytC/A9m0BasS
+	 /NkFExPurb2oT0STqtDfzAU05+pgyfdKo+GUS0Rmyy4w2rmI9RKR6PGDHuMshIxbjenbk
+	 7TCeDSOBtuTiwJmEyucWGW2EjlgygNlQKsYmJOIRhgjbieJFX3m503p4NnfDtcPYMMH2r
+	 pQ8Y+JAaxKhtnfxvejfn6TSioikyyUQmo/cYPNOLgolhs8GNMwWYg3Oq7qCxNDEwGfJth
+	 FHB4ZAtSZ8YHpr/M6am0Wlnb5mMoqOsHbUUytgGQrlZpRRkiHFMwgeInI4TNh1vSMTQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kqeWePhs;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=fail header.from=mgcrea.io;
+	spf=pass smtp.mailfrom=mg-crea.com;
+	dkim=pass header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=jOeFNwHa;
+	arc=none smtp.remote-ip=209.85.128.47
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1504606A326;
-	Fri,  6 Nov 2026 09:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DDD606A329
+	for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2026 10:00:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D0DDD606A329
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kqeWePhs
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C551F0089F;
-	Fri,  6 Nov 2026 09:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793957324;
-	bh=VC16RfQ/Ch74ykYoajUZJ+R1KFdW7fHzBmB94MytVlk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=kqeWePhskc8HNNCmYcdAWgvx59rFaItJGQOF/OyXIt/sCZd7S07yg+8aS/fnB0zNp
-	 VZWmUIjL5yONrrC/I3jiwH2+dnKikXHjGeTuLUGr0j0eRPY5SO/KWrCGOFcgNA3ZZL
-	 HdLccbtIl2+rB52+gfXthzuEXvhI4yjsjlV4x4GCkb7bizD6hCKSxpyMWCje9+/s6U
-	 4d4hYcIqy+tap693g+yX6oZ4XvZL7fnGPKzTviF5CpGIRYQ1kG01IAXQpkl7+VYCF1
-	 E9JusScvtWLyNrSjSK8j0HDA6lphKi+qTFh2GDRYyMedmYzEVbuuhiiS7jnOcasf3z
-	 PDOC78hNF61Zw==
-From: Christian Brauner <brauner@kernel.org>
-To: me@bobcopeland.com,
-	Hungyu Lin <dennylin0707@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	willy@infradead.org,
-	viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	akpm@linux-foundation.org,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	geert@linux-m68k.org,
-	tsbogend@alpha.franken.de,
-	maddy@linux.ibm.com,
-	linux-karma-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
+	dkim=pass (2048-bit key, unprotected) header.d=mg-crea-com.20260707.gappssmtp.com header.i=@mg-crea-com.20260707.gappssmtp.com header.a=rsa-sha256 header.s=20260707 header.b=jOeFNwHa
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4a215e64962so4564965e9.1
+        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 02:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mg-crea-com.20260707.gappssmtp.com; s=20260707; t=1793959226; x=1794564026; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=yCBgBKMY+oy3XViUBHf7wx1cUIY9nYtt/kQ1CMxL0X8=;
+        b=jOeFNwHao332HVD3QfiQaM5lk7vcAcuQZLCaMifPIknjCvH/ze3hFfWuBV4EoN7tMk
+         wEoP/XwX4ULThqV1kMKSVTIyKos0MpEI9/DM853jGT8B7QZDLkJWTiv12Wf4NYzsPLyQ
+         FnrFI0FMPmbRz2Y6dHMQ2pFDb+paJuVVTRzZdrhHt00cALOA+uVDF4nOEtghJt+1Qp0d
+         KQM1ioBMXXiJUeyCl3m2BusET9eM7dvmLWYgyAMoVFBNIyR7KRbY19rKvslC07zpMwdw
+         z1BhkBlaqompvfLdAX95pJqHTOLThpCQ2uHrbpMh2aRtIrZxi50iL47D5iHIE2IriNRQ
+         XfDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793959226; x=1794564026;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=yCBgBKMY+oy3XViUBHf7wx1cUIY9nYtt/kQ1CMxL0X8=;
+        b=rL0svqmYtozKy7jNhoRM8Z1OQ0Bp/v2SBqcCFupt51rYjDQ8M5hXjr9Kkbree7fVjq
+         rkmiaRnmHe9bZeM7AYcxtIPa9o3DehOmkc2UutDbgi3QNazgUMU0tGAbhkhe8i5ZuDCP
+         97KdTKH4XDt6paldKKMIM9Ufa1U3GT30es9fDrAAomCiEYa6+CbGqENiJaMbf46IUoGH
+         VdqVGPr/04cmWBFTYmjgaivjRGXWa87h22jdemM77Zu1t4mHZ/agkMtIVN2F1X4K+21j
+         +2nFDUuhzElzcG2s09qJ0yUMhxGkHoOeTfCmPd4MC0enFialGN3oEEIyA7TrB3vTsv+e
+         +jcw==
+X-Forwarded-Encrypted: i=1; AKwUvBwUYd1JXDvtcSNWF4Z90t381Q2D/ryn10cVIIxVvUb4qDdDTJNbcAeE97m2tkEqs1rlNIIC8Nw2pitL@vger.kernel.org
+X-Gm-Message-State: APuU4Z8Vui+hBFfhuwUzguaDK7GrOzYBmRsFZqtDtbO4ALdMmXlmrHRy
+	ojsHa4m66uPWq8IUS5KTNq4NZrFmlQCBl4/bxrCNs/wFyjhKDI84m6BRXWbRpVe5KvY=
+X-Gm-Gg: AYBFou1dSOXpZDiFufwo3NddFMtwYxr8jZ3IeuCNSAs0z1e5LkyFnaDYxOR6oj+LmUJ
+	1Ua/wwPpPVEU53EBEe0TRu798nnn/YRufomPL2EoRycyRbuYos19x0F3mHOTKLQFrRZ5/LCD+CT
+	Ebuupl3JTOpx8+e2KXV9bijEVQFFKCCAZ9EFiuLmxj+ksvRPdA8W37ZYnSWQeKUSH5a7A4v1tfS
+	ycZzdv4gUwGQ3JCyqZdL1VX++311b348eBevyOOFTMVk72xV5xbtemkSI5T2yZa9j8r67ovca7I
+	wV9d2ZkCm+WfhCmMesRD3NI/vJtARwhGcYAKUU63g5ODH7+/O4rmbZRLKp8loXaafp2YNnGN8SO
+	Jkd5YU2sPHEsVnBKhgKy0V2E2plIYjzg2lE0rjCo/UW6fyWPPv+n9q5Xnipg0brC52TJSVKUpG5
+	uK9USXYibP+SXwilaz9HFqWFCZ870itjOCtSW8H+INGpfBbF4ghb5/9g3JkitYs1zHMSR7L42rX
+	JCqeaHKj/hoxa4cWGSJ4TbuvOnh0y51fV79O5PLTeG7GeS1qyjrt7GG5+5tDlcFksNB59HfcG3t
+	PcB85dHVnXPZTZNTTIZlonao+CmFqxgeH7n0OwnochyQGyaA3ONuNT1x/HF/2GdIX388GQ==
+X-Received: by 2002:a05:600c:4f55:b0:4a1:e69d:90e8 with SMTP id 5b1f17b1804b1-4b6df5eac54mr35512905e9.22.1793959225655;
+        Fri, 06 Nov 2026 02:00:25 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:5c25:f8d1:d9d7:54c1])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-492d6d63b79sm2824397f8f.20.2026.11.06.02.00.24
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 06 Nov 2026 02:00:25 -0800 (PST)
+From: Olivier Louvignes <olivier@mgcrea.io>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	David Lechner <dlechner@baylibre.com>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Joshua Crofts <crofts@kernel.org>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] omfs: remove the filesystem
-Date: Fri,  6 Nov 2026 10:28:33 +0100
-Message-ID: <20261106-vortrag-exotisch-pelzmantel-66235662f81f@brauner>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261105044046.52180-1-dennylin0707@gmail.com>
-References: <20261105044046.52180-1-dennylin0707@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: adc: Add the Ingenic X1600 ADC
+Date: Fri,  6 Nov 2026 10:59:09 +0100
+Message-ID: <20261106095909.67659-1-olivier@mgcrea.io>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <eeec310a-a271-4e56-8958-a03318f07e82@kernel.org>
+References: <20261105213210.87457-2-olivier@mgcrea.io> <49e69d9c-6cb1-453f-bbf5-e2202f97e4ef@kernel.org> <30B040B3-D371-443C-A66D-11EF89FC7C63@goldelico.com> <f74bf2cc-c459-4b9c-ad94-c60afcaed3cf@kernel.org> <05798D24-C5A7-41BD-8FDF-F7075F2F0D01@goldelico.com> <eeec310a-a271-4e56-8958-a03318f07e82@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -76,41 +109,21 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1286; i=brauner@kernel.org; h=from:subject:message-id; bh=i3zpqEJ74dna9za+0x2JJjtzgM6lB6eRNkY0jcS+yfg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9nXv4bfPNlUcWTPn4uXNLgONU2auKFum3j/m/yNjO3 u7/4QGPcEcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEkjYzMkw6HKYfmszBsTjg nQ9D0/sLfp1fF166+WGPjq32xIUV3GcZfrMKhXHuzlJ3P5KXsnvXZd3mx77RJ1add2gs+WygyOB fzwsA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Thu, 05 Nov 2026 04:40:45 +0000, Hungyu Lin wrote:
-> OMFS supports the on-disk format used by the long-discontinued Rio Karma
-> music player and ReplayTV DVR. While reviewing a fix for incorrect block
-> mapping on writes starting beyond EOF, Matthew suggested removing the
-> filesystem instead of continuing to maintain it.
-> 
-> Existing OMFS media can still be accessed using an older kernel with OMFS
-> support.
-> 
-> [...]
+Hi Krzysztof,
 
-I agree. It's great to see that we are are able to shed a whole bunch of
-legacy tech.
+On 06/11/2026 09:23, Krzysztof Kozlowski wrote:
+> On 06/11/2026 09:18, H. Nikolaus Schaller wrote:
+>> So this tag should not simply be dropped but moved to the driver code.
+> Yes, please. Thank you for testing, it is important and should be
+> credited, just accordingly.
 
----
+Right, my mistake, I carried it to both patches. Sorry about that.
 
-Applied to the vfs-7.5.omfs branch of the vfs/vfs.git tree.
-Patches in the vfs-7.5.omfs branch should appear in linux-next soon.
+Jonathan, could you drop Nikolaus's Tested-by from 1/2 when applying? It
+stays on 2/2, which already has it. Or I can send a v6 with only that
+change if you prefer,
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-7.5.omfs
-
-[1/1] omfs: remove the filesystem
-      https://git.kernel.org/vfs/vfs/c/b4d257187fe7
+Thanks,
+Olivier

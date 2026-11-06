@@ -1,53 +1,72 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793956316;
-	b=5gHnlX7a04/0r6LbvJW7jboOIx/M9xPltv/MdQia25T+XwBKyGeoMq9C2rnI9vBf6ieW
-	 TaaP2ZtLnplozR4Rb+C7+XDg/gx67+QQH1F7L4hFJa0Oyu45IRPLodVWhY354sM0ACq1k
-	 da/Adb2c2HjdtEusXZUFSF3FuufDfVx6T6971Ld6CSD/z0BXzgjGS4vKJ7tosf7htNcSL
-	 3Y0oStPtDOvLat83Y+OS+DO2ufehESL77hY1sE7VfnmEdD4qRO330kk0KI8/wJFn18RTK
-	 3pq4EDXqy39oP3Py57DAzJBVt3fN6rn/zpe3AndrSIJMra46VYg/XuxWCKmUkogQuaQ==
+	t=1793957325;
+	b=3fVUAiURTS44TjoGQ1pv7Aah/a8VEbAoBZOvCycNWlZ7OS8BJnUrrie5ZBrScP0hMF0p
+	 21zxSlKDIN8nbmfH1cwHmKY9uhWV3hDvnQbYRtwEk/WeQ9bxn7w+Qg4LdUvUB9HQ1hMHT
+	 kR3xtJJDPXCM2Xe0OYOWPR0HCm19hnKOht/swRQRtld0VOqdOJNFZS3u6Gvnbn8z/7YTX
+	 Z2+2dQK2BRqdEOAYdQeGZbFClZq+zLnqnPGEJvAw8Jpl00vWjnV5roS0ZBYIa0r5Vduwr
+	 LGGGEYsINPWjWnjQHYAAlFLdxMd9YRUkQ2LPIwi3dOT/bsb/9JG1joYP7HdZTCLO38g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793956316;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=eA+Ud+gFJNcVj31tDphP7Ap6AZDSCnf20xd55ColT4w=;
-	b=UFfWJYtr40UmtsPm3SlGsjeTAGJb9G2x1KGpDNMfDynSMBfoj1e6S1fmjKmZec2KVccf
-	 jxkyxZ7/JRiujauNY93Hgqu1Y7TcQWsy5YXQoYKNdSZ2VycQWBT6F3UWCWVGfZjGyIcXF
-	 e/AIWB37da1q6ke3eddc2ikjzpTRHEE4Sp5btkA4Q7TDLuasWr6MPdg5C5huzl6O9FEq5
-	 kp9ajKzpz4Z/r5fvXL0OXohv69B/M2BIwFm66J/wnRpR+Z/lvTl2JuY5p7UICr4sFKkYR
-	 qiZOoTefuuQyHLP8MKIHBNtJE1HIIaSYwvMdTyUPeKNvFEzGX5jIsfRMqg0TAVlIMhw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793957325;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Type:
+	 X-Developer-Signature:X-Developer-Key:Content-Transfer-Encoding;
+	bh=VC16RfQ/Ch74ykYoajUZJ+R1KFdW7fHzBmB94MytVlk=;
+	b=WzQxChkHI14oFq4yEbBaoozusuAfMETEJqHgsvIlbbrk3f7FJMyKM0h0ede1zTF2wlNW
+	 tPdrK3zRAHQnUUaHigveEg5wBUFkPF8iMzTIFCABBZfq0zm3T3FZj+jIkGjxYZUtFZaCX
+	 W7v5YMGtmIOevBz4VVk1l18Xfj3sKMz+K/AnlFyMQFaTf7V1KRgfvFL+bNwPJxxra0WvX
+	 3rDyoKisrYk0d63aKxIdNezjdauRpVXfh3viFfcJUHrNXINP7TwO8D52bIJzEbZVsHZOC
+	 LQkd3+5+VkpH+w5+o7L0fPzhMuQqVMR4z4+VgzaN1tWoqXO/l910xeghKnN2lvUgqkA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kqeWePhs;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A04D606A326;
-	Fri,  6 Nov 2026 09:11:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4A04D606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <a19cb7baea1434ddbbffc3176bdf493c895c7ea3.camel@crapouillou.net>
-Subject: Re: [PATCH 1/3] clk: ingenic: Poll JZ4780 CPU1 power status
- atomically
-From: Paul Cercueil <paul@crapouillou.net>
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Burton	
- <paulburton@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Brian Masney	
- <bmasney+clk@redhat.com>, Jerome Brunet <jbrunet+clk@baylibre.com>, 
- =?UTF-8?Q?=E5=91=A8=E7=90=B0=E6=9D=B0?= "(Zhou Yanjie)"	
- <zhouyanjie@wanyeetech.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, open
- list	 <linux-kernel@vger.kernel.org>, "open list:COMMON CLK FRAMEWORK"	
- <linux-clk@vger.kernel.org>, "H. Nikolaus Schaller" <hns@goldelico.com>, 
- Paul Boddie <paul@boddie.org.uk>
-Date: Fri, 06 Nov 2026 10:11:48 +0100
-In-Reply-To: <20261105203243.2292647-2-f.fainelli@gmail.com>
-References: <20261105203243.2292647-1-f.fainelli@gmail.com>
-	 <20261105203243.2292647-2-f.fainelli@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1504606A326;
+	Fri,  6 Nov 2026 09:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kqeWePhs
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C551F0089F;
+	Fri,  6 Nov 2026 09:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793957324;
+	bh=VC16RfQ/Ch74ykYoajUZJ+R1KFdW7fHzBmB94MytVlk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=kqeWePhskc8HNNCmYcdAWgvx59rFaItJGQOF/OyXIt/sCZd7S07yg+8aS/fnB0zNp
+	 VZWmUIjL5yONrrC/I3jiwH2+dnKikXHjGeTuLUGr0j0eRPY5SO/KWrCGOFcgNA3ZZL
+	 HdLccbtIl2+rB52+gfXthzuEXvhI4yjsjlV4x4GCkb7bizD6hCKSxpyMWCje9+/s6U
+	 4d4hYcIqy+tap693g+yX6oZ4XvZL7fnGPKzTviF5CpGIRYQ1kG01IAXQpkl7+VYCF1
+	 E9JusScvtWLyNrSjSK8j0HDA6lphKi+qTFh2GDRYyMedmYzEVbuuhiiS7jnOcasf3z
+	 PDOC78hNF61Zw==
+From: Christian Brauner <brauner@kernel.org>
+To: me@bobcopeland.com,
+	Hungyu Lin <dennylin0707@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	willy@infradead.org,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	akpm@linux-foundation.org,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	geert@linux-m68k.org,
+	tsbogend@alpha.franken.de,
+	maddy@linux.ibm.com,
+	linux-karma-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] omfs: remove the filesystem
+Date: Fri,  6 Nov 2026 10:28:33 +0100
+Message-ID: <20261106-vortrag-exotisch-pelzmantel-66235662f81f@brauner>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261105044046.52180-1-dennylin0707@gmail.com>
+References: <20261105044046.52180-1-dennylin0707@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,50 +76,41 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1286; i=brauner@kernel.org; h=from:subject:message-id; bh=i3zpqEJ74dna9za+0x2JJjtzgM6lB6eRNkY0jcS+yfg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9nXv4bfPNlUcWTPn4uXNLgONU2auKFum3j/m/yNjO3 u7/4QGPcEcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEkjYzMkw6HKYfmszBsTjg nQ9D0/sLfp1fF166+WGPjq32xIUV3GcZfrMKhXHuzlJ3P5KXsnvXZd3mx77RJ1add2gs+WygyOB fzwsA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Hi Florian,
+On Thu, 05 Nov 2026 04:40:45 +0000, Hungyu Lin wrote:
+> OMFS supports the on-disk format used by the long-discontinued Rio Karma
+> music player and ReplayTV DVR. While reviewing a fix for incorrect block
+> mapping on writes starting beyond EOF, Matthew suggested removing the
+> filesystem instead of continuing to maintain it.
+> 
+> Existing OMFS media can still be accessed using an older kernel with OMFS
+> support.
+> 
+> [...]
 
-Le jeudi 05 novembre 2026 =C3=A0 12:32 -0800, Florian Fainelli a =C3=A9crit=
-=C2=A0:
-> The CPU1 clock enable callback runs under the clock framework's spinlock
-> with interrupts disabled. Its readl_poll_timeout() can sleep between
-> reads, which is invalid in this context when SMP powers up CPU1.
->=20
-> Use readl_poll_timeout_atomic() with the existing interval and timeout.
-> This is a prerequisite for the JZ4780 SMP bring-up path. The original
-> CPU1 clock implementation by Zhou Yanjie is already upstream.
->=20
-> Cross-built for CI20; the subsequent SMP-enabled image brought up both
-> CPU cores. Development and validation used Codex assistance.
->=20
-> Fixes: 6673db4f3f26 ("clk: JZ4780: Add function for enable the second cor=
-e.")
-> Link:
-> https://lkml.kernel.org/r/1582215889-113034-3-git-send-email-zhouyanjie@w=
-anyeetech.com
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+I agree. It's great to see that we are are able to shed a whole bunch of
+legacy tech.
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+---
 
-Cheers,
--Paul
+Applied to the vfs-7.5.omfs branch of the vfs/vfs.git tree.
+Patches in the vfs-7.5.omfs branch should appear in linux-next soon.
 
-> ---
-> =C2=A0drivers/clk/ingenic/jz4780-cgu.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz478=
-0-
-> cgu.c
-> index 1e88aef7ac0f..f5983033583a 100644
-> --- a/drivers/clk/ingenic/jz4780-cgu.c
-> +++ b/drivers/clk/ingenic/jz4780-cgu.c
-> @@ -242,7 +242,7 @@ static int jz4780_core1_enable(struct clk_hw *hw)
-> =C2=A0	spin_unlock_irqrestore(&cgu->lock, flags);
-> =C2=A0
-> =C2=A0	/* wait for the CPU to be powered up */
-> -	retval =3D readl_poll_timeout(cgu->base + CGU_REG_LCR, lcr,
-> +	retval =3D readl_poll_timeout_atomic(cgu->base + CGU_REG_LCR, lcr,
-> =C2=A0				 !(lcr & LCR_SCPUS), 10, timeout);
-> =C2=A0	if (retval =3D=3D -ETIMEDOUT) {
-> =C2=A0		pr_err("%s: Wait for power up core1 timeout\n", __func__);
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-7.5.omfs
+
+[1/1] omfs: remove the filesystem
+      https://git.kernel.org/vfs/vfs/c/b4d257187fe7

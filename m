@@ -1,108 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794011271;
-	b=GYU1nHC475SirLi0OftYZg3NpHcUkctsfM9lhHmSUi2UhCWoyEOMV+mCGiMhCliwDW/R
-	 cduIM52yua+x1dvp9XAv7kqcxyh9rmJJK4OB6E4R0Rl85DqX9fkoJ/BmffilPCJW1kvG/
-	 qw+T7F++GgjPyPHnl8XZ9ck2SRLHE9WDuyakTzLP75PGfRBnEjnrj9Ix6MfaFfJGOicwQ
-	 VNdkIpDHkSlxgScQkuzeIzK5ojJTv43bLdQevLOrR75svUcz2DPk1XkAhOLmX+EbPaAF4
-	 ulPY9yc5BFGoM4iprb6vWBTNntX7rqjmgimoruL2+6CTgZ7JpUL7sPX0BGqydrD8YTA==
+	t=1794012845;
+	b=MHf1ZK35a7csBGHzVsZ6mI6XoK/G3T156fR/RJmPxjx2pKIhYgJwDbfATCWf8uXiSOYx
+	 Nzb83KymntGI/wuxjLyRr0u5u96CfNp0++HloKpw2WKXXSzNqUkJUU4kJVUNXQIs4FOPn
+	 Cr/GmKTZjFicAb6crdBQwLsZqztCzPC5AMC+5vav34kRyPrqZ746iW6MNaob4UA5v4QvB
+	 4DfYjdcSuv6WaDjV2Ouvct3hR72qkJT9Io2bAYo8DmTKfKtOLlRtSRoCMcBb0ArxEd05t
+	 NKYfttk2WnDddvj+No25RpmtqElLaH5zY8BeWoUjr1c4HEfcCGESiVT1aKehYqgqzxA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794011271;
-	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
-	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:X-Received:Received:From:Date:
-	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key;
-	bh=uaMRO2fzvzuS1ux/KmjGKqBbaSfv45k34PkBtBvjTNE=;
-	b=gyuJO3FViH/n5XbKVyOhDZ9/Sd4xXAAYjBiYjC4aVrxRxoW/j1uQOc267b2VPLNSSEMQ
-	 DhUaQkJmND+XsjSHLQIGdGQAxM/h12x78CzlLcqetmylGOYjKO2h2eTAzUxzvgzxBQGIb
-	 W0ILuAYKIa432TT6qxkYeKw/NZowJQQ00eKiEK+QkW5iPor/jsajLwiQ1M92ojcMYQoeG
-	 FfoNniHuUwQA3K6Q9DwmkIhqmsPtMw1A/zWbQPAJ435p2XH+YwiMqRRq+QOShSKkZ2Iz6
-	 ZSroJMerqgXwlGqHucQKdlGjnzeJal6syQL0bVEjCbQaIysotLOEPRkAyLQmJRUmEiQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794012845;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=pjNeBK7qaQR2cfSs28TNbrSZTUgLgAf+poVMpkxqhFQ=;
+	b=AOHRgqb7Hm9ik3IrANnWESgq5355pcYmDnclQ/FaSHftVkVZ5rAtSpkeEjD2DYJROlOG
+	 N9e70MHEFEigxp72f5AT+igaDQNI5QG/DjshwsQ6/bZtiMCmRoqYWJq5IUZf6pMgmJuPM
+	 2P4X0u6cY5o+xNrGodLOc7qQbS2epUr2lzJnL8BGknqBoXRO8ZDB11knD0HVASTaF8hJn
+	 tMD/FjYoMrzPIEd7H59+9wPB/JCZ7HeHGogNnW3Fq7eozNUcH0I9ICnJuibu65RyuroVj
+	 ygcAhhp/W49hmcHNz8KPJK8oOcmLZDLIMMXAGu3lgfRZXdI6iwJ0/WXSlCpNd/xM4Jw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=redhat.com;
-	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=hlX9jjG6;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b="XRc/9wth";
-	arc=none smtp.remote-ip=170.10.129.124
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Fy3YG7sD;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B70606A32E
-	for <linux-mips@vger.kernel.org>; Sat,  7 Nov 2026 00:27:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 52B70606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F495606A333;
+	Sat,  7 Nov 2026 00:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=hlX9jjG6;
-	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=XRc/9wth
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1794011270;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uaMRO2fzvzuS1ux/KmjGKqBbaSfv45k34PkBtBvjTNE=;
-	b=hlX9jjG6dO4tjoODEJnGlQHpW/aTDV0BEHi+LTfTUfkalxlg8R7wqRPb5dFNPPqS/z6ehb
-	GqAG9IcWbNOZNyonOrPkeObT126dMoersEP4fCHybFhQvzJQ19Q2d6JDzc2g+E/5yMo9Pi
-	AAr51GfBmtIL0YY9OWcGzXCZV7tkDsM=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-zoobhkkiP5iN5dM9YrTGMw-1; Fri, 06 Nov 2026 19:27:28 -0500
-X-MC-Unique: zoobhkkiP5iN5dM9YrTGMw-1
-X-Mimecast-MFC-AGG-ID: zoobhkkiP5iN5dM9YrTGMw_1794011247
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-9308eafb465so319484885a.2
-        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 16:27:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1794011247; x=1794616047; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=uaMRO2fzvzuS1ux/KmjGKqBbaSfv45k34PkBtBvjTNE=;
-        b=XRc/9wtho+AlA/ao6oK3x8Xa9FYeG9zsWUjW02/au1f3alKP58W9CD0VYRLBzHGhBY
-         +EZQnOKB1uOyLI90XYyaBbAq3yUy01h+uCqci/J7GgfyQ8X1FJFNGaQhChGWgOXUVaZy
-         SZy3Uy0kdByC3rhz/oueukC6F3yBMrrmXA7OE8UgkBAthqvC54gJNLgdgBoHpBW8uuE0
-         IWrwxlmo+/PDCFRLoN82jhyRN6M9k4iZIxZ0Qq+owZsybIQd46jn3Zwz2fwU4PHRSCvn
-         Tza9BGTgwUbapRprZNj7K/vtjXd5UrUxfQq30QRRw6awVYT7GE/kYdS/MkgC2A8Xe2fh
-         Xk6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794011247; x=1794616047;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=uaMRO2fzvzuS1ux/KmjGKqBbaSfv45k34PkBtBvjTNE=;
-        b=jNkDOFwR8dHv4MWokZS+JufTFvUK86VCZy1gWlZOLIHBu+s7krgj8Hns8LB3FGxScT
-         LQgkL42MUhUZas5XQ7uu+uESVqEx1AYXCKdpX1KO56YkDJwKT5sEurRpS+UXRhDezsQM
-         tC7A4mTqi5ab5X+Bn+aA5wRqRlXF4JXd/VAeoWa6jrxMVWYxQRG07KJ/cUR+nqoNqu5Q
-         1DNL510DMPW/WiQ4DfPb2LRX5ZNR+hXsXnCyPaW4Z0j9m8BDWVvvWmVvhCZODk2bCyIc
-         NWESUu7Z4rFSt3tOVfHXXNzf2Ij3HgRsqKv9EDw3Rl/yHfxDk7juwazfGkaUbr4GengQ
-         dYRQ==
-X-Gm-Message-State: APuU4Z+UMRnZIp2/hVkO7XqErMSQHcoQ2vPlDJj7v9K09siQem2Kk/JB
-	oCELbQwXCE0idWfMAanpbMCce4g81Y28D9QlHkkH5mUswMCleur3h9rkumvKikRE7fu3mJPeYIm
-	Whx6yXyyTyByJ1z1AZXqR3batKpYYLWawqPoAu+2cv1bZihRwR5ET3bMDCAQVRd0=
-X-Gm-Gg: AYBFou0FvPuL8CeW6ICmuUOwJiNKriOZCCldYLn6tXa3/PadafWK5RbdNAZcjJdbIcv
-	u4VBcOwuKAkudK+pQ49JrCJselPIDJWIEnES8SkbJEY72njFtV+KWgaSjdgo73P3GTcmtvasv+M
-	MVLma8t/FoKPc8JeZKz8yv4UIhqNCApeMLm2kyv7WNN4h5tyUCl3VxApCHBFprwrERDtMD/I/FF
-	CvCU62+7S3azR4mBjtC6YwU7F/lI+zooi5HjU7eytSVE69rFoMGGrVHv+RP73oydV2WtiHHJT02
-	d40Tz1NvgFEVLgg7b1V61HJi7XXWRZCYSaeou8V/FnVYA/91EFY9ANazgS3JZh+lLgz8hUv07PC
-	bnyMXxmI6L1Xqty7HbCbOnBXSkkezDGP8O935Reui8tt/JD0PC8MvTnARk4vWMwMwf0QOnOdwtu
-	Q7XBODQU7Y62KlyGeH
-X-Received: by 2002:a05:620a:8006:b0:93e:d5c1:da49 with SMTP id af79cd13be357-945f3638186mr601942785a.82.1794011247489;
-        Fri, 06 Nov 2026 16:27:27 -0800 (PST)
-X-Received: by 2002:a05:620a:8006:b0:93e:d5c1:da49 with SMTP id af79cd13be357-945f3638186mr601940585a.82.1794011247091;
-        Fri, 06 Nov 2026 16:27:27 -0800 (PST)
-Received: from bmasney-x1.rmtuswv.csb ([69.43.42.202])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-945f5a97aa1sm254122985a.8.2026.11.06.16.27.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2026 16:27:26 -0800 (PST)
-From: Brian Masney <bmasney@redhat.com>
-Date: Fri, 06 Nov 2026 19:27:12 -0500
-Subject: [PATCH 1/2] pinctrl: ingenic: convert to
- subsys_platform_driver_probe()
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Fy3YG7sD
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30D951F008A1;
+	Sat,  7 Nov 2026 00:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794012845;
+	bh=pjNeBK7qaQR2cfSs28TNbrSZTUgLgAf+poVMpkxqhFQ=;
+	h=From:To:Cc:Subject:Date;
+	b=Fy3YG7sDVYMMmQkBgSspBY2tPckDWj/BAUZ0gEzSSShq5gf/Are+KnwGBBfQodYAL
+	 8IdCkRiEv2Bo5jnKc1GYbMBbv5MUIEC9euN0/8AlMgKwqjjXLQU+bU6cwkITcgElMQ
+	 vpZbsRMZK+kLXv+B/FnTLLG0Xq59RIo2XGI0MiUBvjEmxbYaXBkW5EKna2XLdt4K7y
+	 C5FrHdbrlVEHxVgDRjPII8wD4uLG1Y89uBgeLNQtPVrfxZIKbWrkvgzVr4BvfTWrN2
+	 C9odlR8cZ1XnV8lz7nNuZ48/8J+CN7EsHV+kOEtkYAYMcrDtpscJ5zSLl4NU3MGMEA
+	 KEBGy6TP1ZuIg==
+From: Imre Kaloz <kaloz@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH v2] MIPS: sgi-ip32: Fence PIO reads on CRIME 1.1
+Date: Sat,  7 Nov 2026 01:52:45 +0100
+Message-ID: <20261107005245.20299-1-kaloz@kernel.org>
+X-Mailer: git-send-email 2.47.3
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -112,52 +56,190 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261106-pinctrl-subsys-v1-1-f17582f32aaf@redhat.com>
-References: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
-In-Reply-To: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
-To: Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>, 
- Mika Westerberg <mika.westerberg@linux.intel.com>, 
- Andy Shevchenko <andy@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Brian Masney <bmasney@redhat.com>
-X-Mailer: b4 0.17-dev-d96cb
-X-Developer-Signature: v=1; a=openpgp-sha256; l=877; i=bmasney@redhat.com;
- s=20250903; h=from:subject:message-id;
- bh=qS7kwaZ5wh6601gIdwcEGb6zbpvJGdxwP4MG7PQygYA=;
- b=owGbwMvMwCW2/dJd9di6A+2Mp9WSGLLeFWTp3nPdUTrPJvBSdKhO/ZnvHFMFpqiUzJGS9Tv4Z
- dmbtWlfO0pZGMS4GGTFFFmW5BoVRKSusr13R5MFZg4rE8gQBi5OAZhI7UtGhkm+j/8kuD6sSome
- 09n+9tHBlVbb5tQlz9FQ3iKUMe/so4UM/yumeln0B6hXrmC0vWC46/dB0fglDgpu5z+GtnCeW6c
- awwoA
-X-Developer-Key: i=bmasney@redhat.com; a=openpgp;
- fpr=A46D32705865AA3DDEDC2904B7D2DD275D7EC087
+Content-Transfer-Encoding: 8bit
 
-Reduce boilerplate code in this driver and convert it over to use the
-macro subsys_platform_driver_probe().
+On CRIME 1.1, the next MACE or PCI load after a read of the aic7880
+HCNTRL, INTSTAT or ERROR register can return that register's data
+instead of its own; a gap of about 2us avoids it. Under audio and SCSI
+DMA, repeating aic7xxx's ahc_pause(), register read, ahc_unpause() can
+hang; fenced, it runs clean. The next load can be an interrupt
+handler's, so the fence follows the trigger.
 
-Signed-off-by: Brian Masney <bmasney@redhat.com>
+Add a read hook to the MIPS accessors that, on CRIME 1.1, follows each
+MMIO and port read by 5us with interrupts off. Other platforms compile
+it out.
+
+Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- drivers/pinctrl/pinctrl-ingenic.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Changes in v2:
+- Reworded the first paragraph of the commit message.
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index d8ee489897ae..bdadb343c7cc 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -4698,9 +4698,5 @@ static struct platform_driver ingenic_pinctrl_driver = {
- 	},
- };
+v1: https://lore.kernel.org/r/20261021192418.7246-5-kaloz@kernel.org
+
+ arch/mips/include/asm/io.h                    | 11 +++++++
+ .../include/asm/mach-generic/read-fence.h     | 20 +++++++++++++
+ arch/mips/include/asm/mach-ip32/read-fence.h  | 29 +++++++++++++++++++
+ arch/mips/sgi-ip32/crime.c                    | 12 ++++++++
+ 4 files changed, 72 insertions(+)
+ create mode 100644 arch/mips/include/asm/mach-generic/read-fence.h
+ create mode 100644 arch/mips/include/asm/mach-ip32/read-fence.h
+
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 980187a83053..a5c49d319546 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -26,6 +26,7 @@
+ #include <asm/pgtable-bits.h>
+ #include <asm/string.h>
+ #include <mangle-port.h>
++#include <read-fence.h>
  
--static int __init ingenic_pinctrl_drv_register(void)
--{
--	return platform_driver_probe(&ingenic_pinctrl_driver,
--				     ingenic_pinctrl_probe);
--}
--subsys_initcall(ingenic_pinctrl_drv_register);
-+subsys_platform_driver_probe(ingenic_pinctrl_driver,
-+			     ingenic_pinctrl_probe);
-
+ /*
+  * Raw operations are never swapped in software.  OTOH values that raw
+@@ -222,6 +223,8 @@ static inline void pfx##write##bwlq(type val,				\
+ static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
+ {									\
+ 	volatile type *__mem;						\
++	unsigned long __rflags;						\
++	bool __fence;							\
+ 	type __val;							\
+ 									\
+ 	__mem = (void *)__swizzle_addr_##bwlq((unsigned long)(mem));	\
+@@ -229,6 +232,7 @@ static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
+ 	if (barrier)							\
+ 		iobarrier_rw();						\
+ 									\
++	__fence = plat_read_fence_begin(&__rflags);			\
+ 	if (sizeof(type) != sizeof(u64) || sizeof(u64) == sizeof(long)) \
+ 		__val = *__mem;						\
+ 	else if (cpu_has_64bits) {					\
+@@ -251,6 +255,8 @@ static inline type pfx##read##bwlq(const volatile void __iomem *mem)	\
+ 		__val = 0;						\
+ 		BUG();							\
+ 	}								\
++	if (__fence)							\
++		plat_read_fence_end(__rflags);				\
+ 									\
+ 	/* prevent prefetching of coherent DMA data prematurely */	\
+ 	if (!relax)							\
+@@ -283,6 +289,8 @@ static inline void pfx##out##bwlq(type val, unsigned long port)		\
+ static inline type pfx##in##bwlq(unsigned long port)			\
+ {									\
+ 	volatile type *__addr;						\
++	unsigned long __rflags;						\
++	bool __fence;							\
+ 	type __val;							\
+ 									\
+ 	__addr = (void *)__swizzle_addr_##bwlq(mips_io_port_base + port); \
+@@ -292,7 +300,10 @@ static inline type pfx##in##bwlq(unsigned long port)			\
+ 	if (barrier)							\
+ 		iobarrier_rw();						\
+ 									\
++	__fence = plat_read_fence_begin(&__rflags);			\
+ 	__val = *__addr;						\
++	if (__fence)							\
++		plat_read_fence_end(__rflags);				\
+ 									\
+ 	/* prevent prefetching of coherent DMA data prematurely */	\
+ 	if (!relax)							\
+diff --git a/arch/mips/include/asm/mach-generic/read-fence.h b/arch/mips/include/asm/mach-generic/read-fence.h
+new file mode 100644
+index 000000000000..0147ed88bc01
+--- /dev/null
++++ b/arch/mips/include/asm/mach-generic/read-fence.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_MACH_GENERIC_READ_FENCE_H
++#define __ASM_MACH_GENERIC_READ_FENCE_H
++
++#include <linux/types.h>
++
++/*
++ * Called around every MMIO and port read; plat_read_fence_end() runs only
++ * when plat_read_fence_begin() returned true.
++ */
++static inline bool plat_read_fence_begin(unsigned long *flags)
++{
++	return false;
++}
++
++static inline void plat_read_fence_end(unsigned long flags)
++{
++}
++
++#endif /* __ASM_MACH_GENERIC_READ_FENCE_H */
+diff --git a/arch/mips/include/asm/mach-ip32/read-fence.h b/arch/mips/include/asm/mach-ip32/read-fence.h
+new file mode 100644
+index 000000000000..7e3105af4c6f
+--- /dev/null
++++ b/arch/mips/include/asm/mach-ip32/read-fence.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_MACH_IP32_READ_FENCE_H
++#define __ASM_MACH_IP32_READ_FENCE_H
++
++#include <linux/irqflags.h>
++#include <linux/types.h>
++
++extern bool crime_read_fence;
++void crime_read_fence_end(unsigned long flags);
++
++/*
++ * CRIME 1.1 can return a PCI read's data again to the next MACE or PCI
++ * read issued within about 2us, so each read is followed by 5us with
++ * interrupts off.
++ */
++static inline bool plat_read_fence_begin(unsigned long *flags)
++{
++	if (!crime_read_fence)
++		return false;
++	local_irq_save(*flags);
++	return true;
++}
++
++static inline void plat_read_fence_end(unsigned long flags)
++{
++	crime_read_fence_end(flags);
++}
++
++#endif /* __ASM_MACH_IP32_READ_FENCE_H */
+diff --git a/arch/mips/sgi-ip32/crime.c b/arch/mips/sgi-ip32/crime.c
+index a24424437c6b..0b94150fbec1 100644
+--- a/arch/mips/sgi-ip32/crime.c
++++ b/arch/mips/sgi-ip32/crime.c
+@@ -7,6 +7,7 @@
+  * Copyright (C) 2005 Ilya A. Volynets <ilya@total-knowledge.com>
+  */
+ #include <linux/types.h>
++#include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/interrupt.h>
+@@ -25,6 +26,16 @@ struct sgi_mace __iomem *mace;
+ 
+ EXPORT_SYMBOL_GPL(mace);
+ 
++bool crime_read_fence __read_mostly;
++EXPORT_SYMBOL(crime_read_fence);
++
++void crime_read_fence_end(unsigned long flags)
++{
++	udelay(5);
++	local_irq_restore(flags);
++}
++EXPORT_SYMBOL(crime_read_fence_end);
++
+ void __init crime_init(void)
+ {
+ 	static const char * const revs[] = { "1.1", "1.3", "1.4" };
+@@ -41,6 +52,7 @@ void __init crime_init(void)
+ 	switch (id & CRIME_ID_IDBITS) {
+ 	case CRIME_ID_IDVALUE:
+ 		rev = revs[min_t(u64, id >> 32, ARRAY_SIZE(revs) - 1)];
++		crime_read_fence = !(id >> 32);
+ 		break;
+ 	case CRIME_ID_IDVALUE_B:
+ 		rev = "1.5";
 -- 
-2.56.0
+2.47.3
 

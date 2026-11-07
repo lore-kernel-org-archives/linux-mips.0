@@ -1,106 +1,107 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.133.124
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794011250;
-	b=SRNQAzjfrwyr5heu8Yie5JRB0d/BTluhiBnZGzgapSIaczA/kDisqXuO2+i9yGDArDzw
-	 JgL6vz5NbueiSp/a0stMV6NUJ9De7l5DzerwZFJ/mETX7u8NBi9Gi/etEYf54u/u4PQsa
-	 /5aR2VPD208++P8HAA/v0qu/8IjNSxVJW7A3GrlTGpOVmm1gbzP6Cy1dX38UZP1yptrtM
-	 hbuxXiqFVyzgTIFmokXxuxVMde+53mePt/8rPCskSzVoIIwu//+uTsNFao/t9sWy/ym+a
-	 Bqq0BlB19LhVZj8ex6O5LJBfFhYD50zC5pWunmyrH4kXju3k6JW37zO+0ttDilKe3yw==
+	t=1794011253;
+	b=MvOWaJUPVzFL2zckchcvthpli7/Ca/vIxkOUTG01FTGqQhB900celmix2VG5+P4Rqjcq
+	 LHAWyC6RxklKZB3aMQ1WvVgNuYgdeVBjE8XDlItGsRoCMv1L5JAj8cZl721oOnvZPHhg3
+	 KFI8XQont2H86MTv6qHyZ7EkSwGrG6hPOE0WLSdl01eA+FMlodvh/zGuVKhFHtVCr7OAd
+	 7+hMzGKA4f2lE2r+oivQbruGZyEnRpW/wRK4OHJ6PTbi5DEGGp8Pgh5axYaUj9qrrfyPS
+	 lF8c2RQtcWRzuaVUMxLXhEf9FJHXRSX7fd0mYYKi0czA+P3KNiJDxw0ivXQp/sa6tVA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794011250;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794011253;
 	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
 	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:X-Received:Received:From:
-	 Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:X-Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key;
-	bh=ggPcQoF3sJG1GRBPHH5Ww0rZcBO2CUsFZ1xuXmUsbNk=;
-	b=h8GXye/M4fP6pH4bniXieJDGYalTeU3i3vSW9jFft2nccZxgIZAIL3ZCyzqQZ7nnaIHG
-	 HjpvLbS1fMyB6cbADW6Zm/TzBRWrjzI9fAbS25ECrid890JekBqjV5dv1SpCp6G/7JkWT
-	 PNX7qcMhMbhPp+bAwfx+q+a9KUCKl3/eu8GnI4Vd5PE3RhCN55EERiKN6gJ0fobv/xWe+
-	 tBkKRT/xmvPTRSyOyhB6siHp1/e93wDv35zqAClcH4eSmB/hjLKbb/MhFly9THg6fKbuK
-	 2tpAqNi3qjfF9wp1B2jVmemZuSHr3Z/oRuT7Fw98AXeiPCf1XwGBtDh3Ncca8VDyPAA==
+	bh=0jlL+SHvvTR0ZQdsQVmEfpaIkY9fB2XCMI2EZ7p6juM=;
+	b=nRd+exlNVq0wUavmETUokizMm3zTb93VQhBzb0LjxIqsrFbSoRrA5gZMKOirsHqXvacu
+	 dHq7vvKJWYaoWPhSeoncG+wGxCXKBGliUwsUGLOw15y6Jt/MhwBzBWSKVJm8taRHXPLvg
+	 qLgqt4H/A1jJjuPuLDrHqW5Z/zjuevGjf2e9i1g5U+JK9qe4PbLIFirbo3LrEODv95QNc
+	 pGii1BJJnU5qNnZN+sGOhhHAmQneKFI9/3qPmFLK7D/nkrg0fKJ5GCqsM77ZCzFC+WwMf
+	 67i0Azpb3q10TuAiJr1eAybtR55IfB9APSniFr7QQC9G4cWwkNCf4eMdGX3q6eKqxLw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=redhat.com;
 	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NiHuWL40;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=VzZBVusC;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=EKvhCTRE;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=NJwEoHvo;
 	arc=none smtp.remote-ip=170.10.133.124
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33250606A32C
-	for <linux-mips@vger.kernel.org>; Sat,  7 Nov 2026 00:27:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 33250606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EA0606A33B
+	for <linux-mips@vger.kernel.org>; Sat,  7 Nov 2026 00:27:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6EA0606A33B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NiHuWL40;
-	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=VzZBVusC
+	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=EKvhCTRE;
+	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=NJwEoHvo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1794011248;
+	s=mimecast20190719; t=1794011251;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ggPcQoF3sJG1GRBPHH5Ww0rZcBO2CUsFZ1xuXmUsbNk=;
-	b=NiHuWL40Di6gMCiQJjRXxpcluaIy2AvGzZ/zGt72FvRd6wnigMlk3V7oMW6S3O9+2HZII6
-	1qv+FplDomG0VBx9KWAc3CL1fQ16JUW5IfVB+/Hv5aozAVK0xyeF29fN45QHu1q8Rak8zK
-	Qvq4ZrMkJ3Q8jh69+1yRprwLF0i4JW8=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0jlL+SHvvTR0ZQdsQVmEfpaIkY9fB2XCMI2EZ7p6juM=;
+	b=EKvhCTREG4fD3uRFFQmJCMXDOCblWEeZ0NZTOnBB/ISLRmNLiw46TZ8XVNHy/naU5l1pvH
+	tE6+eIqX8GuefB69Wp7kjxu1fOq1HzJpJIswD0LbLZc0p43PYd5KHp8dLmdULonx+m7oOH
+	IJLnHm1Cn6MpGo6DHSCW94ZH35pDY/A=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-474-1qbpApN7OO6CyoCpmGp-rg-1; Fri, 06 Nov 2026 19:27:27 -0500
-X-MC-Unique: 1qbpApN7OO6CyoCpmGp-rg-1
-X-Mimecast-MFC-AGG-ID: 1qbpApN7OO6CyoCpmGp-rg_1794011246
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-944138ed63fso204178085a.3
-        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 16:27:27 -0800 (PST)
+ us-mta-132-83RnNsINNzuWfMc9uiCtTA-1; Fri, 06 Nov 2026 19:27:29 -0500
+X-MC-Unique: 83RnNsINNzuWfMc9uiCtTA-1
+X-Mimecast-MFC-AGG-ID: 83RnNsINNzuWfMc9uiCtTA_1794011249
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-93f26dd2165so400280085a.3
+        for <linux-mips@vger.kernel.org>; Fri, 06 Nov 2026 16:27:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1794011246; x=1794616046; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=ggPcQoF3sJG1GRBPHH5Ww0rZcBO2CUsFZ1xuXmUsbNk=;
-        b=VzZBVusCaIfSJo9m2kCp9VBm7UYuZWBp+NOOYlJjmmWnoD5eAEPS2DIhO+i13wbOCY
-         EEnpouyLBsOH96PbYXaNHIRa8cqSqo6YQA4pl9I9yJa118p1ebQvz+u38M1XR8VOTLIM
-         zTB/auLnx/AroCnxF4cMjEhvTZ0pHnJCWbF1wJXTRqmhTkH6cjxLEbDdPII/vRuwd9ol
-         PPT8tiEjpROBYccWTGJYE8wRvjeIjMFI4iOtK2ik3Zfc6FqmLtIVLEKmIcQ476VORDei
-         ZyfbxsV7tnTzD5YL8LfrXwR+baDPSKhi2EBADLca9X/WzjjWu/lesDlkyLPf24yv20G2
-         j0Nw==
+        d=redhat.com; s=google; t=1794011249; x=1794616049; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=0jlL+SHvvTR0ZQdsQVmEfpaIkY9fB2XCMI2EZ7p6juM=;
+        b=NJwEoHvo2etzU8ANX/62m4Z+uAij13YvCDq1858HFQS7jaXbtE7/bk0Cei6jJzg1ce
+         b3TZLlJoFeC9/3xRfF1nLhP5P5+2+osqYpbSGEdyUVJJmak3sfdo/WDBlhpBFN5shyil
+         jouKf1u5D8jO42wOoCknNYOi2ov7pzETEyj/vIq8ZEe1UCBMcherKGujmzL6IwMDkXpK
+         ESF0YNLfwtoJ+FbhFN2p+hMb6jkulWHNLw14nqWfVedwZtGGw/kFYZVzP3Mqj4rR9DGE
+         xiHfzPH/gHhjodyzQGXLC9mcVLbfKTd4hBh4OkrkJLGp2YLxxI6Gq6/+jQnbGbmsfqvZ
+         EJnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794011246; x=1794616046;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=ggPcQoF3sJG1GRBPHH5Ww0rZcBO2CUsFZ1xuXmUsbNk=;
-        b=QqZ+RvcpGgwVUs5RxdY0cubbAyeu7+MUoq3OwhybSCffn1boNPLyGtELcj5+U8Tm0s
-         avWPnUyIkOXvcYm1hhNlNtwBXUGwGAJxUV0c4akzfU/FPkKC3Zeo7Y7AJwea/GACe2ap
-         FkQwPFGbqYKEq2n96xpQoZR5BPXwRO0FbH+bSE6Q7T5PMVibBs5Xhrg/BzYFpzm537Kl
-         PnXbaS2u3rOLrF8a+3qx8Gr0k0HNLazTRb5TxAFLMKaST09lDNq4V3P2G3BJcIfNiSar
-         rE4TdB6m073WgoqGE1r2zZJUOhmkRL1o/jsUAZumudKBPm9Kv+FD4EnfnzPjvj3ZbX8f
-         M4JA==
-X-Gm-Message-State: APuU4Z8qcc41xwDzK/AkZ6uErdhTwkBhrLH6zQ5hmTvOUmOkc0WmNsJ2
-	yw9sUx8M5PA+iImlLVDIZxKHSg8O94DBPzBieRex2YXvk5yjzaqKyU7u3tmjc7gxCprhmUjkIGf
-	gLsOHYUjFeJR6sowf03DwdOhy5QZ7Rwpa3Ge/2SwywL0OQQsgINni5+Fi5qfsH5E=
-X-Gm-Gg: AYBFou1PK9XhEk3+nRAW07oYeuxWoUbwBMtFKCy1aYubzZ3SBazdMLsU1Tf6eRcIjZ5
-	w0L6Ok5bb8uD0xFBIKz+2T2pMdZV1VqwNgmPWJGlUaDN3l6btnbBvoy1NQByxHstLY7edUPFBV5
-	A1pFpzJg0Lsq0btwxuSCYgMD39z5eonMRUyhZwsgGCDVW05ofmgkgw+YaZk3kXzvdauJAWuMeoT
-	ZSnXAJK4NorQyJOyWOBDxnmx63kf84j1QaDwx8PhmicFmV2IZuPRTC4jAv35ug1z1//ymbWa2S0
-	BKBge2x7g6GFT/r/IeZuNQ7SX5276eRw0WFuaG/tp5JqUcnAUY9yPGbJDVf16Hn6UbyATPmMix+
-	YzynqaWLDU/q0f4vXlQxHyR8kUbOfwju3Z1NypbMOo6Dk0N3HrCPoUE6BWcwrhD4YkROVedlpvZ
-	dNGleAY7KszWKC06gH
-X-Received: by 2002:a05:620a:448b:b0:93f:2aa8:c549 with SMTP id af79cd13be357-945f34d7959mr663754485a.24.1794011246423;
-        Fri, 06 Nov 2026 16:27:26 -0800 (PST)
-X-Received: by 2002:a05:620a:448b:b0:93f:2aa8:c549 with SMTP id af79cd13be357-945f34d7959mr663752285a.24.1794011245960;
-        Fri, 06 Nov 2026 16:27:25 -0800 (PST)
+        d=1e100.net; s=20260707; t=1794011249; x=1794616049;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=0jlL+SHvvTR0ZQdsQVmEfpaIkY9fB2XCMI2EZ7p6juM=;
+        b=27YA0crbTxJxacQa6hzlOEcZzXgxrutICO9g5orMmcxMN65gkyYiiF0gevLbVbI8uz
+         0oY9OjBmSevBCdjDV7x25xzJrGzagMHK4eT7tGkRGY44SGYGafe92d+RG8+/vHVu6x2i
+         AQEKY369eHiFo9TFOzrd9EpYqZISpEY6D5JU6cZEEPmnKZ4kVMmR5U1LoQlATVh1CCkR
+         FcJ5BR3zJmEDezpmcURCnA/VLuBRqB+huz8vilqYeCwi1XfdLgrSTULeocQIKB5M+AOe
+         0iw+yhR4FrGnSSQnZ2czy3VOE1gFyMC/EFYpMV6c1ZVQS1srzesGhrkfq56RTODCb3Hs
+         riDA==
+X-Gm-Message-State: APuU4Z+jjouiTiRF9xh42Pwnuv81Z+o5KxlPy7J59rsr+SbUaeR8i4J8
+	78VOQo1bCaV6oKfuwQJ354BSjEEJM8WZEgTtWIqVtM4THMslCO/38KQaCGeX36HKu29SIsQoBUK
+	bJRlw/tjHiCu+H9Iykty3nhYdYc8EF3Mp4wVIHfSaB5De/2CWY188be1B45Z8aqw=
+X-Gm-Gg: AYBFou05SM1V/7EwgGTsWPOAvVfmgnwSmgcelQljb7obYXeT808e+ZIwvxpUBeZH4EE
+	LUtdrFV/dC+Bg09jeLtTgJRUrtgQv1PMlI6SQl2b+1npJEJerMEVYTtgrBPtweSw1whDVDJ/lfg
+	nGnEf1Q8xmSDAvKeZMSPQE9ETkiuwuLWF+nz1GoGPGE+nxCPm4zCPF+Te9Rd8rZmXK6zmcVJ1M4
+	iDu8tx6LwxoSiqxoekhFdTmSZ2GktrMkBaTcxHbEUpS0otmq/Yv6EvIR4eDqrwxPwTE3YNkTbB3
+	KXR5jPU6TQdnqnAiffXBAUi7xA44YhzHcIltgthMryjqITHw/1+zKg92Dj7q+A3yPDc8tZ/g6ji
+	xDZYhT+W0mJn2qa5WceNzJwgdLCvEsgYckRERL7IoUF7XBHD07/8ubDfp0ZGyizBfLJm9BmQXBw
+	2JB3IRgHkiLhxdYkwq
+X-Received: by 2002:a05:620a:4405:b0:93e:7dfa:2f3f with SMTP id af79cd13be357-945f35bc739mr674554385a.62.1794011248878;
+        Fri, 06 Nov 2026 16:27:28 -0800 (PST)
+X-Received: by 2002:a05:620a:4405:b0:93e:7dfa:2f3f with SMTP id af79cd13be357-945f35bc739mr674551485a.62.1794011248389;
+        Fri, 06 Nov 2026 16:27:28 -0800 (PST)
 Received: from bmasney-x1.rmtuswv.csb ([69.43.42.202])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-945f5a97aa1sm254122985a.8.2026.11.06.16.27.25
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-945f5a97aa1sm254122985a.8.2026.11.06.16.27.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2026 16:27:25 -0800 (PST)
+        Fri, 06 Nov 2026 16:27:27 -0800 (PST)
 From: Brian Masney <bmasney@redhat.com>
-Subject: [PATCH 0/2] pinctrl: convert to subsys_platform_driver()
-Date: Fri, 06 Nov 2026 19:27:11 -0500
-Message-Id: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
+Date: Fri, 06 Nov 2026 19:27:13 -0500
+Subject: [PATCH 2/2] pinctrl: intel: convert to subsys_platform_driver()
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -112,23 +113,22 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzNDQwMz3YLMvOSSohzd4tKk4spiXWMzwyQjo0STJEMDcyWgpoKi1LTMCrC
- B0bEQPlBlVmpyCcgUpdpaABlM8alyAAAA
-X-Change-ID: 20261106-pinctrl-subsys-361b22a4b107
+Message-Id: <20261106-pinctrl-subsys-v1-2-f17582f32aaf@redhat.com>
+References: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
+In-Reply-To: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
 To: Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>, 
  Mika Westerberg <mika.westerberg@linux.intel.com>, 
  Andy Shevchenko <andy@kernel.org>
 Cc: linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Brian Masney <bmasney@redhat.com>
 X-Mailer: b4 0.17-dev-d96cb
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1265; i=bmasney@redhat.com;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8036; i=bmasney@redhat.com;
  s=20250903; h=from:subject:message-id;
- bh=kDTf9y+UELPGx2xKi0yx9abs7XbPUZFUrGvvsIFq3xk=;
- b=owGbwMvMwCW2/dJd9di6A+2Mp9WSGLLeFWS8zkz9FG+99P0aIWcxOf2iTfV/omf/rJTnNKg4s
- HrjYr+lHaUsDGJcDLJiiixLco0KIlJX2d67o8kCM4eVCWQIAxenAEyEz5CR4YhvbvWW+7wt17a9
- Ps5X883+oftzg5tb7ANmLF1StleC+zojw3rTg9s+/2XKuveeN/aHclh7dXVs91ymL4zpv29zKoV
- dZwAA
+ bh=UIZLTu2Z4bcde3pyez7vWV2eIO/OoXqje6HHBI1vuCc=;
+ b=owGbwMvMwCW2/dJd9di6A+2Mp9WSGLLeFWRbz3ttKm6kelnH0oGvefF+6Y8MLbY7vicFr1t24
+ Eq8vsjRjlIWBjEuBlkxRZYluUYFEamrbO/d0WSBmcPKBDKEgYtTACYS95HhD8ezmJ1sVvKVfEcS
+ nAIDVV+eCrmTy8q9kHODX9u1O0I6rIwMPVeqTq/L8pX7dPKp6ix1xYabH3YVR36YeUv9uFE265N
+ zvAA=
 X-Developer-Key: i=bmasney@redhat.com; a=openpgp;
  fpr=A46D32705865AA3DDEDC2904B7D2DD275D7EC087
 
@@ -137,10 +137,6 @@ the macro subsys_platform_driver().
 
 Signed-off-by: Brian Masney <bmasney@redhat.com>
 ---
-Brian Masney (2):
-      pinctrl: ingenic: convert to subsys_platform_driver_probe()
-      pinctrl: intel: convert to subsys_platform_driver()
-
  drivers/pinctrl/intel/pinctrl-broxton.c      | 12 +-----------
  drivers/pinctrl/intel/pinctrl-cedarfork.c    | 12 +-----------
  drivers/pinctrl/intel/pinctrl-cherryview.c   | 12 +-----------
@@ -150,14 +146,216 @@ Brian Masney (2):
  drivers/pinctrl/intel/pinctrl-merrifield.c   | 12 +-----------
  drivers/pinctrl/intel/pinctrl-moorefield.c   | 12 +-----------
  drivers/pinctrl/intel/pinctrl-sunrisepoint.c | 12 +-----------
- drivers/pinctrl/pinctrl-ingenic.c            |  8 ++------
- 10 files changed, 11 insertions(+), 105 deletions(-)
----
-base-commit: ddfe51b0a0f5dc9e415cc2c8ad8db17532dd426b
-base-tree: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-change-id: 20261106-pinctrl-subsys-361b22a4b107
+ 9 files changed, 9 insertions(+), 99 deletions(-)
 
-Best regards,
---  
-Brian Masney <bmasney@redhat.com>
+diff --git a/drivers/pinctrl/intel/pinctrl-broxton.c b/drivers/pinctrl/intel/pinctrl-broxton.c
+index 269b8e25db84..e79e3d6d954f 100644
+--- a/drivers/pinctrl/intel/pinctrl-broxton.c
++++ b/drivers/pinctrl/intel/pinctrl-broxton.c
+@@ -1010,17 +1010,7 @@ static struct platform_driver bxt_pinctrl_driver = {
+ 	.id_table = bxt_pinctrl_platform_ids,
+ };
+ 
+-static int __init bxt_pinctrl_init(void)
+-{
+-	return platform_driver_register(&bxt_pinctrl_driver);
+-}
+-subsys_initcall(bxt_pinctrl_init);
+-
+-static void __exit bxt_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&bxt_pinctrl_driver);
+-}
+-module_exit(bxt_pinctrl_exit);
++subsys_platform_driver(bxt_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Broxton SoC pinctrl/GPIO driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-cedarfork.c b/drivers/pinctrl/intel/pinctrl-cedarfork.c
+index 02fd1cc4fd1b..9f0c3b7f746d 100644
+--- a/drivers/pinctrl/intel/pinctrl-cedarfork.c
++++ b/drivers/pinctrl/intel/pinctrl-cedarfork.c
+@@ -327,17 +327,7 @@ static struct platform_driver cdf_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init cdf_pinctrl_init(void)
+-{
+-	return platform_driver_register(&cdf_pinctrl_driver);
+-}
+-subsys_initcall(cdf_pinctrl_init);
+-
+-static void __exit cdf_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&cdf_pinctrl_driver);
+-}
+-module_exit(cdf_pinctrl_exit);
++subsys_platform_driver(cdf_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Cedar Fork PCH pinctrl/GPIO driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c b/drivers/pinctrl/intel/pinctrl-cherryview.c
+index a33eca5eafc4..800d3e360ba4 100644
+--- a/drivers/pinctrl/intel/pinctrl-cherryview.c
++++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
+@@ -1769,17 +1769,7 @@ static struct platform_driver chv_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init chv_pinctrl_init(void)
+-{
+-	return platform_driver_register(&chv_pinctrl_driver);
+-}
+-subsys_initcall(chv_pinctrl_init);
+-
+-static void __exit chv_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&chv_pinctrl_driver);
+-}
+-module_exit(chv_pinctrl_exit);
++subsys_platform_driver(chv_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Cherryview/Braswell pinctrl driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-denverton.c b/drivers/pinctrl/intel/pinctrl-denverton.c
+index 47636a9719ed..015d0c405c22 100644
+--- a/drivers/pinctrl/intel/pinctrl-denverton.c
++++ b/drivers/pinctrl/intel/pinctrl-denverton.c
+@@ -264,17 +264,7 @@ static struct platform_driver dnv_pinctrl_driver = {
+ 	.id_table = dnv_pinctrl_platform_ids,
+ };
+ 
+-static int __init dnv_pinctrl_init(void)
+-{
+-	return platform_driver_register(&dnv_pinctrl_driver);
+-}
+-subsys_initcall(dnv_pinctrl_init);
+-
+-static void __exit dnv_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&dnv_pinctrl_driver);
+-}
+-module_exit(dnv_pinctrl_exit);
++subsys_platform_driver(dnv_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Denverton SoC pinctrl/GPIO driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-geminilake.c b/drivers/pinctrl/intel/pinctrl-geminilake.c
+index 21d0d5051b04..256b39308a93 100644
+--- a/drivers/pinctrl/intel/pinctrl-geminilake.c
++++ b/drivers/pinctrl/intel/pinctrl-geminilake.c
+@@ -456,17 +456,7 @@ static struct platform_driver glk_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init glk_pinctrl_init(void)
+-{
+-	return platform_driver_register(&glk_pinctrl_driver);
+-}
+-subsys_initcall(glk_pinctrl_init);
+-
+-static void __exit glk_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&glk_pinctrl_driver);
+-}
+-module_exit(glk_pinctrl_exit);
++subsys_platform_driver(glk_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Gemini Lake SoC pinctrl/GPIO driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-lynxpoint.c b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
+index 299ee4f22bdc..c6a1d36a0536 100644
+--- a/drivers/pinctrl/intel/pinctrl-lynxpoint.c
++++ b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
+@@ -834,17 +834,7 @@ static struct platform_driver lp_gpio_driver = {
+ 	},
+ };
+ 
+-static int __init lp_gpio_init(void)
+-{
+-	return platform_driver_register(&lp_gpio_driver);
+-}
+-subsys_initcall(lp_gpio_init);
+-
+-static void __exit lp_gpio_exit(void)
+-{
+-	platform_driver_unregister(&lp_gpio_driver);
+-}
+-module_exit(lp_gpio_exit);
++subsys_platform_driver(lp_gpio_driver);
+ 
+ MODULE_AUTHOR("Mathias Nyman (Intel)");
+ MODULE_AUTHOR("Andy Shevchenko (Intel)");
+diff --git a/drivers/pinctrl/intel/pinctrl-merrifield.c b/drivers/pinctrl/intel/pinctrl-merrifield.c
+index 5cf54bc18f86..2227e8e78a9f 100644
+--- a/drivers/pinctrl/intel/pinctrl-merrifield.c
++++ b/drivers/pinctrl/intel/pinctrl-merrifield.c
+@@ -363,17 +363,7 @@ static struct platform_driver mrfld_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init mrfld_pinctrl_init(void)
+-{
+-	return platform_driver_register(&mrfld_pinctrl_driver);
+-}
+-subsys_initcall(mrfld_pinctrl_init);
+-
+-static void __exit mrfld_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&mrfld_pinctrl_driver);
+-}
+-module_exit(mrfld_pinctrl_exit);
++subsys_platform_driver(mrfld_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Merrifield SoC pinctrl driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-moorefield.c b/drivers/pinctrl/intel/pinctrl-moorefield.c
+index 59f46b0e2156..5fe034dd7a9e 100644
+--- a/drivers/pinctrl/intel/pinctrl-moorefield.c
++++ b/drivers/pinctrl/intel/pinctrl-moorefield.c
+@@ -324,17 +324,7 @@ static struct platform_driver mofld_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init mofld_pinctrl_init(void)
+-{
+-	return platform_driver_register(&mofld_pinctrl_driver);
+-}
+-subsys_initcall(mofld_pinctrl_init);
+-
+-static void __exit mofld_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&mofld_pinctrl_driver);
+-}
+-module_exit(mofld_pinctrl_exit);
++subsys_platform_driver(mofld_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
+ MODULE_DESCRIPTION("Intel Moorefield SoC pinctrl driver");
+diff --git a/drivers/pinctrl/intel/pinctrl-sunrisepoint.c b/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
+index 77ac32ab9577..ae3f1ad627a9 100644
+--- a/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
++++ b/drivers/pinctrl/intel/pinctrl-sunrisepoint.c
+@@ -580,17 +580,7 @@ static struct platform_driver spt_pinctrl_driver = {
+ 	},
+ };
+ 
+-static int __init spt_pinctrl_init(void)
+-{
+-	return platform_driver_register(&spt_pinctrl_driver);
+-}
+-subsys_initcall(spt_pinctrl_init);
+-
+-static void __exit spt_pinctrl_exit(void)
+-{
+-	platform_driver_unregister(&spt_pinctrl_driver);
+-}
+-module_exit(spt_pinctrl_exit);
++subsys_platform_driver(spt_pinctrl_driver);
+ 
+ MODULE_AUTHOR("Mathias Nyman <mathias.nyman@linux.intel.com>");
+ MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
+
+-- 
+2.56.0
 

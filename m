@@ -1,61 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=207.54.77.171
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.225.138
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794144039;
-	b=xuRdp7SBK4FK2sOpAcacXU64IGQEyLUrIegRU1XOMxf1jW1qKiIYktUeZCsE8kCC3Jrf
-	 9OjIxAfGXZ7dWx1LzKwuqId/zj5euiNEqUuFtvD87NAV7yBqBUQX9ZKr4uGg7enF84WPL
-	 CGHxfZuETDMZtIVjn+jCeq81mTfzxSpsaPpZ4k8fpMph2aJMKnG8/FQdL3MCnZU9L6kDB
-	 nWn+KPJOFtjvH+Kw2BRrk9s0uZVvlOFlOVdK59F49mMSEKa/AMKWDcF+b6VliOx41EDpa
-	 n6Z1mZT3ucSiz2CpNvQxorZmudnbNCnRh6ksf751kAXz++ClWErtLmgWsKQBvVbCaSA==
+	t=1794148315;
+	b=sVEBVO1Rm5UrzbWH0sXT9y/v7RIfv9EBH4FPGFFqiK/NQE3BPUlR8YNzj7sXRzZuuG6b
+	 z9KWWgL2GCMd/j/ZoI2UO0Cm0SlKIAJkjsJBhs4u57/CZWTc1hdSdEqGBe0oWBf9PiLOS
+	 fPsLUW+yuZUop1APLTtXAFhnhUhri/Xjy/8v7pqABjaG8XRXCo/pyNajw3+KhXlQyKQjt
+	 oCbqW7Rr8twl8EXmEF1BJNUc8+/HvN4d0K5DA9d3JLxLlVTuahd4IlpzlDTCwtrLTtT+0
+	 LT7fcUUyeXA/iIALlobjBNhq0xnt+Fnl3B2O6VrG46wTvWG9QXeHEXaphkQvXzKLu6g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794144039;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-Amp-Result:X-Amp-File-Uploaded:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:Received:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer;
-	bh=OKPZQyJsCxKmvcu3evgCAn8bCU003kDuUuvj5pSvgRY=;
-	b=lN2Zcm4PyaXIENzte1stuaf2+88/qwwuX7gWcMTM4DJM3ZIqf4V3MZjzmh1bqDAX2JE5
-	 lBh+1ZLcGgtMElZP4SAT4+8FDbro8DmjzQKGIdC9ODBrkyvyIMkKfU/xEUPUZFS2IeuJ6
-	 dRWXlKknXnbBJ3Jii85Mjn2dEoYWSbAzWGMpuhhd3s8VH9GNvOnEi6tSRQ+BbjRnAusVM
-	 NAVlHVrSej3KlsK48lkIu8IVI9ezAvXAjHpUEpOnS9VznMGIqN/5WHGyWgGtQzy4wnsef
-	 sd20eINxcOqVqrsB0LWVaHtP1Ogqpl0SV2poCDFsXIfUubBhVWyQldLZk87DJBCxykg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794148315;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=liy1VmXlPKvtQbzDRyOlq4Ft68qogIpqnl5phnSa1P8=;
+	b=TFXgPWv2XvX3Skz2UNS4DlKVDhpIkiFomPKRlX9ypW/51adxZLcaFJ9sHydunhfJ/KwX
+	 aX+coJof6KYpHo3lpbUqGQIhob1oODxTjyRV3V69aM1cQ4wqFK3ysvwIacjjtc+1Oaqsj
+	 mFPqwNjAkcn74ox/w3nwM2K8j8kSeJh7hf5GK5eL3U7t+oiCChGV5LlhvGrg7vVs8BFX2
+	 bE2hdw6pec3NsjWiiAB3TWIlHQpkPE7mmgZ96z1RUCZcEEm7mNlCOL0bmk+jM8oY1mlpc
+	 BsytlNXZh1aGEbVAI+j780l489zrvZnzYpVcHeFXU78cgHYS2gfTFx/4t83KL8fyMhQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mobileye.com;
-	spf=pass smtp.mailfrom=mobileye.com;
-	arc=none smtp.remote-ip=207.54.77.171
-Received: from esa4.hc555-34.eu.iphmx.com (esa4.hc555-34.eu.iphmx.com [207.54.77.171])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7843E606A322;
-	Sun,  8 Nov 2026 13:20:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7843E606A322
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mobileye.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mobileye.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=mobileye.com; i=@mobileye.com; q=dns/txt; s=MoEyIP;
-  t=1794144036; x=1825680036;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=4V18Tfg9Ly6MPWUMnLZiqruGXQUpnrBi9GEGXYzKK7I=;
-  b=LXnRa253nwtXLJEfoBeJdsESjcGhUp/wkCEQUOcJ6nZx9KAEUUb1U18x
-   VnkntnfdNP/Pt90d/Af2orGJ6EhuNK2dIvC1YTmpmrfsb9pDrqzKLfr2u
-   M++/kICF/i8WAhirLjhgKGlkdmcKGnbKSSmKqSl/zj4OgH5ID/pC0Jham
-   1BRvBzYLk0H48W4+DisbpsVAn6qjqk8VvT84wHy5VgqwneP032nCHSxTL
-   EuSKzcgwAxEO+WT0nEBWRjv/hqLegsNM3nMYvQ54q8gI9w8UgtLyVs9V6
-   nVvIB5QhnUIcMXz9l6fEOzohk/FQ7th+PcCL04I/hy7lwUvilI6Ra4Vwa
-   A==;
-X-CSE-ConnectionGUID: MHGRpWrvQ26WAoe2XmE0rQ==
-X-CSE-MsgGUID: 629/kvOFSk65L7PzPOE8lQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from unknown (HELO ces04_data.me-crop.lan) ([146.255.191.134])
-  by esa4.hc555-34.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2026 15:20:27 +0200
-X-CSE-ConnectionGUID: f/8VzZ2vQ+GxPA0q6sIThQ==
-X-CSE-MsgGUID: LXSvwY2eSq6y8FZ7rEvvEw==
-Received: from unknown (HELO epgd071.me-corp.lan) ([10.154.54.2])
-  by ces04_data.me-crop.lan with SMTP; 08 Nov 2026 15:28:27 +0200
-Received: by epgd071.me-corp.lan (sSMTP sendmail emulation); Sun, 08 Nov 2026 15:20:25 +0200
-From: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-Date: Sun, 08 Nov 2026 15:20:10 +0200
-Subject: [PATCH 1/5] MIPS: CM: add CM3 performance counter GCR definitions
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="ct+Jmk/m";
+	arc=none smtp.remote-ip=74.125.225.138
+Received: from mail-wm2-f10.google.com (mail-wm2-f10.google.com [74.125.225.138])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987EE606A31C
+	for <linux-mips@vger.kernel.org>; Sun,  8 Nov 2026 14:31:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 987EE606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ct+Jmk/m
+Received: by mail-wm2-f10.google.com with SMTP id 5b1f17b1804b1-4b886ebe069so274545e9.1
+        for <linux-mips@vger.kernel.org>; Sun, 08 Nov 2026 06:31:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794148313; x=1794753113; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=liy1VmXlPKvtQbzDRyOlq4Ft68qogIpqnl5phnSa1P8=;
+        b=ct+Jmk/mePCfTNw5JyEoXJ7aIvsqtL4IGtHgKGpa04qLsoMnl4r+Qg+yTKy2GAaw3n
+         hSvi/HC60IrGTS+oAUXuvKQOU4uXbos4v5ieY2GRnHOcoTq+GmG7ugaqaN+vNhAd2LhG
+         5yXwQFTC5NmMIxEZdXn5If4oAbuwwrnM2CNH6s1Pzxqgw8nvmQQXU6R7VulpOb9jmHI+
+         W90Wwm/sRaujuk0oqa7ZPCghzshMJBeu8c1lcjhcPcnfni37053BicRy+vGN8Rviavwi
+         fiScHJb4mIIdX2aOrXl0LXO+zq7bXwFB40qm5SI6mzEPPc40k3anAfxuvkUqzCLm6RIj
+         0JDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794148313; x=1794753113;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=liy1VmXlPKvtQbzDRyOlq4Ft68qogIpqnl5phnSa1P8=;
+        b=wBzlob8l0IBMdO1A3VprJwRYF5yXPfXTHozmktzGyJ5nE0ZvfcPAin9BsVKU6rU9cx
+         /eoBLnEnlhASN7rVt9ZZogE4r+O4ylZx/8WZ8zcL8v8b0ZyJ79FBsQvQ7lLmRIBV1zWl
+         B7Kp6iQYhGP5gg20HjYSiCwDxhiUTnoqRj4txo5vf9MJDPg8ZmD9HQ6dd77j9fMvQulg
+         TSVztvQY7frFYpOSehyNDjQE0FZxza2C+dLkpDAHsM+MHlkrNimbdrqbc+ci/i4x87Cy
+         e5HMPJRhjd4et+S3712oBdjUsGtbuFEOcWhw3mVE5UvV/A3nczbD6vQkl9yEBLFrORPS
+         YDpQ==
+X-Gm-Message-State: APuU4Z8Tm7ZQhazOEWhwS4m2GfkWid2XiYzzL+459+juerHnoFJTRaJq
+	jEriIzgZIAYSZsbtn9XEHT9Q4a+ILC1ilH3FKefEUnCoMEYh2FkaU2eq
+X-Gm-Gg: AYBFou2fPwdeHzVIW7AlU+CltbPQ2zJrtfzJF6qfFuPz8UbyyaiB3lHVh4/bdSCGcUD
+	lYcWYsCXOap2DR9G1iXY6imJMrh5tjfp9VTLlYIaTxPNE5G9JEIHBGj8luPuy2uv3mRry+Z/fVO
+	d7yaJIe0gCzqZ5SckIA8vY7XR3DzRlwZuL1E99Tv0fCc8ybFWKPDFVfuhLaWSQE/UwSpwI9HDj0
+	w1indjMYdO4g+Z9RfBZQexaGI2rSQXQr5+FgybSDVZqZcJVcfO5RSIXYVyNp56mnt4AXBOEnUfK
+	gbiytUZyQL7FiuQCW2xsf4qsZKI4huWmOMU5Df5wNsPme5pgWyYDdpbPHHh+cxAQBs+rptmwKg+
+	6KgkV1I0e2kYy8HI7HMGRwMEeai1v/GQKtB7VM8/GuInz2uoAJh2+Jj345Ocm1nXaeIGtHAp8x6
+	6kFm/Ynfdd0FX/WO2nv1KKn0RgILdBbq1xzbvID1NRq7qXMEXv2Hn1SsEmTN/4+JVdecEI9yNXw
+	mtfzV9DY6V8eV/RHvCryWZ49+fVUsHoipt1dyDPL2wp1+zMsRgsGzyjHaE2nj/rzZ+Wbki9dE0i
+	GTTfgjNV0OlROyrdfQKYRHCbQY1u7ck=
+X-Received: by 2002:a05:600c:c4a6:b0:4a7:669c:c988 with SMTP id 5b1f17b1804b1-4b963c8eb13mr31501935e9.23.1794148312740;
+        Sun, 08 Nov 2026 06:31:52 -0800 (PST)
+Received: from fedora41 ([2a01:e0a:1058:7c30:e315:b955:cb8b:b86b])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b90ee2b8c0sm68486485e9.9.2026.11.08.06.31.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2026 06:31:52 -0800 (PST)
+From: Timo Joannin <timo.joannin@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Orgad Shaneh <orgads@gmail.com>
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Timo Joannin <timo.joannin@gmail.com>
+Subject: [PATCH] mips: cavium-octeon: fix missing prototypes
+Date: Sun,  8 Nov 2026 15:31:40 +0100
+Message-ID: <20261108143140.157628-1-timo.joannin@gmail.com>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -65,126 +94,120 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261108-i6500-cm3-pmu-v1-1-bd119584891a@mobileye.com>
-References: <20261108-i6500-cm3-pmu-v1-0-bd119584891a@mobileye.com>
-In-Reply-To: <20261108-i6500-cm3-pmu-v1-0-bd119584891a@mobileye.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, Will Deacon <will@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Fu Chao-Ying <chao-ying.fu@globalfoundries.com>, 
- Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-X-Mailer: b4 0.16.0
+Content-Transfer-Encoding: 8bit
 
-The CM3 implements two programmable 32-bit performance counters and a
-32-bit cycle counter, controlled through registers in the GCR global
-debug block (GCR_DB_PC_*, offset 0x6100..0x61a8 from GCR_BASE).
+The compiler throws -Wmissing-prototypes warnings for
+several functions in the cavium octeon architecture code.
 
-Add GCR_DB_ACCESSOR_{RO,RW} helpers for the debug block and define the
-control, overflow status, event select, cycle counter, qualifier and
-counter registers along with their fields, as described in the I6500
-register reference (MD01189).
+It occurs due to a mix of hardcoded prototypes scattered
+across C files, a block-scoped extern declaration,
+and missing header files.
 
-Each accessor comes in two flavours, as the CPC ones do: db_<reg> for
-the local cluster and redir_db_<reg> for the debug block of another
-cluster through the redirect block. GCR_Cx_OTHER.BLOCK value 2 selects
-the debug block in the GCR, where the existing _BLOCK_USER name only
-describes its GIC meaning; add CM_GCR_Cx_OTHER_BLOCK_DEBUG for it.
+Fix the warnings by:
+- Moving the prototype for octeon_fill_mac_addresses() from
+setup.c to <asm/octeon/octeon.h>
+- Removing the block-scoped extern declaration for
+octeon_send_ipi_single() in mm/c-octeon.c and exposing via
+<asm/octeon/octeon.h>
+- Moving the prototype __cvmx_interrupt_gmxx_rxx_int_en_enable()
+from cvmx-interrupt-rsl.c to the cvmx-gmxx-defs shared header.
+- Adding the missing #include <asm/octeon/cvmx-helper-errata.h> to
+cvmx-helper-errata.c.
 
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+These changes pass the compiler's -Wmissing-prototypes safety
+checks without changing any runtime logic.
+
+Signed-off-by: Timo Joannin <timo.joannin@gmail.com>
 ---
- arch/mips/include/asm/mips-cm.h | 51 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+ arch/mips/cavium-octeon/executive/cvmx-helper-errata.c | 1 +
+ arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c | 2 --
+ arch/mips/cavium-octeon/setup.c                        | 2 --
+ arch/mips/include/asm/octeon/cvmx-gmxx-defs.h          | 2 ++
+ arch/mips/include/asm/octeon/octeon.h                  | 2 ++
+ arch/mips/mm/c-octeon.c                                | 1 -
+ 6 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-index 407f253bb4a1..390d06a8f1d1 100644
---- a/arch/mips/include/asm/mips-cm.h
-+++ b/arch/mips/include/asm/mips-cm.h
-@@ -161,6 +161,20 @@ static inline bool mips_cm_has_l2sync(void)
- 	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_CLCB_OFS + off, cl_##name)	\
- 	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_COCB_OFS + off, co_##name)
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-errata.c b/arch/mips/cavium-octeon/executive/cvmx-helper-errata.c
+index 4b26fedecf46..4ced03c18ad8 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-helper-errata.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-helper-errata.c
+@@ -38,6 +38,7 @@
+ #include <asm/octeon/octeon.h>
  
-+/*
-+ * Global debug block registers. The redir_db_* accessors reach the debug
-+ * block of another cluster through the redirect block, which must have been
-+ * pointed at it with mips_cm_lock_other(cluster, 0, 0,
-+ * CM_GCR_Cx_OTHER_BLOCK_DEBUG).
-+ */
-+#define GCR_DB_ACCESSOR_RO(sz, off, name)				\
-+	CPS_ACCESSOR_RO(gcr, sz, MIPS_CM_GDB_OFS + off, db_##name)	\
-+	CPS_ACCESSOR_RO(gcr, sz, MIPS_CM_COCB_OFS + off, redir_db_##name)
-+
-+#define GCR_DB_ACCESSOR_RW(sz, off, name)				\
-+	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_GDB_OFS + off, db_##name)	\
-+	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_COCB_OFS + off, redir_db_##name)
-+
- /* GCR_CONFIG - Information about the system */
- GCR_ACCESSOR_RO(64, 0x000, config)
- #define CM_GCR_CONFIG_CLUSTER_COH_CAPABLE	BIT_ULL(43)
-@@ -357,7 +371,8 @@ GCR_CX_ACCESSOR_RW(32, 0x018, other)
- #define CM_GCR_Cx_OTHER_BLOCK			GENMASK(25, 24)	/* CM >= 3.5 */
- #define  CM_GCR_Cx_OTHER_BLOCK_LOCAL		0
- #define  CM_GCR_Cx_OTHER_BLOCK_GLOBAL		1
--#define  CM_GCR_Cx_OTHER_BLOCK_USER		2
-+#define  CM_GCR_Cx_OTHER_BLOCK_USER		2	/* GIC */
-+#define  CM_GCR_Cx_OTHER_BLOCK_DEBUG		2	/* GCR */
- #define  CM_GCR_Cx_OTHER_BLOCK_GLOBAL_HIGH	3
- #define CM_GCR_Cx_OTHER_CLUSTER			GENMASK(21, 16)	/* CM >= 3.5 */
- #define CM3_GCR_Cx_OTHER_CORE			GENMASK(13, 8)	/* CM >= 3 */
-@@ -384,6 +399,40 @@ GCR_CX_ACCESSOR_RW(32, 0x030, reset_ext_base)
- #define CM_GCR_Cx_RESET_EXT_BASE_BEVEXCPA	GENMASK(7, 1)
- #define CM_GCR_Cx_RESET_EXT_BASE_PRESENT	BIT(0)
+ #include <asm/octeon/cvmx-helper-jtag.h>
++#include <asm/octeon/cvmx-helper-errata.h>
  
-+/* GCR_DB_PC_CTL - Control of the CM3 performance counters */
-+GCR_DB_ACCESSOR_RW(32, 0x100, pc_ctl)
-+#define CM_GCR_DB_PC_CTL_PERF_INT_EN		BIT(30)
-+#define CM_GCR_DB_PC_CTL_PERF_OVF_STOP		BIT(29)
-+#define CM_GCR_DB_PC_CTL_P1_RESET		BIT(9)
-+#define CM_GCR_DB_PC_CTL_P1_COUNTON		BIT(8)
-+#define CM_GCR_DB_PC_CTL_P0_RESET		BIT(7)
-+#define CM_GCR_DB_PC_CTL_P0_COUNTON		BIT(6)
-+#define CM_GCR_DB_PC_CTL_CYCL_CNT_RESET		BIT(5)
-+#define CM_GCR_DB_PC_CTL_CYCL_CNT_COUNTON	BIT(4)
-+#define CM_GCR_DB_PC_CTL_PERF_NUM_CNT		GENMASK(3, 0)
-+
-+/* GCR_DB_PC_OV - CM3 performance counter overflow status (write 1 to clear) */
-+GCR_DB_ACCESSOR_RW(32, 0x120, pc_ov)
-+#define CM_GCR_DB_PC_OV_P1_OF			BIT(2)
-+#define CM_GCR_DB_PC_OV_P0_OF			BIT(1)
-+#define CM_GCR_DB_PC_OV_CYCL_CNT_OF		BIT(0)
-+
-+/* GCR_DB_PC_EVENT - CM3 performance counter event selection */
-+GCR_DB_ACCESSOR_RW(32, 0x130, pc_event)
-+#define CM_GCR_DB_PC_EVENT_P1_EVENT		GENMASK(15, 8)
-+#define CM_GCR_DB_PC_EVENT_P0_EVENT		GENMASK(7, 0)
-+
-+/* GCR_DB_PC_CYCL - CM3 performance cycle counter */
-+GCR_DB_ACCESSOR_RW(32, 0x180, pc_cycl)
-+
-+/* GCR_DB_PC_QUALn - CM3 performance counter n event qualifier */
-+GCR_DB_ACCESSOR_RW(64, 0x190, pc_qual0)
-+GCR_DB_ACCESSOR_RW(64, 0x1a0, pc_qual1)
-+
-+/* GCR_DB_PC_CNTn - CM3 performance counter n value */
-+GCR_DB_ACCESSOR_RW(32, 0x198, pc_cnt0)
-+GCR_DB_ACCESSOR_RW(32, 0x1a8, pc_cnt1)
-+
  /**
-  * mips_cm_l2sync - perform an L2-only sync operation
-  *
-
+  * Due to errata G-720, the 2nd order CDR circuit on CN52XX pass
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c b/arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c
+index d23f46736dd6..314672040f2f 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c
+@@ -39,8 +39,6 @@
+ #define PRINT_ERROR(format, ...)
+ #endif
+ 
+-void __cvmx_interrupt_gmxx_rxx_int_en_enable(int index, int block);
+-
+ /**
+  * Enable ASX error interrupts that exist on CN3XXX, CN50XX, and
+  * CN58XX.
+diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+index 7497be7b9431..a1159a3d7f78 100644
+--- a/arch/mips/cavium-octeon/setup.c
++++ b/arch/mips/cavium-octeon/setup.c
+@@ -1156,8 +1156,6 @@ void __init prom_free_prom_memory(void)
+ 	}
+ }
+ 
+-void __init octeon_fill_mac_addresses(void);
+-
+ void __init device_tree_init(void)
+ {
+ 	const void *fdt = NULL;
+diff --git a/arch/mips/include/asm/octeon/cvmx-gmxx-defs.h b/arch/mips/include/asm/octeon/cvmx-gmxx-defs.h
+index bdba676f1f2c..27b2ae74e948 100644
+--- a/arch/mips/include/asm/octeon/cvmx-gmxx-defs.h
++++ b/arch/mips/include/asm/octeon/cvmx-gmxx-defs.h
+@@ -2256,4 +2256,6 @@ union cvmx_gmxx_tx_xaui_ctl {
+ 	} s;
+ };
+ 
++void __cvmx_interrupt_gmxx_rxx_int_en_enable(int index, int block);
++
+ #endif
+diff --git a/arch/mips/include/asm/octeon/octeon.h b/arch/mips/include/asm/octeon/octeon.h
+index 5c1d726c702f..ef1eb000f46d 100644
+--- a/arch/mips/include/asm/octeon/octeon.h
++++ b/arch/mips/include/asm/octeon/octeon.h
+@@ -31,6 +31,7 @@ extern void *octeon_bootmem_alloc_named_address(uint64_t size, uint64_t address,
+ extern int octeon_bootmem_free_named(char *name);
+ extern void octeon_bootmem_lock(void);
+ extern void octeon_bootmem_unlock(void);
++extern void octeon_send_ipi_single(int cpu, unsigned int action);
+ 
+ extern int octeon_is_simulation(void);
+ extern int octeon_is_pci_host(void);
+@@ -47,6 +48,7 @@ extern void octeon_user_io_init(void);
+ 
+ extern void octeon_init_cvmcount(void);
+ extern void octeon_setup_delays(void);
++extern void octeon_fill_mac_addresses(void);
+ extern void octeon_io_clk_delay(unsigned long);
+ 
+ #define OCTEON_ARGV_MAX_ARGS	64
+diff --git a/arch/mips/mm/c-octeon.c b/arch/mips/mm/c-octeon.c
+index b7393b61cfa7..f6b890a89ea1 100644
+--- a/arch/mips/mm/c-octeon.c
++++ b/arch/mips/mm/c-octeon.c
+@@ -62,7 +62,6 @@ static void local_octeon_flush_icache_range(unsigned long start,
+  */
+ static void octeon_flush_icache_all_cores(struct vm_area_struct *vma)
+ {
+-	extern void octeon_send_ipi_single(int cpu, unsigned int action);
+ #ifdef CONFIG_SMP
+ 	int cpu;
+ 	cpumask_t mask;
 -- 
-2.43.0
+2.56.0
 

@@ -1,91 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.169
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.219.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794248802;
-	b=ARhs4OwGDTfthMGLVIRPRmGdN4JFrsf9YWA4ObOGf5YYb76U4NKH554JHKMRxgwtK0ul
-	 MxdH9xi9b+AgR1nqohVgLVci1DOMQLYVAGfSXaDn5vSifi09uVswPCyY1rMejHGcAFtBr
-	 GzEVdNwblrp3gQ4FU9wKPneS1DSoAS51H+tro4xnKo9okbZZO0Ot0tpW7VD14N5sJ7/vF
-	 EUViiNKISxOGTZpc4avxr3c9oCON94VYMha65GbvkNkQzsxT2PUfWCo399DawWeAocI2W
-	 udVASoRwXluaMEAF63hlg7BEsxIrhstWde6paVxDsm14KV0vH7WZZhql4P6pM80NmIA==
+	t=1794248940;
+	b=mVCDGg7jNcq3tJ4XGwGdvdCfzocY8iKzPSmiDhCKPwX6K+T1KURRrA4ESRn7Gc9G/XjF
+	 hfCmizRYopoaCKERy5k/fGqx+Op+jtiNk8gzLuowH0cVJF/Uiia3Xvze95V4xFIAMdBts
+	 Myr1UHuofC6rWDF6Zyrkw/frbfZ5MjmywfKmxeIi4g+yZvOm0IJpAyUM/sqIq4958WB/e
+	 YxML3ZJO3kofsdBfhobopAVyfUySrOWFKySgKwxz3CKxDmucMcTiag0voe9emYR5sTnCF
+	 RyCmK6msmCfV/TofTfh6QxZnjH+mQjj4X2PsgZjPTcfDiEjA77sdpBXSmLExzjw8NDA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794248802;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794248940;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
-	b=s7b8Hc7VcX4OxVK4B3WjUtfuOKwyjT8ypLw3PL1pW28SFqkL1WuG8Jiaq7fBYwlMqkjt
-	 8aQAZiQOXQbxDBb568DQoSrasRT4OPr1cH0WZNdZcFto4FeoySdlkDDsLjijZiNCUA9y7
-	 v5hzvMYf4d23C0EPTZgWQDb0KeYshZ39IhQu02Ez/f/oM39PGKF0mk1gQ1WWju7Dlo1ix
-	 5N4nXikkvxaYdeJDFD1DmcvY+KdxQk+xQrShesEWVp+Ktvou6oVvv4tVUjCRpCFhzvX8C
-	 UFKt5QllvfUROpAzENmHEi/ertA/Le0zHMYG8lNSocS7dDvMxT8qrLL3cj/Ck6uzh7w==
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=9w0S8CsI9EhhlqLHYlJdHUn34HOfLLSbwkfkmUDEcT0=;
+	b=RR9qeBrQqAxDOwi015nBcqkdGJ0zBvtNnyatXYxndN0FDbOqCAUuHE96FZYPsOVqR0fY
+	 v129o/5m/X5qywuv8A5M1RJamAzmmxKxZoevgaEdVHpFWkrhBLXrdXkC/FwaVVUEpDlHh
+	 12ivaRDIg4udTeKhFboWjP/kBDmocWLNTJw86OVTmw55bJZGPUg7Oa2Yskna3RcRUbTr4
+	 1271MOCQv8pOIjBYpOADCQmZAyGbKKnmUqyH2IQDdJnxllyJ3OKkvSFc6Fyuanuzvd+8W
+	 0EJNBEV/vZ4GDMq8MDKQzSevwg+PCrVgh7SxGnDECa82LdKr9NCJCLcePCRVCAQYTDA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=c2Pfn4F9;
-	arc=none smtp.remote-ip=74.125.82.169
-Received: from mail-dy1-f169.google.com (mail-dy1-f169.google.com [74.125.82.169])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=AlEBnYsj;
+	arc=none smtp.remote-ip=209.85.219.43
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ACC606AFC1
-	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 18:26:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B2ACC606AFC1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1416B60700A7
+	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 18:28:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1416B60700A7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=c2Pfn4F9
-Received: by mail-dy1-f169.google.com with SMTP id 5a478bee46e88-36e99cf7bb3so1972006eec.0
-        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 10:26:41 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=AlEBnYsj
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-91ef011e338so1418606d6.1
+        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 10:28:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794248801; x=1794853601; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
-        b=c2Pfn4F9VQW6nJV5+c+VrOUx9i1qZY0ugouUvigZsKq+kfHnKh2XLNThNmFo48myfw
-         bI2J/EIrAkBxP0+1c9ltDkON2PXfOybEthW/dfOR5ISTUUCdYANR9T3AA+sqBvmWX2XP
-         GUmZcx2fKuVu7/aKDFBr7tWvK7WVnTZ5yTb0WfGYuXIZ5lSsRWWzJMC9lbO7LPzrKclY
-         Wx0tH9xy2bjNxNsO1cUh/78M3HaARwTXqFN1kYzndOjK3BhSJepH8yP2vT8eTyYMaOr9
-         kzL9jI6JFX4Jbj/H0/VEMI0uVVImc0xaPZErH0R7uafkldR/zBvJhmjBPv6rrRl7DqK/
-         RgTA==
+        d=gmail.com; s=20260707; t=1794248938; x=1794853738; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=9w0S8CsI9EhhlqLHYlJdHUn34HOfLLSbwkfkmUDEcT0=;
+        b=AlEBnYsjS4cQ/ZCpakl4FK8wdHhmgl33YenUgAc5gNmBjh3fw10yeQV1m6rXIrMTZm
+         6hLUZKz8VGhoG59lEi73vFlBryPYdTm6R1Mhy6zcS5NH7ZYrAOvijTth2T2LOy/Y1Edn
+         W8ObT2BsaSLL/a8c6TLcSBDDQB3lrTg3X5FdB1tpy4FktjHlPdsCwfsQZh/yzejS3Ihl
+         Hc7kcfVoZgvWoOJ002pm5uikvwlhFB+i/Ah1lKvSXWQqWwliIHWwk34Ne4QYBEfubxvI
+         21ifdGnJKvGdNpTZgyDpGOFVmz4nx7CHha7NlCzr9ek+FGkmHxlUCuTYa5FD05QrO9Rd
+         Mo2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794248801; x=1794853601;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20260707; t=1794248938; x=1794853738;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
-        b=ANCFrMYxfdsyRjqYEWeMhjpBHUp3oXak6Ci9FBrSMwrP92gbFPY14vLT08+I9Yk1tE
-         Qpt/c9ascI704My1EIU4jWfHQ5FfI47Jr3sUl/iBPUAllk6a3nUuDkJP+zInMNZD8aNy
-         26qqj+t+NUsRhoi/Ivio00LmEQHd8HnKHJ/dYjHMHPkjqY4H5eUIwsMQ1XlcqfdXrtlq
-         5V/EuoIMP3rJinlh9h4p0FcuT+lnKV+vwz3R4fYnjIK7x2D3xw/dGa6XbtP6De29er+p
-         lwQcXKSuUKGzUkgxrBpkG5zNv5f5IeA5Qrmn5huq27K0s/hwj6NkmqbqnQQxT/tzHsy2
-         Mb7Q==
-X-Gm-Message-State: APuU4Z/Eh3eNk3U8DkRGiDUrAIXkQtd90Lr2bhCtr+AWy6423LzBu9CB
-	3FStTc5/4+pdwla3uvl6pegfRyTRJsZhyhju8frZSBxGv4+XKxDp8uACI0CWPg==
-X-Gm-Gg: AYBFou1DbMT0DnRmUi3JA/rLw1+P5ZTymDXPRY57OdqKTncoXh2tabyo9d7P0usow4A
-	47zr0c98jbg4gbyLZWx1Y8AlxBKyXK3aUQ3jMRHgtxwdrNmVNqUqIgCDV7tlYOGMu8xaPUPSFIn
-	WGwCUdDXBr4p63nrf/s8O1dwFDD/F1d/FbfVja63uVGrywA7BV4wo9ecbrHEbv6XU25LTnf0x1k
-	PBqwjYHdYCRoOP7lkXPhi4F72bYuKPEUYRCuKWBGafzgXLrJa+A+9LwHZeXDb4/u11dF/pdNfMb
-	3S3GRv7rEFFmXWvOKzn8qm8oMsgOlBRb9+Px2yYYw1BCqCf3r7/DfJudXdy7TNXj0zJulhE/KyP
-	Aj+7D+Qq+3RnYjT5SiHnba8C63PT3PH2Rl9X0HwQm+2GS65lE3QxZ/rGe7PRvOScnu4bBmaU6i/
-	zN3Gz6z/sqX9w+6HAy0Vl/yra5j/+cFc/BKs/6V93XgZfAGqtyb0/hZPXeFEaZ2cNqgnbTxeOX8
-	p+/mVlRZFAKLQpcddLc+EaDnI2xzmxCOsJ9Dmjyxz5NF9zhalxt1SxZvLLRw91I2dyxCU+AEvTl
-	WwzNk1IG
-X-Received: by 2002:a05:7301:fc81:b0:36a:1e50:e45 with SMTP id 5a478bee46e88-3751ee7be82mr85465eec.9.1794248799721;
-        Mon, 09 Nov 2026 10:26:39 -0800 (PST)
-Received: from eldorado ([2600:8802:b00:1f88::287])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3751fe306e3sm123652eec.7.2026.11.09.10.26.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 10:26:39 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: macro@orcam.me.uk,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] MIPS: SiByte: Update effective IRQ affinity
-Date: Mon,  9 Nov 2026 10:26:22 -0800
-Message-ID: <20261109182627.3517986-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        bh=9w0S8CsI9EhhlqLHYlJdHUn34HOfLLSbwkfkmUDEcT0=;
+        b=bEDpa5vcbkc42Aq37ToCQ7TQnYMjYaLRUQUaqpH2kQxNZeQHJRw2WVKIb16vAFcp+9
+         QoAY+qC9qf6pePnhxOlerbXR9ggcBYtJ379lEUSAknKn1jZvxIoOoIsmDR3tGZkPLmkE
+         6v378/EhshjnL9+lPG34Si4/Q2N+ncBT7wNL3mmAV4YTZY2zl3vPrD7lYpbMrFvoGzwq
+         HqRRME/fJr35VM7KfmaZ6yuPUIkyEou7u0w6xfajRbJ+Kaqxyd2Ah24g0DzmpQGIFKtr
+         JDWmMr1/DoKLxsyzZTU/u8P89l84CZhIoCwP0d3NYuxdK49ZH+SCHULCA5u6JaaP+l5o
+         Om/A==
+X-Gm-Message-State: APuU4Z/yiLDmgW/asoq+R32JMMY2CiPI/+l0o/Trp7gCGoiAgPkmiBHf
+	Fz4yJRYh5WszN28uraYJn7BvDTfr3WAIaOR8s4RSmOVazaaU2ZRDnT6Y
+X-Gm-Gg: AYBFou0xc8OgcOkYdRruZNfEV1h9jq0KwY6Fxv9xS1+DAtm7uIxg2tAB8XuqbCCKZ1I
+	emPkGYw18YUDVhxKYgG0ygmRYCwAbPo+LuVf+qshmJ+hUEUyrfpjEaIzJGIiMW70dJtqWbebaOV
+	RF6LN8Xk2IXrlH3A7AHH3RcQTlikXLLkly5SSersSHPYTCrInpxzWxbGWjdib6BoU5IGBnyQsDL
+	qiyQmILR0r804UzkRgBRx1Ojxhl2Kt9fA4wFqX2akLVwNxzwpow+NU+xi3LhGVDKSVD/Xpr4+IW
+	n0gkb94vP85d/7Xhc4F/430mJvSmSo6WZEZRuC3nOcUtB8S6E2uFcGqlaAOqB3W9/KbehSFLHcl
+	TVTftnBxQN8uAo+htLp4bo7GRo5uRNBEy8we2vlt/w7Fjo9W1tmltuNi2+Za6tny1m8StwOJxnc
+	PI8+HBu7QH8fKghp3fKUJu72LsuoGpv0sDDpjqOT+b+garHi63xQkPzcN+uEgsjlRxCQpgLPV9D
+	0jzHwnvmRiuydArUaySAjfg5bz9xAVB+cGOEWXlwRz5RmIq8ieHUhi0oGWJBgHjdiCbegpymKE9
+	zcVYwcTSUDmzQGLcr0nNl8AV9HUAXwMQZXxWHKVMdXJRBMFiHFmz3blm+ni3MknOZoaz0yloKWc
+	t
+X-Received: by 2002:a05:6214:3490:b0:91e:92b0:5828 with SMTP id 6a1803df08f44-91eef89eee1mr6841486d6.20.1794248937575;
+        Mon, 09 Nov 2026 10:28:57 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91ef04ce58dsm1981226d6.16.2026.11.09.10.28.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2026 10:28:56 -0800 (PST)
+Message-ID: <0109c87b-b51b-4504-9c22-7f04ae278611@gmail.com>
+Date: Mon, 9 Nov 2026 10:28:53 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -95,67 +91,593 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] MIPS: Ingenic: Add JZ4780 SMP support to the generic
+ platform
+To: "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc: linux-mips@vger.kernel.org, =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?=
+ <zhouyanjie@wanyeetech.com>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, Paul Burton <paulburton@kernel.org>,
+ Paul Cercueil <paul@crapouillou.net>, Stephen Boyd <sboyd@kernel.org>,
+ Brian Masney <bmasney+clk@redhat.com>,
+ Jerome Brunet <jbrunet+clk@baylibre.com>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+ Paul Boddie <paul@boddie.org.uk>,
+ Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
+References: <20261105203243.2292647-1-f.fainelli@gmail.com>
+ <20261105203243.2292647-3-f.fainelli@gmail.com>
+ <FDBC55AE-EAB3-4C30-A148-99FA67B15B01@goldelico.com>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <FDBC55AE-EAB3-4C30-A148-99FA67B15B01@goldelico.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Booting an SB1250 kernel with CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
-enabled reports:
+On 11/6/26 06:36, H. Nikolaus Schaller wrote:
+> Hi,
+> 
+>> Am 05.11.2026 um 21:32 schrieb Florian Fainelli <f.fainelli@gmail.com>:
+>>
+>> From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>
+>> Port the JZ4780 reset-entry and CP0 mailbox implementation from Zhou
+>> Yanjie's 2020 v8 series, based on Paul Burton's original CI20 SMP code.
+>> The old arch/mips/jz4740 platform has moved into the generic MIPS code,
+>> so register the Ingenic SMP operations after unflattening the device
+>> tree and before selecting the generic fallback implementations.
+>>
+>> Reuse the upstream CPU clock gates, CPU device-tree nodes and per-CPU
+>> TCU timers. Enumerate only available CPU nodes within the two-core
+>> hardware limit. Prepare the CPU1 clock before boot, propagate clock
+>> failures, serialize mailbox accesses with a raw spinlock and publish
+>> bootstrap state before releasing the secondary core from reset. Align
+>> the secondary reset entry to the REIM register's 64 KiB granularity.
+>> Retain the UP fallback for other SoCs in a shared Ingenic kernel.
+>>
+>> Write back the private data cache before WAIT, since XBurst gates its
+>> clock during idle and another core must not access dirty data in that
+>> sleeping cache. Return with interrupts disabled as required by the
+>> current idle API. Existing per-CPU TCU events make the old forced
+>> broadcast-timer workaround unnecessary.
+>>
+>> This adaptation incorporates the CPU-enumeration review feedback and
+>> removes the old unused CPU mask. Preserve the original source credits;
+>> historical Tested-by and Reviewed-by tags are not carried to this
+>> substantially changed port. Adaptation and validation used Codex
+>> assistance.
+>>
+>> Link: https://lkml.iu.edu/hypermail/linux/kernel/2005.2/03488.html
+>> Link: https://lists.openwall.net/linux-kernel/2020/05/13/1482
+>> Link: https://lists.openwall.net/linux-kernel/2020/05/19/1099
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> [florian: forward ported to latest version]
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>> ---
+>> MAINTAINERS                           |   1 +
+>> arch/mips/generic/Makefile            |   1 +
+>> arch/mips/generic/ingenic-smp-entry.S |  54 ++++++
+>> arch/mips/generic/ingenic-smp.c       | 240 ++++++++++++++++++++++++++
+>> arch/mips/generic/ingenic-smp.h       |  20 +++
+>> arch/mips/generic/init.c              |   4 +
+>> arch/mips/ingenic/Kconfig             |   6 +
+>> arch/mips/kernel/idle.c               |  25 ++-
+>> 8 files changed, 350 insertions(+), 1 deletion(-)
+>> create mode 100644 arch/mips/generic/ingenic-smp-entry.S
+>> create mode 100644 arch/mips/generic/ingenic-smp.c
+>> create mode 100644 arch/mips/generic/ingenic-smp.h
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 09713dc4c6a7..101027579ccd 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -13117,6 +13117,7 @@ L: linux-mips@vger.kernel.org
+>> S: Maintained
+>> F: arch/mips/boot/dts/ingenic/
+>> F: arch/mips/generic/board-ingenic.c
+>> +F: arch/mips/generic/ingenic-smp*
+>> F: arch/mips/include/asm/mach-ingenic/
+>> F: arch/mips/ingenic/Kconfig
+>> F: drivers/clk/ingenic/
+>> diff --git a/arch/mips/generic/Makefile b/arch/mips/generic/Makefile
+>> index ea0e4ad5e600..df92650c0f15 100644
+>> --- a/arch/mips/generic/Makefile
+>> +++ b/arch/mips/generic/Makefile
+>> @@ -12,5 +12,6 @@ obj-$(CONFIG_YAMON_DT_SHIM) += yamon-dt.o
+>> obj-$(CONFIG_LEGACY_BOARD_SEAD3) += board-sead3.o
+>> obj-$(CONFIG_LEGACY_BOARD_OCELOT) += board-ocelot.o
+>> obj-$(CONFIG_MACH_INGENIC) += board-ingenic.o
+>> +obj-$(CONFIG_MIPS_INGENIC_SMP) += ingenic-smp.o ingenic-smp-entry.o
+>> obj-$(CONFIG_VIRT_BOARD_RANCHU) += board-ranchu.o
+>> obj-$(CONFIG_MACH_REALTEK_RTL) += board-realtek.o
+>> diff --git a/arch/mips/generic/ingenic-smp-entry.S b/arch/mips/generic/ingenic-smp-entry.S
+>> new file mode 100644
+>> index 000000000000..828df4687e84
+>> --- /dev/null
+>> +++ b/arch/mips/generic/ingenic-smp-entry.S
+>> @@ -0,0 +1,54 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+>> +/*
+>> + * Copyright (C) 2013 Paul Burton <paul.burton@imgtec.com>
+>> + * JZ4780 secondary CPU reset entry
+>> + */
+>> +
+>> +#include <asm/addrspace.h>
+>> +#include <asm/asm.h>
+>> +#include <asm/asmmacro.h>
+>> +#include <asm/cacheops.h>
+>> +#include <asm/mipsregs.h>
+>> +
+>> +#define CACHE_SIZE (32 * 1024)
+>> +#define CACHE_LINESIZE 32
+>> +
+>> + /* The CP0 REIM register only stores the upper 16 address bits. */
+>> + .section .text.smp-entry, "ax"
+>> + .balign 0x10000
+>> + .set noreorder
+>> +LEAF(jz4780_secondary_cpu_entry)
+>> + mtc0 zero, CP0_CAUSE
+>> + li t0, ST0_CU0
+>> + mtc0 t0, CP0_STATUS
+>> + ehb
+>> +
+>> + /* Invalidate both private caches before entering cached code. */
+>> + li t0, KSEG0
+>> + ori t1, t0, CACHE_SIZE
+>> + mtc0 zero, CP0_TAGLO
+>> + ehb
+>> +1: cache Index_Store_Tag_I, 0(t0)
+>> + cache Index_Store_Tag_D, 0(t0)
+>> + addiu t0, t0, CACHE_LINESIZE
+>> + bne t0, t1, 1b
+>> + nop
+>> +
+>> + mfc0 t0, CP0_CONFIG
+>> + li t1, ~CONF_CM_CMASK
+>> + and t0, t0, t1
+>> + ori t0, t0, CONF_CM_CACHABLE_NONCOHERENT
+>> + mtc0 t0, CP0_CONFIG
+>> + mtc0 zero, CP0_PAGEMASK
+>> + ehb
+>> +
+>> + /* CPU0 publishes these in RAM before releasing CPU1 from reset. */
+>> + la t0, jz4780_cpu_entry_sp
+>> + lw sp, 0(t0)
+>> + la t0, jz4780_cpu_entry_gp
+>> + lw gp, 0(t0)
+>> +
+>> + la t0, smp_bootstrap
+>> + jr t0
+>> + nop
+>> +END(jz4780_secondary_cpu_entry)
+>> diff --git a/arch/mips/generic/ingenic-smp.c b/arch/mips/generic/ingenic-smp.c
+>> new file mode 100644
+>> index 000000000000..98c1fd7483db
+>> --- /dev/null
+>> +++ b/arch/mips/generic/ingenic-smp.c
+>> @@ -0,0 +1,240 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * JZ4780 SMP support, based on Paul Burton's CI20 implementation and
+>> + * Zhou Yanjie's 2020 JZ4780 SMP series.
+>> + * Copyright (C) 2013 Paul Burton <paul.burton@imgtec.com>
+>> + */
+>> +
+>> +#include <linux/clk.h>
+>> +#include <linux/cpu.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_clk.h>
+>> +#include <linux/sched/task_stack.h>
+>> +#include <linux/smp.h>
+>> +
+>> +#include <asm/addrspace.h>
+>> +#include <asm/irq_cpu.h>
+>> +#include <asm/mipsregs.h>
+>> +#include <asm/r4kcache.h>
+>> +#include <asm/smp-ops.h>
+>> +
+>> +#include "ingenic-smp.h"
+>> +
+>> +#define read_c0_corectrl() __read_32bit_c0_register($12, 2)
+>> +#define write_c0_corectrl(val) __write_32bit_c0_register($12, 2, val)
+>> +#define read_c0_corestatus() __read_32bit_c0_register($12, 3)
+>> +#define write_c0_corestatus(val) __write_32bit_c0_register($12, 3, val)
+>> +#define read_c0_reim() __read_32bit_c0_register($12, 4)
+>> +#define write_c0_reim(val) __write_32bit_c0_register($12, 4, val)
+>> +#define read_c0_mailbox0() __read_32bit_c0_register($20, 0)
+>> +#define write_c0_mailbox0(val) __write_32bit_c0_register($20, 0, val)
+>> +#define read_c0_mailbox1() __read_32bit_c0_register($20, 1)
+>> +#define write_c0_mailbox1(val) __write_32bit_c0_register($20, 1, val)
+>> +
+>> +#define JZ4780_NR_CPUS 2
+>> +#define JZ4780_MBOX_IRQ (MIPS_CPU_IRQ_BASE + 3)
+>> +#define CORECTRL_SWRST(cpu) BIT(cpu)
+>> +#define CORECTRL_RPC(cpu) BIT(8 + (cpu))
+>> +#define CORESTATUS_MIRQ(cpu) BIT(cpu)
+>> +#define REIM_ENTRY GENMASK(31, 16)
+>> +#define REIM_MBOXIRQ(cpu) BIT(cpu)
+>> +
+>> +static struct clk *cpu1_clock;
+>> +static DEFINE_RAW_SPINLOCK(smp_lock);
+>> +
+>> +/* Referenced by the uncached secondary CPU reset entry. */
+>> +unsigned long jz4780_cpu_entry_sp;
+>> +unsigned long jz4780_cpu_entry_gp;
+>> +
+>> +static irqreturn_t jz4780_mbox_interrupt(int irq, void *dev_id)
+>> +{
+>> + unsigned int cpu = cpu_logical_map(smp_processor_id());
+>> + u32 action, status;
+>> +
+>> + raw_spin_lock(&smp_lock);
+>> + if (cpu == 0) {
+>> + action = read_c0_mailbox0();
+>> + write_c0_mailbox0(0);
+>> + } else {
+>> + action = read_c0_mailbox1();
+>> + write_c0_mailbox1(0);
+>> + }
+>> +
+>> + status = read_c0_corestatus();
+>> + write_c0_corestatus(status & ~CORESTATUS_MIRQ(cpu));
+>> + irq_disable_hazard();
+>> + raw_spin_unlock(&smp_lock);
+>> +
+>> + if (action & SMP_RESCHEDULE_YOURSELF)
+>> + scheduler_ipi();
+>> + if (action & SMP_CALL_FUNCTION)
+>> + generic_smp_call_function_interrupt();
+>> +
+>> + return IRQ_HANDLED;
+>> +}
+>> +
+>> +static void __init jz4780_smp_setup(void)
+>> +{
+>> + struct device_node *np;
+>> + u32 entry, reim;
+>> + u64 hwid;
+>> +
+>> + for_each_of_cpu_node(np) {
+>> + hwid = of_get_cpu_hwid(np, 0);
+>> + if (hwid >= nr_cpu_ids || hwid >= JZ4780_NR_CPUS ||
+>> +    !of_device_is_available(np))
+>> + continue;
+>> + __cpu_number_map[hwid] = hwid;
+>> + __cpu_logical_map[hwid] = hwid;
+>> + set_cpu_possible(hwid, true);
+>> + }
+>> +
+>> + /* Program the shared reset vector with mailbox delivery masked. */
+>> + reim = read_c0_reim();
+>> + reim &= ~(REIM_MBOXIRQ(0) | REIM_MBOXIRQ(1));
+>> + write_c0_reim(reim);
+>> + write_c0_mailbox0(0);
+>> + write_c0_mailbox1(0);
+>> + write_c0_corestatus(0);
+>> +
+>> + entry = KSEG1ADDR((unsigned long)jz4780_secondary_cpu_entry);
+>> + write_c0_reim((reim & ~REIM_ENTRY) | (entry & REIM_ENTRY));
+>> +}
+>> +
+>> +static void __init jz4780_prepare_cpus(unsigned int max_cpus)
+>> +{
+>> + struct device_node *np;
+>> + u32 reim;
+>> + int ret;
+>> +
+>> + ret = request_irq(JZ4780_MBOX_IRQ, jz4780_mbox_interrupt,
+>> +  IRQF_PERCPU | IRQF_NO_THREAD, "core mailbox", NULL);
+>> + if (ret)
+>> + panic("JZ4780: cannot request mailbox IRQ: %d", ret);
+>> +
+>> + reim = read_c0_reim();
+>> + write_c0_reim(reim | REIM_MBOXIRQ(0));
+>> + set_c0_status(STATUSF_IP3);
+>> + irq_enable_hazard();
+>> +
+>> + if (!cpu_possible(1))
+>> + return;
+>> +
+>> + np = of_get_cpu_node(1, NULL);
+>> + cpu1_clock = of_clk_get(np, 0);
+>> + of_node_put(np);
+>> + if (IS_ERR(cpu1_clock)) {
+>> + pr_err("JZ4780: cannot get CPU1 clock: %ld\n",
+>> +       PTR_ERR(cpu1_clock));
+>> + return;
+>> + }
+>> +
+>> + ret = clk_prepare(cpu1_clock);
+>> + if (ret) {
+>> + clk_put(cpu1_clock);
+>> + cpu1_clock = ERR_PTR(ret);
+>> + pr_err("JZ4780: cannot prepare CPU1 clock: %d\n", ret);
+>> + }
+>> +}
+>> +
+>> +static int jz4780_boot_secondary(int cpu, struct task_struct *idle)
+>> +{
+>> + unsigned long flags;
+>> + u32 ctrl;
+>> + int ret;
+>> +
+>> + if (cpu_logical_map(cpu) != 1 || IS_ERR_OR_NULL(cpu1_clock))
+>> + return -ENODEV;
+>> +
+>> + raw_spin_lock_irqsave(&smp_lock, flags);
+>> + ctrl = read_c0_corectrl() | CORECTRL_SWRST(1) | CORECTRL_RPC(1);
+>> + write_c0_corectrl(ctrl);
+>> + back_to_back_c0_hazard();
+>> +
+>> + ret = clk_enable(cpu1_clock);
+>> + if (ret)
+>> + goto unlock;
+>> +
+>> + jz4780_cpu_entry_sp = __KSTK_TOS(idle);
+>> + jz4780_cpu_entry_gp = (unsigned long)task_thread_info(idle);
+>> + /* Publish bootstrap state before CPU1 starts using its private cache. */
+>> + r4k_blast_dcache();
+>> + /* Complete cache writeback before releasing reset. */
+>> + mb();
+>> + write_c0_corectrl(ctrl & ~CORECTRL_SWRST(1));
+>> + back_to_back_c0_hazard();
+>> +unlock:
+>> + raw_spin_unlock_irqrestore(&smp_lock, flags);
+>> + return ret;
+>> +}
+>> +
+>> +static void jz4780_init_secondary(void)
+>> +{
+>> + clear_c0_status(ST0_IM);
+>> + irq_disable_hazard();
+>> +}
+>> +
+>> +static void jz4780_smp_finish(void)
+>> +{
+>> + unsigned int cpu = cpu_logical_map(smp_processor_id());
+>> + u32 reim;
+>> +
+>> + raw_spin_lock(&smp_lock);
+>> + reim = read_c0_reim();
+>> + write_c0_reim(reim | REIM_MBOXIRQ(cpu));
+>> + raw_spin_unlock(&smp_lock);
+>> +
+>> + change_c0_status(ST0_IM, STATUSF_IP3 | STATUSF_IP2 |
+>> + STATUSF_IP1 | STATUSF_IP0);
+>> + irq_enable_hazard();
+>> + local_irq_enable();
+>> +}
+>> +
+>> +static void jz4780_send_ipi_locked(int cpu, unsigned int action)
+>> +{
+>> + if (cpu_logical_map(cpu) == 0)
+>> + write_c0_mailbox0(read_c0_mailbox0() | action);
+>> + else
+>> + write_c0_mailbox1(read_c0_mailbox1() | action);
+>> + back_to_back_c0_hazard();
+>> +}
+>> +
+>> +static void jz4780_send_ipi_single(int cpu, unsigned int action)
+>> +{
+>> + unsigned long flags;
+>> +
+>> + raw_spin_lock_irqsave(&smp_lock, flags);
+>> + jz4780_send_ipi_locked(cpu, action);
+>> + raw_spin_unlock_irqrestore(&smp_lock, flags);
+>> +}
+>> +
+>> +static void jz4780_send_ipi_mask(const struct cpumask *mask, unsigned int action)
+>> +{
+>> + unsigned long flags;
+>> + int cpu;
+>> +
+>> + raw_spin_lock_irqsave(&smp_lock, flags);
+>> + for_each_cpu(cpu, mask)
+>> + jz4780_send_ipi_locked(cpu, action);
+>> + raw_spin_unlock_irqrestore(&smp_lock, flags);
+>> +}
+>> +
+>> +static const struct plat_smp_ops jz4780_smp_ops = {
+>> + .send_ipi_single = jz4780_send_ipi_single,
+>> + .send_ipi_mask = jz4780_send_ipi_mask,
+>> + .init_secondary = jz4780_init_secondary,
+>> + .smp_finish = jz4780_smp_finish,
+>> + .boot_secondary = jz4780_boot_secondary,
+>> + .smp_setup = jz4780_smp_setup,
+>> + .prepare_cpus = jz4780_prepare_cpus,
+>> +};
+>> +
+>> +int __init register_ingenic_smp_ops(void)
+>> +{
+>> + if (!of_machine_is_compatible("ingenic,jz4780"))
+> 
+> This will restrict to jz4780 and leave out x2000, x2600 in the future.
+> 
+> But for the moment it seems to be ok.
+> 
+>> + return -ENODEV;
+>> +
+>> + register_smp_ops(&jz4780_smp_ops);
+>> + return 0;
+>> +}
+>> diff --git a/arch/mips/generic/ingenic-smp.h b/arch/mips/generic/ingenic-smp.h
+>> new file mode 100644
+>> index 000000000000..54191be8731a
+>> --- /dev/null
+>> +++ b/arch/mips/generic/ingenic-smp.h
+>> @@ -0,0 +1,20 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+>> +/* Copyright (C) 2013 Paul Burton <paul.burton@imgtec.com> */
+>> +#ifndef __MIPS_GENERIC_INGENIC_SMP_H__
+>> +#define __MIPS_GENERIC_INGENIC_SMP_H__
+>> +
+>> +#include <linux/errno.h>
+>> +#include <linux/init.h>
+>> +#include <linux/kconfig.h>
+>> +
+>> +#ifdef CONFIG_MIPS_INGENIC_SMP
+> 
+> is this needed if the only user is not compiled in case of undefined CONFIG_MIPS_INGENIC_SMP?
+> 
+> Makefile:
+>> +obj-$(CONFIG_MIPS_INGENIC_SMP) += ingenic-smp.o ingenic-smp-entry.o
+> 
+>> +int __init register_ingenic_smp_ops(void);
+>> +void jz4780_secondary_cpu_entry(void);
+>> +#else
+>> +static inline int register_ingenic_smp_ops(void)
+>> +{
+>> + return -ENODEV;
+>> +}
+>> +#endif
+>> +
+>> +#endif /* __MIPS_GENERIC_INGENIC_SMP_H__ */
+>> diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
+>> index 1d712eac1617..00149bd1e9a9 100644
+>> --- a/arch/mips/generic/init.c
+>> +++ b/arch/mips/generic/init.c
+>> @@ -20,6 +20,8 @@
+>> #include <asm/smp-ops.h>
+>> #include <asm/time.h>
+>>
+>> +#include "ingenic-smp.h"
+>> +
+>> static __initconst const void *fdt;
+>> static __initconst const struct mips_machine *mach;
+>> static __initconst const void *mach_match_data;
+>> @@ -113,6 +115,8 @@ void __init device_tree_init(void)
+>> unflatten_and_copy_device_tree();
+>> mips_cpc_probe();
+>>
+>> + if (!register_ingenic_smp_ops())
+>> + return;
+>> if (!register_cps_smp_ops())
+>> return;
+>> if (!register_vsmp_smp_ops())
+>> diff --git a/arch/mips/ingenic/Kconfig b/arch/mips/ingenic/Kconfig
+>> index f595b339a4b8..1dfd0bfd0193 100644
+>> --- a/arch/mips/ingenic/Kconfig
+>> +++ b/arch/mips/ingenic/Kconfig
+>> @@ -64,6 +64,12 @@ config MACH_JZ4780
+>> select MIPS_CPU_SCACHE
+>> select SYS_HAS_CPU_MIPS32_R2
+>> select SYS_SUPPORTS_HIGHMEM
+>> + select SYS_SUPPORTS_SMP
+>> +
+>> +config MIPS_INGENIC_SMP
+>> + def_bool y
+>> + depends on MACH_JZ4780 && SMP
+>> + select SMP_UP
+> 
+> do we need this additional CONFIG option?
+> Ah, yes the inclusion of the code depends on it.
+> 
+>>
+>> config MACH_X1000
+>> bool
+>> diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
+>> index 80e8a04a642e..6cabdd4825a7 100644
+>> --- a/arch/mips/kernel/idle.c
+>> +++ b/arch/mips/kernel/idle.c
+>> @@ -18,6 +18,7 @@
+>> #include <asm/cpu-type.h>
+>> #include <asm/idle.h>
+>> #include <asm/mipsregs.h>
+>> +#include <asm/r4kcache.h>
+>>
+>> /*
+>>   * Not all of the MIPS CPUs have the "wait" instruction available. Moreover,
+>> @@ -71,6 +72,23 @@ static void __cpuidle rm7k_wait_irqoff(void)
+>> " .set pop \n");
+>> }
+>>
+>> +/* XBurst gates its private cache clock in WAIT; write back dirty data first. */
+>> +static void __cpuidle ingenic_smp_wait_irqoff(void)
+>> +{
+>> + unsigned long pending = read_c0_cause() & read_c0_status() & CAUSEF_IP;
+>> +
+>> + if (!need_resched() && !pending) {
+>> + r4k_blast_dcache();
+>> + __asm__ __volatile__(
+>> + ".set push\n"
+>> + ".set mips3\n"
+>> + "sync\n"
+>> + "wait\n"
+>> + ".set pop\n"
+>> + : : : "memory");
+>> + }
+>> +}
+>> +
+>> /*
+>>   * Au1 'wait' is only useful when the 32kHz counter is used as timer,
+>>   * since coreclock (and the cp0 counter) stops upon executing it. Only an
+>> @@ -156,10 +174,15 @@ void __init check_wait(void)
+>> case CPU_CAVIUM_OCTEON_PLUS:
+>> case CPU_CAVIUM_OCTEON2:
+>> case CPU_CAVIUM_OCTEON3:
+>> - case CPU_XBURST:
+>> case CPU_LOONGSON32:
+>> cpu_wait = r4k_wait;
+>> break;
+>> + case CPU_XBURST:
+>> + if (IS_ENABLED(CONFIG_SMP))
+>> + cpu_wait = ingenic_smp_wait_irqoff;
+>> + else
+>> + cpu_wait = r4k_wait;
+>> + break;
+>> case CPU_LOONGSON64:
+>> if ((c->processor_id & (PRID_IMP_MASK | PRID_REV_MASK)) >=
+>> (PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_0) ||
+>> -- 
+>> 2.53.0
+>>
+> 
+> I just want to report that I wasn't able to bring up the second CPU:
+> 
+> [    0.108834] CPU 0 Unable to handle kernel paging request at virtual address 00000000, epc == 00000000, ra == 800239cc
+> [    0.119549] Oops[#1]:
+> [    0.121845] CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted 7.4.0-rc1-letux+ #8714 PREEMPT
+> [    0.130405] Hardware name: Imagination creator CI20
+> ...
+> [    0.093381] [<8006fad4>] __cpu_up+0x24/0x98
+> [    0.097618] [<800891f4>] bringup_cpu+0x48/0x124
+> [    0.102209] [<800885c4>] __cpuhp_invoke_callback_range+0xb0/0x140
+> [    0.108387] [<800f359c>] __down_trylock_console_sem.isra.40+0x28/0x58
+> [    0.114925] [<80089480>] cpu_up.constprop.24+0x190/0x344
+> [    0.120307] [<800c1950>] try_to_wake_up+0xbc/0xae4
+> [    0.125166] [<80e0bc7c>] bringup_nonboot_cpus+0xa4/0x134
+> [    0.130553] [<80e13cec>] smp_init+0x30/0x80
+> [    0.134789] [<80e07028>] kernel_init_freeable+0x120/0x2e4
+> [    0.140266] [<80b6eb4c>] kernel_init+0x28/0x124
+> [    0.144853] [<80b6eb24>] kernel_init+0x0/0x124
+> [    0.061973] [<800616e4>] ret_from_kernel_thread+0x14/0x1c
+> [    0.067462]
+> [    0.068947] Code: (Bad address in epc)
+> [    0.068947]
+> [    0.075802] ---[ end trace 0000000000000000 ]---
+> [    0.080430] Kernel panic - not syncing: Fatal exception
+> [    0.085734] Rebooting in 10 seconds..
+> [    0.138377] Reboot failed -- System halted
+> 
+> If I disable CONFIG_SMP I can boot a single core.
+> 
+> The reason may be that we have other interfering private configs in our tree
+> and/or something else is missing.
+> 
+> But I remember that the original patches by Zhou Yanjie had once worked in 2020
+> on an older kernel release.
+> 
+> So at the moment I can't dig into all this deeper.
 
-  genirq: irq_chip SB1250-IMR did not update eff. affinity mask of irq 2
+Would you be able to help me track this down with:
 
-The interrupt mapper selects the first online CPU in the requested mask,
-but sb1250_set_affinity() does not update the effective affinity mask.
-Returning IRQ_SET_MASK_OK makes the IRQ core copy the requested mask to
-irq_common_data.affinity, but leaves the separate effective affinity mask
-empty, triggering irq_validate_effective_affinity().
+  mipsel-linux-addr2line -fip -e vmlinux 0x800239cc
+   mipsel-linux-objdump -drS \
+       --start-address=0x800239a0 \
+       --stop-address=0x800239e0 vmlinux
 
-Update the effective affinity with the single logical CPU selected as
-the hardware target. Apply the same update to the analogous BCM1480
-callback, and use IRQ_SET_MASK_OK explicitly in both callbacks.
-
-The IRQ core already rejects masks without an online CPU for normal
-affinity changes, so no additional mask validation is needed here.
-
-Fixes: 421d1563c662 ("mips: Validate online cpus in irq_set_affinity() callbacks")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
-
-- update commit message
-- cover bcm1480, remove the check on nr_cpu_ids
-
- arch/mips/sibyte/bcm1480/irq.c | 3 ++-
- arch/mips/sibyte/sb1250/irq.c  | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/sibyte/bcm1480/irq.c b/arch/mips/sibyte/bcm1480/irq.c
-index 7929bee911eb..4c18a2c755d2 100644
---- a/arch/mips/sibyte/bcm1480/irq.c
-+++ b/arch/mips/sibyte/bcm1480/irq.c
-@@ -113,9 +113,10 @@ static int bcm1480_set_affinity(struct irq_data *d, const struct cpumask *mask,
- 			____raw_writeq(cur_ints, IOADDR(A_BCM1480_IMR_MAPPER(cpu) + R_BCM1480_IMR_INTERRUPT_MASK_H + (k*BCM1480_IMR_HL_SPACING)));
- 		}
- 	}
-+	irq_data_update_effective_affinity(d, cpumask_of(i));
- 	raw_spin_unlock_irqrestore(&bcm1480_imr_lock, flags);
- 
--	return 0;
-+	return IRQ_SET_MASK_OK;
- }
- #endif
- 
-diff --git a/arch/mips/sibyte/sb1250/irq.c b/arch/mips/sibyte/sb1250/irq.c
-index d7a656cd7ec0..a971bdfac356 100644
---- a/arch/mips/sibyte/sb1250/irq.c
-+++ b/arch/mips/sibyte/sb1250/irq.c
-@@ -108,7 +108,7 @@ static int sb1250_set_affinity(struct irq_data *d, const struct cpumask *mask,
- 	irq_data_update_effective_affinity(d, cpumask_of(i));
- 	raw_spin_unlock_irqrestore(&sb1250_imr_lock, flags);
- 
--	return 0;
-+	return IRQ_SET_MASK_OK;
- }
- #endif
- 
+on your kernel? Thanks!
 -- 
-2.53.0
-
+Florian

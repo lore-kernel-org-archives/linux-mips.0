@@ -1,77 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=62.149.156.116
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794175500;
-	b=yhKxcZ6b+rqz/ZaArv/OT1XqIOqI/oY4jeGs622cI4kcavR2WZQKN3rxDJMuiRKLRhKy
-	 JfSmLcZffjjQ79yEi2GglRWTeHkmXD3kTtAds0uQXKQiY+yz0P0hkncA6nS7aYMjcA4e9
-	 4n8ty60zEC5vhRm+xx0I7cT4+kCAV2aLyE1bPeSR3G5bpePhjWodFWufZiv4a/Iz1ZG2J
-	 xhvK87HypA2HvOgiW/VSOcXsJpvBaPARoZ4BGerr1133sa82g2WJScKuEvk65ek/sGB+g
-	 ouj6wbSaNW9CuxjMLU+2xUtF6vwYtzBPTBhL6MZLWxB+bshTmvz/Lv9gVF5kbf/wgAw==
+	t=1794187083;
+	b=nbzYu3cgOa3HtGncomR7qu/foJ+MZyzFy+6i8ZVwNPA95SUhfnOJGPnrO1X4NqUVDKy9
+	 KRZk6LELMlI9Rd1/UaUcXcm3byZQrlycJbNEpruwGJW0cXb2rOKakff9Jz0l+lkZcTx6m
+	 MmsXS1QPy2Hpjp5+bPJzSwlIeGGTM2h0lTBb2GP2DJfe12j5UFwRd2kcZ3XRtGMJvzCKD
+	 67f84ilBrAteeRXh739QPO08JR+Dc4E7kfYclRAR7y2HwQAvR+4ToPS9G55/GrNETUgEn
+	 +L7E7wX2RtR8sZwnYp6bY50EwDAuYi3ipWZL1/Ivd4NPQgFqo/F8sqgxYqFltAqqvpA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794175500;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=H/CcamKTQfMjaSJiajoERENx/3ROWxMLBiv4UmCbwv0=;
-	b=w+V5q3nKC+11n6z3zFMPIPWiAJ2nZDTTLT3+ZeYcrEL5Sv9lQ15dSbmxMQWlKakK/SAF
-	 psYymQNo1jQy+zWICQCTXp44eO34tmo8tuh4r9QnFzBGi7a7hgTIXnk72uqlmLdbpJhYA
-	 r5kPRkSoRxVQvQFFti1GSLHtTULhaBKvMkEgshWtJ9LdZOFbKV6aswfaGVeT52ts+ba4d
-	 Lqh2ukUtD0kUYRBNZ6BhAg0qHE3aMEdX/lqNzl1YeZwxZvtE0WZPmrDItqU2hInYHFWUF
-	 w4zI2RGyPHMUv9Aa4IsQzUz9nEounDdoa5VAoZL31pmghSysTaUmI4mJ8ztHNud+Zaw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794187083;
+	h=DMARC-Filter:Received:DKIM-Signature:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
+	 X-Change-ID:To:Cc:X-Mailer:X-CMAE-Envelope;
+	bh=slZxuBR5Ylf16jTMuBMAPIg1IYxJMk2ifndH1hoqYJo=;
+	b=tEalk1aO+kBoHaDuB+/EhY+gX1A1eA6s5GXpSDuMAXAzV11O54sI1/QVpLzGYJwaVkDR
+	 ++XCnjVH40Ox/zGcUUvWjriLJcZ2aDdCnuOuUm1Z+GCdelKC+kbA5MjX6iZWIkOgicQJu
+	 GU09r8lvucSD7E7gwWANpJ0NSgRkQd7X+W8BdTOY7SAZGyIjth9/vQj2KDcLGkTNPz59d
+	 31E130waYT+vK+bncWTCe5yQqSan6ZXGacAjsXuqEfxVWEhscv0lI6Jf3tmM8NE8JCqkZ
+	 WBGzD94FMt6tN4qbGrYI2Nyr3p0LOnSiFs1emrRweSb+wvExG9pfjjilyfIX+2chhBw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=telaak.dev;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.216.47
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=mythread.it;
+	spf=pass smtp.mailfrom=mythread.it;
+	dkim=pass header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=fKRvzmdy;
+	arc=none smtp.remote-ip=62.149.156.116
+Received: from smtpcmd11116.aruba.it (smtpcmd11116.aruba.it [62.149.156.116])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CD3606A320
-	for <linux-mips@vger.kernel.org>; Sun,  8 Nov 2026 22:04:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9CD3606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3ac78f4c10bso114262a91.1
-        for <linux-mips@vger.kernel.org>; Sun, 08 Nov 2026 14:04:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794175499; x=1794780299;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=H/CcamKTQfMjaSJiajoERENx/3ROWxMLBiv4UmCbwv0=;
-        b=DfxvJjUT0Dd1Y7FWMRoHPFgx5c2PU2nTA1UNNVMBOpyzgDHYCw94PImuFkYlojmuqT
-         8d6b1BmeFXUv6o0gOqn9uIucYT5M0gBkPov6eUhHMa0N30X3Ljf+olJPTgVgOWmLwuCa
-         yQ7wVoRzLocz3wi2HmBymS+kcxWkpiS1Pp4clBcZ6/SItJg2p+k4oX+QT2d1TTURHCQM
-         Ob8HwnUFtC30BspmNaFO3c8hKS+vGtOo83UsgdMllmzZGgKG0MhRDT63LaYRuqCQrnea
-         tTu3iCZSzYo2ZI4BvTWEmZGMdxTPUdZoeSV6vse0BgLZfldkNnYTi8piII551AsjV9Ts
-         M0gQ==
-X-Forwarded-Encrypted: i=1; AL+hErFhGzyCdDxXhKWXT2ZB5uxI+gYZTyhVL3q8AIZGdMof9orqGyMrGEzTFxH4Ewmuw2Fd/Sekrl5GN5xC@vger.kernel.org
-X-Gm-Message-State: APuU4Z/3tSMhLGxe9zl3PPUxACsJ6YYNlPOSLyvsssX/jRWjAmfwda0D
-	eGfEcHQFNwq6+kswjWKcYQtzqVLgBcVwhuZ8CtazYy/yVvLVr/RfhrxjzfJrpL9e
-X-Gm-Gg: AYBFou0y+5AUCUFCgXjCszU28BpyjbtocZx4k/OJC6KBKs+oLirCIWjOrCzhpcBR1+K
-	4wHBOLOnAn+8qyZrKgECVxHNzgKxHaG+9sSeMQty3EZywQjxV5ROKga7SlrfrGggKzAfPePaQt6
-	J/h8AEildaI70DOM0dvpjuxXPmeDFod+MiYPVFFFijP3Jfp/Ebo4afjyVt1JGUWI4diPqgAOUlN
-	2A96wVXG+PAMt1fyw1AAKgalFPlrMPQGOc88F2BzDhxz55m352ZaZGol9rKErxxlbWaozUTjxw1
-	dKgzh/rinlqdUd6+gVAt18CU8FGcnQk/ayJ0UFUGSTBScgqDnp1FNjNo9c6GH+f7sI6MlsfaaRE
-	yTOsxIK8Bf5tJFsMEpteXLOk2ajtuhMzn7i5kBG59ppMeSr09cwmfSFonqYqAJTDb5x5rzg7IO+
-	+/8Ev8dGEXpADeFvmCjCUrZiK0ILIh582WN7Gh+a+npNt0vEpyFQN/ZSGIDKh5S5O5Q9swCbG+V
-	BVr5aaOvSuoXcHbWghpH+NEHkaiMexTQ6fxgifO+VM8mkh36EnYA0MRbr1njCTsa1tKfORlNCfd
-	DJy6jDRrbfeuaLw55Qy9wvOjjFbay0TSppU53GRLTDpDc19W9HL0vGVLQhb/cnaIlu0ey21dISS
-	qMizEuJoCKzidM+40uGwqAAtRnQHNLxZYEaXWJNP6pqcTMilNwEbf3QO7Gn5Buqo6
-X-Received: by 2002:a17:90b:3b4c:b0:3a4:e735:b39d with SMTP id 98e67ed59e1d1-3b12d57457cmr1955077a91.64.1794175499187;
-        Sun, 08 Nov 2026 14:04:59 -0800 (PST)
-Received: from mail-dy1-f176.google.com (mail-dy1-f176.google.com. [74.125.82.176])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b126385c62sm4312595a91.8.2026.11.08.14.04.57
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2026 14:04:58 -0800 (PST)
-Received: by mail-dy1-f176.google.com with SMTP id 5a478bee46e88-36dbde64409so517750eec.0
-        for <linux-mips@vger.kernel.org>; Sun, 08 Nov 2026 14:04:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErE4kIC+Im+5cATt0jnGI09ERpzQSHSSTWUBmsrU6gO92IQ7jpdG1liiTSTYY+oo/eCOBKIYekbkRA7t@vger.kernel.org
-X-Received: by 2002:a05:7301:9f03:b0:370:cc56:b61a with SMTP id
- 5a478bee46e88-37258c2acefmr5845036eec.39.1794175497365; Sun, 08 Nov 2026
- 14:04:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232D5606A321
+	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 01:18:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 232D5606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mythread.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mythread.it
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mythread.it header.i=@mythread.it header.a=rsa-sha256 header.s=a1 header.b=fKRvzmdy
+Received: from [127.0.0.1] ([87.16.49.252])
+	by Aruba SMTP with ESMTPSA
+	id QE1AxMsH06VShQE1BxPoug; Mon, 09 Nov 2026 02:17:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mythread.it; s=a1;
+	t=1794187073; bh=BoLHLvKmDPgG+mZ0H4J9N9IHuLDr3SiWMohhnh53hq4=;
+	h=From:Subject:Date:MIME-Version:Content-Type:To;
+	b=fKRvzmdyzC8jyj6MrcjcoSoG/ufNBPIYlagoNWL/aqwH5qg2ICjP0nr0yRKqKlM0C
+	 SXaJWWUhQN6I8VtdPQ8nweW8O3K2bAdrMrLKFJZ0Dwb4RHwLWM3mGWntMYuGVG7Kqm
+	 9dI2UTHOpktAzWvZbCP65KXyrGshXRywOn2pxuz2ruJq6XoR7cpQ9fbAMpvIxP2aMr
+	 jSFpo9z8jEkcCTx9ZIQnSayB6xWN3Z/cT0o/iP2yeFz+kVtIxyL4t/bwPhn6cEYySq
+	 YwYJf6ZIwu0DSXk6RiUCKXbLVf/a3cSaK9KPoGo3s7AcW01bEDPZ/Nb27Sn2myAieI
+	 5FxhDw4mF784Q==
+From: Alessio Ferri <alessio.ferri@mythread.it>
+Subject: [PATCH wireless-next v4 00/10] bcma-ac-rev1: support 4352/4360
+ rev3 chips
+Date: Mon, 09 Nov 2026 02:17:50 +0100
+Message-Id: <20261109-bcma-ac-rev1-v4-0-de1262c18b54@mythread.it>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -81,33 +59,107 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261104-sf19a2890-sysm-v1-0-a4fac07df823@telaak.dev>
- <20261104-sf19a2890-sysm-v1-4-a4fac07df823@telaak.dev> <au4Hc7LAXH-ujDPj@monoceros>
-In-Reply-To: <au4Hc7LAXH-ujDPj@monoceros>
-From: Joseph Telaak <joseph@telaak.dev>
-Date: Sun, 8 Nov 2026 17:04:45 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ6PzrCkNuHEib8WrYoYw3eeUuK6rCeBYPQg+iPzbVEECQ@mail.gmail.com>
-X-Gm-Features: AclHuK94cu5PMN_CR3MHF5B50stfHn_PtAIMtZ8wHEf1hN8qZJlhM6zrg1Ysdd0
-Message-ID: <CAPY4CJ6PzrCkNuHEib8WrYoYw3eeUuK6rCeBYPQg+iPzbVEECQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: siflower: Add SF19A2890 peripheral clock and
- reset manager driver
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
-	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, Yao Zi <me@ziyao.cc>, 
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAD4f8WoC/23NQQ6CMBAF0KuQrq3ptAjUlfcwLtoySI2CaREhh
+ LtbYINoMpufmfdnIB6dRU+O0UActtbbugoh3kXElKq6IrV5yIQzngCDmGrzUFQZGo6B5iqTMcQ
+ 8lawggTwdFrab687kbR3e0XtaYdeQy7L2L31D00yVEyitb2rXz+9bmNn/T2EY1QnLUMpcFIfk9
+ Oib0qHK93Ypb/mK83TD+cylTsAIkJz9crHiAjZcBA6FRpFhBqnU33wcxw9FheEKSQEAAA==
+X-Change-ID: 20261014-bcma-ac-rev1-da894142790f
+To: =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Michael Buesch <m@bues.ch>
+Cc: vit9696 <vit9696@protonmail.com>, ville+git@takio.fi, egc112@msn.com, 
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, Alessio Ferri <alessio.ferri@mythread.it>, 
+ b43-dev@lists.infradead.org
+X-Mailer: b4 0.15.2
+X-CMAE-Envelope: MS4xfEdioDTGY1z/u4GjVMe1mHbLmWpT+rI4H8Xls66NQln3AiF++CcMvxSaaGmsBXk3x4g8Dib6BHu6BK7TnmTEOyW7ehauJEouv8SmkiWXnR8yDAh0bB+l
+ EloZ/IAJiS+pl1kaopHIob50iIHTC/gQWIgjGsi2LETExhRM+4Iw4SCq/wC0LddyDFKmHZ1+cC9a7yW1HZgGp/1yMl5U8vhOCUJNDyGRBZVhLbHUNeFzuHa5
+ El4XezI2nRw/fKrMcWh6jLOdHOlPh61DGekcC/bMC7HU+xVzJxUEkJhFHncDdWUYTu9ZDKdKoVTiCfIGDOjT4RrpaXx0JVGSUZ4h5ElM/Icp1mpuzk8xrtoL
+ lqrk58HMIeGgZOleaDyOXw1A8zY//V541UoWSHJa05W6otiIa2vqQ47zRVXM8GFp6e8/iRuanRLI5ji6BUU/0BWNimWWZaL78D4YfdbOLmR7Op+ESZdUK2Rx
+ +AtcAd9UX0hdJ+tOJ0A1x3quhZXaT7BEcnQH7A==
 
-> Please don't use <linux/mod_devicetable.h>. <linux/platform_device.h> is
-> good enough to provide of_device_id already. If you insist on full iwyu,
-> please use <linux/device-id/of.h> instead.
+Preparatory work in the bring up of AC family rev1 chips, in particular,
+the bcm4352 rev3 and bcm4360 rev3. When public sources were found, the 
+same gates applied for operations were ported in this code.
 
-v2 includes <linux/device-id/of.h> instead.
+Initialize the PMU, the PCIe2 core and chipcommon of the BCM4352/BCM4360
+family on chip based on the open source version of broadcom driver, parse 
+SPROM revision 11, read the NVRAM variables set on top of the SPROM, and 
+bind bcma-pci-bridge to the BCM4352. Finally, add the missing ids to b43.
 
-> Please drop the trailing , after the list terminator.
+Most of the series was tested by Erik Conijin and Ville Takio, both are 
+cc-ed, but i don't know if i can put their tested by directly in the 
+commit myself or if it is a very suspicious thing to do.
 
-Will do in v2, and in the gpio driver, which has the same.
+Concerning the risk of applying the series: 
+- FORCEHT may change the behaviour of brcmsmac too (can i ask Arend?)
+- i do not expect regression from rev11 parsing, especially since no one 
+  use it yet.
+- The rest of the series has code mostly gated with the same criteria 
+  used by public code released by Broadcom, so i guess that it is safe. 
+- b43 marks the ac part BROKEN, so there is very little to preserve.
 
-Thanks for the review.
+Signed-off-by: Alessio Ferri <alessio.ferri@mythread.it>
+---
+Changes in v4:
+- Readded the missing signed off
+- Added pdoffset2g40ma and pdoffset2g40mvalid to the series, work of 
+  Ville Takio, mostly.
+- Link to v3: https://patch.msgid.link/20261031-bcma-ac-rev1-v3-0-1fbe38e8179b@mythread.it
+
+Changes in v3:
+- regated most of the checks on the proper version/flag present
+  instead of forcing everything to be rev3 only, as Vitaly suggested
+- Added nvram parsing for all params found in a real northstar router
+- Removed AvVmid parsing from nvram, as it doesn't seems to be useful
+- Added missing pci ids for 4352/4360 variants
+- Link to v2: https://patch.msgid.link/20261027-bcma-ac-rev1-v2-0-b69b61c31920@mythread.it
+
+Changes in v2:
+- gated chipcommon behaviour on its own revision instead of chip rev as
+  pointed out by Vitaly
+- Link to v1: https://patch.msgid.link/20261014-bcma-ac-rev1-v1-0-b608e99d3f56@mythread.it
+
+To: Rafał Miłecki <zajec5@gmail.com>
+To: Michael Buesch <m@bues.ch>
+To: vit9696 <vit9696@protonmail.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: b43-dev@lists.infradead.org
+
+---
+Alessio Ferri (10):
+      bcma: core: clear only FORCEHT for BCMA_CLKMODE_DYNAMIC
+      bcma: pmu: init PLL and resources on BCM4352/BCM4360
+      bcma: pcie2: request HT on BCM4352/BCM4360
+      bcma: chipcommon: enable asynchronous GPIO interrupts
+      bcma: extract SPROM revision 11
+      firmware: bcm47xx_sprom: read the SPROM revision 11 fields from NVRAM
+      firmware: bcm47xx_sprom: read ledbh4..ledbh15 from NVRAM
+      firmware: bcm47xx_sprom: read boardflags3 from NVRAM over the SPROM
+      bcma: add the single-band BCM4352/BCM4360 PCI IDs
+      wifi: b43: add the 2.4 GHz BCM4352/BCM4360 to the supported bands
+
+ drivers/bcma/core.c                         |   2 +-
+ drivers/bcma/driver_chipcommon.c            |   3 +
+ drivers/bcma/driver_chipcommon_pmu.c        |  81 +++++++++
+ drivers/bcma/driver_pcie2.c                 |   3 +
+ drivers/bcma/host_pci.c                     |   8 +-
+ drivers/bcma/sprom.c                        | 210 ++++++++++++++++++++++-
+ drivers/firmware/broadcom/bcm47xx_sprom.c   | 257 +++++++++++++++++++++++++---
+ drivers/net/wireless/broadcom/b43/main.c    |   6 +
+ include/linux/bcm47xx_sprom.h               |  15 ++
+ include/linux/bcma/bcma_driver_chipcommon.h |  15 ++
+ include/linux/ssb/ssb.h                     |  72 ++++++++
+ include/linux/ssb/ssb_regs.h                | 103 +++++++++++
+ 12 files changed, 747 insertions(+), 28 deletions(-)
+---
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+change-id: 20261014-bcma-ac-rev1-da894142790f
+
+Best regards,
+--  
+Alessio Ferri <alessio.ferri@mythread.it>
+

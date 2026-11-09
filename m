@@ -1,48 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794205029;
-	b=WMdmc+qE61ILk+CB16xHXgy5IMWEFKBYkfajHDRKlQTVk+PfWDfP8OrFtexLjfPbP66m
-	 vyRckRuwGbfMVKmP4kmZcSUmloyndQb0uemATVhC6NO/Nr8FLhj/xHZef7mmuWunXQ+5q
-	 6Enz18inElV7mJj/xX3wFFZRWRDKPu//marTF2/TUAk6dWgaFNMwGldj93aSLkGy0O0ig
-	 uQBt+9PSbw4Ui/rP5awt3GC3MyKyJE867CYWvB+keHAqsLe8wDo6wRTQyfWCn4QDpawWo
-	 nWEvk5OgtjvJnploO9wpT8Xxzkp4izGHCEUydhIH00cuWdTGrGwJHbRujtBMxRAOYJA==
+	t=1794218105;
+	b=bzuQvW5vZxtlAaQb28MyewXsRCU215m41VYiVXYguvc6OXlOqKB4e+nyGS1avO62//YD
+	 6Q9uRV9+X9HJw5mv5yC28GLwIni5jPV/s9tRVR5dWBt2EMVehhB9QA5rCNi8ARUHvZ3QE
+	 PCyBe77Z7pMoP55fc63s6/6/tazJ+zTWTCCg4qbdsMUUbv081+yTeEpKgGK0gElVoT6uP
+	 QHpjBvtPft3sIVfa3Bfv3Rj3Du5+T32mShTsa2bQMZ4zRPR8hSN9ULaBDxw6YpXXJ7RdF
+	 rp1hq+mMrLZEeCWRjQBrIVbvmVIzhSwvFiKt5+jvXayfFsoJNw5Qi0Uq1+aTeYPs+oQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794205029;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=CeNune+Xe5gcnKsfyPzbtx0SWguVXYJkIwyYkJoc2O0=;
-	b=QOBt+qpmSbFLQrDIhPhqF8j2KAWnDJeCcvkK9gNqcglnaLmtK1z1cxUoXgiX5FbBCJ7c
-	 clkeqGVtA7mQuA6l0KM9eZ4018DLSng7J7vB00yC4gJT7KQZEwsjFATvvXzc/4qrSZ85w
-	 AiNcTvhISF5CRt/m7lk2L+N2JmRN8uTkgbxh9G1jugH6qaDWCoqAx0Bv+dFUeiLKB9Iug
-	 F3GlXkCgb3zh5tITimQhL9aXU9Gw1BuZhBJ4TPpMiBrx7DHHj27VRLRWf1BdtFzP8HnQl
-	 7ZHLFydvfEE2QwQyrl8EgvXFWncelo1LjGlbYn9/Sayf0gVFi3dYtxPEwVVJqb/7R+g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794218105;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
+	 Date:Message-ID:MIME-Version:Content-Type;
+	bh=vn7V5zWgWjR2AxhbbXtzmU81jhYCCnS3gbGv+/5Hh8Q=;
+	b=0Y6HPO73VTxjV//8dJz/Bigt1Fyd1rUuRCrCaFbEI02VtaKNbSNLH6oxjIZ/TUQaBlRV
+	 Mr42kTFCpzFHvqG8I7HqPpdpFaIT5EPdZWvHLSnJQCIILY2xBfPC9Fbl2N19HAJDmIqPq
+	 7svkm/6Xlv0a0hI+/Hha3cMjMjj0b7qrc58UYMxn0tz2BdeVaYKIYPOKmyDMJsDNtUA7F
+	 mAF5boMuBpCQMxXQZsjG6Q+yhWfzjNhCXsm3zbRljCoBpzh4bKXx2w+4trIpTi37U5xMP
+	 baL3urGhtdwyLAytZe6UDPbmdw1uVockTZtXAt5zByGYnpZmg1oFgs9yrZQ/yUVtn8w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BFE606A31C;
-	Mon,  9 Nov 2026 06:17:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 66BFE606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 1DB7692009E; Mon,  9 Nov 2026 07:17:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 17AA892009B;
-	Mon,  9 Nov 2026 06:17:05 +0000 (GMT)
-Date: Mon, 9 Nov 2026 06:17:05 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Florian Fainelli <f.fainelli@gmail.com>
-cc: linux-mips@vger.kernel.org, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Thomas Gleixner <tglx@kernel.org>, 
-    open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: SB1250: Validate and update IRQ affinity
-In-Reply-To: <alpine.DEB.2.21.2611060517330.17804@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2611090615360.17804@angie.orcam.me.uk>
-References: <20261103215043.1190947-1-f.fainelli@gmail.com> <alpine.DEB.2.21.2611060517330.17804@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FWUG4zbF;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60437606A321;
+	Mon,  9 Nov 2026 09:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FWUG4zbF
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A6D1F0089F;
+	Mon,  9 Nov 2026 09:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794218105;
+	bh=vn7V5zWgWjR2AxhbbXtzmU81jhYCCnS3gbGv+/5Hh8Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=FWUG4zbFrGPjlsUUYCS7eLB+wVTHdqvhSomjjUrLfHGzs5DcZBo9eyCdYxfcGEsvu
+	 X5IxtbOs5IYFl/GCUOzLWBj3k2p6nVnYd/AymccQWV24NifCdO7c9yJhJQL81xQogJ
+	 wAVtB7QA01+tbqeIHkc2di1H2cdvdes2y6PRZMpEtnCKiF3o6g+f7NJJYcxWiq9/ZR
+	 FxOJO5TmB+BXtCuw7lCtZ0OND8xswpgssUpfPSPRtkjjifGdBi91tjF3Bhyz46DhJs
+	 CPhnfSz5trwWRiz8yevWh95WLjWhYsrAmZ8WPNxCqqt4xjTb0A73Cc4OeD+TB+RDr7
+	 y20yyMsf/kVYw==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, Vladimir Kondratiev
+ <vladimir.kondratiev@mobileye.com>, =?utf-8?Q?Beno=C3=AEt?= Monin
+ <benoit.monin@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>, Radu
+ Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: Re: [PATCH v2 2/4] irqchip: irq-eyeq5-msi: add EyeQ5 PCIe MSI
+ controller driver
+In-Reply-To: <20261102-eyeq5_msi-v2-2-4aa3d3608064@bootlin.com>
+References: <20261102-eyeq5_msi-v2-0-4aa3d3608064@bootlin.com>
+ <20261102-eyeq5_msi-v2-2-4aa3d3608064@bootlin.com>
+Date: Mon, 09 Nov 2026 10:55:01 +0100
+Message-ID: <87v766uy6i.ffs@fw13>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -52,45 +66,132 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 
-On Fri, 6 Nov 2026, Maciej W. Rozycki wrote:
+On Mon, Nov 02 2026 at 17:50, Gregory CLEMENT wrote:
+> +static void __eyeq_msi_mask_irq(struct eyeq_msi *msi, unsigned int bit)
+> +{
+> +	u16 value;
+> +
+> +	lockdep_assert_held(&msi->lock);
+> +
+> +	value = readw(msi->gcsr_base + GCSR_IRQMASK);
+> +	value &= ~FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
+> +	writew(value, msi->gcsr_base + GCSR_IRQMASK);
+> +}
+> +
+> +static void __eyeq_msi_unmask_irq(struct eyeq_msi *msi, unsigned int bit)
+> +{
+> +	u16 value;
+> +
+> +	lockdep_assert_held(&msi->lock);
+> +
+> +	value = readw(msi->gcsr_base + GCSR_IRQMASK);
+> +	value |= FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
+> +	writew(value, msi->gcsr_base + GCSR_IRQMASK);
+> +}
+> +
+> +static void eyeq_msi_mask_irq(struct irq_data *data)
+> +{
+> +	struct eyeq_msi *msi = irq_data_get_irq_chip_data(data);
+> +
+> +	guard(raw_spinlock_irqsave)(&msi->lock);
 
-> > sb1250_set_affinity() selects the first online CPU in the requested
-> > affinity mask without checking whether such a CPU exists. If the
-> > intersection is empty, the resulting CPU index is invalid and must
-> > not be passed to cpu_logical_map().
-> > 
-> > Reject affinity masks containing no online CPU with -EINVAL before
-> > accessing the CPU mapping or interrupt mapper registers.
-> 
->  Why do you think this is needed?  The only case where an unvalidated mask 
-> is passed is AFAICT with:
-> 
-> /**
->  * irq_force_affinity - Force the irq affinity of a given irq
->  * @irq:	Interrupt to set affinity
->  * @cpumask:	cpumask
->  *
->  * Same as irq_set_affinity, but without checking the mask against
->  * online cpus.
->  *
->  * Solely for low level cpu hotplug code, where we need to make per
->  * cpu interrupts affine before the cpu becomes online.
->  */
-> 
-> -- which does not apply here (nor for arch/mips/sibyte/bcm1480/irq.c, 
-> which uses analogous code and should otherwise be updated accordingly) 
-> since all the CPUs are onchip the SoC.
-> 
->  Have I missed anything?
-> 
-> > Also update the effective affinity mask to reflect the single logical
-> > CPU selected as the interrupt target.
-> 
->  Likewise, why is it needed?  This code returns IRQ_SET_MASK_OK (should 
-> really use the enumeration constant), so the caller will do the copy.
+What's the reason for ...irqsave() here? The mask/unmask callbacks are
+invoked with the interrupt descriptor lock held and interrupts disabled,
+so a plain raw_spinlock() is sufficient, no?
 
- I can see it went to Linus already.  Can we please have it reverted?
+> +static void eyeq_msi_isr(struct irq_desc *desc)
+> +{
+> +	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
+> +	struct eyeq_msi *msi = irq_desc_get_handler_data(desc);
+> +	void __iomem *status_reg;
+> +	unsigned long pending;
+> +	unsigned int bit;
+> +
+> +	chained_irq_enter(parent_chip, desc);
 
-  Maciej
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=irq/drivers&id=6cf0d999a18e799965cf2cf4a0157e257c805946
+
+> +static int eyeq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
+> +				 unsigned int nr_irqs, void *args)
+> +{
+> +	DECLARE_BITMAP(reserved, EYEQ_MSI_MAX_VECTORS);
+> +	struct eyeq_msi *msi = domain->host_data;
+> +	unsigned long bit = 0;
+> +	unsigned int i;
+> +
+> +	bitmap_zero(reserved, EYEQ_MSI_MAX_VECTORS);
+> +
+> +	scoped_guard(raw_spinlock_irqsave, &msi->lock) {
+> +		for (i = 0; i < nr_irqs; i++) {
+
+This does not support MULTI_MSI, so nr_irqs is always 1. That allows to
+simplify both alloc() and free() by a lot, no?
+
+> +#define EYEQ_MSI_FLAGS_REQUIRED			\
+> +	(MSI_FLAG_USE_DEF_DOM_OPS |		\
+> +	 MSI_FLAG_USE_DEF_CHIP_OPS |		\
+> +	 MSI_FLAG_PCI_MSI_MASK_PARENT)
+
+Just a cosmetic nit:
+
+#define EYEQ_MSI_FLAGS_REQUIRED		(MSI_FLAG_USE_DEF_DOM_OPS |	\
+					 MSI_FLAG_USE_DEF_CHIP_OPS |	\
+					 MSI_FLAG_PCI_MSI_MASK_PARENT)
+
+is easier to read. But no strong opinion.
+
+> +#define EYEQ_MSI_FLAGS_SUPPORTED		\
+> +	(MSI_FLAG_PCI_MSIX |			\
+> +	 MSI_GENERIC_FLAGS_MASK)
+> +
+> +static const struct msi_parent_ops eyeq_msi_parent_ops = {
+> +	.required_flags		= EYEQ_MSI_FLAGS_REQUIRED,
+> +	.supported_flags	= EYEQ_MSI_FLAGS_SUPPORTED,
+> +	.bus_select_token	= DOMAIN_BUS_NEXUS,
+> +	.bus_select_mask	= MATCH_PCI_MSI,
+> +	.prefix			= "EYEQ-",
+> +	.init_dev_msi_info	= msi_lib_init_dev_msi_info,
+> +};
+> +
+> +/*
+> + * In endpoint mode the snooper is a platform MSI controller: the host writes
+> + * the doorbell and the snooper raises a local interrupt. Expose it as a
+> + * platform MSI parent so endpoint functions can allocate doorbells.
+> + */
+> +static const struct msi_parent_ops eyeq_msi_platform_parent_ops = {
+> +	.required_flags		= EYEQ_MSI_FLAGS_REQUIRED,
+> +	.supported_flags	= EYEQ_MSI_FLAGS_SUPPORTED,
+> +	.bus_select_token	= DOMAIN_BUS_NEXUS,
+> +	.bus_select_mask	= MATCH_PLATFORM_MSI,
+> +	.prefix			= "EYEQ-",
+
+It might be sensible to use a distinct prefix here, e.g. 'EYEQ-P-' or so.
+
+> +static int eyeq_msi_create_domain(struct eyeq_msi *msi, struct device_node *node, bool is_rc)
+
+__init ?
+
+> +static int eyeq_msi_parse_vector_region(struct eyeq_msi *msi, struct device_node *node)
+
+__init ?
+
+> +static int eyeq_msi_parse_dt(struct eyeq_msi *msi, struct device_node *node)
+
+__init ?
+
+> +static void eyeq_msi_program_hardware(struct eyeq_msi *msi, bool is_rc)
+
+__init ?
+
+> +
+> +static int __init eyeq_msi_of_init(struct device_node *node, struct device_node *parent)
+> +{
+
+Also please check the sashiko response vs. handle_simple_irq() and the
+affinity mechanism.
+
+Thanks,
+
+        tglx

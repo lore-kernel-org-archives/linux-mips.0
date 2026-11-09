@@ -1,119 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.169
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794247155;
-	b=F2LQQT6IwfQXQl6Ty83QMn+1cKR43BMpEWPkSo99KZT9UhDuxnY4AijS5M2QYyjfrRBJ
-	 B28ToZS0CPoU95zofYgoRF33r8TdAViUtGdEUNGiB+H5Nofq6T0qpOA5XHHwyMrhi0xEn
-	 dS57h5Ce8ANxzBNB9yEDORX+d1FsRBVMgxSdph6nC0jqSzNVUdjTRYOovBOPzbvMR8XG1
-	 rJ1rt7+DmdFyrpYdnmEb6JyEXVD5hHJ6+x9KyvqzzELobRtMoW/1RXrTv9SYUBv8+XZjB
-	 e9WEaLzRDrTRgwlKJuSAJyZelUKjLYIiIYBENN/wC4D7I7TZVaYf340xu5T31yBgHrQ==
+	t=1794248802;
+	b=ARhs4OwGDTfthMGLVIRPRmGdN4JFrsf9YWA4ObOGf5YYb76U4NKH554JHKMRxgwtK0ul
+	 MxdH9xi9b+AgR1nqohVgLVci1DOMQLYVAGfSXaDn5vSifi09uVswPCyY1rMejHGcAFtBr
+	 GzEVdNwblrp3gQ4FU9wKPneS1DSoAS51H+tro4xnKo9okbZZO0Ot0tpW7VD14N5sJ7/vF
+	 EUViiNKISxOGTZpc4avxr3c9oCON94VYMha65GbvkNkQzsxT2PUfWCo399DawWeAocI2W
+	 udVASoRwXluaMEAF63hlg7BEsxIrhstWde6paVxDsm14KV0vH7WZZhql4P6pM80NmIA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794247155;
-	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
-	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To:User-Agent;
-	bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
-	b=4gp4x2k2FCZfK6MRnhkbAz4cJfiey80AVZeSUjybrkJLN3hA0TjmJwhufTvoSW818K5D
-	 GRoBms4q3LGvJp+jR/x1AcjTmeDxDuMegWbn0cReHJbEFHRGw3STPFLmibYFsJx9p3T9h
-	 F/JfhkIJmPddYLC5U+Wlh7wUkhuRzGU4Q5jpea8FSo0cgaFnN/td4GwcLQBhoBCeEi+M2
-	 46bBR/+SF5juOoZeKpI/w7xWAtOagVReV9ETyB4BjcsqccURD8nqQAgRat1JBRQOSH3Xb
-	 LOa0Foxik8gOYbmmfQI37N5BN+JBT/kDnpcxNlXhx/RNq8Vse6hFatN7OAdT/Q4dQVg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794248802;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
+	b=s7b8Hc7VcX4OxVK4B3WjUtfuOKwyjT8ypLw3PL1pW28SFqkL1WuG8Jiaq7fBYwlMqkjt
+	 8aQAZiQOXQbxDBb568DQoSrasRT4OPr1cH0WZNdZcFto4FeoySdlkDDsLjijZiNCUA9y7
+	 v5hzvMYf4d23C0EPTZgWQDb0KeYshZ39IhQu02Ez/f/oM39PGKF0mk1gQ1WWju7Dlo1ix
+	 5N4nXikkvxaYdeJDFD1DmcvY+KdxQk+xQrShesEWVp+Ktvou6oVvv4tVUjCRpCFhzvX8C
+	 UFKt5QllvfUROpAzENmHEi/ertA/Le0zHMYG8lNSocS7dDvMxT8qrLL3cj/Ck6uzh7w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=redhat.com;
-	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NkyXxXqr;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Hfuq1k0U;
-	arc=none smtp.remote-ip=170.10.129.124
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=c2Pfn4F9;
+	arc=none smtp.remote-ip=74.125.82.169
+Received: from mail-dy1-f169.google.com (mail-dy1-f169.google.com [74.125.82.169])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195FD606A338
-	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 17:59:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 195FD606A338
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ACC606AFC1
+	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 18:26:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B2ACC606AFC1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NkyXxXqr;
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Hfuq1k0U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1794247154;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
-	b=NkyXxXqrpF+Xu/J80la0nrSXqdHWwnIonM/+vBN4R6nc+hyEj9ZQJapQQVm7mb0TWBUco5
-	cJ5c0Ea5t2T/BOvYXfQ5bmgZfvYc1Ubh8JqzO8CXUlJ/Qeh79IIgu9snMIJenP0cirQzos
-	Tk6Z1M/l/v94nxFz/4xL0bsDwyUitfU=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-57-TMsJ12GJMWyhF8cJTulKPQ-1; Mon, 09 Nov 2026 12:59:12 -0500
-X-MC-Unique: TMsJ12GJMWyhF8cJTulKPQ-1
-X-Mimecast-MFC-AGG-ID: TMsJ12GJMWyhF8cJTulKPQ_1794247152
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-91e89171fabso21955966d6.3
-        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 09:59:12 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=c2Pfn4F9
+Received: by mail-dy1-f169.google.com with SMTP id 5a478bee46e88-36e99cf7bb3so1972006eec.0
+        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 10:26:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1794247152; x=1794851952; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
-        b=Hfuq1k0U5lj48vN+VVbPE+g94Um9TL7NKt28h+pN/ZNFUl6D8MgsemgnVVqm33u//p
-         3pyClyCyR2WrZyljS1BdUQd1gllRbbjlmwxGkP/YFf1rN1m7zvGZAFq6E4l6Ta8jdzpn
-         QPdp4/enLhhwTeTrHvYeAc8xJhoqmCB+MzuCbdVGCFG5epxMgchtIpnMQKSB6j/tDEv3
-         9ZgLzv1zArLUvhnjJ4u5FkUhP4ghYc/U5BlIagwgrJX9/+zVHeZuPhPXqJVDPz/S5r7j
-         k8aa+Nj0tCwsT3Kk40rjH79/VjmtuapD4F3GG+bHm2x1fICu/CN51iM0xFdMkRaVCCT+
-         4jMg==
+        d=gmail.com; s=20260707; t=1794248801; x=1794853601; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
+        b=c2Pfn4F9VQW6nJV5+c+VrOUx9i1qZY0ugouUvigZsKq+kfHnKh2XLNThNmFo48myfw
+         bI2J/EIrAkBxP0+1c9ltDkON2PXfOybEthW/dfOR5ISTUUCdYANR9T3AA+sqBvmWX2XP
+         GUmZcx2fKuVu7/aKDFBr7tWvK7WVnTZ5yTb0WfGYuXIZ5lSsRWWzJMC9lbO7LPzrKclY
+         Wx0tH9xy2bjNxNsO1cUh/78M3HaARwTXqFN1kYzndOjK3BhSJepH8yP2vT8eTyYMaOr9
+         kzL9jI6JFX4Jbj/H0/VEMI0uVVImc0xaPZErH0R7uafkldR/zBvJhmjBPv6rrRl7DqK/
+         RgTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794247152; x=1794851952;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:content-type:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
-        b=B5RUwWomiijpKnI90RHhUQUjQeITYYHaTpNXelwEa/iL9z4k44kPoFTxH6WjgS5bH9
-         u4wEJ8WB/8ObLweU8qwggzhMP2Y/Nq44+sPMxke3J+0wBOenxdhbsCc0iYW5a7dcxIV+
-         PaaVvQ7I/omP+j3pfqBNrrmFIPCVPDNHKcChWuxEiars1m8feBwILpEj9TdZ1MEesYWf
-         0md2nnSBGxvm1W66vbAZMc3fAsPpAuIhjlju7gyPQt3tTDipUUu9XhbKAhjB8+UwlK0I
-         crKdOcXfym6t+g7+xlMBCQhDY8jvb4MmgQD90L5jBD1oVfFB5UWjIZRFe8xV1VKOkZwq
-         p+MA==
-X-Forwarded-Encrypted: i=1; AL+hErGcYg2B9xSDgLUrd+YBoY+xjkOzPykiNcPqVQ6KV7K1eYvXR0++/x8Iiu+ZcZjOFmpwQOoAuYQzgkfW@vger.kernel.org
-X-Gm-Message-State: APuU4Z9msCG/2YpIvJJiAcutC9jjj1OIKUjFowSa9r3+HYVpQQBy3lSS
-	NoPmZbDB9gLpeerFArIle+EAMzsYnZlMyG82EVFZN/z022N8cb2RF1XG+u6oIyjkfqqlA6k3X6U
-	jxGZmCkQlvNlLLCPGl8ln8Ivho3iNZ0oVEIVX5+AeKY+7k5SDGv5VND2Ym8o5Qw4=
-X-Gm-Gg: AYBFou0NhCG1bJ+KYNuEXfrE39ollM2Hqmaw8K7k8GpelNqRIZWqF7/3IG2AdJb8Ce7
-	hMAtrmM2S1T570GdIZ1hvI4i7zlydqDdGeUsZ4ZbuIwpW55hbZT3y29vsMUAPT4HZ54OqtB48dH
-	cjIXo7TsKUS7vcqPFogWnEWz1Eio/sxw0iMAoBfSQ7i2sOAJO+TGSyHAsl4JrHaffq0KXbQUzHX
-	xyfxXk4gDgmkf5iWVtV+Hx2SaR65NJfBCcg70IP/dNMUg+OwhJBfEm5MUVBFXSYjcqi/ip9env1
-	P0tlzR+PETgOobWWsaIeoVcfTd9/jmKSrmVz9FPUjomzHBY262AV+NCOD0W1CGJcLyrSIoBiYZA
-	H2xhmJ1gGmIG0HnN0cDmYY8DwMAKghq9MtyBbdru1l410NyahSE7gQXoo9or1I0TYI3ttDvKZl9
-	VHPncsIbjelv+TIr5W7EdxKXVLzfvNy3HhU2nFtFE=
-X-Received: by 2002:a05:6214:5bca:b0:91e:8a59:5fd7 with SMTP id 6a1803df08f44-91eef724dbcmr7141526d6.3.1794247151849;
-        Mon, 09 Nov 2026 09:59:11 -0800 (PST)
-X-Received: by 2002:a05:6214:5bca:b0:91e:8a59:5fd7 with SMTP id 6a1803df08f44-91eef724dbcmr7141026d6.3.1794247151158;
-        Mon, 09 Nov 2026 09:59:11 -0800 (PST)
-Received: from redhat.com (c-73-183-53-213.hsd1.pa.comcast.net. [73.183.53.213])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91ef0540a8dsm1273966d6.41.2026.11.09.09.59.09
+        d=1e100.net; s=20260707; t=1794248801; x=1794853601;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=KuWXOr8bdBpcuJfvomt+cRvy3pPxw4DWlc9TpuLSuDc=;
+        b=ANCFrMYxfdsyRjqYEWeMhjpBHUp3oXak6Ci9FBrSMwrP92gbFPY14vLT08+I9Yk1tE
+         Qpt/c9ascI704My1EIU4jWfHQ5FfI47Jr3sUl/iBPUAllk6a3nUuDkJP+zInMNZD8aNy
+         26qqj+t+NUsRhoi/Ivio00LmEQHd8HnKHJ/dYjHMHPkjqY4H5eUIwsMQ1XlcqfdXrtlq
+         5V/EuoIMP3rJinlh9h4p0FcuT+lnKV+vwz3R4fYnjIK7x2D3xw/dGa6XbtP6De29er+p
+         lwQcXKSuUKGzUkgxrBpkG5zNv5f5IeA5Qrmn5huq27K0s/hwj6NkmqbqnQQxT/tzHsy2
+         Mb7Q==
+X-Gm-Message-State: APuU4Z/Eh3eNk3U8DkRGiDUrAIXkQtd90Lr2bhCtr+AWy6423LzBu9CB
+	3FStTc5/4+pdwla3uvl6pegfRyTRJsZhyhju8frZSBxGv4+XKxDp8uACI0CWPg==
+X-Gm-Gg: AYBFou1DbMT0DnRmUi3JA/rLw1+P5ZTymDXPRY57OdqKTncoXh2tabyo9d7P0usow4A
+	47zr0c98jbg4gbyLZWx1Y8AlxBKyXK3aUQ3jMRHgtxwdrNmVNqUqIgCDV7tlYOGMu8xaPUPSFIn
+	WGwCUdDXBr4p63nrf/s8O1dwFDD/F1d/FbfVja63uVGrywA7BV4wo9ecbrHEbv6XU25LTnf0x1k
+	PBqwjYHdYCRoOP7lkXPhi4F72bYuKPEUYRCuKWBGafzgXLrJa+A+9LwHZeXDb4/u11dF/pdNfMb
+	3S3GRv7rEFFmXWvOKzn8qm8oMsgOlBRb9+Px2yYYw1BCqCf3r7/DfJudXdy7TNXj0zJulhE/KyP
+	Aj+7D+Qq+3RnYjT5SiHnba8C63PT3PH2Rl9X0HwQm+2GS65lE3QxZ/rGe7PRvOScnu4bBmaU6i/
+	zN3Gz6z/sqX9w+6HAy0Vl/yra5j/+cFc/BKs/6V93XgZfAGqtyb0/hZPXeFEaZ2cNqgnbTxeOX8
+	p+/mVlRZFAKLQpcddLc+EaDnI2xzmxCOsJ9Dmjyxz5NF9zhalxt1SxZvLLRw91I2dyxCU+AEvTl
+	WwzNk1IG
+X-Received: by 2002:a05:7301:fc81:b0:36a:1e50:e45 with SMTP id 5a478bee46e88-3751ee7be82mr85465eec.9.1794248799721;
+        Mon, 09 Nov 2026 10:26:39 -0800 (PST)
+Received: from eldorado ([2600:8802:b00:1f88::287])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3751fe306e3sm123652eec.7.2026.11.09.10.26.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 09:59:09 -0800 (PST)
-Date: Mon, 9 Nov 2026 12:59:08 -0500
-From: Brian Masney <bmasney@redhat.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Andy Shevchenko <andy@kernel.org>, linux-mips@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] pinctrl: ingenic: convert to
- subsys_platform_driver_probe()
-Message-ID: <avIJ7KZxtTzUkpfJ@redhat.com>
-References: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
- <20261106-pinctrl-subsys-v1-1-f17582f32aaf@redhat.com>
- <CAHp75VfW-DV_HcorM_XWWkBnc6YVrj0fBReFf=WgziVCOoEjzg@mail.gmail.com>
+        Mon, 09 Nov 2026 10:26:39 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: macro@orcam.me.uk,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] MIPS: SiByte: Update effective IRQ affinity
+Date: Mon,  9 Nov 2026 10:26:22 -0800
+Message-ID: <20261109182627.3517986-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -123,28 +95,67 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VfW-DV_HcorM_XWWkBnc6YVrj0fBReFf=WgziVCOoEjzg@mail.gmail.com>
-User-Agent: Mutt/2.4.3 (2026-10-09)
 
-Hi Andy,
+Booting an SB1250 kernel with CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+enabled reports:
 
-On Sat, Nov 07, 2026 at 03:58:23PM +0200, Andy Shevchenko wrote:
-> On Sat, Nov 7, 2026 at 2:27 AM Brian Masney <bmasney@redhat.com> wrote:
-> >
-> > Reduce boilerplate code in this driver and convert it over to use the
-> > macro subsys_platform_driver_probe().
-> 
-> Wasn't there already a set of patches from somebody for the same reason?
+  genirq: irq_chip SB1250-IMR did not update eff. affinity mask of irq 2
 
-I just searched the linux-gpio archives and I see the effort back in
-June to also add subsys_platform_driver(). I wasn't aware of that
-effort, and it was never unfortunately merged into the driver core.
+The interrupt mapper selects the first online CPU in the requested mask,
+but sb1250_set_affinity() does not update the effective affinity mask.
+Returning IRQ_SET_MASK_OK makes the IRQ core copy the requested mask to
+irq_common_data.affinity, but leaves the separate effective affinity mask
+empty, triggering irq_validate_effective_affinity().
 
-I got the macros added in 7.4-rc1, and I posted patches across the tree
-to use the new macros.
+Update the effective affinity with the single logical CPU selected as
+the hardware target. Apply the same update to the analogous BCM1480
+callback, and use IRQ_SET_MASK_OK explicitly in both callbacks.
 
-Brian
+The IRQ core already rejects masks without an online CPU for normal
+affinity changes, so no additional mask validation is needed here.
+
+Fixes: 421d1563c662 ("mips: Validate online cpus in irq_set_affinity() callbacks")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
+
+- update commit message
+- cover bcm1480, remove the check on nr_cpu_ids
+
+ arch/mips/sibyte/bcm1480/irq.c | 3 ++-
+ arch/mips/sibyte/sb1250/irq.c  | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/sibyte/bcm1480/irq.c b/arch/mips/sibyte/bcm1480/irq.c
+index 7929bee911eb..4c18a2c755d2 100644
+--- a/arch/mips/sibyte/bcm1480/irq.c
++++ b/arch/mips/sibyte/bcm1480/irq.c
+@@ -113,9 +113,10 @@ static int bcm1480_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 			____raw_writeq(cur_ints, IOADDR(A_BCM1480_IMR_MAPPER(cpu) + R_BCM1480_IMR_INTERRUPT_MASK_H + (k*BCM1480_IMR_HL_SPACING)));
+ 		}
+ 	}
++	irq_data_update_effective_affinity(d, cpumask_of(i));
+ 	raw_spin_unlock_irqrestore(&bcm1480_imr_lock, flags);
+ 
+-	return 0;
++	return IRQ_SET_MASK_OK;
+ }
+ #endif
+ 
+diff --git a/arch/mips/sibyte/sb1250/irq.c b/arch/mips/sibyte/sb1250/irq.c
+index d7a656cd7ec0..a971bdfac356 100644
+--- a/arch/mips/sibyte/sb1250/irq.c
++++ b/arch/mips/sibyte/sb1250/irq.c
+@@ -108,7 +108,7 @@ static int sb1250_set_affinity(struct irq_data *d, const struct cpumask *mask,
+ 	irq_data_update_effective_affinity(d, cpumask_of(i));
+ 	raw_spin_unlock_irqrestore(&sb1250_imr_lock, flags);
+ 
+-	return 0;
++	return IRQ_SET_MASK_OK;
+ }
+ #endif
+ 
+-- 
+2.53.0
 

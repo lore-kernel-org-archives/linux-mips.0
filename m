@@ -1,109 +1,119 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794246483;
-	b=u17ZJ8FxrEIgkR3EV8r+Hbh93tuOvhHUuwUfMwWqJ2geipI1BcmoQYoR5QStzAdkjfkz
-	 MOFcNLeJcXS4XL5gS37iJb3cTpbTSREqJ5gc6bxLIDOJueRsuy5C+hY+UzKMLF4hder/K
-	 uvti2eugrpxrqCsXDIgVwKrGGSKiQSzrXEKeAFQgMddMDtsojc5XIXVYoN0Rpiferk6Bk
-	 KatTFB/LlA6t9cH77pMc2jWsurJ+HQdYgfe8WpqnVgPkGFWMLVknwENZba1ZYetEPf3yG
-	 +yqD5/faAj0hDaaPFKFgdSpvTyh8FmopLr7kyKzkU6fYJIy1bFUPjhqpF4aBY1Zy0dA==
+	t=1794247155;
+	b=F2LQQT6IwfQXQl6Ty83QMn+1cKR43BMpEWPkSo99KZT9UhDuxnY4AijS5M2QYyjfrRBJ
+	 B28ToZS0CPoU95zofYgoRF33r8TdAViUtGdEUNGiB+H5Nofq6T0qpOA5XHHwyMrhi0xEn
+	 dS57h5Ce8ANxzBNB9yEDORX+d1FsRBVMgxSdph6nC0jqSzNVUdjTRYOovBOPzbvMR8XG1
+	 rJ1rt7+DmdFyrpYdnmEb6JyEXVD5hHJ6+x9KyvqzzELobRtMoW/1RXrTv9SYUBv8+XZjB
+	 e9WEaLzRDrTRgwlKJuSAJyZelUKjLYIiIYBENN/wC4D7I7TZVaYf340xu5T31yBgHrQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794246483;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=tczO0T2acqzLBXDm0bXtzLxXrF1+AKk/7INkxfR+dio=;
-	b=UnpFc6MzhlL2SQgbv6p/zrN9d/oJhO9tfn/H9UxqqS2YmdDNk2SndSaUC9YcCEeF2pdB
-	 PC62WonCKD9UZYGUdIOPk7d1wVjwjvZXIwqz9DKLRwO7kTNvVHbvnvYjlDf0Cm0HoBAxr
-	 COiNnhEoqYHr/ZMX5eRTPOE1YJLIJN0sHFDf+GaIx8w1CyMQGqQxI/Hgo/HF4cUUpX7lt
-	 tLd5XRSg5eqBTsaAG6uN4af4vs+TPVzsaaCZ3DIGA74qrMtcxpA6xuczvDIWWhIyUX4OC
-	 tBu/Oye7slVoa0T3nFMfevnv+H4tdjOrQLlnCn9wr41ptYwKgfjM3Hc0eilq4NBz8bQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794247155;
+	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
+	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To:User-Agent;
+	bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
+	b=4gp4x2k2FCZfK6MRnhkbAz4cJfiey80AVZeSUjybrkJLN3hA0TjmJwhufTvoSW818K5D
+	 GRoBms4q3LGvJp+jR/x1AcjTmeDxDuMegWbn0cReHJbEFHRGw3STPFLmibYFsJx9p3T9h
+	 F/JfhkIJmPddYLC5U+Wlh7wUkhuRzGU4Q5jpea8FSo0cgaFnN/td4GwcLQBhoBCeEi+M2
+	 46bBR/+SF5juOoZeKpI/w7xWAtOagVReV9ETyB4BjcsqccURD8nqQAgRat1JBRQOSH3Xb
+	 LOa0Foxik8gOYbmmfQI37N5BN+JBT/kDnpcxNlXhx/RNq8Vse6hFatN7OAdT/Q4dQVg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mgcrea.io;
-	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=OV5rh1oA;
-	arc=none smtp.remote-ip=209.85.221.48
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=redhat.com;
+	spf=pass smtp.mailfrom=redhat.com;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NkyXxXqr;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Hfuq1k0U;
+	arc=none smtp.remote-ip=170.10.129.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B68660A262D
-	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 17:48:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2B68660A262D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgcrea.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195FD606A338
+	for <linux-mips@vger.kernel.org>; Mon,  9 Nov 2026 17:59:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 195FD606A338
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=OV5rh1oA
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-48e20ed3b9dso1022211f8f.2
-        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 09:48:02 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=NkyXxXqr;
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=Hfuq1k0U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1794247154;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
+	b=NkyXxXqrpF+Xu/J80la0nrSXqdHWwnIonM/+vBN4R6nc+hyEj9ZQJapQQVm7mb0TWBUco5
+	cJ5c0Ea5t2T/BOvYXfQ5bmgZfvYc1Ubh8JqzO8CXUlJ/Qeh79IIgu9snMIJenP0cirQzos
+	Tk6Z1M/l/v94nxFz/4xL0bsDwyUitfU=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-57-TMsJ12GJMWyhF8cJTulKPQ-1; Mon, 09 Nov 2026 12:59:12 -0500
+X-MC-Unique: TMsJ12GJMWyhF8cJTulKPQ-1
+X-Mimecast-MFC-AGG-ID: TMsJ12GJMWyhF8cJTulKPQ_1794247152
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-91e89171fabso21955966d6.3
+        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 09:59:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mgcrea.io; s=google; t=1794246481; x=1794851281; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=tczO0T2acqzLBXDm0bXtzLxXrF1+AKk/7INkxfR+dio=;
-        b=OV5rh1oAMSZdpVKbq/NriZTyay8/W8OE2CeSgfLLXfT95l4zVXRS+i/3QYOzlm7cRb
-         5f3SNszNs39EHFU0EniBTgMJYf88n7Gc/+yVK8EB1XJlqU2MoXMSFH0cZZjHdBItFR83
-         az1JQ5SrG/l+VV5ECHGrp7eQ8iI6vnwAjmcXsDTdmKJPGKLRMBAtXPtbgbEnFPpf5YyX
-         N6NiAcqVOTsIgcYjksiBr1JszhwRetumagyQYW1kYgxpyfFqwZnLJt+z+3Rd1qsMZCrK
-         WGRaj7PQd8mzNz5bfA+oULp7dllZxfAKiVsc0RazcLGG42K39ipnc4XsOJSO05QFm0/e
-         yJCw==
+        d=redhat.com; s=google; t=1794247152; x=1794851952; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:content-type:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
+        b=Hfuq1k0U5lj48vN+VVbPE+g94Um9TL7NKt28h+pN/ZNFUl6D8MgsemgnVVqm33u//p
+         3pyClyCyR2WrZyljS1BdUQd1gllRbbjlmwxGkP/YFf1rN1m7zvGZAFq6E4l6Ta8jdzpn
+         QPdp4/enLhhwTeTrHvYeAc8xJhoqmCB+MzuCbdVGCFG5epxMgchtIpnMQKSB6j/tDEv3
+         9ZgLzv1zArLUvhnjJ4u5FkUhP4ghYc/U5BlIagwgrJX9/+zVHeZuPhPXqJVDPz/S5r7j
+         k8aa+Nj0tCwsT3Kk40rjH79/VjmtuapD4F3GG+bHm2x1fICu/CN51iM0xFdMkRaVCCT+
+         4jMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794246481; x=1794851281;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=tczO0T2acqzLBXDm0bXtzLxXrF1+AKk/7INkxfR+dio=;
-        b=R4kgbiyBGHO/bwhWM8Jd/QwPZBLnMkhXcjJUnBB/51YQan6t1QT+/NSoKMqY2hsX46
-         FmCQae5okmHVeV9h78/Qnx7Fc6z7SBfw5woOGsi5nJker0XXaiK1BCHWAbmd8Y0wIj/p
-         /EL6ptY5gT8eB4WH2y+USc/3dREcUuQMqrGMbGk5RJP6DdlYktTxKFLDwZdlY2Q78sat
-         9JGDKqUBd9OEmE94C6mRq8F5L+OjZO6dFlin7e2q0fG6vrFjl4FIx3lCFyniBmybDa0N
-         X9Miz861knIFEtwWZdYc7VB8zE3dmbn3dXrhsh7UKeIHGF/bAzfHfJqv4jdEtzxef/dU
-         U2WQ==
-X-Forwarded-Encrypted: i=1; AL+hErFf6HhkGz0WEAct6x9uutUa9cdxzPlZw/LXDRUUvHJaBbwIlw01RGN1k6WLex9ag02XERHdKOAL0JTy@vger.kernel.org
-X-Gm-Message-State: APuU4Z8Tz2V05l8mTf5evuBaKfeO2R9wAQOxbt7idC5tfxPmUOpoOiRq
-	VqUCx5l0UqOuMlTkxa97EK1dvWfMGSrahjMwVPCj84ZE+zgCF5zTDShbI4T2Yc+qQ3c=
-X-Gm-Gg: AYBFou3GY6kzpmI8LJFagM0e2pYKp2ClNNRCqfLLRtIhVymhYV+F+IRQITwcO2tCalO
-	qLB45lOFUD2icOZJ22Pm0pPxNMlWJJc5wIslhXn0LAtUnIgJgpvkbzpqhl5ixdbSnDBXEdcvudA
-	zDXfYr5DAxgYc6+XO7Skx2Nf9EJa6FUd8BIPxnWfFqR/VVXMFHESkZXimRVfzDBNPjnYpPxteof
-	JzalXeYy3QlBT5Y9cAkv4WL0JBWAU32nNhUzJItrVo0LLhvCtZHnrUaRMMEv9pP4lGfUh/0gU7b
-	lQZv05p1TZN1E3XtMltGrSguGTiFgjc9i9AavLWyIZxZ+vjV1Y40QQGFB/D4ru9gpH6QkY93CuW
-	3bgAdYdsgLJsq8bWvZf57+4ni/KMNxxlSjTqD741byxk6XZhno8ZUgQbVQ5LzuRvwGti06KjRMI
-	6HsBqP93qaFsX6eOf4J7HpBM97kFep1G0ICFNYLyEmFEKAYAUuk8uyKmqug67sk0MdXBiwxwWVS
-	oqk49Y/9TQjxAuqKpuZBS8UsKKiO7SYnZ1Ig2UfLO2IBLahGc67mzw4a9x/3WpWfpNS+gSEiKpP
-	gvns4s4Ck2W90uLVQSaOVlr1P+eQCc6upZ72K4j27KSqA2qENb6Tp87vd0Y9owec+ZIdXxeY+A0
-	lFoQAXOR9tA==
-X-Received: by 2002:a05:6000:25f1:b0:491:9fc1:e6c2 with SMTP id ffacd0b85a97d-498318067demr229440f8f.51.1794246480672;
-        Mon, 09 Nov 2026 09:48:00 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:e834:fd4d:2ecb:b787])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-498369a3f4esm167322f8f.53.2026.11.09.09.48.00
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 09 Nov 2026 09:48:00 -0800 (PST)
-From: Olivier Louvignes <olivier@mgcrea.io>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>
-Cc: David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Jessica Zhang <jesszhan0024@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	"H . Nikolaus Schaller" <hns@goldelico.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Olivier Louvignes <olivier@mgcrea.io>
-Subject: [PATCH v4 5/5] drm/panel: Add the HiBy LG35583
-Date: Mon,  9 Nov 2026 18:46:40 +0100
-Message-ID: <20261109174640.96951-6-olivier@mgcrea.io>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261109174640.96951-1-olivier@mgcrea.io>
-References: <20261109174640.96951-1-olivier@mgcrea.io>
+        d=1e100.net; s=20260707; t=1794247152; x=1794851952;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:content-type:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=xzxrWa40iQ7LOYTF6q0Q+O79NFISPGm9rApGiB+AUmc=;
+        b=B5RUwWomiijpKnI90RHhUQUjQeITYYHaTpNXelwEa/iL9z4k44kPoFTxH6WjgS5bH9
+         u4wEJ8WB/8ObLweU8qwggzhMP2Y/Nq44+sPMxke3J+0wBOenxdhbsCc0iYW5a7dcxIV+
+         PaaVvQ7I/omP+j3pfqBNrrmFIPCVPDNHKcChWuxEiars1m8feBwILpEj9TdZ1MEesYWf
+         0md2nnSBGxvm1W66vbAZMc3fAsPpAuIhjlju7gyPQt3tTDipUUu9XhbKAhjB8+UwlK0I
+         crKdOcXfym6t+g7+xlMBCQhDY8jvb4MmgQD90L5jBD1oVfFB5UWjIZRFe8xV1VKOkZwq
+         p+MA==
+X-Forwarded-Encrypted: i=1; AL+hErGcYg2B9xSDgLUrd+YBoY+xjkOzPykiNcPqVQ6KV7K1eYvXR0++/x8Iiu+ZcZjOFmpwQOoAuYQzgkfW@vger.kernel.org
+X-Gm-Message-State: APuU4Z9msCG/2YpIvJJiAcutC9jjj1OIKUjFowSa9r3+HYVpQQBy3lSS
+	NoPmZbDB9gLpeerFArIle+EAMzsYnZlMyG82EVFZN/z022N8cb2RF1XG+u6oIyjkfqqlA6k3X6U
+	jxGZmCkQlvNlLLCPGl8ln8Ivho3iNZ0oVEIVX5+AeKY+7k5SDGv5VND2Ym8o5Qw4=
+X-Gm-Gg: AYBFou0NhCG1bJ+KYNuEXfrE39ollM2Hqmaw8K7k8GpelNqRIZWqF7/3IG2AdJb8Ce7
+	hMAtrmM2S1T570GdIZ1hvI4i7zlydqDdGeUsZ4ZbuIwpW55hbZT3y29vsMUAPT4HZ54OqtB48dH
+	cjIXo7TsKUS7vcqPFogWnEWz1Eio/sxw0iMAoBfSQ7i2sOAJO+TGSyHAsl4JrHaffq0KXbQUzHX
+	xyfxXk4gDgmkf5iWVtV+Hx2SaR65NJfBCcg70IP/dNMUg+OwhJBfEm5MUVBFXSYjcqi/ip9env1
+	P0tlzR+PETgOobWWsaIeoVcfTd9/jmKSrmVz9FPUjomzHBY262AV+NCOD0W1CGJcLyrSIoBiYZA
+	H2xhmJ1gGmIG0HnN0cDmYY8DwMAKghq9MtyBbdru1l410NyahSE7gQXoo9or1I0TYI3ttDvKZl9
+	VHPncsIbjelv+TIr5W7EdxKXVLzfvNy3HhU2nFtFE=
+X-Received: by 2002:a05:6214:5bca:b0:91e:8a59:5fd7 with SMTP id 6a1803df08f44-91eef724dbcmr7141526d6.3.1794247151849;
+        Mon, 09 Nov 2026 09:59:11 -0800 (PST)
+X-Received: by 2002:a05:6214:5bca:b0:91e:8a59:5fd7 with SMTP id 6a1803df08f44-91eef724dbcmr7141026d6.3.1794247151158;
+        Mon, 09 Nov 2026 09:59:11 -0800 (PST)
+Received: from redhat.com (c-73-183-53-213.hsd1.pa.comcast.net. [73.183.53.213])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91ef0540a8dsm1273966d6.41.2026.11.09.09.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2026 09:59:09 -0800 (PST)
+Date: Mon, 9 Nov 2026 12:59:08 -0500
+From: Brian Masney <bmasney@redhat.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Andy Shevchenko <andy@kernel.org>, linux-mips@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pinctrl: ingenic: convert to
+ subsys_platform_driver_probe()
+Message-ID: <avIJ7KZxtTzUkpfJ@redhat.com>
+References: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
+ <20261106-pinctrl-subsys-v1-1-f17582f32aaf@redhat.com>
+ <CAHp75VfW-DV_HcorM_XWWkBnc6YVrj0fBReFf=WgziVCOoEjzg@mail.gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -113,417 +123,28 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfW-DV_HcorM_XWWkBnc6YVrj0fBReFf=WgziVCOoEjzg@mail.gmail.com>
+User-Agent: Mutt/2.4.3 (2026-10-09)
 
-The 480x800 parallel RGB panel of the HiBy R1. It is set up over a 3-wire
-SPI bus with 16-bit words, each carrying a register address byte or a
-data byte, which no existing panel driver speaks. The set-up sequence is
-the vendor kernel's; prepare sends it up to sleep-out, and enable and
-disable switch the display on and off. It asks for BGR666: in RGB order the
-R1 shows red and blue swapped.
+Hi Andy,
 
-Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
----
- MAINTAINERS                                |   1 +
- drivers/gpu/drm/panel/Kconfig              |  10 +
- drivers/gpu/drm/panel/Makefile             |   1 +
- drivers/gpu/drm/panel/panel-hiby-lg35583.c | 342 +++++++++++++++++++++
- 4 files changed, 354 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-hiby-lg35583.c
+On Sat, Nov 07, 2026 at 03:58:23PM +0200, Andy Shevchenko wrote:
+> On Sat, Nov 7, 2026 at 2:27 AM Brian Masney <bmasney@redhat.com> wrote:
+> >
+> > Reduce boilerplate code in this driver and convert it over to use the
+> > macro subsys_platform_driver_probe().
+> 
+> Wasn't there already a set of patches from somebody for the same reason?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ddc559cac674..062270232344 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8350,6 +8350,7 @@ DRM DRIVER FOR HIBY LG35583 PANEL
- M:	Olivier Louvignes <olivier@mgcrea.io>
- S:	Maintained
- F:	Documentation/devicetree/bindings/display/panel/hiby,lg35583.yaml
-+F:	drivers/gpu/drm/panel/panel-hiby-lg35583.c
- 
- DRM DRIVER FOR HIMAX HX8394 MIPI-DSI LCD panels
- M:	Ondrej Jirman <megi@xff.cz>
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 26ffa2378f55..79528ff0100a 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -209,6 +209,16 @@ config DRM_PANEL_LVDS
- 	  handling of power supplies or control signals. It implements automatic
- 	  backlight handling if the panel is attached to a backlight controller.
- 
-+config DRM_PANEL_HIBY_LG35583
-+	tristate "HiBy LG35583 RGB/SPI panel"
-+	depends on OF && SPI
-+	help
-+	  Say Y here if you want to enable support for the LG35583, the
-+	  480x800 parallel RGB panel of the HiBy R1 digital audio player,
-+	  which is set up over a 3-wire SPI bus.
-+
-+	  To compile this driver as a module, choose M here.
-+
- config DRM_PANEL_HIMAX_HX8279
- 	tristate "Himax HX8279-based panels"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index 365f2e73f6b4..9f5cacfaba29 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -21,6 +21,7 @@ obj-$(CONFIG_DRM_PANEL_ELIDA_KD35T133) += panel-elida-kd35t133.o
- obj-$(CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02) += panel-feixin-k101-im2ba02.o
- obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d.o
- obj-$(CONFIG_DRM_PANEL_FOCALTECH_OTA7290B) += panel-focaltech-ota7290b.o
-+obj-$(CONFIG_DRM_PANEL_HIBY_LG35583) += panel-hiby-lg35583.o
- obj-$(CONFIG_DRM_PANEL_HIMAX_HX8279) += panel-himax-hx8279.o
- obj-$(CONFIG_DRM_PANEL_HIMAX_HX83102) += panel-himax-hx83102.o
- obj-$(CONFIG_DRM_PANEL_HIMAX_HX83112A) += panel-himax-hx83112a.o
-diff --git a/drivers/gpu/drm/panel/panel-hiby-lg35583.c b/drivers/gpu/drm/panel/panel-hiby-lg35583.c
-new file mode 100644
-index 000000000000..9189c7c19665
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-hiby-lg35583.c
-@@ -0,0 +1,342 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * The LG35583 panel of the HiBy R1
-+ *
-+ * Copyright (c) 2026 Olivier Louvignes <olivier@mgcrea.io>
-+ *
-+ * A 480x800 parallel RGB panel, set up over a 3-wire SPI bus with 16-bit
-+ * words: 0x20 and a register's high byte, 0x00 and its low byte, then 0x40
-+ * and each data byte. HiBy calls it the LG35583; its controller is not
-+ * identified. The set-up sequence is the one the vendor kernel sends.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/media-bus-format.h>
-+#include <linux/module.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+#define LG35583_ADDR_HI		0x2000
-+#define LG35583_ADDR_LO		0x0000
-+#define LG35583_DATA		0x4000
-+
-+#define LG35583_SLPIN		0x1000
-+#define LG35583_SLPOUT		0x1100
-+#define LG35583_DISPOFF		0x2800
-+#define LG35583_DISPON		0x2900
-+#define LG35583_RAMWR		0x2c00
-+
-+struct lg35583_write {
-+	u16 reg;	/* 0: wait val milliseconds */
-+	s16 val;	/* -1: no data */
-+};
-+
-+#define REG(r, v)	{ (r), (v) }
-+#define CMD(r)		{ (r), -1 }
-+#define DELAY(ms)	{ 0, (ms) }
-+
-+static const struct lg35583_write lg35583_init[] = {
-+	REG(0xb100, 0x06), REG(0xb101, 0x01), REG(0xb102, 0x54),
-+	REG(0xb104, 0x07), REG(0xb105, 0x06), REG(0xb106, 0x06),
-+	REG(0xb107, 0x4a), REG(0xb108, 0x21), REG(0xb109, 0x08),
-+	REG(0xf101, 0xc0), REG(0xf103, 0x01),
-+	DELAY(5),
-+	REG(0xb400, 0x01), REG(0xb600, 0x10),
-+	REG(0x3a00, 0x77), REG(0x3b00, 0x03), REG(0x5e04, 0x02),
-+	REG(0x3600, 0x08),
-+	DELAY(5),
-+	/* Gamma */
-+	REG(0xe000, 0x00), REG(0xe001, 0x2f), REG(0xe002, 0x3f),
-+	REG(0xe003, 0x1f), REG(0xe004, 0x21), REG(0xe005, 0x2c),
-+	REG(0xe006, 0x2c), REG(0xe007, 0x61), REG(0xe008, 0x1c),
-+	REG(0xe009, 0x18), REG(0xe00a, 0xbc), REG(0xe00b, 0x27),
-+	REG(0xe00c, 0x59), REG(0xe00d, 0x6a), REG(0xe00e, 0xbb),
-+	REG(0xe00f, 0xbe), REG(0xe010, 0x3e), REG(0xe011, 0x48),
-+	REG(0xe100, 0x00), REG(0xe101, 0x32), REG(0xe102, 0x45),
-+	REG(0xe103, 0x26), REG(0xe104, 0x21), REG(0xe105, 0x2c),
-+	REG(0xe106, 0x5c), REG(0xe107, 0x63), REG(0xe108, 0x1c),
-+	REG(0xe109, 0x19), REG(0xe10a, 0xd3), REG(0xe10b, 0x28),
-+	REG(0xe10c, 0x59), REG(0xe10d, 0x6b), REG(0xe10e, 0xdb),
-+	REG(0xe10f, 0xde), REG(0xe110, 0x5f), REG(0xe111, 0x6b),
-+	REG(0xe200, 0x7f), REG(0xe201, 0x7d), REG(0xe202, 0x86),
-+	REG(0xe203, 0x89), REG(0xe204, 0x10), REG(0xe205, 0x1e),
-+	REG(0xe206, 0x41), REG(0xe207, 0x77), REG(0xe208, 0x0d),
-+	REG(0xe209, 0x1d), REG(0xe20a, 0xc8), REG(0xe20b, 0x30),
-+	REG(0xe20c, 0x5f), REG(0xe20d, 0x71), REG(0xe20e, 0xc3),
-+	REG(0xe20f, 0xbe), REG(0xe210, 0x3e), REG(0xe211, 0x48),
-+	REG(0xe300, 0x7f), REG(0xe301, 0x7f), REG(0xe302, 0x86),
-+	REG(0xe303, 0x93), REG(0xe304, 0x10), REG(0xe305, 0x1e),
-+	REG(0xe306, 0x41), REG(0xe307, 0x89), REG(0xe308, 0x0d),
-+	REG(0xe309, 0x1d), REG(0xe30a, 0xe0), REG(0xe30b, 0x30),
-+	REG(0xe30c, 0x5f), REG(0xe30d, 0x70), REG(0xe30e, 0xe4),
-+	REG(0xe30f, 0xdf), REG(0xe310, 0x5f), REG(0xe311, 0x6b),
-+	REG(0xe400, 0x00), REG(0xe401, 0x43), REG(0xe402, 0x6f),
-+	REG(0xe403, 0x60), REG(0xe404, 0x21), REG(0xe405, 0x2c),
-+	REG(0xe406, 0x5a), REG(0xe407, 0x6d), REG(0xe408, 0x1c),
-+	REG(0xe409, 0x18), REG(0xe40a, 0xc6), REG(0xe40b, 0x27),
-+	REG(0xe40c, 0x59), REG(0xe40d, 0x6a), REG(0xe40e, 0xbb),
-+	REG(0xe40f, 0xbe), REG(0xe410, 0x3e), REG(0xe411, 0x48),
-+	REG(0xe500, 0x00), REG(0xe501, 0x46), REG(0xe502, 0x75),
-+	REG(0xe503, 0x67), REG(0xe504, 0x21), REG(0xe505, 0x2c),
-+	REG(0xe506, 0x5a), REG(0xe507, 0x7e), REG(0xe508, 0x1c),
-+	REG(0xe509, 0x19), REG(0xe50a, 0xdd), REG(0xe50b, 0x28),
-+	REG(0xe50c, 0x59), REG(0xe50d, 0x6b), REG(0xe50e, 0xdb),
-+	REG(0xe50f, 0xde), REG(0xe510, 0x5f), REG(0xe511, 0x6b),
-+	DELAY(5),
-+	REG(0xc200, 0x70), REG(0xc202, 0x70), REG(0xc203, 0x44),
-+	DELAY(20),
-+	REG(0xc200, 0x51), REG(0xc201, 0x06), REG(0xc202, 0x51),
-+	REG(0xc203, 0x66),
-+	DELAY(20),
-+	REG(0xc100, 0x45),
-+	DELAY(5),
-+	REG(0xc700, 0x46), REG(0xc000, 0xa3), REG(0xc002, 0x8a),
-+	DELAY(5),
-+	CMD(LG35583_SLPOUT),
-+	DELAY(130),
-+};
-+
-+struct lg35583 {
-+	struct drm_panel panel;
-+	struct spi_device *spi;
-+	struct gpio_desc *reset;
-+	struct regulator *vcc;
-+	struct regulator *vccio;
-+};
-+
-+static const struct drm_display_mode lg35583_mode = {
-+	.clock = 28000,
-+	.hdisplay = 480,
-+	.hsync_start = 480 + 24,
-+	.hsync_end = 480 + 24 + 24,
-+	.htotal = 480 + 24 + 24 + 24,
-+	.vdisplay = 800,
-+	.vsync_start = 800 + 14,
-+	.vsync_end = 800 + 14 + 5,
-+	.vtotal = 800 + 14 + 5 + 8,
-+	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC,
-+	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
-+};
-+
-+static struct lg35583 *to_lg35583(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct lg35583, panel);
-+}
-+
-+static int lg35583_word(struct lg35583 *ctx, u16 word)
-+{
-+	/* Copied to a DMA-safe buffer. */
-+	return spi_write_then_read(ctx->spi, &word, sizeof(word), NULL, 0);
-+}
-+
-+static int lg35583_cmd(struct lg35583 *ctx, u16 reg)
-+{
-+	int ret;
-+
-+	ret = lg35583_word(ctx, LG35583_ADDR_HI | (reg >> 8));
-+	if (ret)
-+		return ret;
-+	return lg35583_word(ctx, LG35583_ADDR_LO | (reg & 0xff));
-+}
-+
-+static int lg35583_write(struct lg35583 *ctx, const struct lg35583_write *w)
-+{
-+	int ret;
-+
-+	if (!w->reg) {
-+		msleep(w->val);
-+		return 0;
-+	}
-+
-+	ret = lg35583_cmd(ctx, w->reg);
-+	if (ret || w->val < 0)
-+		return ret;
-+	return lg35583_word(ctx, LG35583_DATA | w->val);
-+}
-+
-+static int lg35583_prepare(struct drm_panel *panel)
-+{
-+	struct lg35583 *ctx = to_lg35583(panel);
-+	unsigned int i;
-+	int ret;
-+
-+	ret = regulator_enable(ctx->vccio);
-+	if (ret)
-+		return ret;
-+	usleep_range(5000, 6000);
-+
-+	ret = regulator_enable(ctx->vcc);
-+	if (ret)
-+		goto err_vccio;
-+	usleep_range(5000, 6000);
-+
-+	gpiod_set_value_cansleep(ctx->reset, 0);
-+	usleep_range(5000, 6000);
-+	gpiod_set_value_cansleep(ctx->reset, 1);
-+	msleep(50);
-+	gpiod_set_value_cansleep(ctx->reset, 0);
-+	msleep(30);
-+
-+	for (i = 0; i < ARRAY_SIZE(lg35583_init); i++) {
-+		ret = lg35583_write(ctx, &lg35583_init[i]);
-+		if (ret) {
-+			dev_err(panel->dev, "Unable to set up the panel: %d\n", ret);
-+			goto err_vcc;
-+		}
-+	}
-+
-+	return 0;
-+
-+err_vcc:
-+	gpiod_set_value_cansleep(ctx->reset, 1);
-+	regulator_disable(ctx->vcc);
-+err_vccio:
-+	regulator_disable(ctx->vccio);
-+	return ret;
-+}
-+
-+static int lg35583_enable(struct drm_panel *panel)
-+{
-+	struct lg35583 *ctx = to_lg35583(panel);
-+	int ret;
-+
-+	ret = lg35583_cmd(ctx, LG35583_DISPON);
-+	if (ret)
-+		return ret;
-+
-+	return lg35583_cmd(ctx, LG35583_RAMWR);
-+}
-+
-+static int lg35583_disable(struct drm_panel *panel)
-+{
-+	struct lg35583 *ctx = to_lg35583(panel);
-+	int ret;
-+
-+	ret = lg35583_cmd(ctx, LG35583_DISPOFF);
-+	usleep_range(5000, 6000);
-+	return ret;
-+}
-+
-+static int lg35583_unprepare(struct drm_panel *panel)
-+{
-+	struct lg35583 *ctx = to_lg35583(panel);
-+
-+	lg35583_cmd(ctx, LG35583_SLPIN);
-+	usleep_range(5000, 6000);
-+
-+	gpiod_set_value_cansleep(ctx->reset, 1);
-+	regulator_disable(ctx->vcc);
-+	regulator_disable(ctx->vccio);
-+	return 0;
-+}
-+
-+static int lg35583_get_modes(struct drm_panel *panel, struct drm_connector *connector)
-+{
-+	/* Red and blue are swapped on the R1 without it. */
-+	static const u32 bus_format = MEDIA_BUS_FMT_BGR666_1X18;
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, &lg35583_mode);
-+	if (!mode)
-+		return -ENOMEM;
-+
-+	drm_mode_set_name(mode);
-+	drm_mode_probed_add(connector, mode);
-+
-+	connector->display_info.bpc = 6;
-+	connector->display_info.bus_flags = DRM_BUS_FLAG_DE_HIGH |
-+					    DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE;
-+	drm_display_info_set_bus_formats(&connector->display_info, &bus_format, 1);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs lg35583_funcs = {
-+	.prepare = lg35583_prepare,
-+	.enable = lg35583_enable,
-+	.disable = lg35583_disable,
-+	.unprepare = lg35583_unprepare,
-+	.get_modes = lg35583_get_modes,
-+};
-+
-+static int lg35583_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct lg35583 *ctx;
-+	int ret;
-+
-+	ctx = devm_drm_panel_alloc(dev, struct lg35583, panel, &lg35583_funcs,
-+				   DRM_MODE_CONNECTOR_DPI);
-+	if (IS_ERR(ctx))
-+		return PTR_ERR(ctx);
-+
-+	ctx->spi = spi;
-+	spi_set_drvdata(spi, ctx);
-+
-+	spi->bits_per_word = 16;
-+	ret = spi_setup(spi);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Unable to set up SPI\n");
-+
-+	ctx->vcc = devm_regulator_get(dev, "vcc");
-+	if (IS_ERR(ctx->vcc))
-+		return dev_err_probe(dev, PTR_ERR(ctx->vcc), "Unable to get vcc\n");
-+
-+	ctx->vccio = devm_regulator_get(dev, "vccio");
-+	if (IS_ERR(ctx->vccio))
-+		return dev_err_probe(dev, PTR_ERR(ctx->vccio), "Unable to get vccio\n");
-+
-+	/*
-+	 * Deasserted, which keeps a panel the boot loader left on as it is, but
-+	 * as an output: after a reset the pin is an input, and prepare's reset
-+	 * pulse would never reach the panel.
-+	 */
-+	ctx->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->reset))
-+		return dev_err_probe(dev, PTR_ERR(ctx->reset), "Unable to get reset\n");
-+
-+	ret = drm_panel_of_backlight(&ctx->panel);
-+	if (ret)
-+		return ret;
-+
-+	drm_panel_add(&ctx->panel);
-+	return 0;
-+}
-+
-+static void lg35583_remove(struct spi_device *spi)
-+{
-+	struct lg35583 *ctx = spi_get_drvdata(spi);
-+
-+	drm_panel_remove(&ctx->panel);
-+}
-+
-+static const struct of_device_id lg35583_of_match[] = {
-+	{ .compatible = "hiby,lg35583" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lg35583_of_match);
-+
-+static const struct spi_device_id lg35583_ids[] = {
-+	{ "lg35583" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(spi, lg35583_ids);
-+
-+static struct spi_driver lg35583_driver = {
-+	.probe = lg35583_probe,
-+	.remove = lg35583_remove,
-+	.id_table = lg35583_ids,
-+	.driver = {
-+		.name = "panel-hiby-lg35583",
-+		.of_match_table = lg35583_of_match,
-+	},
-+};
-+module_spi_driver(lg35583_driver);
-+
-+MODULE_AUTHOR("Olivier Louvignes <olivier@mgcrea.io>");
-+MODULE_DESCRIPTION("HiBy R1 LG35583 panel driver");
-+MODULE_LICENSE("GPL");
--- 
-2.39.5
+I just searched the linux-gpio archives and I see the effort back in
+June to also add subsys_platform_driver(). I wasn't aware of that
+effort, and it was never unfortunately merged into the driver core.
+
+I got the macros added in 7.4-rc1, and I posted patches across the tree
+to use the new macros.
+
+Brian
 

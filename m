@@ -1,66 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794253616;
-	b=hKAaE9evCvMSr3EzcKEtvLoW8cAOsgFCeKZvV9Hd8+GxaxhxZtfzqJDZgmLP1mUfevkP
-	 +bLqnjEufsODdOIPCrx1X2vCmPrA+sWjaOUWkbzrdff4HTet3K8+5qFT8GjdySb5WJvZR
-	 /f0O5iMiFG6AKR8RboKRJaI5lyijEQhdt35OhZKU+F+6538lVeo4C1QVTSfno2VzdIbh+
-	 pjHvftf3L4BUPxg7yHi/fj591kqGqxPW3Q/OMrNg1Q6XBeNoyZTT/B6OBMBVsY5I89dhk
-	 KpYp7Zco/9HUMGoKk/LPbkaALNmjpPcLYEeoPaeuMoo6tF19oCh3KKulRvLHorHNUEQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794253616;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
-	 MIME-Version;
-	bh=g8KZrmmXlZvIgwyOWoivduEv1ngGHJzGbY2i8aPyLd4=;
-	b=qYma8+DknAm81oTiOCY9g7cQc1nplWJiYZc/zJcta1NQW1FiANiOK6jv9x5B0d6wMPfo
-	 e2o1ai3A7PJRcmf7NIKD346Lonuy436Llgyu0iWbEF7CQ2o0+KOs5d2IyO9HdClGzqO02
-	 9AQl64ldsqijVir40TpRj8IDDjZub7baOCUCPyyVHEr3X+ebiZ+kancfbDtz5d+O0xiPG
-	 w0HcdPRtil9MfDX02nLM+wCk0Uq/ER1JjGEFp4khuizUYgH7R9aFKJvweg+1E8OkpPf8R
-	 UcHrLVQSBuT9dylVqf4oU/2y4Qcw1PdU/YwcBetEbQIsF9WDt4lgN5BHgqq10Z/sPhw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794254990;
+	b=XHPUTFfghc+bxK0Yrc/ozgBF/ZO/iGzz6f6M9ERzMJuJH9xQ+NRCeDw8LyLIb3ObvN9m
+	 /ojpCRZPF4RIDFxN1ZXJsLldCIDZOKlEXkOsxNdOL8Wj4gR8hJ82SyRUmXXzh5ClnZixI
+	 4oypa7Ozq/52T+LOwrSzyIlg8XYPq+0iw2+2jtJART3shkb8Ppo2KUhs5M1p8aIKyQJ0T
+	 nc5Pj8/LcZVqNJqYNToB7CFmM/UUFNZ5dFnJ0I2edqaQYvuYi7DnpK5jwJJfGrZrOd7Fh
+	 zOi/ioKKpVITaCgtLmiDdheIUigHjFpDskIXnWXEqCdV7NJmblGO3ekZcuXj0mlD/xA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794254990;
+	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
+	 X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 X-Endpoint-Received:X-Original-From:Reply-To;
+	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
+	b=3C/mrO4BA1jVldD6LQEc5nVY56Rpehp51dbvRK3sn53+V+OJNHsvqhZPAj2tHI7n8Xyv
+	 r6sMVhfGXwNrgfHqUAzgKMS6ODcmKqnF7G7UQEWWSldXosPlEu3tgoJdQXhr+fsJVkEJw
+	 Ye/r8Q9YIWxKMheoWxF37z9ugWsKISMLBLwpnl26kF6ZebZAZfSM/QIAUr5FXCahsHnp9
+	 Zt7aa+RynC7jJRnXRgIUOCtzu2SfWGqjVj5zYJrmA6jMxxS49+RMB1QKo0sIsEnbA9uTc
+	 k4UoQyEVDsMeEXQm4Z4X5o4jCZk7WULNXHdjVWBhBoabLnnT55PKAi0ncHIVbAEdQ3A==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X+9pLdYG;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D210D606A326;
+	Mon,  9 Nov 2026 20:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X+9pLdYG
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794254989;
+	b=jt/zc6MvdiEpcS53ati9Btcd2vN7CgaIKkRUez3PZppe0W4UDV9F0wZitezliwR70dPv
+	 4ojJbtX0fy8n5UIEL3QOVR1q78eRs7DHNN3sv72FeFk5C/xCexFmYo5A+2CtR9uKvW/zk
+	 +PQCWcsbv7w43fBT80KC745ugcGhDzKODthyhE6tTukKAUFAy1Q/VsQsXmoi7fpWyKY/R
+	 adV53Nu2/ZvS+nV+os/RJfHwWzw1XJrBKLD694ZnIedC5rM47mixeKeq1NZ3oIx4vHv2m
+	 cp+irFN678fojJudFFm5F4IG+sBbHQGvMEMbwqn10cRar3Ds3V7Eg2bwb2VTeRapNIw==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794254989;
+	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
+	b=BzEfqEq3Myc1AKCY6eDqNU/no6qi63CdJ8/FfhgfeuyLU0O9Ed3XboXmJAb3t1s0AOKv
+	 bujtPW3A4XUe0noP/DfQBBnTMYtD5wJ0D0n6Sa0W2joPA5rupvrj9oaAGM7Y98vEm9MGZ
+	 mMZemMalXeGqY665jrno03IdrhSY5OGKfKBZy3v4HbvMm3318Kx+EnSACfx6GH5vxG6V3
+	 e/2rO5pWov8oGVvzwvVFSIK83clMSjLxl4tLcAy9YiSeP40hJkn3wmdnQg8pUdj+BUzbj
+	 ZCn5RxGt4x03z27Om9061xQk29mOsAHHP9y8DE1gHm2oxhb32JP81de2CgZgCxpUxXA==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BDF606A325;
-	Mon,  9 Nov 2026 19:46:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8BDF606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <fb84cd36838875ccd2530b9e3983700fbd23eb3c.camel@crapouillou.net>
-Subject: Re: [PATCH] drm/ingenic: Allocate and register the internal bridge
- separately
-From: Paul Cercueil <paul@crapouillou.net>
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
-Cc: "H. Nikolaus Schaller" <hns@goldelico.com>, Paul Boddie
- <paul@boddie.org.uk>,  Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann	 <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter	 <simona@ffwll.ch>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, "open list:INGENIC JZ47xx SoCs"	
- <linux-mips@vger.kernel.org>, "open list:DRM DRIVERS"	
- <dri-devel@lists.freedesktop.org>
-Date: Mon, 09 Nov 2026 20:46:40 +0100
-In-Reply-To: <20261105203517.2293404-1-f.fainelli@gmail.com>
-References: <20261105203517.2293404-1-f.fainelli@gmail.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
- LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
- FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
- z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
- +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
- 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
- 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
- 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
- dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
- 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
- rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
- lBwgAhlGy6nqP7O3u7q23hRU=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.kernel.org (Postfix) with ESMTPS id 1BC331F008A1;
+	Mon,  9 Nov 2026 20:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794254989;
+	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
+	h=From:Subject:Date:To:Cc:Reply-To;
+	b=X+9pLdYGEVKqNU7CQwWm6ej4fKMVhAyaMrLyuP8Zd2LY3oVztMA7h3BVmlRzRhEEb
+	 TRouOadiC6CKzCwuvqvI/uuhLHqcZDzoUW2yMgPMLC9OKovR57nvr2L4LKhs7p4htq
+	 vXpsLLUOCqsykRdKJDgDP72S+h3LkbxvmBlU/GOG1XhnsdroNBlBRiBQGG9CYzTW40
+	 b6abNN0yeD2zHAGzpGEeRD3ROf9jXKE0krfa9JtBeZ07Suk4C87t5WOW41CDLYa/1p
+	 uYxk56/yEYp7Z9S1+4C7aNpWLSGKcktnBu7r0hIGxLIL6iE3yJEU/nk0KND6kzKD++
+	 subbOqwnuEGGQ==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 9CCDA48638;
+	Mon,  9 Nov 2026 20:09:48 +0000 (UTC)
+From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
+Subject: [PATCH v2 0/2] gpio: Add the Siflower SF19A2890 GPIO controller
+Date: Mon, 09 Nov 2026 15:09:30 -0500
+Message-Id: <20261109-sf19a2890-gpio-v2-0-b885fbd84c4c@telaak.dev>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -70,161 +83,97 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHoo8moC/12OQQ6CMBBFr2K6tqYdCxZX3sOwKDDAqAFsS6Mh3
+ N2CGhOXb/L/fzMxh5bQseNmYhYDOeq7CLDdsLI1XYOcqsgMBKRSCuCulpkBnQneDNTzAmSSAiZ
+ Qa81iabBY02MdPOdvdmNxwdIvK5+ExfsYTf4Xa8n53j7XN4Jcrl+j+jcGyQVXCap0Xyp9AH3ye
+ DPmuqswsHye5xcPo6kw1AAAAA==
+X-Change-ID: 20261102-sf19a2890-gpio-b21562e52f88
+To: Linus Walleij <linusw@kernel.org>, 
+ Bartosz Golaszewski <brgl@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Chuanhong Guo <gch981213@gmail.com>, Qingfang Deng <dqfext@gmail.com>, 
+ linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Joseph Telaak <joseph@telaak.dev>, 
+ Qingfang Deng <qingfang.deng@siflower.com.cn>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794254987; l=2936;
+ i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
+ bh=YNNuUIhjyiZTY0/u39z7F4DHkB1CR2mjqFrrVwxsTQw=;
+ b=aDWYDVEqbwGQOOzgeVDJcyo7dMkWGrTYnRUqmnnPNtCDyslKc9bZGlOK0oXMYMpUkLscHESvz
+ BkExt1y9aMJDu1qc+SzG0x1KhQeDIPeY/2ng/JusVy51kaqWLIHGlKZ
+X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
+ pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
+X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
+ auth_id=1404
+X-Original-From: Joseph Telaak <joseph@telaak.dev>
+Reply-To: joseph@telaak.dev
 
-Hi,
+This series adds a binding and a driver for the GPIO controller of the
+Siflower SoCs, starting with the SF19A2890, a MIPS SoC for home routers.
+Each line has a register block of its own, and each group of 16 lines an
+interrupt.
 
-Le jeudi 05 novembre 2026 =C3=A0 12:35 -0800, Florian Fainelli a =C3=A9crit=
-=C2=A0:
-> The LCD controller's internal bridge is embedded in an object
-> allocated
-> with drmm_encoder_alloc(). This initializes the encoder but leaves
-> the
-> bridge's reference count at zero. Since drm_bridge_attach() takes a
-> reference, probing the CI20 display produces addition-on-zero and
-> underflow warnings and fails to attach the HDMI bridge chain.
->=20
-> Allocate the internal bridge with devm_drm_bridge_alloc() and
-> register
-> it with devm_drm_bridge_add() before attaching it. Keep the encoder
-> in a
-> separate DRM-managed allocation: encoder cleanup can drop the final
-> bridge reference before it has finished accessing the encoder. Find
-> the internal bridge through the encoder's bridge chain during mode
-> setting, and use the bridge argument directly in bridge callbacks.
->=20
-> Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in
-> drm_bridge_attach/detach()")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+The binding is Chuanhong Guo's and the driver Qingfang Deng's, both from
+Chuanhong's SF19A2890 branch [1], with my changes noted in each. The
+same controller is in Siflower's SF21 RISC-V SoCs; the binding has only
+the SF19A2890's compatible, the one I can test.
 
-Looks like I lost my commit rights to drm-misc-next, I guess for
-inactivity.
+The SoC support itself (MACH_SIFLOWER_MIPS) goes through the MIPS tree;
+until then the driver builds with COMPILE_TEST.
 
-So I'll ack it (LGTM) and let someone else (Maxime?) commit it.
+Tested on a GL.iNet GL-SFT1200: gpio-keys sees both buttons on both
+edges (the reset button on GPIO 27 as KEY_RESTART, the mode slide switch
+on GPIO 1 as BTN_0, 1 and 0 per slide); /sys/kernel/debug/gpio lists the
+49 lines; the GSW150 switch comes out of reset through GPIO 0 and the
+SPI NAND uses GPIO 8 as its chip select.
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+[1] https://github.com/981213/linux/commits/siflower-7.1
 
-Cheers,
--Paul
+---
+Changes in v2:
+- Write my notes on Chuanhong's and Qingfang's patches as lists, with
+  Co-developed-by on the driver (Bartosz).
+- Get priv with gpiochip_get_data(), drop the two else branches, and add
+  a blank line after the header comment (Bartosz).
+- Get the reset with devm_reset_control_get_exclusive_deasserted(), as a
+  local, not in priv (Philipp), and drop the OF_GPIO dependency.
+- Name only the SF19A2890 in the Kconfig help and the binding's commit
+  message, since the other SoCs need compatibles of their own (Conor).
+- Drop the ngpios property, which the compatible implies: the driver
+  takes the number of lines from its match data, and the binding takes
+  exactly four interrupts (Conor).
+- Order the binding's properties and its required list (Conor).
+- Add a MAINTAINERS entry for the driver and its binding.
+- Use GPL-2.0-or-later, not the deprecated GPL-2.0+ SPDX identifier.
+- Use readl() and writel() directly, without wrapper functions (Linus).
+- No comma after the match table's sentinel, as Uwe asked of the
+  clock driver.
+- Drop the unused linux/pinctrl/consumer.h include.
+- Link to v1: https://patch.msgid.link/20261104-sf19a2890-gpio-v1-0-45e463c48728@telaak.dev
 
-> ---
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++-----=
--
-> --
-> =C2=A01 file changed, 21 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 625ec76cf04d..520912f9ed0d 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -121,16 +121,15 @@ struct ingenic_drm {
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct ingenic_drm_bridge {
-> -	struct drm_encoder encoder;
-> =C2=A0	struct drm_bridge bridge, *next_bridge;
-> =C2=A0
-> =C2=A0	struct drm_bus_cfg bus_cfg;
-> =C2=A0};
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_bridge *
-> -to_ingenic_drm_bridge(struct drm_encoder *encoder)
-> +to_ingenic_drm_bridge(struct drm_bridge *bridge)
-> =C2=A0{
-> -	return container_of(encoder, struct ingenic_drm_bridge,
-> encoder);
-> +	return container_of(bridge, struct ingenic_drm_bridge,
-> bridge);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_private_state *
-> @@ -738,7 +737,9 @@ static void
-> ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
-> =C2=A0{
-> =C2=A0	struct ingenic_drm *priv =3D drm_device_get_priv(encoder-
-> >dev);
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *bridge =3D
-> to_ingenic_drm_bridge(encoder);
-> +	struct drm_bridge *first_bridge __free(drm_bridge_put) =3D
-> +		drm_bridge_chain_get_first_bridge(encoder);
-> +	struct ingenic_drm_bridge *bridge =3D
-> to_ingenic_drm_bridge(first_bridge);
-> =C2=A0	unsigned int cfg, rgbcfg =3D 0;
-> =C2=A0
-> =C2=A0	priv->panel_is_sharp =3D bridge->bus_cfg.flags &
-> DRM_BUS_FLAG_SHARP_SIGNALS;
-> @@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct
-> drm_bridge *bridge,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 enum drm_bridge_attach_flags
-> flags)
-> =C2=A0{
-> -	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(encoder);
-> +	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	return drm_bridge_attach(encoder, ib->next_bridge,
-> =C2=A0				 &ib->bridge, flags);
-> @@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct
-> drm_bridge *bridge,
-> =C2=A0					=C2=A0=C2=A0 struct
-> drm_connector_state *conn_state)
-> =C2=A0{
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge->encoder);
-> +	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	ib->bus_cfg =3D bridge_state->output_bus_cfg;
-> =C2=A0
-> @@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device
-> *dev, bool has_components)
-> =C2=A0			drm_panel_put(panel);
-> =C2=A0		}
-> =C2=A0
-> -		ib =3D drmm_encoder_alloc(drm, struct
-> ingenic_drm_bridge, encoder,
-> -					NULL, DRM_MODE_ENCODER_DPI,
-> NULL);
-> +		ib =3D devm_drm_bridge_alloc(dev, struct
-> ingenic_drm_bridge, bridge,
-> +					=C2=A0=C2=A0
-> &ingenic_drm_bridge_funcs);
-> =C2=A0		if (IS_ERR(ib)) {
-> =C2=A0			ret =3D PTR_ERR(ib);
-> +			dev_err(dev, "Failed to allocate bridge:
-> %d\n", ret);
-> +			goto err_drvdata;
-> +		}
-> +
-> +		encoder =3D drmm_plain_encoder_alloc(drm, NULL,
-> +						=C2=A0=C2=A0
-> DRM_MODE_ENCODER_DPI, NULL);
-> +		if (IS_ERR(encoder)) {
-> +			ret =3D PTR_ERR(encoder);
-> =C2=A0			dev_err(dev, "Failed to init encoder: %d\n",
-> ret);
-> =C2=A0			goto err_drvdata;
-> =C2=A0		}
-> =C2=A0
-> -		encoder =3D &ib->encoder;
-> =C2=A0		encoder->possible_crtcs =3D drm_crtc_mask(&priv-
-> >crtc);
-> =C2=A0
-> =C2=A0		drm_encoder_helper_add(encoder,
-> &ingenic_drm_encoder_helper_funcs);
-> =C2=A0
-> -		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
-> =C2=A0		ib->next_bridge =3D bridge;
-> =C2=A0
-> +		ret =3D devm_drm_bridge_add(dev, &ib->bridge);
-> +		if (ret)
-> +			goto err_drvdata;
-> +
-> =C2=A0		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
-> =C2=A0					DRM_BRIDGE_ATTACH_NO_CONNECT
-> OR);
-> =C2=A0		if (ret) {
+---
+Chuanhong Guo (1):
+      dt-bindings: gpio: Add Siflower SF19A2890 GPIO controller
+
+Qingfang Deng (1):
+      gpio: Add Siflower GPIO controller driver
+
+ .../bindings/gpio/siflower,sf19a2890-gpio.yaml     |  76 +++++
+ MAINTAINERS                                        |   7 +
+ drivers/gpio/Kconfig                               |  12 +
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-siflower.c                       | 310 +++++++++++++++++++++
+ 5 files changed, 406 insertions(+)
+---
+base-commit: d66b6b86d5a6278ca930112c634d03725beb7d9a
+change-id: 20261102-sf19a2890-gpio-b21562e52f88
+
+Best regards,
+--  
+Joseph Telaak <joseph@telaak.dev>
+
+

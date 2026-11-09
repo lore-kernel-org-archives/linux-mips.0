@@ -1,79 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794254990;
-	b=XHPUTFfghc+bxK0Yrc/ozgBF/ZO/iGzz6f6M9ERzMJuJH9xQ+NRCeDw8LyLIb3ObvN9m
-	 /ojpCRZPF4RIDFxN1ZXJsLldCIDZOKlEXkOsxNdOL8Wj4gR8hJ82SyRUmXXzh5ClnZixI
-	 4oypa7Ozq/52T+LOwrSzyIlg8XYPq+0iw2+2jtJART3shkb8Ppo2KUhs5M1p8aIKyQJ0T
-	 nc5Pj8/LcZVqNJqYNToB7CFmM/UUFNZ5dFnJ0I2edqaQYvuYi7DnpK5jwJJfGrZrOd7Fh
-	 zOi/ioKKpVITaCgtLmiDdheIUigHjFpDskIXnWXEqCdV7NJmblGO3ekZcuXj0mlD/xA==
+	b=Oqj+V+ZQ3UsfYFA+X294Bcc8YeJ6mg+WWV/Za9I7MDHwL3bW4/nufqdOBDe8tsFeqMlL
+	 WV9roj2+Cf1IYyMzpt+ZZ70yv0w+x474jKonKIYcwLYWI9z0Kfiw5PW0Dyme7JUWRQ2EB
+	 sSZfR4R9Uyv+yfoR1yeE+vU1EoewarpLZvV/UkQqd8B9qlQigxxwMho2RVMm4wiwYt3dr
+	 30eKcdaU8PdWE36ep5MF3EDovFbsL5jS7f4ag+TNpMwHkhshWHPmwKETI2nO1Zb//ivGr
+	 PW/Z8YZFxmVpPfAUXDPaz0qZv0AiRvxoQPxHLsO91V3Koi5sTY/XtFc7MaHdLQ+XItw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794254990;
-	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
-	 X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 X-Endpoint-Received:X-Original-From:Reply-To;
-	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
-	b=3C/mrO4BA1jVldD6LQEc5nVY56Rpehp51dbvRK3sn53+V+OJNHsvqhZPAj2tHI7n8Xyv
-	 r6sMVhfGXwNrgfHqUAzgKMS6ODcmKqnF7G7UQEWWSldXosPlEu3tgoJdQXhr+fsJVkEJw
-	 Ye/r8Q9YIWxKMheoWxF37z9ugWsKISMLBLwpnl26kF6ZebZAZfSM/QIAUr5FXCahsHnp9
-	 Zt7aa+RynC7jJRnXRgIUOCtzu2SfWGqjVj5zYJrmA6jMxxS49+RMB1QKo0sIsEnbA9uTc
-	 k4UoQyEVDsMeEXQm4Z4X5o4jCZk7WULNXHdjVWBhBoabLnnT55PKAi0ncHIVbAEdQ3A==
+	bh=/8asDfPuN9E/dFme34IYbG5Lj3axm/bwNBj55SvVdks=;
+	b=IGCD6wMvn0W5pqRW3fAUgMXVZ1dB5I/N3Y1HhJ/RwvHuYR/kqVtIKBnX/CdNCLliISNR
+	 JIu0YYfQhhQAhBlOcAoJIXyHFf2ieV6coZWH2Pxj7kgO7c1OEVdMB2v0Jl+mqyEboszmr
+	 bMyBNOtwspGB1seZEj7AHqzDQd4wU7HNL0UXon06OGoSupameViOIvclmbn5IgAq8w0Qs
+	 8dtoQK/2+bKc1Hd9LyQJvaNJPqcoVVPOJgbCZTne9DjI/SJvOwNzJDBJgckvHLluiglWt
+	 aRufsTSJ5MUoQi2/DLGNTT61647Z273vlFFq6DdP/eaPAcHEAkMXx/JLAZBuu09fEhw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X+9pLdYG;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="M/EDtdXD";
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D210D606A326;
-	Mon,  9 Nov 2026 20:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54632606A337;
+	Mon,  9 Nov 2026 20:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X+9pLdYG
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=M/EDtdXD
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
 	t=1794254989;
-	b=jt/zc6MvdiEpcS53ati9Btcd2vN7CgaIKkRUez3PZppe0W4UDV9F0wZitezliwR70dPv
-	 4ojJbtX0fy8n5UIEL3QOVR1q78eRs7DHNN3sv72FeFk5C/xCexFmYo5A+2CtR9uKvW/zk
-	 +PQCWcsbv7w43fBT80KC745ugcGhDzKODthyhE6tTukKAUFAy1Q/VsQsXmoi7fpWyKY/R
-	 adV53Nu2/ZvS+nV+os/RJfHwWzw1XJrBKLD694ZnIedC5rM47mixeKeq1NZ3oIx4vHv2m
-	 cp+irFN678fojJudFFm5F4IG+sBbHQGvMEMbwqn10cRar3Ds3V7Eg2bwb2VTeRapNIw==
+	b=KYXk0HL3R7n0LpnjUsRxj8+TJev1zmAPK0j+ZiFOpYBzm2sbPbkLZEiFWzct2pmZc1ff
+	 PlvWWqqz53gOHCMun9Y0yNpRUl6jSEYEhylXRQ2Z2fLKgvyKp5nXUWyVrDJrYeUuARQFJ
+	 dfaNYcqyr7k9gPBXE68zZwO8CH0/5qyULZvxy83F2yuCzY5wAhjNZSDTtUnrisg2I4KTc
+	 kBVh3WqpXPQEwStT0DZTlIL3Cn4oTaU9uzlFq6fm+Uo0qE/viVUiY6mynzk6gxkyrY2dp
+	 LT0QInWXg3tM3SPuRXe6+QFya2jlKBJp/39k8+9oorPz2e1rcuJFV5nqT0jBj3c5MXw==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
 	c=relaxed/relaxed; t=1794254989;
-	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
-	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To;
-	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
-	b=BzEfqEq3Myc1AKCY6eDqNU/no6qi63CdJ8/FfhgfeuyLU0O9Ed3XboXmJAb3t1s0AOKv
-	 bujtPW3A4XUe0noP/DfQBBnTMYtD5wJ0D0n6Sa0W2joPA5rupvrj9oaAGM7Y98vEm9MGZ
-	 mMZemMalXeGqY665jrno03IdrhSY5OGKfKBZy3v4HbvMm3318Kx+EnSACfx6GH5vxG6V3
-	 e/2rO5pWov8oGVvzwvVFSIK83clMSjLxl4tLcAy9YiSeP40hJkn3wmdnQg8pUdj+BUzbj
-	 ZCn5RxGt4x03z27Om9061xQk29mOsAHHP9y8DE1gHm2oxhb32JP81de2CgZgCxpUxXA==
+	bh=/8asDfPuN9E/dFme34IYbG5Lj3axm/bwNBj55SvVdks=;
+	b=M70YBXpPFaBDDcihPnl6tbAMxmn3DKaV1YyQWnCZcJVVGZCc9KwUoZQJeUlFE1PX8v12
+	 b3xL6fWdhbwbxflsLQO/5It6Ppv88Ll0Bdd3EAkTOm9pFyBSr8Shb4WpRAoby42xFeyCL
+	 XYtJcWNxaInzTJizZjkXn6zrzLpYSrgKm7pLtqOIgxzR8hwZn5J7Ws7PDlrrqrYE22Pq7
+	 /NUOkQcAkH8dE1kk36/Vgd21w1rWIdoS9Sjq2r+SMllmEZRquj6T4cIwNPKlF2mT5ZFoX
+	 lTz+K+EaiAElkgZSSaXFFzk1wZICnOdUhOSvRgMJxMqhhBvuvASwOXQ23Dbs5FHDxgQ==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 1BC331F008A1;
+	by smtp.kernel.org (Postfix) with ESMTPS id 32E511F008A2;
 	Mon,  9 Nov 2026 20:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1794254989;
-	bh=+qYgKgKkNrRami9gJNBATfSBpbaF04VJZNS+/MMoX8c=;
-	h=From:Subject:Date:To:Cc:Reply-To;
-	b=X+9pLdYGEVKqNU7CQwWm6ej4fKMVhAyaMrLyuP8Zd2LY3oVztMA7h3BVmlRzRhEEb
-	 TRouOadiC6CKzCwuvqvI/uuhLHqcZDzoUW2yMgPMLC9OKovR57nvr2L4LKhs7p4htq
-	 vXpsLLUOCqsykRdKJDgDP72S+h3LkbxvmBlU/GOG1XhnsdroNBlBRiBQGG9CYzTW40
-	 b6abNN0yeD2zHAGzpGEeRD3ROf9jXKE0krfa9JtBeZ07Suk4C87t5WOW41CDLYa/1p
-	 uYxk56/yEYp7Z9S1+4C7aNpWLSGKcktnBu7r0hIGxLIL6iE3yJEU/nk0KND6kzKD++
-	 subbOqwnuEGGQ==
+	bh=/8asDfPuN9E/dFme34IYbG5Lj3axm/bwNBj55SvVdks=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=M/EDtdXDqhfFgq0pdWcRjU5Tr9Y0hlX8Bd4r/u0iHDbQ56PfkmVkhkv1SoZF4lBc/
+	 v6A8a8Hn3rsibI+S/BGjN/porTH5zLnov8G9e9Nib+hCafgW0g6FHtdqXsdLKH1SQI
+	 kTDLRRLTxRnlfTAiEZyj+bNOgcFxc+YsBxWxKon/qrdTM0G7bKvzz4TgxvWuckcuzt
+	 W5Di3vu1ZrcnNCijzwNLCAVDHn5AwMreYKwC2nHbKAazVZqW3fxcEAeDMX4oWBYThB
+	 VnC6c1QODxj20hFD0MdYRPIbb2g58V0y+wQGCoStY7/NZFI/I1VCq1q4M5PCFfQ05h
+	 2kFN6sTH3+OPQ==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 9CCDA48638;
+	by lkml.kernel.org (Postfix) with ESMTP id B05AE48639;
 	Mon,  9 Nov 2026 20:09:48 +0000 (UTC)
 From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
-Subject: [PATCH v2 0/2] gpio: Add the Siflower SF19A2890 GPIO controller
-Date: Mon, 09 Nov 2026 15:09:30 -0500
-Message-Id: <20261109-sf19a2890-gpio-v2-0-b885fbd84c4c@telaak.dev>
+Date: Mon, 09 Nov 2026 15:09:31 -0500
+Subject: [PATCH v2 1/2] dt-bindings: gpio: Add Siflower SF19A2890 GPIO
+ controller
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -85,11 +85,9 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHoo8moC/12OQQ6CMBBFr2K6tqYdCxZX3sOwKDDAqAFsS6Mh3
- N2CGhOXb/L/fzMxh5bQseNmYhYDOeq7CLDdsLI1XYOcqsgMBKRSCuCulpkBnQneDNTzAmSSAiZ
- Qa81iabBY02MdPOdvdmNxwdIvK5+ExfsYTf4Xa8n53j7XN4Jcrl+j+jcGyQVXCap0Xyp9AH3ye
- DPmuqswsHye5xcPo6kw1AAAAA==
-X-Change-ID: 20261102-sf19a2890-gpio-b21562e52f88
+Message-Id: <20261109-sf19a2890-gpio-v2-1-b885fbd84c4c@telaak.dev>
+References: <20261109-sf19a2890-gpio-v2-0-b885fbd84c4c@telaak.dev>
+In-Reply-To: <20261109-sf19a2890-gpio-v2-0-b885fbd84c4c@telaak.dev>
 To: Linus Walleij <linusw@kernel.org>, 
  Bartosz Golaszewski <brgl@kernel.org>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -97,14 +95,13 @@ To: Linus Walleij <linusw@kernel.org>,
 Cc: Chuanhong Guo <gch981213@gmail.com>, Qingfang Deng <dqfext@gmail.com>, 
  linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Joseph Telaak <joseph@telaak.dev>, 
- Qingfang Deng <qingfang.deng@siflower.com.cn>
+ Joseph Telaak <joseph@telaak.dev>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794254987; l=2936;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794254988; l=3368;
  i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
- bh=YNNuUIhjyiZTY0/u39z7F4DHkB1CR2mjqFrrVwxsTQw=;
- b=aDWYDVEqbwGQOOzgeVDJcyo7dMkWGrTYnRUqmnnPNtCDyslKc9bZGlOK0oXMYMpUkLscHESvz
- BkExt1y9aMJDu1qc+SzG0x1KhQeDIPeY/2ng/JusVy51kaqWLIHGlKZ
+ bh=gBaGbabUMc2JA71WrgLEKTYUF/cvS9i4MFpvPPv2yIc=;
+ b=8BufdIVM4MIYrul/uWU7+yEtqdBOSY8LbB/4Ja3VIIRcKJreWL12VNu/Zgk4sECqYwlO6pqBC
+ kYUAUBVAJUwBtO5SAJNMDNElZeWAvelUeFUu51bRSCnuTtu1b/JAILR
 X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
  pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
 X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
@@ -112,68 +109,129 @@ X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
 X-Original-From: Joseph Telaak <joseph@telaak.dev>
 Reply-To: joseph@telaak.dev
 
-This series adds a binding and a driver for the GPIO controller of the
-Siflower SoCs, starting with the SF19A2890, a MIPS SoC for home routers.
-Each line has a register block of its own, and each group of 16 lines an
-interrupt.
+From: Chuanhong Guo <gch981213@gmail.com>
 
-The binding is Chuanhong Guo's and the driver Qingfang Deng's, both from
-Chuanhong's SF19A2890 branch [1], with my changes noted in each. The
-same controller is in Siflower's SF21 RISC-V SoCs; the binding has only
-the SF19A2890's compatible, the one I can test.
+Document the GPIO controller of the Siflower SF19A2890. Siflower's SF21
+RISC-V SoCs have the same controller, and will get compatibles of their
+own with their device trees.
 
-The SoC support itself (MACH_SIFLOWER_MIPS) goes through the MIPS tree;
-until then the driver builds with COMPILE_TEST.
-
-Tested on a GL.iNet GL-SFT1200: gpio-keys sees both buttons on both
-edges (the reset button on GPIO 27 as KEY_RESTART, the mode slide switch
-on GPIO 1 as BTN_0, 1 and 0 per slide); /sys/kernel/debug/gpio lists the
-49 lines; the GSW150 switch comes out of reset through GPIO 0 and the
-SPI NAND uses GPIO 8 as its chip select.
-
-[1] https://github.com/981213/linux/commits/siflower-7.1
-
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+[Joseph Telaak:
+  - take it from Chuanhong's siflower-7.1 branch
+  - list myself as the binding's maintainer
+  - use GPL-2.0-only instead of the deprecated GPL-2.0 SPDX
+    identifier
+  - indent the example by four spaces
+  - drop the ngpios property, which the compatible implies, take
+    exactly four interrupts, and order the properties as in required
+  - commit message and subject]
+Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 ---
-Changes in v2:
-- Write my notes on Chuanhong's and Qingfang's patches as lists, with
-  Co-developed-by on the driver (Bartosz).
-- Get priv with gpiochip_get_data(), drop the two else branches, and add
-  a blank line after the header comment (Bartosz).
-- Get the reset with devm_reset_control_get_exclusive_deasserted(), as a
-  local, not in priv (Philipp), and drop the OF_GPIO dependency.
-- Name only the SF19A2890 in the Kconfig help and the binding's commit
-  message, since the other SoCs need compatibles of their own (Conor).
-- Drop the ngpios property, which the compatible implies: the driver
-  takes the number of lines from its match data, and the binding takes
-  exactly four interrupts (Conor).
-- Order the binding's properties and its required list (Conor).
-- Add a MAINTAINERS entry for the driver and its binding.
-- Use GPL-2.0-or-later, not the deprecated GPL-2.0+ SPDX identifier.
-- Use readl() and writel() directly, without wrapper functions (Linus).
-- No comma after the match table's sentinel, as Uwe asked of the
-  clock driver.
-- Drop the unused linux/pinctrl/consumer.h include.
-- Link to v1: https://patch.msgid.link/20261104-sf19a2890-gpio-v1-0-45e463c48728@telaak.dev
+ .../bindings/gpio/siflower,sf19a2890-gpio.yaml     | 76 ++++++++++++++++++++++
+ MAINTAINERS                                        |  6 ++
+ 2 files changed, 82 insertions(+)
 
----
-Chuanhong Guo (1):
-      dt-bindings: gpio: Add Siflower SF19A2890 GPIO controller
+diff --git a/Documentation/devicetree/bindings/gpio/siflower,sf19a2890-gpio.yaml b/Documentation/devicetree/bindings/gpio/siflower,sf19a2890-gpio.yaml
+new file mode 100644
+index 000000000..830a049ae
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/siflower,sf19a2890-gpio.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/siflower,sf19a2890-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Siflower SF19A2890 GPIO controller
++
++maintainers:
++  - Joseph Telaak <joseph@telaak.dev>
++
++properties:
++  compatible:
++    const: siflower,sf19a2890-gpio
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: One interrupt per group of 16 GPIOs.
++    maxItems: 4
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-ranges: true
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - resets
++  - gpio-controller
++  - "#gpio-cells"
++  - gpio-ranges
++  - interrupt-controller
++  - "#interrupt-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
++
++    gpio@19d00000 {
++        compatible = "siflower,sf19a2890-gpio";
++        reg = <0x19d00000 0x100000>;
++        interrupts = <GIC_SHARED 246 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 247 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 248 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SHARED 249 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&gpioclk 0>;
++        resets = <&gpiorst 0>;
++
++        gpio-controller;
++        #gpio-cells = <2>;
++        gpio-ranges = <&pinctrl 0 0 49>;
++
++        interrupt-controller;
++        #interrupt-cells = <2>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b5a6dc379..4193b433c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -25706,6 +25706,12 @@ N:	sifive
+ K:	fu[57]40
+ K:	[^@]sifive
+ 
++SIFLOWER GPIO DRIVER
++M:	Joseph Telaak <joseph@telaak.dev>
++L:	linux-gpio@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/gpio/siflower,sf19a2890-gpio.yaml
++
+ SILEAD TOUCHSCREEN DRIVER
+ M:	Hans de Goede <hansg@kernel.org>
+ L:	linux-input@vger.kernel.org
 
-Qingfang Deng (1):
-      gpio: Add Siflower GPIO controller driver
-
- .../bindings/gpio/siflower,sf19a2890-gpio.yaml     |  76 +++++
- MAINTAINERS                                        |   7 +
- drivers/gpio/Kconfig                               |  12 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-siflower.c                       | 310 +++++++++++++++++++++
- 5 files changed, 406 insertions(+)
----
-base-commit: d66b6b86d5a6278ca930112c634d03725beb7d9a
-change-id: 20261102-sf19a2890-gpio-b21562e52f88
-
-Best regards,
---  
-Joseph Telaak <joseph@telaak.dev>
+-- 
+Git-155)
 
 

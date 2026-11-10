@@ -1,90 +1,50 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794292333;
-	b=p4Y1MnJ6Hz1iFx8TqlnPK29XsU/X8IMmwUOSrDbzyis5tsP/jBhDEI6aaMiKaoQEU57J
-	 JLSAZt7+dOZjftZxPkwtDwpRv2vpNj3rlvWI65Q5ZgkVZvpUQbzURYywTUwZKdageRdpB
-	 cRqhpkicHQVFFTB2dI2lRnb7g2ODXX8LuWMtg7HvQLl5J2MIQlS1BZLx3VXMLcLmt7g+c
-	 hHmthE6Px3rjSumO/oGHLLMUDXP0xb09wCmHRifF6uuUKObAi6xCc3wqQhXJJOvdpR6j9
-	 puAzhUBDHwu4cy2t70PIqlL98Ss+KLxc1StjKI2eEio8CSsGE97UQ/iQH3qypWSE86A==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794292333;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=zIeUCbrWL2otG3jWvVxAJl75ky18Wd1uPMPZj3Tbo5Q=;
-	b=ZwIxJKPIQ+1+PsA3gOZXT7mRbjAAIygd9Bl/cClHbICMvR8wRPc1ebDsmNzUBuCEFWUO
-	 rjAORtnRQf3rfN+wFCsbJz8Jl5sA+DLk91n3d6L2QeKmVRPC8VKyt+vu23ae6lc3NhkzT
-	 BBjkw1qpxNC4yVbLsCLtbh7HhqGtzZSkigO5hniUBSSPSyxnX0uCxxXRi2YzfKsSs8K33
-	 rrOGfkGUv84lfJ8eOy7bpmxhoRn/WVFeFHrJ9p1noa8bW9DK0ADkFc7YhMYYjb5POHOUb
-	 tNZqI3nVHwglvXhudvE+rbzzuMfSi6OYevFXtxIXSrhLt7Oob3Mp++mxesuXlKsgHPg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ClFyTW6r;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Xjo64+AO;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.57
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794294178;
+	b=ZSEvpJr5BWbdSxTJLL1Cf8uHzQdIUrhrL6XIemcllcmZbpLgngogptSgXO6K+wnW7wgj
+	 uiOkyFvTvFIUCg27Zlb+rZgGZy22gHsQ/Aef60OYyG6A7vznnqHyEsIFJv0xfcryFsUq0
+	 QdWU+PdMiekfG4Kj/CMNR7a4lltpJZeTZn9nPV0PVHmpSf4dYiwUxkZGLgmgkw6oNXrcX
+	 4pBTBglujA7tbWFk6hqbyVv7vdlkoR914eeFvYCSHrOS8yPh8xHDr+7byglS7fFm2ZKXA
+	 PXdy7Hprf7B7myIvAKuX/nnrjveTI84k84UI5zKIG1jFxxQdoAHdDCwyoxErbJcqKiw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794294178;
+	h=DMARC-Filter:DKIM-Signature:From:Mime-Version:
+	 Content-Transfer-Encoding:X-Lms-Return-Path:X-Original-From:Cc:
+	 X-Mailer:Content-Type:Received:References:Message-Id:In-Reply-To:To:
+	 Date:Subject;
+	bh=Jan7Tp683d84kVHecx+gnP5xVm5QZk5klZ/ivxPkH/8=;
+	b=lPhW71pBYHOMvXVBwOj2iXwImLkRUBJXRH03lm6Ve8j1gYDjnaR0IEy/ZqACnpFqxZHq
+	 iW2EjSmmLAWcKxB4SR/4+jiRFlvDvZqqvKcP/zvpLAZK2pFIDfjarknK6tCcGKHmhFg/Y
+	 q3KLQqTCJfjpKAsqhuNSI6q+2Xfvi1022BqrCgLneuYl6w2LqYX339lVa2hxVA0yD5RKl
+	 aMI71Wob6Ybygm/c8L6Drn1xgh9JhcFPM5v8fMEoQ7xLrmuQMWs1ZUPrIxhw+NHexyLk2
+	 xi9Tmw1Xxx1OkLjfVUtWRIl5ror4CoZ1HnjJnZm/IUTZ7HkGZD3DgELEIkF4ZD+PQ+Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=oss.cipunited.com;
+	spf=pass smtp.mailfrom=oss.cipunited.com;
+	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=IGe4mVvf;
+	arc=none smtp.remote-ip=209.127.231.57
+Received: from va-2-57.ptr.blmpb.com (va-2-57.ptr.blmpb.com [209.127.231.57])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB9A606A325;
-	Tue, 10 Nov 2026 06:32:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ECB9A606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE95D606A330
+	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 07:02:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CE95D606A330
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ClFyTW6r;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Xjo64+AO
-ARC-Seal: i=1; a=rsa-sha256; t=1794292320; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=QPAQkbaQzTsdjgKdlzRRC8KGCRND6s6ght+Xfv3xNz/whL7snq7wksYlW5oRxjeI7N
-    cVyMALkVngdtJ2vVfeBdPIf6JV2/VoEUOX+3qk1RtZ3bYrnr2HEAxUYjvZ0J5tXJ9hZw
-    lWzehFTI5MV0TYKLFgVtjQczgTTq6wzSnse6Pakt+oppGBA7ojRDTRPmujM7YmOMo6gA
-    pJe4UTImP9RNEpEaxhY0CRolJCN3kJ0ToP90zIWw30V3UFRqMsQJr3/1i77CFiicJtxL
-    czMHp8iFedkjbjoNDnv6kZY19lW9WssMi2bZPacC8h1NHKvvldn5K/GKMcwCehJShFHi
-    A/fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794292320;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=zIeUCbrWL2otG3jWvVxAJl75ky18Wd1uPMPZj3Tbo5Q=;
-    b=jUSWHBah2R8OU1JrSK7ofZ70Cr2srslHtf/IbMBLlmSR5LqVfWpPGluxC7sAGtQ/3P
-    B14SCP+hvRnFJgotDBOHtE6lCq+J5memm6wQVse+Ibt7UTqatBq2UEn6+GANgOU5+CmP
-    CE+MefAYQZ8dGjntUMgcrLEla2ye1MW3Er+gO+kDTNd3njsw5ZhVQyM0JFUw3JOdEkD3
-    Kz8+Dg3yoMeV8syUuNQjxfMgCR1xi7IRfd1vbPKDm9JAfYIFVL96U153pwT2HcS3+ozC
-    0BveaFkBltAK1vQlwtL/DfaljaiPZTK9Tf0TO51PDGRncjz7C6KlZeyg3s+Nvphijl0U
-    GbHA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794292320;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=zIeUCbrWL2otG3jWvVxAJl75ky18Wd1uPMPZj3Tbo5Q=;
-    b=ClFyTW6rFAShb2ZEZTRyTL88MdUoFU8PB6YTkg7aAuc1avwCjdjjgoaCSsoHtLqC4z
-    /qGEDCCt9sHkclyPYihKIfZzhXV7Rpyr8DuQ4I6i10i4NJQiL5xFdaP4ewyWnmPSZy/M
-    0DFMV0a/iOuEaC28cTRe0NwUc617hzwpWb/zuL9rWtlnzjk5w0AlIfBml6c3YYnuQ+Wm
-    Zok4N83x3+9lZsMye3HW6bJ+nq20SYThidGFCcgDoi+7c7Tzh7//y/dlSxuvjvjGzrzy
-    q78oauLe92RoRd25l70inWAz491HdY7nZM0hJ/hVlNfTdVHUAUbarG/zHuama7HBLxsN
-    wuQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794292320;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=zIeUCbrWL2otG3jWvVxAJl75ky18Wd1uPMPZj3Tbo5Q=;
-    b=Xjo64+AOfGqMUYgW2NM37V+kCo5lPlDWaHKMX24Ixjl1ZjGzPvIewVloiQ+FWUF14e
-    O/II7zE5X71F8cyMa7Aw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQ25pZm8iNLlWLhMfIu14x/UU8X8YOyRO3gSBU"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AA6W00Fm
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Tue, 10 Nov 2026 07:32:00 +0100 (CET)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=IGe4mVvf
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=feishu2303200042; d=oss.cipunited.com; t=1794294172;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=Jan7Tp683d84kVHecx+gnP5xVm5QZk5klZ/ivxPkH/8=;
+ b=IGe4mVvf3plmoX3d+tq5smr5oVhXHjNT2VKBHi5c+snS09Vn+kH0wXZwiYERpr6Vt2N8Kz
+ WNKLt/J8FPw7AuySfSv+xEVpoYFi2pSwpv8OgXlrY1hgUpP7R5GNQJZ/58cvX+lHbQ+XL2
+ iGHEiUAFWs0YU7fbsltYn5W7DtXUfbJnpwfqUZnccn2L+kdQJ/OqbaU+UKJHTtCbtGMebu
+ YNw9bNGo6xVt7gC5e17J5IC4Zazb3g57xmDlBqndwz5mKUOCFxr/hS/NWV5RrgSU2C3iJ3
+ A/I0xJJSfyve+YVGPf0IjYdwMspKVpaywy5MoqciXzZZqeEX5AdrJNFvHDaDXA==
+From: "Rong Zhang" <rongrong@oss.cipunited.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,47 +53,101 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 2/2] dt-bindings: i2c: ingenic,i2c: Add the X1600
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20261109190345.61480-1-olivier@mgcrea.io>
-Date: Tue, 10 Nov 2026 07:31:29 +0100
-Cc: Andi Shyti <andi.shyti@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <384F58FF-41C4-46AC-8B2A-1B6ABCDA6981@goldelico.com>
-References: <20261024212520.91401-1-olivier@mgcrea.io>
- <20261024212520.91401-3-olivier@mgcrea.io>
- <33b5ee36-e293-4356-9906-54e99ba3557e@kernel.org>
- <at8jCGfp9dKjieoo@zenone.zhora.eu> <20261109190345.61480-1-olivier@mgcrea.io>
-To: Olivier Louvignes <olivier@mgcrea.io>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+X-Lms-Return-Path: <lba+26af2c19a+47c59e+vger.kernel.org+rongrong@oss.cipunited.com>
+X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
+Cc: "Rong Zhang" <i@rong.moe>, "Yao Zi" <me@ziyao.cc>, 
+	"Icenowy Zheng" <uwu@icenowy.me>, 
+	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
+	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
+	<linux-kernel@vger.kernel.org>, 
+	"Rong Zhang" <rongrong@oss.cipunited.com>
+X-Mailer: b4 0.17-dev-ce4c1
+Content-Type: text/plain; charset=UTF-8
+Received: from [127.0.1.1] ([1.192.71.23]) by smtp.feishu.cn with ESMTPS; Tue, 10 Nov 2026 15:02:49 +0800
+References: <20261110-mips-ls7a-wdt-v1-0-968bb85122e6@oss.cipunited.com>
+Message-Id: <20261110-mips-ls7a-wdt-v1-1-968bb85122e6@oss.cipunited.com>
+In-Reply-To: <20261110-mips-ls7a-wdt-v1-0-968bb85122e6@oss.cipunited.com>
+To: "Keguang Zhang" <keguang.zhang@gmail.com>, 
+	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
+	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
+	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
+	"Conor Dooley" <conor+dt@kernel.org>, 
+	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Date: Tue, 10 Nov 2026 15:02:30 +0800
+Subject: [PATCH 1/4] dt-bindings: watchdog: loongson,ls1x-wdt: Add ls7a-wdt compatible
 
-Hi Olivier,
+The Loongson-7A has a watchdog, which is similar to Loongson 2K0300,
+except that it has no clock controller.
 
-> Am 09.11.2026 um 20:03 schrieb Olivier Louvignes <olivier@mgcrea.io>:
-> 
-> Hi Nikolaus,
-> 
-> On Mon, Oct 26, 2026 at 10:54:49AM +0100, Andi Shyti wrote:
->> I'll wait for Nikolaus ack/r-b for applying the patches.
-> 
-> Could you have a look at v2 when you have a moment? It is the version
-> after your review of v1: the spike filter programmed on the X1000 and
-> later, and the X1600 falling back to ingenic,x1000-i2c. It still applies
-> on i2c-host and on v7.4-rc1.
+Add "loongson,ls7a-wdt" compatible as well as a conditionally required
+field clock-frequency.
 
-Yes, it is not forgotten.
-I just have to solve another issue before.
+Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
+---
+ .../bindings/watchdog/loongson,ls1x-wdt.yaml       | 31 +++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-BR,
-Nikolaus
+diff --git a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
+index 50a9b468c4a3..cb93e9578f82 100644
+--- a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
+@@ -18,6 +18,7 @@ properties:
+       - loongson,ls1b-wdt
+       - loongson,ls1c-wdt
+       - loongson,ls2k0300-wdt
++      - loongson,ls7a-wdt
+ 
+   reg:
+     maxItems: 1
+@@ -25,13 +26,34 @@ properties:
+   clocks:
+     maxItems: 1
+ 
++  clock-frequency:
++    description: Frequency of clock in Hz
++
+ required:
+   - compatible
+   - reg
+-  - clocks
+ 
+ unevaluatedProperties: false
+ 
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - loongson,ls7a-wdt
++
++then:
++  properties:
++    clocks: false
++  required:
++    - clock-frequency
++
++else:
++  properties:
++    clock-frequency: false
++  required:
++    - clocks
++
+ examples:
+   - |
+     #include <dt-bindings/clock/loongson,ls1x-clk.h>
+@@ -41,3 +63,10 @@ examples:
+ 
+         clocks = <&clkc LS1X_CLKID_APB>;
+     };
++
++  - |
++    watchdog@100d0030 {
++        compatible = "loongson,ls7a-wdt";
++        reg = <0x100d0030 0xc>;
++        clock-frequency = <50000000>;
++    };
 
+-- 
+2.55.0

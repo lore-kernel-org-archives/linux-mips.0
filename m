@@ -1,90 +1,72 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=35.89.44.39
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794296718;
-	b=umjp4RYHeX4op2ZX+K2KNAVwUBe/DwtkchdF8CL/Sg5yTIFOgS4pTkP3wDOQ00C1fbgY
-	 dw071odWc9MpbaUTqk+pjAfO3LsE8M5RM6pabcQ1zWpEQnwbeU2JadS/joeQ7SiMowJkl
-	 LZ+6Cpuw+T3zPkhNkpfKCZ98+V744GGX35xsquOJX6Ay+ytSdq6+U6js1umFyEGX8XRVa
-	 h1O5k0YbSGgetRoH45Pv1UoO5gyPof/jd5SChQUpqQOU1OJQImnc0razIXbiJPW6IHGE5
-	 tjAV5tdOADQeCAtUNQGhI9+co2PiprW6+oZpZeJRU/1J3cjeQjA5GTe11+2tTn3Zt5w==
+	t=1794296851;
+	b=cyiV7gaw3ioW1VQ/yUmuvfd0G4ZrPNGSpdDGdaAyR7HY4xaZjvoyAipiX+fw3i6m4+ir
+	 8hOcBaQxCe1xYe1siILd5voIaS8qNKhySsQkkTLOhu2O6VZ0YILgE4SgDvf1+sVrq8Cys
+	 pO0394xRLisLe8ktuC4r8P/laC8I9slbtpqoLw415E6V7Hmc06E1gJKvRdt4odIvTPabZ
+	 Ly8+tgPZY+jWecqXpgACCPgMR9ruCidk3YEPrdSI845flz0u1OcaABuySg4RhYEM58DFL
+	 Wgf4AP2JtxfcVU7wRlBIzsw03sXGM+Wfbwi3JHYe49rgiPnQvKSmQDNEBrzujCWZhaQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794296718;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:Date:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer;
-	bh=PtoE/q2C4k2NNiMs/Ld1bUT7pKQ3a3d65YuvuOUWKZ4=;
-	b=WA1niC9/9laWnn9JTayuseggj2822gI+cGffDspP+6OgHavi7esso3tW2PhREKx6dX8k
-	 Qm1GLHUemyAJCUJrqUmjiTbZg34H/ZinAQ8lrjVheGjisnnVhM8zzqmVd3YZCMTXP5VS2
-	 xdrxiPLy72D7igkRWqetsZOMsLc67oVcwiL4PLQq0hqees8c+eROWAT0jrOrmORfQRTga
-	 HHwYkBlC/Ey6gi5yIzHPt1Q71rA75Z8f/OCQN4EkB4IiOk/SrStSMxxrDmLYWxT7yRf5o
-	 s34uj1zkiBkhWuUHgP91kdZTfig0Uqf4zZX8eZcwuATqpgxdUsWnw0lL6+ofK7Iu7Gw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794296851;
+	h=DMARC-Filter:Received:Received:X-Authority-Analysis:DKIM-Signature:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:Autocrypt:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:
+	 X-AntiAbuse:X-AntiAbuse:X-BWhitelist:X-Source-IP:X-Source-L:X-Exim-ID:
+	 X-Source:X-Source-Args:X-Source-Dir:X-Source-Sender:X-Source-Auth:
+	 X-Email-Count:X-Org:X-Source-Cap:X-Local-Domain:X-CMAE-Envelope;
+	bh=ZdOpelxHEyCF0gxFn3MQJ7SWUNe56C4I7f9Inm7VJXY=;
+	b=Hfxnubz4eTPjcN+jbeUW8vnG6bPXipH5SXKBsonJsIgZUIMF7NNAgQxteWgu5MeZpTsy
+	 y/PQFzd4xmRjBQo92wHRSTyp86Yc9WVGBZF149s0huhMSItdOr+OluoAoTXLZAbkTPvlv
+	 dxqjLlNYhbvmAg8Je+bay1+m5Byw2qCXS1qCpRLyw8QrylTwmCLJ7DI+GjmTReiPvVtN9
+	 BulTMIJk7ekGwM+oMDqd/y9pFWPczVWJjNXtgPHtmog4z/SbpyjzD1ptCmbr2EzhGaNAj
+	 ri6+/tdbPdJF36cuN16z/oj6ze93Mg8GX8EjhwT/MaClpXlm1f3T/8RPvPcWfk30XBQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=igme2IZP;
-	arc=none smtp.remote-ip=209.85.160.49
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=none header.from=roeck-us.net;
+	spf=fail smtp.mailfrom=roeck-us.net;
+	dkim=pass header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b="U2Cw/7TT";
+	arc=none smtp.remote-ip=35.89.44.39
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF29560742C5
-	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 07:45:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DF29560742C5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002D6606B520
+	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 07:47:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 002D6606B520
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=igme2IZP
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-486f013db83so609028fac.0
-        for <linux-mips@vger.kernel.org>; Mon, 09 Nov 2026 23:45:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794296717; x=1794901517; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=PtoE/q2C4k2NNiMs/Ld1bUT7pKQ3a3d65YuvuOUWKZ4=;
-        b=igme2IZPDnrzZLUDBjJ7JC56FCY5L6Nz+uNSAN+WdZ9mLvhIvFixTSc9PwJIk0QeQ/
-         QNapVPy4ulqMmaZbHmft7k1AGIaygIUGi4uCqXTzRaVO0hEonelP6Ngz/iyrkglp/1v6
-         FxHUOmJSX5afutmj+a2Ee3X4Jg6aXQIxRVWdzuLMfKmQUKm4bjjta1NgkHtbR+qlbadJ
-         827nfeQf2fAOAhyK1zd7pWWHcSGGHTvT/Ypu8/W5t+5ul8IJJefeIKsoqQKSXT3hLyYE
-         sXloBtjjjwzGEX+TBAmSVshWhCYdf5098tcHiKDWQjoTrxX1kMb1ecSb3hN2tHUi73OY
-         0LJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794296717; x=1794901517;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=PtoE/q2C4k2NNiMs/Ld1bUT7pKQ3a3d65YuvuOUWKZ4=;
-        b=oSk+D5eT2IJLGT2KVI6pdIlfCCN0XTyrIEbWO1MnWEa+2aIA1iROkHT2A6m0rwk0TY
-         rGY67fOLfCZj1/eeZu7L0f7xFpTCWsJcFZbnOSNgsQoC6YxObLZAvkxUCiSC6Nel4pPw
-         M209+5MjFtci1tM8SSb+P5XASk2m8CSuKlyJVEVc8AHVjLxS+RLMsTf3oGMdIsCjTpQd
-         bIHwgmwZdXtI+z4Ffkv5ahS8mIYw2I6m3XQUoZpmf6jM0N4NGXpY38tuAxkTUUjGq9uE
-         MpQpNh9EUKujuq0EVXJ050fB+Pdd3OIWrZwE5Cx5luphjQs+89lSMoLkNnAaeBm69IGV
-         Ig1w==
-X-Forwarded-Encrypted: i=1; AL+hErGx9sodh3ZYFmfXd+xOP4BPH/eceSmLJpvo0CwAs1s+pVQaXjPU5arGJ9ODEWfVOQoY++DDL3YBw8BD@vger.kernel.org
-X-Gm-Message-State: APuU4Z+obhhVpY53ja+18BIianph5T6IYBpgXsguMyXcN92az63G7hiO
-	Oz6dG4Z/Dy3YAua7nFqYVfBYBfqH2i8WiCkgEaUHjmWsYm+gVo2r9wGo
-X-Gm-Gg: AYBFou0bWqaxJVMQIOZWd6LAXHFlB6hYRjcUEH+XdhN6+t515N7HN8jb2C8ziKjsJpG
-	Utl+FdhHonVySOsjqNCEzw1Rjy5FarTqDcrjjvPMqON7b0V1gTq5NGF4cJ+ocBrEgydvD8sDXuu
-	w8Z2zPWYRPmffU1PguRrkf/2wzIcTcp7uIZUx4mkMcfRXi+PdrVFte3nCgism7h6PPppQ+1s5Ag
-	vQJHKFkJfRjvXKRKFgI5b5fU9StW1XPPSYKPPe9uyTer2XqGPftABlMxmr7P6yX35mYcAXUd4Rt
-	hpF6kM5v5VYsHPFqGRc7D296A/FffyjSXFvF2NY2/Qx+7jo5WRVACL2MUqk25U2KYGWLJwLFicf
-	GmAyJuMUMNZEtCTZrkFsjaNAjNE9rZCl/96F8jCSqW170BZmFTHvoN496vwFDXBdYineVQhslGk
-	9cTpJZIGTbeX0hnATH/zI5imApeYdfsgB78xTreHBlG71G3UWpKMjyQ0WkBihrEUmzQdZG/GxeV
-	7I3GDMMzd+7xVqjpZw6/aW88kCmijTMowV056V7YLYxq0YOTMxKejn4+5r7A4DniKoxJ0LrH9Go
-	8PuOlwqEFSLtKQDMeV7D30Da1Ht0T8HY+adfjtqENdV1mjBTPcdJ1POdN/5AwZa1PI9e42FnTz8
-	TzmIOIijo47yJ+d8ayjOx6xCZvRYUvP0yGAD20klpdf4F35G3vjg1f6xPvWTtgRsnHuiv1AYwof
-	gpFSjeURBgpbrEhhfVNKRS0k2P7ScHRQeumI0wzBR+3FBsVFUEMMk=
-X-Received: by 2002:a05:6808:13c2:b0:4f4:4de8:9376 with SMTP id 5614622812f47-5683cd9c3f7mr1680606b6e.54.1794296716679;
-        Mon, 09 Nov 2026 23:45:16 -0800 (PST)
-Received: from [127.0.1.1] (174-29-1-49.hlrn.qwest.net. [174.29.1.49])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-5690504fdb5sm1522804b6e.3.2026.11.09.23.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 23:45:16 -0800 (PST)
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 10 Nov 2026 00:44:53 -0700
-Subject: [PATCH v2 50/58] mtd: rawnand: ingenic: retain chip state across
- removal
+	dkim=pass (2048-bit key) header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=U2Cw/7TT
+Received: from eig-obgw-6003b.ext.cloudfilter.net ([10.0.30.175])
+	by cmsmtp with ESMTPS
+	id QelCxEc05yb4YQgZmxs3mN; Tue, 10 Nov 2026 07:47:30 +0000
+Received: from 162-215-252-36.unifiedlayer.com ([208.91.199.152])
+	by cmsmtp with ESMTPS
+	id QgZlxh7yYGh2BQgZmxEMfl; Tue, 10 Nov 2026 07:47:30 +0000
+X-Authority-Analysis: v=2.4 cv=Aszu3P9P c=1 sm=1 tr=0 ts=6af2cc12
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10 a=M0FbrtG7MMAA:10 a=rxihhvIKAAAA:8
+ a=igakLOeW_9eA_uLUBNUA:9 a=QEXdDO2ut3YA:10 a=vyXZNj8PikhivSrfMdal:22
+ a=KPbNTLLc3YvdawN95zVk:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=roeck-us.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:
+	List-Archive; bh=ZdOpelxHEyCF0gxFn3MQJ7SWUNe56C4I7f9Inm7VJXY=; b=U2Cw/7TT81ID
+	O2OAzJ6ZhvN5ToA3vikuAdlPBfe8y8AoBRPL8PUiKOrPNt8Qn/inWHuO4GZbK/kG0yn+vOzSAqyYZ
+	toKMqKk/r1NQedBlT00k5MeTyHLEHSHtuEZDnJOraLrfApTNHffu4TmbmArlmLcXYoWsnomMLITc1
+	2TfSg2HjfLw13ubb5a+o8frHWD12hVjWhArW0bRcGVKsLaBQFtn3zFdeh+NMUtn6x4qKUIKnpPwCO
+	FjaGLOT4XrtDdtrK/tvGXVWO8UBmI1jkVJ+A0LU/9nAzoU61Os77s6p2gEi4OEbx6C3pMuztIlO0X
+	qMhbXeoDwlFmYdSGFyPxmg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:51292)
+	by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.100.1)
+	(envelope-from <linux@roeck-us.net>)
+	id 1xQgZk-00000001A5f-2jf5;
+	Tue, 10 Nov 2026 13:17:28 +0530
+Message-ID: <9525d680-71e7-4dc8-a1fc-1be178453cb2@roeck-us.net>
+Date: Mon, 9 Nov 2026 23:47:26 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -94,175 +76,180 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] watchdog: loongson1: Add Loongson-7A watchdog support
+To: Rong Zhang <rongrong@oss.cipunited.com>,
+ Keguang Zhang <keguang.zhang@gmail.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Rong Zhang <i@rong.moe>, Yao Zi <me@ziyao.cc>,
+ Icenowy Zheng <uwu@icenowy.me>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20261110-mips-ls7a-wdt-v1-0-968bb85122e6@oss.cipunited.com>
+ <20261110-mips-ls7a-wdt-v1-2-968bb85122e6@oss.cipunited.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ np3900V20aS7eD9K8GTU0TGC1pyz6IVJwIE=
+In-Reply-To: <20261110-mips-ls7a-wdt-v1-2-968bb85122e6@oss.cipunited.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-50-9137d08f05df@gmail.com>
-References: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
-In-Reply-To: <20261110-submit-rawnand-retained-handle-lifetime-v1-v2-0-9137d08f05df@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- James Hilliard <james.hilliard1@gmail.com>, 
- Harvey Hunt <harveyhuntnexus@gmail.com>, linux-mips@vger.kernel.org, 
- Paul Cercueil <paul@crapouillou.net>
-X-Mailer: b4 0.15.2
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1xQgZk-00000001A5f-2jf5
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net [108.223.40.66]:51292
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 10
+X-Org: HG=direseller_whb_net_legacy;ORG=directi;
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfH8nyBJWmRZioWzUxuS0IGU0ZMe3+FWqgM1R+w69jg3z2GFgJK01upLcBKwS53GtlYv25aUuSb6AfhRdWaIzYicC+3Bh2ubuVp9Aoy+GoYc5agqqi2Zp
+ sCpMtJZ6fnMvmT3SeLu2Q2nYJZKEylr4Rs/yTzNotSZ6mVa5EUY48Yp4PvhdXVwIMJvZuVYgY2TIeGrMhC8MPOvZCq7vD0cjx/7s61E5W+4CQCEZRIuRJvCL
 
-Unregister and disconnect all chips before releasing the ECC provider.
-Retain each chip and its shared controller until the final MTD put,
-while releasing hardware resources during device removal.
+On 11/9/26 23:02, Rong Zhang wrote:
+> The Loongson-7A watchdog is similar to Loongson 2K0300, except that it
+> has no clock controller.
+> 
+> Retrieve clock frequency from OF to make it work.
+> 
+> Tested on Loongson-LS3A4000-7A1000-NUC-SE and Lenovo KaiTian M530Z.
+> 
+> Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
+> ---
+>   drivers/watchdog/loongson1_wdt.c | 29 +++++++++++++++++++++++++----
+>   1 file changed, 25 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/watchdog/loongson1_wdt.c b/drivers/watchdog/loongson1_wdt.c
+> index 2811e7eab631..57b9e699c131 100644
+> --- a/drivers/watchdog/loongson1_wdt.c
+> +++ b/drivers/watchdog/loongson1_wdt.c
+> @@ -31,6 +31,7 @@ struct ls1x_wdt_pdata {
+>   	u32 timer_offset;
+>   	u32 set_offset;
+>   	u32 wdt_en_bit;
+> +	bool no_clk;
+>   };
+>   
+>   static const struct ls1x_wdt_pdata ls1b_wdt_pdata = {
+> @@ -45,6 +46,13 @@ static const struct ls1x_wdt_pdata ls2k0300_wdt_pdata = {
+>   	.wdt_en_bit = BIT(1),
+>   };
+>   
+> +static const struct ls1x_wdt_pdata ls7a_wdt_pdata = {
+> +	.timer_offset = 0x8,
+> +	.set_offset = 0x4,
+> +	.wdt_en_bit = BIT(1),
+> +	.no_clk = true,
+> +};
+> +
+>   struct ls1x_wdt_drvdata {
+>   	void __iomem *base;
+>   	struct clk *clk;
+> @@ -129,6 +137,8 @@ static int ls1x_wdt_probe(struct platform_device *pdev)
+>   	struct ls1x_wdt_drvdata *drvdata;
+>   	struct watchdog_device *ls1x_wdt;
+>   	unsigned long clk_rate;
+> +	u32 freq;
+> +	int ret;
+>   
+>   	drvdata = devm_kzalloc_obj(dev, *drvdata);
+>   	if (!drvdata)
+> @@ -136,16 +146,26 @@ static int ls1x_wdt_probe(struct platform_device *pdev)
+>   	platform_set_drvdata(pdev, drvdata);
+>   
+>   	drvdata->pdata = of_device_get_match_data(dev);
+> +	if (!drvdata->pdata)
+> +		return -ENODEV;
+>   
+>   	drvdata->base = devm_platform_ioremap_resource(pdev, 0);
+>   	if (IS_ERR(drvdata->base))
+>   		return PTR_ERR(drvdata->base);
+>   
+> -	drvdata->clk = devm_clk_get_enabled(dev, NULL);
+> -	if (IS_ERR(drvdata->clk))
+> -		return PTR_ERR(drvdata->clk);
+> +	if (drvdata->pdata->no_clk) {
+> +		ret = of_property_read_u32(dev->of_node, "clock-frequency", &freq);
+> +		if (ret)
+> +			return ret;
+> +
+> +		clk_rate = freq;
+> +	} else {
+> +		drvdata->clk = devm_clk_get_enabled(dev, NULL);
+> +		if (IS_ERR(drvdata->clk))
+> +			return PTR_ERR(drvdata->clk);
+>   
 
-Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 49 +++++++++++++++++++------
- 1 file changed, 37 insertions(+), 12 deletions(-)
+Wouldn't it be much easier to just create a fixed rate clock and use it
+(as suggested by Sashiko in the devicetree patch) ?
 
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index f1e2c82936b3..775ebf4dd3b9 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -341,6 +341,11 @@ static const struct nand_controller_ops ingenic_nand_controller_ops = {
- 	.exec_op = ingenic_nand_exec_op,
- };
- 
-+static void ingenic_nand_release(struct nand_chip *chip)
-+{
-+	kfree(to_ingenic_nand(nand_to_mtd(chip)));
-+}
-+
- static int ingenic_nand_init_chip(struct platform_device *pdev,
- 				  struct ingenic_nfc *nfc,
- 				  struct device_node *np,
-@@ -368,7 +373,7 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 	if (IS_ERR(cs->base))
- 		return PTR_ERR(cs->base);
- 
--	nand = devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
-+	nand = kzalloc_obj(*nand);
- 	if (!nand)
- 		return -ENOMEM;
- 
-@@ -377,7 +382,7 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 	if (IS_ERR(nand->busy_gpio)) {
- 		ret = PTR_ERR(nand->busy_gpio);
- 		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
--		return ret;
-+		goto free_chip;
- 	}
- 
- 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
-@@ -385,15 +390,17 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 	if (IS_ERR(nand->wp_gpio)) {
- 		ret = PTR_ERR(nand->wp_gpio);
- 		dev_err(dev, "failed to request WP GPIO: %d\n", ret);
--		return ret;
-+		goto free_chip;
- 	}
- 
- 	chip = &nand->chip;
- 	mtd = nand_to_mtd(chip);
- 	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev),
- 				   cs->bank);
--	if (!mtd->name)
--		return -ENOMEM;
-+	if (!mtd->name) {
-+		ret = -ENOMEM;
-+		goto free_chip;
-+	}
- 	mtd->dev.parent = dev;
- 
- 	chip->options = NAND_NO_SUBPAGE_WRITE;
-@@ -404,17 +411,27 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 	chip->controller->ops = &ingenic_nand_controller_ops;
- 	ret = nand_scan(chip, 1);
- 	if (ret)
--		return ret;
-+		goto free_chip;
-+	ret = nand_set_release(chip, ingenic_nand_release);
-+	if (ret) {
-+		nand_cleanup(chip);
-+		goto free_chip;
-+	}
- 
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
--		nand_cleanup(chip);
-+		nand_disconnect(chip);
-+		mtd_put_master(mtd);
- 		return ret;
- 	}
- 
- 	list_add_tail(&nand->chip_list, &nfc->chips);
- 
- 	return 0;
-+
-+free_chip:
-+	kfree(nand);
-+	return ret;
- }
- 
- static void ingenic_nand_cleanup_chips(struct ingenic_nfc *nfc)
-@@ -429,8 +446,9 @@ static void ingenic_nand_cleanup_chips(struct ingenic_nfc *nfc)
- 		chip = &ingenic_chip->chip;
- 		ret = mtd_device_unregister(nand_to_mtd(chip));
- 		WARN_ON(ret);
--		nand_cleanup(chip);
-+		nand_disconnect(chip);
- 		list_del(&ingenic_chip->chip_list);
-+		mtd_put_master(nand_to_mtd(chip));
- 	}
- }
- 
-@@ -461,6 +479,11 @@ static int ingenic_nand_init_chips(struct ingenic_nfc *nfc,
- 	return 0;
- }
- 
-+static void ingenic_nfc_release(struct nand_controller *controller)
-+{
-+	kfree(to_ingenic_nfc(controller));
-+}
-+
- static int ingenic_nand_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -474,9 +497,12 @@ static int ingenic_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	nfc = devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KERNEL);
-+	nfc = kzalloc(struct_size(nfc, cs, num_banks), GFP_KERNEL);
- 	if (!nfc)
- 		return -ENOMEM;
-+	ret = devm_nand_controller_init(dev, &nfc->controller, ingenic_nfc_release);
-+	if (ret)
-+		return ret;
- 
- 	nfc->soc_info = device_get_match_data(dev);
- 	if (!nfc->soc_info)
-@@ -493,7 +519,6 @@ static int ingenic_nand_probe(struct platform_device *pdev)
- 	nfc->dev = dev;
- 	nfc->num_banks = num_banks;
- 
--	nand_controller_init(&nfc->controller);
- 	INIT_LIST_HEAD(&nfc->chips);
- 
- 	ret = ingenic_nand_init_chips(nfc, pdev);
-@@ -511,10 +536,10 @@ static void ingenic_nand_remove(struct platform_device *pdev)
- {
- 	struct ingenic_nfc *nfc = platform_get_drvdata(pdev);
- 
-+	ingenic_nand_cleanup_chips(nfc);
-+
- 	if (nfc->ecc)
- 		ingenic_ecc_release(nfc->ecc);
--
--	ingenic_nand_cleanup_chips(nfc);
- }
- 
- static const struct jz_soc_info jz4740_soc_info = {
+Guenter
 
--- 
-2.53.0
+> -	clk_rate = clk_get_rate(drvdata->clk);
+> +		clk_rate = clk_get_rate(drvdata->clk);
+> +	}
+>   	if (!clk_rate)
+>   		return -EINVAL;
+>   	drvdata->clk_rate = clk_rate;
+> @@ -191,6 +211,7 @@ static const struct of_device_id ls1x_wdt_dt_ids[] = {
+>   	{ .compatible = "loongson,ls1b-wdt", .data = &ls1b_wdt_pdata },
+>   	{ .compatible = "loongson,ls1c-wdt", .data = &ls1b_wdt_pdata },
+>   	{ .compatible = "loongson,ls2k0300-wdt", .data = &ls2k0300_wdt_pdata },
+> +	{ .compatible = "loongson,ls7a-wdt", .data = &ls7a_wdt_pdata },
+>   	{ /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(of, ls1x_wdt_dt_ids);
+> 
 

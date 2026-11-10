@@ -1,88 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794330885;
-	b=PPiQvyK3/JnJYX7yKDmoQuV9G7ReboDaRbuyDe9WgqNxfZHRavlywEoVcKDL+u9nkkUi
-	 /slPJSFkvzcKoll6lkKp6hbUOo/gFrB+aKhEoPdw2x2POJHfwWrrcQHxdJQrTdTBSJ9hl
-	 jjq28iXvDUI81x04w/SGI9PTeKGuqWJi2HOxIxHjsgzvsjUz+6dsdPuqE0USKIZAVxAE6
-	 S5mkwffqCi5aZo/XbW8iaQFt+sNtNllalel9fCsiEF7MAl7G2WtYo+bpgK0Z6CXBud9T2
-	 hA0l3QxS6JR9D5Ia21x1Q3m2aMg7rDBpAxGg5Z5XOOb7PFzXgTk5LbuDQzthpBL1y+Q==
+	t=1794334330;
+	b=FcwZYFft4RhKHQ13D07Ry6oGeJMVrxXylR4OTSFBY3d9ZrZbt7Ax5qEZTpTPKfoiAcuD
+	 NBYWQ5X6hlVOEGm2B/8pwiUBOIZ4QK7zYl3xapK+4SwP/wfHJsz5T02mc35QwJOqRr+pG
+	 7BOa3VQNxJIdswvCuzQKUubAfHQN/6Qlg2Tab7YSnno5bEbORTA8zWr9JqRmr59mAsWvD
+	 /nl+WYn20Oh2k12MCndecL7wBhd/WHuohUTu8hqN2Hy8cXMEfr7V6BmVLmAqe5Gmk9zdr
+	 BNn2tO+e6WutDg2lV7jUYE4Df1lmKzuO63hU292id0YwAx5t8o7ynNBFJP04OQv902Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794330885;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=Oujdvcye93Xof0isVHmwpB1y2xPdgyYOn7LBWK9psyI=;
-	b=4p1tVR7d/J2Su+ZfK4YnpMBKHQtv6EJ4Xl6F9PrSH2B17EEVq5G8i5/SLN7lIjYK21TO
-	 nkEmuUD/UUc1HVGPX95THrU+j2h6ZQfO4A1yhuJCB1JgEDChMJdxmRRvq1bHImW/Gkm2P
-	 ihj0Qex1foaRtn5M6XS/dvfnaYUQVPkTEYOhIzp/yPkRVANGevO+YkP5N9SjVOnpce5Mz
-	 v6bfhIT+kXfZtiiIC9j7jYYNrCnakaBDEUk5nCII4Fk9jTImggaiZwX8G89sznykMoyYZ
-	 l7QOUyTS3OpZZivTFpqW9uMZqgePgsjSTi7sN37q20GLF1si0Daogt71gVhAxkEJ6SA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794334330;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version;
+	bh=sfAk8Ws+0uNYJ2PCmYeLwK6DkvAvd88lwADzaSpDPts=;
+	b=HuEnoVJwzZA5xWvbF70yuae8bGnxbX2i8+CQ+Tuitg4QNLzvY/aPcf/O/WSJSW6HzE2F
+	 BXmfVmI45txGOTMpBRaG0lAmsKuGJZ2jp5j84bZ/EHnQ7oj2q/s1+A0F5N4cLg17AfkpI
+	 ftlYgC5oNhAB66S7AIrDUNJ005Yc9qIECI43LuHFMCs+S+sn8K/Z+mBXXKR/XN2rc7DUP
+	 3COcxuBuqRAq8yQFH1hhQC13u0BLd1njALDIV/5kxierAZ3vZADMdM/YM5DbqCs4rGE8A
+	 cBVbh8fPKOkZSJE3COfSpbE0pVaJr3fDmJapwSxfrUnCNsPB34gptGZ1cUHBUsqqQ4Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Isk1ca0I;
-	arc=none smtp.remote-ip=209.85.160.169
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB81D606A323
-	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 17:14:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AB81D606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Isk1ca0I
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-53bb57f1310so24622881cf.2
-        for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 09:14:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794330884; x=1794935684; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Oujdvcye93Xof0isVHmwpB1y2xPdgyYOn7LBWK9psyI=;
-        b=Isk1ca0I30RMY+8oOixfoUtKFUb92r+JB+FTOYbGORvjFe+4pLoPI7uWL/tCbKyIwv
-         g8Gue7qlz7uzKqJFZJZxmfyi4VVDrfyej0NqTTJbJkEeSEi2ahOGDInhkt1oy8//7Dvm
-         Jlbxg0qJF97m4s5nQYSYsZpHILdgIQ35oT/T2aA0aBilW39XdEadvUkQf94wgYxxFJPj
-         ZvkARhwpbsSpWkH3OBA1IGSqBBLxWOt+lgCanmJG2TL1sKUC0Zxf78nYDUwOBQryCIQ8
-         h+ViZhY1z7aIqM8Em8vpLa9rsx6NxlNpkswBuchqitA+MMr2JjWoXh7iImMJvvP87We/
-         1yFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794330884; x=1794935684;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Oujdvcye93Xof0isVHmwpB1y2xPdgyYOn7LBWK9psyI=;
-        b=ln9zchVUQ+hoA9DorwHPikllrOvXob7RXRWf27J1lT+BfAilLtpUVePg7ipdfqWDyh
-         rwBSso6Hnm5HDpgzmQsrkdtYeJ9jaf7zPP9/NAk5pP/pIjuebhClxumjGTNOFRUj8YZa
-         BxPnZSjwks/O0s+jUhAOZVHwRTdod0nfMC5hlKtnzJnvBnpilR4odiQAM4OigbRfCMEq
-         dJ/hYE/LD35U0x3dN3JNv/i9koY/9NvUsG5H+IsNnAGY7fpSlQ/Y0wthnZu/TBEVlSgY
-         8hTyQiA/SfvUzHpJNZaDHS4eAEvkQDZju8/YN7rAgmVix6rOUUalIb4QDiPlS4kPSRyb
-         VvwQ==
-X-Forwarded-Encrypted: i=1; AL+hErG36yhxAY/NRpjIhtV2S7D4bML4szhGEYawqckY38/cm9q4be0Y4UjpkC3pKz5/GNKFXQbuOb1WrORB@vger.kernel.org
-X-Gm-Message-State: APuU4Z+XeL/oNv4B0jWvgQebaJ7f5thIPvLX+Wx+dP1y3T2OBQK2W3QB
-	wyRBkBlEZ4zFAzrjMAiAbIgxk3PUDnwHjyZ8/X18QBt+i5fqi49mDsV/
-X-Gm-Gg: AYBFou0dUThTwIpc/vEy6FJp/nU5zXsL/b7KSjWmaK22DiZ/JMI5W1ZX4iO6/o8+Ki6
-	OFAG2ZjfbvH3bRzsS7tJe+3cPDphBPf1QYsrQUYzHPPfYhiJHDSWGm6Y/OFZz2AHJsyyAkreirH
-	iTUtNvWz6k50d4bpU10lqBiQoxeJDCK1mGyf0LSq9lqtzmpu01DOb3du9dYZJDtEKlE0wMd5zfz
-	XEWAPy0GsbhkzaijlB0lNkB1UP/Um/tKyPJCqJ0Cpgpts+qBRKIDJqHM/Ns6sBHzR/RL+XHspgX
-	7ZCCy2tauTYs9IsGEe2LTnJWQlb4VRB9/5X6QRBaNVVxxw+Zk1GSoGFxrNUeBai2OMiu9Wi+0ab
-	RfgEsOJ5vcfNFvRvYQf0NaPh6FH8t3+TG5coPoJwsAk7CcZI4cpgzrc3SEXNmKAd0IsJZnd2xK4
-	swpTTVCGX5Rz93D8wcXB6XEa7pVDcuvTzqV0tv4UAm+6DHjggP9OAy46/SgB74IKWCbbTxvdIo2
-	WVoIVIx4kd7hphX9HXzNOT7HBJlC6G3RgmELJG+6Fw1AaYbEBGUatNxicxJO5S0C9FpoZQ6alQ6
-	a14cfzQxpG8xmtHI+p6Wcqe0RYPAGCzdzktB24tU3Ft8mtoPpg8twFxQ
-X-Received: by 2002:a05:622a:1911:b0:54d:a34f:c736 with SMTP id d75a77b69052e-555271342c7mr48254351cf.17.1794330883512;
-        Tue, 10 Nov 2026 09:14:43 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91ef04d8397sm25744446d6.18.2026.11.10.09.14.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2026 09:14:42 -0800 (PST)
-Message-ID: <135a8f3d-9eb4-43e7-a20d-056362a29c14@gmail.com>
-Date: Tue, 10 Nov 2026 09:14:40 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485DB606A323;
+	Tue, 10 Nov 2026 18:12:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 485DB606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <7d64e6a329aa6e0160680a6246f9ba3275d1c265.camel@crapouillou.net>
+Subject: Re: [PATCH v2 0/3] MIPS: CI20: Enable SMP with two CPUs
+From: Paul Cercueil <paul@crapouillou.net>
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Burton	
+ <paulburton@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Brian Masney	
+ <bmasney+clk@redhat.com>, Jerome Brunet <jbrunet+clk@baylibre.com>, 
+ =?UTF-8?Q?=E5=91=A8=E7=90=B0=E6=9D=B0?= "(Zhou Yanjie)"	
+ <zhouyanjie@wanyeetech.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, open
+ list	 <linux-kernel@vger.kernel.org>, "open list:COMMON CLK FRAMEWORK"	
+ <linux-clk@vger.kernel.org>, hns@goldelico.com, paul@boddie.org.uk
+Date: Tue, 10 Nov 2026 19:11:59 +0100
+In-Reply-To: <135a8f3d-9eb4-43e7-a20d-056362a29c14@gmail.com>
+References: <20261110043131.1985993-1-f.fainelli@gmail.com>
+	 <d40bcc5d7742025db9a67af5c77796745e284e45.camel@crapouillou.net>
+	 <135a8f3d-9eb4-43e7-a20d-056362a29c14@gmail.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -92,68 +70,78 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] MIPS: CI20: Enable SMP with two CPUs
-To: Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Burton <paulburton@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
- Brian Masney <bmasney+clk@redhat.com>,
- Jerome Brunet <jbrunet+clk@baylibre.com>,
- =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= <zhouyanjie@wanyeetech.com>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
- hns@goldelico.com, paul@boddie.org.uk
-References: <20261110043131.1985993-1-f.fainelli@gmail.com>
- <d40bcc5d7742025db9a67af5c77796745e284e45.camel@crapouillou.net>
-Content-Language: en-US, fr-FR
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <d40bcc5d7742025db9a67af5c77796745e284e45.camel@crapouillou.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 11/10/26 07:44, Paul Cercueil wrote:
-> Hi Florian,
-> 
-> Le lundi 09 novembre 2026 à 20:31 -0800, Florian Fainelli a écrit :
->> This patch series resurrects SMP support for the CI20 board. This was
->> submitted back in 2020 by Zhou Yanjie.
->>
->> Changes in v2:
->>
->> • Moved SMP sources to arch/mips/ingenic/ and the header to
->> arch/mips/include/asm/
->> • Removed CONFIG_MIPS_INGENIC_SMP, using CONFIG_MACH_JZ4780 and CONFIG_SMP
->> directly
->> • Renamed JZ4780-specific SMP symbols to XBurst names
->> • Changed CPU enumeration to assign consecutive logical IDs and removed the
->> explicit two-core limit
->> • Changed mailbox IRQ allocation failure from panic to logging and returning
->> • Shortened commit descriptions, removed Codex attribution, and adjusted
->> source credits and sign-offs
->> • Kept the clock polling patch and CI20 defconfig changes unchanged,
->>    added Paul's R-b for patch #1
->> • Updated the kernel baseline to include additional upstream fixes
-> 
-> You should also have a changelog per-patch, in each patch's header.
+Hi,
 
-This seems to vary on per-subsystem basis, for netdev where I contribute 
-the vast majority of the time, putting the changelog in the cover letter 
-works, but I will do it on a per-patch basis next time.
+Le mardi 10 novembre 2026 =C3=A0 09:14 -0800, Florian Fainelli a =C3=A9crit=
+=C2=A0:
+> On 11/10/26 07:44, Paul Cercueil wrote:
+> > Hi Florian,
+> >=20
+> > Le lundi 09 novembre 2026 =C3=A0 20:31 -0800, Florian Fainelli a =C3=A9=
+crit=C2=A0:
+> > > This patch series resurrects SMP support for the CI20 board. This
+> > > was
+> > > submitted back in 2020 by Zhou Yanjie.
+> > >=20
+> > > Changes in v2:
+> > >=20
+> > > =E2=80=A2 Moved SMP sources to arch/mips/ingenic/ and the header to
+> > > arch/mips/include/asm/
+> > > =E2=80=A2 Removed CONFIG_MIPS_INGENIC_SMP, using CONFIG_MACH_JZ4780 a=
+nd
+> > > CONFIG_SMP
+> > > directly
+> > > =E2=80=A2 Renamed JZ4780-specific SMP symbols to XBurst names
+> > > =E2=80=A2 Changed CPU enumeration to assign consecutive logical IDs a=
+nd
+> > > removed the
+> > > explicit two-core limit
+> > > =E2=80=A2 Changed mailbox IRQ allocation failure from panic to loggin=
+g
+> > > and returning
+> > > =E2=80=A2 Shortened commit descriptions, removed Codex attribution, a=
+nd
+> > > adjusted
+> > > source credits and sign-offs
+> > > =E2=80=A2 Kept the clock polling patch and CI20 defconfig changes
+> > > unchanged,
+> > > =C2=A0=C2=A0 added Paul's R-b for patch #1
+> > > =E2=80=A2 Updated the kernel baseline to include additional upstream
+> > > fixes
+> >=20
+> > You should also have a changelog per-patch, in each patch's header.
+>=20
+> This seems to vary on per-subsystem basis, for netdev where I
+> contribute=20
+> the vast majority of the time, putting the changelog in the cover
+> letter=20
+> works, but I will do it on a per-patch basis next time.
+>=20
+> >=20
+> > Your patch [1/3] has a Fixes: tag but does not Cc
+> > stable@vger.kernel.org, so
+> > you'll have to send a v3.
+> >=20
+> > I reviewed [2/3] and it looks good to me, but I'm a bit concerned
+> > about
+> > Nikolaus' reported issue.
+> >=20
+> > Thomas, if you can wait a few days, I can test it on my CI20 and if
+> > it works
+> > report back with a Tested-by: tag.
+>=20
+> Thanks Paul, yes please do test it because I could not reproduce what
+> Nikolaus reported, that makes me think there must be additional=20
+> configuration options and/or patches being carried that could be=20
+> responsible.
 
-> 
-> Your patch [1/3] has a Fixes: tag but does not Cc stable@vger.kernel.org, so
-> you'll have to send a v3.
-> 
-> I reviewed [2/3] and it looks good to me, but I'm a bit concerned about
-> Nikolaus' reported issue.
-> 
-> Thomas, if you can wait a few days, I can test it on my CI20 and if it works
-> report back with a Tested-by: tag.
+Tested right now on my CI20, with just this patchset on top of 7.4-rc2.
 
-Thanks Paul, yes please do test it because I could not reproduce what 
-Nikolaus reported, that makes me think there must be additional 
-configuration options and/or patches being carried that could be 
-responsible.
--- 
-Florian
+It works fine. So:
+Tested-by: Paul Cercueil <paul@crapouillou.net>
+
+For the series.
+
+Best regards,
+-Paul

@@ -1,77 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794263695;
-	b=DR8yl4BI0Uuh4B68iFkXYfKPS8Xx2giCNKf/vctDRPWGsqbi4TC/8J50S0EMlKIXg9he
-	 83oyr0aTAF2XzQUN5c5w4bCrcuLrwNQEGJEJriQultFs0Fi82b8igwNWA7vc049TQQG8Z
-	 l+0O4+eWUtzzHknaYd4XTSYX3tMG6VipgsDXJAKfI7VK9fPZotbuzhSt6pbToXB1AcW+x
-	 mXTtZtUq8OfI7S5CB8zwX/Pz1wnl1DxMyc/QedKXcm7OgVhO5EOvgOQx3Wyp/57Cc/k7I
-	 WwD/Dt8m/FwPTDIqYqa16Gp22ZDian1rXu3vWwfoqX8BQTsJLeLU9D7klUksv2G/YmQ==
+	t=1794272173;
+	b=vbySxjfjmd40jozlvWD6pXrGxqGf7FFuwT4fX+HIVCkFuWOFH2p+BzymeUeo/oQeTjxc
+	 lr7AeCZHRvgljY9XX9euM1OAxz1astos1hHGnJ29ozCzzElOEzPC7NVSuyfQezqfdPMS+
+	 ADpLnkE4YmD+9Tz+BCPdzrMOsPq7UEBsu1Czl9gCJFHQqJiNTV4LYEHj2rkmn7SHXoHpH
+	 g3ZqrnugKruXM7cyTlc2FT7UtyaGDy9VXqOBCINC4sMTvrVNHHBENC5Z2YkfjEtBGPx8U
+	 /tXUSz+BBRTa3mmeCKhKd+KxQH8sdxDnLof67/zt0ySpAZ3/OEE0PpKlJbB/ndTqtpg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794263695;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:Organization;
-	bh=np9M+pJSbds5rnylGSQybj0eEL70g3jA5yLzRpW6CGY=;
-	b=1mZp6rWktuc96b0Q52FOGDyue6SgyabqfGwZa9R3JbSwm4wugWaSFHeDPmBBVt/xO90C
-	 0Yic5fl+kIhMf2D5xagJM0EsFLXI5zulc5m2Q7di065aDA8Xotel7TwQhL/i2hiSsri1+
-	 0QhIlaavQRS1ADic83I1dAMZaypq+wLW2kSpkcU9rxJ0E5UeyJbBN1IATdb5ZysGKR08c
-	 CsPAi2E82SS15ZcgfLYz5DEOCsqpg5Z98qaqU4rVtx/H9nS8fZkjF5eojHjXUiB1jv8Es
-	 bEgdm4jZs50N7UUw9IYR/xO3dCD9H9bNc24CwFz49l3Ni/wjyorCH75NDkjz01tR/dA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794272173;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To:
+	 User-Agent;
+	bh=mqsJpcvl5xnVXB0JO5NOaGhdm3h5WbbRjFyaS6rWLhI=;
+	b=DizPubTEEKvRUxpwnu/LtL4zNG26gPjXHwG8fc7109OEMQuxty3fjiM4UzC8SqId51CT
+	 f4XFzZymSSw7gg8inHZCnbi/t2Hj7/tfSvOFok3B6uJ1jhV+LJaiaR58W+sFJQUAqIHOD
+	 ecgptqVBqyKijY56lzB9/4Zf9tsD5rLMM3nj2wIqpNGu+5bVhcb9PRUyOS7s06Kn0yZJY
+	 LPa0RqUfTk24S0f4D5yRn/cKOhHY0yXCSEOpqGTpj3jnPt1T5eZdGArgojuKxDVYXvdHy
+	 FpploNeu6qfAauikNHfWnRoN0hiiq9bkHGMl3HwCSV9MRgw5qrBUsFCCsKR2lflvI+w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=czYgiVEF;
-	arc=none smtp.remote-ip=192.198.163.16
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gZhIa3Fv;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB49606A331;
-	Mon,  9 Nov 2026 22:34:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1AB49606A331
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F02606A325;
+	Tue, 10 Nov 2026 00:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=czYgiVEF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794263694; x=1825799694;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MRTklrICT1+xSptLDu/+oVKKPOOhfN35osx6RAortbA=;
-  b=czYgiVEFcgl6tnLUxdQ8kVbqGst9PVsDaCDkj67Nunp+aF/+Yne25QG+
-   cZ/HOBGTiNoroJngjwFW9e/PCGOLcUWyRygsWETg8NGqZ9s2ZoVsSUQWl
-   +mHanRHUBQn32+DmBFNLsIdSvtRuchZ5mW6p9SGPsN9y5pescrqQVoVDv
-   aD9Vay/+PFQiE+izAhN9ZWyUPF2e2O8COoStVgAbByuSH0/NNVYPQJJFB
-   bBig0LeSWT+cgr9HRyyiaDm15aRFzLPWTtHVGYWZdDGzNA3nsUaqMHpDu
-   ee5L/QVkUeraTIY8gH4quxOL7PTH2FkZUGLnhJYnOhbvtSnU0DtQWlhH1
-   w==;
-X-CSE-ConnectionGUID: NHDSAVdUQ+itFFn7NF5fUw==
-X-CSE-MsgGUID: ehButblCSIWh64lyBo6ngg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11961"; a="3024255"
-X-IronPort-AV: E=Sophos;i="6.27,204,1787036400"; 
-   d="scan'208";a="3024255"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2026 14:34:53 -0800
-X-CSE-ConnectionGUID: OPyoT2rxQQmorsssOHL9FA==
-X-CSE-MsgGUID: cZEl2ZO0Tm+iBpPw0W+jqw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,204,1787036400"; 
-   d="scan'208";a="7974861"
-Received: from amilburn-desk.amilburn-desk (HELO localhost) ([10.245.244.144])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2026 14:34:52 -0800
-Date: Tue, 10 Nov 2026 00:34:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Brian Masney <bmasney@redhat.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linusw@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Andy Shevchenko <andy@kernel.org>, linux-mips@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pinctrl: intel: convert to subsys_platform_driver()
-Message-ID: <avJKiYtczueslNSQ@ashevche-desk.local>
-References: <20261106-pinctrl-subsys-v1-0-f17582f32aaf@redhat.com>
- <20261106-pinctrl-subsys-v1-2-f17582f32aaf@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gZhIa3Fv
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A4211F0089F;
+	Tue, 10 Nov 2026 00:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794272173;
+	bh=mqsJpcvl5xnVXB0JO5NOaGhdm3h5WbbRjFyaS6rWLhI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=gZhIa3Fv0wij7Y0MyJ+UZImLtY58ZWWkKRZHSBkrI10cyghyyj+rKuOW4Usw+zr67
+	 qwH5wI9YtThAXlBxVWGi5pmYQgt/gPnvU/ZvvhRuLifF5ZKWFIleOU7MrR0feM3M6n
+	 FkmlF8khbCeGxWhxRBOy21uYg/1I+i2ZpNzfYiCsFxEobm0KySkfH99ufxUB7yo8NQ
+	 4eq1Wt5Kzqmn0wYBMFiL76yK0Ke2vz3n96kS3TgupX7E8nOpVbsJhQnS7fgaqM3F2Q
+	 eObgqPHZZqJWlvZ+fv/GHhyGBekhl2F8jHs+n+ZmqMpzAdOSI9B3Kpgs1/fMJWAulZ
+	 aZaW2BGSzXxUA==
+Date: Mon, 9 Nov 2026 19:56:08 -0500
+From: Brian Masney <masneyb@kernel.org>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Brian Masney <bmasney+clk@redhat.com>,
+	Jerome Brunet <jbrunet+clk@baylibre.com>,
+	Alban Bedel <albeu@free.fr>,
+	Antony Pavlov <antonynpavlov@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH 3/8] clk: ath79: move the ath79 clock driver to
+ drivers/clk
+Message-ID: <avJrqNyhqZiVZQ7f@x1g10>
+References: <20261104055852.152340-1-rosenp@gmail.com>
+ <20261104055852.152340-4-rosenp@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,18 +68,31 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261106-pinctrl-subsys-v1-2-f17582f32aaf@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+In-Reply-To: <20261104055852.152340-4-rosenp@gmail.com>
+User-Agent: Mutt/2.4.2 (2026-08-30)
 
-On Fri, Nov 06, 2026 at 07:27:13PM -0500, Brian Masney wrote:
-> Reduce boilerplate code in these drivers and convert them over to use
-> the macro subsys_platform_driver().
+Hi Rosen,
 
-Look at 20261104113343.1634218-1-peng.fan@oss.nxp.com.
+On Tue, Nov 03, 2026 at 09:58:47PM -0800, Rosen Penev wrote:
+> The ath79 PLL clock code only uses the clk API and its own PLL and SRIF
+> registers now, so move it from arch/mips/ath79 to drivers/clk, like
+> the Ralink clocks before it. Copy the register definitions it uses
+> from asm/mach-ath79/ar71xx_regs.h into the driver, so it no longer
+> needs the mach headers, and drop the unused ath79.h and common.h.
+> 
+> The driver stays a CLK_OF_DECLARE one, as the MIPS timer needs the CPU
+> clock from plat_time_init(). COMMON_CLK_ATH79 defaults to ATH79.
+> 
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+This patch itself looks straight forward, however looking at the
+original driver it needs a lot of work to be cleaned up. To make it
+easier to review, I suggest that you clean up the driver all in one go,
+and post it as a brand new version to drivers/clk.
 
+Also for the CLK_OF_DECLARE, we are trying to limit new drivers that use
+this. Please have just the timer clock(s) declared with CLK_OF_DECLARE,
+and have all of the others as a standard platform driver.
+
+Brian
 

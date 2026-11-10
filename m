@@ -1,49 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794305407;
-	b=WxBKLLNbLi/4rOqTAKYkdIPg1zdpxYHVMpfmfyyYo/S/+o/in4SAmV7mBcLxQFYofsgq
-	 fQ+7qXuWIIEA9KjUPi7GfN7FJe/Txyc+j4FvFVmhe5DwcLcwV7GhRATTZWx5TOspKo1TO
-	 70I3g5vItHDr5jfswGaWAuWPbCR+8+4WqZOOxW/IfLpAYzhc1IhOaGdzfaluEfL9T5LxK
-	 pJho+6EbYFh2i0hjNqo+06fsHQLh12lP6UzJEV8y5Rw+BnW0in36D8q6J8FhLhv+qeJXb
-	 l0JVvSU65N3pAwawqHT8kdtcU5poLYRYev1gzf2BfZNuRYJPhQeJP8NRx8a2n8Ax/4A==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794305407;
-	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc;
-	bh=El/8JBBP72rDx75dqpDC2klSCHMZgsc/9NFgTGKU9aI=;
-	b=KbMf2KYruFcGN11sQM9+lHFPhw1nPd8mE1r8z0j1OFkhjAdwCak/k/gH6x9fIjA0jtUO
-	 ARIwMydfNGUzxsAJJvB4uOQu7B4BQ07B9T4wnwYuRi6+172ITnKntGMwbtw1qjwJzNHdQ
-	 5CmMLl2ft6b+BSwsCNgIyi6AIwHTI8Ayeuh59jMIbcfIsep/d8yIzqc3+CsahomJRnKzv
-	 +qwICBUNJnWZfXBV9hAfsziAht+vb5MIHHFqWzeUbrLmp/SUuFLpMckuXiZDCqtvTZKDL
-	 SFl9Fje6f0afi2XfhmO+ifQsY0J+1UuneOJSRzCFQ9tQosO+ardnF2ktU3UcdeeF2lA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mwx4KcBE;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.222.172
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794314459;
+	b=HJOgxa/EzpJLvN95chKuwRA9tuKLGQGV7f5LUUmfD/ZSMLS2xCTq/8P7dJM4GKOU2e2y
+	 8Fr8iMbstEaZtaa+/JDSiYqmTNXBPaH5EowzKeAB4gIp9FYgbv9lMTBOzcJutlMpCQ+Sm
+	 HTVbAD6CXLaY3eNf0axw8HPTyYQJ6Els8yc8XkyTpJ6otEBIdXYoBtcYkBAysk5h0Z/8O
+	 tScuzIkNnBdCC7STa2t/xeJUcJ5+Pa0YgL+Yo7VurmcumOeqFCd1g/PPev7KL5IzOcLZD
+	 BM3Mc6SVuyMcAbwHhCBCDOpw0Z6REnX6bN6e/rifCfoPKwM0H9YJwrpziSnFkZo7B+A==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794314459;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:MIME-Version:References:
+	 In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
+	b=K2Rd1tcLv3JX9EFYmdR8j+kOQArprjqaltgYdu5npfl60hUeqSwDEZNCnevtgk808zXs
+	 BzgDwNaQ6cqbqWIb2m6FE94Ah5mnZiLKafPEIUQn24q6FPdWgyRnW7mHIAmwPhay+QJtT
+	 dYEfkcCRJR0mrTCzg4gk36DIO4cDmtzhs4tzq4kf62EaHMsk2k3IOCE+6zfi8ydwqFD1I
+	 hAKqcnnnXQHTEYLHATaHhwsi4X3OmN7R5QVEI92ioA01TLMiW9L4DdczchGGLubB3oSfR
+	 2fnXXhKbUI6LAOuq8EVFkkWa6dzBMiEoZZcwS4vqy7sLSb/60MHfL74in86Bx6C/brg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UiED+id3;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.222.172
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5B7606A33A;
-	Tue, 10 Nov 2026 10:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A3060A2607
+	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 12:40:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 41A3060A2607
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mwx4KcBE
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E58371F0089F;
-	Tue, 10 Nov 2026 10:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794305407;
-	bh=El/8JBBP72rDx75dqpDC2klSCHMZgsc/9NFgTGKU9aI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=Mwx4KcBEIY4KrxoXxGbJZF0oTJsu18oVCIlGM0PjWRLbRS4oKjSeQrRQi7jkNxKjU
-	 vye7nCZkKdN7NYvsakkU8aBjlShrznTfxbybz9TRMci12/Zxc541jMKxcAb/1lcl3l
-	 TSD6A5xhbbxJQDzIDOec/OFt8/sUS8TDK9Dy0lT7cooCo5alxhiEjEHyPrNd7Cll9U
-	 S5Abey03UkVO/jnP+yDM26u44anI4kab0UTufNScnAE+M/nH/FVLxrtT1+ugeszvE/
-	 iYevgmtPpLwx+nGrDZvFFJeKoqpkdbXP9HkwgkdEyFFFq9h2Z9UN5NEyAEfwQE11h/
-	 GCbvq93A0tE1A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D82EC391B148;
-	Tue, 10 Nov 2026 10:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UiED+id3
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-93e64d52949so174548885a.1
+        for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 04:40:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794314457; cv=none;
+        d=google.com; s=arc-20260327;
+        b=hlUB/Vb+fdx/0e0YlfRX0LbMHM7bqcdUnwPePxx+bt1Je8lzy8ycD7duu9ATtAlYcL
+         cstiK+x+0EOx6JD0HYdeEWEhrCP3EE8jjtPJ341lb+Emr71icOgP3VX0+6Dv4TUUZHSs
+         ZDdCFZwIU9KUOPW0xthfESKdvUvQdnqzc5G0D4jJELW8PGPcREHkSD13UYwmRY28eYVO
+         Z34GjQpslA7uwhlxIlEyY+xs/N0PSoZAyd57t/cZhX/cUGgd6AoVINQFZz7ffr24qrxV
+         DwNhsVNNt2qT2dcai4m8hJxz7UXUn36gyrRmbwz+opBmVZu9/N0I8TrgY2Xym2DiD5PV
+         Rahw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
+        fh=HoOc6DkcT3KLkbP+SVKkVjmWUMceasByiL/c1CxkKwQ=;
+        b=CqqF+UU91u9Uzlb4KpL9Scaa7ysfKkKQpVwcUpWQXprqcJJzYZD5Ou9zl/IuuAd8Ow
+         qK6Yps6TGPdWNAWEoXN611wEb4BJUn2llnvgt6XS75knnI/e6gno1bksH6sYOy+/fs1v
+         BCZnkzoxSO5vVc5h61nUENXnVSLdUe5ZM0bnz+2M/7RBy2zDVbV3cKjUbD5uFORgZqyu
+         13KHu+7cBQLI865UAVnfiLUBDF4TeswiV8mz32eAY1Y27SaovNLLam6dimqXrNAQbPn6
+         RZr4nJHGyluNBr/HTnPDLqz8vbbD1sO+wnDsSIv2LX7c9XAEiy1NP6Cg9vcXUxW3y1/k
+         2qYQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794314457; x=1794919257; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
+        b=UiED+id3VSZdgsoZMA1YSiLfBE2mMY0BkkqRrECjgevQDkAnzJCGpADOVqPQp4JgGo
+         vbpL2Fq8GGvTlgPBqzQaZus1cEssuCIBBMyAckf5TSHJObOkYJZTktiBshe3GcXV0IKc
+         /pjZZ1e48v0/hByYGiknK8QpRcyOBsvNR/M9aM5VQa1vzPCcwAS8wnHbNUayF0a+QM56
+         gOFHXs20ttDRdZqaJ8lq0X/5G96YGrfpF2HqKsL48xUHNVi7qT+w3nPsVOhzCG977We4
+         Mc3r++vex9Ysg9cMkgoWhDd7ZjUu0Rj0WGogNlcP3gH7howVxcZzz4qLX9id2JvsT5ea
+         650g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794314457; x=1794919257;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
+        b=pR7spFHca7RrX7nzvCLYW1FTrz0nr4DE/qfV1wb1Ps4BQHDNoYTWEM2v2v74wHSmAt
+         yS9i5r5pqdOhjQX1QxjI9Gp8jJACNHkjXPh+Ve8r22OUEdzjbTCf39wGRM/MaFskhSrB
+         uyTI5l6o7e71F3D0a4hNiJGQNxK+KYUKQ/tyTa49M26ZnN7/U7sZwk+MclKmCuJ6/9L/
+         SjpfIJPiGDEQcj0Alqa1jI+JHqlzSLtzQsmEDt3v83CLCH/l2M28SXKBWVMQVPNjssQ1
+         wzpbf8enDVCdLQbaRghxGMZkyRbah7RKegYWHiExz4JlCFmRkDOTOPDyhPzZzBI7NP4M
+         0Pxg==
+X-Gm-Message-State: APuU4Z+nMY0j2MKOMWrHK7OdPbNE7sgjg37MSEQ/WloT4yvmficSqCuh
+	kSDMl4Of8U5wXLtmFjZEODO02M55uYiWF7yhPTmMeMt49WEi5BeBD87FpgtmF5QaB94h6TVRjl2
+	CG92HVqTt1pEbbFqW7e4AmXyMqlEI53U=
+X-Gm-Gg: AYBFou3xaXNr9OArZBtByqDD/8i6XLxp8HUedc56++tMsIXxHj1F1NavHUUr2EREcKx
+	wjUa2jtieVYMTbcF/ex2Y4+uW6JQ5+jhF2F3psjY6NDpcH1UEshnHZh+7h0ARc/KVgPVeMwG1cY
+	dNavhIIHkEp6eOx0wEzI9sfvS3NkkDsT3J0wrIylUTcE9nAJV+smQFrf8Lruwnn2aM8s4y0qTNV
+	mZTKvvxluXScDX2vBauA15kk62xQX+H/hAXTW4Ivm4E6uDcoPGT3o8p0J9SKt6XDZHyOmtN27bO
+	upq9W10fC2k7anc+Q2cakK23CZt6pteLuBGkFyB7w/Kb6P4gcYBydN2S5fFpfWTJIr9ycbQ3flg
+	dRsr9hCXKXBQln321KR2iWsrGZoeZJlSrhdNilKTXpjrW4NlwHEwnPfQCWTh3FW2KpXG+ZUq/L4
+	hTHXx4nagf/x+qzq22ot4Y
+X-Received: by 2002:a05:620a:450d:b0:93c:b6db:8c with SMTP id
+ af79cd13be357-9479f093b28mr391627885a.0.1794314457277; Tue, 10 Nov 2026
+ 04:40:57 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -53,57 +104,54 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] net: add SO_PASSCRED_THREAD to get a
- thread-specific SCM_CREDENTIALS
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <179430540568.3843312.3120284833105457561.git-patchwork-notify@kernel.org>
-Date: Tue, 10 Nov 2026 10:10:05 +0000
-References: <20261102-halaney-scm-creds-thread-v1-0-0b4d75dbf35f@amutable.com>
-In-Reply-To: 
- <20261102-halaney-scm-creds-thread-v1-0-0b4d75dbf35f@amutable.com>
-To: Andrew Halaney <andrew@amutable.com>
-Cc: kuniyu@google.com, davem@davemloft.net, edumazet@kernel.org,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, shuah@kernel.org,
- brauner@kernel.org, richard.henderson@linaro.org, mattst88@gmail.com,
- linmag7@gmail.com, tsbogend@alpha.franken.de,
- James.Bottomley@HansenPartnership.com, deller@gmx.de, andreas@gaisler.com,
- willemb@google.com, arnd@arndb.de, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org
+References: <CGME20261110094847eucas1p125691a852f3621482adae13de1205223@eucas1p1.samsung.com>
+ <20261110094830.2081847-1-m.szyprowski@samsung.com> <20261110094830.2081847-2-m.szyprowski@samsung.com>
+In-Reply-To: <20261110094830.2081847-2-m.szyprowski@samsung.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Tue, 10 Nov 2026 04:40:44 -0800
+X-Gm-Features: AclHuK83CWJc5YlF2QehrZfUW5W7mZ4EuCDQrpmAsXstQoXrFuDrYSPavdO9f3s
+Message-ID: <CAMo8BfL04-yz8VppH6P+dcBTJEvM5zPR-=d9GMdRG4F2B78YXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] xtensa: write back dirty lines in arch_dma_prep_coherent()
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@infradead.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
+	Shrikanth Hegde <sshegde@linux.ibm.com>, Chris Zankel <chris@zankel.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Tue, Nov 10, 2026 at 1:48=E2=80=AFAM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> arch_dma_prep_coherent() is expected to remove any dirty cache lines
+> covering the buffer, so that they are neither lost nor evicted later on
+> top of data written through the uncached alias or by the device.
+> xtensa implements it with __invalidate_dcache_range(), which uses the
+> DHI instruction and discards dirty lines without writing them back.
+>
+> This loses data written through the cached kernel mapping right before
+> the call. dma_direct_alloc() zeroes the buffer with memset() on the
+> cached linear mapping and only then calls arch_dma_prep_coherent() and
+> switches to the KSEG bypass alias via arch_dma_set_uncached(). On cores
+> with a write-back data cache the zeroes still sitting in the cache are
+> dropped, and dma_alloc_coherent() returns a buffer with stale content.
+>
+> Use __flush_invalidate_dcache_range() (DHWBI) instead, which writes the
+> dirty lines back before invalidating them. On cores with a write-through
+> data cache it maps to __invalidate_dcache_range(), so nothing changes
+> there.
+>
+> Fixes: 0f665b9e2a6d ("xtensa: use the generic uncached segment support")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  arch/xtensa/kernel/pci-dma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
 
-On Mon, 02 Nov 2026 17:12:33 -0600 you wrote:
-> Currently, SCM_CREDENTIALS carries the pid of the thread-group leader,
-> despite carrying the uid/gid of the actual sending thread.
-> SO_PASSPIDFD_THREAD lets a receiver identify the sending thread, but
-> only through a pidfd. If you just want to know what the tid of the
-> sending thread is you have to do something like:
-> 
->     1. Setup SO_PASSPIDFD_THREAD on the socket
->     2. ioctl(thread_pidfd, PIDFD_GET_INFO) per message
->     3. close(thread_pidfd) per message
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/3] selftests/net: pass socket options to the scm_pidfd test flows
-    https://git.kernel.org/netdev/net-next/c/5fb7b21d2971
-  - [net-next,2/3] net: add SO_PASSCRED_THREAD to get a thread-specific SCM_CREDENTIALS
-    https://git.kernel.org/netdev/net-next/c/d006eac7b099
-  - [net-next,3/3] selftests/net: Add tests for SO_PASSCRED_THREAD
-    https://git.kernel.org/netdev/net-next/c/032bc8ef0456
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+--=20
+Thanks.
+-- Max

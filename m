@@ -1,100 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.219.49
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794314459;
-	b=HJOgxa/EzpJLvN95chKuwRA9tuKLGQGV7f5LUUmfD/ZSMLS2xCTq/8P7dJM4GKOU2e2y
-	 8Fr8iMbstEaZtaa+/JDSiYqmTNXBPaH5EowzKeAB4gIp9FYgbv9lMTBOzcJutlMpCQ+Sm
-	 HTVbAD6CXLaY3eNf0axw8HPTyYQJ6Els8yc8XkyTpJ6otEBIdXYoBtcYkBAysk5h0Z/8O
-	 tScuzIkNnBdCC7STa2t/xeJUcJ5+Pa0YgL+Yo7VurmcumOeqFCd1g/PPev7KL5IzOcLZD
-	 BM3Mc6SVuyMcAbwHhCBCDOpw0Z6REnX6bN6e/rifCfoPKwM0H9YJwrpziSnFkZo7B+A==
+	t=1794314556;
+	b=WqybyiLQu4vczMiRLOOCDG0FPS8ruV410STX7SzeOLyXtrCNfW+aCmStifsHxe60fp5b
+	 DjqBq9R3+fpD0jRdBjtOOdPUuXLpoNXVLroCSxjWVYJcFg6cyYZuTKg8nhFzR0rJLn599
+	 YO8AZgeUwx+dm56nRXcJpnGSJ6GPwGWI+KwzWi5HwsZdPoi1C7GaPdZcu9sdfwoFsYx0q
+	 tdeBc+FPIi7nqgfCE9w9t4agMtpHDjXf8yN071hcDnRhy4lpwDtO/i4GDnKoP530UPLJa
+	 SDY/nQcDaabeZOGLehPTx8f9E+CecQcjZC3pSEmkA8dBOcRsWyyyD+bt6xHBE4MWUVQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794314459;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794314556;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:MIME-Version:References:
 	 In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:Cc:
 	 Content-Type:Content-Transfer-Encoding;
-	bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
-	b=K2Rd1tcLv3JX9EFYmdR8j+kOQArprjqaltgYdu5npfl60hUeqSwDEZNCnevtgk808zXs
-	 BzgDwNaQ6cqbqWIb2m6FE94Ah5mnZiLKafPEIUQn24q6FPdWgyRnW7mHIAmwPhay+QJtT
-	 dYEfkcCRJR0mrTCzg4gk36DIO4cDmtzhs4tzq4kf62EaHMsk2k3IOCE+6zfi8ydwqFD1I
-	 hAKqcnnnXQHTEYLHATaHhwsi4X3OmN7R5QVEI92ioA01TLMiW9L4DdczchGGLubB3oSfR
-	 2fnXXhKbUI6LAOuq8EVFkkWa6dzBMiEoZZcwS4vqy7sLSb/60MHfL74in86Bx6C/brg==
+	bh=10UT92sr+vRIVo9wGLbCQyuS9MFs0Bc9LyaIXMh/H9I=;
+	b=XZam8bNFOrziWSXq/+Wpd11g1A/jKaQudAO3X4b1KxLJJxL8LYzIWHR2Dc/lc2Ujr8f3
+	 uvaq0PPDNMnPa7AY5FOhIkfEf8n4p11c7Mv5hB+5EGuAqnxdjGgd/m0TIe5P+sCnJOSvH
+	 hJ8OM6Ig0XnV3q/AlkTdgo80dX3eGjoosCTBbcEe9AcrZri/ySDsD5mqMl55dmLHOBZsN
+	 jpvPGl1fMbyxd6Dhdr1Xci8nikIMHkcGPpKGTEUZwXaDlvherm0aqQjNs2XdvFq4hcRPV
+	 mQ280ZA93nxDYHSj7Armi1kRJNqqMaN+UrPq9nVX+lp/SQpWQAtgbp3XKbtLOvSG/ZA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UiED+id3;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.222.172
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=o8HjuQ88;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.219.49
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A3060A2607
-	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 12:40:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 41A3060A2607
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625D060A260D
+	for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 12:42:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 625D060A260D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UiED+id3
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-93e64d52949so174548885a.1
-        for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 04:40:58 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794314457; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=o8HjuQ88
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-91ec2d42231so21108866d6.2
+        for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 04:42:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794314555; cv=none;
         d=google.com; s=arc-20260327;
-        b=hlUB/Vb+fdx/0e0YlfRX0LbMHM7bqcdUnwPePxx+bt1Je8lzy8ycD7duu9ATtAlYcL
-         cstiK+x+0EOx6JD0HYdeEWEhrCP3EE8jjtPJ341lb+Emr71icOgP3VX0+6Dv4TUUZHSs
-         ZDdCFZwIU9KUOPW0xthfESKdvUvQdnqzc5G0D4jJELW8PGPcREHkSD13UYwmRY28eYVO
-         Z34GjQpslA7uwhlxIlEyY+xs/N0PSoZAyd57t/cZhX/cUGgd6AoVINQFZz7ffr24qrxV
-         DwNhsVNNt2qT2dcai4m8hJxz7UXUn36gyrRmbwz+opBmVZu9/N0I8TrgY2Xym2DiD5PV
-         Rahw==
+        b=B3udWtOstdl4pySdLzFfyj/RcdwtPpISe0fGvR/pCKVd3l2BWW9WL95LL0OsU2h7c8
+         W366xW3Jck3F2Or4z8BAEorG6ohmMVia3t/v0Xaei7TXVKJQAPXc6hg+g07kNp1i0Crl
+         jpu9D9zkkWJUlTYTu7I8dJHrIQcRPOsYcwtSuTRfHIdh0Y2B1Pt4iBfDlS3qHOy+wCo9
+         dbpZsr4vZea93zKdyvCl/NZh0ylAxdJDk64oNwH9+HgXeIzEwhYb8ag7kVKc82/dVuuZ
+         iUFy3KV2xPiyafuYZOw6zNTN4zPZOqVOUQ/6KNxGaUKWdr+PyKge+Zfgwo3tDYabvXKG
+         ca8A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
+        bh=10UT92sr+vRIVo9wGLbCQyuS9MFs0Bc9LyaIXMh/H9I=;
         fh=HoOc6DkcT3KLkbP+SVKkVjmWUMceasByiL/c1CxkKwQ=;
-        b=CqqF+UU91u9Uzlb4KpL9Scaa7ysfKkKQpVwcUpWQXprqcJJzYZD5Ou9zl/IuuAd8Ow
-         qK6Yps6TGPdWNAWEoXN611wEb4BJUn2llnvgt6XS75knnI/e6gno1bksH6sYOy+/fs1v
-         BCZnkzoxSO5vVc5h61nUENXnVSLdUe5ZM0bnz+2M/7RBy2zDVbV3cKjUbD5uFORgZqyu
-         13KHu+7cBQLI865UAVnfiLUBDF4TeswiV8mz32eAY1Y27SaovNLLam6dimqXrNAQbPn6
-         RZr4nJHGyluNBr/HTnPDLqz8vbbD1sO+wnDsSIv2LX7c9XAEiy1NP6Cg9vcXUxW3y1/k
-         2qYQ==;
+        b=Q1V1xI6YKhZnX1xJwEP+sa0Wd87AfyZsdjcdH+EYF5tCUYJsrmBtRhq0rVY/xrIpBm
+         rDZAT7zZkjAcv9IwN47RtLcHUfT4BIIOadPYDFsz2TpBFxDmRqQCFB8h1SsBITyZko8z
+         MrcCS/VkystpV3VIWqosWn3+AzWhxfqgbjycDRCiat3OD4Yh24O1qvb7F/jrJyjtufPO
+         HMWIcRsLN3zZdxVHh5EMJyg3n/kDqoYv4xpUiv1JS3CtfCc3+Dzf5hxRtjPWRC+3ntFV
+         FV0M750O4bx34Lt9D2nGW4X8qx38xknKsJ3I9lFylVCjxiRwHB5HqVYbER18LRUB83W8
+         jirw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794314457; x=1794919257; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1794314555; x=1794919355; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
-        b=UiED+id3VSZdgsoZMA1YSiLfBE2mMY0BkkqRrECjgevQDkAnzJCGpADOVqPQp4JgGo
-         vbpL2Fq8GGvTlgPBqzQaZus1cEssuCIBBMyAckf5TSHJObOkYJZTktiBshe3GcXV0IKc
-         /pjZZ1e48v0/hByYGiknK8QpRcyOBsvNR/M9aM5VQa1vzPCcwAS8wnHbNUayF0a+QM56
-         gOFHXs20ttDRdZqaJ8lq0X/5G96YGrfpF2HqKsL48xUHNVi7qT+w3nPsVOhzCG977We4
-         Mc3r++vex9Ysg9cMkgoWhDd7ZjUu0Rj0WGogNlcP3gH7howVxcZzz4qLX9id2JvsT5ea
-         650g==
+        bh=10UT92sr+vRIVo9wGLbCQyuS9MFs0Bc9LyaIXMh/H9I=;
+        b=o8HjuQ88fkTW5d1ZW/m8UUP7qUQpPD8kCVKzDtrOtYt3cOxdEj1WVqdHEHMv5/FY+0
+         DQZbxgAWWXsAWPjlCqC/S73i5mccSSmnTpemGu80vpL9URa8Yc/U3g8r0rfWpG8dzxlf
+         FnKNqE1XK2Ni8s7Taui8GPF6fvxIwIWzA67a5fBPaLlv+Fv+39UMgWlMXBY7lJA+dCCb
+         or+YMvYajbh7ypqWpXF04JApiwgmR7iBnsmTnFu79RRd5RtfY6sx8ZWmVo+/Z/78vnKn
+         LB5Y2DLceN+KGTHLkJi7gssFQ9MZcUWdJRyEQcIRDdl1BnTSuTjcXT7Npcrqn8AVQha4
+         LfQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794314457; x=1794919257;
+        d=1e100.net; s=20260707; t=1794314555; x=1794919355;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=D4gMZ1PVA/qgtmCoqERD1UHw3rhXprh1G5vdxXe7myk=;
-        b=pR7spFHca7RrX7nzvCLYW1FTrz0nr4DE/qfV1wb1Ps4BQHDNoYTWEM2v2v74wHSmAt
-         yS9i5r5pqdOhjQX1QxjI9Gp8jJACNHkjXPh+Ve8r22OUEdzjbTCf39wGRM/MaFskhSrB
-         uyTI5l6o7e71F3D0a4hNiJGQNxK+KYUKQ/tyTa49M26ZnN7/U7sZwk+MclKmCuJ6/9L/
-         SjpfIJPiGDEQcj0Alqa1jI+JHqlzSLtzQsmEDt3v83CLCH/l2M28SXKBWVMQVPNjssQ1
-         wzpbf8enDVCdLQbaRghxGMZkyRbah7RKegYWHiExz4JlCFmRkDOTOPDyhPzZzBI7NP4M
-         0Pxg==
-X-Gm-Message-State: APuU4Z+nMY0j2MKOMWrHK7OdPbNE7sgjg37MSEQ/WloT4yvmficSqCuh
-	kSDMl4Of8U5wXLtmFjZEODO02M55uYiWF7yhPTmMeMt49WEi5BeBD87FpgtmF5QaB94h6TVRjl2
-	CG92HVqTt1pEbbFqW7e4AmXyMqlEI53U=
-X-Gm-Gg: AYBFou3xaXNr9OArZBtByqDD/8i6XLxp8HUedc56++tMsIXxHj1F1NavHUUr2EREcKx
-	wjUa2jtieVYMTbcF/ex2Y4+uW6JQ5+jhF2F3psjY6NDpcH1UEshnHZh+7h0ARc/KVgPVeMwG1cY
-	dNavhIIHkEp6eOx0wEzI9sfvS3NkkDsT3J0wrIylUTcE9nAJV+smQFrf8Lruwnn2aM8s4y0qTNV
-	mZTKvvxluXScDX2vBauA15kk62xQX+H/hAXTW4Ivm4E6uDcoPGT3o8p0J9SKt6XDZHyOmtN27bO
-	upq9W10fC2k7anc+Q2cakK23CZt6pteLuBGkFyB7w/Kb6P4gcYBydN2S5fFpfWTJIr9ycbQ3flg
-	dRsr9hCXKXBQln321KR2iWsrGZoeZJlSrhdNilKTXpjrW4NlwHEwnPfQCWTh3FW2KpXG+ZUq/L4
-	hTHXx4nagf/x+qzq22ot4Y
-X-Received: by 2002:a05:620a:450d:b0:93c:b6db:8c with SMTP id
- af79cd13be357-9479f093b28mr391627885a.0.1794314457277; Tue, 10 Nov 2026
- 04:40:57 -0800 (PST)
+        bh=10UT92sr+vRIVo9wGLbCQyuS9MFs0Bc9LyaIXMh/H9I=;
+        b=04VzKc3JWVTsQtA4Oc6Tqa3oa40yTJJpJZwjTq7UXWYdKGWo1EYD8kPgd+PlcQGmgj
+         1uOwBUATHYzIUmWXTr20xzaWd5yBvHvWybl1FHQqVZ4oKgRcQXyD6f/6WUoe3Gabaaza
+         Lr/PjCAbbPXtSaA3AfL1y3CMe60GqqlwVMsXYfNc/iVPXPMTioVYly6RLMhM8BLvdGKb
+         NkW/SCPLIbBz455L17kln59tRTvBTDlnPlw8/H6D77rIXHGi+XmonMLLA26NLO17Nk0Z
+         bO0FkCiidtx9IgdRkTsuKxI70XuJkAN9w4oKqIrMZBnMIY9NPCyPjAiURxGXvTW3MtSH
+         71/A==
+X-Gm-Message-State: APuU4Z+r90ZlUGrzVjzN6N36JdncpEqRdq1Uz/ToEDGKIVNUCUi4rJBL
+	hHta8dvTrQHnfzoh9BNWrhq8PiJEXjgTqfRCi42AyEOU9jQ7BmAYdhyzL+s6QDN2fTAqykMjQA3
+	0UPgVMZ4Gq/M0xUyMMIG6n+UuOHjAIIY=
+X-Gm-Gg: AYBFou2Q72xahS5rQj3Twl3Rt6Doevo147WEOUa99rVr3fgUggz8R1Sgk/Ged9zI98f
+	0a70YQTm6ScLjBJ2ftmJl0eYy96aioO/QkVRSCX6dnWPX628zTeSw89A1DGmfNGJewEALKD1RkB
+	0Xo/6wBSijA74lkOi+/YO0I02uH/SIdxzmNR3LN03KxBNWNXQjXOf8qi6XZPXqLTHxiAb20v8Db
+	n7K2Pf7vEI+Cp3mqSTkzFlWLDngo/g8q9bESGT5/UWD09XbAq3vz6pEYTr39VcE8GebMGyCQDys
+	7LODqSw1QW+eH2uyy9t/TMveUrxyVX8XLNr/v0JSN4C9TUtwX5JrNJhYlOubOlKUCdrBo3o6/+k
+	66A/jwT9ZCPfWei1l//9AXiV5KFyv5G7uxJCg1J1o0srdvbBxhV/vEk+w4yOGXHjFzeXWNzJ22k
+	XHZBiHfzJ3OONm/ZuY4nvq
+X-Received: by 2002:a05:620a:461f:b0:93e:c12c:f137 with SMTP id
+ af79cd13be357-9479f368c54mr360445785a.82.1794314555301; Tue, 10 Nov 2026
+ 04:42:35 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -104,14 +104,14 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <CGME20261110094847eucas1p125691a852f3621482adae13de1205223@eucas1p1.samsung.com>
- <20261110094830.2081847-1-m.szyprowski@samsung.com> <20261110094830.2081847-2-m.szyprowski@samsung.com>
-In-Reply-To: <20261110094830.2081847-2-m.szyprowski@samsung.com>
+References: <CGME20261110094848eucas1p2577d7a3c60643a040e599dfa1bf97f08@eucas1p2.samsung.com>
+ <20261110094830.2081847-1-m.szyprowski@samsung.com> <20261110094830.2081847-3-m.szyprowski@samsung.com>
+In-Reply-To: <20261110094830.2081847-3-m.szyprowski@samsung.com>
 From: Max Filippov <jcmvbkbc@gmail.com>
-Date: Tue, 10 Nov 2026 04:40:44 -0800
-X-Gm-Features: AclHuK83CWJc5YlF2QehrZfUW5W7mZ4EuCDQrpmAsXstQoXrFuDrYSPavdO9f3s
-Message-ID: <CAMo8BfL04-yz8VppH6P+dcBTJEvM5zPR-=d9GMdRG4F2B78YXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] xtensa: write back dirty lines in arch_dma_prep_coherent()
+Date: Tue, 10 Nov 2026 04:42:23 -0800
+X-Gm-Features: AclHuK-FeNynpA1_RJvncVNma0nOMx7dW4op-Ljg-ln5a78S2ORxIIsRcrITnr8
+Message-ID: <CAMo8BfKENmH3rZU5jyCdVOBzRAQ+KBJmVyjEWG97XYxBNaZ=qQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] xtensa: handle highmem pages in arch_dma_prep_coherent()
 To: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
 	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
@@ -126,29 +126,30 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Nov 10, 2026 at 1:48=E2=80=AFAM Marek Szyprowski
 <m.szyprowski@samsung.com> wrote:
 >
-> arch_dma_prep_coherent() is expected to remove any dirty cache lines
-> covering the buffer, so that they are neither lost nor evicted later on
-> top of data written through the uncached alias or by the device.
-> xtensa implements it with __invalidate_dcache_range(), which uses the
-> DHI instruction and discards dirty lines without writing them back.
+> arch_dma_prep_coherent() performs the cache maintenance on the address
+> returned by page_address(). xtensa with CONFIG_HIGHMEM uses
+> HASHED_PAGE_VIRTUAL, so page_address() returns NULL for a highmem page
+> that is not kmapped, and the cache operation then works on the virtual
+> range starting at 0 instead of the buffer, leaving any dirty cache lines
+> of the buffer in place.
 >
-> This loses data written through the cached kernel mapping right before
-> the call. dma_direct_alloc() zeroes the buffer with memset() on the
-> cached linear mapping and only then calls arch_dma_prep_coherent() and
-> switches to the KSEG bypass alias via arch_dma_set_uncached(). On cores
-> with a write-back data cache the zeroes still sitting in the cache are
-> dropped, and dma_alloc_coherent() returns a buffer with stale content.
+> Highmem pages do reach this function: dma_alloc_contiguous() can return
+> a highmem CMA page, which dma_direct_alloc() handles by forcing the remap
+> path and calling arch_dma_prep_coherent() on that page before creating
+> the uncached mapping.
 >
-> Use __flush_invalidate_dcache_range() (DHWBI) instead, which writes the
-> dirty lines back before invalidating them. On cores with a write-through
-> data cache it maps to __invalidate_dcache_range(), so nothing changes
-> there.
+> Fix this by reusing do_cache_op(), which the arch_sync_dma_for_*() hooks
+> already use and which maps highmem pages one page at a time with
+> kmap_atomic(). For lowmem pages it does a single cache operation over
+> the whole range, so the behaviour is unchanged there. A small wrapper
+> is needed because __flush_invalidate_dcache_range() is a macro on cores
+> with a write-through data cache.
 >
 > Fixes: 0f665b9e2a6d ("xtensa: use the generic uncached segment support")
 > Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 > ---
->  arch/xtensa/kernel/pci-dma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/xtensa/kernel/pci-dma.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 
 Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
 

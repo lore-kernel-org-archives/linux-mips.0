@@ -1,105 +1,123 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794434270;
-	b=yRz/WdKJ7Ec6eP8gDijRXfs/NKMuidUO7C+OsY9ccdDarC5IWueFOqDn2IaMHS+EEkM4
-	 gAUTkbUZ7kME2uA7qlbOIhmYx9RfkgNT0NfGJbXHs6ynxh5Q+PB1xlElGRuTDfcVQlA0R
-	 hCnsHJxkqcVR6lqZznnkFPZJrtjPWr/zedghJQmBv+I1B5WuG6X9rAO8uimGKceZBBWzd
-	 P7iDCMpz4K5hUomPeLf7ICePQ1tFTQHewbUNPfuAeaJFNqjVtaCg98mAKO2f9m5sP8/v5
-	 eoBJPyYuRaZ/a87+MHxLWxgaZg4ZwKLXr3J+1rDoLQSRHR1dLL7RBxQ+lh8CoEpvgvA==
+	t=1794434587;
+	b=m0rJNXonjjzzwcTDcwTO4H1ldWx2S483c/CamjyQxS7tHfthY19pXuJ5mWXKXZgrmn9/
+	 zCyem5ACf1s8qYMaBl+RTOvNQRX4E7Siq5VCwrj0N3aFsJA/+JtSpg8wBP4VxEJuFMyxc
+	 2daXbJMRdBow7664nIwUmXNtHWAfVyTBNDdgdgSYhkWsD7DrBuqjE1J/D6yNcQCrSREpw
+	 lFw0SXr/a6Fp//aNF1HX7Ucud6e/iJRWSemd4gTWmSZN+XweB4RLrS9ukaWzvzYJJfhGz
+	 9fml/LOt8SWAtlhWgRMMGL7YyzrP/LUpaRYumD1GgEI9v6okCbNVAXFASPd3LyeP5gg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794434270;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=sMwXL6j1Jl//7kEypkUMsF5owWjAHeyKcj/IxIcfrmE=;
-	b=kvo8v4jscyGxB2pvacrgBax8nC8fnQF44F42iQBh9aXrnYunhMO8qSzl7NDkbczceTbx
-	 bzrOFjSmCP78yr1LIUQPnWTuaE92jzu+JiGbQmgy8M++syAVo3JDOiVCnLwM06ugdh4/F
-	 M3SRJ9EmAert9nI/ZwaBWkXAAp8BaFexOu/wP5q6kkgY1Z2Drsiq5qo0eMkV9lVetw/xW
-	 QyTmyFANR4wfsYzbrb53gt18+TOjtd4oXW3dBM/96gR5J2QujF/Qmap+Rr5SX5geXfE23
-	 fQsWENVlA/WQGnRe8wS8I68WjTa0iAiCbQIJsfTyxQaHiHSr1ukaLePKZIWuTmU/Emw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794434587;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 Mail-Followup-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=/29Fh1u2FOm5/5k1pmwlztbcmx561O6eu158ApMSsyU=;
+	b=oDLLqt2wZocMgWJg+j0Xz9D0Ncm7u4C7fyJizRS281dwA7RhjGR90esX195TmYd9taxq
+	 DwZw2WoEcxZ7dK7WtSk8N8ClxxsmuJ3j7XUuvlvGJwBx5d4i/pXO17rNfWNgL0UttUjSW
+	 el/a6J3GinaCMJgsmuQB1VZZEdgNn9AAygnKMp+QgKrYUO6dHN3hfprNfIfueoRJLQcD2
+	 jaY3J2mzyRMzUTIW8wp3L1caGOEiM8UOagT4m1PHCU/vt3aYVQk/xPGX69ABXpu1c275i
+	 +bIcDBqpTo/EVqtt8gknlNJkm9kqDQSJcPhVsTzS3Ftg5ndS1zVEsSlZyWJI7gt3dDg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HU7cTYuW;
-	arc=none smtp.remote-ip=209.85.216.46
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H2HTk8rO;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2418360A5BC2
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 21:57:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2418360A5BC2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B77606A32D;
+	Wed, 11 Nov 2026 22:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HU7cTYuW
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3ae1b34e0d2so155491a91.1
-        for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 13:57:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794434269; x=1795039069; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=sMwXL6j1Jl//7kEypkUMsF5owWjAHeyKcj/IxIcfrmE=;
-        b=HU7cTYuWcYZwx3dirdqHV7dp9rAyEvp5zocDFaYn1Uo8TbHZzDQLuVpWMQWpyHXSVB
-         kATHtqToLXfC+vtLAzLJxR+o0W68eM6NnkAk7Flb3mxanBtjKU1+7tZxpRzJeHmJpYnY
-         xO6j1wl2t7VMzkdqiU5AZ0igvhQebPSRaa4dQV9yceON2yV7cETSs7A2ciHW8TKbRBLs
-         PY6S4TB4+SzH84J+W+bVRCb8ORxL54rJKgXapB8cCKmm/SpVhWaRP4nLOl4mIOe5IX1O
-         /h8eGEBgsiPIXpq6QvMjntXU/8WKmkuU/KPUd+vyds2ozzWIxsHMtYCHpvFFiIn+jSlu
-         hUTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794434269; x=1795039069;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=sMwXL6j1Jl//7kEypkUMsF5owWjAHeyKcj/IxIcfrmE=;
-        b=rKPc9Lr7Dnr1BZgYo2D7uiixvzQzC9NtCKsE38w14bYv6QD+arhsxpyvvnW+rhoF+4
-         kAY+2vdKfOyr/s+Vdng3dNWMPoGx0j2ObSILve94p265WAB7VNEE+ao47pUxjMmuh3Rd
-         R+5vcKOxKvVnP5XUpPwpPsZrp46YeRgYWKXF74vLNi7PByH7UqWkYdf9oKuJ5xdFsT7h
-         MOPOHOVhFXrKDwrkVGB4/ihr0kAoVzuMEUNyHFZF8mUNOZtutDf9+r9LhFuj1tXwOFHQ
-         VluEOTII2Cf3TTt/xvzKzjqP4JFmMAN2xCljdBTr4HN34hA0DWzghiEo5NV1btolj3wH
-         xOBw==
-X-Forwarded-Encrypted: i=1; AL+hErFKLWlXWFdsogciy3rjkP30x6oC/oNL49Zly/Hg8YL4kS6rLLnrU1mNju8JelsAO3VqFdh2JqPvnlhb@vger.kernel.org
-X-Gm-Message-State: APuU4Z/CtYSOM1R4Y6DyvU+qpzp+76Joq/iLYETe6dnb/wOAqBLynxtK
-	RKM9+f8kvhbDOelD77BN73sY+KQ5WC8Rme1v7OBbo2jrl0fp5ojNp6Z2
-X-Gm-Gg: AYBFou3fZtklvNr+gC1k9jiRAAp3dXfg8E3H9KtRtrGG/Nnx07CuiR8FPy0SGg/XwHf
-	p644VuzxTCelZOGsVmDBt/pbARnqaXr9pCmVYuxXCODD/3K7olsJaVG8IfkiJvmPeOxqQ/pWyyK
-	1+9siCTm8y+x18oytceFGVESykL/Wvp0FCgBhwBd9MIb9zKVqQfm9ynBa/uGS30Wp6sYqUQAj79
-	jQPCekP8Dpln3FYj0e07OdsEQShysLcui6Yo4ZixUr1FhT2tUSOYs/CI+L8Qw62a+lRTNRFulfC
-	oKV/N3qfPYcgOcVH6G9KeBTrWLCHCIHe9JPq0pczFXW1Nq0IfAU6FHM1VHKGd5g9PLEtDZ7n4nw
-	zMiaWnvyI2m/5derFZEtDqdh7ekk6NRXjLejGQVF0cQpqtE/0cU+OyqgYgUdsSp7ZaS4gEi1zt3
-	ceOODVcut2MbIh1yJDAJN0ehNMoWVRP00HauPFiU3iQgOoU67OlE7TDW+DlAVTDgZ1yNW9lD+Co
-	A8EEb3vZoQalMkP5dL4qGf8k6c4XOvvRDpYA4/fmK+gNRfb7UUacbiIv+8HwXXdF4CqSAheLBM4
-	kF9VVFUUImk+3lxSFOqtkPNSqLUvGsjLmv0RyWnXKYk9Drmye+3SyRlo/JnjlkSn4hntL4bwned
-	NN6O3Zraz/SlOuOzdOn9P+QKdZ1WvuGjmoKL94m0cmJbqi89TeRZjgRl7JaJabLEM830oK2fOQG
-	e67yg=
-X-Received: by 2002:a17:90a:d610:b0:3ad:677f:567f with SMTP id 98e67ed59e1d1-3b197cdb5b0mr413944a91.40.1794434269206;
-        Wed, 11 Nov 2026 13:57:49 -0800 (PST)
-Received: from ryzen.lan ([2601:644:8000:37f::e34])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b197ce556dsm965429a91.6.2026.11.11.13.57.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2026 13:57:48 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Alban Bedel <albeu@free.fr>,
-	Antony Pavlov <antonynpavlov@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 7/7] MIPS: ath79: remove the old clock code
-Date: Wed, 11 Nov 2026 13:57:29 -0800
-Message-ID: <20261111215729.10683-8-rosenp@gmail.com>
-X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261111215729.10683-1-rosenp@gmail.com>
-References: <20261111215729.10683-1-rosenp@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H2HTk8rO
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2E751F00A05;
+	Wed, 11 Nov 2026 22:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794434586;
+	bh=/29Fh1u2FOm5/5k1pmwlztbcmx561O6eu158ApMSsyU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=H2HTk8rOLZgWw9Lm2uB8it44XJGQ1VP252zKM3Vsl27YeQT3fQC/oPf+9dR1GGuPe
+	 fTrdVHJg83sazuCLRwsK7FMBmZ65BjYmx/5l1Fr9V4zrWbVX2E4c/EGrAZHOJ23iP5
+	 K6oVJy3Ue6XdepxFi87RWoq3TdzVK9qDLL8BM8XMCz9n7H3pjJ8s2COHz+NjnFIDwg
+	 2eGJ+4dbOKk2dBpxqBDuRpXAU1slNtJxbA2Dkar3W/730CiqV+uxXwdTMmafxIRXoH
+	 hanK6KHxVmWrohkzaChiP47GtgTq+nQUar+jL+4xWJclsB1e8afff/e4uoWiQs4JB9
+	 jrQrJYXOzTbWA==
+Date: Wed, 11 Nov 2026 23:02:51 +0100
+From: Gao Xiang <xiang@kernel.org>
+To: Michal Wilczynski <m.wilczynski@samsung.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>,
+	Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Laight <david.laight.linux@gmail.com>,
+	Sungguk <sungguk.na@samsung.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 12/15] lib/lz4: widen LZ4_DECOMPRESS_INPLACE_MARGIN
+ for the fast decode loop
+Message-ID: <avTmC_1I59FKA1FN@MacBookPro.fritz.box>
+Mail-Followup-To: Michal Wilczynski <m.wilczynski@samsung.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>,
+	Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Laight <david.laight.linux@gmail.com>,
+	Sungguk <sungguk.na@samsung.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-crypto@vger.kernel.org
+References: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
+ <CGME20261106144309eucas1p2a9bfcc1cf81779d473fb073e7d9139b7@eucas1p2.samsung.com>
+ <20261106-lz4-vendor-upstream-v2-12-ee04c3f0d7dc@samsung.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -109,658 +127,42 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261106-lz4-vendor-upstream-v2-12-ee04c3f0d7dc@samsung.com>
 
-The clk-ath79 driver in drivers/clk has replaced arch/mips/ath79/clock.c,
-which is no longer built. Remove it.
+Hi Michal,
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- arch/mips/ath79/Makefile |   3 -
- arch/mips/ath79/clock.c  | 622 ---------------------------------------
- 2 files changed, 625 deletions(-)
- delete mode 100644 arch/mips/ath79/clock.c
+On Fri, Nov 06, 2026 at 03:42:52PM +0100, Michal Wilczynski wrote:
+> erofs decompresses a pcluster in place when the slack after the output
+> is at least LZ4_DECOMPRESS_INPLACE_MARGIN(compressed size), upstream's
+> (compressedSize >> 8) + 32.
+> 
+> That holds for the fork, which overshoots its output by at most 8
+> bytes. Upstream's LZ4_FAST_DEC_LOOP, which the next patch brings in for
+> x86 and arm64, copies in 32-byte steps and can overwrite input it has
+> not read yet: of 172410 valid streams laid out as erofs does at exactly
+> that margin, 3660 fail to decode, none with the fork. The worst needs
+> (compressedSize >> 8) + 33. Images mkfs.erofs built did not hit this,
+> but nothing in the format rules it out.
+> 
+> Use (compressedSize >> 8) + (compressedSize >> 15) + 36, which takes a
+> 4K pcluster's margin from 48 to 52 bytes. Upstream's lz4.h defines the
+> macro too, so undefine it first.
+> 
+> Signed-off-by: Michal Wilczynski <m.wilczynski@samsung.com>
 
-diff --git a/arch/mips/ath79/Makefile b/arch/mips/ath79/Makefile
-index b78ffdc9b389..5df55b5e1c15 100644
---- a/arch/mips/ath79/Makefile
-+++ b/arch/mips/ath79/Makefile
-@@ -8,7 +8,4 @@
- 
- obj-y	:= prom.o setup.o common.o
- 
--# replaced by the clk-ath79 driver
--obj-$(if $(CONFIG_COMMON_CLK_ATH79),,y) += clock.o
--
- obj-$(CONFIG_EARLY_PRINTK)		+= early_printk.o
-diff --git a/arch/mips/ath79/clock.c b/arch/mips/ath79/clock.c
-deleted file mode 100644
-index 55d8ef8c1c8c..000000000000
---- a/arch/mips/ath79/clock.c
-+++ /dev/null
-@@ -1,622 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- *  Atheros AR71XX/AR724X/AR913X common routines
-- *
-- *  Copyright (C) 2010-2011 Jaiganesh Narayanan <jnarayanan@atheros.com>
-- *  Copyright (C) 2011 Gabor Juhos <juhosg@openwrt.org>
-- *
-- *  Parts of this file are based on Atheros' 2.6.15/2.6.31 BSP
-- */
--
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/io.h>
--#include <linux/err.h>
--#include <linux/clk.h>
--#include <linux/clkdev.h>
--#include <linux/clk-provider.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <dt-bindings/clock/ath79-clk.h>
--
--#include <asm/div64.h>
--
--#include <asm/mach-ath79/ath79.h>
--#include <asm/mach-ath79/ar71xx_regs.h>
--#include "common.h"
--
--#define ATH79_CLK_NUM	(ATH79_CLK_MDIO + 1)
--
--static struct clk *clks[ATH79_CLK_NUM];
--static struct clk_onecell_data clk_data = {
--	.clks = clks,
--	.clk_num = ARRAY_SIZE(clks),
--};
--
--static const char * const clk_names[ATH79_CLK_NUM] = {
--	[ATH79_CLK_CPU] = "cpu",
--	[ATH79_CLK_DDR] = "ddr",
--	[ATH79_CLK_AHB] = "ahb",
--	[ATH79_CLK_REF] = "ref",
--	[ATH79_CLK_MDIO] = "mdio",
--};
--
--static const char * __init ath79_clk_name(int type)
--{
--	BUG_ON(type >= ARRAY_SIZE(clk_names) || !clk_names[type]);
--	return clk_names[type];
--}
--
--static void __init __ath79_set_clk(int type, const char *name, struct clk *clk)
--{
--	if (IS_ERR(clk))
--		panic("failed to allocate %s clock structure", clk_names[type]);
--
--	clks[type] = clk;
--	clk_register_clkdev(clk, name, NULL);
--}
--
--static struct clk * __init ath79_set_clk(int type, unsigned long rate)
--{
--	const char *name = ath79_clk_name(type);
--	struct clk *clk;
--
--	clk = clk_register_fixed_rate(NULL, name, NULL, 0, rate);
--	__ath79_set_clk(type, name, clk);
--	return clk;
--}
--
--static struct clk * __init ath79_set_ff_clk(int type, const char *parent,
--					    unsigned int mult, unsigned int div)
--{
--	const char *name = ath79_clk_name(type);
--	struct clk *clk;
--
--	clk = clk_register_fixed_factor(NULL, name, parent, 0, mult, div);
--	__ath79_set_clk(type, name, clk);
--	return clk;
--}
--
--static unsigned long __init ath79_get_ref_rate(void)
--{
--	if (!clks[ATH79_CLK_REF])
--		panic("ath79: no reference clock");
--
--	return clk_get_rate(clks[ATH79_CLK_REF]);
--}
--
--static void __init ar71xx_clocks_init(void __iomem *pll_base)
--{
--	unsigned long ref_rate;
--	unsigned long cpu_rate;
--	unsigned long ddr_rate;
--	unsigned long ahb_rate;
--	u32 pll;
--	u32 freq;
--	u32 div;
--
--	ref_rate = ath79_get_ref_rate();
--
--	pll = __raw_readl(pll_base + AR71XX_PLL_REG_CPU_CONFIG);
--
--	div = ((pll >> AR71XX_PLL_FB_SHIFT) & AR71XX_PLL_FB_MASK) + 1;
--	freq = div * ref_rate;
--
--	div = ((pll >> AR71XX_CPU_DIV_SHIFT) & AR71XX_CPU_DIV_MASK) + 1;
--	cpu_rate = freq / div;
--
--	div = ((pll >> AR71XX_DDR_DIV_SHIFT) & AR71XX_DDR_DIV_MASK) + 1;
--	ddr_rate = freq / div;
--
--	div = (((pll >> AR71XX_AHB_DIV_SHIFT) & AR71XX_AHB_DIV_MASK) + 1) * 2;
--	ahb_rate = cpu_rate / div;
--
--	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
--	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
--	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
--}
--
--static void __init ar724x_clocks_init(void __iomem *pll_base)
--{
--	u32 mult, div, ddr_div, ahb_div;
--	u32 pll;
--
--	ath79_get_ref_rate();
--
--	pll = __raw_readl(pll_base + AR724X_PLL_REG_CPU_CONFIG);
--
--	mult = ((pll >> AR724X_PLL_FB_SHIFT) & AR724X_PLL_FB_MASK);
--	div = ((pll >> AR724X_PLL_REF_DIV_SHIFT) & AR724X_PLL_REF_DIV_MASK) * 2;
--
--	ddr_div = ((pll >> AR724X_DDR_DIV_SHIFT) & AR724X_DDR_DIV_MASK) + 1;
--	ahb_div = (((pll >> AR724X_AHB_DIV_SHIFT) & AR724X_AHB_DIV_MASK) + 1) * 2;
--
--	ath79_set_ff_clk(ATH79_CLK_CPU, "ref", mult, div);
--	ath79_set_ff_clk(ATH79_CLK_DDR, "ref", mult, div * ddr_div);
--	ath79_set_ff_clk(ATH79_CLK_AHB, "ref", mult, div * ahb_div);
--}
--
--static void __init ar933x_clocks_init(void __iomem *pll_base)
--{
--	u32 clock_ctrl;
--	u32 ref_div;
--	u32 ninit_mul;
--	u32 out_div;
--
--	u32 cpu_div;
--	u32 ddr_div;
--	u32 ahb_div;
--
--	ath79_get_ref_rate();
--
--	clock_ctrl = __raw_readl(pll_base + AR933X_PLL_CLOCK_CTRL_REG);
--	if (clock_ctrl & AR933X_PLL_CLOCK_CTRL_BYPASS) {
--		ref_div = 1;
--		ninit_mul = 1;
--		out_div = 1;
--
--		cpu_div = 1;
--		ddr_div = 1;
--		ahb_div = 1;
--	} else {
--		u32 cpu_config;
--		u32 t;
--
--		cpu_config = __raw_readl(pll_base + AR933X_PLL_CPU_CONFIG_REG);
--
--		t = (cpu_config >> AR933X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
--		    AR933X_PLL_CPU_CONFIG_REFDIV_MASK;
--		ref_div = t;
--
--		ninit_mul = (cpu_config >> AR933X_PLL_CPU_CONFIG_NINT_SHIFT) &
--		    AR933X_PLL_CPU_CONFIG_NINT_MASK;
--
--		t = (cpu_config >> AR933X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
--		    AR933X_PLL_CPU_CONFIG_OUTDIV_MASK;
--		if (t == 0)
--			t = 1;
--
--		out_div = (1 << t);
--
--		cpu_div = ((clock_ctrl >> AR933X_PLL_CLOCK_CTRL_CPU_DIV_SHIFT) &
--		     AR933X_PLL_CLOCK_CTRL_CPU_DIV_MASK) + 1;
--
--		ddr_div = ((clock_ctrl >> AR933X_PLL_CLOCK_CTRL_DDR_DIV_SHIFT) &
--		      AR933X_PLL_CLOCK_CTRL_DDR_DIV_MASK) + 1;
--
--		ahb_div = ((clock_ctrl >> AR933X_PLL_CLOCK_CTRL_AHB_DIV_SHIFT) &
--		     AR933X_PLL_CLOCK_CTRL_AHB_DIV_MASK) + 1;
--	}
--
--	ath79_set_ff_clk(ATH79_CLK_CPU, "ref", ninit_mul,
--			 ref_div * out_div * cpu_div);
--	ath79_set_ff_clk(ATH79_CLK_DDR, "ref", ninit_mul,
--			 ref_div * out_div * ddr_div);
--	ath79_set_ff_clk(ATH79_CLK_AHB, "ref", ninit_mul,
--			 ref_div * out_div * ahb_div);
--}
--
--static u32 __init ar934x_get_pll_freq(u32 ref, u32 ref_div, u32 nint, u32 nfrac,
--				      u32 frac, u32 out_div)
--{
--	u64 t;
--	u32 ret;
--
--	t = ref;
--	t *= nint;
--	do_div(t, ref_div);
--	ret = t;
--
--	t = ref;
--	t *= nfrac;
--	do_div(t, ref_div * frac);
--	ret += t;
--
--	ret /= (1 << out_div);
--	return ret;
--}
--
--static void __init ar934x_clocks_init(void __iomem *pll_base)
--{
--	unsigned long ref_rate;
--	unsigned long cpu_rate;
--	unsigned long ddr_rate;
--	unsigned long ahb_rate;
--	u32 pll, out_div, ref_div, nint, nfrac, frac, clk_ctrl, postdiv;
--	u32 cpu_pll, ddr_pll;
--	void __iomem *dpll_base;
--
--	dpll_base = ioremap(AR934X_SRIF_BASE, AR934X_SRIF_SIZE);
--
--	ref_rate = ath79_get_ref_rate();
--
--	pll = __raw_readl(dpll_base + AR934X_SRIF_CPU_DPLL2_REG);
--	if (pll & AR934X_SRIF_DPLL2_LOCAL_PLL) {
--		out_div = (pll >> AR934X_SRIF_DPLL2_OUTDIV_SHIFT) &
--			  AR934X_SRIF_DPLL2_OUTDIV_MASK;
--		pll = __raw_readl(dpll_base + AR934X_SRIF_CPU_DPLL1_REG);
--		nint = (pll >> AR934X_SRIF_DPLL1_NINT_SHIFT) &
--		       AR934X_SRIF_DPLL1_NINT_MASK;
--		nfrac = pll & AR934X_SRIF_DPLL1_NFRAC_MASK;
--		ref_div = (pll >> AR934X_SRIF_DPLL1_REFDIV_SHIFT) &
--			  AR934X_SRIF_DPLL1_REFDIV_MASK;
--		frac = 1 << 18;
--	} else {
--		pll = __raw_readl(pll_base + AR934X_PLL_CPU_CONFIG_REG);
--		out_div = (pll >> AR934X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
--			AR934X_PLL_CPU_CONFIG_OUTDIV_MASK;
--		ref_div = (pll >> AR934X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
--			  AR934X_PLL_CPU_CONFIG_REFDIV_MASK;
--		nint = (pll >> AR934X_PLL_CPU_CONFIG_NINT_SHIFT) &
--		       AR934X_PLL_CPU_CONFIG_NINT_MASK;
--		nfrac = (pll >> AR934X_PLL_CPU_CONFIG_NFRAC_SHIFT) &
--			AR934X_PLL_CPU_CONFIG_NFRAC_MASK;
--		frac = 1 << 6;
--	}
--
--	cpu_pll = ar934x_get_pll_freq(ref_rate, ref_div, nint,
--				      nfrac, frac, out_div);
--
--	pll = __raw_readl(dpll_base + AR934X_SRIF_DDR_DPLL2_REG);
--	if (pll & AR934X_SRIF_DPLL2_LOCAL_PLL) {
--		out_div = (pll >> AR934X_SRIF_DPLL2_OUTDIV_SHIFT) &
--			  AR934X_SRIF_DPLL2_OUTDIV_MASK;
--		pll = __raw_readl(dpll_base + AR934X_SRIF_DDR_DPLL1_REG);
--		nint = (pll >> AR934X_SRIF_DPLL1_NINT_SHIFT) &
--		       AR934X_SRIF_DPLL1_NINT_MASK;
--		nfrac = pll & AR934X_SRIF_DPLL1_NFRAC_MASK;
--		ref_div = (pll >> AR934X_SRIF_DPLL1_REFDIV_SHIFT) &
--			  AR934X_SRIF_DPLL1_REFDIV_MASK;
--		frac = 1 << 18;
--	} else {
--		pll = __raw_readl(pll_base + AR934X_PLL_DDR_CONFIG_REG);
--		out_div = (pll >> AR934X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
--			  AR934X_PLL_DDR_CONFIG_OUTDIV_MASK;
--		ref_div = (pll >> AR934X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
--			   AR934X_PLL_DDR_CONFIG_REFDIV_MASK;
--		nint = (pll >> AR934X_PLL_DDR_CONFIG_NINT_SHIFT) &
--		       AR934X_PLL_DDR_CONFIG_NINT_MASK;
--		nfrac = (pll >> AR934X_PLL_DDR_CONFIG_NFRAC_SHIFT) &
--			AR934X_PLL_DDR_CONFIG_NFRAC_MASK;
--		frac = 1 << 10;
--	}
--
--	ddr_pll = ar934x_get_pll_freq(ref_rate, ref_div, nint,
--				      nfrac, frac, out_div);
--
--	clk_ctrl = __raw_readl(pll_base + AR934X_PLL_CPU_DDR_CLK_CTRL_REG);
--
--	postdiv = (clk_ctrl >> AR934X_PLL_CPU_DDR_CLK_CTRL_CPU_POST_DIV_SHIFT) &
--		  AR934X_PLL_CPU_DDR_CLK_CTRL_CPU_POST_DIV_MASK;
--
--	if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_CPU_PLL_BYPASS)
--		cpu_rate = ref_rate;
--	else if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_CPUCLK_FROM_CPUPLL)
--		cpu_rate = cpu_pll / (postdiv + 1);
--	else
--		cpu_rate = ddr_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> AR934X_PLL_CPU_DDR_CLK_CTRL_DDR_POST_DIV_SHIFT) &
--		  AR934X_PLL_CPU_DDR_CLK_CTRL_DDR_POST_DIV_MASK;
--
--	if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_DDR_PLL_BYPASS)
--		ddr_rate = ref_rate;
--	else if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_DDRCLK_FROM_DDRPLL)
--		ddr_rate = ddr_pll / (postdiv + 1);
--	else
--		ddr_rate = cpu_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> AR934X_PLL_CPU_DDR_CLK_CTRL_AHB_POST_DIV_SHIFT) &
--		  AR934X_PLL_CPU_DDR_CLK_CTRL_AHB_POST_DIV_MASK;
--
--	if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_AHB_PLL_BYPASS)
--		ahb_rate = ref_rate;
--	else if (clk_ctrl & AR934X_PLL_CPU_DDR_CLK_CTRL_AHBCLK_FROM_DDRPLL)
--		ahb_rate = ddr_pll / (postdiv + 1);
--	else
--		ahb_rate = cpu_pll / (postdiv + 1);
--
--	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
--	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
--	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
--
--	clk_ctrl = __raw_readl(pll_base + AR934X_PLL_SWITCH_CLOCK_CONTROL_REG);
--	if (clk_ctrl & AR934X_PLL_SWITCH_CLOCK_CONTROL_MDIO_CLK_SEL)
--		ath79_set_clk(ATH79_CLK_MDIO, 100 * 1000 * 1000);
--
--	iounmap(dpll_base);
--}
--
--static void __init qca953x_clocks_init(void __iomem *pll_base)
--{
--	unsigned long ref_rate;
--	unsigned long cpu_rate;
--	unsigned long ddr_rate;
--	unsigned long ahb_rate;
--	u32 pll, out_div, ref_div, nint, frac, clk_ctrl, postdiv;
--	u32 cpu_pll, ddr_pll;
--
--	ref_rate = ath79_get_ref_rate();
--
--	pll = __raw_readl(pll_base + QCA953X_PLL_CPU_CONFIG_REG);
--	out_div = (pll >> QCA953X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
--		  QCA953X_PLL_CPU_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA953X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
--		  QCA953X_PLL_CPU_CONFIG_REFDIV_MASK;
--	nint = (pll >> QCA953X_PLL_CPU_CONFIG_NINT_SHIFT) &
--	       QCA953X_PLL_CPU_CONFIG_NINT_MASK;
--	frac = (pll >> QCA953X_PLL_CPU_CONFIG_NFRAC_SHIFT) &
--	       QCA953X_PLL_CPU_CONFIG_NFRAC_MASK;
--
--	cpu_pll = nint * ref_rate / ref_div;
--	cpu_pll += frac * (ref_rate >> 6) / ref_div;
--	cpu_pll /= (1 << out_div);
--
--	pll = __raw_readl(pll_base + QCA953X_PLL_DDR_CONFIG_REG);
--	out_div = (pll >> QCA953X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
--		  QCA953X_PLL_DDR_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA953X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
--		  QCA953X_PLL_DDR_CONFIG_REFDIV_MASK;
--	nint = (pll >> QCA953X_PLL_DDR_CONFIG_NINT_SHIFT) &
--	       QCA953X_PLL_DDR_CONFIG_NINT_MASK;
--	frac = (pll >> QCA953X_PLL_DDR_CONFIG_NFRAC_SHIFT) &
--	       QCA953X_PLL_DDR_CONFIG_NFRAC_MASK;
--
--	ddr_pll = nint * ref_rate / ref_div;
--	ddr_pll += frac * (ref_rate >> 6) / (ref_div << 4);
--	ddr_pll /= (1 << out_div);
--
--	clk_ctrl = __raw_readl(pll_base + QCA953X_PLL_CLK_CTRL_REG);
--
--	postdiv = (clk_ctrl >> QCA953X_PLL_CLK_CTRL_CPU_POST_DIV_SHIFT) &
--		  QCA953X_PLL_CLK_CTRL_CPU_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA953X_PLL_CLK_CTRL_CPU_PLL_BYPASS)
--		cpu_rate = ref_rate;
--	else if (clk_ctrl & QCA953X_PLL_CLK_CTRL_CPUCLK_FROM_CPUPLL)
--		cpu_rate = cpu_pll / (postdiv + 1);
--	else
--		cpu_rate = ddr_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA953X_PLL_CLK_CTRL_DDR_POST_DIV_SHIFT) &
--		  QCA953X_PLL_CLK_CTRL_DDR_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA953X_PLL_CLK_CTRL_DDR_PLL_BYPASS)
--		ddr_rate = ref_rate;
--	else if (clk_ctrl & QCA953X_PLL_CLK_CTRL_DDRCLK_FROM_DDRPLL)
--		ddr_rate = ddr_pll / (postdiv + 1);
--	else
--		ddr_rate = cpu_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA953X_PLL_CLK_CTRL_AHB_POST_DIV_SHIFT) &
--		  QCA953X_PLL_CLK_CTRL_AHB_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA953X_PLL_CLK_CTRL_AHB_PLL_BYPASS)
--		ahb_rate = ref_rate;
--	else if (clk_ctrl & QCA953X_PLL_CLK_CTRL_AHBCLK_FROM_DDRPLL)
--		ahb_rate = ddr_pll / (postdiv + 1);
--	else
--		ahb_rate = cpu_pll / (postdiv + 1);
--
--	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
--	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
--	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
--}
--
--static void __init qca955x_clocks_init(void __iomem *pll_base)
--{
--	unsigned long ref_rate;
--	unsigned long cpu_rate;
--	unsigned long ddr_rate;
--	unsigned long ahb_rate;
--	u32 pll, out_div, ref_div, nint, frac, clk_ctrl, postdiv;
--	u32 cpu_pll, ddr_pll;
--
--	ref_rate = ath79_get_ref_rate();
--
--	pll = __raw_readl(pll_base + QCA955X_PLL_CPU_CONFIG_REG);
--	out_div = (pll >> QCA955X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
--		  QCA955X_PLL_CPU_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA955X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
--		  QCA955X_PLL_CPU_CONFIG_REFDIV_MASK;
--	nint = (pll >> QCA955X_PLL_CPU_CONFIG_NINT_SHIFT) &
--	       QCA955X_PLL_CPU_CONFIG_NINT_MASK;
--	frac = (pll >> QCA955X_PLL_CPU_CONFIG_NFRAC_SHIFT) &
--	       QCA955X_PLL_CPU_CONFIG_NFRAC_MASK;
--
--	cpu_pll = nint * ref_rate / ref_div;
--	cpu_pll += frac * ref_rate / (ref_div * (1 << 6));
--	cpu_pll /= (1 << out_div);
--
--	pll = __raw_readl(pll_base + QCA955X_PLL_DDR_CONFIG_REG);
--	out_div = (pll >> QCA955X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
--		  QCA955X_PLL_DDR_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA955X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
--		  QCA955X_PLL_DDR_CONFIG_REFDIV_MASK;
--	nint = (pll >> QCA955X_PLL_DDR_CONFIG_NINT_SHIFT) &
--	       QCA955X_PLL_DDR_CONFIG_NINT_MASK;
--	frac = (pll >> QCA955X_PLL_DDR_CONFIG_NFRAC_SHIFT) &
--	       QCA955X_PLL_DDR_CONFIG_NFRAC_MASK;
--
--	ddr_pll = nint * ref_rate / ref_div;
--	ddr_pll += frac * ref_rate / (ref_div * (1 << 10));
--	ddr_pll /= (1 << out_div);
--
--	clk_ctrl = __raw_readl(pll_base + QCA955X_PLL_CLK_CTRL_REG);
--
--	postdiv = (clk_ctrl >> QCA955X_PLL_CLK_CTRL_CPU_POST_DIV_SHIFT) &
--		  QCA955X_PLL_CLK_CTRL_CPU_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA955X_PLL_CLK_CTRL_CPU_PLL_BYPASS)
--		cpu_rate = ref_rate;
--	else if (clk_ctrl & QCA955X_PLL_CLK_CTRL_CPUCLK_FROM_CPUPLL)
--		cpu_rate = ddr_pll / (postdiv + 1);
--	else
--		cpu_rate = cpu_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA955X_PLL_CLK_CTRL_DDR_POST_DIV_SHIFT) &
--		  QCA955X_PLL_CLK_CTRL_DDR_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA955X_PLL_CLK_CTRL_DDR_PLL_BYPASS)
--		ddr_rate = ref_rate;
--	else if (clk_ctrl & QCA955X_PLL_CLK_CTRL_DDRCLK_FROM_DDRPLL)
--		ddr_rate = cpu_pll / (postdiv + 1);
--	else
--		ddr_rate = ddr_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA955X_PLL_CLK_CTRL_AHB_POST_DIV_SHIFT) &
--		  QCA955X_PLL_CLK_CTRL_AHB_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA955X_PLL_CLK_CTRL_AHB_PLL_BYPASS)
--		ahb_rate = ref_rate;
--	else if (clk_ctrl & QCA955X_PLL_CLK_CTRL_AHBCLK_FROM_DDRPLL)
--		ahb_rate = ddr_pll / (postdiv + 1);
--	else
--		ahb_rate = cpu_pll / (postdiv + 1);
--
--	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
--	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
--	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
--}
--
--static void __init qca956x_clocks_init(void __iomem *pll_base)
--{
--	unsigned long ref_rate;
--	unsigned long cpu_rate;
--	unsigned long ddr_rate;
--	unsigned long ahb_rate;
--	u32 pll, out_div, ref_div, nint, hfrac, lfrac, clk_ctrl, postdiv;
--	u32 cpu_pll, ddr_pll;
--
--	ref_rate = ath79_get_ref_rate();
--
--	pll = __raw_readl(pll_base + QCA956X_PLL_CPU_CONFIG_REG);
--	out_div = (pll >> QCA956X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
--		  QCA956X_PLL_CPU_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA956X_PLL_CPU_CONFIG_REFDIV_SHIFT) &
--		  QCA956X_PLL_CPU_CONFIG_REFDIV_MASK;
--
--	pll = __raw_readl(pll_base + QCA956X_PLL_CPU_CONFIG1_REG);
--	nint = (pll >> QCA956X_PLL_CPU_CONFIG1_NINT_SHIFT) &
--	       QCA956X_PLL_CPU_CONFIG1_NINT_MASK;
--	hfrac = (pll >> QCA956X_PLL_CPU_CONFIG1_NFRAC_H_SHIFT) &
--	       QCA956X_PLL_CPU_CONFIG1_NFRAC_H_MASK;
--	lfrac = (pll >> QCA956X_PLL_CPU_CONFIG1_NFRAC_L_SHIFT) &
--	       QCA956X_PLL_CPU_CONFIG1_NFRAC_L_MASK;
--
--	cpu_pll = nint * ref_rate / ref_div;
--	cpu_pll += (lfrac * ref_rate) / ((ref_div * 25) << 13);
--	cpu_pll += (hfrac >> 13) * ref_rate / ref_div;
--	cpu_pll /= (1 << out_div);
--
--	pll = __raw_readl(pll_base + QCA956X_PLL_DDR_CONFIG_REG);
--	out_div = (pll >> QCA956X_PLL_DDR_CONFIG_OUTDIV_SHIFT) &
--		  QCA956X_PLL_DDR_CONFIG_OUTDIV_MASK;
--	ref_div = (pll >> QCA956X_PLL_DDR_CONFIG_REFDIV_SHIFT) &
--		  QCA956X_PLL_DDR_CONFIG_REFDIV_MASK;
--	pll = __raw_readl(pll_base + QCA956X_PLL_DDR_CONFIG1_REG);
--	nint = (pll >> QCA956X_PLL_DDR_CONFIG1_NINT_SHIFT) &
--	       QCA956X_PLL_DDR_CONFIG1_NINT_MASK;
--	hfrac = (pll >> QCA956X_PLL_DDR_CONFIG1_NFRAC_H_SHIFT) &
--	       QCA956X_PLL_DDR_CONFIG1_NFRAC_H_MASK;
--	lfrac = (pll >> QCA956X_PLL_DDR_CONFIG1_NFRAC_L_SHIFT) &
--	       QCA956X_PLL_DDR_CONFIG1_NFRAC_L_MASK;
--
--	ddr_pll = nint * ref_rate / ref_div;
--	ddr_pll += (lfrac * ref_rate) / ((ref_div * 25) << 13);
--	ddr_pll += (hfrac >> 13) * ref_rate / ref_div;
--	ddr_pll /= (1 << out_div);
--
--	clk_ctrl = __raw_readl(pll_base + QCA956X_PLL_CLK_CTRL_REG);
--
--	postdiv = (clk_ctrl >> QCA956X_PLL_CLK_CTRL_CPU_POST_DIV_SHIFT) &
--		  QCA956X_PLL_CLK_CTRL_CPU_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA956X_PLL_CLK_CTRL_CPU_PLL_BYPASS)
--		cpu_rate = ref_rate;
--	else if (clk_ctrl & QCA956X_PLL_CLK_CTRL_CPU_DDRCLK_FROM_CPUPLL)
--		cpu_rate = ddr_pll / (postdiv + 1);
--	else
--		cpu_rate = cpu_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA956X_PLL_CLK_CTRL_DDR_POST_DIV_SHIFT) &
--		  QCA956X_PLL_CLK_CTRL_DDR_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA956X_PLL_CLK_CTRL_DDR_PLL_BYPASS)
--		ddr_rate = ref_rate;
--	else if (clk_ctrl & QCA956X_PLL_CLK_CTRL_CPU_DDRCLK_FROM_DDRPLL)
--		ddr_rate = cpu_pll / (postdiv + 1);
--	else
--		ddr_rate = ddr_pll / (postdiv + 1);
--
--	postdiv = (clk_ctrl >> QCA956X_PLL_CLK_CTRL_AHB_POST_DIV_SHIFT) &
--		  QCA956X_PLL_CLK_CTRL_AHB_POST_DIV_MASK;
--
--	if (clk_ctrl & QCA956X_PLL_CLK_CTRL_AHB_PLL_BYPASS)
--		ahb_rate = ref_rate;
--	else if (clk_ctrl & QCA956X_PLL_CLK_CTRL_AHBCLK_FROM_DDRPLL)
--		ahb_rate = ddr_pll / (postdiv + 1);
--	else
--		ahb_rate = cpu_pll / (postdiv + 1);
--
--	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
--	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
--	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
--}
--
--static void __init ath79_clocks_init_dt(struct device_node *np)
--{
--	struct clk *ref_clk;
--	void __iomem *pll_base;
--
--	ref_clk = of_clk_get(np, 0);
--	if (!IS_ERR(ref_clk))
--		clks[ATH79_CLK_REF] = ref_clk;
--
--	pll_base = of_iomap(np, 0);
--	if (!pll_base) {
--		pr_err("%pOF: can't map pll registers\n", np);
--		goto err_clk;
--	}
--
--	if (of_device_is_compatible(np, "qca,ar7100-pll"))
--		ar71xx_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,ar7240-pll") ||
--		 of_device_is_compatible(np, "qca,ar9130-pll"))
--		ar724x_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,ar9330-pll"))
--		ar933x_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,ar9340-pll"))
--		ar934x_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,qca9530-pll"))
--		qca953x_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,qca9550-pll"))
--		qca955x_clocks_init(pll_base);
--	else if (of_device_is_compatible(np, "qca,qca9560-pll"))
--		qca956x_clocks_init(pll_base);
--
--	if (!clks[ATH79_CLK_MDIO])
--		clks[ATH79_CLK_MDIO] = clks[ATH79_CLK_REF];
--
--	if (of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data)) {
--		pr_err("%pOF: could not register clk provider\n", np);
--		goto err_iounmap;
--	}
--
--	return;
--
--err_iounmap:
--	iounmap(pll_base);
--
--err_clk:
--	clk_put(ref_clk);
--}
--
--CLK_OF_DECLARE(ar7100_clk, "qca,ar7100-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar7240_clk, "qca,ar7240-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9130_clk, "qca,ar9130-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9330_clk, "qca,ar9330-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9340_clk, "qca,ar9340-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9530_clk, "qca,qca9530-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9550_clk, "qca,qca9550-pll", ath79_clocks_init_dt);
--CLK_OF_DECLARE(ar9560_clk, "qca,qca9560-pll", ath79_clocks_init_dt);
--- 
-2.56.0
+First, I really think kernel LZ4 should be updated for many years, so
+thanks for this!
 
+But my personal thought is that could you just fold this patch into
+the next one ("lib/lz4: switch the decompressor to the vendored sources")?
+Because this one should be part of the fast loop update.
+
+Although the current patch order is also fine, but my potential concern
+is that people don't know the details maybe pick the random ones for
+backporting, which is what I'd like to avoid so I hope this patch could
+be just part of it, otherwise the inplace decompression could be broken.
+
+Thanks,
+Gao Xiang

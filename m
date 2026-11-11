@@ -1,51 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.36
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794387292;
-	b=5K01KNW7o+eRUdzP7oyG3KZi4OlY2f9qgPT9iEq3YnVh2gAidlMwA+1KqTyNXAvalty8
-	 +U/nmQGJUoRue97f5FI2PBNiMkTJ3+GaLoCynVvbM7H22WsBhf+cxDUkYRpZyJG6QgOYh
-	 Eg6i569HiHwLgFaYx+O/lR91N7FCpOLaDb19wDuC+scGRGGT/fBYBbghUZ3ZsgEuNISiW
-	 z7HEXOAvsRpOcANCxE4iLz8c2inR+aSzNQjzkux6s2/eJ/vJS5RU99B4EZwcwUr+YxEMH
-	 /8izICTkuSYVAFfT7nqjhbGwPPcXn3B5aQVB01XYYpLB9lqKJaMFDRQNRU3BgjPtT7w==
+	t=1794387312;
+	b=mBBsoXVt51x67weZ9Ojp9f6zXTiD1ISnFpeMZGziXG86chy+XxKQ7rC9QBu3zU1yScH0
+	 Jc87QeDYCtjPNFIszDf8VvFv7sdJO/ZSUy6I3k3pgKsURNyGJsUrirFL6l7IYSlKU8raC
+	 mdZau78baupW1UyJdDw3QTI8Yn3NZVLG5TlSYLEpkroJw+3zy9qSBNGxS3RTv53oqY6cm
+	 ob/XY/i+2XhrcuNDev0ZWvxM+9gN6Ji/AhGf2+2IgpmclgN2C3mBqnCjnba1Jk8p6nGWf
+	 SEuWGr+ZtSPkGgvyvDUcHKg23xAT70KhN+KlU2vh2nL65Ei0MxQ/kClfeCL7ansr0Yg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794387292;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794387312;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
 	 X-Mizu-Trace-ID:X-Migadu-Flow:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=Xep7SBbbNDO5bMEHEU9WWCJxZIaQH/GFG20RUGACPvc=;
-	b=NdWJkcjyyxp6KbCWL29VqBD0nVdFbb8wHdUJjryQiUUDT0g8VKmWbmmv3sIEPa7GOiwA
-	 gzmZpTiwAun+5R3NEBCJPSAp7KZhHkMwnHxwmiNsCQgye/IOKjbtHQZN+SAulf3634iKN
-	 a1TOatT81VbhainyVAqRf2vX5BGXOZusoDKPYQOIJRcypEgCYDS2T+CV/jx4EZbzdpUbp
-	 frolIu7uQVoyV1gWOt0R5WZs0Yep6fKObUu4agRSD1bUgZ+mb2r8sKTarl+ifRr+mB/w4
-	 Ngup66pmn3NmSp3E3TVHKgLYWrRnVjaJBfiqOHTPyVCqBcsVALPerog2cyBhRvOHccw==
+	bh=WgXaFz9sXnAgHiGUrYMZLfhoCp1MCCpu18viR9Gwmjk=;
+	b=D0epftVsrs1wIy2xP2dVRUMBAefyHbodwbXVPqyZVIdUxLiAlEmd6WcYx/TpAqhDqI/H
+	 d9o6CaAQAwDiQBKs7gmTgU1z4h5eYhYR1y68rVrdYyy8RWXU3Z6I3c5vVmt9OtvIcaJtw
+	 Pc89tI/DAqfe8Vplu8bGlE1Cw5Jp4eYoMUhuIsl20CinqFtFpTMWLuYQTES1j5wh5l8KO
+	 lWsd5N3OEDRomHYUP4roNhHS18kvrolp/NLNOQgpYDnUW0Jh8msLqd8sLMYFMYXQaniZ4
+	 I182ZKMixJ611oicrkOiTwa2mhb7C5a7GbVqKefeIpJjqc/Y+6NVmLc+L/xj8xuvV+g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linux.dev;
 	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=QC9KmbNq;
-	arc=none smtp.remote-ip=91.218.175.36
-Received: from mta0.migadu.com (out-36.mta0.migadu.com [91.218.175.36])
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=jokthHji;
+	arc=none smtp.remote-ip=95.215.58.18
+Received: from mta1.migadu.com (out-18.mta1.migadu.com [95.215.58.18])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A27606A330
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 08:54:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 44A27606A330
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E3B60A2633
+	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 08:55:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F3E3B60A2633
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=QC9KmbNq
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=jokthHji
 X-Envelope-To: linux-mips@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=NENmiS2g+Y1HlHuwMownwP4RTuyExhGZrangX/wccZU=;
+DKIM-Signature: a=rsa-sha256; bh=8JXAFL9UgHqUugVQhYYObZijxRhREjGJPT3TQ8wK3Lc=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1794387289; v=1; x=1794992089;
- b=QC9KmbNqMylSkMQ+J8EMF5eX+pJzPm61NDVJU7T59gqn3k+faeEJgJc6zn0L5ei94LRFaT5g
- JdlcCllSInDfsA1QNQEkDuekZGv+0LYKjwJJC1nnv11zukCF/oF4FOuVf6+vM5M7SnQGzpoR2KD
- cGXfqiRl9faASGg0ZWO4qF6I=
+ t=1794387310; v=1; x=1794992110;
+ b=jokthHjiibBCy07CE7TpNt9bJNoW2ZMmgUvcr6nYlg56qPtF3Q+w2XzEAiL9GjqtruFi8M+O
+ MiyNVvmEzxxSMn3SK6IA8F0lEWLhufjSBw8hwTuUiRJWH3mnfQiR2UXCmM9/Uc9P8UmN4pC3c5Y
+ BRZMsHE3u3RHN3/jhqWFJeDI=
 X-Envelope-To: linux-mips@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id ebd9db9384436d83;
-	Wed, 11 Nov 2026 08:54:49 +0000
-X-Mizu-Trace-ID: ebd9db9384436d83
+Received: by smtp.migadu.com with ESMTPS id 682b2f0781475885;
+	Wed, 11 Nov 2026 08:55:08 +0000
+X-Mizu-Trace-ID: 682b2f0781475885
 X-Migadu-Flow: FLOW_OUT
 From: Fuad Tabba <fuad.tabba@linux.dev>
 To: Paolo Bonzini <pbonzini@redhat.com>,
@@ -61,9 +61,9 @@ Cc: kvm@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Will Deacon <will@kernel.org>,
 	Fuad Tabba <tabba@google.com>
-Subject: [PATCH 1/7] Documentation: KVM: Fix references to non-existent identifiers
-Date: Wed, 11 Nov 2026 08:54:42 +0000
-Message-ID: <20261111085448.1130701-2-fuad.tabba@linux.dev>
+Subject: [PATCH 5/7] KVM: Fix comments that refer to non-existent identifiers
+Date: Wed, 11 Nov 2026 08:54:46 +0000
+Message-ID: <20261111085448.1130701-6-fuad.tabba@linux.dev>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261111085448.1130701-1-fuad.tabba@linux.dev>
 References: <20261111085448.1130701-1-fuad.tabba@linux.dev>
@@ -78,162 +78,128 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The KVM API documentation and the review checklist refer to
-non-existent ioctls, capabilities, structures, fields and constants.
-Use the names from the uAPI headers.
+Comments in the generic KVM code and its headers refer to functions,
+structures, fields, capabilities and Kconfig symbols that have been
+misspelled or renamed. Use the current names.
 
 Signed-off-by: Fuad Tabba <fuad.tabba@linux.dev>
 ---
- Documentation/virt/kvm/api.rst              | 40 ++++++++++-----------
- Documentation/virt/kvm/review-checklist.rst |  2 +-
- 2 files changed, 21 insertions(+), 21 deletions(-)
+ include/linux/kvm_dirty_ring.h | 2 +-
+ include/linux/kvm_host.h       | 4 ++--
+ include/linux/kvm_irqfd.h      | 4 ++--
+ include/uapi/linux/kvm.h       | 2 +-
+ virt/kvm/binary_stats.c        | 2 +-
+ virt/kvm/eventfd.c             | 2 +-
+ virt/kvm/kvm_main.c            | 2 +-
+ 7 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index e95c9cda085d9..ccdc210575e25 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -897,7 +897,7 @@ x86 allows the operating system to program the interrupt polarity
- (active-low/active-high) for level-triggered interrupts, and KVM used
- to consider the polarity.  However, due to bitrot in the handling of
- active-low interrupts, the above convention is now valid on x86 too.
--This is signaled by KVM_CAP_X86_IOAPIC_POLARITY_IGNORED.  Userspace
-+This is signaled by KVM_CAP_IOAPIC_POLARITY_IGNORED.  Userspace
- should not present interrupts to the guest as active-low unless this
- capability is present (or unless it is not using the in-kernel irqchip,
- of course).
-@@ -941,7 +941,7 @@ be used for a userspace interrupt controller.
-   struct kvm_irq_level {
- 	union {
- 		__u32 irq;     /* GSI */
--		__s32 status;  /* not used for KVM_IRQ_LEVEL */
-+		__s32 status;  /* not used for KVM_IRQ_LINE */
- 	};
- 	__u32 level;           /* 0 or 1 */
-   };
-@@ -3219,7 +3219,7 @@ With KVM_CAP_IRQFD_RESAMPLE, KVM_IRQFD supports a de-assert and notify
- mechanism allowing emulation of level-triggered, irqfd-based
- interrupts.  When KVM_IRQFD_FLAG_RESAMPLE is set the user must pass an
- additional eventfd in the kvm_irqfd.resamplefd field.  When operating
--in resample mode, posting of an interrupt through kvm_irq.fd asserts
-+in resample mode, posting of an interrupt through kvm_irqfd.fd asserts
- the specified gsi in the irqchip.  When the irqchip is resampled, such
- as from an EOI, the gsi is de-asserted and the user is notified via
- kvm_irqfd.resamplefd.  It is the user's responsibility to re-queue
-@@ -4982,8 +4982,8 @@ Errors:
-   #define KVM_STATE_NESTED_VMX_VMCS_SIZE	0x1000
-   #define KVM_STATE_NESTED_SVM_VMCB_SIZE	0x1000
+diff --git a/include/linux/kvm_dirty_ring.h b/include/linux/kvm_dirty_ring.h
+index eb10d87adf7d5..8679ba17bd1ff 100644
+--- a/include/linux/kvm_dirty_ring.h
++++ b/include/linux/kvm_dirty_ring.h
+@@ -29,7 +29,7 @@ struct kvm_dirty_ring {
  
--  #define KVM_STATE_NESTED_VMX_SMM_GUEST_MODE	0x00000001
--  #define KVM_STATE_NESTED_VMX_SMM_VMXON	0x00000002
-+  #define KVM_STATE_NESTED_SMM_GUEST_MODE	0x00000001
-+  #define KVM_STATE_NESTED_SMM_VMXON		0x00000002
+ #ifndef CONFIG_HAVE_KVM_DIRTY_RING
+ /*
+- * If CONFIG_HAVE_HVM_DIRTY_RING not defined, kvm_dirty_ring.o should
++ * If CONFIG_HAVE_KVM_DIRTY_RING not defined, kvm_dirty_ring.o should
+  * not be included as well, so define these nop functions for the arch.
+  */
+ static inline u32 kvm_dirty_ring_get_rsvd_entries(struct kvm *kvm)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index e7fc94e2910a8..4b91ef9667703 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -764,7 +764,7 @@ struct kvm {
+ 	struct mutex slots_lock;
  
-   #define KVM_STATE_NESTED_GIF_SET		0x00000100
+ 	/*
+-	 * Protects the arch-specific fields of struct kvm_memory_slots in
++	 * Protects the arch-specific fields of struct kvm_memory_slot in
+ 	 * use by the VM. To be used under the slots_lock (above) or in a
+ 	 * kvm->srcu critical section where acquiring the slots_lock would
+ 	 * lead to deadlock with the synchronize_srcu in
+@@ -802,7 +802,7 @@ struct kvm {
+ 	/*
+ 	 * created_vcpus is protected by kvm->lock, and is incremented
+ 	 * at the beginning of KVM_CREATE_VCPU.  online_vcpus is only
+-	 * incremented after storing the kvm_vcpu pointer in vcpus,
++	 * incremented after storing the kvm_vcpu pointer in vcpu_array,
+ 	 * and is accessed atomically.
+ 	 */
+ 	atomic_t online_vcpus;
+diff --git a/include/linux/kvm_irqfd.h b/include/linux/kvm_irqfd.h
+index ef8c134ded8a3..bca430a4ae3a8 100644
+--- a/include/linux/kvm_irqfd.h
++++ b/include/linux/kvm_irqfd.h
+@@ -23,13 +23,13 @@
+ struct kvm_kernel_irqfd_resampler {
+ 	struct kvm *kvm;
+ 	/*
+-	 * List of resampling struct _irqfd objects sharing this gsi.
++	 * List of resampling struct kvm_kernel_irqfd objects sharing this gsi.
+ 	 * RCU list modified under kvm->irqfds.resampler_lock
+ 	 */
+ 	struct list_head list;
+ 	struct kvm_irq_ack_notifier notifier;
+ 	/*
+-	 * Entry in list of kvm->irqfd.resampler_list.  Use for sharing
++	 * Entry in list of kvm->irqfds.resampler_list.  Use for sharing
+ 	 * resamplers among irqfds on the same gsi.
+ 	 * RCU list modified under kvm->irqfds.resampler_lock
+ 	 */
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 8dff2fc1972e9..951b891b8ae60 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1459,7 +1459,7 @@ struct kvm_enc_region {
+ #define KVM_GET_NESTED_STATE         _IOWR(KVMIO, 0xbe, struct kvm_nested_state)
+ #define KVM_SET_NESTED_STATE         _IOW(KVMIO,  0xbf, struct kvm_nested_state)
  
-@@ -5448,14 +5448,14 @@ KVM_PV_DISABLE
-   KVM_PV_ASYNC_CLEANUP_PERFORM, it will be torn down in this call
-   together with the current protected VM.
+-/* Available with KVM_CAP_MANUAL_DIRTY_LOG_PROTECT_2 */
++/* Available with KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 */
+ #define KVM_CLEAR_DIRTY_LOG          _IOWR(KVMIO, 0xc0, struct kvm_clear_dirty_log)
  
--KVM_PV_VM_SET_SEC_PARMS
-+KVM_PV_SET_SEC_PARMS
-   Pass the image header from VM memory to the Ultravisor in
-   preparation of image unpacking and verification.
+ /* Available with KVM_CAP_HYPERV_CPUID (vcpu) / KVM_CAP_SYS_HYPERV_CPUID (system) */
+diff --git a/virt/kvm/binary_stats.c b/virt/kvm/binary_stats.c
+index 76ce697c773bf..c772fe7be5dd7 100644
+--- a/virt/kvm/binary_stats.c
++++ b/virt/kvm/binary_stats.c
+@@ -116,7 +116,7 @@ ssize_t kvm_stats_read(char *id, const struct kvm_stats_header *header,
+ 	 * The descriptors copy would be skipped in the typical case that
+ 	 * userspace periodically read stats data, since the pos would be
+ 	 * greater than the end address of descriptors
+-	 * (header->header.desc_offset + size_desc) causing copylen <= 0.
++	 * (header->desc_offset + size_desc) causing copylen <= 0.
+ 	 */
+ 	copylen = header->desc_offset + size_desc - pos;
+ 	copylen = min(copylen, remain);
+diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
+index f43b8b25bc854..81ed20ec0d4a1 100644
+--- a/virt/kvm/eventfd.c
++++ b/virt/kvm/eventfd.c
+@@ -248,7 +248,7 @@ irqfd_wakeup(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+ 		/*
+ 		 * Taking irqfds.lock is safe here, as KVM holds a reference to
+ 		 * the eventfd when registering the irqfd, i.e. this path can't
+-		 * be reached while kvm_irqfd_add() is running.
++		 * be reached while kvm_irqfd_register() is running.
+ 		 */
+ 		spin_lock_irqsave(&kvm->irqfds.lock, iflags);
  
--KVM_PV_VM_UNPACK
-+KVM_PV_UNPACK
-   Unpack (protect and decrypt) a page of the encrypted boot image.
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index cf4cb586f1407..ba8f53ec3d718 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -4338,7 +4338,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, unsigned long id)
  
--KVM_PV_VM_VERIFY
-+KVM_PV_VERIFY
-   Verify the integrity of the unpacked image. Only if this succeeds,
-   KVM is allowed to start protected VCPUs.
- 
-@@ -5951,7 +5951,7 @@ This ioctl (when supported) replaces the KVM_SET_SREGS.
- 4.133 KVM_GET_STATS_FD
- ----------------------
- 
--:Capability: KVM_CAP_STATS_BINARY_FD
-+:Capability: KVM_CAP_BINARY_STATS_FD
- :Architectures: all
- :Type: vm ioctl, vcpu ioctl
- :Parameters: none
-@@ -6087,10 +6087,10 @@ Bits 0-3 of ``flags`` encode the type:
-   * ``KVM_STATS_TYPE_LINEAR_HIST``
-     The statistic is reported as a linear histogram. The number of
-     buckets is specified by the ``size`` field. The size of buckets is specified
--    by the ``hist_param`` field. The range of the Nth bucket (1 <= N < ``size``)
--    is [``hist_param``*(N-1), ``hist_param``*N), while the range of the last
--    bucket is [``hist_param``*(``size``-1), +INF). (+INF means positive infinity
--    value.)
-+    by the ``bucket_size`` field. The range of the Nth bucket
-+    (1 <= N < ``size``) is [``bucket_size``*(N-1), ``bucket_size``*N), while
-+    the range of the last bucket is [``bucket_size``*(``size``-1), +INF).
-+    (+INF means positive infinity value.)
-   * ``KVM_STATS_TYPE_LOG_HIST``
-     The statistic is reported as a logarithmic histogram. The number of
-     buckets is specified by the ``size`` field. The range of the first bucket is
-@@ -6962,8 +6962,8 @@ to the byte array.
- 
- .. note::
- 
--      For KVM_EXIT_IO, KVM_EXIT_MMIO, KVM_EXIT_OSI, KVM_EXIT_PAPR, KVM_EXIT_XEN,
--      KVM_EXIT_EPR, KVM_EXIT_HYPERCALL, KVM_EXIT_TDX,
-+      For KVM_EXIT_IO, KVM_EXIT_MMIO, KVM_EXIT_OSI, KVM_EXIT_PAPR_HCALL,
-+      KVM_EXIT_XEN, KVM_EXIT_EPR, KVM_EXIT_HYPERCALL, KVM_EXIT_TDX,
-       KVM_EXIT_X86_RDMSR and KVM_EXIT_X86_WRMSR the corresponding
-       operations are complete (and guest state is consistent) only after userspace
-       has re-entered the kernel with KVM_RUN.  The kernel side will first finish
-@@ -8607,7 +8607,7 @@ See Documentation/arch/x86/sgx.rst for more details.
- :Parameters: args[0] whether the feature should be enabled or not
- 
- When this capability is enabled, an emulation failure will result in an exit
--to userspace with KVM_INTERNAL_ERROR (except when the emulator was invoked
-+to userspace with KVM_EXIT_INTERNAL_ERROR (except when the emulator was invoked
- to handle a VMware backdoor instruction). Furthermore, KVM will now provide up
- to 15 instruction bytes for any exit to userspace resulting from an emulation
- failure.  When these exits to userspace occur use the emulation_failure struct
-@@ -9232,7 +9232,7 @@ utilises it.
- If KVM_CHECK_EXTENSION on a kvm VM handle indicates that this capability is
- available, it means that the VM is using full hardware assisted virtualization
- capabilities of the hardware. This is useful to check after creating a VM with
--KVM_VM_MIPS_DEFAULT.
-+KVM_VM_MIPS_AUTO.
- 
- The value returned by KVM_CHECK_EXTENSION should be compared against known
- values (see below). All other values are reserved. This is to allow for the
-@@ -9541,8 +9541,8 @@ related to event channel delivery, timers, and the XENVER_version
- interception.
- 
- The KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG flag indicates that KVM supports
--the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute in the KVM_XEN_SET_ATTR
--and KVM_XEN_GET_ATTR ioctls. This controls whether KVM will set the
-+the KVM_XEN_ATTR_TYPE_RUNSTATE_UPDATE_FLAG attribute in the KVM_XEN_HVM_SET_ATTR
-+and KVM_XEN_HVM_GET_ATTR ioctls. This controls whether KVM will set the
- XEN_RUNSTATE_UPDATE flag in guest memory mapped vcpu_runstate_info during
- updates of the runstate information. Note that versions of KVM which support
- the RUNSTATE feature above, but not the RUNSTATE_UPDATE_FLAG feature, will
-@@ -9750,7 +9750,7 @@ Local APIC features
- 
- CPU[EAX=1]:ECX[21] (X2APIC) is reported by ``KVM_GET_SUPPORTED_CPUID``,
- but it can only be enabled if ``KVM_CREATE_IRQCHIP`` or
--``KVM_ENABLE_CAP(KVM_CAP_IRQCHIP_SPLIT)`` are used to enable in-kernel emulation of
-+``KVM_ENABLE_CAP(KVM_CAP_SPLIT_IRQCHIP)`` are used to enable in-kernel emulation of
- the local APIC.
- 
- The same is true for the ``KVM_FEATURE_PV_UNHALT`` paravirtualized feature.
-diff --git a/Documentation/virt/kvm/review-checklist.rst b/Documentation/virt/kvm/review-checklist.rst
-index 053f00c50d669..5f8398be52472 100644
---- a/Documentation/virt/kvm/review-checklist.rst
-+++ b/Documentation/virt/kvm/review-checklist.rst
-@@ -18,7 +18,7 @@ Review checklist for kvm patches
- 5.  New features must default to off (userspace should explicitly request them).
-     Performance improvements can and should default to on.
- 
--6.  New cpu features should be exposed via KVM_GET_SUPPORTED_CPUID2,
-+6.  New cpu features should be exposed via KVM_GET_SUPPORTED_CPUID,
-     or its equivalent for non-x86 architectures
- 
- 7.  The feature should be testable (see below).
+ 	/*
+ 	 * Pairs with smp_rmb() in kvm_get_vcpu.  Store the vcpu
+-	 * pointer before kvm->online_vcpu's incremented value.
++	 * pointer before incrementing kvm->online_vcpus.
+ 	 */
+ 	smp_wmb();
+ 	atomic_inc(&kvm->online_vcpus);
 -- 
 2.47.3
 

@@ -1,77 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794424116;
-	b=GGE5VLiwzc1VidX1vAPC+1zmMDTb7FUqh2BWXIlfiz1PNBEgBhmVgMcUyiHdHsiuJ49z
-	 z4z1YXnIde6dz4bKkfLBGqo8lizcK6ebZTyLbRk0vhXGmQSjqtKoJ7olrhThM3tgzNkTn
-	 BzpWQo1twDBVH+l3lpD25AQbxRgU6URppfrTUHMKbchMN6Ojd+IZ9ju1Q79aKKZgTx87C
-	 wsj9PNcBOpuSId04Y5GeLhqYWzG9UiehPgjZuS3Or4NEWhx0qOSD59yxUR2NySq1BRHjl
-	 Hcs+PA5yWEZ93e8EGJ+6rKXywsCJG/w5bZntenhVZY5FLSwzPZTXYa5yZk5/CZWpf2Q==
+	t=1794424890;
+	b=kSnIllMjVwHJcBOUwiPyqRcDI6H2q0st86Y2yn86CjlRZ208BFZBlemUa5tqjhz36Ghh
+	 ATkD9Y+JQEk7TmlvfY1kma0IjTfGxY8HbN8db8VM4RXgYhpRIMkCZAU945gXAf0PUbfBF
+	 6N+Xsf3W1oobQM1RIGj1zhVcam+hE2JMjWnGAEsfs0MOTxVSgbtOqHzSh4vue46pCUKDf
+	 XfvMEgFTDm90ppsA29mLupj4lCvVPprbZFEgC2WO7QQeEzE7ghPSmRRdbKLIIKVdHIiLO
+	 rStvOjDLztJ1Vmh/O9Q61v8h42yWgUCJ/Tu1hbxpENnobpWcgsDH2rb5WfUT+EYSKMg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794424116;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=1u1FmtDlq9fLUJ7TofIm7s6Ux5ZyHgM1hXjsasoL1Tg=;
-	b=yFOpXZIQsEGTt3BB8NUHRGpCs13i6ayxEZC1L94ecYjz/ZZVF/pBqrEN2IiLCrqAoCJX
-	 Wd4ibbicchFmwOf+Ltg9dYP5kEAuegofmydoN7viB+zafqxhwjU96vBHeuIZGUvLckwoP
-	 joPeJUovP9HDY3A5Hj+IISPlUTDmtsFBlTry8q1oUlVGKbs1N9pFUCabNWSqtZXFVwg8S
-	 y+0ZkgS5izfuUOBhe85qN1IK7GP0jlKpVQMkgaXwY4e4BWzBRPgTvF7KxkZxSM55kYvtu
-	 1aDqDGR6gDewSYB0WVxNuu255atIASmDgigx4Mv3LlkL+w/7GGhUv6OiNM0kBZx6PPA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794424890;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=EOz/+k6Rphfauu1mzh1ygpzQgMQ6Co5lqmSQNO16YRU=;
+	b=WyTd/t3KpIye5i8RaZGHLMaItIgD2BLpuVxCESLhxHsMMMyVJQQEo9iHkYCP4ZC8R15N
+	 +FIcjboI1Ob1WIfju3ZX/iDmdxaOZqRNpFZvCSzdNv0V7xkY278+0bk54SA5s2ym9brrk
+	 SK+Fjo2yQca8vf3tV/kk+23CYH69CQdIOza2UdzcTg/rvVCWkAbcGD303eCqRdWXRUtmi
+	 WlBYFCOyiFixIStsTVZHPqtdm55+leRXJrZa5YN7UC1YJYKxuSblyDdUsIeuWH5tQCFSy
+	 w7e1avQdxi758IxF8iQGv8Jj5Cli69UnqljNA+mlxpHrYkdvuMaJzrPQXd/fqX4TMAA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=telaak.dev;
+	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.214.182
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=t0aNYUXD;
+	arc=none smtp.remote-ip=209.85.216.51
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC147606A321
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 19:08:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC147606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1A2606A327
+	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 19:21:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3B1A2606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2ed28bac8d7so889635ad.0
-        for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 11:08:35 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=t0aNYUXD
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-3b0e0e65adbso1788077a91.3
+        for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 11:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794424889; x=1795029689; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=EOz/+k6Rphfauu1mzh1ygpzQgMQ6Co5lqmSQNO16YRU=;
+        b=t0aNYUXDdRAZpqsbOIRoanjkWthLrq9de/FZxXADbekc3TgpX5MGsP0isyhoiLOqHg
+         04lnghKOUMfOOHWfuePk6lKRbCLcRBcNrmM7q529KZNdIGKrJNCUQnGo7ndGsSEBf6Rp
+         QssCN7HeBGbLIG2BwTcpJ0OtCo0ikqLkYlngBgW0R78Asv2OI1UtWkQ5dNkACWhvPKiQ
+         MnF/2AP9lPuNQFQwAR5etpUQ3+GU6/eSb6EkdVxWs4s8DZD+RpgXC6DwpmIUGZ0PT8UN
+         TErDiRt59CF6DjrlXofNjc5t/3SiBT7qwPf28HtWRhUTbONWCjDln5BjHvWJOLPKBsr/
+         rIVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794424115; x=1795028915;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=1u1FmtDlq9fLUJ7TofIm7s6Ux5ZyHgM1hXjsasoL1Tg=;
-        b=CUWS6n5/1lpWugAYazarV35PHWByx3861ipzx+T+kJm13rTWARYqvKKFWuA5dbnbEa
-         iqSEmXW30rrgCYA9I2ovMhl/qQNIKkfDXtQbnMDVZxlUm0hAI+7ReVDFcbtOhcddNpOA
-         igdTIyqFFM2SoEs0FjRIxn62jWKggBhiohb7gOwv8S06MWsreETwexkLgr4QSeuURt6x
-         SLAT1gQTwALpwe0ssLGNWjHWwyPDqY7gQ57ILawqs3nYI4YoU2OBpdMaGIlxnwTLyK7v
-         EJhMYlL0QWblYKDuyG5jIQfBrUvwlnXGkfRmd9SpRdWKw2qNbYcYItC9oX6c5TOpZ7c3
-         JZrw==
-X-Forwarded-Encrypted: i=1; AL+hErGiCtiu8Q1VtldEeZtPtTqpELjqmC37QYatmJLLUUrI/xZxqcSj/8ZMFwukmUs8ZlJ9GqHvvTwx+f+2@vger.kernel.org
-X-Gm-Message-State: APuU4Z9L+83eqX2MnGZc2DV/DdTd02mnK7+PSuMn+moKuE2vZqJqiNrW
-	a7T56dFRMdnYpXHspn0QaPlagTv9VThau/4YSGjuG+R/1oKy7yIZCy33G88nRwk/
-X-Gm-Gg: AYBFou1z7V5YfosXmUYfuyH7r7q/pO+GL9p/MtN0QLwXLAnYhFHIpa+oq6mDlkQJiAK
-	1fosM/skmmmudoS8DJuvtQAECn2xyebMqt1W1maYC2wtNlKo6YoiPQvCnuNb/OGimJWIfNH1WxK
-	qSAAizZtkEld6Nlmm7zB5+9ej74SV2686AIrSozoMUPoBexyBcUofcz9zAsEP6xwRlbm244HaGS
-	elE3a0Okiqo7G7cEhKuho/ZTn/DfO5hKSV5avl3x9rqJB0Dv5QZKkQE6tSsBMjz2nyaBHRMFq2y
-	j+69HRqaKSJ2ySdS3uGCzpgfWvYnUEpKxKqfXwgXBFx23w31oScvW2s2byBu0a+FznFMA8WckmH
-	2xsgGVLNSaahCAOUO+DzPJQgrj9QU0+6pKTcHkPMNWpffjMw6SDyEPysZtAqVJEmJBP/710g7KG
-	AWDNg5ZMQJzksQnESSfe9rvHAoWUtkhyEyDMXWEdqFVkUxFaPaWmf9vHExsFHqn2DvdNAS/sOFv
-	l5P99UllTlT1x992ipW+RvLXi3t686VioFmApYnviBTaYJWi+yCDJs9efBf2ab0abHuceMMFKQs
-	z5qsqNfKNnIWAGsFT9DsAnLglTydJSZWC7jfeK3savyjPrkd0ZWyZoRqU3PVZz1zVvjeoyPKnnh
-	HQnLmNVJW1y1703yRg4WeP9vuYPFMZd1aeEoT6M93fBfy
-X-Received: by 2002:a17:902:f705:b0:2df:98a1:d0a7 with SMTP id d9443c01a7336-2edf21a4d30mr2117565ad.33.1794424115104;
-        Wed, 11 Nov 2026 11:08:35 -0800 (PST)
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com. [74.125.82.174])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2edb6d7bb64sm23965235ad.28.2026.11.11.11.08.34
-        for <linux-mips@vger.kernel.org>
+        d=1e100.net; s=20260707; t=1794424889; x=1795029689;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=EOz/+k6Rphfauu1mzh1ygpzQgMQ6Co5lqmSQNO16YRU=;
+        b=yF7IKzOZtzvEJmuLpcFog41JNYP2zYFmeLTsVkTiaUGGfp40KXHKoogI64ioe62MQT
+         bxDbIyYHNkp09HCG0EwBwBYRSYuOlZuJjIUIvlBS0whkLyh2kSQZOKGV5OdSi/nh7CaP
+         T9NN1QEJrJByvHbclAMMWlV6TEArJ3fLn9BZZW97NPwyMmWQ01YbzdwH+m4LkCv5i/Ps
+         k43pCssQM4gFajpVHAPHUm1yBt6OZ/yxSebkEWJiIOq+Q/lsCZYC5BzSBAesnUwiyXF8
+         KAOFX6x32ig0gqUg0EGBV7Eq1nOKxDBhCo0xCQ2VJAjneMpe3Yzy4Wb9QVWwPgt+tGPo
+         4/8Q==
+X-Gm-Message-State: APuU4Z+EaCtBBs7sL1bgGdZsGm31VOQIvPbMV+7VeP+pEMC2CbQrHCWr
+	MufTBGvAbXisyHW18gzH5E8ZoK4CE7WvS/RrhjHM7J8z21Mq2wTrE0oM
+X-Gm-Gg: AYBFou3P8H9SA6fyK9vDGmHCUTizXRnSSSnUODUt9XSe5q6tU5xJbNN5pUZCuEgGWl8
+	QQNlYldwx42PLgxOIgvF8UwW2CydZIhHv5umhsqAzZagea4x88fAb8JkPEwLRVp0tcoEthUwfyl
+	PDZ84tNW5AoQgxUJxgHj0c3caqiq8GNkSrBRCfKtl167vBfvEknaEzuhknPa0twJR3v//dqofxK
+	ky2lVa10guF/Oy+NkeFYE/9vA2MmqQSSy0rOpVFZeLAbKEuoCtmqqZdlCOPU72GQB2GhON7auV7
+	nH7RgR0d468hGPlYzMtvtcITaSJ8dCcoRXwHhj2cdwGUr+dpf9EMLNP6y2RL3JVc4+POKFjaHlU
+	L7oH0gAxPxKGJrceeApPRd1Hh+/PXcfLelW04JpjIYmprVcSFA+FQk5TWlNAiDxZpKFk5KqrNl0
+	y8GuUEqw9q7ksvI+i0Np8JzfGwEhpsxXH60Za3xPo5mau+SyWyip55ew97uZceuQUwZEB+VvjVm
+	ZM3/hYT/WqVz4NcFzuCTd3gwO4BmWHJjI8K9P/7Hs7GAeGmT+BNk5vaIZcNcrny6AuRiprj5msd
+	W+Frxu4IaEwl686wl8jP+a+1DnBjsyEzuiPQsTdf2F2W85qTJBnTKOzmmN5exIG84SF7iwOXhhG
+	uFw==
+X-Received: by 2002:a17:90b:57cb:b0:3ac:7872:d1b7 with SMTP id 98e67ed59e1d1-3b182eec0f1mr3136688a91.32.1794424889401;
+        Wed, 11 Nov 2026 11:21:29 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b197c42a4csm596583a91.4.2026.11.11.11.21.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2026 11:08:34 -0800 (PST)
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-36a315ed211so154300eec.0
-        for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 11:08:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErELerVKrJDXzDFtvFRPuYNKvddshTM6JLUM7NLkJLMGC8Sjxc55wxOZINd5hnmAMldLcsnG8FxkOI0b@vger.kernel.org
-X-Received: by 2002:a05:7300:c7c4:b0:377:3984:5cb with SMTP id
- 5a478bee46e88-377e15ef441mr284775eec.17.1794424113527; Wed, 11 Nov 2026
- 11:08:33 -0800 (PST)
+        Wed, 11 Nov 2026 11:21:28 -0800 (PST)
+Message-ID: <dd549ba7-8c19-4c77-aef4-b3607298f6b0@gmail.com>
+Date: Wed, 11 Nov 2026 11:21:27 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -81,74 +91,70 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261111-sf19a2890-sysm-v2-0-d2fcb723e4f1@telaak.dev>
- <20261111-sf19a2890-sysm-v2-4-d2fcb723e4f1@telaak.dev> <d59f52d1466c515f574be1e9eb127ca3e43d155b.camel@pengutronix.de>
-In-Reply-To: <d59f52d1466c515f574be1e9eb127ca3e43d155b.camel@pengutronix.de>
-From: Joseph Telaak <joseph@telaak.dev>
-Date: Wed, 11 Nov 2026 14:08:22 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ5_Qa2vf7_GiFU-T92HDkA3mdY_x2Dt5DXZ5dMfS-oUwQ@mail.gmail.com>
-X-Gm-Features: AclHuK9zvtdVIUhueVUtW3uifqySWqzLz4GA6zOccXJAOROeptCP5K7cJXQAOv4
-Message-ID: <CAPY4CJ5_Qa2vf7_GiFU-T92HDkA3mdY_x2Dt5DXZ5dMfS-oUwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] clk: siflower: Add SF19A2890 peripheral clock and
- reset manager driver
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
-	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chuanhong Guo <gch981213@gmail.com>, Yao Zi <me@ziyao.cc>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] clk: ingenic: Poll JZ4780 CPU1 power status
+ atomically
+To: Brian Masney <masneyb@kernel.org>
+Cc: linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Burton <paulburton@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Brian Masney <bmasney+clk@redhat.com>,
+ Jerome Brunet <jbrunet+clk@baylibre.com>,
+ =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= <zhouyanjie@wanyeetech.com>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, hns@goldelico.com, paul@boddie.org.uk
+References: <20261110043131.1985993-1-f.fainelli@gmail.com>
+ <20261110043131.1985993-2-f.fainelli@gmail.com>
+ <179442247882.1131744.13316822371180932611.b4-review@b4>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <179442247882.1131744.13316822371180932611.b4-review@b4>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 11, 2026 at 10:56:47AM +0100, Philipp Zabel wrote:
-> > + spin_lock_irqsave(&crm->lock, flags);
->
-> Could be simplified with guard(spinlock)(&crm->lock);
+On 11/11/26 10:41, Brian Masney wrote:
+> Hi Florian,
+> 
+>> The CPU1 clock enable callback runs under the clock framework's spinlock
+>> with interrupts disabled. Its readl_poll_timeout() can sleep between
+>> reads, which is invalid in this context when SMP powers up CPU1.
+>>
+>> Use readl_poll_timeout_atomic() with the existing interval and timeout.
+>> This is a prerequisite for the JZ4780 SMP bring-up path. The original
+>> CPU1 clock implementation by Zhou Yanjie is already upstream.
+>>
+>> Cross-built for CI20; the subsequent SMP-enabled image brought up both
+>> CPU cores. Development and validation used Codex assistance.
+>>
+>> Fixes: 6673db4f3f26 ("clk: JZ4780: Add function for enable the second core.")
+>> Link: https://lkml.kernel.org/r/1582215889-113034-3-git-send-email-zhouyanjie@wanyeetech.com
+> 
+> Cc: stable
 
-Will do in v3, as guard(spinlock_irqsave)(), since the clock gates take
-the same lock from clk_enable(), which can run in interrupt context. I'll
-convert the gate enable and disable paths as well.
+OK, I will add that, thanks!
 
-> > +static const u32 sf19a2890_usb_resets[] = {
-> > + [RST_USB] = GENMASK(2, 0),
->
-> Do these three bits control separate reset lines?
-> Does the hardware require them to be changed together?
+> 
+>> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>> ---
+>>   drivers/clk/ingenic/jz4780-cgu.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz4780-cgu.c
+>> index 1e88aef7ac0f..f5983033583a 100644
+>> --- a/drivers/clk/ingenic/jz4780-cgu.c
+>> +++ b/drivers/clk/ingenic/jz4780-cgu.c
+>> @@ -242,7 +242,7 @@ static int jz4780_core1_enable(struct clk_hw *hw)
+>>   	spin_unlock_irqrestore(&cgu->lock, flags);
+>>   
+>>   	/* wait for the CPU to be powered up */
+>> -	retval = readl_poll_timeout(cgu->base + CGU_REG_LCR, lcr,
+>> +	retval = readl_poll_timeout_atomic(cgu->base + CGU_REG_LCR, lcr,
+>>   				 !(lcr & LCR_SCPUS), 10, timeout);
+> 
+> Since you are making changes here, please fix the alignment of the
+> next line with (.
 
-Yes, they are separate lines, one per clock domain of the DWC2
-controller. Bit 0 matches the controller's gate and bit 2 its AXI
-master's (usb_axim). Bit 1 has no gate, so it is probably the PHY clock
-domain, whose clock comes from the PHY rather than from this block.
-
-There is no public documentation for this block. Chuanhong explained in
-v1 that the lines of one IP's clock domains have to be asserted together
-[1], the same as the GMAC's. The dwc2 binding also takes a single reset
-for the controller.
-
-> > +static const u32 sf19a2890_uart_resets[] = {
-> > + [RST_UART0] = BIT(0) | BIT(4),
-> > + [RST_UART1] = BIT(1) | BIT(5),
-> > + [RST_UART2] = BIT(2) | BIT(6),
->
-> Same question as above.
-
-Yes, they are separate. Going by the gates at the same bit positions,
-bits 0-2 are the UARTs' APB resets (PRESETn) and bits 4-6 their UART
-clock domain resets (nUARTRST). The PL011 TRM (DDI 0183, section 2.4.1)
-says the reset controller must use PRESETn to assert nUARTRST. This block
-leaves both to software, so the driver asserts them together. The pl011
-binding also allows a single reset.
-
-The same goes for the other two groups. The SPI block's bits 4 and 5 are
-the PL022's PRESETn and nSSPRST, which its TRM (DDI 0194) ties together in
-the same way. The WLAN blocks' bits 0-2 match their AXI slave, AXI master
-and platform gates.
-
-v3 will explain each multi-bit group in the commit message, not just the
-GMAC's.
-
-[1] https://lore.kernel.org/all/CAJsYDV+PSoAU9qNyRoEKuFoc4oeBkw8b=vdcCap4Mx3dCA1kAw@mail.gmail.com/
-
-Thanks,
-Joseph
+Certainly, will submit a newer version shortly.
+-- 
+Florian

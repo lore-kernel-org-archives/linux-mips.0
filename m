@@ -1,73 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=178.238.236.174
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794391842;
-	b=wNO5BAjema7UPeq0YFIKJ85M6ATTqPY1gcoVDVk9GZ2zzvqHKeQ7E/eT3JIOgl/oKgfj
-	 II4ztpvif3/3KAKyqfUVnrtJX0ezk4Ebrb0ExxYH2Jiztn7q+OgonmIGIrh8J3a5dwjtZ
-	 rZeE3FhLNkhv4BJkhYDhovo9XPaEcim7/Nxyr+wSuunj3Dzrd/m9Crc0qHYGCmxgnK5Oy
-	 s5OYykGvk4+gEt9+/NJahwuN8L/19sE2sUBOCKZi7+OyynXjeNmqFEjNoQ1wDAkCnuzNL
-	 WBRiKiqF6WsYum0DnsfBmN+Z5xRLpfBqxTDTfU0HC7zJkGscdjyD5z4oCSrz1hiT3QA==
+	t=1794395988;
+	b=4XeGfvHcCvvw9oMXiqaGTUMxUW9T11Ah3YTQhYLTfMcxPokZhPLd2ctC42MSRjKBgw0i
+	 iuw/PPlCx/HxqWL+2K4IN0Q3JJbbgMOZcr9mmt0Kf+rFsM2j+Zw3wUQPJetpES0z6NJfT
+	 8jqMARN+BrFsfEZH9fbtvGPjd6AmdKuQMcJRVrCzRqvSifxO9DAfF8ZNi+gNxrZIqTDHV
+	 Cyx3tRabqtiHL4DG264YyT+6hCkF+cKaHG3aUOAYPPUFpUPCLqrtYnnQMrctwLdHiOLNU
+	 Oh+EwRuCFHDTTqEuGKvkikdGckNojNm8KQe6tOTDAkuz1ECa0fSexGb+MpKwI5UKiKw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794391842;
-	h=Received:DKIM-Signature:Received:Received:X-ME-Sender:
-	 X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=IufNXsNoB8xfQAU7zCYVR5erkbYE0FcNy66hIgW4lkI=;
-	b=S0pV7UxwJRTTjYBwVA4tWPqJ5kKHKOqGebIuu/sFQutSty3EQfGUD5nbStae8jN/WGxj
-	 UthU5wQD+C69cUHgbXFoa8junfS6uvaDyv8SnNS1LVFTJzUn9ao+sXXHSSv/rW3L1JmCq
-	 VP0WLlaIvrsKe0nnDS2ubjS9RbqSseKDZvjg0x71nfd/4IsPZu4fbzBg4MatplbTaxoXp
-	 OeLyZqLfg1obw7mWihsP79OV7LzE+bt9mNYf3ZEnZiyNeqDzSsezeL0YpGL/wSgnAJiNp
-	 aiYdBqPwaX2yj0Bekc8xsoNVqQicCfBBGr8RLURg4778+HR3QptJ7ag8j9lTIrYCIIw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794395988;
+	h=DMARC-Filter:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=UGGOSnoQOa8uQR6vbajtQptujNdknjBUZcDCmSIDNdo=;
+	b=5TL6NjrmVTrzwcA+KCiF7blRqQ+tlV5SKvIPt4ozJvKzos/Bakb2Bt7ywaY6wRwyheXe
+	 bt5qTgd0xCzgsfYsTYLEI5FOvdBZpM42KmJQVq+dwg0uevdyXK9eFDjyZxPg8UWfiWm3T
+	 9Ot5KvFwyysRQHfcWhW/CVtbAIs/fQhNtyiadgel2EqN9bDaD2rwNIM3zqQLifOG5L2JR
+	 eap85DsGPhgwyUamMFkqY9+/ErNeL+20tG3G/rYuqeoQfx6+cYiJkRJNZDUoCFFcE1uDx
+	 kPWRMT9ea9YhzmaveoSK/efsudlu5mnMUKxEe1mOkn/ppaeT2gM7C354ryCnyccsfSA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=f4E3SUao;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=kemnade.info;
+	spf=pass smtp.mailfrom=kemnade.info;
+	dkim=pass header.d=kemnade.info header.i=@kemnade.info header.a=rsa-sha256 header.s=20220719 header.b=QBOWFM3N;
+	arc=none smtp.remote-ip=178.238.236.174
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [178.238.236.174])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650F5606A327
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 10:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CEF606A321;
+	Wed, 11 Nov 2026 11:19:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32CEF606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=f4E3SUao
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECADC1F00A0A
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 10:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794391842;
-	bh=IufNXsNoB8xfQAU7zCYVR5erkbYE0FcNy66hIgW4lkI=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=f4E3SUaoNRt8xinz7Y8nw81C8p+E8Ofs1kInONw+r7aJ9L2T+vq18ODnBd/qtj0V8
-	 hiHwJaK/TpMFKcHniF6cHXFOmHe/aOvqPFwkFft2cZuUZW+LJzGfGVDd0eO5ruLzSw
-	 8e+3OTa1RLKdLhdOxnViCW3dVIP8Q17k8UVcCzIhjkrmhUe1iR0H5Yc5ZF6TvypGyU
-	 OyLqRh1ctHd6HKTx/+ydcxbG7SXKE00sI328WaU3bXj1KVBOCu1evnUgx4TS2uMI53
-	 8Gijs9iN4cSsDIcRyo2G2Ezoy9BIwKxhKo+jg//iKFLOGC7f45Iyt6v+y30md1fbpn
-	 XLe9gHjLi7Gww==
-Received: from ams-compute-01.internal (ams-compute-01.internal [10.64.2.61])
-	by mailfauth.ams.internal (Postfix) with ESMTP id 19D6B1980052;
-	Wed, 11 Nov 2026 05:10:40 -0500 (EST)
-Received: from ams-imap-19 ([10.64.2.39])
-  by ams-compute-01.internal (MEProxy); Wed, 11 Nov 2026 05:10:40 -0500
-X-ME-Sender: <xms:Hj_0auPQeOWyXnuroeoDVDbOxN5baiELB3WUouDCiNowmGu0luTRkw>
-    <xme:Hj_0any274b2r5v-d8yqt7mqPz4ryOSUQ5a8HNYlygx7oH6BXbVbKU_FQjEim6eow
-    A85qsgRK9fKc-268vTR5tRFb4cP3rBFEeKkVlY2sBeovk57CyZ6dsx2>
-X-ME-Proxy-Cause: dmFkZTFjDI7QWig021/eXFx0ahuxZXlbfi5d9h4/xo+SDWkvQu0Q91/jB5v0OKL7bsQyiE
-    XrkYcU/GbBBquYJXZH1wiXPCPavomNV9/Z3MLh8hzXM/B3FL3cjFSMMoXZzGAH6jddHYIo
-    fTPa0KI/aikSUFyC+8HJAlqV14z/JGyYY0CAejqmHBXSpFN1UBCAumHBk+PJ/r4HGsio8o
-    BKlREcY0J0VhMtU+jfV1B+YgqI5nCoeASECQFNYYHPOgZKZjIDnimifxsS1OJITdCUife4
-    3OfAjRw89oVLdio6q8uTxuxRcXEkM4V7IqmCP9yQjoJXOUot8+QJAi5PwC/FduEFfRtpQH
-    5VMXzzhLVl4MYBAmnFIkS7ynM0QoEE76Oo1QSqBxFXCT/SgGlOnx8a3qJithD9UfoDQ7AP
-    HCpY2DbaRSbIK0Za5JUm4dtwI2lqSns4mvqmWTGsXYmo+Pr7tet/WIPdrSICG5mm4fiOzh
-    wEWcTtumsAmdJg0ysFNfu3YJe061XtLmAkFVvHRXkkWBsF7Ad2aXpZ1QKrPJTXtFkgeU/n
-    xfO8pzihxdj1ZFMLTHqZ+LfS+9mchaQuLJAjsoj1Kjk6tjbaA54GUdBV2+PuT3VRHnNV5i
-    aG/jvsjhe2Ycl+J08//fSrWVTMkRRNTAsG0kNuI6L7XEGqNhcoArvZ+Ws6tg
-X-ME-Proxy: <xmx:ID_0auywWTqQ3s3s-WixPrj-YGZ7qrPT-70LnCpA1F14j_-lS8RQbg>
-    <xmx:ID_0aryGVbSb-zlWyx3ijAsByd2ENuEf0m85S8kJxkm6YFh0ifZyuA>
-    <xmx:ID_0agYD3RFyXFW64VjlGCtr0caLybCB__6nPg4BdV8oBMYvATEHPA>
-    <xmx:ID_0akUHVi211vXinfeZ31qSnignvRNLLWLo9YuK7Uxy5GD6DpxZgw>
-    <xmx:ID_0amhe_ndzn2iY3gE0NszbcX6KWCO0Qq-kBvtUndWc_mXNwZM4sO-Z>
-Feedback-ID: ia3204a8f:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id 73AF92F8005A; Wed, 11 Nov 2026 05:10:38 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.a=rsa-sha256 header.s=20220719 header.b=QBOWFM3N
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=References:In-Reply-To:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description;
+	bh=UGGOSnoQOa8uQR6vbajtQptujNdknjBUZcDCmSIDNdo=; t=1794395987; x=1795605587; 
+	b=QBOWFM3NmCqXcWpeEpiAe1sLa7w9smTt2ygsWJvoDwexClILCEuyimAjy2Dszrb3lsYu4Acc/Uu
+	2c6vYi4oIu+hgg+ymTO9QaAf7UP7ZP3OL3Tax6Zb8rzT9A7pywLwZCQnNXt8ysE66/Br8fzvZ1ZWA
+	EW3f7wb/10m3DojJt++RZ/cJIBx/4TDW8smgJurrgvL3p7fLP1eUX3PrmqPN5sOTKz/YStz3jaL4H
+	20DoIqZoybcHHvr0hpzBJjr71aTMyS5F4hLjaIEd1yoM5CspZlFMsTqAliqzPNQgcdKYx3ff/z2Hp
+	I8VsFee+B2mi0pf6N1osXzG9wsT9UQPsgmjQ==;
+Date: Wed, 11 Nov 2026 12:19:24 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ tomi.valkeinen@ideasonboard.com
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Laurent
+ Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
+ <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jessica Zhang
+ <jesszhan0024@gmail.com>, Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+ Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>, Sascha
+ Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Paul Cercueil
+ <paul@crapouillou.net>, Paul Kocialkowski <paulk@sys-base.io>, Linus
+ Walleij <linusw@kernel.org>, Inki Dae <inki.dae@samsung.com>, Jagan Teki
+ <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Sean Paul <sean@poorly.run>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+ <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Albert
+ Esteve <aesteve@redhat.com>, Anusha Srivatsa <asrivats@redhat.com>, Dmitry
+ Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Hui Pu
+ <Hui.Pu@gehealthcare.com>, Ian Ray <ian.ray@gehealthcare.com>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-rockchip@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, asahi@lists.linux.dev,
+ linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+ linux-tegra@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 17/19] drm/omap: dss: don't create a panel_bridge
+Message-ID: <20261111121924.0e54e7e8@kemnade.info>
+In-Reply-To: <20260916-drm-bridge-every-panel-v3-17-83afb4f1a707@bootlin.com>
+References: <20260916-drm-bridge-every-panel-v3-0-83afb4f1a707@bootlin.com>
+	<20260916-drm-bridge-every-panel-v3-17-83afb4f1a707@bootlin.com>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; aarch64-unknown-linux-gnu)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -77,47 +88,132 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: Am_MQAJHDGj7
-Date: Wed, 11 Nov 2026 11:10:03 +0100
-From: "Imre Kaloz" <kaloz@kernel.org>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <7b19087a-986a-414c-a35c-e44052458495@app.fastmail.com>
-In-Reply-To: <alpine.DEB.2.21.2611080926150.17804@angie.orcam.me.uk>
-References: <20261107005245.20299-1-kaloz@kernel.org>
- <alpine.DEB.2.21.2611080926150.17804@angie.orcam.me.uk>
-Subject: Re: [PATCH v2] MIPS: sgi-ip32: Fence PIO reads on CRIME 1.1
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sun, Nov 8, 2026, at 10:28, Maciej W. Rozycki wrote:
-> On Sat, 7 Nov 2026, Imre Kaloz wrote:
+On Wed, 16 Sep 2026 15:45:41 +0200
+Luca Ceresoli <luca.ceresoli@bootlin.com> wrote:
 
-<snip>
+> Now a panel_bridge is automatically created for every drm_panel and the
+> panel-bridge API is just a deprecated wrapper to access it.
+> 
+> Update and simplify the code by just getting a reference to the
+> already-existing bridge using of_drm_get_bridge_by_endpoint().
+> 
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
->> +static inline void plat_read_fence_end(unsigned long flags)
->> +{
->> +	crime_read_fence_end(flags);
->> +}
->
->  This seems hackish to me with the call to local_irq_restore() buried in 
-> crime_read_fence_end().  Why is is out of line?
+This breaks the display on GTA04/OMAPDRM.
 
-Good point, thanks.  Only the 5us udelay() needs to be out of line,
-so that asm/io.h does not have to pull in linux/delay.h, the irq
-restore had no business being buried in there with it.
+Panel is panel-tpo-td028ttec1 attached via DPI, controlled
+via spi_gpio.
 
-v3 keeps local_irq_save() and local_irq_restore() together in
-read-fence.h and makes only crime_read_fence_delay() out of line.
+I get
+[   12.050201] omapdrm omapdrm.0: [drm] No compatible format found
+[   12.050231] omapdrm omapdrm.0: [drm] Cannot find any crtc or sizes
 
-It has been retested on a CRIME 1.1 O2 with audio and SCSI DMA
-running: 0 stale reads in 50M read pairs with the fence on, 15 in 10M
-with it off.
+Workaround:
+rmmod omapdrm
+modprobe omapdrm
 
+Regards,
+Andreas
 
-Thanks,
-Imre
+> ---
+>  drivers/gpu/drm/omapdrm/dss/omapdss.h |  1 -
+>  drivers/gpu/drm/omapdrm/dss/output.c  | 42 ++++-------------------------------
+>  2 files changed, 4 insertions(+), 39 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/omapdss.h b/drivers/gpu/drm/omapdrm/dss/omapdss.h
+> index 4c22c09c93d5..e3e685c931f1 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/omapdss.h
+> +++ b/drivers/gpu/drm/omapdrm/dss/omapdss.h
+> @@ -204,7 +204,6 @@ struct omap_dss_device {
+>  	struct dss_device *dss;
+>  	struct drm_bridge *bridge;
+>  	struct drm_bridge *next_bridge;
+> -	struct drm_panel *panel;
+>  
+>  	struct list_head list;
+>  
+> diff --git a/drivers/gpu/drm/omapdrm/dss/output.c b/drivers/gpu/drm/omapdrm/dss/output.c
+> index 6e9bc605ee22..36d37deac802 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/output.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/output.c
+> @@ -12,7 +12,6 @@
+>  #include <linux/of_graph.h>
+>  
+>  #include <drm/drm_bridge.h>
+> -#include <drm/drm_panel.h>
+>  
+>  #include "dss.h"
+>  #include "omapdss.h"
+> @@ -20,40 +19,16 @@
+>  int omapdss_device_init_output(struct omap_dss_device *out,
+>  			       struct drm_bridge *local_bridge)
+>  {
+> -	struct device_node *remote_node;
+> +	struct drm_bridge *bridge;
+>  	int ret;
+>  
+> -	remote_node = of_graph_get_remote_node(out->dev->of_node,
+> -					       out->of_port, 0);
+> -	if (!remote_node) {
+> +	bridge = of_drm_get_bridge_by_endpoint(out->dev->of_node, out->of_port, 0);
+> +	if (IS_ERR(bridge)) {
+>  		dev_dbg(out->dev, "failed to find video sink\n");
+>  		return 0;
+>  	}
+>  
+> -	out->panel = of_drm_find_panel(remote_node);
+> -	if (IS_ERR(out->panel))
+> -		out->panel = NULL;
+> -
+> -	if (!out->panel)
+> -		out->bridge = of_drm_find_and_get_bridge(remote_node);
+> -
+> -	of_node_put(remote_node);
+> -
+> -	if (out->panel) {
+> -		struct drm_bridge *bridge;
+> -
+> -		bridge = drm_panel_bridge_add(out->panel);
+> -		drm_panel_put(out->panel);
+> -		if (IS_ERR(bridge)) {
+> -			dev_err(out->dev,
+> -				"unable to create panel bridge (%ld)\n",
+> -				PTR_ERR(bridge));
+> -			ret = PTR_ERR(bridge);
+> -			goto error;
+> -		}
+> -
+> -		out->bridge = drm_bridge_get(bridge);
+> -	}
+> +	out->bridge = bridge;
+>  
+>  	if (local_bridge) {
+>  		if (!out->bridge) {
+> @@ -65,11 +40,6 @@ int omapdss_device_init_output(struct omap_dss_device *out,
+>  		out->bridge = drm_bridge_get(local_bridge);
+>  	}
+>  
+> -	if (!out->bridge) {
+> -		ret = -EPROBE_DEFER;
+> -		goto error;
+> -	}
+> -
+>  	return 0;
+>  
+>  error:
+> @@ -79,10 +49,6 @@ int omapdss_device_init_output(struct omap_dss_device *out,
+>  
+>  void omapdss_device_cleanup_output(struct omap_dss_device *out)
+>  {
+> -	if (out->bridge && out->panel)
+> -		drm_panel_bridge_remove(out->next_bridge ?
+> -					out->next_bridge : out->bridge);
+> -
+>  	drm_bridge_put(out->next_bridge);
+>  	drm_bridge_put(out->bridge);
+>  }
+> 
 
-P.S:
-v3: https://lore.kernel.org/r/20261111095650.14954-1-kaloz@kernel.org/

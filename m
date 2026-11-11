@@ -1,57 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=79.135.106.119
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.42
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794365175;
-	b=2HDQLsPj+LAQ8IQSXQUVjLo5Tx9C06xUeFld09+aAoo9e1mCMnfRdmk522Nhk7NfTWgG
-	 iAjnRyp/H3XD94H8Wuc2YUbp1wG7OUlE16lSrCUdfkX0GmL2wkB23INqirZuDa/B23/uW
-	 SuALVgsag5q9yDfyTrouDASmUcxynrGSX0NBz3KG4TercTDb7/N27bpX9uj+EUJCG5rx/
-	 YWm79DUAH3aJXKR6L7QXdESaZOmr9N6on9ngXDvTAqFPv4wKugmMRcp3ePU+1T4V6yRXi
-	 zQLtiE2X6PdKhk8FUy3ZX6vgtI0oIww2cvzPlrWtCm9Sxh+Kr6hUSHddLLb51vGiuqA==
+	t=1794367381;
+	b=o+jr0FjAckwM/aOotOkqga8t80iDqFAVvvz4hBjyWt62k/BO4nTr41cKPsO+LCS7XEiB
+	 AfzMVHpmvIV/75Es4SICr2EPtgEGRxb+x09s2PAjiNOTdgJC4yASIM5I9rOwN0BCKJzSa
+	 U5yOou8pSj2Irp04LTlOpEJDQWvrADXrRbNBrFehZ9r0cXS2kLKnk2MKb05jbfaN47Z2+
+	 Bfv/4sMx302LCUF8ardEQnOwFrHuzJ/ku3zkMpVkqy45U2a2+MwJNZ2+qBjDBkZX6EIiC
+	 d2ICb2UCdkAbHg8s/9XZ2f9uhZpEgNUieW8yjUSAt0RJsvC9u1yu3pNRx2DVXFniFnw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794365175;
-	h=DMARC-Filter:DKIM-Signature:Date:To:From:Cc:Subject:Message-ID:
-	 Feedback-ID:X-Pm-Message-ID:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=aHtsWtah6vBal2nFE0nb7JH5Z6v+Kv/eLAAK7lJjA5E=;
-	b=kL+ve6ztjUbSJuCukBncMjJ1VLdjpJQr81whq3rNLPmEO0wb0kZiKG/0JqyMasTCs5Z7
-	 EvMFcYwFIqJby0frUZ5CYh0octM0v2XFfzBkMVdew93MSNUFhJ1DlOP2mf3y8MBKNdQuv
-	 PKggqwLaKG9etK+aZHaekYRfWTNFEb7HnMAzDPtCCQK7U2+mrcygplY7U9UJh7gSzPjSh
-	 Edx9z6x8mp7PgcJUZblnltKwJqNIsrEqJj/lOFpol4vqWBcEhI8RKCvU6GT1HUBsfPQpt
-	 PI6rewWYeSYDcIIaaWfwB15oyhaNDSoIIpTSCakS7Mnz8QBSRsaaREq8CmjxRuZQflQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794367381;
+	h=DMARC-Filter:DKIM-Signature:User-Agent:X-Lms-Return-Path:To:Date:
+	 Mime-Version:Received:Content-Transfer-Encoding:Cc:From:Content-Type:
+	 Subject:Message-Id:X-Original-From:References:In-Reply-To;
+	bh=cwlQpXqaLUwHvZtTs8DVVBeTiYBaieNwyzTfHe3g38c=;
+	b=mBwoCAy4HMaGz5KM5GC6zNrum6Vj7axMq+dRRy9EwRpy2Yz5jniVkM5Amvgnp2sf9XRW
+	 pn0Ztdbwutn5p0/N6Z8ip5hlTNQYDGLJ4bd8184ln+0vZBne5rrCfasEtbUOegXv+sYbZ
+	 1xPPX2ExoN0/MEdv+ArV5LkIq2oV37rJIjd3aih92AdQlKyg0Zb3dosJT7+rr7khimNXB
+	 cHzbSOBdOt1TTbCdHiqifO8POk8ZIqXyuTKNCktV7QxgtUDrepj5qTHdSIoyr5goTLMJ5
+	 RBIo8muvar/8cpZ3ghl14W74jhhTCN00bgQYVJBkXlPEBA0wD7KTBcAWiZadwf31b/w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=pm.me;
-	spf=pass smtp.mailfrom=pm.me;
-	dkim=pass header.d=pm.me header.i=@pm.me header.a=rsa-sha256 header.s=protonmail3 header.b=oBZnDbfJ;
-	arc=none smtp.remote-ip=79.135.106.119
-Received: from mail-106119.protonmail.ch (mail-106119.protonmail.ch [79.135.106.119])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=oss.cipunited.com;
+	spf=pass smtp.mailfrom=oss.cipunited.com;
+	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=QdU2PjN+;
+	arc=none smtp.remote-ip=209.127.231.42
+Received: from va-2-42.ptr.blmpb.com (va-2-42.ptr.blmpb.com [209.127.231.42])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B8C606A327
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 02:46:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 78B8C606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A161A606A327
+	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 03:22:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A161A606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pm.me header.i=@pm.me header.a=rsa-sha256 header.s=protonmail3 header.b=oBZnDbfJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1794365170; x=1794624370;
-	bh=aHtsWtah6vBal2nFE0nb7JH5Z6v+Kv/eLAAK7lJjA5E=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=oBZnDbfJE+5vsPCws+ii6madHrhRZi6XXLYyknlYoK99vCbQoZgs9yvya5GtEgzYH
-	 kdLwa3cG8IfVRG4cXXEuVNoV9bM9DHmCP/qHAG/7ift0JmVO2TT7SEkqFb+AEdRj/M
-	 +hNjjt2BwhE+JNMYaKINM7tR5cu4wfR5NufNF0ZOzHKD/LZjOo+acB0rSR5z0cijo2
-	 NPYn1jGL+rG/oIKRR52wu4psruO5UTSG8qtnvciiGMdFo5tt9VgvRN66GhJanGNUno
-	 QYGrcaW5UgOYyfAteqIWLAGXt91XLYHPIYX73b7Jpex0pZCYJNAdMfZEudpI19f8gW
-	 ftU1c0EtYnWuA==
-Date: Wed, 11 Nov 2026 02:46:05 +0000
-To: linux-mips@vger.kernel.org
-From: "Michael C. Pratt" <mcpratt@pm.me>
-Cc: "Michael C. Pratt" <mcpratt@pm.me>, linux-kernel@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] mips: vdso: fix uninitialized warning for genvdso
-Message-ID: <20261111024520.17905-1-mcpratt@pm.me>
-Feedback-ID: 27397442:user:proton
-X-Pm-Message-ID: 44b5b34ebae7b8e695f22c6f6b8ea6e86db309ed
+	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=QdU2PjN+
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=feishu2303200042; d=oss.cipunited.com; t=1794367374;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=cwlQpXqaLUwHvZtTs8DVVBeTiYBaieNwyzTfHe3g38c=;
+ b=QdU2PjN+S8MHyDoR8BoIIAvVmAtOsi8yx0EEPS4BkrbIqArHI0gSgae+o14zTNcsbmpG5H
+ /Csdzuo+Izi/Verz7pp/S5R6kx6kzDGfOV6WaySoPq2zDWt3GVjltOq3CXwCj6Tsxkp0C6
+ XsceqzKhlqwNXqfLD99X8mSwVaVQ6BiMDz8Q2bpGV3fl16+Quzlog6Kb79V2k1MlgMV98b
+ sgI4dTeE0yVi6bDoxbnRpQm8+w9+6fZjbyRy1K4MYWzLvbtZPCYl1uZipL88OdzdkaIDVe
+ 5irPPHFNWgpECodUkwmOuivz42dCQxJeXbUgFer3cWijbByB43QGc2AMHOUyzw==
+User-Agent: Evolution 3.62.1-3
+X-Lms-Return-Path: <lba+26af3df8c+79df59+vger.kernel.org+rongrong@oss.cipunited.com>
+To: "Conor Dooley" <conor@kernel.org>
+Date: Wed, 11 Nov 2026 11:17:48 +0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -60,56 +55,125 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Received: from [192.168.8.156] ([1.192.71.23]) by smtp.feishu.cn with ESMTPS; Wed, 11 Nov 2026 11:22:51 +0800
+Content-Transfer-Encoding: 7bit
+Cc: "Rong Zhang" <i@rong.moe>, "Keguang Zhang" <keguang.zhang@gmail.com>, 
+	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
+	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
+	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
+	"Conor Dooley" <conor+dt@kernel.org>, 
+	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, 
+	"Yao Zi" <me@ziyao.cc>, "Icenowy Zheng" <uwu@icenowy.me>, 
+	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
+	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
+	<linux-kernel@vger.kernel.org>
+From: "Rong Zhang" <rongrong@oss.cipunited.com>
+Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 1/4] dt-bindings: watchdog: loongson,ls1x-wdt: Add ls7a-wdt compatible
+Message-Id: <227eb9a3dd5c1cb1af4cfbf2c94f30db1755a5d6.camel@oss.cipunited.com>
+X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
+References: <20261110-mips-ls7a-wdt-v1-0-968bb85122e6@oss.cipunited.com> <20261110-mips-ls7a-wdt-v1-1-968bb85122e6@oss.cipunited.com> <20261110-barterer-pandemic-e4c658cac7c4@spud>
+In-Reply-To: <20261110-barterer-pandemic-e4c658cac7c4@spud>
 
-On older versions of GCC such as GCC 10.2.1,
-it is possible that a "maybe-uninitialized" warning is triggered
-for the pointer variables in the header's inline functions
-when all warnings are enabled.
+Hi Conor,
 
-Resolve this warning by initializing all the pointers to NULL.
+Thanks for the review.
 
-Signed-off-by: Michael C. Pratt <mcpratt@pm.me>
----
- arch/mips/vdso/genvdso.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+On Tue, 2026-11-10 at 18:58 +0000, Conor Dooley wrote:
+> On Tue, Nov 10, 2026 at 03:02:30PM +0800, Rong Zhang wrote:
+> > The Loongson-7A has a watchdog, which is similar to Loongson 2K0300,
+> > except that it has no clock controller.
+> 
+> I find this hard to believe, the device seems to be getting a clock from
+> somewhere that the clock-frequency property is providing the rate of.
 
-diff --git a/arch/mips/vdso/genvdso.h b/arch/mips/vdso/genvdso.h
-index 9bfb874038b0..112f51e2e546 100644
---- a/arch/mips/vdso/genvdso.h
-+++ b/arch/mips/vdso/genvdso.h
-@@ -7,9 +7,9 @@
- static inline bool FUNC(patch_vdso)(const char *path, void *vdso)
- {
- =09const ELF(Ehdr) *ehdr =3D vdso;
--=09void *shdrs;
--=09ELF(Shdr) *shdr;
--=09char *shstrtab, *name;
-+=09void *shdrs =3D NULL;
-+=09ELF(Shdr) *shdr =3D NULL;
-+=09char *shstrtab =3D NULL, *name =3D NULL;
- =09uint16_t sh_count, sh_entsize, i;
-=20
- =09shdrs =3D vdso + FUNC(swap_uint)(ehdr->e_shoff);
-@@ -58,10 +58,10 @@ static inline bool FUNC(patch_vdso)(const char *path, v=
-oid *vdso)
- static inline bool FUNC(get_symbols)(const char *path, void *vdso)
- {
- =09const ELF(Ehdr) *ehdr =3D vdso;
--=09void *shdrs, *symtab;
--=09ELF(Shdr) *shdr;
--=09const ELF(Sym) *sym;
--=09char *strtab, *name;
-+=09void *shdrs =3D NULL, *symtab =3D NULL;
-+=09ELF(Shdr) *shdr =3D NULL;
-+=09const ELF(Sym) *sym =3D NULL;
-+=09char *strtab =3D NULL, *name =3D NULL;
- =09uint16_t sh_count, sh_entsize, st_count, st_entsize, i, j;
- =09uint64_t offset;
- =09uint32_t flags;
---=20
-2.30.2
+I must be losing my mind when I wrote this. My thought was "software
+cannot control the clock" but my finger typed "no clock controller".
 
+> 
+> Why is that clock not represented in devicetree?
 
+I will add a fixed-clock node in v2.
+
+> 
+> Confused,
+> Conor.
+
+Sorry for the confusion.
+
+Thanks,
+Rong
+
+> 
+> > 
+> > Add "loongson,ls7a-wdt" compatible as well as a conditionally required
+> > field clock-frequency.
+> > 
+> > Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
+> > ---
+> >  .../bindings/watchdog/loongson,ls1x-wdt.yaml       | 31 +++++++++++++++++++++-
+> >  1 file changed, 30 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
+> > index 50a9b468c4a3..cb93e9578f82 100644
+> > --- a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
+> > +++ b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
+> > @@ -18,6 +18,7 @@ properties:
+> >        - loongson,ls1b-wdt
+> >        - loongson,ls1c-wdt
+> >        - loongson,ls2k0300-wdt
+> > +      - loongson,ls7a-wdt
+> >  
+> >    reg:
+> >      maxItems: 1
+> > @@ -25,13 +26,34 @@ properties:
+> >    clocks:
+> >      maxItems: 1
+> >  
+> > +  clock-frequency:
+> > +    description: Frequency of clock in Hz
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - clocks
+> >  
+> >  unevaluatedProperties: false
+> >  
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      contains:
+> > +        enum:
+> > +          - loongson,ls7a-wdt
+> > +
+> > +then:
+> > +  properties:
+> > +    clocks: false
+> > +  required:
+> > +    - clock-frequency
+> > +
+> > +else:
+> > +  properties:
+> > +    clock-frequency: false
+> > +  required:
+> > +    - clocks
+> > +
+> >  examples:
+> >    - |
+> >      #include <dt-bindings/clock/loongson,ls1x-clk.h>
+> > @@ -41,3 +63,10 @@ examples:
+> >  
+> >          clocks = <&clkc LS1X_CLKID_APB>;
+> >      };
+> > +
+> > +  - |
+> > +    watchdog@100d0030 {
+> > +        compatible = "loongson,ls7a-wdt";
+> > +        reg = <0x100d0030 0xc>;
+> > +        clock-frequency = <50000000>;
+> > +    };
+> > 
+> > -- 
+> > 2.55.0

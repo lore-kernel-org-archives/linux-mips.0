@@ -1,52 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.42
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794367381;
-	b=o+jr0FjAckwM/aOotOkqga8t80iDqFAVvvz4hBjyWt62k/BO4nTr41cKPsO+LCS7XEiB
-	 AfzMVHpmvIV/75Es4SICr2EPtgEGRxb+x09s2PAjiNOTdgJC4yASIM5I9rOwN0BCKJzSa
-	 U5yOou8pSj2Irp04LTlOpEJDQWvrADXrRbNBrFehZ9r0cXS2kLKnk2MKb05jbfaN47Z2+
-	 Bfv/4sMx302LCUF8ardEQnOwFrHuzJ/ku3zkMpVkqy45U2a2+MwJNZ2+qBjDBkZX6EIiC
-	 d2ICb2UCdkAbHg8s/9XZ2f9uhZpEgNUieW8yjUSAt0RJsvC9u1yu3pNRx2DVXFniFnw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794367381;
-	h=DMARC-Filter:DKIM-Signature:User-Agent:X-Lms-Return-Path:To:Date:
-	 Mime-Version:Received:Content-Transfer-Encoding:Cc:From:Content-Type:
-	 Subject:Message-Id:X-Original-From:References:In-Reply-To;
-	bh=cwlQpXqaLUwHvZtTs8DVVBeTiYBaieNwyzTfHe3g38c=;
-	b=mBwoCAy4HMaGz5KM5GC6zNrum6Vj7axMq+dRRy9EwRpy2Yz5jniVkM5Amvgnp2sf9XRW
-	 pn0Ztdbwutn5p0/N6Z8ip5hlTNQYDGLJ4bd8184ln+0vZBne5rrCfasEtbUOegXv+sYbZ
-	 1xPPX2ExoN0/MEdv+ArV5LkIq2oV37rJIjd3aih92AdQlKyg0Zb3dosJT7+rr7khimNXB
-	 cHzbSOBdOt1TTbCdHiqifO8POk8ZIqXyuTKNCktV7QxgtUDrepj5qTHdSIoyr5goTLMJ5
-	 RBIo8muvar/8cpZ3ghl14W74jhhTCN00bgQYVJBkXlPEBA0wD7KTBcAWiZadwf31b/w==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=oss.cipunited.com;
-	spf=pass smtp.mailfrom=oss.cipunited.com;
-	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=QdU2PjN+;
-	arc=none smtp.remote-ip=209.127.231.42
-Received: from va-2-42.ptr.blmpb.com (va-2-42.ptr.blmpb.com [209.127.231.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794370147;
+	b=MVlICaATS6S6yZnf8obJM/gS4fRaJMp8vVgPJBUpfrR+cDAcKKncSI2ixk/lnXEoUmTk
+	 sHszT9xEEZ5mfb9naQyitjLuEJo0PPfUS0PnQnCqZ7CtANX2+e2Rn0QVYVrpamxtapaL2
+	 3vvsfCmwIa11aSOygVRZ77oJnh66oXeueezjbPEvCZCv2YaXYGADCGi1L9Xh9NOf1hCLy
+	 hJrdFs7hTD9e34E52vKYD+WJpGDTliC8gA+ycjfVcbmcZoUZPM5M/tk0jiiZmU+eenr5J
+	 vZqX1DaZUmbrWXa+sA3mC6V+CcE3rrsu5Jz3qQb13BLzIi8l5l5SJ8CFqhGqeYSr5zQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794370147;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:X-B4-Tracking:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
+	b=1lu43ne3llC8cXuGYCOyzHh0q2XqEMNq6YTIy0GCo/IyJ2gZ65y5+5pJTQrAMwq5OZ+k
+	 ERt/Lz0L+4KbUZtYQXpW8PGN6amgc+0cvkztQ0xutvhNzS1Hmz353yrCp0JDB4KQf8PzM
+	 r5RnE0VHOAfU7kciX5XzWGMMxUN748CionsC9He5w9+5Hz9bbpQ3eUJTnXDeKvMLnWzp3
+	 Ab8TLNVEnFqhdjfnAPbJqSrEl2FYe4Iv1KDGw9mySyHKF5UArxznocG3byCemg25yTDTp
+	 LqnS1Zlj3unuHXEyIlVxMeeITr5u5JyIKKvSBGd7GW59cTfpvLEb9tlxR+I4aKXIv4g==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TezoHI7d;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6737606A321;
+	Wed, 11 Nov 2026 04:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TezoHI7d
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794370147;
+	b=R2CnwztBjOtWpbz0ho1gf4SF1JfDtDZ+RSWT2neFLiRu+Xyo1Xlf9xBTDd/XJr+bHJ8u
+	 meGHDyHG+x+kE4Vq/rf5uYQVF09l17s3IneyS7cvQT3MsU2MJphHpC83LQB7mm/qISOKT
+	 Ra13XYhoUEg+MYgUefG7X8OoXmEhPqsvE6yVqfvYHZkQUU3O8Xkej4K7fq4sOGHJ4VThS
+	 qUgh0tpsWuzjGy9mctRQM8i2Ts2g/e2O8wC51sCpyTm3NCBsmV4okYQKt2jEn9OUQiw9y
+	 5Ujx4tcLaHaBgFwdzVak28AfXgoWbalqg7Nio8Y5JZjPnPVL2rBDYuyfvtBVQeWxBpg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794370147;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:
+	 X-Developer-Key:X-Endpoint-Received:X-Original-From:Reply-To:
+	 Content-Transfer-Encoding;
+	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
+	b=xYYxXyyo0GQrfdGpOB3HeABt2tO+BpfkCFS835+3F6mbBZepzBdnmkgKqs+Mts/yhsej
+	 zw0H/+CG9OswDnLRm42FbAaY0vAG9Oq/e+5AUyCv4j/F/73+MkZtpiA7h3d4VfMphExQ0
+	 4AatdFWJPDTEnTTR20Se8o0QX2lKOuuUK1yJJiNyWY7khoY/pv2K0soNOQbrTVhWuT9J2
+	 wCzpsAWIn8+fMsX726mEiW2zJCBE6bylaxPkOxTno6tL3KYrBX26eiucFEnduhwfuW2J4
+	 IZTx62DtmKfjy85C6xUPgbIPTH/C3Smz/OYaQF+8RWjf3A6HYV1l792rSv5YF5n++hg==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A161A606A327
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 03:22:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A161A606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=QdU2PjN+
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1794367374;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=cwlQpXqaLUwHvZtTs8DVVBeTiYBaieNwyzTfHe3g38c=;
- b=QdU2PjN+S8MHyDoR8BoIIAvVmAtOsi8yx0EEPS4BkrbIqArHI0gSgae+o14zTNcsbmpG5H
- /Csdzuo+Izi/Verz7pp/S5R6kx6kzDGfOV6WaySoPq2zDWt3GVjltOq3CXwCj6Tsxkp0C6
- XsceqzKhlqwNXqfLD99X8mSwVaVQ6BiMDz8Q2bpGV3fl16+Quzlog6Kb79V2k1MlgMV98b
- sgI4dTeE0yVi6bDoxbnRpQm8+w9+6fZjbyRy1K4MYWzLvbtZPCYl1uZipL88OdzdkaIDVe
- 5irPPHFNWgpECodUkwmOuivz42dCQxJeXbUgFer3cWijbByB43QGc2AMHOUyzw==
-User-Agent: Evolution 3.62.1-3
-X-Lms-Return-Path: <lba+26af3df8c+79df59+vger.kernel.org+rongrong@oss.cipunited.com>
-To: "Conor Dooley" <conor@kernel.org>
-Date: Wed, 11 Nov 2026 11:17:48 +0800
+	by smtp.kernel.org (Postfix) with ESMTPS id AF2DB1F0089F;
+	Wed, 11 Nov 2026 04:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794370147;
+	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=TezoHI7d2j/0+w6aS2BBO5HQcektIzRx3mmH99xKSNFF/lqHTS+89OyRYGz7KSRtQ
+	 /HbH5L5zDmCfskJSRiuYExrasto9rFQuySDehfiBBFfQhAOzNzT5apafCQETiNOaT6
+	 fYujMS0R0WUqlwophIW8Zc3s0Q9Ct+GbUZmxJywjTnr0fcXMQSmsVDOeuIG7Y5gosM
+	 inxEwwRitrgtqZZG0Ilcm4EG9nYg9CMarEL9FV+xd2+E8QWIedpXPTBkpgFsjUw1xM
+	 4SQO57IQYw/aKozcgAqt7VV5ebF3UQojK2BVGh4IlieWw7Qkv2fIW8EoKiSJ9giPko
+	 PtEehs3QJq1mQ==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 0CF8548D5F;
+	Wed, 11 Nov 2026 04:09:06 +0000 (UTC)
+From: Hunter Laux via B4 Relay <devnull+hunterlaux.gmail.com@kernel.org>
+Date: Tue, 10 Nov 2026 21:09:03 -0700
+Subject: [PATCH] MIPS: ingenic: Let Config.VI tell whether the icache is
+ virtual
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -55,125 +82,94 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Received: from [192.168.8.156] ([1.192.71.23]) by smtp.feishu.cn with ESMTPS; Wed, 11 Nov 2026 11:22:51 +0800
-Content-Transfer-Encoding: 7bit
-Cc: "Rong Zhang" <i@rong.moe>, "Keguang Zhang" <keguang.zhang@gmail.com>, 
-	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
-	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
-	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
-	"Conor Dooley" <conor+dt@kernel.org>, 
-	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, 
-	"Yao Zi" <me@ziyao.cc>, "Icenowy Zheng" <uwu@icenowy.me>, 
-	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
-	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
-	<linux-kernel@vger.kernel.org>
-From: "Rong Zhang" <rongrong@oss.cipunited.com>
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: [PATCH 1/4] dt-bindings: watchdog: loongson,ls1x-wdt: Add ls7a-wdt compatible
-Message-Id: <227eb9a3dd5c1cb1af4cfbf2c94f30db1755a5d6.camel@oss.cipunited.com>
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
-References: <20261110-mips-ls7a-wdt-v1-0-968bb85122e6@oss.cipunited.com> <20261110-mips-ls7a-wdt-v1-1-968bb85122e6@oss.cipunited.com> <20261110-barterer-pandemic-e4c658cac7c4@spud>
-In-Reply-To: <20261110-barterer-pandemic-e4c658cac7c4@spud>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261110-mips-xburst-icache-vi-v1-1-efba689606dd@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAF7q82oC/x3MPQqAMAxA4atIZgONgohXEYfaRM3gD42KULy7x
+ fEb3ktgElUMuiJBlFtN9y2DygLC4rdZUDkbKlc1RORw1cPwGa9oJ2rwYRG8FXkk51t2NXMDuT2
+ iTPr833543w+ofuiIZwAAAA==
+To: Paul Cercueil <paul@crapouillou.net>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Lars-Peter Clausen <lars@metafoo.de>, Hunter Laux <hunterlaux@gmail.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794370145; l=2681;
+ i=hunterlaux@gmail.com; s=20261109; h=from:subject:message-id;
+ bh=cXFr6wRPxVPgKvzA/Ve7zSz/KJTDwuu+N1xApA/N3xY=;
+ b=UKlZ8oi6sWqvZJ0m3xZeRfzwO8CcyCPNgl6B2IiUpljtQGdiBROaXejpdWeYKhZKvsPCgwTZl
+ uovwasrpm1wDmmpxs++CRRWRW1mguTLQ7oPxp8YAZeAAvOUpqYo7Rvp
+X-Developer-Key: i=hunterlaux@gmail.com; a=ed25519;
+ pk=Z5VTsE4CAwditt0CNeG+rpPk7xDUVh+oHWDZlNNm8FI=
+X-Endpoint-Received: by B4 Relay for hunterlaux@gmail.com/20261109 with
+ auth_id=1476
+X-Original-From: Hunter Laux <hunterlaux@gmail.com>
+Reply-To: hunterlaux@gmail.com
+Content-Transfer-Encoding: 8bit
 
-Hi Conor,
+From: Hunter Laux <hunterlaux@gmail.com>
 
-Thanks for the review.
+The Ingenic CPU support treats every XBurst instruction cache as
+virtually tagged: the feature overrides fix cpu_has_vtag_icache to 1,
+and the probe sets MIPS_CACHE_VTAG. The setting came in with the JZ4740
+feature overrides in commit 83ccf69d8f11 ("MIPS: JZ4740: Add base
+support for Ingenic JZ4740 System-on-a-Chip") without a stated reason,
+and Ingenic's own kernels treat the icache as physically tagged.
 
-On Tue, 2026-11-10 at 18:58 +0000, Conor Dooley wrote:
-> On Tue, Nov 10, 2026 at 03:02:30PM +0800, Rong Zhang wrote:
-> > The Loongson-7A has a watchdog, which is similar to Loongson 2K0300,
-> > except that it has no clock controller.
-> 
-> I find this hard to believe, the device seems to be getting a clock from
-> somewhere that the clock-frequency property is providing the rate of.
+Neither XBurst1 nor XBurst II has a virtually tagged icache. Both
+programming manuals describe a physically tagged one and hardwire
+Config.VI to 0, which the cache probe already reads. On the X2600, code
+at a virtual address remapped to another page through the TLB alone
+runs the new page, while the old line is still in the icache. XBurst1
+has not been tested. Treating the icache as virtually tagged is
+incorrect and costs needless icache flushes.
 
-I must be losing my mind when I wrote this. My thought was "software
-cannot control the clock" but my finger typed "no clock controller".
+Drop both and leave it to Config.VI.
 
-> 
-> Why is that clock not represented in devicetree?
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Assisted-by: Claude:claude-opus-5-5
+Signed-off-by: Hunter Laux <hunterlaux@gmail.com>
+---
+Lars, the override came with your JZ4740 support in 2010. On the off
+chance you remember a reason for setting cpu_has_vtag_icache to 1,
+I'd like to hear it.
+---
+ arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h | 1 -
+ arch/mips/kernel/cpu-probe.c                               | 3 ---
+ 2 files changed, 4 deletions(-)
 
-I will add a fixed-clock node in v2.
+diff --git a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+index 7ace50127f..71c03f1dd4 100644
+--- a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
++++ b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+@@ -27,7 +27,6 @@
+ #define cpu_has_mips3d 0
+ #define cpu_has_smartmips 0
+ #define kernel_uses_llsc	1
+-#define cpu_has_vtag_icache	1
+ #define cpu_has_dc_aliases	0
+ #define cpu_has_ic_fills_f_dc	0
+ #define cpu_has_pindexed_dcache 0
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 489612ed9d..bef92e6cd6 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1763,9 +1763,6 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
+ 	c->options &= ~MIPS_CPU_COUNTER;
+ 	BUG_ON(__builtin_constant_p(cpu_has_counter) && cpu_has_counter);
+ 
+-	/* XBurst has virtually tagged icache */
+-	c->icache.flags |= MIPS_CACHE_VTAG;
+-
+ 	switch (c->processor_id & PRID_IMP_MASK) {
+ 
+ 	/* XBurst®1 with MXU1.0/MXU1.1 SIMD ISA */
 
-> 
-> Confused,
-> Conor.
+---
+base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
+change-id: 20261110-mips-xburst-icache-vi-db10a8d03dd6
 
-Sorry for the confusion.
+Best regards,
+-- 
+Hunter Laux <hunterlaux@gmail.com>
 
-Thanks,
-Rong
 
-> 
-> > 
-> > Add "loongson,ls7a-wdt" compatible as well as a conditionally required
-> > field clock-frequency.
-> > 
-> > Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
-> > ---
-> >  .../bindings/watchdog/loongson,ls1x-wdt.yaml       | 31 +++++++++++++++++++++-
-> >  1 file changed, 30 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
-> > index 50a9b468c4a3..cb93e9578f82 100644
-> > --- a/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
-> > +++ b/Documentation/devicetree/bindings/watchdog/loongson,ls1x-wdt.yaml
-> > @@ -18,6 +18,7 @@ properties:
-> >        - loongson,ls1b-wdt
-> >        - loongson,ls1c-wdt
-> >        - loongson,ls2k0300-wdt
-> > +      - loongson,ls7a-wdt
-> >  
-> >    reg:
-> >      maxItems: 1
-> > @@ -25,13 +26,34 @@ properties:
-> >    clocks:
-> >      maxItems: 1
-> >  
-> > +  clock-frequency:
-> > +    description: Frequency of clock in Hz
-> > +
-> >  required:
-> >    - compatible
-> >    - reg
-> > -  - clocks
-> >  
-> >  unevaluatedProperties: false
-> >  
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - loongson,ls7a-wdt
-> > +
-> > +then:
-> > +  properties:
-> > +    clocks: false
-> > +  required:
-> > +    - clock-frequency
-> > +
-> > +else:
-> > +  properties:
-> > +    clock-frequency: false
-> > +  required:
-> > +    - clocks
-> > +
-> >  examples:
-> >    - |
-> >      #include <dt-bindings/clock/loongson,ls1x-clk.h>
-> > @@ -41,3 +63,10 @@ examples:
-> >  
-> >          clocks = <&clkc LS1X_CLKID_APB>;
-> >      };
-> > +
-> > +  - |
-> > +    watchdog@100d0030 {
-> > +        compatible = "loongson,ls7a-wdt";
-> > +        reg = <0x100d0030 0xc>;
-> > +        clock-frequency = <50000000>;
-> > +    };
-> > 
-> > -- 
-> > 2.55.0

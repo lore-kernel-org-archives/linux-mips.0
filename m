@@ -1,50 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.27
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.38
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794387292;
-	b=GzPqjUI3IMu0Zs4UyKFiCE0oBRNV2mOA3ITtDnGkE9x5wIT+5nnlwDypzXt9bepZIlXc
-	 tGmvznm5iY2Ohn2eMc8tsrAmFHLScWs2CpLWfu+mT3GdO6m2rFuJ2f3DBpQnzgCbSb4Gr
-	 Qdaw+bWFDAkTQPCwbpAGWnKwMvpcI4siuH8U0OGPB/cFujO0hj51cbzpllIkwXMRY2oP6
-	 YOGAsUw/fNwfA83jXYS4Le14sZVz1H52Rkl8N9/0FpJNf7yIuDveH77II8FiQQC7gI0V1
-	 z7LNk79DE6vJEusqRp6BF7NXlu4PfkIRKHpmA00t58T4XRL6RQx/7eId/FrBFwzDdxA==
+	b=Ex6y4ptx6O7kh2vO4DMLCkVk4qtCXyDoUXt7zA73kGbYxXZT24NTzfYuYAKXlinQv1c7
+	 JRQbd6wNTqyvCPGHErm5c2QOF9q0Cha+L/GsCLEdIo8bsx81A7s1UPKHKZzfDk0Rutei3
+	 rrlQ6G9nfsQLUUu4WC/Z4dLFw12SaqjWxFef0x5/CI+RujFI+gGEDqBKAG0K70Ts78DsE
+	 1xUyFS43T2TrZ5IXffp+YhWPYPLBolsd6z7p2wB5mgUksgCCrnl5EWs8g/6FhF5OGrf5u
+	 VZzU8KiZLV86tX+n0KmT0rKRr7c9S5eCQndBXQoqS9ZPI3wkIJKgDNZ2CbMWiKx1qzQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794387292;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
 	 X-Mizu-Trace-ID:X-Migadu-Flow:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=p4/RbmPX9KICmkQ11iRcvdKgkMSU7xKEKoTjGh+2Kwc=;
-	b=FLFLVsf2C0zU5sGawCUkD7W9QZOZkDIotsUjF/2tmrTvonhL9e1cjQTIpi6SwgWTG9UB
-	 PTIznrfZ5g6y3AV6DWNZujc00i19j5fS3eprkAj0lMmpZmTjI/eKXTuRjTuJAFJcSeQMi
-	 BFfoKqS68Er1PNEHaUN+hH4JKFDBolVPJkYcgpfpvn9WqLvhkUzVqeM4V60AsypTxxqDi
-	 WTb6D3t1iPBjo6aOlY17nfi1bfal0oNmMUMDq11yVoGPS1mQQGNukHV6f45y7iU3C51qq
-	 a2rpRsEli1MITm3vuAQzF3qrVvxeIX1qVm6Q8f8DOhzEcRXafutn+5MoMviPpr3AiQw==
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=LLwOkpWku+LuRzU0j1n/3ISg+beECDACZb9CL8tnJJE=;
+	b=D41ib9oHYT0BF/oxQtnSOWh2kClXK+TSLrSmHXiQAhqys5iWbPJiNx7W5KMRQiB4k/Zr
+	 P9yQ4eL2SiI2BkmKFmyWVDddGJf1oNpXyfStWZMC96wNDa2mEn9F6+Krrov+NPOBLG/kI
+	 M79MqY0G1Sw8vAYl16CSQck5Z+OetkuAE1PupS8ALXZZ5DKCFRPDfkQrABD/XJlREnoQF
+	 zQQGMg+ExiCEQwvmBvzn9RrgjQwhaHJxCsmlbvYigEhq33A1LAoTyyOHQ/NbNTLDgsEq4
+	 z3bFOL7DGdxfSE6t7UVQT/YIneccRkTYurmL6Phi1Zl7Vmv1Zz4SQnQCJv1HUx6dquQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linux.dev;
 	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=EP962D2x;
-	arc=none smtp.remote-ip=91.218.175.27
-Received: from mta0.migadu.com (out-27.mta0.migadu.com [91.218.175.27])
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=Y3MTWlgW;
+	arc=none smtp.remote-ip=91.218.175.38
+Received: from mta0.migadu.com (out-38.mta0.migadu.com [91.218.175.38])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAA3606A321
-	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 08:54:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8AAA3606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49B2606A333
+	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 08:54:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C49B2606A333
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=EP962D2x
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=Y3MTWlgW
 X-Envelope-To: linux-mips@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=jwk3hmfICgJ3X0igFOTViDcbZ5rjch+hhQUeonx02Cg=;
+DKIM-Signature: a=rsa-sha256; bh=VWN8eFztGEEX6q/yBgqDy1q04Jl/aSZsCUJ97YS64+c=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1794387288; v=1; x=1794992088;
- b=EP962D2xhTQnfAw8QPg64sph3xNt8Y8xXe/PzXk8ermHDGE+sFLcXlDmXy8Y8cUYCxmkk2GG
- uCeMMFGqEvnYTFEO2qiL/lRkPKHOVJJPoCCbcmZemu4jrHkwQyjFZ5s6H26hy7qcaS5Pp0DEO6b
- 3TMZdeu6VxuY+OvOfxKx+qbE=
+ t=1794387290; v=1; x=1794992090;
+ b=Y3MTWlgWk2aPPMJp2eucy29+8mFDNc+CQYurEZgnR0UAQ9qbRM6B8fSYsmwkvuxc2HlO32Ht
+ nblvddxnYWvzM/xMJcaizH+lMQAZWXQYtPN5WfIkCPb9JFMhdbsOS0TQh/Sx57rDi6ZL2WA+JN+
+ CsvAjf6wCkUr6/xVTc3CQB1M=
 X-Envelope-To: linux-mips@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 1900b9c390600ab3;
-	Wed, 11 Nov 2026 08:54:48 +0000
-X-Mizu-Trace-ID: 1900b9c390600ab3
+Received: by smtp.migadu.com with ESMTPS id 3e744c096daf5982;
+	Wed, 11 Nov 2026 08:54:49 +0000
+X-Mizu-Trace-ID: 3e744c096daf5982
 X-Migadu-Flow: FLOW_OUT
 From: Fuad Tabba <fuad.tabba@linux.dev>
 To: Paolo Bonzini <pbonzini@redhat.com>,
@@ -60,10 +61,12 @@ Cc: kvm@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	Will Deacon <will@kernel.org>,
 	Fuad Tabba <tabba@google.com>
-Subject: [PATCH 0/7] KVM: Documentation and comment fixes
-Date: Wed, 11 Nov 2026 08:54:41 +0000
-Message-ID: <20261111085448.1130701-1-fuad.tabba@linux.dev>
+Subject: [PATCH 2/7] Documentation: KVM: Fix lock names and a lock type in locking.rst
+Date: Wed, 11 Nov 2026 08:54:43 +0000
+Message-ID: <20261111085448.1130701-3-fuad.tabba@linux.dev>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261111085448.1130701-1-fuad.tabba@linux.dev>
+References: <20261111085448.1130701-1-fuad.tabba@linux.dev>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -75,46 +78,52 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi folks,
+The x86 lock ordering refers to kvm->arch.mmu_lock instead of
+kvm->mmu_lock. The entry for wakeup_vcpus_on_cpu_lock gives its type
+as spinlock_t instead of raw_spinlock_t, and its comment uses the list
+and lock names from before commit 12a8eee5686ef ("KVM: Move x86 VMX's
+posted interrupt list_head to vcpu_vmx").
 
-This series fixes the generic KVM documentation and comments, mostly
-references to non-existent functions, structures and constants, plus a
-few other one-line fixes and typos.
+Fix all three.
 
-Patches 1-4 are for Documentation/virt/kvm, and 5-7 for comments in
-the code.
+Signed-off-by: Fuad Tabba <fuad.tabba@linux.dev>
+---
+ Documentation/virt/kvm/locking.rst | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Based on Linux 7.4-rc2 (7475ea8b58616).
-
-Cheers,
-/fuad
-
-Fuad Tabba (7):
-  Documentation: KVM: Fix references to non-existent identifiers
-  Documentation: KVM: Fix lock names and a lock type in locking.rst
-  Documentation: KVM: Fix the function that implements halt polling
-  Documentation: KVM: Drop the stale number of vCPU request flags
-  KVM: Fix comments that refer to non-existent identifiers
-  KVM: Fix the range of reserved arch-independent request bits
-  KVM: Fix typos in comments
-
- Documentation/virt/kvm/api.rst              | 40 ++++++++++-----------
- Documentation/virt/kvm/halt-polling.rst     |  2 +-
- Documentation/virt/kvm/locking.rst          | 10 +++---
- Documentation/virt/kvm/review-checklist.rst |  2 +-
- Documentation/virt/kvm/vcpu-requests.rst    |  3 +-
- include/linux/kvm_dirty_ring.h              |  2 +-
- include/linux/kvm_host.h                    | 16 ++++-----
- include/linux/kvm_irqfd.h                   |  4 +--
- include/uapi/linux/kvm.h                    |  8 ++---
- virt/kvm/binary_stats.c                     |  4 +--
- virt/kvm/eventfd.c                          |  4 +--
- virt/kvm/guest_memfd.c                      |  2 +-
- virt/kvm/kvm_main.c                         |  8 ++---
- 13 files changed, 52 insertions(+), 53 deletions(-)
-
-
-base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
+diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+index 662231e958a07..df0db74630976 100644
+--- a/Documentation/virt/kvm/locking.rst
++++ b/Documentation/virt/kvm/locking.rst
+@@ -54,9 +54,9 @@ On x86:
+ 
+ - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock and kvm->arch.xen.xen_lock
+ 
+-- kvm->arch.mmu_lock is an rwlock; critical sections for
++- kvm->mmu_lock is an rwlock; critical sections for
+   kvm->arch.tdp_mmu_pages_lock and kvm->arch.mmu_unsync_pages_lock must
+-  also take kvm->arch.mmu_lock
++  also take kvm->mmu_lock
+ 
+ Everything else is a leaf: no other lock is taken inside the critical
+ sections.
+@@ -297,13 +297,13 @@ time it will be set using the Dirty tracking mechanism described above.
+ 
+ ``wakeup_vcpus_on_cpu_lock``
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-:Type:		spinlock_t
++:Type:		raw_spinlock_t
+ :Arch:		x86
+ :Protects:	wakeup_vcpus_on_cpu
+ :Comment:	This is a per-CPU lock and it is used for VT-d posted-interrupts.
+ 		When VT-d posted-interrupts are supported and the VM has assigned
+-		devices, we put the blocked vCPU on the list blocked_vcpu_on_cpu
+-		protected by blocked_vcpu_on_cpu_lock. When VT-d hardware issues
++		devices, we put the blocked vCPU on the list wakeup_vcpus_on_cpu
++		protected by wakeup_vcpus_on_cpu_lock. When VT-d hardware issues
+ 		wakeup notification event since external interrupts from the
+ 		assigned devices happens, we will find the vCPU on the list to
+ 		wakeup.
 -- 
 2.47.3
 

@@ -1,54 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794415884;
-	b=tJ28sZkONNtQJG12PmLqtwwaAnyEUGnxT16yelK2oJxCqLcisnQtCJUpGVy7HPTOVz+P
-	 fyvyy4Bo4xCL/3sU+R+BHGpMyCcXTe5J2mEUec6XVb8n28+bjmyf2KmVwb3GaSFBtaSLP
-	 aaeVCif2dRv7zHdb+QXqYISXLSM+hWss4FUurNLnCLMmi3LNLgwH/pj14UBg/4lcFngs7
-	 6g2LxLY6uy9efMWK4IotNhYNsOL5mh3MrgsgguFQa8DQE+D7I4TwgNkDcTsqMlsMuhhob
-	 URyOEPSZOV6Ikuk1bkyHKIvXFcO5Yr8zRRCxvIg+AfC5VYrcRlmD58MTdTWmCRgN58g==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794415884;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=BXhud/AUQ85lkv471QOBwvOmA53AitNKT5dvd8MAWHo=;
-	b=UYUH3VEcxcUvZH9cL/ttDqNZ6+sT+OZV70yRqu8b4I+sKNY75QWlSCj0LU8P3rxSczLL
-	 ns+A2Eu2AfYY8CRlBL5LrmUsxCs0lLeUmxseQxeZRB+waDYbybTGFI/3M3ZKc8T5EG1Al
-	 nSr1sr116AsMDz2C8JLvmtv6VQs7DW/+Xs6L9/Lse7oKE+jWT6Ks0/2CbEUfH8usgRiBt
-	 mKx0Sx9A14fuC7BhTPhRjNQoPajaDaLhEVTEr2plN5DxZ8HoMpG6jmg/NzMveqJQGicHQ
-	 ZnQazNFgGIVF9rAS4s0uQC3DNkeA/dASQvQNaky2I1FlGiGvSkUbr0pLtoFqSa/59Og==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794416510;
+	b=MZZAqrNtk5M70AHExaoEJyIidqnjm4PCijQGrBRWzR4vZO8na3raCRMfXDbBY9E8SnGC
+	 k8+kXh7hBRtUAMIQwkS2LrANMpwr7OQIEUvG5qjBBGCfdnj47y+TK9NwkTDeYfQSziyHs
+	 RRag2VzhgvPLs9SDwWXYXOU1/nCF1/APWLgp/963CYdJEoFZZNwtiFFWLV4mrd2/EGQqy
+	 dAdk+N055sfGjWleJF0017p29oOxAl0h1n9uZU+oVm9HZJYDOTSfNr/FoK+3pIRVZMCad
+	 QISFwxrqSr02dcusdFmJe5SnOVmlOQ/8hpTSt7M98nlRqBCHivb3cws2D4dTdVfr+hA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794416510;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
+	bh=Xu2IziJbxEx8FYDyoQyVNAj5hzygFsW53R6oVXAp9jI=;
+	b=DaFm+Cx7UgZmoCq8DocscuCodHq9izU/MMmpWm4Pd6V/KrtmnVtn7QPuH6t6DwulVJvZ
+	 Qu2RLO99cP+zS3nDgFmloIguQLmXIwCSzGbha/Zu0gPDEN6pbkgd7n7PI1A7yWASaqHyZ
+	 zVwD+0Q5ZnBr0VpKdfPIPCuoolZghgGtMLV1jhUIwLTPP4jLM0uKp42gPDCNwkzjH2XjD
+	 fbIvI9j1iq6AiO/pL39er88oYClBpVvAi7sx/b/HWftda7j38o/rUtoYvbQVmb6N5Q6S2
+	 eirxs5Hfnz8zxnsyRq6oU9U/Le94tblciBYXV7IELKjANeE6RdWouR/Mlq9G4P9+Qew==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=goldelico.com;
+	spf=pass smtp.mailfrom=goldelico.com;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gd5DE5+6;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uqCplBgc;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA72B606A33E;
-	Wed, 11 Nov 2026 16:51:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DA72B606A33E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <93e271bb46944ea887722fa2296efa26f4ce2c58.camel@crapouillou.net>
-Subject: Re: [PATCH v4 5/5] drm/panel: Add the HiBy LG35583
-From: Paul Cercueil <paul@crapouillou.net>
-To: Olivier Louvignes <olivier@mgcrea.io>, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, Neil Armstrong
- <neil.armstrong@linaro.org>
-Cc: David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Jessica Zhang <jesszhan0024@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
- <conor+dt@kernel.org>, "H . Nikolaus Schaller" <hns@goldelico.com>, Thomas
- Petazzoni	 <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org,
- 	devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Wed, 11 Nov 2026 17:51:16 +0100
-In-Reply-To: <20261109174640.96951-6-olivier@mgcrea.io>
-References: <20261109174640.96951-1-olivier@mgcrea.io>
-	 <20261109174640.96951-6-olivier@mgcrea.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190EB606A31C;
+	Wed, 11 Nov 2026 17:01:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 190EB606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gd5DE5+6;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uqCplBgc
+ARC-Seal: i=1; a=rsa-sha256; t=1794416478; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=mak7jq2/8Rsk23FLQfCe+Mu8DsN61rdmuyTzA9vEnSCfwHrvaM0Gjw89r49TUn4wGZ
+    PJ3T6dz37B9i0DdLoZS6KF/3hndQDCW+KcpIFr2cU2vvgHQA/j+yc3vnas4LMEXhxYL0
+    5MtTSNZA6Aj8R3WnqlAcHD6hs1eDsc2FMwbT9bR1n2MK1R6oXRzFGSDJ7jtjM2F2GKoE
+    K2VuAOSkLRRwFrjJ056659w7DunD9uYNT5jevrF/MGbo5BgEG3Y8BeCpMKlMGCKId7zt
+    D77PQKb64Ahkm4SWlyyqAYMXuDMtnSYaGNgxZgRtxGx+qFHjaGSJ6Q1d6+1vkMaQk3mQ
+    MbLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794416478;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Xu2IziJbxEx8FYDyoQyVNAj5hzygFsW53R6oVXAp9jI=;
+    b=de1VA6D9e+unLdPAyyTZqjwWUaltKanjD3fxrCkj7dupHUQUq9BST5izO3AJhtAqNV
+    zZ4Xjbt+/g7mU9R3jAPzN5+6pYAtc6RTQkVqC3TQkhrahdQdGL8I3bWYyIS+iUG9yo/u
+    etXIv90aS7cjaa6qTapoddj3Q065sgwgDCkB1YwkYSBanbBfWCunCya4CK4Nx5fboeqh
+    BH3zU/rFs1RJkNc8cvbLLIfLGAhjU/nS5ZR5B4QlklmP/vjEVnmVBPrrakvyc8Oh3kRj
+    VKwcEqykJI8qaiI6NlENZg/Q1eV0pdufDZft0mBPxijAJaE1NycTJ4tv1ZL7c94JHC2i
+    W4eQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794416478;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Xu2IziJbxEx8FYDyoQyVNAj5hzygFsW53R6oVXAp9jI=;
+    b=gd5DE5+66cCU5sdq3AMPaG0puSvSmGp3jHB2nfQDPJIWtHwr3kNa1Y9Qh7VWJLnkzz
+    qulNJprf4gsTHgIBtczakuRFXDujIl/g8dM0nat7NqvdrnbzmK05Ycr3XFw5pDBvP02o
+    YVfb8AD5XM6s2sWOVYprw+iwr81NFYWjvtlg1O6GO7zuoW3jLLLn8++l1vdjoBWCT1r7
+    rPC87cvJYA6h5jWI1coKZOIrW1aFN/qX9WQmea9wsUsqYD9oa3bY8Bh1nA9K7fYSj9gy
+    pm3m9JqWwcxAaeGTxE9cfpifOF5e0pLj4lwyc+iSE4R+ZAP4IjtCDLuSkqJXdNsQ6Wtt
+    FiOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794416478;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Xu2IziJbxEx8FYDyoQyVNAj5hzygFsW53R6oVXAp9jI=;
+    b=uqCplBgck3bT9FDPK9KopUAKaZTBMoPP9mAeRUmMnIxElv8/y97z6KnlwnD14b7v3c
+    Qj0g83EcZmqoGLV3jjAw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQjZoLz8iN2kucGv2N8YJDPry98OL4EAMbtbpe"
+Received: from smtpclient.apple
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Qb56a22ABH1I8hR
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+	(Client did not present a certificate);
+    Wed, 11 Nov 2026 18:01:18 +0100 (CET)
+Content-Type: text/plain;
+	charset=utf-8
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,461 +93,172 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
+Subject: Re: [PATCH] MIPS: ingenic: Let Config.VI tell whether the icache is
+ virtual
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20261110-mips-xburst-icache-vi-v1-1-efba689606dd@gmail.com>
+Date: Wed, 11 Nov 2026 18:00:47 +0100
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Paul Boddie <paul@boddie.org.uk>,
+ Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BA039439-3960-4865-B6D4-17B845BD77DB@goldelico.com>
+References: <20261110-mips-xburst-icache-vi-v1-1-efba689606dd@gmail.com>
+To: hunterlaux@gmail.com,
+ Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
-Hi Olivier,
+Hi,
 
-Le lundi 09 novembre 2026 =C3=A0 18:46 +0100, Olivier Louvignes a =C3=A9cri=
-t=C2=A0:
-> The 480x800 parallel RGB panel of the HiBy R1. It is set up over a 3-wire
-> SPI bus with 16-bit words, each carrying a register address byte or a
-> data byte, which no existing panel driver speaks. The set-up sequence is
-> the vendor kernel's; prepare sends it up to sleep-out, and enable and
-> disable switch the display on and off. It asks for BGR666: in RGB order t=
-he
-> R1 shows red and blue swapped.
+> Am 11.11.2026 um 05:09 schrieb Hunter Laux via B4 Relay =
+<devnull+hunterlaux.gmail.com@kernel.org>:
 >=20
-> Signed-off-by: Olivier Louvignes <olivier@mgcrea.io>
+> From: Hunter Laux <hunterlaux@gmail.com>
+>=20
+> The Ingenic CPU support treats every XBurst instruction cache as
+> virtually tagged: the feature overrides fix cpu_has_vtag_icache to 1,
+> and the probe sets MIPS_CACHE_VTAG. The setting came in with the =
+JZ4740
+> feature overrides in commit 83ccf69d8f11 ("MIPS: JZ4740: Add base
+> support for Ingenic JZ4740 System-on-a-Chip") without a stated reason,
+> and Ingenic's own kernels treat the icache as physically tagged.
+>=20
+> Neither XBurst1 nor XBurst II has a virtually tagged icache. Both
+> programming manuals describe a physically tagged one and hardwire
+> Config.VI to 0, which the cache probe already reads. On the X2600, =
+code
+> at a virtual address remapped to another page through the TLB alone
+> runs the new page, while the old line is still in the icache. XBurst1
+> has not been tested. Treating the icache as virtually tagged is
+> incorrect and costs needless icache flushes.
+>=20
+> Drop both and leave it to Config.VI.
+>=20
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Assisted-by: Claude:claude-opus-5-5
+> Signed-off-by: Hunter Laux <hunterlaux@gmail.com>
 > ---
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/gpu/drm/panel/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 10 +
-> =C2=A0drivers/gpu/drm/panel/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/gpu/drm/panel/panel-hiby-lg35583.c | 342 ++++++++++++++++++=
-+++
-> =C2=A04 files changed, 354 insertions(+)
-> =C2=A0create mode 100644 drivers/gpu/drm/panel/panel-hiby-lg35583.c
+> Lars, the override came with your JZ4740 support in 2010. On the off
+> chance you remember a reason for setting cpu_has_vtag_icache to 1,
+> I'd like to hear it.
+> ---
+> arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h | 1 -
+> arch/mips/kernel/cpu-probe.c                               | 3 ---
+> 2 files changed, 4 deletions(-)
 >=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ddc559cac674..062270232344 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8350,6 +8350,7 @@ DRM DRIVER FOR HIBY LG35583 PANEL
-> =C2=A0M:	Olivier Louvignes <olivier@mgcrea.io>
-> =C2=A0S:	Maintained
-> =C2=A0F:	Documentation/devicetree/bindings/display/panel/hiby,lg35583.yam=
-l
-> +F:	drivers/gpu/drm/panel/panel-hiby-lg35583.c
-> =C2=A0
-> =C2=A0DRM DRIVER FOR HIMAX HX8394 MIPI-DSI LCD panels
-> =C2=A0M:	Ondrej Jirman <megi@xff.cz>
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfi=
-g
-> index 26ffa2378f55..79528ff0100a 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -209,6 +209,16 @@ config DRM_PANEL_LVDS
-> =C2=A0	=C2=A0 handling of power supplies or control signals. It implement=
-s
-> automatic
-> =C2=A0	=C2=A0 backlight handling if the panel is attached to a backlight
-> controller.
-> =C2=A0
-> +config DRM_PANEL_HIBY_LG35583
-> +	tristate "HiBy LG35583 RGB/SPI panel"
-> +	depends on OF && SPI
-> +	help
-> +	=C2=A0 Say Y here if you want to enable support for the LG35583, the
-> +	=C2=A0 480x800 parallel RGB panel of the HiBy R1 digital audio player,
-> +	=C2=A0 which is set up over a 3-wire SPI bus.
-> +
-> +	=C2=A0 To compile this driver as a module, choose M here.
-> +
-> =C2=A0config DRM_PANEL_HIMAX_HX8279
-> =C2=A0	tristate "Himax HX8279-based panels"
-> =C2=A0	depends on OF
-> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makef=
-ile
-> index 365f2e73f6b4..9f5cacfaba29 100644
-> --- a/drivers/gpu/drm/panel/Makefile
-> +++ b/drivers/gpu/drm/panel/Makefile
-> @@ -21,6 +21,7 @@ obj-$(CONFIG_DRM_PANEL_ELIDA_KD35T133) +=3D panel-elida=
+> diff --git =
+a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h =
+b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+> index 7ace50127f..71c03f1dd4 100644
+> --- a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+> +++ b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+> @@ -27,7 +27,6 @@
+> #define cpu_has_mips3d 0
+> #define cpu_has_smartmips 0
+> #define kernel_uses_llsc 1
+> -#define cpu_has_vtag_icache 1
+> #define cpu_has_dc_aliases 0
+> #define cpu_has_ic_fills_f_dc 0
+> #define cpu_has_pindexed_dcache 0
+> diff --git a/arch/mips/kernel/cpu-probe.c =
+b/arch/mips/kernel/cpu-probe.c
+> index 489612ed9d..bef92e6cd6 100644
+> --- a/arch/mips/kernel/cpu-probe.c
+> +++ b/arch/mips/kernel/cpu-probe.c
+> @@ -1763,9 +1763,6 @@ static inline void cpu_probe_ingenic(struct =
+cpuinfo_mips *c, unsigned int cpu)
+> c->options &=3D ~MIPS_CPU_COUNTER;
+> BUG_ON(__builtin_constant_p(cpu_has_counter) && cpu_has_counter);
+>=20
+> - /* XBurst has virtually tagged icache */
+> - c->icache.flags |=3D MIPS_CACHE_VTAG;
+> -
+> switch (c->processor_id & PRID_IMP_MASK) {
+>=20
+> /* XBurst=C2=AE1 with MXU1.0/MXU1.1 SIMD ISA */
+>=20
+> ---
+> base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
+> change-id: 20261110-mips-xburst-icache-vi-db10a8d03dd6
+>=20
+> Best regards,
+> --=20
+> Hunter Laux <hunterlaux@gmail.com>
+
+it appears that this looks quite similar to what had been sent to us by =
+=E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
+5 years ago for testing and we integrated it into our out-of-tree kernel =
+but it never
+arrived upstream (attached as plain text just for review).
+
+So it is likely the right way to go to solve such an old bug if =
+independently suggested
+and did work for us for such a long time...
+
+Please compare and verify, as I am not an expert for MIPS cache.
+
+BR and thanks,
+Nikolaus
+
+
+See also: https://github.com/goldelico/letux-kernel/commit/ff0761012124d
+
+commit ff0761012124d0d06a9fc01c644c52399b7dc1f4
+Author: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) =
+<zhouyanjie@wanyeetech.com>
+Date:   Tue Jun 22 23:20:22 2021 +0800
+
+   MIPS: Ingenic: Fix the wrong cpu features.
+        1.Ingenic SoCs have never had a instruction cache with virtual =
+tag,
+     so the "cpu_has_vtag_icache" in cpu-feature-overrides.h should be
+     0, and the flag in cpu-probe.c should also be removed.
+   2.Ingenic XBurst=C2=AE1 CPU does not implement the UserLocal register =
+but
+     XBurst=C2=AE2 CPU does, so remove the "#define cpu_has_userlocal 0" =
+and
+     detect whether the processor supports UserLocal register through
+     "cpu_probe_ingenic()".
+        Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) =
+<zhouyanjie@wanyeetech.com>
+
+diff --git a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h =
+b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+index 7ace50127f5aa..24d6157ed6da6 100644
+--- a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
++++ b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
+@@ -27,7 +27,7 @@
+#define cpu_has_mips3d 0
+#define cpu_has_smartmips 0
+#define kernel_uses_llsc       1
+-#define cpu_has_vtag_icache    1
++#define cpu_has_vtag_icache    0
+#define cpu_has_dc_aliases     0
+#define cpu_has_ic_fills_f_dc  0
+#define cpu_has_pindexed_dcache 0
+@@ -37,7 +37,6 @@
+#define cpu_has_dsp            0
+#define cpu_has_dsp2           0
+#define cpu_has_mipsmt         0
+-#define cpu_has_userlocal      0
+#define cpu_has_nofpuex 0
+#define cpu_has_64bits         0
+#define cpu_has_64bit_zero_reg 0
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 489612ed9d498..bef92e6cd6950 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1763,9 +1763,6 @@ static inline void cpu_probe_ingenic(struct =
+cpuinfo_mips *c, unsigned int cpu)
+       c->options &=3D ~MIPS_CPU_COUNTER;
+       BUG_ON(__builtin_constant_p(cpu_has_counter) && cpu_has_counter);
+-       /* XBurst has virtually tagged icache */
+-       c->icache.flags |=3D MIPS_CACHE_VTAG;
 -
-> kd35t133.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02) +=3D panel-feixin-k101-=
-im2ba02.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) +=3D panel-feiyang-
-> fy07024di26a30d.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_FOCALTECH_OTA7290B) +=3D panel-focaltech-ota=
-7290b.o
-> +obj-$(CONFIG_DRM_PANEL_HIBY_LG35583) +=3D panel-hiby-lg35583.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_HIMAX_HX8279) +=3D panel-himax-hx8279.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_HIMAX_HX83102) +=3D panel-himax-hx83102.o
-> =C2=A0obj-$(CONFIG_DRM_PANEL_HIMAX_HX83112A) +=3D panel-himax-hx83112a.o
-> diff --git a/drivers/gpu/drm/panel/panel-hiby-lg35583.c
-> b/drivers/gpu/drm/panel/panel-hiby-lg35583.c
-> new file mode 100644
-> index 000000000000..9189c7c19665
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panel/panel-hiby-lg35583.c
-> @@ -0,0 +1,342 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * The LG35583 panel of the HiBy R1
-> + *
-> + * Copyright (c) 2026 Olivier Louvignes <olivier@mgcrea.io>
-> + *
-> + * A 480x800 parallel RGB panel, set up over a 3-wire SPI bus with 16-bi=
-t
-> + * words: 0x20 and a register's high byte, 0x00 and its low byte, then 0=
-x40
-> + * and each data byte. HiBy calls it the LG35583; its controller is not
-> + * identified. The set-up sequence is the one the vendor kernel sends.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/media-bus-format.h>
-> +#include <linux/module.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#include <drm/drm_modes.h>
-> +#include <drm/drm_panel.h>
-> +
-> +#define LG35583_ADDR_HI		0x2000
-> +#define LG35583_ADDR_LO		0x0000
-> +#define LG35583_DATA		0x4000
-> +
-> +#define LG35583_SLPIN		0x1000
-> +#define LG35583_SLPOUT		0x1100
-> +#define LG35583_DISPOFF		0x2800
-> +#define LG35583_DISPON		0x2900
-> +#define LG35583_RAMWR		0x2c00
-> +
-> +struct lg35583_write {
-> +	u16 reg;	/* 0: wait val milliseconds */
-> +	s16 val;	/* -1: no data */
-> +};
-> +
-> +#define REG(r, v)	{ (r), (v) }
-> +#define CMD(r)		{ (r), -1 }
-> +#define DELAY(ms)	{ 0, (ms) }
-> +
-> +static const struct lg35583_write lg35583_init[] =3D {
-> +	REG(0xb100, 0x06), REG(0xb101, 0x01), REG(0xb102, 0x54),
-> +	REG(0xb104, 0x07), REG(0xb105, 0x06), REG(0xb106, 0x06),
-> +	REG(0xb107, 0x4a), REG(0xb108, 0x21), REG(0xb109, 0x08),
-> +	REG(0xf101, 0xc0), REG(0xf103, 0x01),
-> +	DELAY(5),
-> +	REG(0xb400, 0x01), REG(0xb600, 0x10),
-> +	REG(0x3a00, 0x77), REG(0x3b00, 0x03), REG(0x5e04, 0x02),
-> +	REG(0x3600, 0x08),
-> +	DELAY(5),
-> +	/* Gamma */
-> +	REG(0xe000, 0x00), REG(0xe001, 0x2f), REG(0xe002, 0x3f),
-> +	REG(0xe003, 0x1f), REG(0xe004, 0x21), REG(0xe005, 0x2c),
-> +	REG(0xe006, 0x2c), REG(0xe007, 0x61), REG(0xe008, 0x1c),
-> +	REG(0xe009, 0x18), REG(0xe00a, 0xbc), REG(0xe00b, 0x27),
-> +	REG(0xe00c, 0x59), REG(0xe00d, 0x6a), REG(0xe00e, 0xbb),
-> +	REG(0xe00f, 0xbe), REG(0xe010, 0x3e), REG(0xe011, 0x48),
-> +	REG(0xe100, 0x00), REG(0xe101, 0x32), REG(0xe102, 0x45),
-> +	REG(0xe103, 0x26), REG(0xe104, 0x21), REG(0xe105, 0x2c),
-> +	REG(0xe106, 0x5c), REG(0xe107, 0x63), REG(0xe108, 0x1c),
-> +	REG(0xe109, 0x19), REG(0xe10a, 0xd3), REG(0xe10b, 0x28),
-> +	REG(0xe10c, 0x59), REG(0xe10d, 0x6b), REG(0xe10e, 0xdb),
-> +	REG(0xe10f, 0xde), REG(0xe110, 0x5f), REG(0xe111, 0x6b),
-> +	REG(0xe200, 0x7f), REG(0xe201, 0x7d), REG(0xe202, 0x86),
-> +	REG(0xe203, 0x89), REG(0xe204, 0x10), REG(0xe205, 0x1e),
-> +	REG(0xe206, 0x41), REG(0xe207, 0x77), REG(0xe208, 0x0d),
-> +	REG(0xe209, 0x1d), REG(0xe20a, 0xc8), REG(0xe20b, 0x30),
-> +	REG(0xe20c, 0x5f), REG(0xe20d, 0x71), REG(0xe20e, 0xc3),
-> +	REG(0xe20f, 0xbe), REG(0xe210, 0x3e), REG(0xe211, 0x48),
-> +	REG(0xe300, 0x7f), REG(0xe301, 0x7f), REG(0xe302, 0x86),
-> +	REG(0xe303, 0x93), REG(0xe304, 0x10), REG(0xe305, 0x1e),
-> +	REG(0xe306, 0x41), REG(0xe307, 0x89), REG(0xe308, 0x0d),
-> +	REG(0xe309, 0x1d), REG(0xe30a, 0xe0), REG(0xe30b, 0x30),
-> +	REG(0xe30c, 0x5f), REG(0xe30d, 0x70), REG(0xe30e, 0xe4),
-> +	REG(0xe30f, 0xdf), REG(0xe310, 0x5f), REG(0xe311, 0x6b),
-> +	REG(0xe400, 0x00), REG(0xe401, 0x43), REG(0xe402, 0x6f),
-> +	REG(0xe403, 0x60), REG(0xe404, 0x21), REG(0xe405, 0x2c),
-> +	REG(0xe406, 0x5a), REG(0xe407, 0x6d), REG(0xe408, 0x1c),
-> +	REG(0xe409, 0x18), REG(0xe40a, 0xc6), REG(0xe40b, 0x27),
-> +	REG(0xe40c, 0x59), REG(0xe40d, 0x6a), REG(0xe40e, 0xbb),
-> +	REG(0xe40f, 0xbe), REG(0xe410, 0x3e), REG(0xe411, 0x48),
-> +	REG(0xe500, 0x00), REG(0xe501, 0x46), REG(0xe502, 0x75),
-> +	REG(0xe503, 0x67), REG(0xe504, 0x21), REG(0xe505, 0x2c),
-> +	REG(0xe506, 0x5a), REG(0xe507, 0x7e), REG(0xe508, 0x1c),
-> +	REG(0xe509, 0x19), REG(0xe50a, 0xdd), REG(0xe50b, 0x28),
-> +	REG(0xe50c, 0x59), REG(0xe50d, 0x6b), REG(0xe50e, 0xdb),
-> +	REG(0xe50f, 0xde), REG(0xe510, 0x5f), REG(0xe511, 0x6b),
-> +	DELAY(5),
-> +	REG(0xc200, 0x70), REG(0xc202, 0x70), REG(0xc203, 0x44),
-> +	DELAY(20),
-> +	REG(0xc200, 0x51), REG(0xc201, 0x06), REG(0xc202, 0x51),
-> +	REG(0xc203, 0x66),
-> +	DELAY(20),
-> +	REG(0xc100, 0x45),
-> +	DELAY(5),
-> +	REG(0xc700, 0x46), REG(0xc000, 0xa3), REG(0xc002, 0x8a),
-> +	DELAY(5),
-> +	CMD(LG35583_SLPOUT),
-> +	DELAY(130),
-> +};
-> +
-> +struct lg35583 {
-> +	struct drm_panel panel;
-> +	struct spi_device *spi;
-> +	struct gpio_desc *reset;
-> +	struct regulator *vcc;
-> +	struct regulator *vccio;
-> +};
-> +
-> +static const struct drm_display_mode lg35583_mode =3D {
-> +	.clock =3D 28000,
-> +	.hdisplay =3D 480,
-> +	.hsync_start =3D 480 + 24,
-> +	.hsync_end =3D 480 + 24 + 24,
-> +	.htotal =3D 480 + 24 + 24 + 24,
-> +	.vdisplay =3D 800,
-> +	.vsync_start =3D 800 + 14,
-> +	.vsync_end =3D 800 + 14 + 5,
-> +	.vtotal =3D 800 + 14 + 5 + 8,
-> +	.flags =3D DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC,
-> +	.type =3D DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+       switch (c->processor_id & PRID_IMP_MASK) {
+         /* XBurst=C2=AE1 with MXU1.0/MXU1.1 SIMD ISA */
 
-FYI:
-28 MHz / ((480+24+24+24)*(800+14+5+8)) that's ~61.34 Hz, if your input cloc=
-k is
-a perfect 28 MHz you could have (.htotal =3D .hsync_end + 14) and (.vtotal =
-=3D
-.vsync_end =3D .vsync_end + 42) and get 60.001 Hz.
-
-Cheers,
--Paul
-
-> +};
-> +
-> +static struct lg35583 *to_lg35583(struct drm_panel *panel)
-> +{
-> +	return container_of(panel, struct lg35583, panel);
-> +}
-> +
-> +static int lg35583_word(struct lg35583 *ctx, u16 word)
-> +{
-> +	/* Copied to a DMA-safe buffer. */
-> +	return spi_write_then_read(ctx->spi, &word, sizeof(word), NULL, 0);
-> +}
-> +
-> +static int lg35583_cmd(struct lg35583 *ctx, u16 reg)
-> +{
-> +	int ret;
-> +
-> +	ret =3D lg35583_word(ctx, LG35583_ADDR_HI | (reg >> 8));
-> +	if (ret)
-> +		return ret;
-> +	return lg35583_word(ctx, LG35583_ADDR_LO | (reg & 0xff));
-> +}
-> +
-> +static int lg35583_write(struct lg35583 *ctx, const struct lg35583_write=
- *w)
-> +{
-> +	int ret;
-> +
-> +	if (!w->reg) {
-> +		msleep(w->val);
-> +		return 0;
-> +	}
-> +
-> +	ret =3D lg35583_cmd(ctx, w->reg);
-> +	if (ret || w->val < 0)
-> +		return ret;
-> +	return lg35583_word(ctx, LG35583_DATA | w->val);
-> +}
-> +
-> +static int lg35583_prepare(struct drm_panel *panel)
-> +{
-> +	struct lg35583 *ctx =3D to_lg35583(panel);
-> +	unsigned int i;
-> +	int ret;
-> +
-> +	ret =3D regulator_enable(ctx->vccio);
-> +	if (ret)
-> +		return ret;
-> +	usleep_range(5000, 6000);
-> +
-> +	ret =3D regulator_enable(ctx->vcc);
-> +	if (ret)
-> +		goto err_vccio;
-> +	usleep_range(5000, 6000);
-> +
-> +	gpiod_set_value_cansleep(ctx->reset, 0);
-> +	usleep_range(5000, 6000);
-> +	gpiod_set_value_cansleep(ctx->reset, 1);
-> +	msleep(50);
-> +	gpiod_set_value_cansleep(ctx->reset, 0);
-> +	msleep(30);
-> +
-> +	for (i =3D 0; i < ARRAY_SIZE(lg35583_init); i++) {
-> +		ret =3D lg35583_write(ctx, &lg35583_init[i]);
-> +		if (ret) {
-> +			dev_err(panel->dev, "Unable to set up the panel:
-> %d\n", ret);
-> +			goto err_vcc;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +err_vcc:
-> +	gpiod_set_value_cansleep(ctx->reset, 1);
-> +	regulator_disable(ctx->vcc);
-> +err_vccio:
-> +	regulator_disable(ctx->vccio);
-> +	return ret;
-> +}
-> +
-> +static int lg35583_enable(struct drm_panel *panel)
-> +{
-> +	struct lg35583 *ctx =3D to_lg35583(panel);
-> +	int ret;
-> +
-> +	ret =3D lg35583_cmd(ctx, LG35583_DISPON);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return lg35583_cmd(ctx, LG35583_RAMWR);
-> +}
-> +
-> +static int lg35583_disable(struct drm_panel *panel)
-> +{
-> +	struct lg35583 *ctx =3D to_lg35583(panel);
-> +	int ret;
-> +
-> +	ret =3D lg35583_cmd(ctx, LG35583_DISPOFF);
-> +	usleep_range(5000, 6000);
-> +	return ret;
-> +}
-> +
-> +static int lg35583_unprepare(struct drm_panel *panel)
-> +{
-> +	struct lg35583 *ctx =3D to_lg35583(panel);
-> +
-> +	lg35583_cmd(ctx, LG35583_SLPIN);
-> +	usleep_range(5000, 6000);
-> +
-> +	gpiod_set_value_cansleep(ctx->reset, 1);
-> +	regulator_disable(ctx->vcc);
-> +	regulator_disable(ctx->vccio);
-> +	return 0;
-> +}
-> +
-> +static int lg35583_get_modes(struct drm_panel *panel, struct drm_connect=
-or
-> *connector)
-> +{
-> +	/* Red and blue are swapped on the R1 without it. */
-> +	static const u32 bus_format =3D MEDIA_BUS_FMT_BGR666_1X18;
-> +	struct drm_display_mode *mode;
-> +
-> +	mode =3D drm_mode_duplicate(connector->dev, &lg35583_mode);
-> +	if (!mode)
-> +		return -ENOMEM;
-> +
-> +	drm_mode_set_name(mode);
-> +	drm_mode_probed_add(connector, mode);
-> +
-> +	connector->display_info.bpc =3D 6;
-> +	connector->display_info.bus_flags =3D DRM_BUS_FLAG_DE_HIGH |
-> +					=C2=A0=C2=A0=C2=A0
-> DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE;
-> +	drm_display_info_set_bus_formats(&connector->display_info,
-> &bus_format, 1);
-> +
-> +	return 1;
-> +}
-> +
-> +static const struct drm_panel_funcs lg35583_funcs =3D {
-> +	.prepare =3D lg35583_prepare,
-> +	.enable =3D lg35583_enable,
-> +	.disable =3D lg35583_disable,
-> +	.unprepare =3D lg35583_unprepare,
-> +	.get_modes =3D lg35583_get_modes,
-> +};
-> +
-> +static int lg35583_probe(struct spi_device *spi)
-> +{
-> +	struct device *dev =3D &spi->dev;
-> +	struct lg35583 *ctx;
-> +	int ret;
-> +
-> +	ctx =3D devm_drm_panel_alloc(dev, struct lg35583, panel,
-> &lg35583_funcs,
-> +				=C2=A0=C2=A0 DRM_MODE_CONNECTOR_DPI);
-> +	if (IS_ERR(ctx))
-> +		return PTR_ERR(ctx);
-> +
-> +	ctx->spi =3D spi;
-> +	spi_set_drvdata(spi, ctx);
-> +
-> +	spi->bits_per_word =3D 16;
-> +	ret =3D spi_setup(spi);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Unable to set up SPI\n");
-> +
-> +	ctx->vcc =3D devm_regulator_get(dev, "vcc");
-> +	if (IS_ERR(ctx->vcc))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->vcc), "Unable to get
-> vcc\n");
-> +
-> +	ctx->vccio =3D devm_regulator_get(dev, "vccio");
-> +	if (IS_ERR(ctx->vccio))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->vccio), "Unable to get
-> vccio\n");
-> +
-> +	/*
-> +	 * Deasserted, which keeps a panel the boot loader left on as it is,
-> but
-> +	 * as an output: after a reset the pin is an input, and prepare's
-> reset
-> +	 * pulse would never reach the panel.
-> +	 */
-> +	ctx->reset =3D devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR(ctx->reset))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->reset), "Unable to get
-> reset\n");
-> +
-> +	ret =3D drm_panel_of_backlight(&ctx->panel);
-> +	if (ret)
-> +		return ret;
-> +
-> +	drm_panel_add(&ctx->panel);
-> +	return 0;
-> +}
-> +
-> +static void lg35583_remove(struct spi_device *spi)
-> +{
-> +	struct lg35583 *ctx =3D spi_get_drvdata(spi);
-> +
-> +	drm_panel_remove(&ctx->panel);
-> +}
-> +
-> +static const struct of_device_id lg35583_of_match[] =3D {
-> +	{ .compatible =3D "hiby,lg35583" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, lg35583_of_match);
-> +
-> +static const struct spi_device_id lg35583_ids[] =3D {
-> +	{ "lg35583" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, lg35583_ids);
-> +
-> +static struct spi_driver lg35583_driver =3D {
-> +	.probe =3D lg35583_probe,
-> +	.remove =3D lg35583_remove,
-> +	.id_table =3D lg35583_ids,
-> +	.driver =3D {
-> +		.name =3D "panel-hiby-lg35583",
-> +		.of_match_table =3D lg35583_of_match,
-> +	},
-> +};
-> +module_spi_driver(lg35583_driver);
-> +
-> +MODULE_AUTHOR("Olivier Louvignes <olivier@mgcrea.io>");
-> +MODULE_DESCRIPTION("HiBy R1 LG35583 panel driver");
-> +MODULE_LICENSE("GPL");

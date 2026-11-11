@@ -1,79 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.52
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794370147;
-	b=MVlICaATS6S6yZnf8obJM/gS4fRaJMp8vVgPJBUpfrR+cDAcKKncSI2ixk/lnXEoUmTk
-	 sHszT9xEEZ5mfb9naQyitjLuEJo0PPfUS0PnQnCqZ7CtANX2+e2Rn0QVYVrpamxtapaL2
-	 3vvsfCmwIa11aSOygVRZ77oJnh66oXeueezjbPEvCZCv2YaXYGADCGi1L9Xh9NOf1hCLy
-	 hJrdFs7hTD9e34E52vKYD+WJpGDTliC8gA+ycjfVcbmcZoUZPM5M/tk0jiiZmU+eenr5J
-	 vZqX1DaZUmbrWXa+sA3mC6V+CcE3rrsu5Jz3qQb13BLzIi8l5l5SJ8CFqhGqeYSr5zQ==
+	t=1794382814;
+	b=pfUMkCYyoi4HV0Ea8fkDjOoHo47mUbm7ItPttY+iUHIXc0rZaAS4Kf/8rrJfwClX5OZU
+	 h7U3ude+bI1F3ii5/Z4Z3K6OPuv5xgF/TtNvCyKn7DWKqdpVDyaP5NHWNWAghL+iy81ST
+	 u6JGSOg93f8qN9m7v2mc718jaXpIyQ5uGgqlSSwk8oXKN696B+VmHVi6fktRz8R21WIw8
+	 IX71V5Ozwi0h3xaLq8B092g6FWe632RoqEYPv+9wevQR8RS5gXDL2pgOW6hMl7Ku3f45L
+	 aNjeFbYIww7edsd2nN6d/FMcQ5R4dVgPS+W9oxVci74CcZBhfv+vxJj1b4iPOR4Qm8A==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794370147;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:X-B4-Tracking:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
-	b=1lu43ne3llC8cXuGYCOyzHh0q2XqEMNq6YTIy0GCo/IyJ2gZ65y5+5pJTQrAMwq5OZ+k
-	 ERt/Lz0L+4KbUZtYQXpW8PGN6amgc+0cvkztQ0xutvhNzS1Hmz353yrCp0JDB4KQf8PzM
-	 r5RnE0VHOAfU7kciX5XzWGMMxUN748CionsC9He5w9+5Hz9bbpQ3eUJTnXDeKvMLnWzp3
-	 Ab8TLNVEnFqhdjfnAPbJqSrEl2FYe4Iv1KDGw9mySyHKF5UArxznocG3byCemg25yTDTp
-	 LqnS1Zlj3unuHXEyIlVxMeeITr5u5JyIKKvSBGd7GW59cTfpvLEb9tlxR+I4aKXIv4g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794382814;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=UE+ZO+LDbUQkJMK6amSVRY89ivr6MWd0ox+os4xr0eo=;
+	b=Bf2CIhtddlCxj3bg5yDLN1aVvoXNtXcicAyCxfYt5wTPekGknNKGtwNwBdxV7wru2evj
+	 OCPQDe7cobEfgOhVjUKJz9ULWY4XPgpcq7pJQW2kvICoLWgjCWQZ+rIYnQQrCPuxn6A4P
+	 TFaeONTeaVyhO/YV5VW2MFdxy5Lwy/tFKjLb2UDW/s/1vyai9KsnlhXZYI6UHbulWwdGS
+	 yd8W4qq8yt5l39Uzhy3Y8iLnDpM7yoy+XlRgSDJW/IwkV+By1anOkGoy0PspUwEvC8Nye
+	 34MaYJLZ6hAeE4RRRa9b/6YyJqIFr5/6vSZ85wR2FJEYgNXpECRmN8e1VpfDu3G45bg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TezoHI7d;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6737606A321;
-	Wed, 11 Nov 2026 04:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TezoHI7d
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1794370147;
-	b=R2CnwztBjOtWpbz0ho1gf4SF1JfDtDZ+RSWT2neFLiRu+Xyo1Xlf9xBTDd/XJr+bHJ8u
-	 meGHDyHG+x+kE4Vq/rf5uYQVF09l17s3IneyS7cvQT3MsU2MJphHpC83LQB7mm/qISOKT
-	 Ra13XYhoUEg+MYgUefG7X8OoXmEhPqsvE6yVqfvYHZkQUU3O8Xkej4K7fq4sOGHJ4VThS
-	 qUgh0tpsWuzjGy9mctRQM8i2Ts2g/e2O8wC51sCpyTm3NCBsmV4okYQKt2jEn9OUQiw9y
-	 5Ujx4tcLaHaBgFwdzVak28AfXgoWbalqg7Nio8Y5JZjPnPVL2rBDYuyfvtBVQeWxBpg==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1794370147;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key:X-Endpoint-Received:X-Original-From:Reply-To:
-	 Content-Transfer-Encoding;
-	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
-	b=xYYxXyyo0GQrfdGpOB3HeABt2tO+BpfkCFS835+3F6mbBZepzBdnmkgKqs+Mts/yhsej
-	 zw0H/+CG9OswDnLRm42FbAaY0vAG9Oq/e+5AUyCv4j/F/73+MkZtpiA7h3d4VfMphExQ0
-	 4AatdFWJPDTEnTTR20Se8o0QX2lKOuuUK1yJJiNyWY7khoY/pv2K0soNOQbrTVhWuT9J2
-	 wCzpsAWIn8+fMsX726mEiW2zJCBE6bylaxPkOxTno6tL3KYrBX26eiucFEnduhwfuW2J4
-	 IZTx62DtmKfjy85C6xUPgbIPTH/C3Smz/OYaQF+8RWjf3A6HYV1l792rSv5YF5n++hg==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VCD6QF64;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.52
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id AF2DB1F0089F;
-	Wed, 11 Nov 2026 04:09:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794370147;
-	bh=PsDgrxkXPiqjiEztk1kKnzx1+PxCAUEjUyDWrmhcWY4=;
-	h=From:Date:Subject:To:Cc:Reply-To;
-	b=TezoHI7d2j/0+w6aS2BBO5HQcektIzRx3mmH99xKSNFF/lqHTS+89OyRYGz7KSRtQ
-	 /HbH5L5zDmCfskJSRiuYExrasto9rFQuySDehfiBBFfQhAOzNzT5apafCQETiNOaT6
-	 fYujMS0R0WUqlwophIW8Zc3s0Q9Ct+GbUZmxJywjTnr0fcXMQSmsVDOeuIG7Y5gosM
-	 inxEwwRitrgtqZZG0Ilcm4EG9nYg9CMarEL9FV+xd2+E8QWIedpXPTBkpgFsjUw1xM
-	 4SQO57IQYw/aKozcgAqt7VV5ebF3UQojK2BVGh4IlieWw7Qkv2fIW8EoKiSJ9giPko
-	 PtEehs3QJq1mQ==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 0CF8548D5F;
-	Wed, 11 Nov 2026 04:09:06 +0000 (UTC)
-From: Hunter Laux via B4 Relay <devnull+hunterlaux.gmail.com@kernel.org>
-Date: Tue, 10 Nov 2026 21:09:03 -0700
-Subject: [PATCH] MIPS: ingenic: Let Config.VI tell whether the icache is
- virtual
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA909606A327
+	for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 07:40:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CA909606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VCD6QF64
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-6b581b6b0e9so1724744a12.2
+        for <linux-mips@vger.kernel.org>; Tue, 10 Nov 2026 23:40:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794382812; cv=none;
+        d=google.com; s=arc-20260327;
+        b=aQaFbLDgBOxB+U2wqBIT+aqHGjODCFxhO8cMeJZLQXx5BMbyiGf29eHxUfkvVLs2WJ
+         GumGTnLSZIt/X7JRcgYlLHSsbgjmWvyZbC1Onj3B5KTikG2cgKdcsWTTD/tEDSeOCNwi
+         iICeJCZ2+dz4jKQ1t7sPy/TGmR764QZg/ZebWGp4wsLN/sd8edGGcwe8/Ks6siNcUu1A
+         wBgb69fDvsHSnLkQuZF7koNRjeYL0Men/cDDowoy0ZXcgdYBMut5vj8AE5KPeYPg1fLW
+         aRJWjDT5GWBAy+bBwWFsuasYrII26K6oqSclL/OwzJVN8bGkV+YFNcCkDGA2XwsxoALZ
+         9wZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=UE+ZO+LDbUQkJMK6amSVRY89ivr6MWd0ox+os4xr0eo=;
+        fh=4jt3Faqb8HbZSHjsNg1SRT8i2W4/eMDfASdyFbnzQQs=;
+        b=EapN9fKO5lgUoZGMY1USmUq4JBIcAIiSlQI2c92yOtNhKu+0eGbJ2IzV+KYCVrlKaM
+         uncUGzG4NkOTOjMxefduP4Itbh0NWFDEoHy/vwhfJDHQTO1vaP7UGg0BSfOKmIQl9RDR
+         zuT7XH5acwAmpg1LBzd5cF95DwDqo+rehTjXI3BlyJjXKFSYDzVKIWiA7MGd/gBIdZCv
+         /jA+9iX7oiew1HmPtXf5mOmq8VHspv0i57FnEsAPC7Sxs5A8JWo1tlKiudIy+/JhpoZ2
+         72Or1HJBJGZvRfZDdFHNPoFEYioxufeHM2K5cdSVmu7z+QrE3pGiyzYE6xdX2j4e8Xa5
+         J9sQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794382812; x=1794987612; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=UE+ZO+LDbUQkJMK6amSVRY89ivr6MWd0ox+os4xr0eo=;
+        b=VCD6QF64cq+6EajKVeH2KGvi/U5cBgOq2QaZUPujN9TUpScC8tW0bSWQt0oDUSy4JW
+         S6Z8D6nWlIJvYo0C12W4DfrOkGdol86fJwYUUTyy4O1KRs5ZZZUMVLH5TcN2PkElzTMC
+         CDPcO/9EjC2evHTSCepGDSbwuoSelf7KCGcOupsWhHmqIXstiHNkS+oNFTvRiDsE9USX
+         LiWsrb9RYjjdGp3t/FMvX1MXOCXDbkNCM98PDcj50ceTD5evbGSrKBzvVmJsknTflsiz
+         goYBb6lxDQzfivXfrbKsifTYJfLVgLYCutTWcyI9Jo7kHyPrf094IrOod562TSGGHij3
+         JFcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794382812; x=1794987612;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=UE+ZO+LDbUQkJMK6amSVRY89ivr6MWd0ox+os4xr0eo=;
+        b=Itilh6if0V8s1y+Wg6QgYqK8mSguU4qeg/7qsVWXC0t/aPKYVSjgFJS5xBZG/s2pgi
+         XU+fJgC6jCVhKSG94l+CpuxLI1GQIP7CRV3eIJXbyOeUn7mTgbas6IwVzERehIDAib43
+         EOey9WKzC3LXsRAeFqSN+HzQYqK+Apc70Qufs2vjVbpWsjEoXpu5VNWtk2Kbr5KYhWXW
+         Y6I6XW/QxnG4inPFGCcepKnbpJ6Dbkt9Gh+OyiAWoP4rrcP0dERI5vrtFYFgwJZhh3ZG
+         YWT0Prv6g0wj6JT/9zExvLwI05mINc8mBpRGIqjakpObTf4Pm/Fan8EvnSYyqEq8KKTa
+         bIhw==
+X-Forwarded-Encrypted: i=1; AL+hErHwYUtWzu/TgZRT4oGk8jnIs+AFVHwAoTHMgbjgSxsRhKU2aX0nSA5MMh03CZ0O+eUBabt8mLtN/8LT@vger.kernel.org
+X-Gm-Message-State: APuU4Z/gqjeggODj5J3SJzGM+zViHDHGkF6orbSw80zt8j2QC/sSI/o0
+	urSfUv2ZAeaZrcEb5akC/QWDtsAKO4dKUD3y4Dnf2UUnQbrjF2XDyK681d3AMJ0jaijMAog9ZlS
+	dbtvxKitMzucfvozoCOq5ctMh81Fq2kY=
+X-Gm-Gg: AYBFou1/4WkiLnPUmn4tzdkAGIH7zQz/5LbIHHGLIyMLgGwyszpMSFspjGh2TDdeIWG
+	Lwm24JJOYk0epe3xPV+tEr+MEHsA23URAE6WrnMdoGcehDn7oLCuOl/7lnALzN14JkskeK+p4xc
+	WKXH6MrS0izmWYz3nnHx32+UNXOG19EIiVsRyONSeQDg/ggXXCUSiidIEyOfu39szghql5JEfII
+	iwiBk8hRnbtx6qI6xfLUpc4ovG+J9IzIifej0awD2XtmUjHsZriQ7a2Du1t+2iRTStjii0O8NGV
+	8TAGOEBxT0R4vmaij5U5P+RRhHZ5CWW78qp9+ThOD4v0oIXU0AyZ6eWajFeixrVRY4X16zJ75SN
+	PznwEEfW20jjRfg6xUZrMg5j2gtKmLg3AD+HfqAESevLPj+geF1IewqHNKc69gMQI4qt9/g==
+X-Received: by 2002:a05:6402:a614:b0:6b4:2aa6:2bf7 with SMTP id
+ 4fb4d7f45d1cf-6b7773fba00mr814626a12.17.1794382812113; Tue, 10 Nov 2026
+ 23:40:12 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,93 +104,75 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261110-mips-xburst-icache-vi-v1-1-efba689606dd@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAF7q82oC/x3MPQqAMAxA4atIZgONgohXEYfaRM3gD42KULy7x
- fEb3ktgElUMuiJBlFtN9y2DygLC4rdZUDkbKlc1RORw1cPwGa9oJ2rwYRG8FXkk51t2NXMDuT2
- iTPr833543w+ofuiIZwAAAA==
-To: Paul Cercueil <paul@crapouillou.net>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Lars-Peter Clausen <lars@metafoo.de>, Hunter Laux <hunterlaux@gmail.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794370145; l=2681;
- i=hunterlaux@gmail.com; s=20261109; h=from:subject:message-id;
- bh=cXFr6wRPxVPgKvzA/Ve7zSz/KJTDwuu+N1xApA/N3xY=;
- b=UKlZ8oi6sWqvZJ0m3xZeRfzwO8CcyCPNgl6B2IiUpljtQGdiBROaXejpdWeYKhZKvsPCgwTZl
- uovwasrpm1wDmmpxs++CRRWRW1mguTLQ7oPxp8YAZeAAvOUpqYo7Rvp
-X-Developer-Key: i=hunterlaux@gmail.com; a=ed25519;
- pk=Z5VTsE4CAwditt0CNeG+rpPk7xDUVh+oHWDZlNNm8FI=
-X-Endpoint-Received: by B4 Relay for hunterlaux@gmail.com/20261109 with
- auth_id=1476
-X-Original-From: Hunter Laux <hunterlaux@gmail.com>
-Reply-To: hunterlaux@gmail.com
-Content-Transfer-Encoding: 8bit
+References: <20261105-tonyk-syscall_table-v9-0-8d1275885d9c@igalia.com> <20261105-tonyk-syscall_table-v9-10-8d1275885d9c@igalia.com>
+In-Reply-To: <20261105-tonyk-syscall_table-v9-10-8d1275885d9c@igalia.com>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Wed, 11 Nov 2026 08:40:00 +0100
+X-Gm-Features: AclHuK-efo-IN8C0PeBM3H51GRM-qrC5WxHB8slQK0l-tYnt6GeST1OC-lb_0Yw
+Message-ID: <CA+=Fv5RNznnVyh4AM_ZTdwyK4iv-8TEO5Ejx0_81sf5CTeoGgw@mail.gmail.com>
+Subject: Re: [PATCH v9 10/15] alpha: Define entry point for
+ set_mempolicy_home_node syscall
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmanon <arnd@arndb.de>, 
+	Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, kernel-dev@igalia.com, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-alpha@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	soc@lists.linux.dev, linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hunter Laux <hunterlaux@gmail.com>
+Hi Andr=C3=A9
 
-The Ingenic CPU support treats every XBurst instruction cache as
-virtually tagged: the feature overrides fix cpu_has_vtag_icache to 1,
-and the probe sets MIPS_CACHE_VTAG. The setting came in with the JZ4740
-feature overrides in commit 83ccf69d8f11 ("MIPS: JZ4740: Add base
-support for Ingenic JZ4740 System-on-a-Chip") without a stated reason,
-and Ingenic's own kernels treat the icache as physically tagged.
+On Thu, Nov 5, 2026 at 9:06=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@igal=
+ia.com> wrote:
+>
+> Instead of explicitly defining set_mempolicy_home_node as sys_ni_sycall i=
+n
+> the syscall table, define it as the real syscall entry point,
+> sys_set_mempolicy_home_node. As per commit fdb7d9b7acd0 ("alpha: remove
+> DISCONTIGMEM and NUMA"), alpha doesn't have NUMA support, so none of the
+> mempolicy sycalls will ever be compiled for alpha, resulting in the
+> COND_SYSCALL() fallback being used to result in the sys_ni_syscall.
+>
+> There's no function change here, but this step helps to unify the syscall
+> tables and create a common table to rule them all.
+>
+> Acked-by: Magnus Lindholm <linmag7@gmail.com>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+> ---
+>  arch/alpha/kernel/syscalls/syscall.tbl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/s=
+yscalls/syscall.tbl
+> index 52e3538cc7df..8fc4701a6328 100644
+> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+> @@ -489,7 +489,7 @@
+>  # 557 reserved for memfd_secret
+>  558    common  process_mrelease                sys_process_mrelease
+>  559    common  futex_waitv                     sys_futex_waitv
+> -560    common  set_mempolicy_home_node         sys_ni_syscall
+> +560    common  set_mempolicy_home_node         sys_set_mempolicy_home_no=
+de
+>  561    common  cachestat                       sys_cachestat
+>  562    common  fchmodat2                       sys_fchmodat2
+>  563    common  map_shadow_stack                sys_map_shadow_stack
+>
+> --
+> 2.56.0
+>
 
-Neither XBurst1 nor XBurst II has a virtually tagged icache. Both
-programming manuals describe a physically tagged one and hardwire
-Config.VI to 0, which the cache probe already reads. On the X2600, code
-at a virtual address remapped to another page through the TLB alone
-runs the new page, while the old line is still in the icache. XBurst1
-has not been tested. Treating the icache as virtually tagged is
-incorrect and costs needless icache flushes.
+My Acked-by already in this patch still stands.
 
-Drop both and leave it to Config.VI.
+I tested the series against my Alpha for-next, with the integration
+adjustments described in my replies to patches 11 and 12. Full GENERIC
+SMP and DP264 UP builds passed.
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Assisted-by: Claude:claude-opus-5-5
-Signed-off-by: Hunter Laux <hunterlaux@gmail.com>
----
-Lars, the override came with your JZ4740 support in 2010. On the off
-chance you remember a reason for setting cpu_has_vtag_icache to 1,
-I'd like to hear it.
----
- arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h | 1 -
- arch/mips/kernel/cpu-probe.c                               | 3 ---
- 2 files changed, 4 deletions(-)
+The generated dispatch table changes syscall 560 to
+sys_set_mempolicy_home_node as intended. Alpha has no NUMA support,
+so this still resolves to the sys_ni_syscall fallback.
 
-diff --git a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
-index 7ace50127f..71c03f1dd4 100644
---- a/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
-+++ b/arch/mips/include/asm/mach-ingenic/cpu-feature-overrides.h
-@@ -27,7 +27,6 @@
- #define cpu_has_mips3d 0
- #define cpu_has_smartmips 0
- #define kernel_uses_llsc	1
--#define cpu_has_vtag_icache	1
- #define cpu_has_dc_aliases	0
- #define cpu_has_ic_fills_f_dc	0
- #define cpu_has_pindexed_dcache 0
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 489612ed9d..bef92e6cd6 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1763,9 +1763,6 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
- 	c->options &= ~MIPS_CPU_COUNTER;
- 	BUG_ON(__builtin_constant_p(cpu_has_counter) && cpu_has_counter);
- 
--	/* XBurst has virtually tagged icache */
--	c->icache.flags |= MIPS_CACHE_VTAG;
--
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 
- 	/* XBurst®1 with MXU1.0/MXU1.1 SIMD ISA */
-
----
-base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
-change-id: 20261110-mips-xburst-icache-vi-db10a8d03dd6
-
-Best regards,
--- 
-Hunter Laux <hunterlaux@gmail.com>
-
-
+Thanks,
+Magnus

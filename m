@@ -1,61 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=23.90.104.147
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.11
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794486575;
-	b=g9KZo3mehwjfeBdRZPm4j91brYd19ttRamKVWN7mW9h+i+CRz7Cxk8lOx6QTZLkAKhGM
-	 ik+8GEMvJQvsSgcmNMm6eyNx0dQAhap1qRIokGASyyFZ9H+H31o/R/TIqoX1NmeXBUHPo
-	 sohtqVwBguaFXL3800Nb63kubKb5IUA6N6pLcwd8lXgWOydfmKhUrDVflccXqg0cNfGPV
-	 oL9ytc7JoWt++iU1uhd2zrK82kME48rbA5WSkHWC7YG4xibUNlsmnOEoZfd8srbuP6d1i
-	 8lCcyE7rZ9Cwy8Jx8JoEupHaBNbNB2wYw87ltO14OxWanUpsT/LI50vOjFLxOvloFRQ==
+	t=1794487245;
+	b=OMZsIhOMTuAOJS4rdJVjLhFQWcJDivEE/9IQQDeDPl9ALqXZCchVMlXqtlBiURWALRRR
+	 dWTaWv5fL3EtXvU0N6xEPsXrFWltjMc945pNI6k0IeDjeK8h7LCtOdtHdb9uR+/P2fCIV
+	 6Jv296htKdJ5Gmag/k4wbezhKCmu0hbgVF89SfVcd9FU5OSuHg6eptuLApzB6XYsh5qWe
+	 B9iypnwa5kjHmEGV6akn/Bcd0rIB5MSvle3/LY8RunlUWBY0t64tL1pt/K0PnYoW3gLdl
+	 YRmnR+juUqsDHEpOpTya5cDIXBS5nWrUaRQmT/S4YkLD3QrZsrSuhesB0tW/6e1LxfQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794486575;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-Amp-Result:X-Amp-File-Uploaded:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:Received:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer;
-	bh=E3uK4ToIL2mUz3Svln8sWa7foOIYRKuRK6T5m3vJSVY=;
-	b=OtKF/d8zCoyLzm+Ed1363eiIFfilAwb7a1Qka4Z4eUEAG96eQjmf2wyO7HZFN5nHutjS
-	 dfY6VIjlbVRVvaP4ELjkz1JZM5USV4cCwLfbTzSsySQCU4NzUnH9K7sRC7rpnSwDadkY7
-	 UPUdmmvjk2VBfD/XwGKawFTJ6V5RyDT5owbjTA5kCKpwgqVsrj+LhP8QzWihtTkZryStr
-	 8YCmSZFgLjBBJS+CP2E3I08O1RrfZ/7fa9YjmfFvOqILMnMoGSH/8nuRejDWP1w27LU2K
-	 PRX44Z2CVMkF/aLKH8UwHI/plhIciw/Ac+pwpmLbFxNgPZCvDEletIJq7heHC3CfLIg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794487245;
+	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Content-Language:
+	 From:In-Reply-To:Content-Transfer-Encoding:X-CMS-MailID:
+	 X-Msg-Generator:Content-Type:X-RootMTR:X-EPHeader:X-CMS-RootMailID:
+	 References;
+	bh=I9X4XD5ud4JHTzb58pE9cFq0Gp7fU1CTG2I9JiABR6U=;
+	b=Y63C27GrfjWQgk6AZlbZAh1ocb758KREBXLmULKtgELdYlkUw0Esg6i0kaCrZAP7PbPK
+	 RugYyE1OmjzKXNPBNxuhCnmnBb7OaGI1Y9Nglvm+wPZ2Fo+QQr+jwKpfvmdUunLa21pCV
+	 w91nkhVedf5Qtv99e39EX7OGTf+Gr0dOM4sePn/+0aHT+czg8zS/dmlflZeRLcPaVaIoj
+	 +N35hcxtkJ2jKhpPx/tedf++E5WHSxkyZbzBNnfYSUiYWk5jNpNglET6URJ5vFqAcwvHr
+	 BkOBBMr1vsvOL7S8esn95l4fHWl6+sa/xai02++8dpxcFIaVeBFP51BqtCSn/G1y+pw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mobileye.com;
-	spf=pass smtp.mailfrom=mobileye.com;
-	arc=none smtp.remote-ip=23.90.104.147
-Received: from esa2.hc555-34.eu.iphmx.com (esa2.hc555-34.eu.iphmx.com [23.90.104.147])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAA5606A894;
-	Thu, 12 Nov 2026 12:29:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5FAA5606A894
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mobileye.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mobileye.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=mobileye.com; i=@mobileye.com; q=dns/txt; s=MoEyIP;
-  t=1794486581; x=1826022581;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=CVPab+eqiu3Puch8ckhPaA7dUxIgv7j+PTZCvvIA2cs=;
-  b=CDfZ3H0QaFmRAQDEpTLrzuNHQc7g/zasEBIXDJ7b4ruPUUjQocSpTgX4
-   h4sMKYijD1UxKGuX9ZFAaNMZEi0O/4BnByChmanbPi5Xkrz7iqgHBjyVp
-   nqYaLKndkTl49nxgEQK8dKH3LAIKOrL5uBVpX64M3MQPiReq5IMg/tSia
-   /RycTBOuQw6UZzRitP1HJ5lzmvsXdg77ArSOFCHtcABYqpzS6lBNVTalJ
-   WFRDTKe5huSZX6rK0orDEa8T7dfdmWT7z5FWYfQvJdec3c4FC/J8ay3Aw
-   jhcxQOArhpWuAlWhv6Y95rpT0OlPY7XFfF5GSXFQDwlPIZN+D4k7kkUOM
-   g==;
-X-CSE-ConnectionGUID: Onf6UB9YRtWDDtYrsJWD9A==
-X-CSE-MsgGUID: QOon83Y6Tom8tCX4zAk+gQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from unknown (HELO ces01_data.me-corp.lan) ([146.255.191.134])
-  by esa2.hc555-34.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2026 14:29:31 +0200
-X-CSE-ConnectionGUID: zrfLJ32aT/e9A3NIpkHx5Q==
-X-CSE-MsgGUID: eQ1Chy+aQ7SpgWhbo53KEQ==
-Received: from unknown (HELO epgd071.me-corp.lan) ([10.154.54.2])
-  by ces01_data.me-corp.lan with SMTP; 12 Nov 2026 14:37:36 +0200
-Received: by epgd071.me-corp.lan (sSMTP sendmail emulation); Thu, 12 Nov 2026 14:29:22 +0200
-From: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-Date: Thu, 12 Nov 2026 14:29:03 +0200
-Subject: [PATCH v2 6/6] MIPS: eyeq6_defconfig: enable the CM3 PMU
+	dmarc=pass header.from=samsung.com;
+	spf=pass smtp.mailfrom=samsung.com;
+	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b="res/twsR";
+	arc=none smtp.remote-ip=210.118.77.11
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B68606A32D;
+	Thu, 12 Nov 2026 12:40:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 18B68606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=res/twsR
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20261112124042euoutp01e70ce1178d26db6b7c248a8e4494b386~nTKOYIdlg2545925459euoutp01N;
+	Thu, 12 Nov 2026 12:40:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20261112124042euoutp01e70ce1178d26db6b7c248a8e4494b386~nTKOYIdlg2545925459euoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1794487242;
+	bh=I9X4XD5ud4JHTzb58pE9cFq0Gp7fU1CTG2I9JiABR6U=;
+	h=Date:Subject:To:From:In-Reply-To:References:From;
+	b=res/twsRekcb00rl0hpigdDQU49wJT9sewqF9AZUfNVtehuVCXJxiXNmMChvBTE4G
+	 eET/M3Ndk/cN+pz1L0w+/FpjnaGKptZRpIyBuWJJY/P+4a8RF1Bcj0RGmLHmGYIVpi
+	 4s1s/PiyRviToazDh7OQfOe5aoNIe42v3Wv4p1io=
+Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20261112124041eucas1p2e0fefb8eb4e504a6bbf86fc3bbd57b3b~nTKOBqqaA1051410514eucas1p21;
+	Thu, 12 Nov 2026 12:40:41 +0000 (GMT)
+Received: from [192.168.1.44] (unknown [106.210.136.40]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20261112124039eusmtip15ffbafa2efefdb32bf4f0155ad33cff7~nTKMZv7ec1174711747eusmtip1g;
+	Thu, 12 Nov 2026 12:40:39 +0000 (GMT)
+Message-ID: <52c54fdf-0879-4dda-9eac-822180f811bc@samsung.com>
+Date: Thu, 12 Nov 2026 13:40:39 +0100
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -65,60 +64,89 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/15] lib/lz4: widen LZ4_DECOMPRESS_INPLACE_MARGIN
+ for the fast decode loop
+To: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+	<justinstitt@google.com>, Russell King <linux@armlinux.org.uk>, Thomas
+	Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+	<James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, Heiko
+	Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander
+	Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
+	<borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
+	Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>, Sergey
+	Senozhatsky <senozhatsky@chromium.org>, Jens Axboe <axboe@kernel.dk>, Andrew
+	Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-block@vger.kernel.org, Yann Collet
+	<yann.collet.73@gmail.com>, Nick Terrell <terrelln@meta.com>, Gao Xiang
+	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Jaegeuk Kim
+	<jaegeuk@kernel.org>, Eric Biggers <ebiggers@kernel.org>, Herbert Xu
+	<herbert@gondor.apana.org.au>, David Laight <david.laight.linux@gmail.com>,
+	Sungguk <sungguk.na@samsung.com>, Jaehoon Chung <jh80.chung@samsung.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org
+Content-Language: en-US
+From: Michal Wilczynski <m.wilczynski@samsung.com>
+In-Reply-To: <avTmC_1I59FKA1FN@MacBookPro.fritz.box>
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261112-i6500-cm3-pmu-v2-6-cd2569571819@mobileye.com>
-References: <20261112-i6500-cm3-pmu-v2-0-cd2569571819@mobileye.com>
-In-Reply-To: <20261112-i6500-cm3-pmu-v2-0-cd2569571819@mobileye.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, Will Deacon <will@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, Kees Cook <kees@kernel.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Fu Chao-Ying <chao-ying.fu@globalfoundries.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-rt-devel@lists.linux.dev, devicetree@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org
-X-Mailer: b4 0.16.0
+X-CMS-MailID: 20261112124041eucas1p2e0fefb8eb4e504a6bbf86fc3bbd57b3b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20261106144309eucas1p2a9bfcc1cf81779d473fb073e7d9139b7
+X-EPHeader: CA
+X-CMS-RootMailID: 20261106144309eucas1p2a9bfcc1cf81779d473fb073e7d9139b7
+References: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
+	<CGME20261106144309eucas1p2a9bfcc1cf81779d473fb073e7d9139b7@eucas1p2.samsung.com>
+	<20261106-lz4-vendor-upstream-v2-12-ee04c3f0d7dc@samsung.com>
+	<avTmC_1I59FKA1FN@MacBookPro.fritz.box>
 
-Enable perf events and build the Coherence Manager 3 PMU driver as a
-module.
 
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
----
- arch/mips/configs/eyeq6_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/configs/eyeq6_defconfig b/arch/mips/configs/eyeq6_defconfig
-index 0a00a201937b..2d06d9ed6526 100644
---- a/arch/mips/configs/eyeq6_defconfig
-+++ b/arch/mips/configs/eyeq6_defconfig
-@@ -19,6 +19,7 @@ CONFIG_USER_NS=y
- CONFIG_SCHED_AUTOGROUP=y
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_EXPERT=y
-+CONFIG_PERF_EVENTS=y
- CONFIG_EYEQ=y
- CONFIG_MACH_EYEQ6H=y
- CONFIG_MIPS_CPS=y
-@@ -86,6 +87,7 @@ CONFIG_MMC_SDHCI_PLTFM=y
- CONFIG_MMC_SDHCI_CADENCE=y
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_RESET_CONTROLLER=y
-+CONFIG_MIPS_CM3_PMU=m
- # CONFIG_NVMEM is not set
- CONFIG_EXT4_FS=y
- CONFIG_EXT4_FS_POSIX_ACL=y
+On 11/11/26 23:02, Gao Xiang wrote:
+> Hi Michal,
+> 
+> On Fri, Nov 06, 2026 at 03:42:52PM +0100, Michal Wilczynski wrote:
+>> erofs decompresses a pcluster in place when the slack after the output
+>> is at least LZ4_DECOMPRESS_INPLACE_MARGIN(compressed size), upstream's
+>> (compressedSize >> 8) + 32.
+>>
+>> That holds for the fork, which overshoots its output by at most 8
+>> bytes. Upstream's LZ4_FAST_DEC_LOOP, which the next patch brings in for
+>> x86 and arm64, copies in 32-byte steps and can overwrite input it has
+>> not read yet: of 172410 valid streams laid out as erofs does at exactly
+>> that margin, 3660 fail to decode, none with the fork. The worst needs
+>> (compressedSize >> 8) + 33. Images mkfs.erofs built did not hit this,
+>> but nothing in the format rules it out.
+>>
+>> Use (compressedSize >> 8) + (compressedSize >> 15) + 36, which takes a
+>> 4K pcluster's margin from 48 to 52 bytes. Upstream's lz4.h defines the
+>> macro too, so undefine it first.
+>>
+>> Signed-off-by: Michal Wilczynski <m.wilczynski@samsung.com>
+> 
+> First, I really think kernel LZ4 should be updated for many years, so
+> thanks for this!
+> 
+> But my personal thought is that could you just fold this patch into
+> the next one ("lib/lz4: switch the decompressor to the vendored sources")?
+> Because this one should be part of the fast loop update.
+> 
+> Although the current patch order is also fine, but my potential concern
+> is that people don't know the details maybe pick the random ones for
+> backporting, which is what I'd like to avoid so I hope this patch could
+> be just part of it, otherwise the inplace decompression could be broken.
+> 
 
+Make sense I'll fold it into the decompressor switch in v3 so the
+wider margin and the fast loop can't be picked up separately.
+
+Thanks for the review and the kind words
+
+Best regards,
 -- 
-2.43.0
-
+Michal Wilczynski <m.wilczynski@samsung.com>

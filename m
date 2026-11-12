@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.101
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.104
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794471051;
-	b=BffzAvxa/9rRYYFSn6eYaqoiLuII0B7Wz+SWYuzSDqwWlamAbvL3ktiIrPENtQktarv3
-	 qRd4DDoA+AhPaF7YzQwp4C+JforM17ArfVghnhc6HRHmM1kpF8ITsiV8hyGeBZQnXyh8/
-	 uyycytXpm787ZknMzAIKP75fakFZ2O8m81ChneDcHwSwvCokulytHLe7n1cbPSdqhLf1J
-	 wHkLZxIe+3J4jUW3+faXgZFUYJ6jiTi4RccC4YJuaVVCurRe6YDft7HLoGDLyU/gAd4yt
-	 To6QbdZsj+0L9EZeQy2aDVAS2iuRgNGl+lGjZVBGsy2gD3z1zPYs4Y+rn5Bz16XNC7A==
+	b=SvsaLaoLLALUvwC5ZQo8lb/fMkznbbXqtRunRq79HGZBuhouiTCFneX3BfjKblPDmOW9
+	 DJhR76n6PHiL9ms+bkr5zvxIms0UfY60thT4njxMbyLj+5jCOll/9LpXd3eHbYosbC52r
+	 d1Z0AEqkEYrLQEJEXHcz0NOQZybNazIZm9YvGx6k9ZlSQ8r2RS+lsKahH8jbjKvfDvE9M
+	 BQENJkfiPM8mQSxONXwtzwmaz8oTWIuUb6/38dPx0sv37Z0q7FBEC8g7XwrGXajiE4M1x
+	 Az6plhjS9AFCV5/jUEJuMMlyG/kbGIvXRn507OqVLhCaIJ7lAei3P/VONkdHDjJ16Zw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794471051;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-	bh=y4stZLY7/qFErDyazGHQZM4jxHV6kGPBs+gSS/J5ccs=;
-	b=OjhYgVjXYK4hEPuWdNm+RVdlSKRdc4CeyvfJyGQBGraN9fX3YmihPP6wY4ctIuXGyk1e
-	 X5t1DMRMED4/CT9u/Nl3PwDakSoxcv0GxIpZvRrSE5NFRwXKGDC2DZwpE0Bc3xCmXpgpo
-	 t4ZklRK7aiobzsQGPxB9A891jifkqJaXD2NdZVrFAmUDap93ScOs8BFl917ssQs9mZxVZ
-	 upzpTAej+ZL+ccNw2Mb7Ati2wQc9VGNPU7DqMy1LySptEMM7prvtm57ZdkVbeHJMDihl1
-	 +BjLEU+K7TdKBQkIKQ2RT7dn/m8lqxzVkRtwkwSsF3UhwWnDbmW9L38Pmu6jwHxF/gw==
+	bh=1kOQr3GG5QxY2CeCjY5dbSkzjnLF8IxSHa2BVVqZQMU=;
+	b=lCSiG8a0Rh4XpbcsNfppeTAWrJ9CjyreqkU/27IyDNNYNhOBnUdgJINaY3lKo6fDUhdN
+	 m4IF/bNXJ1i47lXxqFd4mzVM3LbMZSi9HrjooROuE3hq+CoaxPqVqLls8XzeGdJqpJALu
+	 XTVMlSZ4HI14gsEXBxcB/4aYCrQ2JDAiqxo6Rimcz+tc/vEiJ+vAZRREu6qLIjCa/Y6ut
+	 hnNl6fc2id/HHYhhoJSPAmGs83FmbznAwI3Unii60ibeU41tP4fw/cH+hRjV6zAGFbhIl
+	 N2pBY2fass1GZM3/yZeGb5P0T93InRkOnrtNog52djQluYZNbRBAbgerKhdm/D42Mvg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=nqqKxemY;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=ggeD5FSS;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.101
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.101])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=WHU9zEox;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Vq7OgT4G;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.104
+Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.104])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B7B606A883;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFD8606A885;
 	Thu, 12 Nov 2026 08:10:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 93B7B606A883
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AFFD8606A885
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=nqqKxemY;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=ggeD5FSS
-ARC-Seal: i=1; a=rsa-sha256; t=1794471036; cv=none;
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=WHU9zEox;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Vq7OgT4G
+ARC-Seal: i=1; a=rsa-sha256; t=1794471037; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=B/wr04t+RxEccFcw38vLylRTYNFe2dCD9Sif+kdSD0LuauKpyABQyZvCNpy0WCuSpu
-    4l1S8Uvhg7xtCK3CrwQShDRL9/2TU/S0BACNOCPPpZnHDNjPvdKwD8DZbuowHvUiBHhI
-    t70p6qiUI9D3Q6YPVX6+a+o9uTr7+N6iv1j/3u+kzwDIcw8k8avplU9w0Am5UZrOlWzE
-    lFegmhhRefGS69SpgbA4PBauYr29UqEE5g0hNBU7JLkFczbxTnV4pdiakh9ocTfMKQOx
-    j1ifnBJaFuGvFvSfkgFT8GvrNGGu0/KIaWn9Ppostqpn11FWXyhitXQHNJ4UKgtJWDpo
-    KZWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471036;
+    b=EPGsedKOJpITiKcAvTsJZzwcJKRzD4Rx5aDrmeSN9ZkX4QiyqrPhUQ/NvDgCuFR98T
+    dYuJwITP3Z7ETzQTmrBtrU/HlvB2Y+W7C1sI7sxbCGXaLc21aQKpuU6WmUh312VWMWu2
+    4P78p3cp5d/GwSki/K3Vvtu8ALy7O2P+qES3j4b/UTl6B8xAyrkoSwdz48hrWKkiNXde
+    mDLx5OTAt7gNsydZq18Ymaofy9+DiYeh/oSaRm/ldgLQm9lE/rdL0DWk7UrO400Q9HrD
+    uD985idFHpN41O7vcEKt/xMhlRIWMANrGRsphVH18bU+njiftFfBmBssUnbs51VlL+/a
+    aTLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471037;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=y4stZLY7/qFErDyazGHQZM4jxHV6kGPBs+gSS/J5ccs=;
-    b=o2gdpIxCi+IPcacOqJt1BO8J/SmldGYDYgESHTEDXUleal6lq31sacnSh9fWA/2Ped
-    dhJY3V6ln2FGLTzigntGOmNIX3NsZ0VNnDb3nNDPrgtgcUGJFsbbQ/DuwM7QcdrRIhFR
-    reIhbmPZK9tSdCyDCr5WFVCIqsWWVRvLFnMJu0nFWgraCnNzGUCTa6HGD4WXZeH1wXS2
-    WuXFBZ8A8tEHgrDFmlRqGj0zcXf1SW3ZJ8QIAiYdFFGp+TOjNb+sVca9XbkHzCjmwcuX
-    Jtvp+9eGFAGULLKV0mTqDLMLHtL0c7oTHwI5AWkku+eJwv2MWYclG99G+PRtBZm3JyUv
-    4pww==
+    bh=1kOQr3GG5QxY2CeCjY5dbSkzjnLF8IxSHa2BVVqZQMU=;
+    b=UvW6eUOhGNunXUUJWgNE2C/eq6+LO3wR5+K1KRl2hu3aZa5AZFis5paB7mqpXb/iUU
+    4cuHrUbCbjPjESjs3vpeeqSXVGynGDkmjjOZziczQk1B6rXzRcKTuYdeH0p2eVkkif04
+    tBaD0iRGahaDwnUKqtHzeNXiPLAZsH3E/W5RG7RvxarvenaZ81Xv3JF8FqhgZZipNoJu
+    nd5S18o293GdI0GsBEuqt7qiAERsbYnekB5wDDzu7ByFZ8FkC93t/aY6uJ5cKhhay5Lc
+    Py+2Uhuqih8dGaybXoh/KMZjlz2zmW60O2GUauL5Zv9IcKedSvk4YeBnI8LA4UKLSOPT
+    pXBw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471036;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471037;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=y4stZLY7/qFErDyazGHQZM4jxHV6kGPBs+gSS/J5ccs=;
-    b=nqqKxemYQdn7PPtHQbkIxZgDfQNSFZe1u1tjUjOyk9mFuCGab0aLy73954i0XeKTUJ
-    VmXsZ8mWiVbfvTZxMsayqhd/isAqg5/M4nGxPMleTkv13+NLKyMYJmHWlUcCTHnlweI1
-    yp8zuhW1TrkA7Exo5keFfduwsz0USD5R5QUM3tm6GhuALcthIEyfo5iqM4JsZUiD40sV
-    Au/sE+GQPm9LC8ov7Q4CbPjGMCcilSgnR0LF0VVgHSUXQ/xePLejrLJpboe9N95ZGboB
-    V/DAcyFyuBUm+09pnS9BCSqfjgtz3C9A1Ea3w/Pu6cEdoPbBB1maBCk+/eNGkzrnS/ry
-    MNjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471036;
+    bh=1kOQr3GG5QxY2CeCjY5dbSkzjnLF8IxSHa2BVVqZQMU=;
+    b=WHU9zEoxLsMAvvxGePtA3x84ZPFdqmX4De5TFNa6N8uxt1OjZdFCbgewOHXADXM8yz
+    eJf1jgZILPQxwgNJB9Esk98VmCx4+dvC9gmUXII+tDHZUlGqeoOb8CKusnUmtgfnLNgk
+    FwFMg2d8v2Pn/OBhOwgfutqP+0QlFEhWsBSsSef5IXmG5pEsQpGvPHNe0zjakwSjInGg
+    80SMaGHvnykzoSBGRW1bNcGT5Z/8lUPVwObcXICGx4H5QxShx2eksrJfncKu2nXQEM1l
+    3Jti7e/zdEhdOCTCVxQSST9KKHyuOeG7ZNtOg2pvOgCFDHJtm0QAjkByaqg/umibA2Gi
+    rn/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471037;
     s=strato-dkim-0003; d=goldelico.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=y4stZLY7/qFErDyazGHQZM4jxHV6kGPBs+gSS/J5ccs=;
-    b=ggeD5FSSEOKJPHWEwXSj9Oz8FTB0nlaOhhN6e7SPWKMOtjhcxJQuXRhV235HTuGxq9
-    90IJjTyv7VJySp/B2MCw==
+    bh=1kOQr3GG5QxY2CeCjY5dbSkzjnLF8IxSHa2BVVqZQMU=;
+    b=Vq7OgT4GoySidaHrEFUALca1HCMqIV3DqIZX7C2/EDh5v6+A4KBOQYhuqnTkEcZUAl
+    OO7CeIuf63zF9jtkY/BA==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AC8AaAbg
+    with ESMTPSA id Qb56a22AC8AbAbi
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Thu, 12 Nov 2026 09:10:36 +0100 (CET)
+    Thu, 12 Nov 2026 09:10:37 +0100 (CET)
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Paul Cercueil <paul@crapouillou.net>,
@@ -97,9 +97,9 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	letux-kernel@openphoenux.org
-Subject: [PATCH v2 7/9] MIPS: Ingenic: Expand Kconfig for X1600, X2000, and X2600 SoCs
-Date: Thu, 12 Nov 2026 09:10:29 +0100
-Message-ID: <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
+Subject: [PATCH v2 9/9] MIPS: Ingenic: Add Platform makefile and load addresses for X1600, X2000, X2600
+Date: Thu, 12 Nov 2026 09:10:31 +0100
+Message-ID: <4ef609bd18c2398a6eb8242a73448c92a08ef9dc.1794471031.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1794471031.git.hns@goldelico.com>
 References: <cover.1794471031.git.hns@goldelico.com>
@@ -115,93 +115,26 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-Expand MACH_INGENIC_GENERIC to select all existing and newly added
-machine variants (including JZ4750/55/60/75, X1500, X1600, X2000,
-X2100, and X2600).
+Introduce the arch/mips/ingenic/Platform file to define the default
+kernel load addresses for X1600, X2000 and X2600 SoCs.
 
-Introduce individual Kconfig blocks for the following SoCs:
-- MACH_X1600: Selects MIPS32_R2 and HIGHMEM.
-- MACH_X2000 / MACH_X2600: Selects MIPS32_R5, SMP support, broadcast
-  clockevents, O32 FP64 support, and weak ordering optimizations.
-
-In parts developed by Reimu NotMoe <reimu@sudomaker.com>
+All platforms are configured to use 0xffffffff80010000.
 
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/ingenic/Kconfig | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ arch/mips/ingenic/Platform | 3 +++
+ 1 file changed, 3 insertions(+)
+ create mode 100644 arch/mips/ingenic/Platform
 
-diff --git a/arch/mips/ingenic/Kconfig b/arch/mips/ingenic/Kconfig
-index f595b339a4b84..5d351b42bbc9b 100644
---- a/arch/mips/ingenic/Kconfig
-+++ b/arch/mips/ingenic/Kconfig
-@@ -5,10 +5,19 @@ config MACH_INGENIC_GENERIC
- 	select MACH_INGENIC
- 	select MACH_JZ4740
- 	select MACH_JZ4725B
-+	select MACH_JZ4750
-+	select MACH_JZ4755
-+	select MACH_JZ4760
- 	select MACH_JZ4770
-+	select MACH_JZ4775
- 	select MACH_JZ4780
- 	select MACH_X1000
-+	select MACH_X1500
-+	select MACH_X1600
- 	select MACH_X1830
-+	select MACH_X2000
-+	select MACH_X2100
-+	select MACH_X2600
- 
- choice
- 	prompt "Machine type"
-@@ -62,8 +71,10 @@ config MACH_JZ4770
- config MACH_JZ4780
- 	bool
- 	select MIPS_CPU_SCACHE
-+	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_SUPPORTS_HIGHMEM
-+	select SYS_SUPPORTS_SMP
- 
- config MACH_X1000
- 	bool
-@@ -71,8 +82,35 @@ config MACH_X1000
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_SUPPORTS_HIGHMEM
- 
-+config MACH_X1600
-+	bool
-+	select SYS_HAS_CPU_MIPS32_R2
-+	select SYS_SUPPORTS_HIGHMEM
-+
- config MACH_X1830
- 	bool
- 	select MIPS_CPU_SCACHE
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_SUPPORTS_HIGHMEM
-+
-+config MACH_X2000
-+	bool
-+	select MIPS_CPU_SCACHE
-+	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-+	select SYS_HAS_CPU_MIPS32_R5
-+	select SYS_SUPPORTS_HIGHMEM
-+	select SYS_SUPPORTS_SMP
-+	select MIPS_O32_FP64_SUPPORT
-+	select WEAK_ORDERING
-+	select WEAK_REORDERING_BEYOND_LLSC
-+
-+config MACH_X2600
-+	bool
-+	select MIPS_CPU_SCACHE
-+	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-+	select SYS_HAS_CPU_MIPS32_R5
-+	select SYS_SUPPORTS_HIGHMEM
-+	select SYS_SUPPORTS_SMP
-+	select MIPS_O32_FP64_SUPPORT
-+	select WEAK_ORDERING
-+	select WEAK_REORDERING_BEYOND_LLSC
+diff --git a/arch/mips/ingenic/Platform b/arch/mips/ingenic/Platform
+new file mode 100644
+index 0000000000000..bffb4529d799d
+--- /dev/null
++++ b/arch/mips/ingenic/Platform
+@@ -0,0 +1,3 @@
++load-$(CONFIG_MACH_X1600)	:= 0xffffffff80010000
++load-$(CONFIG_MACH_X2000)	:= 0xffffffff80010000
++load-$(CONFIG_MACH_X2600)	:= 0xffffffff80010000
 -- 
 2.56.0
 

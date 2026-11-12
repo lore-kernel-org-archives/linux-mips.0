@@ -1,76 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.137.202.133
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794510966;
-	b=LbznH5Bz13HNBEskQC2CBIILIV7OB7SeYpHeNuvUmfIQCbQ0Z9wJdFkHB4Mb55h0DYOb
-	 i4/B4XydxOFB1FZftg1/vV6J4IkaLm6hB4y9H7dhnRfCrLL0qDigIBt1ZoA+zWFQopBwi
-	 w35HOAptluLNzLVQSo4fzz2Zy1M81Me0yI2MY868BVyQb9NziI+VkC0/L9R6ix2wJRxw4
-	 FaWVBhipgWL5UZCac+AP4B8xOoUSqJoOPFT+a0dkr2SpyuuJmcGJedXXD4glNCyrC9WMS
-	 ZiZrh8D0zFcMdbbJEmwFlC53TGrFRhVzMfvbYDcRJjnQzTDsizkKPYMUo3r0WF9bFTw==
+	t=1794511122;
+	b=RYTmXr3tm7eMf4bExNdH0P9nczqVlU4nEqoTmTz9bd4F5OZ/0H9pl9W/KZSsVj3q9IeY
+	 AWvbz0ocIndk8XMPQXi0iUCwEKhK3tM3Xwcng7bd2+cZV1mQxFvoTzmgRLYIpltWDgIZ/
+	 rXkszN1X5aF9nSx7dL4HbgxZWnKcf5LU7EsXpMFgE9GwyCbsp8M0x3PeorFundh6S0RXT
+	 sldJnWRPAliIOW2UZ8hJfSyQgUe4dyobOHXHXNzkt6WweDamPKK6YiFHXr3pNFwUjwlsA
+	 4+7/g3jcewIK/rju4nhPslE54vnwL4uZ4ZfShZyF0exWE6g+UkJgeiE4hhUmzZwd0iA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794510966;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=x7avfF8CE7MQkedzx8waSCJsEYoj4qczcsv6b4mLDHA=;
-	b=nRwDnCTbokbNtIzG5/Krxu5Q+Cw2nds73LKu5AQOeRlkdpIhbbqSuRP7iw+q1PC/sYI/
-	 BhKBDIt9x1CGxNQNFI1oS6u4UOfk3mQg1FDCAV8ktLsQ4LXvi5lGDeR308kuy3DJnC6sH
-	 ffz6Hxqg8zZ8rQpQCzhuMEvO8LccOVaeUozLmdb7SkUQe874RIDpGbgedhrbu0ggPJW9j
-	 wt7nisZdMHgK7AUrh8O7yCsmqMB1fjzl73X8k534vUiN0hPpEhFQI6tacr06LrD8CKddN
-	 UnGpeVso0NvUZuRfw8uoMb/CgSGFdqZ+yd+C755C+Bgmd3Hi7ATH+OMmVArYPQFJZUA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794511122;
+	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=IXexg50WmPwtfGt6g4HQnuTR66f0QjGX0HYreFyKgk8=;
+	b=xuQT2WH5A9pkEbUS9Eivj8yIQNDPthuoKzpJJFhcwEkppquFx6Gx1aUk2Zqw/UtH8QvZ
+	 wHhhtdpQVi+/VesCA3uskeDjRkl3yzSQScc19YI/lOMgwE7AdzRxfHsIvSBh9qUDwtVPu
+	 zsUWM6wouK5xb90Fe4tGzIZTmg/O/u74R9ArSUdvjLrNCxKJET45pz97NY6CVJl4Aw5/x
+	 J/NH5Hp65IQ2QjUyTvrp+xqcTuc1E01MivzAMoH5sVuOfJCHApKsrWJWy0Ybp2EVlLIwc
+	 gqwgskunUOFA2mVYsLpi1Y5VjHSoRvVDJ+GnGjgrHTaXkFoyC+6uh7qEPFvi1qprUAQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-m68k.org;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.172
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=infradead.org;
+	spf=pass smtp.mailfrom=infradead.org;
+	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mBerxBeQ;
+	arc=none smtp.remote-ip=198.137.202.133
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6238606A31C
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 19:16:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6238606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-5eaaa9b1591so183488e0c.3
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:16:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794510965; x=1795115765;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=x7avfF8CE7MQkedzx8waSCJsEYoj4qczcsv6b4mLDHA=;
-        b=XEYmvGQzA2a1psdasa9gwjO+C/O1k+/GtYb6HNn8FP5KsUyKipEH0rlIYiCyGVxC0U
-         k8SCYul9ksC6vKYK4zL5BrvDHsqL1ouiRfGHpBx3SvZAS/DHnvMbh0mXdrwdHPK9qP5E
-         9aeUBvmc9/+VeZ4PpiOXcuo2mQCqb2b0fKbAO5o4TnH6tulPvCWa1J0LPZhw3GOjqvXE
-         J2fUa4wnXBX8G7DD1GCZdDJFBt/O3XsorEQSvobNTx6F7FqXuaLiTGN8KrRemtXmWi1B
-         bCq4tw9N9kyI1r3KFsEKstKmxC+ubPLyIzfhG3OtFpyAvhu3aW6DHpDmGkDUvkOJycZ7
-         tSOw==
-X-Forwarded-Encrypted: i=1; AL+hErEzmJciMluQCgX5PAuHGlZ/jq6OC9c30bmM2l4bTuYngtIhUiCmNbtnhBP06WJddhSaKqMPxJL53/ks@vger.kernel.org
-X-Gm-Message-State: APuU4Z/GzhGKWd5MHiQIvwGUqigQRbq/6dEIhOtClxxByMgm2Rm29IMY
-	LVSDY+6hLAq72UNz5ld/Mcs8DBiIWohoqED8a6t3qLCqvoGcunKpm+mut7YzFrTQqKQ=
-X-Gm-Gg: AYBFou2rOspIzgs3E5pUhigsu7YRJaMmfayM4JCiztLntyTAIom70rniCGQSBlwrP4U
-	iZOwsKt3NGocYKMDc+D9Ncp9O1LKlZaTMFhViYCejKqH2jkXCA81R7/5h9Vsr8k9Am7T1RNqk+5
-	Gr1Nf4mNgUdbKlwDKjSrYN54+xsdsvZrJJzqQHa7Nj100yIYDAP1+quhs19B0ZdueSQ5GnmVqrj
-	D3lIclVrTyYGtUKGiBYKr1vhIFwqc5jXEnq9te85c2c0YxfMw68gD7CxZkACt5LRqhQH9TrTodT
-	tnCEcEoDKh7viY8MlSN8ukOlXQnCOqME3qDlzbnQc9k4zbnAJQX1qBGh+SGclCCBjYbXqPTx5t/
-	ZVSwYZ2Q+rMmqTGpZ3mD7ajEysPjwz2hZ7D+Mdua1/ylfdZ6QnYUL2hIyQcMJRHZPGuyLj0AiJH
-	MUaJoU6DSpAwKaUEsNJFhS9WEsprLLhxEUgXMADI+yKXkaEKfZLGJMEh/r190GVAQwl9w8PYmDZ
-	3P+vTzVEPmhwMfOfJjP5xCzjApdlVA2Kpg++MOPog1qjwiu3h3jrjtw6LvjIhlUkn2W+j7Dohzi
-	uyYQFw0c7XIrz79a9O0ZsuHmD3Ey2yeY5piNrrEeUKSHdh/I/2+VSaTcSEqzouO+852G2L0=
-X-Received: by 2002:a05:6122:8b10:b0:5ea:dc36:245b with SMTP id 71dfb90a1353d-5ee34aa906amr50936e0c.18.1794510964601;
-        Thu, 12 Nov 2026 11:16:04 -0800 (PST)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5ee3420b59dsm94692e0c.12.2026.11.12.11.16.04
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2026 11:16:04 -0800 (PST)
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-5ecd9a400cbso160376e0c.0
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:16:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErGGibIcgi87FbFXhvOJDO0U5Ms/2KBwYc0FL573R8LpUa4c/zX9vv5QbcqfKZ+Nvim2CxZyWolMo185@vger.kernel.org
-X-Received: by 2002:a05:6102:c15:b0:7d2:8dd0:2eb with SMTP id
- ada2fe7eead31-7d64d6ed886mr73919137.8.1794510481935; Thu, 12 Nov 2026
- 11:08:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFFB606A31C;
+	Thu, 12 Nov 2026 19:18:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CCFFB606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mBerxBeQ
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=IXexg50WmPwtfGt6g4HQnuTR66f0QjGX0HYreFyKgk8=; b=mBerxBeQJnkwjlzlTDbN+kj3WM
+	jVZ3tair82aWMzz3qk4bpNKHWO94V1zNOy0+Dhq3LSdZhRfUGH7uD/iclRys16i9W2yOER3toc2s+
+	rU5TYF530d7Xw3Lvpya35OspbW+W7YUg6X406AIXh7V4+LHx5JZ4ZYZQp+egcfiSNiIz4MYr0LPET
+	DBOkUxvx8c37785YnZ05KRWu9ibuw7WY8NGsnmi9R/fkAvNXoFsqWu2tK1DwRP59O+XKYUu2ZS6kR
+	BIscE1U2DwqAD3rzlLjNDLcQRRFnREAtEVvDsjoMOhsBrxF0KQQWxPwBIFCzu4VED8+H6fz/jJ14F
+	4Hu+9oag==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xRaJj-0000000AwDP-3EYQ;
+	Thu, 12 Nov 2026 19:18:39 +0000
+Message-ID: <85567abf-bf15-4cd8-a04d-d1238cb5fbd3@infradead.org>
+Date: Thu, 12 Nov 2026 11:18:38 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -80,47 +58,68 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261112-work-procfs-oldmem-v1-0-ecdcafd99265@kernel.org> <20261112-work-procfs-oldmem-v1-2-ecdcafd99265@kernel.org>
-In-Reply-To: <20261112-work-procfs-oldmem-v1-2-ecdcafd99265@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 12 Nov 2026 20:07:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUgOGjwOUMxSabUgtaVeKZW1wx78XOJL8joGKkZEj7RZw@mail.gmail.com>
-X-Gm-Features: AclHuK8l5OcVstuPYNpoHJ657hIuMQK5i9ySH9sE9lHb16H-lVuh0fnzCqi0JCs
-Message-ID: <CAMuHMdUgOGjwOUMxSabUgtaVeKZW1wx78XOJL8joGKkZEj7RZw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/4] sh/crash_dump: check ioremap() in copy_oldmem_page()
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Breno Leitao <leitao@debian.org>, 
-	Chris Mason <mason@kernel.org>, Thomas Gleixner <tglx@kernel.org>, x86@kernel.org, 
-	kexec@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Hildenbrand <david@kernel.org>, stable@vger.kernel.org, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] MIPS: perf: Add SB1 and SB1A performance counter
+ support
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, Thomas Gleixner <tglx@kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-perf-users@vger.kernel.org>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>
+References: <20261112190916.3725141-1-f.fainelli@gmail.com>
+ <20261112190916.3725141-4-f.fainelli@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20261112190916.3725141-4-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 12 Nov 2026 at 17:43, Christian Brauner <brauner@kernel.org> wrote:
-> copy_oldmem_page() maps a page of the old kernel with ioremap() and
-> copies from it without checking whether the mapping worked. If it
-> didn't, the copy reads from an offset into the NULL page.
->
-> Return -ENOMEM like the other architectures do. read_from_oldmem() turns
-> that into -EFAULT like any other short copy.
->
-> Fixes: 4d5ade5b29c6 ("sh: kdump support.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+Hi,
+This has one 'make htmldocs' warning (see below).
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On 11/12/26 11:09 AM, Florian Fainelli wrote:
 
-Gr{oetje,eeting}s,
+> ---
+>  Documentation/arch/mips/index.rst    |   1 +
+>  Documentation/arch/mips/sb1-pmu.rst  | 162 ++++++++++++
+>  arch/mips/kernel/perf_event_mipsxx.c | 373 ++++++++++++++++++++++++++-
+>  include/linux/cpuhotplug.h           |   1 +
+>  4 files changed, 526 insertions(+), 11 deletions(-)
+>  create mode 100644 Documentation/arch/mips/sb1-pmu.rst
+> 
 
-                        Geert
+> diff --git a/Documentation/arch/mips/sb1-pmu.rst b/Documentation/arch/mips/sb1-pmu.rst
+> new file mode 100644
+> index 000000000000..d589a6262c65
+> --- /dev/null
+> +++ b/Documentation/arch/mips/sb1-pmu.rst
+> @@ -0,0 +1,162 @@
+
+> +Counter selection and mode filtering
+> +-----------------------------------
+
+Documentation/arch/mips/sb1-pmu.rst:57: WARNING: Title underline too short.
+
+Counter selection and mode filtering
+----------------------------------- [docutils]
+
+> +
+> +The ``counter`` format field selects a physical counter: 0 means automatic,
+> +and values 1 through 4 select physical counters 0 through 3.  A non-cycle
+> +event requesting physical counter 0 is rejected.  Automatic events may move
+> +to another eligible counter when a fixed-counter event is added, preserving
+> +their accumulated counts and sample periods.
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+~Randy
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

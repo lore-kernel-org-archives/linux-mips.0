@@ -1,111 +1,53 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.158
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794492473;
-	b=JMjJ25myhzJdwifWDAz7oXGaGmHKLNl6ui3IneM+IY5gBCZNAY2O5dQ7uke6oxMgzSBj
-	 CJktRPTicd4JIxMs59fsUTNYaejBAOg94L4BHE5pNhqzpIfUc5rqgBQ/1un9rRLUPXr4i
-	 4XK+v4tVO2VzvIg9Wu1RtnP4HS4CRQpmRe+kVt9MGslfmOtuWLH93S+J/aQ4wam3AuW1D
-	 yMhNdvAnlwco8pR/VtuBow8SGMAzpDYtbjbXBm5cR+BQIQwPgQtRuW+qALFEnvtTRknl8
-	 aqDjHT7N1ydwYThIgVqg2ZTc7/AJGTSFcFFaeqAU3XWsdZQKFn184KF+yIHK1/2/D9w==
+	t=1794492572;
+	b=4BY7JmLUEycollND7PksBxB00AzenePmuJYPWaY3DYwdTkOreua481OBAQbtVBMJEXqk
+	 UKOdIDtq2fg44k1NA6xKnSK+XIxW/xJKoMKRJXk2F66giCj4prdrnInF+LC2Mydgbf7g5
+	 9uTnfFthYoa3BmLPA/zHT054XbDQFdTjoX2ZfTIOsA812EAq6I3r+fDChLlasEeEl3vio
+	 LyCbuu3Wco35zMPeGjmLDc9Omi4+WaZtOdm5HLbQNtp10h9KrHC1YGo3vnVpWt5SVfM9G
+	 1Y1c9RB6wwtoaQRZdmT+X/m0TMB2Rcwt4X7sk7NHkfnLj7j3u5LaiWgXIWHWkrdUvOQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794492473;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
-	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
-	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=5GXdvZHa3knndYwSDmToIG3fcge9m7l+oguuWUgRnLk=;
-	b=axdO/YOYxUd3jeA4KXfjzHUyTMvrvoMrlHFWWX0RZhL1M54C9HQhVhIJnrtBecy7pFrP
-	 rNQNL8raDk2WXKO2UQXYIz+Qy390OgH2bVZu8Kp2ajuYDB2AIyQ9ZbGmplC/n4z+WmYMD
-	 07tTqrk/3FA2Bnga4viYD4Bpkb9+UvsRcQpZ2f1GsjvhiA7q0m3gIxl8t3kp34FyIvX/h
-	 7sl1FChasGjRgxtR2wWuUnqPxfJE8MAFosxTIE5bBatOSl163rj8Djty6/x4SaEujk2Tc
-	 SWf1bTVhVJGm7bw7IJJLR4gQahj38I4MM68gALHOXhFswktrGlU/3jMwhWKKFW55YVQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794492572;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=4FoQu+zc856j9cM6Owz0Qq1DtZ9bdH2J+suDVuWBlo4=;
+	b=VUi7kAdzyWlLF0C8F5lCVc/jqnzE1bglSRBZ2X1UHVKkWfN8yyMCiCcfYPbqhwfc2w3K
+	 TYYhjF+3MDhoFXI3wFvZSxMQbmskObOp0MucXtHvbaqnZEHlMurjdgRFEcZveHj1VsKwC
+	 awUSl/zfD0KjtbGpfXaNXNqLmI4+upVD/13f6JUagAgi6adR9mAoT8/TBay7u+aPUoWyF
+	 YBaq4g6CLYiKXdr3GnOHh7jvvMqy2uneP5QcVnd/7Sncu+WzkhYdBQkIESFRUxcWixw2O
+	 BRU+KKQcx2Rrvbomq9poKxsc4p9yL7Vl2yHPYP4Gf+0ftqkPBHzXIBhwngVxGZ30KvA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arndb.de;
-	spf=pass smtp.mailfrom=arndb.de;
-	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=cRlAZarm;
-	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=QqHaFT0F;
-	arc=none smtp.remote-ip=202.12.124.158
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7818D606A33D
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:07:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7818D606A33D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=cRlAZarm;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=QqHaFT0F
-Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id B80327A0167
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 09:07:52 -0500 (EST)
-Received: from ams-imap-03 ([10.64.2.23])
-  by ams-compute-02.internal (MEProxy); Thu, 12 Nov 2026 09:07:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1794492465;
-	 x=1794578865; bh=5GXdvZHa3knndYwSDmToIG3fcge9m7l+oguuWUgRnLk=; b=
-	cRlAZarmZS4105Z8tE7f5RDZYNntIRDnBfMMwHtbWXAlvjAnUs8euZwHzC1oA4qV
-	g1bITi/YN+sbnyrChh/8anW6sQGvnqA965k71YUZ18+D4wLBl1MkPCgkyT/HKte4
-	BnpFI1Almwv7zBh0yge61xnfmnIJ3D14TFtgf94jeLh6pQ4kpKOAxpkgGPJ4CX4B
-	XlOSs37j/bSR3CdqILwBv5+w9TmIccKFqV2TqXbkCYwi6R50mLbcw57uR91SIiKs
-	tFCUNrBIqj4sy9V+Ukm8Op7fGcPOJjUPVjAvogbXgOEDgCf5Y9t8ZSRcAJPDVdRW
-	Osd+XB3y/EwjtCI7jz3f0A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1794492465; x=
-	1794578865; bh=5GXdvZHa3knndYwSDmToIG3fcge9m7l+oguuWUgRnLk=; b=Q
-	qHaFT0Fm+Wxf3hVMxQa558O3fZ0Go6Jvi6S274zLQEJS6swjaKCN6kB3AUwkcVZ4
-	dHDEA5RRuivP73JeVzYN2a5M4QjNAqcGSjHw1HLzo2U59UMJIODJxa6SnojiP4lH
-	Uj8EcGbNTu6T+rJayzrCydwjkYYmRenBBxShjzXDHIPuKBwWs8nRPX3Gevj2Tt8o
-	AJNjpm3Rw9AO2nlSHmfC64ON2h78tL2HbGW6/r0IvWKMsJOacuWA0cFZV3qOs1bQ
-	nWepqOlxwFocK7Vu0Jab9gbKs2dT7oHaoq659r4agjGKZkHp0pXjsKU/1RcZxXY3
-	ZKiLkERh/JVcsTsfQvhkg==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=sign d=arndb.de a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1794492465; d=arndb.de;
-	mf=PGFybmRAYXJuZGIuZGU+;
-	rt=PGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnPg==;
-	s=fm2:rsa-sha256:UL67DzI3KI2/nhnUAcLpH9RUNkLbECuIcfFDVMZaSchuohs
-	P5HAxPr/AxLYhFJB+waSEatYywqW3FuHeio/s46RpO5sGOdhFhPf3pBYN9QPUz9j
-	xYrzVzOatGCMEn83te2M7b8xFySQ7rs1zG4se22bBdIDiYJw4lgk8GQ5AlkzomeN
-	6x3OTSEN/Nxe951L1ZTYnRNEl6wtl32C+f7D4jg42UXJbr1Gm6zb2Gsr1EJ54G8v
-	WLI/qXFj+ycwYt5bBiXr4SoPwKqmIsDKtuCjFvTGLcVBWdII5KtE/SjkUt4hYAsB
-	e3r0QMliKcrJkeIAVh6sl06ZYS4grfTrYoDxOvw==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=mi-m=1; hc=12;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,subject,to;
-Message-Instance: m=1; h=sha256:zJP+fHFCTvxBi9D/O28hUzwh2VX6rVFNk/0QKB44wyY=:8TXN24dfbYOYJLrLvVuV4dl9S5EX/zjyzYT5+JZds8s=;
-X-ME-Sender: <xms:Lcj1al2oDFJnOlUAmK_BhKEcST47Y0N6e5UIX07eNEXBv_yYUlsZtA>
-    <xme:Lcj1am4R8gX-0bHXcCTlyCS1H-JNx-BAPKywKQ0kjLuDYlEpivo9LVv98dmWysKay
-    3qssT5BdSa0DkALv8tcXnEC-qPrdrNxsauOzMj_NzZPFMcj6E7oTzM>
-X-ME-Proxy-Cause: dmFkZTEghsy3+LDBk1J/jXVYB3hbg3urWjbCnf+Is56K6KlyTy7hIW7mdHHgDWmuP6IaSb
-    ZDXdDcOc8EV8xGJ7CVkyaa8YfJnz+Oz5uIt8kzZFWND+RFfODBO8sLHZboCnmWkQc0NtGG
-    l3m+7yn/hIETUBKmCSO/0i8f92jbpUkfzY35dzz2GqeR8krzd/ZZtpA1opel6Labd8o8Jr
-    MepMBknmBvH7aoLJ+2u/caDVcD2sFC6WrTvozBvhoz+OtDk47fDCPU9aDRAS/xK9Z5NRJV
-    eZ98T+xm+0pq/5D+gOcXKSGMdgNITE5JJLPWGOTTJ8yb37oXvlE+xkuERaKDpqamuH6Znp
-    6jsnsra3ZK0HdT4HHKtvD8eikpleAHDfwks7gof9zPlIUPsvoTUFbXoatjBALn7XX1se9k
-    kCeWhN1h7Ygg92ZrcUrSM/mCxz2MLa/YggUp+0ssbZVkcA3RVSmma9cljg8YjYKA7fE1vh
-    BRTNx8nN1Y38eUCjaghHkPadoJuJID/h/SAhHbZKAMEL3WQEKGmncFIC1zTrshehz2GSt2
-    0ZD9dYFtc8YO8UDcWym4jdmJoX6Blmvh1WfUaM9DI3Faa6e1EiPsDGYj56HHmNQC/lZYlx
-    B1NZh6hbAg7ESf5+tvi5K4i06eDUo822q39zlCb/tB5MexwQOpyv+Kfk/SCw
-X-ME-Proxy: <xmx:MMj1akaCpyajzwhvAHKKZ3HZJuUDzUBJAMdPBUx4tG84ACWN6y34JA>
-    <xmx:MMj1av3Oj_SGPc4gcInww3tWYrXMmHgYyqV7T113ctRHn8jyHVYBfQ>
-    <xmx:MMj1auvfUe2etshsDERBjwS6ULQab0lCcKkEXyrIW_sbpl8v72g-IA>
-    <xmx:MMj1arBIPygLK1JsaclQxxjbHq9DZQwyg5dqTqfYUfb22rZx5khPDw>
-    <xmx:Mcj1asAQNZSZLBQmYqLGCj-qn6alc9lGF0WTdC3VDXPX5SzDibl_9SIC>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id AEE7532A009C; Thu, 12 Nov 2026 09:07:41 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84AC606A323;
+	Thu, 12 Nov 2026 14:09:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D84AC606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <0ec3716fb00fe25b3b03a7abc45348901fee05dd.camel@crapouillou.net>
+Subject: Re: [PATCH v2 6/9] MIPS: generic: Add MACH_INGENIC type and
+ compatible for X1600 and X2600
+From: Paul Cercueil <paul@crapouillou.net>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>, Thomas Bogendoerfer	
+ <tsbogend@alpha.franken.de>, Paul Burton <paulburton@kernel.org>, "Maciej
+ W. Rozycki" <macro@orcam.me.uk>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
+ "Christophe Leroy, David Heidelberg" <david@ixit.cz>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>,  Janusz
+ Krzysztofik	 <jmkrzyszt@gmail.com>, Paul Boddie <paul@boddie.org.uk>,
+ Olivier Louvignes	 <olivier@mgcrea.io>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	letux-kernel@openphoenux.org
+Date: Thu, 12 Nov 2026 15:09:26 +0100
+In-Reply-To: <87a3ba40389df599efe30af922ba1564813be8f6.1794471031.git.hns@goldelico.com>
+References: <cover.1794471031.git.hns@goldelico.com>
+	 <87a3ba40389df599efe30af922ba1564813be8f6.1794471031.git.hns@goldelico.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -115,42 +57,137 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: AXRzvbN5yUxV
-Date: Thu, 12 Nov 2026 15:07:21 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
- "Masami Hiramatsu" <mhiramat@kernel.org>
-Cc: "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org, kernel-dev@igalia.com,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev,
- linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
-Message-Id: <0cfb4dbf-f3e2-4ceb-ab89-0453ae59793d@app.fastmail.com>
-In-Reply-To: <20261105-tonyk-syscall_table-v9-9-8d1275885d9c@igalia.com>
-References: <20261105-tonyk-syscall_table-v9-0-8d1275885d9c@igalia.com>
- <20261105-tonyk-syscall_table-v9-9-8d1275885d9c@igalia.com>
-Subject: Re: [PATCH v9 09/15] syscalls: Add an option for offsetting the common table
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 5, 2026, at 21:05, Andr=C3=A9 Almeida wrote:
-> To better support architectures that doesn't share the same syscall
-> numbers, but have them in the same sequence, add an new option to offs=
-et
-> the common syscall table numbers by a value. This make it possible to =
-reuse
-> the common syscall table for alpha.
->
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+Hi Nikolaus,
+
+Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =C3=A9=
+crit=C2=A0:
+> Add support for the Ingenic/Lumissil X1600 and X2600 SoC by introducing
+> new machine types.
+>=20
+> Update the system type string mapping and add the "ingenic,x1600" and
+> "ingenic,x2600" compatible strings to the DT match table in the generic
+> Ingenic board support.
+>=20
+> Note that we do not separate between e.g. X1600, X1600E, X1600H since
+> they differ only in built-in memory size which can be handled by the
+> boot loader.
+>=20
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 > ---
-> Changes from v4:
->  - I was reusing the logic from --offset to apply the --common-offset,=
- but
->  the logic is different: --offset does a string concat, and --common-o=
-ffset
->  does a addition to the number
+>=20
+> Notes:
+> =C2=A0=C2=A0=C2=A0 Note that there is no bindings document for any of the=
+ compatible values
+> =C2=A0=C2=A0=C2=A0 so we don't add them.
+>=20
+> =C2=A0arch/mips/generic/board-ingenic.c | 8 +++++++-
+> =C2=A0arch/mips/include/asm/bootinfo.h=C2=A0 | 2 ++
+> =C2=A02 files changed, 9 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-
+> ingenic.c
+> index 1f4906875e7bc..5840293913977 100644
+> --- a/arch/mips/generic/board-ingenic.c
+> +++ b/arch/mips/generic/board-ingenic.c
+> @@ -24,6 +24,8 @@
+> =C2=A0static __init char *ingenic_get_system_type(unsigned long machtype)
+> =C2=A0{
+> =C2=A0	switch (machtype) {
+> +	case MACH_INGENIC_X2600:
+> +		return "X2600";
+> =C2=A0	case MACH_INGENIC_X2100:
+> =C2=A0		return "X2100";
+> =C2=A0	case MACH_INGENIC_X2000H:
+> @@ -34,6 +36,8 @@ static __init char *ingenic_get_system_type(unsigned lo=
+ng
+> machtype)
+> =C2=A0		return "X2000";
+> =C2=A0	case MACH_INGENIC_X1830:
+> =C2=A0		return "X1830";
+> +	case MACH_INGENIC_X1600:
+> +		return "X1600";
+> =C2=A0	case MACH_INGENIC_X1000E:
+> =C2=A0		return "X1000E";
+> =C2=A0	case MACH_INGENIC_X1000:
+> @@ -146,11 +150,13 @@ static const struct of_device_id ingenic_of_match[]
+> __initconst =3D {
+> =C2=A0	{ .compatible =3D "ingenic,jz4780", .data =3D (void *)MACH_INGENIC=
+_JZ4780
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x1000", .data =3D (void *)MACH_INGENIC_=
+X1000
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x1000e", .data =3D (void *)MACH_INGENIC=
+_X1000E
+> },
+> +	{ .compatible =3D "ingenic,x1600", .data =3D (void *)MACH_INGENIC_X1600
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x1830", .data =3D (void *)MACH_INGENIC_=
+X1830
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x2000", .data =3D (void *)MACH_INGENIC_=
+X2000
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x2000e", .data =3D (void *)MACH_INGENIC=
+_X2000E
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x2000h", .data =3D (void *)MACH_INGENIC=
+_X2000H
+> },
+> =C2=A0	{ .compatible =3D "ingenic,x2100", .data =3D (void *)MACH_INGENIC_=
+X2100
+> },
+> +	{ .compatible =3D "ingenic,x2600", .data =3D (void *)MACH_INGENIC_X2600
+> },
 
-I don't understand why this should be different here.
+I was going to say that if you add compatibles here you'll also need to add=
+ them
+to the bindings documentation, but it seems we don't have one?
 
-    Arnd
+We have Documentation/devicetree/bindings/mips/ingenic/devices.yaml for boa=
+rds
+but most SoCs listed here don't have an accompanying board.
+
+Given that it's not your mess I'm OK with the patch, but we should really f=
+ix
+this at some point.
+
+Cheers,
+-Paul
+
+> =C2=A0	{}
+> =C2=A0};
+> =C2=A0
+> @@ -188,7 +194,7 @@ static const struct platform_suspend_ops ingenic_pm_o=
+ps =3D
+> {
+> =C2=A0
+> =C2=A0static int __init ingenic_pm_init(void)
+> =C2=A0{
+> -	if (boot_cpu_type() =3D=3D CPU_XBURST) {
+> +	if (boot_cpu_type() =3D=3D CPU_XBURST || boot_cpu_type() =3D=3D CPU_XBU=
+RST2)
+> {
+> =C2=A0		if (IS_ENABLED(CONFIG_PM_SLEEP))
+> =C2=A0			suspend_set_ops(&ingenic_pm_ops);
+> =C2=A0		_machine_halt =3D ingenic_halt;
+> diff --git a/arch/mips/include/asm/bootinfo.h
+> b/arch/mips/include/asm/bootinfo.h
+> index 2128ba9033911..f6ae983577f6f 100644
+> --- a/arch/mips/include/asm/bootinfo.h
+> +++ b/arch/mips/include/asm/bootinfo.h
+> @@ -81,11 +81,13 @@ enum ingenic_machine_type {
+> =C2=A0	MACH_INGENIC_JZ4780,
+> =C2=A0	MACH_INGENIC_X1000,
+> =C2=A0	MACH_INGENIC_X1000E,
+> +	MACH_INGENIC_X1600,
+> =C2=A0	MACH_INGENIC_X1830,
+> =C2=A0	MACH_INGENIC_X2000,
+> =C2=A0	MACH_INGENIC_X2000E,
+> =C2=A0	MACH_INGENIC_X2000H,
+> =C2=A0	MACH_INGENIC_X2100,
+> +	MACH_INGENIC_X2600,
+> =C2=A0};
+> =C2=A0
+> =C2=A0extern char *system_type;

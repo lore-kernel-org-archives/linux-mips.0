@@ -1,53 +1,111 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.158
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794492220;
-	b=Yin8uGlVOikzYIsYrpX1HYfEva1vkLvQa+a64FDGlW2MFV84dos6BhGMhxOppkN9WUhY
-	 xuRFcZF1DEk1jMGHB+RpXau6dPzjZ6P0SS3ErnQj0DBLGu23XyS+/RVmneHyArv3HRJPv
-	 WRgL6F6vLkmuWN57ch/EP80RpG7QNykgLsxs2NQ2PLQvz8KG8T6xhR1xUl2Gv+gFtVCAz
-	 w6Xrzg52oQE7VkVBUnL79/RKHGEC4i8L5jdrZeciBpQQ/O45b/6pHkV0nZx6c4dnqJZAZ
-	 EbuWioEKLetS1SrTlIcF7cx1l/VVr4sES14M15C0xmf2J1OyLfK/L0pMVC6ccXHhbYw==
+	t=1794492290;
+	b=tCMBctv53rZqEf8xiC0Ru813rC7h2LHUc31yfOIn+nOqYq5cVmoEUYeuS8wBfZA4KjoT
+	 W/Oy7xKD9JRPk7K9EehVY0PbjY0G1UOc+KYb72TnfFfeHvbXj5jHWYGIYoBFgrDkDOFQH
+	 gUcP0jx7LQGN4VvwUD+kPKZm4i392th/fNRngWXqcj81gNfj3jjb38/Zkr35VlxNDTDuO
+	 pzl6E+GZ72Guw4Ngk+OHHepgvmnRm/JJc4FuzsJIIrEUS3QtN/63YG5jmswjNHR5tI7zY
+	 KpZ5fa/Pb0ArHO/GJ3Y/bMPbjQLzrPMJ50DQy3/odWiazI/PPsOzQaeWRrljuit6ZbQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794492220;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=d0d6nm0QMna74OqqEofCs8RvWrgIS/w4CLAon4Pe7PU=;
-	b=dg/zV4hrbnL4TSNlsdZvLZttMKaZpgo+WjYJV82/uJ7rxC2jgXjWWwbFDAi6wgz0CJQa
-	 rfIIeFOSmwBmxRetPhSek3cCO6Efti/DJZkfnqebMYd3LD1QFd4nIvZo+I/JOxIQPvLfB
-	 4Kge+VhiN1dFFxM6B9TN+8Efj6ixKKNCxDCxDmGzMj6gbtp9YuFJPR1jLKVZ2iCzZoY/Q
-	 q+k5xo6JC5+uncBygky8QmMnbyNRuCw5D0rU8x6m1FxjE1p5SDnACZBclt8rcO1/tOiQZ
-	 NXssRlEc1k8LyOMLZcjuTKd1E/f7rnFCPOGKhcIYPCKvyVdSYlQ5xQH1Cknd0q6d6bw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794492290;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
+	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
+	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
+	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
+	 References:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=/tAXn9HhhI5i2xRr+VsFOZh/OUH+m9OqcmYc0kEYn+s=;
+	b=lxoQPgN41KLkgdvInHrDib0sR/ngJvxeV/j3T/loVkjTje/xsmoS3ld43ZsiDyW5W9Hq
+	 Vnq5zeUwchGoN4hKUfwo+4Jmp6CdiHL97fyHAyGhnvq3RGfZfPPHAT9jrZuoxSx46/Ui5
+	 nouBBbvk3F65SENlThGC6iKvkEUV75wdYwFPL9tNsawEp6w81eEoY5dhFOc3O92hfGkBW
+	 aJRb7lsDN3CosE/z5tvUERM55lpzbNvaoDusmRQD0uoXs52pC87dB2BY95Eacm9jY3F9Q
+	 YQc6H3W0E0BZs5B/LhdSNsVJCtcOKwVq59PdAndXkhFmkOu8hoIVfg7ImhpYt8ttqxw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+	dmarc=pass header.from=arndb.de;
+	spf=pass smtp.mailfrom=arndb.de;
+	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=h6epGYND;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=E1F13uXq;
+	arc=none smtp.remote-ip=202.12.124.158
+Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F46960A261C;
-	Thu, 12 Nov 2026 14:03:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1F46960A261C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <f91a0c53b35ff28bed26622f46d562b5a6150008.camel@crapouillou.net>
-Subject: Re: [PATCH v2 5/9] MIPS: Ingenic: Update Ingenic XBurst
- implementation IDs
-From: Paul Cercueil <paul@crapouillou.net>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>, Thomas Bogendoerfer	
- <tsbogend@alpha.franken.de>, Paul Burton <paulburton@kernel.org>, "Maciej
- W. Rozycki" <macro@orcam.me.uk>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
- "Christophe Leroy, David Heidelberg" <david@ixit.cz>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>,  Janusz
- Krzysztofik	 <jmkrzyszt@gmail.com>, Paul Boddie <paul@boddie.org.uk>,
- Olivier Louvignes	 <olivier@mgcrea.io>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	letux-kernel@openphoenux.org
-Date: Thu, 12 Nov 2026 15:03:34 +0100
-In-Reply-To: <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com>
-References: <cover.1794471031.git.hns@goldelico.com>
-	 <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E55C606AE87
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:04:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3E55C606AE87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=h6epGYND;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=E1F13uXq
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 64EB27A00C3
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 09:04:49 -0500 (EST)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Thu, 12 Nov 2026 09:04:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1794492281;
+	 x=1794578681; bh=/tAXn9HhhI5i2xRr+VsFOZh/OUH+m9OqcmYc0kEYn+s=; b=
+	h6epGYNDiXOZ0U54jmhcFmhr9liTv0S3e/4nsnTQfdZmBFJGFRaPsxgpJKPUpAk1
+	man4juZ+v7SfR72SVe3i5cfcS0G7NL3QkvZTt+0piUTA2wTEghZ7hXd9p0RBPABG
+	5vhk1MBr3ULBoO0fTV4xpy4d/uBlLl/WFzoCs379XjgTDVtHfTWujuvdYu9H5pow
+	2mXvdrxvo6BhDIXhZTTx/bO3Exp+PlvP7cK/DsGo9hy9sNUO0aoE67RezRNBDEZt
+	Kasby90AUwr7/BWv+b6YVD+uqy69CBR415lbcTs4A9hLDdoP+N+5GcejR9XDXDhW
+	w0ADKq6QwhGjXMVmZTHlJQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1794492281; x=
+	1794578681; bh=/tAXn9HhhI5i2xRr+VsFOZh/OUH+m9OqcmYc0kEYn+s=; b=E
+	1F13uXqZUsWP9ERbcmBRauF4vI+GEx2BkuRQNzoes0ataedMZtzqTjRBbAf7LabK
+	6WDlDw915yi5GTALoa6bso7Dz4Pc0J9qUX9MgVn/kt3l+Lah3AavR6rBwmaTmSf1
+	/Dkgzk8DNWALFs+mQR3HrIKBuWVqz/5oa9tJ3ZgIgjiHGDvTqNr6BNpbQqqJor89
+	huWf3aFIMMPKU8muFWmaNaWYC1XeD81vPT0o1Ohqq1cIEcM1xxKA2Xzx7q+SLPfa
+	QKwNqZZeCSI8o3vbKYTqsjy8jI/z1G4n6JK8HUwDxqK0p+GX20y40nbDpuam5VaR
+	ofEDJNS4lNkRVhiMiG7mA==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=sign d=arndb.de a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1794492281; d=arndb.de;
+	mf=PGFybmRAYXJuZGIuZGU+;
+	rt=PGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnPg==;
+	s=fm2:rsa-sha256:P0Kke4GwFXwat174g81GPTScwGUfqw3Sh+w1yccEATpm8xQ
+	bzikPAt5l39gDExQwgGQlJN9FYjKteE4vFTeAsG3yX14RzFzEXpZodx2znb/f3O1
+	W+RpasfZLTwqn8Psff07SZsXn7vk6gT11KEb2U2X6AgTVh42Ggd/emo0ifMqyZsN
+	CxtgeAxicCx5204o54vJPjcbMvf5bAUapT2uws5mNiGIfbrr/aD1k/fm2g8Z0YV9
+	aMV4R06VY4oDmY9aTs6tqaLlHZi5VoCaNmMlfmZc+3lIG2G2KuiXsDRP8VafUB8+
+	E39SnJiH8Wh0MdmiQKiMLVZW2rM2HqM6kL7pEMg==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:yhBWo2F8Mg0lXsgAAiDFBLboJONwipmeaHVibNlXcm4=:/tAXn9HhhI5i2xRr+VsFOZh/OUH+m9OqcmYc0kEYn+s=;
+X-ME-Sender: <xms:dcf1ap4UN1N1sYgm98NrBR9yMo43zP8zWJHt_KoCCUEsCOixwmXvbA>
+    <xme:dcf1ahuPMMxteh0vrY0B4rNvmUkFDIN65y7XQAlfVmsmWslILsr3sEP7InMBsBFGj
+    jbDb_lVhqrDpul3WXu1CnFH6muk8Of_T9-Lj4BHAQuKYb3qH8sFKJ4o>
+X-ME-Proxy-Cause: dmFkZTEraX544mQ4uwFvdzCIHZ/nHTECZ1d9wNRCoCeA56HdTpiTyq3xSVAqiNV3X35/Z+
+    dDXXwTcNSzIAJs5fwRvM3QaBeQigOW0u7sEAgv9lxlziJXvg6CryNer7nVzhQF8juyj+aa
+    hRvH/YxuTpd4mrkR5o5OwzbwL4nDwtcuGyVhfjrnAyzbXG69muhVoQHXlcEoD8wQmkGr28
+    VnetKWGF/1sn1HHrJB+F7J5TcmgHftJ59BVNmRvt+ttOpu2zJ8WeAveF1srqK9/1pU1bv9
+    kQRD8+Jeqc9KbjeuF/GwuTL1cm0gvom1BFAQUMXqfIfM0hlgHFgzSKueKw1YJR40jKF1Kv
+    1gxoiF0Xcg0X8YKBTOnVVdwZbEx7LTkcAo9TDrv5CmdIwZlhYabltHnf1TXjhEhFJ7mRh9
+    CsavwvhJzZQje+YI9kWh/F4c3Byqi+Lh9cZ94FgydIu4K98FIU4bAF8yVVBQpwEVNFNrcV
+    /Y8BolSDQx3UwXNXakz2fAlRJjSjz7Bcqoa/DazJqLfFkM9i0bZDaW55ekxupA1FzMDwsX
+    2fYIe3mnx8s7qWJWF4kH37tOLKz6HQ9xmLTk66yk1/H2bO8Wqfi47UDgWnfhstGrZNWee4
+    lE+sM2ptnn48DlRfenKAM500y06BMwBdjQDEM2nKvqkQ7fX1p3NjqkZSZqcQ
+X-ME-Proxy: <xmx:d8f1anI4GyahBTQZsMiQINwhNdinl3W9pXUuBsnor0nDZiOGnXqGHA>
+    <xmx:d8f1arzkSPTEAgh1hwjM-z_KEXo1JI1bT0cQNqGONl2t3IaIjdm0hA>
+    <xmx:d8f1aq0bbLxprs1Ax6j_YjKbqVlZDjcm0WcWdgsV6Z2ubsV4AScf_Q>
+    <xmx:d8f1ak9BDP92Kq051cUj7-aWz23-e42FFO7yN9MbetviFDBx2VwM2g>
+    <xmx:ecf1aqEH4wnb05YC4zON_rcfe3sxx7jDz8fsDVXV3sknS5Vvne6Dwq7a>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 2DC8932A009E; Thu, 12 Nov 2026 09:04:37 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,154 +115,34 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+X-ThreadId: AtwnaRLwEjKw
+Date: Thu, 12 Nov 2026 15:04:16 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, kernel-dev@igalia.com,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev,
+ linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
+Message-Id: <b580eaab-100f-4375-a8df-7d1f4c751cbc@app.fastmail.com>
+In-Reply-To: <20261105-tonyk-syscall_table-v9-13-8d1275885d9c@igalia.com>
+References: <20261105-tonyk-syscall_table-v9-0-8d1275885d9c@igalia.com>
+ <20261105-tonyk-syscall_table-v9-13-8d1275885d9c@igalia.com>
+Subject: Re: [PATCH v9 13/15] syscalls: Avoid matching substrings in the ABI parsing
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Nikolaus,
+On Thu, Nov 5, 2026, at 21:05, Andr=C3=A9 Almeida wrote:
+> Currently, the abi parsing for grep will match substrings. For instanc=
+e, an
+> ABI called `abc` will match also the ABI called `abcde`. Use the space
+> limiter to match a complete word and avoid matching substrings.
+>
+> While here, add a true command in the end of grep command to avoid the
+> script exiting earlier and being able to do the cleanup.
+>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
 
-Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =C3=A9=
-crit=C2=A0:
-> Add PRID implementation constants for Ingenic XBurst and XBurst II
-> processors and handle the corresponding implementation IDs in
-> cpu_probe_ingenic().
->=20
-> The PRID table is updated based on Programming Manuals and hardware tests=
-:
-> - jz4780: 0x3ee1024f (confirmed on CI20 board)
-> - x1000:=C2=A0 0x2ed1024f (unconfirmed)
-> - x1600:=C2=A0 0x00d00000 (confirmed on LX16 board)
-> - X1830:=C2=A0 0x00d00100 (unconfirmed)
-> - X2000:=C2=A0 0x00132000 (read out from LX20 board)
-> - X2600:=C2=A0 0x001320xx (confirmed 0x00132000 on LX26 board)
->=20
-> Additionally, clean up extra spaces in the comments for
-> PRID_IMP_XBURST_REV2 and PRID_IMP_XBURST2.
->=20
-> Distinguish XBurst1 implementations with different SIMD ISA revisions
-> and identify XBurst II processors using PRID_IMP_XBURST2.
-> The XBurst II classification follows the Ingenic vendor kernel.
->=20
-> Keep the existing writecombine handling unchanged, since no
-> independent evidence justifies changing the cache attribute for
-> XBurst II.
->=20
-> Public references:
-> - Ingenic Community, public SoC datasheets and programming manuals:
-> =C2=A0 https://github.com/Ingenic-community/datasheets/tree/main/X
-> =C2=A0 Includes the X1600 programming manual (X1600_PM_20220117.pdf)
-> =C2=A0 and documentation for other X-series SoCs, including X1000,
-> =C2=A0 X1830 and X2000.
-> - Ingenic, XBurst1 CPU Core Programming Manual:
-> =C2=A0 https://cdn.hackaday.io/files/1855627939084608/XBurst1_Core_PM.pdf
-> =C2=A0 Documents the XBurst1 core architecture and CP0 configuration.
-> - Ingenic, XBurst Instruction Set Architecture Programming Manual:
-> =C2=A0 https://www.setphaserstostun.org/ci20/X1000_M200_XBurst_ISA_MXU_PM=
-.pdf
-> =C2=A0 Documents the original XBurst SIMD instruction set.
-> - Ingenic, XBurst2 CPU Core Programming Manual:
-> =C2=A0 https://www.manualslib.com/manual/2646351/Ingenic-Xburst-2-Cpu-Cor=
-e.html
-> =C2=A0 Documents the XBurst2 core architecture.
-> - Ingenic, MIPS-LINUX toolchain R6.0.0 release notes:
-> =C2=A0 https://www.ingenic.com.cn/news-detail/nid-343.html
-> =C2=A0 Distinguishes MSA, MXA and MXU/MXU2 support in the toolchain.
-> - Ingenic, MIPS-LINUX toolchain R6.2.1 release notes:
-> =C2=A0 https://www.ingenic.com.cn/news-detail/nid-348.html
-> =C2=A0 Documents MXU3 support and identifies X2000 as an MSA target.
->=20
-> The public references document the available CPU, SoC and ISA
-> information. The PRID implementation handling follows the Ingenic
-> vendor kernel.
->=20
-> AI assistance: ChatGPT was used to help review the PRID definitions,
-> compare the Ingenic vendor implementation with the upstream code,
-> and draft the commit message with public references. The code changes,
-> hardware observations, and final patch were reviewed by the authors.
->=20
-> Co-developed-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
->=20
-> Notes:
-> =C2=A0=C2=A0=C2=A0 Changes in V2:
-> =C2=A0=C2=A0=C2=A0 - removed the PRID_IMP_XBURST2_R2 definition and hints=
- for an x2100 as
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 there is no public reference
-> =C2=A0=C2=A0=C2=A0 - merged into single commit changing the PRID definiti=
-ons and code
-> =C2=A0=C2=A0=C2=A0 - reviewed details and rewrote commit message
-> =C2=A0=C2=A0=C2=A0=20
-> =C2=A0=C2=A0=C2=A0 Open Issue:
-> =C2=A0=C2=A0=C2=A0 Olivier Louvignes <olivier@mgcrea.io> pointed out that=
- he has
-> =C2=A0=C2=A0=C2=A0 simply reused the definition of the X1830 for the X160=
-0. This
-> =C2=A0=C2=A0=C2=A0 sets c->writecombine differently (_CACHE_CACHABLE_WA) =
-from
-> =C2=A0=C2=A0=C2=A0 _CACHE_UNCACHED_ACCELERATED as we do here.
-> =C2=A0=C2=A0=C2=A0 Both settings appear to work but it needs expert comme=
-nt which
-> =C2=A0=C2=A0=C2=A0 is the right/better one.
->=20
-> =C2=A0arch/mips/include/asm/cpu.h=C2=A0 | 9 +++++----
-> =C2=A0arch/mips/kernel/cpu-probe.c | 7 +++++++
-> =C2=A02 files changed, 12 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-> index add26f08e8029..79fd9a0747cf2 100644
-> --- a/arch/mips/include/asm/cpu.h
-> +++ b/arch/mips/include/asm/cpu.h
-> @@ -47,7 +47,7 @@
-> =C2=A0#define PRID_COMP_CAVIUM	0x0d0000
-> =C2=A0#define PRID_COMP_LOONGSON	0x140000
-> =C2=A0#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
-> -#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750,
-> JZ4755, JZ4760, X1830 */
-> +#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750,
-> JZ4755, JZ4760, X1830, X1600 */
-> =C2=A0#define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
-> =C2=A0#define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
-> =C2=A0
-> @@ -186,9 +186,10 @@
-> =C2=A0 * These are the PRID's for when 23:16 =3D=3D PRID_COMP_INGENIC_*
-> =C2=A0 */
-> =C2=A0
-> -#define PRID_IMP_XBURST_REV1	0x0200	/* XBurst=C2=AE1 with MXU1.0/MXU1.1 =
-SIMD
-> ISA	*/
-> -#define PRID_IMP_XBURST_REV2	0x0100	/* XBurst=C2=AE1 with MXU2.0 SIMD
-> ISA		*/
-> -#define PRID_IMP_XBURST2		0x2000	/* XBurst=C2=AE2 with MXU2.1 SIMD
-> ISA		*/
-> +#define PRID_IMP_XBURST		0x0000	/* XBurst1 */
-> +#define PRID_IMP_XBURST_REV1	0x0200	/* XBurst1 with MXU1.0/MXU1.1 SIMD
-> ISA */
-> +#define PRID_IMP_XBURST_REV2	0x0100	/* XBurst1 with MXU2.0 SIMD ISA */
-> +#define PRID_IMP_XBURST2	0x2000	/* XBurst2 with MXU2.1 SIMD ISA */
-> =C2=A0
-> =C2=A0/*
-> =C2=A0 * These are the PRID's for when 23:16 =3D=3D PRID_COMP_NETLOGIC
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 489612ed9d498..69b68d00b66f7 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -1768,6 +1768,13 @@ static inline void cpu_probe_ingenic(struct
-> cpuinfo_mips *c, unsigned int cpu)
-> =C2=A0
-> =C2=A0	switch (c->processor_id & PRID_IMP_MASK) {
-> =C2=A0
-> +	/* XBurst=C2=AE1 with ISA */
-> +	case PRID_IMP_XBURST:
-> +		c->cputype =3D CPU_XBURST;
-> +		c->writecombine =3D _CACHE_UNCACHED_ACCELERATED;
-> +		__cpu_name[cpu] =3D "Ingenic XBurst";
-> +		break;
-
-What SoCs actually use PRID_IMP_XBURST? The JZ4730?
-
-If it's really used somewhere, you'll also need to add a compatible string =
-for
-it in Documentation/devicetree/bindings/mips/cpus.yaml. I guess just
-"ingenic,xburst".
-
-Cheers,
--Paul
+Acked-by: Arnd Bergmann <arnd@arndb.de>

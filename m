@@ -1,109 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794471055;
-	b=fMIqlTul/1Rd0NWgDN9ZF4CezTALXJvvm+8YmXD20EI1Yqk39pRqYih4P88DAwTwQAKm
-	 FnJWJ3eFfewJxtuHG/sAolWTJXx5cJf/faM1DHTA6u1hwSH0EbjUoisi7CAfxcylFeYVm
-	 hjXTiDPg045smWHlSQJyP1kqu9AfqAj8jqFR5oVqpgeY61sdsFBgA30kSjm9L4sYXmwYa
-	 pckQiYnH0ON/p8PxGfBNMl4yKPfaWCr7/hRbClsLdNnqc0A+XaHdd4AOYk6GzhehBOtE2
-	 fXVQYZSOt+3HOIJRdcrw6ynZo9B5wPKeAvXpqLmOTvsD0ScOAfNfsOfT3AIzd8gVTYg==
+	t=1794476063;
+	b=tRhL8Yu3/VHbjbIeI3DLPDVVN7UrZlXUpvKoqzb/Gnh+hYBlvGaDGaNf7scCFq/K8h1b
+	 Hyvv/MM/vwHWH5gh0CSMTV9RnAkuGi+5croM5j/8itMYI7jxwe2byrF5mYZ5NDNCX/BW8
+	 bR1h3fbKTIPfXt9UTRL+UVr9nSa27wq/k/8d5AnCWiWRtfcDs+P2nRBHfpHDw3iAWenKC
+	 Jdv8NwE3Xfj5mMc4MQlbdmaSpRvJ/URxy1NyyafbAIK+1WJrBRoPcgRBmPXKWa+lV1kKG
+	 Xa+SSIHTNJgBp736FzQEyxk5aBmy2/9dA1fsH69+5d2A98ZrEa6cRO3RhaS02CLngDQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794471055;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=OtV2Pa12MbcHInWbgvFShpANT/vmdTc3N+DfOg93zZk=;
-	b=MTko3ni0xg6XtZZf2a7e5f0pi33ORA5uDPbL1mt2kAcmXTN4VzRusb6aoWjUIem6hWp6
-	 dqQN31fzuGC2UfccpbkfiQLOOUaYBEoqkn0Iunz1C1rO6mNyw297guWE2762kp1wfRdCS
-	 K3e6ht5E4lTHFU9bddVREvprvocELjfWoWZ37yD79NgTxPGMzQsyl4RWlBAVznk6/TclY
-	 UwjT3YROJA/9XDdIFdUxpAzKH4tBNzAx6u0Xr7S5SicNIbNDIadM8aILzGLxlxO3GOGiw
-	 /gfSotjnSjSNapJBSlPWGWtgGVXYWWxIPNamqnG5DkSdFb5vWIyVqjkZKZg2maReo4Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794476063;
+	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Subject:From:To:Cc:
+	 Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
+	 User-Agent:MIME-Version;
+	bh=0mwJLfkCKM4Ex+W3HdtHCenUOHq2LFEypD9rBYF7gtE=;
+	b=bzzoCPKX6sXcOdnXuL/G9UB5uuXMfJ+xHZZsQnAge5SaXEXOhnOdj1dt946T+RycJRxt
+	 cBWY8mVZmnTuaeEUBaiCrGpdGo5ff03XoTkdyMBgKTvlPyVoAHlQChnblaUhvzCkxXXg2
+	 D8oYYEpI9boJSS1OVb8sDEucbznIrxLh3i4PgVCFHOjwV4l2Rr0YxmsR13ofelg9iLDTi
+	 PpyYEKXhznao9Yq+TH5TAiYvgDYsSGIvZSVKJo0a7I3xEN6LydDcRP+kAbyeH12nxZJp7
+	 Wo1iH/T5zEnG014jWsS85szyRXjqqV04rdLBx070RYBHk26QcLt8U5tZgm9jVTLgRkw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ZvkG9wUX;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=CbGS5Jr4;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=bsf0A2Om;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAF5606A32E;
-	Thu, 12 Nov 2026 08:10:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8EAF5606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB63606A321;
+	Thu, 12 Nov 2026 09:34:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5CB63606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ZvkG9wUX;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=CbGS5Jr4
-ARC-Seal: i=1; a=rsa-sha256; t=1794471035; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KS3e9Qu/HeJIQVyF26pIp2BClZRrUONN0saBSDSZi2JJeO/j113+b1Q0AWyYvdFCHQ
-    wGFkrCFcPfDftRoKghcQHkTxEc57Uqy/y85h7x/1+bfL34VHtFVjdsL/Pi9L/L1k6W21
-    NSDudPlNx0Xvr1VJDgeEoCc0lQogQWqM96OdTW+1LzN7wVN2OLvKhXztgOwJPSbEbwM7
-    dg9FOIsXaGIQfL8bVICJe3lIHKUZcuIAqfKlt8r9xHxmDvEnI79LeVIhlOONaX532ZTu
-    HmraFWqwx9wmb8rJNAZIngvlw8q6m1HnXqsgfQwRmI53lO0D08yENXvV57YHZ5qoofel
-    p6cA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471035;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=OtV2Pa12MbcHInWbgvFShpANT/vmdTc3N+DfOg93zZk=;
-    b=XflAKdwlidWtefikP0z/NbkAlKczJWP+WnD9il24qMU+tDYj9n8wBhCA8JK6yiIEtv
-    RnJhlbzaJl2l0jFe5SMJXydWozFDmooa2KyZ6NhT8f99MBz916kngiGU/fl0qspJRiR9
-    lvEPdFLQpLdLGYZEcQ1RUcSweGsxQIVXtzzOsS9hu3QUzy8PfDOKdZUSZ3ri2nnec1tN
-    rTIZg+lxV5nu9qGTTeZpedPRpe0Cgfz6hLvu45TQRz/LgjNVB0XqTV8JRuEH2KAgJijg
-    DT/dpd9qWDYIPpbNEiw34ynysxq9/E1c5/objx5zprdWiW7JCGihV4niejetzrVw6bL6
-    WKtA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471035;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=OtV2Pa12MbcHInWbgvFShpANT/vmdTc3N+DfOg93zZk=;
-    b=ZvkG9wUXKvRJn4k4Yiygc1Occ7ca8hBiEVcmgJC31zuylUzMrmkQJurMrjN+v7jQmT
-    1xPyoRZ+tkNzpVj2KNcnOfYRYUmzYc9leV8qqspesYxwin26IY6MBR/5aoJ2SS7nKPaU
-    78v30q3j3aKDeqeYAkXBuk/F2xxXPtK3BgrQp75HQ73PPNoRWJAzQhVE/G0DlF8rIQHz
-    WpNctSNUe1TbjjCyv0ZIwe58R1xyaG8ArIO4DMN9klWnxou7P7KvEhFvE57f7dl+vPJL
-    /0UBqNTLbwqycW4fBQRmrqinLPDdej8w1PpQJyq0zch0Qx+OBWx6dldu+/jagrmdl3K4
-    qNuw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471035;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=OtV2Pa12MbcHInWbgvFShpANT/vmdTc3N+DfOg93zZk=;
-    b=CbGS5Jr4FhJXu94vI+X44UsLK0XNb9K9j25ePWai7bXxtzr9vmsvl7RpyYsxfndG/i
-    ed7HQE85+PV6EROBW4BQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AC8AYAbd
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 12 Nov 2026 09:10:34 +0100 (CET)
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Paul Burton <paulburton@kernel.org>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	"Christophe Leroy, David Heidelberg" <david@ixit.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	周琰杰,
-	Paul Boddie <paul@boddie.org.uk>,
-	Olivier Louvignes <olivier@mgcrea.io>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	letux-kernel@openphoenux.org,
-	=?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= <zhouyanjie@wanyeetech.com>
-Subject: [PATCH v2 4/9] MIPS: Ingenic: Add a new CPU_XBURST2 type
-Date: Thu, 12 Nov 2026 09:10:26 +0100
-Message-ID: <a398b4d68c085d334cef32430d55bec24bd7b4ad.1794471031.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <cover.1794471031.git.hns@goldelico.com>
-References: <cover.1794471031.git.hns@goldelico.com>
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=bsf0A2Om
+Received: from [IPv6:2a0a:edc0:0:900:1d::4e] (lupine.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::4e])
+	(Authenticated sender: pza@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3C4902006B6;
+	Thu, 12 Nov 2026 10:34:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794476059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0mwJLfkCKM4Ex+W3HdtHCenUOHq2LFEypD9rBYF7gtE=;
+	b=bsf0A2OmIo4OBsbuBshB9FsFX+F+TlhG4Gz8KkGEF7/js8khUKc4FI8vayYVMoucxWt5Ko
+	OSe+42Jyd2PWyVH14xSLE5tWctlwWI5lrWBCo5sVnzIa3vqW/dtMAY0RyiDUO8i/jjLGIB
+	rTcVhWyyHueMksggRKGjb8Cr4pbO1YxIH/y+dZvjDMm7W+Qm3sqsTriUtrJMghd7MJCHk5
+	9HJ6ZUCw88gRvuW7vDyRAh/pvFXC5HcfyH0ls0VClY/szhjbvXmhugdmUTqMatmHWMdE9W
+	y3/CQfAD6KLC5jJyhVhVlEiuSEJZO14inIkgiocsGmop7a13sSD3yfXA2gUL5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794476059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0mwJLfkCKM4Ex+W3HdtHCenUOHq2LFEypD9rBYF7gtE=;
+	b=M1xp41demAYY1JUSaNTDwVYwai2XVErtg/5rY82QD66dsMfcSGVvcCGvdnK1iCTS4vsuRG
+	0g2v+8SS/0o8UoYCYk4xTCd5HOZhs7G74GoSjhGboBY3rzaGKEr3igoER60lWq3YBfoems
+	LC6yAO0ULo8LzWZsukM9Hfvoj9OYWwoJaWA+NTXYcl2uX4hY0dFY/ZBg0d9MaEiiCTRzCS
+	WGYlJ8lBDVHFlCuhMbSNgorxvZ/OhfmoN86+PsX8fdMbJnstsGZd+Ca6WKIl1hV96V4LEU
+	NmPE57+T7tHrO47mYGqt8S24mu98zwfwpoWHHg5dL/1/8TUsOewL3/Cb5maPCQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794476059; a=rsa-sha256;
+	cv=none;
+	b=JXsBro+kIRWK2d9mYT2oon7XgCLOHsT+5BFR9eephMZg2hha8kNBOPeJWpw/6AarlhCBt+
+	PJrwDM+U2obtY0XoH/w7g4ENdE2YDw7jVCTptfy/a1LhoUx6rG3ZiQ+G63LBeTtEYG7fDU
+	NvmPdTX53nmIGlamlP85Yax6nEF8asBfcpSAUqu7HQk1l3SMf8p5m9JX2xROYoo7NZjUIN
+	lE5zbpyKrmZf1Bu8ZfUdAF4C4leSAajMcBpTbZcLpJKvubWThEvrl0is7gYnqYOcvTj7ZA
+	OgcjgU2kSIIxU82R9kn7HZhGHq0+CPOFK9i4vzE3lmJzR63DvKZJtZ2qefqh6w==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=pza@pengutronix.de smtp.mailfrom=p.zabel@pengutronix.de
+Message-ID: <65b603d24fa606b075a81b4e2211863a52c51d3e.camel@pengutronix.de>
+Subject: Re: [PATCH v2 4/4] clk: siflower: Add SF19A2890 peripheral clock
+ and reset manager driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Joseph Telaak <joseph@telaak.dev>
+Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
+ Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Chuanhong Guo	 <gch981213@gmail.com>, Yao Zi
+ <me@ziyao.cc>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=	
+ <u.kleine-koenig@baylibre.com>, linux-mips@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 12 Nov 2026 10:34:19 +0100
+In-Reply-To: <CAPY4CJ5_Qa2vf7_GiFU-T92HDkA3mdY_x2Dt5DXZ5dMfS-oUwQ@mail.gmail.com>
+References: <20261111-sf19a2890-sysm-v2-0-d2fcb723e4f1@telaak.dev>
+	 <20261111-sf19a2890-sysm-v2-4-d2fcb723e4f1@telaak.dev>
+	 <d59f52d1466c515f574be1e9eb127ca3e43d155b.camel@pengutronix.de>
+	 <CAPY4CJ5_Qa2vf7_GiFU-T92HDkA3mdY_x2Dt5DXZ5dMfS-oUwQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-0+deb13u1 
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -113,55 +102,67 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+On Mi, 2026-11-11 at 14:08 -0500, Joseph Telaak wrote:
+> On Wed, Nov 11, 2026 at 10:56:47AM +0100, Philipp Zabel wrote:
+> > > + spin_lock_irqsave(&crm->lock, flags);
+> >=20
+> > Could be simplified with guard(spinlock)(&crm->lock);
+>=20
+> Will do in v3, as guard(spinlock_irqsave)(), since the clock gates take
+> the same lock from clk_enable(), which can run in interrupt context. I'll
+> convert the gate enable and disable paths as well.
+>=20
+> > > +static const u32 sf19a2890_usb_resets[] =3D {
+> > > + [RST_USB] =3D GENMASK(2, 0),
+> >=20
+> > Do these three bits control separate reset lines?
+> > Does the hardware require them to be changed together?
+>=20
+> Yes, they are separate lines, one per clock domain of the DWC2
+> controller. Bit 0 matches the controller's gate and bit 2 its AXI
+> master's (usb_axim). Bit 1 has no gate, so it is probably the PHY clock
+> domain, whose clock comes from the PHY rather than from this block.
+>=20
+> There is no public documentation for this block. Chuanhong explained in
+> v1 that the lines of one IP's clock domains have to be asserted together
+> [1], the same as the GMAC's.
 
-Add a new CPU_XBURST2 type for the MIPS32r5 compatible XBurst®2 CPU.
+Ah, I got confused by the commit message, which to me looked like the
+bus lockup issue is limited to GMAC.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
+> The dwc2 binding also takes a single reset for the controller.
 
-Notes:
-    This patch solves a build error in
-    
-    "MIPS: Ingenic: Update Ingenic XBurst implementation IDs"
-    
-    reported by kernel test robot.
+That is irrelevant from my PoV, the binding could be insufficient for
+this integration.
 
- arch/mips/include/asm/cpu-type.h | 1 +
- arch/mips/include/asm/cpu.h      | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+>=20
+> > > +static const u32 sf19a2890_uart_resets[] =3D {
+> > > + [RST_UART0] =3D BIT(0) | BIT(4),
+> > > + [RST_UART1] =3D BIT(1) | BIT(5),
+> > > + [RST_UART2] =3D BIT(2) | BIT(6),
+> >=20
+> > Same question as above.
+>=20
+> Yes, they are separate. Going by the gates at the same bit positions,
+> bits 0-2 are the UARTs' APB resets (PRESETn) and bits 4-6 their UART
+> clock domain resets (nUARTRST). The PL011 TRM (DDI 0183, section 2.4.1)
+> says the reset controller must use PRESETn to assert nUARTRST. This block
+> leaves both to software, so the driver asserts them together. The pl011
+> binding also allows a single reset.
+>=20
+> The same goes for the other two groups. The SPI block's bits 4 and 5 are
+> the PL022's PRESETn and nSSPRST, which its TRM (DDI 0194) ties together i=
+n
+> the same way. The WLAN blocks' bits 0-2 match their AXI slave, AXI master
+> and platform gates.
+>=20
+> v3 will explain each multi-bit group in the commit message, not just the
+> GMAC's.
 
-diff --git a/arch/mips/include/asm/cpu-type.h b/arch/mips/include/asm/cpu-type.h
-index fd37a44a2f199..25a181fd0eb7a 100644
---- a/arch/mips/include/asm/cpu-type.h
-+++ b/arch/mips/include/asm/cpu-type.h
-@@ -56,6 +56,7 @@ static inline int __pure __get_cpu_type(const int cpu_type)
- #ifdef CONFIG_SYS_HAS_CPU_MIPS32_R5
- 	case CPU_M5150:
- 	case CPU_P5600:
-+	case CPU_XBURST2:
- #endif
- 
- #if defined(CONFIG_SYS_HAS_CPU_MIPS32_R2) || \
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 0fd9f9bbd21f1..add26f08e8029 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -312,8 +312,8 @@ enum cpu_type_enum {
- 	 */
- 	CPU_4KC, CPU_4KEC, CPU_4KSC, CPU_24K, CPU_34K, CPU_1004K, CPU_74K,
- 	CPU_ALCHEMY, CPU_PR4450, CPU_BMIPS32, CPU_BMIPS3300, CPU_BMIPS4350,
--	CPU_BMIPS4380, CPU_BMIPS5000, CPU_XBURST, CPU_LOONGSON32, CPU_M14KC,
--	CPU_M14KEC, CPU_INTERAPTIV, CPU_P5600, CPU_PROAPTIV, CPU_1074K,
-+	CPU_BMIPS4380, CPU_BMIPS5000, CPU_XBURST, CPU_XBURST2, CPU_LOONGSON32,
-+	CPU_M14KC, CPU_M14KEC, CPU_INTERAPTIV, CPU_P5600, CPU_PROAPTIV, CPU_1074K,
- 	CPU_M5150, CPU_I6400, CPU_P6600, CPU_M6250,
- 
- 	/*
--- 
-2.56.0
+Please do. With that,
 
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp

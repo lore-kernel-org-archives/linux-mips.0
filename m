@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.171
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794471050;
-	b=th/JPz3q6i78m6YExBhQVENsmLcYdqS8jrNiDsE5B5I2HLIkOCnUbsfnKbNgKsJTx3lQ
-	 TYq9Sx9SKIulHVnVfxdzAtQOuCLmAaCBZSmM3GV0sdX3HDGnHL1/IcgBqLXMJWzWP19Xz
-	 h6dMgBm8x3S4zEdJ3zSWeP5IehYn8kC9c10C4TTDOerUqPOvm6kv/dJm4+LZUhJWYDpEu
-	 6UvttrcwNeVsW6IE/WJIwIupU2TxHxnoHwDWDjCD747OsozZUnmc/XOTvFVJLS7xEGG3p
-	 62ITt8OcQ0/skrVIS4iCDaoQE439mjwBP747Q676HwcTOO6Axq1Wj8+0xTdrs3a76qw==
+	b=oN7psHx2g4iiGJdNS6/zTbKU3mP36m0YXUNLAfLHpe6vnAzBk0iDOX/xJKfGIbxF7Bps
+	 eg561JNMP2xjYDWP/vQIAMWMxnOlcg4fUd6sZEsqrxE8Rxh6zNTqv4KhYEaN/cyvE/ViF
+	 g5JZCvowTKr0hUFU/nxZ5bgqOMCTQKG6AdHF3910GYmv/Ph1pTFOFSP02MISEThKyM48U
+	 idsYiZKym0UKgR/T90nkUSDyIq5n2ylzpCijNPkFmsoiSQr5zfMQXwzLykCD+5fdktfMR
+	 QTJwVcrpB+vUvY7bOm6jyU62Ee52zwP+tIiBG/FeaS025iBJIQi7F9OW5RTsJxNdxxA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794471050;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=+j8/fJhR8UQX2Q/xDYKDp5x+c21RfWgMErPB9xHKBEI=;
-	b=t7eg13bMcUPy2uUEydZVjBOG6mWcJF+iN/XixxdIG2J2ceZaeAFZyR7zUED3XVgsmFE9
-	 vC99bAhNJsjOGnexSqFsAW02HRWOHxiNxngeHvHgQLoQmC5aPEKhEaUbdSBKUa56HEqcK
-	 3EFkKUJNvV93eiB35s4b9f3Q3zJKZbXJ3Dc9NUhX4szUFCB3URKEDC9/PdynT+LATOhrP
-	 uYYslxUw3CHjVFpffluGgq6RyTUt5Mz5LflcRWDXE0VMvOn1WpOo15i7XTwXza8GduhAO
-	 dx6spef/bvyDO7XekGBDx+8lmH7U4J58QZINzu6YV7OUK6/venflhlGbifZaUqILkkw==
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=3Niw6rj88SccCD4L5qvzZ25l7kraaGkUSkwQV1MpJ9E=;
+	b=yvn/xGte4d06m6ytt5Lk9yw6iCRFSFxoE5f202yPJqFPyqzhGEHp+QOIVrNXFhR5MuSb
+	 t+32G8klHPNVL0oQOCe4yq6q7rdA1WwfBQ2mn2NtTqBc4vqTUrlsoZ5Riqc9qBMbRulxw
+	 JAWWCLIlbQf9jPlIdslEWF7RnZpkpRdbecZF8RFnY28a/9sQ74tO+5JrFR1fHYwtt5Jqj
+	 QJOp8L7wienYXz5ApVbYYRhMEkLrczqnTajjDxlNrwy6dULfbY9EFgwfD0KwIbtM/h3ec
+	 BxVE+ooHLq9p5gq1nOB3shVzzYLUzc6k98Tx9ptpTEAfhAShVRjhBbAEUW854wdLM+A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Qso0KxD0;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=zGr+1dnH;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.171
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Wbmdml0n;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=PSOn0GOo;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B34606A881;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E4C606A32E;
 	Thu, 12 Nov 2026 08:10:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 93B34606A881
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 86E4C606A32E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Qso0KxD0;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=zGr+1dnH
-ARC-Seal: i=1; a=rsa-sha256; t=1794471035; cv=none;
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Wbmdml0n;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=PSOn0GOo
+ARC-Seal: i=1; a=rsa-sha256; t=1794471034; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=kQUTErHlJy11MxruRT7iVEoeOE8JYr8VW45aXYhaIijtYLvMBAlZjz4hrPKktbrNjY
-    Qn7Vf73IWvNBE7L2qmOBOuE0GGKOXipH1OVY7lX+rgpeI9iRaHcgtrT0M2C9RbOSTvay
-    I1/Eo8B02roP0TOLE8JryqaJTSIP4rLok21z51z70W4Ba36Fi/gONOS4fB87seCpPEcl
-    ysNYIa287TopU95MhF3wZpgYDYi0cuQ4cWScisx6u355Flch4+me4nqShXAFfOUt68Ez
-    /zeQfvBANwxbwzLm+S+Btwft8vPgPgWGjY3nb73dJb0PdAJl9g5Ogj094CHa1xQSDQKx
-    LWIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471035;
+    b=EVOlVKQw1SQkSEHSrx32L55JCwfb63tBKR6omlqZlURce1NxYq8HEf9Iq9/w/ljB1i
+    VrVvbYDyJyXxeAk6wHvnthCX3Qch2kZiNphaoN15gVp3YOiEW2ZjaUdECfE6R5IZZKqu
+    c3RzH1ru3MTpTNoS/yN6IdMUXVLIFDbERwElPQS1P0hdpefrD46B0KyUL5H6bToRB0Fs
+    Y7ZyD6Mp91ILU3J1NIU/ovbg0T7+rmSf7gvOoJV08/uYS30t/HCkbWh26uTsVfcpi8Kd
+    pcAYlHAHedUFsz8P/TVHYfuRvBI6y7yLHKrTkeJmD1P+eC0pmSxVysZM3XkySqI2X0en
+    m+6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=+j8/fJhR8UQX2Q/xDYKDp5x+c21RfWgMErPB9xHKBEI=;
-    b=ozezEb91dBxQHwgEu5i5EummVmB62K31O372APva4tnubg6ZLucedhCWsDrcHv+L1R
-    CLzqFY3UV9+aKLUHOHskw8Y3rb6Vhp1yhIGgzBIGlTQ+4ff9kwQxUQYXwCV3ytgleRHg
-    eEWfOaeGfePuzMCi0V+dGv9jPvN1DjcJZNH4z//QsiATSofX0GBkHfJFqhaZGC5/UVJF
-    fthyq2K58ocyD+n+6iq2B4A9WZRQbdWCKEMqHIz+NTM6b20vAUl4SoEtQ4XB9++6LvOa
-    X0fqlqanHSyEExZJI7rQAhmxKzJrKU+Q85i6Bu3N3sylIy8ef9oLbDNZJnvfVQZXQp+1
-    75Rg==
+    bh=3Niw6rj88SccCD4L5qvzZ25l7kraaGkUSkwQV1MpJ9E=;
+    b=nDHnymyZ2VArPQ40wsY1qsOvahyFCbaQAIVH11K7HT9QM9UOyPP7zE8bDnUaiq6iIB
+    CtkH+ZyTJ2Io+zcLDQLM/nJrabvNkddjtb6MhkLmfceUR+7X1Rp14Dy44C2UMQtIXpK3
+    BhfB54JNu4sqc2GqTotIoagchMixyZ24qbzJHKBtd5dtKpfGeEaMD6lxno/KZHwWUZnj
+    GYDf+qe+eCfjy2cH9f1EZ5ARV1WkedmLfoV0cGA7wuhTiZcm70rctjmSqkEsRvhWQZd0
+    Y7gi5BiQGX70zX6Z9D2hDlbpExisTLL//1Hz+2X18Z4p8KLxRFWYcpj32Dsx4P1+Dh6g
+    GxIA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471035;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=+j8/fJhR8UQX2Q/xDYKDp5x+c21RfWgMErPB9xHKBEI=;
-    b=Qso0KxD0wjN3L0tFh27Ad1s53Jn8f1wuxM7Y8BzYdlCbYuQFdCfwsS+khzXoInaUMc
-    f5cG886E0VtMdJ+QeVFszIesXMVPdPyh/UoNAltrVRBw35eVB+iI9M+4ngs9LqyoOdBH
-    J19p6wdO3Jm8aqnoXjVo8q5ZkzpOKExyGfuVvcsnjk9tlUx0ajC63wFfaLsgFAlte3xY
-    T55vdlccVAJPpsH9E5H6zpF7ikWTyp1bi9FJhSWMuukeyCnVI2rWU963Y9fuRTw+Voof
-    EeqZX+PKTfFBtI7XuzVLmwY1PNf6oonqThxNqlCFbEg0uD+0YsA6xGcQ3FXLGtXj1iaL
-    uMfw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471035;
+    bh=3Niw6rj88SccCD4L5qvzZ25l7kraaGkUSkwQV1MpJ9E=;
+    b=Wbmdml0n/L6Ib4fEOIhB2/UJX62QuktS5erD+vEDBYDGHUxwBWfzCwVKkI7HTDV7fd
+    ojWONxt8IQK9u9cFPm/cF1pYgsqcKNvutPZ++vNwvqSRJYwZmBfExiwWgaWkWLAYXPkt
+    hDf/UzQ60UXedD7sdhcCLZwqum/6IUU1zSonGzLqnwhGOT087q3wS5vcA6fskqqelFV7
+    IuVwXDoBIGejRC8GR6Liwu/Ak8fWrLOfv9+AM4KiBFhLgDEmtgud/iBF1gvW/1WPYX55
+    OLVGgF9Z2i2gE3uRrMbqq1lzZa4Lbx5lV9tR3OmRR30pxbVGv7e66evAsEgKSMg42gHU
+    XCPA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0003; d=goldelico.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=+j8/fJhR8UQX2Q/xDYKDp5x+c21RfWgMErPB9xHKBEI=;
-    b=zGr+1dnHnFI4p29SkoZc4TxHe90b6cjHAmVEH+uD0WarMD8LC9PS4n+biIL70Q9Qjz
-    i/4LGJJ/RNEewLuOGoCw==
+    bh=3Niw6rj88SccCD4L5qvzZ25l7kraaGkUSkwQV1MpJ9E=;
+    b=PSOn0GOoDBRMhZeulH+x6sigzFZjCi4wYvqZktz1jQqa141CNbRNYMXrkfT3KQIoLm
+    L2Jx6GEl6Nr04FAh72Dg==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AC8AZAbe
+    with ESMTPSA id Qb56a22AC8AYAbc
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Thu, 12 Nov 2026 09:10:35 +0100 (CET)
+    Thu, 12 Nov 2026 09:10:34 +0100 (CET)
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Paul Cercueil <paul@crapouillou.net>,
@@ -97,9 +97,9 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	letux-kernel@openphoenux.org
-Subject: [PATCH v2 5/9] MIPS: Ingenic: Update Ingenic XBurst implementation IDs
-Date: Thu, 12 Nov 2026 09:10:27 +0100
-Message-ID: <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com>
+Subject: [PATCH v2 3/9] MIPS: Ingenic: Do not force BUILTIN_DTB in Kconfig
+Date: Thu, 12 Nov 2026 09:10:25 +0100
+Message-ID: <fdc48b799f3c2f43a70236ef4d68bf1527facc9c.1794471031.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1794471031.git.hns@goldelico.com>
 References: <cover.1794471031.git.hns@goldelico.com>
@@ -112,132 +112,47 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-Add PRID implementation constants for Ingenic XBurst and XBurst II
-processors and handle the corresponding implementation IDs in
-cpu_probe_ingenic().
+Remove the unconditional selection of BUILTIN_DTB for MACH_INGENIC
+when MIPS_NO_APPENDED_DTB is enabled.
 
-The PRID table is updated based on Programming Manuals and hardware tests:
-- jz4780: 0x3ee1024f (confirmed on CI20 board)
-- x1000:  0x2ed1024f (unconfirmed)
-- x1600:  0x00d00000 (confirmed on LX16 board)
-- X1830:  0x00d00100 (unconfirmed)
-- X2000:  0x00132000 (read out from LX20 board)
-- X2600:  0x001320xx (confirmed 0x00132000 on LX26 board)
+The current Kconfig logic selects BUILTIN_DTB when
+MIPS_NO_APPENDED_DTB is set, although this configuration is intended
+to prevent the kernel from appending a DTB to the kernel image.
 
-Additionally, clean up extra spaces in the comments for
-PRID_IMP_XBURST_REV2 and PRID_IMP_XBURST2.
+While the kernel gives precedence to a DTB supplied by the boot loader,
+selecting BUILTIN_DTB still triggers additional build steps and may
+add unnecessary code to the resulting uImage.
 
-Distinguish XBurst1 implementations with different SIMD ISA revisions
-and identify XBurst II processors using PRID_IMP_XBURST2.
-The XBurst II classification follows the Ingenic vendor kernel.
+Note that BUILTIN_DTB controls the build process, not necessarily
+whether a DTB is actually embedded in the kernel image. For example,
+CONFIG_BUILTIN_DTB=y with CONFIG_BUILTIN_DTB_NAME="" still triggers
+the generation of .builtin-dtbs.S, but does not embed a DTB.
 
-Keep the existing writecombine handling unchanged, since no
-independent evidence justifies changing the cache attribute for
-XBurst II.
+The goal is to allow a configuration in which no .builtin-dtbs.S
+is generated and no DTB is appended to or built into the zImage/uImage.
 
-Public references:
-- Ingenic Community, public SoC datasheets and programming manuals:
-  https://github.com/Ingenic-community/datasheets/tree/main/X
-  Includes the X1600 programming manual (X1600_PM_20220117.pdf)
-  and documentation for other X-series SoCs, including X1000,
-  X1830 and X2000.
-- Ingenic, XBurst1 CPU Core Programming Manual:
-  https://cdn.hackaday.io/files/1855627939084608/XBurst1_Core_PM.pdf
-  Documents the XBurst1 core architecture and CP0 configuration.
-- Ingenic, XBurst Instruction Set Architecture Programming Manual:
-  https://www.setphaserstostun.org/ci20/X1000_M200_XBurst_ISA_MXU_PM.pdf
-  Documents the original XBurst SIMD instruction set.
-- Ingenic, XBurst2 CPU Core Programming Manual:
-  https://www.manualslib.com/manual/2646351/Ingenic-Xburst-2-Cpu-Core.html
-  Documents the XBurst2 core architecture.
-- Ingenic, MIPS-LINUX toolchain R6.0.0 release notes:
-  https://www.ingenic.com.cn/news-detail/nid-343.html
-  Distinguishes MSA, MXA and MXU/MXU2 support in the toolchain.
-- Ingenic, MIPS-LINUX toolchain R6.2.1 release notes:
-  https://www.ingenic.com.cn/news-detail/nid-348.html
-  Documents MXU3 support and identifies X2000 as an MSA target.
-
-The public references document the available CPU, SoC and ISA
-information. The PRID implementation handling follows the Ingenic
-vendor kernel.
-
-AI assistance: ChatGPT was used to help review the PRID definitions,
-compare the Ingenic vendor implementation with the upstream code,
-and draft the commit message with public references. The code changes,
-hardware observations, and final patch were reviewed by the authors.
-
-Co-developed-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Fixes: f0f4a753079c ("MIPS: generic: Add support for Ingenic SoCs")
+Fixes: 15205fc05482 ("MIPS: ingenic: Add support for appended devicetree")
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
+ arch/mips/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Notes:
-    Changes in V2:
-    - removed the PRID_IMP_XBURST2_R2 definition and hints for an x2100 as
-      there is no public reference
-    - merged into single commit changing the PRID definitions and code
-    - reviewed details and rewrote commit message
-    
-    Open Issue:
-    Olivier Louvignes <olivier@mgcrea.io> pointed out that he has
-    simply reused the definition of the X1830 for the X1600. This
-    sets c->writecombine differently (_CACHE_CACHABLE_WA) from
-    _CACHE_UNCACHED_ACCELERATED as we do here.
-    Both settings appear to work but it needs expert comment which
-    is the right/better one.
-
- arch/mips/include/asm/cpu.h  | 9 +++++----
- arch/mips/kernel/cpu-probe.c | 7 +++++++
- 2 files changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index add26f08e8029..79fd9a0747cf2 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -47,7 +47,7 @@
- #define PRID_COMP_CAVIUM	0x0d0000
- #define PRID_COMP_LOONGSON	0x140000
- #define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
--#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, JZ4755, JZ4760, X1830 */
-+#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, JZ4755, JZ4760, X1830, X1600 */
- #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
- #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
- 
-@@ -186,9 +186,10 @@
-  * These are the PRID's for when 23:16 == PRID_COMP_INGENIC_*
-  */
- 
--#define PRID_IMP_XBURST_REV1	0x0200	/* XBurst®1 with MXU1.0/MXU1.1 SIMD ISA	*/
--#define PRID_IMP_XBURST_REV2	0x0100	/* XBurst®1 with MXU2.0 SIMD ISA		*/
--#define PRID_IMP_XBURST2		0x2000	/* XBurst®2 with MXU2.1 SIMD ISA		*/
-+#define PRID_IMP_XBURST		0x0000	/* XBurst1 */
-+#define PRID_IMP_XBURST_REV1	0x0200	/* XBurst1 with MXU1.0/MXU1.1 SIMD ISA */
-+#define PRID_IMP_XBURST_REV2	0x0100	/* XBurst1 with MXU2.0 SIMD ISA */
-+#define PRID_IMP_XBURST2	0x2000	/* XBurst2 with MXU2.1 SIMD ISA */
- 
- /*
-  * These are the PRID's for when 23:16 == PRID_COMP_NETLOGIC
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 489612ed9d498..69b68d00b66f7 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1768,6 +1768,13 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
- 
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 
-+	/* XBurst®1 with ISA */
-+	case PRID_IMP_XBURST:
-+		c->cputype = CPU_XBURST;
-+		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
-+		__cpu_name[cpu] = "Ingenic XBurst";
-+		break;
-+
- 	/* XBurst®1 with MXU1.0/MXU1.1 SIMD ISA */
- 	case PRID_IMP_XBURST_REV1:
- 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 92bca520cd5ae..2135a69f9962c 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -127,7 +127,6 @@ config MACH_INGENIC
+ 	select GPIOLIB
+ 	select COMMON_CLK
+ 	select GENERIC_IRQ_CHIP
+-	select BUILTIN_DTB if MIPS_NO_APPENDED_DTB
+ 	select USE_OF
+ 	select CPU_SUPPORTS_CPUFREQ
+ 	select MIPS_EXTERNAL_TIMER
 -- 
 2.56.0
 

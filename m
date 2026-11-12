@@ -1,77 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.182
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794519479;
-	b=vaGFeUAGFSif5smx9feuf4IhLPfnAwvspoJ5mgGOpe+sQ7Pu71vPcOBmC60frH3L4dWD
-	 g6W4NCDJldRg/d+KX1ZD49odzG7+BT5cbwLnpbaQAHZ+8msvly/ZFSLxC9G7i3CfipAMi
-	 2Zak4H3siusOG16PHtDKh9JiLYrLV8/QoYaC88K79ujqa4e5mXcCBnfhH4Ig4Xcc/sfjb
-	 7SWehmAqZVD48KJ2/gZSfyQTILSSfd56w/Zcx006NgKAGgFWurGT9Bu7H1e3lZ9jDyl/3
-	 +1wtoOvV2F983YUjVPp7mKAuOCuq0/unBQNEvBDd09fr4SHicWTW3uk/fuJwYdevWmg==
+	t=1794523509;
+	b=CamFKV4+L6TR9y1K/k5aDWLMUcXYuRYnJJrHvYJpYWQFPkwJj/ETWTWZkq1QegEGcSez
+	 sqikvFY4FeMPEcBs+1kMNzrfDZa8gGJqwInPNdm9saG5vbBNJabhtNTQGjfWTy4fXNWzP
+	 U384kMAuCXE7lzcKLdqWjIC87qXVPK9/80+9x/uTb6CIgi1w3xg22/7cF/+B7m/DFc4G7
+	 GzY+KqihVwUc95RkUDgnqWaixA4sEWvsuw6EdrKsAUiiiY7QQr1eSft17jTIvl7zIHnJc
+	 XoeUKYah3kLgIS0/lXuY4SIj3eUBMMSmFWtHkKPhRrwKPOkbubsoIz2MuwvOSNfV+jQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794519479;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=oZdcJRMUxxlk1z+2TXuUtGeoqWVbfR50Qnwl3g1KkFc=;
-	b=5bolBsQh3clvvFvCqWMb4G+Hbb35zpB9ork0TFhWEtdeBqxtUocm0R1avohmq+Hyqye6
-	 lDfjcO2mJlNtmAqd5xpLDtohDlSaQHcJ438BFKc07zbmCbq36qHeRYM0FOiIyp2c3o0LL
-	 Krp9XmcYFPSi4ttLpw+c06PN2N3o3+L8wxR888nf8bSZZuWlEC7d6btoUQlgJi1gtF2F4
-	 U/CeTWLIfHG57mrmpnHDk9UoMdlboTIZkUtZTIPHDhDgZ6KWDUl/WTn6axxWJkuAqRfe+
-	 +vRpxZAOc0UpTaP6GYlC4xdu0tdVN4bnRoFH95KwHYWvitqjljR4DAkXdW7/4rKVFOA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794523509;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=8tqnSgVZpqPW8BsWNmooETTnIE7/WkUkogSOJRF5jZI=;
+	b=Tou1fEuwbYfVvKjh8LSS0xvucADYmcvQAb2xQaNECp+MtHdJCvEtPdP5UD3a5zPCgqyr
+	 lnxTRqnR4OaVLA5yDlY10iswUnoZsrDgWJXz0UpliZVcnoQf38u76X646l8PowTO90/xx
+	 GxPc4ftEAJvPTCun1fEeZ3E89Qvc4TT9O6ySjNRNwUBI4HZcNCqDIjvngNSntQ8WKpILg
+	 UGVcCfZ4ejtFwjQWeEdJeVed3w31vNMZxKgpswV0W22gaPxBqNGRJ8jTQD001gHAvkOg3
+	 nFcvIHItZs6+U7ODdgBIHAbrqxFwwmA6XPgG03SrEvyPnDiDCAonBgB+qhtL7KbvM1A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=telaak.dev;
+	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.216.47
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gaYyOYy3;
+	arc=none smtp.remote-ip=209.85.215.182
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB97F606A321
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 21:37:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DB97F606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=telaak.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CA1606A336
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:45:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 66CA1606A336
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3b09a65c76dso274089a91.1
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 13:37:58 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gaYyOYy3
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-cc4aa18f9afso135250a12.3
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794523507; x=1795128307; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=8tqnSgVZpqPW8BsWNmooETTnIE7/WkUkogSOJRF5jZI=;
+        b=gaYyOYy3ceE2MsM1X6p0A1KQqpuy4aosm6kLHi2JCVy3IPVy2YUDQERQJomEdX/fZ5
+         cNngAAfWiPPBjiJY+EI9u5bESaDUZYR/3ga3veG8oY0/UQ0e6kLX2OHmEg2le9L7lb5B
+         BRXfdgA8Gc9acr5gP7GEWG6GTKVTZ79cKiml6J+9ED7q2wCh6xt0e6/zdBvF1vlpr5Ub
+         RYjOMGaKCC1Rb6CEj9yYM5fp5PjUAVm+S1IsrOui2OHj57dJAYy+j/L2cCKcfYw6eMva
+         tJw8IjGHzbiviLK+FgfbTRYD+64okgN1hsDM6UN4w6r/U6qiD6V/5SMQs41FkWpfz1o2
+         udew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794519478; x=1795124278;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=oZdcJRMUxxlk1z+2TXuUtGeoqWVbfR50Qnwl3g1KkFc=;
-        b=bRKheVU2MZHCx+kVTYvBfkXfFhMT+0r5z1MABhc0QE/SQAfUYZMp9hv54ht7faLu1g
-         e+5so5F/8Jwbsy2j4jzjgIOfUtgfH5I+orJ/QduakVU+3Et0V2mnxd929VS2PyAihNmR
-         KmoTxA6Va5ia+GgdiKEKPyzOwJllJSUG1qiqKcU37vSPz4aS9bJ+tsHcmTONBel5inYP
-         rnzfjLVMV8CpA0NvcUrbEAs9W+ZRTrtSMYdXrUm+LGYSL9m/kBFnSb0NhM8QW6x0IDPk
-         Lg5LVx4QKKumxzNtYGdxb1Hq4qb7nD+HJdH8hg58pzZg6ddt4O4dN4vlh8oc2SJrMT7w
-         P/+g==
-X-Forwarded-Encrypted: i=1; AL+hErGbmgj9FwFmeXh+tQuwlbdDNhk1jiXNKQ3dojWJ1XD8nj+/xUNhDdNZQW/o0Da2yXukZWeGHIkaH5XY@vger.kernel.org
-X-Gm-Message-State: APuU4Z/4J2vGPnVDJvoX6ycVUyZiKo2srK8LbYJCdAfWFwmqVi3jGK54
-	gaUc5JIEXjVWJKmsEcBq6TbebWJbVvGclqcx9pOq2A4SX7f73yjdjXqaxmmKkpuE
-X-Gm-Gg: AYBFou1//PDwlHfz6Isc3q/U1zzO5nofcATLzzggUTYQ5pZEbhRkhjKZLZTAfSyT4ve
-	hnM79qT72kNvEGQ9BIHYYu2lzvv9RH7PzpiQ2Szz0MPrhknC1bir8YHxQzyRMQhp80YUagp/JOl
-	wo3aXoNLAdFjMe4J8HFu2YbeiARh466ftqj0ydBWw6Ww1lCFxEzh68qr4jrjhO1crUoq8nGSw8G
-	q+O9oEGZOutjbPvfGB8dyzcuIZLW8YdNWz/bDTqGXmgFRWsM5bUeOV5DKbURzZOxGvgbO7Yq49E
-	jzXBmYWbbNXkL597xHgpTACXup3zkMeGQ+A48T9sPh7Z9PrAKJ0+445pSg6mbT1fQqpNBhP1BYA
-	KF2ol3VB09hBIlhExJaO5qG3XSwDmkLT2E6QIoLVn6r3beWxgWTYnNb68FmBMoafyvuTPg2kWjV
-	Ae5dN7uKOdRJMhTbnyG+hyTx119jI/hOKhEMbsPP1XdQKuQ4q+Se+pVkGB0t2JqPuISKqUNgiyC
-	f+ro2v7bRc4DQW1c2RNm3TN0TLLiUXNXRtap+KbIgR4Q8+r56tsx6A8BsF/daebAcBdMbnyu+Dg
-	ZCZZU3hmwD2c1DbyH2SzTQjfbUG0r6fLmRhKcSc3/9DEsY1eWq/2SZjzfUfr1So6u1yuHQCvG0J
-	JCFTwBGu0+/X8vBAvLgZsik/UP/R1vDPProE2sq6PRkH5
-X-Received: by 2002:a17:90b:2d88:b0:3ab:36c4:b502 with SMTP id 98e67ed59e1d1-3b1b0ba38d1mr289634a91.30.1794519478100;
-        Thu, 12 Nov 2026 13:37:58 -0800 (PST)
-Received: from mail-dy1-f171.google.com (mail-dy1-f171.google.com. [74.125.82.171])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1aec66f4csm1082760a91.14.2026.11.12.13.37.57
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2026 13:37:57 -0800 (PST)
-Received: by mail-dy1-f171.google.com with SMTP id 5a478bee46e88-3791619605cso683777eec.0
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 13:37:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErHTJr5Dxz11tBrO145fwnvJ3IRDKPmlqKO9KqoJvG9S7xHRv1TyvSZMA7bmhW2HXGUUOUnoM9C6m5hN@vger.kernel.org
-X-Received: by 2002:a05:693c:6383:20b0:379:8df3:d2c9 with SMTP id
- 5a478bee46e88-3798df3d361mr53568eec.13.1794519476959; Thu, 12 Nov 2026
- 13:37:56 -0800 (PST)
+        d=1e100.net; s=20260707; t=1794523507; x=1795128307;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=8tqnSgVZpqPW8BsWNmooETTnIE7/WkUkogSOJRF5jZI=;
+        b=KJJzHvXj6JrGyeWiuYkK2cr+Vg1TCoKahCU9YVe3KQAWYQObiYoee7//j4BPFUpvge
+         5sP+d6fy1em6mQlKGTot0nGb63XkhMo88Zo2wLCaittwSPi588dTMrGgo4HGc9LMG7n0
+         Lulnaz3bBiptFF1ZEG1bIDflZqy4P+aHf44LUnt+H9NSa1t1gibFN0Al21bNSohVrFEU
+         2CpTZ4JVcWN04FsGy3b4j3nVRae7qebez34qrWh2PYstRmlglCGl96VBvNsLBzSFGWqB
+         WXza2G44Ku257MpqoV2vslq3tAZsaie8Au+weYeKVIFONqAyG4CcL5uvltI26ncJJGIg
+         hwHw==
+X-Forwarded-Encrypted: i=1; AL+hErF3+rdH+cVnX/7gt07SS6CSlEn+y6AOgps5HB1PDZyB7QTPKSJ0dVpf6SWWfBe1yReGbuMx5OEGpEEY@vger.kernel.org
+X-Gm-Message-State: APuU4Z8z1EcWbAjI+3omP1QrDdSz/p1SliH96cxj6oqPlSWPMPP7vLGL
+	VVC97hdLlUu1i+mSL+g8EArcqBp2ksH37Oh0+vuE6sYy0YGGaFuftI53
+X-Gm-Gg: AYBFou2xx635wWwQOQWZ+ZmI5uyNo3PGeXKGry6Kk5K4wMn7/J1OAc8gpMcN+mYQjvL
+	m+2WB++fEMUOBEVzMbWgOnVFcYhqysplCWZSgC3cHC/NNYvI1mU+P3US5FI3sfwQS4egxv/6Xs7
+	d+AtgNSmztdVqBI8cx3aP1pKmuLb6FR/tDP00Y2S3xfvaArfZUCe8/6TtNgiu+IfVe+Ti3Cn3xm
+	g6at+x47K5P6iT/e3zNgVb6sKE05uV8fiWA+z2woZ8/oWjnREZG7fEw85HIabTdcRlMoHuyfqfH
+	iK5DZ9efFGwStxg9qXxk4tEiJA14nX6imqEwscPpkryaEmsqc2Mp52+I/8DFgTnFY7BoUtvodzQ
+	R+HSbzuuEF8UAbYKTxiF2f45RdODO2nxINYL/Nb4AIS80qTn8bTYq0HPcESQMmK1heQmT5zbmmF
+	Ka48VMugPpQ41arShS+R6rQCnBMf0qTLG46FhLFtU71KVD3xYhN0vpYIwOAD3XhZ11CGzKZL9C3
+	7Xv+Cdoy+0xNcVqt2NGrT9R+URd8BaD//Dzc2xMhF8o0kD/+UDO/qr/XJlLannDdLUW0D5847mE
+	2HZYliDKOgTKeRvcxTZPd6scieDfAPk/gx9st4jomTPvGLqv/703yB+iCvfXGiqYs8u478+5jbi
+	kF5IS2fLXtDbDJBFMdzmNLQ7oKjbiwWJFDlNuPHxmLLBJ+ca/Qu12vRRVi71z1wIMBvIPb3QFnD
+	mT5Q==
+X-Received: by 2002:a17:90b:4c49:b0:3ac:9772:8da3 with SMTP id 98e67ed59e1d1-3b1b0a3a7fbmr402428a91.31.1794523507457;
+        Thu, 12 Nov 2026 14:45:07 -0800 (PST)
+Received: from ryzen.lan ([2601:644:8000:37f::e34])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1b3b708adsm37073a91.4.2026.11.12.14.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2026 14:45:06 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>,
+	Radu Rendec <radu@rendec.net>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: [PATCH 0/4] irqchip/ath79-misc: probe as a platform driver
+Date: Thu, 12 Nov 2026 14:44:41 -0800
+Message-ID: <20261112224445.213324-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.56.1
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -81,42 +109,59 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261111-sf19a2890-sysm-v2-0-d2fcb723e4f1@telaak.dev>
- <20261111-sf19a2890-sysm-v2-1-d2fcb723e4f1@telaak.dev> <179444699398.1126566.18079369824329437583.b4-review@b4>
-In-Reply-To: <179444699398.1126566.18079369824329437583.b4-review@b4>
-From: Joseph Telaak <joseph@telaak.dev>
-Date: Thu, 12 Nov 2026 16:37:45 -0500
-X-Gmail-Original-Message-ID: <CAPY4CJ79fUPUGG4g+bZYcaMXJHXVh_89NL55MXNkhppMEYDD6A@mail.gmail.com>
-X-Gm-Features: AclHuK-qYQ4QvhuWcFcAv5sXFh2xbA3gQD3BM89Iz_DI_n7EaCswO7U9VivUGq0
-Message-ID: <CAPY4CJ79fUPUGG4g+bZYcaMXJHXVh_89NL55MXNkhppMEYDD6A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: clock: Add Siflower SF19A2890 clock manager
-To: Brian Masney <masneyb@kernel.org>
-Cc: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
-	Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, Yao Zi <me@ziyao.cc>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor.dooley@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-> > +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
->
-> The license is different compared to siflower,sf19a2890-clk.yaml. Is that
-> expected?
+The MISC interrupt controller of the Atheros/Qualcomm ath79 SoCs is
+cascaded from a CPU interrupt, and all of its users are platform
+devices. It is still initialized from IRQCHIP_DECLARE, before the early
+initcalls, only because the MIPS perf code asks for the performance
+counter overflow interrupt, which goes through it, from an
+early_initcall.
 
-Yes. The header is Chuanhong's, and it keeps the license he gave it,
-with only the identifier updated from GPL-2.0 to GPL-2.0-only. The
-binding is mine, under the usual GPL-2.0-only OR BSD-2-Clause. Both
-licenses let non-GPL device trees use the header.
+Patch 1 makes the MIPS perf code look up that interrupt when the first
+event is created, which is when it is requested. Patch 2 makes the ath79
+MISC driver create the mapping at that point. Patch 3 then converts the
+driver to IRQCHIP_PLATFORM_DRIVER with device-managed resources, which
+also fixes the leak of the register mapping on its error path. Patch 4
+adds COMPILE_TEST coverage, which a platform driver makes possible.
 
-> > +#define CLK_MUXDIV_NPU_PE_CLK 20
->
-> This is the only one that has a suffix of _CLK. Can that be dropped for
-> consistency?
+Patch 3 depends on patch 1: without it, perf would ask for the interrupt
+before the controller has probed and would lose its overflow interrupt.
+Patch 1 touches only arch/mips, so the series could go through the MIPS
+tree with an ack for the irqchip patches, or through irqchip with an ack
+for patch 1.
 
-Sure, v3 names it CLK_MUXDIV_NPU_PE. No device tree uses it yet.
+The other users of get_c0_perfcount_int() (generic/GIC, Malta, Lantiq,
+Ralink) return an interrupt that is set up at boot, so calling it later
+does not change anything for them. The perf boot message no longer
+prints the interrupt, which is not known at that point.
 
-Thanks,
-Joseph
+Tested on a TP-Link Archer C7 v2 (QCA9558), with the device tree from
+the pending series that adds it: the MISC controller probes as a
+platform device, its users (UART, GPIO, watchdog) probe with nothing
+left deferred, and perf record gets its samples from the overflow
+interrupt on MISC 5. Each patch builds with W=1 (mips, clang), and
+with patch 4 the driver also builds with W=1 for arm64, x86_64 and a
+non-ath79 MIPS kernel (Lantiq).
+
+An AI coding assistant (Claude Code, Claude Opus 5.5) was used to write
+the patches, test them on the router over its serial console, and draft
+the commit messages and this cover letter.
+
+Rosen Penev (4):
+  MIPS: perf: look up the PMU interrupt when it is requested
+  irqchip/ath79-misc: map the performance counter interrupt on demand
+  irqchip/ath79-misc: convert to a platform driver
+  irqchip/ath79-misc: allow COMPILE_TEST builds
+
+ arch/mips/kernel/perf_event_mipsxx.c |  30 +++++---
+ drivers/irqchip/Kconfig              |  14 ++++
+ drivers/irqchip/Makefile             |   2 +-
+ drivers/irqchip/irq-ath79-misc.c     | 108 ++++++++++++++-------------
+ 4 files changed, 88 insertions(+), 66 deletions(-)
+
+
+base-commit: aaa2f954c21b205a0bcd0961e5b2be4e82e58455
+-- 
+2.56.1
+

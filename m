@@ -1,53 +1,111 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.144
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794493009;
-	b=5by4jZK8+ZjT62LPIwtnqjHlC/m25JtXYgtRJ7SAu+Jn5N0IdJ8IHhV+DoBfCHHCoXIb
-	 xMG1byWsj8je99acJae5wN6fni7tUPzSd07hLXfxbkxejaRcgGa/r4LFul7vdorzcLEhu
-	 uX5C0fSBTwVuclR46DkvCb7nSDM0rqOhZuJjhGPvG1eliLWmeHISBRINnqkq10P7FE0ff
-	 Sulp5WH5H79ux9YR8stCSMhWS2rOHjWIMuSv9VVTOnlDY3uWjLHEMueq6gVNpzkupBQQd
-	 tt9GXw8jM7k1g0EBWPLZUaCfYbQScL3EE8fbZ7vkyL258v5n+A0Xyb3caGKqnv0Ziog==
+	t=1794493022;
+	b=LSfrO/ZXAWU1dzjBiDUsQzcDn5WXOEll94PsJVcymV12qt3/qSgUZ4Io08FfrCQLd+3c
+	 jwFzcbeHe5oR+4lgXnm1w8OplL7nM7lAtbvY2fT3PVqgShyctqY5CdFP/8r/bcz1xn57m
+	 //qqXolxCf/joM6q7A1/IdCXfvJNeYdDfLmuMU7T8oFBQSr7KOBQp4w1omWg8nBlIfpBG
+	 Rj66X2WYB3y4BknWunDhh1Gr+YLmcWHQVS1Tc34gsyJqwVyDLm3yRbph0yFqoUqmnBgwS
+	 zaVJm8pfmRlKMP4RLa0tWgrkZUgj+ISNYUw8T8lGrndnLjt85k2jcXnHzxgxXW1wAMQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794493009;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=GJrAPV8Hu/wtUOrR2oclkClaFgK4tBROJq09MMMd9Jc=;
-	b=AJjkN/bZeDlFCaOgK8OOl0HtTbAQQarZ8yz4Vz0axAS/ILGQd7mwmnpwdD+O80jXP9Dy
-	 Fp/f8x1cmZWjzDjTIeHPKohwbpK1XzKdvGVIIW6yzsYbsdvjBswhbKv9IdA5sOMTlg3MR
-	 oSnKjC6Wk/HsvxZiChdKOlTthZNGNgXd9fj8e4oKUGSWW27mAtkPW1MFbtjilhbpupmYN
-	 HVL8/WcWhl8F0vuadruUUy6D13hu+ilFtp094xkt5XIbCJh9vIz4LANyeESIUqX/HuQug
-	 WPTuNt6C1JircgsrzPHZ5Jag6nMgan8ZoLVoTGKH0txdN8LivWqoONoeaI40xd5voKg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794493022;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
+	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
+	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
+	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
+	 References:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=UbnPlEC24dkXjKamOs3/pbar/DmSKOkynvOR6CwNOYI=;
+	b=LB2n7UnvnomLkYWoqd4bVSP+nHNwGr2kG2/cQBn0i0jkN4x2tee5Kx3BL0lBpBI/iUsV
+	 5/TWdwVv66cl/aF/mE5xinnacB60m48pi6Fbf58bOvamqvTLTrD73br+pZ0gicsBSw5RE
+	 IYSCAvaIHVPcePFC/bLtT9Ec2ShIMjQEawFkiPTxwGl8Oixc4xMOPI23wjB+GWJVfmMo8
+	 h9PeqBsbRbdYbJVCC0WvtZSB8mivJZ6Af76UXxynwlRd2kAHDbUq74eB2evudnF0Neh5n
+	 q3Jczzkwsb9kZAfzwNp2IfvDpbA6qp0MHcPpTjSFatVZgX7jeMH6YPvqCLKslgHMq0Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+	dmarc=pass header.from=arndb.de;
+	spf=pass smtp.mailfrom=arndb.de;
+	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=Zo9efcIB;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=XhhVe9IY;
+	arc=none smtp.remote-ip=202.12.124.144
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4162F606A32E;
-	Thu, 12 Nov 2026 14:16:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4162F606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <26336f36c7ed09bcf64fcc2ae2d8aa1e0c1b7d23.camel@crapouillou.net>
-Subject: Re: [PATCH v2 7/9] MIPS: Ingenic: Expand Kconfig for X1600, X2000,
- and X2600 SoCs
-From: Paul Cercueil <paul@crapouillou.net>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>, Thomas Bogendoerfer	
- <tsbogend@alpha.franken.de>, Paul Burton <paulburton@kernel.org>, "Maciej
- W. Rozycki" <macro@orcam.me.uk>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
- "Christophe Leroy, David Heidelberg" <david@ixit.cz>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>,  Janusz
- Krzysztofik	 <jmkrzyszt@gmail.com>, Paul Boddie <paul@boddie.org.uk>,
- Olivier Louvignes	 <olivier@mgcrea.io>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	letux-kernel@openphoenux.org
-Date: Thu, 12 Nov 2026 15:16:44 +0100
-In-Reply-To: <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
-References: <cover.1794471031.git.hns@goldelico.com>
-	 <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C613606A8A4
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:17:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4C613606A8A4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=Zo9efcIB;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=XhhVe9IY
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfout.stl.internal (Postfix) with ESMTP id 952CA1D00161
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 09:17:01 -0500 (EST)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Thu, 12 Nov 2026 09:17:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1794493014;
+	 x=1794579414; bh=UbnPlEC24dkXjKamOs3/pbar/DmSKOkynvOR6CwNOYI=; b=
+	Zo9efcIBsV78Vf7GQOyuzvtCvTm2u3MlgEKOux4tEFcwIxcLJDAElgyImkKJZWGM
+	RW8b/ibuCWyFPs4J/4r2X14zHg295WnvPsaAeswZzrgqtWFjP5sXGAaZIE2DGyGu
+	PQzy8ZLLXtPB45VkkoDzxuXnCGMXaWwdJcwYoPZd90DojaeXxIQMrLdtgouHNmAB
+	num6RS2HUj+pD1yxMzAN1uak93kdgfOVd2YiISsSy/cWw5d54zPRYYV7aThMlAXw
+	UcVn9pirhBrOb6+N4bAQd+p+vVH/huRZfn+Ma8rq5f+viyORhqCpaX+JPDyoL90t
+	j6UVGOGE4m7h9YEfDdeawA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1794493014; x=
+	1794579414; bh=UbnPlEC24dkXjKamOs3/pbar/DmSKOkynvOR6CwNOYI=; b=X
+	hhVe9IYYq7iI/u1fU8tbuZ4FHSYY/53NyzJh7/mAIFWl/8U99ycxaF1H6lANmhIi
+	bVjyp+45zE7Q1cm2do/HF2qh6F5gCGVnfE+5HuX7hPxFfoOwAXx0KjpXbwBO/tTC
+	Vd8X8OVaheeQ4buEDOoLwgmoDku1J5ST0xaZzpMHkmKi92XZvvYrGzThEY0dLGVk
+	ZjVFLII8bFfsH2lrybiI1OBpHwXL5fTtUb8xLYe4tIXAPslzLMnT39jTFz6uv5iZ
+	vRY2lie75dslydLYg5XvHDJSkKkB5EB9VoGHmQpoVpeXcwFsmaMOrqhsWRh/k//x
+	rPvQKHYw9shsucBIgAPqQ==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=sign d=arndb.de a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1794493014; d=arndb.de;
+	mf=PGFybmRAYXJuZGIuZGU+;
+	rt=PGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnPg==;
+	s=fm2:rsa-sha256:Jw63DA/rkZZkHBqZ+2I3tJCSDUepmVVt31H7omSFnACnbLk
+	1g/VySnNDXnk4cRAZO01RM6OFz2tpxCz6AeRXXgoPihi5chITZKeMtOK6Uu6LYVi
+	IvPSX0I+TmUvlpmvY5rXJcNB+awXaIlIWeaf3avqIO7dqfEwt4gOZ4xDj8AcDqMN
+	bXe1/uQBKTbR/QRMSE0YHrAEEHVFdJKl0gnhGndzptMhWjlcaMVU8ne9ApasUwnj
+	Sikx1khXtfwj4OTvZcD5cfZX7RZOLIrn+BjwUc6soiGhhXgP5DfZ9w5MMw3tQqFv
+	naif3xjY9Uqnp26zTSSjkpTrAR/X6gH/kWEqbSw==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:RJMoJlBKzRz4YafuepOWgyGgRwmbNROO/4+xzp0wgnA=:voWKWCaOGlpdmVP0Cwkilh51Ef0aw4U3oRcvlpmnlcI=;
+X-ME-Sender: <xms:Usr1asjg9G4PPrrr82juOslt7WKJN2ox9e-bN6SzpTxkGdZM0A_dDg>
+    <xme:Usr1av04JsRqLh9v9gbHE1H_izlBix8MV34vFWayd6EjzWrkxHPwiFWLrHvDmo26s
+    ovJDj8__BsFibCUgFTXI737JjmO5mwOO0BL3xeXFvJrkizs4QQO0SsY>
+X-ME-Proxy-Cause: dmFkZTGU1UV2oYSfQ0TDb1+YCaM1GfW0+RS3kK7MgTRdv3CA05JCz48Ta9CCSLlOcpZnTE
+    5+ZOMsON9AJ3ihTXUUpRdagXPodCCoX6aSe4q5jQysfDOpftb9F+DFbYH7T2XBDQ7VjKfO
+    kI6OhDcTdOghERSXPTFLEsqkUrMOnhT6vfB2kbZOXMxWGEnfDaRp9cSlFXHNSKBIf4r47G
+    4UHIhOtAVLx1q6wW8GKxQdM7x6pA399ztVauThgsUqwHlKALouxJ7qbpJSnrvVw4HdBBfn
+    rr0IGOO4fLpCz/qnjaC4U0it81fcb+Ukr6/dPb2fOTpIwMvU1Q1LkaugEouHuqsMSRrZMR
+    wV2gg/g3S07ecr7z3571XaK5lEBI91xNUybORKYiWEuNXxwFFwvfUgSLVVUKe9kW/uxhbd
+    GX8PX23AF79RywweGYodz3PlJe9ZozIMs2roOlsVr8lH0EB+TwL3walkuyEZQ+gY4fJSqa
+    PRURPvRwJTeZh3C0FKz/ZoYkgakQuZmn8A3xnYOOTXuTOsozSOJV4MTOvyXPBX0L4u6EZP
+    ZFekd1SJrKrVK/v5LX7o5DqlBAVNNSyi2f8yamaDRcunU86gEoaMyuQQj+9YR8LUFBeUyD
+    uNY4M0HCGLraPM58SZuaw6nEEdvr0veDZlNZKCN8poVAPde3S/fO9I4sgxWQ
+X-ME-Proxy: <xmx:VMr1aqkc6vj6abTdLo9cLUp0T0kq2sgpni80YY7mV3HtE5BBDfwxkA>
+    <xmx:VMr1aiR95H7Gh3yZfCsXTicuFLoqUwgsX_WWV7HkuqoxcsoHYiNRkg>
+    <xmx:VMr1aoYQy0UwsKNL0xGgEHQMls0uV32cDihyhr37Cxc9GbjGJVFSpA>
+    <xmx:VMr1aq88aO4veFItIVp-gV4Ex-D1sEipyC0nBa7yTRep2NeKu6s2tA>
+    <xmx:Vsr1aivy198MKwqJ4bN_4_eeISMyguI0Px1x3gP4D8vhBtwwmWJfmHEJ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 78F7432A0099; Thu, 12 Nov 2026 09:16:50 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,113 +115,35 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+X-ThreadId: AytIAyy8u7pB
+Date: Thu, 12 Nov 2026 15:16:29 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, kernel-dev@igalia.com,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ linux-alpha@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, soc@lists.linux.dev,
+ linux-mips@vger.kernel.org, sparclinux@vger.kernel.org
+Message-Id: <d7086f73-c6c7-466f-9f33-e64af741f126@app.fastmail.com>
+In-Reply-To: <20261105-tonyk-syscall_table-v9-4-8d1275885d9c@igalia.com>
+References: <20261105-tonyk-syscall_table-v9-0-8d1275885d9c@igalia.com>
+ <20261105-tonyk-syscall_table-v9-4-8d1275885d9c@igalia.com>
+Subject: Re: [PATCH v9 04/15] s390: Use the common syscall table
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =C3=A9=
-crit=C2=A0:
-> Expand MACH_INGENIC_GENERIC to select all existing and newly added
-> machine variants (including JZ4750/55/60/75, X1500, X1600, X2000,
-> X2100, and X2600).
->=20
-> Introduce individual Kconfig blocks for the following SoCs:
-> - MACH_X1600: Selects MIPS32_R2 and HIGHMEM.
-> - MACH_X2000 / MACH_X2600: Selects MIPS32_R5, SMP support, broadcast
-> =C2=A0 clockevents, O32 FP64 support, and weak ordering optimizations.
->=20
-> In parts developed by Reimu NotMoe <reimu@sudomaker.com>
-
-Co-developed-by? (+ his Sob)
-
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+On Thu, Nov 5, 2026, at 21:05, Andr=C3=A9 Almeida wrote:
+> Remove some of the duplicated code by using the common syscall number
+> table.
+>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
 > ---
-> =C2=A0arch/mips/ingenic/Kconfig | 38 ++++++++++++++++++++++++++++++++++++=
-++
-> =C2=A01 file changed, 38 insertions(+)
->=20
-> diff --git a/arch/mips/ingenic/Kconfig b/arch/mips/ingenic/Kconfig
-> index f595b339a4b84..5d351b42bbc9b 100644
-> --- a/arch/mips/ingenic/Kconfig
-> +++ b/arch/mips/ingenic/Kconfig
-> @@ -5,10 +5,19 @@ config MACH_INGENIC_GENERIC
-> =C2=A0	select MACH_INGENIC
-> =C2=A0	select MACH_JZ4740
-> =C2=A0	select MACH_JZ4725B
-> +	select MACH_JZ4750
-> +	select MACH_JZ4755
-> +	select MACH_JZ4760
-> =C2=A0	select MACH_JZ4770
-> +	select MACH_JZ4775
-> =C2=A0	select MACH_JZ4780
-> =C2=A0	select MACH_X1000
-> +	select MACH_X1500
+>  arch/s390/kernel/syscall.c            |  2 ++
+>  arch/s390/kernel/syscalls/Makefile    | 12 ++++++---
+>  arch/s390/kernel/syscalls/syscall.tbl | 49 --------------------------=
+---------
+>  3 files changed, 10 insertions(+), 53 deletions(-)
 
-You select MACH_X1500 but there's no CONFIG_MACH_X1500 symbol. No entry in =
-enum
-ingenic_machine_type either, or compatible string for it.
-
-Your patch didn't add a CONFIG_MACH_X2100 either.
-
-> +	select MACH_X1600
-> =C2=A0	select MACH_X1830
-> +	select MACH_X2000
-> +	select MACH_X2100
-> +	select MACH_X2600
-> =C2=A0
-> =C2=A0choice
-> =C2=A0	prompt "Machine type"
-> @@ -62,8 +71,10 @@ config MACH_JZ4770
-> =C2=A0config MACH_JZ4780
-> =C2=A0	bool
-> =C2=A0	select MIPS_CPU_SCACHE
-> +	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-> =C2=A0	select SYS_HAS_CPU_MIPS32_R2
-> =C2=A0	select SYS_SUPPORTS_HIGHMEM
-> +	select SYS_SUPPORTS_SMP
-> =C2=A0
-> =C2=A0config MACH_X1000
-> =C2=A0	bool
-> @@ -71,8 +82,35 @@ config MACH_X1000
-> =C2=A0	select SYS_HAS_CPU_MIPS32_R2
-> =C2=A0	select SYS_SUPPORTS_HIGHMEM
-> =C2=A0
-> +config MACH_X1600
-> +	bool
-> +	select SYS_HAS_CPU_MIPS32_R2
-> +	select SYS_SUPPORTS_HIGHMEM
-> +
-> =C2=A0config MACH_X1830
-> =C2=A0	bool
-> =C2=A0	select MIPS_CPU_SCACHE
-> =C2=A0	select SYS_HAS_CPU_MIPS32_R2
-> =C2=A0	select SYS_SUPPORTS_HIGHMEM
-> +
-> +config MACH_X2000
-> +	bool
-> +	select MIPS_CPU_SCACHE
-> +	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-> +	select SYS_HAS_CPU_MIPS32_R5
-> +	select SYS_SUPPORTS_HIGHMEM
-> +	select SYS_SUPPORTS_SMP
-> +	select MIPS_O32_FP64_SUPPORT
-
-I know MIPS_O32_FP64_SUPPORT was supported on the JZ4770, and most likely o=
-n the
-JZ4760 too (the first one with a FPU AFAIK). So this could probably be move=
-d to
-CONFIG_MACH_INGENIC.
-
-Cheers,
--Paul
-
-> +	select WEAK_ORDERING
-> +	select WEAK_REORDERING_BEYOND_LLSC
-> +
-> +config MACH_X2600
-> +	bool
-> +	select MIPS_CPU_SCACHE
-> +	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-> +	select SYS_HAS_CPU_MIPS32_R5
-> +	select SYS_SUPPORTS_HIGHMEM
-> +	select SYS_SUPPORTS_SMP
-> +	select MIPS_O32_FP64_SUPPORT
-> +	select WEAK_ORDERING
-> +	select WEAK_REORDERING_BEYOND_LLSC
+Acked-by: Arnd Bergmann <arnd@arndb.de>

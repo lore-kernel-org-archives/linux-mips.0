@@ -1,108 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.54
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794523516;
-	b=rfBguIiptLfxf7KsLOu4rYroPrgkukw5TR7psts5yG5Zl2fip14s8mZcGFK54br7HY4d
-	 YVb8AoOIt/ILrbdGCWZUl06+H9ROiygYqPjRAsbTzUzk2IxvHVnGVKAVXL+/62uUcwNZa
-	 KjHJNjQSXXs2BZEa4cM2p6UHkReyzZrEOa1MSJsBl1ppQMc5y5U/8oe3BOt0i1/D6PCZ7
-	 4trwExJaV+jWE71e5aakbEcduwSnOYd9R0aEwoXTxaOW4Zb4RUXyUepuiwIp58A3usJRX
-	 0w5KR5WswFnzKH7LyIjCvYPHA8tvOTZL1x/FxL/gmYLZd7hLgqv4YB8drjicwVwESCw==
+	t=1794523589;
+	b=V3tiW3P147dWF0RA3qmZ+/DwMywRryC89WYbxy3jX4y3H8hoxyvmtX2uwraHhuqnqv18
+	 7Gmdp6YrIthx0Tx+6fd/6zKBQG56UrmDdQZNHmJD9DyOOAg+cTz/nsNyomkXK3E3HBUjK
+	 H+9Lszbdh6PoB+LfD34xri2GZVkjb63fiyL2+Nr9qwPYXa5Nt9huwiPxXSufy4fGZMtru
+	 sKSlkq9iaY/OehpVluxfdMTlnPUJxmvxRMhuKjoWO9H44xDTPLsw0oktdwKxPmycSvNnC
+	 UONEMc0DkmGOfAK4N+hy2qA4vT4jAe5FZCep8OWc5EBDCW9jdo8cZuZgUIrSZfJ0Uvw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794523516;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794523589;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=G8Io8I+YEqWRGsV8tAVCp98ZwR0+rUFIZtD/WXh2Ul8=;
-	b=yy8qt1Y89MIeflPVdb+FMVsVRcVmLDx166civXieGFqDzqfsMhIM9uluIO08ZtF/kZta
-	 du8NEr9hzV3oqOJMWXKAs57AxtyEpNepD0OtGvW5zJq4ai7rJy95z/dfV9nFWUfzsSGaM
-	 WoFrsXmmB+1jKJwdIte4nrQwlnMHVqx0XArZPOOfm7A3KvnbIf9HDowEfN44jZyVcek6K
-	 Riui3t3+R8WfkjNjARxjLiG6JfXnoKFQfSqoURDuVZp7NXjN8s6NH97ZzEoPM+LlHfD4f
-	 +O2ETt0pY2z4BC/h4zyk2HrGW+QByMRx0kwxNFhbrMK6XTcVUzPmZW/P3wwfVvkl06g==
+	 Date:From:To:Cc:Subject:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Disposition:Message-ID:User-Agent;
+	bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
+	b=ld6pySWIchNAySvoR/pfDD2tTypNRz2i5yf4cpTTMcLt0Xy2k3iRx58ghLgHUXWqqC2L
+	 Cy2Tsk9s4cqS1OeiRMDMKVDspLei6D8X2BXn3KCyM3s0FOwuYvaVRmHh5e4JOKO22gvlZ
+	 omzWZwxjr/kyI4XU8ZO5vcec0rWuX7FQcI5AZvG2XsfGFqw4dHMxPbldrjcsnVIzXAN8r
+	 3SDkgwlwZCUgHZzx1Db58VoCLyhCxw6k2zSgOQVaS63QQlhPDU2nPEazKBTtMpCRJjXYH
+	 BW6R8gsPyLrfJJMIuWkEq2XphfB4x43iVzHTvdsbphUfp/5KPNKd9kOj4Bnsk2Rc5zw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ue9bvPyC;
-	arc=none smtp.remote-ip=209.85.216.49
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dmarc=pass header.from=chrisdown.name;
+	spf=pass smtp.mailfrom=chrisdown.name;
+	dkim=pass header.d=chrisdown.name header.i=@chrisdown.name header.a=rsa-sha256 header.s=google header.b=ebkrXilb;
+	arc=none smtp.remote-ip=209.85.221.54
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141EF60A2610
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:45:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 141EF60A2610
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1775F606A327
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:46:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1775F606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=chrisdown.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chrisdown.name
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ue9bvPyC
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-3b09a65c76dso353212a91.1
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:45:15 -0800 (PST)
+	dkim=pass (1024-bit key, unprotected) header.d=chrisdown.name header.i=@chrisdown.name header.a=rsa-sha256 header.s=google header.b=ebkrXilb
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-491971ac844so297981f8f.2
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794523515; x=1795128315; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=G8Io8I+YEqWRGsV8tAVCp98ZwR0+rUFIZtD/WXh2Ul8=;
-        b=Ue9bvPyC0LKInRqnVHcjxOVjYkME87DYzL1a3Nl7Xi2mvu3yJ4P9Qere1920OYpE+s
-         dNuFCC9cgmfjdCa4dWUAQLWHMs+utxkLf2iFTjyeVAHtdGRvpn/1QRFgkNmc4h7USM1t
-         Ing3Sqqukg17kCjWAXpk7PdJ6X6JwWpDO+AlfYOF1I0/4kUSACMD0n6t7kyDh4742pNY
-         Bts/ZVgX2J3fBs6GO3B5ISZaIho1DsGsZmwqOserT8ndTUYY25ILRc5P5KYoPkjXpUK/
-         Xzd0AgaKjUBXVPRZsafX/5wOJLufl1Ym8Sa+Di5Rw2KWCTx2Z8uKy81KMLtO8pxgNcgu
-         O27A==
+        d=chrisdown.name; s=google; t=1794523587; x=1795128387; darn=vger.kernel.org;
+        h=user-agent:message-id:content-disposition:content-type:mime-version
+         :references:in-reply-to:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
+        b=ebkrXilbj9spVaHW9PDW3KQNpqmqI4+4NOB68oQOLq+07vtNzaBA8OzPAUS9CcsePT
+         8Kjg8BdAuCo3mV77DJ+j0I94WcjCRoV9fZV+wxCYZ49UIFzTMPcPTgg29Atqgy9WVWs2
+         OlA64TH/oKxQCTcIaOXxFG9ghWOzXAc97hNLU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794523515; x=1795128315;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=G8Io8I+YEqWRGsV8tAVCp98ZwR0+rUFIZtD/WXh2Ul8=;
-        b=u+v07bWHuro4xWOIlTwaZjIBNj7pCJIYorQa0uASL7hGtEPug0WgI5jm7/tS00FqHL
-         AjSPX8zKD7p5qyfvt0ew/4TBg+uEvmspI8SHZIDC2WpONJk9OAsT/DdwWFWfKotI/LYk
-         GeHqXj7/UhFuouG0XZNgWTveM9dBWTfOZ6D04Y4Wjw6rtH7Cgf2qERbrPxbG842e7EcJ
-         Nuc4N7oY+BQNwhOv9w5OP6pr1DCKdS/kYWGmazQWTsoL0CAomXQjdfkDjgTvaKPAgGro
-         MbmRHYm8f6htp2vz/IMflSwTeV7C2t+bq1EP5LmbaVnnjR2O96NDZPnxO7CKzA58t2oy
-         Xsew==
-X-Forwarded-Encrypted: i=1; AL+hErEzCNC5aIQmcgnluYaYgpj6Kv9pE6Iyhtk/A5aFNamF/YW1KhYVCDvSZbET+nxTjpSiiAVZGoxPZytO@vger.kernel.org
-X-Gm-Message-State: APuU4Z9a6EcrmsJyTRwnn/r813Ohj2Lj320tQHz2UJwGOguRlL0MzjPZ
-	emEcxq5jHm2rvzp6kYxpHkEHka6miM31x4bcfoETEujJyhAy7sw1Q9Fz
-X-Gm-Gg: AYBFou2kcdVybFqn3lOHNelWkC43+wY21gma6JvcmxKSOrhQnj5T3mGTOefLpRxMOEn
-	EZwWkL7qprYZhEUJe7d2dxthOWEYusH5pDoOYHd6ZMrioCL++vUaR1WZ7qajV1ObTAmalgV2NDB
-	e98yIB+s+V7mb5m4xnL1/lDGPhn8HEViPfNaGsZ+Ob1SknLjV8bfQXVJuG7lAa+LvB4TekpnhRd
-	/BagqlGU4qa7iNV4OLO5CZU6HrV9ZZRUOezp2RBs7J8AjHQ83lH2ojms0k/cJybjWxC7871wheA
-	ihSTRXity82JMzlPd9AQqnu652UhIwino5ojJNFd0GQ4CGHk3trGelQGW8QtvG95Xkt45iQKITQ
-	V9OdobzTuEHSUB+UXvlY3xn8OAWpA67zVkCemtsTzuWQF3RyraG4ACk35iS1tIhqo/LfDy7z4kq
-	09LOn4NPxljRliWavVobUG1FBz8DT3KOqsJVIQ9vIi8kl95UxhLcckRSS//6r66l2Xf3FwvcaUy
-	DS3TjBRXTmweWASnR6h7BH6dtGaUCqVW4Z5zH+OhNhZ7iYGdiGzEigV1uWdMZ9J3dJOeN28eexn
-	KiKE9WAJMLrH42XMLoqZjGSUknTePvNIhUeoHQ74xMCq3vKp8cleKRvYmNIQW25hdDuUsjXgIMy
-	P1l0Gg4iKPwe+nMdeoe0nxxf3Jw6vsplK/N7gYTFhFJFCbwc8Ax5oxZ9SPRLcR+IOfHqZCk8FfK
-	7HOg==
-X-Received: by 2002:a17:90b:1b01:b0:3ab:2d46:1dd2 with SMTP id 98e67ed59e1d1-3b1b08798bcmr424778a91.6.1794523515247;
-        Thu, 12 Nov 2026 14:45:15 -0800 (PST)
-Received: from ryzen.lan ([2601:644:8000:37f::e34])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1b3b708adsm37073a91.4.2026.11.12.14.45.12
+        d=1e100.net; s=20260707; t=1794523587; x=1795128387;
+        h=user-agent:message-id:content-disposition:content-type:mime-version
+         :references:in-reply-to:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
+        b=lGyrp9DpNX1FNtqQd8tHUKMfc/SeNUuXbKQD+WtZmQPCl1TJt2rP2Nzf8Hp9nlRdcn
+         4L2hF+BDj0jkK04OYwPjmz3zIMOVuLHTG535praLAaeXBbslp34PJ9zLeXgFWqgGKeRT
+         9iHZvNsObgrLsNcGuHi6UronmsdTjzSsyObbTeN5jv6b+3mUjKjzmNOnY3aFaHHL/80o
+         k/HNXP528yfS2tmOpOTgVDLcNCsrt9OOMk32wdZizzTbtmPa/CSRMOhTNbREGIfBhIkp
+         6MdEW0L5CfSaxDXJagJIN2J6iFTl0B2sQ93LH0YGDMS6mQKP+60BasFO5uoYEceOy3Fg
+         KIjw==
+X-Forwarded-Encrypted: i=1; AL+hErG+eCXLqvY5M+NtUVD6JQvXelJcouxuI71qc89+Wi7kSdflhwpAp7vdevUrJrkSlncd80kuVvnmtNei@vger.kernel.org
+X-Gm-Message-State: APuU4Z9/+Ewb+EkubEq3U+T1nw7qL18NTmKd3amg72q7YRKnGzxI7MIj
+	iKmcuEUFZdWQwQp1O/5YV5YwhVaF00OQ3agBJh1ZEKP8ezZp4/cQG/kePtDkP75yKfE=
+X-Gm-Gg: AYBFou0FbydvaITFvpuFn011BFJfbmByU+wPPpd3Kpv56F7zW7dF7depeaxLUmNRYQV
+	E0bl1eMebPPhgb0RKVtkDSzUC4lUz2C4OF5ip1UYopabbe3IHrLJ7WoZWsIrwhhjrazjFw/W4Md
+	PI+jO0729lM8xr29a52JV8MVqXUKyLHYr1+J10hasuNVGmwyKYUCYLgAgPD7MZWIjXZjQQoY2DJ
+	ziKTbtT69kDCLHCaDYT+2WZjZe+VfKdFSPx9sPbBn84o7G4tJpNa8z9Nw2h3rrXC0PqfDct6/6L
+	AkA6RtwBmSLUrebmJrvjkxj+O/7oneLf6MBL/dC6BvW23MkpWKTlWmxe8PVqWnyXXSmRE97JNA1
+	9C2swwgf07FO0jd1Nhwmijz/ho6u724PLUtzrW2JlPsQEQoxapITUmJ0zPcp6pMV3rkfQVw79uA
+	Wec+HQs85LNlP5Q7uNmYp0bcE1+lCfPsxMe8iHgy+jvp2Ish1YHm7FRQDWZBCQDiNUaYLTUk7b2
+	mO5Mc6svF6f5C9dDjolmgeKlcDup/20ispsaijTMpbhE/mJ6K6sUY8NXnQUS7Gn8VpbS5iScjfv
+	IOk2Uo7XlveD2LoCW1T/fx8XhDT7Glim853CDamJJUfdyLkULVCjGoi1YOegwmAMlAIdiC2XoQa
+	SWJmuKsOdvUiwJOPE080zHCYJfm4Xnf7Prm0mIggMYmvExwOLJc/abhhFFuvhaKW8WfFt9YVm/U
+	KfwXyju+qAej944k4W81yDDkm/BlrffEfQWHP95tGmZPHYCerhqYFhxf+Pfg==
+X-Received: by 2002:a05:6000:2087:b0:488:57ad:d5c8 with SMTP id ffacd0b85a97d-49c6d453dbbmr2169176f8f.3.1794523587286;
+        Thu, 12 Nov 2026 14:46:27 -0800 (PST)
+Received: from [172.18.0.2] ([199.201.64.8])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c6020bb0fsm1504046f8f.34.2026.11.12.14.46.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 14:45:13 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Radu Rendec <radu@rendec.net>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org
-Subject: [PATCH 4/4] irqchip/ath79-misc: allow COMPILE_TEST builds
-Date: Thu, 12 Nov 2026 14:44:45 -0800
-Message-ID: <20261112224445.213324-5-rosenp@gmail.com>
-X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261112224445.213324-1-rosenp@gmail.com>
-References: <20261112224445.213324-1-rosenp@gmail.com>
+        Thu, 12 Nov 2026 14:46:26 -0800 (PST)
+Date: Thu, 12 Nov 2026 14:46:15 -0800
+From: Chris Down <chris@chrisdown.name>
+To: Aaron Tomlin <atomlin@atomlin.com>
+Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] security: Expand task_setscheduler LSM hook
+In-Reply-To: <20261105172210.76706-1-atomlin@atomlin.com>
+References: <20261105172210.76706-1-atomlin@atomlin.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -112,125 +94,97 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Message-ID: <20261112144615.df72a3bef0a52f3c@chrisdown.name>
+User-Agent: Mutt/2.4.3 (cc9e3943) (2026-10-09)
 
-The driver is only built with ATH79, so only ath79 kernels build it. As
-a platform driver, its only MIPS-specific parts are the performance
-counter hook and the call to spurious_interrupt().
+Hi Aaron,
 
-Add a Kconfig symbol that defaults to ATH79 and can be enabled with
-COMPILE_TEST. Build the performance counter hook only with ATH79, as
-other MIPS platforms provide their own. Drop the call to
-spurious_interrupt(), which only exists on MIPS: a cascaded interrupt
-with nothing pending only bumped the error count in /proc/interrupts,
-and the handler now just returns.
+Aaron Tomlin writes:
+>In modern multi-tenant and real-time environments, CPU and scheduling
+>isolation are critical boundaries. The inability to audit or restrict
+>specific scheduling policy changes or CPU pinning requests limits the
+>effectiveness of security policies, particularly when attempting to
+>shield isolated or cryptographic cores from unprivileged or compromised
+>tasks.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/irqchip/Kconfig          | 14 ++++++++++++++
- drivers/irqchip/Makefile         |  2 +-
- drivers/irqchip/irq-ath79-misc.c | 19 ++++++++++++-------
- 3 files changed, 27 insertions(+), 8 deletions(-)
+Peter objected to this paragraph on v3, and you said there that you would
+drop it. What you told him the patch is really for was auditing the
+affinity mask as userspace asked for it, before cpuset intersects it with
+the allowed CPUs, which seccomp can't do because the mask is behind a user
+pointer. That should be in the changelog in place of this paragraph. (I
+object to it as well. Please avoid such LLM grandiosity.)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 731041def5d6..91fcc433afab 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -127,6 +127,20 @@ config ASPEED_AST2700_INTC_TEST
- 
- 	  If unsure, say N.
- 
-+config ATH79_MISC_IRQ
-+	bool "Atheros/Qualcomm ath79 MISC interrupt controller" if COMPILE_TEST
-+	depends on ATH79 || COMPILE_TEST
-+	depends on OF
-+	depends on HAS_IOMEM
-+	default ATH79
-+	select IRQ_DOMAIN
-+	help
-+	  Support the MISC interrupt controller of the Atheros/Qualcomm
-+	  ath79 SoCs. It is cascaded from a CPU interrupt and collects the
-+	  interrupts of the UART, GPIO, timers, watchdog and performance
-+	  counters, among others. It is enabled by default on ath79, and
-+	  only needs to be selected by hand for compile testing.
-+
- config ATMEL_AIC_IRQ
- 	bool
- 	select GENERIC_IRQ_CHIP
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 16a5fd126c9a..de7be9803c74 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_IRQCHIP)			+= irqchip.o
- obj-$(CONFIG_AL_FIC)			+= irq-al-fic.o
- obj-$(CONFIG_ALPINE_MSI)		+= irq-alpine-msi.o
- obj-$(CONFIG_ATH79)			+= irq-ath79-cpu.o
--obj-$(CONFIG_ATH79)			+= irq-ath79-misc.o
-+obj-$(CONFIG_ATH79_MISC_IRQ)		+= irq-ath79-misc.o
- obj-$(CONFIG_ARCH_BCM2835)		+= irq-bcm2835.o
- obj-$(CONFIG_ARCH_BCM2835)		+= irq-bcm2836.o
- obj-$(CONFIG_ARCH_ACTIONS)		+= irq-owl-sirq.o
-diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
-index b06ece446746..dc865dbbbc3b 100644
---- a/drivers/irqchip/irq-ath79-misc.c
-+++ b/drivers/irqchip/irq-ath79-misc.c
-@@ -16,7 +16,9 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- 
-+#ifdef CONFIG_ATH79
- #include <asm/time.h>
-+#endif
- 
- #define AR71XX_RESET_REG_MISC_INT_STATUS	0
- #define AR71XX_RESET_REG_MISC_INT_ENABLE	4
-@@ -24,8 +26,14 @@
- #define ATH79_MISC_IRQ_COUNT			32
- #define ATH79_MISC_PERF_IRQ			5
- 
-+#ifdef CONFIG_ATH79
- static struct irq_domain *ath79_misc_domain;
- 
-+static void ath79_misc_set_perf_domain(struct irq_domain *domain)
-+{
-+	ath79_misc_domain = domain;
-+}
-+
- /* Called by the MIPS perf code when the first event is created. */
- int get_c0_perfcount_int(void)
- {
-@@ -39,6 +47,9 @@ int get_c0_perfcount_int(void)
- 	return irq ? irq : -1;
- }
- EXPORT_SYMBOL_GPL(get_c0_perfcount_int);
-+#else
-+static void ath79_misc_set_perf_domain(struct irq_domain *domain) { }
-+#endif
- 
- static void ath79_misc_irq_handler(struct irq_desc *desc)
- {
-@@ -52,12 +63,6 @@ static void ath79_misc_irq_handler(struct irq_desc *desc)
- 	pending = __raw_readl(base + AR71XX_RESET_REG_MISC_INT_STATUS) &
- 		  __raw_readl(base + AR71XX_RESET_REG_MISC_INT_ENABLE);
- 
--	if (!pending) {
--		spurious_interrupt();
--		chained_irq_exit(chip, desc);
--		return;
--	}
--
- 	while (pending) {
- 		int bit = __ffs(pending);
- 
-@@ -151,7 +156,7 @@ static int ath79_misc_intc_probe(struct platform_device *pdev)
- 	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_STATUS);
- 
- 	irq_set_chained_handler_and_data(irq, ath79_misc_irq_handler, domain);
--	ath79_misc_domain = domain;
-+	ath79_misc_set_perf_domain(domain);
- 
- 	return 0;
- }
--- 
-2.56.1
+>This change updates all in-tree security modules (capabilities, SELinux,
+>and Smack) to accommodate the new parameters mechanically, while
+>providing LSMs with the necessary context to enforce strict scheduling
+>and affinity policies.
 
+An LSM can only enforce an affinity policy through this hook if all possible
+ways of changing a task's affinity go through it, but writes to cpuset.cpus
+don't. With a BPF LSM program on this hook that rejects any mask containing
+CPU 3, sched_setaffinity() to CPU 3 gets EPERM. An unprivileged user with a
+delegated cgroup v2 subtree can still write 3 to the task's cpuset.cpus,
+though, and the task ends up on CPU 3 without the hook being called.
+cpuset_update_tasks_cpumask() just calls set_cpus_allowed_ptr() on every
+task in the cpuset.
+
+So what this gives an LSM is visibility into sched_setaffinity() requests
+and cpuset migrations, not control over where a task runs. That may be
+enough for auditing, but the changelog shouldn't promise enforcement. It
+also looks like the kind of gap Paul meant on v3 when he asked how this
+fits into a more comprehensive approach to resource control in the LSM.
+
+>-LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p)
+>+LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p,
+>+	 const struct sched_attr *attr__nullable,
+>+	 const struct cpumask *in_mask__nullable)
+
+Since the BPF LSM is the only thing that reads these, please Cc
+bpf@vger.kernel.org and the BPF LSM maintainers (KP Singh and Matt
+Bobrowski) on the next version.
+
+While the __nullable annotations do what you say, and a program that
+dereferences either argument without a NULL check is rejected by the
+verifier here, there is still a problem. Existing programs on this hook
+that follow Documentation/bpf/prog_lsm.rst and pass on the previous
+program's ret now get attr in that slot. One declared as
+
+     int BPF_PROG(x, struct task_struct *p, int ret)
+
+that returns ret when it's non-zero loads and runs fine, but with this
+patch the verifier rejects it. LSM hooks aren't stable ABI, so that may
+well be fine, but the BPF folks should get to say so :-)
+
+> 		if (setsched_check) {
+>-			ret = security_task_setscheduler(task);
+>+			ret = security_task_setscheduler(task, NULL, cs->effective_cpus);
+
+The kerneldoc you add in security.c says @in_mask is NULL if affinity
+isn't changing, but that isn't what happens in cpuset_can_attach(). On v1
+setsched_check is always true, so moving a task between two cpusets with
+the same cpus and mems still calls the hook with the destination's
+effective_cpus. With a v1 cpuset mount I see the hook get 0xf for a move
+between two cpusets that both have cpus 0-3, and Cpus_allowed_list stays
+at 0-3. On v2 the same happens for moves where only the mems differ.
+
+The hook also can't tell this from a sched_setaffinity() call, since both
+pass a NULL attr and a mask, but here the mask is the destination cpuset's
+configuration, rather than something anyone asked to pin to. Please say
+in the kerneldoc what @in_mask means for cgroup migration and
+CLONE_INTO_CGROUP, so LSM authors don't treat it as a pinning request.
+
+>+		lsm_attr.sched_policy = policy;
+>+		retval = security_task_setscheduler(p, &lsm_attr, NULL);
+
+For sched_setparam() and SCHED_FLAG_KEEP_POLICY, the reset-on-fork setting
+that gets applied also comes from the task (reset_on_fork is set from
+p->sched_reset_on_fork above), but lsm_attr.sched_flags still belongs to
+the caller. On a task with SCHED_RESET_ON_FORK set, sched_setparam() reaches
+the hook with sched_flags of 0, and sched_getscheduler() still reports
+SCHED_RESET_ON_FORK afterwards. If lsm_attr is meant to show the hook what
+will be applied, SCHED_FLAG_RESET_ON_FORK should follow reset_on_fork as
+well.
+
+Chris

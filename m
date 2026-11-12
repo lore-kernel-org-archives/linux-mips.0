@@ -1,76 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794510621;
-	b=0mB/xbW15fEVh1k7NghJsEnmWUQLxlb2hONB0QColFBx9FWtfYK1k5b9sp4xMkZF2GvY
-	 8noCDeaVfgpRabUhUWCJ8/VNRrSeIMamk0HeHaaKgs9FtOjTTWJ4j92k76f3HdS5nA5Fe
-	 7IagKQyaMnEAPaYZgjLxDWg1bscYIW76TiOAiA33ej5FVcwkhLrOEGI8yiJ9gWPEaraGU
-	 murBQwRxHTPtNILpt2Au4o9MZbtdn236JSdCYE5S6U961Y2KOA/7ZU1i6SbGaITnQNKLJ
-	 MPjG3NJCyV5Gjqa6V3k7clMBpF2ixIyiZf55/qB7q0prMP4P98tgzd8EzhsjlBh8rCA==
+	t=1794510966;
+	b=LbznH5Bz13HNBEskQC2CBIILIV7OB7SeYpHeNuvUmfIQCbQ0Z9wJdFkHB4Mb55h0DYOb
+	 i4/B4XydxOFB1FZftg1/vV6J4IkaLm6hB4y9H7dhnRfCrLL0qDigIBt1ZoA+zWFQopBwi
+	 w35HOAptluLNzLVQSo4fzz2Zy1M81Me0yI2MY868BVyQb9NziI+VkC0/L9R6ix2wJRxw4
+	 FaWVBhipgWL5UZCac+AP4B8xOoUSqJoOPFT+a0dkr2SpyuuJmcGJedXXD4glNCyrC9WMS
+	 ZiZrh8D0zFcMdbbJEmwFlC53TGrFRhVzMfvbYDcRJjnQzTDsizkKPYMUo3r0WF9bFTw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794510621;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794510966;
 	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
 	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type;
-	bh=BiDOWQWnXjiTVlwWz8It4XU8j0IkMRXtLOxSJ2sBmUk=;
-	b=x/qoSVIX0N6DspOPoY/b+HJdGCRdf4hTz6WBD4pKJNZ8uZfCmrdKH9ssSN2MYGFl0ofi
-	 n5YXfWbCBcd+SP2jqVF0ASJBSPo0M76rCUER/u60JwRAT+GSMyUnYD05ib/Tleq8yH3Ps
-	 TXfXxH56vulN4Y4ldZHv2ZidN8BXKDyaoIvjMvV/pa4Z1Qst3bdmMM0Zr9JRE/Iqe5UGL
-	 w7mW7REq63ap45R4bFtcxfDHcEzyKsxQx0K5i3ajuNwGOez5jqkxgTGNzD1U3CmEfxGts
-	 DWEX6HdmN0FHnUfO1OV43RZ8ZzNr/FR3JR6Jeb51jBicSjgtoswbFeR5bBDUV1wqO0g==
+	bh=x7avfF8CE7MQkedzx8waSCJsEYoj4qczcsv6b4mLDHA=;
+	b=nRwDnCTbokbNtIzG5/Krxu5Q+Cw2nds73LKu5AQOeRlkdpIhbbqSuRP7iw+q1PC/sYI/
+	 BhKBDIt9x1CGxNQNFI1oS6u4UOfk3mQg1FDCAV8ktLsQ4LXvi5lGDeR308kuy3DJnC6sH
+	 ffz6Hxqg8zZ8rQpQCzhuMEvO8LccOVaeUozLmdb7SkUQe874RIDpGbgedhrbu0ggPJW9j
+	 wt7nisZdMHgK7AUrh8O7yCsmqMB1fjzl73X8k534vUiN0hPpEhFQI6tacr06LrD8CKddN
+	 UnGpeVso0NvUZuRfw8uoMb/CgSGFdqZ+yd+C755C+Bgmd3Hi7ATH+OMmVArYPQFJZUA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=linux-m68k.org;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.177
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	arc=none smtp.remote-ip=209.85.221.172
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E5260A2625
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 19:10:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C7E5260A2625
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6238606A31C
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 19:16:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6238606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-5ebf39def3aso81194e0c.3
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:10:20 -0800 (PST)
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-5eaaa9b1591so183488e0c.3
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:16:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794510620; x=1795115420;
+        d=1e100.net; s=20260707; t=1794510965; x=1795115765;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=BiDOWQWnXjiTVlwWz8It4XU8j0IkMRXtLOxSJ2sBmUk=;
-        b=UIIbcZdO7yYH68DawMjBk2sNNYE58g5L3HI22G+DUZfyGTwI4auUb/lJnGMbsYN0Jo
-         lv09ajbFlKBsFanQ3GPp4bJwpM8nLN1j2BNP4OjgAEC0gl5TFKCLOYjGsNu/WRtIVwQd
-         xFeYTVdIIjDivxi/E9rNst2KsvwsmuXAp/jntjo27gTOYJ9ll6fW2hQvv799iZam2Jb0
-         6DAQ6LkjBhxha8uf9KOf1FxlPAN0X7SzIfqzoDP2W/h/6Xkv604zPRKzoMcytMxdSZ8V
-         2DCP9WTQpYz9q4ZIzdpSsuHCSuq4Gj+yOvg/sE34O9hdNTiQgtn8HLnrMBTIXSmnhIOU
-         z3Mw==
-X-Forwarded-Encrypted: i=1; AL+hErHVuEjKctVDBM7DlT5wxWoDn2DIjMxd+JJ1zUm6tpEN7shurGlOPNK0lRoML8RbP5Fw6Gg+zW0yZ2FA@vger.kernel.org
-X-Gm-Message-State: APuU4Z+Yesz/bs2/B/tqCBgbfKHycjpYVJHeWhhn9o3A2USpDx4v5zCY
-	szwrvEKDqcEVT/YEIRkUhLKhokGnKoX9rl/eNcUu3qmysqHe1WpdtRqBBzBoKwBRtpI=
-X-Gm-Gg: AYBFou05EhLVDuD2K4/bLX1mycLM0ex9Xt2XUwO2AULSx4yZLV2dkWd8+uh5h7tcSsG
-	cN1UIaX2qlGQBIXV4YPbELQVmjP/pfq1sjVIWUO8W4h/ngDALlVNNkQ0yr293ZfXARW+J7f2pm9
-	N/eVykcG1Qd88rOf5IF5Xcclf0KBy+dFlb+7dvhveijrrnV3fNb2jOt+vOekCjFr7NCwLM3SbmT
-	+BqZLZU5IX4n+cNZchFHXdfvIJVOaio2ElNnPITTfqySCj09Bol7uXamQA4I/PsNpgkETBLImOt
-	2kaDKUB8ow3KnyRrSwzjhTemCUK8rRB7SNRuCuX95sZ1hoH1xH/MteQR4kORNi31ZXWeqL+ahWl
-	i5F592sku32YeomMrJP4meQUmE5PfxMMc5mXJ0r12en3R0GECH57GrKXwKkErGHNaD4D3iu+BgE
-	T4Z2pUSIoM3+IEWVEAOVMKmv/hj/9a5a+Rkf1ICjY8AcDCvOhwHQxF03m97uMicvMiLJ4S0ozSb
-	ryqYCskexB5vJh+2qwSsrlEpGDIErGNU7ffBxqJiRNcafa6H3O875KjcotkpRFzX2PbGCxClJrQ
-	Lpg5syX4r5xyslDQ60uyft7WJ9fAHQDxHc3ehLWnzdi7+suZu5sxCBreg1HK7/ViMZZk
-X-Received: by 2002:a05:6122:1d0d:b0:5ec:4112:6839 with SMTP id 71dfb90a1353d-5ee34aa3a38mr38391e0c.15.1794510619844;
-        Thu, 12 Nov 2026 11:10:19 -0800 (PST)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5ee34236017sm82313e0c.16.2026.11.12.11.10.18
+        bh=x7avfF8CE7MQkedzx8waSCJsEYoj4qczcsv6b4mLDHA=;
+        b=XEYmvGQzA2a1psdasa9gwjO+C/O1k+/GtYb6HNn8FP5KsUyKipEH0rlIYiCyGVxC0U
+         k8SCYul9ksC6vKYK4zL5BrvDHsqL1ouiRfGHpBx3SvZAS/DHnvMbh0mXdrwdHPK9qP5E
+         9aeUBvmc9/+VeZ4PpiOXcuo2mQCqb2b0fKbAO5o4TnH6tulPvCWa1J0LPZhw3GOjqvXE
+         J2fUa4wnXBX8G7DD1GCZdDJFBt/O3XsorEQSvobNTx6F7FqXuaLiTGN8KrRemtXmWi1B
+         bCq4tw9N9kyI1r3KFsEKstKmxC+ubPLyIzfhG3OtFpyAvhu3aW6DHpDmGkDUvkOJycZ7
+         tSOw==
+X-Forwarded-Encrypted: i=1; AL+hErEzmJciMluQCgX5PAuHGlZ/jq6OC9c30bmM2l4bTuYngtIhUiCmNbtnhBP06WJddhSaKqMPxJL53/ks@vger.kernel.org
+X-Gm-Message-State: APuU4Z/GzhGKWd5MHiQIvwGUqigQRbq/6dEIhOtClxxByMgm2Rm29IMY
+	LVSDY+6hLAq72UNz5ld/Mcs8DBiIWohoqED8a6t3qLCqvoGcunKpm+mut7YzFrTQqKQ=
+X-Gm-Gg: AYBFou2rOspIzgs3E5pUhigsu7YRJaMmfayM4JCiztLntyTAIom70rniCGQSBlwrP4U
+	iZOwsKt3NGocYKMDc+D9Ncp9O1LKlZaTMFhViYCejKqH2jkXCA81R7/5h9Vsr8k9Am7T1RNqk+5
+	Gr1Nf4mNgUdbKlwDKjSrYN54+xsdsvZrJJzqQHa7Nj100yIYDAP1+quhs19B0ZdueSQ5GnmVqrj
+	D3lIclVrTyYGtUKGiBYKr1vhIFwqc5jXEnq9te85c2c0YxfMw68gD7CxZkACt5LRqhQH9TrTodT
+	tnCEcEoDKh7viY8MlSN8ukOlXQnCOqME3qDlzbnQc9k4zbnAJQX1qBGh+SGclCCBjYbXqPTx5t/
+	ZVSwYZ2Q+rMmqTGpZ3mD7ajEysPjwz2hZ7D+Mdua1/ylfdZ6QnYUL2hIyQcMJRHZPGuyLj0AiJH
+	MUaJoU6DSpAwKaUEsNJFhS9WEsprLLhxEUgXMADI+yKXkaEKfZLGJMEh/r190GVAQwl9w8PYmDZ
+	3P+vTzVEPmhwMfOfJjP5xCzjApdlVA2Kpg++MOPog1qjwiu3h3jrjtw6LvjIhlUkn2W+j7Dohzi
+	uyYQFw0c7XIrz79a9O0ZsuHmD3Ey2yeY5piNrrEeUKSHdh/I/2+VSaTcSEqzouO+852G2L0=
+X-Received: by 2002:a05:6122:8b10:b0:5ea:dc36:245b with SMTP id 71dfb90a1353d-5ee34aa906amr50936e0c.18.1794510964601;
+        Thu, 12 Nov 2026 11:16:04 -0800 (PST)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5ee3420b59dsm94692e0c.12.2026.11.12.11.16.04
         for <linux-mips@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Nov 2026 11:10:18 -0800 (PST)
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-7d2ca055399so20987137.3
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:10:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErEXEnrnL9Gl2lJ52NKyWevhYTagYtVaxqtmbXK11XqosGmYGaKql2h4hRQujlfGDFmD6UvWpVoKbF7K@vger.kernel.org
-X-Received: by 2002:a05:6102:5ccb:b0:7ce:5952:125d with SMTP id
- ada2fe7eead31-7d64db29605mr42432137.36.1794510618289; Thu, 12 Nov 2026
- 11:10:18 -0800 (PST)
+        Thu, 12 Nov 2026 11:16:04 -0800 (PST)
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-5ecd9a400cbso160376e0c.0
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 11:16:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErGGibIcgi87FbFXhvOJDO0U5Ms/2KBwYc0FL573R8LpUa4c/zX9vv5QbcqfKZ+Nvim2CxZyWolMo185@vger.kernel.org
+X-Received: by 2002:a05:6102:c15:b0:7d2:8dd0:2eb with SMTP id
+ ada2fe7eead31-7d64d6ed886mr73919137.8.1794510481935; Thu, 12 Nov 2026
+ 11:08:01 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -80,14 +80,14 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261112-work-procfs-oldmem-v1-0-ecdcafd99265@kernel.org> <20261112-work-procfs-oldmem-v1-1-ecdcafd99265@kernel.org>
-In-Reply-To: <20261112-work-procfs-oldmem-v1-1-ecdcafd99265@kernel.org>
+References: <20261112-work-procfs-oldmem-v1-0-ecdcafd99265@kernel.org> <20261112-work-procfs-oldmem-v1-2-ecdcafd99265@kernel.org>
+In-Reply-To: <20261112-work-procfs-oldmem-v1-2-ecdcafd99265@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 12 Nov 2026 20:10:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXgM_TMX7HrpsvDaQi96Ht-K6KTBu5PPRRBpcCegf3Q9g@mail.gmail.com>
-X-Gm-Features: AclHuK-k7G9fpVKu6BhCbcWfXavvnldoQZhCl9e2eioRf49lg5T7xpzAfc2z5gM
-Message-ID: <CAMuHMdXgM_TMX7HrpsvDaQi96Ht-K6KTBu5PPRRBpcCegf3Q9g@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] powerpc/crash_dump: check ioremap_cache() in copy_oldmem_page()
+Date: Thu, 12 Nov 2026 20:07:50 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUgOGjwOUMxSabUgtaVeKZW1wx78XOJL8joGKkZEj7RZw@mail.gmail.com>
+X-Gm-Features: AclHuK8l5OcVstuPYNpoHJ657hIuMQK5i9ySH9sE9lHb16H-lVuh0fnzCqi0JCs
+Message-ID: <CAMuHMdUgOGjwOUMxSabUgtaVeKZW1wx78XOJL8joGKkZEj7RZw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/4] sh/crash_dump: check ioremap() in copy_oldmem_page()
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Breno Leitao <leitao@debian.org>, 
@@ -96,23 +96,20 @@ Cc: linux-fsdevel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
 	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
 	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Hildenbrand <david@kernel.org>, stable@vger.kernel.org
+	David Hildenbrand <david@kernel.org>, stable@vger.kernel.org, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 12 Nov 2026 at 17:39, Christian Brauner <brauner@kernel.org> wrote:
-> copy_oldmem_page() maps a page of the old kernel that isn't in the
-> linear mapping with ioremap_cache() and copies from it without checking
-> whether the mapping worked. If it didn't, the copy reads from an offset
-> into the NULL page. That oopses unless the copy happens to be a user
-> copy, whose exception table entries turn the fault into a short copy.
+On Thu, 12 Nov 2026 at 17:43, Christian Brauner <brauner@kernel.org> wrote:
+> copy_oldmem_page() maps a page of the old kernel with ioremap() and
+> copies from it without checking whether the mapping worked. If it
+> didn't, the copy reads from an offset into the NULL page.
 >
-> Return -ENOMEM like the other architectures do. read_from_oldmem()
-> turns that into -EFAULT like any other short copy.
+> Return -ENOMEM like the other architectures do. read_from_oldmem() turns
+> that into -EFAULT like any other short copy.
 >
-> Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: 54c32021eb6f ("[PATCH] powerpc: Add arch-dependent copy_oldmem_page")
+> Fixes: 4d5ade5b29c6 ("sh: kdump support.")
 > Cc: stable@vger.kernel.org
-> Reviewed-by: Breno Leitao <leitao@debian.org>
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>

@@ -1,82 +1,85 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794471046;
-	b=uqhlzd1JeLb5idMUzYA2OpF3KZZDGyuC1Vlwpcw6Jk9DaLgIJCjmGuLnZ5ZYESYBbYZ+
-	 WIEySYwArl2Fz5qD/8fzWz6pfCpFX6q8TjmE5W6NocTW3u9zzV4xg6fiwPdd+irHf6Z3G
-	 YB3qgBW7u2iRECmntwjw+zDtp47rX0URwD45s9OoWaN0r27zuqVnRmlPDZBAMZeTzuxL4
-	 QvuHfTQThpPcaeNMH73SbRfST6287QLcJPBraxeJkUYBnYxMTs2sr9DskicBLo1lbUpl5
-	 l7uwocvv9Gv7/LxR7QhFJHCPmc+I8aWoqAyJO8c4oGD/oiaZ6g5+Gyppsh5NLYlVNLw==
+	t=1794471050;
+	b=XFUpMrvOh/ThufveiEPNoqDTLQGF+FJss86i+Ea7cT6e4cZWHHtuXxq0rtQqMjeQTV+1
+	 0RLkLzGsaj/Nog7vP6K9FmrV6NHrVpjg6RfSPSQD33yMgbq+S/VVplbG/gf7vqk8ogNnX
+	 GnptoipepdSNzJvUrQ83rQ9E+SuNtLpUViMgR1DRrG56UrgLgBfhCBnanalU6c7+rI7uz
+	 RQzUuH0RdEqYudixf4xAhmeYpVZToBwrJaF0nlQ+TcH+eacAw7MBW10cx9oyaocpf7HTR
+	 WXCRlZpW0wqBo2TzKxaWsXw+f46lgopXFFkWnPLhHop0XrpcAHCsqJ7cyr0E9Z3y3Jg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794471046;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794471050;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
-	b=YYzRIpWpFJ479TVMj+LKMDdHZCs2huMfAAuusEF86FIeHHPfewNq70Q6UUn0KQXr1bpl
-	 jO+oOKthUkHOIu2rz+pGbRXM6vASDaPRplnS/EF2r0YiMj72TqPfnCXY7+OSalNuF802h
-	 V5qKE24E7ry2Jyrf6GaE2l4AY2dVU7yVNp+ZyMSMkEN+LeAElXCgHza9HOvfqQ+VIQbhS
-	 9uZhEz4L1cW+erCqe2n2mKBQo28PSXtanUpmDb590XqqcLx85Uk2jy+QZ17sVoFAtlHYh
-	 x/aRO83pjynV7zCBWFjmGhWvHxxxOkKeSrx95LWOMpIEq9JWIt/lpwGggsoGgmcPPQQ==
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=J315p/nA8/LIK4s075FbW43IkpkxmesS70y/K+NP0lY=;
+	b=c1WtDai6ADua/6Jf1VUG7wQcy64Okoa1ktlI+QLGVbfhg1zAqEXbh8qpJn2CMZmKfRf9
+	 HKU/YhBu3Mvj8blmzsrc3isJ0Rz14LGBYXaj3dFumYnBEO0wneyF0sHSAMxDfD+Dbfs6H
+	 KC1JjwdXtqNgDruqMS/1y2ImdH/Vhbo8oKXaIvuukTWcgOrzqr1/EhRkHzRjxOFtYymSr
+	 2fxvA1RgNGSVXefLzmv/1p0s+p4TcWB0eD3ng6/Fd5pigYWZXHvM08uA8RQ54Oz7GJ23L
+	 D1R8W5+v+LpgP9gdH0TaytbIaEPW/c30TI9up+B3Ma4fnwp8Fsqfl/78d/w1h0kTSng==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=NFPsL3pW;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dITluR6B;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YwDxyaF7;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Ot9KOqs5;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9113E606A32E;
-	Thu, 12 Nov 2026 08:10:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9113E606A32E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9241C606A33F;
+	Thu, 12 Nov 2026 08:10:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9241C606A33F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=NFPsL3pW;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dITluR6B
-ARC-Seal: i=1; a=rsa-sha256; t=1794471033; cv=none;
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YwDxyaF7;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Ot9KOqs5
+ARC-Seal: i=1; a=rsa-sha256; t=1794471034; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=hnw9Xxdh1yRShJROWepnAtFPXxM4iMofnsTDv5GEsgWwipX+Po+hm8kYT0hf4R26AQ
-    NXE+1kivFXycWnoVIMBGt6/PC45JpTyRqhNhk14Vjh4wmj2p4pTjoFLgfl6Qle95QCus
-    KlcJnR8pSpLoMYlm0q6iUoXCZ5J7aXCh422M8qKWAcy2XJc9Tl23ZQ6SmTW4XLzuQrov
-    rh0B4mmGTfdG2YKHsuWsUuOHVOy2iFcE48e7WrscHrrl9zbUcwmUM4IjFEQORWHKnxfn
-    BCDVTHeINo5z4VN9pkNkKKa1H3xzCIPZHU4hVHFGGasvDRSEARbmnjbNL3/n7Ix4Q+JM
-    WXug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471033;
+    b=d/c1kRc/Fia6jXd7mlJilvj/OrXt3y/Z8wzz5CkEg28s6PmPyXCh60+xFJm4L6+yMJ
+    frfHBkF8XFn5hUb0atwQFR008+myaDzHpO+SbBGzLIrGZX+i7eL1CyfnNylYY0eTWBEo
+    oX1Y2Mp0BF+0/6WMSEw61ZxKijTuHjQBWBwXkylpTV3AFdKjRV3nX3+OygvHQ4YXZWbX
+    7d7Nq6KS1bWkOLHYyQhPpPb9IRuFpvaUtnuxSH6OGwTQKnTcpD/S8k6SxkrwCZsAoqrN
+    TaDbEYhbSpHMHyfxt733WhR0D7S2NKZfvwXqRHQriLWb4vBg1k5MH1W12Dj0OuPCnz+U
+    7WFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
-    b=o2ywCsVqBbpVHDRdsGwbESt1s6/hgYOLbW/8uGQ5RXUKsrX+Cjgv5h8vo8l8DEmuhn
-    vwNLvQG7E68fCW2wmk/a7wfF/I6kHr5AAxUEyI3k4KTWzBvQHVyPMXjjKk1KeuBsGLji
-    zS6dSXJwpQgmHjHUChF012C+aHXhfrANauYe2++8N3IumReDc3Rr4YpTSZ3wVuRPZzlW
-    cI/yB9drpyp38X560r+7P6hh1vxhM23fpwJnUcRrweJcdohVdFb2FBfOtSya+T14QFZs
-    OCO1VwPqbrfFBRby0V5VX5oKjXa9EowB7hDEU3COB1X9d32+M/uMZ/TsrHypnGBIAqdt
-    jL9Q==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=J315p/nA8/LIK4s075FbW43IkpkxmesS70y/K+NP0lY=;
+    b=s6gM1bBL1veDAuLCH8Z9JFGI2d/1TrsZK3bSec0fEWyIXnsGYQtePHg9UQz6E9yAPp
+    zDr8Hr9e0o0TG/bJ5e+SSi53dpxXv5WKqSxJU4SHelpuHqUkSUhuLI1i7SF4qxqDItg6
+    wmBy8ZvoUpVq+mvafXEXXu3xRjWpeWUmBAGmxujexwYSZvDZZB1ayCoZdE/d79YEIe7b
+    bM0Gu8tvCEMXGtJggshOeaSsKUVzITBfEM3WmtkDHVfb31MCaNU3c0nn+Q65k5tTXJhi
+    A+XXw9JG9RQRQpFGZFNrFcxd4PpJinbS5frXrI3IiRGMs6NHuU5zAH4d9oWPGL6yuMJ+
+    IB5w==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471033;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0002; d=goldelico.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
-    b=NFPsL3pW7kj6XsBRbST1WJEQietTklM0ewLqG8AHm3vGrll47epLPJYA9vb4J1tLSu
-    xMBa5FAvuZ/kLMcVcivuUKNiLmPIRHlxq0+kP39o//Aaq16zx7innsiSQN/OGBiOfvTc
-    dNDkDqYGo0OzPsmnAneJiV2Xj8BXn7tswv8ynTh+y8viq7DIctkP1UDAMABLnenf2/5Z
-    e8yvK6GTBc2w890hopZ4PcW2/dm7CFfswTwmLrUW9RF2ykd3dhhQ+ECny2TflU2r55IV
-    62ihsCdsqwxkjJwuzk7+n9Y1jvE7Rnq2U96hngHWrgqpUo9U38CEn6PoLP10N5fyJBzx
-    3WMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471033;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=J315p/nA8/LIK4s075FbW43IkpkxmesS70y/K+NP0lY=;
+    b=YwDxyaF7is1ZI4SXLSdydE2vsHr49aoVhkZrQlLmXqt9fz/bo7HEFhz0XuGxhRFQPF
+    ubLWHE8BGL5kA6wvizU50tMgjymuwQP7tnShy35XjXOuG8ogL+p/3Q4GeWhAIFgBGfFZ
+    ONu03HzKka0pzhdGXV39QPfPQdBLf19kzKgdY3kiRUNxFY8FAI3acBpCev/JOQBoOOpM
+    tOjMUe39HJc6czJgxvpsgrhfgH6ot5VHT8ckesRHaiq/eQVqmW9DrnX4QU8S7wUtj5YB
+    yIhmP3MIkJQGPDiTOkAG3OvvSsm7veDHm0j3/Hjkl/JSXclYXxaP+AXQa5+C7kS03zQ6
+    jUHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471034;
     s=strato-dkim-0003; d=goldelico.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
-    b=dITluR6BOZhPZoRzV18kd9hz3WsFhsE0mQzhXRrt+/NR+NRXSz16tMT17kXmo6jUFu
-    QfiRj5Jwwtd+mapZjAAw==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=J315p/nA8/LIK4s075FbW43IkpkxmesS70y/K+NP0lY=;
+    b=Ot9KOqs5OnbSpdPKLDtl3ewoBIB/2fiHgp/5Ww6GWHaebq14UVfM92GE0udzoGjw4C
+    GeFHYsjOcclV+Mh/0xAw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AC8AXAbZ
+    with ESMTPSA id Qb56a22AC8AXAba
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
     Thu, 12 Nov 2026 09:10:33 +0100 (CET)
@@ -94,10 +97,12 @@ To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 Cc: linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	letux-kernel@openphoenux.org
-Subject: [PATCH v2 0/9] MIPS: Ingenic: Add XBurst / XBurst II infrastructure and improve overall Ingenic SoC support
-Date: Thu, 12 Nov 2026 09:10:22 +0100
-Message-ID: <cover.1794471031.git.hns@goldelico.com>
+Subject: [PATCH v2 1/9] MIPS: Kconfig: Allow user selection of BUILTIN_DTB with description
+Date: Thu, 12 Nov 2026 09:10:23 +0100
+Message-ID: <873ebe259b8534fdb3a6f8a926cd16d1aafec74b.1794471031.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.56.0
+In-Reply-To: <cover.1794471031.git.hns@goldelico.com>
+References: <cover.1794471031.git.hns@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,88 +112,69 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-PATCH V2 2026-11-12 09:10:31:
-The series updates the Ingenic platform support to allow clean transitions
-between bootloader-provided Device Trees and built-in fallbacks. It provides
-the foundational Kconfig, PRID, and CPU-probe blocks required for newer 
-Ingenic/Lumissil hardware generations (X1600, X2000, X2600) and adds JZ4730
-for completeness.
+Make CONFIG_BUILTIN_DTB visible in Kconfig by adding a prompt and a
+detailed help text.
 
-Changes to V1
-- allow user selection of BUILTIN_DTB (suggested by Paul Cercueil <paul@crapouillou.net>)
-- added the CPU_XBURTS2 type here to solve an issue reported by kernel test robot
-- removed PRID_IMP_XBURST2_R2 and merged into single commit
-- reviewed all PRID_IMP with data sheets and programming manuals
-- added full x2600 and jz4730 definition for completeness
-- added platform makefile and load address for X1600, X2000, X2600
+Previously, BUILTIN_DTB was a silent option forcefully selected by
+certain machine types (such as MACH_INGENIC) whenever appended DTB
+support was disabled. This prevented modern setups from turning off the
+built-in DTB fallback when the bootloader is fully capable of passing a
+dynamic DTB.
 
-PATCH V1 2026-10-25 20:20:55:
-The series updates the Ingenic platform support to allow clean transitions
-between bootloader-provided Device Trees and built-in fallbacks. It provides
-the foundational Kconfig, PRID, and CPU-probe blocks required for newer 
-Ingenic/Lumissil hardware generations (X1600, X2000, X2600).
+By adding a prompt, users can now explicitly toggle this behavior. The
+added help text clarifies the distinction between MIPS_NO_APPENDED_DTB
+(which controls image appending) and BUILTIN_DTB (which controls the
+compiled-in fallback data and code path via get_fdt()), as well as its
+relationship to BUILTIN_DTB_NAME.
 
-The first patch corrects an inverted Kconfig condition regarding appended 
-and built-in DTBs. This fix is necessary to allow configurations where 
-the kernel relies entirely on a Device Tree provided dynamically by the 
-bootloader instead of forcing a built-in fallback.
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
 
-The remaining patches implement CPU-probe initialization, correct PRID 
-mappings (including vendor-kernel values for the Ingenic A1 SoC), 
-platform load addresses, Kconfig updates, and generic board match updates.
+Notes:
+    Help text and commit message generated by public Google AI.
 
-Structure of the series:
-1. MIPS: Ingenic: Fix inverted MIPS_NO_APPENDED_DTB logic in Kconfig
-2. MIPS: Ingenic: Add and update PRIDs for XBurst II R0 and R2
-3. MIPS: Ingenic: Expand Kconfig for X1600, X2000, and X2600 SoCs
-4. MIPS: Ingenic: Add cpu-probe setup for XBurst and XBurst II R2
-5. MIPS: generic: Add MACH_INGENIC type and compatible for X1600
-6. MIPS: Ingenic: Add Platform makefile for X1600 and X2000
+ arch/mips/Kconfig | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-Testing:
-The series has been compile-tested for generic Ingenic targets. PRID 
-values for jz4780, x1600, X2000, X2600 were verified on real hardware 
-(CI20, LX16, LX20 and LX26 boards respectively).
-
-Please review and consider for inclusion.
-
-
-H. Nikolaus Schaller (8):
-  MIPS: Kconfig: Allow user selection of BUILTIN_DTB with description
-  MIPS: Ingenic: Configure CONFIG_BUILTIN_DTB=y for Ingenic based
-    devices
-  MIPS: Ingenic: Do not force BUILTIN_DTB in Kconfig
-  MIPS: Ingenic: Update Ingenic XBurst implementation IDs
-  MIPS: generic: Add MACH_INGENIC type and compatible for X1600 and
-    X2600
-  MIPS: Ingenic: Expand Kconfig for X1600, X2000, and X2600 SoCs
-  MIPS: Ingenic: Expand Kconfig by MACH_JZ4730
-  MIPS: Ingenic: Add Platform makefile and load addresses for X1600,
-    X2000, X2600
-
-周琰杰 (Zhou Yanjie) (1):
-  MIPS: Ingenic: Add a new CPU_XBURST2 type
-
- arch/mips/Kconfig                      | 25 +++++++++++++--
- arch/mips/configs/ci20_defconfig       |  1 +
- arch/mips/configs/cu1000-neo_defconfig |  1 +
- arch/mips/configs/cu1830-neo_defconfig |  1 +
- arch/mips/configs/gcw0_defconfig       |  1 +
- arch/mips/configs/qi_lb60_defconfig    |  1 +
- arch/mips/configs/rs90_defconfig       |  1 +
- arch/mips/generic/board-ingenic.c      |  8 ++++-
- arch/mips/include/asm/bootinfo.h       |  2 ++
- arch/mips/include/asm/cpu-type.h       |  1 +
- arch/mips/include/asm/cpu.h            | 13 ++++----
- arch/mips/ingenic/Kconfig              | 43 ++++++++++++++++++++++++++
- arch/mips/ingenic/Platform             |  3 ++
- arch/mips/kernel/cpu-probe.c           |  7 +++++
- 14 files changed, 99 insertions(+), 9 deletions(-)
- create mode 100644 arch/mips/ingenic/Platform
-
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index dac3ec5120a34..92bca520cd5ae 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2924,7 +2924,29 @@ config UHI_BOOT
+ 	bool
+ 
+ config BUILTIN_DTB
+-	bool
++	bool "Enable builtin DTB fallback support"
++	depends on USE_OF
++	help
++	  Compiles a Device Tree Blob (DTB) directly into the kernel image
++	  and enables the kernel to use it as a fallback during boot.
++
++	  This option:
++	  a) Links the DTB specified by BUILTIN_DTB_NAME into the
++	     kernel binary.
++	  b) Instructs the boot code (get_fdt()) to return this internal
++	     DTB if no dynamic DTB from the bootloader or appended DTB
++	     image data is detected.
++
++	  Note on MIPS boot strategy:
++	  MIPS kernels check for a DTB in the following order inside get_fdt():
++	  1. An appended DTB image (if CONFIG_MIPS_*_APPENDED_DTB is set).
++	  2. The built-in DTB fallback controlled by this option.
++
++	  If your bootloader provides a valid DTB dynamically and you do not
++	  rely on appended or built-in DTBs, you should enable
++	  MIPS_NO_APPENDED_DTB and disable BUILTIN_DTB.
++
++	  If unsure, say Y.
+ 
+ choice
+ 	prompt "Kernel appended dtb support"
 -- 
 2.56.0
 

@@ -1,90 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794498529;
-	b=xmx/iDHBV6WztX+rZUsCITy8V6B8YVJwgucLhCJrAMwjUIegchDIjVztAJQ5vvpFANr3
-	 i5bGyyi25D8ZrxDHRzyKVf3o7s5KOiNMbUj7TwZ2Tbr7v38VQgj9+AAqhnWIhUgKqUQtl
-	 p3e+6JZ1jZCtK21H8oCyGB8QKxOi+3qz2Ku9slnFXbcBg17G6vf62fhQIHpWeouozTtm1
-	 +uvzxJXJC3ZiPaMdM/lRPfUHCbI4xia0aSQyT51yQ8K/Alw4Gn5bqdi2EdBqI3FWCht75
-	 Awi3NqwxhNZNJ+lXU5rg1iu+KuG/7M5nmnWFI5FsUx57uT00WuqypyqwSY50KlH2ROg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794498529;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=fgw5BhbzyfegbuedZOXHCoF+Z54btuowGOL63wOGrJA=;
-	b=ey37JYSoH9YAQX5h84Zm46Mxdf6QenhEWVBiCe8bNFnXBeR8eYAfrUwK6xZAu0GX+Qlz
-	 j8NxMztI0NeQgK0eVxPjoM/UeGJKbjB/HryXGRw+UF9DVZGo0Yd1ImaxIpSlHi7syqKwL
-	 4TeNckgBL7ticrjj3ex4AR6FI67IFRaUfTdIYFecjHE5y9WcZnsNdf13G+BQpy5EGH+aV
-	 sS3qcmD/9pl5MCJmEzE6RhR5qHTEEvXPizmt3skyWDu5fVSaFak7xDVo7oJ2kR4iGwFFA
-	 eiV2ZSbMBy7sY7oDM+s6+YsA9k+2qjwkrBt5te3N97juREOfa3SlN559jH4hnx/SXvA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=RurjjU8H;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=4R2YqJwx;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794498568;
+	b=i13xdOAVbd3T4yzXtH4yeWJ8hiaEUPwXw5b8hKuNwyPKJb0qiZQozBdLZpo0kWUC76C2
+	 rQR+NSTJlG0ZU7VqycAytE040ZPCgM66KMAgnw1p/iDN7gxoWkiRO06teG7Q5LMnx3OD7
+	 J4DAgetqp/TdLXvvBQHRMWTw1aVUoHmTk0crWd8a+ujI9+QveMnMNk7hx9V9l/7WIzbtN
+	 UolcCya8AztAqPAbI9EDbbQvw+o0DmNrrtwnWabx5Q2sTnAJ5UZ4JqOa7OM+ScBMPZkk4
+	 NGwbElVvh6wRdXsdC3rKouAn0i4h45xQfEOUDIuue0+LsJYlXmnI1GKP8xiydiSAYWA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794498568;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=95sGRAGlPDihdGv2DdHd5wQK/JBt1wq+khN+Sd3SAvg=;
+	b=iC0nGCqgW4VwymKx9w0yS3UqbkgBnhFSJhYZeexnUwOoOtVffxWts7q8cBripTHYIy6P
+	 V4GPj8wUzVfp89J7eW66mDogzziHtq1K1uBWcKixFeQzMZCgcrcJJuzr73owBVDQvPuA2
+	 D15ltVpFnMXi0K/n6UHj6GdGamwS+SBqqTM6SOk+0gc0pNr4O2iJp3hkweZ7+1yWK/3wE
+	 ffVh8/IVRfGPbaybhVDh4K0FZXYaL/fqP+UutShObk/qxqqZOmsbmsNBd2P037Pa44ebH
+	 7KqhkPTm/pEOw7gWfgbmdnPFZjbEb2icAyQxyiIJ5j7PLQS2JReQcF7CRsJ34iRPfzQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DEE606A323;
-	Thu, 12 Nov 2026 15:48:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D7DEE606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=RurjjU8H;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=4R2YqJwx
-ARC-Seal: i=1; a=rsa-sha256; t=1794498524; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=flokDZcFH/ui4a/ZWM4e6N/TpOte/paDwRRnQXCHP+/DLBVeP57q+6YlCO9mtQya+i
-    yspnGrqlj3rNPSEcdp1xyPHVCP6XiRz3rZT7RbJuLXpAbU7TpFIQ70ZDJqV2TY0tBfrY
-    7Ttp34ZIt2Xgcou1mQwJDobVCMLpYo+zpToamBhMSi7vml6um2cZBDKUqz7yBzfP3LlM
-    ht7Ect5ZXvY91tm+caN/tbW80zi8IR6rN2WDTN3PMY/iHrE/XFE7KnIl7naUhp7ZuQmG
-    5JCNQqW3yvwg89MuDC3Upc67jvNmHJ/WcvpiCBqI825qTuIm66QnZ1b89ecXSREf6oPj
-    ZObg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794498524;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=fgw5BhbzyfegbuedZOXHCoF+Z54btuowGOL63wOGrJA=;
-    b=d2uU87dKXZc16pMIiU/oRIJYcnjgw+PB6hklqyeO4QmR5ddpcn71uCtJhK/n/Lh/WQ
-    KeKndUOyGODZRt/l3Q5RJ/e7CT56ZEEQD7n69UIU7MKQ0FsvH4618kPJe4CgUMERVfc0
-    F+Ml8WatSBOTqCH/n/ENckJluLgxKkKQTMZBzkljdHfa6x5nC7jX64buQkxlCueZn6yP
-    AjBbrUY9zW9DYKPwJcZik5qqxsQ1hGHxveC5riSJpXGVp1q+WfjJupYEz9wHFI6VJS4T
-    G9O8zcmG46Fsad9UPrCobCm6GFXmtRCbocbOHa29hvszTAAR9l7UBwy/QdtzlZ18uh1b
-    aU5g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794498524;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=fgw5BhbzyfegbuedZOXHCoF+Z54btuowGOL63wOGrJA=;
-    b=RurjjU8HmVfVfyQn8QkSe1sxiGThJ9Eq16jnF9YCia6rgVk9a8zCECEsn/1L1A5yZy
-    vuZamKG3yAk5EIVgD+F6EYmaW3Uh8J8/ROTl4emvcP4pB/15aUH5AuSrkf41vqpe8N5J
-    Nh46FwSbJG19eVnLUlo7YZOb/BgrDGy+32DylnIUxDEkdLKzYM91NC9dpV5991iS7xub
-    6MtzZD9rbnFU5c1u4xKC3M0r8A+JdacUss9+oanB7HzjVJmmxnt2LlmQJqrYtbK1h4XL
-    hiIOVMe8x5JIRvgzWnOTKvNPnvQ4YZFXSl7IY4e6rdSPmgvOEvgrSQ6z4O2f/4Yvsh4E
-    r1Aw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794498524;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=fgw5BhbzyfegbuedZOXHCoF+Z54btuowGOL63wOGrJA=;
-    b=4R2YqJwxqQfIHssSagBdgZr96JMMbvKT+Qp+jC+UQeDnDP1r/VIcP6vHAqBLfZXTwN
-    GBQKiyLDLi3u6z2jzcBQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22ACFmhD47
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Thu, 12 Nov 2026 16:48:43 +0100 (CET)
-Content-Type: text/plain;
-	charset=utf-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2037B606A32A;
+	Thu, 12 Nov 2026 15:49:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2037B606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <8da96916856e73c3ed368eeb8d28891750206a71.camel@crapouillou.net>
+Subject: Re: [PATCH v2 5/9] MIPS: Ingenic: Update Ingenic XBurst
+ implementation IDs
+From: Paul Cercueil <paul@crapouillou.net>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Burton	
+ <paulburton@kernel.org>, "Maciej W. Rozycki" <macro@orcam.me.uk>, Pengpeng
+ Hou	 <pengpeng@iscas.ac.cn>, "Christophe Leroy, David Heidelberg"
+ <david@ixit.cz>,  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi
+ Iwai <tiwai@suse.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,  Paul
+ Boddie <paul@boddie.org.uk>, Olivier Louvignes <olivier@mgcrea.io>,
+ linux-mips@vger.kernel.org, 	linux-kernel@vger.kernel.org,
+ letux-kernel@openphoenux.org
+Date: Thu, 12 Nov 2026 16:49:21 +0100
+In-Reply-To: <3892D527-E3F1-49CA-8557-2C62E2C015C4@goldelico.com>
+References: <cover.1794471031.git.hns@goldelico.com>
+	 <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com>
+	 <f91a0c53b35ff28bed26622f46d562b5a6150008.camel@crapouillou.net>
+	 <3892D527-E3F1-49CA-8557-2C62E2C015C4@goldelico.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,164 +58,202 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 7/9] MIPS: Ingenic: Expand Kconfig for X1600, X2000,
- and X2600 SoCs
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <26336f36c7ed09bcf64fcc2ae2d8aa1e0c1b7d23.camel@crapouillou.net>
-Date: Thu, 12 Nov 2026 16:48:13 +0100
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Burton <paulburton@kernel.org>,
- "Maciej W. Rozycki" <macro@orcam.me.uk>,
- Pengpeng Hou <pengpeng@iscas.ac.cn>,
- "Christophe Leroy, David Heidelberg" <david@ixit.cz>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Takashi Iwai <tiwai@suse.de>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Paul Boddie <paul@boddie.org.uk>,
- Olivier Louvignes <olivier@mgcrea.io>,
- linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- letux-kernel@openphoenux.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BE31F647-6DDB-4B84-AD79-64BAEAB7AFC6@goldelico.com>
-References: <cover.1794471031.git.hns@goldelico.com>
- <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
- <26336f36c7ed09bcf64fcc2ae2d8aa1e0c1b7d23.camel@crapouillou.net>
-To: Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3826.700.81.1.10)
+MIME-Version: 1.0
 
-
-
-> Am 12.11.2026 um 15:16 schrieb Paul Cercueil <paul@crapouillou.net>:
+Le jeudi 12 novembre 2026 =C3=A0 16:37 +0100, H. Nikolaus Schaller a =C3=A9=
+crit=C2=A0:
+> Hi Paul,
 >=20
-> Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =
+> > Am 12.11.2026 um 15:03 schrieb Paul Cercueil <paul@crapouillou.net>:
+> >=20
+> > Hi Nikolaus,
+> >=20
+> > Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =
 =C3=A9crit :
->> Expand MACH_INGENIC_GENERIC to select all existing and newly added
->> machine variants (including JZ4750/55/60/75, X1500, X1600, X2000,
->> X2100, and X2600).
->>=20
->> Introduce individual Kconfig blocks for the following SoCs:
->> - MACH_X1600: Selects MIPS32_R2 and HIGHMEM.
->> - MACH_X2000 / MACH_X2600: Selects MIPS32_R5, SMP support, broadcast
->>   clockevents, O32 FP64 support, and weak ordering optimizations.
->>=20
->> In parts developed by Reimu NotMoe <reimu@sudomaker.com>
+> > > Add PRID implementation constants for Ingenic XBurst and XBurst II
+> > > processors and handle the corresponding implementation IDs in
+> > > cpu_probe_ingenic().
+> > >=20
+> > > The PRID table is updated based on Programming Manuals and hardware t=
+ests:
+> > > - jz4780: 0x3ee1024f (confirmed on CI20 board)
+> > > - x1000:=C2=A0 0x2ed1024f (unconfirmed)
+> > > - x1600:=C2=A0 0x00d00000 (confirmed on LX16 board)
+> > > - X1830:=C2=A0 0x00d00100 (unconfirmed)
+> > > - X2000:=C2=A0 0x00132000 (read out from LX20 board)
+> > > - X2600:=C2=A0 0x001320xx (confirmed 0x00132000 on LX26 board)
+> > >=20
+> > > Additionally, clean up extra spaces in the comments for
+> > > PRID_IMP_XBURST_REV2 and PRID_IMP_XBURST2.
+> > >=20
+> > > Distinguish XBurst1 implementations with different SIMD ISA revisions
+> > > and identify XBurst II processors using PRID_IMP_XBURST2.
+> > > The XBurst II classification follows the Ingenic vendor kernel.
+> > >=20
+> > > Keep the existing writecombine handling unchanged, since no
+> > > independent evidence justifies changing the cache attribute for
+> > > XBurst II.
+> > >=20
+> > > Public references:
+> > > - Ingenic Community, public SoC datasheets and programming manuals:
+> > > =C2=A0 https://github.com/Ingenic-community/datasheets/tree/main/X
+> > > =C2=A0 Includes the X1600 programming manual (X1600_PM_20220117.pdf)
+> > > =C2=A0 and documentation for other X-series SoCs, including X1000,
+> > > =C2=A0 X1830 and X2000.
+> > > - Ingenic, XBurst1 CPU Core Programming Manual:
+> > > =C2=A0 https://cdn.hackaday.io/files/1855627939084608/XBurst1_Core_PM=
+.pdf
+> > > =C2=A0 Documents the XBurst1 core architecture and CP0 configuration.
+> > > - Ingenic, XBurst Instruction Set Architecture Programming Manual:
+> > > =C2=A0 https://www.setphaserstostun.org/ci20/X1000_M200_XBurst_ISA_MX=
+U_PM.pdf
+> > > =C2=A0 Documents the original XBurst SIMD instruction set.
+> > > - Ingenic, XBurst2 CPU Core Programming Manual:
+> > > =C2=A0 https://www.manualslib.com/manual/2646351/Ingenic-Xburst-2-Cpu=
+-Core.html
+> > > =C2=A0 Documents the XBurst2 core architecture.
+> > > - Ingenic, MIPS-LINUX toolchain R6.0.0 release notes:
+> > > =C2=A0 https://www.ingenic.com.cn/news-detail/nid-343.html
+> > > =C2=A0 Distinguishes MSA, MXA and MXU/MXU2 support in the toolchain.
+> > > - Ingenic, MIPS-LINUX toolchain R6.2.1 release notes:
+> > > =C2=A0 https://www.ingenic.com.cn/news-detail/nid-348.html
+> > > =C2=A0 Documents MXU3 support and identifies X2000 as an MSA target.
+> > >=20
+> > > The public references document the available CPU, SoC and ISA
+> > > information. The PRID implementation handling follows the Ingenic
+> > > vendor kernel.
+> > >=20
+> > > AI assistance: ChatGPT was used to help review the PRID definitions,
+> > > compare the Ingenic vendor implementation with the upstream code,
+> > > and draft the commit message with public references. The code changes=
+,
+> > > hardware observations, and final patch were reviewed by the authors.
+> > >=20
+> > > Co-developed-by: Paul Boddie <paul@boddie.org.uk>
+> > > Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> > > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> > > ---
+> > >=20
+> > > Notes:
+> > > =C2=A0=C2=A0=C2=A0 Changes in V2:
+> > > =C2=A0=C2=A0=C2=A0 - removed the PRID_IMP_XBURST2_R2 definition and h=
+ints for an x2100 as
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 there is no public reference
+> > > =C2=A0=C2=A0=C2=A0 - merged into single commit changing the PRID defi=
+nitions and code
+> > > =C2=A0=C2=A0=C2=A0 - reviewed details and rewrote commit message
+> > > =C2=A0=C2=A0=C2=A0=20
+> > > =C2=A0=C2=A0=C2=A0 Open Issue:
+> > > =C2=A0=C2=A0=C2=A0 Olivier Louvignes <olivier@mgcrea.io> pointed out =
+that he has
+> > > =C2=A0=C2=A0=C2=A0 simply reused the definition of the X1830 for the =
+X1600. This
+> > > =C2=A0=C2=A0=C2=A0 sets c->writecombine differently (_CACHE_CACHABLE_=
+WA) from
+> > > =C2=A0=C2=A0=C2=A0 _CACHE_UNCACHED_ACCELERATED as we do here.
+> > > =C2=A0=C2=A0=C2=A0 Both settings appear to work but it needs expert c=
+omment which
+> > > =C2=A0=C2=A0=C2=A0 is the right/better one.
+> > >=20
+> > > =C2=A0arch/mips/include/asm/cpu.h=C2=A0 | 9 +++++----
+> > > =C2=A0arch/mips/kernel/cpu-probe.c | 7 +++++++
+> > > =C2=A02 files changed, 12 insertions(+), 4 deletions(-)
+> > >=20
+> > > diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.=
+h
+> > > index add26f08e8029..79fd9a0747cf2 100644
+> > > --- a/arch/mips/include/asm/cpu.h
+> > > +++ b/arch/mips/include/asm/cpu.h
+> > > @@ -47,7 +47,7 @@
+> > > =C2=A0#define PRID_COMP_CAVIUM 0x0d0000
+> > > =C2=A0#define PRID_COMP_LOONGSON 0x140000
+> > > =C2=A0#define PRID_COMP_INGENIC_13 0x130000 /* X2000, X2100 */
+> > > -#define PRID_COMP_INGENIC_D0 0xd00000 /* JZ4730, JZ4740, JZ4750,
+> > > JZ4755, JZ4760, X1830 */
+> > > +#define PRID_COMP_INGENIC_D0 0xd00000 /* JZ4730, JZ4740, JZ4750,
+> > > JZ4755, JZ4760, X1830, X1600 */
+> > > =C2=A0#define PRID_COMP_INGENIC_D1 0xd10000 /* JZ4770, JZ4775, X1000 =
+*/
+> > > =C2=A0#define PRID_COMP_INGENIC_E1 0xe10000 /* JZ4780 */
+> > > =C2=A0
+> > > @@ -186,9 +186,10 @@
+> > > =C2=A0 * These are the PRID's for when 23:16 =3D=3D PRID_COMP_INGENIC=
+_*
+> > > =C2=A0 */
+> > > =C2=A0
+> > > -#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst=C2=AE1 with MXU1.0/MXU=
+1.1 SIMD
+> > > ISA */
+> > > -#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst=C2=AE1 with MXU2.0 SIM=
+D
+> > > ISA */
+> > > -#define PRID_IMP_XBURST2 0x2000 /* XBurst=C2=AE2 with MXU2.1 SIMD
+> > > ISA */
+> > > +#define PRID_IMP_XBURST 0x0000 /* XBurst1 */
+> > > +#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst1 with MXU1.0/MXU1.1 SI=
+MD
+> > > ISA */
+> > > +#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst1 with MXU2.0 SIMD ISA =
+*/
+> > > +#define PRID_IMP_XBURST2 0x2000 /* XBurst2 with MXU2.1 SIMD ISA */
+> > > =C2=A0
+> > > =C2=A0/*
+> > > =C2=A0 * These are the PRID's for when 23:16 =3D=3D PRID_COMP_NETLOGI=
+C
+> > > diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-prob=
+e.c
+> > > index 489612ed9d498..69b68d00b66f7 100644
+> > > --- a/arch/mips/kernel/cpu-probe.c
+> > > +++ b/arch/mips/kernel/cpu-probe.c
+> > > @@ -1768,6 +1768,13 @@ static inline void cpu_probe_ingenic(struct
+> > > cpuinfo_mips *c, unsigned int cpu)
+> > > =C2=A0
+> > > =C2=A0 switch (c->processor_id & PRID_IMP_MASK) {
+> > > =C2=A0
+> > > + /* XBurst=C2=AE1 with ISA */
+> > > + case PRID_IMP_XBURST:
+> > > + c->cputype =3D CPU_XBURST;
+> > > + c->writecombine =3D _CACHE_UNCACHED_ACCELERATED;
+> > > + __cpu_name[cpu] =3D "Ingenic XBurst";
+> > > + break;
+> >=20
+> > What SoCs actually use PRID_IMP_XBURST? The JZ4730?
 >=20
-> Co-developed-by? (+ his Sob)
-
-I have to check what he really has developed. I think we did take this =
-from
-his github tree (https://github.com/Ingenic-community/linux/tree/v6.1.y) =
-but
-were never in contact with him. So I am not sure if we can get a SoB:.
-
+> The x1600 has a PRID of 0x00d00000.
 >=20
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->>  arch/mips/ingenic/Kconfig | 38 =
-++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 38 insertions(+)
->>=20
->> diff --git a/arch/mips/ingenic/Kconfig b/arch/mips/ingenic/Kconfig
->> index f595b339a4b84..5d351b42bbc9b 100644
->> --- a/arch/mips/ingenic/Kconfig
->> +++ b/arch/mips/ingenic/Kconfig
->> @@ -5,10 +5,19 @@ config MACH_INGENIC_GENERIC
->>   select MACH_INGENIC
->>   select MACH_JZ4740
->>   select MACH_JZ4725B
->> + select MACH_JZ4750
->> + select MACH_JZ4755
->> + select MACH_JZ4760
->>   select MACH_JZ4770
->> + select MACH_JZ4775
->>   select MACH_JZ4780
->>   select MACH_X1000
->> + select MACH_X1500
+> It is a little confusing how these numbers have been assigned over time.
 >=20
-> You select MACH_X1500 but there's no CONFIG_MACH_X1500 symbol. No =
-entry in enum
-> ingenic_machine_type either, or compatible string for it.
+> +#define PRID_IMP_XBURST 0x0000 /* XBurst1 */
+> +#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst1 with MXU1.0/MXU1.1 SIMD I=
+SA */
+> +#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst1 with MXU2.0 SIMD ISA */
 >=20
-> Your patch didn't add a CONFIG_MACH_X2100 either.
+> Obviously the x1600 is newer than X1830 (likely PRID_IMP_XBURST_REV2)
 
-Ok, that may be from taking the Reimu NotMoe patch without =
-cross-checking.
+Obviously? ;)
 
-Will be removed in V3.
+I thought that their SoC versions were ordered, with the only exception bei=
+ng
+the JZ4725B being newer than the JZ4740 as a sort-of beta JZ4750.
 
+> or jz4780 and x1000 being PRID_IMP_XBURST_REV1.
 >=20
->> + select MACH_X1600
->>   select MACH_X1830
->> + select MACH_X2000
->> + select MACH_X2100
->> + select MACH_X2600
->> =20
->>  choice
->>   prompt "Machine type"
->> @@ -62,8 +71,10 @@ config MACH_JZ4770
->>  config MACH_JZ4780
->>   bool
->>   select MIPS_CPU_SCACHE
->> + select GENERIC_CLOCKEVENTS_BROADCAST if SMP
->>   select SYS_HAS_CPU_MIPS32_R2
->>   select SYS_SUPPORTS_HIGHMEM
->> + select SYS_SUPPORTS_SMP
->> =20
->>  config MACH_X1000
->>   bool
->> @@ -71,8 +82,35 @@ config MACH_X1000
->>   select SYS_HAS_CPU_MIPS32_R2
->>   select SYS_SUPPORTS_HIGHMEM
->> =20
->> +config MACH_X1600
->> + bool
->> + select SYS_HAS_CPU_MIPS32_R2
->> + select SYS_SUPPORTS_HIGHMEM
->> +
->>  config MACH_X1830
->>   bool
->>   select MIPS_CPU_SCACHE
->>   select SYS_HAS_CPU_MIPS32_R2
->>   select SYS_SUPPORTS_HIGHMEM
->> +
->> +config MACH_X2000
->> + bool
->> + select MIPS_CPU_SCACHE
->> + select GENERIC_CLOCKEVENTS_BROADCAST if SMP
->> + select SYS_HAS_CPU_MIPS32_R5
->> + select SYS_SUPPORTS_HIGHMEM
->> + select SYS_SUPPORTS_SMP
->> + select MIPS_O32_FP64_SUPPORT
+> So it may or may not be a PRID_IMP_XBURST_REV3? But we don't know.
+
+Can you check if the X1600 supports MXU? A IMP value of 0 might mean a Xbur=
+st
+CPU with no XMU support, maybe?
+
+> >=20
+> > If it's really used somewhere, you'll also need to add a compatible str=
+ing
+> > for
+> > it in Documentation/devicetree/bindings/mips/cpus.yaml. I guess just
+> > "ingenic,xburst".
 >=20
-> I know MIPS_O32_FP64_SUPPORT was supported on the JZ4770, and most =
-likely on the
-> JZ4760 too (the first one with a FPU AFAIK). So this could probably be =
-moved to
-> CONFIG_MACH_INGENIC.
+> Ok, will check.
 
-That should be clearly checked. If I find a little time I can add it
-or it can be done later.
+"ingenic,xburst" if it does not support MXU, I should clarify.
 
-BR and thanks,
-Nikolaus
-
->=20
-> Cheers,
-> -Paul
->=20
->> + select WEAK_ORDERING
->> + select WEAK_REORDERING_BEYOND_LLSC
->> +
->> +config MACH_X2600
->> + bool
->> + select MIPS_CPU_SCACHE
->> + select GENERIC_CLOCKEVENTS_BROADCAST if SMP
->> + select SYS_HAS_CPU_MIPS32_R5
->> + select SYS_SUPPORTS_HIGHMEM
->> + select SYS_SUPPORTS_SMP
->> + select MIPS_O32_FP64_SUPPORT
->> + select WEAK_ORDERING
->> + select WEAK_REORDERING_BEYOND_LLSC
-
+Cheers,
+-Paul

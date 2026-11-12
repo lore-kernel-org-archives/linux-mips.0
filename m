@@ -1,101 +1,50 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794500363;
-	b=p4Qln7mzW24Bipuv97ClHm7LpLIES9RftZpr8EIRFsrLXzfL/yn4/Mzp7vb4t+m3uVCI
-	 Svv6Y5HeIfHCC1/a/sxCMC2z4e/h2osAv3z4xyB9XVKTUo0VsfP9sIA2pD/f/E6NOKq/Z
-	 i78fzagjZTx27Wn+mUeYJ/n9iraVGpNF/X7feuhffTCIu1xZtSUEOI1KcCnI5AgbEvwQM
-	 9vKrBrQN3K5u5a9KSw1HT1f+co+BFDCvjE6snw+Ul/+s6UKq7WwR59ElVjYS9SmTNnR6c
-	 mXgyZyAPiFO+H4ANicyjRlmI4PKNjNpp6aIpluqKXYwPHGFLfJ2PGw691O0s9wR+tcA==
+	t=1794501475;
+	b=re/Sz8Z5yjLMLhkXhl2KnzNW8HCnlac4nNq4ku706MszVhrJT9qZLz9iViCoq/9cYikQ
+	 Jo9HF1Ea5RP9gJXMMVX0FGLuKm25F0fFYozNAwNUQlsXIsqJo6FufciFP2sgIvO7rR++1
+	 E/3hVvAEnGPiCMVNc52EIqQGqgleAWlditRH6SS4s3rNP9JWxOozsO0rr5a1yeeRsltMY
+	 qcLszOsFB33eHkgdq/qao6NmAO63V8Ewu9rQhwbQoAfe4Dp8VyVc1d/OctopsxRH3UEPj
+	 TnJkjcqZ3yEsJwmYIXIp84VMenS5cQQeJ+EMWhzppf3hGmMjNguJ2gPjgFcW/cTSMxw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794500363;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=zC4m+uV/YPD15AHdZCPuybHwTTw6+LRxv/oRPoTCzOM=;
-	b=jPU3Q+cGsD41ANEz8NnCIyNKGEr079vN/j0aaIkHAzO4IGsDipLfG4fPAQw/3pefGr3F
-	 lNPwbdbGwgOpFMvCV1SPF0/iPSWOY6aye7hi6ITnh8n3TQk5Yz4EthetA4K208eARdsg9
-	 aziTd1kyMmKjH2ykAJ96LRzqblVqyOBHtBxVgDDF4kpw66Zjdag2Dvbc3vknSHnEGyecA
-	 ZTLr/m7YSI5Nv7ErlZEDl0QiDgAOCSMzTvbD7jCYh+Fl8vMZ6LUMJ+AF9b1ZTufvSs4Fu
-	 bF7WgFJj2HpKK5AJiAzyqC0LNh6E0br0u8WNakASx2XHFHDZyswj56haUd5epZ+TNiw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794501475;
+	h=Received:DKIM-Signature:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
+	bh=jCZcwaVbEXSO6fmP+AQbtigP75VIYTb9aAjDi7oBhe8=;
+	b=sapR9csF0QTLBibpBehDZTIjQGEPL6cxnPNTK36hoDLcCnZ6cMh4lwVk8lh5yAUghG11
+	 vWpJAaXo6apupJRu6k8IxAb1jGB6Xmq6yIDabDHsBbFCZruoqKlli9w/756sGRiJvGW8U
+	 80Fu1H9laa3ZMoaoxRjFzT6krNYaqIBA4eGBU9qMa6rTTlvN8vXxR1NTThd/x6g7R958X
+	 22xmMnBxqOPDq2ZuR9Za3QyzWQVWDyYyrO6AUN97KOWJGUcWjTMg/GTJkQ/wromoNKNf/
+	 XUkg3Cr+0mVQTNYiHEQhTR7O7VEDzwqwzKvn0+g2ibJTXqfWAeWMW0zxOpEdilC9Wpg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=SXymAPkg;
-	arc=none smtp.remote-ip=74.125.82.49
-Received: from mail-dl1-f49.google.com (mail-dl1-f49.google.com [74.125.82.49])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=j2ksWvqT;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3600606A31C
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 16:19:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3600606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AEC606A31C;
+	Thu, 12 Nov 2026 16:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=SXymAPkg
-Received: by mail-dl1-f49.google.com with SMTP id a92af1059eb24-14394530ec6so6174085c88.1
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 08:19:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794500362; x=1795105162; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:content-type:message-id:date
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=zC4m+uV/YPD15AHdZCPuybHwTTw6+LRxv/oRPoTCzOM=;
-        b=SXymAPkg7f5xQgkpMDyHIHCXo5cOdQ03I9FAN9FlFhLNy0ekJnF8d513tLBZNoLRdG
-         lOkhqN71obDm+PVplCDpIhvtuNTsYZNq05k3StDBbu+B+ebcrIfTHO98jrN6GZdbuuul
-         JKifPpayHcoKLe/ydW9eegm6C8WLJvD0Fi3mdAhvArF/QtS+jNjTEMv1sV6LbWC3b6gl
-         aZ+4U8/zSb5AIAWOElaCywg+FdfwBh0x9jF1ypFvXPUSAoBx9TcHO3MZ3ctb+FEPEDcs
-         SmV8eJP1quYwVSXusZV3zPc4TbueJ8pDefrrUTqvuU8czLkg1maBUKM0jH+P9VJHO/Pg
-         GWng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794500362; x=1795105162;
-        h=mime-version:content-transfer-encoding:content-type:message-id:date
-         :references:in-reply-to:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=zC4m+uV/YPD15AHdZCPuybHwTTw6+LRxv/oRPoTCzOM=;
-        b=wzNN8SFGB10me5iaBZbjZZJKjbTKZWQi61aoKYzh5gJGVElxT7JSj8OB6FCaVdvrkB
-         38xQeE9/hsRnnYxL2BLeWai5YVCjNGeQJJ8wzsp5oh0lJ1HM1jK0LggNq7ldEuCe7UXZ
-         gEtU6vxsj1SAeo1HPf3d8v+hJBFKLbkWXDhjKkBTeY97qJonh3V+UnLBXx6s20CE6MVX
-         bs1OuIxHXYXWYfzdcyENlGkAVGI03lURs7Pb33SDdcmMZuxHIp32DIIiEekg+/nnpxiw
-         ZAsFfOnkGTzKPaXba/Gepdr9TyL2VW500xCAxcxiozROPvHElnunnL9uu2epZld39d4W
-         c1rQ==
-X-Forwarded-Encrypted: i=1; AL+hErHPGu0NqK/HgtR0grExKYXsAZhitaHkR3tZt3akZTOOTssvmPynUxk4akDkk3Mt98WbvbTa2SwD3P4L@vger.kernel.org
-X-Gm-Message-State: APuU4Z+yQ1bDUArmfLHp5Csslc05tLGwFFheHadjB9oslKWpI20xZNKF
-	WAi/oHDBZF0X4SGGnuUsVHWDXUbZfkk9ndT4aG+kiroXAS0ZElpht2Qj
-X-Gm-Gg: AYBFou0oWa69dXmDo+m6XizJSDW5nIVNGcSMaOUqHubLN8huLjOLTl0xepQLZZ7P9al
-	bSxTuYIFmYDIAk491wotw9T5CYhWRMpG0yVmdZn6m/10NYhdqLRfTalmAklawTtfOx8oq3i/BIa
-	GW80fZSZPyYV9rjZ+xg7lSC4fD4S7fgoxf/w8XCf2xSZrkozLesbljrKrEgrg3ihvYF3l9ETlRt
-	D6wUbychFOKiaZyOF5A8PCXqFTNokTdXVurmVtmL2QO5uWqDbt2L/McbjHc0CX8bFIPT35UVcAP
-	t/937eWNr1QHJm2kfk6GnwEQbbTpov98C73vYGRlHJkgfqjiNvj7OTVia6qoDQvbhglYi/VgKQl
-	VfWTVWcYnQS41oevO6tVu2zMiVL8/1pQk3kgyxA6O5uJ61bSZlOiARKA3K6nqUWZIf4wVJ/jDZI
-	kU/SRy+EjRZaUoPOTwcv8OtaCFgCVuyfOgjrXbgRKUqtcIOtcil7CROAukiDS69DM9d5SMKdreR
-	gAQDOgNbdUH3HcbfQ03fUJdXYnDwiLqQzU2dH3qMW2OtTiPgTXu/Gas5MVX17cju3YBwlsnM4Rx
-	VHGQhDjjQR5MHwRU6mMcu7Ch/8FxpEfN4S1HUQftOC5/7qrDpzVI27IaEbp6ORfaDXDEBH/atr4
-	51Gnz
-X-Received: by 2002:a05:701b:2802:b0:14c:d84c:7182 with SMTP id a92af1059eb24-1b503104d0fmr31761c88.22.1794500361623;
-        Thu, 12 Nov 2026 08:19:21 -0800 (PST)
-Received: from smalls.localdomain (ip-198-145-71-161.az.bambroadband.net. [198.145.71.161])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b50316e195sm79377c88.8.2026.11.12.08.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 08:19:20 -0800 (PST)
-From: Hunter Laux <hunterlaux@gmail.com>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Olivier Louvignes <olivier@mgcrea.io>,
- Paul Cercueil <paul@crapouillou.net>, Paul Boddie <paul@boddie.org.uk>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
-Subject:
- Re: [PATCH] MIPS: ingenic: Work around stale L2 data after DMA on XBurst II
-In-Reply-To: <988F3625-C300-4C68-AC70-E371E5D9A496@goldelico.com>
-References: <20261111-mips-ingenic-l2-war-v1-1-0d9dec232a7a@gmail.com>
- <988F3625-C300-4C68-AC70-E371E5D9A496@goldelico.com>
-Date: Thu, 12 Nov 2026 09:19:20 -0700
-Message-ID: <179450036033.3574224.1997492818519568890@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=j2ksWvqT
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 527B61F000C5;
+	Thu, 12 Nov 2026 16:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794501474;
+	bh=jCZcwaVbEXSO6fmP+AQbtigP75VIYTb9aAjDi7oBhe8=;
+	h=From:Subject:Date:To:Cc;
+	b=j2ksWvqTjSpZRpEsyTzmS8gn1fYVO4+77jjtVD2TTFlIgfkVQlOk4zXryc2kB9+JC
+	 T3OtQ+rN/tMSqHZomvQ/G5Cx/WXIMv3mMEYGQ4qvgX8LiABhA8sQK0N6QYHi7Fsp4e
+	 Hk2pUwIxYgFmsDpRsRCOCGb79e9HTkdNFz9F9ThBcu/ofn6qdF/vOYMyi0NhEk2ePx
+	 zyjSDNgbA4HYZWd2NgF4NUeouIylYH4zt8BRnBbYz8tK66jZQcBHuvxyulHFFfvNoQ
+	 HvYmM4CcWOgiMGC6XGwj7KPtbncI/6XyGlUbOREprjSfMgxNUVuKQRC+//pxEYh94L
+	 81/mSZ987PGpA==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH RFC 0/4] crash_dump: recover from machine checks in
+ copy_oldmem_page()
+Date: Thu, 12 Nov 2026 17:37:06 +0100
+Message-Id: <20261112-work-procfs-oldmem-v1-0-ecdcafd99265@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -105,36 +54,93 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWMSw7CMAxEr1J5jasmC35bJA7AFrGIU5cGaFLZ/
+ KSqdyehy3kz8yZQlsAK+2oC4XfQkGIOZlWB7128MoY2Z7CNXRtjLH6S3HGU5DvF9GgHHnDH28Z
+ bJkcbgnwchbvw/UvPcDoe4LJAfdGN/bPoyoycMpK46PuCirhexHWpYJ5/L4zYOZ4AAAA=
+X-Change-ID: 20261112-work-procfs-oldmem-9e80c2ebab7b
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+ Breno Leitao <leitao@debian.org>, Chris Mason <mason@kernel.org>, 
+ Thomas Gleixner <tglx@kernel.org>, x86@kernel.org, 
+ kexec@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, 
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ David Hildenbrand <david@kernel.org>, 
+ "Christian Brauner (Amutable)" <brauner@kernel.org>, stable@vger.kernel.org
+X-Mailer: b4 0.17-dev-ce4c1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2874; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=sqtljLIH8KoO+/k7KE1Gt/hrphFZnwIFPTrrlrdZ//8=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR9fR2u/02Pnzf6SneSIY/3/COb93oukuRYOudztZZ0u
+ oHTlZwPHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABO5G8jwP0xmhXO+VVRl/K9S
+ y+eKH67dmLyl77jre1aL/4d5T4k1eDIyXFQTW+N5kUUj5zrH27dnf60ybtdbuU7Bn/07Y+aJqU7
+ lTAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Hi Nikolaus,
+A capture kernel reads the memory of the crashed kernel. That memory
+may have uncorrectable errors in it. Which is likely also what murdered
+the first kernel.
 
-On Thu, Nov 12, 2026 at 11:24 +0100, H. Nikolaus Schaller wrote:
-> - LX26 board with X2600 (isn't running stable for unknown reasons and
->                         sometimes damages the µSD contents but your
->                         patch didn't help to solve)
+On x86 a machine check in the copy that /proc/vmcore does out of an old
+page panics the capture kernel. On book3s64 the read() comes up short
+and splice() panics. Breno has observed that on a fleet iiuc. The first
+kernel dies of a machine check and then there's no vmcore either.
 
-I don't know that the stale L2 data is behind your instability or µSD
-problem. A quick way to rule it in or out, independent of the patch,
-is to turn the prefetcher off (MSCR.DisPFB2):
+I had the powerpc half of this as a fix in part 1 of the procfs series
+because Chris ran into it there. Breno pointed out that x86 has the same
+hole.
 
-  devmem 0x12200060 32 $(( $(devmem 0x12200060) | 2 ))
+I think that likely makes this a kdump problem and not a procfs problem.
+So I moved this out together with the ioremap_cache() fix.
 
-With it off I saw no stale reads here.
+The first two patches make powerpc's and sh's copy_oldmem_page() check
+whether mapping the old page worked.
 
-> Maybe the individuals and teams working on the XBurst devices should
-> coordinate somehow to avoid double work and potentially incompatible
-> fragments?
+Every architecture that maps a page of the old kernel copies it out with
+copy_to_iter(). The third patch puts that copy into a new
+copy_oldmem_to_iter() helper. It's just copy_to_iter() with
+_copy_mc_to_iter() underneath.
 
-Agreed. I'll follow up off-list with what I have for the X2600.
-What I have working on my board is here, on top of v7.3.3:
+On x86_64 (and book3s64 - whatever that is) that's the machine check
+safe copy and the machine check turns into a short read and -EFAULT.
+Everywhere else it's copy_to_iter() under another name.
 
-  https://github.com/jolting/linux/tree/ad5x-7.3.3-rc1
+I then convert the remaining architectures so the copy lives in one
+place and any new architecture with ARCH_HAS_COPY_MC later gets this for
+free.
 
-The patches I send upstream are cherry-picked from it.
+I reproduced the x86 panic in a kdump VM by injecting a machine check
+into the copy. Without it the capture kernel is gone, with it the read()
+fails with EFAULT and the kernel logs the event and keeps going.
 
-I don't have any dev boards. My X2600 is in a Flashforge Adventurer 5X
-3D printer, which is quite cheap, and its mainboard is also sold on its
-own as a replacement part. A few of the printers make an X2600 test lab
-that doubles as a print farm.
+The helper is a static inline in crash_dump.h and that pulls uio.h into
+it. If people would rather have it out of line it can go into
+kernel/crash_core.c, which builds for CRASH_DUMP just like the arch
+crash_dump.c files do.
 
-Hunter
+Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+---
+Christian Brauner (4):
+      powerpc/crash_dump: check ioremap_cache() in copy_oldmem_page()
+      sh/crash_dump: check ioremap() in copy_oldmem_page()
+      crash_dump: recover from a machine check in copy_oldmem_page()
+      crash_dump: use copy_oldmem_to_iter() everywhere
+
+ arch/arm/kernel/crash_dump.c       |  2 +-
+ arch/arm64/kernel/crash_dump.c     |  2 +-
+ arch/loongarch/kernel/crash_dump.c |  2 +-
+ arch/mips/kernel/crash_dump.c      |  2 +-
+ arch/powerpc/kernel/crash_dump.c   |  6 ++++--
+ arch/riscv/kernel/crash_dump.c     |  2 +-
+ arch/sh/kernel/crash_dump.c        |  5 ++++-
+ arch/x86/kernel/crash_dump_32.c    |  2 +-
+ arch/x86/kernel/crash_dump_64.c    |  2 +-
+ include/linux/crash_dump.h         | 22 ++++++++++++++++++++++
+ 10 files changed, 37 insertions(+), 10 deletions(-)
+---
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+change-id: 20261112-work-procfs-oldmem-9e80c2ebab7b
+

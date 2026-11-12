@@ -1,85 +1,85 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794523512;
-	b=pZuazV/6QZ1dgsXIvTOaUMEbI5TuDl1etGqUzkwCtGMx5Mmh+OPGHwJBkEm1TWJA8Zxd
-	 LRwn0xS8dUM2tjsVsq79+aY5yduFFcYkxx5GERU95Pg4MKkpKv6s0oCorasKG63vwwsRD
-	 K3s3H9VBHZhea0a3O8k9NnXvpID3bUVWMj/EUgvcTEUTuK9chTOXaxqYQ6nFtvKtyQBzi
-	 L08dak1JY1RnfQJ0TjYsYqPU8SBCsR9NEB1KQGiI6Rn0SOfDZLVAd193BczUDtBvgKLjS
-	 oNyXTWUWsGhBycv+lZhtWEPysMns+SbsmfdTqUtOe7GgroLeCyTwtdi4ebwPvR+zBVg==
+	t=1794523513;
+	b=zS2fT3FDQk44MHH8e/+nWh/ldKN/vY/WBXby26r8G4D5eHvY5yT6i4JfkTx/SNnFBpWY
+	 TfOtAepXaYPMsApYnf912PFfh9fbEHf4slBrSWbg6LDoRGVY9eWsiS6rymrFHnfx0cKIQ
+	 zQiDtqbAAZu7IO73MPWzIKXNN944E//VkDodSs+m8zmy36G4mhvxCBx8M4PxtCtrMAcdK
+	 vdbiF6/sam19bLuxGOobLE1cgk4m3molgE1khN5hMyQT8pvcaAvFyukgY4dMd+BX6bKvT
+	 LhTK5GKG5ZBhtt/0jEM7BN4WPMwLHywo3AselGKLbkYF6xqYeqhN79HtQjKyt/JAT6A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794523512;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794523513;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=a/wS6Yxk7+tECj0s54STfUWVzey+C0tieK8m7kinAtY=;
-	b=5L/1igNRpDsn72MLrvJ0GN7Gct8wDwLWKM1KSYewcJAyn8+cNBaVRIZmLFbrT7FRATDm
-	 jOUi17kox9tliGOGg8K6OLF4vuWTD0imLMkhvOEdWozGjSgEr7T6FeQkETkSw0DVfTkh0
-	 k7LbDNETghOL0jm2hSyhikdtHazob9yWhqdiWduRYYNrMEvnIaIUzRFQaePrQhCDglRap
-	 YW6k5pSA/AVG+nsK2d5EPdNQYrzC11gIoXQuG4zsH1uqu9J3esXpfJ7qyVt1RNaKw97lv
-	 WdYwOhoGR5clA06QWdzLT16Ct5esSwRNrTMiIHz5ZKlkQmz+X6zdJR52guYftd3Eryw==
+	bh=heEUhtnTzevsAN/dn7ydMYMsHtnM+YjTEWE5POe1JUc=;
+	b=NXvvfDcIPWu45PQPqHvjdnCQOITm5QgGYSiuQSUUFJ7WQZI+/KoJjGRGCR2KemOkTmro
+	 5HmJtK2PZxfYNEyAD3st3p1xS9cUwvPeBmladXhtLmTq2cwiO0FlPc/dUu/9P/c5sq2/O
+	 ObTllLFPphf2HjyM+34az6bJIMGU6a6aGmzidCjsxsLdbbbYcLJxk6n30UINemygiJ66O
+	 lFeIbRWmeCGiR1IYd3DUnbgsbjIv7g+9Lm/owv8y1KEIn606HqdtgVpBFssNCXgRC4c+p
+	 fRuy2KhLh8YUvCpYg6OCPlMMhRi2lck/Z/wNEMCD9ycr2rztWcvCyWY60BUdFzyrrZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=quIDXCH7;
-	arc=none smtp.remote-ip=209.85.215.180
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pnbYQjAP;
+	arc=none smtp.remote-ip=209.85.216.47
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0972606A881
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:45:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D0972606A881
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716AC606A8BA
+	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:45:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 716AC606A8BA
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=quIDXCH7
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-cdd89d84521so574879a12.1
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:45:11 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pnbYQjAP
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3ad41b47541so353997a91.1
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794523511; x=1795128311; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1794523512; x=1795128312; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=a/wS6Yxk7+tECj0s54STfUWVzey+C0tieK8m7kinAtY=;
-        b=quIDXCH71r8kXBO4zdmT6LlbhiXdMtjp+QUt18lWxGcKuvXZl0oapAUh+5CbIZgcEM
-         eza9piKdYYEMXGeQX1lAOkfvajpigt6BwFfJnhk5WQqSleQPoJ79KpXVeFnwCrpfqhm5
-         87SyjImHW5l9njGveuPp0mszSohcMwz4FGBradmm6xHemQg6a3CYs2U0yDk1dpdbvjEg
-         AAZhhd3QfurDN/KeTmh/vEGjoLTFPqwROznszY42kem+2D4touGKyC1KIcB94OzwjGAI
-         FK6giG2TtiPTot7bWkFF71XJvy64c0wwPcyA8SrckymUwNa5ysC0P7+8qVXCKkDny5AQ
-         wHSQ==
+        bh=heEUhtnTzevsAN/dn7ydMYMsHtnM+YjTEWE5POe1JUc=;
+        b=pnbYQjAPM2dhX280XyIRrMgzVTptJyJWJOykXUVKZQM+A70qSlygcE4MY3Ux/SkWEM
+         eNzf2sFt4AB+h6tQV8fRiyU0mcSEfNRT9yNj4yJHO4dplq5ydoZjcZuatOAvY+vWGwoC
+         88O+8vkheP5c+64Au0el5VggzHAIUvs5Gr7lDXYiMmAXHix+s2py8xDAXKKW/uqWLzjA
+         hRM9J6/2jIDWuW8H/aPFw95+pdZnpqms6TOVcObjF5s6yv07jpe3uO85aqc0VcuV3xPC
+         /H6eMc6HI+WXgVd6migwulf4Du81KFoU4WypNnl3pCdxAaoBB6bGA4YquPfg2mt9B9/0
+         WUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794523511; x=1795128311;
+        d=1e100.net; s=20260707; t=1794523512; x=1795128312;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=a/wS6Yxk7+tECj0s54STfUWVzey+C0tieK8m7kinAtY=;
-        b=ghM8e1Q/ZerfXoO1Mpu+HvYqTvdJDWXctd/XfihBkm2SFHPPQp/SAiaEfYFBtYEXJA
-         d/JYlvUcDBvAFlSOsA8flIc2u/i2XNASF97ZzLnRdb59WHgiKiTs1TOuq0i5Tb57s4mE
-         fWJRctd699KA95Vp9UerLVlVbZEsiKw88i5MiTMvswU/+o3lvEiBb2TXUXZYng84H4L5
-         XaKbUOLTlqycVpEYx0Gq5ugSpJqkLek3N3SQ1D/Ptc0TOQ2xxDDf1wYl6N+Hkph7dbrt
-         lQYpSGV6UlTnjVxZzdAWHhP/qUwjzmi2maNn3nGwVhWLFECGyPnn4sKRWKdUCClYpVYM
-         F07A==
-X-Forwarded-Encrypted: i=1; AL+hErHyW4zi1yyOStzjcJsI1L2V4qWDGqntgKyHkMH+jeevYH2ZRy1r6zOsD4csHjNoVHbm8vXv+WBJG/iL@vger.kernel.org
-X-Gm-Message-State: APuU4Z+zYL3QJObXAWA2/zjY5lTodQlfuX5bf7jsBAXxtW8YsivYC1er
-	qpSFWbFUR6Cw9MnRzgRiEYxXVMScRF9bxIhxxqfHGjbCNGFDg4MTLmlv
-X-Gm-Gg: AYBFou17uCZVoibTYk26AH5MJaXtDb2Gr0/wJKQvjFu1XJr6LnYa8whzGq8EL6NuL8u
-	fAg9B0tEumWyxWpQumiuilNpLVqugJPqJnHljD+hZRul/yH5uI5h9rIWN2oQ0uAG0xcXWkNXzHI
-	PccU3OFfs+iUamf4hrMH+oXQBJdXXm6002EB2LgtN8dTpI05gSHYEbdcz3bplw6w6OUuMZ/EoXv
-	ziifA/dYS577tODo3h8+M1upfhqBSHMnplANS1aAynuogGe8iOuEstk2Xhmr1lEMZTvKCsAk49F
-	12mV5byXHjziG72L0HYwscPqfNKe1HRfdZHFs5H5UlQKOKymnQxMe7ImoHDjZKegGv0XTsTGYf6
-	BlUtQ3Ba9chSAuoy/NEhU9a6sXEdm6kbcAMsxDXFdcqHugeryyvg6pBSzorTU+BNdB3TOYsm4V/
-	Sf63CWbwhsxH+aAZuLD/+la3OfNp8vAhUQlO5m7jjXFDZ1nx2WARLkddZ049o2iqyWRJ+fw6Eep
-	OM3ZVPORZ9d/j+VUNhbrFmPY0GL2aQy6PACvFJS3g+9hAdz4Hq3oANIyCzpkNOTUJ6VvAIufVoI
-	BTtkcT/S9HKZnPE5geWWCxDt/B0au1ZHp0W7xcGAFRauIDPHNWX9BzmBG/P80CW9axAAcztFF0N
-	rqUFfztKT1/d9/MMVU+dnWC4Yb9oji9Gzmtxcmbnyxv000x+r26UvNj7Zv5yWQ9qP2ocDTJIuWW
-	F+q8h38NBnqU29p9PJts12E/c=
-X-Received: by 2002:a17:90b:4a84:b0:3ac:b6eb:e0de with SMTP id 98e67ed59e1d1-3b1b087c2f3mr285721a91.4.1794523510994;
-        Thu, 12 Nov 2026 14:45:10 -0800 (PST)
+        bh=heEUhtnTzevsAN/dn7ydMYMsHtnM+YjTEWE5POe1JUc=;
+        b=YfwT2uD+lEx947DGOROAiUmq8Ds4/rjWZ/YlX1c8y1/0+K2jFuugsJYkmFch0BdmW7
+         6Gyyve9oOx1DdKflUDq1ccSNQvLd4EnhhhL938RMusdFrBkYSJtRExckPm3DZ0RkxgSD
+         aEvnIg7nkav2x+QUuDUeW4F9Xy2f2PskoxvbDoCp5rM/A+Skm+lVAFk/OCGAjr7WTNLe
+         S1sAlzTHjFa1NCQPnSO/P/DBlu6mRQNjWdrVnckHfdFuX71geO4aTcyXy9PK7NCmYXna
+         jEdt/ZMMnQeTYH/uoD8z5lH+/n3CSbG1884EhuoHOfBUFxJVIEByRSXitKrB2wEZqtlC
+         xj9w==
+X-Forwarded-Encrypted: i=1; AL+hErF5mFWNDjt2/eBJSOILgpp7POA5YZCUHZY4E6PYE+iMNMnEvmEhE4/JE94xAF+UVi87YBUbb7w67W8Z@vger.kernel.org
+X-Gm-Message-State: APuU4Z+5HPYLExFeGXSSmADZCOvgEl6SGswYb09Y0XvlrHt+HAZPP3VO
+	Svg/5WgGIuYz4Hc9MylIyUNBs2RAd9r2CqPuKOQCS+kzx9X/J03qXDDO
+X-Gm-Gg: AYBFou3ARzRa7qimpNbeY+RvKcOxXZL3pKZGISXgrG+IQvVtAVkCh2xRCTn4x2x8E6A
+	ns4zEKbJIgJ1zp1mCvA/vz/dTer26HkTU7iBxyEynAtaxsgfCLc0jht6qcz+NmRPnJOiHWDGZ7g
+	HanXSCMGUDdMFHGSL7FBgFxyDSN+B4yEG+MhXowqj0vifs4DJ0bjW5tUAovdz0V0BZYMiNbOvUe
+	SkWUr9RfNIGvgdamNZWJ5sM9nYttFEXNGGZHSOuJJxJJwp/XFBtfnEIWBVgn6lSmBvgGANAX9Ap
+	PRIm+z9S0JWX+0+QHRK2VFzsCbQz0P5nA8znZXtuU6eAnuUKziC54r7mXPygHSS8l5eOTpnpDj6
+	jrJxDIKduoFHcSgkNhqr25vyAiCO/bgO5q69v2m67D/das1ZAOH99186NCzrklpVXPmrUHmq4Rw
+	0AOO9n0ueDLOYBZD/HqJQtoXE2tRQTT6hkaoEwT+0KPCVywYCl1FZgKa+pcDObDUox0Dz5P894O
+	A+FFe7w469b43Ffy/3tEo0VwgoFFe86Y56OGlg7thDVgRYIWGae9cDl9UinkdTvB6w+xy+PyN4h
+	fTiTSWFfKyl+AnKtNtjLBLA7zJA1D79+nqXqCRZgADq578eWU8aew3sIB3eyQi+6qS2zL5S2Han
+	lAVeb9WjBh+MYCXBySCvBC1BSFkd0rEmBzUO0IqxDM3nKM0/X3sgnOp4sA+peF0h7UPdcmBWMJ2
+	r9JA==
+X-Received: by 2002:a17:90b:3890:b0:3b1:6f2:a188 with SMTP id 98e67ed59e1d1-3b1b0a4e441mr448540a91.55.1794523512591;
+        Thu, 12 Nov 2026 14:45:12 -0800 (PST)
 Received: from ryzen.lan ([2601:644:8000:37f::e34])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1b3b708adsm37073a91.4.2026.11.12.14.45.09
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1b3b708adsm37073a91.4.2026.11.12.14.45.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 14:45:10 -0800 (PST)
+        Thu, 12 Nov 2026 14:45:12 -0800 (PST)
 From: Rosen Penev <rosenp@gmail.com>
 To: Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -97,9 +97,9 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
 	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org
-Subject: [PATCH 2/4] irqchip/ath79-misc: map the performance counter interrupt on demand
-Date: Thu, 12 Nov 2026 14:44:43 -0800
-Message-ID: <20261112224445.213324-3-rosenp@gmail.com>
+Subject: [PATCH 3/4] irqchip/ath79-misc: convert to a platform driver
+Date: Thu, 12 Nov 2026 14:44:44 -0800
+Message-ID: <20261112224445.213324-4-rosenp@gmail.com>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261112224445.213324-1-rosenp@gmail.com>
 References: <20261112224445.213324-1-rosenp@gmail.com>
@@ -114,60 +114,133 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The MIPS perf code now asks for the counter overflow interrupt when the
-first event is created, instead of from an early_initcall. Create the
-mapping in get_c0_perfcount_int() then, instead of when the controller
-is initialized, so that the controller no longer has to be ready before
-the early initcalls.
+The MISC interrupt controller is cascaded from a CPU interrupt, and its
+users are all platform devices, which defer their probe until it is
+available. The performance counter interrupt, the only one needed
+before the early initcalls, is now mapped on demand.
+
+Probe the controller as a platform driver, and use device-managed
+resources, which also fixes the leak of the register mapping when the
+irq domain cannot be created.
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- drivers/irqchip/irq-ath79-misc.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/irqchip/irq-ath79-misc.c | 78 ++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
-index 258b8e9a2d57..5cedea5234e0 100644
+index 5cedea5234e0..b06ece446746 100644
 --- a/drivers/irqchip/irq-ath79-misc.c
 +++ b/drivers/irqchip/irq-ath79-misc.c
-@@ -23,11 +23,19 @@
- #define ATH79_MISC_IRQ_COUNT			32
- #define ATH79_MISC_PERF_IRQ			5
+@@ -12,8 +12,9 @@
  
--static int ath79_perfcount_irq;
-+static struct irq_domain *ath79_misc_domain;
+ #include <linux/irqchip.h>
+ #include <linux/irqchip/chained_irq.h>
+-#include <linux/of_address.h>
+-#include <linux/of_irq.h>
++#include <linux/irqdomain.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
  
-+/* Called by the MIPS perf code when the first event is created. */
- int get_c0_perfcount_int(void)
- {
--	return ath79_perfcount_irq;
-+	unsigned int irq;
-+
-+	if (!ath79_misc_domain)
-+		return -1;
-+
-+	irq = irq_create_mapping(ath79_misc_domain, ATH79_MISC_PERF_IRQ);
-+
-+	return irq ? irq : -1;
- }
- EXPORT_SYMBOL_GPL(get_c0_perfcount_int);
+ #include <asm/time.h>
  
-@@ -121,8 +129,6 @@ static void __init ath79_misc_intc_domain_init(
- {
- 	void __iomem *base = domain->host_data;
+@@ -124,65 +125,54 @@ static const struct irq_domain_ops misc_irq_domain_ops = {
+ 	.map = misc_map,
+ };
  
--	ath79_perfcount_irq = irq_create_mapping(domain, ATH79_MISC_PERF_IRQ);
+-static void __init ath79_misc_intc_domain_init(
+-	struct irq_domain *domain, int irq)
+-{
+-	void __iomem *base = domain->host_data;
 -
- 	/* Disable and clear all interrupts */
- 	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_ENABLE);
- 	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_STATUS);
-@@ -157,6 +163,7 @@ static int __init ath79_misc_intc_of_init(
- 	}
+-	/* Disable and clear all interrupts */
+-	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_ENABLE);
+-	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_STATUS);
+-
+-	irq_set_chained_handler_and_data(irq, ath79_misc_irq_handler, domain);
+-}
+-
+-static int __init ath79_misc_intc_of_init(
+-	struct device_node *node, struct device_node *parent)
++static int ath79_misc_intc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct irq_domain *domain;
+ 	void __iomem *base;
+ 	int irq;
  
- 	ath79_misc_intc_domain_init(domain, irq);
-+	ath79_misc_domain = domain;
+-	irq = irq_of_parse_and_map(node, 0);
+-	if (!irq) {
+-		pr_err("Failed to get MISC IRQ\n");
+-		return -EINVAL;
+-	}
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
+ 
+-	base = of_iomap(node, 0);
+-	if (!base) {
+-		pr_err("Failed to get MISC IRQ registers\n");
+-		return -ENOMEM;
+-	}
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
+ 
+-	domain = irq_domain_create_linear(of_fwnode_handle(node), ATH79_MISC_IRQ_COUNT,
+-				&misc_irq_domain_ops, base);
+-	if (!domain) {
+-		pr_err("Failed to add MISC irqdomain\n");
+-		return -EINVAL;
+-	}
++	domain = devm_irq_domain_create_linear(dev, dev_fwnode(dev),
++					       ATH79_MISC_IRQ_COUNT,
++					       &misc_irq_domain_ops, base);
++	if (!domain)
++		return dev_err_probe(dev, -ENOMEM, "failed to add the irq domain\n");
++
++	/* Disable and clear all interrupts */
++	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_ENABLE);
++	__raw_writel(0, base + AR71XX_RESET_REG_MISC_INT_STATUS);
+ 
+-	ath79_misc_intc_domain_init(domain, irq);
++	irq_set_chained_handler_and_data(irq, ath79_misc_irq_handler, domain);
+ 	ath79_misc_domain = domain;
++
  	return 0;
  }
  
+-static int __init ar7100_misc_intc_of_init(
+-	struct device_node *node, struct device_node *parent)
++static int ar7100_misc_intc_probe(struct platform_device *pdev,
++				  struct device_node *parent)
+ {
+ 	ath79_misc_irq_chip.irq_mask_ack = ar71xx_misc_irq_mask;
+-	return ath79_misc_intc_of_init(node, parent);
++	return ath79_misc_intc_probe(pdev);
+ }
+ 
+-IRQCHIP_DECLARE(ar7100_misc_intc, "qca,ar7100-misc-intc",
+-		ar7100_misc_intc_of_init);
+-
+-static int __init ar7240_misc_intc_of_init(
+-	struct device_node *node, struct device_node *parent)
++static int ar7240_misc_intc_probe(struct platform_device *pdev,
++				  struct device_node *parent)
+ {
+ 	ath79_misc_irq_chip.irq_ack = ar724x_misc_irq_ack;
+-	return ath79_misc_intc_of_init(node, parent);
++	return ath79_misc_intc_probe(pdev);
+ }
+ 
+-IRQCHIP_DECLARE(ar7240_misc_intc, "qca,ar7240-misc-intc",
+-		ar7240_misc_intc_of_init);
++IRQCHIP_PLATFORM_DRIVER_BEGIN(ath79_misc_intc)
++IRQCHIP_MATCH("qca,ar7100-misc-intc", ar7100_misc_intc_probe)
++IRQCHIP_MATCH("qca,ar7240-misc-intc", ar7240_misc_intc_probe)
++IRQCHIP_PLATFORM_DRIVER_END(ath79_misc_intc)
++MODULE_DESCRIPTION("Atheros AR71xx/AR724x/AR913x MISC interrupt controller");
++MODULE_LICENSE("GPL");
 -- 
 2.56.1
 

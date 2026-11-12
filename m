@@ -1,87 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.54
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794459675;
-	b=HrybKBcreh/7sd1JtAwKN73amtI6AzOpBUVez/NOJ1i8B4uC1Sj8gUgCQrK4WtmLMCr2
-	 YulaJK3UCMXZoQ4P7mgH7o11+WO+zSy7DRaIl608TR9c4m6dq8IhOvK/8B29Pj5tE2xHw
-	 UJQchgJnwCoeLhzk1c8r+A6PsPODMVnPbanU9HRPx5xZjMjv5FWZr72CcOLHvgCkFnFRd
-	 G7UqZAy02nbUhQiNGBdtbYV/731XijhCpIAw9BDHGpdUTpC7nFRglTqy0ZweVet12pxZn
-	 wxS0fM7xJQr10aDJC9aJn5gvXi8s/J47JkQlSD91TZV6lPhLMNYItOSa3RD/neCr8Wg==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794459675;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=XOtS0jZSJLnbuCUHqHGLiVmcLs9rLHyD3/gIICXW7CQ=;
-	b=2Ri1vJiNHNYohvpseewXrv9cdVAhtotkdWvqudurNRjMzEWRLhtVjbdbhwqpN+yxxO4B
-	 dLLinaBA7ueoPa12gCDauguqKHEkCKhi+846IJxJrEpeQHJoVvXP9Ro2UcJtBE2LfZx1a
-	 01KsesWNW4EeZUQw14VDBF+MFh+/qdODeqr+51sRryLSPAin03LSBktbjSpLjC9q6OzA4
-	 0BYk5BTh/3uZ9U4zI5EyYwYn+5+ydHEQUpEMw7yRuwq5/2Y5+gLMAbiT+5qmfSQN8mRaA
-	 d5cYMIJV8EVspJNpFkqKMYeHcE5lw8ynl4jNV3HC8BgLZGHowb4pNewg9I5gXc7P9ZA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=mSPzFsAP;
-	arc=none smtp.remote-ip=209.85.210.54
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794471046;
+	b=uqhlzd1JeLb5idMUzYA2OpF3KZZDGyuC1Vlwpcw6Jk9DaLgIJCjmGuLnZ5ZYESYBbYZ+
+	 WIEySYwArl2Fz5qD/8fzWz6pfCpFX6q8TjmE5W6NocTW3u9zzV4xg6fiwPdd+irHf6Z3G
+	 YB3qgBW7u2iRECmntwjw+zDtp47rX0URwD45s9OoWaN0r27zuqVnRmlPDZBAMZeTzuxL4
+	 QvuHfTQThpPcaeNMH73SbRfST6287QLcJPBraxeJkUYBnYxMTs2sr9DskicBLo1lbUpl5
+	 l7uwocvv9Gv7/LxR7QhFJHCPmc+I8aWoqAyJO8c4oGD/oiaZ6g5+Gyppsh5NLYlVNLw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794471046;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
+	b=YYzRIpWpFJ479TVMj+LKMDdHZCs2huMfAAuusEF86FIeHHPfewNq70Q6UUn0KQXr1bpl
+	 jO+oOKthUkHOIu2rz+pGbRXM6vASDaPRplnS/EF2r0YiMj72TqPfnCXY7+OSalNuF802h
+	 V5qKE24E7ry2Jyrf6GaE2l4AY2dVU7yVNp+ZyMSMkEN+LeAElXCgHza9HOvfqQ+VIQbhS
+	 9uZhEz4L1cW+erCqe2n2mKBQo28PSXtanUpmDb590XqqcLx85Uk2jy+QZ17sVoFAtlHYh
+	 x/aRO83pjynV7zCBWFjmGhWvHxxxOkKeSrx95LWOMpIEq9JWIt/lpwGggsoGgmcPPQQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=goldelico.com;
+	spf=pass smtp.mailfrom=goldelico.com;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=NFPsL3pW;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dITluR6B;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F98606A32D
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 05:01:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A1F98606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9113E606A32E;
+	Thu, 12 Nov 2026 08:10:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9113E606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=mSPzFsAP
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-843cf077f10so4850698a34.1
-        for <linux-mips@vger.kernel.org>; Wed, 11 Nov 2026 21:01:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794459673; x=1795064473; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=XOtS0jZSJLnbuCUHqHGLiVmcLs9rLHyD3/gIICXW7CQ=;
-        b=mSPzFsAPaT9tym6cizOY3groV50kh2tvVRiY5Aos5AwFH91/B/LfpKc9wRotRxoK3A
-         lux/SjtbyrknH8jgKwOYE8eoEevdS3OUBb469kaGVzAcWLChw2NUe8gJnMngt1X/szW/
-         pTq2FiiIH3RRLnW5sT0lrdAC3gx3hXyKMZKgjkYqmCmUrjd8FzwJL1Mq4htzuzDWeBet
-         Nz28SXlGj6QjdnLSlQx3b6fUCr61dREGOS+9PlxfXN8LkbDXJ8y0pbjhv8/K9qQLOaC1
-         xtvPT0tbhqOloKMb9LNjNKV/N4FOO09b5IxggtakChrL/Lf8Rgd9zA+Qatc5G2hxAGgm
-         zubg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794459673; x=1795064473;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=XOtS0jZSJLnbuCUHqHGLiVmcLs9rLHyD3/gIICXW7CQ=;
-        b=UvhflqLnx36lBGsgoLRZU+g9LBCdu+Ha+ZCjFJGESDiO8b7/L/MjG9fw0wbjURsGYS
-         X+x/tv7fjqbtyXPoTg4r1DM9yKA3hnmLZFQxgcAVvtGYUHO+e5kSIcw6iMMRNZJ0l5Y1
-         tR8n2cZgCHejSdJ9bO/cVMqgAl6kNpr1WvpEnrbDowx55jmi++LnzD5xNZpWN5FkjfNb
-         p62QxKykogK03KNtiHyuniVfC9xcFd1L70ca8lh9LbRkMVFAJVZCzK3Krz15YnGH76Hx
-         bx5as8ME+bx4G3g/1sGIhjIXSltVy08ezleqZzxSsCTNM364xMGimef7A5fl8e/baora
-         KhTw==
-X-Gm-Message-State: APuU4Z9QQGDSQFWvOUlec+04S9Eo8cn+y8QkRlrIRhaZLN2oQw5k+tuk
-	6XAWQicyTYXRCVXfNRBLgdgfFb7OiHNebNeZwwCCy5kA6apVbd72RYIrRASvoA==
-X-Gm-Gg: AYBFou3XmNTYSG43yNpwTZoLrgJ6aYV5wEoTHJoWRLCP0hb6EWt2ax5WH42AKEV5r0u
-	cCMEUfGEbZBFg9YhOtttsRsWqQcv152p4K4iZYFaGUtbobGUR+sHhF2zpay9u1vNiQh3jkPpmh9
-	3YetvxdqM1yjG64zMUs3PYsugDMfUO+9t49t1yvrAHvdzEcS/ktDAmw0cIXO3eyLsXxOWS7DonC
-	dSacli4wT41RmbtvKdMCI2JwgIHMHKi8lkRRDxBWPW9Qb48gWozdFxoz6cYTiE9kFN783W90yBx
-	oZoreosEpyOeG1Bfbn/u2woPToQCCFQTcN2vSNTFJudHlR9qQ63KXCTWstOpQAnFhTOKckxiC+g
-	zCR0zvWpwVM6zOJ3hGifsu+uPTfSz95Z2+JUzF3z2LZf3mT9KPB3Ini6IIHGwwWAU23BACCt9n2
-	B4ka244WxhtjRbOGEt6mAiQXqcErbZMlAuo+1lgYw96g0F0qSsQ4epRIAARvOxjQqAVadqyj6dO
-	dJ8bLERvMFgIvfqY80ukzLa6zK/1ZAwwmVL12mESr0qoh8vGk7Kt4vJT2m9Pi0SeMGTQa5aMmgl
-	mmjEgAdzbGZK2RFQK37rBjiG4tFfxbAVBffKGsw9AyiBylzJSlnwCNGW5CpdETt/BdJrdDxZhSV
-	S
-X-Received: by 2002:a05:6808:1a02:b0:564:22ae:a68c with SMTP id 5614622812f47-56b968c7f46mr4463769b6e.13.1794459673581;
-        Wed, 11 Nov 2026 21:01:13 -0800 (PST)
-Received: from [192.168.10.3] (ip70-187-214-22.oc.oc.cox.net. [70.187.214.22])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-56906036028sm7779876b6e.11.2026.11.11.21.00.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2026 21:00:59 -0800 (PST)
-Message-ID: <e158710e-bf16-4010-8bf1-b8ee0ff2347b@gmail.com>
-Date: Wed, 11 Nov 2026 21:00:47 -0800
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=NFPsL3pW;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dITluR6B
+ARC-Seal: i=1; a=rsa-sha256; t=1794471033; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=hnw9Xxdh1yRShJROWepnAtFPXxM4iMofnsTDv5GEsgWwipX+Po+hm8kYT0hf4R26AQ
+    NXE+1kivFXycWnoVIMBGt6/PC45JpTyRqhNhk14Vjh4wmj2p4pTjoFLgfl6Qle95QCus
+    KlcJnR8pSpLoMYlm0q6iUoXCZ5J7aXCh422M8qKWAcy2XJc9Tl23ZQ6SmTW4XLzuQrov
+    rh0B4mmGTfdG2YKHsuWsUuOHVOy2iFcE48e7WrscHrrl9zbUcwmUM4IjFEQORWHKnxfn
+    BCDVTHeINo5z4VN9pkNkKKa1H3xzCIPZHU4hVHFGGasvDRSEARbmnjbNL3/n7Ix4Q+JM
+    WXug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471033;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
+    b=o2ywCsVqBbpVHDRdsGwbESt1s6/hgYOLbW/8uGQ5RXUKsrX+Cjgv5h8vo8l8DEmuhn
+    vwNLvQG7E68fCW2wmk/a7wfF/I6kHr5AAxUEyI3k4KTWzBvQHVyPMXjjKk1KeuBsGLji
+    zS6dSXJwpQgmHjHUChF012C+aHXhfrANauYe2++8N3IumReDc3Rr4YpTSZ3wVuRPZzlW
+    cI/yB9drpyp38X560r+7P6hh1vxhM23fpwJnUcRrweJcdohVdFb2FBfOtSya+T14QFZs
+    OCO1VwPqbrfFBRby0V5VX5oKjXa9EowB7hDEU3COB1X9d32+M/uMZ/TsrHypnGBIAqdt
+    jL9Q==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794471033;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
+    b=NFPsL3pW7kj6XsBRbST1WJEQietTklM0ewLqG8AHm3vGrll47epLPJYA9vb4J1tLSu
+    xMBa5FAvuZ/kLMcVcivuUKNiLmPIRHlxq0+kP39o//Aaq16zx7innsiSQN/OGBiOfvTc
+    dNDkDqYGo0OzPsmnAneJiV2Xj8BXn7tswv8ynTh+y8viq7DIctkP1UDAMABLnenf2/5Z
+    e8yvK6GTBc2w890hopZ4PcW2/dm7CFfswTwmLrUW9RF2ykd3dhhQ+ECny2TflU2r55IV
+    62ihsCdsqwxkjJwuzk7+n9Y1jvE7Rnq2U96hngHWrgqpUo9U38CEn6PoLP10N5fyJBzx
+    3WMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794471033;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=KKbXoLi/o/F4tUEc0WXbaOVqO1cHoHFZMlMuRD/E/6A=;
+    b=dITluR6BOZhPZoRzV18kd9hz3WsFhsE0mQzhXRrt+/NR+NRXSz16tMT17kXmo6jUFu
+    QfiRj5Jwwtd+mapZjAAw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV35pZz8iNKp1rK7chac7b5mVucO+Qp4KTQNe8"
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Qb56a22AC8AXAbZ
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 12 Nov 2026 09:10:33 +0100 (CET)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Paul Burton <paulburton@kernel.org>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	"Christophe Leroy, David Heidelberg" <david@ixit.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	周琰杰,
+	Paul Boddie <paul@boddie.org.uk>,
+	Olivier Louvignes <olivier@mgcrea.io>
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	letux-kernel@openphoenux.org
+Subject: [PATCH v2 0/9] MIPS: Ingenic: Add XBurst / XBurst II infrastructure and improve overall Ingenic SoC support
+Date: Thu, 12 Nov 2026 09:10:22 +0100
+Message-ID: <cover.1794471031.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -91,51 +107,88 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] MIPS: CI20: Enable SMP with two CPUs
-To: linux-mips@vger.kernel.org
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Burton <paulburton@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
- Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>,
- Jerome Brunet <jbrunet+clk@baylibre.com>,
- =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= <zhouyanjie@wanyeetech.com>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
- hns@goldelico.com, paul@boddie.org.uk
-References: <20261112041422.2997275-1-f.fainelli@gmail.com>
-Content-Language: en-US
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20261112041422.2997275-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+PATCH V2 2026-11-12 09:10:31:
+The series updates the Ingenic platform support to allow clean transitions
+between bootloader-provided Device Trees and built-in fallbacks. It provides
+the foundational Kconfig, PRID, and CPU-probe blocks required for newer 
+Ingenic/Lumissil hardware generations (X1600, X2000, X2600) and adds JZ4730
+for completeness.
+
+Changes to V1
+- allow user selection of BUILTIN_DTB (suggested by Paul Cercueil <paul@crapouillou.net>)
+- added the CPU_XBURTS2 type here to solve an issue reported by kernel test robot
+- removed PRID_IMP_XBURST2_R2 and merged into single commit
+- reviewed all PRID_IMP with data sheets and programming manuals
+- added full x2600 and jz4730 definition for completeness
+- added platform makefile and load address for X1600, X2000, X2600
+
+PATCH V1 2026-10-25 20:20:55:
+The series updates the Ingenic platform support to allow clean transitions
+between bootloader-provided Device Trees and built-in fallbacks. It provides
+the foundational Kconfig, PRID, and CPU-probe blocks required for newer 
+Ingenic/Lumissil hardware generations (X1600, X2000, X2600).
+
+The first patch corrects an inverted Kconfig condition regarding appended 
+and built-in DTBs. This fix is necessary to allow configurations where 
+the kernel relies entirely on a Device Tree provided dynamically by the 
+bootloader instead of forcing a built-in fallback.
+
+The remaining patches implement CPU-probe initialization, correct PRID 
+mappings (including vendor-kernel values for the Ingenic A1 SoC), 
+platform load addresses, Kconfig updates, and generic board match updates.
+
+Structure of the series:
+1. MIPS: Ingenic: Fix inverted MIPS_NO_APPENDED_DTB logic in Kconfig
+2. MIPS: Ingenic: Add and update PRIDs for XBurst II R0 and R2
+3. MIPS: Ingenic: Expand Kconfig for X1600, X2000, and X2600 SoCs
+4. MIPS: Ingenic: Add cpu-probe setup for XBurst and XBurst II R2
+5. MIPS: generic: Add MACH_INGENIC type and compatible for X1600
+6. MIPS: Ingenic: Add Platform makefile for X1600 and X2000
+
+Testing:
+The series has been compile-tested for generic Ingenic targets. PRID 
+values for jz4780, x1600, X2000, X2600 were verified on real hardware 
+(CI20, LX16, LX20 and LX26 boards respectively).
+
+Please review and consider for inclusion.
 
 
-On 11/11/2026 8:14 PM, Florian Fainelli wrote:
-> This patch series resurrects SMP support for the CI20 board. This was
-> submitted back in 2020 by Zhou Yanjie.
-> 
-> Changes in v3:
-> 
-> • Align the second line of the readl_poll_timeout_atomic() per Brian's
->    feedback
-> • Collected Paul's R-b and T-b tags
-> 
-> Changes in v2:
-> 
-> • Moved SMP sources to arch/mips/ingenic/ and the header to arch/mips/include/asm/
-> • Removed CONFIG_MIPS_INGENIC_SMP, using CONFIG_MACH_JZ4780 and CONFIG_SMP directly
-> • Renamed JZ4780-specific SMP symbols to XBurst names
-> • Changed CPU enumeration to assign consecutive logical IDs and removed the explicit two-core limit
-> • Changed mailbox IRQ allocation failure from panic to logging and returning
-> • Shortened commit descriptions, removed Codex attribution, and adjusted source credits and sign-offs
-> • Kept the clock polling patch and CI20 defconfig changes unchanged,
->    added Paul's R-b for patch #1
-> • Updated the kernel baseline to include additional upstream fixes
+H. Nikolaus Schaller (8):
+  MIPS: Kconfig: Allow user selection of BUILTIN_DTB with description
+  MIPS: Ingenic: Configure CONFIG_BUILTIN_DTB=y for Ingenic based
+    devices
+  MIPS: Ingenic: Do not force BUILTIN_DTB in Kconfig
+  MIPS: Ingenic: Update Ingenic XBurst implementation IDs
+  MIPS: generic: Add MACH_INGENIC type and compatible for X1600 and
+    X2600
+  MIPS: Ingenic: Expand Kconfig for X1600, X2000, and X2600 SoCs
+  MIPS: Ingenic: Expand Kconfig by MACH_JZ4730
+  MIPS: Ingenic: Add Platform makefile and load addresses for X1600,
+    X2000, X2600
 
-Looks like Sashiko found some issues to address, I will do that, re-test 
-and re-spin.
+周琰杰 (Zhou Yanjie) (1):
+  MIPS: Ingenic: Add a new CPU_XBURST2 type
+
+ arch/mips/Kconfig                      | 25 +++++++++++++--
+ arch/mips/configs/ci20_defconfig       |  1 +
+ arch/mips/configs/cu1000-neo_defconfig |  1 +
+ arch/mips/configs/cu1830-neo_defconfig |  1 +
+ arch/mips/configs/gcw0_defconfig       |  1 +
+ arch/mips/configs/qi_lb60_defconfig    |  1 +
+ arch/mips/configs/rs90_defconfig       |  1 +
+ arch/mips/generic/board-ingenic.c      |  8 ++++-
+ arch/mips/include/asm/bootinfo.h       |  2 ++
+ arch/mips/include/asm/cpu-type.h       |  1 +
+ arch/mips/include/asm/cpu.h            | 13 ++++----
+ arch/mips/ingenic/Kconfig              | 43 ++++++++++++++++++++++++++
+ arch/mips/ingenic/Platform             |  3 ++
+ arch/mips/kernel/cpu-probe.c           |  7 +++++
+ 14 files changed, 99 insertions(+), 9 deletions(-)
+ create mode 100644 arch/mips/ingenic/Platform
+
 -- 
-Florian
+2.56.0
 

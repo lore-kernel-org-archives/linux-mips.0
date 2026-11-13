@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794573262;
-	b=vkZrLq3H25VDt9biRxrx/Qk9SGkKTtTZxHRNbYaplDcGL4kN/xesHiaE9JJ1GYLBx14J
-	 PD51P5AQQr+kzYmlvuFqVSn7PW7zk/Jgq24UYR49FpRJuHspxjeSbehHFjt/9DTFc/qAE
-	 GNa3VmfIWiirzaxIswkvFyChOMGZJFKTwJeUcyZcnbvhu9zeZFoNk4MSe2xBOTLbkKKGL
-	 UOMZgAJi5UdrunbhU/eRuOJ/9N57F0howpaGOM9QynLoqh9NbScLD311v0mYL8OoTes22
-	 JBNZIp7eew+H/3f9jlDsqwGrLuJMsE5j71nKR7z+RtUPXM0GUlcMC7hD7uhtB2gyiOg==
+	t=1794573801;
+	b=PR6g6zf+UhdKXWE28kNtQhk66689HENQEd9o3sEa1A1I4c5hWE1I9RCnwgpsAnCk4LhC
+	 4SC/j8Lh077Er2IIdxcpuynlKYpnk40VpOoj0bHPaVdgn7+thv6KdcmImz2Z5shqqNdBq
+	 grGmLQQwH6SPTG2KXsyt1BQUdyG17kC98nLp/Qn68zRV6K0kGNPSe28ZOG4xpShe9MpRF
+	 tIWIhZx2OJqkrVGlumlGC6F9o5IHWqA7lXuZJpxRuapIijop474EKnZ7gKE3I+YwYROrc
+	 EOh5BdMXB7wsLcndrfg2jHyiNVJDCHzRwUzSgsXOeUfpu94zoPagn/Dgd5moN07nBzw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794573262;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794573801;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
 	 Content-Transfer-Encoding:Message-Id:References:To:X-Mailer;
-	bh=o1oE6vxk9h9z2LQK48DVMJ62sicjZCTdBUSKLRc7HkE=;
-	b=iaM8GHQ3GqzYM0HFy+o9wORT/mEaz5IAI9FiRux8gEo+8FngSvvR3OdANYeIHwcQlJKV
-	 Dj85Kwo9SgpTV6q42dmOq1zzsHPwc9sx2xuZGW1xgWCoWJKq8wO2Dz6qaAlJmMwLZFTgS
-	 gDx91BgOfosWqULBZ671XiDhBRoY5jYcdpdx1Iv38m8KmfbfFy2WNISue7hFZmhIN2/7b
-	 +mREa3OYM2264ZjPIAoM3bafNbq0nF3lq/qRcvgZnwhZdUT4srXFlNtSdJ3a/ktSW3Dc1
-	 jEnF8SU9b5HmL0fT9ecG+nbXrd7yvh2ZEn+EyH+qMv0qsVkNNPzNArBL6s94lmggWmw==
+	bh=l/ecaUE2TqaQ94uOcIsuUrNAhgSRo0la3KrlU9BCwFU=;
+	b=Wr3SDVqjguHMz7XW/I3rsYJ0zU6qOlgOYTBaRBj6SGP3OaaFoOdwPLi/aLuSjCJrDCvl
+	 R4t4Dvcort6w9SggCA9FoPhQyM6mGTkD3874bhzpVB8fhUChlzdHC5TvNINA83XtMUqrY
+	 fOkcAbjjS4wwxi+VFXoVICzEIXUtcLbblD54/81zcD5eMbeIRmejUW+SnvjL25JG4MdL+
+	 MSn+gDSi2H24O3RciBycMEvdU1eDR92OuoamjLmke/qvpJt+u3tmT/ab5aCeoR3JGPbdZ
+	 CMsvg/8XsOCp0BPSSxJKfDptlcoJIa/ZZPS/G+pUNxIY53FsTBJHP233ufOFAlVg+Hg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=goldelico.com;
 	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=QEKZAJhY;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=VaUuWToB;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=CBTtvJur;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=EVBY+1oI;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF364606A899;
-	Fri, 13 Nov 2026 12:34:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF364606A899
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A82606A331;
+	Fri, 13 Nov 2026 12:43:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 55A82606A331
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=QEKZAJhY;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=VaUuWToB
-ARC-Seal: i=1; a=rsa-sha256; t=1794573236; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=CBTtvJur;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=EVBY+1oI
+ARC-Seal: i=1; a=rsa-sha256; t=1794573796; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=DuIPRE9O/YnflkbSywKk+eUf71Vq1P05CkDg80482YRtC3ZKhAOY5X3PFYDDWBZgsK
-    YEIDLxq01NsEnPFQq5m1JLCxmUPnnKONNi81DGnTpQ7iNKGSVExekEdSFEsdqvNsS2DB
-    nSv2Y0lSpNEoqlRz3vJs2t+1K4Z9ja2CnUbiJJh4GEnivLpdiVytlOzyUGxiO8uA9vOR
-    gUB3LP6jhVW0wEOw5yFFcDXqjN1e0mtn3UoPgIm26FNCPMlBJh34gio7KOc7AVa6HnJv
-    0e8/JZkiqIhg0IHCGUbh+Yh87YxvLAxqlEhZ1MkgmaPaXPMfZYKaTY4gY1eibUS2TezM
-    YXlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794573236;
+    b=YHYsh1RMf6eK7o5DjJFMF2gVL6FpM0+ay6I/424Yuki2FxYGwjRhYCCuJOXWpgekZg
+    lUCilE2OrE4OH6r2OmD/zBurlGC3IMvKj259bPlm+UQsGt99ekaBoa4lEC8KrMD/2WnY
+    KNE85rt+7NecCekFpJcs2n/kF5oOgkoOcagSWX2glLU24FMvjB4v0tfVEXKzb89yQtLi
+    kmQWkqTEO1rqAoYJlo2/7+SUBEOMhTp0vonMXUGqULc3BlcspSObYn/0VIDY6X+N0aZa
+    zW7wqodr/44cfuxqZlzXSUqYQhBrSMoDE0pGHA5YZG21Qs2tdQcMOLysrmhbBmJtCsFB
+    yqzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794573796;
     s=strato-dkim-0002; d=strato.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=o1oE6vxk9h9z2LQK48DVMJ62sicjZCTdBUSKLRc7HkE=;
-    b=SFvetpeqkM00zK/SBNUHMIdcRIONenbc/6fmX1wU85tTzPyndRWgi2605ak5qdG4cb
-    BBfgLiURdYUSi34Uxdmnn42uMLRAKiWFZkxjOveTg+d5WRXc7cXzxvvDoXPQNGSGCVBi
-    /ZqIm2xugjvpgsKIb0TEcIx8WKF4OAJiXQa0MTioi7eR8mxBMJ6nEmLiAY7VHzTx74ZV
-    ZwGAMuPfKKC1zNIfhBoPTOHNtsdlr0Sp9/EHSdPo/e/OjN4lTfJKACQtUAjuL12plqkV
-    ploOO1ACR0RRHRGw4R5cmMhv3ydURzsJf5KyHW954qL275rf+fOlPjHrYAwTKG6vYnds
-    DUkw==
+    bh=l/ecaUE2TqaQ94uOcIsuUrNAhgSRo0la3KrlU9BCwFU=;
+    b=sGuZcsBAr/EmU4HTUwk1F18s+5/WlGLJlrjboNmodAIV65tvPc7Nno6aiQy5vvuqKX
+    A6zjihX+3ljOVb7nQPQPbYIrgz+ob0jwR8RjRJk0OZhJMzSOv/Emu/tJ9uM5jMh0uTX5
+    NIFCk5vnzkF0mNn62JtGXh2AwkMpuzA6oDzqnhGAPS4saozS21o+iHrM40b69s47fV20
+    fpM+Js5TxO/+BwTsacL2cbpkR5C1fcTOPUweCOuqYbwH5ysM17zTOcP6FFyhn1cfc5vu
+    SRJUxsJ3lmYVOGh5Sog0tJq4WWaVSZmyGo1pTGlgVAMfeKt38JeZXkbnvnby8LtmonfH
+    amqA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794573236;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794573796;
     s=strato-dkim-0002; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=o1oE6vxk9h9z2LQK48DVMJ62sicjZCTdBUSKLRc7HkE=;
-    b=QEKZAJhYuF4dH7/mmMPb2abUMLHiHNH0qRyMSGJbWLdu0NO2COHlY4eVzO1sPLhLc3
-    O9pZmxqh6s9Zg+9GChT5B8aKAzZr/aS1khtfiTIkE0Cs2Q79JJVLcGRe1UsU0S/5tP9T
-    49kHQKYMY0WJQWjSaWM8iFUbPlRpJ5+6XMpDYhk+BXDpJX9Xc3NsgrfZRtxxFPVkE2/Z
-    5J9cbJW/ZwKfIPVo3svfq6VGUeoNfaWgclXpio4oFNpNTz3yyf/omDMZeOjedtt2Vc7w
-    8J5Ft+blrvUCPsZ0oH549z7y0V4rYI1hlHXKYWXhLR5Lj3FnrV9zSXyKrDqEVshVl+fI
-    iB9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794573236;
+    bh=l/ecaUE2TqaQ94uOcIsuUrNAhgSRo0la3KrlU9BCwFU=;
+    b=CBTtvJurGO2blvdSMZcgZpy2YUspecwzfEWy25C99ZEhW8JHiYWQ/uIGko515YtZ8r
+    Tx8k425VzN7f2q6EB6IymRa/wBOILpdkf9u5sfUUYDPFg1sXM6EuL6sFEdZmNc4V6lph
+    vGt8IUur9vOG3bmCXtuVtoo2gW3SpGTkwQg8T1QRrbRQEkxL60D7TxlRS+SxOPRJr1hq
+    ysPOZXTDwlZIjR9t6NZqPhYkJcjmTZhZUhrC0tZQBe+jQLOmkVoDTDnj1pDnaKiL+NJt
+    k6swNjKQ3vRtIBqkZwGz0dM6tJGUoKX1v45WaZmuPJV1qVxKl76DvW19d8L/1kOgJG1g
+    Fh6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794573796;
     s=strato-dkim-0003; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=o1oE6vxk9h9z2LQK48DVMJ62sicjZCTdBUSKLRc7HkE=;
-    b=VaUuWToBrHJ6WDwKfJvDqWVkXoeLXCfkRBC/l6noRageCAkvoEFwty1Kp8OmxGWtv0
-    cF0RzxRUrm5NcsthBvBg==
+    bh=l/ecaUE2TqaQ94uOcIsuUrNAhgSRo0la3KrlU9BCwFU=;
+    b=EVBY+1oITZ6/wcIIe67zBEmHmGbsZgkbDby69Bdtb7xWXqKXYvdT8BlZ3rgmiSyTnB
+    C9BbQirYwUNxzgEcpGBw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrS2ZoHmMiNHYIZPrro6QPZGBqKLoYar6phQmxG"
 Received: from smtpclient.apple
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22ADCXsGcj
+    with ESMTPSA id Qb56a22ADChFGf9
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
 	(Client did not present a certificate);
-    Fri, 13 Nov 2026 13:33:54 +0100 (CET)
+    Fri, 13 Nov 2026 13:43:15 +0100 (CET)
 Content-Type: text/plain;
 	charset=utf-8
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -94,287 +94,394 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.10\))
-Subject: Re: [PATCH v2 5/9] MIPS: Ingenic: Update Ingenic XBurst
- implementation IDs
+Subject: Re: [PATCH 2/3] pinctrl: ingenic: Add X2600 register and GPIO IRQ
+ support
 From: "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <8da96916856e73c3ed368eeb8d28891750206a71.camel@crapouillou.net>
-Date: Fri, 13 Nov 2026 13:33:23 +0100
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Burton <paulburton@kernel.org>,
- "Maciej W. Rozycki" <macro@orcam.me.uk>,
- Pengpeng Hou <pengpeng@iscas.ac.cn>,
- "Christophe Leroy, David Heidelberg" <david@ixit.cz>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Takashi Iwai <tiwai@suse.de>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Paul Boddie <paul@boddie.org.uk>,
- Olivier Louvignes <olivier@mgcrea.io>,
- linux-mips@vger.kernel.org,
+In-Reply-To: <209B96BB-1458-442B-95B8-F0F6BA204E9B@goldelico.com>
+Date: Fri, 13 Nov 2026 13:42:45 +0100
+Cc: Linus Walleij <linusw@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Bartosz Golaszewski <brgl@kernel.org>,
+ linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org,
  letux-kernel@openphoenux.org
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <7FF80C33-895A-40AD-8149-70A7F5B42E54@goldelico.com>
-References: <cover.1794471031.git.hns@goldelico.com>
- <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com>
- <f91a0c53b35ff28bed26622f46d562b5a6150008.camel@crapouillou.net>
- <3892D527-E3F1-49CA-8557-2C62E2C015C4@goldelico.com>
- <8da96916856e73c3ed368eeb8d28891750206a71.camel@crapouillou.net>
+Message-Id: <A6F5AEAC-9D8C-4572-AD7D-500B83F37DE1@goldelico.com>
+References: <cover.1794557697.git.hns@goldelico.com>
+ <1c495c7ac851aff2a798c82acf33bbb33da37953.1794557697.git.hns@goldelico.com>
+ <3784202f7f6baa63b548af4c491805852e5835df.camel@crapouillou.net>
+ <11E0E075-D267-4E50-906C-022D297A4988@goldelico.com>
+ <d8e981be7badb4cb2476e58399010e533df40916.camel@crapouillou.net>
+ <209B96BB-1458-442B-95B8-F0F6BA204E9B@goldelico.com>
 To: Paul Cercueil <paul@crapouillou.net>
 X-Mailer: Apple Mail (2.3826.700.81.1.10)
 
-Hi Paul,
 
-> Am 12.11.2026 um 16:49 schrieb Paul Cercueil <paul@crapouillou.net>:
+
+> Am 13.11.2026 um 11:02 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
 >=20
-> Le jeudi 12 novembre 2026 =C3=A0 16:37 +0100, H. Nikolaus Schaller a =
-=C3=A9crit :
->> Hi Paul,
+>=20
+>=20
+>> Am 13.11.2026 um 10:54 schrieb Paul Cercueil <paul@crapouillou.net>:
 >>=20
->>> Am 12.11.2026 um 15:03 schrieb Paul Cercueil <paul@crapouillou.net>:
+>> Le vendredi 13 novembre 2026 =C3=A0 10:49 +0100, H. Nikolaus Schaller =
+a =C3=A9crit :
+>>> Hi Paul,
 >>>=20
->>> Hi Nikolaus,
+>>>> Am 13.11.2026 um 10:37 schrieb Paul Cercueil =
+<paul@crapouillou.net>:
+>>>>=20
+>>>> Hi Nikolaus,
+>>>>=20
+>>>> Le vendredi 13 novembre 2026 =C3=A0 09:14 +0100, H. Nikolaus =
+Schaller a =C3=A9crit :
+>>>>> Add the X2600 SoC ID and adapt the GPIO register access functions
+>>>>> to its register layout.
+>>>>>=20
+>>>>> Unlike earlier Ingenic SoCs, the X2600 uses a register bank
+>>>>> spacing of 0x1000 and provides separate shadow registers and
+>>>>> load registers for each GPIO port. It also uses a dedicated
+>>>>> register for clearing GPIO interrupt flags.
+>>>>>=20
+>>>>> Update the GPIO interrupt configuration to account for hardware
+>>>>> dual-edge detection on X1600, X2000 and X2600. These SoCs require
+>>>>> PAT1 to be set when dual-edge detection is enabled, while X1000
+>>>>> and X1830 continue to use software emulation.
+>>>>=20
+>>>> So at the same time you're fixing X1600/X2000 and adding support =
+for X2600.
+>>>> Looks to me like it should be splitted into two patches.
 >>>=20
->>> Le jeudi 12 novembre 2026 =C3=A0 09:10 +0100, H. Nikolaus Schaller a =
-=C3=A9crit :
->>>> Add PRID implementation constants for Ingenic XBurst and XBurst II
->>>> processors and handle the corresponding implementation IDs in
->>>> cpu_probe_ingenic().
->>>>=20
->>>> The PRID table is updated based on Programming Manuals and hardware =
-tests:
->>>> - jz4780: 0x3ee1024f (confirmed on CI20 board)
->>>> - x1000:  0x2ed1024f (unconfirmed)
->>>> - x1600:  0x00d00000 (confirmed on LX16 board)
->>>> - X1830:  0x00d00100 (unconfirmed)
->>>> - X2000:  0x00132000 (read out from LX20 board)
->>>> - X2600:  0x001320xx (confirmed 0x00132000 on LX26 board)
->>>>=20
->>>> Additionally, clean up extra spaces in the comments for
->>>> PRID_IMP_XBURST_REV2 and PRID_IMP_XBURST2.
->>>>=20
->>>> Distinguish XBurst1 implementations with different SIMD ISA =
-revisions
->>>> and identify XBurst II processors using PRID_IMP_XBURST2.
->>>> The XBurst II classification follows the Ingenic vendor kernel.
->>>>=20
->>>> Keep the existing writecombine handling unchanged, since no
->>>> independent evidence justifies changing the cache attribute for
->>>> XBurst II.
->>>>=20
->>>> Public references:
->>>> - Ingenic Community, public SoC datasheets and programming manuals:
->>>>   https://github.com/Ingenic-community/datasheets/tree/main/X
->>>>   Includes the X1600 programming manual (X1600_PM_20220117.pdf)
->>>>   and documentation for other X-series SoCs, including X1000,
->>>>   X1830 and X2000.
->>>> - Ingenic, XBurst1 CPU Core Programming Manual:
->>>>   =
-https://cdn.hackaday.io/files/1855627939084608/XBurst1_Core_PM.pdf
->>>>   Documents the XBurst1 core architecture and CP0 configuration.
->>>> - Ingenic, XBurst Instruction Set Architecture Programming Manual:
->>>>   =
-https://www.setphaserstostun.org/ci20/X1000_M200_XBurst_ISA_MXU_PM.pdf
->>>>   Documents the original XBurst SIMD instruction set.
->>>> - Ingenic, XBurst2 CPU Core Programming Manual:
->>>>   =
-https://www.manualslib.com/manual/2646351/Ingenic-Xburst-2-Cpu-Core.html
->>>>   Documents the XBurst2 core architecture.
->>>> - Ingenic, MIPS-LINUX toolchain R6.0.0 release notes:
->>>>   https://www.ingenic.com.cn/news-detail/nid-343.html
->>>>   Distinguishes MSA, MXA and MXU/MXU2 support in the toolchain.
->>>> - Ingenic, MIPS-LINUX toolchain R6.2.1 release notes:
->>>>   https://www.ingenic.com.cn/news-detail/nid-348.html
->>>>   Documents MXU3 support and identifies X2000 as an MSA target.
->>>>=20
->>>> The public references document the available CPU, SoC and ISA
->>>> information. The PRID implementation handling follows the Ingenic
->>>> vendor kernel.
->>>>=20
->>>> AI assistance: ChatGPT was used to help review the PRID =
-definitions,
->>>> compare the Ingenic vendor implementation with the upstream code,
->>>> and draft the commit message with public references. The code =
-changes,
->>>> hardware observations, and final patch were reviewed by the =
-authors.
->>>>=20
->>>> Co-developed-by: Paul Boddie <paul@boddie.org.uk>
->>>> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
->>>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->>>> ---
->>>>=20
->>>> Notes:
->>>>     Changes in V2:
->>>>     - removed the PRID_IMP_XBURST2_R2 definition and hints for an =
-x2100 as
->>>>       there is no public reference
->>>>     - merged into single commit changing the PRID definitions and =
-code
->>>>     - reviewed details and rewrote commit message
->>>>    =20
->>>>     Open Issue:
->>>>     Olivier Louvignes <olivier@mgcrea.io> pointed out that he has
->>>>     simply reused the definition of the X1830 for the X1600. This
->>>>     sets c->writecombine differently (_CACHE_CACHABLE_WA) from
->>>>     _CACHE_UNCACHED_ACCELERATED as we do here.
->>>>     Both settings appear to work but it needs expert comment which
->>>>     is the right/better one.
->>>>=20
->>>>  arch/mips/include/asm/cpu.h  | 9 +++++----
->>>>  arch/mips/kernel/cpu-probe.c | 7 +++++++
->>>>  2 files changed, 12 insertions(+), 4 deletions(-)
->>>>=20
->>>> diff --git a/arch/mips/include/asm/cpu.h =
-b/arch/mips/include/asm/cpu.h
->>>> index add26f08e8029..79fd9a0747cf2 100644
->>>> --- a/arch/mips/include/asm/cpu.h
->>>> +++ b/arch/mips/include/asm/cpu.h
->>>> @@ -47,7 +47,7 @@
->>>>  #define PRID_COMP_CAVIUM 0x0d0000
->>>>  #define PRID_COMP_LOONGSON 0x140000
->>>>  #define PRID_COMP_INGENIC_13 0x130000 /* X2000, X2100 */
->>>> -#define PRID_COMP_INGENIC_D0 0xd00000 /* JZ4730, JZ4740, JZ4750,
->>>> JZ4755, JZ4760, X1830 */
->>>> +#define PRID_COMP_INGENIC_D0 0xd00000 /* JZ4730, JZ4740, JZ4750,
->>>> JZ4755, JZ4760, X1830, X1600 */
->>>>  #define PRID_COMP_INGENIC_D1 0xd10000 /* JZ4770, JZ4775, X1000 */
->>>>  #define PRID_COMP_INGENIC_E1 0xe10000 /* JZ4780 */
->>>> =20
->>>> @@ -186,9 +186,10 @@
->>>>   * These are the PRID's for when 23:16 =3D=3D PRID_COMP_INGENIC_*
->>>>   */
->>>> =20
->>>> -#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst=C2=AE1 with =
-MXU1.0/MXU1.1 SIMD
->>>> ISA */
->>>> -#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst=C2=AE1 with MXU2.0 =
-SIMD
->>>> ISA */
->>>> -#define PRID_IMP_XBURST2 0x2000 /* XBurst=C2=AE2 with MXU2.1 SIMD
->>>> ISA */
->>>> +#define PRID_IMP_XBURST 0x0000 /* XBurst1 */
->>>> +#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst1 with MXU1.0/MXU1.1 =
-SIMD
->>>> ISA */
->>>> +#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst1 with MXU2.0 SIMD =
-ISA */
->>>> +#define PRID_IMP_XBURST2 0x2000 /* XBurst2 with MXU2.1 SIMD ISA */
->>>> =20
->>>>  /*
->>>>   * These are the PRID's for when 23:16 =3D=3D PRID_COMP_NETLOGIC
->>>> diff --git a/arch/mips/kernel/cpu-probe.c =
-b/arch/mips/kernel/cpu-probe.c
->>>> index 489612ed9d498..69b68d00b66f7 100644
->>>> --- a/arch/mips/kernel/cpu-probe.c
->>>> +++ b/arch/mips/kernel/cpu-probe.c
->>>> @@ -1768,6 +1768,13 @@ static inline void cpu_probe_ingenic(struct
->>>> cpuinfo_mips *c, unsigned int cpu)
->>>> =20
->>>>   switch (c->processor_id & PRID_IMP_MASK) {
->>>> =20
->>>> + /* XBurst=C2=AE1 with ISA */
->>>> + case PRID_IMP_XBURST:
->>>> + c->cputype =3D CPU_XBURST;
->>>> + c->writecombine =3D _CACHE_UNCACHED_ACCELERATED;
->>>> + __cpu_name[cpu] =3D "Ingenic XBurst";
->>>> + break;
+>>> Well, I have to look if it can be split.
 >>>=20
->>> What SoCs actually use PRID_IMP_XBURST? The JZ4730?
+>>> So far the driver for X1600/X2000 does not have dual-edge support by
+>>> hardware (programming the EDG bit).
+>>>=20
+>>> But registers and programming model are the same. Therefore it is =
+more
+>>> or less a nice side-effect that x2600 adds functions to x1600/x2000.
+>>>=20
+>>> I.e. new code would be replacing some is_soc_or_above(jzgc->jzpc, =
+ID_X2600)
+>>> with is_soc_or_above(jzgc->jzpc, ID_X1600) to fix it for them.
+>>>=20
+>>> Or otherwise we have to split full x2600 support into two patches.
+>>>=20
+>>> Is this worth a separate patch or should we leave it as a comment in
+>>> the commit message?
 >>=20
->> The x1600 has a PRID of 0x00d00000.
->>=20
->> It is a little confusing how these numbers have been assigned over =
-time.
->>=20
->> +#define PRID_IMP_XBURST 0x0000 /* XBurst1 */
->> +#define PRID_IMP_XBURST_REV1 0x0200 /* XBurst1 with MXU1.0/MXU1.1 =
-SIMD ISA */
->> +#define PRID_IMP_XBURST_REV2 0x0100 /* XBurst1 with MXU2.0 SIMD ISA =
-*/
->>=20
->> Obviously the x1600 is newer than X1830 (likely PRID_IMP_XBURST_REV2)
+>> My idea was that you'd first swap X1600/X1830, then add support for =
+hardware
+>> dual-edge support if >=3D X1600, and finally add X2600 support.
 >=20
-> Obviously? ;)
+> Ah, ok. Fine with that. Will do for V2.
 
-Well,
-if REV1 is encoded as 0x02, and REV2 as 0x01, then 0x00 must be REV3 :)
+I have checked that a little more deeply, but analysis of the driver =
+shows that the
+pinctrl register set evolution was perhaps
 
->=20
-> I thought that their SoC versions were ordered, with the only =
-exception being
-> the JZ4725B being newer than the JZ4740 as a sort-of beta JZ4750.
->=20
->> or jz4780 and x1000 being PRID_IMP_XBURST_REV1.
->>=20
->> So it may or may not be a PRID_IMP_XBURST_REV3? But we don't know.
->=20
-> Can you check if the X1600 supports MXU? A IMP value of 0 might mean a =
-Xburst
-> CPU with no XMU support, maybe?
+X1000 -> X1830 -> X2000 =3D X2100 -> X1600 -> X2600
 
-The Programing Manual of the X1600 only mentions MXU as missing in the =
-auxiliary MCU.
+(for X1830 and X2000 I do not know the exact sequence).
 
-X1600: mentions only as missing in the auxiliary MCU
-X1000: Enhanced MXU implements XBurst SIMD instruction set release I and =
-release II
-X1830: The MXU2.0(SIMD128) instruction set has been implemented by =
-XBurst=C2=AE engine, and is one part of the CPU
-X2000: mentions only as missing in the auxiliary MCU
-	but Ingenic SIMD instruction set architecture: 128bit MXA
-X2600: same
-JZ4780: Media Extension Unit (MXU) Ingenic SIMD instruction set II fully =
-pipelined
+So we should IMHO sort the X1600 behind X2000=3DX2100.
 
-So MXU is only available in X1000 and X1830. If the data sheet is right.
+But if we do either of the swapping options, we have to introduce new
+is_soc_or_above() conditions and exclusion of others.
 
-Is there some runtime check? Hardware capabilities register to look =
-into?
-The PRID values are known but not their exact meaning.
+So I looked into the revision history of the programming manuals:
 
-But if we take these as MXU-Flags we would have:
+X1000/E Release Date: Dec. 26, 2016
+X1830	Release Date: Mar. 16, 2020
+X1600	Release Date: Aug. 06, 2021
+X2000	Release Date: Oct. 15, 2021
+X2600	First Release May.2023
 
-- jz4780: 0x02 (confirmed on CI20 board)
-- x1000:  0x02 (unconfirmed)
-- x1600:  0x00 (confirmed on LX16 board)
-- X1830:  0x01 (unconfirmed)
-- X2000:  0x20 (confirmed and read out from LX20 board)
-- X2600:  0x20 (confirmed 0x00132000 on LX26 board)
+And Google AI claims:
 
-So the lower 4 bits could indeed encode the MXU revision
-and the upper 4 bits the XBurst revision.
+Here are the release dates for the Ingenic X-Series processors:
+    =E2=80=A2 Ingenic X1000: July 2015. The processor was officially =
+unveiled by Ingenic in mid-2015.
+    =E2=80=A2 Ingenic X1830: January 2020. Initial announcements and =
+early developments for this chip appeared at the beginning of 2020.
+    =E2=80=A2 Ingenic X2000: January 2020. The processor and the Halley5 =
+development board launched in January, followed by the official =
+datasheet in July 2020.
+    =E2=80=A2 Ingenic X1600: December 2021. Ingenic published the =
+official datasheet for this processor on December 2, 2021.
+    =E2=80=A2 Ingenic X2600: January 2023. Early SDKs and manuals were =
+released in January, followed by the Halley7 development kit in the =
+summer of 2023.
 
-x1600:		0x00	none		XBURST
-jz4780/x1000:	0x02	MXU2.0		XBURST_REV1	(REV has been =
-swapped?)
-x1830:		0x01	MXU1.0		XBURST_REV2 	(REV has been =
-swapped?)
-x2000/2600:	0x20	MXA/XBURST2	XBURST2
+But that is not necessarily the same as the date the SoC architecture
+and IP building blocks were chosen years before announcement and =
+finished
+silicon. Especially as the X2000 usually seems to be more similar to the
+X1830 than the X1600.
 
-IMHO, in that case defining PRID_IMP_XBURST =3D 0x0000 would be correct.
-Maybe the _REV is misleading and should be _MXU_REV?
+In general, it turns out that there is probably not a single linear =
+history and
+only features added. It looks more like like branch&merge...
 
-But that is quite some speculation.
+Therefore, there are always subtle changes and it seems to be impossible =
+to follow
+the is_soc_or_above() without exceptions.
 
-Any thoughts?
+Therefore I would suggest to keep it in the order as currently upstream =
+and do
+not swap anything. Neverheless we could add dual-edge support if >=3D =
+X1600 (which
+covers x2000) and make x1830 an exception.
 
-BR,
+Or we should introduce a new macro like is_soc(jzgc->jzpc, ID_X1830) to =
+make
+the exceptions more readable:
+
+	is_soc_or_above(jzgc->jzpc, ID_X1600) && !is_soc(jzgc->jzpc, =
+ID_X1830)
+
+BR and thanks,
 Nikolaus
 
 
+
 >=20
->>>=20
->>> If it's really used somewhere, you'll also need to add a compatible =
-string
->>> for
->>> it in Documentation/devicetree/bindings/mips/cpus.yaml. I guess just
->>> "ingenic,xburst".
+> BR and thanks,
+> Nikolaus
+>=20
 >>=20
->> Ok, will check.
+>>>>> The corrected interrupt configuration has been tested on X1600,
+>>>>> X2000, and X2600, including GPIO dual-edge interrupts by a
+>>>>> gpio-button.
+>>>>>=20
+>>>>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>>>>> ---
+>>>>> drivers/pinctrl/pinctrl-ingenic.c | 71 =
++++++++++++++++++++++++++------
+>>>>> 1 file changed, 58 insertions(+), 13 deletions(-)
+>>>>>=20
+>>>>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c =
+b/drivers/pinctrl/pinctrl-
+>>>>> ingenic.c
+>>>>> index a62532c49fb60..90c734c74d267 100644
+>>>>> --- a/drivers/pinctrl/pinctrl-ingenic.c
+>>>>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>>>>> @@ -70,6 +70,10 @@
+>>>>> #define X2000_GPIO_SR 0xd0
+>>>>> #define X2000_GPIO_SMT 0xe0
+>>>>>=20
+>>>>> +#define X2600_GPIO_FLAG_CLR 0x58 /* write only */
+>>>>> +#define X2600_GPIO_SHADOW_OFFSET 0x800
+>>>>> +#define X2600_GPIO_PAGLD (X2600_GPIO_SHADOW_OFFSET +
+>>>>> 0xf0)
+>>>>> +
+>>>>> #define REG_SET(x) ((x) + 0x4)
+>>>>> #define REG_CLEAR(x) ((x) + 0x8)
+>>>>>=20
+>>>>> @@ -114,6 +118,7 @@ enum jz_version {
+>>>>> ID_X1830,
+>>>>> ID_X2000,
+>>>>> ID_X2100,
+>>>>> + ID_X2600,
+>>>>> };
+>>>>>=20
+>>>>> struct ingenic_chip_info {
+>>>>> @@ -164,7 +169,8 @@ static const unsigned long enabled_socs =3D
+>>>>> IS_ENABLED(CONFIG_MACH_X1600) << ID_X1600 |
+>>>>> IS_ENABLED(CONFIG_MACH_X1830) << ID_X1830 |
+>>>>> IS_ENABLED(CONFIG_MACH_X2000) << ID_X2000 |
+>>>>> - IS_ENABLED(CONFIG_MACH_X2100) << ID_X2100;
+>>>>> + IS_ENABLED(CONFIG_MACH_X2100) << ID_X2100 |
+>>>>> + IS_ENABLED(CONFIG_MACH_X2600) << ID_X2600;
+>>>>>=20
+>>>>> static bool
+>>>>> is_soc_or_above(const struct ingenic_pinctrl *jzpc, enum =
+jz_version
+>>>>> version)
+>>>>> @@ -3545,15 +3551,21 @@ static void =
+ingenic_gpio_shadow_set_bit(struct
+>>>>> ingenic_gpio_chip *jzgc,
+>>>>> else
+>>>>> reg =3D REG_CLEAR(reg);
+>>>>>=20
+>>>>> - regmap_write(jzgc->jzpc->map, REG_PZ_BASE(
+>>>>> - jzgc->jzpc->info->reg_offset) + reg, BIT(offset));
+>>>>> + if (is_soc_or_above(jzgc->jzpc, ID_X2600))
+>>>>> + regmap_write(jzgc->jzpc->map, jzgc->reg_base +
+>>>>> X2600_GPIO_SHADOW_OFFSET + reg,
+>>>>> +      BIT(offset));
+>>>>> + else
+>>>>> + regmap_write(jzgc->jzpc->map, REG_PZ_BASE(jzgc->jzpc->info-
+>>>>>> reg_offset) + reg,
+>>>>> +      BIT(offset));
+>>>>> }
+>>>>>=20
+>>>>> static void ingenic_gpio_shadow_set_bit_load(struct =
+ingenic_gpio_chip
+>>>>> *jzgc)
+>>>>> {
+>>>>> - regmap_write(jzgc->jzpc->map, REG_PZ_GID2LD(
+>>>>> - jzgc->jzpc->info->reg_offset),
+>>>>> - jzgc->gc.base / PINS_PER_GPIO_CHIP);
+>>>>> + if (is_soc_or_above(jzgc->jzpc, ID_X2600))
+>>>>> + regmap_write(jzgc->jzpc->map, jzgc->reg_base +
+>>>>> X2600_GPIO_PAGLD, 1);
+>>>>> + else
+>>>>> + regmap_write(jzgc->jzpc->map, REG_PZ_GID2LD(jzgc->jzpc->info-
+>>>>>> reg_offset),
+>>>>> +      jzgc->gc.base / PINS_PER_GPIO_CHIP);
+>>>>> }
+>>>>>=20
+>>>>> static void jz4730_gpio_set_bits(struct ingenic_gpio_chip *jzgc,
+>>>>> @@ -3618,6 +3630,12 @@ static void irq_set_type(struct =
+ingenic_gpio_chip
+>>>>> *jzgc,
+>>>>> break;
+>>>>> }
+>>>>>=20
+>>>>> + if (type =3D=3D IRQ_TYPE_EDGE_BOTH &&
+>>>>> +     (is_soc_or_above(jzgc->jzpc, ID_X2000) ||
+>>>>> +      (is_soc_or_above(jzgc->jzpc, ID_X1600) &&
+>>>>> +       !is_soc_or_above(jzgc->jzpc, ID_X1830))))
+>>>>=20
+>>>> I remember you saying (in another patchset) that the X1830 was =
+older than
+>>>> the
+>>>> X1600, if that's the case the IDs for X1600 and X1830 should be =
+swapped. I
+>>>> believe this patch would then become much simpler.
+>>>=20
+>>> Indeed. So I can swap the ID's in V2.
+>>=20
+>> I just checked in the programming manuals and indeed it seems to be =
+the case.
+>> Weird! I had no idea.
+>>=20
+>> Cheers,
+>> -Paul
+>>=20
+>>>>> + val2 =3D true;
+>>>>> +
+>>>>> if (is_soc_or_above(jzgc->jzpc, ID_JZ4770)) {
+>>>>> reg1 =3D JZ4770_GPIO_PAT1;
+>>>>> reg2 =3D JZ4770_GPIO_PAT0;
+>>>>> @@ -3640,6 +3658,9 @@ static void irq_set_type(struct =
+ingenic_gpio_chip
+>>>>> *jzgc,
+>>>>> ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
+>>>>> ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
+>>>>> ingenic_gpio_shadow_set_bit_load(jzgc);
+>>>>> +
+>>>>> + if (is_soc_or_above(jzgc->jzpc, ID_X1600) &&
+>>>>> !is_soc_or_above(jzgc->jzpc, ID_X1830))
+>>>>> + ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset,
+>>>>> val3);
+>>>>> } else {
+>>>>> ingenic_gpio_set_bit(jzgc, reg2, offset, val1);
+>>>>> ingenic_gpio_set_bit(jzgc, reg1, offset, val2);
+>>>>> @@ -3714,7 +3735,8 @@ static void ingenic_gpio_irq_ack(struct =
+irq_data
+>>>>> *irqd)
+>>>>> bool high;
+>>>>>=20
+>>>>> if ((irqd_get_trigger_type(irqd) =3D=3D IRQ_TYPE_EDGE_BOTH) &&
+>>>>> -     !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
+>>>>> +     (!is_soc_or_above(jzgc->jzpc, ID_X1600) ||
+>>>>> +     (is_soc_or_above(jzgc->jzpc, ID_X1830) && =
+!is_soc_or_above(jzgc-
+>>>>>> jzpc, ID_X2000)))) {
+>>>>> /*
+>>>>>  * Switch to an interrupt for the opposite edge to the one
+>>>>> that
+>>>>>  * triggered the interrupt being ACKed.
+>>>>> @@ -3726,7 +3748,9 @@ static void ingenic_gpio_irq_ack(struct =
+irq_data
+>>>>> *irqd)
+>>>>> irq_set_type(jzgc, irq, IRQ_TYPE_LEVEL_HIGH);
+>>>>> }
+>>>>>=20
+>>>>> - if (is_soc_or_above(jzgc->jzpc, ID_JZ4770))
+>>>>> + if (is_soc_or_above(jzgc->jzpc, ID_X2600))
+>>>>> + regmap_write(jzgc->jzpc->map, jzgc->reg_base +
+>>>>> X2600_GPIO_FLAG_CLR, BIT(irq));
+>>>>> + else if (is_soc_or_above(jzgc->jzpc, ID_JZ4770))
+>>>>> ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_FLAG, irq, false);
+>>>>> else if (is_soc_or_above(jzgc->jzpc, ID_JZ4740))
+>>>>> ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
+>>>>> @@ -3754,7 +3778,9 @@ static int ingenic_gpio_irq_set_type(struct =
+irq_data
+>>>>> *irqd, unsigned int type)
+>>>>> irq_set_handler_locked(irqd, handle_bad_irq);
+>>>>> }
+>>>>>=20
+>>>>> - if ((type =3D=3D IRQ_TYPE_EDGE_BOTH) && =
+!is_soc_or_above(jzgc->jzpc,
+>>>>> ID_X2000)) {
+>>>>> + if (type =3D=3D IRQ_TYPE_EDGE_BOTH &&
+>>>>> +     (!is_soc_or_above(jzgc->jzpc, ID_X1600) ||
+>>>>> +     (is_soc_or_above(jzgc->jzpc, ID_X1830) && =
+!is_soc_or_above(jzgc-
+>>>>>> jzpc, ID_X2000)))) {
+>>>>> /*
+>>>>>  * The hardware does not support interrupts on both edges.
+>>>>> The
+>>>>>  * best we can do is to set up a single-edge interrupt and
+>>>>> then
+>>>>> @@ -3849,16 +3875,35 @@ static inline void
+>>>>> ingenic_shadow_config_pin(struct
+>>>>> ingenic_pinctrl *jzpc,
+>>>>> unsigned int pin, u8 reg, bool set)
+>>>>> {
+>>>>> unsigned int idx =3D pin % PINS_PER_GPIO_CHIP;
+>>>>> + unsigned int offt =3D pin / PINS_PER_GPIO_CHIP;
+>>>>>=20
+>>>>> - regmap_write(jzpc->map, REG_PZ_BASE(jzpc->info->reg_offset) +
+>>>>> - (set ? REG_SET(reg) : REG_CLEAR(reg)), BIT(idx));
+>>>>> + if (set)
+>>>>> + reg =3D REG_SET(reg);
+>>>>> + else
+>>>>> + reg =3D REG_CLEAR(reg);
+>>>>> +
+>>>>> + if (is_soc_or_above(jzpc, ID_X2600)) {
+>>>>> + u32 target_reg =3D (offt * jzpc->info->reg_offset) +
+>>>>> X2600_GPIO_SHADOW_OFFSET + reg;
+>>>>> +
+>>>>> + regmap_write(jzpc->map, target_reg, BIT(idx));
+>>>>> + } else {
+>>>>> + regmap_write(jzpc->map, REG_PZ_BASE(jzpc->info->reg_offset) +
+>>>>> reg, BIT(idx));
+>>>>> + }
+>>>>> }
+>>>>>=20
+>>>>> static inline void ingenic_shadow_config_pin_load(struct =
+ingenic_pinctrl
+>>>>> *jzpc,
+>>>>> unsigned int pin)
+>>>>> {
+>>>>> - regmap_write(jzpc->map, REG_PZ_GID2LD(jzpc->info->reg_offset),
+>>>>> - pin / PINS_PER_GPIO_CHIP);
+>>>>> + unsigned int offt =3D pin / PINS_PER_GPIO_CHIP;
+>>>>> +
+>>>>> + if (is_soc_or_above(jzpc, ID_X2600)) {
+>>>>> + u32 target_load_reg =3D (offt * jzpc->info->reg_offset) +
+>>>>> X2600_GPIO_PAGLD;
+>>>>> +
+>>>>> + regmap_write(jzpc->map, target_load_reg, 1);
+>>>>> + } else {
+>>>>> + regmap_write(jzpc->map, REG_PZ_GID2LD(jzpc->info-
+>>>>>> reg_offset),
+>>>>> +      pin / PINS_PER_GPIO_CHIP);
+>>>>> + }
+>>>>> }
+>>>>>=20
+>>>>> static inline void jz4730_config_pin_function(struct =
+ingenic_pinctrl
+>>>>> *jzpc,
 >=20
-> "ingenic,xburst" if it does not support MXU, I should clarify.
->=20
-> Cheers,
-> -Paul
 >=20
 

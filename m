@@ -1,90 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.167.45
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794523589;
-	b=V3tiW3P147dWF0RA3qmZ+/DwMywRryC89WYbxy3jX4y3H8hoxyvmtX2uwraHhuqnqv18
-	 7Gmdp6YrIthx0Tx+6fd/6zKBQG56UrmDdQZNHmJD9DyOOAg+cTz/nsNyomkXK3E3HBUjK
-	 H+9Lszbdh6PoB+LfD34xri2GZVkjb63fiyL2+Nr9qwPYXa5Nt9huwiPxXSufy4fGZMtru
-	 sKSlkq9iaY/OehpVluxfdMTlnPUJxmvxRMhuKjoWO9H44xDTPLsw0oktdwKxPmycSvNnC
-	 UONEMc0DkmGOfAK4N+hy2qA4vT4jAe5FZCep8OWc5EBDCW9jdo8cZuZgUIrSZfJ0Uvw==
+	t=1794528917;
+	b=HB7SRZocFqjnBYGF42MGjxJumm1H+F8htTEPmkNbkA8iG+m2q6vczGd2BgkT6sg4KBYT
+	 feZuYVz0fYkly0TC9frcFVj3WB+GA/Q4uJcn38nTTf4h6MEik60k/Tn1IVbrjS0Nza5HB
+	 mnmGw0SRUA/xEDXjSU6PRA930e6sGOkSAZ0Xl+USjaNvNSc+gSAlkpur+HA7EOVcj5eOW
+	 K/k4m88OhVc6mnftiwkQdR2ck9C2nRZn5yITa82uLK3C95g9OySqr40w+bOuDgDLBudsg
+	 gX3U3wa2PvC4dKSS8cGR1l+b9EBwgddjOp+QkC3EyIOdOlVPbB+lqa0X32ivFNtZKMA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794523589;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794528917;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Subject:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Disposition:Message-ID:User-Agent;
-	bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
-	b=ld6pySWIchNAySvoR/pfDD2tTypNRz2i5yf4cpTTMcLt0Xy2k3iRx58ghLgHUXWqqC2L
-	 Cy2Tsk9s4cqS1OeiRMDMKVDspLei6D8X2BXn3KCyM3s0FOwuYvaVRmHh5e4JOKO22gvlZ
-	 omzWZwxjr/kyI4XU8ZO5vcec0rWuX7FQcI5AZvG2XsfGFqw4dHMxPbldrjcsnVIzXAN8r
-	 3SDkgwlwZCUgHZzx1Db58VoCLyhCxw6k2zSgOQVaS63QQlhPDU2nPEazKBTtMpCRJjXYH
-	 BW6R8gsPyLrfJJMIuWkEq2XphfB4x43iVzHTvdsbphUfp/5KPNKd9kOj4Bnsk2Rc5zw==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=iB8Ek5PC625AhLa3IVdNzUKQeK5NZ2fH8Nko59u0dJQ=;
+	b=cjynWWIpqCJTs3Yth4AjpP8VLNGa+hgYoQYh7EW17hcf4R4pmDQVrC8vXBo5Yf6zweb/
+	 SRN3nBv6ibV1uXIdGzhd/Tzgi4HiQ1/H6bNZznUUBT5uuIbzUkXYBDmqsv3MwxsMTWt/e
+	 OovoYMTNXjNRep5NqhuqAAVpaEpT4jRuhyAtw82ONhUHf5EdqXaiH3XkHKeWV3vFslqje
+	 ACvDJuILnkHOyyELatwZ1lqBlQd1l0EO/wDp8Xd6VY1u643VHQZDTwgbQ1xXEiEQDwZeR
+	 Wz4uNCfx+y2JgPWQZCKUsA43+95jf8LfJ6MC8S3A8GVnWTwtMUerRwxcoY5UAZFy2bw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=chrisdown.name;
-	spf=pass smtp.mailfrom=chrisdown.name;
-	dkim=pass header.d=chrisdown.name header.i=@chrisdown.name header.a=rsa-sha256 header.s=google header.b=ebkrXilb;
-	arc=none smtp.remote-ip=209.85.221.54
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tiDG+56S;
+	arc=none smtp.remote-ip=209.85.167.45
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1775F606A327
-	for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 22:46:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1775F606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=chrisdown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chrisdown.name
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F13606A336
+	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 00:15:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C1F13606A336
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=chrisdown.name header.i=@chrisdown.name header.a=rsa-sha256 header.s=google header.b=ebkrXilb
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-491971ac844so297981f8f.2
-        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 14:46:28 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tiDG+56S
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5c1479be604so415082e87.1
+        for <linux-mips@vger.kernel.org>; Thu, 12 Nov 2026 16:15:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google; t=1794523587; x=1795128387; darn=vger.kernel.org;
-        h=user-agent:message-id:content-disposition:content-type:mime-version
-         :references:in-reply-to:subject:cc:to:from:date:from:to:cc:subject
+        d=gmail.com; s=20260707; t=1794528915; x=1795133715; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
-        b=ebkrXilbj9spVaHW9PDW3KQNpqmqI4+4NOB68oQOLq+07vtNzaBA8OzPAUS9CcsePT
-         8Kjg8BdAuCo3mV77DJ+j0I94WcjCRoV9fZV+wxCYZ49UIFzTMPcPTgg29Atqgy9WVWs2
-         OlA64TH/oKxQCTcIaOXxFG9ghWOzXAc97hNLU=
+        bh=iB8Ek5PC625AhLa3IVdNzUKQeK5NZ2fH8Nko59u0dJQ=;
+        b=tiDG+56SXTQWkW064KYpfKje598//RZWxyF7j9QK8tkzuIM8ZuLJ+V1ykfuB0bl2My
+         v71VWx8EzqpK9WEpiQzinjCuW53515KyVtM/+eqGl8yXNULw66D3WNKo7GmxVMrQvtnb
+         M95Ejnry4sp+4MC4js1Fe7FgTrAj0D3JnqaA+Xp/X2raqUHqjkbEXp4sqvS2+pKdhJ8p
+         W+jnfpewTDplSpzLmsD32xrMgQp4g8xs8RDY1CGmCa/O2+wHaIsNfnKDEAJwbL6xr9f/
+         Bs1mUxtPJE/7CsSqoPYcqheRhFRFifFfc6ZjgKEdhqZAupP67VwNRm3p7Fu7wt6IoqaO
+         o8HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794523587; x=1795128387;
-        h=user-agent:message-id:content-disposition:content-type:mime-version
-         :references:in-reply-to:subject:cc:to:from:date:x-gm-gg
+        d=1e100.net; s=20260707; t=1794528915; x=1795133715;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=Qp/CYO9Y9QR0dXHUfw6yCZHzw+ctBhl7YE1TC+1vOS8=;
-        b=lGyrp9DpNX1FNtqQd8tHUKMfc/SeNUuXbKQD+WtZmQPCl1TJt2rP2Nzf8Hp9nlRdcn
-         4L2hF+BDj0jkK04OYwPjmz3zIMOVuLHTG535praLAaeXBbslp34PJ9zLeXgFWqgGKeRT
-         9iHZvNsObgrLsNcGuHi6UronmsdTjzSsyObbTeN5jv6b+3mUjKjzmNOnY3aFaHHL/80o
-         k/HNXP528yfS2tmOpOTgVDLcNCsrt9OOMk32wdZizzTbtmPa/CSRMOhTNbREGIfBhIkp
-         6MdEW0L5CfSaxDXJagJIN2J6iFTl0B2sQ93LH0YGDMS6mQKP+60BasFO5uoYEceOy3Fg
-         KIjw==
-X-Forwarded-Encrypted: i=1; AL+hErG+eCXLqvY5M+NtUVD6JQvXelJcouxuI71qc89+Wi7kSdflhwpAp7vdevUrJrkSlncd80kuVvnmtNei@vger.kernel.org
-X-Gm-Message-State: APuU4Z9/+Ewb+EkubEq3U+T1nw7qL18NTmKd3amg72q7YRKnGzxI7MIj
-	iKmcuEUFZdWQwQp1O/5YV5YwhVaF00OQ3agBJh1ZEKP8ezZp4/cQG/kePtDkP75yKfE=
-X-Gm-Gg: AYBFou0FbydvaITFvpuFn011BFJfbmByU+wPPpd3Kpv56F7zW7dF7depeaxLUmNRYQV
-	E0bl1eMebPPhgb0RKVtkDSzUC4lUz2C4OF5ip1UYopabbe3IHrLJ7WoZWsIrwhhjrazjFw/W4Md
-	PI+jO0729lM8xr29a52JV8MVqXUKyLHYr1+J10hasuNVGmwyKYUCYLgAgPD7MZWIjXZjQQoY2DJ
-	ziKTbtT69kDCLHCaDYT+2WZjZe+VfKdFSPx9sPbBn84o7G4tJpNa8z9Nw2h3rrXC0PqfDct6/6L
-	AkA6RtwBmSLUrebmJrvjkxj+O/7oneLf6MBL/dC6BvW23MkpWKTlWmxe8PVqWnyXXSmRE97JNA1
-	9C2swwgf07FO0jd1Nhwmijz/ho6u724PLUtzrW2JlPsQEQoxapITUmJ0zPcp6pMV3rkfQVw79uA
-	Wec+HQs85LNlP5Q7uNmYp0bcE1+lCfPsxMe8iHgy+jvp2Ish1YHm7FRQDWZBCQDiNUaYLTUk7b2
-	mO5Mc6svF6f5C9dDjolmgeKlcDup/20ispsaijTMpbhE/mJ6K6sUY8NXnQUS7Gn8VpbS5iScjfv
-	IOk2Uo7XlveD2LoCW1T/fx8XhDT7Glim853CDamJJUfdyLkULVCjGoi1YOegwmAMlAIdiC2XoQa
-	SWJmuKsOdvUiwJOPE080zHCYJfm4Xnf7Prm0mIggMYmvExwOLJc/abhhFFuvhaKW8WfFt9YVm/U
-	KfwXyju+qAej944k4W81yDDkm/BlrffEfQWHP95tGmZPHYCerhqYFhxf+Pfg==
-X-Received: by 2002:a05:6000:2087:b0:488:57ad:d5c8 with SMTP id ffacd0b85a97d-49c6d453dbbmr2169176f8f.3.1794523587286;
-        Thu, 12 Nov 2026 14:46:27 -0800 (PST)
-Received: from [172.18.0.2] ([199.201.64.8])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c6020bb0fsm1504046f8f.34.2026.11.12.14.46.19
+        bh=iB8Ek5PC625AhLa3IVdNzUKQeK5NZ2fH8Nko59u0dJQ=;
+        b=Y9PoTK1BsjWDYqb94yRSwKOksxuBIQPL0k77meVGKLXEgLDHAFo3BC0+4joaK9u5XC
+         PHJLwEx5ZKrbLHHCOLPxOXDFAbi2FywtS8S0rHqlaYbIsxU1mmol3juzhNwpV/Lsqabv
+         sF1fMNqGD7UV3cTXfjrK2O8jhWBLeUgNcZqbV5lSDJ+YRXevwHCaTUd0jZSMBEwvJND4
+         4MIos1ScEMHriHbofLazIRu4df7F8nomXQxRAbu+pqLLFgk1bAiBbuKgZJ3riiQ7z0Pe
+         MbPDqsKBN2t8+Va1gkCIqs7u1TJM4W8/rt8YD7C0Id8l980UuOdjBNnnZdu9L4GEHJ87
+         Ibsw==
+X-Forwarded-Encrypted: i=1; AL+hErHUnzwpNmvqdJnszdIxwTHPO70vGGHA6jq3jelQq6n7cYVg8bgEds9bh92wkqxw0bm91Wsoo7svVp1f@vger.kernel.org
+X-Gm-Message-State: APuU4Z//nlcBBJ25gqPXva9sAy+HU6a1aktr1X7bZxm5tZzub5FXydTm
+	IAUNW71MxjRgCsuCad9mW/qaQuW6+Msm4bbTR6+lDBnj4OJvC13NtP6b
+X-Gm-Gg: AYBFou3gwKG2Ac7ZM+Pia2m5tIzjUVGIsq68DGynm6x2up6tfiHuEOioOPjXYdcqztM
+	DqJTYwQJ6OlTeGDatbaVKJTDxWEWZw5jgykLXV+tcLPeuHCivk/edoCG0W+o9xPLsODcfXsdovV
+	TLU/IziS1zxh9KTr8OykeNGnWYKnidjFz+jOo8GySfG+AUrBdWvOTdtAeMY6h+hxbQvcGAuAePg
+	qZ5RQSTSo5x/gVo5YVhgs3UrE84uUnNnNNvbrwQ53N9r8asA+vX0KpyNLYgQAklRlxbsfr32r1/
+	OzCsvW6c2rdvt54WI4Zt7Jtz58V/iChCybXxXvZi3tyk1eDwGgAaLtjHSn1ZIrnYzSKRRZ/YXvx
+	5Ls35VDVYXFd+45atAfZe8aifE9o8SHRUmtU3bLKfmg4Xw+R6kYUBeFCdcBcGqeQv/aezqSf39a
+	q+d4ktTQBHa2jIOs3O9njKian9cErM9EO8PLUWVDFxnvW0hM8P61yCT8DXnw7gMQmbDiFRUsQuq
+	Hs4vE6j3op27b/zR2MeC1tFt01BExr1SvfBRHaErXWVwFUtYAnd4+kz4HzTjpoRupXBx0nDkZ+3
+	sLrBMhj3xCOD2sHFOTF4QTWSQZiAFhIngVej9DngS+vawoQ3FvD8xgeGXdK2pJPaNmzVBJe8ivY
+	gA66bdYj+/Q==
+X-Received: by 2002:a05:6512:1394:b0:5bb:7b64:340d with SMTP id 2adb3069b0e04-5c170795308mr372572e87.28.1794528914766;
+        Thu, 12 Nov 2026 16:15:14 -0800 (PST)
+Received: from SafoStation ([31.40.65.49])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5c17133ca01sm200968e87.36.2026.11.12.16.15.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 14:46:26 -0800 (PST)
-Date: Thu, 12 Nov 2026 14:46:15 -0800
-From: Chris Down <chris@chrisdown.name>
-To: Aaron Tomlin <atomlin@atomlin.com>
-Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] security: Expand task_setscheduler LSM hook
-In-Reply-To: <20261105172210.76706-1-atomlin@atomlin.com>
-References: <20261105172210.76706-1-atomlin@atomlin.com>
+        Thu, 12 Nov 2026 16:15:13 -0800 (PST)
+From: Safocl Stollmannovic <safocl88@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Oleg Nesterov <oleg@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: [PATCH 04/10] MIPS: fix duplicate extern declarations
+Date: Fri, 13 Nov 2026 04:14:10 +0400
+Message-ID: <20261113001432.128201-5-safocl88@gmail.com>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261113001432.128201-1-safocl88@gmail.com>
+References: <20261113001432.128201-1-safocl88@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -94,97 +100,221 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Message-ID: <20261112144615.df72a3bef0a52f3c@chrisdown.name>
-User-Agent: Mutt/2.4.3 (cc9e3943) (2026-10-09)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Aaron,
+Compiling a kernel module with a C++ compiler results in a duplicate
+echo ‘extern’ specifier error.
+This occurs because the code contains , and
+expands to  when processed by a C++ compiler.
+The  specifier must be removed.
+https://bugzilla.kernel.org/show_bug.cgi?id=222257
 
-Aaron Tomlin writes:
->In modern multi-tenant and real-time environments, CPU and scheduling
->isolation are critical boundaries. The inability to audit or restrict
->specific scheduling policy changes or CPU pinning requests limits the
->effectiveness of security policies, particularly when attempting to
->shield isolated or cryptographic cores from unprivileged or compromised
->tasks.
+Signed-off-by: Safocl Stollmannovic <safocl88@gmail.com>
+---
+ arch/mips/cavium-octeon/setup.c   |  2 +-
+ arch/mips/include/asm/bmips.h     |  2 +-
+ arch/mips/include/asm/idle.h      |  2 +-
+ arch/mips/include/asm/paccess.h   |  4 +--
+ arch/mips/include/asm/ptrace.h    |  4 +--
+ arch/mips/include/asm/smp.h       |  2 +-
+ arch/mips/include/asm/switch_to.h |  2 +-
+ arch/mips/kernel/r4k-bugs64.c     |  2 +-
+ arch/mips/kernel/signal-common.h  |  8 ++---
+ arch/mips/kernel/traps.c          | 50 +++++++++++++++----------------
+ 10 files changed, 39 insertions(+), 39 deletions(-)
 
-Peter objected to this paragraph on v3, and you said there that you would
-drop it. What you told him the patch is really for was auditing the
-affinity mask as userspace asked for it, before cpuset intersects it with
-the allowed CPUs, which seccomp can't do because the mask is behind a user
-pointer. That should be in the changelog in place of this paragraph. (I
-object to it as well. Please avoid such LLM grandiosity.)
+diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+index 7497be7b9..c2ee7d8bc 100644
+--- a/arch/mips/cavium-octeon/setup.c
++++ b/arch/mips/cavium-octeon/setup.c
+@@ -296,7 +296,7 @@ static uint64_t crashk_size, crashk_base;
+ 
+ static int octeon_uart;
+ 
+-extern asmlinkage void handle_int(void);
++asmlinkage void handle_int(void);
+ 
+ /**
+  * octeon_is_simulation - Return non-zero if we are currently running
+diff --git a/arch/mips/include/asm/bmips.h b/arch/mips/include/asm/bmips.h
+index 0eee81be9..a0de86e0d 100644
+--- a/arch/mips/include/asm/bmips.h
++++ b/arch/mips/include/asm/bmips.h
+@@ -88,7 +88,7 @@ extern cpumask_t bmips_booted_mask;
+ extern unsigned long bmips_tp1_irqs;
+ 
+ extern void bmips_ebase_setup(void);
+-extern asmlinkage void plat_wired_tlb_setup(void);
++asmlinkage void plat_wired_tlb_setup(void);
+ extern void bmips_cpu_setup(void);
+ 
+ static inline unsigned long bmips_read_zscm_reg(unsigned int offset)
+diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
+index c7d75807d..58b201eb4 100644
+--- a/arch/mips/include/asm/idle.h
++++ b/arch/mips/include/asm/idle.h
+@@ -6,7 +6,7 @@
+ #include <linux/linkage.h>
+ 
+ extern void (*cpu_wait)(void);
+-extern asmlinkage void r4k_wait(void);
++asmlinkage void r4k_wait(void);
+ extern void r4k_wait_irqoff(void);
+ 
+ static inline int using_skipover_handler(void)
+diff --git a/arch/mips/include/asm/paccess.h b/arch/mips/include/asm/paccess.h
+index af81ab0da..67efa9440 100644
+--- a/arch/mips/include/asm/paccess.h
++++ b/arch/mips/include/asm/paccess.h
+@@ -22,8 +22,8 @@
+ #define __PA_ADDR	".dword"
+ #endif
+ 
+-extern asmlinkage void handle_ibe(void);
+-extern asmlinkage void handle_dbe(void);
++asmlinkage void handle_ibe(void);
++asmlinkage void handle_dbe(void);
+ 
+ #define put_dbe(x, ptr) __put_dbe((x), (ptr), sizeof(*(ptr)))
+ #define get_dbe(x, ptr) __get_dbe((x), (ptr), sizeof(*(ptr)))
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index ef72c46b5..5673c7518 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -160,8 +160,8 @@ extern unsigned long exception_ip(struct pt_regs *regs);
+ #define exception_ip(regs) exception_ip(regs)
+ #define profile_pc(regs) instruction_pointer(regs)
+ 
+-extern asmlinkage long syscall_trace_enter(struct pt_regs *regs);
+-extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
++asmlinkage long syscall_trace_enter(struct pt_regs *regs);
++asmlinkage void syscall_trace_leave(struct pt_regs *regs);
+ 
+ extern void die(const char *, struct pt_regs *) __noreturn;
+ 
+diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
+index a545568f1..5e1b73a06 100644
+--- a/arch/mips/include/asm/smp.h
++++ b/arch/mips/include/asm/smp.h
+@@ -58,7 +58,7 @@ extern cpumask_t cpu_coherent_mask;
+ 
+ extern unsigned int smp_max_threads __initdata;
+ 
+-extern asmlinkage void smp_bootstrap(void);
++asmlinkage void smp_bootstrap(void);
+ 
+ extern void calculate_cpu_foreign_map(void);
+ 
+diff --git a/arch/mips/include/asm/switch_to.h b/arch/mips/include/asm/switch_to.h
+index d6ccd5344..a9d6616ad 100644
+--- a/arch/mips/include/asm/switch_to.h
++++ b/arch/mips/include/asm/switch_to.h
+@@ -29,7 +29,7 @@ struct task_struct;
+  * This function is used whilst scheduling to save the context of prev & load
+  * the context of next. Returns prev.
+  */
+-extern asmlinkage struct task_struct *resume(struct task_struct *prev,
++asmlinkage struct task_struct *resume(struct task_struct *prev,
+ 		struct task_struct *next, struct thread_info *next_ti);
+ 
+ extern unsigned int ll_bit;
+diff --git a/arch/mips/kernel/r4k-bugs64.c b/arch/mips/kernel/r4k-bugs64.c
+index 83970ac7e..31bf3146f 100644
+--- a/arch/mips/kernel/r4k-bugs64.c
++++ b/arch/mips/kernel/r4k-bugs64.c
+@@ -182,7 +182,7 @@ asmlinkage void __init do_daddi_ov(struct pt_regs *regs)
+ 
+ static __init void check_daddi(void)
+ {
+-	extern asmlinkage void handle_daddi_ov(void);
++	asmlinkage void handle_daddi_ov(void);
+ 	unsigned long flags;
+ 	void *handler;
+ 	long v, tmp;
+diff --git a/arch/mips/kernel/signal-common.h b/arch/mips/kernel/signal-common.h
+index 136eb20ac..65e262b7f 100644
+--- a/arch/mips/kernel/signal-common.h
++++ b/arch/mips/kernel/signal-common.h
+@@ -32,13 +32,13 @@ extern int fpcsr_pending(unsigned int __user *fpcsr);
+ #define unlock_fpu_owner()	({ pagefault_enable(); preempt_enable(); })
+ 
+ /* Assembly functions to move context to/from the FPU */
+-extern asmlinkage int
++asmlinkage int
+ _save_fp_context(void __user *fpregs, void __user *csr);
+-extern asmlinkage int
++asmlinkage int
+ _restore_fp_context(void __user *fpregs, void __user *csr);
+ 
+-extern asmlinkage int _save_msa_all_upper(void __user *buf);
+-extern asmlinkage int _restore_msa_all_upper(void __user *buf);
++asmlinkage int _save_msa_all_upper(void __user *buf);
++asmlinkage int _restore_msa_all_upper(void __user *buf);
+ 
+ extern int setup_sigcontext(struct pt_regs *, struct sigcontext __user *);
+ extern int restore_sigcontext(struct pt_regs *, struct sigcontext __user *);
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 8ec1e185b..0d963f427 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -77,31 +77,31 @@
+ #include "access-helper.h"
+ 
+ extern void check_wait(void);
+-extern asmlinkage void skipover_handle_int(void);
+-extern asmlinkage void handle_int(void);
+-extern asmlinkage void handle_adel(void);
+-extern asmlinkage void handle_ades(void);
+-extern asmlinkage void handle_ibe(void);
+-extern asmlinkage void handle_dbe(void);
+-extern asmlinkage void handle_sys(void);
+-extern asmlinkage void handle_bp(void);
+-extern asmlinkage void handle_ri(void);
+-extern asmlinkage void handle_ri_rdhwr_tlbp(void);
+-extern asmlinkage void handle_ri_rdhwr(void);
+-extern asmlinkage void handle_cpu(void);
+-extern asmlinkage void handle_ov(void);
+-extern asmlinkage void handle_tr(void);
+-extern asmlinkage void handle_msa_fpe(void);
+-extern asmlinkage void handle_fpe(void);
+-extern asmlinkage void handle_ftlb(void);
+-extern asmlinkage void handle_gsexc(void);
+-extern asmlinkage void handle_msa(void);
+-extern asmlinkage void handle_mdmx(void);
+-extern asmlinkage void handle_watch(void);
+-extern asmlinkage void handle_mt(void);
+-extern asmlinkage void handle_dsp(void);
+-extern asmlinkage void handle_mcheck(void);
+-extern asmlinkage void handle_reserved(void);
++asmlinkage void skipover_handle_int(void);
++asmlinkage void handle_int(void);
++asmlinkage void handle_adel(void);
++asmlinkage void handle_ades(void);
++asmlinkage void handle_ibe(void);
++asmlinkage void handle_dbe(void);
++asmlinkage void handle_sys(void);
++asmlinkage void handle_bp(void);
++asmlinkage void handle_ri(void);
++asmlinkage void handle_ri_rdhwr_tlbp(void);
++asmlinkage void handle_ri_rdhwr(void);
++asmlinkage void handle_cpu(void);
++asmlinkage void handle_ov(void);
++asmlinkage void handle_tr(void);
++asmlinkage void handle_msa_fpe(void);
++asmlinkage void handle_fpe(void);
++asmlinkage void handle_ftlb(void);
++asmlinkage void handle_gsexc(void);
++asmlinkage void handle_msa(void);
++asmlinkage void handle_mdmx(void);
++asmlinkage void handle_watch(void);
++asmlinkage void handle_mt(void);
++asmlinkage void handle_dsp(void);
++asmlinkage void handle_mcheck(void);
++asmlinkage void handle_reserved(void);
+ extern void tlb_do_page_fault_0(void);
+ 
+ void (*board_be_init)(void);
+-- 
+2.56.1
 
->This change updates all in-tree security modules (capabilities, SELinux,
->and Smack) to accommodate the new parameters mechanically, while
->providing LSMs with the necessary context to enforce strict scheduling
->and affinity policies.
-
-An LSM can only enforce an affinity policy through this hook if all possible
-ways of changing a task's affinity go through it, but writes to cpuset.cpus
-don't. With a BPF LSM program on this hook that rejects any mask containing
-CPU 3, sched_setaffinity() to CPU 3 gets EPERM. An unprivileged user with a
-delegated cgroup v2 subtree can still write 3 to the task's cpuset.cpus,
-though, and the task ends up on CPU 3 without the hook being called.
-cpuset_update_tasks_cpumask() just calls set_cpus_allowed_ptr() on every
-task in the cpuset.
-
-So what this gives an LSM is visibility into sched_setaffinity() requests
-and cpuset migrations, not control over where a task runs. That may be
-enough for auditing, but the changelog shouldn't promise enforcement. It
-also looks like the kind of gap Paul meant on v3 when he asked how this
-fits into a more comprehensive approach to resource control in the LSM.
-
->-LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p)
->+LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p,
->+	 const struct sched_attr *attr__nullable,
->+	 const struct cpumask *in_mask__nullable)
-
-Since the BPF LSM is the only thing that reads these, please Cc
-bpf@vger.kernel.org and the BPF LSM maintainers (KP Singh and Matt
-Bobrowski) on the next version.
-
-While the __nullable annotations do what you say, and a program that
-dereferences either argument without a NULL check is rejected by the
-verifier here, there is still a problem. Existing programs on this hook
-that follow Documentation/bpf/prog_lsm.rst and pass on the previous
-program's ret now get attr in that slot. One declared as
-
-     int BPF_PROG(x, struct task_struct *p, int ret)
-
-that returns ret when it's non-zero loads and runs fine, but with this
-patch the verifier rejects it. LSM hooks aren't stable ABI, so that may
-well be fine, but the BPF folks should get to say so :-)
-
-> 		if (setsched_check) {
->-			ret = security_task_setscheduler(task);
->+			ret = security_task_setscheduler(task, NULL, cs->effective_cpus);
-
-The kerneldoc you add in security.c says @in_mask is NULL if affinity
-isn't changing, but that isn't what happens in cpuset_can_attach(). On v1
-setsched_check is always true, so moving a task between two cpusets with
-the same cpus and mems still calls the hook with the destination's
-effective_cpus. With a v1 cpuset mount I see the hook get 0xf for a move
-between two cpusets that both have cpus 0-3, and Cpus_allowed_list stays
-at 0-3. On v2 the same happens for moves where only the mems differ.
-
-The hook also can't tell this from a sched_setaffinity() call, since both
-pass a NULL attr and a mask, but here the mask is the destination cpuset's
-configuration, rather than something anyone asked to pin to. Please say
-in the kerneldoc what @in_mask means for cgroup migration and
-CLONE_INTO_CGROUP, so LSM authors don't treat it as a pinning request.
-
->+		lsm_attr.sched_policy = policy;
->+		retval = security_task_setscheduler(p, &lsm_attr, NULL);
-
-For sched_setparam() and SCHED_FLAG_KEEP_POLICY, the reset-on-fork setting
-that gets applied also comes from the task (reset_on_fork is set from
-p->sched_reset_on_fork above), but lsm_attr.sched_flags still belongs to
-the caller. On a task with SCHED_RESET_ON_FORK set, sched_setparam() reaches
-the hook with sched_flags of 0, and sched_getscheduler() still reports
-SCHED_RESET_ON_FORK afterwards. If lsm_attr is meant to show the hook what
-will be applied, SCHED_FLAG_RESET_ON_FORK should follow reset_on_fork as
-well.
-
-Chris

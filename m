@@ -1,111 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=148.163.158.5
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794576491;
-	b=bAni5j2O3BXo8n2yhbtynw3HLD33Go4mLYn+zFfNnAkYKOzHyxcz430koar8BueL+ME5
-	 gni9XkxvZePN7PjFlW4WpGzLB4U1Qi6AnIFLb8KnwXZJSdYrybYbbbeOoZBDnlo0Xc7zu
-	 7qdfygT9vRxOmGC5oRvpgK5DQ6LZphXvJACppMs7kz1WXxphjndYIOF9wMFwjV9p5E1yt
-	 bqf5Yk2fcz09UqnlG2KOEUeCkHcVcSoF7WrMDpapFYAu60ywvMZrBCehmDzE1VwpWvHuT
-	 ysqOflSA7ynOGddb9wIakN64zdyXV8iIhK60iQxW3srcRcVn+/kkrQO1uzJ8vMqaO5g==
+	t=1794576662;
+	b=koKl8NxoVm/+Gh9KkLm9qEqLE/ed9oJbL+J+IC5SzeJ5LlcFys6HfqNcs2efxFLyT4UK
+	 PZW2mKtJwh2KzuLhVgPMZI8NOKuDdNc35teCaHFJ91VfVder1zz1YnRjF0fKLvRuFE+4S
+	 q7H0nFNPKUCUpYGfP9EJVtLVRErPGXkMCvG/VixTf/08mx5yrDk26fQ9o0k23Ws+A6/AE
+	 5Pfnqy4Shwa+CKe+0Khr7YFZWXK4MjUV+aKJg947Ecf9DtLPDaJ62oTMNSWngeT7Mlq1q
+	 E1sBubt6gkJdBZsWlDaDnpXxm078rdTPUdGwfQvOKa/bPsP7/4YuL8y75e/YC1O+ozg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794576491;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
-	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
-	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=9LjiGBOCX96rSSNvEfoUYGWvZrwuFjXNaoxWrBLQT6A=;
-	b=OQ09DGtX5hd+sdHBT+4zx6P7PrNpcBY/zKHUDZk+6PXDtJWbbsfis5GNkwp7OmLB0kv2
-	 hKtfScRkl3UfHnEgx8hb0APZmd9IjlwXQ7mP9OfcSWv0mWKhRig/DVtJQCZe7fqzGqiGg
-	 MRhJg1MtYTxbokDDnrpMih3w8yiGdu2PhPTcQI2FMRRKfATFF9TbeWmtsGN2AiI5gOxYZ
-	 XiubUsdPkUhSZkUMb0ZrPasLMKhgrplUTlYgVbGZIHsLCKc+SFuBWnTyWBFUNPvH36k9i
-	 qpNlXu6Ld6xsBcvRo4RsbAPG83dU4HbcsOI95OHUhE+L2zUk5jL5H2sThYj05Yuuf1A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794576662;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Received:
+	 Received:Received:Received:Received:MIME-Version:Date:From:To:Cc:
+	 Subject:Reply-To:Mail-Reply-To:In-Reply-To:References:Message-ID:
+	 X-Sender:Content-Type:Content-Transfer-Encoding:X-TM-AS-GCONF:
+	 X-Authority-Analysis:X-Proofpoint-Spam-Details-Enc:
+	 X-Proofpoint-Spam-Info:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
+	bh=sjfGDhqsQQgcjYHH2kwsSi64IsRr+LqbxLOZSsUHavg=;
+	b=jXQ1az+zeqUau4Z/xaUdwgetrX5/u1GGXKxIINEzhdo2V6JxsIcldOVVk3auxxp22n8h
+	 JfmtLFqkW0X5uE4HhDGDoHufYtj/4ndcmfoiuR2+/0j56+6Q/XHPiXnMxWSBb4nG20Kis
+	 eJhshWOhSZugTqosdWfqKqCulnv47RI6P4OZFlh4HEAHKXBW7cSeotWFue21T4W6oWm2K
+	 Oj5fBxb5ytFkKlj8C2zCvJVFsE4tVrOaBtC5qIjXe9KW1w9Z36rAsKjB632vTTX++EWuy
+	 XcYsp3OqOXOjAJ1YySUQ6IOOe3TxzQzA4LBhebd3svzgUepT0IKcFRKSrZtmm8u+KtQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arndb.de;
-	spf=pass smtp.mailfrom=arndb.de;
-	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=N0YpG+6V;
-	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=Ov0C+g5q;
-	arc=none smtp.remote-ip=103.168.172.156
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+	dmarc=pass header.from=linux.ibm.com;
+	spf=pass smtp.mailfrom=linux.ibm.com;
+	dkim=pass header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=FBcqAvpP;
+	arc=none smtp.remote-ip=148.163.158.5
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9D960A6F65
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 13:28:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BD9D960A6F65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EBB606A33B;
+	Fri, 13 Nov 2026 13:31:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A4EBB606A33B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=N0YpG+6V;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=Ov0C+g5q
-Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id DA28A140011B
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 08:28:09 -0500 (EST)
-Received: from ams-imap-03 ([10.64.2.23])
-  by ams-compute-02.internal (MEProxy); Fri, 13 Nov 2026 08:28:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1794576482;
-	 x=1794662882; bh=9LjiGBOCX96rSSNvEfoUYGWvZrwuFjXNaoxWrBLQT6A=; b=
-	N0YpG+6VotxmnaMHi3/JC2VdweYEB7M8XRDkaof1NUGOOcd0ZBtmR9r/lMmcYckv
-	EOcvdPvz2o3IaVYaMO3UffHmetwLHTJ0/3zxtjhEQd5VOdayFxW7UIrUl/pxJNKd
-	4kdMs3Jz83wfA/zXnSoxeXAUPq1WyxtvKHIO9qXFJyC36EUUc65djl4ts8Ivz85H
-	u8UII1h0IdXQ12zdPLCnAQmAde50Da7Udy9ijunLM57mxGQzxKxhIpjWznZOZA98
-	87w2sRKcK3nYCP9x5vxmWKyuWJ1X8G1RpuLB9N4rushPYrIItGdsfDK/CdWIu7an
-	VxxuUBie12c6guR2UrRnvA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1794576482; x=
-	1794662882; bh=9LjiGBOCX96rSSNvEfoUYGWvZrwuFjXNaoxWrBLQT6A=; b=O
-	v0C+g5qI9tqFVe2d85pPGKqA+YvASu2BW8zrxQKSSqQg13rvrpm/2QZNtgQe2OM9
-	g2EfTzMrDzcZjjkyd7gSjpYA/0LBhZmezlnCI2vxI3EYhE45NbG3LIBWMqVU/iVP
-	6JiBhtl6gHglEpqIMgGRtMffnrTbdsP6VMpglQMXLWmf45DuAW4NfrNB6TbXvrrH
-	B11c4W79p65GZdDuB/PrluWyuQfZAUUu84klK530xk3aXBqqN7SbP/f7/lUTkoAC
-	GzRlSVJjJKcXLnzXJQQPTbGT0A01XL1PvmBSdNF8d3htGwV+NERn0eyC59qvetI3
-	J7rQuIqDwG3GO1vl3dr9Q==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=sign d=arndb.de a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1794576482; d=arndb.de;
-	mf=PGFybmRAYXJuZGIuZGU+;
-	rt=PGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnPg==;
-	s=fm2:rsa-sha256:ch24h9+OrdJgYwDOlVZA9AwejN2abn3u1znlF3UugLGmWq+
-	p+PgY9XTNekkPPYdz3PdwdaRxiRHFS5VmxaEyHUX9FDl+yEOuqVjMebVf6DmAa2X
-	2qmMl1Zomo3my1ZFfwxKsJIUhDy/TgkkQp48F6J3t5NA40APhYrzaLw4bmyiAx/9
-	1nzINT549NRnXywIKttAtUaC0nifP7GzsWw7Eyh8wA/odd1+lkbpLoCbQ0QlwVgM
-	pACEZx1eODB4MiNET36yNVWDv3lFTJB9UJKdE6k6swYskSUU4Wji+ZNlyAV4a8id
-	zZhLCVl4d5dq45fAgw7YdpH/lc89WfTwi+ZafLw==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=mi-m=1; hc=12;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,subject,to;
-Message-Instance: m=1; h=sha256:+RjTD/Q6NsCEgZiZA8pRig93q5sJxLp5l6HZSEV+DLA=:O/OcHSU8JkRF9PSdP1ksG6mZ2UARTkzPpJRFqU1qOjI=;
-X-ME-Sender: <xms:WhD3auR40-FcGgLStJFAEfcRvrMX8H0mvFM410_VV1FS_ePeLU19Tg>
-    <xme:WhD3aukkZitBMSw0JDPCHF2enaff40UalIqHetZytUZZoz0QwbSiM6fvxx0JiQ9ex
-    Hyc7pInqRfaKe6cOLxuInmZ24kvcCI314Al9tWrn7W61VyduTfYvOtK>
-X-ME-Proxy-Cause: dmFkZTEFJNUm4FXXB3dty2rNQcE/EDDYqXdEkDcBe16pFUwLRr8Gp2x7ZSZu7gpf0p9f3Y
-    4d3ODBGKp/oGuX3xSeKhp3H+liRpNaxKLVbDIUNvU0I8zLx5fVOuQww3Hz2rhgRfM84oAQ
-    8k9XMWFDehywM8dzGAaWn0vmtnRDaTStO47BqZE5YhQVXiLdlnIY690QOItxDwiBdv9MMU
-    Z7UBxInI0ppBw6Hzow2yH3bF1UoA8At/iSCZ/JZhU5L9ecn3HGyThco2v/BekIAmvRmWJn
-    nqjGEapPHQzjNwlOabfCBHeMGt0FdoKp8KmgOym8Z5y0YmImYFgOmkdj7tnXi6IxKTWRD0
-    FbDPdpE4QNo6ffD4xFhSS1Xh34bByPoh6wcTCQeK3fm/52BwrTKvIEyJHoO+HeR8MyM+W0
-    NyMk8FRVDuj7m/xh9ao5EA7sxN/q2x+5PRZ26NAHI/Qo7U/0iWi1x07RBjIQhu5ZVY7A6A
-    6llRu3LXnxwAf2QcHbVGqiJAj83dWlPQssUKTurtC84L+XkNoEuw4KfIxLQHwoyU0H3vW8
-    q7+OKIuSNeUqb4GIfWSfcB5DlxiE+KxnQrb/r8Nbe7Ocjyr7+oCMrSVg2CuiLbOshXKZWu
-    eE0hF5SgnEempN0hxu1pQPY2zmLIoXsGm/rC9GYOfy4sdCJD92ElePHltaCg
-X-ME-Proxy: <xmx:XRD3an1fDyF-neVerilFGd5u0Zop4xn_s-2N7L6zT8xywKb734yc0g>
-    <xmx:XRD3avdB-CET59b-lFOEC3kIhpBrb1VS0j98K6ijbHfbYkv_YljGyg>
-    <xmx:XRD3agY-q1NvVxBmJthtyWKnQP9znqQPX5d7i8tFfmRNv17Yxic3aA>
-    <xmx:XRD3asVKYxec1BSUm6fqriuiDdr9xHzbjhrW20-xFWGhJQj7zhit-Q>
-    <xmx:YhD3apEu49FoFTAFU0avFw9DZejfgIEmbd-iCLg5FOUGeyh2yVwZFjGp>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id 6893A32A0099; Fri, 13 Nov 2026 08:27:54 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=FBcqAvpP
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6ADCEPf31667815;
+	Fri, 13 Nov 2026 13:30:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:to; s=pp1;
+	 bh=sjfGDhqsQQgcjYHH2kwsSi64IsRr+LqbxLOZSsUHavg=; b=FBcqAvpPcebE
+	gm1Mg6Xfg2yNvftA6HvGkzDVDAupWZAPP1PsurYNXIv70pT/WVVpohDPlHhD0zfU
+	wFfIWLO38k/oL6A2cfsKF4Ego51TmoVmz1kD1bABqdNY6FqV1FNwz8Mr8Ai9RwQ6
+	/7BbLHM2jAi1uqwN+mR68d5r7Wnj6xctBdIZ7jvPLUDrIb8uo1RoT6dvg5PnVxXV
+	65/Rj/mAnUnas5LJ2jeBQDpUMPDhK0MTdyMImmriNOsAYqWdDnByayFe9SU26DEC
+	lM+Cp7kx+00Oj3x7tXZMa75GKmCN4qixQqetjUyvCPpA9y27d3uV3yI4GxDpB8ON
+	H1PYMbgirw==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hstdgjmrf-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 13 Nov 2026 13:30:55 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6ADC5FMv2213383;
+	Fri, 13 Nov 2026 13:30:54 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4hwegfbyw6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 13 Nov 2026 13:30:54 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6ADDUrOL63832502
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 13 Nov 2026 13:30:53 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8985358067;
+	Fri, 13 Nov 2026 13:30:53 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2E33C58043;
+	Fri, 13 Nov 2026 13:30:52 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 13 Nov 2026 13:30:52 +0000 (GMT)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -115,54 +83,114 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: A1iXVo9thhaB
-Date: Fri, 13 Nov 2026 14:27:14 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andrew Davis" <afd@ti.com>, "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Paul Walmsley" <pjw@kernel.org>, "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre Ghiti" <alex@ghiti.fr>,
- "Philipp Zabel" <p.zabel@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-Id: <c7d332ad-09df-42ca-a73d-2dc48ff2c245@app.fastmail.com>
-In-Reply-To: <20261112214223.765100-1-afd@ti.com>
-References: <20261112214223.765100-1-afd@ti.com>
-Subject: Re: [PATCH] reset: Remove ARCH_HAS_RESET_CONTROLLER Kconfig symbol
-Content-Type: text/plain
+Date: Fri, 13 Nov 2026 14:30:51 +0100
+From: Harald Freudenberger <freude@linux.ibm.com>
+To: Sasha Levin <sashal@kernel.org>
+Cc: Nicolas Schier <nsc@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+        Holger
+ Dengler <dengler@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily
+ Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+        Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "kernelci.org bot"
+ <bot@kernelci.org>
+Subject: Re: [PATCH 1/2] s390/pkey: Include <linux/device-id/ap.h> for struct
+ ap_device_id
+Reply-To: freude@linux.ibm.com
+Mail-Reply-To: freude@linux.ibm.com
+In-Reply-To: <66e4ee9c7f9b4bc48fcee92a94b6bb6d92fe1ad2.1794233316.git.sashal@kernel.org>
+References: <cover.1792144769.git.u.kleine-koenig@baylibre.com>
+ <179416565740.60865.16102443399828949110.b4-review@b4>
+ <66e4ee9c7f9b4bc48fcee92a94b6bb6d92fe1ad2.1794233316.git.sashal@kernel.org>
+Message-ID: <c9762ccd45e25032384bf9d83fa39765@linux.ibm.com>
+X-Sender: freude@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=J+M/fwnS c=1 sm=1 tr=0 ts=6af7110f cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=kj9zAlcOel0A:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=U0zfkUukAAAA:8
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=fHy9Ve0kNF58s2Fdc2gA:9 a=CjuIK1q_8ugA:10
+ a=rXRU1dkEVDZ1dOovDhQH:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTEzMDA1MiBTYWx0ZWRfX2yEBsMs3Fufc
+ X6ekDLWcm+zuX3nZH7lq9SbE6VKES2cB7zbRBXOKX4qnt6Kr1Zcop1JqjrMcj2u/6XuK3hoP3N+
+ 5IWH9kZ88j7hBXmmH6YpnLKDL5Re/ojiGWzAhhDA4+ctqHxhM7HY/MA1yGyfGLF/4U8I8a7Za6M
+ 0CFLE0RmDijyvQXuRxEoTA4iLGFoORWy191AcdKfRSGSImEUJOZg5oynXrcfZbqsDMOptdIP3Hb
+ mRMowyejOqOlm+ZKDs7qBboJ/3E+r6JPeT1iX5eJjkcu7qOlI9bL1VTvp/8eoVPfOnsr1FieL1m
+ /oCE+46hk0b5PStRwFXBqw3h3d35RJ/6GYv6YVo9G2LHYyVa+uFyW8Pi/IBUb5vUZvc+Mwg053W
+ MN2bLO8iDs5vaazt6/JkPBU013CetqcIpHxuguyT/+9GPQo2ev+6O8h4aTMkvmKIPIqhBnpZYY+
+ iXYmFpDK0Fipl/BioNQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTEzMDA1MiBTYWx0ZWRfX7nb3+ufzodPl
+ KsRl5+G2CveEw3hjF3u4u2jzp3ByxtkPDzd5C8XzMvXVEd2kKQsZ8IVfsUJXOQK2RQ1gqZvmUl4
+ BNKtz+8onhMo7Q/+OltEy138iMLQ2AQ=
+X-Proofpoint-GUID: GMFUUyxkH7_jTqBOBqxJPpjx62uyavg8
+X-Proofpoint-ORIG-GUID: GMFUUyxkH7_jTqBOBqxJPpjx62uyavg8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-11-13_04,2026-11-11_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ malwarescore=0 clxscore=1011 priorityscore=1501 impostorscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2611040001 definitions=main-2611130052
 
-On Thu, Nov 12, 2026, at 22:42, Andrew Davis wrote:
-> Many ARCH_HAS_* symbols change some behavior based on what an ARCH
-> supports, but ARCH_HAS_RESET_CONTROLLER is used only to set a default
-> for RESET_CONTROLLER. Those ARCH symbols that select this can skip the
-> middleman and directly select RESET_CONTROLLER, and many already do.
->
-> Replace all selection of this symbol with a direct selection of
-> RESET_CONTROLLER when it is not already in the selection list. In the
-> latter case when RESET_CONTROLLER is also already selected we can simply
-> remove the ARCH_HAS_RESET_CONTROLLER without changing existing behavior.
+On 2026-11-09 15:14, Sasha Levin wrote:
+> pkey_cca.c and pkey_ep11.c got struct ap_device_id from
+> <linux/mod_devicetable.h> by way of <linux/cpufeature.h>. Commit
+> cdfdbc11552b ("Move struct cpu_feature to <linux/cpufeature.h>") 
+> dropped
+> that include, so s390 defconfig no longer builds:
+> 
+>   drivers/s390/crypto/pkey_cca.c:22:28: error: array type has
+> incomplete element type 'struct ap_device_id'
+>   drivers/s390/crypto/pkey_ep11.c:23:28: error: array type has
+> incomplete element type 'struct ap_device_id'
+> 
+> Include the header that defines it, as the other AP drivers do.
+> 
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+> Closes:
+> https://d.kernelci.org/i/maestro:7baaa311bc9c30a8ad43f42c24225ab2fead866a
+> Fixes: cdfdbc11552b ("Move struct cpu_feature to <linux/cpufeature.h>")
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/s390/crypto/pkey_cca.c  | 1 +
+>  drivers/s390/crypto/pkey_ep11.c | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/s390/crypto/pkey_cca.c 
+> b/drivers/s390/crypto/pkey_cca.c
+> index e8dc2f77c137b..f95d61fd5b090 100644
+> --- a/drivers/s390/crypto/pkey_cca.c
+> +++ b/drivers/s390/crypto/pkey_cca.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+>  #include <linux/cpufeature.h>
+> +#include <linux/device-id/ap.h>
+> 
+>  #include "zcrypt_ccamisc.h"
+>  #include "pkey_base.h"
+> diff --git a/drivers/s390/crypto/pkey_ep11.c 
+> b/drivers/s390/crypto/pkey_ep11.c
+> index f99c19323f3d7..f66fc97ad5adc 100644
+> --- a/drivers/s390/crypto/pkey_ep11.c
+> +++ b/drivers/s390/crypto/pkey_ep11.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+>  #include <linux/cpufeature.h>
+> +#include <linux/device-id/ap.h>
+> 
+>  #include "zcrypt_ccamisc.h"
+>  #include "zcrypt_ep11misc.h"
 
-This is fine
-
-> Some ARCHs "select" this symbol when they actually "depend on" the
-> RESET_CONTROLLER framework to build, in those cases the indirect select
-> could lead to broken randconfig builds. In cases when it is not needed
-> for building the ARCH code, these selections can be switched to the weaker
-> "imply" to allow it deselected for minimal builds without reset support.
-> Additional checking will be needed to find such cases.
-
-Please don't recommend the use of 'imply', this is rarely what you
-want and everyone misunderstands what it does.
-
-If you want to have a default, please add another symbol and use
-that as the default value, such as
-
-config ARCH_WANT_RESET_CONTROLLER
-      bool
-
-
-
-       Arnd
+Acked-by: Harald Freudenberger <freude@linux.ibm.com>

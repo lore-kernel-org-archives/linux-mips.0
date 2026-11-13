@@ -1,104 +1,80 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.16
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794596928;
-	b=DlS+/9DA3ycz3r9XRRqVvgQ3kI4pydn9etczKZ+Qzlc9O5nAwBlk2L3Lnhsv2KwZ5CAo
-	 K2pY5Rc+ZQHyP/AKLzsB2wsdO2b77k05AeDIyiNNU1fDQH3kGRjzF5KjTfu8Pn12BCd1L
-	 /02yEkbl/Y4lOgDg+17LRB58hdUj3eDwsYwJ5nha2+oX09YMrRlr2iXoN5XdrYNKzopRO
-	 LKInq7icUYzk2SPxnE2HbQo1xh4bZs8Yc0F0kCCoXvsoKBJ5AlPL5lEqRsvE9fWawexQZ
-	 HIitpsCuDbvecuOOyDN5QczZWrkAX0T1dbytNHrtBjE9rrqlYiBu5/Ocj51yYNbd82Q==
+	t=1794597015;
+	b=B/QFmG5mDN1OuBsOy1pj0NCaGhJ4xaQmjpuF35+rIRzgxhqkoNrzPJgGzc0OoSSC2GMB
+	 SYiBoooYeL1VLnO3aVsxCsU860xl0s1Fg0ErsAmb4f33Dl+J63xrOuW1ZVTl0UxwjO/N7
+	 5Qrb7kkCFhapaMpDY0yUZlyn30uC4jXqkd9Jg7FRiFJTLcP1kh5u2mzxMiaZinwzmrKwo
+	 2Ae/NJxasn7rXlmEJidxbTL92Nc7UJKlwVXwQUOWC09EnZFs3DkoZnFpHhyjCXyfBJB7P
+	 05DsVvmTN7WA1i1EyMALJtMaZNSSZbDlUx5OZhnZBTra8ErCqLfWcrkHNra5D4Bx3Xg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794596928;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=w9+uS//+4af4PzBkDEhgycJpPiPnu+xIQt8Ostr/eb8=;
-	b=V3um2VaQTkBvo/p5yenVKqap3vW8bRRf27//AbdkR6RnNY1SZdc/IXBNM44MBU++nEII
-	 +vyAB20IJbehXQT/M1fdfFN1ECk+0sBvX+J4bFV5XGjWqo5EdN8ezF0D0akTkQi7eNwOn
-	 Rs9tJLIk+eUIlfTAZuYewmx7Eu8HPih+CI1UtsCbtXMU0ZtGyUBQbxmtlA7caCshz1Fz9
-	 jt9LcEH6ZvSXZTvO6Q3JEo3ZsrCKKaDXsMn4AUBO8kUPWtL5gye9lHug+pUGW9ui/gAv8
-	 H9k0Ta46VlX6wK0YbMwUkFkx9lWALWl7B7gZK2Jr8RrqER/TQtmCBgJCn0npPKSinUg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794597015;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=zeSc0Kmi4ulP+o8LuWHeCs5C4EMGcAlzHD8FkG+e35Q=;
+	b=yqTJ6BMdzTf0X/vCjomwyxZQGdLb7jctrw+XV2Xe4tNQS59p1Exh/uUQHW/Ylw8wTQ6O
+	 FFJFRSTZFQZqdAVCGhdaPyPXgMKRySfeKSv1zqPKAW1QncdDvuheKqesZzvLhokgRlddU
+	 APvcXd16NQBK8BW4u+IOAZzRqyxH/yWgaFr02cI0EAymGh8Xx7IfjJH25Q+OZWb4DjwkV
+	 SsjEPHszaY7Lj+Exn3LIwxl7/iEe001pQXzLixPkWSvfugxSt7UANRyrX6LJYt09NgLwV
+	 Cp+ELDXOifD1Bo4teyG0nAuwxqiCBHsJuIyA6A9OAa3xIX10lrF9EgufSof+c/uwpKw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=MDooZqaB;
-	arc=none smtp.remote-ip=74.125.82.173
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com [74.125.82.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BZ5XgBQn;
+	arc=none smtp.remote-ip=192.198.163.16
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C785F60A6F63
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 19:08:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C785F60A6F63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1607606A8BF;
+	Fri, 13 Nov 2026 19:10:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E1607606A8BF
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=MDooZqaB
-Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-3712b6d9843so1264099eec.1
-        for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 11:08:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794596927; x=1795201727; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=w9+uS//+4af4PzBkDEhgycJpPiPnu+xIQt8Ostr/eb8=;
-        b=MDooZqaBODVtmrAEROIhZ+YR/IZ2G7Dej7dChwE5k7mdUoSo73eh84tWWl3tlb3wZP
-         XOhFph/aNh8LZ/qM1y8R9CJapK4naTGGNmSKML51tgeDwvNvYSXUsoaiMBx4Wo2eQ5Pt
-         J41+8XP+rka+5f88vrNiIG4mp5/vmwS5Qo9eMgJ2jrocKgufYauwDC79Mt1J61WgfRXL
-         KAkVdNIwP0OJAvoFFFHqMU4JOjEOEOFIwTKOlpycSTlhIxfIC+GOIArlK73I+caDlE/R
-         k728aO6xXpyFmqdJQG19lJxd5E+RjB/EvOCJVQOoSzwngLVNIbb8Ki16Ul7RtKxPpqXC
-         4MqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794596927; x=1795201727;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=w9+uS//+4af4PzBkDEhgycJpPiPnu+xIQt8Ostr/eb8=;
-        b=uDKQZw+vLoR1Qk8W7OlB8ox4zhH1g7pVWRKnxUF0IKbQACidzL3N1gBtuSyu/Yxf6r
-         p7bvjfngjZEVNv2fR0UMGH2MpwWkQhzdu941X0g0rbIzGpklYcu4hsYVQDUCsNPCR1DE
-         Fw4Tm/iIL9POydUOXZ0YTRbX4OBNZD8VE49vco/DQHDkR2YjWzi8IcVbBPv1yJOl3ZS8
-         MoOR9AsGbUemwOP/h04cstUzsXk0KcIj2U68f/myGf3126duXdnijHm4ionVdRTdl8Xd
-         jlGDNnWDEKKHAyAZebv0aSkf3MROJwBbse29EeaaGWeQvIT3kHKkq3uA7sBCR7JlBRYg
-         yiyQ==
-X-Gm-Message-State: APuU4Z/h+DYvsvV7JLq6+f5tI/0FWD5vUFPRQvEUgqxlqRl6honOQnmk
-	vZtJAPnTUXPye0HXQV7p9BDlx82V7JAAoL/MGZmi5fddyijQJaoQbtnhODQJpg==
-X-Gm-Gg: AYBFou0CA4r5tFfhrCojCR6R6XUhsjTl5r02xVmP7b9nwq1+wmUd32Z8uEQgxNe9QwN
-	dAthkXT1ET5xWd7K5Sn930ycc15POR6a2fNa6vrfVGIxkfxBZxjmG9FMwzI7c371Uwou4jt2A1B
-	dghIn400G8xpc1jVhhWVeYv1CY3fqvn5hiBqmDhaG8g1p+CSJc/xOE0u3wTYn55gEHntUUq/uEc
-	fNuEBFfN6x5Wu+dijAMKIVgma248+hBsCDK6RsygzUXzZOPtF0/i58wyfcrhhU8rujSCJc4iFCA
-	g7fLKDq4+3cSUQmN8m4Q2XMg059uFTEDjPon1wVUYoTHJBZV+CUWdY5B+xMw0h012Bm8qMa3LlK
-	5eWrFrHHgE/wGNeE0v8RzBOqrydOlAROkcz0DfyqMAqv/08ERNsB7LsCIgrbEcGcfHtDDkH7gHa
-	oGMPqse7HBfhguhW8J2z8Q052SflWfBArVmkDF7wL7GPmLKT13vmiyhwPtUZaA+2kUV7eU4eEnf
-	4qe2TvVzFO4FJdOQrgi4RRC/mPalGoKG8zoGTrXpz5P/bJFJD35LMlm8yMHYWaapoc6h3CaY0tG
-	/3zgW44N
-X-Received: by 2002:a05:7300:6148:b0:36a:270:ce76 with SMTP id 5a478bee46e88-379681c69afmr4380882eec.33.1794596927130;
-        Fri, 13 Nov 2026 11:08:47 -0800 (PST)
-Received: from eldorado ([2600:8802:b00:1f88::287])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-379569b8389sm15714037eec.25.2026.11.13.11.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2026 11:08:46 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= <zhouyanjie@wanyeetech.com>,
-	Paul Cercueil <paul@crapouillou.net>,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BZ5XgBQn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1794597014; x=1826133014;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AHpBbQRSEabbHUaavN2fFxopt7Q6u6OmKX3uFoHEXWU=;
+  b=BZ5XgBQnDglIyhdHBFeX47CGh6Dp9AAo5S63a3cqyvd4abaRQYc72qRY
+   hcL5dmCQBpfbcXifC3kOlHc9gjrRj1UdYeQiS7ZcnbHKGMjNTyM208jeD
+   J7mnO4qFtqJ8Zc58oAFSKBD0j5k9qPHByRzjnJoCxHexaZ2M9nKZiAXXB
+   mupKSGAK5nORzvIECLBFGSMHAv/wpreTA5zaNy4DgJHD4p1zWr+B9rNP1
+   nJYaNiz1VUt2vi2kaMyws14Ea7V7gKXAPC2hibSq8Fg9AxcKeQL1ICUUA
+   PoreLyhCBUiUHGi0E32Rr8VcNQjn964AxC8xZiijmmU40UfXqhnnXH1wv
+   w==;
+X-CSE-ConnectionGUID: jq6vt+SGR+2LwzFXUqPixw==
+X-CSE-MsgGUID: lNC9c9HhTmSH3ekxxqU/rA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11965"; a="3444568"
+X-IronPort-AV: E=Sophos;i="6.27,212,1787036400"; 
+   d="scan'208";a="3444568"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2026 11:10:13 -0800
+X-CSE-ConnectionGUID: Ma3FVthRQ1GYT2wYe5gHOQ==
+X-CSE-MsgGUID: iCDfZ9/nQJWs5TGzoEiIpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,212,1787036400"; 
+   d="scan'208";a="9158508"
+Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 13 Nov 2026 11:10:10 -0800
+Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xRwf1-000000013kL-3pZr;
+	Fri, 13 Nov 2026 19:10:07 +0000
+Date: Sat, 14 Nov 2026 03:09:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, macro@orcam.me.uk,
 	Florian Fainelli <f.fainelli@gmail.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Paul Burton <paulburton@kernel.org>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Brian Masney <bmasney+clk@redhat.com>,
-	Jerome Brunet <jbrunet+clk@baylibre.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-kernel@vger.kernel.org (open list),
-	linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-	hns@goldelico.com,
-	paul@boddie.org.uk
-Subject: [PATCH v6 4/4] MIPS: CI20: Enable SMP with two CPUs
-Date: Fri, 13 Nov 2026 11:08:36 -0800
-Message-ID: <20261113190836.470937-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261113190836.470937-1-f.fainelli@gmail.com>
-References: <20261113190836.470937-1-f.fainelli@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: SiByte: Fix missing function prototypes
+Message-ID: <202611140242.xhMf9lU3-lkp@intel.com>
+References: <20261112195824.298915-1-f.fainelli@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -108,39 +84,70 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261112195824.298915-1-f.fainelli@gmail.com>
 
-From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Hi Florian,
 
-Enable both JZ4780 cores now that the generic Ingenic platform provides
-secondary CPU reset and mailbox support. The existing device tree
-already reserves TCU channels for both per-CPU clock events.
+kernel test robot noticed the following build warnings:
 
-Link: https://lists.openwall.net/linux-kernel/2020/05/19/739
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-Tested-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-No changes in v6
+[auto build test WARNING on linus/master]
+[also build test WARNING on v7.4-rc2 next-20261112]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Changes since previous posting:
-- No changes to this patch; renumbered after the IPI prerequisite split.
+url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Fainelli/MIPS-SiByte-Fix-missing-function-prototypes/20261112-115739
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20261112195824.298915-1-f.fainelli%40gmail.com
+patch subject: [PATCH] MIPS: SiByte: Fix missing function prototypes
+config: mips-bcm63xx_defconfig (https://download.01.org/0day-ci/archive/20261114/202611140242.xhMf9lU3-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project 1b1fed44d3dcca649a9877915d57c3357a98124e)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261114/202611140242.xhMf9lU3-lkp@intel.com/reproduce)
 
- arch/mips/configs/ci20_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202611140242.xhMf9lU3-lkp@intel.com/
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index 90536cab417e..09d65094b1bd 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -22,6 +22,8 @@ CONFIG_EXPERT=y
- CONFIG_MACH_INGENIC_SOC=y
- CONFIG_JZ4780_CI20=y
- CONFIG_HIGHMEM=y
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=2
- CONFIG_HZ_100=y
- # CONFIG_SUSPEND is not set
- # CONFIG_SECCOMP is not set
+All warnings (new ones prefixed by >>):
+
+   In file included from arch/mips/mm/tlbex.c:40:
+   In file included from arch/mips/include/asm/sibyte/sb1250.h:28:
+>> arch/mips/include/asm/sibyte/bcm1480_scd.h:261:9: warning: 'M_SPC_CFG_CLEAR' macro redefined [-Wmacro-redefined]
+     261 | #define M_SPC_CFG_CLEAR                 M_BCM1480_SPC_CFG_CLEAR
+         |         ^
+   arch/mips/include/asm/sibyte/sb1250_scd.h:392:9: note: previous definition is here
+     392 | #define M_SPC_CFG_CLEAR         _SB_MAKEMASK1(32)
+         |         ^
+   In file included from arch/mips/mm/tlbex.c:40:
+   In file included from arch/mips/include/asm/sibyte/sb1250.h:28:
+>> arch/mips/include/asm/sibyte/bcm1480_scd.h:262:9: warning: 'M_SPC_CFG_ENABLE' macro redefined [-Wmacro-redefined]
+     262 | #define M_SPC_CFG_ENABLE                M_BCM1480_SPC_CFG_ENABLE
+         |         ^
+   arch/mips/include/asm/sibyte/sb1250_scd.h:393:9: note: previous definition is here
+     393 | #define M_SPC_CFG_ENABLE        _SB_MAKEMASK1(33)
+         |         ^
+   2 warnings generated.
+
+
+vim +/M_SPC_CFG_CLEAR +261 arch/mips/include/asm/sibyte/bcm1480_scd.h
+
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  252  
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  253  /*
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  254   * System Performance Counter Control Register (Table 32)
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  255   * Register: PERF_CNT_CFG_1
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  256   * BCM1480 specific
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  257   */
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  258  #define M_BCM1480_SPC_CFG_CLEAR	    _SB_MAKEMASK1(0)
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  259  #define M_BCM1480_SPC_CFG_ENABLE    _SB_MAKEMASK1(1)
+8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28  260  #if SIBYTE_HDR_FEATURE_CHIP(1480)
+8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28 @261  #define M_SPC_CFG_CLEAR			M_BCM1480_SPC_CFG_CLEAR
+8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28 @262  #define M_SPC_CFG_ENABLE		M_BCM1480_SPC_CFG_ENABLE
+8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28  263  #endif
+4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  264  
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki

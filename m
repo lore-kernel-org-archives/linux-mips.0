@@ -1,80 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.170
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794597015;
-	b=B/QFmG5mDN1OuBsOy1pj0NCaGhJ4xaQmjpuF35+rIRzgxhqkoNrzPJgGzc0OoSSC2GMB
-	 SYiBoooYeL1VLnO3aVsxCsU860xl0s1Fg0ErsAmb4f33Dl+J63xrOuW1ZVTl0UxwjO/N7
-	 5Qrb7kkCFhapaMpDY0yUZlyn30uC4jXqkd9Jg7FRiFJTLcP1kh5u2mzxMiaZinwzmrKwo
-	 2Ae/NJxasn7rXlmEJidxbTL92Nc7UJKlwVXwQUOWC09EnZFs3DkoZnFpHhyjCXyfBJB7P
-	 05DsVvmTN7WA1i1EyMALJtMaZNSSZbDlUx5OZhnZBTra8ErCqLfWcrkHNra5D4Bx3Xg==
+	t=1794597587;
+	b=oeuFNP/Cn+A6lJe72IXc/5SgdAC7xeZh66lPswt4SyHSTm6aMtCU0sPTmD9meeqtVXlT
+	 0P7SDiv7PXITO3mqiSWkYhG4HvrbRFsIBBiLgyKyg1q8flLW1RmF1t9q9Ldypkdgj8iW6
+	 DIbZdO8T3YgPJjOLpkUGWTXMlmHanHb9bi0kvqapx4QDAbmRzAfVjgpODr+kQIns20p2D
+	 z22MGQBFcpKMYkIztTHYxSSHqxJ9Hc6WgOlyCSD/Ktrr7sRPWa6rvU797T9yJ+dzdW0iO
+	 lwst431Hp699tVUnXpcayI7wQeVeY6XUS/Lmt0CS+Av0drNltc+UaZWcm3Jtp7gimug==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794597015;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=zeSc0Kmi4ulP+o8LuWHeCs5C4EMGcAlzHD8FkG+e35Q=;
-	b=yqTJ6BMdzTf0X/vCjomwyxZQGdLb7jctrw+XV2Xe4tNQS59p1Exh/uUQHW/Ylw8wTQ6O
-	 FFJFRSTZFQZqdAVCGhdaPyPXgMKRySfeKSv1zqPKAW1QncdDvuheKqesZzvLhokgRlddU
-	 APvcXd16NQBK8BW4u+IOAZzRqyxH/yWgaFr02cI0EAymGh8Xx7IfjJH25Q+OZWb4DjwkV
-	 SsjEPHszaY7Lj+Exn3LIwxl7/iEe001pQXzLixPkWSvfugxSt7UANRyrX6LJYt09NgLwV
-	 Cp+ELDXOifD1Bo4teyG0nAuwxqiCBHsJuIyA6A9OAa3xIX10lrF9EgufSof+c/uwpKw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794597587;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=JIdyVUUoBkth+M+cx5jVMKNmaLvwy5ueEkwAsdvKPlg=;
+	b=H3kpWCxbISlyarCXXeqSt9l1xTC0qiNGW2PqOQ1RK1TCV5KO+e23vn3+pwSpvlX2JPmx
+	 C2StoZwb4VOcaOWtMiSW6aFtB6pGUtVz7rIWLb400Hj8TIwdlMcgg1dmRDoL4zCRQ4NXJ
+	 Bmh5L3L2FCQMrE+R+uGkJepsTWEsnjnuUHgmM7gQM3m7mZkirz73ykCVpL9Ujdwvn1Zg2
+	 ZJOuSPjoIbrNaxAs5BxvBhjNbr6LIW9U9ssNgtqi9M6VZdBje9tfHtVMqCR82kBLXKglu
+	 aDgNdAuDKNHIUj4gJc3xWkPTuroCsxg9740oNYH0BPYeAaYPmRwLFxwCz3J0tsU7Arg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BZ5XgBQn;
-	arc=none smtp.remote-ip=192.198.163.16
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="QfL5VWA/";
+	arc=none smtp.remote-ip=74.125.82.170
+Received: from mail-dy1-f170.google.com (mail-dy1-f170.google.com [74.125.82.170])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1607606A8BF;
-	Fri, 13 Nov 2026 19:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E1607606A8BF
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D08606A32E
+	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 19:19:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56D08606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BZ5XgBQn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794597014; x=1826133014;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AHpBbQRSEabbHUaavN2fFxopt7Q6u6OmKX3uFoHEXWU=;
-  b=BZ5XgBQnDglIyhdHBFeX47CGh6Dp9AAo5S63a3cqyvd4abaRQYc72qRY
-   hcL5dmCQBpfbcXifC3kOlHc9gjrRj1UdYeQiS7ZcnbHKGMjNTyM208jeD
-   J7mnO4qFtqJ8Zc58oAFSKBD0j5k9qPHByRzjnJoCxHexaZ2M9nKZiAXXB
-   mupKSGAK5nORzvIECLBFGSMHAv/wpreTA5zaNy4DgJHD4p1zWr+B9rNP1
-   nJYaNiz1VUt2vi2kaMyws14Ea7V7gKXAPC2hibSq8Fg9AxcKeQL1ICUUA
-   PoreLyhCBUiUHGi0E32Rr8VcNQjn964AxC8xZiijmmU40UfXqhnnXH1wv
-   w==;
-X-CSE-ConnectionGUID: jq6vt+SGR+2LwzFXUqPixw==
-X-CSE-MsgGUID: lNC9c9HhTmSH3ekxxqU/rA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11965"; a="3444568"
-X-IronPort-AV: E=Sophos;i="6.27,212,1787036400"; 
-   d="scan'208";a="3444568"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2026 11:10:13 -0800
-X-CSE-ConnectionGUID: Ma3FVthRQ1GYT2wYe5gHOQ==
-X-CSE-MsgGUID: iCDfZ9/nQJWs5TGzoEiIpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,212,1787036400"; 
-   d="scan'208";a="9158508"
-Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 13 Nov 2026 11:10:10 -0800
-Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xRwf1-000000013kL-3pZr;
-	Fri, 13 Nov 2026 19:10:07 +0000
-Date: Sat, 14 Nov 2026 03:09:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, macro@orcam.me.uk,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=QfL5VWA/
+Received: by mail-dy1-f170.google.com with SMTP id 5a478bee46e88-37600b0db49so2131020eec.1
+        for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 11:19:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794597586; x=1795202386; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=JIdyVUUoBkth+M+cx5jVMKNmaLvwy5ueEkwAsdvKPlg=;
+        b=QfL5VWA/nL0RQ2xzGEmq7QPpQdiNu3GFP8kHjLbveC/iK8iJj4xQ3GcH7XhRjpNH+X
+         IvXTHms9Nu75NgiRFsSKmsrmdoaf+Ulyyls5wR910QieBP10L1evwBUQuMGSGt4vbl7f
+         oP9auovrHLGFx/LD413AGNnInlQ2OzhCBnzPG5IBKXDkhRBTGLOw+M3BSZsBmBqRPzVI
+         phk6QNFzPDlKMgLCWCvFbe4Gc8GBqqToSQk9vIlZQXOWj7df4G7nWs4P/LpYXGikUfES
+         cG3JZftDnV+ZWihFOf+LYeSXJ6lg3HIHVBrhZw0EsE561ERa8WFGIy2JLY+72Ot3LF0a
+         L4VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794597586; x=1795202386;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=JIdyVUUoBkth+M+cx5jVMKNmaLvwy5ueEkwAsdvKPlg=;
+        b=2vptKoepFKkV5e/TySL8vh0gDQsNM0neGdSgkjRRS0LFaEfVSb9Od/tE3fpDYpQ7sW
+         F94DKdkkJWjVRjffSi7m49yVhH53K8k5ydABsXDGWNXtva00wAzHJH+30bCoi/0HN+Ap
+         5NKF7xOVwfcJKid44xx2IiBpMBiWKJavfQcL9I2iniBQJPFDV4blQUeF9LB5OrMHuuUh
+         DAYPt6A4SU3nKzq7aGAx0D3rsdZHhS8+W1w/wCczdht3sr6DW9UikdOxEwjcHM0G01bC
+         /gCRL3w/z72JJdZE5HgKufARBUA+SrPUsV1ewzhB/fzUeSP22wi+cbCRTP7Cba3U5T0+
+         EdUg==
+X-Gm-Message-State: APuU4Z+Zkv5MRZMFvVV1z5L0WajBF2k3njqEWbm+p80gJvBBl7sRdm0T
+	SfsrcE9yFyqbY/I4AP4Ft4pg40hSr+ll4ydRxdiGs+Xm+q7Kzgd4i+YUyuQshw==
+X-Gm-Gg: AYBFou1okeIdOpqy0jRU8/qSlIpPrhRUorg/AXBeGnYY48s+1HDu1xzG+++cS9p6C/q
+	eet+POW/n8h9o3AhHU9x4cq/DGd3VnEpfv5ZEZVgpl7V3a2Lv9Y451SXg8RFF9D3IU6Q6ddv2Qv
+	oQAdHZymy7nVq4VBzSC4auNnCWbDvxG8K42HOKo2yPOI75fkAIE+WaLNSAtD1xvl/Rb3b2rCpLZ
+	Ei8iWTggVtfxtLYE2sngKv6dykbIXfP+gInnSW321ZVp3pZrUY/D2PHMk8lCCd+FNXZvxSa6vdM
+	L0KL6gQx62gussibM9vZlK4QhzsCt9aU/qwPBAePLuH23MrJGOIPPNS2WSs61u4QzV5ydLVQdiW
+	s2lTUwPSpHEbYqR9L5QjgJXHaaDB2UlW5s2DzTXOYB7Q9qTRjPDVHpkA/dyTkt4QI5xAbFx6ch5
+	SFNcEtWcb1DYtIoDfAbrmIRRfCsmW36BMRwtLMArNCtRy7jYjvS5MI+fcECGW3QcY7F7jpBZaDB
+	9Qn7UMtylikMNlFs8WUyJTK+oXY+HKYmWq8ncSqe/LSKEz9XicU0h0/JhbNLcLC2cZgoSk1PY1e
+	765fjnt/NRTHP3eI4vIlZasi6wG3Qrs=
+X-Received: by 2002:a05:693c:60cd:b0:376:fa06:573e with SMTP id 5a478bee46e88-379658c795emr3191436eec.5.1794597586075;
+        Fri, 13 Nov 2026 11:19:46 -0800 (PST)
+Received: from eldorado ([2600:8802:b00:1f88::287])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3797f98b9b2sm9084971eec.6.2026.11.13.11.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2026 11:19:45 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: macro@orcam.me.uk,
 	Florian Fainelli <f.fainelli@gmail.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SiByte: Fix missing function prototypes
-Message-ID: <202611140242.xhMf9lU3-lkp@intel.com>
-References: <20261112195824.298915-1-f.fainelli@gmail.com>
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] MIPS: SiByte: Fix missing function prototypes
+Date: Fri, 13 Nov 2026 11:19:02 -0800
+Message-ID: <20261113191933.477395-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -84,70 +94,340 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261112195824.298915-1-f.fainelli@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Florian,
+The SB1250 SWARM build reports missing prototypes for platform time
+initialization, SoC setup, IRQ and SMP helpers, and both RTC backends.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v7.4-rc2 next-20261112]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+- corrected warning reported by kbuild test robot by gating the
+  inclusion of sb1250.h to avoid warnings on bcm63xx_defconfig
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Fainelli/MIPS-SiByte-Fix-missing-function-prototypes/20261112-115739
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20261112195824.298915-1-f.fainelli%40gmail.com
-patch subject: [PATCH] MIPS: SiByte: Fix missing function prototypes
-config: mips-bcm63xx_defconfig (https://download.01.org/0day-ci/archive/20261114/202611140242.xhMf9lU3-lkp@intel.com/config)
-compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project 1b1fed44d3dcca649a9877915d57c3357a98124e)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261114/202611140242.xhMf9lU3-lkp@intel.com/reproduce)
+ arch/mips/include/asm/sibyte/sb1250.h  | 17 +++++++++++++++++
+ arch/mips/mm/cerr-sb1.c                |  2 --
+ arch/mips/mm/tlbex.c                   | 11 +++++++----
+ arch/mips/sibyte/bcm1480/irq.c         |  4 +---
+ arch/mips/sibyte/bcm1480/smp.c         |  6 +-----
+ arch/mips/sibyte/bcm1480/time.c        |  4 ++--
+ arch/mips/sibyte/common/bus_watcher.c  |  2 +-
+ arch/mips/sibyte/sb1250/irq.c          |  4 +---
+ arch/mips/sibyte/sb1250/smp.c          |  6 +-----
+ arch/mips/sibyte/sb1250/time.c         |  4 ++--
+ arch/mips/sibyte/swarm/rtc.h           | 15 +++++++++++++++
+ arch/mips/sibyte/swarm/rtc_m41t81.c    |  1 +
+ arch/mips/sibyte/swarm/rtc_xicor1241.c |  1 +
+ arch/mips/sibyte/swarm/setup.c         | 18 ++----------------
+ 14 files changed, 52 insertions(+), 43 deletions(-)
+ create mode 100644 arch/mips/sibyte/swarm/rtc.h
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611140242.xhMf9lU3-lkp@intel.com/
+diff --git a/arch/mips/include/asm/sibyte/sb1250.h b/arch/mips/include/asm/sibyte/sb1250.h
+index de4b352256c8..ff97e77d4fe7 100644
+--- a/arch/mips/include/asm/sibyte/sb1250.h
++++ b/arch/mips/include/asm/sibyte/sb1250.h
+@@ -32,9 +32,26 @@ extern unsigned int soc_type;
+ extern unsigned int periph_rev;
+ extern unsigned int zbbus_mhz;
+ 
++void sb1_cache_error(void);
++
++#ifdef CONFIG_SIBYTE_BUS_WATCHER
++void check_bus_watcher(void);
++#endif
++
++int sb1250_m3_workaround_needed(void);
++void sb1250_setup(void);
++void sb1250_clockevent_init(void);
++void sb1250_clocksource_init(void);
++void sb1250_mailbox_interrupt(void);
++
+ extern void sb1250_mask_irq(int cpu, int irq);
+ extern void sb1250_unmask_irq(int cpu, int irq);
+ 
++void bcm1480_setup(void);
++void sb1480_clockevent_init(void);
++void sb1480_clocksource_init(void);
++void bcm1480_mailbox_interrupt(void);
++
+ extern void bcm1480_time_init(void);
+ extern void bcm1480_mask_irq(int cpu, int irq);
+ extern void bcm1480_unmask_irq(int cpu, int irq);
+diff --git a/arch/mips/mm/cerr-sb1.c b/arch/mips/mm/cerr-sb1.c
+index a3c02df19f6f..6842244ac85b 100644
+--- a/arch/mips/mm/cerr-sb1.c
++++ b/arch/mips/mm/cerr-sb1.c
+@@ -158,8 +158,6 @@ static void check_bus_watcher(void)
+ 		printk("Bus watcher indicates no error\n");
+ 	}
+ }
+-#else
+-extern void check_bus_watcher(void);
+ #endif
+ 
+ asmlinkage void sb1_cache_error(void)
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index 69ea54bdc0c3..03a9b03c3d3a 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -37,6 +37,9 @@
+ #include <asm/regdef.h>
+ #include <asm/uasm.h>
+ #include <asm/setup.h>
++#ifdef CONFIG_SB1_PASS_2_WORKAROUNDS
++#include <asm/sibyte/sb1250.h>
++#endif
+ #include <asm/tlbex.h>
+ 
+ static int mips_xpa_disabled;
+@@ -84,13 +87,13 @@ static inline int r4k_250MHZhwbug(void)
+ 	return 0;
+ }
+ 
+-extern int sb1250_m3_workaround_needed(void);
+-
+ static inline int __maybe_unused bcm1250_m3_war(void)
+ {
+-	if (IS_ENABLED(CONFIG_SB1_PASS_2_WORKAROUNDS))
+-		return sb1250_m3_workaround_needed();
++#ifdef CONFIG_SB1_PASS_2_WORKAROUNDS
++	return sb1250_m3_workaround_needed();
++#else
+ 	return 0;
++#endif
+ }
+ 
+ static inline int __maybe_unused r10000_llsc_war(void)
+diff --git a/arch/mips/sibyte/bcm1480/irq.c b/arch/mips/sibyte/bcm1480/irq.c
+index 4c18a2c755d2..ab329a15d690 100644
+--- a/arch/mips/sibyte/bcm1480/irq.c
++++ b/arch/mips/sibyte/bcm1480/irq.c
+@@ -198,7 +198,7 @@ static struct irq_chip bcm1480_irq_type = {
+ #endif
+ };
+ 
+-void __init init_bcm1480_irqs(void)
++static void __init init_bcm1480_irqs(void)
+ {
+ 	int i;
+ 
+@@ -303,8 +303,6 @@ void __init arch_init_irq(void)
+ 	change_c0_status(ST0_IM, imask);
+ }
+ 
+-extern void bcm1480_mailbox_interrupt(void);
+-
+ static inline void dispatch_ip2(void)
+ {
+ 	unsigned long long mask_h, mask_l;
+diff --git a/arch/mips/sibyte/bcm1480/smp.c b/arch/mips/sibyte/bcm1480/smp.c
+index 5861e50255bf..ea491f45d9ac 100644
+--- a/arch/mips/sibyte/bcm1480/smp.c
++++ b/arch/mips/sibyte/bcm1480/smp.c
+@@ -46,7 +46,7 @@ static void *mailbox_0_regs[] = {
+ /*
+  * SMP init and finish on secondary CPUs
+  */
+-void bcm1480_smp_init(void)
++static void bcm1480_smp_init(void)
+ {
+ 	unsigned int imask = STATUSF_IP4 | STATUSF_IP3 | STATUSF_IP2 |
+ 		STATUSF_IP1 | STATUSF_IP0;
+@@ -83,8 +83,6 @@ static void bcm1480_send_ipi_mask(const struct cpumask *mask,
+  */
+ static void bcm1480_init_secondary(void)
+ {
+-	extern void bcm1480_smp_init(void);
+-
+ 	bcm1480_smp_init();
+ }
+ 
+@@ -94,8 +92,6 @@ static void bcm1480_init_secondary(void)
+  */
+ static void bcm1480_smp_finish(void)
+ {
+-	extern void sb1480_clockevent_init(void);
+-
+ 	sb1480_clockevent_init();
+ 	local_irq_enable();
+ }
+diff --git a/arch/mips/sibyte/bcm1480/time.c b/arch/mips/sibyte/bcm1480/time.c
+index e6450d79fb4f..42db437af306 100644
+--- a/arch/mips/sibyte/bcm1480/time.c
++++ b/arch/mips/sibyte/bcm1480/time.c
+@@ -4,8 +4,8 @@
+  */
+ #include <linux/init.h>
+ 
+-extern void sb1480_clockevent_init(void);
+-extern void sb1480_clocksource_init(void);
++#include <asm/time.h>
++#include <asm/sibyte/sb1250.h>
+ 
+ void __init plat_time_init(void)
+ {
+diff --git a/arch/mips/sibyte/common/bus_watcher.c b/arch/mips/sibyte/common/bus_watcher.c
+index a296d2c51841..5df4c82ac2a5 100644
+--- a/arch/mips/sibyte/common/bus_watcher.c
++++ b/arch/mips/sibyte/common/bus_watcher.c
+@@ -189,7 +189,7 @@ static irqreturn_t sibyte_bw_int(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-int __init sibyte_bus_watcher(void)
++static int __init sibyte_bus_watcher(void)
+ {
+ 	memset(&bw_stats, 0, sizeof(struct bw_stats_struct));
+ 	bw_stats.status_printed = 1;
+diff --git a/arch/mips/sibyte/sb1250/irq.c b/arch/mips/sibyte/sb1250/irq.c
+index 57943fe3ac03..8108ead0cea8 100644
+--- a/arch/mips/sibyte/sb1250/irq.c
++++ b/arch/mips/sibyte/sb1250/irq.c
+@@ -179,7 +179,7 @@ static struct irq_chip sb1250_irq_type = {
+ #endif
+ };
+ 
+-void __init init_sb1250_irqs(void)
++static void __init init_sb1250_irqs(void)
+ {
+ 	int i;
+ 
+@@ -266,8 +266,6 @@ void __init arch_init_irq(void)
+ 	change_c0_status(ST0_IM, imask);
+ }
+ 
+-extern void sb1250_mailbox_interrupt(void);
+-
+ static inline void dispatch_ip2(void)
+ {
+ 	unsigned int cpu = smp_processor_id();
+diff --git a/arch/mips/sibyte/sb1250/smp.c b/arch/mips/sibyte/sb1250/smp.c
+index 7a794234e3d7..950d2e1c0de7 100644
+--- a/arch/mips/sibyte/sb1250/smp.c
++++ b/arch/mips/sibyte/sb1250/smp.c
+@@ -35,7 +35,7 @@ static void *mailbox_regs[] = {
+ /*
+  * SMP init and finish on secondary CPUs
+  */
+-void sb1250_smp_init(void)
++static void sb1250_smp_init(void)
+ {
+ 	unsigned int imask = STATUSF_IP4 | STATUSF_IP3 | STATUSF_IP2 |
+ 		STATUSF_IP1 | STATUSF_IP0;
+@@ -72,8 +72,6 @@ static inline void sb1250_send_ipi_mask(const struct cpumask *mask,
+  */
+ static void sb1250_init_secondary(void)
+ {
+-	extern void sb1250_smp_init(void);
+-
+ 	sb1250_smp_init();
+ }
+ 
+@@ -83,8 +81,6 @@ static void sb1250_init_secondary(void)
+  */
+ static void sb1250_smp_finish(void)
+ {
+-	extern void sb1250_clockevent_init(void);
+-
+ 	sb1250_clockevent_init();
+ 	local_irq_enable();
+ }
+diff --git a/arch/mips/sibyte/sb1250/time.c b/arch/mips/sibyte/sb1250/time.c
+index 8b63000a4dd5..3f7f64fe5690 100644
+--- a/arch/mips/sibyte/sb1250/time.c
++++ b/arch/mips/sibyte/sb1250/time.c
+@@ -4,8 +4,8 @@
+  */
+ #include <linux/init.h>
+ 
+-extern void sb1250_clocksource_init(void);
+-extern void sb1250_clockevent_init(void);
++#include <asm/time.h>
++#include <asm/sibyte/sb1250.h>
+ 
+ void __init plat_time_init(void)
+ {
+diff --git a/arch/mips/sibyte/swarm/rtc.h b/arch/mips/sibyte/swarm/rtc.h
+new file mode 100644
+index 000000000000..64b8db786575
+--- /dev/null
++++ b/arch/mips/sibyte/swarm/rtc.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _SIBYTE_SWARM_RTC_H
++#define _SIBYTE_SWARM_RTC_H
++
++#include <linux/time64.h>
++
++int xicor_probe(void);
++int xicor_set_time(time64_t t);
++time64_t xicor_get_time(void);
++
++int m41t81_probe(void);
++int m41t81_set_time(time64_t t);
++time64_t m41t81_get_time(void);
++
++#endif /* _SIBYTE_SWARM_RTC_H */
+diff --git a/arch/mips/sibyte/swarm/rtc_m41t81.c b/arch/mips/sibyte/swarm/rtc_m41t81.c
+index afe1e3460bd4..e70ec1870674 100644
+--- a/arch/mips/sibyte/swarm/rtc_m41t81.c
++++ b/arch/mips/sibyte/swarm/rtc_m41t81.c
+@@ -17,6 +17,7 @@
+ #include <asm/sibyte/sb1250_regs.h>
+ #include <asm/sibyte/sb1250_smbus.h>
+ 
++#include "rtc.h"
+ 
+ /* M41T81 definitions */
+ 
+diff --git a/arch/mips/sibyte/swarm/rtc_xicor1241.c b/arch/mips/sibyte/swarm/rtc_xicor1241.c
+index e2164200ceec..5bb2bc6a57d2 100644
+--- a/arch/mips/sibyte/swarm/rtc_xicor1241.c
++++ b/arch/mips/sibyte/swarm/rtc_xicor1241.c
+@@ -17,6 +17,7 @@
+ #include <asm/sibyte/sb1250_regs.h>
+ #include <asm/sibyte/sb1250_smbus.h>
+ 
++#include "rtc.h"
+ 
+ /* Xicor 1241 definitions */
+ 
+diff --git a/arch/mips/sibyte/swarm/setup.c b/arch/mips/sibyte/swarm/setup.c
+index 38c90b5e8754..a910961ad967 100644
+--- a/arch/mips/sibyte/swarm/setup.c
++++ b/arch/mips/sibyte/swarm/setup.c
+@@ -35,28 +35,14 @@
+ #include <asm/sibyte/sb1250_genbus.h>
+ #include <asm/sibyte/board.h>
+ 
+-#ifdef CONFIG_SIBYTE_BCM1x80
+-extern void bcm1480_setup(void);
+-#elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
+-extern void sb1250_setup(void);
+-#else
+-#error invalid SiByte board configuration
+-#endif
+-
+-extern int xicor_probe(void);
+-extern int xicor_set_time(time64_t);
+-extern time64_t xicor_get_time(void);
+-
+-extern int m41t81_probe(void);
+-extern int m41t81_set_time(time64_t);
+-extern time64_t m41t81_get_time(void);
++#include "rtc.h"
+ 
+ const char *get_system_type(void)
+ {
+ 	return "SiByte " SIBYTE_BOARD_NAME;
+ }
+ 
+-int swarm_be_handler(struct pt_regs *regs, int is_fixup)
++static int swarm_be_handler(struct pt_regs *regs, int is_fixup)
+ {
+ 	if (!is_fixup && (regs->cp0_cause & 4)) {
+ 		/* Data bus error - print PA */
+-- 
+2.53.0
 
-All warnings (new ones prefixed by >>):
-
-   In file included from arch/mips/mm/tlbex.c:40:
-   In file included from arch/mips/include/asm/sibyte/sb1250.h:28:
->> arch/mips/include/asm/sibyte/bcm1480_scd.h:261:9: warning: 'M_SPC_CFG_CLEAR' macro redefined [-Wmacro-redefined]
-     261 | #define M_SPC_CFG_CLEAR                 M_BCM1480_SPC_CFG_CLEAR
-         |         ^
-   arch/mips/include/asm/sibyte/sb1250_scd.h:392:9: note: previous definition is here
-     392 | #define M_SPC_CFG_CLEAR         _SB_MAKEMASK1(32)
-         |         ^
-   In file included from arch/mips/mm/tlbex.c:40:
-   In file included from arch/mips/include/asm/sibyte/sb1250.h:28:
->> arch/mips/include/asm/sibyte/bcm1480_scd.h:262:9: warning: 'M_SPC_CFG_ENABLE' macro redefined [-Wmacro-redefined]
-     262 | #define M_SPC_CFG_ENABLE                M_BCM1480_SPC_CFG_ENABLE
-         |         ^
-   arch/mips/include/asm/sibyte/sb1250_scd.h:393:9: note: previous definition is here
-     393 | #define M_SPC_CFG_ENABLE        _SB_MAKEMASK1(33)
-         |         ^
-   2 warnings generated.
-
-
-vim +/M_SPC_CFG_CLEAR +261 arch/mips/include/asm/sibyte/bcm1480_scd.h
-
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  252  
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  253  /*
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  254   * System Performance Counter Control Register (Table 32)
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  255   * Register: PERF_CNT_CFG_1
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  256   * BCM1480 specific
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  257   */
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  258  #define M_BCM1480_SPC_CFG_CLEAR	    _SB_MAKEMASK1(0)
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  259  #define M_BCM1480_SPC_CFG_ENABLE    _SB_MAKEMASK1(1)
-8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28  260  #if SIBYTE_HDR_FEATURE_CHIP(1480)
-8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28 @261  #define M_SPC_CFG_CLEAR			M_BCM1480_SPC_CFG_CLEAR
-8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28 @262  #define M_SPC_CFG_ENABLE		M_BCM1480_SPC_CFG_ENABLE
-8deab1144b5535 include/asm-mips/sibyte/bcm1480_scd.h Mark Mason      2007-03-28  263  #endif
-4cbf2beac2265b include/asm-mips/sibyte/bcm1480_scd.h Andrew Isaacson 2005-10-19  264  
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki

@@ -1,86 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.48
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794594399;
-	b=cr5jv5dNs9EPk41wJvLuVsU7qC4i9NrroNe9rJsxrHXMZK8SO8fXkbHYDIaw37jdioEe
-	 aoFKaeG+pvZlp8+UsLMe+8hbljWbA8O7mP7yTshzTCmkIPYsHcplPhGrZCe9Dx3EtEW2Z
-	 f6+iDzIsJUawWWkexcYufS0VGZRL+4Qr7pUmi2nN2ZsXFrgjtaUSfqhnCE4cqAw/p/S2s
-	 xnFi8PbSbsBtv9UE0ga+gOYnd9gD5LN01XcfUvshp3AWn0ldVtkF/hf93mE3Nhvu2MpQr
-	 xqFHQ7dc67kCfdG6b08JWxAlpqLgqAgzdETmz1Kh6okniX42wyd4BXC6t7VeTbps5Tg==
+	t=1794595376;
+	b=RerVx10xYtE8n5CHtq3eCepLADsqEABg4TV+Pl2HDQVNMtf5+VHIKEa4arYgmFYoFSZS
+	 0QKhT6apP93bewni6ByLXwQBEz4USFtNmyaBFcVHHwHx5ZN+ceUpZh7wfIKs3Fm4ojLXW
+	 rutfil7qBw9QOboxdAaZRMs0yvRvJfTICSMFnVfy6JooPbVKVWkMkZsaIO1uGpxZ4mw7y
+	 6fKb2XwdK01gPU4M1aZQwH4N1vYv0tyZ+xBkqS9ipHYrXUZZmeZVimLNoJasZkRV/8cO7
+	 JL1o7IAe8jkQnc5oOfOY5qOkRkWhesYYXkYQBMJ+rKMiEBR+SUu97sUKYhQAbXssWMA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794594399;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:Sender:X-SRS-Rewrite;
-	bh=a8uW+4oqYv72sJkgKsoP+73URG/7qnLsk5wAKeTN0oY=;
-	b=hJu0POCyzBp+gs2ZBAI5HWaeHA6u5UJHjhjHzdfi5Q8x7DYeVuIRPkSvN+S6w5lp4IC6
-	 gUIUJ9pCcG0Ve1Y99SJAg0J7Dvj2d6jFxlUM8I0IHDQD8jcAfSPgWTm3TGs45Oz9ddp9a
-	 U/WcnwIJnLVF+Drk39Yvfl9df2SC+Gw7KtjIDQaDPo02JfNT5OiJuY4emBASk1/3HEKmm
-	 1hC2kP4449JhikQPn8Hogl5vNOthZ+XQfsWX3np8LvXHZCtkVn7s4q1y90Wybfrn7w8BB
-	 MPXR6pLEbkyQofjnYhro95l1TC76fEGCzi6cBDMnlYFRnss5Ka1rdCjcSKKYhaGEl/A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794595376;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=yEw5KadHQTak+G++8OlzH9m+1ubEWMXtFGCjx2W1Qrg=;
+	b=VEfSv+uytjiruDPpj+cLhAPM8wqxh3p1QQyRUrXwGKumsfT3WDZCYr+XzlS8C9l6k1ws
+	 YPCfNcUgcQE9SPDiA7Bkq8wxeY+jv6R2v5QOAeKiv4r0tZAhx9g7gMFYWfy1dVU/3ERx0
+	 itF+RTMlka7AVKFA/AkBW+B8w37Lx3ikowtfyoGKDS1w1YC58qGxFB2KjGOFwUbwF9tcM
+	 MlmYQ2FTvWb9/Csidy5JqR1HiM1swn6tBe8Q2z3JZGkvGY7o+egR3NO0p/2SHP9vqcgzj
+	 4Y3gsZP3ZCf5xhsBrTPbE6YDJw7VnJ77SDtkN/FbfZZEMuGwyw/FBbK9/pvpTBm7sDw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=none smtp.mailfrom=desiato.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=NYFEjsv5;
-	arc=none smtp.remote-ip=90.155.92.199
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=u9Eg0Qeu;
+	arc=none smtp.remote-ip=74.125.82.48
+Received: from mail-dl1-f48.google.com (mail-dl1-f48.google.com [74.125.82.48])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED6D606C14A;
-	Fri, 13 Nov 2026 18:26:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9ED6D606C14A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F03606A890
+	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 18:42:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 47F03606A890
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=NYFEjsv5
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=a8uW+4oqYv72sJkgKsoP+73URG/7qnLsk5wAKeTN0oY=; b=NYFEjsv5JTvQrCDdrUhtjYOnVL
-	LzDBfP+Mjsbl3xJLs2jAxr3kd4oBKbxYWYpZ8iMXU+tLpBC7KqTAxCkMgBPYQc8eknIgPjUmWSz7N
-	02Sb3NLmDWCINk3ZFejM+d2NHgjVf0C2ySvFgg7mjD57V+zP8RWF4IXmqxY2gB5ugzmRLvMOq7hQ1
-	QutSMlT8ZFUUutHNk1hCGW6/UIc/S52KoMICy6LsrK6FZRbd5nDvGBUZ0SLRxkrtswQoCWlZEHHNG
-	SAf6YGF3lcDdqFMBTwL1Pf5kQGFgCPkH8NVs3McggKSUHpAB0IyUP7zob49fNmWJmSAJ0BggMsZ8a
-	96bz1rwg==;
-Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRvyU-0000000BeOZ-1731;
-	Fri, 13 Nov 2026 18:26:30 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.99.5 #2 (Red Hat Linux))
-	id 1xRvyR-00000000LYB-2VCU;
-	Fri, 13 Nov 2026 18:26:07 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?UTF-8?q?J=C3=B6rg=20R=C3=B6del?= <joro@8bytes.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	ashish.kalra@amd.com,
-	michael.roth@amd.com,
-	nsaenz@amazon.com,
-	anelkz@amazon.de,
-	James.Bottomley@HansenPartnership.com,
-	Melody Wang <huibo.wang@amd.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org,
-	x86@kernel.org,
-	coconut-svsm@lists.linux.dev,
-	joerg.roedel@amd.com,
-	Mushahid Hussain <hmushi@amazon.co.uk>,
-	Sriram Nambakam <snambakam@linux.microsoft.com>,
-	David Woodhouse <dwmw@amazon.co.uk>
-Subject: [RFC PATCH 06/13] KVM: planes: Fan out per-plane requests to twin vCPUs
-Date: Fri, 13 Nov 2026 11:26:00 -0700
-Message-ID: <20261113182607.82813-7-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261113182607.82813-1-dwmw2@infradead.org>
-References: <20260608144252.351443-1-joro@8bytes.org>
- <20261113182607.82813-1-dwmw2@infradead.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=u9Eg0Qeu
+Received: by mail-dl1-f48.google.com with SMTP id a92af1059eb24-15ea896ddc8so1776229c88.0
+        for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 10:42:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794595375; x=1795200175; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=yEw5KadHQTak+G++8OlzH9m+1ubEWMXtFGCjx2W1Qrg=;
+        b=u9Eg0Qeu706qjT2IhCsz4+EKc2sO/nmiljfYEXHHufIWj8XYW9yaWltbHfroO+nRs0
+         4gdWcsMQoFSyT8YLi0gRRsryAw+3QXIWxWhsEUjuaDNFalx/VTGkgnrsyjl5E7ctZbED
+         LT0gSvcoNSjTXDxJXTHdW8EFzO0x0RB8TN29xhZ42euzZ1lij68JgmV1oS6N8z5Khbxs
+         EpyLoib0NMAjwfbP803j5/GeZo4jLP7Zn0GSdSNKtRIJKzA6DkNeMNbIYGESB//k2Tj4
+         nf3cUDSVetEIRqtLgNwyftNHQKGiBtYj/Sf+vQOTKOWRhOIl1w82dt2dQOGeQeayJdiR
+         kYxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794595375; x=1795200175;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=yEw5KadHQTak+G++8OlzH9m+1ubEWMXtFGCjx2W1Qrg=;
+        b=ywZxeni7umIQuNRpLNMbEXEh5T0niakKd376cTdhM4d9XNW1F3+lRbZFOhHB/xcaGE
+         6H3U4tGiS8xqQz4vHote3UoHfHhfm2RdfbLiyba/wsw5UOP1CBzsBZVweXFgiEgbyZ3R
+         ckJ2c+vb9b+qDnA7GSQyuQe4+hJGq8Httd8mWAviMKoTAWU/IlAydmDmLKQyX13ea90p
+         fq9u9fXr4pw3oe6+B31vmmRF12q5WIPw9VQT9Y2Tg5A3FVoW87DxrHLydzk++YSYVJAA
+         zKLzhDemQZUvFU9Eehh8ibUpkIYnzMtuuXVjvIMVlwU3pxyUfRw0aZZAmyPNJDcknvpl
+         yw1g==
+X-Gm-Message-State: APuU4Z/MZhxBlZUugmIhqntsvR/fIOSAGG7U4U4Gwpp489kOw8AibjSx
+	gh85GXKL3m5Vj//qgrtrsgbHcBAMyTriLf2gg+iBoWBMB4VhJkmeJKQglYi4hA==
+X-Gm-Gg: AYBFou0A+Vqs0znn10D8SMmwajsdvT5f7z+UFibxY+tH2mGL67U8C69JNTNnxx/ggwL
+	L0HesmCSHVfcMhpIp+IPb75mjyDj3Ku8mxFaWCJWMQUALz5wMBEYQXJM8TPKx7BAf57s3P7NGIY
+	pAJQA7wL/U9A1/2syZHkVnLDL3PVtigCPHe+X1eskwh9ZSdPkvSEOOE4znKPhUHuO9wkxg+7XiF
+	spfFT1TjbDMU2QTZf/VAJZMHaIR9zzprIEPeFWuobgQ/xTUgTKQh8TyTRur5u4FngFCGdNawTLk
+	n0ukr84ne7i+kIZ/xjwj4id1NhzC/4wVGjtChkKfU+e4d9YOct5kmjN85Hwtat+UJQF9QVwcUQR
+	6N+01wVZLFnx3p69FsKgBQ6Mw80+LxiouIihnFsZy1MSiGJookjPKvMVIJvM6RL2CciEeP+a+Ex
+	aY/fiKBpyqqfKuFOMpOPkNRkdlT2+8ihfVmPI6YKxXSbJpJwSdafOfVWoqypNMf9+E0VBwv7Kb/
+	mfjJEXk5rxkIADqfbDhYwMxN4nZEehsJ5YLhTqcsp4MZ2bK1XsNOFwnrxgl7gRjhvOwutrUvaxi
+	ckRwRgf4
+X-Received: by 2002:a05:7022:3a87:b0:19a:9a93:c9b2 with SMTP id a92af1059eb24-1b5030980f2mr3402806c88.13.1794595375329;
+        Fri, 13 Nov 2026 10:42:55 -0800 (PST)
+Received: from eldorado ([2600:8802:b00:1f88::287])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b50316e195sm10526177c88.8.2026.11.13.10.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2026 10:42:54 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Burton <paulburton@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Brian Masney <bmasney+clk@redhat.com>,
+	Jerome Brunet <jbrunet+clk@baylibre.com>,
+	=?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= <zhouyanjie@wanyeetech.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-kernel@vger.kernel.org (open list),
+	linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+	hns@goldelico.com,
+	paul@boddie.org.uk
+Subject: [PATCH v5 0/4] MIPS: CI20: Enable SMP with two CPUs
+Date: Fri, 13 Nov 2026 10:42:06 -0800
+Message-ID: <20261113184210.470320-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -90,163 +105,70 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+This patch series resurrects SMP support for the CI20 board. This was
+submitted back in 2020 by Zhou Yanjie.
 
-A request raised on one plane's vCPU for a VM-wide reason (TLB flush
-after a host-side zap, APIC page reload, obsolete-roots release) is
-consumed by whichever twin runs first, so the other planes keep stale
-translations. The plane-1 twin of a Windows VSM guest then runs on a
-zapped root and the guest bugchecks.
+Changes in v5:
 
-Mark those three requests per-plane and make kvm_make_vcpu_request()
-replicate any KVM_REQUEST_PER_PLANE request to every twin of the
-target vCPU through vcpu_for_each_plane(). Mode and wait live in the
-shared common and the kick targets the running twin's pCPU, so the
-existing kick logic already reaches the twins.
+• Added changelog per-patch
+• Split the generic IPI setup check
+• Added comments explaining both need_resched()
+• Removed void Reviewed/Tested-by tags
 
-The x86 kvm_exit and powerpc kvm_check_requests tracepoints logged
-only the shared request word, so the three requests would vanish from
-them. OR in the vCPU's plane requests instead; a separate field would
-say which word a bit came from, but changes the tracepoint format for
-little gain.
+Changes in v4:
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/powerpc/kvm/trace.h        |  3 ++-
- arch/x86/include/asm/kvm_host.h |  6 ++++--
- arch/x86/kvm/mmu/mmu.c          | 13 ++++++++-----
- arch/x86/kvm/trace.h            |  3 ++-
- include/linux/kvm_host.h        |  3 ++-
- virt/kvm/kvm_main.c             | 20 +++++++++++++++++++-
- 6 files changed, 37 insertions(+), 11 deletions(-)
+• Enable the secondary CPU clock outside the raw spinlock
+• Mark enumerated CPUs present and assign hardware core IDs
+• Skip generic IPI allocation when the platform supplies both IPI callbacks
+• Fix generic 64-bit builds using CKSEG aliases and pointer-sized assembly macros
+• Reject unsupported CPU offlining with -EOPNOTSUPP
+• Restrict the XBurst SMP idle handler to multicore systems and recheck
+  pending interrupts after flushing the cache
 
-diff --git a/arch/powerpc/kvm/trace.h b/arch/powerpc/kvm/trace.h
-index 35c000d918bb..2fc60a4e159f 100644
---- a/arch/powerpc/kvm/trace.h
-+++ b/arch/powerpc/kvm/trace.h
-@@ -108,7 +108,8 @@ TRACE_EVENT(kvm_check_requests,
- 
- 	TP_fast_assign(
- 		__entry->cpu_nr		= vcpu->vcpu_id;
--		__entry->requests	= vcpu->common->requests;
-+		__entry->requests	= READ_ONCE(vcpu->common->requests) |
-+					  READ_ONCE(vcpu->plane_requests);
- 	),
- 
- 	TP_printk("vcpu=%x requests=%x",
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index d4628ab99197..596be8ad7154 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -107,7 +107,8 @@
- 	KVM_ARCH_REQ_FLAGS(15, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_GLOBAL_CLOCK_UPDATE	KVM_ARCH_REQ(16)
- #define KVM_REQ_APIC_PAGE_RELOAD \
--	KVM_ARCH_REQ_FLAGS(17, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+	KVM_ARCH_REQ_FLAGS(17, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP | \
-+			   KVM_REQUEST_PER_PLANE)
- #define KVM_REQ_HV_CRASH		KVM_ARCH_REQ(18)
- #define KVM_REQ_IOAPIC_EOI_EXIT		KVM_ARCH_PLANE_REQ(19)
- #define KVM_REQ_HV_RESET		KVM_ARCH_REQ(20)
-@@ -125,7 +126,8 @@
- #define KVM_REQ_UPDATE_CPU_DIRTY_LOGGING \
- 	KVM_ARCH_REQ_FLAGS(30, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_MMU_FREE_OBSOLETE_ROOTS \
--	KVM_ARCH_REQ_FLAGS(31, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+	KVM_ARCH_REQ_FLAGS(31, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP | \
-+			   KVM_REQUEST_PER_PLANE)
- #define KVM_REQ_HV_TLB_FLUSH \
- 	KVM_ARCH_REQ_FLAGS(32, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_VMSA_PAGE_RELOAD \
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index e8eb1e48df36..ef6df08f5a99 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6405,11 +6405,14 @@ void kvm_mmu_free_obsolete_roots(struct kvm_vcpu *vcpu)
- 	int i;
- 
- 	/*
--	 * KVM_REQ_MMU_FREE_OBSOLETE_ROOTS is tracked in the request set
--	 * shared by all of the vCPU's planes, so the plane that consumes
--	 * the request is not necessarily the plane whose root is obsolete.
--	 * Service every plane: the inactive twins cannot be running (all
--	 * planes of a vCPU share one thread), so their MMUs are stable.
-+	 * KVM_REQ_MMU_FREE_OBSOLETE_ROOTS fans out to every plane twin,
-+	 * but each twin only consumes its own copy when it next runs, and
-+	 * a plane that userspace never re-enters would pin its obsolete
-+	 * roots indefinitely.  Service every plane from whichever twin
-+	 * consumes its request first: the inactive twins cannot be
-+	 * running (all planes of a vCPU share one thread), so their MMUs
-+	 * are stable, and a twin's own later request finds nothing left
-+	 * to free.
- 	 */
- 	vcpu_for_each_plane(vcpu->common, i, v) {
- 		__kvm_mmu_free_obsolete_roots(vcpu->kvm, &v->arch.root_mmu);
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index 7038e596019a..ad901836c08a 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -409,7 +409,8 @@ TRACE_EVENT(name,							     \
- 		__entry->guest_rip	= tracing_kvm_rip_read(vcpu);		     \
- 		__entry->isa            = isa;				     \
- 		__entry->vcpu_id        = vcpu->vcpu_id;		     \
--		__entry->requests       = READ_ONCE(vcpu->common->requests); \
-+		__entry->requests       = READ_ONCE(vcpu->common->requests) | \
-+					  READ_ONCE(vcpu->plane_requests);   \
- 		kvm_x86_call(get_exit_info)(vcpu,			     \
- 					    &__entry->exit_reason,	     \
- 					    &__entry->info1,		     \
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index b30982fcd3e7..6c50c1dc5819 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -168,7 +168,8 @@ static inline bool kvm_is_error_gpa(gpa_t gpa)
-  * Architecture-independent vcpu->requests bit members
-  * Bits 3-7 are reserved for more arch-independent bits.
-  */
--#define KVM_REQ_TLB_FLUSH		(0 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+#define KVM_REQ_TLB_FLUSH \
-+	(0 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP | KVM_REQUEST_PER_PLANE)
- #define KVM_REQ_VM_DEAD			(1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_UNBLOCK			2
- #define KVM_REQ_DIRTY_RING_SOFT_FULL	3
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 6a00654490ae..c323d067256e 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -237,9 +237,27 @@ static void kvm_make_vcpu_request(struct kvm_vcpu *vcpu, unsigned int req,
- {
- 	int cpu;
- 
--	if (likely(!(req & KVM_REQUEST_NO_ACTION)))
-+	if (likely(!(req & KVM_REQUEST_NO_ACTION))) {
- 		__kvm_make_request(req, vcpu);
- 
-+		/*
-+		 * A per-plane request raised on "the vCPU" (TLB flush after
-+		 * a host-side zap, obsolete-roots reload, ...) concerns
-+		 * every plane: fan it out to the twins, or the plane that
-+		 * runs next consumes a bit the others still need.  Mode and
-+		 * wait live in the common and the kick below targets the
-+		 * running twin's pCPU, so it covers the twins too.
-+		 */
-+		if (req & KVM_REQUEST_PER_PLANE) {
-+			struct kvm_vcpu *twin;
-+			int p;
-+
-+			vcpu_for_each_plane(vcpu->common, p, twin)
-+				if (twin != vcpu)
-+					__kvm_make_request(req, twin);
-+		}
-+	}
-+
- 	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
- 		return;
- 
--- 
-2.50.1
+Changes in v3:
+
+• Align the second line of the readl_poll_timeout_atomic() per Brian's
+  feedback
+• Collected Paul's R-b and T-b tags
+
+Changes in v2:
+
+• Moved SMP sources to arch/mips/ingenic/ and the header to arch/mips/include/asm/
+• Removed CONFIG_MIPS_INGENIC_SMP, using CONFIG_MACH_JZ4780 and CONFIG_SMP directly
+• Renamed JZ4780-specific SMP symbols to XBurst names
+• Changed CPU enumeration to assign consecutive logical IDs and removed the explicit two-core limit
+• Changed mailbox IRQ allocation failure from panic to logging and returning
+• Shortened commit descriptions, removed Codex attribution, and adjusted source credits and sign-offs
+• Kept the clock polling patch and CI20 defconfig changes unchanged,
+  added Paul's R-b for patch #1
+• Updated the kernel baseline to include additional upstream fixes
+
+Florian Fainelli (2):
+  clk: ingenic: Poll JZ4780 CPU1 power status atomically
+  MIPS: Skip generic IPI setup for platform-specific callbacks
+
+周琰杰 (Zhou Yanjie) (2):
+  MIPS: Ingenic: Add XBurst SMP support
+  MIPS: CI20: Enable SMP with two CPUs
+
+ MAINTAINERS                           |   3 +-
+ arch/mips/Kbuild                      |   1 +
+ arch/mips/configs/ci20_defconfig      |   2 +
+ arch/mips/generic/init.c              |   3 +
+ arch/mips/include/asm/ingenic-smp.h   |  20 ++
+ arch/mips/ingenic/Kconfig             |   2 +
+ arch/mips/ingenic/Makefile            |   5 +
+ arch/mips/ingenic/ingenic-smp-entry.S |  54 ++++++
+ arch/mips/ingenic/ingenic-smp.c       | 260 ++++++++++++++++++++++++++
+ arch/mips/kernel/idle.c               |  31 ++-
+ arch/mips/kernel/smp.c                |   6 +-
+ drivers/clk/ingenic/jz4780-cgu.c      |   4 +-
+ 12 files changed, 386 insertions(+), 5 deletions(-)
+ create mode 100644 arch/mips/include/asm/ingenic-smp.h
+ create mode 100644 arch/mips/ingenic/Makefile
+ create mode 100644 arch/mips/ingenic/ingenic-smp-entry.S
+ create mode 100644 arch/mips/ingenic/ingenic-smp.c
 

@@ -1,55 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794580498;
-	b=QUPPwPLD9qnmKZggaIy7m6DcrSTsPpwYzEU8Xv32aDUzIheu5knZydxfnWdrpMgkFv69
-	 HetotK6OsX5ukBhOcIav2KiCqqMItQPS3GzAkFPybBPr/N66RK+ivUc5Q4xyyv0X2zUsg
-	 tqNh7NdDj2kYLi/36R2uHdI8LwgailpB51YgvNyB2rbVrrPcBPhDE7jLQf/gVBQThy4+p
-	 ZQFVWNJ2SnfpVby4CnYOMxIvmbpC/ezMXbEF8Hu/tGHqGEJu+dMSn+H1RHwYFNkRX3XzZ
-	 6SgGRzeN0nUVCvPJrgrZ9xZ4zvTD4Emo5Bz1vJpw+0WBdAyYaHkNQxcBOf2Yh8lf2CQ==
+	t=1794580577;
+	b=jZ7cWCcmPI/iekvaFLHTY/WGYeTbNdp8pW9W8exRLakStO2JUjmKk15PYwO0Op6+EL2/
+	 EvMCOoyjPU0nOTpdLj6P5OjE8GIxRF0DDv4wzN7/03IDjqX+CP+hVjLgOMRgkWnFx5f73
+	 JXXFq/LLLpY9tCUnfWGigtEynqLwG/EHZDXZ7yCYte9BO93fUkWD9qoQLTN0LcqaavZqd
+	 IXO18ehbtJmYsoEHmX5EcW9RHrSR3U7v7PBWaNctfxRR/mQ79bZHwpdwY7dZfVfz9KjR2
+	 OBcx8tSwwW4wexZUt9ZAdjdpKOQ++ULzIUi5nm5uQVFaN9qgOvo968/8CWwhzTxF6eA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794580498;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=PF7x+WHFDlFjFzclJMmi7Uvb2yYXpjZa21XSXBNN68Y=;
-	b=4yfYIqdFk7wqDupm8iQwPD7UIILu8v1ML3Y825+I25YGFXqFYpi89ymESL5Xsj4QkAZZ
-	 ZdWOvsXhJzjJTjbM3JbODML4PJBYwJk+w491EZAas/E0v0zLKRxdcNR/hgjZ8pNCjszjh
-	 HUZfVQerFGfPujQ6FTZBSdJhbvKBknXG1oul2ZGTNR/v8uFWUEDeJUk+xRXtI10cCsaKf
-	 GDkhb7jgN+AsVQvgwrmpMjhdK9Yaeqbz+2oOKK5Cjxl/UuYdCcMbyolwnL3pDkQLz/fqc
-	 Xv4oHxLPImq7INDeRm1ZbFfgHRo+WDpVdUg11IntIvM8dGSEJWli1M/zzUf+ANmYC1Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794580577;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=w49hyKAjJNYQc0T0xEVaI68+0oF+m2dcDRcRYzEk8rs=;
+	b=OtwB2aXtZOl+ucpDClDVKDR7uUEqEjuYNerfG4u1kOAqAhopQ4XfofcZyQVUNNtmA4q7
+	 brkJqiBoLRaaYBDufLX9OL2sauWefFNq7hDz4a3DucgEKykUgv/5xSN9zYgUZ8RbjA1qT
+	 k6Xna6VuEQjo5RLTTev5N9tfk3k8VyjHKqZumcYxCWxxs4qS3qiArN+HDKMipLusxYWGq
+	 D3PyRbXGSP2B65jvCrF8LX4SC+DydffFJoGItwEGhbxdgCFh/G8SE3zN3lp7VROF2dRbI
+	 lbkygIl7z57fI5mUAWCKvAIiFF1ZfA7lqwYCPglocO27LO3L5KaSEbM2eFJAw62WouA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YEbwZqSL;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jDjzVVrU;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F39606A32E
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 14:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EAD0606A327;
+	Fri, 13 Nov 2026 14:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YEbwZqSL
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BA381F000C7
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 14:34:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jDjzVVrU
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B8A1F000C4;
+	Fri, 13 Nov 2026 14:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794580498;
-	bh=PF7x+WHFDlFjFzclJMmi7Uvb2yYXpjZa21XSXBNN68Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=YEbwZqSLLzVinIsev4uKzk7/4/PPLE2z76q/tnaQKkNHy2+uG64yeJ+XPQVFtQ5F3
-	 XKDJUgECbz60DbFqOXDNzQiCBXKsSMeeSnOKYVnQAc9ZS7TGcfyg74OpT7h27BZwH3
-	 s3Et4sWD3624q9DsfNuId2DVbvHUXWQQ+EpH5EMfptNuOXN/ULPBt6+YGOH88da7+Q
-	 TAQ/39NJTT4S61c80HWAKREkgWrfreUsFeZT9K1DBfkCHMMvjsjWQGmz26uBz+fZZx
-	 76TD5Pjilo2YIcAv5sxnBKOOUygXM6xH95tiqfoG2sfOQbOdXVyLaRI8JUlLqVt8my
-	 wtW+k3C0LzpLg==
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-6de2f213b7aso375760eaf.0
-        for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 06:34:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErEvOY5cBlc/h/9TWhk3sVNN1I/gQ0zuWC5m9TAN+ZDZpgBdkkoISP+Fi30Xl0PHiYARl3JdOuiQuqv2@vger.kernel.org
-X-Gm-Message-State: APuU4Z/L/3hX6KCsM6EuEN2z7jm4uCUTtLvqbS3cBj8Hg1u16lcdZ9xv
-	Is5hzkcsxG6/j8mPlpUn0d6Dkcy2K3r4lPmykTNfdCaowCm/ckyid0kp6fkey55zTkgK9A8f3Tb
-	XcICHt5IEKTxMaVuA+t+ee7BFo+0OI0U=
-X-Received: by 2002:a05:6820:238b:b0:6f4:d9d4:3948 with SMTP id
- 006d021491bc7-71ab50535a7mr1136848eaf.45.1794580497611; Fri, 13 Nov 2026
- 06:34:57 -0800 (PST)
+	s=k20260515; t=1794580577;
+	bh=w49hyKAjJNYQc0T0xEVaI68+0oF+m2dcDRcRYzEk8rs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=jDjzVVrUjcqqvOcF2zRf/R4D2SkobqauH5sB4E4FWc03X74m4jxFCQSio9YHHHuuR
+	 9Ml4Tlrckfk60OSmZz+hec4p2l9kmjLvQBMrX/YWsRQQvgUFJp0NHQZIrCyw0Gwiek
+	 QZbpgzhogd+cwsY3Nd25gGqUKt3Baw/aKdlCaoUNBkxmn6Z5pyPj2weF8qqKc3/A8M
+	 /Hvf3OTZxfDyyZ1sLXoNdqhyld8LAWFVmEcfNS1X7e6OGeS63NUqhOrnPQq/ZF6Igj
+	 DMtYYds7K9Hh4P0SFcSWYXYIJSddoBhMr/8mdEZ/t7+gx48plf7GD6vYahVdtRVM4l
+	 DMbaEQTybkmNw==
+Message-ID: <3f7af771-87a7-4ae7-9919-bc4c23bd31c9@kernel.org>
+Date: Fri, 13 Nov 2026 15:36:01 +0100
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,89 +51,135 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261026-drm-panel-funcs-v1-0-5e3070a3478f@oss.qualcomm.com> <20261026-drm-panel-funcs-v1-22-5e3070a3478f@oss.qualcomm.com>
-In-Reply-To: <20261026-drm-panel-funcs-v1-22-5e3070a3478f@oss.qualcomm.com>
-From: Linus Walleij <linusw@kernel.org>
-Date: Fri, 13 Nov 2026 15:34:42 +0100
-X-Gmail-Original-Message-ID: <CAD++jLmME3b35ipG0N9agoe+5P1J6dsDiy3hoT9MJ9vyRwBA7A@mail.gmail.com>
-X-Gm-Features: AclHuK879_MUVY4wh3-oLFktJApN7IrvQSuSi80dujOkyN3zJSTWDVcOyRF70LI
-Message-ID: <CAD++jLmME3b35ipG0N9agoe+5P1J6dsDiy3hoT9MJ9vyRwBA7A@mail.gmail.com>
-Subject: Re: [PATCH 22/35] drm/panel: drop the orientation workaround from get_modes()
-To: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jyri Sarha <jyri.sarha@iki.fi>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Paul Cercueil <paul@crapouillou.net>, Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>, 
-	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
-	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Sandy Huang <hjc@rock-chips.com>, 
-	=?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
-	Andy Yan <andy.yan@rock-chips.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Peter Griffin <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Alison Wang <alison.wang@nxp.com>, Paul Kocialkowski <paulk@sys-base.io>, 
-	Yannick Fertre <yannick.fertre@foss.st.com>, 
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
-	Philippe Cornu <philippe.cornu@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, 
-	Samuel Holland <samuel@sholland.org>, Thierry Reding <thierry.reding@kernel.org>, 
-	Mikko Perttunen <mperttunen@nvidia.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Ondrej Jirman <megi@xff.cz>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Igor Reznichenko <igor@reznichenko.net>, 
-	Michael Walle <mwalle@kernel.org>, Dario Binacchi <dario.binacchi@amarulasolutions.com>, 
-	Jagan Teki <jagan@edgeble.ai>, Jianhua Lu <lujianhua000@gmail.com>, 
-	=?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
-	Purism Kernel Team <kernel@puri.sm>, Jerry Han <hanxu5@huaqin.corp-partner.google.com>, 
-	Joel Selvaraj <jo@jsfamily.in>, Icenowy Zheng <icenowy@aosc.io>, 
-	Michael Trimarchi <michael@amarulasolutions.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	Casey Connolly <casey.connolly@linaro.org>, Michael Tretter <m.tretter@pengutronix.de>, 
-	Cristian Cozzolino <cristian_ci@protonmail.com>, Junjie Cao <junjie.cao@linux.dev>, 
-	Ryan Brue <ryanbrue.dev@gmail.com>, Nickolay Goppen <setotau@mainlining.org>, 
-	Stefan Mavrodiev <stefan@olimex.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-	Robert Chiras <robert.chiras@nxp.com>, Alexander Koskovich <akoskovich@pm.me>, 
-	Markuss Broks <markuss.broks@gmail.com>, Artur Weber <aweber.kernel@gmail.com>, 
-	David Heidelberg <david@ixit.cz>, Dzmitry Sankouski <dsankouski@gmail.com>, 
-	Yedaya Katsman <yedaya.ka@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v8 11/16] powerpc: extend execmem_params for
+ kprobes allocations
+To: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>, Liviu Dudau
+ <liviu@dudau.co.uk>, Luis Chamberlain <mcgrof@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Russell King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20240505160628.2323363-1-rppt@kernel.org>
+ <20240505160628.2323363-12-rppt@kernel.org>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <20240505160628.2323363-12-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 26, 2026 at 12:11=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@oss.qualcomm.com> wrote:
+Hi Mike,
 
-> Setting the orientation from get_modes() was a stopgap for the display
-> drivers not calling drm_connector_set_orientation_from_panel(). It is
-> also too late: by then the connector is registered and the property can
-> no longer be attached properly.
->
-> drm_bridge_connector and the panel bridge set the orientation on their
-> own, and the drivers using a panel directly do it when creating the
-> connector now. The exceptions are sun6i_mipi_dsi, sti_dvo and the Tegra
-> DSI, which get the panel only after the DRM device has been registered.
-> None of the in-tree boards using them has a rotated panel.
->
-> Assisted-by: LLM
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Looks like I missed this change ...
 
-Makes sense.
-Acked-by: Linus Walleij <linusw@kernel.org>
+Le 05/05/2024 à 18:06, Mike Rapoport a écrit :
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> powerpc overrides kprobes::alloc_insn_page() to remove writable
+> permissions when STRICT_MODULE_RWX is on.
+> 
+> Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
+> generic kprobes::alloc_insn_page() with the desired permissions.
+> 
+> As powerpc uses breakpoint instructions to inject kprobes, it does not
+> need to constrain kprobe allocations to the modules area and can use the
+> entire vmalloc address space.
 
-Yours,
-Linus Walleij
+Using breakpoint means the segment must still be executable.
+On book3s/32 VMALLOC segment is not executable, while module segment is.
+
+See commit 6ca055322da8 ("powerpc/32s: Use dedicated segment for modules 
+with STRICT_KERNEL_RWX")
+
+See report and fix at 
+https://lore.kernel.org/all/ed03d290d440d579a81ae0b7de5243721291d903.1794543909.git.ritesh.list@gmail.com/
+
+Christophe
+
+
+
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
+>   arch/powerpc/kernel/kprobes.c | 20 --------------------
+>   arch/powerpc/kernel/module.c  |  7 +++++++
+>   2 files changed, 7 insertions(+), 20 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> index 9fcd01bb2ce6..14c5ddec3056 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -126,26 +126,6 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
+>   	return (kprobe_opcode_t *)(addr + offset);
+>   }
+>   
+> -void *alloc_insn_page(void)
+> -{
+> -	void *page;
+> -
+> -	page = execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+> -	if (!page)
+> -		return NULL;
+> -
+> -	if (strict_module_rwx_enabled()) {
+> -		int err = set_memory_rox((unsigned long)page, 1);
+> -
+> -		if (err)
+> -			goto error;
+> -	}
+> -	return page;
+> -error:
+> -	execmem_free(page);
+> -	return NULL;
+> -}
+> -
+>   int arch_prepare_kprobe(struct kprobe *p)
+>   {
+>   	int ret = 0;
+> diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+> index ac80559015a3..2a23cf7e141b 100644
+> --- a/arch/powerpc/kernel/module.c
+> +++ b/arch/powerpc/kernel/module.c
+> @@ -94,6 +94,7 @@ static struct execmem_info execmem_info __ro_after_init;
+>   
+>   struct execmem_info __init *execmem_arch_setup(void)
+>   {
+> +	pgprot_t kprobes_prot = strict_module_rwx_enabled() ? PAGE_KERNEL_ROX : PAGE_KERNEL_EXEC;
+>   	pgprot_t prot = strict_module_rwx_enabled() ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
+>   	unsigned long fallback_start = 0, fallback_end = 0;
+>   	unsigned long start, end;
+> @@ -132,6 +133,12 @@ struct execmem_info __init *execmem_arch_setup(void)
+>   				.fallback_start	= fallback_start,
+>   				.fallback_end	= fallback_end,
+>   			},
+> +			[EXECMEM_KPROBES] = {
+> +				.start	= VMALLOC_START,
+> +				.end	= VMALLOC_END,
+> +				.pgprot	= kprobes_prot,
+> +				.alignment = 1,
+> +			},
+>   			[EXECMEM_MODULE_DATA] = {
+>   				.start	= VMALLOC_START,
+>   				.end	= VMALLOC_END,
+

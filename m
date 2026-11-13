@@ -1,49 +1,49 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.19
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.58
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794567096;
-	b=yXYbjrw4TapieQxemK6rCPFz76wY2GlIyZ8OsrYkfvVlNOILXY2niV+LnBbKbg712l30
-	 rsVPfdtTEFIXNslKV2UKkPXlGp6H12wTnTj1g5+BY9xvLw2mnUCFHP0nadxWhUjiIy6yK
-	 ICm3iJQnab+pKL4K+tFiWZ2rtLqG/xMH93W4VqLnQbdYEal2rZcuKIYqPc91+3VI43RC5
-	 IpMYBKR5YAISgSfUWGKfFU+i5HZ4aovGlPul8TQKISC7abz/fBF8uOGgnznOZM3B3190s
-	 8srYJiVN2ehGN5HozrCO3KZr38GeRn/jiHWjk/hS3lF2FCVJBVsuX3SybnwYN1Jsq7w==
+	t=1794567100;
+	b=3K4cFDMXGAQaO5sJkvuhlJZ7Q6hzx7PsklryvQSjqRGaFPWxYkYxldj/Akld/NZfKV76
+	 g8u75EVyLK0psaWddDgPreO4/AEig4RnWd6OhE/67ZJyJPZoTGDaqjYPir6GyX7F+iFFX
+	 hOftFdqgX1Vn0M+3G1QiwOzKB/Q7NxNcMsjwGK2dx+eGdCPjxbAqE3kvrpYYoQgQugwV5
+	 JJOhVRXG/IeVNd6vNmdKalTyAbIyVC3+G9rOXhaCrtBaO/pX3E+f5edOIPCDXFPt9Q+Zx
+	 w8YKOXgTEk048m3RR4IAl8IMCmP8lxhWtj5JJXbLUcox8z0KpSZ/GmD9IzNY4tHtP7g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794567096;
-	h=DMARC-Filter:DKIM-Signature:Mime-Version:X-Mailer:
-	 Content-Transfer-Encoding:References:Content-Type:To:Cc:Subject:
-	 X-Lms-Return-Path:Received:In-Reply-To:From:X-Original-From:Date:
-	 Message-Id;
-	bh=C7jaf+mqJ3nEpBUCe1nWvnKMcYg9nKNjEb/4DZ1aYO0=;
-	b=wTPKWcLiwoK6eb3lcPbNpyRiD49ZRZgIzSwAlzAX+InRBvSB17HHNqHdVcn9Pja0KOTJ
-	 PuT44Bk/fY097WpPsPs/iqlCphiZLSag0qGL7ullIeFMA2EPzlBKKgKUv5WiQP+hDqwYR
-	 L78tAFbPywANP6023b41L2Bi057C+BYPrRyCj+c8xbgPijKiQG+HoQ6wKneWkq0QMSXYy
-	 +yfP1sbB4A0ki9wtodSxR5MVXPoexZjfvpn4lYUdGqJgMXWIrxElDOMDkLKmvZZ7xRbrg
-	 TYSG5QCfmdDGDBs313REAItnLL4n0pS8b5GAHoCMIkjYQ0Op02JzluAnvBHfTWBm6Yg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794567100;
+	h=DMARC-Filter:DKIM-Signature:X-Original-From:Mime-Version:X-Mailer:
+	 Content-Type:Content-Transfer-Encoding:References:To:Subject:Date:
+	 Message-Id:In-Reply-To:Received:Cc:From:X-Lms-Return-Path;
+	bh=Q08JydL98fy47nVJqLqGFTrZaaBqSEW743Jy2fzuf48=;
+	b=on5mhZPX81lwiywIzo4bpHngcPZOdXImFN/njvA/UzoPOoPgSl1k1QECLPaWb+wYKUWD
+	 VrqNtEQ5Tk6ABNP43rW414Y9ahTaX4D7xa11xnlYaOg5D1D+SBp6ZQZyNkfUstZRG4nJJ
+	 Nr7ZjAn5tDFvDNHVdo/S2OnNnF2KNX2LKKFwgtEERNc73V2Aw90+n6bbcBJ+REFDAk7vh
+	 erlxHZI+ItM8pDFtbCW5MHIhxXBIcT5qs1KCGkR0VRB4F3YkKNco0CYM7SJ7Zt+R83DZg
+	 fOVpE+sqbD4+2E4vCdH3cScLPOZ4qwc25mBpYzKsCVxn0gkiixBTmcp52WuiEec1doA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=oss.cipunited.com;
 	spf=pass smtp.mailfrom=oss.cipunited.com;
-	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=Jd1bahQE;
-	arc=none smtp.remote-ip=209.127.231.19
-Received: from va-2-19.ptr.blmpb.com (va-2-19.ptr.blmpb.com [209.127.231.19])
+	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=NBvXPIJe;
+	arc=none smtp.remote-ip=209.127.231.58
+Received: from va-2-58.ptr.blmpb.com (va-2-58.ptr.blmpb.com [209.127.231.58])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0390560A6F78
-	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 10:51:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0390560A6F78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F09606B25B
+	for <linux-mips@vger.kernel.org>; Fri, 13 Nov 2026 10:51:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 03F09606B25B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=Jd1bahQE
+	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=NBvXPIJe
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1794567094;
+ s=feishu2303200042; d=oss.cipunited.com; t=1794567096;
   h=from:subject:mime-version:from:date:message-id:subject:to:cc:
  reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=C7jaf+mqJ3nEpBUCe1nWvnKMcYg9nKNjEb/4DZ1aYO0=;
- b=Jd1bahQExfSIBMoFEVLQlt6wvPHySQzLImObAxcpSxUJ5hVR4IYCZ0VNGsZSnnYNqaR7go
- 9X03hUtEsMMougXyEPBmWA59Ghp3KxXsRJhqfMTGXkcktQLvgQSn1xQxHMoqJ2f4tLkHTH
- 3vl00icy8/LH8M+RYtD+/xFSaylAfcZT2dxtZoKCuf5oy/UMsYwT3QLjLi/LcK2Vt3GRTd
- l/JyfRLQ7ojr66tJxH4xGc4tpCXMpCLqm5YuXa67ZlG9EXfqkMNo7b690FPt6SECaeS0mI
- l5Xg3/hY2/43mAPmtoQWJtfZgggOHj0ajlHDUxuUsycP2OrYbOmLppLBbO1+EA==
+ bh=Q08JydL98fy47nVJqLqGFTrZaaBqSEW743Jy2fzuf48=;
+ b=NBvXPIJeAwsGVemlL+AyS/y5rVYY/U/aRagK6dtGNGt02kxhPff+0Lpp79J/g1Z/zB9HYn
+ oVHYzkSNTnOHX6iYyx/lE9kmJOELjxh8SGTkTmZXICpaQ+weqPgNypaXFS3lxwbfYY1cq8
+ 2Yvcld6xaeeGDKubOif1zGpiLCXEan0xgIKTwSfbNOeIMWFGloV32Ahz4qe+AlsVRdzCA1
+ v+hjZG9oyaI6XfLdd1whVW0DT16TuSelWz2yq/nEyMJPOzgYLNVNiisBaveqdvMkccKii9
+ /AOtpTrzOlQr4E9guMiQbfnXTTAWWdKZEZgP10EJBx7pW+s/Ub6HDg36lg8xmA==
+X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,147 +54,58 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0
 X-Mailer: b4 0.17-dev-ce4c1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 References: <20261113-mips-ls7a-wdt-v2-0-e8abd6b2f77c@oss.cipunited.com>
-Content-Type: text/plain; charset=UTF-8
 To: "Keguang Zhang" <keguang.zhang@gmail.com>, 
 	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
 	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
 	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
 	"Conor Dooley" <conor+dt@kernel.org>, 
 	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Subject: [PATCH v2 7/8] MIPS: Loongson64: dts: ls7a-pch: Add watchdog node
+Date: Fri, 13 Nov 2026 18:51:14 +0800
+Message-Id: <20261113-mips-ls7a-wdt-v2-7-e8abd6b2f77c@oss.cipunited.com>
+In-Reply-To: <20261113-mips-ls7a-wdt-v2-0-e8abd6b2f77c@oss.cipunited.com>
+Received: from [127.0.1.1] ([171.15.157.139]) by smtp.feishu.cn with ESMTPS; Fri, 13 Nov 2026 18:51:33 +0800
 Cc: "Rong Zhang" <i@rong.moe>, "Yao Zi" <me@ziyao.cc>, 
 	"Icenowy Zheng" <uwu@icenowy.me>, 
 	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
 	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
 	<linux-kernel@vger.kernel.org>, 
-	"Rong Zhang" <rongrong@oss.cipunited.com>, 
-	"Conor Dooley" <conor@kernel.org>
-Subject: [PATCH v2 4/8] MIPS: Loongson64: dts: ls7a-pch: Use hex in ranges and reg properties
-X-Lms-Return-Path: <lba+26af6ebae+97c36b+vger.kernel.org+rongrong@oss.cipunited.com>
-Received: from [127.0.1.1] ([171.15.157.139]) by smtp.feishu.cn with ESMTPS; Fri, 13 Nov 2026 18:51:25 +0800
-In-Reply-To: <20261113-mips-ls7a-wdt-v2-0-e8abd6b2f77c@oss.cipunited.com>
+	"Rong Zhang" <rongrong@oss.cipunited.com>
 From: "Rong Zhang" <rongrong@oss.cipunited.com>
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
-Date: Fri, 13 Nov 2026 18:51:11 +0800
-Message-Id: <20261113-mips-ls7a-wdt-v2-4-e8abd6b2f77c@oss.cipunited.com>
+X-Lms-Return-Path: <lba+26af6ebb6+66998e+vger.kernel.org+rongrong@oss.cipunited.com>
 
-The ls7a-pch.dtsi mixes two different styles of addresses and sizes.
-Some use a all-hex style while some use a semi-dec-semi-hex style.
+The Loongson-7A has a watchdog compatible with the one on Loongson
+2K0300.
 
-The latter style is confusing and hard to read, so convent all ranges
-and reg properties into the former style.
+Add a watchdog node with appropriate compatible strings to wire it up.
 
-Suggested-by: Conor Dooley <conor@kernel.org>
-Link: https://msgid.link/20261111-unlucky-parrot-eb416eb0c794@spud
+Tested on Loongson-LS3A4000-7A1000-NUC-SE and Lenovo KaiTian M530Z.
+
 Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
 ---
-The following changes will replace ls7a_uart*'s clock-frequency
-properties. There are reg properties with the unfavoured style around
-the context, so I decided that this series should fix them as well as
-other properties for address and size.
----
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 28038b8cdd14..9f0a183bd348 100644
+index 7ba7bbb9c013..498abf1f9a85 100644
 --- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
 +++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -5,14 +5,14 @@ pch: bus@10000000 {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
--		ranges = <0 0x10000000 0 0x10000000 0 0x10000000 /* PIO & CONF & APB */
--				0 0x20000000 0 0x20000000 0 0x10000000
--				0 0x40000000 0 0x40000000 0 0x40000000 /* PCI MEM */
--				0xe00 0x00000000 0xe00 0x00000000 0x100 0x0000000>;
-+		ranges = <  0x0 0x10000000   0x0 0x10000000   0x0 0x10000000 /* PIO & CONF & APB */
-+			    0x0 0x20000000   0x0 0x20000000   0x0 0x10000000
-+			    0x0 0x40000000   0x0 0x40000000   0x0 0x40000000 /* PCI MEM */
-+			  0xe00 0x00000000 0xe00 0x00000000 0x100 0x00000000>;
+@@ -75,6 +75,12 @@ ls7a_uart3: serial@10080300 {
+ 			no-loopback-test;
+ 		};
  
- 		pic: interrupt-controller@10000000 {
- 			compatible = "loongson,pch-pic-1.0";
--			reg = <0 0x10000000 0 0x400>;
-+			reg = <0x0 0x10000000 0x0 0x400>;
- 			interrupt-controller;
- 			interrupt-parent = <&htvec>;
- 			loongson,pic-base-vec = <0>;
-@@ -22,7 +22,7 @@ pic: interrupt-controller@10000000 {
- 
- 		lpc: interrupt-controller@10002000 {
- 			compatible = "loongson,ls7a-lpc";
--			reg = <0 0x10002000 0 0x1000>;
-+			reg = <0x0 0x10002000 0x0 0x1000>;
- 			interrupt-controller;
- 			interrupt-parent = <&pic>;
- 			interrupts = <19 IRQ_TYPE_LEVEL_HIGH>;
-@@ -32,7 +32,7 @@ lpc: interrupt-controller@10002000 {
- 
- 		ls7a_uart0: serial@10080000 {
- 			compatible = "ns16550a";
--			reg = <0 0x10080000 0 0x100>;
-+			reg = <0x0 0x10080000 0x0 0x100>;
- 			clock-frequency = <50000000>;
- 			interrupt-parent = <&pic>;
- 			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-@@ -42,7 +42,7 @@ ls7a_uart0: serial@10080000 {
- 		ls7a_uart1: serial@10080100 {
- 			status = "disabled";
- 			compatible = "ns16550a";
--			reg = <0 0x10080100 0 0x100>;
-+			reg = <0x0 0x10080100 0x0 0x100>;
- 			clock-frequency = <50000000>;
- 			interrupt-parent = <&pic>;
- 			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-@@ -52,7 +52,7 @@ ls7a_uart1: serial@10080100 {
- 		ls7a_uart2: serial@10080200 {
- 			status = "disabled";
- 			compatible = "ns16550a";
--			reg = <0 0x10080200 0 0x100>;
-+			reg = <0x0 0x10080200 0x0 0x100>;
- 			clock-frequency = <50000000>;
- 			interrupt-parent = <&pic>;
- 			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-@@ -62,7 +62,7 @@ ls7a_uart2: serial@10080200 {
- 		ls7a_uart3: serial@10080300 {
- 			status = "disabled";
- 			compatible = "ns16550a";
--			reg = <0 0x10080300 0 0x100>;
-+			reg = <0x0 0x10080300 0x0 0x100>;
- 			clock-frequency = <50000000>;
- 			interrupt-parent = <&pic>;
- 			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-@@ -71,7 +71,7 @@ ls7a_uart3: serial@10080300 {
- 
++		watchdog: watchdog@100d0030 {
++			compatible = "loongson,ls7a-wdt", "loongson,ls2k0300-wdt";
++			reg = <0x0 0x100d0030 0x0 0xc>;
++			clocks = <&pch_misc_clk>;
++		};
++
  		rtc0: rtc@100d0100 {
  			compatible = "loongson,ls7a-rtc";
--			reg = <0 0x100d0100 0 0x78>;
-+			reg = <0x0 0x100d0100 0x0 0x78>;
- 			interrupt-parent = <&pic>;
- 			interrupts = <52 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-@@ -83,8 +83,8 @@ pci@1a000000 {
- 			#size-cells = <2>;
- 			msi-parent = <&msi>;
- 
--			reg = <0 0x1a000000 0 0x02000000>,
--				<0xefe 0x00000000 0 0x20000000>;
-+			reg = <  0x0 0x1a000000 0x0 0x02000000>,
-+			      <0xefe 0x00000000 0x0 0x20000000>;
- 
- 			ranges = <0x01000000 0x0 0x00020000 0x0 0x18020000 0x0 0x00020000>,
- 				 <0x02000000 0x0 0x40000000 0x0 0x40000000 0x0 0x40000000>;
-@@ -479,7 +479,7 @@ isa@18000000 {
- 			compatible = "isa";
- 			#address-cells = <2>;
- 			#size-cells = <1>;
--			ranges = <1 0 0 0x18000000 0x20000>;
-+			ranges = <0x1 0x00000000 0x0 0x18000000 0x20000>;
- 		};
- 	};
- };
+ 			reg = <0x0 0x100d0100 0x0 0x78>;
 
 -- 
 2.55.0

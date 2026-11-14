@@ -1,85 +1,85 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.170
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794699758;
-	b=AR+wwfWTUl6TODRM6Ma9tkZMHXN15UtlpB/UPIbdDerpOWJwQA+Qr85JzI36P9zEIVRC
-	 vBLpiXAg2y6ub0jlZG2Iw8NayBTkLnMnBf/jscCI5mxxdXcqgJyX/k88C0gyJ6Bm3Pp17
-	 QeajAOyDta/ifUBVXSTJEbqTMOrkLBNPxaNbw7L1s08ev4JGnz/OegysAIotRrvdF6lpH
-	 3EnSQmBal5JGrQQ1NpJNDgosssSdDvgrYiui5fTblqhGOUvknGwtyzecWFZae4VaBd8ub
-	 SQvozodZkODLiz+aOFKYXUU8uwCS88g8BhHHWZuKlBeRMGSkNSczaH8uI9WhRcDEJTw==
+	b=N6xm8EdOaC9tPtCzck4I4gIxoOyO1ZCtzK2yx9x4LyR8xiKMpCV9aTb5H2i9X9eQ8Wo0
+	 7b9Ruq0jPOObsNh8wMappVrogKSfN+807gOuHqhsaA9GHJ0vXXyHYYaBm1ZVJGyKdebeB
+	 /klRVGvFVZgMQlcqp1H4/lJG/vdTI9viaUEqVJRS7x4drlnu3C/Z1PJQnIiFEG/lGnxCz
+	 AxQamZwXJEX3b7zIp8/JbodtZIMXkW4jL0Xwg/hzxZyXYnka5MMu2QtFSMKmrCGFBicUo
+	 yKhkm2wm5WQuUZiuxy/jn9DFcFE9L8cRUfzVtUVlzStVuctkbEEAdEiFInDMvS2g7gw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794699758;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=U4Wp3uhTvjCynmWCLS5Rd8vTJ5kiOQZe2vBJ9RpJPeo=;
-	b=A7GOx9oEHPW6FcqBjp/zXL6lmQIJ2rtOWNDoHqhQmH1o1tMBDEre1awJJMXN9GnyDylf
-	 JI1F4sE3nR5Qg217ZxnrQG1uoWMtUoiSp4VVZ1+b+EeoWCCqce2QsNabngdSYSJs/W53M
-	 Iyxp3R+8dYIo+pcRNiJb+JocnoL9LePiWEfp74delFse4W07nczX68k5Ho/z/XwAg1ovw
-	 dy3LDAHdevBbalKLReaPabK19qVeRsU3PJH9+Llc4/FDJhURZWwC76musqIiIs5HNYObq
-	 8nlIofngoCxIayZ4ic8/0XI1iQOLlRhA04vsupwCIBdm0HHRa5QmELhpSous+BSI9Ug==
+	bh=W084RD0vMitsWt5r0GlWYVXrFKNwmQsR+8dQtTFBHCQ=;
+	b=WzurAuxonqDMAtOdmB4qe0Xbr948QNlMZzNVR+T3RsoJLhOTl2Fp8FSxNmrRvM5ZIaZt
+	 dmooOXeaQ66bmFbvc3KjhvLdlcPsSoEhSumQfxO30v/qnh34EjroMIcEBBywUxygLpn43
+	 DoWbVA8AEMP1Km4EFWI1q4t0JAEkSwXCi3+Z+JCtlgYTwJzolVOo/6ujhEUtueW9pbCjx
+	 sJi2+hxHEYqP8N6k7AWyFezcQKKWznA3PPArYPpVl8BIb0KHeP2eu/fukoaEvjYnMdmsT
+	 /zMRMjfXQp2mv6S3YkCabZenMc0XJ6tRjqNcXx7uSHxQ5KSPCCzRtCieSzgqzXtKa4w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=k6A9sHpO;
-	arc=none smtp.remote-ip=209.85.216.43
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DG9s3d33;
+	arc=none smtp.remote-ip=209.85.210.170
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062D0606A893
-	for <linux-mips@vger.kernel.org>; Sat, 14 Nov 2026 23:42:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 062D0606A893
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7BB606A891
+	for <linux-mips@vger.kernel.org>; Sat, 14 Nov 2026 23:42:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A7BB606A891
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=k6A9sHpO
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3b12cb3c37bso1091976a91.2
-        for <linux-mips@vger.kernel.org>; Sat, 14 Nov 2026 15:42:36 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DG9s3d33
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-8b5a6f2f27fso878404b3a.3
+        for <linux-mips@vger.kernel.org>; Sat, 14 Nov 2026 15:42:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794699756; x=1795304556; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1794699758; x=1795304558; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=U4Wp3uhTvjCynmWCLS5Rd8vTJ5kiOQZe2vBJ9RpJPeo=;
-        b=k6A9sHpOYyI+6ZIQK4KbT+tLovLlf53HzeyjQQmZSjRuXZjeS5Py/nbcAkkJWw71/T
-         PWqsBLGHAu55ZITm14h0RGGL3hQTbPLvLCq5blZsnHyc3HnjFxYI/c+N30w/SDfs19f8
-         eBb2zZJQSmzyFj9cuS4z59b83/cYRK/0mxQ14AlgFbDSB0aIfL/rIdDzOroKdO6w2K9c
-         kHl2f0tXLH/NQF5SwGx5xErb5cmQgpwAtC35ijCT/tMU+BWSUTo1VYaFopBfrDmfCxjI
-         DWDtghVaycfC87jy1a6SH3ZFaY5BYPbYyZESw8tfze3kdYZKAXbY5UDgglzTHUWaFSzd
-         lPVA==
+        bh=W084RD0vMitsWt5r0GlWYVXrFKNwmQsR+8dQtTFBHCQ=;
+        b=DG9s3d33XVxFHN9OdMlrQizyH32SS28Z0pjRS/Vx64SZvizFw6a98TZcj6jr/GpZyO
+         8uPe/AWMPFNzKqXlD5TITgeGVM+O+sIWE3iqRgVgg0S67t6iwcRsGaqtqEcZ5FguqgA7
+         Wt12nhYnQ4MbDAljt0rcO72ySodvZep5pIIbMTHWiXTGImaxQX/tj0//q76hbSqEg9Ei
+         UQv+2N78i4sR4DCryexyX1Of+9VvuZak0/t2moqY7KxYLpGPUbj0v9H0PNoG8vDs6I2V
+         lyS2V4pPgb3Xfi4ccuaKjDUEpY01+FNK8teUEXpRE9bntEZe1uYg6UNTJcJAr8rfzj+X
+         oPkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794699756; x=1795304556;
+        d=1e100.net; s=20260707; t=1794699758; x=1795304558;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=U4Wp3uhTvjCynmWCLS5Rd8vTJ5kiOQZe2vBJ9RpJPeo=;
-        b=ILsjaVw/D05URpwItDhdMo+1J24rakpfKBW43kqpS6za5tdlPS5WW+DHBUZzGk1qa9
-         9jBH8sGAYvQwOxCvYj5XFhZT2ubqlDYZCtQHZmb5IGythCh+XEHA2fUbScsvKXE1loLr
-         UvXKHlUJyYSK478zr/5MiBR25nk9yLv+vaAs8qAhvOvTPxrEF9bu9uM1gZs5kg09Lfb2
-         nxV1G7plhX06AN93wAfcE8nOjiy3Xr0MCgDvxZcsubqbPyH90N51UJdig0HxHYehcT2O
-         wyDhNCGXP4I9eih7u3UjHpafilhmT3EJVVhq1iu1mVABw+PVw9wDssYKyitFeLRAvMsX
-         sjKA==
-X-Forwarded-Encrypted: i=1; AL+hErH026z8fhX26mi0UHDGt9RRbFSjYtREAtd+9xYr1acPuXpWWPvHXl9sV06tCmryBC1/CedYPlxCSZm9@vger.kernel.org
-X-Gm-Message-State: APuU4Z86IrLHbC/y+6FWNBs2WAozDPfLsWJGMLOPbX08E0B9DuXqz2Ma
-	lln17a9xroQc228x5+ZMGywmFC9cMh76tJz7cJZxPIQdVgCP4gBHVG+H
-X-Gm-Gg: AYBFou02PdeAG4OUd8KQq3XK3v1Y+/idT1DvgvfWXH+ZtOJ13hY+RGvX6pvGcu5BoMD
-	0uQqsJp5Wvw7uMeRx7snibjBDjv3W49vOWOHexTrkVLqIQpMw3Apzrg9bnJGArwworR4/neu4Xn
-	P2Hi7qVLmRDbfGeSKfwzYfN+HM6eGJJxQef/upCAiziViitYbfv3Sg3/MnmzUIWO0lI3FnNzqsa
-	sfGfp6fpw95lC0FR69wtGRKfIw/eJQDuk7SzXA8zXGLPcywyO5jgUlGJs8K3yUerc1Cr4fygzkV
-	OAd03Es4QmMLYqXfSaGJG2atN9N0mKDh+03mpepvekM4FlgBaH83otx4Gn6CG7FNmdRTIiI7Qv4
-	u6Nsq7x/pXAc2iOq94Jvlt4jInnOOkpVvy5GUa4COU1dKG9hNbGnMVw73gKLKBVLp/WGfd7TZeA
-	TNoL0cMpc7ry3lG4jJ3tpIVa+8zQhw8ISWYgnQjmHYXF3kUGOf0dfPzubDH1jwDqHglAoJP93a9
-	d0MGl6wf9LFUJSGnkaAie/T2ApSuF2/ua+sqXnwaJi/H9ZVmbAnn3ScpdT+35/dvorB/FueFs20
-	9ptN7T4I67ohoCyG+UT74+JGGfHgnWeqfgZq1sbV6QZvCMeFp0hxS7DQbYK/cBjnrw8zhs+FSi6
-	+ICpOjEddVlxsMzz+uGj7BOwynouYNULQV00zAhqNfPdNKxRA1b3+2CJZFyf4Yqkzp6SNHOQ5zr
-	3ZjATJ4RT9oGWjLIOk9sZVLPvx
-X-Received: by 2002:a17:90b:2b87:b0:3b0:dbc5:c56b with SMTP id 98e67ed59e1d1-3b1b07e9026mr5652010a91.6.1794699756210;
-        Sat, 14 Nov 2026 15:42:36 -0800 (PST)
+        bh=W084RD0vMitsWt5r0GlWYVXrFKNwmQsR+8dQtTFBHCQ=;
+        b=SotoX/7mRweCEdIdWV6PMfhJREqAGdxGEtJ8t77fFSsyTNtd/1iK6eDuIT/2geOgni
+         pgF5q6uINs2apIUlnLqXqvXQgtIheLcfMUvVjAbRITgTlod3xw8AjY8TZIFznp8qcfOB
+         F3bNDoeu/jWWLJK7n4H7+o6jWXPbZFK9pcsaQs8TXD1INC3gwtHt51wL/USQ5uzHqMKl
+         gyRvbN8ZnkPkNcw7Ymq7Opu6GDb82kUBl+MvhAyvi8Fe8ZnC0UA3YbOzHl+Fw2g+u0HT
+         19sBXRWEuGQ/ksxYHB0YD4pjNI6ncZQcGhfVGtMvA5whBnRhy14Y/rV/0xaA2OoZ9Tqg
+         Lrhw==
+X-Forwarded-Encrypted: i=1; AL+hErHmxCn0fyRxjjUk21kbFOTkaAFhJWPtaBOrsETEOVRkVJ6CzXLcFyjsRaHB0y0L+WK7ZGjKtSULy5Bh@vger.kernel.org
+X-Gm-Message-State: APuU4Z/M2xVrpXomvWrPKbIosANyq5S22kwNo8LW3fnP/tIS6atfoWPb
+	pkKHK2ygeHdVZWmlipKBy8bcWabw0WlzhY0rFZHog3N+uvPByHJEogYO
+X-Gm-Gg: AYBFou2fTBk4/8vSvUrsXRnLW8Xr6bukqVzmkmuY78OKQZRy2jMVnkWKoCodaq/vy6j
+	HoPFCCw6VlF9BYX1oR5JrVeAgiG5qgNY9SFGfd69Q4qtH+Emd7VKUNLxilGOhqanJGqS3gLpx67
+	BhZ9TSfjfMtiQtBMp0jid0Y+jCVEtWNOurOPxr0oVk7TVkqoHPetW3E5lv6qpJDJJc70r8No0vX
+	VWXKPDwan5G2ER/BH4unglN5J6ChbMfZrdrIpDp7+LKXrigFC+s6vaiSJfUtl8NQb6CCTkKhCuC
+	2KCrvSeg1ufN83ceL+dGm76L647pqeoGbstfkz5lpvbKanXmIudbjMKN5TWS93R1mUJ0ITKlPeZ
+	6zH+XHqMlM3P04hccadQKeTsLatZIPD5G7OjYIJPvZFfS4x+8i6qEhsgCPgT9yeVmWZQXGYMPET
+	ld2/jpPAW20kq6dBWiHks3wB452VsCHoCZH2rIH1AtX0+cK+eWVRjumqljnxP9sY6BQP5PHBH/W
+	1Hq0aOB2m/z9nD2prJwEgMJmcC0Q+CVTEEeIAhzo1aXWq4bzsU1hpSooJt19MwpIBwoI8jOCOSI
+	exQDkd9654jpugopU+ivYJR6xBvz6kLcDRLCtVuWQF1y0DokgbxMK6uf1TYx33EQMdL3EJjwU2X
+	RxrImcHAsOyxxJsH3LTFqrazzfzmUJabTjdptMWS0awvY1gWqJdDZuvgZXKwWFLRo1ZJo8urrQM
+	2d1Q==
+X-Received: by 2002:a17:90b:39ab:b0:3ae:8410:ae6a with SMTP id 98e67ed59e1d1-3b1b0a1eec0mr6608862a91.22.1794699757612;
+        Sat, 14 Nov 2026 15:42:37 -0800 (PST)
 Received: from ryzen.lan ([2601:644:8000:37f::e34])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b197d04336sm15755574a91.7.2026.11.14.15.42.33
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b197d04336sm15755574a91.7.2026.11.14.15.42.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 15:42:34 -0800 (PST)
+        Sat, 14 Nov 2026 15:42:37 -0800 (PST)
 From: Rosen Penev <rosenp@gmail.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Stephen Boyd <sboyd@kernel.org>,
@@ -94,9 +94,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: [PATCH v4 2/7] MIPS: ath79: move the bootstrap reference clock to setup
-Date: Sat, 14 Nov 2026 15:42:17 -0800
-Message-ID: <20261114234222.88337-3-rosenp@gmail.com>
+Subject: [PATCH v4 3/7] MIPS: ath79: stop using ATH79_CLK_END
+Date: Sat, 14 Nov 2026 15:42:18 -0800
+Message-ID: <20261114234222.88337-4-rosenp@gmail.com>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261114234222.88337-1-rosenp@gmail.com>
 References: <20261114234222.88337-1-rosenp@gmail.com>
@@ -111,295 +111,38 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The qca,ath79-pll binding requires the reference clock as an input, and a
-rate in the device tree already took precedence over the 25/40 MHz that
-the clock code read from the bootstrap pins. Many AR933x boards leave the
-rate out, though, and rely on the pins.
-
-Read the pins in plat_time_init() instead. When the device tree gives
-no rate, so that the fixed-clock driver can't register the clock, register
-it from the pins as the provider of the reference clock node. The clock
-code then takes it from the device tree, like every other consumer of the
-node, such as the AR933x UART, and no longer needs ath79_reset_base.
-
-When the device tree does give a rate, warn if it disagrees with the
-pins: a wrong rate leaves the CPU, DDR and AHB rates off, the UART baud
-rate included.
+ATH79_CLK_END counts the clocks in the dt-bindings header, which means
+it has to change whenever a clock is added, but it is not part of the
+ABI. Size the clock table from the IDs that the clock code uses
+instead, so the define can be dropped from the header.
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- arch/mips/ath79/clock.c | 65 +++++-----------------------
- arch/mips/ath79/setup.c | 94 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 105 insertions(+), 54 deletions(-)
+ arch/mips/ath79/clock.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/ath79/clock.c b/arch/mips/ath79/clock.c
-index 8c5eaa4ab6e0..6a8bef782186 100644
+index 6a8bef782186..55d8ef8c1c8c 100644
 --- a/arch/mips/ath79/clock.c
 +++ b/arch/mips/ath79/clock.c
-@@ -25,9 +25,6 @@
+@@ -25,13 +25,15 @@
  #include <asm/mach-ath79/ar71xx_regs.h>
  #include "common.h"
  
--#define AR71XX_BASE_FREQ	40000000
--#define AR724X_BASE_FREQ	40000000
--
- static struct clk *clks[ATH79_CLK_END];
+-static struct clk *clks[ATH79_CLK_END];
++#define ATH79_CLK_NUM	(ATH79_CLK_MDIO + 1)
++
++static struct clk *clks[ATH79_CLK_NUM];
  static struct clk_onecell_data clk_data = {
  	.clks = clks,
-@@ -78,16 +75,12 @@ static struct clk * __init ath79_set_ff_clk(int type, const char *parent,
- 	return clk;
- }
+ 	.clk_num = ARRAY_SIZE(clks),
+ };
  
--static unsigned long __init ath79_setup_ref_clk(unsigned long rate)
-+static unsigned long __init ath79_get_ref_rate(void)
- {
--	struct clk *clk = clks[ATH79_CLK_REF];
--
--	if (clk)
--		rate = clk_get_rate(clk);
--	else
--		clk = ath79_set_clk(ATH79_CLK_REF, rate);
-+	if (!clks[ATH79_CLK_REF])
-+		panic("ath79: no reference clock");
- 
--	return rate;
-+	return clk_get_rate(clks[ATH79_CLK_REF]);
- }
- 
- static void __init ar71xx_clocks_init(void __iomem *pll_base)
-@@ -100,7 +93,7 @@ static void __init ar71xx_clocks_init(void __iomem *pll_base)
- 	u32 freq;
- 	u32 div;
- 
--	ref_rate = ath79_setup_ref_clk(AR71XX_BASE_FREQ);
-+	ref_rate = ath79_get_ref_rate();
- 
- 	pll = __raw_readl(pll_base + AR71XX_PLL_REG_CPU_CONFIG);
- 
-@@ -126,7 +119,7 @@ static void __init ar724x_clocks_init(void __iomem *pll_base)
- 	u32 mult, div, ddr_div, ahb_div;
- 	u32 pll;
- 
--	ath79_setup_ref_clk(AR71XX_BASE_FREQ);
-+	ath79_get_ref_rate();
- 
- 	pll = __raw_readl(pll_base + AR724X_PLL_REG_CPU_CONFIG);
- 
-@@ -143,7 +136,6 @@ static void __init ar724x_clocks_init(void __iomem *pll_base)
- 
- static void __init ar933x_clocks_init(void __iomem *pll_base)
- {
--	unsigned long ref_rate;
- 	u32 clock_ctrl;
- 	u32 ref_div;
- 	u32 ninit_mul;
-@@ -152,15 +144,8 @@ static void __init ar933x_clocks_init(void __iomem *pll_base)
- 	u32 cpu_div;
- 	u32 ddr_div;
- 	u32 ahb_div;
--	u32 t;
- 
--	t = ath79_reset_rr(AR933X_RESET_REG_BOOTSTRAP);
--	if (t & AR933X_BOOTSTRAP_REF_CLK_40)
--		ref_rate = (40 * 1000 * 1000);
--	else
--		ref_rate = (25 * 1000 * 1000);
--
--	ath79_setup_ref_clk(ref_rate);
-+	ath79_get_ref_rate();
- 
- 	clock_ctrl = __raw_readl(pll_base + AR933X_PLL_CLOCK_CTRL_REG);
- 	if (clock_ctrl & AR933X_PLL_CLOCK_CTRL_BYPASS) {
-@@ -237,18 +222,11 @@ static void __init ar934x_clocks_init(void __iomem *pll_base)
- 	unsigned long ahb_rate;
- 	u32 pll, out_div, ref_div, nint, nfrac, frac, clk_ctrl, postdiv;
- 	u32 cpu_pll, ddr_pll;
--	u32 bootstrap;
- 	void __iomem *dpll_base;
- 
- 	dpll_base = ioremap(AR934X_SRIF_BASE, AR934X_SRIF_SIZE);
- 
--	bootstrap = ath79_reset_rr(AR934X_RESET_REG_BOOTSTRAP);
--	if (bootstrap & AR934X_BOOTSTRAP_REF_CLK_40)
--		ref_rate = 40 * 1000 * 1000;
--	else
--		ref_rate = 25 * 1000 * 1000;
--
--	ref_rate = ath79_setup_ref_clk(ref_rate);
-+	ref_rate = ath79_get_ref_rate();
- 
- 	pll = __raw_readl(dpll_base + AR934X_SRIF_CPU_DPLL2_REG);
- 	if (pll & AR934X_SRIF_DPLL2_LOCAL_PLL) {
-@@ -355,15 +333,8 @@ static void __init qca953x_clocks_init(void __iomem *pll_base)
- 	unsigned long ahb_rate;
- 	u32 pll, out_div, ref_div, nint, frac, clk_ctrl, postdiv;
- 	u32 cpu_pll, ddr_pll;
--	u32 bootstrap;
--
--	bootstrap = ath79_reset_rr(QCA953X_RESET_REG_BOOTSTRAP);
--	if (bootstrap &	QCA953X_BOOTSTRAP_REF_CLK_40)
--		ref_rate = 40 * 1000 * 1000;
--	else
--		ref_rate = 25 * 1000 * 1000;
- 
--	ref_rate = ath79_setup_ref_clk(ref_rate);
-+	ref_rate = ath79_get_ref_rate();
- 
- 	pll = __raw_readl(pll_base + QCA953X_PLL_CPU_CONFIG_REG);
- 	out_div = (pll >> QCA953X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
-@@ -438,15 +409,8 @@ static void __init qca955x_clocks_init(void __iomem *pll_base)
- 	unsigned long ahb_rate;
- 	u32 pll, out_div, ref_div, nint, frac, clk_ctrl, postdiv;
- 	u32 cpu_pll, ddr_pll;
--	u32 bootstrap;
- 
--	bootstrap = ath79_reset_rr(QCA955X_RESET_REG_BOOTSTRAP);
--	if (bootstrap &	QCA955X_BOOTSTRAP_REF_CLK_40)
--		ref_rate = 40 * 1000 * 1000;
--	else
--		ref_rate = 25 * 1000 * 1000;
--
--	ref_rate = ath79_setup_ref_clk(ref_rate);
-+	ref_rate = ath79_get_ref_rate();
- 
- 	pll = __raw_readl(pll_base + QCA955X_PLL_CPU_CONFIG_REG);
- 	out_div = (pll >> QCA955X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
-@@ -521,15 +485,8 @@ static void __init qca956x_clocks_init(void __iomem *pll_base)
- 	unsigned long ahb_rate;
- 	u32 pll, out_div, ref_div, nint, hfrac, lfrac, clk_ctrl, postdiv;
- 	u32 cpu_pll, ddr_pll;
--	u32 bootstrap;
--
--	bootstrap = ath79_reset_rr(QCA956X_RESET_REG_BOOTSTRAP);
--	if (bootstrap &	QCA956X_BOOTSTRAP_REF_CLK_40)
--		ref_rate = 40 * 1000 * 1000;
--	else
--		ref_rate = 25 * 1000 * 1000;
- 
--	ref_rate = ath79_setup_ref_clk(ref_rate);
-+	ref_rate = ath79_get_ref_rate();
- 
- 	pll = __raw_readl(pll_base + QCA956X_PLL_CPU_CONFIG_REG);
- 	out_div = (pll >> QCA956X_PLL_CPU_CONFIG_OUTDIV_SHIFT) &
-diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
-index d9e1cc77ad04..d06e8cc378bc 100644
---- a/arch/mips/ath79/setup.c
-+++ b/arch/mips/ath79/setup.c
-@@ -15,6 +15,8 @@
- #include <linux/memblock.h>
- #include <linux/err.h>
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/of.h>
- #include <linux/of_clk.h>
- #include <linux/of_fdt.h>
- #include <linux/irqchip.h>
-@@ -235,6 +237,97 @@ void __init plat_mem_setup(void)
- 	pm_power_off = ath79_halt;
- }
- 
-+static const struct of_device_id ath79_pll_ids[] __initconst = {
-+	{ .compatible = "qca,ar7100-pll" },
-+	{ .compatible = "qca,ar7240-pll" },
-+	{ .compatible = "qca,ar9130-pll" },
-+	{ .compatible = "qca,ar9330-pll" },
-+	{ .compatible = "qca,ar9340-pll" },
-+	{ .compatible = "qca,qca9530-pll" },
-+	{ .compatible = "qca,qca9550-pll" },
-+	{ .compatible = "qca,qca9560-pll" },
-+	{ /* sentinel */ }
-+};
-+
-+/* the crystal that the bootstrap pins select */
-+static unsigned long __init ath79_bootstrap_ref_rate(bool *strapped)
-+{
-+	unsigned int reg;
-+	u32 bit;
-+
-+	*strapped = true;
-+	if (soc_is_ar933x()) {
-+		reg = AR933X_RESET_REG_BOOTSTRAP;
-+		bit = AR933X_BOOTSTRAP_REF_CLK_40;
-+	} else if (soc_is_ar934x()) {
-+		reg = AR934X_RESET_REG_BOOTSTRAP;
-+		bit = AR934X_BOOTSTRAP_REF_CLK_40;
-+	} else if (soc_is_qca953x()) {
-+		reg = QCA953X_RESET_REG_BOOTSTRAP;
-+		bit = QCA953X_BOOTSTRAP_REF_CLK_40;
-+	} else if (soc_is_qca955x()) {
-+		reg = QCA955X_RESET_REG_BOOTSTRAP;
-+		bit = QCA955X_BOOTSTRAP_REF_CLK_40;
-+	} else if (soc_is_qca956x() || soc_is_tp9343()) {
-+		reg = QCA956X_RESET_REG_BOOTSTRAP;
-+		bit = QCA956X_BOOTSTRAP_REF_CLK_40;
-+	} else {
-+		/* no bootstrap pin for the crystal on AR71xx, AR724x, AR913x */
-+		*strapped = false;
-+		return 40000000;
-+	}
-+
-+	return (ath79_reset_rr(reg) & bit) ? 40000000 : 25000000;
-+}
-+
-+/*
-+ * The clock code takes the reference clock from the device tree. Many
-+ * AR933x boards leave its rate out and rely on the bootstrap pins, so
-+ * register it from those for them, as the provider of the DT node so that
-+ * its other consumers find it too. Otherwise warn if the device tree
-+ * disagrees with the pins, as a wrong rate leaves every derived clock off,
-+ * the UART baud rate included.
-+ */
-+static void __init ath79_setup_ref_clk(void)
-+{
-+	struct device_node *np, *ref_np;
-+	unsigned long strap_rate;
-+	struct clk_hw *hw;
-+	bool strapped;
-+	u32 dt_rate;
-+	int ret;
-+
-+	strap_rate = ath79_bootstrap_ref_rate(&strapped);
-+
-+	np = of_find_matching_node(NULL, ath79_pll_ids);
-+	ref_np = np ? of_parse_phandle(np, "clocks", 0) : NULL;
-+	of_node_put(np);
-+	if (!ref_np)
-+		return;
-+
-+	if (!of_property_read_u32(ref_np, "clock-frequency", &dt_rate)) {
-+		if (strapped && dt_rate != strap_rate)
-+			pr_warn("ath79: reference clock is %u Hz in the device tree, but the bootstrap pins select %lu Hz\n",
-+				dt_rate, strap_rate);
-+		goto out_put;
-+	}
-+
-+	hw = clk_hw_register_fixed_rate(NULL, "ref", NULL, 0, strap_rate);
-+	if (IS_ERR(hw)) {
-+		pr_err("ath79: failed to register the reference clock\n");
-+		goto out_put;
-+	}
-+
-+	ret = of_clk_add_hw_provider(ref_np, of_clk_hw_simple_get, hw);
-+	if (ret) {
-+		pr_err("ath79: failed to add the reference clock provider\n");
-+		clk_hw_unregister_fixed_rate(hw);
-+	}
-+
-+out_put:
-+	of_node_put(ref_np);
-+}
-+
- void __init plat_time_init(void)
- {
- 	struct device_node *np;
-@@ -254,6 +347,7 @@ void __init plat_time_init(void)
- 		ath79_reset_wr(AR71XX_RESET_REG_MISC_INT_ENABLE, misc);
- 	}
- 
-+	ath79_setup_ref_clk();
- 	of_clk_init(NULL);
- 
- 	np = of_get_cpu_node(0, NULL);
+-static const char * const clk_names[ATH79_CLK_END] = {
++static const char * const clk_names[ATH79_CLK_NUM] = {
+ 	[ATH79_CLK_CPU] = "cpu",
+ 	[ATH79_CLK_DDR] = "ddr",
+ 	[ATH79_CLK_AHB] = "ahb",
 -- 
 2.56.1
 

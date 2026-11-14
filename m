@@ -1,80 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=23.88.38.48
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=111.22.67.151
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794650778;
-	b=GZDnrpGPv2HqJWlvJLp+CqScRB2AEaGyPI6nQfUx5bvJKclbha/xcpK7ad/LwcGyeI+K
-	 KS7vZ8zzbx1WbigCGfSZvUokEc5X0KP0+nYr/xnLRyKQbQLZDalH8becDjQDR3qkQ5OwK
-	 DxqshcL2YgCLarSuaPA/mFCo3sEsLgkUy10MX8kEEoknQbMyIXn7kClJUk+0KOq3fdpdm
-	 ts4WWa4yQvspbCcKC/qxvjaDq8RHVyQcyEPdu8J+UMQU3ewIaY6Qw7acjduhwO/zHF6KI
-	 AQaR0J+zf+pSWXecpf6aJFPUCBRLy6NfcJCJXtE1nAXyaEl5Hamv3UtNYG0eNBKS7dw==
+	t=1794658532;
+	b=s5qJN0aSAOf2xqcG24962gcDcBGmNyCtOZ9woX7Dao/0Hp+ywQRkhk5FzbkSFKjMBT7T
+	 Rc1IHkWVHhccBSt94IG4gtMc4x2FA+i2ag5873vc8foFbjJDThNSDvKR+FCEZLLntRYK6
+	 Hx+r0j6TsOIhuUA+jbZnXY/yW9uWLvGEk1WsAZRSiwLoWkT2HvQkEiVQc2BGfq7qTN+JQ
+	 JWofLdJghmaYcclrB3g3rjNQ60KRJ3bglYClnsmgGyHAHHyCeSNK1tl5qsR7l4mcTuMxM
+	 FIHNgvGm16Wk5/KgyMkh+WQB/ttkZhRQlxx76CBOz+zDouTmk1oJerlMyhJszS5UN4Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794650778;
-	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794658532;
+	h=DMARC-Filter:DKIM-Signature:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:
+	 X-RM-TRANSID:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:X-RM-TRANSID:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=AtxH1rtvVGcCbrpssWyswzGEtKmY8FkdO8ogP+lp3+I=;
-	b=1GuRqqExC7C8R6KyCSm8pFRFZc2l0WP5n2et24xSKpakR5BedRng8UgCAtLiZ+SMF4n9
-	 HwSEUUDXR4IAmPVT+Um2Y/oqSkqyAcqfHrz0BcmBdpE/mwwO7hGFMSXkXyTXBJFjGazoW
-	 XAPZpRaZKLeEtddF2ssGn26XTV070De+1kk3u+JG/BH09Lm3bXirpe+QjX0+nm6mRYm3C
-	 t3vWf9QhRUFIT7YuuEIQzE0LhGF+bnSZZNtQHi90buq7+aHjU3yaMEXA1s8f+nsgLtyD/
-	 hFelmj0CDk+1HL11Je+I6RiXl8sm1ovRJjH4lQoDJzblToHc+1Gn25TbpwexP/ga1Og==
+	bh=oWuOwDFhTmH3ChqYEXokVxql4X4DiTpIDjApkuAhTfs=;
+	b=ydlFYRsvWAYkRK5h+LH483zVi89vRzUqnvk4nK6L91vOGPIxxMrBXdd7Uwl4ONH8Iuzn
+	 6NL4Fr4FIzeiq3sVaz4SexAs/uRDufePZXFmrTbLFa+g2IWwUYYW+/pTRr8ihgdCtGxhl
+	 TmxkPqCebs49mi9kQY2ieWjQdai+vUXMism2TrRqxIvYET3M3BKTb/am54S7J9DpNlLuO
+	 7kvrsfd7Hc//L9QnxZQxQb7Sy7AioKpgRvLqBabFzlGlSqf65Y8l3bhYslf1EzugeWJ77
+	 yUgHXJvLbZxyjVg2zx+UiYrQq89pcrbkfiJ9Xlr0WeN35MnC2BtZ1ajIuWfAESKHsjw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=simonwunderlich.de;
-	spf=pass smtp.mailfrom=simonwunderlich.de;
-	dkim=pass header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=vzax+X44;
-	arc=none smtp.remote-ip=23.88.38.48
-Received: from mail.simonwunderlich.de (mail.simonwunderlich.de [23.88.38.48])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 8BFFE60A260F;
-	Sat, 14 Nov 2026 10:06:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8BFFE60A260F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=simonwunderlich.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=simonwunderlich.de
+	dmarc=pass header.from=cmss.chinamobile.com;
+	spf=pass smtp.mailfrom=cmss.chinamobile.com;
+	dkim=pass header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=kiD2WV2G;
+	arc=none smtp.remote-ip=111.22.67.151
+Received: from cmccmta8.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4900606A323;
+	Sat, 14 Nov 2026 12:15:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B4900606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=vzax+X44
-Received: from kero.packetmixer.de (unknown [IPv6:2a02:3037:6ed:dd6c:838:344b:3152:2d5e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.simonwunderlich.de (Postfix) with UTF8SMTPSA id 3706CFA25F;
-	Sat, 14 Nov 2026 11:06:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=simonwunderlich.de;
-	s=09092022; t=1794650775;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AtxH1rtvVGcCbrpssWyswzGEtKmY8FkdO8ogP+lp3+I=;
-	b=vzax+X44GgR+mYPvEMksybA3egCmVsE8nnGqhKJHD4rJ633YS8nOf8mKJpsOzm3z1ceCtr
-	fiATtfwlmP/NJvaUJ57LmODHfjZp0pEK/rMXcXI3lb2P3vDaGbgjLM4mFURY+FEaQeg98v
-	+YuUjbeiY8BLxRXGr116OEkxkgieVBKSij4wTFaLsJbHMNwPyomY6adoZmal5jooUEZN5i
-	RJYP0hYIlXeHJ1RBdoAs2XJs6R2S16386i2GK4JC2kYn2QcD/oyqf3P1a+asikjG4SghMX
-	lMK3/DS5ghdjNmZx/ZWbVhy534yHQNPQoU66a0suwNs8AVrArVBeu9R612VDvg==
-From: Simon Wunderlich <sw@simonwunderlich.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	dkim=pass (1024-bit key, unprotected) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=kiD2WV2G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=kiD2WV2GAAhcwSn7IdlWDZGC6iUOUnQT53kkKSsN5aHTk1ZBAWtrtkPkq7+pX3jRmTIa5iTE/3yil
+	 hclbYCRCUkLVoT38bxmeGdFd9wTrEd7mhzQ2gn03XWY6fgWLhw+o9AFMYTzyw9WAK4eHAIousxT+RH
+	 XJDAoRkw2RGs0EK0=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee66af850ce47b-be2b0;
+	Sat, 14 Nov 2026 20:15:18 +0800 (CST)
+X-RM-TRANSID:2ee66af850ce47b-be2b0
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from FHD-W7400297 (unknown[10.55.1.70])
+	by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66af850d4ac7-4462a;
+	Sat, 14 Nov 2026 20:15:18 +0800 (CST)
+X-RM-TRANSID:2ee66af850d4ac7-4462a
+From: Aibing Chen <chenaibing@cmss.chinamobile.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Tony Luck <tony.luck@intel.com>
+Cc: linux-edac@vger.kernel.org,
 	linux-mips@vger.kernel.org,
-	Hauke Mehrtens <hauke@hauke-m.de>,
-	Aleksander Jan Bajkowski <olek2@wp.pl>,
-	John Crispin <john@phrozen.org>,
-	Sebastien Decourriere <sebtx452@gmail.com>,
-	Yangtao Li <frank.li@vivo.com>,
-	linux-kernel@vger.kernel.org,
-	Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 5/5] mips: lantiq: danube: rename NOR node on EASY50712 reference board
-Date: Sat, 14 Nov 2026 11:06:07 +0100
-Message-ID: <20261114100608.3432120-6-sw@simonwunderlich.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261114100608.3432120-1-sw@simonwunderlich.de>
-References: <20261114100608.3432120-1-sw@simonwunderlich.de>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC/octeon: enlarge the L2C error message buffer
+Date: Sat, 14 Nov 2026 20:15:15 +0800
+Message-ID: <20261114121516.1306-1-chenaibing@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.50.1.windows.1
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -86,32 +72,36 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This fixes the following warning with the new lantiq,nor binding:
-arch/mips/boot/dts/lantiq/danube_easy50712.dtb: nor-boot@0 (lantiq,nor): $nodename:0: 'nor-boot@0' does not match '^(flash|.*sram|nand)(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/mtd/lantiq,nor.yaml
+_octeon_l2c_poll_oct2() builds an error message by prefixing buf1 with a
+short description.  buf1 holds up to 63 characters and the longest
+prefix is 33 characters ("Tag Single bit error (corrected):"), so the
+message needs up to 97 bytes, but buf2 is only 80 bytes.
 
-The MTD device name comes from the driver and not from the node name,
-and the board uses a built-in DTB, so only the name of the platform
-device changes.
+Building with W=1 reports a -Wformat-truncation warning for each of the
+six snprintf() calls, e.g. for "L2D Double bit error (detected):%s" the
+compiler notes that the output can reach 97 bytes including the
+terminator, into a destination of size 80.  The printed message then
+loses the syndrome, type and way information that buf1 carries.
 
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Size buf2 for the worst case.
+
+Signed-off-by: Aibing Chen <chenaibing@cmss.chinamobile.com>
 ---
- arch/mips/boot/dts/lantiq/danube_easy50712.dts | 2 +-
+ drivers/edac/octeon_edac-l2c.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/lantiq/danube_easy50712.dts b/arch/mips/boot/dts/lantiq/danube_easy50712.dts
-index c9f7886f57b8..456d5d090c7f 100644
---- a/arch/mips/boot/dts/lantiq/danube_easy50712.dts
-+++ b/arch/mips/boot/dts/lantiq/danube_easy50712.dts
-@@ -25,7 +25,7 @@ localbus@0 {
- 				1 0 0x4000000 0x4000010>; /* addsel1 */
- 			compatible = "lantiq,localbus", "simple-bus";
+diff --git a/drivers/edac/octeon_edac-l2c.c b/drivers/edac/octeon_edac-l2c.c
+index e6b1595a3..5eca6e204 100644
+--- a/drivers/edac/octeon_edac-l2c.c
++++ b/drivers/edac/octeon_edac-l2c.c
+@@ -62,7 +62,7 @@ static void _octeon_l2c_poll_oct2(struct edac_device_ctl_info *l2c, int tad)
+ 	union cvmx_l2c_err_tdtx err_tdtx, err_tdtx_reset;
+ 	union cvmx_l2c_err_ttgx err_ttgx, err_ttgx_reset;
+ 	char buf1[64];
+-	char buf2[80];
++	char buf2[128];
  
--			nor-boot@0 {
-+			flash@0 {
- 				compatible = "lantiq,nor";
- 				bank-width = <2>;
- 				reg = <0 0x0 0x2000000>;
--- 
-2.47.3
+ 	err_tdtx_reset.u64 = 0;
+ 	err_tdtx.u64 = cvmx_read_csr(CVMX_L2C_ERR_TDTX(tad));
+
 

@@ -1,105 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794762094;
-	b=r39hWYP/LKGQL+k+XYLNUDikfLO0S4dOdxBkD416w2Dac2wuUUaFS0arFu3r0nXu7JuZ
-	 TrcGc1VpeGizcKSl4aViaf2Bf+YHrSF9shBPvREZcn30sa1UQfLSKKsF10YsRDSsTPBo+
-	 afKS5YhexlcXytXUUdtuEc461UgUzLMioNY2bdFu9j0pPW1ta79ah9AYC5/hEtpn5FTcw
-	 tks3f9cXlV4gQhg+5vN7n2K6Ew2iEnrgNuXvSfQjRAjEOx6nJD7uSgzBMZ2y9dCvyhXUJ
-	 djk/p8TA3Rk5dtXBwirym86AxEbvFYnGDAlqTa8GmSsaH6lx7NPwIaBtfUY6LnDLpDw==
+	t=1794762095;
+	b=k7W8/6qa5YnMOm/DpoLTzgxORetmp4+e/kReXb/qvvmiCTKP2b4hZp4+q8yPypAKQegJ
+	 cFf2unDstEN4yUz1TFWTa7rFFCTcm/SAHQxEhxQ2YVGki6zmlpx03fXBsoG+Ffpgg7e8q
+	 hXyqxLueHaA3jYy+57ZAylKcHcYHIU4dyBDwSzbJ9356rTrtqYpFONJEdeIp9nSZsl5kp
+	 nMUTNnvYc7BTByxbhyKdd1Qly+KBb8xAGsHQWdpNcxFuxLm1kTp5JRzSaPp98sA75odmN
+	 biGH5mVXIGD8meVF/4vBzliLi2KLwGODGgjFpmPHZeQazIBpoqFpIWxHwa0Qp7OGb7g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794762094;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794762095;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=SVZwwH4W1zKgtEsp608WvX3HiMcrtY/DDmZr7nWB46g=;
-	b=3tYQEe1UqVH9eDlcnwwD3GXz/qxooJPAwPwAb1Zc6o2R8NN5fD8nOtoD2zWKh9s94z6o
-	 ehHKsxSy2IXlY1MdEkEsyI9DUyvDdCFPFMNnofmF1fJiiOz4K+gy4mAm+rXNdOjQRH2PQ
-	 U9B7y/YaT52lpknrKwFCTSycqA/kbF8ZD8cMu/mVelzL/mPQ5bZJQQQxaEa1qiAsjv+fF
-	 i/KMmPppgQYgnQsNXqHj9UMwFLoHoaXBTFpuTgw9lOpMshqqFAR9tflVwROcVUXlVR+xj
-	 woHMxOhafq/u1z8Qm0RrplvG8fhWBiuznpwLJ4O5ltRuLhQOCN2Xn8pl4N1JjMA0qUw==
+	bh=4/xuQKgFmax+PlK8RsrrP9CtynouzaCSXzHEkLVU8HA=;
+	b=PeQMXCv9sDM182qNabShaK4ANXi2xq1my+UjHgj7omNO/T8KwNhmYb0wcCR5CdTZuWlO
+	 QiaU/hDOhloRLNg4LTjCmEhbkBDu55eaVxoPPhIS9JLGtAtc8X0GBGDSqJmybswE8g1K6
+	 eHnWG/PwNdb2MCevFlWe3NUPG4j6Yvn7mM0APD5hyvT24g1/Zi83e83WdH3v0DZC9R1nS
+	 87OC6c+1KcrJJ1S2ny7Z/Bw+LOq2feWOkOL+g8NRcjZUCSQQF4CuXEf0xLkqUN5wp6cKX
+	 Z/xuOOAh3y1YrEtnvVQd67PcqDW2nny2mflgXYVij+szU+B3SrLAm7C+sh+H7T2+k/w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=mgcrea.io;
 	spf=pass smtp.mailfrom=mg-crea.com;
-	dkim=pass header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=qY7h4cTy;
-	arc=none smtp.remote-ip=209.85.221.51
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=GaPAMHpr;
+	arc=none smtp.remote-ip=209.85.128.41
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727AA606A32F
-	for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 17:01:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 727AA606A32F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B66606A332
+	for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 17:01:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 73B66606A332
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgcrea.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=qY7h4cTy
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-497614c95f0so1156203f8f.1
-        for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 09:01:34 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=mgcrea.io header.i=@mgcrea.io header.a=rsa-sha256 header.s=google header.b=GaPAMHpr
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a5b2be99a8so16570655e9.2
+        for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 09:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mgcrea.io; s=google; t=1794762093; x=1795366893; darn=vger.kernel.org;
+        d=mgcrea.io; s=google; t=1794762094; x=1795366894; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=SVZwwH4W1zKgtEsp608WvX3HiMcrtY/DDmZr7nWB46g=;
-        b=qY7h4cTyq3eIH+N1giwXEDGq77RYhniijXUA3ssiqYQHkVUOqSPUzZNIJh8/q3vOj5
-         Vg+uUvEC4nn7iEaKd6xMBxoP7aSz7qN6X8Er/wZnjRwoxwhKRybf5uDXXMdWLtUfW+CV
-         jfESgM4MIKHpMKpm6nyS6SCvHyZ/JYLyHL6pgfwukS7S7rOxUnlNqHPcUQIcOaWA7aNf
-         XsK441+fZF+TScjo9fOnJYgroil/hxxXP0YRDCOAZKuHgmxIwQfvwdhDe2RyMScqnum6
-         h5NwYCcwou2o/wJ5szE91gIY3aLP00VBveBktR+MD+J6jLSiTgFDXufCb6s7k+e48Qn2
-         0NbA==
+        bh=4/xuQKgFmax+PlK8RsrrP9CtynouzaCSXzHEkLVU8HA=;
+        b=GaPAMHpr42ecy3Yixz8307T4q2uhyPQNdYB3zqdnsxzbCfPV03222Tb+bYULUfSiId
+         4hvrNFPZMR9Q6OT77poc4sDVLKWR/Tt4ETs8UyIM9nBb5hsQsIOr5CqVjtxf0N+kji5u
+         yAHTgf9r40XzS36rayLBQKjL2MVY1SDeYPXz6WjZn5baNyUBDLOsIk+2TqgqZXDT+HXR
+         B0Mg9e+xLJrrU4CaQLjZlZ9K/U1BWZ/cMYzSRMSCmdRkxwbU2HVxNpZQ+UdcBjKDKiRw
+         BaC57U3e+v7hJkNAHT9mqOoMCEs/idnx7sDnwDTM3aGi9CIfMgbp5JP7F1CUbtbivIi7
+         cMuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794762093; x=1795366893;
+        d=1e100.net; s=20260707; t=1794762094; x=1795366894;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=SVZwwH4W1zKgtEsp608WvX3HiMcrtY/DDmZr7nWB46g=;
-        b=p5RjJrCW/nqao6H5VxOCzhW4IHDE5ULN5ZKqjxqrl/ux4D5LA38EMsfPP0BPRSEtVi
-         CxQeEqC+z5xCQSbVwWlhchBI0CIqqcLz7h7+jfahs1RZyrNnFjH1d+Zf2kb2WS1nK3/h
-         JSy4OmwMa6yvlcCXvpQgDPV164gJ4SpVUCTx69cTFo+3xKf4Xge+a/doviiZPk3vR4Ui
-         gg4NhfcBbeuRMI7SDP18Hd/TsQFu8bm9Tg5XJHY+fOEPjegwQaU6SvOlr+Jt6C+IUXEP
-         DTV/1JUKqE2Ml2wgXr+78CBmb/l8Q3NDSUQPAReKdRK3Ztc4knOwcKStx/TL+dC1AjCy
-         Lqwg==
-X-Forwarded-Encrypted: i=1; AL+hErGsU/UT/PS7amb0TCNveacZdU38ssceFHDl4uVLhzglMEqQ3DHz0q7XZAmYMXiKtk9HYtP8VyTkgVDh@vger.kernel.org
-X-Gm-Message-State: APuU4Z+r3ylgc10FZYzDE9i0xTTUgR941kF3RY+lQbZaLy9R44pIDqAQ
-	azbTOOKB/DKXYPWazBO5I+xs4Hs/ckAwPUjkNuYpr+DhG3SorSeDkthYGWtJbgJmXi0=
-X-Gm-Gg: AYBFou0cqQJI1Vpiwq8zoSIvYn1ThUTjZ7x7VNOxgqbN4A8PgTz5eSHptXTMyiEMilw
-	lN2Vlqg6QyLwf3qRf48k9YJ1lwu+ZVoEmvJxvCQb+PTLDI2dOKO5vTuSrZ4pI3OSDesJYkALEBU
-	oWSAQunpSiiNFAm071poilvpEClsnlE87A7WfG3zq63iM7Ndd+AXVwHRYYvlQrOU17wJqH+wLRC
-	1UX63nLpcNPO4847x6j54BG2BFt3txB4xl9AFlXNIZeH9ESvjlU49/GtggdJ81TrgwXL3nt2/58
-	tYnOgzrcF0PetiP9ksgCzVtxhHpgbbwvhvspwiCFiv0KDsIugR9spaBkxpj/aJiVE6CpUX2ESuQ
-	eGqjXuaxX5ChKmkPiIEnCOzdTU9gdH7OQyXw0GVNmX4mlV3XG9llU028wN0tVrMZQT/wBvo99J5
-	qJfluzzhn3/ujtbThfXodyGENVPkYBuLsTkMkJqYJNYfjMPydWa3gtf16WP0nqSaUJbC7pFJ6LT
-	kvOvLkuQrkOkfna9zxfcY2AhDfM44RtHT4snCqaCf1nN3eoFOiqYrhYMj0Z3nv2bZ1tuOyjErCD
-	LYSLfpxagKHDwaAL920B143UIlxGxEvUfOqR1ZrgxB3NTDdSypfRMKIIgVQTM/SdePzWr5XCzC1
-	EJG/skGY=
-X-Received: by 2002:a05:6000:22c8:b0:492:7efe:3fc5 with SMTP id ffacd0b85a97d-49c7381ae3emr20826396f8f.23.1794762092143;
-        Sun, 15 Nov 2026 09:01:32 -0800 (PST)
+        bh=4/xuQKgFmax+PlK8RsrrP9CtynouzaCSXzHEkLVU8HA=;
+        b=auW/tS+DzCcYdmPbgpM61IO0PvMgY0U5eEeADQ1jOhA+S9+27QLWC2oO1h+ORj3H9s
+         rW1gGrVetnqTJd1+DO6GQ9OpcDikEG0L+s1Ofm8BwrTe5eA0OsWcxavubEZoIMhl4I38
+         XDi3zPInKYwpyudnpo6KnmALGaKEIcE4Ug85MVjOv7XfcHdJkamRMENYgl8E6oi2NTlN
+         Bb0qO7thVozWooeIQvykTWZa1x+CTPeg60pQX6I93ODn4+BVc2Kl2JMV8S94JPy+jw2r
+         6vKm/hQnkMMsQ955ycf3uH478ZH9uoDSTOBcZPi/6MLgeuE7RucauOdQQINj4PtPI2P+
+         8SEg==
+X-Forwarded-Encrypted: i=1; AL+hErEtRcPCrs4BGClSgiA7Dj35m/lGXnR/ludrLgCMcK6d9GtUjZORkWTDiqCM8H5fZWfo09mn6M3Kiq0N@vger.kernel.org
+X-Gm-Message-State: APuU4Z+gD4fT8UpZkFZGVTNFMhO9S8fX5E2VdeA4GdFUDIaAoGBiuV5M
+	V//KyTTJ121/Xumhvy9VAUDKN+bx9WYMhOfhwsWkXiznlGu3dFpRhekXgGivbNPIu+w=
+X-Gm-Gg: AYBFou2499Izs2kHTYQQEKis/8/NaUfae1LxpgLWWlRH8gmDhOH8vTG1Fx+7ZySnXHy
+	5IL2gG8EEe1/0yqOkoqbi635Hwf+tPOeMvkd9+1T/2WbE/Fs9bAOFEhzI+fDr5gKN9BYUM2y7QV
+	o6thDgzNKOoUsBxJ4rL7pv4SAVBmfwupcddN/qJTbQQQjEzZGtBzYlk+SkQ+0TKGkydfkmtPePY
+	BAO3heYZYgvMCkS1MmClh4gGg1E87i12Jr0RLHhD1jlZRXPU8OBKQ8msha5WzkSol8hkBreHiki
+	u9P3P0z02vLersI4YhJGEx/M1p+/dDWE9TKtydGE58jpzNKysZJe8egGjLYVDLKpZlUayyi9YPP
+	jEOHdwaGXZDhEzx+kgSFEAo2jVxFPMVqRjq5yrFDxGcwR4aFWLE5sCMF/vMYQtfrd2dN89DAS5g
+	c9HbOcQKHIwTdONrlu8WAHuLtHP/pPtZV/qwaPIZbO27Uenityol14Ytxz7LbD/86yj3psT96h+
+	D/CTBQkddj3dfApENUaev36+ogw44sCTUJB2LthJvYxZjvy1tclCSwFOQVJYrxvcRYGG6vpyhn2
+	F/ekaNoX55W1zISxlWK4zKsskP2z2J94LPQn3OrGCUfV2kf8Emph9SOQxpHAGMeLO7RZ4jEurvZ
+	lTLW823KM
+X-Received: by 2002:a05:600c:3b98:b0:4b7:6a8b:9df2 with SMTP id 5b1f17b1804b1-4bb55a8c128mr180753495e9.25.1794762093849;
+        Sun, 15 Nov 2026 09:01:33 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:b9ad:41d3:c29c:11b4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c60f8d615sm17595092f8f.56.2026.11.15.09.01.31
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49d673ce75fsm11599174f8f.55.2026.11.15.09.01.33
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 15 Nov 2026 09:01:31 -0800 (PST)
+        Sun, 15 Nov 2026 09:01:33 -0800 (PST)
 From: Olivier Louvignes <olivier@mgcrea.io>
 To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-	Paul Cercueil <paul@crapouillou.net>
+	Hunter Laux <hunterlaux@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Paul Boddie <paul@boddie.org.uk>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Paul Burton <paulburton@kernel.org>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	David Heidelberg <david@ixit.cz>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Paul Boddie <paul@boddie.org.uk>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	letux-kernel@openphoenux.org
-Subject: Re: [PATCH v2 5/9] MIPS: Ingenic: Update Ingenic XBurst implementation IDs
-Date: Sun, 15 Nov 2026 18:01:31 +0100
-Message-ID: <20261115170131.24669-1-olivier@mgcrea.io>
+Subject: Re: [PATCH] MIPS: ingenic: Work around stale L2 data after DMA on XBurst II
+Date: Sun, 15 Nov 2026 18:01:32 +0100
+Message-ID: <20261115170132.24780-1-olivier@mgcrea.io>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <7FF80C33-895A-40AD-8149-70A7F5B42E54@goldelico.com>
-References: <2e21dc4889ec55bf210dfc205bfadb57acb93eda.1794471031.git.hns@goldelico.com> <7FF80C33-895A-40AD-8149-70A7F5B42E54@goldelico.com>
+In-Reply-To: <988F3625-C300-4C68-AC70-E371E5D9A496@goldelico.com>
+References: <20261111-mips-ingenic-l2-war-v1-1-0d9dec232a7a@gmail.com> <988F3625-C300-4C68-AC70-E371E5D9A496@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -111,43 +105,35 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Nikolaus,
+Hi Nikolaus, Hunter,
 
-On Fri, Nov 13, 2026 at 01:33:23PM +0100, H. Nikolaus Schaller wrote:
-> So the lower 4 bits could indeed encode the MXU revision
-> and the upper 4 bits the XBurst revision.
-[...]
-> IMHO, in that case defining PRID_IMP_XBURST = 0x0000 would be correct.
-> Maybe the _REV is misleading and should be _MXU_REV?
+On Thu, Nov 12, 2026 at 11:24:40AM +0100, H. Nikolaus Schaller wrote:
+> Maybe the individuals and teams working on the XBurst devices should coordinate somehow
+> to avoid double work and potentially incompatible fragments?
 >
-> But that is quite some speculation.
->
-> Any thoughts?
+> E.g. by describing which hardware is available, which topics/code patches are in the queue etc.
 
-The core manuals define that byte. XBurst1 CPU Core PM, 2.3.1.8
-(PRId), bits 15:8:
+Good idea. On my side:
 
-  15:13  Generation: 0 - XBurst1, 1 - XBurst2
-  12:8   uA, micro architecture version ("please reference to SOC
-         document")
+Hardware: a HiBy R1, an X1600E music player (480x800 RGB panel,
+CS43131 DAC, AXP2101 PMIC, SPI-NAND, Wi-Fi on SDIO, Bluetooth on
+UART0). It runs mainline from its own flash.
 
-The XBurst2 CPU Core PM, 3.3.1.7, has the same layout, with uA 0 for
-the X2000. Decoded:
+Posted and waiting: i2c v2, PWM v3, serial v3 (binding only), display
+and panel v4, cs43130 TDM v3, the dma-jz4780 fix. AXP2101 v2 follows.
 
-- X1600 0x00d00000: XBurst1, uA 0
-- X1830 0x00d00100: XBurst1, uA 1 (PRID_IMP_XBURST_REV2 today)
-- JZ4780 and X1000 (0x...024f): XBurst1, uA 2 (PRID_IMP_XBURST_REV1)
-- X2000 and X2600 0x00132000: XBurst2, uA 0 (PRID_IMP_XBURST2)
+Not posted:
+- CGU and the X1600 USB PHY: yours, as agreed. I will test them on
+  the R1 when they are out, including the 1 ms wait after POR
+- MACH_X1600 and the R1's board and dts: I will rebase them on your
+  MIPS series and dtsi
+- the X1600 TCU and watchdog (needs rework: the TCU is the X2000's)
+- a driver for the X1600 SFC (SPI-NAND)
+- MIPS kexec writing the new kernel back from the caches, and keeping
+  the jz4740 MMC clock running on an SDIO host
 
-So the upper bits are the core generation, as you guessed, but the
-lower ones number the micro-architecture rather than the MXU: the core
-manual leaves their meaning to the SoC documents, and the X1600 PM only
-gives the value. This is the reading Maciej gave on my v1, where he
-suggested PRID_IMP_XBURST_REV0 for 0x0000 (REV1 and REV2 being swapped
-with respect to their values):
-https://lore.kernel.org/all/alpine.DEB.2.21.2610262045440.42255@angie.orcam.me.uk/
-
-I have asked Thomas to drop my cpu-probe patch in favour of this one.
+All of it is in kernel/patches of
+https://github.com/mgcrea/hiby-r1-linux, on top of v7.3.
 
 Thanks,
 Olivier

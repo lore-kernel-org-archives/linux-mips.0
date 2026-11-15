@@ -1,80 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794770763;
-	b=s2AS8KpCW6RKY5LODaXCCXrGsyiEC4DJ4LnCfwNbbgXTLCx0gECOf0npjlBapPA+7fgR
-	 j6/JxL37p+Dt0qviouH8NQTfzswz3I2tB+dbptC15CNlyw1zc9TMcb7fDY4B6OaMeElZ2
-	 w6YmW+uyqCrnrEO8LK4w8aR2BAxvLNRKRkOtjyeeyxQtE5zFVdtAJANeYozugdeu/0ova
-	 LX9WQZXNL2ndm52tX20p1O7zeblLoQIBB9ex9EDgR9KMxOvRzr4n4WD16inwKsj5qOPIn
-	 HUtQr5neWMRXvVmKUXqN2FKBCMOYdE2TgDTb7XDIH+QlYH39tA2g5VRndGFfzPx06Qg==
+	b=qvOiX+VieaHWUwDvKI5Araz+PWZbCxRp/IkCqrCE6KcbFbFrdL/aDzapZbFhcvvtA2Mr
+	 ZJhcu8Tj4/QGsqt7dMnEohWWb+kOsGxyCbaHLtHEDB0jsbjpGiBdjwjnsuGctdVUwk1Nx
+	 7l1v6pBgxB7geKKl/aYoAUWKLFlrQc3uVTljE7HOeFZB/PO9xup/v5MdalxEXU/B423mN
+	 NuB74Ep/DyCMcsGDYapxkHtDVlM4MswNgD79gAJuDekWFXA1u6uUbRUn4cL17KO5nQuUD
+	 XZ1bawnWOs8CmwYkgu+6jmXCdk+ATi/vXnGszS4qEPJW9qjJROpa3fGs5Y8vm4VQIgw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794770763;
-	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
-	 X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
-	 X-Endpoint-Received:X-Original-From:Reply-To;
-	bh=SZlXnOJ2ipQNhSON5gMptolkL7kKMOiRpRLHivkQi2A=;
-	b=RR/nsnaYdiyXWcCEpKR3/RNX4ctuGjGE+nyJZttNVJfWSL4hIX4FCRKKgSZCAjCAge/r
-	 6j+pLEcC6N+1wUFpUiYFwiM43GaOF1VIQU+MZsodgSN/rh3FeNF8drvQ/TrGXDDTsJuYG
-	 0T7HqSuUfkzbCLgp8IV+AMOJOCtLSXtASFhutD+ALkEieyoHOHeKQcLgMiTgTMOsYCL0i
-	 2YoBREoh2VFm2Shk6CLc40KOCbdSIR5TI3ybhTepXE8MEJO6H2S3kcITd/1RlzKocKEhI
-	 bng8tZz7Ar6csTPd6UX8QOjFpNqaRmeSyx+rqWLexn8XuFXemNfbdvhF0EZ0kAmTCRg==
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=zWNIBsO5D570AE0b0ZHB7VLmfe1MXCra+FnRJQpgE3Y=;
+	b=Oz9RrVZd/OJ5TPB5YM0+XPgQ9BFxvQGUB1wsYLL0mtSB9KrybHzvMalrq5qK/qbMQWiU
+	 fvw9m+VOGO4o4q9vT+FS/UVKl33a0qZBUfzZoaBwSwi+cleB7Gkc8H3cqc5JFigm6e9e2
+	 sqtu6kbdRXEqGRi+ev/Vlbj498hg9LNZHJ6em7B9Oz7DRmzeBJyz8hgCSA70ScuxGrlG+
+	 qC2YYhw7WZOvF/MXk8GPfW3ocjqnq6n9xcQZHJ8AXfC5bbzkINj5Y1mf5GvEqMZpALu00
+	 2x5jYMe3q+UOqIhuWAEY0mEsPRHxnjSSUraF8En6aTwUsN91dAn8JtlXFc+WlwM1Y8A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ekYL9ZAd;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=D0PZpGlT;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C945606A329;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F97606A335;
 	Sun, 15 Nov 2026 19:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ekYL9ZAd
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=D0PZpGlT
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
 	t=1794770763;
-	b=ljyVkKvp3pPLy87ndXTmKkZc8lqknW8/S7UJrwtz0aJTgjIoPVjCDF5uJJjss5B215Wa
-	 t38fUHFHFiS/SWoqyqy4rFN6wPxVxid+OQkMvdTd1P9jTCBPFty3UOAF4Pso3YA4+EFRP
-	 DXrUlHcwAnalJIbVYEmPiFA4P4hJofoRICoKqV/JbgoMsTgxx0R1Cdyv5DNetWi8K7vhr
-	 UDSprY23vSnjklo7lxtAQTL52VBb2E2B+uhevNb5NxuwOyqG4HY8zRAbpXvZ6Odno4m1y
-	 ExYmyHdyoOCzhEwtCb6CcNzKYx++5R3kPaGhaaKT8okkg+XhZ0BEvjhMAa8y4c7EuJA==
+	b=UYTagONP1tEMrKSgoz6fT/RlmZ25Yp45SbCnJvxVP4M52HDb2jCUMFDPkSetH4ZLaDDr
+	 19vjI5YmhsPfbPzA+fQ/7Lqv1EmIdsmyL4+n6862ccxeIaiw9rD05gaHrTOqjZxEUrEhB
+	 I9serDJhcgjy4oO5+AGUq+NUymglJHI20R4/92Szf5J4I2/wY5Ggm5Fepa3DMzCUC+Chg
+	 wGivFtEdnf99BEifnDCgdlnqoWHxWP8PMcwThiFn2Tkoc99pAcFLBtBkM1qF31wDQeuZ+
+	 +ezVXtJ6M+8ZduIYzm+wPZx5JsIkdXbfYAChJrLPP/74BCeuNvcll/A0Wk2Jc00I8JA==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
 	c=relaxed/relaxed; t=1794770763;
-	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
-	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To;
-	bh=SZlXnOJ2ipQNhSON5gMptolkL7kKMOiRpRLHivkQi2A=;
-	b=DU8SjmDgvdfEPtnmeJtzNUGF1a/Be3kQBsnl5aLnZ3ellJmzp5pu3N7jfObazmB2p40k
-	 +Kf6vainBSINvGk2KyLI2/7NAcFlcp0F0iOYKKC2NGnzYYKPSROu3PeouxoyMdsw0pt8x
-	 loCAscgCD6MQLUMcB6cXfaeqxOtj80BrHm+z7j7y4emTwe+ThACoZoMhTFZXI7CQg4ldX
-	 ULUxPEsJA6UeFRzNgRDrxivAMIeboPYBZ8XocxKRZtDocztUsF/I+VHiQrXsU+7hd70Rk
-	 i2RXvP5CvlCbQPgdNjO9gUVSW8+iKRDKoNiSeS4OUbNX8sRAMdlSmINPoDM0zXzTWMA==
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=zWNIBsO5D570AE0b0ZHB7VLmfe1MXCra+FnRJQpgE3Y=;
+	b=y1Ir0U0XbUrpvBb8meXWbSO8zXc8VABFD/5Df3cbs/k3ppVLK933wDoRyVFS5qEH2s6Q
+	 85C2iQHx+1zwQAo3qb8TtrNzePDGvFQSV+MNQ+bqLl0AuZiq44UYmjkstWmw1SuSwZV2h
+	 iOwqY+0rEZQqDV91mQKNR8bRledwCPBgWlSRgHj2/XR/m254lOGxia0ztc7vZSStyncl/
+	 pO0cjTyrPXCuzpV1UkIgguGzIP/FO8jUmif0viKR2oALRIzRQ4faNBcMai7jLfP03+5y1
+	 Z1JjUJvt35LqMobr4snTd7jxITKqcLKyqAqCEtjEWul5GJooN//3ORo3migIpb/35EQ==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 1EA311F000C4;
+	by smtp.kernel.org (Postfix) with ESMTPS id 320E51F000C7;
 	Sun, 15 Nov 2026 19:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794770762;
-	bh=SZlXnOJ2ipQNhSON5gMptolkL7kKMOiRpRLHivkQi2A=;
-	h=From:Subject:Date:To:Cc:Reply-To;
-	b=ekYL9ZAdcIRXabaqsjAzxmnl0UBbdGOV/7X1xZbPPs+emICIo+OftUyldfkegis+o
-	 AM3ilRTBSE9kGBhDMaYGmZgTW2ZSvWAmEYVWHQit7j9eOnnEw5NFgAcDNXenmXWmq5
-	 Q+Z+tntfhvp8PF4tj8XPNhHTrsuYRqn2Q3TnteNNvbt89gYfXiPLLhnv2IbbUxVEzF
-	 uoOB4RRGWABWCN3DyzfDMOSx/39OC0zmtbPXztiLKKotI+ZuGukd0zh7gau8m9PEm7
-	 tGnUHpeFq3HJNXiVqSOWocP4rsUPl03m5NdrFvS1ps/yvqfkAhwiA8QkHQkYG5McLE
-	 BOKVBrB+64ZxA==
+	s=k20260515; t=1794770763;
+	bh=zWNIBsO5D570AE0b0ZHB7VLmfe1MXCra+FnRJQpgE3Y=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=D0PZpGlTIdTwuJ1iztcnHCnm+wtacjporlS0/nbmVBvUg7lwDhkrpth3L/zH0TV6o
+	 xmAUgAaqiG29Y/cBQl/IXnkdoXQruuxbAJUTnveqm5spFxNDPnJiVDdm6LzYLspw2I
+	 Vn7/Xd0S3+fvMhmj0IrO7lQkZgITrjoO25kIZ3HAw+nNkS+JO7edDDCFLLRAAjFRRp
+	 aN9Nn6+hKn7K7jpQRjwCXiqWXTzqeVWckZZNQOVSU5mhRl3/6cnwVhJeQCx7RcDJNw
+	 5lBInTo2BxJOkVaQljtlxEMSOmBsApEUnQqTEsZ0wGFG7oqhZThFUgehtmDpaOIO2D
+	 91VaznbHASB9w==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 7080F4A160;
+	by lkml.kernel.org (Postfix) with ESMTP id AF17C4A168;
 	Sun, 15 Nov 2026 19:26:01 +0000 (UTC)
 From: Akshat Singh via B4 Relay <devnull+automobilehacks.gmail.com@kernel.org>
-Subject: [PATCH 0/3] irqchip/econet-en751221: Deliver odd interrupts
- without VEIC
-Date: Sun, 15 Nov 2026 19:26:00 +0000
-Message-Id: <20261115-en751221-intc-all-lines-v1-0-dc03a40f47f0@gmail.com>
+Date: Sun, 15 Nov 2026 19:26:03 +0000
+Subject: [PATCH 3/3] mips: dts: Connect the EcoNet EN751221 intc to IP2-IP6
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -85,11 +83,9 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAEgH+moC/yXMwQrCMAyA4VcZORtYIp3MVxEPbY0zo0Rppghj7
- 27V43f4/xVcqorDsVuhyktd79ZAuw7yLdokqJdm4J4HIgoodgjETKi2ZIylYFETR477wIFTn8Y
- MrX5Uuer7dz6d//ZnmiUv3x1s2weaewXKewAAAA==
-X-Change-ID: 20261115-en751221-intc-all-lines-2a35252b0b9c
+Message-Id: <20261115-en751221-intc-all-lines-v1-3-dc03a40f47f0@gmail.com>
+References: <20261115-en751221-intc-all-lines-v1-0-dc03a40f47f0@gmail.com>
+In-Reply-To: <20261115-en751221-intc-all-lines-v1-0-dc03a40f47f0@gmail.com>
 To: Caleb James DeLisle <cjd@cjdns.fr>, Thomas Gleixner <tglx@kernel.org>, 
  Radu Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -98,59 +94,55 @@ To: Caleb James DeLisle <cjd@cjdns.fr>, Thomas Gleixner <tglx@kernel.org>,
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
  devicetree@vger.kernel.org, Akshat Singh <automobilehacks@gmail.com>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794770761; l=1983;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794770761; l=1352;
  i=automobilehacks@gmail.com; s=20261115; h=from:subject:message-id;
- bh=37nXMvHe9COOysw+x+zYU6STNDAgT/YyB1vW+x/B7yk=;
- b=uT2JglyePJzMDk4/2T4qCA1bMjsDQ3m0H/e5/goeML6gCtolC6/TMhF00OFbOihB05ndcW7Zl
- yQcHmxFvCz/BUDUrVfPml9kFgXquydbW37lc63I8vHzQyO8bn3ojjrm
+ bh=2qagY6yBzX67d4cZ5XajQuXtH2Jf23X3ZRemiwVV7dI=;
+ b=xmGEesZVxG+yiKXMProyZ/11vN8zXbjYk1bvNEKu0PdyM0v9wIlQVB45J+t+ubI8P9s3v4+Q2
+ vTujTeZacTECFFq/HsDIwaGK2mi4QUQXRYbFmxyi+qaWowvyLu+XWuK
 X-Developer-Key: i=automobilehacks@gmail.com; a=ed25519;
  pk=wYmYXn6wy/XN0edTCg6D7UtE9nYLei8mbfqydGGCdf4=
 X-Endpoint-Received: by B4 Relay for automobilehacks@gmail.com/20261115
  with auth_id=1535
 X-Original-From: Akshat Singh <automobilehacks@gmail.com>
 Reply-To: automobilehacks@gmail.com
+Content-Transfer-Encoding: 7bit
 
-the en751221 intc puts the number of the pending irq plus one, in binary,
-on IP2-IP7. with VEIC the cpu takes that as the vector, but without it the
-driver only chains IP2, so odd irqs (qdma 21, xhci 17, first pcie port 23)
-only get handled when an even one runs the handler, usually the next timer
-tick.
+From: Akshat Singh <automobilehacks@gmail.com>
 
-on a nokia g-140w-c the 34kc doesn't report VEIC (no veic in
-/proc/cpuinfo), and ping to the box kept cycling through 1-11ms. chaining
-the handler to IP2-IP6 brings it under 1ms. VEIC mode is untouched.
+The interrupt controller presents the number of the pending interrupt
+plus one, in binary, on the CPU interrupt lines IP2-IP7. Without VEIC,
+chaining it to IP2 alone leaves the odd-numbered interrupts, such as the
+QDMA, xHCI and the first PCIe port, waiting for an even-numbered one to
+run the handler.
 
-tested on the g-140w-c with openwrt's 6.18 kernel, where the non-VEIC path
-is the same as in mainline. on 7.4-rc2 it's build tested (W=1, no new
-warnings), and dt_binding_check, CHECK_DTBS and checkpatch --strict are
-clean. Caleb offered to test it on his boards:
-https://github.com/openwrt/openwrt/pull/26744
-
-Caleb: arch/mips/econet/init.c says the en751221 is a 34kc with VEIC, but
-this one doesn't report it. is that something the bootloader or a soc
-register turns on? if VEIC can be enabled here that's probably the better
-fix for this board, but the non-VEIC path should still deliver everything.
-
-the binding patch has to go in first, the dts change fails CHECK_DTBS
-without it.
+List IP2-IP6. IP7 is left out: the CPU can also signal its own timer on
+it, and only hwirq 31, which is unused, needs it.
 
 Signed-off-by: Akshat Singh <automobilehacks@gmail.com>
 ---
-Akshat Singh (3):
-      dt-bindings: interrupt-controller: econet,en751221-intc: Allow up to 6 parent interrupts
-      irqchip/econet-en751221: Chain the handler to all parent interrupts
-      mips: dts: Connect the EcoNet EN751221 intc to IP2-IP6
+ arch/mips/boot/dts/econet/en751221.dtsi | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- .../interrupt-controller/econet,en751221-intc.yaml |  9 ++++--
- arch/mips/boot/dts/econet/en751221.dtsi            |  7 ++++-
- drivers/irqchip/irq-econet-en751221.c              | 33 ++++++++++++++++++++--
- 3 files changed, 43 insertions(+), 6 deletions(-)
----
-base-commit: fa2933aac170dd19c6a7f0d7b81a8f537e40915c
-change-id: 20261115-en751221-intc-all-lines-2a35252b0b9c
+diff --git a/arch/mips/boot/dts/econet/en751221.dtsi b/arch/mips/boot/dts/econet/en751221.dtsi
+index 57ae84a8a..5e3f626b5 100644
+--- a/arch/mips/boot/dts/econet/en751221.dtsi
++++ b/arch/mips/boot/dts/econet/en751221.dtsi
+@@ -66,7 +66,12 @@ intc: interrupt-controller@1fb40000 {
+ 		compatible = "econet,en751221-intc";
+ 		reg = <0x1fb40000 0x100>;
+ 		interrupt-parent = <&cpuintc>;
+-		interrupts = <2>;
++		/*
++		 * The number of the pending interrupt plus one is presented in
++		 * binary on IP2-IP7. IP7 is left out: the CPU can also signal its
++		 * own timer on it, and only hwirq 31, which is unused, needs it.
++		 */
++		interrupts = <2>, <3>, <4>, <5>, <6>;
+ 
+ 		interrupt-controller;
+ 		#interrupt-cells = <1>;
 
-Best regards,
---  
-Akshat Singh <automobilehacks@gmail.com>
+-- 
+2.43.0
 
 

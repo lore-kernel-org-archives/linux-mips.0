@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794824561;
-	b=3GzN/r7Yv+apMOfTOsn9o0VJ/YZ6pfeJk3nRQNy5ecvpOHZYPXgbAxfyUz9F5qyutZNK
-	 4DVelO9pOJgkaE0X1u4V+avyXvvwZ0oNFRIIhSggIPM8Q09OpsHQZcC5trlsuXztObzIn
-	 qK7Vm3ChPOurOk7mMU8LfWVP94BIcp/sXcpUaQt/MvJ1X1m2v/VtfESwMIDh0uJjHLd1S
-	 uQzS0XTF31M+1TPOZk+aJpQo0Evlx/iVwJTJ/ipYdpTMakYWlCsVcNeyYNNSCblnV2ff5
-	 KsJvD1PXqKHLJa+bgPLyYLF6vSaX9nAsRWnnaZNMLsYPBacIwEscvPTJ+povUHiU3Ww==
+	t=1794824565;
+	b=wtEWkQdU4DfT1l0MOSClVQxAEonlBd4lWYry3pKgwrgjDgsOt9iz+HreoDzS8HF8gM6K
+	 f/Ydh+PXu35CPEV6k6AnSQ4agEeldeuxkLBuh5uX5Pfw+phFRjd1zb8bKYkuSeZpKZibS
+	 WukzkL/sSdkLXo/XD9bbH/LRmtTc1mqQ5EzY1iFV756B7p3JeTLChDJfHPXjnCDdqAilJ
+	 Nxt+ed0qQufbe2a4cf1JL8NiAg4FTyJ11016RbnxPCfctnGZl/A6UUWBZNnEDt5L6/hB8
+	 YBs3upkG4iZRJ0643olp2R15k1gshSToVuMi3DgHOcXTEUku7mHQOKVcyacFAR9NlnQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794824561;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794824565;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=YGoSG8pwY3+EuSZlWjBvKFqdQt3SGCVXshvFk4MF3ns=;
-	b=pGLHprvQS2RpEsPcTIoL6J50w8p56ZvJZT4c0+FM8ckxMHM43xbxUxfc3T99OIDUpsIL
-	 8BobwYWAlGtf2FLeZSDSPN3YzqKmze9+xH2l4Ryt32S++VdYlC0Zc2t135Q/ONrGo7nqA
-	 jKx+0hZ79zx8l0F1ifUfD/s4Q5DiS9xbzoPwNvIAKpqzpXywGtXci2Zl7gpseqRYwRZOy
-	 wwUHTeJG5W9P/h3VQsw5HobQHIu2I5ivNQweK5qgX2fIfOOVJRHWEvraFC7PsTsoiLwWu
-	 6gZi9GjyWjuEaKtgoJTDREmfPtH3DL1UCNkYTF18pxM3704CpjG3pHnPGfD4Ug6Ljkg==
+	bh=+mdym79kJn/elOqWsI1aqSwd2Rn9IZ9NS6lY8D5g1II=;
+	b=LaLWmJ5yJUM1yik9OkxcuKlZgFpR5MyqU7r/gCMSj2fRrLScctoRZZydD+qbQSCteLGS
+	 rVzOnqx0/vdSi3anPxF60UePVdDORc4fHJS30v6p0KxINfAC//yq1uHXr3swAl9g544Yj
+	 OSY0Ub+hNs7qlQ3LSw9BGGlDkHRg4OQNaph2T5Izxf4ntE+uOqnSnzVzMG1Sx62XJJD+i
+	 6Q2mx7Ch0RH74ybZFL8vDlvFuSsEuWHCiFYXJ9k7CFRoTGOmvVQ8rXza8bDm/xyBbB7QF
+	 IvHULn/TW/sPzR9koxWsr5fdSnqRyBQ0p5hhiIjfC+GFJcQoJCtIRXRukCYcZiQfVTg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ECRmi4ey;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Iq5MDfci;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6D6606A335;
-	Mon, 16 Nov 2026 10:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13140606A334;
+	Mon, 16 Nov 2026 10:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ECRmi4ey
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 318E11F000C5;
-	Mon, 16 Nov 2026 10:22:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Iq5MDfci
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B771F000CB;
+	Mon, 16 Nov 2026 10:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794824561;
-	bh=YGoSG8pwY3+EuSZlWjBvKFqdQt3SGCVXshvFk4MF3ns=;
+	s=k20260515; t=1794824564;
+	bh=+mdym79kJn/elOqWsI1aqSwd2Rn9IZ9NS6lY8D5g1II=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ECRmi4eyO6lLaQigj8E0XyGNYvP7BMBZcdF6Ax6YJY+wR/0TNFkbZZC9Ctxxa0xI8
-	 0aKuJp7s+VIAHnD0pWY3TfHHb1M+z9aimLFI4OWDzcLk/ksQqxE3YmcSRBW3ivYjnI
-	 XcrR8K+foOzj4qkK62CQGFXEOgczYUJjuF1H4K0sJXmBKeL8wq3O0PHVhHkEtBaUuk
-	 0dj+PwfYDDiLHlfG7UCXQrHVegwSW7uzQWge7YhcQ44FIj2Yv1sDLF7Nu5aUsnAZ25
-	 tYnkhsLwi0GbFfV5FyRMOoFZ/idjSePVrKqRXTVDVqLThgH1SIRig62bUTqTln76Hg
-	 3WHy43Pc1S9/w==
+	b=Iq5MDfciQvjn6UnQ5JnSTFaJ5o7PfWq+6F3WoTnoK1pyCRl9/D49DWAZSZ445fUx1
+	 ILAHpLxnBtkslEl/CuLBOIsheZ0qaXtZ8Eaep9GGqOEqwRQrF67CE7oqRUI+MjeDfo
+	 vUGHstCv/y4Xxy86xhMKutGkmsJjnG0hjJkQyiu2IdIvZlTznhb09ihUz4VtgAh+jI
+	 nUPHxpvXn3pI2l65yML91mbnDRHOMq6u+g4uhHck7MfNhVf0nW1iIdUKJUgmmvpYX2
+	 xwtakZRtJsv0XrcgdxqUbRO/8ExJQkxjUGQfs8Rk37yUI/h44W2RV0i+vgxqkqFNFr
+	 IWaclhVofMrSA==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	netdev@vger.kernel.org
@@ -49,9 +49,9 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
 	Paolo Abeni <pabeni@redhat.com>,
 	linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 1/2] net: sgi: ioc3-eth: apply the DMA attributes only to 64-bit addresses
-Date: Mon, 16 Nov 2026 11:21:14 +0100
-Message-ID: <20261116102115.27574-2-kaloz@kernel.org>
+Subject: [PATCH net-next v2 2/2] net: sgi: ioc3-eth: take the MAC address from a device property
+Date: Mon, 16 Nov 2026 11:21:15 +0100
+Message-ID: <20261116102115.27574-3-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261116102115.27574-1-kaloz@kernel.org>
 References: <20261116102115.27574-1-kaloz@kernel.org>
@@ -66,69 +66,31 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A Bridge 32-bit direct window address carries no target widget, so
-DMA attributes OR-ed onto it aim it at widget 0. IP27 and IP30 only
-hand the IOC3 64-bit direct addresses; IP35 support will hand it
-window addresses.
+Some boards have no MAC PROM on the IOC3's 1-wire bus, and the probe
+defers forever there. Let the platform supply the address as a device
+property for such a board.
 
 Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- drivers/net/ethernet/sgi/ioc3-eth.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/sgi/ioc3-eth.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-index 009f37105eaf..25139cf5ff62 100644
+index 25139cf5ff62..fa844267c325 100644
 --- a/drivers/net/ethernet/sgi/ioc3-eth.c
 +++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-@@ -152,19 +152,37 @@ static inline int ioc3_alloc_skb(struct ioc3_private *ip, struct sk_buff **skb,
- }
+@@ -857,8 +857,9 @@ static int ioc3eth_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "Invalid resource\n");
+ 		return -EINVAL;
+ 	}
+-	/* get mac addr from one wire prom */
+-	if (ioc3eth_get_mac_addr(regs, mac_addr))
++	/* get mac addr from one wire prom, or from a device property */
++	if (ioc3eth_get_mac_addr(regs, mac_addr) &&
++	    device_get_mac_address(&pdev->dev, mac_addr))
+ 		return -EPROBE_DEFER; /* not available yet */
  
- #ifdef CONFIG_PCI_XTALK_BRIDGE
-+/* A Bridge 64-bit direct-mapped DMA address carries the target widget in
-+ * bits 63:60 and the DMA attributes below it.  An address in the 32-bit
-+ * direct window carries neither, so attributes OR-ed onto one form a
-+ * 64-bit address aimed at widget 0.
-+ */
- static inline unsigned long ioc3_map(dma_addr_t addr, unsigned long attr)
- {
-+	if (!(addr & PCI64_ATTR_TARG_MASK))
-+		return addr;
-+
- 	return (addr & ~PCI64_ATTR_BAR) | attr;
- }
- 
--#define ERBAR_VAL	(ERBAR_BARRIER_BIT << ERBAR_RXBARR_SHIFT)
-+/* The RX barrier's upper address bits follow the same form. */
-+static inline u32 ioc3_erbar(dma_addr_t addr)
-+{
-+	if (!(addr & PCI64_ATTR_TARG_MASK))
-+		return 0;
-+
-+	return ERBAR_BARRIER_BIT << ERBAR_RXBARR_SHIFT;
-+}
- #else
- static inline unsigned long ioc3_map(dma_addr_t addr, unsigned long attr)
- {
- 	return addr;
- }
- 
--#define ERBAR_VAL	0
-+static inline u32 ioc3_erbar(dma_addr_t addr)
-+{
-+	return 0;
-+}
- #endif
- 
- static int ioc3eth_nvmem_match(struct device *dev, const void *data)
-@@ -727,7 +745,7 @@ static void ioc3_init(struct net_device *dev)
- 	readl(&regs->emcr);
- 
- 	/* Misc registers  */
--	writel(ERBAR_VAL, &regs->erbar);
-+	writel(ioc3_erbar(ip->rxr_dma), &regs->erbar);
- 	readl(&regs->etcdc);			/* Clear on read */
- 	writel(15, &regs->ercsr);		/* RX low watermark  */
- 	writel(0, &regs->ertr);			/* Interrupt immediately */
+ 	dev = alloc_etherdev(sizeof(struct ioc3_private));
 -- 
 2.47.3
 

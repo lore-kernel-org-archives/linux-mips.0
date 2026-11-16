@@ -1,59 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.84.56
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794837557;
-	b=koFKnsdcvCTnw/TAly6Xbisx+BoN/wafkD7Nr55omWR6rh9uLXuoVAaLsyBfztRpS5Rm
-	 ionRS8jhKQahd5ysJ8rnb87+Uz2FqR/tNC3jVUrRtDt9SYvTgYZouhSiKdM0BL8BRvG7G
-	 yu9b2GiBeNqAXpDJ21tIzMX/JBvTqgX3DfUX2RIy3iZD/eDWtSR1yyCjtX2YBLU79aE3d
-	 43fNmiVPFQEVAPSdWA08sZx2oPkqDUh9sxm8mLXP8HSGfkkMfB3Pu/awMJpX9nOooh4P/
-	 t/oqBdx21ugBCysqBV7iQmhYl1My1VX5nMHGhcClEUIayvV/1A1dB9Uu7C6XfKLHlyg==
+	t=1794837559;
+	b=d+mJvTUKQST3JSyg8f5fc+WNinLEpFRlQEXpb7MCkaluvpzRkU+X7rKVuNMhjKwg7QcI
+	 fr5CKixFdnRoaERTFHWbQvVTC4yGNLvZeyyfBLjYekodJIeO2T5biQ+rVE0f+aH7Jjdev
+	 2zD5pMm2Y/zgt0XbdNgWIItFSUABj7hXwqelpJFkLBvyiCK9JWdhTcsaxP21909hih5ox
+	 AI5ef09NexYvCjOAhjNJbJdGmajjqGRV+vtLuxlUKRGnXNt1tm2g1zWDQFbEhfEKvsW2j
+	 ofz5w69CX+UoXcku1u+9xlLopK5VfFhy+/9NvCdpozNZtOlQep4InyDxCQtqYopakAA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794837557;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794837559;
 	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:Date:
 	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Last-TLS-Session-Version;
-	bh=YIgqvqCft0xzE6fzVQNsWse3GOw0O1bdbLixEWZhIw4=;
-	b=0ccPCLGH9r3Z0YPp1ccFqnJ7i2DMfRdm+M/eY3FbJccWyM842K6K3y9LL4KjipX862Ho
-	 eBenpp1CvFV/K706ZORt7yth1SEGHEM9SgdPUtlTZK3yjh+/IE2jHOuWU3SyCd3h443Bg
-	 Wb41TlEWnKj9fp5BxIyLXY62doRCrNBFzYhGZm6HOcxoNoKcEk3DXQ97gJN5UrTT4cHbW
-	 Sep6fV5MNY6CC9e6fxJFBcs8Zk1ZYQrTJrft9uXmmtwToVa1slkPXqUNmyaEBRFgGTwaR
-	 B5AJpG0dLtmHa9/TRjLn5cv3DFGtUnRSafV9uxuexTSjmdsES/typk8EstR2h+iTS2g==
+	bh=7f2hzo/dOBTufspJmPFdaPlSMDROy4acygZbmp25eMQ=;
+	b=KwtY8QxSWMyBAsUm9/OaPuoHOnKf+paO+irJQf6Hm1h3WYYcBg2v1NTN28ai1cNG3r7w
+	 aobddLh3QqUF4XahQYd7K4f32Ofaf4nVzMEptqIuCOig2ikHBAwLZqWXZ4Xu5hPuPJeXa
+	 s0va8CvfRYfbhLrWNX2/hHuE/m4m+Aa253YWKrn6PF42Hk4ndZ9fEBTO//Zto/2pDPh2K
+	 0f8OATjqjIp6i4fMwrrfOIAZMh3Ca155ATA7f3m4F8jh8I+QYf/l+Rul515SzSI4/6w00
+	 CuugEnUwQ73bCuIFhc4ygkrrXRZFockeB9EdEI1qeKIuQRlX3Bw6deIjmJJ6D37+GQQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=bootlin.com;
 	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=2O6q6pVC;
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=WfyZHiuu;
 	arc=none smtp.remote-ip=185.246.84.56
 Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AD6606A888
-	for <linux-mips@vger.kernel.org>; Mon, 16 Nov 2026 13:59:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C5AD6606A888
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D766760A260D;
+	Mon, 16 Nov 2026 13:59:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D766760A260D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=2O6q6pVC
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=WfyZHiuu
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 8AFD71A168D;
-	Mon, 16 Nov 2026 13:59:15 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 93D981A168E;
+	Mon, 16 Nov 2026 13:59:17 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 563526023F;
-	Mon, 16 Nov 2026 13:59:15 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A1C4011BC0298;
-	Mon, 16 Nov 2026 14:59:11 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 62F046023F;
+	Mon, 16 Nov 2026 13:59:17 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C771511BC051A;
+	Mon, 16 Nov 2026 14:59:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794837554; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1794837556; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=YIgqvqCft0xzE6fzVQNsWse3GOw0O1bdbLixEWZhIw4=;
-	b=2O6q6pVCb12IoAoTB+Ls8FQRtjIDkpN9GK10cwb1Msm+D/AJvIf19rJXsLJ7ZT4Zv9Vw99
-	5Ursr1Bk6LpZiryS7OJ/m4EzeTPbx6TC2Tc2xNOM/YONh05TcGh05yMUDjCEe3wnyRnI1n
-	v6YTNx+Oi7BsQTUe3YczfOFq9LiRpQYVBZ9AyhVmk3BjPK9XjtKrYVmiIZTMwhXABMf4Hk
-	w8sive6Lc7/9nHauwdKQ+Pvj8LK/4nvYaFiv6Ea/TGqhGn97i/lj9IMpfi8G820djJrMbk
-	HXxounEewNpVj6AfziWNm5sgeqBvpgIPmE2o/X4lcdUSnbjS4wrAn44LBJ+l+Q==
+	bh=7f2hzo/dOBTufspJmPFdaPlSMDROy4acygZbmp25eMQ=;
+	b=WfyZHiuu3/9f0gaRut3kWaOutqX8rn+DBgTPsfAdTO29X3NwxclHC2Kh9q3HcEzKNtzxeg
+	X+NIlSOqlswYLPLfzyegwO0g66V3e28xnN546LMFptoBUM8H8+dU4Bo75lOh7On7L4uuvi
+	wiNt+Szl/7aHS8je1bDObqMd8YYtHbLJzNqp6J745FCddjC1YZvDqX5YquOlH5CWaPcAt4
+	nxkChn2ZBXVyUQeFR3130lj5dp43Rc2fEig45j+IpAXPH8AUigcu7EtAQkHlFpqm/8DKSd
+	azMC6hNnrX2QWpsr3Bf9R3+k7REdN1yzS6Vy5awoP4tDOgl3z8wsr6WOpYEUvA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
-Date: Mon, 16 Nov 2026 14:58:40 +0100
-Subject: [PATCH v4 4/5] MIPS: dts: eyeq5: add MSI controllers
+Date: Mon, 16 Nov 2026 14:58:41 +0100
+Subject: [PATCH v4 5/5] MAINTAINERS: add EyeQ5 MSI controller entry
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -64,8 +64,8 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261116-eyeq5_msi-v4-4-2e1233b014b0@bootlin.com>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20261116-eyeq5_msi-v4-5-2e1233b014b0@bootlin.com>
 References: <20261116-eyeq5_msi-v4-0-2e1233b014b0@bootlin.com>
 In-Reply-To: <20261116-eyeq5_msi-v4-0-2e1233b014b0@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
@@ -81,47 +81,32 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.16.0
 X-Last-TLS-Session-Version: TLSv1.3
 
-Add the two EyeQ5 MSI controllers. They use reserved-memory regions as
-their doorbell windows.
+Add the EyeQ5 MSI controller binding document and driver.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index cec5ad8752285..bc6024fa1a132 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -309,6 +309,28 @@ gpio1: gpio@1500000 {
- 			resets = <&olb 0 26>;
- 		};
- 
-+		msi0: msi-controller@5840000 {
-+			compatible = "mobileye,eyeq5-msi";
-+			reg =	<0x0 0x05840000 0x0 0x10>,
-+				<0x0 0x05840040 0x0 0x20>;
-+			interrupt-parent = <&gic>;
-+			msi-controller;
-+			#msi-cells = <0>;
-+			interrupts =  <GIC_SHARED 7 IRQ_TYPE_LEVEL_HIGH>;
-+			memory-region =	<&pci0_msi_reserved>;
-+		};
-+
-+		msi1: msi-controller@5840010 {
-+			compatible = "mobileye,eyeq5-msi";
-+			reg = <0x0 0x05840010 0x0 0x10>,
-+				<0x0 0x05840060 0x0 0x20>;
-+			interrupt-parent = <&gic>;
-+			msi-controller;
-+			#msi-cells = <0>;
-+			interrupts =  <GIC_SHARED 48 IRQ_TYPE_LEVEL_HIGH>;
-+			memory-region =	<&pci1_msi_reserved>;
-+		};
-+
- 		iocu-bus {
- 			compatible = "simple-bus";
- 			#address-cells = <2>;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 93abbb315065d..ca3a32790261d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18769,12 +18769,14 @@ M:	Gregory CLEMENT <gregory.clement@bootlin.com>
+ M:	Théo Lebrun <theo.lebrun@bootlin.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/interrupt-controller/mobileye,eyeq5-msi.yaml
+ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
+ F:	Documentation/devicetree/bindings/soc/mobileye/
+ F:	arch/mips/boot/dts/mobileye/
+ F:	arch/mips/configs/eyeq*_defconfig
+ F:	arch/mips/mobileye/board-epm5.its.S
+ F:	drivers/clk/clk-eyeq.c
++F:	drivers/irqchip/irq-eyeq5-msi.c
+ F:	drivers/phy/phy-eyeq5-eth.c
+ F:	drivers/pinctrl/pinctrl-eyeq5.c
+ F:	drivers/reset/reset-eyeq.c
 
 -- 
 2.53.0

@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794824465;
-	b=gmkudDRgCVAAGyhRSHHbQiZUSrfBvfLYXQF2pYSj/9n+ZYeOoZelqGox+pztcmF+lfRn
-	 CYlwCcQca2R23wfL3jaoFB4B4bn6HJjxIgmgKASAAVzCBYGYz0cOToX5ExxjlMTQIv3RL
-	 aiRfw9Pu+MjlU4NP7/HE1lhQ4uBrEm0Q/AAUiZRKRhCoavv7XwyvTTXxiQEzc6OUGslBB
-	 REbH1QEhGKlgzBA3+jp3dfkuiFPCTpCNVceAj/PxRhdOvis34IlH1u4Qzm1/JkcPLju0P
-	 W7dFkOyfPf1EjBpI9Mgxa54lIHd4WPMTjs3e+Zee0zfa1jgy9dJdtLe/CBh+XB7cvKA==
+	t=1794824559;
+	b=A8DF4/z+WjRg3jlBCo1CfNMd5H32eWG6Gty75UCJuKWbn977lb3QrZ6uWARChNaKEFdf
+	 QmxEKF8SCQ/a2LcP4SpaCcoTA61SzhaReD6bEy20pcqnbv3TwBYjnOgViICc4Ns0LFHn3
+	 CVwjS5SnuzCIUyCfUetRImUd31Agikq9AX9rQfOV3BK3FjqNSyVMhseCMQeA/SnJCCEaT
+	 9kjO5rejrYL5hXe3Parpd4NAeJG8HaCzt6iZ8xXVwMcu+EZzL6XWujn82krVxTbNZP81c
+	 xS8w+RMxnLY/jyD/k8ryOlUENj22q6KJ45nK6Yh6QcsnXh3BOOEekw8TriNuoDZob9Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794824465;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794824559;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=PODueEbuV8yQIK2sk6E9OJLlqXL1eOnZsVPrULsCgVw=;
-	b=ZH7Q6ZPMMbnUVhhodlPu5zvLbJVcoYMJrDW2/NJrlF+OkLhw/EAeYVcjqstK4TMyWuph
-	 uA5LNVnDJjNxXp6fv+Wd4bNCxqNIh2co2lIMvK08dh7XUJp+uc4pEbV4tSyw73Gi3s0YL
-	 YTN7EEKbybBdL+mHStIMMNjkR4LPjWXIhJ2HuFNUzfmaZYmqa5eEk66xI7B5lzrr19AdV
-	 B9DxxI1qpJh67M1bBQUNtm8JfEKY+nG4e2CgtfW2R4E/8LbVSSJV9I+sy5l9pTsECjhO0
-	 T8WsUblijHn90gRlptClriglaBFAZ7qFrYzPzdBNstuAse/n6/VUr7Tkk3uOA2ESXkg==
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=R/j4yaa1r3z9iDZfADuAlq5V0e6n8RPvA7y/at4iBXc=;
+	b=NDsKGX7tVZtdxK3FNpE4/bd+OtkzFDB3K1jv0GIcc+jnGQSWZcOVf37t/oB4M0t2jeNG
+	 0o1J+OgsCIyDuJeJbs3dbVGr0Q7S9iIRdFP3j+6xzE2FsaPdgW6dh5RtjFmQyxXPJQPQB
+	 88TTdtisN0uGA+IJdKOdiorFEByReNv9lN+npjXXoSgBuF0wVf0vGriHHybMPYUQom1vF
+	 ktmsqqcXHu3XKz1RS240kGREVBR3jg7jRxP+LCgfyMbIh9lAdU1kdLOH3j0H7ntPSRK9p
+	 YW3LnXvFdp+Avgd/DyvCuDY182KNzavxBo0cODfqgt3QVcVngnOWwXZfnI0eBFzJYuQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mi5+MsfS;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RnH1F2wO;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF56606A338;
-	Mon, 16 Nov 2026 10:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112F4606A323;
+	Mon, 16 Nov 2026 10:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mi5+MsfS
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A111C1F000C4;
-	Mon, 16 Nov 2026 10:21:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RnH1F2wO
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BA411F000C5;
+	Mon, 16 Nov 2026 10:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794824465;
-	bh=PODueEbuV8yQIK2sk6E9OJLlqXL1eOnZsVPrULsCgVw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Mi5+MsfSg1uL7Fjfs9BWNfnhXaeY2PLIrvq+cKL9rs13lUOZ9SWIn2/qpJnBETq3V
-	 g/XZI4xSwhN7dQ2hQ2lVXbCj7k2hrWyvma5PpUVkhfjlG+LryS7EpbQ8NmtGeWAvTa
-	 Wb71OxoQTWRgRiHNpTCNHzOLsiPdSEk8U62FPU+GEOVBjhueiAsVznsAPVzQTdP7QS
-	 O0tfWbyXQL6nRy92H3umyimes7joHJDHt7w5a8JFr0C+aIh/gAAnf//IQzLBPoxX3j
-	 8YlLsgX/8eUdR0RUwVXcwq51z2SjTLCrX54R4cTbXPZmYNlJcN0wmvD1HvRDusgeMd
-	 nG5r4w/8u6OxA==
+	s=k20260515; t=1794824558;
+	bh=R/j4yaa1r3z9iDZfADuAlq5V0e6n8RPvA7y/at4iBXc=;
+	h=From:To:Cc:Subject:Date;
+	b=RnH1F2wOqPJRS/JSLU1EkQ86act9eQGW6swwXKDsyeBvpeZDnD66+cPm6nJvGpLcm
+	 JhcaidMvfKmm20TrOHCx3kqEDnFFi2qZpf4BhvbjeyLOoGZvO2i0b3HL3XECKNp8up
+	 ZaOUITssUNOt4QHV2i/I/lLD0D0ISLTob8hJYOJB7nses6ZJgv5wflMLikrcJgFWP+
+	 +33ugZLhP/a87hhEnBWVZJ7V4NlrFjJy1a28vWnodt45zCa0f1i+spn3HJJepOB64g
+	 upr5CmjAzzKj+OYezcwIIP8kkX0ScGgVcLzdUl1LBacNmfln6cg/yFEe3kBfII5wPl
+	 +TYwjsk6GPEQg==
 From: Imre Kaloz <kaloz@kernel.org>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	netdev@vger.kernel.org
@@ -48,15 +48,11 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
 	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Sashiko <sashiko-bot@kernel.org>
-Subject: [PATCH net 2/2] net: sgi: ioc3-eth: fix IRQ lifetime against netdev teardown
-Date: Mon, 16 Nov 2026 11:19:34 +0100
-Message-ID: <20261116101934.25910-3-kaloz@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/2] net: sgi: ioc3-eth: two changes for the IOC3 on SGI IP35 machines
+Date: Mon, 16 Nov 2026 11:21:13 +0100
+Message-ID: <20261116102115.27574-1-kaloz@kernel.org>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261116101934.25910-1-kaloz@kernel.org>
-References: <20261116101934.25910-1-kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -68,65 +64,31 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The shared IRQ is requested before the lock and timer its handler
-uses are initialized, and stays registered past free_netdev() on the
-probe error paths and in remove, so the handler can run on freed
-memory.
+These two changes let ioc3-eth drive the IOC3 of the SGI Fuel, which
+sits behind an XBridge and has no MAC PROM. They were part of the IP35
+support series, which supplies the window addresses; its next version
+attaches the MAC property. Neither side has a build dependency on the
+other.
 
-Reproduced with CONFIG_DEBUG_SHIRQ=y and slub_debug=P and tested on
-an SGI Fuel.
+Tested on an SGI Fuel.
 
-Fixes: 0ce5ebd24d25 ("mfd: ioc3: Add driver for SGI IOC3 chip")
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Closes: https://lore.kernel.org/all/179473760071.2199510.16065103101920438822@kernel.org/
-Cc: stable@vger.kernel.org
-Signed-off-by: Imre Kaloz <kaloz@kernel.org>
 ---
- drivers/net/ethernet/sgi/ioc3-eth.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Changes in v2:
+- Patch 2 takes the address from a device property instead of the
+  platform hook, and drops the random address fallback.
+- Patch 1's message no longer reads as a fix for existing systems.
 
-diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-index ee284a4f75ff..e322a588d5c4 100644
---- a/drivers/net/ethernet/sgi/ioc3-eth.c
-+++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-@@ -870,16 +870,16 @@ static int ioc3eth_probe(struct platform_device *pdev)
- 		goto out_free;
- 	}
- 
--	if (devm_request_irq(&pdev->dev, dev->irq, ioc3_interrupt,
--			     IRQF_SHARED, "ioc3-eth", dev)) {
-+	spin_lock_init(&ip->ioc3_lock);
-+	timer_setup(&ip->ioc3_timer, ioc3_timer, 0);
-+
-+	if (request_irq(dev->irq, ioc3_interrupt, IRQF_SHARED, "ioc3-eth",
-+			dev)) {
- 		dev_err(&pdev->dev, "Can't get irq %d\n", dev->irq);
- 		err = -ENODEV;
- 		goto out_free;
- 	}
- 
--	spin_lock_init(&ip->ioc3_lock);
--	timer_setup(&ip->ioc3_timer, ioc3_timer, 0);
--
- 	ioc3_stop(ip);
- 
- 	/* Allocate rx ring.  4kb = 512 entries, must be 4kb aligned */
-@@ -951,6 +951,7 @@ static int ioc3eth_probe(struct platform_device *pdev)
- 	return 0;
- 
- out_stop:
-+	free_irq(dev->irq, dev);
- 	timer_delete_sync(&ip->ioc3_timer);
- 	if (ip->rxr)
- 		dma_free_coherent(ip->dma_dev, RX_RING_SIZE, ip->rxr,
-@@ -969,6 +970,7 @@ static void ioc3eth_remove(struct platform_device *pdev)
- 	struct ioc3_private *ip = netdev_priv(dev);
- 
- 	unregister_netdev(dev);
-+	free_irq(dev->irq, dev);
- 	timer_delete_sync(&ip->ioc3_timer);
- 
- 	dma_free_coherent(ip->dma_dev, RX_RING_SIZE, ip->rxr, ip->rxr_dma);
+v1: https://lore.kernel.org/all/20261111095138.1757-1-kaloz@kernel.org/
+
+Imre Kaloz (2):
+  net: sgi: ioc3-eth: apply the DMA attributes only to 64-bit addresses
+  net: sgi: ioc3-eth: take the MAC address from a device property
+
+ drivers/net/ethernet/sgi/ioc3-eth.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
+
+
+base-commit: 7ccc5e05043b1bb84326b19a2b05938d8f7a2ae6
 -- 
 2.47.3
 

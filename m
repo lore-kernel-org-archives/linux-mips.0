@@ -1,60 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.84.56
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794837551;
-	b=QKoByS2VgldE7fB9BHYemcreZ6HF5zgBB2TkuE0PZMwRfWuspTgwpWA+qxdvMV50zP2f
-	 F8ZsTseEd0QNOldRrwlIE/EJeB/HuOhF2EhQxgFl6vQUxW5DES607QNEpa8w6tHNS742o
-	 pJN2DxvDqfCexkF5OvIjAHUTdjL5utLacwz+0ISbtJXhIssQfnU/bKGO094qZPdgriioK
-	 Uj7HhFTTWVJlXs3AkmQJE6mz1M/bp7T9wtuDnmSqs4V75w4N1pB9/7Rc8W8ReGKhkZeuA
-	 mLHeMdiDfN6sohkfINN72DkLi6kf39UZtrD8wRTmxB+nC7hZGV7fsynd35NPMbw8arA==
+	t=1794837554;
+	b=zITOcAsArUHsQP/GQaUcp8b6zrMIhPNb+8M0/8NzfiLEPE09oTpQBY/pRdKt3gL86ihT
+	 mAb87OOXuc2qR0nfv7vSM992xerXydU9Upy+0D6rqnu3TPwkATHPcH1+DVklXaTCvdn/0
+	 4oH7JsBRQte5KPaVt7YxSwf0QUj3Q1l7kMQ75gs7C+mIe1FuAEBIrXb8Qy+fWuKaWT4jq
+	 +UZG2hqxzxqUXqSGG5XQXQDsN7tjyu84XdD5xEb/0N9dSHH5fxqNcxZLIOeCxmBUnSAAm
+	 FL5krSvhgRgVqA12f13IW56fQeBWLhztqib+qCAdshLBLo4xRnAVNw53SO0M1BIqDGw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794837551;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794837554;
 	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:Date:
 	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Last-TLS-Session-Version;
-	bh=AMpAE98UuC76ZPepFiU4cI8NbVZxOLD0xSfYWj0FhRk=;
-	b=j/4Z5wumjqaT+3oVQrJryE4dpAmRZwDaE+Y8HpGYYO9o5sqSOG6AnlW75ohB+N11vdAY
-	 DaZE1DTjcFKzKfVOQrtaYcXYxnNC8glYmEIF18C+xwZQ6YXwSRBU1R/Xu7CCG4Nv8NF5h
-	 kUynRWd/QyYpqbALV76AebX9Sf+yTVGj2xfdk6B6OATIHIVcwzblLbcdIrhNp7NXkSD96
-	 Q08sloQhaddFm4GXeggPtUA3XkVHkRLRwagWdZ4gg9DFc/JZBY4mhqD+xIzqED9ypzkBI
-	 ulIXV4/5aZEyHOA1EKVfXSqGQoTh5w+iGUwjv8C11v/UEcIBePx3rD/UuVgtXQ1erSg==
+	bh=+c+7QLIr/6xnjzeRbgVMydkl5tX7ycl5LcLTqkY0J/0=;
+	b=yXmbDjxiH0ru+6uEkGBE3aBziZor0viJQdcZUf5l5LqquHeaOMpcz6Tv2aEwKNPF0cGq
+	 5tyl7pBLjWqKe45qYYiaKezEfwaAMDuEcs+i1yUJXesItjR8M61ydQIK8jHXPOkAdYLzC
+	 hwoUOFs1/BWmycOdtJzW9TiuFrazSBToN5XW3IzdzqU2ZX6J0RjnVfwcSKfIfzVOzXbOf
+	 5B03W/Hu6DSZmiDO7bLiJONzDTvLeSF1Dxmjwh4i7hl3FAglPPGAIL3bGiKdsNvRRIyg7
+	 WExi15sQ3YmnPgw+8V5db215YbCrmyZW6/1fofBA8umxxV9fMxcnv/XdwTiQ3gtkGGg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=bootlin.com;
 	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Z0KcsP4b;
-	arc=none smtp.remote-ip=185.246.85.4
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Oqr06SAB;
+	arc=none smtp.remote-ip=185.246.84.56
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2126606A32A
-	for <linux-mips@vger.kernel.org>; Mon, 16 Nov 2026 13:59:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F2126606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BCF606A89C;
+	Mon, 16 Nov 2026 13:59:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 76BCF606A89C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Z0KcsP4b
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=Oqr06SAB
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 917EB4E41600;
-	Mon, 16 Nov 2026 13:59:09 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 5B53A1A168D;
+	Mon, 16 Nov 2026 13:59:12 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 6602C6023F;
-	Mon, 16 Nov 2026 13:59:09 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 361C711BC1D57;
-	Mon, 16 Nov 2026 14:59:06 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2B5396023F;
+	Mon, 16 Nov 2026 13:59:12 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E9B5111BC0477;
+	Mon, 16 Nov 2026 14:59:08 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794837548; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1794837551; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=AMpAE98UuC76ZPepFiU4cI8NbVZxOLD0xSfYWj0FhRk=;
-	b=Z0KcsP4bN0j7e878uK/prFg5cjvx2tPt17WmiQQivCJD3BrAREDI4q5Fvch2iR/nbVKXF8
-	rfL+YJi/wPbBDCkPvV0Svz5L8p4pbF8agYnlFLEQlRWMgIgutZ1b/RGb0PkBOmOK+NnUk7
-	1xEvqRJUb6aJuKtOhvgM80A6mp/oxYKWbY5fqgv1EETmUSZ71DuU6QcOyxuuG69P8//j+L
-	AzszTptIsjmi9mi8Gb5m0MDDo5ARR9i1NFFZrvngK0H2ONPz3f+N3hylGeSKu/LwD23Uwk
-	N5Tek3cZgv7VKlgXar1NZq8GNkly8KL+pv2Mh+4OsNXqtTN7g3QrIDNIp3oMfw==
+	bh=+c+7QLIr/6xnjzeRbgVMydkl5tX7ycl5LcLTqkY0J/0=;
+	b=Oqr06SABkTCcLuKn9GstcTXG0gpKEzHE3UWJFl40TGAJCKpvRpKUucQ9506Eflw9CC0w5a
+	1tI7a04edAe9z/3N9aQA4IsohieZ3OtIoowX5JQMeFxJesE2i2Amnnft8SURcYSJfOp5Us
+	uq56fkN5grKmyXIUDCMghLb20Mp7cJ3/ubN11vEKI3paExn+3pIAWF/CJrTvpMfvYqp9h6
+	he7rQTHhyJB/Kv5AHiYC0miEyV8p3a0/7i4bWfO4oprKoiz1FUti5A3zubqhKhG4EpxOBT
+	YrSaZlbd3LUorpkFrQml0gpbBg7HxXMVScuLYwEjb8H3gPrcVGQ8zkrK51odRg==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
-Date: Mon, 16 Nov 2026 14:58:38 +0100
-Subject: [PATCH v4 2/5] irqchip: irq-eyeq5-msi: add EyeQ5 PCIe MSI
- controller driver
+Date: Mon, 16 Nov 2026 14:58:39 +0100
+Subject: [PATCH v4 3/5] MIPS: eyeq: select the EyeQ5 MSI controller
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,7 +65,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261116-eyeq5_msi-v4-2-2e1233b014b0@bootlin.com>
+Message-Id: <20261116-eyeq5_msi-v4-3-2e1233b014b0@bootlin.com>
 References: <20261116-eyeq5_msi-v4-0-2e1233b014b0@bootlin.com>
 In-Reply-To: <20261116-eyeq5_msi-v4-0-2e1233b014b0@bootlin.com>
 To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
@@ -82,488 +81,26 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.16.0
 X-Last-TLS-Session-Version: TLSv1.3
 
-Each EyeQ5 PCIe port has its own MSI controller. The controller snoops the
-MSI write TLPs that the port receives. It raises an interrupt when a write
-targets the doorbell window. A port supports a maximum of 4 MSI vectors.
-
-The driver supports two roles, selected by the GCSR mode. In root complex
-mode, it registers a PCI MSI parent. In endpoint mode, it registers a
-platform MSI parent. The driver chains the snooper domain to one GIC
-interrupt.
+The MSI controller is part of the EyeQ SoC. This change selects it by
+default.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- drivers/irqchip/Kconfig         |   5 +
- drivers/irqchip/Makefile        |   1 +
- drivers/irqchip/irq-eyeq5-msi.c | 432 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 438 insertions(+)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 90daedb7554ae..5d5a2e31d5eab 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -827,6 +827,11 @@ config APPLE_AIC
- 	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
- 	  such as the M1.
- 
-+config EYEQ5_MSI
-+	bool
-+	select IRQ_DOMAIN
-+	select IRQ_MSI_LIB
-+
- config MCHP_EIC
- 	bool "Microchip External Interrupt Controller"
- 	depends on ARCH_AT91 || COMPILE_TEST
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index eb539d41251e2..4b96194e70b72 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -132,6 +132,7 @@ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
- obj-$(CONFIG_WPCM450_AIC)		+= irq-wpcm450-aic.o
- obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
- obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
-+obj-$(CONFIG_EYEQ5_MSI)			+= irq-eyeq5-msi.o
- obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
- obj-$(CONFIG_SOPHGO_SG2042_MSI)		+= irq-sg2042-msi.o
- obj-$(CONFIG_SUNPLUS_SP7021_INTC)	+= irq-sp7021-intc.o
-diff --git a/drivers/irqchip/irq-eyeq5-msi.c b/drivers/irqchip/irq-eyeq5-msi.c
-new file mode 100644
-index 0000000000000..823dfb0b00b5b
---- /dev/null
-+++ b/drivers/irqchip/irq-eyeq5-msi.c
-@@ -0,0 +1,432 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Mobileye EyeQ5 MSI interrupt controller
-+ *
-+ * Copyright Mobileye (2026)
-+ */
-+
-+#define pr_fmt(fmt) "eyeq5-msi: " fmt
-+
-+#include <linux/bitfield.h>
-+#include <linux/bitmap.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqchip/irq-msi-lib.h>
-+#include <linux/irqdomain.h>
-+#include <linux/msi.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+
-+/*
-+ * The snooper decodes the vector number from TLP address bits [4:3], so a
-+ * port can serve at most 4 vectors.
-+ */
-+#define EYEQ_MSI_MAX_VECTORS		4
-+
-+/*
-+ * Vector n is raised by a write to the doorbell base + n * 8.
-+ */
-+#define EYEQ_MSI_VECTOR_STRIDE		8
-+
-+#define GCSR_CONFIG			0x00
-+#define GCSR_CONFIG_RC			BIT(0)
-+
-+#define GCSR_IRQSTATUS			0x0a
-+#define GCSR_IRQSTATUS_MASK		GENMASK(15, 12)
-+
-+#define GCSR_IRQMASK			0x0c
-+#define GCSR_IRQMASK_MASK		GENMASK(15, 12)
-+
-+#define MSI_BASE_LO			0x00
-+#define MSI_BASE_HI			0x02
-+
-+#define MSI_CTRL			0x04
-+#define MSI_CTRL_EN_OVERRIDE		BIT(15)
-+#define MSI_CTRL_BAR_MATCH_MODE		BIT(10)
-+#define MSI_CTRL_BAR_COMPARE		GENMASK(9, 7)
-+
-+#define VECTOR_ADDR_LO			GENMASK_ULL(20, 5)
-+#define VECTOR_ADDR_HI			GENMASK_ULL(36, 21)
-+
-+struct eyeq_msi {
-+	raw_spinlock_t			lock;
-+	struct irq_domain		*msi_domain;
-+	DECLARE_BITMAP(used, EYEQ_MSI_MAX_VECTORS);
-+
-+	void __iomem			*gcsr_base;
-+	void __iomem			*msi_base;
-+
-+	phys_addr_t			vector_phys;
-+
-+	int				irq;
-+};
-+
-+static void __eyeq_msi_mask_irq(struct eyeq_msi *msi, unsigned int bit)
-+{
-+	u16 value;
-+
-+	lockdep_assert_held(&msi->lock);
-+
-+	value = readw(msi->gcsr_base + GCSR_IRQMASK);
-+	value &= ~FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
-+	writew(value, msi->gcsr_base + GCSR_IRQMASK);
-+}
-+
-+static void __eyeq_msi_unmask_irq(struct eyeq_msi *msi, unsigned int bit)
-+{
-+	u16 value;
-+
-+	lockdep_assert_held(&msi->lock);
-+
-+	value = readw(msi->gcsr_base + GCSR_IRQMASK);
-+	value |= FIELD_PREP(GCSR_IRQMASK_MASK, BIT(bit));
-+	writew(value, msi->gcsr_base + GCSR_IRQMASK);
-+}
-+
-+static void eyeq_msi_mask_irq(struct irq_data *data)
-+{
-+	struct eyeq_msi *msi = irq_data_get_irq_chip_data(data);
-+
-+	guard(raw_spinlock)(&msi->lock);
-+	__eyeq_msi_mask_irq(msi, data->hwirq);
-+}
-+
-+static void eyeq_msi_unmask_irq(struct irq_data *data)
-+{
-+	struct eyeq_msi *msi = irq_data_get_irq_chip_data(data);
-+
-+	guard(raw_spinlock)(&msi->lock);
-+	__eyeq_msi_unmask_irq(msi, data->hwirq);
-+}
-+
-+static void eyeq_msi_compose_msg(struct irq_data *data, struct msi_msg *msg)
-+{
-+	struct eyeq_msi *msi = irq_data_get_irq_chip_data(data);
-+	phys_addr_t address;
-+
-+	memset(msg, 0, sizeof(*msg));
-+
-+	address = msi->vector_phys + data->hwirq * EYEQ_MSI_VECTOR_STRIDE;
-+
-+	msg->address_lo = lower_32_bits(address);
-+	msg->address_hi = upper_32_bits(address);
-+	msg->data = data->hwirq;
-+}
-+
-+/*
-+ * The pending bit is write-one-to-cleared in eyeq_msi_isr() before the
-+ * vector is dispatched, so there is nothing left to acknowledge here.
-+ * handle_edge_irq() nevertheless requires an ack callback.
-+ */
-+static void eyeq_msi_ack_irq(struct irq_data *data) { }
-+
-+static struct irq_chip eyeq_msi_irq_chip = {
-+	.name			= "EyeQ5-MSI",
-+	.irq_mask		= eyeq_msi_mask_irq,
-+	.irq_unmask		= eyeq_msi_unmask_irq,
-+	.irq_ack		= eyeq_msi_ack_irq,
-+	.irq_compose_msi_msg	= eyeq_msi_compose_msg,
-+#ifdef CONFIG_SMP
-+	.irq_set_affinity	= irq_chip_redirect_set_affinity,
-+#endif
-+};
-+
-+static void eyeq_msi_isr(struct irq_desc *desc)
-+{
-+	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
-+	struct eyeq_msi *msi = irq_desc_get_handler_data(desc);
-+	void __iomem *status_reg;
-+	unsigned long pending;
-+	unsigned int bit;
-+
-+	guard_chained_irq(parent_chip, desc);
-+
-+	status_reg = msi->gcsr_base + GCSR_IRQSTATUS;
-+
-+	while (true) {
-+		pending = FIELD_GET(GCSR_IRQSTATUS_MASK, readw(status_reg));
-+		if (!pending)
-+			break;
-+
-+		/*
-+		 * Write-one-to-clear status register.
-+		 */
-+		writew(FIELD_PREP(GCSR_IRQSTATUS_MASK, pending), status_reg);
-+
-+		for_each_set_bit(bit, &pending, EYEQ_MSI_MAX_VECTORS) {
-+			if (!generic_handle_demux_domain_irq(msi->msi_domain, bit))
-+				pr_err_ratelimited("unmapped MSI interrupt %u\n", bit);
-+		}
-+	}
-+}
-+
-+static int eyeq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				 unsigned int nr_irqs, void *args)
-+{
-+	struct eyeq_msi *msi = domain->host_data;
-+	unsigned long bit;
-+
-+	if (WARN_ON_ONCE(nr_irqs != 1))
-+		return -EINVAL;
-+
-+	scoped_guard(raw_spinlock_irqsave, &msi->lock) {
-+		bit = find_first_zero_bit(msi->used, EYEQ_MSI_MAX_VECTORS);
-+		if (bit >= EYEQ_MSI_MAX_VECTORS)
-+			return -ENOSPC;
-+
-+		set_bit(bit, msi->used);
-+	}
-+
-+	irq_domain_set_info(domain, virq, bit, &eyeq_msi_irq_chip, msi,
-+			    handle_edge_irq, NULL, NULL);
-+
-+	return 0;
-+}
-+
-+static void eyeq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
-+				 unsigned int nr_irqs)
-+{
-+	struct irq_data *data = irq_domain_get_irq_data(domain, virq);
-+	irq_hw_number_t hwirq;
-+	struct eyeq_msi *msi;
-+
-+	if (WARN_ON_ONCE(nr_irqs != 1))
-+		return;
-+
-+	if (WARN_ON_ONCE(!data))
-+		return;
-+
-+	msi = irq_data_get_irq_chip_data(data);
-+	hwirq = data->hwirq;
-+
-+	guard(raw_spinlock_irqsave)(&msi->lock);
-+
-+	if (!test_and_clear_bit(hwirq, msi->used)) {
-+		pr_warn("attempt to free unused hwirq %lu\n", (unsigned long)hwirq);
-+		return;
-+	}
-+
-+	__eyeq_msi_mask_irq(msi, hwirq);
-+}
-+
-+/*
-+ * The same callbacks serve the PCI MSI parent (root complex mode) and the
-+ * platform MSI parent (endpoint mode).
-+ */
-+static const struct irq_domain_ops eyeq_msi_domain_ops = {
-+	.alloc	= eyeq_msi_domain_alloc,
-+	.free	= eyeq_msi_domain_free,
-+	.select	= msi_lib_irq_domain_select,
-+};
-+
-+#define EYEQ_MSI_FLAGS_REQUIRED		(MSI_FLAG_USE_DEF_DOM_OPS |	\
-+					 MSI_FLAG_USE_DEF_CHIP_OPS |	\
-+					 MSI_FLAG_PCI_MSI_MASK_PARENT)
-+
-+#define EYEQ_MSI_FLAGS_SUPPORTED		(MSI_FLAG_PCI_MSIX |		\
-+					 MSI_GENERIC_FLAGS_MASK)
-+
-+static bool eyeq_msi_init_dev_msi_info(struct device *dev,
-+				       struct irq_domain *domain,
-+				       struct irq_domain *real_parent,
-+				       struct msi_domain_info *info)
-+{
-+	if (!msi_lib_init_dev_msi_info(dev, domain, real_parent, info))
-+		return false;
-+
-+	/*
-+	 * handle_edge_irq() and mask_ack_irq() run on the top-level
-+	 * (device) irq_data, so this chip needs an ack callback too.
-+	 */
-+	info->chip->irq_ack = eyeq_msi_ack_irq;
-+
-+	return true;
-+}
-+
-+static const struct msi_parent_ops eyeq_msi_parent_ops = {
-+	.required_flags		= EYEQ_MSI_FLAGS_REQUIRED,
-+	.supported_flags	= EYEQ_MSI_FLAGS_SUPPORTED,
-+	.bus_select_token	= DOMAIN_BUS_NEXUS,
-+	.bus_select_mask	= MATCH_PCI_MSI,
-+	.prefix			= "EYEQ-",
-+	.init_dev_msi_info	= eyeq_msi_init_dev_msi_info,
-+};
-+
-+/*
-+ * In endpoint mode the snooper is a platform MSI controller: the host writes
-+ * the doorbell and the snooper raises a local interrupt. Expose it as a
-+ * platform MSI parent so endpoint functions can allocate doorbells.
-+ */
-+static const struct msi_parent_ops eyeq_msi_platform_parent_ops = {
-+	.required_flags		= EYEQ_MSI_FLAGS_REQUIRED,
-+	.supported_flags	= EYEQ_MSI_FLAGS_SUPPORTED,
-+	.bus_select_token	= DOMAIN_BUS_NEXUS,
-+	.bus_select_mask	= MATCH_PLATFORM_MSI,
-+	.prefix			= "EYEQ-P-",
-+	.init_dev_msi_info	= eyeq_msi_init_dev_msi_info,
-+};
-+
-+static int eyeq_msi_create_domain(struct eyeq_msi *msi, struct device_node *node, bool is_rc)
-+{
-+	const struct msi_parent_ops *parent_ops = is_rc ?
-+		&eyeq_msi_parent_ops : &eyeq_msi_platform_parent_ops;
-+	struct irq_domain_info info = {
-+		.fwnode		= of_fwnode_handle(node),
-+		.ops		= &eyeq_msi_domain_ops,
-+		.host_data	= msi,
-+		.size		= EYEQ_MSI_MAX_VECTORS,
-+		/*
-+		 * The composed doorbell address does not depend on affinity,
-+		 * as required by platform MSI doorbell consumers.
-+		 */
-+		.domain_flags	= is_rc ? 0 : IRQ_DOMAIN_FLAG_MSI_IMMUTABLE,
-+	};
-+
-+	msi->msi_domain = msi_create_parent_irq_domain(&info, parent_ops);
-+	if (!msi->msi_domain)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static int eyeq_msi_parse_vector_region(struct eyeq_msi *msi, struct device_node *node)
-+{
-+	struct device_node *memory_node;
-+	struct resource resource;
-+	int ret;
-+
-+	memory_node = of_parse_phandle(node, "memory-region", 0);
-+	if (!memory_node) {
-+		pr_err("missing memory-region property\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = of_address_to_resource(memory_node, 0, &resource);
-+	of_node_put(memory_node);
-+
-+	if (ret) {
-+		pr_err("failed to parse MSI vector memory region: %d\n", ret);
-+		return ret;
-+	}
-+
-+	msi->vector_phys = resource.start;
-+
-+	return 0;
-+}
-+
-+static void eyeq_msi_program_hardware(struct eyeq_msi *msi, bool is_rc)
-+{
-+	u16 control, value;
-+	u32 match_bar;
-+
-+	guard(raw_spinlock_irqsave)(&msi->lock);
-+	value = readw(msi->gcsr_base + GCSR_IRQMASK);
-+	value &= ~GCSR_IRQMASK_MASK;
-+	writew(value, msi->gcsr_base + GCSR_IRQMASK);
-+	writew(GCSR_IRQSTATUS_MASK, msi->gcsr_base + GCSR_IRQSTATUS);
-+
-+	/*
-+	 * The register holds address bits 5..36.
-+	 */
-+	writew(FIELD_GET(VECTOR_ADDR_LO, msi->vector_phys), msi->msi_base + MSI_BASE_LO);
-+
-+	writew(FIELD_GET(VECTOR_ADDR_HI, msi->vector_phys), msi->msi_base + MSI_BASE_HI);
-+
-+	/*
-+	 * RC mode uses BAR 2 as the no-translation BAR, endpoint mode uses
-+	 * BAR 3 as the MSI BAR.
-+	 */
-+	match_bar = is_rc ? 2 : 3;
-+
-+	/*
-+	 * MSI_ADDR_MASK is left to zero: the vector region only differs from
-+	 * its base on address bits [4:3], which hardware excludes from the
-+	 * comparison since they hold the vector number.
-+	 */
-+	control = MSI_CTRL_EN_OVERRIDE | MSI_CTRL_BAR_MATCH_MODE |
-+		FIELD_PREP(MSI_CTRL_BAR_COMPARE, match_bar);
-+
-+	writew(control, msi->msi_base + MSI_CTRL);
-+}
-+
-+static int eyeq_msi_probe(struct platform_device *pdev, struct device_node *parent)
-+{
-+	struct device_node *node = pdev->dev.of_node;
-+	struct eyeq_msi *msi;
-+	bool is_rc;
-+	int ret;
-+
-+	msi = devm_kzalloc(&pdev->dev, sizeof(*msi), GFP_KERNEL);
-+	if (!msi)
-+		return -ENOMEM;
-+
-+	raw_spin_lock_init(&msi->lock);
-+	bitmap_zero(msi->used, EYEQ_MSI_MAX_VECTORS);
-+	msi->irq = -1;
-+
-+	msi->gcsr_base = of_iomap(node, 0);
-+	if (!msi->gcsr_base) {
-+		pr_err("failed to map GCSR registers\n");
-+		return -ENOMEM;
-+	}
-+
-+	msi->msi_base = of_iomap(node, 1);
-+	if (!msi->msi_base) {
-+		pr_err("failed to map MSI registers\n");
-+		ret = -ENOMEM;
-+		goto err_unmap_gcsr;
-+	}
-+
-+	ret = eyeq_msi_parse_vector_region(msi, node);
-+	if (ret)
-+		goto err_unmap_msi;
-+
-+	msi->irq = of_irq_get(node, 0);
-+	if (msi->irq <= 0) {
-+		ret = msi->irq ?: -EINVAL;
-+		pr_err("failed to obtain parent IRQ: %d\n", ret);
-+		goto err_unmap_msi;
-+	}
-+
-+	is_rc = FIELD_GET(GCSR_CONFIG_RC, readw(msi->gcsr_base + GCSR_CONFIG));
-+
-+	ret = eyeq_msi_create_domain(msi, node, is_rc);
-+	if (ret) {
-+		pr_err("failed to create IRQ domain: %d\n", ret);
-+		goto err_dispose_irq;
-+	}
-+
-+	eyeq_msi_program_hardware(msi, is_rc);
-+
-+	/*
-+	 * Install the chained handler only once the domain and hardware are
-+	 * ready, otherwise an interrupt could arrive unhandled.
-+	 */
-+	irq_set_chained_handler_and_data(msi->irq, eyeq_msi_isr, msi);
-+
-+	pr_info("%s: initialized in %s mode with %u vectors, parent IRQ %d\n",
-+		of_node_full_name(node), is_rc ? "root-complex" : "endpoint",
-+		EYEQ_MSI_MAX_VECTORS, msi->irq);
-+
-+	return 0;
-+
-+err_dispose_irq:
-+	irq_dispose_mapping(msi->irq);
-+
-+err_unmap_msi:
-+	iounmap(msi->msi_base);
-+
-+err_unmap_gcsr:
-+	iounmap(msi->gcsr_base);
-+
-+	return ret;
-+}
-+
-+IRQCHIP_PLATFORM_DRIVER_BEGIN(eyeq5_msi)
-+IRQCHIP_MATCH("mobileye,eyeq5-msi", eyeq_msi_probe)
-+IRQCHIP_PLATFORM_DRIVER_END(eyeq5_msi)
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index ed17c9b1624ca..19dbf24684b23 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -632,6 +632,7 @@ config EYEQ
+ 	select CPU_MIPSR2_IRQ_VI
+ 	select CSRC_R4K
+ 	select DMA_NONCOHERENT
++	select EYEQ5_MSI
+ 	select HAVE_PCI
+ 	select IRQ_MIPS_CPU
+ 	select MIPS_AUTO_PFN_OFFSET
 
 -- 
 2.53.0

@@ -1,90 +1,106 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.176
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794793341;
-	b=x5xCKOzc+NcncYFrdJ7zXi77WNKSgVXd/AD1aI/cgZdmwwH8SomTh9r9pndLges60a1p
-	 xl6Q44fKIHIMykgXHnbBQYeEsDhfNmJUJuOzPetDLAuevGz6qIyNbsXY+mSsXJ1aPZpwS
-	 dWh6x5UMuHJX9CMC8BTQ30amIRmn97vyMAeAnEXnj+wBvQnCl8PEG/7I2pm4iTkwb1GHh
-	 lPN/Wf6KvCszbM3eHLzL7d8mEJO5t9hlY67zAC4JpKg5X3CXzDkcPLxzjxqeRSKr1YlWR
-	 aoUJ2wosDbRQTACtMQ3R3jCaFr3mq0jciR+6YvT8vZecMNzFkjGPsCT8v+uENk//CPA==
+	t=1794804567;
+	b=Qd+PSlwGPGADYIrYK7oDUzQJluVWAkIeDH7PvvZc9E1rxoF1Ak7/i1x9kVx0ZvSHnL1l
+	 otgJ5lK1xEAkDZfpq7YlSH1QS4ACqjpGO5xQ3rNpqZULnoPpQUXm5uzFOJauZLEJS2DgS
+	 7nnB1Ug7n+WD/jE0Pz5UZBspB2VSrjpHxq/s9W0Icp1ae1njCN8ufnio0uH/1qiv6QB7C
+	 DbHhRBpyOCa+ObAHWnmFsBj3nUOX1/4984VydfTiXo9I5dLRUf8RLvZl5AXCGa6+gUlau
+	 65LI0gLCKoJgI4OVQA9XhHdnArk8R/Hf3k9lR2GaW6uNnJQf/W7NH2u8psp9A/41V6w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794793341;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794804567;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=8/gPUWQgBL4YpaUMj9IaoQs3NYT18BOp9IYonDJZev0=;
-	b=dzsvVMrGlDyHo9ebW5HN5SlyixeICa3tNRu2084u5U5PQdZ7cFqhtWBF1LNx7M3TnE/p
-	 H/fCqr0Ab/MPPOWmXodAU/y8H3qEvXR3UIgDwABqT9rv3KRySbM8MeNeT2BonqXSKeVfN
-	 OozI9kEkl+TL/SM7hpyV3NyVrgdpXw4V7RgUNDtqUc+tszl1KQjl6RAljjRwNSRvBF1zd
-	 Q/hD+o622hFgYLn0apWLG/+/UoyAJ5WozW+GmmDptCePHOZuqzDqe+jQe3wYeAdVqSvlF
-	 +03wtUoJU36BRH2OKT+UlCratScShQTqTY+6woDm9+GZ71YV0mKmTcpd1IvDp6H4vjw==
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=+r4qanG5HFrQTkiMyL1knKm50Zsb7RunVimgg67J/4k=;
+	b=iKw3p+BuxA75BWV2Flhj7M5LMY+4lF3Nlq9k8hqKidHJjdrPIOUEul0RxFCaspabuGJW
+	 54+MjxCzCzx7yiOKVQKq498WuCXEOkDzGE4ysYDhxoJIdQLAUwFNpjXFB5SqWxv5VLCiA
+	 NEGYY3W7mLXkSy3xq8oYULp3rL618tp2sPJJAiujbO7CNl8VeTJ55QfTHIgVzQxGEqMCw
+	 uWxyk66MzZHrw6nLon5Wgz5oIkxUIw3msOooQsecyfwRGSsba55Fqp1xu9xPfuXod10E1
+	 emrH+jdO3px3AV/wCt/fsfbBdH2p3t2jU4867Gvk4h8QI3ilS4GHeynVSazvs0XBkoA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VTK6mp+t;
-	arc=none smtp.remote-ip=209.85.221.45
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jJlMStIv;
+	arc=none smtp.remote-ip=74.125.82.176
+Received: from mail-dy1-f176.google.com (mail-dy1-f176.google.com [74.125.82.176])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F22F606A31F
-	for <linux-mips@vger.kernel.org>; Mon, 16 Nov 2026 01:42:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5F22F606A31F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D95606A31F
+	for <linux-mips@vger.kernel.org>; Mon, 16 Nov 2026 04:49:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 12D95606A31F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=VTK6mp+t
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-48e3b22e971so1367029f8f.0
-        for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 17:42:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jJlMStIv
+Received: by mail-dy1-f176.google.com with SMTP id 5a478bee46e88-37628596783so5054520eec.1
+        for <linux-mips@vger.kernel.org>; Sun, 15 Nov 2026 20:49:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794793340; x=1795398140; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8/gPUWQgBL4YpaUMj9IaoQs3NYT18BOp9IYonDJZev0=;
-        b=VTK6mp+tpFSuXdi7YjleqCJglXkypHfOQ62H41qafcPNrwgmXRHtn3X8kEn4BXn5JG
-         DdXpcliDlzl/yAoCy7FrFUgUyoa2ZLF71062DcuwqnmjgSIGl4mzENa1H4XyXDaQI5Sa
-         oAIruFeVrW3QVZKNCCPRAm8dghAl9egUmlGrS6GDjBCBI8kk+aubNuX5zVivCgH9UFUb
-         MSv7PD+BDw56sOxFNEa0aYv/vSiB9BI1/vTS0MPiweb4YyNQWjLn7Y8kGXKYTcevXHei
-         tLD6donzmpZW5H5h0niCGrhWPYzpNwKwmWifj2Dki08S4eyun+w4QLzu9/zEQtxlDRze
-         Btzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794793340; x=1795398140;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20260707; t=1794804566; x=1795409366; darn=vger.kernel.org;
+        h=mime-version:content-transfer-encoding:content-type:message-id:date
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=8/gPUWQgBL4YpaUMj9IaoQs3NYT18BOp9IYonDJZev0=;
-        b=IpVjgIRE/HHCe/RlBQuiE5kB+vBDzv72P6le1EcWhpTr3J4a0pE0mk2NgbY1xHb/Ur
-         cTXBW0vAaLOufZ9DpiXWFUy0J7JnKo1WbQ6skjCaPLdV6NckAxypri8j+FItGBjOa4eI
-         zQFeCZx7yOvRBT5iKqIUQtCmY8Hlyj8LzlVK0BagU9Sc1aY3tf9KlZP/VW6cPHNsr4ql
-         Vl235Kx9TvLhEtvRd8H1S3SchsNPgnvEHk7B6HIi5ovbZqUHUftdvbGoAZQbX5FMlOws
-         3wbSQt+Y0jS2IhP3cm0Zdb+FaXQjv0K+RlaN2RpLkdf8vjr8RNZW/EWJ5bCg03NgCIvN
-         khaw==
-X-Gm-Message-State: APuU4Z+PvpXIFycGrwDKHVYe9NafMfwS/sZw37585qkLr869/kfaMxlc
-	O4gxNtTmlX9JCF1xCpdzJhD95b5yBmcyYkuxt/99z1ph8hC9tBX/zU/B
-X-Gm-Gg: AYBFou36kiPLV/MeV0pKgUxJxJQ6RG9klmp27CR+LMS9Ag7GlCevVence85e7IfulYO
-	oGvQrVQxdMQB8BeH837nJri4SVZC62QvycYY2fjt4plldJN/jeIiwGMMaksN4kL9/mBfls2brec
-	fruCqEt2cHYqUM2c9WeyeYR0+SkBO1vxNPdaUkR17arOVbKKpQ9q9uuSO53ZdQ/oKgSb5obrqRY
-	ZxRqxlB5EF2KpDcrD7ppwI4d5/ZFFuNPUcKRplqc92vBezJeI0nQ5kcQqVB8q8xDpkqo3swQzAF
-	sWw0qie9M0jwXvbeSHLau9uAsVNR45t50amMUg3CLNJwB7smoLUid5yZ6a52olhCulCcwpPLb2F
-	OnRZ+N/BkBPVFoqJxjVaGJ3UxS8Uh/Y1ah9Jmh7ZxDpCOFgn/Af3c2oRYw+T7ses9NZyMzcgDm9
-	yEJe3zuv7lQdzPUjrjYBgRmEuYGFAAAkEd8BH/RyUA8yBgmTMmVSz31Ts/89ic3HaLEmi5l3Orn
-	nVcwkaiosEYrH6YawTnTxzpvy257ZS76to0g3A1cuvP3Jzgrh1ZUK1pPCU6EqqyqucXkdpvH/z1
-	op/kzw5tONxxG6R5FF9sqc7D2E227wjOkLZnesr6Km0kV+KhiDKmAimsISUcpSWNGv0bXihHUDZ
-	n5p4jvpoa1qWgCYQ91wCorxRavEvfYaPZK7agKU8uICX8+YIEDI+3thIteM5mr75GEAZsBOKziP
-	Pi8p4q95aTjYP2e1So8XIi3nM=
-X-Received: by 2002:a05:6000:46c4:b0:491:286f:8e63 with SMTP id ffacd0b85a97d-49c731648a8mr11496375f8f.14.1794793339534;
-        Sun, 15 Nov 2026 17:42:19 -0800 (PST)
-Received: from DESKTOP-D7IGS5L.localdomain (123.20.61.94.rev.vodafone.pt. [94.61.20.123])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c81a63b1csm18342616f8f.4.2026.11.15.17.42.18
+        bh=+r4qanG5HFrQTkiMyL1knKm50Zsb7RunVimgg67J/4k=;
+        b=jJlMStIv8CO/WWwH3KJUMlP+JqEIb5EABQ2CNUKnv+nIAQo5R82ulSn/HPthFhksLl
+         T0GcMxMZnAANMIf/VY6cSW/O3lZ/iGdwoF0j95clk0+G/tS0tw3q02wTSD43zJothtAQ
+         JfEBwRUZ6mPrLlAOrACebwzHmpU9l5dOwW1HqNxGA/lJcEyJR79JPsWQD6a0xNFqQB3X
+         xUFmzg4vlhBYYjrRwgR/aCPOKquuPAEBnY5DooF6a0mRTzHjiAtoytANiZ/bygffHdqm
+         se3c7qO6RR0bZuY8FJANMciFcQ/kVOt21VIHXY2AMU8j1j60eJW0fo8WmdSaMhXNfTQ/
+         f9fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794804566; x=1795409366;
+        h=mime-version:content-transfer-encoding:content-type:message-id:date
+         :references:in-reply-to:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=+r4qanG5HFrQTkiMyL1knKm50Zsb7RunVimgg67J/4k=;
+        b=DOkPzYFNUpK9oab8w8eK4fpfcZI7fhr0X/1ZA9B/BjIAiKW/zaQcEE+kjsrl9bfswX
+         WH7iNuJKnvqQPJI9q6lzfWe9DallTxprhAWFh7WDQuRXb7cTIPQ2UbGAmP2Fs+sjXimN
+         JnnYWFxNMfRggmuwGzKkTLnbcUfYNjZJLQRNmwH6NNB6eRgsLq5xjmaRpwoC5OFdkcDN
+         UpFWawDwCkQQJer5HzlkijTdho9y3WW3lqR8pyPbkkQdn++WsVyu8dXQw7vrXLJQf+4K
+         JyRCJbnPgnDjJbn1IKUDp+2tQ9kPxl+3Nc501ucEEB7EY7AUbCkmVMsDmPDc5Ek+ApsY
+         hOQA==
+X-Forwarded-Encrypted: i=1; AL+hErF9Z5vBCJsxBxN/WRoSxy/FE/I0pLeJWhncJoeGv2wLzeSs+SnGAbiJgqK8tUoSv/5SlrYwANyoK/XI@vger.kernel.org
+X-Gm-Message-State: APuU4Z/aK+UX2Ysn7ic568TTga1XjRFAX+oUD/46Po8Jdt0cXIPwlIff
+	yRoyrPhQCb/0WbQaeoyaIqQnsr30fXsDmzAcnJug/2EF1knDASfPDtKM/ddoBU80xm0=
+X-Gm-Gg: AYBFou12nv9aWY6PvIr4eeNRwRTdRAGI9f+42JYAuV2fjbZ3ODQE2apGVuAfwTj5stl
+	uv8xTtowQwirsU3iD1jb5FCib4CCxqKvgTYSEkMwX/EXZKeUzxKbWiHG5LP9/gUHe0CnERjBtmD
+	SSC7ktnvhEfIZTDnBoc/M5ir+Nz870i0/Tv6QM7rU/vqDjvh784Xhg9+ZMmmdAb9WoQ0d+JVIHw
+	51en5NxNmIVeGmoeuWyzvF8MmuUBsGPugpawxzPD2waCiSxrTPmZPWsf0S/H3B0w7/eIhfPR0k+
+	pGdM8tB1b/d0moT/1E4LS6MeSCPAsARGFdFHAejDwCZ0RDTT4OQYkOeSrZgEaA4fciwgoH/UjNY
+	/WrnEg6kUOx0ZMxDflfbPu/IQUvEEZojMZdM39gF6X+eSXQ0FqnxbVBJr7oMDiYKRcMBw4WlCrw
+	PFRQu5OS2TLxHjXjpEqUbvEq46pkmJbYrsMyQP0wEVWHXqgjobHSAdsWi/XAFTcStekobAOoOq/
+	YkQ8TUKzWDinU27BCBd6DnMAbYwExLjehoemdqlCRbb4qPa6+ghxqYCVVdm044r8hs+pnqYNe6T
+	lDOdHQWD7x/Nh3GY/rJDurRFC7OAFA6iNMZ84THS5JzjtTCMNqgCmxJvujM+pWmr7FL7UjxSNJH
+	XMoXj
+X-Received: by 2002:a05:693c:4003:b0:369:9af5:7bc9 with SMTP id 5a478bee46e88-3796696128emr9718335eec.23.1794804566027;
+        Sun, 15 Nov 2026 20:49:26 -0800 (PST)
+Received: from smalls.localdomain (ip-198-145-71-161.az.bambroadband.net. [198.145.71.161])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37955332ae7sm45873114eec.8.2026.11.15.20.49.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2026 17:42:19 -0800 (PST)
-From: Marco Martins <marcomartins86@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: kexec: Sync the instruction cache with the copied kernel
-Date: Mon, 16 Nov 2026 01:42:07 +0000
-Message-ID: <20261116014207.3112156-1-marcomartins86@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        Sun, 15 Nov 2026 20:49:25 -0800 (PST)
+From: Hunter Laux <hunterlaux@gmail.com>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Cercueil <paul@crapouillou.net>, Paul Burton <paulburton@kernel.org>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
+ "Christophe Leroy, David Heidelberg" <david@ixit.cz>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Paul Boddie <paul@boddie.org.uk>,
+ Olivier Louvignes <olivier@mgcrea.io>,
+ "Zhou Yanjie" <zhouyanjie@wanyeetech.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Subject: Re: [PATCH v2 7/9] MIPS: Ingenic: Expand Kconfig for X1600, X2000,
+ and X2600 SoCs
+In-Reply-To:
+ <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
+References: <cover.1794471031.git.hns@goldelico.com>
+ <4cbb6412d3e7713d6c464051a107db19feef1278.1794471031.git.hns@goldelico.com>
+Date: Sun, 15 Nov 2026 21:49:24 -0700
+Message-ID: <179480456454.1427711.8965713943172137555@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -94,104 +110,25 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-machine_kexec() writes back and invalidates the caches with
-__flush_cache_all() and then calls kexec_reboot(), which still runs
-set_cpu_online() and local_flush_icache_range() before it jumps to the
-relocation code, so their lines stay valid in the instruction cache.
-relocate_new_kernel() then copies the new kernel over the old one
-through the data cache and jumps to it without writing the copy back
-or invalidating the instruction cache, except on Octeon. Where both
-kernels have code at the same address, the new kernel can run stale
-instructions of the old one.
+On Thu, Nov 12, 2026 at 09:10:29AM +0100, H. Nikolaus Schaller wrote:
+> +config MACH_X2600
+> +	bool
+> +	select MIPS_CPU_SCACHE
+> +	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+> +	select SYS_HAS_CPU_MIPS32_R5
 
-The new kernel calls set_cpu_online() in boot_cpu_init(), before it
-prints anything, and hangs there when its copy sits at a different
-address than the old kernel's. On an MT7620A (24KEc), a kexec from a
-kernel with set_cpu_online() at 0x8002bb5c into one with it at
-0x8002bb7c hung in all 5 tries; with this change in the old kernel,
-the new one booted in all 4.
+With only R5 here, a kernel for just the X2600 is built for MIPS32r5,
+and it dies at the first interrupt return:
 
-On R2 and later, SYNCI each copied page, which writes it back from the
-data cache and drops it from the instruction cache, and jump to the new
-kernel with JR.HB. Octeon keeps its own SYNCI of the whole instruction
-cache.
+  Reserved instruction in kernel code[#1]:
+  epc   : arch_local_irq_restore+0xc/0x18
+  PrId  : 00132000 (Ingenic XBurst II)
 
-The bug was found, and this patch and its description written, with an
-AI coding assistant (Claude Code, model Claude Opus 5.5), asked to find
-why images started with kexec on an MT7620A board sometimes hung. It
-bisected the new kernel's boot with reset probes patched into the
-image, and ran the tests on the board.
+RESTORE_SP_AND_RET uses eretnc on R5, which XBurst II doesn't have (it
+predates R5.04). Zhou fixed this in 2020, using eretnc only on R6:
+"MIPS: stackframe: Fix the problem caused by the eretnc instruction."
+With it the same kernel boots. Since this patch makes an X2600 kernel
+R5-only, I think Zhou's fix should come before it in the series.
 
-Fixes: 62cac480f33f ("MIPS: kexec: Make a framework for both jumping and halting on nonboot CPUs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Marco Martins <marcomartins86@gmail.com>
----
-Tested on a TP-Link TL-WPA7510 v2 (MT7620A, MIPS 24KEc, single core)
-with OpenWrt's 6.18.60 kernel. relocate_kernel.S and machine_kexec.c are
-the same in 6.18.60 and v7.4-rc3, but OpenWrt adds a patch of its own to
-both (command line arguments for the new kernel). The board runs this
-change on top of that patch, in a form that assembles to the same
-machine code. The 5 hangs and 4 boots above are from November 13;
-without a serial console, a hang showed as the watchdog resetting the
-board, as the kernel was booted with watchdog.stop_on_reboot=0. Since
-then the board has run the change, and on November 15 alone kexec
-started kernels laid out differently from the running one more than 30
-times, all of which booted.
-
-Built only in that 6.18.60 tree, with the board's configuration. Not
-tested: SMP, where the other CPUs also jump into the new kernel, from
-kexec_smp_wait; 64-bit; R6; Octeon.
-
- arch/mips/kernel/relocate_kernel.S | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/relocate_kernel.S b/arch/mips/kernel/relocate_kernel.S
-index de894a0..e3cae10 100644
---- a/arch/mips/kernel/relocate_kernel.S
-+++ b/arch/mips/kernel/relocate_kernel.S
-@@ -64,8 +64,25 @@ copy_word:
- 	PTR_ADDIU	s4, s4, SZREG
- 	PTR_ADDIU	s2, s2, SZREG
- 	LONG_ADDIU	s6, s6, -1
--	beq		s6, zero, process_entry
-+	beq		s6, zero, 2f
- 	b		copy_word
-+2:
-+#if MIPS_ISA_REV >= 2 && !defined(CONFIG_CPU_CAVIUM_OCTEON)
-+	/*
-+	 * The old kernel's code may still be in the I-cache at this page's
-+	 * address: write the page back from the D-cache and drop it from
-+	 * the I-cache.
-+	 */
-+	rdhwr		t0, $1
-+	beqz		t0, process_entry
-+	li		t1, (1 << _PAGE_SHIFT)
-+	PTR_SUBU	t1, s4, t1
-+3:	synci		0(t1)
-+	PTR_ADDU	t1, t1, t0
-+	sltu		t2, t1, s4
-+	bnez		t2, 3b
-+#endif
-+	b		process_entry
- 
- done:
- #ifdef CONFIG_SMP
-@@ -96,7 +113,11 @@ done:
- 	sync
- #endif
- 	/* jump to kexec_start_address */
-+#if MIPS_ISA_REV >= 2
-+	jr.hb		s1
-+#else
- 	j		s1
-+#endif
- 	END(relocate_new_kernel)
- 
- #ifdef CONFIG_SMP
-
-base-commit: aebb7274476403040d582c61478df8f4a7bf9cd3
--- 
-2.53.0
-
+Hunter

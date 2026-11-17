@@ -1,52 +1,49 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794934623;
-	b=o1h/tG/l1DNvcyZ0aCoj52EjP2BnqiCJH3nhgZPHBS/oP5qfBDjHQ6Dty1R6dRZAzVi9
-	 TR4Cuiobb88StIe8UfsMmE/0DKt+NyzpAinjuUoEBR1g7EYXtQUNyN/L5FKgXTZtBSdK2
-	 ggU86ETrpN2DlX8qK0YlH5kZ2kw0J1vBTbAoy7xX+RdKrW8O5aYFBhceicLdTUK5N6ZlA
-	 5vZpFInpuapT1lh/p+noXc3jVRDhbxKIj7MG6dxzMCMIrkYpW0B9DVRnD1NOFK5Njgpuv
-	 TmRrJZ7RotFcItAOn8WyTEhBJtjle36NK/yKbzplILWMo+7OvdK9m1trnT66cGduYYA==
+	t=1794934982;
+	b=l1Dr3lpmrA0cDvc2tOJgi6eBoeVVtdomZZQHF2kkzoTY1IcdpMRGRQX3RcHVASUZIiwH
+	 9KeGxZIgM0ddEEV0imiPN831g/MxRXHXBqJbuiqLYGI/XE+DQrHCYLaKg3Os70mvjVSCy
+	 iGu9DPkxP7JwsaQS4lxdTDBsmrzZGo9dWM+fbuWd3xbHvuDB1/J2fg9ltbtFxk6c386C9
+	 6mhqmoJ8walb20V1a+EEBE2BePNM1N4amRR0rUhR1cO15tMj8NcyyF7iPid/6yd2DANhM
+	 7aWuQ9tLOFoImTj7PVx+IXc6kQTVTEKvzBkePZz0YDRsYyuVgT/ona8AwFQ5GaRYeLQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794934623;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=cqZZtnMDInWvWgjRYAOMxV6WBhlN2nkMRXYKcfds7/g=;
-	b=k3RwkwSsHucPE5SKjQhB5qojcGLB8G08voOM/76LgmUMSAFFvXVHAfCf2RVfAV3t53dU
-	 /a7yIO8rDnIBpxFf5T21ArvLV3fbTdS/uOsvfWTJRrT90eyVwVCEQBJLOU5+fZt41w3ZU
-	 Q8dXJamjr8rltlOBMGIj6RhpO/qbuVso93+sivkkNvcum+w59tamz9PNuffKi626xT6iE
-	 MyAoEjBnneBYQYglXAGXoiotNoaFRQ+spYWr5kAqCAm4sPtj8UFhhsfjuXNn62BW0Yzt1
-	 oWl91nRU9/tamKXMtb0ldKagWWzRzm7MNXfzR1sak3WZ+/+Ow75SIFJxh7cQnb26T0Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794934982;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=DWSbG4O7NNcxX8fObj3HSY6oLeblqc38YjrZ70564Yc=;
+	b=zACFmkp9RXWSW3RPqgz88AMIfAgHbR/yeR056Jd+Uu8JhpEs1+NsBunzyeb10a9xcflW
+	 eTFrzjWjrJXv/Pq/PadF38O3T830YF12Avwe5XzZvh69tCN21nC1c9FyA5OWLeRh2x2Ya
+	 FniBVyXsWWv5Z1NYZmmxZnHZi5xFvz/9y7X3PMbjtQ7r0H9lvZM4A+ZUPq5nxpfBqrH8u
+	 OaVV1U/K8UoTzP1hn+PwcFeF4RjesPQ7MYW12mfZX3gUO1ph9Z/BpMuglio9jRcIpxRSt
+	 AJb2yy5VUa55bwIQSiCm/xKCoEqWkLUbAfCK0r4KfjTlnV/Al/EH9c+7l/2T8k/4/rA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7AF606A31C;
-	Tue, 17 Nov 2026 16:57:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0F7AF606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <14dd237aa605bfa42d62a19047782f571618408b.camel@crapouillou.net>
-Subject: Re: [PATCH] drm/ingenic: Allocate and register the internal bridge
- separately
-From: Paul Cercueil <paul@crapouillou.net>
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
-Cc: "H. Nikolaus Schaller" <hns@goldelico.com>, Paul Boddie
- <paul@boddie.org.uk>,  Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann	 <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter	 <simona@ffwll.ch>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, "open list:INGENIC JZ47xx SoCs"	
- <linux-mips@vger.kernel.org>, "open list:DRM DRIVERS"	
- <dri-devel@lists.freedesktop.org>
-Date: Tue, 17 Nov 2026 17:56:56 +0100
-In-Reply-To: <20261105203517.2293404-1-f.fainelli@gmail.com>
-References: <20261105203517.2293404-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	dmarc=none header.from=alpha.franken.de;
+	spf=pass smtp.mailfrom=alpha.franken.de;
+	arc=none smtp.remote-ip=193.175.24.41
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48050606A32A;
+	Tue, 17 Nov 2026 17:03:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 48050606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xTMaC-0005GF-00; Tue, 17 Nov 2026 18:03:00 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 034DFC0546; Tue, 17 Nov 2026 17:56:41 +0100 (CET)
+Date: Tue, 17 Nov 2026 17:56:40 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Rosen Penev <rosenp@gmail.com>
+Cc: linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	"open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+	"moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
+	"moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH] mips: ralink: mt7621: avoid casting away __iomem in
+ wraparound test
+Message-ID: <avyHSKd4l8YYdESO@alpha.franken.de>
+References: <20261004184828.31284-1-rosenp@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -56,142 +53,45 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261004184828.31284-1-rosenp@gmail.com>
 
-Hi Florian,
-
-Le jeudi 05 novembre 2026 =C3=A0 12:35 -0800, Florian Fainelli a =C3=A9crit=
-=C2=A0:
-> The LCD controller's internal bridge is embedded in an object allocated
-> with drmm_encoder_alloc(). This initializes the encoder but leaves the
-> bridge's reference count at zero. Since drm_bridge_attach() takes a
-> reference, probing the CI20 display produces addition-on-zero and
-> underflow warnings and fails to attach the HDMI bridge chain.
->=20
-> Allocate the internal bridge with devm_drm_bridge_alloc() and register
-> it with devm_drm_bridge_add() before attaching it. Keep the encoder in a
-> separate DRM-managed allocation: encoder cleanup can drop the final
-> bridge reference before it has finished accessing the encoder. Find
-> the internal bridge through the encoder's bridge chain during mode
-> setting, and use the bridge argument directly in bridge callbacks.
->=20
-> Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in
-> drm_bridge_attach/detach()")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-
-You have a Fixes: tag but you didn't add a Cc: stable@vger.kernel.org
-
-Please re-send with the Cc.
-
-Cheers,
--Paul
-
+On Sun, Oct 04, 2026 at 11:48:28AM -0700, Rosen Penev wrote:
+> CPHYSADDR() casts its argument to an integer, which strips the __iomem
+> annotation from dm and triggers a sparse warning. Compute the physical
+> address from detect_magic directly. The result is unchanged since the
+> sum never exceeds the 512MB KSEG mask.
+> 
+> Fixes: 4ddaf88aadd3 ("mips: ralink: mt7621: add missing __iomem")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202610041411.uJXWXF8i-lkp@intel.com/
+> Assisted-by: LLM
+> Signed-off-by: Rosen Penev <rosenp@gmail.com>
 > ---
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++-----=
----
-> =C2=A01 file changed, 21 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 625ec76cf04d..520912f9ed0d 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -121,16 +121,15 @@ struct ingenic_drm {
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct ingenic_drm_bridge {
-> -	struct drm_encoder encoder;
-> =C2=A0	struct drm_bridge bridge, *next_bridge;
-> =C2=A0
-> =C2=A0	struct drm_bus_cfg bus_cfg;
-> =C2=A0};
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_bridge *
-> -to_ingenic_drm_bridge(struct drm_encoder *encoder)
-> +to_ingenic_drm_bridge(struct drm_bridge *bridge)
-> =C2=A0{
-> -	return container_of(encoder, struct ingenic_drm_bridge, encoder);
-> +	return container_of(bridge, struct ingenic_drm_bridge, bridge);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_private_state *
-> @@ -738,7 +737,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struc=
-t
-> drm_encoder *encoder,
-> =C2=A0{
-> =C2=A0	struct ingenic_drm *priv =3D drm_device_get_priv(encoder->dev);
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *bridge =3D to_ingenic_drm_bridge(encoder);
-> +	struct drm_bridge *first_bridge __free(drm_bridge_put) =3D
-> +		drm_bridge_chain_get_first_bridge(encoder);
-> +	struct ingenic_drm_bridge *bridge =3D
-> to_ingenic_drm_bridge(first_bridge);
-> =C2=A0	unsigned int cfg, rgbcfg =3D 0;
-> =C2=A0
-> =C2=A0	priv->panel_is_sharp =3D bridge->bus_cfg.flags &
-> DRM_BUS_FLAG_SHARP_SIGNALS;
-> @@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridg=
-e
-> *bridge,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 enum drm_bridge_attach_flags flags)
-> =C2=A0{
-> -	struct ingenic_drm_bridge *ib =3D to_ingenic_drm_bridge(encoder);
-> +	struct ingenic_drm_bridge *ib =3D to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	return drm_bridge_attach(encoder, ib->next_bridge,
-> =C2=A0				 &ib->bridge, flags);
-> @@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct
-> drm_bridge *bridge,
-> =C2=A0					=C2=A0=C2=A0 struct drm_connector_state
-> *conn_state)
-> =C2=A0{
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *ib =3D to_ingenic_drm_bridge(bridge-
-> >encoder);
-> +	struct ingenic_drm_bridge *ib =3D to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	ib->bus_cfg =3D bridge_state->output_bus_cfg;
-> =C2=A0
-> @@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device *dev, b=
-ool
-> has_components)
-> =C2=A0			drm_panel_put(panel);
-> =C2=A0		}
-> =C2=A0
-> -		ib =3D drmm_encoder_alloc(drm, struct ingenic_drm_bridge,
-> encoder,
-> -					NULL, DRM_MODE_ENCODER_DPI, NULL);
-> +		ib =3D devm_drm_bridge_alloc(dev, struct ingenic_drm_bridge,
-> bridge,
-> +					=C2=A0=C2=A0 &ingenic_drm_bridge_funcs);
-> =C2=A0		if (IS_ERR(ib)) {
-> =C2=A0			ret =3D PTR_ERR(ib);
-> +			dev_err(dev, "Failed to allocate bridge: %d\n", ret);
-> +			goto err_drvdata;
-> +		}
-> +
-> +		encoder =3D drmm_plain_encoder_alloc(drm, NULL,
-> +						=C2=A0=C2=A0 DRM_MODE_ENCODER_DPI,
-> NULL);
-> +		if (IS_ERR(encoder)) {
-> +			ret =3D PTR_ERR(encoder);
-> =C2=A0			dev_err(dev, "Failed to init encoder: %d\n", ret);
-> =C2=A0			goto err_drvdata;
-> =C2=A0		}
-> =C2=A0
-> -		encoder =3D &ib->encoder;
-> =C2=A0		encoder->possible_crtcs =3D drm_crtc_mask(&priv->crtc);
-> =C2=A0
-> =C2=A0		drm_encoder_helper_add(encoder,
-> &ingenic_drm_encoder_helper_funcs);
-> =C2=A0
-> -		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
-> =C2=A0		ib->next_bridge =3D bridge;
-> =C2=A0
-> +		ret =3D devm_drm_bridge_add(dev, &ib->bridge);
-> +		if (ret)
-> +			goto err_drvdata;
-> +
-> =C2=A0		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
-> =C2=A0					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> =C2=A0		if (ret) {
+>  arch/mips/ralink/mt7621.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
+> index ae7b8cfedd5f..2d10c74b13c1 100644
+> --- a/arch/mips/ralink/mt7621.c
+> +++ b/arch/mips/ralink/mt7621.c
+> @@ -65,7 +65,7 @@ static bool __init mt7621_addr_wraparound_test(phys_addr_t size)
+>  {
+>  	void __iomem *dm = (void __iomem *)KSEG1ADDR(&detect_magic);
+>  
+> -	if (CPHYSADDR(dm + size) >= MT7621_LOWMEM_MAX_SIZE)
+> +	if (CPHYSADDR(&detect_magic) + size >= MT7621_LOWMEM_MAX_SIZE)
+>  		return true;
+>  	__raw_writel(MT7621_MEM_TEST_PATTERN, dm);
+>  	if (__raw_readl(dm) != __raw_readl(dm + size))
+> -- 
+> 2.56.0
+
+applied to mips-next
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -1,89 +1,69 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=23.88.38.48
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794933583;
-	b=LSpN/i6PIlEYHBximFIOFgCez9kRjiC+X7fCAuv9tM8sqsRsq6mJjKzyIVYWjimdyAdw
-	 H9+n9Ziam75ZVli90W06kfRUpz+noBi4f0thPteSn+20+Z8KWRbEWkb0wAjGqPXEIEl8W
-	 qfDGUZqoFC+gktEi+xwjM3jJHp1wQebZPUTDcauz7219x0AsSsr1iIeukYIm9Fq5JX7Iv
-	 6n9BHuGJRq/hkwj1H8BXrR6x/p5QWxy6R4/X4pXWl2JZXyvcWEuUw/vcD67rU55LbwPaH
-	 BtUJzGOjhduQfUgaNZ6/BlgvZrXbrQi0RAQ8yaZw7fzUM/T3ZyY2HDAVaXvZxte06Sg==
+	t=1794933946;
+	b=eA3kavDCorSYuqN4/wWPxYNXHYhQlqg2CM9Gcrdz/pp1EcDl4e5jMLWQcVfWODCYaSNG
+	 u7i9340yZAyiOzLWEyG2Ad2VSvqeLj1kjJ/TCX48YEi9MKYPuu/hEIQc4TuTL3lWK/RBU
+	 Mvy1Rto6gvx9/dbV6H5dnohg9+cNkJpi/PePLt93uVU9T+onfCvYAUBo7H5u6qrzHLJBO
+	 kvYwjPH+hYqu+U1jpGA10iJ09z4kW91rLFPGHljdq99X1m7shBzDVr1cpy6EnzR+GuQ6h
+	 eJkFKD2PSWFa74MjHMR92jd8VvyAIoM5AHlrKl+Poj7poUHMmAv1f4uM8c7CZmtytbQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794933583;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=0Ulm0G03sCySHIhrtUq93+/xbXgYkzf0aPutKqa+d+g=;
-	b=nWllAMOOQrvgvwM0UE0LrnJKbK9K1eTBvjYl0zURaNFR1r45oCrzki5VvqivQYI34dh1
-	 upHRahky3khkOZhiBm/2ogbVDWiJf1tVJuCDxxvb5BsSmmq8H8yvr+BJvEKNYmYb2hm5c
-	 sR90Zuk3zflW+1EpmZtcG9mv9KvgpWzGNydVmDvPYE9dtYtyUcTZJiyhiH1U3KS+35aBd
-	 c9PFzmSnTHHlEXltMs7tGVU1Oz3gg339ocfsrfMX7vP6t74fe2fJ52KvBQe8W31KX7aME
-	 mk3RlUm7ZhpRALDFT9d4k92g10RXv3aYofWckRs2oV461v3XcvkAvSjW9iWyFF9Toag==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794933946;
+	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	bh=b7rA3f+5kZ4ohnzATtzU3IQFFAM5nwbvX+N6Ax6dlwg=;
+	b=jlK1ge7NJY+HvdouJcmCsV84fxe9wqM28gg0YpCjBhw+hX9UawbtilEToNddHJL3B/O5
+	 n50jfOzhUbHCD9AZRYqHl/IxFWViuSDDAYRf6OpQ0B/B9Ye5BwoXZT7aVjLhDP2tCbH1z
+	 ZMYHQ0kxlFA0ep+0U9HkgJ8xgRwgjYMV1g4HKOf5eCuEdJ5Zpjfp/hCcyfpWSs5KMS8aW
+	 QKYsILh76Be92GdcSkGUFDacMF5iryX3zkBK4rQiXAXopkEoBfUFfxaODnPVCYnk1fUq/
+	 FEIozEfiBBWLF/chqWoExPWC/pTTYcHHsTiyeZ0lOH/qb6C6k46IW1e4HB1b3PfRVRw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tJhgbQOc;
-	arc=none smtp.remote-ip=209.85.221.44
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=simonwunderlich.de;
+	spf=pass smtp.mailfrom=simonwunderlich.de;
+	dkim=pass header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=Ko6SikcA;
+	arc=none smtp.remote-ip=23.88.38.48
+Received: from mail.simonwunderlich.de (mail.simonwunderlich.de [23.88.38.48])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C077C606A33A
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 16:39:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C077C606A33A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D529606A31C;
+	Tue, 17 Nov 2026 16:45:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0D529606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=simonwunderlich.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=simonwunderlich.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tJhgbQOc
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4a42b34e930so740231f8f.2
-        for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 08:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794933581; x=1795538381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0Ulm0G03sCySHIhrtUq93+/xbXgYkzf0aPutKqa+d+g=;
-        b=tJhgbQOcgcJYobi/hzdSu+8Tt2qQ/2dZNmpPk4e+ZxI2eSqPJl8HZJp5LUzmlv3xZp
-         XIO81DoGsShLYYtFTH8aCx+OkEoU2mrdab+0hsyWgOqDSDyVjyR3136BgT9DqiKdloTW
-         sn7yJWqorQHQGl7zYdpYaSmMWxhjU4GjiSbB1Nx3169z69VHnec5I4nZAK3eyB0fr3P+
-         HqKVmEEs1hYmQ2JMg8EyU6rDtG411OwBCPVZiJjEa6TTzt702ckdWyfWIEBzcfQ8su3f
-         wcjVe1kS+wq7QXhWd4pu91uZEALN/Ae0dQNV+/HLRbh0fPZfjXJtT6ReBtJo1KAvufa5
-         DhVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794933581; x=1795538381;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=0Ulm0G03sCySHIhrtUq93+/xbXgYkzf0aPutKqa+d+g=;
-        b=kiwkwuC437to2h8g7NH7B0eGyODg6VKhmWYKqTggJeYMRDJJYmT4wwT4hds/B+0dnm
-         YQ9MXzOYx0ZaTo5PfHn7O5TlP6M2YvUhszRuBPrT94qT+yOxu3Jj0hZwHgFsrJrEICI/
-         3w7hrpvAnRLD/Ehxoh/JW4TJG0jXn6wOFWSRrjxzB7it1juswmO7lm4BK/+FKKdXa/M2
-         HQAUiQLS5fS05yaBZ7x/ietubJUdecpDA903b9YZGnr4bl/KE+DFczNx5fxczvyezR4w
-         SIsmXC1RYTCwLhIa8qSDvZm67FehyAbYHh+icd+l69rU7aWhqfljWH1d7q/ghz4TTezW
-         08iw==
-X-Gm-Message-State: APuU4Z/UhEpSFpoUNbJMQK+jrB2pyVhiZ4XegKghEzGDWCE6XOzydaV3
-	yMoOVAFvkhm1bD/yBrzOmewEVH5xJBBtInlWNLj3Pnz4ciup0p65RQtZ
-X-Gm-Gg: AZFdTZdgFi1Dyd+rRBeewKMYpu4+SvfxNLGOYHN0vhkQ30M4M6KEOJdwmG7d+yGGnuv
-	bXu6Ekk9KFkaO1OfaiFCl/MRoFZHk9h6oIMhRE2nqJTlEBdWvW0RuNNONckd9SxyDIiigf/PNYU
-	LgIJdloaVzgheoBs8MCquE8MqMK+qRGZP11z42TjkmxFqTtelce3y+BICT7Fqfbq1/a3DrDGpz2
-	Owy2//Q10PdjxaNh5/YGAKPAI4gJgvhKyL8wWTGg5G5CzWonHzmq+SVWTOFthnT82OdiCjcW0XB
-	WXifCExspiS/Soi+PyxoF2tQA1IfRfUMl14iMYgHKK+XFVt3m1uq3ExWfhZNoK0drh1dGc5CYTE
-	FpxIkxN27BLja/ITlN27g1IU6PCWjme6fDzmOqW/U1216AlUbyfxjV6Wjdp4q6aHo62qPhSv1iO
-	VUa8CC4lOeXX2NEE4i+PY6f3ExoA7X0n/Cp/SXTX1uwLpYjPwUkhgZccxW9d90zmGvQOuwf5IMY
-	YTf5qtE+633r0aaOZnoin+TOzumCNiG9uNe2inyJMviUf2tmrdMjslh2HwDZF2h4bQDT19QNljA
-	xNAdVO3G3RurM8+yItaJGm5aFIvYJkuu763mJ9+V+Yjk/xcte/iDvmW3Y3La6ieLdN31S4QqGFX
-	FNZmRSETBtis901EfzCSwZoBiOVPEDkSouXQFqwV3X+UCOoqM
-X-Received: by 2002:a05:6000:29d3:b0:48e:6a23:4a09 with SMTP id ffacd0b85a97d-49c731641bamr21234472f8f.54.1794933580972;
-        Tue, 17 Nov 2026 08:39:40 -0800 (PST)
-Received: from center.jhjvjihww5qejoy14qwv1cc4td.frax.internal.cloudapp.net ([131.189.143.225])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c5f78214dsm29292716f8f.25.2026.11.17.08.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 08:39:40 -0800 (PST)
-From: Orgad Shaneh <orgads@gmail.com>
-To: tsbogend@alpha.franken.de
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] MIPS: OCTEON: program L2C_CTL on CNF71XX too
-Date: Tue, 17 Nov 2026 16:39:39 +0000
-Message-ID: <20261117163939.3727065-1-orgads@gmail.com>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (2048-bit key, unprotected) header.d=simonwunderlich.de header.i=@simonwunderlich.de header.a=rsa-sha256 header.s=09092022 header.b=Ko6SikcA
+Received: by mail.simonwunderlich.de (Postfix) id 7F3C0FA039;
+	Tue, 17 Nov 2026 17:45:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=simonwunderlich.de;
+	s=09092022; t=1794933937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b7rA3f+5kZ4ohnzATtzU3IQFFAM5nwbvX+N6Ax6dlwg=;
+	b=Ko6SikcAnFscPuvoOl+h9YTtyPLrjZi7kEEQLf3A0K+Imfmwfx22QXglwfosAAXMVs2uB+
+	wATDpXH7/ggdyQl7iLTGzySpVWrVrrpEHIPzNwngA7mROUnuUHNR6TBAE2ergZLhyBnfVW
+	RUVYgW5+9rqEMt8F1MWf8qwR7UUjv4mQEdYnwQYT1gK7bv8HgC6qGoQ5UE+JSqaMnV+9u/
+	IFr7NZO8PUVfpea5ZWAqdymWRGwnyLYrrOZGIhfqvZhLgoQHt5WMGCeFgh6Ny4F+swoqAX
+	TyByTHT9kqL2KHViMHVKIOlVjIHFY9/qRhncM3rENORPktp5RHmDX+NjrIgG+w==
+From: Simon Wunderlich <sw@simonwunderlich.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org,
+ Hauke Mehrtens <hauke@hauke-m.de>, Aleksander Jan Bajkowski <olek2@wp.pl>,
+ John Crispin <john@phrozen.org>, Sebastien Decourriere <sebtx452@gmail.com>,
+ Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: mtd: Add lantiq,nor
+Date: Tue, 17 Nov 2026 17:45:36 +0100
+Message-ID: <5155531.6YUMPnJmAY@prime>
+In-Reply-To: <87fqwzn3tq.fsf@bootlin.com>
+References:
+ <20261114100608.3432120-1-sw@simonwunderlich.de>
+ <20261114100608.3432120-3-sw@simonwunderlich.de> <87fqwzn3tq.fsf@bootlin.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -93,40 +73,74 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Since commit bd978130307c ("MIPS: OCTEON: program L2C_CTL, not L2C_CFG,
-on OCTEON II"), cvmx_helper_initialize_packet_io_global() writes L2C_CTL
-instead of L2C_CFG, because L2C_CFG does not exist on OCTEON II and
-writing it hangs a CN6335. The test is OCTEON_CN6XXX, which leaves the
-CNF71XX - also an OCTEON II, as OCTEON_IS_OCTEON2() and the rest of this
-file treat it - writing the register that commit says is not there.
+On Tuesday, November 17, 2026 11:35:13=E2=80=AFAM Central European Standard=
+ Time=20
+Miquel Raynal wrote:
+> Hi Simon,
+>=20
+> On 14/11/2026 at 11:06:04 +01, Simon Wunderlich <sw@simonwunderlich.de>=20
+wrote:
+> > The NOR flash on the External Bus Unit (EBU) of Lantiq SoCs is handled
+> > by the lantiq-flash driver and used by danube_easy50712.dts, but its
+> > binding was never documented.
+> >=20
+> > Add a schema for it, including a new optional lantiq,ebu-swap-check
+> > property. Some boot loaders, like the BOSS bootmonitor on the bintec
+> > elmeg RS123 and RS353, enable the EBU's own endianness swapping for the
+> > flash chip select (EBU_BUSCON0 bit 30), and the flash then appears at
+> > its unswapped addresses. Whether that bit can be trusted depends on the
+> > SoC: it only works on VR9 (xRX200) from revision 1.2 and on AR10
+> > (xRX300), and Falcon has no such register. A board property instead of
+> > a list of SoC revisions in the driver was requested in the review of an
+> > earlier attempt at this. The property does not state the bit's value,
+> > so a board keeps working with either boot loader setting.
+> >=20
+> > Link:
+> > https://lists.infradead.org/pipermail/linux-mtd/2017-January/071749.html
+> > Link:
+> > https://lists.infradead.org/pipermail/linux-mtd/2017-January/071818.html
+> > Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+>=20
+> Let's be honest, I am not very familiar with that MTD area and all the
+> legacy content is has, but would it be a lot more work to add lantiq as
+> a physmap variant? I don't like much the fact that you describe the
+> flash without describing the EBU. Physmap versions typically are matched
+> using the more specific compatible (lantiq,ebu?) and the cfi-flash
+> fallback. All your tweaks are EBU/machine/integration details, not
+> related to the flash itself.
+>=20
+> One consequence of not modeling the controller is your need for
+> EXPORT_SYMBOL_GPL(ltq_ebu_membase) in patch 3/5, which is quite a hack.
+>=20
+> Thanks,
+> Miqu=C3=A8l
 
-Use OCTEON_IS_OCTEON2(). OCTEON III (CN7XXX) still takes the L2C_CFG
-path, as before: I have no such part and do not know which register it
-wants.
+Hi Miqu=C3=A8l,
 
-Fixes: bd978130307c ("MIPS: OCTEON: program L2C_CTL, not L2C_CFG, on OCTEON II")
-Signed-off-by: Orgad Shaneh <orgads@gmail.com>
----
-RESEND: bd978130307c is in v7.4-rc1 now; this still applies there
-and to mips-next. No change but the Assisted-by tag, now dropped (an
-LLM helped write this patch).
-v1: https://lore.kernel.org/all/20261019034918.3805764-1-orgads@gmail.com/
+thank you for applying patch 1!
 
-Found by the Sashiko review bot on the original series. By inspection
-only: I have no CNF71XX board to test on.
+About physmap: you were right, and this was actually a great hint. I tested=
+ on=20
+the my RS123: with the EBU swap that its boot loader enables, the flash is=
+=20
+simply a plain CFI flash. With compatible =3D "cfi-flash" and the generic p=
+hysmap=20
+driver, probing, reads (identical to what lantiq-flash reads, unaligned rea=
+ds=20
+included), erase and write all work. So this board needs no lantiq-flash ch=
+ange=20
+at all, and I'm dropping patches 2 to 5. There won't be a v2.
 
-diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-index 107b1be..c02448b 100644
---- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
-+++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-@@ -1028,7 +1028,7 @@ int cvmx_helper_initialize_packet_io_global(void)
- 	 * to the cores. This avoids conditions where IO blocks might
- 	 * be starved under very high L2 loads.
- 	 */
--	if (OCTEON_IS_MODEL(OCTEON_CN6XXX)) {
-+	if (OCTEON_IS_OCTEON2()) {
- 		union cvmx_l2c_ctl l2c_ctl;
- 
- 		l2c_ctl.u64 = cvmx_read_csr(CVMX_L2C_CTL);
+Turning lantiq-flash itself into a physmap variant for the boards with the=
+=20
+classic U-Boot setup would probably be the cleaner model, but I don't have=
+=20
+such a board to test it, so I'm leaving that alone for now.
+
+Thank you again!
+     Simon
+
+

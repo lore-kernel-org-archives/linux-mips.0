@@ -1,49 +1,43 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794932775;
-	b=dEvt/KqFyGGfKew+pA5YJ0e1pWJbDmerxurHXI4cy5ObCykY+7N/Fu6m2/NJsjllt3sk
-	 +JmDAbbM//m7h3FXFhZKljvfA//FSKGeCgUHWUprW3UfzHgQs0dFv5bWCRH4Muv4rmoT3
-	 +c8tfqlRyajfsZoUXVschj6qbNetCahZvCJwCm6xLAEWdunudpyZ4qxOQm4//WWoTzdTH
-	 2FO4LuEKTMtFZOLYlwbyg4W4V9Jl8K3+x9l3RWHVmOq+CN1JfeVuEzGDyig+zPfn6gdrh
-	 vnziJV1NjxhYftdkJvSFWEM4MY9dXy1XyyjUaxR3MhVaKialzEP0R/5NP08mPeJX8YA==
+	t=1794932886;
+	b=bwMtpHY4udRro4CYpSRoSdWqTo/OuxqMBEvZcf8bU4UitK/VH0TryXBvo2ziFGGPUF72
+	 EAA92w4MlfGOyoJXSYwnxqHmRdVPxO8CwAo9W/5RXfSd0sU6ph+ywuxT4p8rp6+9aJrbh
+	 4Yj5spabMt50r2pS80NI+CSWKQPbxajndaLCdyPl5bnk59+bcPMaI0gUjWcNQ6M8MAyUm
+	 u8oXUocuhxKgPqorVrZmjFG6fvKgU8iMQLEuWKRWkMxB/ghhfNMKSDcLbsFRTsxJX9XW5
+	 VHLMAGb0GkxW+9XKAb4IsWdZ3qUGXWCwqwv30pJYNTzqybtO7A1xpOuHXntEWb35YTQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794932775;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=a4gjRdu3o+vVl5H2q8lXRC3wVpAmReSzbcYychrcUo8=;
-	b=n5z/y0ipaHvTXFLFoXT1mEdA2veKh+0YMkBQpARtJSw9rgvfuzj6MhS8Ligk+ZrWw6fq
-	 SVAmPfl+RP8jCYsSQBgR6ZBRlzv7NLam+AnoHoWaGRyvVyU7ohB818f2C9jvXRDAFcfqc
-	 Ub3Q+XjRl70eNYNPfVCdLVFz6Ksob6MoQTcYMnMWKmevpvBXzqYvy6BzneyOXtR28sC9G
-	 Dio17Osygp+kN5MvhqB77d1WKrJ0ha6nndmRuS2Z0VrWubsYBY5xg6D7E+fP1sDJAX73U
-	 ZVIuOpT7t4xgUWDlGIlzTNeQnn5er7uHiXdw9KkWIbsgO/GPHvPjjuTcDJeQJxNwnXA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794932886;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=IbqtQ2iXuxj+cm+Qwf97VKDkQ5sBXAh3GDWM+Y5+8nU=;
+	b=tv2zGOcLmf/FvfrkOfY+V+YdI2c1YM5TC7Hn5Sn/YY525/7MRi2jiBs5lu+qeUC0c8mP
+	 2rb07H9H7Kdno+2dWdjB6KjlGLmCn6Yj+HXqLxkGUAB8E8sBs86Ql9xZXjw+CFgzLMm3p
+	 51RbZ/Kzt7bWkIh47PsyYGBi14mqWsSzzNOPdBHrprc10GUY9t06FMXBxALfvmi8ZBmuC
+	 QA74r+f7npb5gb1yoHfBTcPEpC2z65uHG0elC5SDIBBjJBr9O31ZfMrGIc4OLmSwNS8Sx
+	 yhz8K4QZCYmwGRomY5fgcCEqkBCDXxMCAwoMYIYEnoWLzxYE/9tmPns53BeDNKcPqxQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A881606A31C;
-	Tue, 17 Nov 2026 16:26:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4A881606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <c9f9b41ff36254ce0dd968ed190e265b1d2eb906.camel@crapouillou.net>
-Subject: Re: [PATCH 09/10] dmaengine: jz4780: Fix descriptor cleanup on
- hwdesc setup failure
-From: Paul Cercueil <paul@crapouillou.net>
-To: Lee Jones <lee@kernel.org>, Vinod Koul <vkoul@kernel.org>, Frank Li	
- <Frank.Li@kernel.org>, Alex Smith <alex@alex-smith.me.uk>, Zubair Lutfullah
- Kakakhel <Zubair.Kakakhel@imgtec.com>, linux-mips@vger.kernel.org,
- dmaengine@vger.kernel.org, 	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Date: Tue, 17 Nov 2026 17:26:01 +0100
-In-Reply-To: <20261111215349.1983909-10-lee@kernel.org>
-References: <20261111215349.1983909-1-lee@kernel.org>
-	 <20261111215349.1983909-10-lee@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	dmarc=none header.from=alpha.franken.de;
+	spf=pass smtp.mailfrom=alpha.franken.de;
+	arc=none smtp.remote-ip=193.175.24.41
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579DE606A32F;
+	Tue, 17 Nov 2026 16:28:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 579DE606A32F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1xTM2N-0004s9-00; Tue, 17 Nov 2026 17:28:03 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 3B1DBC05C3; Tue, 17 Nov 2026 17:12:47 +0100 (CET)
+Date: Tue, 17 Nov 2026 17:12:47 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Orgad Shaneh <orgads@gmail.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org
+Subject: Re: [PATCH] MIPS: OCTEON: compute the FDT CRC in device_tree_init()
+Message-ID: <avx8_1ffn4OlS4YD@alpha.franken.de>
+References: <20261027060214.2687878-1-orgads@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -53,71 +47,52 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261027060214.2687878-1-orgads@gmail.com>
 
-Hi Lee,
-
-Le mercredi 11 novembre 2026 =C3=A0 21:52 +0000, Lee Jones a =C3=A9crit=C2=
-=A0:
-> When jz4780_dma_setup_hwdesc() fails in jz4780_dma_prep_slave_sg() or
-> jz4780_dma_prep_dma_cyclic(), the error paths pass &jzchan->desc->vdesc
-> to jz4780_dma_desc_free() instead of the newly allocated &desc->vdesc.
-> This leaks the newly allocated descriptor and either dereferences NULL
-> when jzchan->desc is NULL or frees the currently active descriptor while
-> it is still in flight.=C2=A0 Furthermore, jz4780_dma_desc_free() derives
-> jzchan from vdesc->tx.chan, which is not yet initialised before
-> vchan_tx_prep() is called.
->=20
-> Initialise desc->vdesc.tx.chan in jz4780_dma_desc_alloc() and pass
-> &desc->vdesc to jz4780_dma_desc_free() in the preparation error paths.
->=20
-> Fixes: d894fc6046fe ("dmaengine: jz4780: add driver for the Ingenic JZ478=
-0 DMA
-> controller")
-> Closes: https://sashiko.dev/#/bug/linux-b39121ef-5ffb-401a-9d04-0afccd467=
-bde
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lee Jones <lee@kernel.org>
-
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-
-Cheers,
--Paul
-
+On Tue, Oct 27, 2026 at 06:02:14AM +0000, Orgad Shaneh wrote:
+> device_tree_init() assigns initial_boot_params directly and never calls
+> early_init_dt_verify(), so of_fdt_crc32 stays 0 and every boot logs
+> 
+>   OF: fdt: not creating '/sys/firmware/fdt': CRC check failed
+> 
+> whether the blob was passed by the bootloader, appended or built in.
+> Call early_init_dt_verify() once the prune and the MAC address fill-in
+> are done with the blob, so the CRC matches what of_fdt_raw_init() reads
+> back. x86 had the same omission, fixed by commit 628df9dc5ad8
+> ("x86/devicetree: Initialize device tree before using it").
+> 
+> Fixes: 08d53aa58cb1 ("of/fdt: export fdt blob as /sys/firmware/fdt")
+> Assisted-by: LLM
+> Signed-off-by: Orgad Shaneh <orgads@gmail.com>
 > ---
-> =C2=A0drivers/dma/dma-jz4780.c | 5 +++--
-> =C2=A01 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-> index ac2094e65ecf..c3974c825ba7 100644
-> --- a/drivers/dma/dma-jz4780.c
-> +++ b/drivers/dma/dma-jz4780.c
-> @@ -248,6 +248,7 @@ jz4780_dma_desc_alloc(struct jz4780_dma_chan *jzchan,
-> unsigned int count,
-> =C2=A0		return NULL;
-> =C2=A0	}
-> =C2=A0
-> +	desc->vdesc.tx.chan =3D &jzchan->vchan.chan;
-> =C2=A0	desc->count =3D count;
-> =C2=A0	desc->type =3D type;
-> =C2=A0
-> @@ -379,7 +380,7 @@ static struct dma_async_tx_descriptor
-> *jz4780_dma_prep_slave_sg(
-> =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sg_dma_len(&sgl[i]),
-> =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 direction);
-> =C2=A0		if (err < 0) {
-> -			jz4780_dma_desc_free(&jzchan->desc->vdesc);
-> +			jz4780_dma_desc_free(&desc->vdesc);
-> =C2=A0			return NULL;
-> =C2=A0		}
-> =C2=A0
-> @@ -426,7 +427,7 @@ static struct dma_async_tx_descriptor
-> *jz4780_dma_prep_dma_cyclic(
-> =C2=A0		err =3D jz4780_dma_setup_hwdesc(jzchan, &desc->desc[i],
-> buf_addr,
-> =C2=A0					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 period_len, direction);
-> =C2=A0		if (err < 0) {
-> -			jz4780_dma_desc_free(&jzchan->desc->vdesc);
-> +			jz4780_dma_desc_free(&desc->vdesc);
-> =C2=A0			return NULL;
-> =C2=A0		}
-> =C2=A0
+> Tested on a CN6335 board (internal device tree, Cavium U-Boot 1.1.1),
+> in a 7.3-based tree: the warning is gone and /sys/firmware/fdt holds the
+> 11551-byte blob. mips-next with cavium_octeon_defconfig prints the
+> warning on the same board without this patch.
+> 
+>  arch/mips/cavium-octeon/setup.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+> index 7497be7b9431..fa8273799b94 100644
+> --- a/arch/mips/cavium-octeon/setup.c
+> +++ b/arch/mips/cavium-octeon/setup.c
+> @@ -1213,6 +1213,8 @@ void __init device_tree_init(void)
+>  	}
+>  	if (fill_mac)
+>  		octeon_fill_mac_addresses();
+> +	/* After the edits above, so the CRC covers the final blob */
+> +	early_init_dt_verify(initial_boot_params, __pa(initial_boot_params));
+>  	unflatten_and_copy_device_tree();
+>  	init_octeon_system_type();
+>  }
+
+I've applied https://lore.kernel.org/all/20261025192918.586220-1-carl.smith@alliedtelesis.co.nz/ to mips-next, which is doing the same.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

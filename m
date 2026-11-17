@@ -1,51 +1,63 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=5.135.140.105
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794906602;
-	b=tA1eddsg2mHuq12HNNcBNSOq1tnXlFh5sRZCiIy6VORQoD0T4thYqAr1mKkb9pNLF/d/
-	 MehQE6mrAt7hrXNUZMbsHCsd2VzqzLJkLU4/AOIZU+Hv3xgabXFytgUAqsvhhnY7DPpnP
-	 NroCaYiSkSTuEiSXprO4OImMPfcMFj0MDxmnNRP8lTBw+qxKrKwa+WvM9P+wcJOkLNRuA
-	 bCF5LR1r8Ov3lcIdVbusK3cvaSOzE0R05y5HKflHMW59c4Lb9VjmtfNySg0Ovm2mEQufo
-	 3cr/jcI5/+1VPj84ybk7/rkuBKJl9ysarepYs+iDhM5nsK1JddKZEnygFjBBUucH2Bw==
+	t=1794909085;
+	b=psur8lSVgwcimu+09EmbcI6mKdfTq6lnmDs+Q1Mk5/2fbyWkbzfKbXe4Lf9gKz2coYlW
+	 CgeMFOGpRYgtopnf7iwUEpu8UKrOIhLGIzeaAcQ9ZOefghjcR45d2ZCAWQUzqoLoBG/fl
+	 zgpO4gXWZKlUeThiiyCHQZKCwnRVQzBVOUZ51u2Y7SPxLV0YCRlKTjc2CAvZeMuC8Sw7T
+	 U93U2VwmucpQlmZuoG+YfhgjDo7116kzrHCy/zSYGLpWFm1POqUg656zalLtKRAzmN5es
+	 v09guc6zAt2G5sjBeZ36vXEHD1M7aUs6lnP5ERurBHo644HOKUr7hzKwpeB0/2Wa6UQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794906602;
-	h=DMARC-Filter:DKIM-Signature:Date:Message-Id:X-Original-From:
-	 Mime-Version:Received:Content-Transfer-Encoding:Cc:From:Subject:
-	 Content-Type:References:To:X-Lms-Return-Path:In-Reply-To:X-Mailer;
-	bh=Hx9ycWhbTIn7Xgvg5k3iHKhms/avTNC2TMXeb54Q1lE=;
-	b=oobTg3qldZAp27qCtYOde8Lt+IgRZ6xgTjMSs3v/B13oB0rtLLI1UiV8nWqZgQC3PWJP
-	 7KTrXHuP0MO1+++xHVfc+gXqAVO6MUG1R+tNd6W1Fr9DjdUje/1OsUSkqB5ZtNtMY1dDB
-	 7b4q+IxcjMw3ajl3FZsNlLX6u+r6yWSOCAMCbJkEXL8qycBtXHmfZnuai8GxfA2Qv5N9s
-	 UZbCejEqq2G89O5lZT0mMZhqjTPnjkCwf+ZKMpaklRjUwg/9OvAIdUnceIM4lZ2bxs019
-	 KKE2h6D2KhQmhPNXqBy2amgm1hOJQPIUlFXn7mz3SEes4xdfZKegiKUPo7M8SCdlmgA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794909085;
+	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-Id:MIME-Version:Content-Transfer-Encoding:
+	 X-Last-TLS-Session-Version;
+	bh=8QGRrjtcy7R8vfKCbp56fKR8ZrLT6epmRKadFazehRA=;
+	b=BInPFUbAmQzdGvRvm2omN0RdPT0jBDPTZbOUaWMYXLX7tZBkgVlab7gPKTv1oM1XWF4P
+	 FLugcm/nsxCj03bBamRbNr2K+YyP0sT9bS/QO5geZOIbYaoXK4E9mJRXKo1gOkg60km5w
+	 8i5DkPbMQy9PcG975j7PS6wTb86ON5EddO/oErJZ8DHsBUHx0vcUKOFG3NEFdDH4KGjZK
+	 pVESJ9HZF4YFbHnny6fGlk39RDjgrQa7/hBVvYUyob6IeOEQAyf9oh3Fzq5QkRodq/B1v
+	 /jrKhDsBy9cGUDb/biGkHHCiCOfde01eLTLQOwRfRMBR27m67k4nK2prv6I5JPmnScw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=oss.cipunited.com;
-	spf=pass smtp.mailfrom=oss.cipunited.com;
-	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=jGs11Nw3;
-	arc=none smtp.remote-ip=209.127.231.42
-Received: from va-2-42.ptr.blmpb.com (va-2-42.ptr.blmpb.com [209.127.231.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=cjdns.fr;
+	spf=pass smtp.mailfrom=cjdns.fr;
+	dkim=pass header.d=cjdns.fr header.i=@cjdns.fr header.a=rsa-sha256 header.s=dkim header.b=a+ZMPlz2;
+	arc=none smtp.remote-ip=5.135.140.105
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2204606A332
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 09:10:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E2204606A332
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341D7606A31C;
+	Tue, 17 Nov 2026 09:51:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 341D7606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=jGs11Nw3
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1794906591;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=Hx9ycWhbTIn7Xgvg5k3iHKhms/avTNC2TMXeb54Q1lE=;
- b=jGs11Nw3eJ1S7u9WnjMBZmmlQ29/7OC5OFX/a/xK53RPHKOe9Hp++LPh8BpAG+lVZnjTce
- h4bikYiSAyvyKi12ahHVzRV5HqSAoSiZBWNesXhAsSqJnqtITmSduRXkwccX1WHgm0czyd
- Rslpg39C4ZtMuGIoQ0LFJsNyGTEACi0uU7L1NMjevTVEdJisSnH+hPsz4e2EqMPG6QJuQt
- dfI0liHVqos2oLWRDsgKTjFtGKtuZuwRjdJHtIy3EuJbX8+fKW1MafneC6CWPpHfLFAx1t
- J/fgSWHd4i++fhYLHo9I6iQHDdBhOEkKSW6+Cfn+zY+iCvOmlAvF4bRJn98YpA==
-Date: Tue, 17 Nov 2026 17:06:49 +0800
-Message-Id: <20261117-mips-ls7a-wdt-v3-7-2e88f7e1d6c5@oss.cipunited.com>
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
+	dkim=pass (2048-bit key, unprotected) header.d=cjdns.fr header.i=@cjdns.fr header.a=rsa-sha256 header.s=dkim header.b=a+ZMPlz2
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 61254518ACC;
+	Tue, 17 Nov 2026 10:51:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1794909082; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=8QGRrjtcy7R8vfKCbp56fKR8ZrLT6epmRKadFazehRA=;
+	b=a+ZMPlz2loQmIdRt40DR2Mo4KxW1D4Ol8rS+LL8GH1DoWKtLYBob++YZQ+FGatUdAFBGoy
+	JqCkSgcTUmeS2SH2cuzbkZfSfYt/p7oSWtQ9GS6Og84wztxv52Ih+KNmcvMYQMlFSP9/nT
+	uIRkJK1x5ZuiU16B9tGW5nrEW2/uECy7p75tzACr1LvBvF+7kjUoAqXUPUBrkKLlak0ZzH
+	iuYlZuud6+TnVCxWFskzlGYCRd0j1Sw3s6TPEHpodBBCKsCAzx52MDDkF4LwO1L9rib5Y0
+	aQ4kU7Vt0My0ETwPwk2xUHxciKLn4mKAbyInbrmYRH5iC9s89G8Tx7lRKfdghA==
+From: Caleb James DeLisle <cjd@cjdns.fr>
+To: linux-mips@vger.kernel.org
+Cc: conor+dt@kernel.org,
+	daniel.lezcano@kernel.org,
+	devicetree@vger.kernel.org,
+	krzk+dt@kernel.org,
+	linux-kernel@vger.kernel.org,
+	naseefkm@gmail.com,
+	robh@kernel.org,
+	tglx@kernel.org,
+	grandmaster@al2klimov.de,
+	Caleb James DeLisle <cjd@cjdns.fr>
+Subject: [PATCH v12 0/5] clocksource/timer-econet-en751221: Support irq number per timer
+Date: Tue, 17 Nov 2026 09:51:12 +0000
+Message-Id: <20261117095117.173316-1-cjd@cjdns.fr>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -54,175 +66,95 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Received: from [127.0.1.1] ([171.15.157.139]) by smtp.feishu.cn with ESMTPS; Tue, 17 Nov 2026 17:09:48 +0800
-Content-Transfer-Encoding: 7bit
-Cc: "Rong Zhang" <i@rong.moe>, "Yao Zi" <me@ziyao.cc>, 
-	"Icenowy Zheng" <uwu@icenowy.me>, 
-	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
-	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
-	<linux-kernel@vger.kernel.org>, 
-	"Rong Zhang" <rongrong@oss.cipunited.com>
-From: "Rong Zhang" <rongrong@oss.cipunited.com>
-Subject: [PATCH v3 7/7] MIPS: loongson3_defconfig: Enable LOONGSON1_WDT by default
-Content-Type: text/plain; charset=UTF-8
-References: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
-To: "Keguang Zhang" <keguang.zhang@gmail.com>, 
-	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
-	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
-	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
-	"Conor Dooley" <conor+dt@kernel.org>, 
-	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-X-Lms-Return-Path: <lba+26afc19dd+9d2bd8+vger.kernel.org+rongrong@oss.cipunited.com>
-In-Reply-To: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
-X-Mailer: b4 0.17-dev-ce4c1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-The Loongson-7A has a watchdog compatible with the one on Loongson
-2K0300. With the relevant node added to ls7a-pch.dtsi, enable
-LOONGSON1_WDT in defconfig to make it work by default.
+This timer appears on both the EcoNet EN751221 (34Kc) and on the
+EN751627 / EN7528 (1004Kc) SoCs. On the 34Kc the interrupt controller
+uses a percpu interrupt while on the others it uses an individual
+IRQ number for each CPU timer. Add support for EN751627 and EN7528.
+Add support for IRQ number for each CPU timer under the
+econet,en751627-timer compatible.
 
-This basically mirrors commit 5e73ad3ffceb ("MIPS: Loongson1: Add
-watchdog support for Loongson1 board") except that the driver is built
-as a module, since some LOONGSON64 platforms are not LS7A-based.
+Changes since v11:
+* Update to tip/timers/core Nov 1, see base-commit.
 
-The defconfig file is outdated, so this also refreshes it with
-savedefconfig.
+Changes since v10:
+* Unconditionally setup clock_event_device for all possible CPUs so
+that error log will not access uninitialized data. Identified by:
+Link: https://sashiko.dev/#/patchset/20261015145331.453837-1-cjd@cjdns.fr?part=4
 
-Tested on Loongson-LS3A4000-7A1000-NUC-SE and Lenovo KaiTian M530Z.
+Changes since v9:
+* Use dynamic size irq and iomem block arrays based on DT
+* Update commit message explicating that CPU hotplug is intentionally
+not supported
 
-Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
----
- arch/mips/configs/loongson3_defconfig | 54 ++++++-----------------------------
- 1 file changed, 9 insertions(+), 45 deletions(-)
+Changes since v8:
+* Actually git commit changes from v7. Guys, I sincerely apologize for
+the spam.
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 12cb1a6a1360..00c591f21938 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -66,7 +66,6 @@ CONFIG_NF_CONNTRACK_SNMP=m
- CONFIG_NF_TABLES=m
- CONFIG_NFT_CT=m
- CONFIG_NFT_NAT=m
--CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
- CONFIG_NETFILTER_XT_TARGET_MARK=m
- CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
-@@ -91,33 +90,11 @@ CONFIG_NF_TABLES_ARP=y
- CONFIG_IP_NF_IPTABLES=m
- CONFIG_IP_NF_MATCH_AH=m
- CONFIG_IP_NF_MATCH_ECN=m
--CONFIG_IP_NF_MATCH_RPFILTER=m
- CONFIG_IP_NF_MATCH_TTL=m
--CONFIG_IP_NF_FILTER=m
--CONFIG_IP_NF_TARGET_REJECT=m
--CONFIG_IP_NF_NAT=m
--CONFIG_IP_NF_TARGET_MASQUERADE=m
--CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_ECN=m
--CONFIG_IP_NF_TARGET_TTL=m
--CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_SECURITY=m
--CONFIG_IP_NF_ARPFILTER=m
--CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NF_TABLES_IPV6=y
- CONFIG_IP6_NF_IPTABLES=m
--CONFIG_IP6_NF_MATCH_RPFILTER=m
--CONFIG_IP6_NF_FILTER=m
--CONFIG_IP6_NF_TARGET_REJECT=m
--CONFIG_IP6_NF_MANGLE=m
--CONFIG_IP6_NF_RAW=m
--CONFIG_IP6_NF_SECURITY=m
--CONFIG_IP6_NF_NAT=m
--CONFIG_IP6_NF_TARGET_MASQUERADE=m
- CONFIG_NF_TABLES_BRIDGE=m
- CONFIG_BRIDGE_NF_EBTABLES=m
--CONFIG_BRIDGE_EBT_T_FILTER=m
--CONFIG_BRIDGE_EBT_T_NAT=m
- CONFIG_IP_SCTP=m
- CONFIG_L2TP=m
- CONFIG_BRIDGE=m
-@@ -189,7 +166,6 @@ CONFIG_VIRTIO_NET=m
- # CONFIG_NET_VENDOR_ATHEROS is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_CHELSIO is not set
--# CONFIG_NET_VENDOR_CIRRUS is not set
- # CONFIG_NET_VENDOR_CISCO is not set
- # CONFIG_NET_VENDOR_DEC is not set
- # CONFIG_NET_VENDOR_DLINK is not set
-@@ -250,9 +226,9 @@ CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_8250_NR_UARTS=16
- CONFIG_SERIAL_8250_EXTENDED=y
--CONFIG_SERIAL_8250_MANY_PORTS=y
- CONFIG_SERIAL_8250_SHARE_IRQ=y
- CONFIG_SERIAL_8250_RSA=y
-+CONFIG_SERIAL_8250_MANY_PORTS=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_NONSTANDARD=y
- CONFIG_VIRTIO_CONSOLE=y
-@@ -263,11 +239,14 @@ CONFIG_GPIO_LOONGSON=y
- CONFIG_SENSORS_LM75=m
- CONFIG_SENSORS_LM93=m
- CONFIG_SENSORS_W83627HF=m
-+CONFIG_WATCHDOG=y
-+CONFIG_WATCHDOG_NOWAYOUT=y
-+CONFIG_WATCHDOG_SYSFS=y
-+CONFIG_LOONGSON1_WDT=m
- CONFIG_MEDIA_SUPPORT=m
- CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
- CONFIG_DRM=y
--CONFIG_DRM_RADEON=m
- CONFIG_DRM_AMDGPU=m
- CONFIG_DRM_AMDGPU_SI=y
- CONFIG_DRM_AMDGPU_CIK=y
-@@ -276,6 +255,7 @@ CONFIG_DRM_AMD_ACP=y
- CONFIG_DRM_AMD_DC_SI=y
- CONFIG_DRM_AST=m
- CONFIG_DRM_QXL=y
-+CONFIG_DRM_RADEON=m
- CONFIG_DRM_VIRTIO_GPU=y
- CONFIG_FB=y
- CONFIG_FB_RADEON=y
-@@ -288,27 +268,12 @@ CONFIG_SND=m
- CONFIG_SND_SEQUENCER=m
- CONFIG_SND_SEQ_DUMMY=m
- # CONFIG_SND_ISA is not set
--CONFIG_SND_HDA_INTEL=m
- CONFIG_SND_HDA_PATCH_LOADER=y
--CONFIG_SND_HDA_CODEC_REALTEK=m
--CONFIG_SND_HDA_CODEC_REALTEK_LIB=m
--CONFIG_SND_HDA_CODEC_ALC260=m
--CONFIG_SND_HDA_CODEC_ALC262=m
--CONFIG_SND_HDA_CODEC_ALC268=m
--CONFIG_SND_HDA_CODEC_ALC269=m
--CONFIG_SND_HDA_CODEC_ALC662=m
--CONFIG_SND_HDA_CODEC_ALC680=m
--CONFIG_SND_HDA_CODEC_ALC861=m
--CONFIG_SND_HDA_CODEC_ALC861VD=m
--CONFIG_SND_HDA_CODEC_ALC880=m
--CONFIG_SND_HDA_CODEC_ALC882=m
-+CONFIG_SND_HDA_INTEL=m
- CONFIG_SND_HDA_CODEC_SIGMATEL=m
--CONFIG_SND_HDA_CODEC_HDMI=m
--CONFIG_SND_HDA_CODEC_HDMI_GENERIC=m
--CONFIG_SND_HDA_CODEC_HDMI_INTEL=m
--CONFIG_SND_HDA_CODEC_HDMI_ATI=m
--CONFIG_SND_HDA_CODEC_HDMI_NVIDIA=m
- CONFIG_SND_HDA_CODEC_CONEXANT=m
-+CONFIG_SND_HDA_CODEC_REALTEK=m
-+CONFIG_SND_HDA_CODEC_HDMI=m
- # CONFIG_SND_USB is not set
- CONFIG_HIDRAW=y
- CONFIG_HID_A4TECH=m
-@@ -406,7 +371,6 @@ CONFIG_PRINTK_TIME=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_FS=y
--# CONFIG_SCHED_DEBUG is not set
- CONFIG_FUNCTION_TRACER=y
- CONFIG_FTRACE_SYSCALLS=y
- CONFIG_CMDLINE_BOOL=y
+Changes since v7:
+* Use %zd for logging with ARRAY_SIZE to avoid compiler errors if
+test-compiling on 64 bit.
 
+Changes since v6:
+* Rebase to tip/timers/core (base-commit below)
+
+Changes since v5:
+* Integrate patch fix refcount leak from:
+Link: https://lore.kernel.org/linux-mips/20260526184105.18962-3-grandmaster@al2klimov.de/
+* NULL econet_timer.membase after unmapping
+* NULL check dev->event_handler in case clockevents_config_and_register
+  failed to fully register.
+* v5: https://lore.kernel.org/linux-mips/20260516233943.49502-1-cjd@cjdns.fr/
+
+Changes from v4:
+* Fixed incorrect compatible in DT schema
+* Bracing in out_irq_free if statement
+* I did not move cpuhp_setup_state past the point of no return
+* v4: https://lore.kernel.org/linux-mips/20260516215720.4160831-1-cjd@cjdns.fr
+
+Changes from v3:
+* off-by-one in out_irq_free
+* Gracefully fail if too many address resources are provided in the DT
+* Allow fewer actual timers than num_possible_cpus, as long as they
+never start
+* v3: https://lore.kernel.org/linux-mips/20260516182648.3987792-1-cjd@cjdns.fr
+
+v3 note:
+
+I decided to take this patchset in a slightly different direction from
+v2. There is a certain amount of initialization that once it has run,
+it cannot be reverted in case of error. The original driver init was a
+mixture of revertible and non-revertible code which made it too easy
+for code which is designed with best practices in mind to in fact
+introduce a bug. Therefore I start by making the init process more
+legible but without any business logic changes, then fix a race
+condition by keeping IRQ disabled until after cevt is setup, then
+finally add non-percpu IRQ support.
+
+* v2: https://lore.kernel.org/linux-mips/20260514000601.3430262-1-cjd@cjdns.fr
+
+Changes from v1:
+* Split changes over 3 refactoring patches + main patch
+* Remove driver discussion from dt commit message
+* v1: https://lore.kernel.org/linux-mips/20260416175101.958073-1-cjd@cjdns.fr/
+
+Caleb James DeLisle (5):
+  dt-bindings: timer: econet: Update EN751627 for multi-IRQ
+  clocksource/timer-econet-en751221: Init teardown on error if possible
+  clocksource/timer-econet-en751221: Disable IRQ until cevt registered
+  clocksource/timer-econet-en751221: Support EN751627 without percpu IRQ
+  clocksource/timer-econet-en751221: Do not use NR_CPUS for resource
+    array size
+
+ .../bindings/timer/econet,en751221-timer.yaml |  31 ++-
+ drivers/clocksource/timer-econet-en751221.c   | 206 ++++++++++++++----
+ 2 files changed, 181 insertions(+), 56 deletions(-)
+
+
+base-commit: 0359ecff58853a491dd0f09792fea8e87235ae06
 -- 
-2.55.0
+2.39.5
+

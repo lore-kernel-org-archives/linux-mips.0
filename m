@@ -1,43 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794932888;
-	b=yRjKjig1rSelwqbHcnR5x4joR+vGQst+uY/UJdNjf/ykuGZO5TMcrDAJmjGczDsVz09r
-	 NIDAsBZqbcI7YYhMEUxltu7olI50X8eufzEVyCzUUuUvfuA2Uo9har9PyBUGgPuoII27N
-	 NaWr5L1KfdQdIfOWj4O/wWXcvpyR1+r73oCvjumPcXiH05ygJrxsJppWOU2Of3i6D4CRf
-	 L1tZHqOaxsP+wR7ARKPbYYSMXwkfQmyqUu2p3AEj6/SpHw45jzqFydlbXhAmLxPBU3QVa
-	 h3wMcS2Aa2XmJdIeqyypBadATbwt3hN+GWVFF3jX9ICe7d1j8+2q8hb6Ufu402IZ1tw==
+	t=1794933497;
+	b=IjZF14+8zT0swQZe0eALJ9wsU5USTjtBplSOeVHxjNvmWdrm7ImsHRB5k4GSdQqtZ1Ez
+	 Gm8u8wmCJG28Vo7ilLx4sARNiS4ItDogVQnGQ1eKzP++Ui29MjjShnQ3yKxFRlRWpRb7f
+	 K5RcPx9/bEdcAov+zyK3fAzmCd3laSuCn/SLjtj6j+XqpO/7vMVMc9+Ch96zjYVq4ZaD1
+	 Ehvk7AiMBiFKy9DgNZS9tv03y+xsAkqgFKBeayqH1HNknW2uja6riUeUp4AOcy93h5xtD
+	 ZLZ0m/CJIZJUZcsu/QIVnUafYDOaXwso7/DYvSxa5G15fdgm68RDuRXeCc44IYkSxyw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794932888;
-	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=QPu2YXpmwn+SJM11tKTxIpNQPeylIu52nZvJKYSmG08=;
-	b=ePhfmvvpifY1ElldGtnTfuskuBuUI1vhQcu67dwLoRzk4rXg1hs8cYum9/G97xj/53TF
-	 HgiPDZMPiDNbrV/VhTyAK53517oV51g4HQicgY00GYTPgvHUwcHAQGUko7nTvhN7ot1+j
-	 JQ6moh4j1nTDLprtbhweyzU61U0Q7YmbB0U9DgS0CTSafam6SMfSAoAbEsCHBKoR0z9UO
-	 ChkGUIW0skCTrEsektvQaI6Cnm0LHqZA9GSN1W5Z0hcIvElE8QpN1dorFZ/qLVJWW+l/3
-	 1EXWxYFNWBIU5kLLK+GxqJDxSFgjJdey8Badl5axHIHfE/3Ofafb2S/G9agqly4SfUA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794933497;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=JVdWED9lCpstMBkqd4TNKoEbfRhRrtDeXaw+rnQt51c=;
+	b=2d+bym0lPN5njjMYNtHwPSsW55es/eQqp+CtZzvNo+XS+SRC2faAhQX+6cwk3LLTDnAD
+	 nJs4rXE5zl6KAJ5IayqAQB6yLFcscUMDHWWzZ9Oo1UFVsBO+WbrGVPqJK93Kr4LtnUTjR
+	 INPit9Wz5wvn+JjgkUvnoujqPVoi7btr+20FwGmGnOEGgb+iEzr3RadhJT8qx/0tRUGq7
+	 G+qQ4BMswVXPv0MsX+oU+WQYQHy22QChKGUHfa/4mY3YvzRYyZQdrsGX89bWUoQnVHnFK
+	 c8wZGGbfyhFQyx6zRs0zFPXMM0DC2V9rHAGb2+4qUg5OyxHU12IF9+dkNpyCCnDOf2w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=alpha.franken.de;
-	spf=pass smtp.mailfrom=alpha.franken.de;
-	arc=none smtp.remote-ip=193.175.24.41
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95703606A33D;
-	Tue, 17 Nov 2026 16:28:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 95703606A33D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xTM2N-0004s5-00; Tue, 17 Nov 2026 17:28:03 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 64E06C0546; Tue, 17 Nov 2026 17:11:13 +0100 (CET)
-Date: Tue, 17 Nov 2026 17:11:13 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Carl Smith <carl.smith@alliedtelesis.co.nz>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Octeon: Verify the device tree so that
- /sys/firmware/fdt is created
-Message-ID: <avx8oTkiiFQypQl9@alpha.franken.de>
-References: <20261025192918.586220-1-carl.smith@alliedtelesis.co.nz>
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kMp4DzAV;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07601606A32A;
+	Tue, 17 Nov 2026 16:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kMp4DzAV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8085E1F000C4;
+	Tue, 17 Nov 2026 16:38:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794933496;
+	bh=JVdWED9lCpstMBkqd4TNKoEbfRhRrtDeXaw+rnQt51c=;
+	h=From:To:Cc:Subject:Date;
+	b=kMp4DzAVffwgAnDTqUfw8+P9hqV0NQe8PzTtfA2/wqZlwRPMnkQnLArhA6Py3xoj/
+	 /5kD+fhlfN6WpBGm6iqeMDr4gBIfTMB73WA4O1d89PVGcCwrKT7Wt4te+zNR0qzkXZ
+	 Re+AfeUaiWnlC5JtjXCAZyK9SJU5dxmtWm9DPL++QEwuwNU7LkUogj4Q/hrHZHCRhE
+	 PfzbffnZYetn85u19f3q/yqLzQMtndhklIKGGns9tDQ5vuhxVhrvrpao9Zv14DS94Y
+	 1cGaEvsVFrMbASdlRKlj1NLVexObltN4HiL/FzbcUiGmhck/sN6jCUNUfEK99hBNK1
+	 SG6I+cJ4pI7iQ==
+From: Lee Jones <lee@kernel.org>
+To: lee@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Alex Smith <alex@alex-smith.me.uk>,
+	Andrey Volkov <avolkov@varma-el.com>,
+	Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Dale Farnsworth <dfarnsworth@mvista.com>,
+	dmaengine@vger.kernel.org,
+	Frank Li <Frank.Li@kernel.org>,
+	Gary R Hook <gary.hook@amd.com>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Joachim Eastwood <manabian@gmail.com>,
+	Linus Walleij <linusw@kernel.org>,
+	linux-amlogic@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	Paul Cercueil <paul@crapouillou.net>,
+	Peter Pearse <peter.pearse@arm.com>,
+	Philipp Stanner <pstanner@redhat.com>,
+	Raju Rangoju <Raju.Rangoju@amd.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sanjay R Mehta <sanju.mehta@amd.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Sylvain Munaut <tnt@246tNt.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Xianwei Zhao <xianwei.zhao@amlogic.com>
+Subject: [PATCH v2 00/11] dmaengine: Fix teardown races, resource leaks, and error handling
+Date: Tue, 17 Nov 2026 16:37:01 +0000
+Message-ID: <20261117163809.622249-1-lee@kernel.org>
+X-Mailer: git-send-email 2.56.0.679.gc527c65306-goog
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -47,48 +81,78 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261025192918.586220-1-carl.smith@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 26, 2026 at 08:29:18AM +1300, Carl Smith wrote:
-> device_tree_init() sets initial_boot_params directly without calling
-> early_init_dt_verify(), so the FDT CRC is never computed and
-> of_fdt_raw_init() skips creating /syts/firmware/fdt.
-> 
->   not creating '/sys/firmware/fdt': CRC check failed
-> 
-> Call early_init_dt_verify() after the tree has been pruned and the MAC
-> addresses filled in, so that the CRC covers the tree that the kernel
-> unflattens.
-> 
-> Tested on a CN7130 with a bootloader-provided device tree.
-> Fixes: 08d53aa58cb1 ("of/fdt: export fdt blob as /sys/firmware/fdt")
-> 
-> Signed-off-by: Carl Smith <carl.smith@alliedtelesis.co.nz>
-> ---
->  arch/mips/cavium-octeon/setup.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-> index 1ad2602a0383..f25301e08222 100644
-> --- a/arch/mips/cavium-octeon/setup.c
-> +++ b/arch/mips/cavium-octeon/setup.c
-> @@ -1178,6 +1178,7 @@ void __init device_tree_init(void)
->  	}
->  	if (fill_mac)
->  		octeon_fill_mac_addresses();
-> +	early_init_dt_verify(initial_boot_params, __pa(initial_boot_params));
->  	unflatten_and_copy_device_tree();
->  	init_octeon_system_type();
->  }
-> -- 
-> 2.56.0
+These issues were reported by Sashiko.
 
-applied to mips-next
+v1 => v2:
+ - ae4dma: Make the completion work terminable, so that cancelling it can
+   no longer hang, and stop it before destroying the descriptor cache
+   (Basavaraj)
+ - jz4780: Correct the Fixes: tag
 
-Thomas.
+v1: https://lore.kernel.org/all/20261111215349.1983909-1-lee@kernel.org/
+
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Alex Smith <alex@alex-smith.me.uk>
+Cc: Andrey Volkov <avolkov@varma-el.com>
+Cc: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Cc: Colin Ian King <colin.i.king@gmail.com>
+Cc: Dale Farnsworth <dfarnsworth@mvista.com>
+Cc: dmaengine@vger.kernel.org
+Cc: Frank Li <Frank.Li@kernel.org>
+Cc: Gary R Hook <gary.hook@amd.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Jacky Huang <ychuang3@nuvoton.com>
+Cc: Joachim Eastwood <manabian@gmail.com>
+Cc: Linus Walleij <linusw@kernel.org>
+Cc: linux-amlogic@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mips@vger.kernel.org
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: Peter Pearse <peter.pearse@arm.com>
+Cc: Philipp Stanner <pstanner@redhat.com>
+Cc: Raju Rangoju <Raju.Rangoju@amd.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Sanjay R Mehta <sanju.mehta@amd.com>
+Cc: Shan-Chun Hung <schung@nuvoton.com>
+Cc: Sylvain Munaut <tnt@246tNt.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Xianwei Zhao <xianwei.zhao@amlogic.com>
+
+Lee Jones (11):
+  dmaengine: pl08x: Defer OF DMA controller registration until slave
+    setup
+  dmaengine: ae4dma: Let the pending work exit before cancelling it
+  dmaengine: ae4dma: Unregister DMA engine in ae4_pci_remove()
+  dmaengine: ptdma: Unmap descriptor in pt_do_cleanup()
+  dmaengine: ptdma: Remove completed descriptor under vc.lock in
+    pt_cmd_callback_work()
+  dmaengine: amlogic: Destroy free_wq after devres DMA device
+    unregistration
+  dmaengine: arm-dma350: Query dma_cookie_status() under vc.lock in
+    d350_tx_status()
+  dmaengine: bestcomm: Defer publishing bcom_eng until initialisation
+    completes
+  dmaengine: bestcomm: Check rh_create() return value in
+    bcom_sram_init()
+  dmaengine: jz4780: Fix descriptor cleanup on hwdesc setup failure
+  dmaengine: dmatest: Avoid unsigned underflow in min_odd()
+
+ drivers/dma/amba-pl08x.c                | 23 +++++++++
+ drivers/dma/amd/ae4dma/ae4dma-dev.c     |  8 +++
+ drivers/dma/amd/ae4dma/ae4dma-pci.c     |  6 +++
+ drivers/dma/amd/ae4dma/ae4dma.h         |  1 +
+ drivers/dma/amd/ptdma/ptdma-dmaengine.c |  3 +-
+ drivers/dma/amlogic-dma.c               |  3 +-
+ drivers/dma/arm-dma350.c                |  3 +-
+ drivers/dma/bestcomm/bestcomm.c         | 69 +++++++++++++------------
+ drivers/dma/bestcomm/sram.c             |  6 +++
+ drivers/dma/dma-jz4780.c                |  5 +-
+ drivers/dma/dmatest.c                   |  6 +++
+ 11 files changed, 93 insertions(+), 40 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.56.0.679.gc527c65306-goog
+

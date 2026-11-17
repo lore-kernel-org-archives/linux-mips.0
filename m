@@ -1,55 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=5.135.140.105
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794911947;
-	b=A3Er/ycx11vzISJl+Q86KhaQceHFhI1bdv+TEUI1cILPWK8rtxv3Uo1KPpb6E5kWCtuf
-	 FM4n4BS+vGferVgT6DI4lwavH3Y536Io1EvzBg/PgAn/b1lEBmlc7dBGUqjDsmlPHM/oz
-	 FtoyntFZ64VY1ymuNFnnJAcXzkZMOoq8GtdwrBKcIvfwi/FrI18M71hu7tFlNVYd/Ynyz
-	 t2hdO8zqQo9s2LBP7p6xPIjh1SAsZmK9eZnHACXjBgsZhW6Zg5iB3DvDcLQF5BQy1EaoT
-	 TtQqZYPXsGBg/Qi+jNTbVOadLDuI29PIEu5Y2joMRw6UPNz6A1urZd9GCGKKEuRXb0Q==
+	t=1794913760;
+	b=0M77zxeyywfZydOzaaz5phwU+Of39CgASk7OL96UAg9QJgNzQp9PqqLfwX8+zcoGpS0w
+	 eeWRMZfwd5komJZ3TqwxYjD+yQKgL5q6aZTSDmX3drU6SuLWy5HPiFTaVTVPOoFEa88ME
+	 9FTmumJi0YsOFKqnA/c5flT7b8EqEW2M+yqvzoBw3Y14gXj5P8VmdesaXAxvhR8iKeVd6
+	 nFTaBKO8v7hcHCcPyO+lJYRiSOlj8ZnAOgr08z4awu5YRXFb/GykoCFJWysxIbyu35oID
+	 3d+ClY/I2r9Ergr6/1HEUcvXZyVGj5u1S6kwi6NlFjCGE59lKdc6y+hRebQQs14Bc5Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794911947;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=NuyW+LPkABdZOmh3sBu4i9JSnfftHozPE5xHuZU3CeI=;
-	b=Xgz8t/894OEBw798LTvbO1KACoqRj0kC1tkvo6m1CkUy9tjk9RoU48rHiYycrPL63TXb
-	 7m8zuRG+KgEYOFJdSPY7N+hrWDknhER6mgpbU4GpXwC6AaxNtapUryWXvVaZ8JTsXzUzm
-	 TIieDsgd3IUoSNX1Kem8u0pRru74IxoT0cJ1IXTYHtIn5w/dREHuLPCE+tcWa4Oavwp+g
-	 3aoRV0OQGVwvNO0/6TiyN7T4VBeP1JvBiwBWWh4+nn9Wnblcs45pdj8FFjC6QFmCqctv/
-	 SdSJwzio4tPDD6UCx84fZ2DwODtPhmOeNA32/DQfWkTcECrALwtYXQbwdT8FZgQAiew==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794913760;
+	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-Last-TLS-Session-Version;
+	bh=GzIg+n+GrebkL3m4Ih6AgxOrmeWJM+7Ee6vjWj2bVJc=;
+	b=XKSu9LJCoE2L0uPb/grRo4UO6aZwHtQj+TXiGRWHzoaC5v2JDd5Yfjn6UMVICsz+CVgc
+	 kvr8k448r2IRbZPJnY1VkyLElvx/afzaFW7W5I3ITBOgz3xFYqLAQ3JCdA4EyQloWB1IT
+	 L2TfuuogB4+9uOQqN2XfAJ18gBY+nsEFXWnf7rodIB9M0KACkJHxQJWLE1EJ06ef2/neV
+	 C7ceqKn5P5nfLdKUYn8+6jUDd1wlQNEp8zqkN7FDlvNiK0Y7gwDcTkc/G90RxkXP1zQEm
+	 aUB14WZj6QWUZEdM1VOdtO1klPMhsMlby5F5sdLbi9JfWNH6Z3knS80xQ55zZknKsFw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kCMXh3Ru;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=cjdns.fr;
+	spf=pass smtp.mailfrom=cjdns.fr;
+	dkim=pass header.d=cjdns.fr header.i=@cjdns.fr header.a=rsa-sha256 header.s=dkim header.b=FnugIG8Z;
+	arc=none smtp.remote-ip=5.135.140.105
+Received: from mail.cjdns.fr (mail.cjdns.fr [5.135.140.105])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58FC606A32A
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 10:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E27B606A331;
+	Tue, 17 Nov 2026 11:09:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2E27B606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cjdns.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cjdns.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kCMXh3Ru
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 524151F000CB
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 10:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794911947;
-	bh=NuyW+LPkABdZOmh3sBu4i9JSnfftHozPE5xHuZU3CeI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=kCMXh3RuzFG0Ug/pEgPdThQxr6c4ceYwJwzJCgsccTaPx/IE81y5TbFtll09nr0Y4
-	 aqTBrPQVPxGZj56gp2+Qkp9bYLjjgaXtDBCrUpkj1sBEcodwqDBgHzf6+u9wbHDXQS
-	 N7KTYTmzj7EERVsE3wGws0Ur05cqGWBQ46VMs0oB+pEhhO0UY+IIa2WZDwH9bb9D7L
-	 d1sP3YHz4HOa9L6VKpc+AUSz4a0pIfATu90CQd53LCHolba+sJnvw6omsnBLrV2uBs
-	 7nJMUA22b4KI9eCp9bh5AMNk9KDDz4YDkngfaD1FPorh9JjZMzmAjxwqfFJJQYp7lv
-	 41nTwTwaGbcWQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5c15ccd7fb5so3886878e87.2
-        for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 02:39:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErG3jylVMmxcd1Y7V5a96+IleD82EetKOoCEAWIYMHYpRdv9ASJu5Tz1/17LaXVFSneN+XjIi3c4UNjM@vger.kernel.org
-X-Gm-Message-State: APuU4Z8X4x0/gtsbQox9qoftNohTZpIA3bYXQBSBSlZdl3CUepMCqA2v
-	PRHD2bbweWxZBqi/4f1bgU7aZz7aybXmJCTAgbleu8vTroN9DiFXEHOUVkaLp5qjWAtIMFQWNJW
-	MsIj6ydl7bKH2vCSVz0WgJLm40WH9hvY=
-X-Received: by 2002:a05:6512:1317:b0:5c1:57ee:1887 with SMTP id
- 2adb3069b0e04-5c1709991c9mr5809743e87.13.1794911946039; Tue, 17 Nov 2026
- 02:39:06 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=cjdns.fr header.i=@cjdns.fr header.a=rsa-sha256 header.s=dkim header.b=FnugIG8Z
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BF62D51BCA8;
+	Tue, 17 Nov 2026 12:09:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjdns.fr; s=dkim;
+	t=1794913756; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=GzIg+n+GrebkL3m4Ih6AgxOrmeWJM+7Ee6vjWj2bVJc=;
+	b=FnugIG8ZXaFyjQBa6vwvEEnJMkQVmLKWSNZqov39LraN4HbwkXbDx62a+qk9GJa2ZO8O3a
+	a81bFNRtNnzDQSukV1a2rIGTiGH5MDM4Y8iRFPXiY+JoJ6TyVmLVl0si3d24X/bjyJ1OKk
+	aMh5947IKOjJWtDVT1vPx//KESpcVrgPA7lqVZvCl5yTNUThPHcGrnPbXHtOtd7Y+ZLEco
+	JzWSCAGc7NrSyjCNDTOa/Y0u/MW/A+2Mpq4ov0qO/v7q+krzERWLdgsglYpxB86qqUjBZW
+	BLRnoa3w8UL6vAPcXqOAv22DYYGgLD8oPW3dEJwx8KbAX0eCbkPgBCAt1S/Otw==
+Message-ID: <dcf40947-942a-4bf3-823c-5e1613f46d76@cjdns.fr>
+Date: Tue, 17 Nov 2026 12:09:11 +0100
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -59,114 +55,118 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261109-sf19a2890-gpio-v2-0-b885fbd84c4c@telaak.dev> <20261109-sf19a2890-gpio-v2-2-b885fbd84c4c@telaak.dev>
-In-Reply-To: <20261109-sf19a2890-gpio-v2-2-b885fbd84c4c@telaak.dev>
-From: Linus Walleij <linusw@kernel.org>
-Date: Tue, 17 Nov 2026 11:38:53 +0100
-X-Gmail-Original-Message-ID: <CAD++jLkGavE9jL_EbPB2iPH=Aa=4Vdwj4nvHgiauJtq-dbwKZQ@mail.gmail.com>
-X-Gm-Features: Aa3M54ppfeS06feOaViTWRV8zuTIrQ_dO7MWlQDFZO4SKHToSwYpGEh5iS9tAzY
-Message-ID: <CAD++jLkGavE9jL_EbPB2iPH=Aa=4Vdwj4nvHgiauJtq-dbwKZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpio: Add Siflower GPIO controller driver
-To: joseph@telaak.dev
-Cc: Bartosz Golaszewski <brgl@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Chuanhong Guo <gch981213@gmail.com>, 
-	Qingfang Deng <dqfext@gmail.com>, linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Qingfang Deng <qingfang.deng@siflower.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH 2/3] irqchip/econet-en751221: Chain the handler to all
+ parent interrupts
+To: automobilehacks@gmail.com, Thomas Gleixner <tglx@kernel.org>,
+ Radu Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20261115-en751221-intc-all-lines-v1-0-dc03a40f47f0@gmail.com>
+ <20261115-en751221-intc-all-lines-v1-2-dc03a40f47f0@gmail.com>
+Content-Language: en-US
+From: Caleb James DeLisle <cjd@cjdns.fr>
+In-Reply-To: <20261115-en751221-intc-all-lines-v1-2-dc03a40f47f0@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Joseph,
 
-On Mon, Nov 9, 2026 at 9:09=E2=80=AFPM Joseph Telaak via B4 Relay
-<devnull+joseph.telaak.dev@kernel.org> wrote:
-
-> From: Qingfang Deng <qingfang.deng@siflower.com.cn>
+On 15/11/2026 20:26, Akshat Singh via B4 Relay wrote:
+> From: Akshat Singh <automobilehacks@gmail.com>
 >
-> Add a driver for the GPIO controller on Siflower SoCs.
-> This controller is found on all current Siflower MIPS and RISC-V
-> chips including SF19A2890, SF21A6826 and SF21H8898.
+> The EN751221 interrupt controller does not drive one CPU interrupt line
+> per source. It presents the number of the pending interrupt plus one, in
+> binary, on the CPU interrupt lines IP2-IP7. In VEIC mode the CPU takes
+> that number as the vector, but without VEIC the driver chains its handler
+> to the first parent interrupt only, IP2 in the existing device trees. An
+> odd-numbered interrupt then never interrupts the CPU by itself: it is
+> handled only when an even-numbered one happens to run the handler, which
+> on an idle system is the next timer interrupt. That covers the frame
+> engine's QDMA (21), xHCI (17) and the first PCIe port (23).
 >
-> Signed-off-by: Qingfang Deng <qingfang.deng@siflower.com.cn>
-> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-> [Joseph Telaak:
->   - take it from Chuanhong's siflower-7.1 branch
->   - depend on MACH_SIFLOWER_MIPS instead of OF_GPIO, longer Kconfig help
->   - get the reset with devm_reset_control_get_exclusive_deasserted(),
->     so it is asserted again only after the GPIO chip is removed, not in
->     a .remove that ran first
->   - drop .owner and the unused drvdata, and get priv with
->     gpiochip_get_data()
->   - drop the irq_set_affinity callback, which reached the parent
->     through irq_to_desc(), not exported with SPARSE_IRQ
->   - call gpiochip_disable_irq() and gpiochip_enable_irq() from mask
->     and unmask, as an immutable irqchip must
->   - find the group by its parent IRQ instead of assuming consecutive
->     numbers
->   - return 0 or 1 from .get
->   - use readl() and writel() directly, without wrapper functions
->   - take the number of lines from the match data, not from an
->     ngpios property
->   - include linux/math64.h, drop the unused linux/pinctrl/consumer.h,
->     sort the includes, spell it "Siflower"
->   - subject]
-> Co-developed-by: Joseph Telaak <joseph@telaak.dev>
-> Signed-off-by: Joseph Telaak <joseph@telaak.dev>
-(...)
+> On a Nokia G-140W-C, whose 34Kc does not report VEIC, this delayed
+> received packets by up to 10 ms, and ping round-trip times to the device
+> cycled through 1-11 ms.
+>
+> Without VEIC, chain the handler to every parent interrupt listed in the
+> device tree. One interrupt usually raises several lines, so the later
+> runs of the handler find nothing pending; don't count those as spurious.
+>
+> VEIC mode is unchanged.
+>
+> Signed-off-by: Akshat Singh <automobilehacks@gmail.com>
 
-> +static int sf_gpio_get_value(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +       struct sf_gpio_priv *priv =3D gpiochip_get_data(gc);
-> +
-> +       return !!readl(priv->base + GPIO_IR(offset));
-> +}
-> +
-> +static int sf_gpio_set_value(struct gpio_chip *gc, unsigned int offset,
-> +                            int value)
-> +{
-> +       struct sf_gpio_priv *priv =3D gpiochip_get_data(gc);
-> +
-> +       writel(value, priv->base + GPIO_OR(offset));
-> +       return 0;
-> +}
-> +
-> +static int sf_gpio_get_direction(struct gpio_chip *gc, unsigned int offs=
-et)
-> +{
-> +       struct sf_gpio_priv *priv =3D gpiochip_get_data(gc);
-> +
-> +       if (readl(priv->base + GPIO_OEN(offset)))
-> +               return GPIO_LINE_DIRECTION_IN;
-> +
-> +       return GPIO_LINE_DIRECTION_OUT;
-> +}
-> +
-> +static int sf_gpio_direction_input(struct gpio_chip *gc, unsigned int of=
-fset)
-> +{
-> +       struct sf_gpio_priv *priv =3D gpiochip_get_data(gc);
-> +
-> +       writel(1, priv->base + GPIO_OEN(offset));
-> +       return 0;
-> +}
-> +
-> +static int sf_gpio_direction_output(struct gpio_chip *gc, unsigned int o=
-ffset,
-> +                                   int value)
-> +{
-> +       struct sf_gpio_priv *priv =3D gpiochip_get_data(gc);
-> +
-> +       writel(value, priv->base + GPIO_OR(offset));
-> +       writel(0, priv->base + GPIO_OEN(offset));
-> +       return 0;
-> +}
 
-So this has one register per setting per GPIO line?
+I tested and confirm that hardware indeed behaves as described.
 
-This is ideally handled with select GPIO_REGMAP
-for gpio-regmap.c using regmap-mmio, see for example
-see for example gpio-mvebu.c that does this elegantly.
 
-Yours,
-Linus Walleij
+Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
+
+
+> ---
+>   drivers/irqchip/irq-econet-en751221.c | 33 ++++++++++++++++++++++++++++++---
+>   1 file changed, 30 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-econet-en751221.c b/drivers/irqchip/irq-econet-en751221.c
+> index 2ca5d9018..5930c67c3 100644
+> --- a/drivers/irqchip/irq-econet-en751221.c
+> +++ b/drivers/irqchip/irq-econet-en751221.c
+> @@ -18,6 +18,15 @@
+>    * When VPE#1 requests IRQ 30, the driver manipulates the mask bit for IRQ 29,
+>    * telling the hardware to mask VPE#1's view of IRQ 30.
+>    *
+> + * The controller does not give each source its own CPU interrupt line. It
+> + * presents the number of the pending interrupt plus one, in binary, on the
+> + * CPU interrupt lines IP2-IP7, which a CPU in VEIC mode takes as the vector.
+> + * Without VEIC, IRQ 21, for example, shows up as 22 = 0b010110 on IP3, IP4
+> + * and IP6, so the controller is chained to every CPU line listed in its
+> + * "interrupts" property. Chained to IP2 alone, it would see the odd-numbered
+> + * IRQs only when an even-numbered one, such as the timer, happened to run
+> + * the handler.
+> + *
+>    * Copyright (C) 2025 Caleb James DeLisle <cjd@cjdns.fr>
+>    */
+>   
+> @@ -145,9 +154,12 @@ static void econet_intc_from_parent(struct irq_desc *desc)
+>   	pending0 = ioread32(econet_intc.membase + REG_PENDING0);
+>   	pending1 = ioread32(econet_intc.membase + REG_PENDING1);
+>   
+> -	if (unlikely(!(pending0 | pending1))) {
+> -		spurious_interrupt();
+> -	} else {
+> +	/*
+> +	 * An interrupt usually raises several CPU lines. It is handled when
+> +	 * the first of them runs this function, and the others find nothing
+> +	 * pending.
+> +	 */
+> +	if (pending0 | pending1) {
+>   		domain = irq_desc_get_handler_data(desc);
+>   		econet_intc_handle_pending(domain, pending0, 0);
+>   		econet_intc_handle_pending(domain, pending1, 32);
+> @@ -461,7 +473,22 @@ static int __init econet_intc_of_init(struct device_node *node, struct device_no
+>   		if (ret)
+>   			return ret;
+>   	} else {
+> +		int nr_parents = of_irq_count(node);
+> +
+>   		irq_set_chained_handler_and_data(irq, econet_intc_from_parent, domain);
+> +
+> +		for (int i = 1; i < nr_parents; i++) {
+> +			int parent = irq_of_parse_and_map(node, i);
+> +
+> +			if (!parent) {
+> +				pr_warn("%pOF: DT: Failed to get IRQ %d from 'interrupts'\n",
+> +					node, i);
+> +				continue;
+> +			}
+> +
+> +			irq_set_chained_handler_and_data(parent, econet_intc_from_parent,
+> +							 domain);
+> +		}
+>   	}
+>   
+>   	econet_intc.domain = domain;
+>

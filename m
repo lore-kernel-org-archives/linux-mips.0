@@ -1,77 +1,61 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794933497;
-	b=IjZF14+8zT0swQZe0eALJ9wsU5USTjtBplSOeVHxjNvmWdrm7ImsHRB5k4GSdQqtZ1Ez
-	 Gm8u8wmCJG28Vo7ilLx4sARNiS4ItDogVQnGQ1eKzP++Ui29MjjShnQ3yKxFRlRWpRb7f
-	 K5RcPx9/bEdcAov+zyK3fAzmCd3laSuCn/SLjtj6j+XqpO/7vMVMc9+Ch96zjYVq4ZaD1
-	 Ehvk7AiMBiFKy9DgNZS9tv03y+xsAkqgFKBeayqH1HNknW2uja6riUeUp4AOcy93h5xtD
-	 ZLZ0m/CJIZJUZcsu/QIVnUafYDOaXwso7/DYvSxa5G15fdgm68RDuRXeCc44IYkSxyw==
+	t=1794933569;
+	b=lvcV/fgy2Xvr7bTowV0+m2GupY4khfOmDhPcons/4rnrCzZ+IX8VMDNb7ShwXmwmvw30
+	 LX52FquqSAz44jmx8YrWCk4l2XPU8JSAEBBN0ScitLl+ZcCN1542Rg14FPWZ2Ob2gPHwC
+	 hrmCRj8Nrc1xZ7M8iqE3P9ZvKCcbxlTWKsB9l1ZElEI5jJBUtK/MkhZCFihrg4LZ3XtVl
+	 UPOAhhnzAPf/KtZIlems/w2dCEThFAgmXz0htp1j5OJGWdl+YJ8lTrMbG4fthVF8dJJuz
+	 MjE455/IETQTJitwFEQd1KjSjK9iTF6Lalj+sLbPyfyOXsE80BSP6gdJQu0SL+ImoEw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794933497;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794933569;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=JVdWED9lCpstMBkqd4TNKoEbfRhRrtDeXaw+rnQt51c=;
-	b=2d+bym0lPN5njjMYNtHwPSsW55es/eQqp+CtZzvNo+XS+SRC2faAhQX+6cwk3LLTDnAD
-	 nJs4rXE5zl6KAJ5IayqAQB6yLFcscUMDHWWzZ9Oo1UFVsBO+WbrGVPqJK93Kr4LtnUTjR
-	 INPit9Wz5wvn+JjgkUvnoujqPVoi7btr+20FwGmGnOEGgb+iEzr3RadhJT8qx/0tRUGq7
-	 G+qQ4BMswVXPv0MsX+oU+WQYQHy22QChKGUHfa/4mY3YvzRYyZQdrsGX89bWUoQnVHnFK
-	 c8wZGGbfyhFQyx6zRs0zFPXMM0DC2V9rHAGb2+4qUg5OyxHU12IF9+dkNpyCCnDOf2w==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=sGJi7hvXe3a9OqGC6JOAa78jR+ZgfQUCIcX0WKJpETc=;
+	b=xptnMQ/ncyTcIbXvghIMOSiDHpoLHyvaEQTa3X8WtYq80y3u4eZQlk6X17Ajz27Ha4+x
+	 dhOT5JyHNG4uFFrPrYkC3eoszofKsMkO3HyEAhNwiGAe7LvTNGewNza82pD8tzEwBeycg
+	 gSoLO3p/9wOxyODmgviotnoMndLsrh7WXwZkb72fpYYuMsshLCFyVWKnnjNMEYpvab7D8
+	 yS0cSi6EpIzl17cbltA8FBcCUAPnPO7ZZAY1RkpOnELvGlWizdbtzlwERHy3uG7SYHH89
+	 rg1ZvXwiuWrhOgt3Wi1ghpZox107xg0Z+U0z3Zq/mZQUAUOj+R3QBhEXWP5OsQMEJSw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kMp4DzAV;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ix3+7jXq;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07601606A32A;
-	Tue, 17 Nov 2026 16:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2CD606A33D;
+	Tue, 17 Nov 2026 16:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kMp4DzAV
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8085E1F000C4;
-	Tue, 17 Nov 2026 16:38:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ix3+7jXq
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C0E91F000C5;
+	Tue, 17 Nov 2026 16:39:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794933496;
-	bh=JVdWED9lCpstMBkqd4TNKoEbfRhRrtDeXaw+rnQt51c=;
-	h=From:To:Cc:Subject:Date;
-	b=kMp4DzAVffwgAnDTqUfw8+P9hqV0NQe8PzTtfA2/wqZlwRPMnkQnLArhA6Py3xoj/
-	 /5kD+fhlfN6WpBGm6iqeMDr4gBIfTMB73WA4O1d89PVGcCwrKT7Wt4te+zNR0qzkXZ
-	 Re+AfeUaiWnlC5JtjXCAZyK9SJU5dxmtWm9DPL++QEwuwNU7LkUogj4Q/hrHZHCRhE
-	 PfzbffnZYetn85u19f3q/yqLzQMtndhklIKGGns9tDQ5vuhxVhrvrpao9Zv14DS94Y
-	 1cGaEvsVFrMbASdlRKlj1NLVexObltN4HiL/FzbcUiGmhck/sN6jCUNUfEK99hBNK1
-	 SG6I+cJ4pI7iQ==
+	s=k20260515; t=1794933569;
+	bh=sGJi7hvXe3a9OqGC6JOAa78jR+ZgfQUCIcX0WKJpETc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ix3+7jXqXudtB+1zTjW4xONci8jKWPa+RA6oGqMF9Fj57RiQ8yseN0leNB9IOZgxJ
+	 YMnbA+4Dr2/eOCl2axK2oCsTiq8flid1cOaFMdmJOMGLJeqhBchE06cmddr0bfoOwv
+	 +cD5PsUmbTO3FQNgx9CCGtB607oUzvJQTBKt2c12NQIOmpETm/D6zcxt9dFZ+kv2sn
+	 +cRyT2uHb0stV6iOhFaCuswwDg0UDNCElLvBOjdXjnV3NZXrpRN2LrgE0zfyXVYqXf
+	 zHtBJVmieO+cEWqpm1UWCl2ONfUcOY1FD0RuHyYJmQJkTEd2C1OXlnM1Bf90m3L6TA
+	 HUbwteYWjP94A==
 From: Lee Jones <lee@kernel.org>
-To: lee@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Alex Smith <alex@alex-smith.me.uk>,
-	Andrey Volkov <avolkov@varma-el.com>,
-	Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-	Colin Ian King <colin.i.king@gmail.com>,
-	Dale Farnsworth <dfarnsworth@mvista.com>,
-	dmaengine@vger.kernel.org,
-	Frank Li <Frank.Li@kernel.org>,
-	Gary R Hook <gary.hook@amd.com>,
-	Grant Likely <grant.likely@secretlab.ca>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Joachim Eastwood <manabian@gmail.com>,
-	Linus Walleij <linusw@kernel.org>,
-	linux-amlogic@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
+To: lee@kernel.org,
 	Paul Cercueil <paul@crapouillou.net>,
-	Peter Pearse <peter.pearse@arm.com>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Raju Rangoju <Raju.Rangoju@amd.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sanjay R Mehta <sanju.mehta@amd.com>,
-	Shan-Chun Hung <schung@nuvoton.com>,
-	Sylvain Munaut <tnt@246tNt.com>,
 	Vinod Koul <vkoul@kernel.org>,
-	Xianwei Zhao <xianwei.zhao@amlogic.com>
-Subject: [PATCH v2 00/11] dmaengine: Fix teardown races, resource leaks, and error handling
-Date: Tue, 17 Nov 2026 16:37:01 +0000
-Message-ID: <20261117163809.622249-1-lee@kernel.org>
+	Frank Li <Frank.Li@kernel.org>,
+	Alex Smith <alex@alex-smith.me.uk>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	linux-mips@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH v2 10/11] dmaengine: jz4780: Fix descriptor cleanup on hwdesc setup failure
+Date: Tue, 17 Nov 2026 16:37:11 +0000
+Message-ID: <20261117163809.622249-11-lee@kernel.org>
 X-Mailer: git-send-email 2.56.0.679.gc527c65306-goog
+In-Reply-To: <20261117163809.622249-1-lee@kernel.org>
+References: <20261117163809.622249-1-lee@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -81,78 +65,61 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-These issues were reported by Sashiko.
+When jz4780_dma_setup_hwdesc() fails in jz4780_dma_prep_slave_sg() or
+jz4780_dma_prep_dma_cyclic(), the error paths pass &jzchan->desc->vdesc
+to jz4780_dma_desc_free() instead of the newly allocated &desc->vdesc.
+This leaks the newly allocated descriptor and either dereferences NULL
+when jzchan->desc is NULL or frees the currently active descriptor while
+it is still in flight.  Furthermore, jz4780_dma_desc_free() derives
+jzchan from vdesc->tx.chan, which is not yet initialised before
+vchan_tx_prep() is called.
 
-v1 => v2:
- - ae4dma: Make the completion work terminable, so that cancelling it can
-   no longer hang, and stop it before destroying the descriptor cache
-   (Basavaraj)
- - jz4780: Correct the Fixes: tag
+Initialise desc->vdesc.tx.chan in jz4780_dma_desc_alloc() and pass
+&desc->vdesc to jz4780_dma_desc_free() in the preparation error paths.
 
-v1: https://lore.kernel.org/all/20261111215349.1983909-1-lee@kernel.org/
+Fixes: fc878efe84c3 ("dmaengine: jz4780: fix resource leaks on error exit return")
+Closes: https://sashiko.dev/#/bug/linux-b39121ef-5ffb-401a-9d04-0afccd467bde
+Cc: stable@vger.kernel.org
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
 
-Cc: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Alex Smith <alex@alex-smith.me.uk>
-Cc: Andrey Volkov <avolkov@varma-el.com>
-Cc: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Cc: Colin Ian King <colin.i.king@gmail.com>
-Cc: Dale Farnsworth <dfarnsworth@mvista.com>
-Cc: dmaengine@vger.kernel.org
-Cc: Frank Li <Frank.Li@kernel.org>
-Cc: Gary R Hook <gary.hook@amd.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: Jacky Huang <ychuang3@nuvoton.com>
-Cc: Joachim Eastwood <manabian@gmail.com>
-Cc: Linus Walleij <linusw@kernel.org>
-Cc: linux-amlogic@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: Peter Pearse <peter.pearse@arm.com>
-Cc: Philipp Stanner <pstanner@redhat.com>
-Cc: Raju Rangoju <Raju.Rangoju@amd.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Sanjay R Mehta <sanju.mehta@amd.com>
-Cc: Shan-Chun Hung <schung@nuvoton.com>
-Cc: Sylvain Munaut <tnt@246tNt.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Xianwei Zhao <xianwei.zhao@amlogic.com>
+v1 => v2: Correct the Fixes: tag to fc878efe84c3
 
-Lee Jones (11):
-  dmaengine: pl08x: Defer OF DMA controller registration until slave
-    setup
-  dmaengine: ae4dma: Let the pending work exit before cancelling it
-  dmaengine: ae4dma: Unregister DMA engine in ae4_pci_remove()
-  dmaengine: ptdma: Unmap descriptor in pt_do_cleanup()
-  dmaengine: ptdma: Remove completed descriptor under vc.lock in
-    pt_cmd_callback_work()
-  dmaengine: amlogic: Destroy free_wq after devres DMA device
-    unregistration
-  dmaengine: arm-dma350: Query dma_cookie_status() under vc.lock in
-    d350_tx_status()
-  dmaengine: bestcomm: Defer publishing bcom_eng until initialisation
-    completes
-  dmaengine: bestcomm: Check rh_create() return value in
-    bcom_sram_init()
-  dmaengine: jz4780: Fix descriptor cleanup on hwdesc setup failure
-  dmaengine: dmatest: Avoid unsigned underflow in min_odd()
+ drivers/dma/dma-jz4780.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- drivers/dma/amba-pl08x.c                | 23 +++++++++
- drivers/dma/amd/ae4dma/ae4dma-dev.c     |  8 +++
- drivers/dma/amd/ae4dma/ae4dma-pci.c     |  6 +++
- drivers/dma/amd/ae4dma/ae4dma.h         |  1 +
- drivers/dma/amd/ptdma/ptdma-dmaengine.c |  3 +-
- drivers/dma/amlogic-dma.c               |  3 +-
- drivers/dma/arm-dma350.c                |  3 +-
- drivers/dma/bestcomm/bestcomm.c         | 69 +++++++++++++------------
- drivers/dma/bestcomm/sram.c             |  6 +++
- drivers/dma/dma-jz4780.c                |  5 +-
- drivers/dma/dmatest.c                   |  6 +++
- 11 files changed, 93 insertions(+), 40 deletions(-)
-
+diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+index ac2094e65ecf..c3974c825ba7 100644
+--- a/drivers/dma/dma-jz4780.c
++++ b/drivers/dma/dma-jz4780.c
+@@ -248,6 +248,7 @@ jz4780_dma_desc_alloc(struct jz4780_dma_chan *jzchan, unsigned int count,
+ 		return NULL;
+ 	}
+ 
++	desc->vdesc.tx.chan = &jzchan->vchan.chan;
+ 	desc->count = count;
+ 	desc->type = type;
+ 
+@@ -379,7 +380,7 @@ static struct dma_async_tx_descriptor *jz4780_dma_prep_slave_sg(
+ 					      sg_dma_len(&sgl[i]),
+ 					      direction);
+ 		if (err < 0) {
+-			jz4780_dma_desc_free(&jzchan->desc->vdesc);
++			jz4780_dma_desc_free(&desc->vdesc);
+ 			return NULL;
+ 		}
+ 
+@@ -426,7 +427,7 @@ static struct dma_async_tx_descriptor *jz4780_dma_prep_dma_cyclic(
+ 		err = jz4780_dma_setup_hwdesc(jzchan, &desc->desc[i], buf_addr,
+ 					      period_len, direction);
+ 		if (err < 0) {
+-			jz4780_dma_desc_free(&jzchan->desc->vdesc);
++			jz4780_dma_desc_free(&desc->vdesc);
+ 			return NULL;
+ 		}
+ 
 -- 
 2.56.0.679.gc527c65306-goog
 

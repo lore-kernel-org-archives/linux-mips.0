@@ -1,100 +1,65 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794937114;
-	b=bP6UZSb5fojbHZ2062tQ0P+mbMh15HAjV/aGS5lAn7hP6Kod4PfbKxBxvNeraSmchJEl
-	 osQQnpY+praP2qWq4jFBMk7Kt/Iuv7LS+YDDdzZonyW5f9ETftkHP3eqiDDDPHU6MC4dA
-	 s+Ibad252kHxKyTHzLaigqnTxpoE3+NezSVU7gywzYViR4utJVo+Jyenb7A9G54OOvOxq
-	 +oUDTPaAqFUpfOILh1jXxi1+jdFOaBDWHMC4MtKIfeNI5R3XPJWUewC0ePw9wcApCot3+
-	 CbKTj+vfMb9QHaNDGhXA572InnmeXCOExIgqkpW5GQUBz3vJ+DZM+crrxI3x3mH6sXA==
+	t=1794938759;
+	b=iQOhGj73CSQCVeeRzEsYU0d34ZUQktgdkjFmU0iLXTAEU3OcgCqx1PmHoS4UkqHLTTbO
+	 VruqkMr0TUbxLg0rmtAGx3fVcYBatV1okd7I508ndfmhUZ+cqCazmtIcNbdgAktBIy1nf
+	 Tces2fOv1cUmpuoGQR1coHIkfvsPMx9z1VZ+vGnk3I+qeMoviY9Gv+wiwYxRJcCVUy/Sv
+	 xE8ixLLqhRIYkucbF9Se6PDJIrA/HnZVTtnPKmDewlbBkZKW3UPCuXAratFUla1GuWYey
+	 ZBTkVyyyhOimOcxG2RTW/dL/BNdBHuzKfGcsCvA8PNFGASMlD2ggUwJ8Ce64XIWKcTw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794937114;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
-	b=xMpTc55owAAGuQeB0+raRiBYwkBL8lK1yoJonYbw5UQhd8udP/t42y+NCu/bHr+2Bm5U
-	 oI0SsZnPIPQGVaMf9SoWiOCbSVmihJhezAjqDNw23uXxObNosxdpFSxYPfS0g89i7KGuB
-	 CFieDHkLZZQheCL1StOoVGJPzZ/PS15V4HPU+M0fE12OPY3m+plPEu7VmTv7vRzYeFla/
-	 9pXhJmCruUYaeDsLVVg6JJ87Tq6NM9HJVySZDDBqusuH4JwZEgeQVN7nIArh/zL9gwqbw
-	 oVDGMXhhXFFEZr+S9QYCftrJ1CB/CzYOsTTJPzJ11Qr/QkZ6k1yn/W11CfrAYE4pNkw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794938759;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
+	 MIME-Version;
+	bh=NKKM4BgDRFz5rVg0yA2Ja0CS4hNZpW/JNXIunibKgmE=;
+	b=PSseXo9dqVEHlRNM4F9kVDWXmqWMDXhuxHPxzeSnhVSOHGAzZTGtBv2WMBNIJrxQHaU6
+	 Abp+lVYFs87TTLRigVES999JZpD2lKCgccBOe0TeVDk6RIBkdgznEluCVV4ZMJZvMNs1D
+	 DzXvcin/zBFIUEI6uVzsbhMz5kuFPHwU5W2zbBFyYJ09WZey7R/ijJgG6+g6M1PReoPJ+
+	 lz9XdMZTw65EUQSGduVDvBvI0DsZEaA931WNbu7EvtMl2uNTv/hnC+MXmnpEL4zyUwyvk
+	 q80P+3N3HSt/O3QeVC6kCjPIzs2WL8Eao5pudMGP4LOlxBDqdArISGn0/l1Enh51J/A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x8lY2Afx;
-	arc=none smtp.remote-ip=74.125.82.172
-Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDE8606A32F
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 17:38:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0CDE8606A32F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x8lY2Afx
-Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-3704d30b84fso217021eec.1
-        for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 09:38:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794937113; x=1795541913; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
-        b=x8lY2AfxwiNYg7IpNbQCiyILCpiANn+42LaeNRKECLogXhMVGvCdemTyxpgGVVxq1m
-         XrugsJSex2OH+YGY/0yNpu6PxKeaXRokdkaGeXtIrN+Fm5b23bR+JFGvwv4dhCTY48gX
-         /+xIndzKuykcxo0voMeBfw0iqHoY51A2l9csG8sJmoEFVxV3Go+l9pxPxXH53taNjs58
-         ZVLGf6fYwvR76sKUTNLWJFsCE/iuOIuZW7j46mBpdQfCruYGiGnxjdGwUKo5TZFaMB3N
-         EsXqvNF+xPqHS9kuMGsLBxpWvrg+3zY/1iabuknjQXbefzeNcnplI9ClvJWXfqQGSpAL
-         t/7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794937113; x=1795541913;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
-        b=keeAcFuL6mqPofi9s2KVw7YAHn9r0/VGiNJeKBBklA3NF1JHY3hNsZVRXcfwA8VomR
-         bFJzwloYKRCxiF77Ck0O4E6Ud7SwTMyibInmGlETmsfKV6GpdWeIslK48HwzBA2KBoCe
-         6cAOen4U3MOG4fP+3TPgR4NVHdCltksTaKgM4IbHue9GH4cuwQVBiwuw+5lPlbEq+oVn
-         ZeCCn1nYa8luYM7CK2foPWZAQ9k+maDR3O18NDenHq8q+KJsU72CZkRX0jQZ30Aapysw
-         OAk3Rz1sAn8oThsWpD8Mb3nvh0Qd8CWV/0Xy1Xxk+dYzYNC1UNdSY4jAmE6mmYayVyog
-         rZnA==
-X-Forwarded-Encrypted: i=1; AL+hErG+l7u2g3gay929f7hxjRRD31GxRZcVmpxWY8UEaW4SsedD0mIa/z68ryCscByrHa/SIKVkxLye/Ln9@vger.kernel.org
-X-Gm-Message-State: APuU4Z+tA9hwU4HERcLydKqWgWAxEmaD7qj7jrFCAxrjdJdGwuNC9+Za
-	+N4Zjrg8TP8ajodP0q/fmKLH55NOup6ZB2/DyciYWLGIpDCWgWWIW4XB
-X-Gm-Gg: AZFdTZfC1ljPCqOUSYhUKED6FF607SFoCjkJc7WTyjt2lrc1W1nhb5S7kUHtkUr9jhd
-	u0U2ghwo58KMyoOwqkLnrzmQYwk3fQIMz+ZKTsWnk+PJUMbls1atp/K5OKlPqxYf62tTORfKGXS
-	xr1UCvWJwSAv/scXF3L+BP86esMzpKj7PEcYR5Az4BBLezMP3W6V4xoqg1MIPMV66SB1wMyYXIz
-	/sfPX/8g2DlV0idlCHrgSQ6qwZof6aFUIAfY9IC/h/lk49aWLEc1Z9LvLyOSsxHM7ctjzP7TGsy
-	h3DlnshY2qvaZA5yEvTBcj9Ygvn8/rzYvqIaiSZqh834KtKbOgwSen1UoeOPIxrDh52Aqfx5FDT
-	JHgkx0yzbxfN70fEDJiBRGZcimGsj00/t5wjKzBTF/C2FJeqo028K7qiDIjYdCk1G7FPHliBWGg
-	4k6FyRgVUixadfyWzaMpUzA4fLHZOD07N/1El1zIrXCsEcb5X9sHBZKDsPvyvHwuYFS7HcfaYIA
-	md20TpK/9gUbi5MaOXl2E2W6nc2fagcahMHZeP0QtkVZDV2wjG9gwkifsdSrN15Lc9Awpy9r3qC
-	jjRL9gOB
-X-Received: by 2002:a05:7300:de4c:b0:36a:1f4f:3e9 with SMTP id 5a478bee46e88-3828101de20mr123080eec.20.1794937112971;
-        Tue, 17 Nov 2026 09:38:32 -0800 (PST)
-Received: from eldorado ([2600:8802:b00:1f88::287])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37956bb0919sm44098373eec.29.2026.11.17.09.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2026 09:38:32 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	stable@vger.kernel.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	linux-mips@vger.kernel.org (open list:INGENIC JZ47xx SoCs),
-	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-Subject: [PATCH v2] drm/ingenic: Allocate and register the internal bridge separately
-Date: Tue, 17 Nov 2026 09:38:20 -0800
-Message-ID: <20261117173822.1816385-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A744A606A336;
+	Tue, 17 Nov 2026 18:05:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A744A606A336
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <6a81081ad3c2d37ed09c75f1303a84c65792dfe1.camel@crapouillou.net>
+Subject: Re: [PATCH v2] drm/ingenic: Allocate and register the internal
+ bridge separately
+From: Paul Cercueil <paul@crapouillou.net>
+To: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
+Cc: "H. Nikolaus Schaller" <hns@goldelico.com>, Luca Ceresoli	
+ <luca.ceresoli@bootlin.com>, stable@vger.kernel.org, Maarten Lankhorst	
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, "open list:INGENIC JZ47xx SoCs"	
+ <linux-mips@vger.kernel.org>, "open list:DRM DRIVERS"	
+ <dri-devel@lists.freedesktop.org>
+Date: Tue, 17 Nov 2026 19:05:50 +0100
+In-Reply-To: <20261117173822.1816385-1-f.fainelli@gmail.com>
+References: <20261117173822.1816385-1-f.fainelli@gmail.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRU=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -104,125 +69,165 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The LCD controller's internal bridge is embedded in an object allocated
-with drmm_encoder_alloc(). This initializes the encoder but leaves the
-bridge's reference count at zero. Since drm_bridge_attach() takes a
-reference, probing the CI20 display produces addition-on-zero and
-underflow warnings and fails to attach the HDMI bridge chain.
+Hi Florian,
 
-Allocate the internal bridge with devm_drm_bridge_alloc() and register
-it with devm_drm_bridge_add() before attaching it. Keep the encoder in a
-separate DRM-managed allocation: encoder cleanup can drop the final
-bridge reference before it has finished accessing the encoder. Find
-the internal bridge through the encoder's bridge chain during mode
-setting, and use the bridge argument directly in bridge callbacks.
+Le mardi 17 novembre 2026 =C3=A0 09:38 -0800, Florian Fainelli a =C3=A9crit=
+=C2=A0:
+> The LCD controller's internal bridge is embedded in an object
+> allocated
+> with drmm_encoder_alloc(). This initializes the encoder but leaves
+> the
+> bridge's reference count at zero. Since drm_bridge_attach() takes a
+> reference, probing the CI20 display produces addition-on-zero and
+> underflow warnings and fails to attach the HDMI bridge chain.
+>=20
+> Allocate the internal bridge with devm_drm_bridge_alloc() and
+> register
+> it with devm_drm_bridge_add() before attaching it. Keep the encoder
+> in a
+> separate DRM-managed allocation: encoder cleanup can drop the final
+> bridge reference before it has finished accessing the encoder. Find
+> the internal bridge through the encoder's bridge chain during mode
+> setting, and use the bridge argument directly in bridge callbacks.
+>=20
+> Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in
+> drm_bridge_attach/detach()")
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # CI20 V2a
+> Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+> CC: stable@vger.kernel.org
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in drm_bridge_attach/detach()")
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # CI20 V2a
-Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-CC: stable@vger.kernel.org
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
+Applied to drm-misc-next.
 
-- collected Reviewed-by and Tested-by tags
-- added CC: stable
+Cheers,
+-Paul
 
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++--------
- 1 file changed, 21 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 625ec76cf04d..520912f9ed0d 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -121,16 +121,15 @@ struct ingenic_drm {
- };
- 
- struct ingenic_drm_bridge {
--	struct drm_encoder encoder;
- 	struct drm_bridge bridge, *next_bridge;
- 
- 	struct drm_bus_cfg bus_cfg;
- };
- 
- static inline struct ingenic_drm_bridge *
--to_ingenic_drm_bridge(struct drm_encoder *encoder)
-+to_ingenic_drm_bridge(struct drm_bridge *bridge)
- {
--	return container_of(encoder, struct ingenic_drm_bridge, encoder);
-+	return container_of(bridge, struct ingenic_drm_bridge, bridge);
- }
- 
- static inline struct ingenic_drm_private_state *
-@@ -738,7 +737,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- {
- 	struct ingenic_drm *priv = drm_device_get_priv(encoder->dev);
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
--	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(encoder);
-+	struct drm_bridge *first_bridge __free(drm_bridge_put) =
-+		drm_bridge_chain_get_first_bridge(encoder);
-+	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(first_bridge);
- 	unsigned int cfg, rgbcfg = 0;
- 
- 	priv->panel_is_sharp = bridge->bus_cfg.flags & DRM_BUS_FLAG_SHARP_SIGNALS;
-@@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
- 				     struct drm_encoder *encoder,
- 				     enum drm_bridge_attach_flags flags)
- {
--	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
- 
- 	return drm_bridge_attach(encoder, ib->next_bridge,
- 				 &ib->bridge, flags);
-@@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
- 					   struct drm_connector_state *conn_state)
- {
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
--	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge->encoder);
-+	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
- 
- 	ib->bus_cfg = bridge_state->output_bus_cfg;
- 
-@@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 			drm_panel_put(panel);
- 		}
- 
--		ib = drmm_encoder_alloc(drm, struct ingenic_drm_bridge, encoder,
--					NULL, DRM_MODE_ENCODER_DPI, NULL);
-+		ib = devm_drm_bridge_alloc(dev, struct ingenic_drm_bridge, bridge,
-+					   &ingenic_drm_bridge_funcs);
- 		if (IS_ERR(ib)) {
- 			ret = PTR_ERR(ib);
-+			dev_err(dev, "Failed to allocate bridge: %d\n", ret);
-+			goto err_drvdata;
-+		}
-+
-+		encoder = drmm_plain_encoder_alloc(drm, NULL,
-+						   DRM_MODE_ENCODER_DPI, NULL);
-+		if (IS_ERR(encoder)) {
-+			ret = PTR_ERR(encoder);
- 			dev_err(dev, "Failed to init encoder: %d\n", ret);
- 			goto err_drvdata;
- 		}
- 
--		encoder = &ib->encoder;
- 		encoder->possible_crtcs = drm_crtc_mask(&priv->crtc);
- 
- 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
- 
--		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
- 		ib->next_bridge = bridge;
- 
-+		ret = devm_drm_bridge_add(dev, &ib->bridge);
-+		if (ret)
-+			goto err_drvdata;
-+
- 		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
- 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 		if (ret) {
--- 
-2.53.0
-
+> ---
+> Changes in v2:
+>=20
+> - collected Reviewed-by and Tested-by tags
+> - added CC: stable
+>=20
+> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++-----=
+-
+> --
+> =C2=A01 file changed, 21 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 625ec76cf04d..520912f9ed0d 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -121,16 +121,15 @@ struct ingenic_drm {
+> =C2=A0};
+> =C2=A0
+> =C2=A0struct ingenic_drm_bridge {
+> -	struct drm_encoder encoder;
+> =C2=A0	struct drm_bridge bridge, *next_bridge;
+> =C2=A0
+> =C2=A0	struct drm_bus_cfg bus_cfg;
+> =C2=A0};
+> =C2=A0
+> =C2=A0static inline struct ingenic_drm_bridge *
+> -to_ingenic_drm_bridge(struct drm_encoder *encoder)
+> +to_ingenic_drm_bridge(struct drm_bridge *bridge)
+> =C2=A0{
+> -	return container_of(encoder, struct ingenic_drm_bridge,
+> encoder);
+> +	return container_of(bridge, struct ingenic_drm_bridge,
+> bridge);
+> =C2=A0}
+> =C2=A0
+> =C2=A0static inline struct ingenic_drm_private_state *
+> @@ -738,7 +737,9 @@ static void
+> ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+> =C2=A0{
+> =C2=A0	struct ingenic_drm *priv =3D drm_device_get_priv(encoder-
+> >dev);
+> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
+> -	struct ingenic_drm_bridge *bridge =3D
+> to_ingenic_drm_bridge(encoder);
+> +	struct drm_bridge *first_bridge __free(drm_bridge_put) =3D
+> +		drm_bridge_chain_get_first_bridge(encoder);
+> +	struct ingenic_drm_bridge *bridge =3D
+> to_ingenic_drm_bridge(first_bridge);
+> =C2=A0	unsigned int cfg, rgbcfg =3D 0;
+> =C2=A0
+> =C2=A0	priv->panel_is_sharp =3D bridge->bus_cfg.flags &
+> DRM_BUS_FLAG_SHARP_SIGNALS;
+> @@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct
+> drm_bridge *bridge,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 enum drm_bridge_attach_flags
+> flags)
+> =C2=A0{
+> -	struct ingenic_drm_bridge *ib =3D
+> to_ingenic_drm_bridge(encoder);
+> +	struct ingenic_drm_bridge *ib =3D
+> to_ingenic_drm_bridge(bridge);
+> =C2=A0
+> =C2=A0	return drm_bridge_attach(encoder, ib->next_bridge,
+> =C2=A0				 &ib->bridge, flags);
+> @@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct
+> drm_bridge *bridge,
+> =C2=A0					=C2=A0=C2=A0 struct
+> drm_connector_state *conn_state)
+> =C2=A0{
+> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
+> -	struct ingenic_drm_bridge *ib =3D
+> to_ingenic_drm_bridge(bridge->encoder);
+> +	struct ingenic_drm_bridge *ib =3D
+> to_ingenic_drm_bridge(bridge);
+> =C2=A0
+> =C2=A0	ib->bus_cfg =3D bridge_state->output_bus_cfg;
+> =C2=A0
+> @@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device
+> *dev, bool has_components)
+> =C2=A0			drm_panel_put(panel);
+> =C2=A0		}
+> =C2=A0
+> -		ib =3D drmm_encoder_alloc(drm, struct
+> ingenic_drm_bridge, encoder,
+> -					NULL, DRM_MODE_ENCODER_DPI,
+> NULL);
+> +		ib =3D devm_drm_bridge_alloc(dev, struct
+> ingenic_drm_bridge, bridge,
+> +					=C2=A0=C2=A0
+> &ingenic_drm_bridge_funcs);
+> =C2=A0		if (IS_ERR(ib)) {
+> =C2=A0			ret =3D PTR_ERR(ib);
+> +			dev_err(dev, "Failed to allocate bridge:
+> %d\n", ret);
+> +			goto err_drvdata;
+> +		}
+> +
+> +		encoder =3D drmm_plain_encoder_alloc(drm, NULL,
+> +						=C2=A0=C2=A0
+> DRM_MODE_ENCODER_DPI, NULL);
+> +		if (IS_ERR(encoder)) {
+> +			ret =3D PTR_ERR(encoder);
+> =C2=A0			dev_err(dev, "Failed to init encoder: %d\n",
+> ret);
+> =C2=A0			goto err_drvdata;
+> =C2=A0		}
+> =C2=A0
+> -		encoder =3D &ib->encoder;
+> =C2=A0		encoder->possible_crtcs =3D drm_crtc_mask(&priv-
+> >crtc);
+> =C2=A0
+> =C2=A0		drm_encoder_helper_add(encoder,
+> &ingenic_drm_encoder_helper_funcs);
+> =C2=A0
+> -		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
+> =C2=A0		ib->next_bridge =3D bridge;
+> =C2=A0
+> +		ret =3D devm_drm_bridge_add(dev, &ib->bridge);
+> +		if (ret)
+> +			goto err_drvdata;
+> +
+> =C2=A0		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
+> =C2=A0					DRM_BRIDGE_ATTACH_NO_CONNECT
+> OR);
+> =C2=A0		if (ret) {

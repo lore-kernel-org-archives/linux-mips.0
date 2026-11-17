@@ -1,43 +1,42 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794934982;
-	b=KNkDaG1SCAp/F/iu5t7KkzbE4PXev59tUg93bJ6B0oegrx/CMam5ZHCPmAMzir1N26Fj
-	 REZi91ZbN/PF98cd8wxw0JUZuaKYHomiwDgj0Y35ULlRxisuvyJooJ3ya5z6zNEi8zSC8
-	 0Ui1duljn3bVfavZfim3de7emSRgwnIYPX4uJeh6u8NQd49XPAAbYpn6Ga+dG+pbxFI0C
-	 Zu4/VV09QXo7kqvtmNn8Ydk3DWAGxDiE1qPsNOwRx+ZmZttHTJJmr5aPhpdiZE1AVocTK
-	 pLtDTYEAwvNoRwFuwnZCtWvUE66coV6jUm3Q6CrdpRIubyNXjks8UAYAbsLZ5vrnv0Q==
+	t=1794934983;
+	b=jCIzb9bQdoJHI3CGkTXrmM861abmiVp2m6w06PtPvj84KLP0JM6LVDCGOUqABCtwKbW/
+	 TieHJT0cP69wIPkS0Lo06chjH/5OrJ/CYOy6yzt7T8NhBanFs+weqpWRvoJZhmZmLcxlq
+	 6LY0Buusj5j0LdM3SFbQInq2AUwlft9+z23SXpBe3kLjSxL3FIc2xELcY7ccbvZnEUQok
+	 RcErTksGhcEWgzFZvdc+GIpdMY11j6ZxvevIcCqgxnx6Slyz+3iI+5XQBTZxyaDFSEOAq
+	 urjHq7iUlCXYNukHRFtWd7xGYTjDFShIEPWfHB36TYJTCazzJiCB5s6HupdkYwYt2Ag==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794934982;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794934983;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=X4RkNEce5DxulKJ8PQAKKgnKeRYyeSstV0Z+RG/FOSs=;
-	b=WzG70lm07S1jfqNTqUkBB+VZW356XgHln/mCUi8+SsrjjX3/2KySiqU5cyFm0QjV9kwm
-	 BG852kI9Fubmf7loHIQF50t4xL9prWJORzMnxn8FGvecBEx318IjfCmFE7sxwumMxWGZI
-	 qYZQkU0TMY0Qjhk6/16yFQLrB+oid+isBIqGTRwJi7Npov0TTdWfLlranQH1R52SVR44r
-	 3eoCVkGpU4VyCSFM8GUEFSnUlThUypyTHf5PJI5+1zKFL4F1XF0p/kBoOKnDvp3+h8fji
-	 C74gGW7eaS71ULQM6CyljYtJb9enWJN2dNlZq1hN/Av6Xl/ZPzwd6EPFCkSqvMVqUug==
+	bh=23ke5IW9wL+schlh0UIfnTkss9BuX8z53RQFsMW/cT0=;
+	b=TgneD2kDZSLA61RchqqXVT5qavaYd2ZE6fsfe/iRoeDRE3RtAOZYT2/b7U6RP8J3MEve
+	 MTBHKxUx/eWId4YZfZappYbmtjeSzXt3CgELZjLPIsLeoWU17f+tJCOV45JSlx00gMsdL
+	 V4erAY2zi283njaMzrar8RepCFlp0foOtU5BmRddGSf9zMivkt+MONLGMKe9WxiRXFlfi
+	 al2xLPDua5JVJn4GbWBqwR8MDhVSYEEDFpM9v2Uo7p1Ab89TfcjdtFYlV+RW0TegLkgFj
+	 auasYrsVqiEYH2I1RJa5T8BztxzQkiNPJSdlDnPQF0luH+gf69S5cbNbmgvpUQuN6Ig==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48014606A31C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4815B606A32F;
 	Tue, 17 Nov 2026 17:03:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 48014606A31C
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4815B606A32F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xTMaC-0005GJ-00; Tue, 17 Nov 2026 18:03:00 +0100
+	id 1xTMaC-0005GR-00; Tue, 17 Nov 2026 18:03:00 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id A49C4C0520; Tue, 17 Nov 2026 17:56:14 +0100 (CET)
-Date: Tue, 17 Nov 2026 17:56:14 +0100
+	id BB28BC06EF; Tue, 17 Nov 2026 17:57:59 +0100 (CET)
+Date: Tue, 17 Nov 2026 17:57:59 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Imre Kaloz <kaloz@kernel.org>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] MIPS: sgi-ip32: Reserve the firmware memory
-Message-ID: <avyHLu4-jaWCSuut@alpha.franken.de>
-References: <20261013094554.16804-1-kaloz@kernel.org>
- <20261013094554.16804-3-kaloz@kernel.org>
+Subject: Re: [PATCH 0/5] MIPS: SGI updates
+Message-ID: <avyHl6mPdR0oJ1Jd@alpha.franken.de>
+References: <20261026134543.27207-1-kaloz@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -49,22 +48,41 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261013094554.16804-3-kaloz@kernel.org>
+In-Reply-To: <20261026134543.27207-1-kaloz@kernel.org>
 
-On Tue, Oct 13, 2026 at 11:45:53AM +0200, Imre Kaloz wrote:
-> ARC memory descriptors are ignored on IP32, so firmware data in low
-> memory ends up in the page allocator and CMA. Reserve it using the
-> generic ARC walk; RAM comes from CRIME, as ARC lists only the first
-> 256 MiB.
+On Mon, Oct 26, 2026 at 02:45:38PM +0100, Imre Kaloz wrote:
+> A stack fix for run_uncached(), a missing prototype and defconfig
+> updates for the SGI machines. Applies on top of "MIPS: SGI fixes"
+> (<20261013094554.16804-1-kaloz@kernel.org>).
 > 
-> Signed-off-by: Imre Kaloz <kaloz@kernel.org>
-> ---
->  arch/mips/fw/arc/memory.c        | 11 +++++++++--
->  arch/mips/include/asm/sgialib.h  |  3 +++
->  arch/mips/sgi-ip32/ip32-memory.c |  3 +++
->  3 files changed, 15 insertions(+), 2 deletions(-)
+> Patch 1 keeps the stack that run_uncached() gives its callee clear of
+> the registers it saves in its own frame.
+> 
+> Patch 2 declares ip22_eisa_init() in asm/sgi/ip22.h, so that enabling
+> EISA on IP22 does not add a -Wmissing-prototypes warning.
+> 
+> Patches 3 to 5 clean up ip22_defconfig, ip30_defconfig and
+> ip32_defconfig. They enable EISA, HAL2 audio and the Zilog serial
+> console on IP22, the front panel LEDs on IP30 and the audio driver on
+> IP32. Patch 3 also switches ip22_defconfig to the R4x00 CPU type,
+> which most of these machines shipped with.
+> 
+> Imre Kaloz (5):
+>   MIPS: lib/uncached: fix run_uncached()'s stack switch
+>   MIPS: sgi-ip22: Add prototype for ip22_eisa_init() to header
+>   MIPS: ip22_defconfig: correct CPU type, add EISA and refresh config
+>   MIPS: ip30_defconfig: drop add-in drivers, enable the LED driver
+>   MIPS: ip32_defconfig: drop dead options and add-in drivers, add audio
+> 
+>  arch/mips/configs/ip22_defconfig | 79 ++++++--------------------------
+>  arch/mips/configs/ip30_defconfig | 13 ++----
+>  arch/mips/configs/ip32_defconfig | 36 ++++-----------
+>  arch/mips/include/asm/sgi/ip22.h |  1 +
+>  arch/mips/lib/uncached.c         |  7 +++
+>  arch/mips/sgi-ip22/ip22-int.c    |  2 -
+>  6 files changed, 34 insertions(+), 104 deletions(-)
 
-applied to mips-next
+series applied to mips-next
 
 Thomas.
 

@@ -1,102 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.52
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794935740;
-	b=mdbHaXIA97l982ytXxP9o6UMAPF1YNUzKZhgwXSt/xa7Jg3+ev+llqiStxvZ4EA0T6A2
-	 LVjNNXKQbA/O9LrH7Ohfem/gYk88C4jeLdaQV4DqKfv4sTVmaNYroN42vBwMQvAGAJmSV
-	 3fsPcfGfHu7ZosoYYiMf3e4QzVD9ctyje9i7vaQ27SclL+YMMr8euT/MXXP6DTH6L3njw
-	 SqRhk7Rx/zhHzW9OME2gNuEthBns/52hD0XRvhtJN7uiWb7EYTZebAgaT1kBNUzIO32qI
-	 BF+CLRphXPWc5rJiwFZtgJTbO15MamHG1llMpfHZxGAE8Rhg8F4kZsFJI4pmRryqRxA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794935740;
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.172
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794937114;
+	b=bP6UZSb5fojbHZ2062tQ0P+mbMh15HAjV/aGS5lAn7hP6Kod4PfbKxBxvNeraSmchJEl
+	 osQQnpY+praP2qWq4jFBMk7Kt/Iuv7LS+YDDdzZonyW5f9ETftkHP3eqiDDDPHU6MC4dA
+	 s+Ibad252kHxKyTHzLaigqnTxpoE3+NezSVU7gywzYViR4utJVo+Jyenb7A9G54OOvOxq
+	 +oUDTPaAqFUpfOILh1jXxi1+jdFOaBDWHMC4MtKIfeNI5R3XPJWUewC0ePw9wcApCot3+
+	 CbKTj+vfMb9QHaNDGhXA572InnmeXCOExIgqkpW5GQUBz3vJ+DZM+crrxI3x3mH6sXA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794937114;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=ycZWOvsMh7FrRoAyBZL4w1avdQvDxeeSgNXhZZJtJFc=;
-	b=PW7N0IVbMHGZu65nL1k0UKiGeawd/idVDNpq0ftUDqr43hhyNmzP+U1Y93wv7DzqswfX
-	 0ABbzRz9n83FSEJvPoGrCpueYP9AlBzTHVjVTH7WzzrbHTYumZmvEXt/DXLFJhBNvXwDN
-	 YT7miiJjKArvI+qItpvaj0OHZwxjKSyKfK3Bn7LewPWgt9wM7amYogdoOeSS+PVZapJmU
-	 TOlEsBqR2sdlKL/1X7/nvPo+ixEb1eqmMcjikERFRGYtQY5QKsb6TAmLMz+vQ7VNV9w83
-	 Qcw5XnVO23HXdcuRAfXCS19t1R8iQcbrvwFzSwSTRMc1g5Q+Lmesmeh2wg24G+H3BSA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
+	b=xMpTc55owAAGuQeB0+raRiBYwkBL8lK1yoJonYbw5UQhd8udP/t42y+NCu/bHr+2Bm5U
+	 oI0SsZnPIPQGVaMf9SoWiOCbSVmihJhezAjqDNw23uXxObNosxdpFSxYPfS0g89i7KGuB
+	 CFieDHkLZZQheCL1StOoVGJPzZ/PS15V4HPU+M0fE12OPY3m+plPEu7VmTv7vRzYeFla/
+	 9pXhJmCruUYaeDsLVVg6JJ87Tq6NM9HJVySZDDBqusuH4JwZEgeQVN7nIArh/zL9gwqbw
+	 oVDGMXhhXFFEZr+S9QYCftrJ1CB/CzYOsTTJPzJ11Qr/QkZ6k1yn/W11CfrAYE4pNkw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0Y76Ifj8;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.52
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x8lY2Afx;
+	arc=none smtp.remote-ip=74.125.82.172
+Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F35606A336
-	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 17:15:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 69F35606A336
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDE8606A32F
+	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 17:38:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0CDE8606A32F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0Y76Ifj8
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-6b7efd3bc26so112188a12.1
-        for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 09:15:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794935739; cv=none;
-        d=google.com; s=arc-20260327;
-        b=WlocbP2tf7LMAv0MAcZZd0L34CGlynAAH0q1Di5QT8yjpb18KR2MiDah1LvRTBN5C/
-         eqYaF5l6r76Fr28PZY8F79hzKnf82Rr6FrcLixWPbvCZKKlRmu/ZkUijPP+VMHURPN9U
-         bWfsK7cBEwSX6bRg83Wep2wp2DdKirYx0tSsWEFImZdQlge3+ljCuASDX5NTyEceKVR8
-         49REHvuylIxEs+9DaPFlRpHknGcZxwZvmU+KYGxXnDCaCimw5eGALwC6CKZ89D1k/y/p
-         atXqKdCG6lhBNxJBsg/NqaPEs0fr01cuDF+BMKowqwvRzGUn2oRR0hVFoXLl2+kZYXY8
-         59DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=ycZWOvsMh7FrRoAyBZL4w1avdQvDxeeSgNXhZZJtJFc=;
-        fh=4cgaHmspT1ijltfcCqAlIjRfdxrHhMmIHE1HvzUzwQE=;
-        b=UoSdcGO+Ty16XlYlm9c0lCg37W/twdjH8uuNmdi2BJSbIc0W8ozJkVXTtpYnHuQnY/
-         X7i3jdSk8BS9JWoTzIs4cLDe2lXS1EYOqt6j2MWcSwWFwn+Ljzxg6z5FeRSJ3TgfujSd
-         +L/ka7CbDA1LDexK6DJlK3d6yZM5s/OOJepvDmeu/W04jbanb+XkFxa8FH78ba62ArvA
-         +SW7IKrU7YtiHceOowJsLTPB8LwauN6HKmWiQgOXczmKX3E4Ew0Yit8/NHicfsE1mO6j
-         s4qGo5aQ6eN3z7u6FTyIj8YPFeUil9ULJzCnTMEPylZil7CiFz39UHgBR5GN42J4rD/t
-         lT+A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=x8lY2Afx
+Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-3704d30b84fso217021eec.1
+        for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 09:38:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794935739; x=1795540539; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ycZWOvsMh7FrRoAyBZL4w1avdQvDxeeSgNXhZZJtJFc=;
-        b=0Y76Ifj8d0i/HievOD+S/vLbshO8yiCsFsY1cg0g2oVP0cooU21euS6mvQFEHc3qd3
-         Iapj8n4Yx7i/NWXzCUxZcq2lrb5Vev4VOMQtniN6TxwVp8WPYgW0yNp3l7kedussZYzF
-         qcXmHM+4/yDOcZtzBg8zXkDF4HCm8Jtc6s6CS+p57usGGBT4CVCDcoYX0D5/LDlEQ6Q8
-         lRF+jjb3HMeHLmvNLtxoKK1f5X8bvTsFKAYwH5+vZ7nftrzqoOMKRObc+uPnHmouEHEh
-         KwFhXMQ95I6R2na1XzIfN4mrBJi67rUeDzPwcUuBFu9FU5VtcUrK9V3cijnCkydyduXE
-         8Igg==
+        d=gmail.com; s=20260707; t=1794937113; x=1795541913; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
+        b=x8lY2AfxwiNYg7IpNbQCiyILCpiANn+42LaeNRKECLogXhMVGvCdemTyxpgGVVxq1m
+         XrugsJSex2OH+YGY/0yNpu6PxKeaXRokdkaGeXtIrN+Fm5b23bR+JFGvwv4dhCTY48gX
+         /+xIndzKuykcxo0voMeBfw0iqHoY51A2l9csG8sJmoEFVxV3Go+l9pxPxXH53taNjs58
+         ZVLGf6fYwvR76sKUTNLWJFsCE/iuOIuZW7j46mBpdQfCruYGiGnxjdGwUKo5TZFaMB3N
+         EsXqvNF+xPqHS9kuMGsLBxpWvrg+3zY/1iabuknjQXbefzeNcnplI9ClvJWXfqQGSpAL
+         t/7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794935739; x=1795540539;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ycZWOvsMh7FrRoAyBZL4w1avdQvDxeeSgNXhZZJtJFc=;
-        b=zC8wKT+QdInfvgbVCHygnPmkmMnrV1h4d0z3f4zn7lnhcLGjuSHubuVvdKAUGIw8ST
-         KxYUjqx32G4skrWN8Tkl0frxDCw/X22jQ738yObNJ6Ot2yY0W0CZVJ5qRsjfwN7GPgOg
-         8DZ4lff1Ep0CBZGvsZqLjsUrli7sg/Nv7EYhXBwCxsLE4BAlpLPmZkNNPyyqDtBMaTwZ
-         DiAgAGj29KTukybqniVh08TkfjRtGehsJltKNS9N+wQzHk/CJhZ9XhuYaeQRH5HPjNSJ
-         HcDszfAeZ92df2of2GtmMYC3mwnxHzZAfX4g4CnXBoNRdumkxi1ZdKKi95bF8NevFkQx
-         sQeg==
-X-Forwarded-Encrypted: i=1; AL+hErF1Dudb42mMrDpTxg81rhf5Y/4WB2tebVdxmZ8AX5osHXYF+pZMLYZfnlj+jII7l01aEuXp6J3KWUsa@vger.kernel.org
-X-Gm-Message-State: APuU4Z9b1+wZT50ripES9uTRVJA5sENKFGj77IMLN5GNYLJw3eepth/V
-	3/Wb3/lfDbq0WWgPnz9gWIlMP8ClIEzroA/ufnjx2/UEedcX0dUB+u3YC9oGjzHDBmStXnafN7v
-	hDMX9pwGXaT532SswPiTxi655FObkXiA=
-X-Gm-Gg: AYBFou19Y6/H3wVxHGdkP4c+QwGb1Xz6ioCenX1yUpspRLh/yF8+k7Hes5mqAHtqtsN
-	LnUGyPFqwuZilvProyjeYVhdS44vx+HPZVr4DzCuTsvlGugw9qwwb9L6CqyeO9Ztr2BG7DzUNLw
-	1O3KehCxGWj3dbo6vkKJZ7jJfjnfZCApVaY1IGDW333ne9UX6D3OnNg0nN6Syuz5TQdshEStLtu
-	AMVwI4jDveVlETQYO34ObFUKDOJlQMn8L188FOhDpHnQhM9IXOWFHoWD1+ZJ1QwbDoNxBw3vGCf
-	DxXnHWf6NmuvzH8dnKoSTgBBFUpYvKzEnGVnjt2hqQNuXUlG4lhRyjT3P9bVTfyFxAw2aTDhLoj
-	hiVWBn2wJY+XErf4MzlQY6uJN/m3XpegsA2UdeJICg4snz6eTV1NPeZlfqOZZEqL1M7j7BVzDbr
-	+2A2N6dBoi0TV35GhRfZGpPFXje5wx2q6WykAIOGdS0WHc9q6UongOM72JkQgypeiafG15Qg8wm
-	lcvA0S2Vdpg1xNyYx987RZ5RXnlMw==
-X-Received: by 2002:a05:6402:42cb:b0:6b1:d439:5c5 with SMTP id
- 4fb4d7f45d1cf-6b7c088fadfmr11109937a12.3.1794935738608; Tue, 17 Nov 2026
- 09:15:38 -0800 (PST)
+        d=1e100.net; s=20260707; t=1794937113; x=1795541913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=SSX+d+qRWkdn91G1pK7BnTwO8tnOwfNEC8664ApeNmk=;
+        b=keeAcFuL6mqPofi9s2KVw7YAHn9r0/VGiNJeKBBklA3NF1JHY3hNsZVRXcfwA8VomR
+         bFJzwloYKRCxiF77Ck0O4E6Ud7SwTMyibInmGlETmsfKV6GpdWeIslK48HwzBA2KBoCe
+         6cAOen4U3MOG4fP+3TPgR4NVHdCltksTaKgM4IbHue9GH4cuwQVBiwuw+5lPlbEq+oVn
+         ZeCCn1nYa8luYM7CK2foPWZAQ9k+maDR3O18NDenHq8q+KJsU72CZkRX0jQZ30Aapysw
+         OAk3Rz1sAn8oThsWpD8Mb3nvh0Qd8CWV/0Xy1Xxk+dYzYNC1UNdSY4jAmE6mmYayVyog
+         rZnA==
+X-Forwarded-Encrypted: i=1; AL+hErG+l7u2g3gay929f7hxjRRD31GxRZcVmpxWY8UEaW4SsedD0mIa/z68ryCscByrHa/SIKVkxLye/Ln9@vger.kernel.org
+X-Gm-Message-State: APuU4Z+tA9hwU4HERcLydKqWgWAxEmaD7qj7jrFCAxrjdJdGwuNC9+Za
+	+N4Zjrg8TP8ajodP0q/fmKLH55NOup6ZB2/DyciYWLGIpDCWgWWIW4XB
+X-Gm-Gg: AZFdTZfC1ljPCqOUSYhUKED6FF607SFoCjkJc7WTyjt2lrc1W1nhb5S7kUHtkUr9jhd
+	u0U2ghwo58KMyoOwqkLnrzmQYwk3fQIMz+ZKTsWnk+PJUMbls1atp/K5OKlPqxYf62tTORfKGXS
+	xr1UCvWJwSAv/scXF3L+BP86esMzpKj7PEcYR5Az4BBLezMP3W6V4xoqg1MIPMV66SB1wMyYXIz
+	/sfPX/8g2DlV0idlCHrgSQ6qwZof6aFUIAfY9IC/h/lk49aWLEc1Z9LvLyOSsxHM7ctjzP7TGsy
+	h3DlnshY2qvaZA5yEvTBcj9Ygvn8/rzYvqIaiSZqh834KtKbOgwSen1UoeOPIxrDh52Aqfx5FDT
+	JHgkx0yzbxfN70fEDJiBRGZcimGsj00/t5wjKzBTF/C2FJeqo028K7qiDIjYdCk1G7FPHliBWGg
+	4k6FyRgVUixadfyWzaMpUzA4fLHZOD07N/1El1zIrXCsEcb5X9sHBZKDsPvyvHwuYFS7HcfaYIA
+	md20TpK/9gUbi5MaOXl2E2W6nc2fagcahMHZeP0QtkVZDV2wjG9gwkifsdSrN15Lc9Awpy9r3qC
+	jjRL9gOB
+X-Received: by 2002:a05:7300:de4c:b0:36a:1f4f:3e9 with SMTP id 5a478bee46e88-3828101de20mr123080eec.20.1794937112971;
+        Tue, 17 Nov 2026 09:38:32 -0800 (PST)
+Received: from eldorado ([2600:8802:b00:1f88::287])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37956bb0919sm44098373eec.29.2026.11.17.09.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2026 09:38:32 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	stable@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	linux-mips@vger.kernel.org (open list:INGENIC JZ47xx SoCs),
+	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Subject: [PATCH v2] drm/ingenic: Allocate and register the internal bridge separately
+Date: Tue, 17 Nov 2026 09:38:20 -0800
+Message-ID: <20261117173822.1816385-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -106,221 +104,125 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-0-556b1d7c6221@gmail.com>
- <20261113-submit-rawnand-retained-handle-lifetime-v1-v4-50-556b1d7c6221@gmail.com>
- <edb4f1ae93fff1bea9380dc7fb1d2c8f2570bb67.camel@crapouillou.net>
-In-Reply-To: <edb4f1ae93fff1bea9380dc7fb1d2c8f2570bb67.camel@crapouillou.net>
-From: James Hilliard <james.hilliard1@gmail.com>
-Date: Tue, 17 Nov 2026 10:15:24 -0700
-X-Gm-Features: AclHuK9KT8grAZrRLLebF-am9hX1f-i-TowuArJi-sKzS1G3iCSB2RVcRvk6uKs
-Message-ID: <CADvTj4qJXb5sUQbDrAj5uY+VDYcP9HOGHuy4j3iA0dQEDF3amw@mail.gmail.com>
-Subject: Re: [PATCH v4 50/58] mtd: rawnand: ingenic: retain chip state across removal
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Harvey Hunt <harveyhuntnexus@gmail.com>, linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 17, 2026 at 3:29=E2=80=AFAM Paul Cercueil <paul@crapouillou.net=
-> wrote:
->
-> Hi James,
->
-> I tried to apply on top of mtd/next but it does not apply cleanly.
-> So what base are you using?
+The LCD controller's internal bridge is embedded in an object allocated
+with drmm_encoder_alloc(). This initializes the encoder but leaves the
+bridge's reference count at zero. Since drm_bridge_attach() takes a
+reference, probing the CI20 display produces addition-on-zero and
+underflow warnings and fails to attach the HDMI bridge chain.
 
-For v4, I used NAND next at
-30daaf3e7897b4a8d9b72e5b0c86dd6e2a4d7d85, plus the separately posted
-fixes listed as prerequisite-patch-id entries in the cover letter.
-The Ingenic patch also depends on the earlier core changes in the
-series.
+Allocate the internal bridge with devm_drm_bridge_alloc() and register
+it with devm_drm_bridge_add() before attaching it. Keep the encoder in a
+separate DRM-managed allocation: encoder cleanup can drop the final
+bridge reference before it has finished accessing the encoder. Find
+the internal bridge through the encoder's bridge chain during mode
+setting, and use the bridge argument directly in bridge callbacks.
 
-With released b4, shazam -H uses the declared base and retrieves those
-prerequisites before applying the series. Provided that base commit is
-available locally, this reconstructs the tree for review:
+Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in drm_bridge_attach/detach()")
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # CI20 V2a
+Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+CC: stable@vger.kernel.org
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
 
-b4 shazam -H -v 4 \
-  20261113-submit-rawnand-retained-handle-lifetime-v1-v4-0-556b1d7c6221@gma=
-il.com
-git switch -c nand-lifetime-v4-review FETCH_HEAD
+- collected Reviewed-by and Tested-by tags
+- added CC: stable
 
-For b4 0.17-dev, add --merge-base _specified, since its default base
-selection changed.
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++--------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-I verified that all 16 prerequisites and 58 patches apply cleanly on
-that base, and the resulting tree matches the sent v4.
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 625ec76cf04d..520912f9ed0d 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -121,16 +121,15 @@ struct ingenic_drm {
+ };
+ 
+ struct ingenic_drm_bridge {
+-	struct drm_encoder encoder;
+ 	struct drm_bridge bridge, *next_bridge;
+ 
+ 	struct drm_bus_cfg bus_cfg;
+ };
+ 
+ static inline struct ingenic_drm_bridge *
+-to_ingenic_drm_bridge(struct drm_encoder *encoder)
++to_ingenic_drm_bridge(struct drm_bridge *bridge)
+ {
+-	return container_of(encoder, struct ingenic_drm_bridge, encoder);
++	return container_of(bridge, struct ingenic_drm_bridge, bridge);
+ }
+ 
+ static inline struct ingenic_drm_private_state *
+@@ -738,7 +737,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+ {
+ 	struct ingenic_drm *priv = drm_device_get_priv(encoder->dev);
+ 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
+-	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(encoder);
++	struct drm_bridge *first_bridge __free(drm_bridge_put) =
++		drm_bridge_chain_get_first_bridge(encoder);
++	struct ingenic_drm_bridge *bridge = to_ingenic_drm_bridge(first_bridge);
+ 	unsigned int cfg, rgbcfg = 0;
+ 
+ 	priv->panel_is_sharp = bridge->bus_cfg.flags & DRM_BUS_FLAG_SHARP_SIGNALS;
+@@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct drm_bridge *bridge,
+ 				     struct drm_encoder *encoder,
+ 				     enum drm_bridge_attach_flags flags)
+ {
+-	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(encoder);
++	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
+ 
+ 	return drm_bridge_attach(encoder, ib->next_bridge,
+ 				 &ib->bridge, flags);
+@@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct drm_bridge *bridge,
+ 					   struct drm_connector_state *conn_state)
+ {
+ 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
+-	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge->encoder);
++	struct ingenic_drm_bridge *ib = to_ingenic_drm_bridge(bridge);
+ 
+ 	ib->bus_cfg = bridge_state->output_bus_cfg;
+ 
+@@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 			drm_panel_put(panel);
+ 		}
+ 
+-		ib = drmm_encoder_alloc(drm, struct ingenic_drm_bridge, encoder,
+-					NULL, DRM_MODE_ENCODER_DPI, NULL);
++		ib = devm_drm_bridge_alloc(dev, struct ingenic_drm_bridge, bridge,
++					   &ingenic_drm_bridge_funcs);
+ 		if (IS_ERR(ib)) {
+ 			ret = PTR_ERR(ib);
++			dev_err(dev, "Failed to allocate bridge: %d\n", ret);
++			goto err_drvdata;
++		}
++
++		encoder = drmm_plain_encoder_alloc(drm, NULL,
++						   DRM_MODE_ENCODER_DPI, NULL);
++		if (IS_ERR(encoder)) {
++			ret = PTR_ERR(encoder);
+ 			dev_err(dev, "Failed to init encoder: %d\n", ret);
+ 			goto err_drvdata;
+ 		}
+ 
+-		encoder = &ib->encoder;
+ 		encoder->possible_crtcs = drm_crtc_mask(&priv->crtc);
+ 
+ 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
+ 
+-		ib->bridge.funcs = &ingenic_drm_bridge_funcs;
+ 		ib->next_bridge = bridge;
+ 
++		ret = devm_drm_bridge_add(dev, &ib->bridge);
++		if (ret)
++			goto err_drvdata;
++
+ 		ret = drm_bridge_attach(encoder, &ib->bridge, NULL,
+ 					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 		if (ret) {
+-- 
+2.53.0
 
->
-> Le vendredi 13 novembre 2026 =C3=A0 11:15 -0700, James Hilliard a =C3=A9c=
-rit :
-> > Unregister and disconnect all chips before releasing the ECC provider.
-> > Retain each chip and its shared controller until the final MTD put,
-> > while releasing hardware resources during device removal.
-> >
-> > Run NAND cleanup during disconnection; the final core-owned put only
-> > releases retained allocation and layout data.
-> >
-> > Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-> > Cc: linux-mips@vger.kernel.org
-> > Cc: Paul Cercueil <paul@crapouillou.net>
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> >  drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 39 +++++++++++++++++=
--------
-> > -
-> >  1 file changed, 27 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> > b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> > index bdda06ae0d72..2818ffe76796 100644
-> > --- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> > +++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> > @@ -368,7 +368,7 @@ static int ingenic_nand_init_chip(struct platform_d=
-evice
-> > *pdev,
-> >       if (IS_ERR(cs->base))
-> >               return PTR_ERR(cs->base);
-> >
-> > -     nand =3D devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
-> > +     nand =3D kzalloc_obj(*nand);
-> >       if (!nand)
-> >               return -ENOMEM;
-> >
-> > @@ -377,7 +377,7 @@ static int ingenic_nand_init_chip(struct platform_d=
-evice
-> > *pdev,
-> >       if (IS_ERR(nand->busy_gpio)) {
-> >               ret =3D PTR_ERR(nand->busy_gpio);
-> >               dev_err(dev, "failed to request busy GPIO: %d\n", ret);
-> > -             return ret;
-> > +             goto free_chip;
-> >       }
-> >
-> >       nand->wp_gpio =3D devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LO=
-W);
-> > @@ -385,15 +385,17 @@ static int ingenic_nand_init_chip(struct platform=
-_device
-> > *pdev,
-> >       if (IS_ERR(nand->wp_gpio)) {
-> >               ret =3D PTR_ERR(nand->wp_gpio);
-> >               dev_err(dev, "failed to request WP GPIO: %d\n", ret);
-> > -             return ret;
-> > +             goto free_chip;
-> >       }
-> >
-> >       chip =3D &nand->chip;
-> >       mtd =3D nand_to_mtd(chip);
-> >       mtd->name =3D devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(d=
-ev),
-> >                                  cs->bank);
-> > -     if (!mtd->name)
-> > -             return -ENOMEM;
-> > +     if (!mtd->name) {
-> > +             ret =3D -ENOMEM;
-> > +             goto free_chip;
-> > +     }
-> >       mtd->parent_dev =3D dev;
-> >
-> >       chip->options =3D NAND_NO_SUBPAGE_WRITE;
-> > @@ -404,17 +406,27 @@ static int ingenic_nand_init_chip(struct platform=
-_device
-> > *pdev,
-> >       chip->controller->ops =3D &ingenic_nand_controller_ops;
-> >       ret =3D nand_scan(chip, 1);
-> >       if (ret)
-> > -             return ret;
-> > +             goto free_chip;
->
-> Blank line here
->
-> > +     ret =3D nand_set_lifetime(chip, to_ingenic_nand(nand_to_mtd(chip)=
-));
->
-> This is quite convoluted, just do nand_set_lifetime(chip, nand);
->
-> > +     if (ret) {
-> > +             nand_cleanup(chip);
-> > +             goto free_chip;
-> > +     }
-> >
-> >       ret =3D mtd_device_register(mtd, NULL, 0);
-> >       if (ret) {
-> > -             nand_cleanup(chip);
-> > +             nand_disconnect(chip);
-> > +             mtd_put_master(mtd);
-> >               return ret;
-> >       }
-> >
-> >       list_add_tail(&nand->chip_list, &nfc->chips);
-> >
-> >       return 0;
-> > +
-> > +free_chip:
-> > +     kfree(nand);
-> > +     return ret;
-> >  }
-> >
-> >  static void ingenic_nand_cleanup_chips(struct ingenic_nfc *nfc)
-> > @@ -429,8 +441,9 @@ static void ingenic_nand_cleanup_chips(struct ingen=
-ic_nfc
-> > *nfc)
-> >               chip =3D &ingenic_chip->chip;
-> >               ret =3D mtd_device_unregister(nand_to_mtd(chip));
-> >               WARN_ON(ret);
-> > -             nand_cleanup(chip);
-> > +             nand_disconnect(chip);
-> >               list_del(&ingenic_chip->chip_list);
-> > +             mtd_put_master(nand_to_mtd(chip));
-> >       }
-> >  }
-> >
-> > @@ -474,9 +487,12 @@ static int ingenic_nand_probe(struct platform_devi=
-ce
-> > *pdev)
-> >               return -ENODEV;
-> >       }
-> >
-> > -     nfc =3D devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KE=
-RNEL);
-> > +     nfc =3D kzalloc(struct_size(nfc, cs, num_banks), GFP_KERNEL);
-> >       if (!nfc)
-> >               return -ENOMEM;
->
-> Blank line here.
->
-> Cheers,
-> -Paul
->
-> > +     ret =3D devm_nand_controller_init(dev, &nfc->controller, nfc);
-> > +     if (ret)
-> > +             return ret;
-> >
-> >       nfc->soc_info =3D device_get_match_data(dev);
-> >       if (!nfc->soc_info)
-> > @@ -493,7 +509,6 @@ static int ingenic_nand_probe(struct platform_devic=
-e
-> > *pdev)
-> >       nfc->dev =3D dev;
-> >       nfc->num_banks =3D num_banks;
-> >
-> > -     nand_controller_init(&nfc->controller);
-> >       INIT_LIST_HEAD(&nfc->chips);
-> >
-> >       ret =3D ingenic_nand_init_chips(nfc, pdev);
-> > @@ -511,10 +526,10 @@ static void ingenic_nand_remove(struct platform_d=
-evice
-> > *pdev)
-> >  {
-> >       struct ingenic_nfc *nfc =3D platform_get_drvdata(pdev);
-> >
-> > +     ingenic_nand_cleanup_chips(nfc);
-> > +
-> >       if (nfc->ecc)
-> >               ingenic_ecc_release(nfc->ecc);
-> > -
-> > -     ingenic_nand_cleanup_chips(nfc);
-> >  }
-> >
-> >  static const struct jz_soc_info jz4740_soc_info =3D {

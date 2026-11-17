@@ -1,72 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794922665;
-	b=1xD5Y5Y1Z2At5HOFYD7MyPdjbXhYeBFsGiXPw8pw11a0l2GZ/a9CEzFD+Y9ThQL4S0VX
-	 V6QWosMBUNOr+tIDfdp9qY49lVKHaGvFVOh15/MMq7HSnqzF9A71cIxJxRa7bDEmfAyCt
-	 OY1Hr7TeGEjombJDaPgIIUz09i8fowWBXlpFDFv8wZF77x4wRA/NLaE25Cuj6oOVqKimF
-	 x34BgvbYRY5Pp4uT00nvWkEZqUEZoE9PnY/NB/cMoCHXLcZa2hri+gWLAL/GU08+OeOsN
-	 iAenTldGu2+R3Z9M8wJc/mG4I8irfsbeupZRMng2Q3I/caa1FBjgc4XXLZ54zbKFypQ==
+	t=1794925337;
+	b=st0qWeQ3aoFiD6+sO50jzMMP8Ir8au9Tj8Da2OZzgpbMT9q+aZ4DIyGbfM3YZ0749r7u
+	 5wmOp77KBaRttVHO+8bDdp3SyLJdxLcTyRtQDb12kQsMy3asFpL4UCzXyame4PsOhYTPD
+	 0DjWjrDpcUisYJ7qdWfpMJUVrATrwlWOa17/gvvS++VuNE1203/Jdqw2/oMyj+GgJQvAM
+	 QVnFSJW7o/fsBDYx5vqqWKaPFEtzQvzzsT6gnBtiw3PygbawueBs0aeU7ItvIXaS8mHqy
+	 YQytnnnklkRn27nQ8W9JoR1kxMeX0HynwKR60zunRxqiDq7Qw9ulA0YAFMdWGAKoNyw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794922665;
-	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:To:Cc:
-	 In-Reply-To:References:Subject:Message-Id:Date:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Mailer:
-	 X-Last-TLS-Session-Version;
-	bh=rnB0xV40D7sFrEbhmOXs6h8oLu3ZRD0P5eWWboGxYiM=;
-	b=k8oATC7QlvTttthcaD/2Kp+DlHJhq322Y2JWMOGlzCuUXF/OsN5UEneTGPYumfQR6vj5
-	 skKPeGJqMG/cg8EOg1BBLunBu1iQJKOUaOLILaeHdjJO4XKyNytQDBYsgOCJw0Lnu/lXg
-	 ZBBGS25AgeHPfEAAZZGStsNEa3B9Uu62O7lvtv9oc3/EYCw8yIELTptM2vk+ZH5YacPYy
-	 mVszNZFvyogJdgCd7fPP5BOLzUg4u6aGBy4ehM+1JLyrCAyMjbYCTt6uNzHpCKrEP1uzK
-	 UNe0Vw8kh++RjK7P76ouyvSviRxKmBjmZC3BwAKEqAzipZJhZmv3UUiW5Uu/J5ODLmw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794925337;
+	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=t4Lr+xw8BXAic1q2UWR4BTuRWiCebSTt4zHhFSbqjLw=;
+	b=kuM3WAct+z1ijoBiJTyKRoyKw3h0e8xL8mC8KW0Fa3KBEzQGzQ5LTtwl+3g2p6SEAGb6
+	 iFI9Rh28rvQ08SF8OT3P9trl8FWITjDHd7H4GpCvdNMJkazvhOHqJ5Lohtn1jEK6pyaMR
+	 xSFM6vKGNrzQEAbkd0UzURakmdfUC7oYDfPghORUAKTsUMru7qHNvnzJ10/1mUND0QdXi
+	 drzu/pY22pSFhRCz/WN/TB+n0TlrWZU98QaFi900VUikpewvD7IN+uo6BwHPzvbwRyrdm
+	 0P4yytgxuwMd7ijj4JLV9owZ0SRe9XJNdUg/BN1Y7184jWva6eCl3/AijmbBXxBRLkg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=bootlin.com;
-	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=RyH6ZLwx;
-	arc=none smtp.remote-ip=185.171.202.116
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+	dmarc=pass header.from=crapouillou.net;
+	spf=pass smtp.mailfrom=crapouillou.net;
+	arc=none smtp.remote-ip=185.119.170.32
+Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7829606A323;
-	Tue, 17 Nov 2026 13:37:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E7829606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=RyH6ZLwx
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id DC729C79A97;
-	Tue, 17 Nov 2026 13:37:47 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 77AAF5FC81;
-	Tue, 17 Nov 2026 13:37:43 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 699A411BC0024;
-	Tue, 17 Nov 2026 14:37:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794922662; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=rnB0xV40D7sFrEbhmOXs6h8oLu3ZRD0P5eWWboGxYiM=;
-	b=RyH6ZLwxdVYvCSRenJ86aNLOsQnB5ocRCEdI9Q9aUJFAPjnYv8vO4b8b2eW93RjASqIzhu
-	g9Sm7ISduvfnA1vaziz5XqZ9X6DPbnR1j1h+VDrQehW/qVRN0tVxJTq0FT+NBRN62OayRO
-	SpyzTb8yrS/njFRR+HNVqlfKUiM+JrT/nESQfsCFvvaJ8K/rsOq7E+DLtRDI1J4nh3/kEf
-	CcDxMy3W/Hc71rGIBkSEoA+qavUpI/KavKP6j1tXi9IrNbBQGxeEXNmnbjV1Rncv9TMfZJ
-	OHn/efXYZYeDfXZuTAJANjvx/zbs8+3NorWi4pEQUiy5XvXwsICTWC1jvA1oPw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
- Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
- Hauke Mehrtens <hauke@hauke-m.de>, Aleksander Jan Bajkowski <olek2@wp.pl>, 
- John Crispin <john@phrozen.org>, Sebastien Decourriere <sebtx452@gmail.com>, 
- Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20261114100608.3432120-1-sw@simonwunderlich.de>
-References: <20261114100608.3432120-1-sw@simonwunderlich.de>
-Subject: Re: [PATCH 0/5] mtd: maps: lantiq-flash: support boot loaders
- using the EBU endianness swap
-Message-Id: <179492265833.2237190.2315954934306792460.b4-ty@bootlin.com>
-Date: Tue, 17 Nov 2026 14:37:38 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6294B606A32C;
+	Tue, 17 Nov 2026 14:22:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6294B606A32C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Message-ID: <80f1ef9dd605d16df2add0a9dbdcdd5f9f508174.camel@crapouillou.net>
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: ingenic: validate BCH error index
+ in jz4780_correct()
+From: Paul Cercueil <paul@crapouillou.net>
+To: Guanglei Zhu <zhugl3@xiaopeng.com>, Harvey Hunt
+ <harveyhuntnexus@gmail.com>,  Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, 	linux-mips@vger.kernel.org,
+ linux-mtd@lists.infradead.org, 	linux-kernel@vger.kernel.org, Weibin Liu
+ <liuwb@xiaopeng.com>
+Date: Tue, 17 Nov 2026 15:22:10 +0100
+In-Reply-To: <20261105042405.71352-2-zhugl3@xiaopeng.com>
+References: <20261105040153.66597-1-zhugl3@xiaopeng.com>
+	 <20261105042405.71352-1-zhugl3@xiaopeng.com>
+	 <20261105042405.71352-2-zhugl3@xiaopeng.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -76,39 +55,79 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
 
-On Sat, 14 Nov 2026 11:06:02 +0100, Simon Wunderlich wrote:
-> Some Lantiq boards, like the bintec elmeg RS123 and RS353, have a boot
-> loader that enables the EBU's own endianness swapping for the NOR flash
-> chip select. lantiq-flash then fails to probe the flash. Patch 4 lets
-> such boards opt in to honouring that bit with a new
-> "lantiq,ebu-swap-check" property. The bit only works on VR9 from
-> revision 1.2 and on AR10, so the driver cannot rely on it on every SoC.
-> The property follows Hauke's review of an earlier attempt at this fix
-> in 2017 [1].
-> 
-> [...]
+Hi Zhu,
 
-Applied to mtd/next, thanks!
+Le jeudi 05 novembre 2026 =C3=A0 12:24 +0800, Guanglei Zhu a =C3=A9crit=C2=
+=A0:
+> From: Weibin Liu <liuwb@xiaopeng.com>
+>=20
+> The JZ4780 BCH controller reports each corrected bit error as a byte
+> pair index, in the INDEX field of the BCH_BHERR registers. The field
+> is 11 bits wide, but nothing in jz4780_correct() checks the reported
+> index against the size of the data buffer being corrected:
+>=20
+> =C2=A0=C2=A0=C2=A0 buf[(index * 2) + 0] ^=3D mask;
+> =C2=A0=C2=A0=C2=A0 buf[(index * 2) + 1] ^=3D mask >> 8;
+>=20
+> With data or ECC coming from an untrusted flash, the decoder can
+> report an index that points past the end of the data buffer, and the
+> above statements then flip bits outside the buffer.
+>=20
+> Skip the correction when the reported index does not point into
+> the data area.=C2=A0 A bitflip in the parity bytes does not affect the
+> data, so rejecting the page for it would fail reads that are
+> perfectly correctable, and an index beyond the codeword has no
+> buffer to update in the first place.
+>=20
+> Fixes: ae02ab00aa3c ("mtd: nand: jz4780: driver for NAND devices on JZ478=
+0
+> SoCs")
+> Signed-off-by: Weibin Liu <liuwb@xiaopeng.com>
 
-[1/5] mtd: maps: lantiq-flash: fix NULL pointer dereference on probe
-      commit: fd1cc5b1dc4f2f99917bc5c016a2593a951c2670
-[2/5] dt-bindings: mtd: Add lantiq,nor
-      (no commit info)
-[3/5] mips: lantiq: xway: sysctrl: export ltq_ebu_membase
-      (no commit info)
-[4/5] mtd: maps: lantiq-flash: honour the EBU's own endianness swap
-      (no commit info)
-[5/5] mips: lantiq: danube: rename NOR node on EASY50712 reference board
-      (no commit info)
+Since you have a Fixes: tag, you also need to Cc: stable@vger.kernel.org
 
-Patche(s) should be available on mtd/linux.git and will be
-part of the next PR (provided that no robot complains by then).
+You also need to add your own Signed-off-by alongside Liu's, since you sent=
+ the
+patch.
 
-Kind regards,
-Miquèl
+The change looks good to me, so you can add my:
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
+Please send a v3 with the Cc: line, your own Signed-off-by, and my Reviewed=
+-by.
+
+Cheers,
+-Paul
+
+> ---
+> Changes in v2: skip the correction for an index that does not point
+> into the data area instead of failing the page with -EBADMSG.=C2=A0 A
+> correctable bitflip in the ECC bytes leaves the data valid, and the
+> early exit also dropped the error entries that followed it.=C2=A0 This
+> matches how jz4740_ecc_correct() treats its indexes.
+>=20
+> Verified with a userspace replica of the correction loop: with
+> params->size =3D 512, an index of 256 (first parity word) or at the
+> field maximum (0x7ff) produces no write outside the data buffer,
+> and in-range indexes keep correcting as before.
+>=20
+> =C2=A0drivers/mtd/nand/raw/ingenic/jz4780_bch.c | 4 ++++
+> =C2=A01 file changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+> b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+> index 12b5b0484fe9..3a4c5d6e7f8a 100644
+> --- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+> +++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
+> @@ -216,6 +216,10 @@ static int jz4780_correct(struct ingenic_ecc *bch,
+> =C2=A0						BCH_BHERR_MASK_SHIFT;
+> =C2=A0			index =3D (reg & BCH_BHERR_INDEX_MASK) >>
+> =C2=A0						BCH_BHERR_INDEX_SHIFT;
+> +			/* Skip indexes outside the data area. */
+> +			if ((index * 2) + 1 >=3D params->size)
+> +				continue;
+> +
+> =C2=A0			buf[(index * 2) + 0] ^=3D mask;
+> =C2=A0			buf[(index * 2) + 1] ^=3D mask >> 8;
+> =C2=A0		}

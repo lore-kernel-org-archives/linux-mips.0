@@ -1,65 +1,107 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794938759;
-	b=iQOhGj73CSQCVeeRzEsYU0d34ZUQktgdkjFmU0iLXTAEU3OcgCqx1PmHoS4UkqHLTTbO
-	 VruqkMr0TUbxLg0rmtAGx3fVcYBatV1okd7I508ndfmhUZ+cqCazmtIcNbdgAktBIy1nf
-	 Tces2fOv1cUmpuoGQR1coHIkfvsPMx9z1VZ+vGnk3I+qeMoviY9Gv+wiwYxRJcCVUy/Sv
-	 xE8ixLLqhRIYkucbF9Se6PDJIrA/HnZVTtnPKmDewlbBkZKW3UPCuXAratFUla1GuWYey
-	 ZBTkVyyyhOimOcxG2RTW/dL/BNdBHuzKfGcsCvA8PNFGASMlD2ggUwJ8Ce64XIWKcTw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794938759;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Autocrypt:Content-Type:Content-Transfer-Encoding:
-	 MIME-Version;
-	bh=NKKM4BgDRFz5rVg0yA2Ja0CS4hNZpW/JNXIunibKgmE=;
-	b=PSseXo9dqVEHlRNM4F9kVDWXmqWMDXhuxHPxzeSnhVSOHGAzZTGtBv2WMBNIJrxQHaU6
-	 Abp+lVYFs87TTLRigVES999JZpD2lKCgccBOe0TeVDk6RIBkdgznEluCVV4ZMJZvMNs1D
-	 DzXvcin/zBFIUEI6uVzsbhMz5kuFPHwU5W2zbBFyYJ09WZey7R/ijJgG6+g6M1PReoPJ+
-	 lz9XdMZTw65EUQSGduVDvBvI0DsZEaA931WNbu7EvtMl2uNTv/hnC+MXmnpEL4zyUwyvk
-	 q80P+3N3HSt/O3QeVC6kCjPIzs2WL8Eao5pudMGP4LOlxBDqdArISGn0/l1Enh51J/A==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.166
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794940185;
+	b=vIDk8w85Kwtfoj30Alv/nyMp6F9vu+ScdeIF7azqaESaAI//DIBIuMx4L6XKGMdY7sDp
+	 VlpO+kswWmBrFgnD/OMxWYuOwBNNkfJvDseMUmnJ7CMBVJGKCdWDT5kH9kGADRv0zPiwT
+	 kCWwmdG0Qj0No1AvgkkXqsAQN77tXgCGOgps1J/y7kAsAKAGblkoZf9jm7siEGOa34xcq
+	 gSHc07YPj4/0vzcpKogoJT6rVP1deihto/YZ6njxzdpVoOwO3VzkEkODGpfAbZQKPTGJR
+	 CGRankf9X00kGebbkJWN8a8xMII9Jg40kzFJS0nXvyXjntTwNJnvPXXKBKQ6BKK0q5w==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794940185;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=l+XFBccrYuDhtVAQlrMd+uvqRXSMqFNcK/gVZwMFJks=;
+	b=gdCrfHp2MeYpr2yUGZuQShPjHEEwZU2lsAZC1v65i65FDnGYxEp9gFR2NxHxJyJBoo5Q
+	 V08yBW6R6ANtagv+y1luV+FchRmsx/1T8e8o5XLHlfBLQEf+10C4WlI/yjAhei0/jsJwC
+	 s/p+J0Vfuk9xNgdd9/ayjeoOy2RmaMhk3e7FfbPSRnITvv+bHqIDAgdb2EYJKKWbTYExL
+	 gFf0ljZjqYfgLwZ9lJsL2QwUWX+dV1fB87R1SSbEjrCh+7ORKKAVV1vKkACZmBPTbNSWP
+	 HtGoz+j3FqHvGigANFGI1pA/FXcGJF/rsaMttgqKlhqOTFui5yulhn2iqn1twEfWWRw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=goldelico.com;
+	spf=pass smtp.mailfrom=goldelico.com;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Fg7PwePu;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Mln4Z3qp;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.166
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A744A606A336;
-	Tue, 17 Nov 2026 18:05:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A744A606A336
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <6a81081ad3c2d37ed09c75f1303a84c65792dfe1.camel@crapouillou.net>
-Subject: Re: [PATCH v2] drm/ingenic: Allocate and register the internal
- bridge separately
-From: Paul Cercueil <paul@crapouillou.net>
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
-Cc: "H. Nikolaus Schaller" <hns@goldelico.com>, Luca Ceresoli	
- <luca.ceresoli@bootlin.com>, stable@vger.kernel.org, Maarten Lankhorst	
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, "open list:INGENIC JZ47xx SoCs"	
- <linux-mips@vger.kernel.org>, "open list:DRM DRIVERS"	
- <dri-devel@lists.freedesktop.org>
-Date: Tue, 17 Nov 2026 19:05:50 +0100
-In-Reply-To: <20261117173822.1816385-1-f.fainelli@gmail.com>
-References: <20261117173822.1816385-1-f.fainelli@gmail.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
- LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
- FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
- z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
- +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
- 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
- 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
- 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
- dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
- 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
- rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
- lBwgAhlGy6nqP7O3u7q23hRU=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA82C606A31C;
+	Tue, 17 Nov 2026 18:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EA82C606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Fg7PwePu;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Mln4Z3qp
+ARC-Seal: i=1; a=rsa-sha256; t=1794940173; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=r4/2fUO9uT4ytL/rgwwjYtBWpbHWj1KI7VTsq4N/icXsQBBJK5mncPKoac7g51XHJi
+    jT6WHNzQZVNqw28EflW+nqBVOfQ/FwsZl5d55LAKLIxlnWnrj5aKFgU8gytvl9+NCKfK
+    jUe+YoMMpKBFqMxTI3fHCWqfP6GmeuDf3txwjhJYxHowEgy0h0Tp9KKRY0KZlBZoHBAD
+    m2zSidNXd0YToxW0O7b1dVtxD8BEd0xUkjjApdj7vFlhXJgsto+KWpTi52HHjDxw9cKE
+    7izql6ACMw3SE15D6RR+b8baqlkA6xcjWrxzXxN9axtIyjfzkUDm9dVMzKo9GoPwFkHc
+    dXEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794940173;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=l+XFBccrYuDhtVAQlrMd+uvqRXSMqFNcK/gVZwMFJks=;
+    b=H18kM8kd88OuXMTIkJ4SQ65oHi6an+ew5o7jwOp+vHQJ1jGq3YxcVotAyCsiPCy2lA
+    /ze8wAOvm9e+AIsNG2WkXarOB2LDqXiJUg4IwENOiakrWXjetRO8qAkKL260STF5kBMo
+    e/te5VfyW6G1sGV/UDcLuFFfINSGLXFZjG5F0PwhibSUIAIYrpRObYFaRYGRdtvHHntz
+    3UgU/t/unsji4dWydhvIRI+eDjLiYmxbd3ZgwMG6BX1L64gLnaNBKIohu3lbODKQ5CnQ
+    iG0HMAVvSap1KnZ+09xiTC/h4ZykvQoQfYaZG/f4MHuAb8ku6pJ6Bh5aYdVd5mqIHYwb
+    Kktg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794940173;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=l+XFBccrYuDhtVAQlrMd+uvqRXSMqFNcK/gVZwMFJks=;
+    b=Fg7PwePuBiIe8MYHGxudhFyymWA5FNdAHJovJZwQ1YZ/9KaEXDD1PAQxwHJsS21mmD
+    Q0VRDxtbwgN+WjqHm2H6/9XxjHG6WMDJ0tztYfiGakcAQcrqrjxv7GI6Xu0ai8/F1uMl
+    ASSv2rCebdvIBIAKhvU8BMMBjaPxwRdiAK+Lz6qv47JK33D1NhmilUx8OvwHDdf8Endf
+    cGFWLcEwONYipu/BpYi5yCt1DDObnwBCJ7fDSKEke61zrK19fRJuVODQvKZBK8sVecfT
+    TybaK/szqnnW4tmti7Ze4lINkMrQlB3ItrEIDz2eTfyo1b3lI4nXGt9ZV3UQTj8UE0OL
+    lvyw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794940173;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=l+XFBccrYuDhtVAQlrMd+uvqRXSMqFNcK/gVZwMFJks=;
+    b=Mln4Z3qpC1X6hAChJIJyS/bk6wPPWMh7aIyVDlgrgFruRVyMIK3oSBmuECoPSEbPo4
+    t5aJ+MDS8DA7QXRQctDQ==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrQ3ppelMiNKoEY92nD9kO01+3QZuyyF4VcrvHZ"
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Qb56a22AHITXYbO
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 17 Nov 2026 19:29:33 +0100 (CET)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Linus Walleij <linusw@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Bartosz Golaszewski <brgl@kernel.org>
+Cc: linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	letux-kernel@openphoenux.org,
+	"H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH v2 1/7] pinctrl: ingenic: Swap ID_X1600 and ID_X1830
+Date: Tue, 17 Nov 2026 19:29:22 +0100
+Message-ID: <31af98bb343c39b76f8c59d247a9ebf45ddfb541.1794940167.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <cover.1794940166.git.hns@goldelico.com>
+References: <cover.1794940166.git.hns@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -69,165 +111,108 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Florian,
+From: Paul Cercueil <paul@crapouillou.net>
 
-Le mardi 17 novembre 2026 =C3=A0 09:38 -0800, Florian Fainelli a =C3=A9crit=
-=C2=A0:
-> The LCD controller's internal bridge is embedded in an object
-> allocated
-> with drmm_encoder_alloc(). This initializes the encoder but leaves
-> the
-> bridge's reference count at zero. Since drm_bridge_attach() takes a
-> reference, probing the CI20 display produces addition-on-zero and
-> underflow warnings and fails to attach the HDMI bridge chain.
->=20
-> Allocate the internal bridge with devm_drm_bridge_alloc() and
-> register
-> it with devm_drm_bridge_add() before attaching it. Keep the encoder
-> in a
-> separate DRM-managed allocation: encoder cleanup can drop the final
-> bridge reference before it has finished accessing the encoder. Find
-> the internal bridge through the encoder's bridge chain during mode
-> setting, and use the bridge argument directly in bridge callbacks.
->=20
-> Fixes: 94d50c1a2ca3 ("drm/bridge: get/put the bridge reference in
-> drm_bridge_attach/detach()")
-> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # CI20 V2a
-> Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-> CC: stable@vger.kernel.org
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+The X1830 predates the X1600 and uses an older GPIO register layout.
 
-Applied to drm-misc-next.
+Swap their IDs to reflect the hardware evolution. This allows
+is_soc_or_above() to distinguish newer X1600-based GPIO features
+like X2000 (and X2600) from the X1830 register layout.
 
-Cheers,
--Paul
+Add an is_soc() helper for features specific to a single SoC
+generation and adjust the existing pin configuration checks
+accordingly.
 
-> ---
-> Changes in v2:
->=20
-> - collected Reviewed-by and Tested-by tags
-> - added CC: stable
->=20
-> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 31 +++++++++++++++-----=
--
-> --
-> =C2=A01 file changed, 21 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 625ec76cf04d..520912f9ed0d 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -121,16 +121,15 @@ struct ingenic_drm {
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct ingenic_drm_bridge {
-> -	struct drm_encoder encoder;
-> =C2=A0	struct drm_bridge bridge, *next_bridge;
-> =C2=A0
-> =C2=A0	struct drm_bus_cfg bus_cfg;
-> =C2=A0};
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_bridge *
-> -to_ingenic_drm_bridge(struct drm_encoder *encoder)
-> +to_ingenic_drm_bridge(struct drm_bridge *bridge)
-> =C2=A0{
-> -	return container_of(encoder, struct ingenic_drm_bridge,
-> encoder);
-> +	return container_of(bridge, struct ingenic_drm_bridge,
-> bridge);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static inline struct ingenic_drm_private_state *
-> @@ -738,7 +737,9 @@ static void
-> ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
-> =C2=A0{
-> =C2=A0	struct ingenic_drm *priv =3D drm_device_get_priv(encoder-
-> >dev);
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *bridge =3D
-> to_ingenic_drm_bridge(encoder);
-> +	struct drm_bridge *first_bridge __free(drm_bridge_put) =3D
-> +		drm_bridge_chain_get_first_bridge(encoder);
-> +	struct ingenic_drm_bridge *bridge =3D
-> to_ingenic_drm_bridge(first_bridge);
-> =C2=A0	unsigned int cfg, rgbcfg =3D 0;
-> =C2=A0
-> =C2=A0	priv->panel_is_sharp =3D bridge->bus_cfg.flags &
-> DRM_BUS_FLAG_SHARP_SIGNALS;
-> @@ -799,7 +800,7 @@ static int ingenic_drm_bridge_attach(struct
-> drm_bridge *bridge,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 enum drm_bridge_attach_flags
-> flags)
-> =C2=A0{
-> -	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(encoder);
-> +	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	return drm_bridge_attach(encoder, ib->next_bridge,
-> =C2=A0				 &ib->bridge, flags);
-> @@ -811,7 +812,7 @@ static int ingenic_drm_bridge_atomic_check(struct
-> drm_bridge *bridge,
-> =C2=A0					=C2=A0=C2=A0 struct
-> drm_connector_state *conn_state)
-> =C2=A0{
-> =C2=A0	struct drm_display_mode *mode =3D &crtc_state->adjusted_mode;
-> -	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge->encoder);
-> +	struct ingenic_drm_bridge *ib =3D
-> to_ingenic_drm_bridge(bridge);
-> =C2=A0
-> =C2=A0	ib->bus_cfg =3D bridge_state->output_bus_cfg;
-> =C2=A0
-> @@ -1303,22 +1304,32 @@ static int ingenic_drm_bind(struct device
-> *dev, bool has_components)
-> =C2=A0			drm_panel_put(panel);
-> =C2=A0		}
-> =C2=A0
-> -		ib =3D drmm_encoder_alloc(drm, struct
-> ingenic_drm_bridge, encoder,
-> -					NULL, DRM_MODE_ENCODER_DPI,
-> NULL);
-> +		ib =3D devm_drm_bridge_alloc(dev, struct
-> ingenic_drm_bridge, bridge,
-> +					=C2=A0=C2=A0
-> &ingenic_drm_bridge_funcs);
-> =C2=A0		if (IS_ERR(ib)) {
-> =C2=A0			ret =3D PTR_ERR(ib);
-> +			dev_err(dev, "Failed to allocate bridge:
-> %d\n", ret);
-> +			goto err_drvdata;
-> +		}
-> +
-> +		encoder =3D drmm_plain_encoder_alloc(drm, NULL,
-> +						=C2=A0=C2=A0
-> DRM_MODE_ENCODER_DPI, NULL);
-> +		if (IS_ERR(encoder)) {
-> +			ret =3D PTR_ERR(encoder);
-> =C2=A0			dev_err(dev, "Failed to init encoder: %d\n",
-> ret);
-> =C2=A0			goto err_drvdata;
-> =C2=A0		}
-> =C2=A0
-> -		encoder =3D &ib->encoder;
-> =C2=A0		encoder->possible_crtcs =3D drm_crtc_mask(&priv-
-> >crtc);
-> =C2=A0
-> =C2=A0		drm_encoder_helper_add(encoder,
-> &ingenic_drm_encoder_helper_funcs);
-> =C2=A0
-> -		ib->bridge.funcs =3D &ingenic_drm_bridge_funcs;
-> =C2=A0		ib->next_bridge =3D bridge;
-> =C2=A0
-> +		ret =3D devm_drm_bridge_add(dev, &ib->bridge);
-> +		if (ret)
-> +			goto err_drvdata;
-> +
-> =C2=A0		ret =3D drm_bridge_attach(encoder, &ib->bridge, NULL,
-> =C2=A0					DRM_BRIDGE_ATTACH_NO_CONNECT
-> OR);
-> =C2=A0		if (ret) {
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 37310d9679457..88c5edeaaddcc 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -110,8 +110,8 @@ enum jz_version {
+ 	ID_JZ4780,
+ 	ID_X1000,
+ 	ID_X1500,
+-	ID_X1600,
+ 	ID_X1830,
++	ID_X1600,
+ 	ID_X2000,
+ 	ID_X2100,
+ };
+@@ -166,6 +166,12 @@ static const unsigned long enabled_socs =
+ 	IS_ENABLED(CONFIG_MACH_X2000) << ID_X2000 |
+ 	IS_ENABLED(CONFIG_MACH_X2100) << ID_X2100;
+ 
++static bool
++is_soc(const struct ingenic_pinctrl *jzpc, enum jz_version version)
++{
++	return (enabled_socs & BIT(version)) && jzpc->info->version == version;
++}
++
+ static bool
+ is_soc_or_above(const struct ingenic_pinctrl *jzpc, enum jz_version version)
+ {
+@@ -4090,7 +4096,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
+ 				!ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPU) &&
+ 				(jzpc->info->pull_downs[offt] & BIT(idx));
+ 
+-	} else if (is_soc_or_above(jzpc, ID_X1830)) {
++	} else if (is_soc(jzpc, ID_X1830)) {
+ 		unsigned int half = PINS_PER_GPIO_CHIP / 2;
+ 		unsigned int idxh = (pin % half) * 2;
+ 
+@@ -4142,7 +4148,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
+ 	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+ 		if (is_soc_or_above(jzpc, ID_X2000))
+ 			reg = X2000_GPIO_SMT;
+-		else if (is_soc_or_above(jzpc, ID_X1830))
++		else if (is_soc(jzpc, ID_X1830))
+ 			reg = X1830_GPIO_SMT;
+ 		else
+ 			return -EINVAL;
+@@ -4153,7 +4159,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
+ 	case PIN_CONFIG_SLEW_RATE:
+ 		if (is_soc_or_above(jzpc, ID_X2000))
+ 			reg = X2000_GPIO_SR;
+-		else if (is_soc_or_above(jzpc, ID_X1830))
++		else if (is_soc(jzpc, ID_X1830))
+ 			reg = X1830_GPIO_SR;
+ 		else
+ 			return -EINVAL;
+@@ -4190,7 +4196,7 @@ static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
+ 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, false);
+ 		}
+ 
+-	} else if (is_soc_or_above(jzpc, ID_X1830)) {
++	} else if (is_soc(jzpc, ID_X1830)) {
+ 		unsigned int idx = pin % PINS_PER_GPIO_CHIP;
+ 		unsigned int half = PINS_PER_GPIO_CHIP / 2;
+ 		unsigned int idxh = (pin % half) * 2;
+@@ -4298,7 +4304,7 @@ static int ingenic_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 			break;
+ 
+ 		case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+-			if (!is_soc_or_above(jzpc, ID_X1830))
++			if (!is_soc(jzpc, ID_X1830) && !is_soc_or_above(jzpc, ID_X2000))
+ 				return -EINVAL;
+ 
+ 			ingenic_set_schmitt_trigger(jzpc, pin, arg);
+@@ -4314,7 +4320,7 @@ static int ingenic_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 			break;
+ 
+ 		case PIN_CONFIG_SLEW_RATE:
+-			if (!is_soc_or_above(jzpc, ID_X1830))
++			if (!is_soc(jzpc, ID_X1830) && !is_soc_or_above(jzpc, ID_X2000))
+ 				return -EINVAL;
+ 
+ 			ingenic_set_slew_rate(jzpc, pin, arg);
+-- 
+2.56.0
+

@@ -1,49 +1,67 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.127.231.48
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794906592;
-	b=dz9j9CEQ0ArFU2hOI6LpHje7Cc6OWSktzMFZnQwk4+lpviwpxscXBeKUd3WjK0uvsNcf
-	 DZlqUVkN4UBCDDEnev24/T7C/jcKmz8PXAYGgFjC2bgCKJ+yuD29Se5FWsT7C0Pl0fo+q
-	 12CXBTGYAopIieqzjZqCvWMAM/bgEzprAXX5J1+E8eCNOrKhahqwGmiMQkPxkmcyknGVD
-	 9H4x86EqoQSaQk9emq+RCAj3vEBASsxgkg9PJg6JXb1Yd7ptI3+d3vLTMYPY5RaAT7kZV
-	 KNAmDPrrIYpZ8TNP0WigtMIra+7bU8OMyBYqYSc3LX8RgIef+zylFcT66/3PufVEmdA==
+	b=W6bcweUda6k3N5YqJJhE72sKZi0MCFOteix/Dw4D8TQZ645yKAhp/hMdXCfTHGXSAVOs
+	 6YgLbqVkR+R6mSs80NBSWISKtuPdBS6BD7cZpoOz1+f9oZY+SQclRE91wlQO314M6KptG
+	 625EsS4Cr2+Zr48pDk9gtPVwfvyn/gNR1a2Ke5mc0T3ozNYJkPVbjQjmUAdxMqtxbr4RQ
+	 tv4Yys9J2qNj4AjI26r3xL8IcmdXnkoBJfinf+nDQtOYVIi0zBXYutYXcZ/PGPXUiuyLp
+	 1+iEQCFUJqdq+pN5XR77ELsQ6f3XExA6xUdY2k2AmbKymsDor83+LiJkA/Arz8nN6Og==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794906592;
-	h=DMARC-Filter:DKIM-Signature:Date:Mime-Version:X-Original-From:
-	 Received:Subject:Content-Type:In-Reply-To:To:Cc:X-Mailer:References:
-	 From:Message-Id:X-Lms-Return-Path:Content-Transfer-Encoding;
-	bh=DRswDdQOboDC8jUvVqmXRjusKvExO2lbWDxBKXv1mvo=;
-	b=3Ak8ZiLttCAoBbUyqyotIrncwJXIR7bio7mKqPsnZD1x+YpeX294XeLZ3aWs9lZHOgzW
-	 /Sd3eyzLZvIovcgFHwyIW0eFXjmKYpGNFqqcxmOV8qJUj1lV14VyrR9iHspw/12MWeHNR
-	 lCBEfkm6TYQGx4EniuXxW19VxFJE/K3VtQ456p8Yye9ghC8dOa9Wn+z3f46+p3IYsrVDs
-	 PJf9GmHaJeVqoCckWMIAKbZBSWMKR0YGK5vMoDzLRC9YyaZ8Pjkic1+31WuTGVOH+4iwf
-	 6Yq+t4p07olnlr7nkbKq74TgWReXaDRRuZ7uHTh2FKpKu+dIp803ZXFNHO4oxeohVlQ==
+	h=DMARC-Filter:DKIM-Signature:Message-Id:X-Original-From:
+	 Content-Transfer-Encoding:Received:Content-Type:Cc:From:In-Reply-To:
+	 Subject:X-Lms-Return-Path:X-Mailer:References:Date:Mime-Version:To;
+	bh=gbKZTu7knUG4G8yOjg3Om2+jitixoefrUeV7mOS6Cv8=;
+	b=ILTbDdVoNRINuqsXqh/bfHby4JqV3Ru9/3+KJ9CD5lG9nfn47SeCwDznR4B7ehMa37rf
+	 a7h7cfLsp3RSWsY/6x4tJyXZZafAoW8VNrQs+TAbuHV4Jys4zSQngMK/XPs6inRi/F/jy
+	 tuFK5g4HjgjIRnrQ/wedQy/ycAS2rs32XSB9gb7KxLQ7NbiXuicwhhY33fy/S23ElXwJV
+	 JfCT5Dd3PDvbqRCvVsDQhjGBXRSThIfapjRGxPJwe6a4C3VcSLtXWHLs+So92H08y9fzM
+	 yctdsPOhfIRJZ6AmJpba9xGB80OmQalo1IDxMx0IIFkaBN39Kalw0oK3oIVTJ9Jcgbg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=oss.cipunited.com;
 	spf=pass smtp.mailfrom=oss.cipunited.com;
-	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=0RqEURDE;
-	arc=none smtp.remote-ip=209.127.231.46
-Received: from va-2-46.ptr.blmpb.com (va-2-46.ptr.blmpb.com [209.127.231.46])
+	dkim=pass header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b="R/NOYCis";
+	arc=none smtp.remote-ip=209.127.231.48
+Received: from va-2-48.ptr.blmpb.com (va-2-48.ptr.blmpb.com [209.127.231.48])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F61606A335
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44986606A33E
 	for <linux-mips@vger.kernel.org>; Tue, 17 Nov 2026 09:09:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 35F61606A335
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 44986606A33E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=0RqEURDE
+	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.a=rsa-sha256 header.s=feishu2303200042 header.b=R/NOYCis
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1794906587;
+ s=feishu2303200042; d=oss.cipunited.com; t=1794906581;
   h=from:subject:mime-version:from:date:message-id:subject:to:cc:
  reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=DRswDdQOboDC8jUvVqmXRjusKvExO2lbWDxBKXv1mvo=;
- b=0RqEURDEcK1kLmqRdRLe3zgyTBykkOzAEBheJxB3med4IYj8VKfNShg9pauwBb2EO4TkOd
- /81qVMhzJwf2tnGopDW+uQbvAJS2eoy6zLavFauNFI9h4lR8zSDjQNgZ3EqsNxhWwVkk6j
- 3RpqrwIiEI8wWrEDxutxtEi+8HELD23ek5dxfK6icUdx99O2kV8GpzjCdJzSMbG4AWapeO
- dxKdCOPJUNJuZc7OnlFaCt9CwXZB7Ivr1XYUzVhoAQSKob8zYgyW7hUuupoxCGDdy+QyNX
- JJ3KD0xX9Vqea498Pi8k5mW1P7cO11Q7kD0b0/vhFDNOL+dMHMssfx44756fSQ==
-Date: Tue, 17 Nov 2026 17:06:47 +0800
+ bh=gbKZTu7knUG4G8yOjg3Om2+jitixoefrUeV7mOS6Cv8=;
+ b=R/NOYCisZAUas7YkThVDOkz3Ypzp6OnaPj0ZwZxrn+d0ZcTOSKYAOWibtlRwd2KKioT1Ui
+ Qp0afCU1BooSGzkTZilMvrpu3pvP7CW82Z7MuftkZVFme+9BaXSzVTg6Crft5Oe176ix/D
+ ZR3Oln8ohR3DCYSJaoNli9+0Xb5BHfQI4TkBKBCULEQuFmbtg6kTWEIFr2vH10sOjy6D8p
+ C5Pc5tclji1edQfFwAGnk2T2GhBzTaLyZ8NxTpYcvYxomTFSv8vljWtaFn0vCUabB9yxA9
+ GME0SYuAaZBQWonkXFoYgtZzHX2YWgSN0VYXsB70gEt1Dep6liX6MER7i0E6vA==
+Message-Id: <20261117-mips-ls7a-wdt-v3-3-2e88f7e1d6c5@oss.cipunited.com>
+X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
+Content-Transfer-Encoding: 7bit
+Received: from [127.0.1.1] ([171.15.157.139]) by smtp.feishu.cn with ESMTPS; Tue, 17 Nov 2026 17:09:38 +0800
+Content-Type: text/plain; charset=UTF-8
+Cc: "Rong Zhang" <i@rong.moe>, "Yao Zi" <me@ziyao.cc>, 
+	"Icenowy Zheng" <uwu@icenowy.me>, 
+	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
+	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
+	<linux-kernel@vger.kernel.org>, 
+	"Rong Zhang" <rongrong@oss.cipunited.com>, 
+	"Conor Dooley" <conor@kernel.org>
+From: "Rong Zhang" <rongrong@oss.cipunited.com>
+In-Reply-To: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
+Subject: [PATCH v3 3/7] MIPS: Loongson64: dts: ls7a-pch: Use hex in ranges and reg properties
+X-Lms-Return-Path: <lba+26afc19d3+255a64+vger.kernel.org+rongrong@oss.cipunited.com>
+X-Mailer: b4 0.17-dev-ce4c1
+References: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
+Date: Tue, 17 Nov 2026 17:06:45 +0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -53,86 +71,129 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0
-X-Original-From: Rong Zhang <rongrong@oss.cipunited.com>
-Received: from [127.0.1.1] ([171.15.157.139]) by smtp.feishu.cn with ESMTPS; Tue, 17 Nov 2026 17:09:43 +0800
-Subject: [PATCH v3 5/7] MIPS: Loongson64: dts: ls7a-pch: Bind UART nodes to miscellaneous clock
-Content-Type: text/plain; charset=UTF-8
-In-Reply-To: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
 To: "Keguang Zhang" <keguang.zhang@gmail.com>, 
 	"Wim Van Sebroeck" <wim@linux-watchdog.org>, 
 	"Guenter Roeck" <linux@roeck-us.net>, "Rob Herring" <robh@kernel.org>, 
 	"Krzysztof Kozlowski" <krzk+dt@kernel.org>, 
 	"Conor Dooley" <conor+dt@kernel.org>, 
 	"Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc: "Rong Zhang" <i@rong.moe>, "Yao Zi" <me@ziyao.cc>, 
-	"Icenowy Zheng" <uwu@icenowy.me>, 
-	"Jiaxun Yang" <jiaxun.yang@flygoat.com>, <linux-mips@vger.kernel.org>, 
-	<linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>, 
-	<linux-kernel@vger.kernel.org>, 
-	"Rong Zhang" <rongrong@oss.cipunited.com>, 
-	"Conor Dooley" <conor@kernel.org>
-X-Mailer: b4 0.17-dev-ce4c1
-References: <20261117-mips-ls7a-wdt-v3-0-2e88f7e1d6c5@oss.cipunited.com>
-From: "Rong Zhang" <rongrong@oss.cipunited.com>
-Message-Id: <20261117-mips-ls7a-wdt-v3-5-2e88f7e1d6c5@oss.cipunited.com>
-X-Lms-Return-Path: <lba+26afc19d8+3629e2+vger.kernel.org+rongrong@oss.cipunited.com>
-Content-Transfer-Encoding: 7bit
 
-The Loongson-7A's UART controllers are driven by an internal 50MHz clock
-source called miscellaneous clock. The clock is nonconfigurable for
-board manufacturer and software.
+The ls7a-pch.dtsi mixes two different styles of addresses and sizes.
+Some use a all-hex style while some use a semi-dec-semi-hex style.
 
-Therefore, the LS7A UART nodes don't need to be fixed up by
-lefi_fixup_fdt_serial(), and can safely use clocks nodes rather than
-clock-frequency ones.
+The latter style is confusing and hard to read, so convent all ranges
+and reg properties into the former style.
 
 Suggested-by: Conor Dooley <conor@kernel.org>
-Link: https://msgid.link/20261111-oboe-shack-11c3e3ce0830@spud/
+Link: https://msgid.link/20261111-unlucky-parrot-eb416eb0c794@spud
 Signed-off-by: Rong Zhang <rongrong@oss.cipunited.com>
 ---
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The following changes will replace ls7a_uart*'s clock-frequency
+properties. There are reg properties with the unfavoured style around
+the context, so I decided that this series should fix them as well as
+other properties for address and size.
+---
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index bd191336f14d..1793109281c7 100644
+index 71d4c882d3f6..1a0484fa2a96 100644
 --- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
 +++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -38,7 +38,7 @@ lpc: interrupt-controller@10002000 {
+@@ -5,14 +5,14 @@ pch: bus@10000000 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+-		ranges = <0 0x10000000 0 0x10000000 0 0x10000000 /* PIO & CONF & APB */
+-				0 0x20000000 0 0x20000000 0 0x10000000
+-				0 0x40000000 0 0x40000000 0 0x40000000 /* PCI MEM */
+-				0xe00 0x00000000 0xe00 0x00000000 0x100 0x0000000>;
++		ranges = <  0x0 0x10000000   0x0 0x10000000   0x0 0x10000000 /* PIO & CONF & APB */
++			    0x0 0x20000000   0x0 0x20000000   0x0 0x10000000
++			    0x0 0x40000000   0x0 0x40000000   0x0 0x40000000 /* PCI MEM */
++			  0xe00 0x00000000 0xe00 0x00000000 0x100 0x00000000>;
+ 
+ 		pic: interrupt-controller@10000000 {
+ 			compatible = "loongson,pch-pic-1.0";
+-			reg = <0 0x10000000 0 0x400>;
++			reg = <0x0 0x10000000 0x0 0x400>;
+ 			interrupt-controller;
+ 			interrupt-parent = <&htvec>;
+ 			loongson,pic-base-vec = <0>;
+@@ -22,7 +22,7 @@ pic: interrupt-controller@10000000 {
+ 
+ 		lpc: interrupt-controller@10002000 {
+ 			compatible = "loongson,ls7a-lpc";
+-			reg = <0 0x10002000 0 0x1000>;
++			reg = <0x0 0x10002000 0x0 0x1000>;
+ 			interrupt-controller;
+ 			interrupt-parent = <&pic>;
+ 			interrupts = <19 IRQ_TYPE_LEVEL_HIGH>;
+@@ -31,7 +31,7 @@ lpc: interrupt-controller@10002000 {
+ 
  		ls7a_uart0: serial@10080000 {
  			compatible = "ns16550a";
- 			reg = <0x0 0x10080000 0x0 0x100>;
--			clock-frequency = <50000000>;
-+			clocks = <&pch_misc_clk>;
+-			reg = <0 0x10080000 0 0x100>;
++			reg = <0x0 0x10080000 0x0 0x100>;
+ 			clock-frequency = <50000000>;
  			interrupt-parent = <&pic>;
  			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
- 			no-loopback-test;
-@@ -48,7 +48,7 @@ ls7a_uart1: serial@10080100 {
+@@ -41,7 +41,7 @@ ls7a_uart0: serial@10080000 {
+ 		ls7a_uart1: serial@10080100 {
  			status = "disabled";
  			compatible = "ns16550a";
- 			reg = <0x0 0x10080100 0x0 0x100>;
--			clock-frequency = <50000000>;
-+			clocks = <&pch_misc_clk>;
+-			reg = <0 0x10080100 0 0x100>;
++			reg = <0x0 0x10080100 0x0 0x100>;
+ 			clock-frequency = <50000000>;
  			interrupt-parent = <&pic>;
  			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
- 			no-loopback-test;
-@@ -58,7 +58,7 @@ ls7a_uart2: serial@10080200 {
+@@ -51,7 +51,7 @@ ls7a_uart1: serial@10080100 {
+ 		ls7a_uart2: serial@10080200 {
  			status = "disabled";
  			compatible = "ns16550a";
- 			reg = <0x0 0x10080200 0x0 0x100>;
--			clock-frequency = <50000000>;
-+			clocks = <&pch_misc_clk>;
+-			reg = <0 0x10080200 0 0x100>;
++			reg = <0x0 0x10080200 0x0 0x100>;
+ 			clock-frequency = <50000000>;
  			interrupt-parent = <&pic>;
  			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
- 			no-loopback-test;
-@@ -68,7 +68,7 @@ ls7a_uart3: serial@10080300 {
+@@ -61,7 +61,7 @@ ls7a_uart2: serial@10080200 {
+ 		ls7a_uart3: serial@10080300 {
  			status = "disabled";
  			compatible = "ns16550a";
- 			reg = <0x0 0x10080300 0x0 0x100>;
--			clock-frequency = <50000000>;
-+			clocks = <&pch_misc_clk>;
+-			reg = <0 0x10080300 0 0x100>;
++			reg = <0x0 0x10080300 0x0 0x100>;
+ 			clock-frequency = <50000000>;
  			interrupt-parent = <&pic>;
  			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
- 			no-loopback-test;
+@@ -70,7 +70,7 @@ ls7a_uart3: serial@10080300 {
+ 
+ 		rtc0: rtc@100d0100 {
+ 			compatible = "loongson,ls7a-rtc";
+-			reg = <0 0x100d0100 0 0x78>;
++			reg = <0x0 0x100d0100 0x0 0x78>;
+ 			interrupt-parent = <&pic>;
+ 			interrupts = <52 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+@@ -82,8 +82,8 @@ pci@1a000000 {
+ 			#size-cells = <2>;
+ 			msi-parent = <&msi>;
+ 
+-			reg = <0 0x1a000000 0 0x02000000>,
+-				<0xefe 0x00000000 0 0x20000000>;
++			reg = <  0x0 0x1a000000 0x0 0x02000000>,
++			      <0xefe 0x00000000 0x0 0x20000000>;
+ 
+ 			ranges = <0x01000000 0x0 0x00020000 0x0 0x18020000 0x0 0x00020000>,
+ 				 <0x02000000 0x0 0x40000000 0x0 0x40000000 0x0 0x40000000>;
+@@ -478,7 +478,7 @@ isa@18000000 {
+ 			compatible = "isa";
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+-			ranges = <1 0 0 0x18000000 0x20000>;
++			ranges = <0x1 0x00000000 0x0 0x18000000 0x20000>;
+ 		};
+ 	};
+ };
 
 -- 
 2.55.0

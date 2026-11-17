@@ -1,43 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794932886;
-	b=bwMtpHY4udRro4CYpSRoSdWqTo/OuxqMBEvZcf8bU4UitK/VH0TryXBvo2ziFGGPUF72
-	 EAA92w4MlfGOyoJXSYwnxqHmRdVPxO8CwAo9W/5RXfSd0sU6ph+ywuxT4p8rp6+9aJrbh
-	 4Yj5spabMt50r2pS80NI+CSWKQPbxajndaLCdyPl5bnk59+bcPMaI0gUjWcNQ6M8MAyUm
-	 u8oXUocuhxKgPqorVrZmjFG6fvKgU8iMQLEuWKRWkMxB/ghhfNMKSDcLbsFRTsxJX9XW5
-	 VHLMAGb0GkxW+9XKAb4IsWdZ3qUGXWCwqwv30pJYNTzqybtO7A1xpOuHXntEWb35YTQ==
+	b=uIrq2Ybqn8ZUQHYz+OlsCfdaSmLWz4JprMRX7nXHu6unBJfc9zhPu1UZ1pmdfThJn0rW
+	 XkFx+/24RwBZ70HEMUcYN5hR45ixrnZkhG+zDAVYfvuZ3rq238mp1E1jAhk9+V62gqnlJ
+	 uPDm3C1wRs86JrPF76brLQUB2qMW4E0b41C5nrrKJCi3LmaWn7sS4mZT00XiJTN6LdsMl
+	 7dM4Ci1H4DvyHtRPBrNFtDMbs5bzYN1Ro1ECj6n9Lr3o/1nEE/gGus6CqkF2i2ANjf2ky
+	 nwg+6pH0IfD+Dtdpz+84mWEYeDcjldoysO9sL+p2d6764qTwfxfWI6Z98lhe6yuT2yA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794932886;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=IbqtQ2iXuxj+cm+Qwf97VKDkQ5sBXAh3GDWM+Y5+8nU=;
-	b=tv2zGOcLmf/FvfrkOfY+V+YdI2c1YM5TC7Hn5Sn/YY525/7MRi2jiBs5lu+qeUC0c8mP
-	 2rb07H9H7Kdno+2dWdjB6KjlGLmCn6Yj+HXqLxkGUAB8E8sBs86Ql9xZXjw+CFgzLMm3p
-	 51RbZ/Kzt7bWkIh47PsyYGBi14mqWsSzzNOPdBHrprc10GUY9t06FMXBxALfvmi8ZBmuC
-	 QA74r+f7npb5gb1yoHfBTcPEpC2z65uHG0elC5SDIBBjJBr9O31ZfMrGIc4OLmSwNS8Sx
-	 yhz8K4QZCYmwGRomY5fgcCEqkBCDXxMCAwoMYIYEnoWLzxYE/9tmPns53BeDNKcPqxQ==
+	bh=lOHdMF483gNPLEccoazumJHj5iVpfna/T2PvfkvuNkY=;
+	b=KC8oqLgq0RIOo3w77FRp5gVjSS3fq5BevqbbbYzj9kc+gBQlAZ2lzKUsvrU8evUgCcew
+	 y55+ihwfzX6ulWiEmF0f2Pyq0mQcxHCVDbHHKVZS5BIMvttnoTFzDKJ8hAL9yycZmkWJt
+	 mzgdic/n+2WsIVGO4/+oJirLxOpZ1C2Em8u67XP6rSpBiy0LSnSTsmtHCWXFv/7rdsfR+
+	 feO/JdH9odASz4Tb0O+d15nJ9e8SorMq+PMT9fO8G/IuKct/TGNR1FQSyULnMEcDG0dP8
+	 PjqghxMx8N8EbFLzU3UfvvxuJ9NTPsMUeHAyCT63YOATLZoPHTg/ewHzCBLFMY0jvqA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579DE606A32F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578A1606A31C;
 	Tue, 17 Nov 2026 16:28:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 579DE606A32F
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 578A1606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xTM2N-0004s9-00; Tue, 17 Nov 2026 17:28:03 +0100
+	id 1xTM2N-0004s3-00; Tue, 17 Nov 2026 17:28:03 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 3B1DBC05C3; Tue, 17 Nov 2026 17:12:47 +0100 (CET)
-Date: Tue, 17 Nov 2026 17:12:47 +0100
+	id F2DE4C01A0; Tue, 17 Nov 2026 17:09:16 +0100 (CET)
+Date: Tue, 17 Nov 2026 17:09:16 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Orgad Shaneh <orgads@gmail.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org
-Subject: Re: [PATCH] MIPS: OCTEON: compute the FDT CRC in device_tree_init()
-Message-ID: <avx8_1ffn4OlS4YD@alpha.franken.de>
-References: <20261027060214.2687878-1-orgads@gmail.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: patches@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-edac@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v2 0/8] MIPS: Octeon: fix missing function prototype
+ warnings
+Message-ID: <avx8LNi5O5926c_W@alpha.franken.de>
+References: <20261101234657.1820661-1-rdunlap@infradead.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -49,47 +50,48 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261027060214.2687878-1-orgads@gmail.com>
+In-Reply-To: <20261101234657.1820661-1-rdunlap@infradead.org>
 
-On Tue, Oct 27, 2026 at 06:02:14AM +0000, Orgad Shaneh wrote:
-> device_tree_init() assigns initial_boot_params directly and never calls
-> early_init_dt_verify(), so of_fdt_crc32 stays 0 and every boot logs
+On Sun, Nov 01, 2026 at 03:46:49PM -0800, Randy Dunlap wrote:
+> Add missing function prototypes to header files in most cases;
+> use the header files in the C source files.
+> In 2 cases, make the functions static so that no prototype is
+> needed.
 > 
->   OF: fdt: not creating '/sys/firmware/fdt': CRC check failed
+> v2 changes:
+>  [PATCH v2 1/8] add more cache prototypes to fix mm/c-octeon build warnings
 > 
-> whether the blob was passed by the bootloader, appended or built in.
-> Call early_init_dt_verify() once the prune and the MAC address fill-in
-> are done with the blob, so the CRC matches what of_fdt_raw_init() reads
-> back. x86 had the same omission, fixed by commit 628df9dc5ad8
-> ("x86/devicetree: Initialize device tree before using it").
+> series:
+>  [PATCH v2 1/8] MIPS: mm/c-octeon: fix missing function prototype warnings
+>  [PATCH v2 2/8] MIPS: Octeon: cvmx-helper: fix missing function prototype warning
+>  [PATCH v2 3/8] MIPS: Octeon: cvmx-interrupt: fix missing function prototype warning
+>  [PATCH v2 4/8] MIPS: c-octeon: fix missing function prototype warning
+>  [PATCH v2 5/8] MIPS: Octeon: octeon-platform: fix missing function prototype warning
+>  [PATCH v2 6/8] MIPS: msi-octeon: fix missing function prototype warning
+>  [PATCH v2 7/8] MIPS: Octeon: pci: fix missing function prototype warnings
+>  [PATCH v2 8/8] MIPS: Octeon: octeon.h: fix missing function prototype warning
 > 
-> Fixes: 08d53aa58cb1 ("of/fdt: export fdt blob as /sys/firmware/fdt")
-> Assisted-by: LLM
-> Signed-off-by: Orgad Shaneh <orgads@gmail.com>
-> ---
-> Tested on a CN6335 board (internal device tree, Cavium U-Boot 1.1.1),
-> in a 7.3-based tree: the warning is gone and /sys/firmware/fdt holds the
-> 11551-byte blob. mips-next with cavium_octeon_defconfig prints the
-> warning on the same board without this patch.
 > 
->  arch/mips/cavium-octeon/setup.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  arch/mips/cavium-octeon/executive/cvmx-helper-errata.c |    1 +
+>  arch/mips/cavium-octeon/executive/cvmx-helper.c        |    1 +
+>  arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c |    2 --
+>  arch/mips/cavium-octeon/setup.c                        |    2 --
+>  arch/mips/include/asm/octeon/cvmx-gmxx-defs.h          |    1 +
+>  arch/mips/include/asm/octeon/octeon.h                  |    3 +++
+>  arch/mips/include/asm/r4kcache.h                       |    5 +++++
+>  arch/mips/mm/c-octeon.c                                |    1 -
+>  arch/mips/pci/msi-octeon.c                             |    2 +-
+>  arch/mips/pci/pci-octeon.c                             |    2 +-
+>  arch/mips/pci/pcie-octeon.c                            |    2 +-
+>  drivers/edac/octeon_edac-pc.c                          |    4 +---
+>  12 files changed, 15 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-> index 7497be7b9431..fa8273799b94 100644
-> --- a/arch/mips/cavium-octeon/setup.c
-> +++ b/arch/mips/cavium-octeon/setup.c
-> @@ -1213,6 +1213,8 @@ void __init device_tree_init(void)
->  	}
->  	if (fill_mac)
->  		octeon_fill_mac_addresses();
-> +	/* After the edits above, so the CRC covers the final blob */
-> +	early_init_dt_verify(initial_boot_params, __pa(initial_boot_params));
->  	unflatten_and_copy_device_tree();
->  	init_octeon_system_type();
->  }
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-edac@vger.kernel.org
+> Cc: linux-watchdog@vger.kernel.org
 
-I've applied https://lore.kernel.org/all/20261025192918.586220-1-carl.smith@alliedtelesis.co.nz/ to mips-next, which is doing the same.
+series applied to mips-next
 
 Thomas.
 

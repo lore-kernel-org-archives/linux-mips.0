@@ -1,44 +1,43 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.175.24.41
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794932886;
-	b=uIrq2Ybqn8ZUQHYz+OlsCfdaSmLWz4JprMRX7nXHu6unBJfc9zhPu1UZ1pmdfThJn0rW
-	 XkFx+/24RwBZ70HEMUcYN5hR45ixrnZkhG+zDAVYfvuZ3rq238mp1E1jAhk9+V62gqnlJ
-	 uPDm3C1wRs86JrPF76brLQUB2qMW4E0b41C5nrrKJCi3LmaWn7sS4mZT00XiJTN6LdsMl
-	 7dM4Ci1H4DvyHtRPBrNFtDMbs5bzYN1Ro1ECj6n9Lr3o/1nEE/gGus6CqkF2i2ANjf2ky
-	 nwg+6pH0IfD+Dtdpz+84mWEYeDcjldoysO9sL+p2d6764qTwfxfWI6Z98lhe6yuT2yA==
+	b=10qKXQL4YdTIEBtdMCbGGOjPNdaiFCKVaz2pghChpo8aXKYtm2GTyMdtOIPl1lOlzJ1f
+	 1CPN0krHlbOcd7Wnsbs7j2sGT3Sh+38RQlGwW+SCMh6Jqx44lKiI67vjvVPiaBCnay/3m
+	 bHzOAglrXOgBVQR7Zo30H8jOU7G/JN6MWMVrteLUP0pRdyqLOnIUcfgfqrsEsLcYcxHWn
+	 5ZWsS9lrlHEDVVvPFGVBrvuQPjRqd3nqtOWjjrEuYpPXqgGhrK53TZJvL2czot19DsvI5
+	 GrCKokTTXmFRSER8rLKKLlaBzsjaDgsZ1lwtCUIaduxQndyPqe+pR6xS92X8u9evjQA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794932886;
 	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=lOHdMF483gNPLEccoazumJHj5iVpfna/T2PvfkvuNkY=;
-	b=KC8oqLgq0RIOo3w77FRp5gVjSS3fq5BevqbbbYzj9kc+gBQlAZ2lzKUsvrU8evUgCcew
-	 y55+ihwfzX6ulWiEmF0f2Pyq0mQcxHCVDbHHKVZS5BIMvttnoTFzDKJ8hAL9yycZmkWJt
-	 mzgdic/n+2WsIVGO4/+oJirLxOpZ1C2Em8u67XP6rSpBiy0LSnSTsmtHCWXFv/7rdsfR+
-	 feO/JdH9odASz4Tb0O+d15nJ9e8SorMq+PMT9fO8G/IuKct/TGNR1FQSyULnMEcDG0dP8
-	 PjqghxMx8N8EbFLzU3UfvvxuJ9NTPsMUeHAyCT63YOATLZoPHTg/ewHzCBLFMY0jvqA==
+	bh=BZR6sTyUIFu+KbgR3RNN3rHjb6ViVVFg38WZJ09msGQ=;
+	b=WH8kEyWCOzQJEAUC9EE1VwpiX93pytD0PRTQhb18J3+tonhQ7hpNQc22xQpdSN9n9TD8
+	 bRdKAI2OUofCBkfkzbmX6KaeohVn9pOxTeGP3tHYs2kHz0VIhivE4iIELJDT1BBLqcpq0
+	 FU5cLkolyDA7l9lDVpeG5BIRoaa00A6m7n/6rkF7ZIn8AeErr6zQxmfLS2CX9tDOsDg2f
+	 pPumXmDwD7YLNMsqCE+ymyjKMhu7kMIxPPe8PTWpCjNei5OaFoLCu1ZMBjKVxyq1fyd2I
+	 BWnBhrmv7qhrZRlxTXO/gSNQ0zo1Z1RSRM/0zrDc9okW5+crBMHShH4Gknvy5S8c9Ig==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=alpha.franken.de;
 	spf=pass smtp.mailfrom=alpha.franken.de;
 	arc=none smtp.remote-ip=193.175.24.41
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578A1606A31C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579EB606A330;
 	Tue, 17 Nov 2026 16:28:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 578A1606A31C
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 579EB606A330
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1xTM2N-0004s3-00; Tue, 17 Nov 2026 17:28:03 +0100
+	id 1xTM2N-0004s7-00; Tue, 17 Nov 2026 17:28:03 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id F2DE4C01A0; Tue, 17 Nov 2026 17:09:16 +0100 (CET)
-Date: Tue, 17 Nov 2026 17:09:16 +0100
+	id 7EC8BC0520; Tue, 17 Nov 2026 17:10:42 +0100 (CET)
+Date: Tue, 17 Nov 2026 17:10:42 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: patches@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-edac@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] MIPS: Octeon: fix missing function prototype
- warnings
-Message-ID: <avx8LNi5O5926c_W@alpha.franken.de>
-References: <20261101234657.1820661-1-rdunlap@infradead.org>
+To: Thorsten Blum <blum@kernel.org>
+Cc: Rosen Penev <rosenp@gmail.com>, Hemanth Selam <hemanth.selam@gmail.com>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] mips: n64: Clean up platform initialization
+Message-ID: <avx8gnAvegdcse1u@alpha.franken.de>
+References: <20261029212343.110095-6-blum@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -50,46 +49,19 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261101234657.1820661-1-rdunlap@infradead.org>
+In-Reply-To: <20261029212343.110095-6-blum@kernel.org>
 
-On Sun, Nov 01, 2026 at 03:46:49PM -0800, Randy Dunlap wrote:
-> Add missing function prototypes to header files in most cases;
-> use the header files in the C source files.
-> In 2 cases, make the functions static so that no prototype is
-> needed.
+On Thu, Oct 29, 2026 at 10:23:43PM +0100, Thorsten Blum wrote:
+> Clean up and simplify the Nintendo 64 initialization code.
 > 
-> v2 changes:
->  [PATCH v2 1/8] add more cache prototypes to fix mm/c-octeon build warnings
+> Thorsten Blum (4):
+>   mips: n64: Use DEFINE_RES_*() helpers
+>   mips: n64: Simplify framebuffer allocation
+>   mips: n64: Rename the video interface register helper
+>   mips: n64: Use SZ_8M in plat_mem_setup()
 > 
-> series:
->  [PATCH v2 1/8] MIPS: mm/c-octeon: fix missing function prototype warnings
->  [PATCH v2 2/8] MIPS: Octeon: cvmx-helper: fix missing function prototype warning
->  [PATCH v2 3/8] MIPS: Octeon: cvmx-interrupt: fix missing function prototype warning
->  [PATCH v2 4/8] MIPS: c-octeon: fix missing function prototype warning
->  [PATCH v2 5/8] MIPS: Octeon: octeon-platform: fix missing function prototype warning
->  [PATCH v2 6/8] MIPS: msi-octeon: fix missing function prototype warning
->  [PATCH v2 7/8] MIPS: Octeon: pci: fix missing function prototype warnings
->  [PATCH v2 8/8] MIPS: Octeon: octeon.h: fix missing function prototype warning
-> 
-> 
->  arch/mips/cavium-octeon/executive/cvmx-helper-errata.c |    1 +
->  arch/mips/cavium-octeon/executive/cvmx-helper.c        |    1 +
->  arch/mips/cavium-octeon/executive/cvmx-interrupt-rsl.c |    2 --
->  arch/mips/cavium-octeon/setup.c                        |    2 --
->  arch/mips/include/asm/octeon/cvmx-gmxx-defs.h          |    1 +
->  arch/mips/include/asm/octeon/octeon.h                  |    3 +++
->  arch/mips/include/asm/r4kcache.h                       |    5 +++++
->  arch/mips/mm/c-octeon.c                                |    1 -
->  arch/mips/pci/msi-octeon.c                             |    2 +-
->  arch/mips/pci/pci-octeon.c                             |    2 +-
->  arch/mips/pci/pcie-octeon.c                            |    2 +-
->  drivers/edac/octeon_edac-pc.c                          |    4 +---
->  12 files changed, 15 insertions(+), 11 deletions(-)
-> 
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-edac@vger.kernel.org
-> Cc: linux-watchdog@vger.kernel.org
+>  arch/mips/n64/init.c | 81 ++++++++++++++------------------------------
+>  1 file changed, 26 insertions(+), 55 deletions(-)
 
 series applied to mips-next
 

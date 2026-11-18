@@ -1,97 +1,108 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.7
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795020681;
-	b=IFRmScdadAgYEfr428N8CgaYMjqNItjjij+bZ04+Az4J2WCPg60lAEqPX1iJYYRjkoHX
-	 tl96Dhp5CuECaJVhrxIPfh1395j/TvOuqSAyPp3jnelCVUOklo39FuxP2ZKkKp9LYwB5l
-	 YH++c1vLiWME/j3CliA7IE7sVQXg2YXWs3aJaUr7Xmi3U3ndpPJsCMSoxtR7mZvi6vl3R
-	 QD4NalvCP4u7Ha5RX6JMqULDyAQuCWmPELvnP6aWLFaz4C4FgQqjE1Lnmd+HVxhWBduFX
-	 yYpUMXnfldFLGga30Oz5gWNfjVsUaUbwjFJBPfHFLbtsVrzGR6EqStt0HSFMEnytrnQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795020681;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
-	 In-Reply-To:Organization:References:Date:Message-ID:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=/cUldU1e2XAI/ZxV0Ch4uDE5FUyxfirjC3SAjGA4JrA=;
-	b=CyUbE72caLUy1bK+i/tGIMqgbB4C9eQZC8V54OesqUNiJaecwMt1Llqbg03BeRgApxUJ
-	 j5KX6AAcw7EfGzVrQiRh43jAxqDnvIxAPFKTf4MgXhJ+cEWO41Nt6HbWkH80tStujoAd3
-	 TrSOIDEtexhCU7KMsQRAwHG7Uh+7/HfAGcbH+1+nayv34pWKfCPwTtpGnhHu46YYq0omm
-	 3CvDtkPvBsklccnHYYtxrDdAkAHm1EjsgLbc2SnbZImyJfPjWHAgTbZpTbLN3mLVgUK/M
-	 Ga2IYVm7nwKutvhryEd6PElEv40UePKPI+yPxGhNq0VQxj2h3VXxrQb23G35EDj2RfQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=mP4DwPyz;
-	arc=none smtp.remote-ip=192.198.163.7
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795022745;
+	b=t43Gk8FaLhfOee4z8MpSnQeK9ySy369ZM14PMBoJZpWjbSAdpSPl729THtZ5rjRWZPhB
+	 d9C6RlZwJpjYxO/lJJi8ssN6G6G3Qb0rHmsTSrcoRvf8+TxHJMTQoXaWZG5SSgKiR5j31
+	 Ht5saeL4ZBrICpBPQknJ7Tl/mUb73dwZuSrnV5Kmjjt4i6ba+Uip69L/2Yr2t1sTQBvR9
+	 s45aEGCYXVnqylscH81pArTE3wWyW/yS1x7yn8Z21kJ7NSxeQjChUq6E26I6Z391WEk7d
+	 qw8g0mUDgZ47s0m5aExxakiH+1R+PA+UFlx1aCWrF4LG1+VrMPeMc/tj5vITdQMksBQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795022745;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=N+ZLUTfEpjO5oUNCth3iHY0m+60IhVuCjuhmSxCyjJg=;
+	b=GZSvJQ21ltr77OzsmNWbTIvKt+zfqOVSvID1kkK6e1SSBe7thaVzz4Nz2IwjBNgJ3wVS
+	 GZwhTSnQ1caRwutW9yM3Aqcc1834NvTe+muIu8TRi7EI52wX2CeFVk+0cvyQa6L4ATvut
+	 WnSgj5bhNUgGi81X9vyZBST/uQxacXe0vzAZ3huuoW7ktN/oyEjaxasmpxrAyjIaFTZPP
+	 7S5bpNc70yFm0rWdtRyQwbxfa4iEZ23AAvfvfktIG1C8VVytJxELpp/mnUTN74GCOmjdi
+	 sXtYHIvTJCluql3XiSDg8AyV26iHFYyepBdyismU2h3S4lGhATaFp8rEixgR3bn3sow==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=goldelico.com;
+	spf=pass smtp.mailfrom=goldelico.com;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=JHhRuAT+;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=5DD7sqL7;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.82
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67CC8606A31C;
-	Wed, 18 Nov 2026 16:51:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 67CC8606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C5C606A31C;
+	Wed, 18 Nov 2026 17:25:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 12C5C606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=mP4DwPyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795020681; x=1826556681;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=ajDnh0zw+64dcFPrEUfvS5sWfWZYQWJZbcQwO+AcVNs=;
-  b=mP4DwPyzA12OflFAs7cqsLyFUlGk851Vd/gqVwVcN25x8BrQL+i7AmOL
-   8mYJpmast9tqACSNx8lBA4jZ4/q1QzUvavsA4vMpmrO4kXPI5tmgD7UvX
-   RIKZkYtrXgFcDgMSDp8+RxF/Qsk0Pdt1zP/11+VRi9zgvwFg2kn0/zAaJ
-   juFRnpN5gAXJQ16xhWq2lvyYTb3qIRMVB9Yj0aB5dYr71LMGSI/TCUXfu
-   Q/vbbt3vkm3f9HlNHt84ek7qFjbaO9159QwvU9BrlJgluRx7ACzWJzJJs
-   wtZ+6YyX/GEjAKJa7Ohka54I7IWU1FNw+PjgE6WXf82fCJhvvI5wWCOY1
-   w==;
-X-CSE-ConnectionGUID: yYAGCVSMTg6M25CjyfDLmA==
-X-CSE-MsgGUID: LYFLKgNuRWmddYtKFddu0w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11970"; a="3699707"
-X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
-   d="scan'208";a="3699707"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 08:50:31 -0800
-X-CSE-ConnectionGUID: k/DCmaX/Qp2q9S20vakyDw==
-X-CSE-MsgGUID: YVFQiz1BSVmcIhLrCJbvrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
-   d="scan'208";a="9985477"
-Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.187])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 08:50:21 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
-Cc: David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Sasha
- Finkelstein <k@chaosmail.tech>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, dri-devel@lists.freedesktop.org,
- asahi@lists.linux.dev, linux-aspeed@lists.ozlabs.org,
- linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
- linux-riscv@lists.infradead.org, etnaviv@lists.freedesktop.org,
- linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, imagination@lists.freedesktop.org,
- linux-mips@vger.kernel.org, lima@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
- virtualization@lists.linux.dev, spice-devel@lists.freedesktop.org,
- linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
- linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 9/9] drm: Unify coding style for *_device_id arrays
-In-Reply-To: <av2rKJQ0AKU9CFZI@monoceros>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
- 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
-References: <cover.1795002467.git.ukleinek@kernel.org>
- <a2d5ce256b8ec150de4a6494c177b19693a33222.1795002467.git.ukleinek@kernel.org>
- <7692c160e418e7ad0528739fcc879b11fbac8ab0@intel.com>
- <av2rKJQ0AKU9CFZI@monoceros>
-Date: Wed, 18 Nov 2026 18:50:19 +0200
-Message-ID: <8ebe3b7219ffd963a498cccbcfe6cefc92717f0c@intel.com>
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=JHhRuAT+;
+	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=5DD7sqL7
+ARC-Seal: i=1; a=rsa-sha256; t=1795022740; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=MbKJMsphile9weZ+pK1vUkLFTRnbQyJMdp+1CQrcDcRawmP9XBigR6T4AmvQmerJ0o
+    3AmoPO3m53YWMo9eMrXtHTHlFVB56eWzCgjTU/IXTSu3VitzUbyQwLzidRIihsXLSaK7
+    6O3qwofefRiYsUxsVsXmeeQYFsYwlN+h4wtKIU40MrF8Cmw4kLZndkMhGaHaBxjSU6kS
+    PBtKTcNCF7G/FG81xvic46xFBKcv8SFioyia8hL7zAhf5LyB06OZnI22FnArdDM77y7h
+    EubwfBWl4M0RrOVSsmeRZf9jzm1JvbyFIUMs5HX/OFvaomZIrK5kEjdkyBBpw8jRKNX2
+    gNNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795022740;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=N+ZLUTfEpjO5oUNCth3iHY0m+60IhVuCjuhmSxCyjJg=;
+    b=KBxATpE7lUZZUBUPP7e3T5Kkfdl1+nNnZkZPysRMvKg4KU43+4BTqxZeqDBLs93wdE
+    mMNz5wl7C5p0HmEpIHWsxYYRLUpD3+JaSvYpNiYlKhxKojjsmgMEp0ViJVD56LH/PPPO
+    3GoB60AZXqYc0HXY3NyBdKarufgW0Yyp9pB4ASMRGQfAxUlzSUk0rCv76s2cy4ppRPO4
+    7z5k0z2Zp7etprfLX0Aj8FQZOHh7Fr/6Dxwclp+RngRIEREvUNa9IGkRJCQxkRabht8J
+    JUkZnRqmUj6ROYPVeuBqPYDlrqw9X4Ol2dxJnJf3XFvIzat52z8KqbTJgRK5He+EDGaV
+    5rbQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795022740;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=N+ZLUTfEpjO5oUNCth3iHY0m+60IhVuCjuhmSxCyjJg=;
+    b=JHhRuAT+AAdU5kOcMr4OmJ75TpvcwdZa9RRzki+gFKzMsiCnUiUFgje0uaiStyaH3p
+    8kv9H4VSk7VyopJSgSQ8s8q5DBSvYbJD0LvtxcWaA3YarKbdtgglew4BrUwIlBarq3TM
+    hQ6NVqyTn+Zq73CCOawbAO8gs/K6V5D3sToRCoV8c00d1f4Z50XCQ7u0NTVfUgnHhKxT
+    0MjFsKGttu+w4ye1hDVy9vOShAdoD3j8D+w47bHY8n1dtdDu2eA+l2K82CIYypKgWvFj
+    e1dvzg9Cb4l4qCYzCyBPbphi/eJ0QjadUSgk8HRpMQ/Lx9J1CcCh8ao97iBxhqJsHX62
+    nkAQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795022740;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=N+ZLUTfEpjO5oUNCth3iHY0m+60IhVuCjuhmSxCyjJg=;
+    b=5DD7sqL7flN3HAglVVBF37wTpZvIqG1k8Wpnl88U3rioEEvQeqiWHhJhL93C2lq1VH
+    pqVWYQxAp9VKJ2TWJ+BQ==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV2Jpcm8iNZLZ2IBizV+3wFb55dglUeZzcEX9J"
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Qb56a22AIHPddiV
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 18 Nov 2026 18:25:39 +0100 (CET)
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+To: Linus Walleij <linusw@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Bartosz Golaszewski <brgl@kernel.org>
+Cc: linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	letux-kernel@openphoenux.org,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v4 2/7] pinctrl: ingenic: Fix hardware dual-edge interrupts on X1600
+Date: Wed, 18 Nov 2026 18:25:32 +0100
+Message-ID: <12e66f571e8765b1eefeab5939c2c874b71b28af.1795022736.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <cover.1795022736.git.hns@goldelico.com>
+References: <cover.1795022736.git.hns@goldelico.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -101,92 +112,87 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, 18 Nov 2026, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@baylibre.com> w=
-rote:
-> Hello Jani,
->
-> On Wed, Nov 18, 2026 at 03:27:40PM +0200, Jani Nikula wrote:
->> > [...]
->> >  drivers/gpu/ipu-v3/ipu-common.c               |   8 +-
->> >  drivers/gpu/ipu-v3/ipu-pre.c                  |   4 +-
->> >  drivers/gpu/ipu-v3/ipu-prg.c                  |   4 +-
->> >  254 files changed, 1155 insertions(+), 940 deletions(-)
->>=20
->> How do you expect a patch of this size be merged?
->
-> Using b4 am :-) Honestly, in the cover letter I wrote about an immutable
-> branch and offered to rebase to 7.4-rc1. When trying to apply this
-> series on top ov 7.4-rc1 there are only 6 conflicts (1x modify/delete
-> and 5x content); these are all not so hard to resolve (and even dropping
-> the respective hunks (i.e. resolving using `git checkout HEAD`) is fine
-> for me.)
->
->> > diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i9=
-15_pci.c
->> > index 84a7dc6ab5db..faceb3de4fa3 100644
->> > --- a/drivers/gpu/drm/i915/i915_pci.c
->> > +++ b/drivers/gpu/drm/i915/i915_pci.c
->> > @@ -870,7 +870,7 @@ static const struct pci_device_id pciidlist[] =3D {
->> >  	INTEL_ATS_M_IDS(INTEL_VGA_DEVICE, &ats_m_info),
->> >  	INTEL_ARL_IDS(INTEL_VGA_DEVICE, &mtl_info),
->> >  	INTEL_MTL_IDS(INTEL_VGA_DEVICE, &mtl_info),
->> > -	{}
->> > +	{ }
->>=20
->> Personally, I would *always* use {} instead of { }, and would rather not
->> change.
->>=20
->> Across the tree, {} is slightly more common than { }. IMO changing them
->> is pointless churn.
->
-> It depends on how you count. My statistic looks as follows (on top of
-> next-20261117):
->
-> 	$ git grep -l device_id | xargs -n 1 perl -g -n -e 'print "$1\n" if m/de=
-vice_id\s*[a-zA-Z_0-9]*\[\]\s*=3D\s*{(?:\s*{[^}]*},\s*({\s*}))/' | sort | u=
-niq -c
-> 	      2 	}
-> 	      2 {
-> 	      6 {  }
-> 	   2598 { }
-> 	   1262 {}
->
-> So over all *_device_id { } is more common by a factor of > 2. This
-> series fixes one {  } and reduces the number of {} by 37. For only
-> pci_device_id it's:
->
-> 	$ git grep -l pci_device_id | xargs -n 1 perl -g -n -e 'print "$1\n" if =
-m/pci_device_id\s*[a-zA-Z_0-9]*\[\]\s*=3D\s*{(?:\s*{[^}]*},\s*({\s*}))/' | =
-sort | uniq -c
-> 	    159 { }
-> 	     32 {}
->
-> Without the context of an array initializer there are many empty
-> code blocks (function bodys or `do {} while (0)`), empty dt nodes, and
-> {} in Rust code, which IMHO have to be considered off-topic for this
-> statistic.
+Use the hardware dual-edge detector on X1600 and X2000.
 
-I realize my phrasing was careless.
+Set PAT1 when configuring both edges and program EDG on X1600.
+Keep software edge switching for older SoCs without EDG.
 
-My point was not so much about one being more common than the other, but
-rather that there are *thousands* of instances of both, specifically as
-C compound literals with empty initializer list. I think it's pointless
-to convert one to other, regardless of whether you're adding or removing
-a space.
+Tested on X1600 and X2000 using GPIO buttons and register readback.
 
-I mentioned my preference, because if I were to go on a style fixing
-spree, I'd go the other direction. But I think that too would be
-pointless.
+Fixes: 4da56f9c6f14 ("pinctrl: ingenic: add x1600 support")
+Cc: stable@vger.kernel.org
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
 
-I suggest to just accept either.
+Notes:
+    Changes V4:
+    - Fix Fixes: and stable Cc trailers.
+      (suggested by Paul Cercueil and Sashiko-Bot)
+    - Merge the common shadow-register paths and simplify EDG handling.
+      (suggested by Paul Cercueil)
+    - Retested hardware dual-edge interrupts on X1600/X2000 after the
+      shadow-register refactoring. Verified both button transitions
+      with evtest and confirmed via devmem2 that PAT1, PAT0 and EDG
+      remain unchanged across GPIO input transitions.
 
+ drivers/pinctrl/pinctrl-ingenic.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-BR,
-Jani.
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 88c5edeaaddcc..7f65f3abf05f5 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -3601,7 +3601,8 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
+ 
+ 	switch (type) {
+ 	case IRQ_TYPE_EDGE_BOTH:
+-		val1 = val2 = false;
++		val1 = false;
++		val2 = is_soc_or_above(jzgc->jzpc, ID_X1600);
+ 		val3 = true;
+ 		break;
+ 	case IRQ_TYPE_EDGE_RISING:
+@@ -3635,15 +3636,13 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
+ 		return;
+ 	}
+ 
+-	if (is_soc_or_above(jzgc->jzpc, ID_X2000)) {
+-		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
+-		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
+-		ingenic_gpio_shadow_set_bit_load(jzgc);
+-		ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset, val3);
+-	} else if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
++	if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
+ 		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
+ 		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
+ 		ingenic_gpio_shadow_set_bit_load(jzgc);
++
++		if (is_soc_or_above(jzgc->jzpc, ID_X1600))
++			ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset, val3);
+ 	} else {
+ 		ingenic_gpio_set_bit(jzgc, reg2, offset, val1);
+ 		ingenic_gpio_set_bit(jzgc, reg1, offset, val2);
+@@ -3718,7 +3717,7 @@ static void ingenic_gpio_irq_ack(struct irq_data *irqd)
+ 	bool high;
+ 
+ 	if ((irqd_get_trigger_type(irqd) == IRQ_TYPE_EDGE_BOTH) &&
+-	    !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
++	    !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
+ 		/*
+ 		 * Switch to an interrupt for the opposite edge to the one that
+ 		 * triggered the interrupt being ACKed.
+@@ -3758,7 +3757,7 @@ static int ingenic_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
+ 		irq_set_handler_locked(irqd, handle_bad_irq);
+ 	}
+ 
+-	if ((type == IRQ_TYPE_EDGE_BOTH) && !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
++	if (type == IRQ_TYPE_EDGE_BOTH && !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
+ 		/*
+ 		 * The hardware does not support interrupts on both edges. The
+ 		 * best we can do is to set up a single-edge interrupt and then
+-- 
+2.56.0
 
-
---=20
-Jani Nikula, Intel

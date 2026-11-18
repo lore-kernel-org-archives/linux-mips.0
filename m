@@ -1,103 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.171.202.116
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794987819;
-	b=yN04jV4Il8xnpns/xYf64azFPeZcIJsBlnm+hOr2Ztl7jvoYxZ+tl0dBbhiU+tSGgtDR
-	 McUlNbvS5Uy8vIgEQ3iHCoU5oDq6BszxoWLIyThVLspMn5vxfgwExnwGpagltOHd2pPtv
-	 XGkNcQ/d74XxwWU20OIrdGYY9AU/uJN7neBw7fadUx+quMTC4i6vvhxF1LyV+IrgXQPc0
-	 PaKtFjPfE+wKlg21BWt4KEAEm0CWczRxYUNE3Qb+JsFjwvlWEma0ytvneFlF92hAA7x4X
-	 npOv3bXbyY2zn1dNKy4IuWL0IFFkaoTFgJlVnwYlLkusSlWBKqjeLNe+QXSamNbOR9g==
+	t=1794991656;
+	b=VxwCK0jfUlm+HgseHuTAMyyjFjCU7a/NP0cg8oFLCmmUTKbpS1tq0WNG9zblTByTMv/B
+	 +6NKHejY6DtZaIQvNgIV+NswVPea+FFCqmKZeVk4tthoGbd1ufSqOKsdD1D28ibnCPju3
+	 4g8Kjhm3tvUrB/Tgs4MdpLoL2e847nwoRQRy88ldy/ZzDzkKoZg6yzfcvgJToDCb0lwze
+	 PygPOrN8xVytyRmHHAKI8PYVHVoacLGwlpWCMDNw/VDsHToWLTW/B9bvNO4lfVtfsrF1t
+	 Hil9dCJ7fUd2CmzIdr66etbyw5X49gHdCQdQ0S3vNB74B5S/enEmc3DAyjUlkPBmFGA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794987819;
-	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:Date:From:To:
-	 Cc:Subject:Message-ID:In-Reply-To:References:Organization:X-Mailer:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794991656;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:To:Cc:
+	 Subject:In-Reply-To:References:User-Agent:Date:Message-ID:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:
 	 X-Last-TLS-Session-Version;
-	bh=5tdOi87MUQVrh0lDnm0y5zaT0nPUT+qlg7v5xkEiqMk=;
-	b=rR6hxOb3bRxs4H5Z2aXCv4uwBxGbwBmHqkZH9LsDpsrTbNj5XQsBmHXNofRHz1Rib1S7
-	 2407F/+BNOCf8/kMfZBGTS2yf9WU9cbwUbh/VLgjAKKLFfgyOICrS5oXBV6x/kIM+JeeO
-	 JGvBM1B+pm5AeMMH790jF8vCFQVnbML7dUcRx+kWqtA3JAiaDgfMJgx5Kp9xbJENOM444
-	 QH2xREDT8VxMUVRhn/uDjYzEk83k+7vIg8YpRF6UvVik+HP1/wBkruTFHHeBnmJDzO/Xx
-	 tURM2fMGEpx6SzdELNCXhoxtpWcAX4FOZ5JnvkmeNxFLzWO50OaTnMT2bzDX8T9e1qw==
+	bh=kGrHNZsv8k17WyDtcN0KoKiEb8AAC/oHWu//7fo5faM=;
+	b=MFg4v2vuhQlMMGYcl3DHGblUNU9DrV2VbKYFr7nv18tvzAysGOZRz9XQeFfDDkuqShkY
+	 Nxew738TOigvgaFoVWyZXPU5o1Z/DtE5TpHpB9lza3AufSIC1EsFKZ+BOLU8Cm8iTTK9w
+	 Y0kdwPWEMV63lJRDpQEeUV97/dCRyT65dkbc4FxFgbjI362pgyBafjRw5Nu0u9DHyJJwE
+	 Ua517zOy++jFKi6cX50v2p8TLLRTppXekxVyPVpQjOhVn2aU9OJt/B0DVdqDve5Xo9kJK
+	 aYEOaeczAbU867ARCTLtnnbyD9CsH8jyStvSPH9oCaVk2ufSfR8EilHnk7CULFJCsIQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=bootlin.com;
 	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lvlw2APD;
-	arc=none smtp.remote-ip=185.246.85.4
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=SefnjUk3;
+	arc=none smtp.remote-ip=185.171.202.116
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF0C606A334;
-	Wed, 18 Nov 2026 07:43:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6DF0C606A334
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC38606A325
+	for <linux-mips@vger.kernel.org>; Wed, 18 Nov 2026 08:47:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DBC38606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lvlw2APD
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=SefnjUk3
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id 72BE44E4160B;
-	Wed, 18 Nov 2026 07:43:35 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id C9578C4CBD9;
+	Wed, 18 Nov 2026 08:47:38 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2820E5FFAF;
-	Wed, 18 Nov 2026 07:43:35 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 77C8D11BC076C;
-	Wed, 18 Nov 2026 08:42:47 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1107D5FE9B;
+	Wed, 18 Nov 2026 08:47:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id ED02411BC0B1A;
+	Wed, 18 Nov 2026 09:47:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1794987811; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1794991653; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=5tdOi87MUQVrh0lDnm0y5zaT0nPUT+qlg7v5xkEiqMk=;
-	b=lvlw2APDkLOsWdPZXrcTGO0SBvJt5AeVKx0Z42miklOsc8vPctTcjUfLvtwVkHahSrHPLo
-	CGkq45BFyuEH8fedQgM6HJ/XMbau2Rz9aKP/PJ7PtvuBj2hMJXvtJKDgvO7p6Q3pjLfN6i
-	0Ut1+LTYYEyg77hZo16dxZxUGEgStz4MKBFw9hj/2Tiw4koxWXy5yQ8yIHNJQ0YwvKbt02
-	l/18CHS5c8YF9Wb/y9UNTxVZrOZMCPnkOtQCGZPI3/uD2p7Qv4dv6TVs+LHq5iTBVHSMvU
-	434h8Tsq1BRLh2Btis1Fush6eJ7xmbr9hxqVcPbs2tV0AeddsTbxh0K8Mz1lOg==
-Date: Wed, 18 Nov 2026 08:42:46 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Peng Fan <peng.fan@linux.dev>
-Cc: Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
- Krzysztof Kozlowski <krzk@kernel.org>, Peter Griffin
- <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, Andrew
- Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Ryan Chen
- <ryan_chen@aspeedtech.com>, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>, Joel Stanley <joel@jms.id.au>, Andrew Jeffery
- <andrew@codeconstruct.com.au>, Billy Tsai <billy_tsai@aspeedtech.com>, Tan
- Siewert <tan.siewert@9elements.com>, Eddie James <eajames@linux.ibm.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
- <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
- internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Caleb
- James DeLisle <cjd@cjdns.fr>, Marc Zyngier <maz@kernel.org>, Miodrag Dinic
- <miodrag.dinic@mips.com>, Frank Li <Frank.Li@nxp.com>, Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Piotr Wojtaszczyk
- <piotr.wojtaszczyk@timesys.com>, Anup Patel <anup@brainfault.org>, Paul
- Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Samuel Holland
- <samuel.holland@sifive.com>, Qin Jian <qinjian@cqplus1.com>, Changhuang
- Liang <changhuang.liang@starfivetech.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, Jernej
- Skrabec <jernej.skrabec@gmail.com>, Nishanth Menon <nm@ti.com>, Tero Kristo
- <kristo@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>, Linus Walleij
- <linusw@kernel.org>, Michal Simek <michal.simek@amd.com>, Anirudha Sarangi
- <anirudha.sarangi@amd.com>, Tushar Nimkar <tushar.nimkar@amd.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
- openbmc@lists.ozlabs.org, linux-aspeed@lists.ozlabs.org,
- linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
- imx@lists.linux.dev, loongarch@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-sunxi@lists.linux.dev, git@amd.com, linux-arm-msm@vger.kernel.org,
- Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] irqchip: Convert chained handlers to
- guard_chained_irq()
-Message-ID: <20261118084246.5b5bf203@bootlin.com>
-In-Reply-To: <20261114-irqchip-cleanup-api-v1-1-4a9d598b0bdb@nxp.com>
-References: <20261114-irqchip-cleanup-api-v1-1-4a9d598b0bdb@nxp.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
+	bh=kGrHNZsv8k17WyDtcN0KoKiEb8AAC/oHWu//7fo5faM=;
+	b=SefnjUk3W69idot9zlT4yJ6DKWi198Tgr1TgEoP1D48Q04zWbpCJZjGgCen4SwBPVj4ljf
+	/yEc5B4h7eMQxoBBvjOCc8vFCmdXgNxXbQ/IOTdXu2/lBr5NoO22F9tMShnqbvThwWk4++
+	JUNOnk7jleWX0Y+Y+3htuXY5KEj/tp2U8MuO2H8lmPX1pFW2fnQYFrSolgPSOgvva1n7dO
+	Khu9BQsdc8WSUq5l33NU6LEB+MxV3t8JAEEQQqtOejFev1xDk2O1IQNcvsfZs61x0NPPQ7
+	g6oefbEVfytz21Eo9SnxDoHzGt7mUwxYLYe8VO3pH/W7qf8WODOm0jpAL/mBCQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,  Rob Herring
+ <robh@kernel.org>,  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor
+ Dooley <conor+dt@kernel.org>,  devicetree@vger.kernel.org,  Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>,  linux-mips@vger.kernel.org,
+  Hauke Mehrtens <hauke@hauke-m.de>,  Aleksander Jan Bajkowski
+ <olek2@wp.pl>,  John Crispin <john@phrozen.org>,  Sebastien Decourriere
+ <sebtx452@gmail.com>,  Yangtao Li <frank.li@vivo.com>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: mtd: Add lantiq,nor
+In-Reply-To: <5155531.6YUMPnJmAY@prime> (Simon Wunderlich's message of "Tue,
+	17 Nov 2026 17:45:36 +0100")
+References: <20261114100608.3432120-1-sw@simonwunderlich.de>
+	<20261114100608.3432120-3-sw@simonwunderlich.de>
+	<87fqwzn3tq.fsf@bootlin.com> <5155531.6YUMPnJmAY@prime>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Wed, 18 Nov 2026 09:47:28 +0100
+Message-ID: <87qzgijzkv.fsf@bootlin.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,31 +80,32 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Peng,
 
-On Sat, 14 Nov 2026 23:06:15 +0800
-Peng Fan <peng.fan@linux.dev> wrote:
+> About physmap: you were right, and this was actually a great hint. I test=
+ed on=20
+> the my RS123: with the EBU swap that its boot loader enables, the flash i=
+s=20
+> simply a plain CFI flash. With compatible =3D "cfi-flash" and the generic=
+ physmap=20
+> driver, probing, reads (identical to what lantiq-flash reads, unaligned r=
+eads=20
+> included), erase and write all work. So this board needs no lantiq-flash =
+change=20
+> at all, and I'm dropping patches 2 to 5. There won't be a v2.
+>
+> Turning lantiq-flash itself into a physmap variant for the boards with th=
+e=20
+> classic U-Boot setup would probably be the cleaner model, but I don't hav=
+e=20
+> such a board to test it, so I'm leaving that alone for now.
+>
+> Thank you again!
+>      Simon
 
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Use the scope-based guard_chained_irq() helper in all chained handlers
-> under drivers/irqchip/ so that chained_irq_exit() is always invoked when
-> the handler returns. Handlers that duplicated the exit call on an error
-> path or jumped to a common exit label simply return now and rely on the
-> guard.
-> 
-> No functional changes.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
+Excellent, thanks for the feedback!
 
-For the irq-lan966x-oic driver:
-
-Reviewed-by: Herve Codina <herve.codina@bootlin.com> # irq-lan966x-oic.c
-
-Best regards,
-Hervé
+Miqu=C3=A8l

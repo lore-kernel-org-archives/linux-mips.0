@@ -1,72 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.16
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795029014;
-	b=1wqi61LcrR4LTl+rgmr4DrrUitA52tivkolCKZCkA28R71ICO0w1XUpwbA6J1ay4buRx
-	 MfPf8J105pT/r4iCIrP/5hHjvN2sJ7VaLoHlk8JnpDX5u3eNbe9abxE6sK6GDWMnz2K7D
-	 KkHP48mXVinQHdePDC7BiFe/W6cLo6ax3Fb9uIloz0C0fSbU+0th7bFxKL+G/kM9vcEpn
-	 kKDb23cB+D2f9M3s2b1VKo7J1KdrbbiVZJAPA/oQ0u4wfD72llEJ4SXVJbLuCQSnh16J1
-	 77nyTJ378mYjde0Ijagx2csSjoHo1ZISYIt/6i4v0n8waQNRtE/zs+qkoVnLv7+Gn4A==
+	t=1795038329;
+	b=btl9DWLIdeUJDtkjU0Q2IphtZjaIU+LivShbjIK7aU+AZutUsZYNINB4VMVttlZ4YrJB
+	 mF61xHaVZ6GnOpyey1ZPjveaBOVHB0VLdEhgpJebw/60xTCwDhUrC39Q2O6rqZ79hixHr
+	 0J0Js7l+CIMVInIwMeySi0duWME/8vkA40/MFmJ8WxEXDTXPtdX1EP4mKJreUDvVBnSTn
+	 zXhWC+DfrbCf4S15A1W3h5gyK/zT70UXsvxTP52lOGxK0tWNHQ77Vf3pNTYXMYxVnnuRO
+	 GeLq+10Cktk2Wrcf/dUdGWBki5kKeHnDUEN2wsuRXxS1GRRdzWg5i7/IURFNoG5O3mQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795029014;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:CC:Subject:
-	 User-Agent:In-Reply-To:References:Message-ID:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-SRS-Rewrite;
-	bh=YxWsOpaN6CU+fFgVMclUNy68ZrjNu1idGsKCVJ6O9Z4=;
-	b=4T/1Ueq6uZyFYbRStjJugXV4AP8dov3sLN+NlINzXBFTlzMkhsriQSD3u2aV1CMyR2xZ
-	 P7ATWuSB5XOfB8BC4wKzERixFQ2qMqu4FqKxy69AQzLuKy6c/MUYz1eoJkzirFz8dGWhF
-	 Thy71k7RBuCFmIokERdmo8g1pER4QffsqFaI5uSzevLbWXZB/rN7v8aUvRWoOFHVJWMwX
-	 xx+dgzgcpkTI56WPdVe+ATGBnUnlFbgq4U/pI7+Il+M4nTP/EOLrNWpWZFfq9DWJQxiGJ
-	 ob9LWjxaUFtfGfzL/OvzAXjfVz9nfCfIRvuAX9YuFXU3bLfasnk00FKN8Mh6UuztF1Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795038329;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Type:Organization:
+	 Content-Transfer-Encoding;
+	bh=O9sP8o2+H5Ta33ZN1ksryRdsWFwtsjdH10Szd6V1FAU=;
+	b=tIl853pwpBwjyTHOppSSyFGQrMOhQYGlqLXNJWFF8PqhcsG6foGApG//7PVti/DqDhcK
+	 gLfibIu/9hrvt/kd3hzjlcqmD+Iugi66lUEUVLIIkiB6nmLRTYVQLLapOBif5Y8Tqnl5j
+	 mIHMg+jVPTAOBQug/eMtbibkaCfUZkqOa5dfJVf8mOebBcLeGrhrzVqJ6rpFcjcMjaUFT
+	 tYKSYqF3Juj23t/n8l1om3uaTT/D28rw9Y956pBoucuFKoGEyoLq4YJagOr6YaTvA/Vng
+	 ZuTlUcmsuGymFVqURzC/N0CYVcGDSgbNvWD5I8WQD+j3uEgPnXNUsJaKN+lJkzYK/UQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=infradead.org;
-	spf=none smtp.mailfrom=desiato.srs.infradead.org;
-	dkim=pass header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=i6T5OkA6;
-	arc=none smtp.remote-ip=90.155.92.199
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=linux.intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Y76Q4IPO;
+	arc=none smtp.remote-ip=198.175.65.16
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E65606A31C;
-	Wed, 18 Nov 2026 19:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C2E65606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE94606A332;
+	Wed, 18 Nov 2026 21:45:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EAE94606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=i6T5OkA6
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=YxWsOpaN6CU+fFgVMclUNy68ZrjNu1idGsKCVJ6O9Z4=; b=i6T5OkA6HB7NG25CMcQ8Te4Ltr
-	KxIOzXx/mNFMONQ4ViCWFPNmIrUOuZVTIe8TZnkkJlz9SvrT7bF+8x41WWOLI8qO2kRjpz3bGORzX
-	iZXB3H/1+181sDQQBjKkDX3Ecxc0BS+EsdKOocrWt+stbQmWHtKIf0QpLepBumkQf/831tPfnEejg
-	Mn0K+Y6S4HnvTOy97cfE4cJl/H97wFiYDnoEOJ+PmptkQJL2VFtvIU9o0jXrb7h8DKMAaRLOBo6Ic
-	75Zv3gjRNJV25Ap9P2B/c6B1/SSOXgveIKaxkIQi9zRBBjJ2Hb8o/hzhGZMKQfHMsaX3VVDtMH58Q
-	ZlneSFqw==;
-Received: from [2a00:23ee:2910:16f:a90:4999:d4c:f045] (helo=ehlo.thunderbird.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xTl2l-0000000GRW5-1yMX;
-	Wed, 18 Nov 2026 19:10:07 +0000
-Date: Wed, 18 Nov 2026 19:10:01 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Paolo Bonzini <pbonzini@redhat.com>,
- =?ISO-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>
-CC: Sean Christopherson <seanjc@google.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, ashish.kalra@amd.com,
- michael.roth@amd.com, nsaenz@amazon.com, anelkz@amazon.de,
- James.Bottomley@HansenPartnership.com, Melody Wang <huibo.wang@amd.com>,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, x86@kernel.org,
- coconut-svsm@lists.linux.dev, joerg.roedel@amd.com,
- Mushahid Hussain <hmushi@amazon.co.uk>,
- Sriram Nambakam <snambakam@linux.microsoft.com>,
- David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH 06/16] KVM: x86: Widen the plane vCPU fd ioctl allowlist
-User-Agent: K-9 Mail for Android
-In-Reply-To: <4e4fb011-9171-42c1-b499-27b0333a2fd6@redhat.com>
-References: <20260608144252.351443-1-joro@8bytes.org> <20261111222911.477-1-dwmw2@infradead.org> <20261111222911.477-7-dwmw2@infradead.org> <4e4fb011-9171-42c1-b499-27b0333a2fd6@redhat.com>
-Message-ID: <D0EE54A9-3FF3-4005-875B-A9AF04EB1341@infradead.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Y76Q4IPO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1795038329; x=1826574329;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=E8Mi5GwSGcSZlzHnI46hbjXPMPdMhOLYxYEXR8H1SGA=;
+  b=Y76Q4IPO+q73eS/usnXkSvAMj9rzKw081uhrfdAMZ7vVeSLflj+YYa3r
+   I2FfsKa1fJqzaVx0rF237m7l0Kjg7NMIx0EgcLyYwDCIuZ5bGTtjJuREW
+   0Pj5WowP+5/Qw12z+PT/USpaXWPNO7tO1UCGdmFxpMUWqDA7xOZ62IHk9
+   iLyNo6cVBDVI5NaTGpKRgnZP7A25+BheY6Vg9Fyyo2ipuBwQjS2Pxx+yD
+   ze9AHaigMe1/ia1QaBptdLehnIw7XBotf8GcaTeVQcWmronz+ZvUkfmz3
+   F5vQt/yEBvRy/a6mdAgfpBOU3Ng1nNZjGGYonfgN/0zCSJx3IDIiIGavy
+   Q==;
+X-CSE-ConnectionGUID: P7CkxlBbQMih49D8ZRPoIA==
+X-CSE-MsgGUID: 3v+X7EthSa+KSjozsc5xpw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11970"; a="3862525"
+X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
+   d="scan'208";a="3862525"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 13:45:28 -0800
+X-CSE-ConnectionGUID: 8ARsq6GQRFi7BBoNvbfCfQ==
+X-CSE-MsgGUID: 5Dh0BXP9QGu7NcXtqx61Mg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
+   d="scan'208";a="10390641"
+Received: from klitkey1-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.16])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 13:45:21 -0800
+From: Ville Syrjala <ville.syrjala@linux.intel.com>
+To: dri-devel@lists.freedesktop.org
+Cc: Alessio Belle <alessio.belle@imgtec.com>,
+	Alison Wang <alison.wang@nxp.com>,
+	asahi@lists.linux.dev,
+	Danilo Krummrich <dakr@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	imagination@lists.freedesktop.org,
+	Janne Grunau <j@jannau.net>,
+	Jyri Sarha <jyri.sarha@iki.fi>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	linux-mips@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Luigi Santivetti <luigi.santivetti@imgtec.com>,
+	Lyude Paul <lyude@redhat.com>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	nouveau@lists.freedesktop.org,
+	Paul Cercueil <paul@crapouillou.net>,
+	Russell King <linux@armlinux.org.uk>,
+	Sasha Finkelstein <k@chaosmail.tech>,
+	Stefan Agner <stefan@agner.ch>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>
+Subject: [PATCH v4 00/20] drm: Increase COMPILE_TEST=y coverage
+Date: Wed, 18 Nov 2026 23:44:57 +0200
+Message-ID: <20261118214518.29317-1-ville.syrjala@linux.intel.com>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -76,58 +99,95 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
+Content-Transfer-Encoding: 8bit
 
-On 18 November 2026 17:58:33 GMT, Paolo Bonzini <pbonzini@redhat=2Ecom> wro=
-te:
->On 11/11/26 23:29, David Woodhouse wrote:
->> From: David Woodhouse <dwmw@amazon=2Eco=2Euk>
->>=20
->> A VMM that puts an initial VTL context on a higher plane cannot finish
->> the job through the plane vCPU's fd=2E kvm_arch_is_vcpu_plane_ioctl()
->> refuses the ioctls it needs, while the one capability ioctl it does
->> admit, KVM_ENABLE_CAP, reaches *every* vCPU capability handler=2E
->>=20
->>   - KVM_GET/SET_MP_STATE: a plane vCPU for an AP starts in
->>     wait-for-INIT like any non-boot x86 vCPU, and nothing ever sends
->>     INIT/SIPI to the higher plane of an AP=2E The VMM has to mark it
->>     runnable itself=2E
->>   - KVM_SET_GUEST_DEBUG: single-step and breakpoints on a non-zero
->>     plane=2E The debug exits surface through the plane-0 KVM_RUN loop
->>     like any other plane exit=2E
->>   - KVM_X86_SETUP_MCE: mcg_cap is per vCPU and every twin starts with
->>     the KVM_MAX_MCE_BANKS default, so programming plane 0 alone leaves
->>     the planes disagreeing=2E Hyper-V shares MCG state across VTLs=2E
->>   - KVM_ENABLE_CAP: accept only the audited capabilities on a plane fd,
->>     the SynIC pair and the two CPUID-enforcement toggles, which change
->>     state that each twin keeps separately=2E Anything else gets -EINVAL=
-, as
->>     non-allowlisted ioctls already do=2E The nested paths behind
->>     enlightened VMCS and direct TLB flush have never been audited for
->>     plane_level > 0, and without the filter any future vCPU cap would
->>     work on planes without anyone having decided that it should=2E
->
->Not sure about KVM_ENABLE_CAP, the other seem sane=2E
->
->BTW at some point I'll rewrite these commit messages, they're infuriating=
-=2E=2E=2E
+From: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-Yeah=2E I've grown kind of immune to them now=2E Even found myself typing =
-"load-bearing" with my actual meat fingers the other day=2E
+This series contains a few of my earlier COMPILE_TEST=y coverage
+patches that are still not applied. I've also included whole new
+set of patches based a more recent excursion with Claude. It
+managed to identify some additional drivers we can target.
 
-I've also been looking harder at the completion thing=2E We *can't* (well,=
- I don't want to) enter another plane while there's still a completion wait=
-ing on the first plane=2E
+Compile tested on x86-32, x86-64, arm, and arm64, and I've also 
+tried to silence all the resulting new compiler and sparse warnings.
+Also a few kernel-doc warnings crept up in pvr so also tried to
+clear those out.
 
-Which means any control register or MSR interception which needs to be han=
-ded to another plane has to completed first=2E
+The tilcdc DT change is the only one that I think might have
+any functional impact. And since I have zero idea about DT
+treat it with suspicion!
 
-I think we need to be able to complete them with the RIP unchanged (not ad=
-vanced over the instruction)=2E Then for VSM, it's VTL1 which will handle t=
-hem and then advance RIP for its VTL0=2E VTL1 wants to be told the instruct=
-ion length too; I could make QEMU find it but since KVM tends to have it an=
-yway, I'm looking at how I can export that=2E
+Assisted by Claude Sonnet 5.5
 
+Cc: Alessio Belle <alessio.belle@imgtec.com>
+Cc: Alison Wang <alison.wang@nxp.com>
+Cc: asahi@lists.linux.dev
+Cc: Danilo Krummrich <dakr@kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: imagination@lists.freedesktop.org
+Cc: Janne Grunau <j@jannau.net>
+Cc: Jyri Sarha <jyri.sarha@iki.fi>
+Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org
+Cc: Luigi Santivetti <luigi.santivetti@imgtec.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>
+Cc: nouveau@lists.freedesktop.org
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Sasha Finkelstein <k@chaosmail.tech>
+Cc: Stefan Agner <stefan@agner.ch>
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>
+
+Ville Syrjälä (20):
+  drm/tilcdc: Allow build without __iowmb()
+  drm/tilcdc: Drop volatile from the mmio pointer in tilcdc_write64()
+  drm/tilcdc: Use __le64 for the fallback 64bit write
+  drm/tilcdc: Fix endpoint node names in the legacy panel overlay
+  drm/tilcdc: Allow build with COMPILE_TEST=y
+  drm/armada: Fix printk arguments
+  drm/armada: Fix armada_debugfs_crtc_reg_write() return type
+  drm/armada: Fix sparse __iomem address space warnings
+  drm/armada: Allow build with COMPILE_TEST=y
+  drm/fsl-dcu: Allow build with COMPILE_TEST=y
+  drm/adp: Include linux/bitfield.h
+  drm/adp: Allow build with COMPILE_TEST=y
+  drm/imagination: Include io-64-nonatomic-lo-hi.h
+  drm/imagination: Use rcu_access_pointer() for dma_fence::ops
+  drm/imagination: Allow build with COMPILE_TEST=y
+  drm/imagination: Drop stale kernel-doc for
+    pvr_mmu_backing_page.pvr_dev
+  drm/imagination: Fix kernel-doc for pvr_mmu_op_context anonymous
+    structs
+  drm/ingenic: Allow ingenic-dw-hdmi build with COMPILE_TEST=y
+  drm/nouveau: Allow platform driver build with COMPILE_TEST=y
+  drm/rcar-du: Allow VSP and writeback build with COMPILE_TEST=y
+
+ drivers/gpu/drm/adp/Kconfig                     |  2 +-
+ drivers/gpu/drm/adp/adp_drv.c                   |  1 +
+ drivers/gpu/drm/armada/Kconfig                  |  2 +-
+ drivers/gpu/drm/armada/armada_debugfs.c         |  2 +-
+ drivers/gpu/drm/armada/armada_fbdev.c           |  2 +-
+ drivers/gpu/drm/armada/armada_gem.c             |  7 ++++---
+ drivers/gpu/drm/fsl-dcu/Kconfig                 |  2 +-
+ drivers/gpu/drm/imagination/Kconfig             |  3 ++-
+ drivers/gpu/drm/imagination/pvr_ccb.c           |  5 +++--
+ drivers/gpu/drm/imagination/pvr_device.h        |  1 +
+ drivers/gpu/drm/imagination/pvr_mmu.c           | 14 ++++++--------
+ drivers/gpu/drm/imagination/pvr_queue.c         | 17 +++++++++--------
+ drivers/gpu/drm/ingenic/Kconfig                 |  2 +-
+ drivers/gpu/drm/nouveau/Kconfig                 |  2 +-
+ drivers/gpu/drm/renesas/rcar-du/Kconfig         |  4 ++--
+ drivers/gpu/drm/tilcdc/Kconfig                  |  2 +-
+ drivers/gpu/drm/tilcdc/tilcdc_panel_legacy.dtso |  4 ++--
+ drivers/gpu/drm/tilcdc/tilcdc_regs.h            |  7 +++++--
+ 18 files changed, 43 insertions(+), 36 deletions(-)
+
+-- 
+2.56.0

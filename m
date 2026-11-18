@@ -1,107 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.104
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794987720;
-	b=y0a02G6NycIEbyGv8CygS7zqBR2bYmmljQTheWPC1U3WFaCF4Er9wQOgMLDTULXeo7d1
-	 tXzGMHPIomoYCv8cpkHEZtv3IV/fCyJ0I/1VqkBTaqdpfKZRKANtFITh9jPlZFL2BM13q
-	 GrWW9rdxijBr75xIPye3v1QZT4qbT4kfYQSEwlDpLv9kGc8s6zVMnAgU4bqNf/H638/Hx
-	 AuQabJHaIToOWFsHjtN+UWrt9fn8AKQNk+ZrI6jpPUCP15a8lHYmWWH0wYixrLTW7yTky
-	 DBRTnLpauUR5KNAsfA+g+bq0LSjJPbv3fGOqKZst+bMBZC2WElkJQakyi0gR8AhGa/Q==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794987720;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-	bh=hgsWW3V4VdF0R/JiApKmthQphnR847bk9goQhkE+1AE=;
-	b=UNbfL/fb+ujzkaAb8PKLJLpaHuUiZmWUtKBQ6oxRMdc8NERhpcL9JeaHKJZ3+aOxJA1B
-	 5bFyRbYPKQoh1YKaa6/UfcgzYwfcq2rIt3w5QRfgBTR1Y6BgDRUyiPvdVUeSEfjUptV78
-	 WwRpcNRv2NOYgKpo/g/jrtIqCUXSyRjgLxq6oWd6Zi8kC52LutSB9kkgy6CmMwGRmQM7T
-	 pNM+xObHwCMlhDiQC8oj1p6xc9gsj4U5nAPB2PwlN/7/GmQAyDo84bHFMYo3Gh0IHOgAd
-	 eKEbn2baUjNvgHB1fiBnMG77kbf3vg4UdhunykcECJh08JRIqbnRRhhAshlVWIYmAzA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ATlU7vwN;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=IbvwBmTs;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.104
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.104])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.85.4
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794987819;
+	b=yN04jV4Il8xnpns/xYf64azFPeZcIJsBlnm+hOr2Ztl7jvoYxZ+tl0dBbhiU+tSGgtDR
+	 McUlNbvS5Uy8vIgEQ3iHCoU5oDq6BszxoWLIyThVLspMn5vxfgwExnwGpagltOHd2pPtv
+	 XGkNcQ/d74XxwWU20OIrdGYY9AU/uJN7neBw7fadUx+quMTC4i6vvhxF1LyV+IrgXQPc0
+	 PaKtFjPfE+wKlg21BWt4KEAEm0CWczRxYUNE3Qb+JsFjwvlWEma0ytvneFlF92hAA7x4X
+	 npOv3bXbyY2zn1dNKy4IuWL0IFFkaoTFgJlVnwYlLkusSlWBKqjeLNe+QXSamNbOR9g==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794987819;
+	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:Date:From:To:
+	 Cc:Subject:Message-ID:In-Reply-To:References:Organization:X-Mailer:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-Last-TLS-Session-Version;
+	bh=5tdOi87MUQVrh0lDnm0y5zaT0nPUT+qlg7v5xkEiqMk=;
+	b=rR6hxOb3bRxs4H5Z2aXCv4uwBxGbwBmHqkZH9LsDpsrTbNj5XQsBmHXNofRHz1Rib1S7
+	 2407F/+BNOCf8/kMfZBGTS2yf9WU9cbwUbh/VLgjAKKLFfgyOICrS5oXBV6x/kIM+JeeO
+	 JGvBM1B+pm5AeMMH790jF8vCFQVnbML7dUcRx+kWqtA3JAiaDgfMJgx5Kp9xbJENOM444
+	 QH2xREDT8VxMUVRhn/uDjYzEk83k+7vIg8YpRF6UvVik+HP1/wBkruTFHHeBnmJDzO/Xx
+	 tURM2fMGEpx6SzdELNCXhoxtpWcAX4FOZ5JnvkmeNxFLzWO50OaTnMT2bzDX8T9e1qw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=bootlin.com;
+	spf=pass smtp.mailfrom=bootlin.com;
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lvlw2APD;
+	arc=none smtp.remote-ip=185.246.85.4
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31C7606A8B1;
-	Wed, 18 Nov 2026 07:41:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A31C7606A8B1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF0C606A334;
+	Wed, 18 Nov 2026 07:43:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6DF0C606A334
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ATlU7vwN;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=IbvwBmTs
-ARC-Seal: i=1; a=rsa-sha256; t=1794987705; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=NLFH7Vhnv1DMxAubfgIPEjsINwAWcJeso/BRYYaKB2CVIYhrvKkDd21HYhQ/Bngy/s
-    qfZIGxTTAwNMOmrnrjrq+d3BaQHLh1sNQESLZIqFBvDjN+/wtOk71HLZbgYfnG45epum
-    wh562gSpif+OBmx5DXJtfJd2L9bYv6HRiOu2jutNsKLdX0xM798et+mV9zv4w6nzq8Ml
-    z7dtQcTFAdUQxQgvOR4iTmFnw/qA5tb87hYLDMnRdN/h0+uM3w3mgxlHmbfGHrgWWjoQ
-    u+eFMNBZXcyLEMCMLaltRx7d4QZU/eVoPDfNac2gysDiwnJizqDGKZna9B09ygkvv//I
-    7S4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794987705;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=hgsWW3V4VdF0R/JiApKmthQphnR847bk9goQhkE+1AE=;
-    b=Fu6fn6HvV5ypH9S6zcooO7hhzgJri5Bdcud1ze7dazwZB4Q/vZq+k9vW4M4U8zlOzb
-    K1jtIsP0z/4JA+Ag6Fx6v5ZT52ViCrMdtTjkzhJg2SAMw4YOaKSogFj0wL1XfKCyg5gQ
-    M0iFIR3nWpmVeOOTMgYO4zzqN3lmBju7uKT8q5EWPxgJ0HsWOFD/EMtsGXtAMzSd4+Q4
-    CtSp9BKzovFORQzkFs09jlNryn3A9HqEU25yX2KkqJYcQie5O4YmSRR5gI5xa2YJHVth
-    vZ7+22kbYwV4ey2sm2vrkQxERhy5WTE7XmNuw9xc930hCvYlAtl/85vtazwvJV4xpM/r
-    Iaiw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794987705;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=hgsWW3V4VdF0R/JiApKmthQphnR847bk9goQhkE+1AE=;
-    b=ATlU7vwNCgHLvCNbhnXDq3dVls2JD/TdS7p8b9qXPFqcgSfvYjayjYRipn79WARTk+
-    lQYfGOQIUOrAujNVO8wFpsY+4legDRYZBRrNapu992Hdy1Zsd4foRlgZoNXhNLanXaLE
-    jFLnZ12gq/hWnPb7VHK7lCuqVoyblkUXcsBaY2kQoE7vFb+gCPNw91MLNadP7pvncwAA
-    wRocdSaaxPI14GYlR9Bk+l/bOO6Ca7RsjDeWeaqenpUwkPqoEIBSFwC8sCAP2i71aoZM
-    jfCCfDBCAUPVYyRxFL/i3tXdwgCsJYmiH7B89Nexi6bVC/t0IuNHvO0bIjlThuINsWeZ
-    xZNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794987705;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=hgsWW3V4VdF0R/JiApKmthQphnR847bk9goQhkE+1AE=;
-    b=IbvwBmTs6vifhP37El0cDkDgorLjckJEDBRS9tgeaESnhBcbNc16WtiKyD7sC1gpzD
-    9o52qC7etgaNixXbRUAw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrV2Jpcm8iNZLZ2IBizV+3wFb55dglUeZzcEX9J"
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AI7fjaVd
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 18 Nov 2026 08:41:45 +0100 (CET)
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-To: Linus Walleij <linusw@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Bartosz Golaszewski <brgl@kernel.org>
-Cc: linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	letux-kernel@openphoenux.org,
-	"H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v3 7/7] pinctrl: ingenic: Handle X2600 Port E pull configuration
-Date: Wed, 18 Nov 2026 08:41:41 +0100
-Message-ID: <c7e87f36e19bd2663e2a2ac03f079220a95383f4.1794987700.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <cover.1794987700.git.hns@goldelico.com>
-References: <cover.1794987700.git.hns@goldelico.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=lvlw2APD
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 72BE44E4160B;
+	Wed, 18 Nov 2026 07:43:35 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2820E5FFAF;
+	Wed, 18 Nov 2026 07:43:35 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 77C8D11BC076C;
+	Wed, 18 Nov 2026 08:42:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1794987811; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=5tdOi87MUQVrh0lDnm0y5zaT0nPUT+qlg7v5xkEiqMk=;
+	b=lvlw2APDkLOsWdPZXrcTGO0SBvJt5AeVKx0Z42miklOsc8vPctTcjUfLvtwVkHahSrHPLo
+	CGkq45BFyuEH8fedQgM6HJ/XMbau2Rz9aKP/PJ7PtvuBj2hMJXvtJKDgvO7p6Q3pjLfN6i
+	0Ut1+LTYYEyg77hZo16dxZxUGEgStz4MKBFw9hj/2Tiw4koxWXy5yQ8yIHNJQ0YwvKbt02
+	l/18CHS5c8YF9Wb/y9UNTxVZrOZMCPnkOtQCGZPI3/uD2p7Qv4dv6TVs+LHq5iTBVHSMvU
+	434h8Tsq1BRLh2Btis1Fush6eJ7xmbr9hxqVcPbs2tV0AeddsTbxh0K8Mz1lOg==
+Date: Wed, 18 Nov 2026 08:42:46 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Peng Fan <peng.fan@linux.dev>
+Cc: Thomas Gleixner <tglx@kernel.org>, Radu Rendec <radu@rendec.net>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Peter Griffin
+ <peter.griffin@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, Andrew
+ Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Ryan Chen
+ <ryan_chen@aspeedtech.com>, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>, Joel Stanley <joel@jms.id.au>, Andrew Jeffery
+ <andrew@codeconstruct.com.au>, Billy Tsai <billy_tsai@aspeedtech.com>, Tan
+ Siewert <tan.siewert@9elements.com>, Eddie James <eajames@linux.ibm.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
+ internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Caleb
+ James DeLisle <cjd@cjdns.fr>, Marc Zyngier <maz@kernel.org>, Miodrag Dinic
+ <miodrag.dinic@mips.com>, Frank Li <Frank.Li@nxp.com>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Piotr Wojtaszczyk
+ <piotr.wojtaszczyk@timesys.com>, Anup Patel <anup@brainfault.org>, Paul
+ Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Samuel Holland
+ <samuel.holland@sifive.com>, Qin Jian <qinjian@cqplus1.com>, Changhuang
+ Liang <changhuang.liang@starfivetech.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Chen-Yu Tsai <wens@kernel.org>, Jernej
+ Skrabec <jernej.skrabec@gmail.com>, Nishanth Menon <nm@ti.com>, Tero Kristo
+ <kristo@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>, Linus Walleij
+ <linusw@kernel.org>, Michal Simek <michal.simek@amd.com>, Anirudha Sarangi
+ <anirudha.sarangi@amd.com>, Tushar Nimkar <tushar.nimkar@amd.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+ openbmc@lists.ozlabs.org, linux-aspeed@lists.ozlabs.org,
+ linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ imx@lists.linux.dev, loongarch@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-sunxi@lists.linux.dev, git@amd.com, linux-arm-msm@vger.kernel.org,
+ Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH] irqchip: Convert chained handlers to
+ guard_chained_irq()
+Message-ID: <20261118084246.5b5bf203@bootlin.com>
+In-Reply-To: <20261114-irqchip-cleanup-api-v1-1-4a9d598b0bdb@nxp.com>
+References: <20261114-irqchip-cleanup-api-v1-1-4a9d598b0bdb@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -111,76 +107,31 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+X-Last-TLS-Session-Version: TLSv1.3
 
-Port E uses PEPE as pull enable and PEPS as pull direction
-selection, unlike ports A-D with independent pull registers.
-Update both pinconf get and set while leaving other ports unchanged.
+Hi Peng,
 
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/pinctrl/pinctrl-ingenic.c | 33 ++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+On Sat, 14 Nov 2026 23:06:15 +0800
+Peng Fan <peng.fan@linux.dev> wrote:
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index 0491b135c1d11..2c8006280b943 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -4637,7 +4637,16 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
- 	unsigned int bias, reg;
- 	bool pull, pullup, pulldown;
- 
--	if (is_soc_or_above(jzpc, ID_X2000)) {
-+	if (is_soc(jzpc, ID_X2600) && offt == 4) {
-+		pull = ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPU);
-+		pullup = pull &&
-+			 ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPD) &&
-+			 (jzpc->info->pull_ups[offt] & BIT(idx));
-+		pulldown = pull &&
-+			   !ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPD) &&
-+			   (jzpc->info->pull_downs[offt] & BIT(idx));
-+
-+	} else if (is_soc_or_above(jzpc, ID_X2000)) {
- 		pullup = ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPU) &&
- 				!ingenic_get_pin_config(jzpc, pin, X2000_GPIO_PEPD) &&
- 				(jzpc->info->pull_ups[offt] & BIT(idx));
-@@ -4706,7 +4715,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
- 		if (is_soc(jzpc, ID_X2600) &&
- 		    pin / PINS_PER_GPIO_CHIP == 4)
- 			arg |= !!ingenic_get_pin_config(jzpc, pin,
--						X2600_GPIO_SMT1);
-+							X2600_GPIO_SMT1);
- 		break;
- 
- 	case PIN_CONFIG_SLEW_RATE:
-@@ -4731,7 +4740,25 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
- static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
- 		unsigned int pin, unsigned int bias)
- {
--	if (is_soc_or_above(jzpc, ID_X2000)) {
-+	if (is_soc(jzpc, ID_X2600) && pin / PINS_PER_GPIO_CHIP == 4) {
-+		/* X2600 Port E: PEPS selects direction, PEPE enables pull */
-+		switch (bias) {
-+		case GPIO_PULL_UP:
-+			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, true);
-+			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, true);
-+			break;
-+
-+		case GPIO_PULL_DOWN:
-+			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, false);
-+			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, true);
-+			break;
-+
-+		case GPIO_PULL_DIS:
-+		default:
-+			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPU, false);
-+			break;
-+		}
-+	} else if (is_soc_or_above(jzpc, ID_X2000)) {
- 		switch (bias) {
- 		case GPIO_PULL_UP:
- 			ingenic_config_pin(jzpc, pin, X2000_GPIO_PEPD, false);
--- 
-2.56.0
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Use the scope-based guard_chained_irq() helper in all chained handlers
+> under drivers/irqchip/ so that chained_irq_exit() is always invoked when
+> the handler returns. Handlers that duplicated the exit call on an error
+> path or jumped to a common exit label simply return now and rely on the
+> guard.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
 
+For the irq-lan966x-oic driver:
+
+Reviewed-by: Herve Codina <herve.codina@bootlin.com> # irq-lan966x-oic.c
+
+Best regards,
+Hervé

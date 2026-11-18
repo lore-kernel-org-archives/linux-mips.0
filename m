@@ -1,47 +1,49 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794991990;
-	b=L0nIgaNW6zYrcVx0awErO9QvGC2gDUujEi3N3Qx8g/qhZHKAOrZ1oIcrkbSMBwG/Z9zX
-	 0dtpW32/zVj+QbfVDF8qUlHehtKNsVryEReN7KlzmYj4Hs46neBhEtiYhKvzD5NfHFpZ5
-	 iWqvAUXM4CzEFZ078U3dx839o0n8UPgd3hpJPrG6MVX4WGPQJD6iUJttW5uj0781aFFMN
-	 I28/QUeKBD6k7XKE5N1120h9TpFdH5RMdLE78JVkCgk6Vvh/lLn1zEdELLXHMP/WP7tFO
-	 Y5azjaBsP18+FswRRPMZ0RSvpL6ZMYNzaKMfY8dBciqzLcetzo0Yd/5CnQxhsergFhQ==
+	t=1794993218;
+	b=q2+b50lVSzSAn8H0+uDLMYve+nnHg68FRb/iJK4NMKceZGEsffHbVjJnoyUE+sjFuSx3
+	 ARpLCs4MO47cNyQM/kHh9ZQJWBaREuafC+wjunAfjaMk6KKplO1BLNjQhDERA86f4QiEv
+	 Dvx43frE218qa0mbQPLZRV4zZif9lPRgpcuK4Q9X4VY4jx/vPz7gPy9FCrNyZmXSuldIj
+	 zrexvKnOwgtVGM116PlAozKvWAQsEXDA2pv4FG1gG7Oa7Gciq0yevEvFRkNITWO1geA1o
+	 AM2O/bbjaQNvzVUfyOsJh7O12DLdg9g4XAzRW4toi3x/9LMKaZVIExhPMS1v8ZLDSqg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794991990;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794993218;
 	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=DDeh3o5XmR0pUM1ClrHDQ8J3K4y9T9DB7rNBDbxG6dI=;
-	b=yBMXxHCdBJ3X+HvIpxaSOQhlTJBi8rZMf2q69HFCyTZD7yTGqu8Dt0aevMHIafTuFlwp
-	 Y/wUVXg7ll2hEEYDYB3J6KINy15vVzbnaq/2ZKHhL0SSj+9mBAsrfrH0Z0uCY4OrOY0JU
-	 vWI1WY3H0GGEBoJHpoMWS9E+TPnJ4/ScaVe+RwOmvez1Eq9RBD+P7EBvxpNxVn1ksKz5e
-	 oLK7K6wZ8k9czPuKgnZCFdDfaQ/7Lj1o0TPFV8fpNZa44mvNj1Xry24OVLHQtAANp2BIg
-	 j761sUSdnOXzbCHbiGWjEB38kkrpQNkgLaq9DYHbwksB/Ij0cuTjgsFLi4rWMERg/rA==
+	bh=MvvizZ9JHQIxNGSNp585ypBtXBMQ2aCpYxufJnPDzVU=;
+	b=rcYsnR4ca4KDHJ+D9FQhJQzs+ZspAM9+CBJClju/ojcVLKnfDWiLWDC9sBB+PFxMpbFD
+	 gpIoMTN62rUgBKcih3fkdMz5BJdW08RTdwF9vemb5dNBrSDlZB1BN32TOzy3CBgIQCyuU
+	 fr6tAAxL2p5m0hyK0+d2HtIVeXqqtSZV1xUaW4LA62asIBFLeRBNz2B6tqVtyFsJP2Fpx
+	 QKKgpF/OqBkeDA+tLpe96Oqm6wCgE1nj+ormqbp7diYl6SlLMLnY2JM35iVPJPpzt718G
+	 QalBi++2jA79sjJzmHf6yzYszKwG8sZo7d1kZUOmURPyViJADBQ7frITF9GLSHC3XRg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=crapouillou.net;
 	spf=pass smtp.mailfrom=crapouillou.net;
 	arc=none smtp.remote-ip=185.119.170.32
 Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DE8606A31C;
-	Wed, 18 Nov 2026 08:53:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 32DE8606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B720C606A88E;
+	Wed, 18 Nov 2026 09:13:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B720C606A88E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <b6aaeb0077bb0238c74aed16adfd212fb2fcb0a4.camel@crapouillou.net>
-Subject: Re: [PATCH v3 1/2] mtd: rawnand: ingenic: validate BCH error index
- in jz4725b_correct()
+Message-ID: <eb60698d243da29c61b3ffded6acca90dfcb3475.camel@crapouillou.net>
+Subject: Re: [PATCH v3 2/7] pinctrl: ingenic: Fix hardware dual-edge
+ interrupts on X1600
 From: Paul Cercueil <paul@crapouillou.net>
-To: Guanglei Zhu <zhugl3@xiaopeng.com>, harveyhuntnexus@gmail.com, 
-	miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, linux-mips@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- liuwb@xiaopeng.com, 	stable@vger.kernel.org
-Date: Wed, 18 Nov 2026 09:53:03 +0100
-In-Reply-To: <20261118020751.1833498-1-zhugl3@xiaopeng.com>
-References: <80f1ef9dd605d16df2add0a9dbdcdd5f9f508174.camel@crapouillou.net>
-	 <20261118020751.1833498-1-zhugl3@xiaopeng.com>
+To: "H. Nikolaus Schaller" <hns@goldelico.com>, Linus Walleij	
+ <linusw@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski	
+ <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Bartosz
+ Golaszewski	 <brgl@kernel.org>
+Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	letux-kernel@openphoenux.org
+Date: Wed, 18 Nov 2026 10:13:31 +0100
+In-Reply-To: <29961993f8fdc1db97854f940ecf3883c2d32cf6.1794987700.git.hns@goldelico.com>
+References: <cover.1794987700.git.hns@goldelico.com>
+	 <29961993f8fdc1db97854f940ecf3883c2d32cf6.1794987700.git.hns@goldelico.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -54,75 +56,108 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Hi Zhu,
+Hi Nikolaus,
 
-Le mercredi 18 novembre 2026 =C3=A0 10:07 +0800, Guanglei Zhu a =C3=A9crit=
-=C2=A0:
-> From: Weibin Liu <liuwb@xiaopeng.com>
+Le mercredi 18 novembre 2026 =C3=A0 08:41 +0100, H. Nikolaus Schaller a =C3=
+=A9crit=C2=A0:
+> Use the hardware dual-edge detector on X1600 and X2000.
 >=20
-> The JZ4725B BCH controller reports each corrected bit error as an
-> index into the codeword it was asked to decode, in the INDEX0/INDEX1
-> fields of the BCH_BHERR registers. These fields are 13 bits wide, but
-> nothing in jz4725b_correct() checks the reported index against the
-> size of the data buffer being corrected:
+> Set PAT1 when configuring both edges and program EDG on X1600.
+> Keep software edge switching for older SoCs without EDG.
 >=20
-> =C2=A0=C2=A0=C2=A0 buf[(bit >> 3)] ^=3D BIT(bit & 0x7);
+> Tested on X1600 and X2000 using GPIO buttons and register readback.
 >=20
-> With data or ECC coming from an untrusted flash, the decoder can
-> report an index that points past the end of the data buffer, and the
-> above statement then flips a bit outside the buffer.
->=20
-> Skip the correction when the reported index does not point into
-> the data area.=C2=A0 A bitflip in the parity bytes does not affect the
-> data, so rejecting the page for it would fail reads that are
-> perfectly correctable, and an index beyond the codeword has no
-> buffer to update in the first place.
->=20
-> Fixes: 3e6ac2ad90b3 ("mtd: rawnand: ingenic: Add support for the JZ4725B"=
-)
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Weibin Liu <liuwb@xiaopeng.com>
-> Signed-off-by: Guanglei Zhu <zhugl3@xiaopeng.com>
+> Fixes: 943e0da15370 ("pinctrl: Ingenic: Add pinctrl driver for X2000.")
+> Fixes: 4da56f9c6f14 ("pinctrl: ingenic: add x1600 support")
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+You'll have to decide, I don't think you can have two Fixes: lines.
+
+You also need to add:
+Cc: stable@vger.kernel.org
+
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+> =C2=A0drivers/pinctrl/pinctrl-ingenic.c | 19 +++++++++++--------
+> =C2=A01 file changed, 11 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-
+> ingenic.c
+> index 88c5edeaaddcc..dc5d38c16e18d 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -3622,6 +3622,10 @@ static void irq_set_type(struct ingenic_gpio_chip
+> *jzgc,
+> =C2=A0		break;
+> =C2=A0	}
+> =C2=A0
+> +	if (type =3D=3D IRQ_TYPE_EDGE_BOTH &&
+> +	=C2=A0=C2=A0=C2=A0 is_soc_or_above(jzgc->jzpc, ID_X1600))
+
+That actually fits in one line of 80 chars.
+
+But you can do even better and move that to the switch above, and replace t=
+he
+val1 =3D val2 =3D false;
+
+with:
+val1 =3D false;
+val2 =3D is_soc_or_above(jzgc->jzpc, ID_X1600);
+
+> +		val2 =3D true;
+> +
+> =C2=A0	if (is_soc_or_above(jzgc->jzpc, ID_JZ4770)) {
+> =C2=A0		reg1 =3D JZ4770_GPIO_PAT1;
+> =C2=A0		reg2 =3D JZ4770_GPIO_PAT0;
+> @@ -3635,15 +3639,13 @@ static void irq_set_type(struct ingenic_gpio_chip
+> *jzgc,
+> =C2=A0		return;
+> =C2=A0	}
+> =C2=A0
+> -	if (is_soc_or_above(jzgc->jzpc, ID_X2000)) {
+> -		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
+> -		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
+> -		ingenic_gpio_shadow_set_bit_load(jzgc);
+> -		ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset, val3);
+> -	} else if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
+> +	if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
+> =C2=A0		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
+> =C2=A0		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
+> =C2=A0		ingenic_gpio_shadow_set_bit_load(jzgc);
+> +
+> +		if (is_soc_or_above(jzgc->jzpc, ID_X1600))
+> +			ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset,
+> val3);
+
+The minimal diff would have been to change the check for ID_X2000 to ID_X16=
+00
+above. But the code does look better this way so I take it.
+
+> =C2=A0	} else {
+> =C2=A0		ingenic_gpio_set_bit(jzgc, reg2, offset, val1);
+> =C2=A0		ingenic_gpio_set_bit(jzgc, reg1, offset, val2);
+> @@ -3718,7 +3720,7 @@ static void ingenic_gpio_irq_ack(struct irq_data *i=
+rqd)
+> =C2=A0	bool high;
+> =C2=A0
+> =C2=A0	if ((irqd_get_trigger_type(irqd) =3D=3D IRQ_TYPE_EDGE_BOTH) &&
+> -	=C2=A0=C2=A0=C2=A0 !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
+> +	=C2=A0=C2=A0=C2=A0 !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
+> =C2=A0		/*
+> =C2=A0		 * Switch to an interrupt for the opposite edge to the one
+> that
+> =C2=A0		 * triggered the interrupt being ACKed.
+> @@ -3758,7 +3760,8 @@ static int ingenic_gpio_irq_set_type(struct irq_dat=
+a
+> *irqd, unsigned int type)
+> =C2=A0		irq_set_handler_locked(irqd, handle_bad_irq);
+> =C2=A0	}
+> =C2=A0
+> -	if ((type =3D=3D IRQ_TYPE_EDGE_BOTH) && !is_soc_or_above(jzgc->jzpc,
+> ID_X2000)) {
+> +	if (type =3D=3D IRQ_TYPE_EDGE_BOTH &&
+> +	=C2=A0=C2=A0=C2=A0 !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
+
+Keep it on line line.
 
 Cheers,
 -Paul
-
-> ---
-> v3: add Cc: stable and my Signed-off-by as the sender, matching
-> =C2=A0=C2=A0=C2=A0 the review comments on 2/2.
->=20
-> Changes in v2: skip the correction for an index that does not point
-> into the data area instead of failing the page with -EBADMSG.=C2=A0 A
-> correctable bitflip in the ECC bytes leaves the data valid, and the
-> early exit also dropped the error entries that followed it.=C2=A0 This
-> matches how jz4740_ecc_correct() treats its indexes.
->=20
-> Verified with a userspace replica of the correction loop: with
-> params->size =3D 512, an index of 4099 (parity area) followed by a
-> data-area index of 100 in the same BHERR register is now corrected
-> (v1 returned -EBADMSG and left the data error unfixed), the field
-> maximum (0x1fff) produces no write outside the buffer, and in-range
-> indexes keep correcting as before.
->=20
-> =C2=A0drivers/mtd/nand/raw/ingenic/jz4725b_bch.c | 4 ++++
-> =C2=A01 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-> b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-> index 2d0e0a2192ae..9b1c3d4e5f6a 100644
-> --- a/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-> +++ b/drivers/mtd/nand/raw/ingenic/jz4725b_bch.c
-> @@ -259,6 +259,10 @@ static int jz4725b_correct(struct ingenic_ecc *bch,
-> =C2=A0			bit =3D (reg & BCH_BHERR_INDEX0_MASK) >>
-> BCH_BHERR_INDEX0_SHIFT;
-> =C2=A0		}
-> =C2=A0
-> +		/* Skip indexes outside the data area. */
-> +		if (bit >=3D params->size * 8)
-> +			continue;
-> +
-> =C2=A0		buf[(bit >> 3)] ^=3D BIT(bit & 0x7);
-> =C2=A0	}
-> =C2=A0

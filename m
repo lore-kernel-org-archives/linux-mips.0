@@ -1,45 +1,50 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795063972;
-	b=EQl6vI5EJGFOO+6MlsuZ5ep/W5TciMyu4xf5M3yugeRW0kgvMkWTY1TH6iU9R8QwJQwf
-	 XvSZjjflyK+GLv0+NGiBsEd8acrB18EphNhaIwYWTlLb7B1qu1Si4a6rEO+O6LQkrMM9y
-	 2C8SZRpXD/O95pnqgEDtHvhTt2H1F8qrEkYLRTD8hY9mAmJTV3rFKNtwpQTGGk284/4ON
-	 48rp9LFlLrA37P9+DzNqn+heJmaOD+jExuyqolDVfN/a9jOeJUlp+I2+5dSXsENMk3cyh
-	 OvgukGykxYHRGkABSX2Y++CkQbFLOZtJBOOV9d/EZs3vU+dgDHPp5C21SrHmOp2odAw==
+	t=1795069031;
+	b=z7sJ81aashRwUt03RWWt2Kvd6BF6dYX6boujF2rEMT38+eIni7PSB6eL7XT2DfkJnWf1
+	 yUmUVYRJMpquMKz72NMBDuuJpS5xTuBe8jilGqCUiatGUUFY9vuHME2AnNLMTx8p37nhi
+	 8oeJhMn6VCNJiN4RTZWRrGapdfPETxOlRdvfpB9IwngxL/DX4LyBXHYZC7LTuDkZAHegj
+	 Kon9SwrJiEm4HCBnZD51rzLXOSib+nipdk0JbqYT0eNr9sMuVONMmn6TXyBlvjHWf15AK
+	 UPCVd/clkKHevLILzt9BTzly/ubbbh/eYI9bKXI7aSllJqZ5ijHNT32Umm7HXt8fYjw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795063972;
-	h=Received:DKIM-Signature:Content-Type:MIME-Version:Message-Id:
-	 In-Reply-To:References:Subject:From:To:Cc:Date;
-	bh=9i+UKZPZ3OpK5ILgjI5giVoNBCsGXWxAGZS6reZxXwU=;
-	b=E/uz/8ynhXRDrARTjvvIaSSu0g3lah0HXGmFgmD7bDGIJOV55Yevz4PpM9Dr8vzGrYJZ
-	 EKAK/M5vgjkSQMCTlEioDkg05G5UTwWRSL/LBizcUwjj3c648qEr4VEhdTxJifmbRbA3j
-	 QZo5o2klfzPwq7j9uTiey7kamYkXQN0dZZewLDVxQIhLYKRF9/DD+bbG3WrTs6S5Wkku9
-	 GiZyH60jpzz1LQAo6XUCwAn0ieRRwg82bvH3a9eSg62HBPJWOMd8Ud5o7xPFOamZEDwhp
-	 D+14ujjwihhmCecx11JP0zxrSGkYjSvUMkWFcjeHAiPsr6VSqia23sIS9RR1dQGrQtQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795069031;
+	h=Received:DKIM-Signature:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer;
+	bh=jAZ3SnNAJjB6kTaL5eHDhSogy8KQgK6+JZEcWaMgZsQ=;
+	b=V5J9lGSWD0cNuwWrQppVd3qiUafREc9uGAtqB8GJt7mNQGZJUDfSHC9r97dJ4YGqSC69
+	 WsaVKbqlvJbrJ8aWFK0DtlNBmeIEE5OsoKKxdxxcyQ3zOcPhwWShFFzVx/Zt/eE2G6MGj
+	 Z3A4hlxDTsVL5L5qTO2XjIL2ivSZox+5mIT0BSrR59/DbxQP00WOBEudj4NcQgU1mxtty
+	 dBsYYgw3n13N7UZ5OJnY5gqYxY5NPvYoHgsZFYsS9CiG/kU4PxI4nyvB18gaf4POq0hPd
+	 +GaBcNzwmieHNvMbkrHRr3DeyQmROyGszG8l0NyVtw9c74M+ZoXpzBL6UCS4+sKRhLw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="O9/IEtKF";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="QPur/Mce";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED199606A320;
-	Thu, 19 Nov 2026 04:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C97606A320;
+	Thu, 19 Nov 2026 06:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=O9/IEtKF
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 554B31F000C4;
-	Thu, 19 Nov 2026 04:52:49 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QPur/Mce
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CBD1F000C4;
+	Thu, 19 Nov 2026 06:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795063971;
-	bh=9i+UKZPZ3OpK5ILgjI5giVoNBCsGXWxAGZS6reZxXwU=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=O9/IEtKFhAwxtSQQ20gIkbGS6jtMNiV9GameG4+c4WUkp0KXzIoV56y3DUCygFCne
-	 fLOud+eFCn0vUUTKCcGgs9SDjzHj3MKrR6vyohE+DDLorBYe6DssRYEfq0rgAX0Em3
-	 6y+r3abPLOZCLeXqdFTHbzKnqW4fCjm/eYlKSIaRDVGJgs4Z5XbZA36SFNeZZJEskZ
-	 01aM/ZQl8wSimCP9er9CJuwHazOkfp89Q/0VDE3Pe56NEroDcQy05tSe1gwi047e4D
-	 RWBycPCqVyiiMLFUxjkVeBaCfklppnp9a/xnU/HVQB8P0iwFXchJbxAD4BWDUX7j6y
-	 v617XEMvSWjDQ==
-Content-Type: multipart/mixed; boundary="===============5775708092211357052=="
+	s=k20260515; t=1795069031;
+	bh=jAZ3SnNAJjB6kTaL5eHDhSogy8KQgK6+JZEcWaMgZsQ=;
+	h=From:Subject:Date:To:Cc;
+	b=QPur/Mced9X4RWzkGAt/MsAw+bqXt6yVON5lBH/7OyoiOaTbtzFItUhDCUIBWDdre
+	 ZGouoE1rykai0wUQlOVqCf0GlA7TrbLaI2Mqs8gYX/JQ9Oo2Wv4yYD/dlpAaTFIAXX
+	 7IftOiVoRagY/2JtvK8msJVyzyhR0zNeTTJ24nH7TIsTApifHRXe0eKDJ6rYh/TTub
+	 jmzTR3ax1PmxnZG5lGOM7weBavns02NIAauS40hYqQBCpuwRdocLfEJkR7ay2DzFMT
+	 sD7YpoQ9CvRkXi7y5T0RyOjL3xyq6FU+Kn1gekCcdzIt/umGs5YWm5g7jWFh3p4MWR
+	 YpdheBZ8DOQsw==
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+Subject: [PATCH 0/2] arch, kexec: declare kexec and crash capabilities in
+ Kconfig.kexec
+Date: Thu, 19 Nov 2026 08:16:56 +0200
+Message-Id: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -49,71 +54,75 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Message-Id: <c90c3d1dfacea3d6a30445bc33ca8e0de75c9fae953a4b9e842dd3dc887a3dce@mail.kernel.org>
-In-Reply-To: <20261119040705.684987-3-atomlin@atomlin.com>
-References: <20261119040705.684987-3-atomlin@atomlin.com>
-Subject: Re: [PATCH v6 2/2] selftests/bpf: Verify task_setscheduler LSM hook parameters
-From: bot+bpf-ci@kernel.org
-To: atomlin@atomlin.com,tsbogend@alpha.franken.de,paul@paul-moore.com,jmorris@namei.org,serge@hallyn.com,andrii@kernel.org,ast@kernel.org,daniel@iogearbox.net,eddyz87@gmail.com,memxor@gmail.com,mingo@redhat.com,peterz@infradead.org,juri.lelli@redhat.com,vincent.guittot@linaro.org,stephen.smalley.work@gmail.com,casey@schaufler-ca.com,longman@redhat.com,tj@kernel.org,hannes@cmpxchg.org,mkoutny@suse.com
-Cc: ihor.solodrai@linux.dev,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,chenridong@huaweicloud.com,dietmar.eggemann@arm.com,rostedt@goodmis.org,bsegall@google.com,mgorman@suse.de,vschneid@redhat.com,kprateek.nayak@amd.com,omosnace@redhat.com,kees@kernel.org,atomlin@atomlin.com,neelx@suse.com,sean@ashe.io,chjohnst@gmail.com,steve@abita.co,mproche@gmail.com,nick.lange@gmail.com,cgroups@vger.kernel.org,linux-mips@vger.kernel.org,linux-fsdevel@vger.kernel.org,linux-security-module@vger.kernel.org,selinux@vger.kernel.org,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org,linux-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
-Date: Thu, 19 Nov 2026 04:52:49 +0000 (UTC)
-
---===============5775708092211357052==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWMSw7CMAwFr1J5TURTlfK5CmKRGDcxiKSyC6pU9
+ e4ksJynN7OCkjApXJoVhD6snFMBu2sAo0uBDN8LQ9d2g7X2bJxgNE/MaeRg/BF7b1s84WGAokx
+ CIy+/3PX2Z337B+FcG/XhnZLx4hLGOmXhwGn/cjqTwLZ9AUFdywKQAAAA
+X-Change-ID: 20261119-arch-kconfig-b7c4b10c8c56
+To: Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>, 
+ Catalin Marinas <catalin.marinas@arm.com>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, 
+ Pasha Tatashin <pasha.tatashin@soleen.com>, Paul Walmsley <pjw@kernel.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>, 
+ Russell King <linux@armlinux.org.uk>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Thomas Gleixner <tglx@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+ x86@kernel.org
+Cc: Alexandre Ghiti <alex@ghiti.fr>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Cong Wang <cwang@multikernel.io>, Mark Rutland <mark.rutland@arm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Mike Rapoport <rppt@kernel.org>, 
+ Nicholas Piggin <npiggin@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
+ Shrikanth Hegde <sshegde@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, 
+ kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ loongarch@lists.linux.dev
+X-Mailer: b4 0.16.1-dev
 
-> selftests/bpf: Verify task_setscheduler LSM hook parameters
-
-TL;DR: Nit only, in the new task_setscheduler selftest: the restore_sched flag
-and the saved_policy initializer look redundant, so the scheduler restore at
-out: could be unconditional.
-
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-> --- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-
-[ ... ]
-
-> +static int test_lsm_task_setscheduler(struct lsm *skel)
-> +{
-
-[ ... ]
-
-> +	int cpu, saved_policy = -1;
-> +	pid_t child_pid = -1, waited;
-> +	bool restore_sched = false;
-> +	bool restore_aff = false;
-> +	int len, ret = -1;
-> +
-> +	saved_policy = sched_getscheduler(0);
-> +	if (!ASSERT_GE(saved_policy, 0, "sched_getscheduler"))
-> +		return -1;
-> +	if (!ASSERT_OK(sched_getparam(0, &saved_param), "sched_getparam"))
-> +		return -1;
-> +	restore_sched = true;
-
-this isn't a bug, but since every "goto out" happens after
-"restore_sched = true", could the restore_sched flag (and the
-"saved_policy = -1" initializer, which is overwritten by the next
-statement) be dropped and the restore at out: done unconditionally?
-
-[ ... ]
-
-> +out:
-> +	skel->bss->setsched_deny = 0;
-
-[ ... ]
-
-> +	if (restore_sched)
-> +		sched_setscheduler(0, saved_policy, &saved_param);
-> +	return ret;
-> +}
-
+The intention is to take it via kexec tree.
 
 ---
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+Mike Rapoport (Microsoft) (2):
+      MAINTAINERS: add kernel/Kconfig.kexec to KEXEC
+      arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/44458173002
---===============5775708092211357052==--
+ MAINTAINERS            |  1 +
+ arch/arm/Kconfig       | 12 +++---------
+ arch/arm64/Kconfig     | 36 +++++++++---------------------------
+ arch/loongarch/Kconfig | 20 +++++---------------
+ arch/m68k/Kconfig      |  4 +---
+ arch/mips/Kconfig      | 12 +++---------
+ arch/parisc/Kconfig    |  8 ++------
+ arch/powerpc/Kconfig   | 30 +++++++-----------------------
+ arch/riscv/Kconfig     | 28 +++++++---------------------
+ arch/s390/Kconfig      | 28 ++++++----------------------
+ arch/sh/Kconfig        | 16 ++++------------
+ arch/x86/Kconfig       | 48 ++++++++++++------------------------------------
+ kernel/Kconfig.kexec   | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 13 files changed, 102 insertions(+), 183 deletions(-)
+---
+base-commit: 666539eecdf4db623f5e3c3e55cf9f2dfad24aa4
+change-id: 20261119-arch-kconfig-b7c4b10c8c56
+
+--
+Sincerely yours,
+Mike.
+

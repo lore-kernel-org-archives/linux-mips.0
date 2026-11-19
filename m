@@ -1,51 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.198
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795074487;
-	b=IjPTlddV+1JqvBHCOTxBbCvd89TOhF9sAJNI1xXBUXomMzKIhkZbm931BuzonLx3c9QU
-	 45e6EZ8vlqx0m4VxCpwZy7PQ07590SLpZt5UJdpksb5onzTFdeh5rLHXqbe7hh4rs0ztE
-	 80Q4oSsWYEi6WWRy5TtoQLVadmSfxnJcjxX+034z6c2vZw4W4IxwgrxfjD034JvfvAX1n
-	 GQnWtniBHRWtYsbbD/56SYSu+Y+9ONmZxfU+hNYu3aZHvIqsnsXeNRXbl+XEulHLn6sZ5
-	 IEkYhhqrfeHb9DeX4tZL9q2/6CqvOWFteAIZGdqfriPXgGGS5gRXaiE2wIlHLn7e7Eg==
+	t=1795074491;
+	b=p5wUU/fvGWZB5iQZZz62sM3VB70P+K6N5gv7vnMOhSmGXKIzVMIrr3x5gA3EhGQ6g/uD
+	 r9d01ffFWmNvCAAX/Jcigp+bVz9Uoe8G7qSVOe2Yc+35LkD2JlgdKI5bzPtQQ7b+bNu2w
+	 vgmuRH+zTJ/6ToHgc9tTpsZVy7bfRy0gwK8mV0lu+a6OYiYwsRQYEyuJDshf2mGpQMdzd
+	 99pulm6q0fb+jEh0KYonDcL7RIyv/22IBj9qKWrPR8o0g2/DgP7hE894iXlFwS2w57iUw
+	 v7ufgRJi3CvhO3xMBVpKnaZntxc1JPZmRmwZ1E4tTyii6pCwXexwc7yvb1W+BJY+GBw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795074487;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795074491;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
 	 X-Mizu-Trace-ID:X-Migadu-Flow:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=jA4EnlN8vX+Zi77g4vST5DH/Y6mCJwZUgtH7iydfQVU=;
-	b=akaRDx4J3fADePe1kWLP3X2n24gohBxAmgnfUINxZy7gm7/mVR4i7eltIztMz0RkpTk/
-	 Pyht3ZvjSDI9c5t8BYLoxQBVYwBVeANJoHkxxjUg+GXIuh58WI/WEU+qUh7EKGfYSZCZq
-	 ijzOCPSmmldz955EtgRfZxYX1A65Qp71zXnZLR0Z40qgO0TiOnsJn/uJ5Xx5vIZIATj9H
-	 Ve6yNmzxOSaGiT3IiwrG+9wnb19IhDIugAtw1jf5V6uoFOE0wjf2+6bEw7tVc43tqV9iG
-	 fqMXtM83I+y6oASYnxzQPYuhfYNBaCOz2lNeZEROsOp49wqoKcNH+RBKWLXVlAMCplQ==
+	bh=XlDJSyi9j+ARZ1pSnvbzJR+3WOFZ17M85iHDgDnRjlw=;
+	b=Tyu5rGcA9a+NE7kC0mJA2uK6D35ahiOWlZte2uFFY4kZIR0xqCCGA3CeXeu9jN78JNu+
+	 XT04LDjdl39zT3P3znpnzt0lDPHIX5K2i+qEbMe9rL78wED1qG0f2qLa1sy4c4U+HzeGW
+	 +tPRAdJutrFLzSB3u5Oe0ojNL6aI4PHtQElz0n0ba/Atc4/PMBKCj+zXgcxvcW9mTU1E2
+	 NZBBSuU9ntIZLDoHWOjUoxCbG7vzkDRowB7Qp4czVUZ/M+KhheENh6L1WjfBIHhblJYks
+	 B4eW+PyyzoUGvR09BodtI6hP8Tnq7YCDsFbHn7DBA+w4Nb7YKvYXY9mMBzdVhskhvWw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linux.dev;
 	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=xEpsA2MW;
-	arc=none smtp.remote-ip=95.215.58.198
-Received: from mta1.migadu.com (out-198.mta1.migadu.com [95.215.58.198])
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=Efl8vFXG;
+	arc=none smtp.remote-ip=91.218.175.47
+Received: from mta0.migadu.com (out-47.mta0.migadu.com [91.218.175.47])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5403460A2601
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 07:48:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5403460A2601
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0EB60A262C
+	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 07:48:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6D0EB60A262C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=xEpsA2MW
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=Efl8vFXG
 X-Envelope-To: linux-mips@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=b8dCz3xyQcdyBq/RUyCmROZ7uxNub0ykavW4CBAhTVY=;
+DKIM-Signature: a=rsa-sha256; bh=M35Q8JweTHDpChhtGlZR4K4Gqkq4axvTIFtPga+8QRg=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795074482; v=1; x=1795679282;
- b=xEpsA2MWKYMLJeHwPe8vVyfcA6CJq3up6Vr51FKZ0ElLm3kxez9HLTy8iajIyNE6eZdYebYu
- h4mKcBMS/ebmVPhhBMkC7p+PC8+XlMboeEOi9oPcvbFC41aGbSuKx3LnkUASBpvLl7K1UOhoE5i
- +Za9sdHxd6Fut/LnZrXd3ZBk=
+ t=1795074487; v=1; x=1795679287;
+ b=Efl8vFXGeNuHH0CMp279UwnUDUO7jPqXKVe1LHqngGOVpzCFlW0GUnZEGELVYWFOjNHghulI
+ 8KZU0BumjUNWcwMFWj1RL5jWWAEeI9PLXZvAiBlTqqEAEM9GvvvAv1c+D4a/R+7VjOtG3GXoEHf
+ BnOB/xg4xL7aqtc1Jj71axL0=
 X-Envelope-To: linux-mips@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 9def377e580dbf6d;
-	Thu, 19 Nov 2026 07:48:02 +0000
-X-Mizu-Trace-ID: 9def377e580dbf6d
+Received: by smtp.migadu.com with ESMTPS id 16235cd6a3feaffe;
+	Thu, 19 Nov 2026 07:48:07 +0000
+X-Mizu-Trace-ID: 16235cd6a3feaffe
 X-Migadu-Flow: FLOW_OUT
 From: Fuad Tabba <fuad.tabba@linux.dev>
 To: Paolo Bonzini <pbonzini@redhat.com>,
@@ -63,9 +63,9 @@ Cc: kvm@vger.kernel.org,
 	Zenghui Yu <yuzenghui@huawei.com>,
 	Will Deacon <will@kernel.org>,
 	Fuad Tabba <tabba@google.com>
-Subject: [PATCH v2 2/7] Documentation: KVM: Fix lock names and a lock type in locking.rst
-Date: Thu, 19 Nov 2026 07:47:47 +0000
-Message-ID: <20261119074752.1027729-3-fuad.tabba@linux.dev>
+Subject: [PATCH v2 3/7] Documentation: KVM: Fix the function that implements halt polling
+Date: Thu, 19 Nov 2026 07:47:48 +0000
+Message-ID: <20261119074752.1027729-4-fuad.tabba@linux.dev>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261119074752.1027729-1-fuad.tabba@linux.dev>
 References: <20261119074752.1027729-1-fuad.tabba@linux.dev>
@@ -80,53 +80,30 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The x86 lock ordering refers to kvm->arch.mmu_lock instead of
-kvm->mmu_lock. The entry for wakeup_vcpus_on_cpu_lock gives its type
-as spinlock_t instead of raw_spinlock_t, and its comment uses the list
-and lock names from before commit 12a8eee5686ef ("KVM: Move x86 VMX's
-posted interrupt list_head to vcpu_vmx").
-
-Fix all three.
+The generic halt polling code is in kvm_vcpu_halt() since
+commit 91b99ea706578 ("KVM: Rename kvm_vcpu_block() =>
+kvm_vcpu_halt()"), but halt-polling.rst still names kvm_vcpu_block().
 
 Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Fuad Tabba <fuad.tabba@linux.dev>
 ---
- Documentation/virt/kvm/locking.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/virt/kvm/halt-polling.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-index 662231e958a07..df0db74630976 100644
---- a/Documentation/virt/kvm/locking.rst
-+++ b/Documentation/virt/kvm/locking.rst
-@@ -54,9 +54,9 @@ On x86:
+diff --git a/Documentation/virt/kvm/halt-polling.rst b/Documentation/virt/kvm/halt-polling.rst
+index a6790a67e2058..c311aac1ff9e9 100644
+--- a/Documentation/virt/kvm/halt-polling.rst
++++ b/Documentation/virt/kvm/halt-polling.rst
+@@ -22,7 +22,7 @@ savings of not invoking the scheduler are distinguishable.
  
- - vcpu->mutex is taken outside kvm->arch.hyperv.hv_lock and kvm->arch.xen.xen_lock
+ The generic halt polling code is implemented in:
  
--- kvm->arch.mmu_lock is an rwlock; critical sections for
-+- kvm->mmu_lock is an rwlock; critical sections for
-   kvm->arch.tdp_mmu_pages_lock and kvm->arch.mmu_unsync_pages_lock must
--  also take kvm->arch.mmu_lock
-+  also take kvm->mmu_lock
+-	virt/kvm/kvm_main.c: kvm_vcpu_block()
++	virt/kvm/kvm_main.c: kvm_vcpu_halt()
  
- Everything else is a leaf: no other lock is taken inside the critical
- sections.
-@@ -297,13 +297,13 @@ time it will be set using the Dirty tracking mechanism described above.
+ The powerpc kvm-hv specific case is implemented in:
  
- ``wakeup_vcpus_on_cpu_lock``
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--:Type:		spinlock_t
-+:Type:		raw_spinlock_t
- :Arch:		x86
- :Protects:	wakeup_vcpus_on_cpu
- :Comment:	This is a per-CPU lock and it is used for VT-d posted-interrupts.
- 		When VT-d posted-interrupts are supported and the VM has assigned
--		devices, we put the blocked vCPU on the list blocked_vcpu_on_cpu
--		protected by blocked_vcpu_on_cpu_lock. When VT-d hardware issues
-+		devices, we put the blocked vCPU on the list wakeup_vcpus_on_cpu
-+		protected by wakeup_vcpus_on_cpu_lock. When VT-d hardware issues
- 		wakeup notification event since external interrupts from the
- 		assigned devices happens, we will find the vCPU on the list to
- 		wakeup.
 -- 
 2.47.3
 

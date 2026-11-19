@@ -1,60 +1,157 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795094274;
-	b=whi2PmESRm/h6awzddt3rjTXPjHTXUiLKz0QcsTwHdVMwCSzdF+jBl1D7m+QpioI1pVt
-	 +wxZiLiLyaBvEQ30tb5X2bgefjpeyEGxDyg5YQNvSU5u1jkyGJHBtABf2SWCHEFnhj8m6
-	 38BW9dizWGuiQebok6QwFjHO+x9H5l9fbyqvJX7AEkpxFy+g/wkcCHQ9djxnWZ0s/RUUz
-	 mpujc9je6iD8F6XxfDwDPMlvg2Sa7BgTg3zTxKehTT3N3B42rxnZz7BbuTC+g//eyRzAt
-	 5EQ3yvL7LtOPIsKlOV46d1xBEjH3lukn7fDSegiFAncqweHezvUDpnPqdBjWK18ViDA==
+	t=1795095788;
+	b=l3pSqhDijIEDgJhwCG1z/MiHCm7YtX3HSEzTEvOGwsURRz1Ic0++QVUTn8Adp6ue1Hxt
+	 xOEQCdy90YjS+T6TxDpx4E4nK3CCLSmLDt1k5/xy1X8RY6MqhRAlGWH1jd7MBkOy8r5CB
+	 DC56VOR0Wmne4+cwdXSxwJAdxKYoS8qOVH930HD8CKmCL5GiPdJP30XELeuYnw9PGD9+R
+	 PWZBgrVCY4nFLAjOikN8wW7ePicfeEr5rXolVmM+uir0GFjzdD05KZZ6poZyOLGx3TQWp
+	 k06M+GrNakLXjVERFkr09mFPJiXZY9tGCTsODX1e0WVsKUKv+JesfGUSVO06+pMOffQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795094274;
-	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 Content-Language:From:In-Reply-To:Content-Transfer-Encoding:
-	 X-CMS-MailID:X-Msg-Generator:Content-Type:X-RootMTR:X-EPHeader:
-	 X-CMS-RootMailID:References;
-	bh=c4JodCXFJYsFjKsG9M4trE9wchuTecCsKm5CSZLC4hc=;
-	b=0/EB82j0xjwg2jABRyqZFp01j+iK4MQjhitb9xeYKG6JyNn/92GGr1MFFLGmt8kdmd7S
-	 Qh49ImwagvTz1FwRu0BEdnvqxHgGrHpQAzNpkCNzjoBOFkAIJFbvLYknNPGH12G55rQU4
-	 7AEEpfdxB7J4tgDhFD4gWK11dEVFTdyUWlE1KnUguQQFGXv89749gH/YkiqdWWWXVCTWO
-	 Zzjk2po1Bh38IzgvFAZqbZ0T3hekhTnz0it6/i3iw1TGTMTmlZM7I2pVWDb+gjzWbeUAq
-	 VoMIrfCSL1F4wMfHZ/3UjfxBRKCXjnxVihRS8SuWB/kpN+nmCaJSpYGXwQssDWTECrQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795095788;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=CbEg7XvfeDnBQ/K77/dlrEkK7yv8e4LifTJxVZmhLAs=;
+	b=h47X2qhB7967iQIcTXCPFXjjrMphxrf+dHgVXSCeldRNhrilKeT4pDhtrqMwuApgEWZk
+	 M+S6ebuPk+ICNiWSwfdi60DFl51iCJnywhvmmsaTa4wdDsYrD3iSaG/YfFYMfR0eLMXdr
+	 zPMOmGPnvujUvEV2oj3EFOiktpc8mxZKH0XLJyvKG6iGmXjK5xQiAkeqQta3Y3jagpW8s
+	 M0SLTugq7frbZQaOT6I6KEGZOxACiSVAGWhWJlON0RAfbIaIc+DIzcpTEBdfbmyH+R6kR
+	 EOAk4gimdNVv2V/9r8mwv9tazTEiaz0KwcPXRn2O9x7aEj4v3aoVyng9rblgSvaCx2Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=samsung.com;
-	spf=pass smtp.mailfrom=samsung.com;
-	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=tCKrdnen;
-	arc=none smtp.remote-ip=210.118.77.11
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="n/jm8GB4";
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D7C606A336
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 13:17:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 38D7C606A336
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D82C606A33E;
+	Thu, 19 Nov 2026 13:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=tCKrdnen
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20261119131751euoutp015530c63aa60b6073c67c527dcd8eb8d7~pdLqen9Vy2583025830euoutp01d
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 13:17:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20261119131751euoutp015530c63aa60b6073c67c527dcd8eb8d7~pdLqen9Vy2583025830euoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1795094271;
-	bh=c4JodCXFJYsFjKsG9M4trE9wchuTecCsKm5CSZLC4hc=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=tCKrdnenBcm3IgpjF1SGdlm8gc80Rzy8MOKtLvZHDbZ4DzfnsSTC/cJYb64iIQeE0
-	 hKy5i/cFoAD0ok+eLMz/0ElmTyA/dK0x6TappCbdLTAe7isXOWreRT5TypImh4S6th
-	 9TGQZMmpSxkATQ+cLpVdE6FVbrBWriGKEhdwNoO4=
-Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20261119131751eucas1p188066757e9cd9eb57dbdceb523c9b7ec~pdLqNmLTa2917429174eucas1p1w;
-	Thu, 19 Nov 2026 13:17:51 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20261119131750eusmtip1b09a8063fcb8f57bec92422ad0c4bde6~pdLpUEplc1427414274eusmtip1n;
-	Thu, 19 Nov 2026 13:17:50 +0000 (GMT)
-Message-ID: <2b64e853-89a7-4fa5-a4f8-2c6b0b62bf74@samsung.com>
-Date: Thu, 19 Nov 2026 14:17:49 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=n/jm8GB4
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C561F000C4;
+	Thu, 19 Nov 2026 13:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795095788;
+	bh=CbEg7XvfeDnBQ/K77/dlrEkK7yv8e4LifTJxVZmhLAs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=n/jm8GB4oI1ZqtVH3mcxqQUwu9zuKiDu90pq6oKhkRGMpkul9cUzIWyL0OMn9lNiE
+	 yBKBsV8prLTEFyx0qEMoD8RpojqItT9dAXuguu1fIPVRXKdIrWHbwCsl9jO+ySa7g7
+	 k00W4Ui1/3OvE8DlqLfbOZX3jHIMUSZi3jgQBAE/Cw/9/Zykh9QHw5PS1qgR2i71IR
+	 zfO8LeXoviNETRPF0eKG6jI5XGyHA/nbymcYM0a9zYLwrYLw9o5tAXmABdR6mFolMb
+	 LOw2bTAgup7y5wAExPZUZs/Z37euTnmiFeLJ23GCI0jxPdlBzRNv8iqF2TPyMS/YJP
+	 fqCrH5mGo+kGQ==
+From: Maxime Ripard <mripard@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Maxime Ripard <mripard@kernel.org>
+Cc: dri-devel@lists.freedesktop.org,
+	Janne Grunau <j@jannau.net>,
+	Sasha Finkelstein <k@chaosmail.tech>,
+	asahi@lists.linux.dev,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	sashiko-bot@kernel.org,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Dave Airlie <airlied@redhat.com>,
+	Jocelyn Falempe <jfalempe@redhat.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Inki Dae <inki.dae@samsung.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Seung-Woo Kim <sw0312.kim@samsung.com>,
+	linux-samsung-soc@vger.kernel.org,
+	Alison Wang <alison.wang@nxp.com>,
+	Stefan Agner <stefan@agner.ch>,
+	Tian Tao <tiantao6@hisilicon.com>,
+	Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+	Yongbang Shi <shiyongbang@huawei.com>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>,
+	linux-hyperv@vger.kernel.org,
+	Fabio Estevam <festevam@gmail.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	imx@lists.linux.dev,
+	Paul Cercueil <paul@crapouillou.net>,
+	linux-mips@vger.kernel.org,
+	Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+	Paul Kocialkowski <paulk@sys-base.io>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Icenowy Zheng <zhengxingda@iscas.ac.cn>,
+	Jianmin Lv <lvjianmin@loongson.cn>,
+	Mingcong Bai <jeffbai@aosc.io>,
+	Qianhai Wu <wuqianhai@loongson.cn>,
+	Xi Ruoyao <xry111@xry111.site>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Abhinav Kumar <abhinav.kumar@linux.dev>,
+	Dmitry Baryshkov <lumag@kernel.org>,
+	Jessica Zhang <jesszhan0024@gmail.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Sean Paul <sean@poorly.run>,
+	freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	Danilo Krummrich <dakr@kernel.org>,
+	Lyude Paul <lyude@redhat.com>,
+	nouveau@lists.freedesktop.org,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	spice-devel@lists.freedesktop.org,
+	virtualization@lists.linux.dev,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
+	linux-renesas-soc@vger.kernel.org,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Marcus Folkesson <marcus.folkesson@gmail.com>,
+	David Lechner <david@lechnology.com>,
+	Iker Pedrosa <ikerpedrosam@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Philippe Cornu <philippe.cornu@foss.st.com>,
+	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+	Yannick Fertre <yannick.fertre@foss.st.com>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-sunxi@lists.linux.dev,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	linux-tegra@vger.kernel.org,
+	Jyri Sarha <jyri.sarha@iki.fi>,
+	Alexey Brodkin <abrodkin@synopsys.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
+	Alex Lanzano <lanzano.alex@gmail.com>,
+	LiangCheng Wang <zaq14760@gmail.com>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Zack Rusin <zack.rusin@broadcom.com>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	Michal Simek <michal.simek@amd.com>
+Subject: Re: (subset) [PATCH v2 00/64] drm: Switch drivers to drm_mode_config_create_initial_state
+Date: Thu, 19 Nov 2026 14:43:02 +0100
+Message-ID: <179509577844.523497.5498880532220697042.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261116-drm-no-more-config-reset-v2-0-0bb471f4d1e0@kernel.org>
+References: <20261116-drm-no-more-config-reset-v2-0-0bb471f4d1e0@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -64,95 +161,39 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: [PATCH v2 4/7] powerpc/mm: handle highmem pages in
- arch_dma_prep_coherent()
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, "Christophe Leroy (CS
- GROUP)" <chleroy@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig
-	<hch@infradead.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Shrikanth Hegde
-	<sshegde@linux.ibm.com>, Chris Zankel <chris@zankel.net>, Max Filippov
-	<jcmvbkbc@gmail.com>
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <jym96n4p.ritesh.list@gmail.com>
-Content-Transfer-Encoding: 8bit
-X-CMS-MailID: 20261119131751eucas1p188066757e9cd9eb57dbdceb523c9b7ec
-X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20261110094850eucas1p1f10fa1473aca341473077f60a088b490
-X-EPHeader: CA
-X-CMS-RootMailID: 20261110094850eucas1p1f10fa1473aca341473077f60a088b490
-References: <20261110094830.2081847-1-m.szyprowski@samsung.com>
-	<CGME20261110094850eucas1p1f10fa1473aca341473077f60a088b490@eucas1p1.samsung.com>
-	<20261110094830.2081847-5-m.szyprowski@samsung.com>
-	<jym96n4p.ritesh.list@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 19.11.2026 13:07, Ritesh Harjani (IBM) wrote:
-> Marek Szyprowski <m.szyprowski@samsung.com> writes:
->
->> arch_dma_prep_coherent() performs the cache maintenance on the address
->> returned by page_address(). On 32-bit powerpc with CONFIG_HIGHMEM that
->> is NULL for a highmem page which is not kmapped, so the flush would
->> operate on the wrong virtual range and leave the dirty lines of the
->> buffer in place.
->>
->> The generic DMA code may pass highmem pages to this hook:
->> dma_direct_alloc() handles a highmem page returned by
->> dma_alloc_contiguous() by forcing the remap path, which calls
->> arch_dma_prep_coherent() on that page before creating the uncached
->> mapping. This cannot happen on powerpc today only because it does not
->> select HAVE_DMA_CONTIGUOUS, so dma-direct never gets a highmem page
->> there, but nothing in the hook's contract rules it out.
->>
->> Use __dma_sync_page() with DMA_BIDIRECTIONAL, which the
->> arch_sync_dma_for_*() hooks already use and which kmaps highmem pages
->> one at a time. Without CONFIG_HIGHMEM it does the same
->> flush_dcache_range() on the linear mapping as before.
->>
-> Does that mean, this change can add additional overhead for
-> CONFIG_HIGHMEM=y kernels, where the buffer received still belongs to
-> lowmem? (Because of extra per-page book keeping like
-> local_irq_save/restore, kmap_xxx). Thoughts?
->
-> Although functionally the change looks correct to me. But maybe
-> __dma_sync_page() on powerpc side could use some cleanups (outside of
-> this patch series perhaps).
-Indeed, __dma_sync_page() could be improved by calling __dma_sync_page_highmem()
-only for highmem pages. Something like:
+On Mon, 16 Nov 2026 11:30:16 +0100, Maxime Ripard wrote:
+> drm_mode_config_reset() has a dual role: it creates the initial KMS
+> state at probe time, and resets hardware and software state during
+> suspend/resume cycles. However, the two roles need different
+> behaviors, notably for objects like drm_private_obj that must persist
+> across suspend/resume and are excluded from drm_mode_config_reset()
+> by design.
+> 
+> [...]
 
+Applied to misc/kernel.git (drm-misc-next)
 
-diff --git a/arch/powerpc/mm/dma-noncoherent.c b/arch/powerpc/mm/dma-noncoherent.c
-index e646256365d5..199ce0467b58 100644
---- a/arch/powerpc/mm/dma-noncoherent.c
-+++ b/arch/powerpc/mm/dma-noncoherent.c
-@@ -97,11 +97,12 @@ static void __dma_sync_page(phys_addr_t paddr, size_t size, int dir)
-        unsigned offset = paddr & ~PAGE_MASK;
+[03/64] drm/hdlcd: Fix drm_atomic_helper_shutdown() on the probe error path
+        commit: e388eae138aa9364caada0a372b5712642188c16
+[11/64] drm/hyperv: Switch to drm_mode_config_create_initial_state
+        commit: 50b11ceaaef03d4062971db173bbddc8ac0df28b
+[25/64] drm/rcar-du: Switch to drm_mode_config_create_initial_state
+        commit: d8b8de5c35983567a7ef78fcd9f75db46d6c26af
+[29/64] drm/st7586: Switch to drm_mode_config_create_initial_state
+        commit: 52eb5b7764084bddd68e77c1c3e62e70ad11828f
+[30/64] drm/st7735r: Switch to drm_mode_config_create_initial_state
+        commit: 28d10bb2421152b650329710183c1f6df1bd056e
+[31/64] drm/st7920: Switch to drm_mode_config_create_initial_state
+        commit: b17f5f1abd5c30875d203d7690c92129d2d814d6
+[35/64] drm/stm: Switch to drm_mode_config_create_initial_state
+        commit: d78ccdcc94eba858fd8386f0da6de4ec4cd44666
+[37/64] drm/tegra: Switch to drm_mode_config_create_initial_state
+        commit: 0c187722c35db771276ee7390454f7de70508833
+[50/64] drm/ili9225: Switch to drm_mode_config_create_initial_state
+        commit: 0fc18dd1409138d88089ecdda5544ea2f8785520
 
- #ifdef CONFIG_HIGHMEM
--       __dma_sync_page_highmem(page, offset, size, dir);
--#else
--       unsigned long start = (unsigned long)page_address(page) + offset;
--       __dma_sync((void *)start, size, dir);
-+       if (PageHighMem(pfn_to_page(PHYS_PFN(paddr + size - 1)))) {
-+               __dma_sync_page_highmem(page, offset, size, dir);
-+               return;
-+       }
- #endif
-+       __dma_sync(page_address(page) + offset, size, dir);
- }
-
- void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
-
-
-Do You want me to add it as another patch for this series?
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Thanks!
+Maxime

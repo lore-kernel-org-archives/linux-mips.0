@@ -1,90 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=23.90.104.144
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795110213;
-	b=r83sm4/s+aW8kmMeNc25k9dS70raoKcg7VFbtpwLOFr/BVhgdas+htX+Jm9x0HoM5Y44
-	 KDYcQCd8No/3ZLdY2PxRouxg+Z1ng3NjNTFv4Gq9aykD8ad64AJ5RRmpv79oFAHSAfk7J
-	 kYVJUuy4TTxhX1hoR9Z3hNBB9V8F8lPuPtRWAR2/NER6WKlRPa/h+5KP7rR0aTdNzs6qH
-	 sh0VU5dl3M1Gj3ZnvC7h+/32yJAQ1KjIx7Pb0O7Y2zNylj185jnK45QPMLMfq6tjmi7D+
-	 UUu5jvZDROAi9HZWm8v06FukMl0yW1OUuXRH9mSuf9tC67psmN6+Wi+TffUMcfzBzqw==
+	t=1795110703;
+	b=btpNFGDPn6xgpaPdbgRBT96EViyxwCV0GA4gicfFwA/eJdIG6cYWwqh8l7PhOTEFJ4Ew
+	 5OSIl6Pxcdl46WFWBzxOHWbOtIQ7VJLFvxlrBFHykEDDILhubNGmyChD3G3ycKjOri6C2
+	 eLDV/wAGMHHqw/ByW+jqQwa+DBHSrllRDwbSOpL66ZMcYCrv6xYk/+z55ewjX3hRjo08e
+	 bRBp2JARUVXopRAevKWPGussUbzl6W6MecAKdUNOHmmk0W9RAJONuViUzh1h8HFIgRbTQ
+	 91FKVKi6NhsdH6+Yxot+S6cBcWamaG/GQbvl0mFZBLq0xnX2OAkIFM0N1M6pkDs3vAw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795110213;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=AlaJ2kXmyX2ex9cqiNhx4W/LysSwxrxfAi2UJAeREB0=;
-	b=xJV7xM6yAqNOlNOp4JYBVITXnFQVP5qGqBIa4rTCRCjIgnatTSAPqbSoS/oZ2ZN6ht3W
-	 re7Q+3knfElE3uChV7cKhzUGe+kldyrFlC26QhtZOfUCXy1F7ezr0sjbWfc+oS6gaKQA2
-	 YnaieVotIxvEZugxuYI2j/2e6xEC0XHfeRarrI36cRH/bxDCtaZ1gaggR1g74QSKjOen1
-	 V0ZjF8CkQATz1IDZFNe5KdCRXMzwPdjKza5M3HVgV/s3XUUJvYREr0WyglvIp+40+MYbU
-	 0D0IZPfM3I2KBSMv5NxxyMsDdGfDbBl6b3RYFNOzApIt05cezMi6EnIp2BTjg9CuUIw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795110703;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-Amp-Result:X-Amp-File-Uploaded:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:Received:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer;
+	bh=OKPZQyJsCxKmvcu3evgCAn8bCU003kDuUuvj5pSvgRY=;
+	b=IUGCsQ/bsXlD98w2v4IQ8GyYdpjKfqLC4lgixKnYWoenVLNq/704zpE5u2iwmOc9mTZ1
+	 Kr8Nlk9W4T5Z/zNqAOMkACWLVMk/AEgXkzU6xTWqcXOXQMJ7CD8MrSygNH4z40LdS7MoK
+	 Kb0YDXZc4eupmLqvCyiG9Sl0RQqZaWewWkCLTrAFkQDgJWzKvOvu0ISai+/WYJAUOptoc
+	 w8zj2eY93H1fbqCvBqLFe1mFSgZyEe4vQc4FKULuiD+MC01QeXp40UmYxx3hBE+M3qyCV
+	 y8mQbxUdPp8JAfHkcmGe6k7miITKekk0bZspfV19gfTodgy6UckZcmWU7o1hKtlSAaw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=LKg8VGfq;
-	arc=none smtp.remote-ip=74.125.82.174
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF85606A32A
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 17:43:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BCF85606A32A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=LKg8VGfq
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-36e99cf7bb3so3535777eec.0
-        for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 09:43:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795110212; x=1795715012; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=AlaJ2kXmyX2ex9cqiNhx4W/LysSwxrxfAi2UJAeREB0=;
-        b=LKg8VGfqbatQQpF7mJuYKhBbVEl/RG+budEVnkIFnCekWhc/aWXCCtS8TgkaLlHyoK
-         pqSXW0mqPx5eJv3LlClcoy+9hPNioKdgPB9xbPTzGkpJX44DKECtRqqiaFXZUykepjQ0
-         wetosojnGbZrsfG4/c/8jcrJkBoaGqF2bSjYb8qKYds6LuDSvrVXWwmhsdDyPECROoVR
-         468p3l2JuMAByHSpVzwRzkt3qGosiRydP2fyEVlg22Em2AHdndhaxdBwt90bWds19DrJ
-         vPV+de3zhz0rUg05flQ4gcloNE+Phs34votyaPQ+Jr85JtolIg/nU0jk43FzD1h9ptRj
-         6Fwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795110212; x=1795715012;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=AlaJ2kXmyX2ex9cqiNhx4W/LysSwxrxfAi2UJAeREB0=;
-        b=mr5RRsZZQJy+85UX3us8z+3bqzzFqB3N9WfvG7meKV46O+cFk8md9/FAWUUtHdRycq
-         cAJjCUxZgTZ8x4seDXbaYlnun5GqmWMCJtzePIEgFmoqqjxTWJAzVeKH2zimKD27RzPQ
-         LLRzWYQrPeFQm8jqROSMRnRj6Ey36IPHDwqpj3GRKrGgxPXU6mhNtYrlWYMF82MR0T1a
-         EkwMoBEXfQz8HV+BEjFlsJlboeXvBRrFtPy4JsIYX7Y6b2Q2HQO++QgwR3Agv/dkhCU6
-         1v8fsRerc7AnFWz1lvvf6GtkIJ7wrMDghnvGuAbOq3bWPZjrQTppHs+DXJZ3WZh1Qdzc
-         PJLg==
-X-Gm-Message-State: APuU4Z+gYM9LwUg8XuClkMsHhHZ9XA7OGOYWLaIs7ofq6P538Tq6yWVZ
-	O73jQhuMT2O414/FjDIXycgvsCMYRztEEQD7tLPCIcbaz6QJe5ehBm72uXQeTA==
-X-Gm-Gg: AZFdTZfDx+4wPMz9/EOSqN2odmmF0P2sQAAjis9CUl21iS4C4nd13QbqCy6DLvNbOyR
-	ExeLIkXq40GNmydrc9CIQGiEHHADDe+ixw4R2EwZUt8wfubrekpRbglXtmC2l+KYlduqAOZbvKq
-	BhW6FVJU0q1OSiQ43VM7ttsTubvIkhOPOnA9WEcPlCm/bEsWWkAMLkA436mPjW+q+S012hpc/IK
-	z36JVZ3Dxm0mcaOad8BBERYNlIttqOJ+SAJoeuIRxqhVGY8wUbGWbjTU1BbE+yvw8Q8Ijg6sGZu
-	4v6JQdJwRUCknn0L5lN2oOzppmkG8moRm2wdtTwUs5DjDvO81NQe0GBkrRggKXdS1gDvmq/D0Fo
-	LlTCLIG8QYIAcHVQN7IMQEpgUMuJz809DKawyx+BsDmiToQadknw/bSKJs65FYg5VMuO2SuCOHX
-	ObpZlbbGl0dCO4y3DHR5w6+dxhScNbWMwwDD3ZOD1bT+91vwjkuLPWZjFYHSNuAfUW8CLYKc/iJ
-	WIDPvrHHuEQR5HWdHvSRG7fooKc+zyq4eYZ6vQ0dNaoBgnDNLIwkGpPm/JjQOjMzyFfr8C2IM3j
-	+8FQgUZck0CEGOdjq864ciLwGo+atBo=
-X-Received: by 2002:a05:7301:18aa:b0:384:eec:aba0 with SMTP id 5a478bee46e88-3857073eebamr57542eec.36.1795110211655;
-        Thu, 19 Nov 2026 09:43:31 -0800 (PST)
-Received: from eldorado ([2600:8802:b00:1f88::287])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-38567cafec4sm378097eec.26.2026.11.19.09.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2026 09:43:31 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	"Maciej W. Rozycki" <macro@orcam.me.uk>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] fixup! MIPS: SiByte: Fix missing function prototypes
-Date: Thu, 19 Nov 2026 09:43:18 -0800
-Message-ID: <20261119174327.220291-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	dmarc=pass header.from=mobileye.com;
+	spf=pass smtp.mailfrom=mobileye.com;
+	arc=none smtp.remote-ip=23.90.104.144
+Received: from esa1.hc555-34.eu.iphmx.com (esa1.hc555-34.eu.iphmx.com [23.90.104.144])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92ACE606A324;
+	Thu, 19 Nov 2026 17:51:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 92ACE606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mobileye.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mobileye.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=mobileye.com; i=@mobileye.com; q=dns/txt; s=MoEyIP;
+  t=1795110702; x=1826646702;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=4V18Tfg9Ly6MPWUMnLZiqruGXQUpnrBi9GEGXYzKK7I=;
+  b=TQi8rvKHeCWk7ottKTZIqJSvWBhS887/V8U3XhzavbuzJ1a4B9gxneal
+   06k9t4y2SGdjgmMKuBs0kTrEXQvQqIwW0QC6hXMakiwclP6toz0EJ2j0U
+   lGgyeMlD7776V/rgKRlvRF6TfFmcAKB7idVZkcfHE3qHHcBcn/cKJzQ5A
+   AuQN6lrlPablmZ2LojVB5QC+hTZQ0q+mkaZQyyiQs+drv0Htc9EgfdZsm
+   tb6dvvMBbPFDjXpPXlckv2DFevBwVxs4HiLfLPWD+gLD43f+xemG1XtLp
+   kRVQpeRTJyz80tehi46V7utsawhYJhXyKiqdq5u/FpttTOWg947lK1wdL
+   A==;
+X-CSE-ConnectionGUID: bck4BxQFSmuiqAdu90FOmw==
+X-CSE-MsgGUID: NuCP7ZcRRJWiXbhWt+3dyA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO ces02_data.me-corp.lan) ([146.255.191.134])
+  by esa1.hc555-34.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2026 19:51:33 +0200
+X-CSE-ConnectionGUID: tengInJhRCa+VsqTvox6mw==
+X-CSE-MsgGUID: klkWn2aISdGzaE5U/QgFbw==
+Received: from unknown (HELO epgd071.me-corp.lan) ([10.154.54.3])
+  by ces02_data.me-corp.lan with SMTP; 19 Nov 2026 19:59:49 +0200
+Received: by epgd071.me-corp.lan (sSMTP sendmail emulation); Thu, 19 Nov 2026 19:51:32 +0200
+From: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+Date: Thu, 19 Nov 2026 19:51:28 +0200
+Subject: [PATCH v3 2/7] MIPS: CM: add CM3 performance counter GCR
+ definitions
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -94,87 +66,128 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261119-i6500-cm3-pmu-v3-2-c86410934b51@mobileye.com>
+References: <20261119-i6500-cm3-pmu-v3-0-c86410934b51@mobileye.com>
+In-Reply-To: <20261119-i6500-cm3-pmu-v3-0-c86410934b51@mobileye.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, Will Deacon <will@kernel.org>, 
+ Mark Rutland <mark.rutland@arm.com>, Kees Cook <kees@kernel.org>, 
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+ =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Fu Chao-Ying <chao-ying.fu@globalfoundries.com>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-rt-devel@lists.linux.dev, devicetree@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org
+X-Mailer: b4 0.16.0
 
-Adopt Maciej's suggestion of moving sb1250_m3_workaround_needed() to
-asm/bugs.h and have that file be included to provide the definition for
-that function. The previous style of using IS_ENABLED() for
-bcm1250_m3_war() is also restored.
+The CM3 implements two programmable 32-bit performance counters and a
+32-bit cycle counter, controlled through registers in the GCR global
+debug block (GCR_DB_PC_*, offset 0x6100..0x61a8 from GCR_BASE).
 
-Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Add GCR_DB_ACCESSOR_{RO,RW} helpers for the debug block and define the
+control, overflow status, event select, cycle counter, qualifier and
+counter registers along with their fields, as described in the I6500
+register reference (MD01189).
+
+Each accessor comes in two flavours, as the CPC ones do: db_<reg> for
+the local cluster and redir_db_<reg> for the debug block of another
+cluster through the redirect block. GCR_Cx_OTHER.BLOCK value 2 selects
+the debug block in the GCR, where the existing _BLOCK_USER name only
+describes its GIC meaning; add CM_GCR_Cx_OTHER_BLOCK_DEBUG for it.
+
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
 ---
- arch/mips/include/asm/bugs.h          |  1 +
- arch/mips/include/asm/sibyte/sb1250.h |  1 -
- arch/mips/mm/tlbex.c                  | 10 +++-------
- arch/mips/sibyte/sb1250/setup.c       |  1 +
- 4 files changed, 5 insertions(+), 8 deletions(-)
+ arch/mips/include/asm/mips-cm.h | 51 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
-index 84be74afcb9a..04d159d4cb21 100644
---- a/arch/mips/include/asm/bugs.h
-+++ b/arch/mips/include/asm/bugs.h
-@@ -17,6 +17,7 @@ extern void check_bugs64_early(void);
+diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
+index 407f253bb4a1..390d06a8f1d1 100644
+--- a/arch/mips/include/asm/mips-cm.h
++++ b/arch/mips/include/asm/mips-cm.h
+@@ -161,6 +161,20 @@ static inline bool mips_cm_has_l2sync(void)
+ 	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_CLCB_OFS + off, cl_##name)	\
+ 	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_COCB_OFS + off, co_##name)
  
- extern void check_bugs32(void);
- extern void check_bugs64(void);
-+extern int sb1250_m3_workaround_needed(void);
++/*
++ * Global debug block registers. The redir_db_* accessors reach the debug
++ * block of another cluster through the redirect block, which must have been
++ * pointed at it with mips_cm_lock_other(cluster, 0, 0,
++ * CM_GCR_Cx_OTHER_BLOCK_DEBUG).
++ */
++#define GCR_DB_ACCESSOR_RO(sz, off, name)				\
++	CPS_ACCESSOR_RO(gcr, sz, MIPS_CM_GDB_OFS + off, db_##name)	\
++	CPS_ACCESSOR_RO(gcr, sz, MIPS_CM_COCB_OFS + off, redir_db_##name)
++
++#define GCR_DB_ACCESSOR_RW(sz, off, name)				\
++	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_GDB_OFS + off, db_##name)	\
++	CPS_ACCESSOR_RW(gcr, sz, MIPS_CM_COCB_OFS + off, redir_db_##name)
++
+ /* GCR_CONFIG - Information about the system */
+ GCR_ACCESSOR_RO(64, 0x000, config)
+ #define CM_GCR_CONFIG_CLUSTER_COH_CAPABLE	BIT_ULL(43)
+@@ -357,7 +371,8 @@ GCR_CX_ACCESSOR_RW(32, 0x018, other)
+ #define CM_GCR_Cx_OTHER_BLOCK			GENMASK(25, 24)	/* CM >= 3.5 */
+ #define  CM_GCR_Cx_OTHER_BLOCK_LOCAL		0
+ #define  CM_GCR_Cx_OTHER_BLOCK_GLOBAL		1
+-#define  CM_GCR_Cx_OTHER_BLOCK_USER		2
++#define  CM_GCR_Cx_OTHER_BLOCK_USER		2	/* GIC */
++#define  CM_GCR_Cx_OTHER_BLOCK_DEBUG		2	/* GCR */
+ #define  CM_GCR_Cx_OTHER_BLOCK_GLOBAL_HIGH	3
+ #define CM_GCR_Cx_OTHER_CLUSTER			GENMASK(21, 16)	/* CM >= 3.5 */
+ #define CM3_GCR_Cx_OTHER_CORE			GENMASK(13, 8)	/* CM >= 3 */
+@@ -384,6 +399,40 @@ GCR_CX_ACCESSOR_RW(32, 0x030, reset_ext_base)
+ #define CM_GCR_Cx_RESET_EXT_BASE_BEVEXCPA	GENMASK(7, 1)
+ #define CM_GCR_Cx_RESET_EXT_BASE_PRESENT	BIT(0)
  
- static inline int r4k_daddiu_bug(void)
- {
-diff --git a/arch/mips/include/asm/sibyte/sb1250.h b/arch/mips/include/asm/sibyte/sb1250.h
-index ff97e77d4fe7..1186a8b21b36 100644
---- a/arch/mips/include/asm/sibyte/sb1250.h
-+++ b/arch/mips/include/asm/sibyte/sb1250.h
-@@ -38,7 +38,6 @@ void sb1_cache_error(void);
- void check_bus_watcher(void);
- #endif
- 
--int sb1250_m3_workaround_needed(void);
- void sb1250_setup(void);
- void sb1250_clockevent_init(void);
- void sb1250_clocksource_init(void);
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index 03a9b03c3d3a..deaee3a3572e 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -37,9 +37,7 @@
- #include <asm/regdef.h>
- #include <asm/uasm.h>
- #include <asm/setup.h>
--#ifdef CONFIG_SB1_PASS_2_WORKAROUNDS
--#include <asm/sibyte/sb1250.h>
--#endif
-+#include <asm/bugs.h>
- #include <asm/tlbex.h>
- 
- static int mips_xpa_disabled;
-@@ -89,11 +87,9 @@ static inline int r4k_250MHZhwbug(void)
- 
- static inline int __maybe_unused bcm1250_m3_war(void)
- {
--#ifdef CONFIG_SB1_PASS_2_WORKAROUNDS
--	return sb1250_m3_workaround_needed();
--#else
-+	if (IS_ENABLED(CONFIG_SB1_PASS_2_WORKAROUNDS))
-+		return sb1250_m3_workaround_needed();
- 	return 0;
--#endif
- }
- 
- static inline int __maybe_unused r10000_llsc_war(void)
-diff --git a/arch/mips/sibyte/sb1250/setup.c b/arch/mips/sibyte/sb1250/setup.c
-index 644b19038848..26d0197ab4b4 100644
---- a/arch/mips/sibyte/sb1250/setup.c
-+++ b/arch/mips/sibyte/sb1250/setup.c
-@@ -9,6 +9,7 @@
- #include <linux/string.h>
- 
- #include <asm/bootinfo.h>
-+#include <asm/bugs.h>
- #include <asm/cpu.h>
- #include <asm/mipsregs.h>
- #include <asm/io.h>
++/* GCR_DB_PC_CTL - Control of the CM3 performance counters */
++GCR_DB_ACCESSOR_RW(32, 0x100, pc_ctl)
++#define CM_GCR_DB_PC_CTL_PERF_INT_EN		BIT(30)
++#define CM_GCR_DB_PC_CTL_PERF_OVF_STOP		BIT(29)
++#define CM_GCR_DB_PC_CTL_P1_RESET		BIT(9)
++#define CM_GCR_DB_PC_CTL_P1_COUNTON		BIT(8)
++#define CM_GCR_DB_PC_CTL_P0_RESET		BIT(7)
++#define CM_GCR_DB_PC_CTL_P0_COUNTON		BIT(6)
++#define CM_GCR_DB_PC_CTL_CYCL_CNT_RESET		BIT(5)
++#define CM_GCR_DB_PC_CTL_CYCL_CNT_COUNTON	BIT(4)
++#define CM_GCR_DB_PC_CTL_PERF_NUM_CNT		GENMASK(3, 0)
++
++/* GCR_DB_PC_OV - CM3 performance counter overflow status (write 1 to clear) */
++GCR_DB_ACCESSOR_RW(32, 0x120, pc_ov)
++#define CM_GCR_DB_PC_OV_P1_OF			BIT(2)
++#define CM_GCR_DB_PC_OV_P0_OF			BIT(1)
++#define CM_GCR_DB_PC_OV_CYCL_CNT_OF		BIT(0)
++
++/* GCR_DB_PC_EVENT - CM3 performance counter event selection */
++GCR_DB_ACCESSOR_RW(32, 0x130, pc_event)
++#define CM_GCR_DB_PC_EVENT_P1_EVENT		GENMASK(15, 8)
++#define CM_GCR_DB_PC_EVENT_P0_EVENT		GENMASK(7, 0)
++
++/* GCR_DB_PC_CYCL - CM3 performance cycle counter */
++GCR_DB_ACCESSOR_RW(32, 0x180, pc_cycl)
++
++/* GCR_DB_PC_QUALn - CM3 performance counter n event qualifier */
++GCR_DB_ACCESSOR_RW(64, 0x190, pc_qual0)
++GCR_DB_ACCESSOR_RW(64, 0x1a0, pc_qual1)
++
++/* GCR_DB_PC_CNTn - CM3 performance counter n value */
++GCR_DB_ACCESSOR_RW(32, 0x198, pc_cnt0)
++GCR_DB_ACCESSOR_RW(32, 0x1a8, pc_cnt1)
++
+ /**
+  * mips_cm_l2sync - perform an L2-only sync operation
+  *
+
 -- 
-2.53.0
+2.43.0
 

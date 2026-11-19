@@ -1,20 +1,19 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.101
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.195.115
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795056244;
-	b=pViDoDbVlh7OrNph9sgMd2RuCEXg9jttlWM4CktsGvY/AEaT1v0PxlKqKQvctsNgc2dm
-	 FXxNm7KaF2gfvv5sRpIzRjKuQrHeVbs/r1bTwEKyIBu8PwlJhex3GvJKKzHSNCB+f7RLj
-	 hlB7yU5R55RxrH5Z9JEma0sY6JDmm+b/yY3EbOhUu6nOSIiycLSM0wVp8izShedF6eYUX
-	 RaNsIbi19jIY0nly2Z9zjMI8mU61cK65BK1R7hiaZg2fmEQSpweR5bk368Ryl0PoFrwW4
-	 Xc9EO1Fuw7p+h4T47Nhhj2UUgAHNEW5XG+amgPL/Sa58VAE1CcOOc/UHjtQIs3GDvIQ==
+	t=1795061241;
+	b=aL2CDvuLzTOgKqRS3e0xSDw3bjjWkPzYElmT4tYsiQiR2Vq+ZdBuhyodNm4utR9LIutS
+	 ZFbk7taz15DbBd5v1H+Z+XF3tHoeEwz6l0ZNp2FsoPw/5raTEHTsiIWYmkO+uj1QqrvBi
+	 WASBKvyiIjjqMzK804AkNu/pj3ikcGfI/7I7THsv3auejqy5UY3oMqNJ0yL+94z0/YuAv
+	 7ztRC70GUhahdisxfSG8z3zEmklb1V6piyCtlyiBbv/T87Ez5PvbVxnd/rm+ZVIs3lyws
+	 I3KRy3vyi2K2w8aJ2G6uCZPnPRV14RtpfggGk3plYV+xB0yuSpp+8L0nnwE7L4mGM5A==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795056244;
-	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:Content-Type:Content-Disposition:In-Reply-To:
-	 X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
+	a=rsa-sha256; c=relaxed/relaxed; t=1795061241;
+	h=DMARC-Filter:Received:Received:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:Content-Transfer-Encoding:Content-Type:X-ClientProxiedBy:
+	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
 	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
 	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
 	 X-MS-Exchange-CrossTenant-Network-Message-Id:
@@ -24,68 +23,104 @@ ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
 	 X-MS-Exchange-CrossTenant-UserPrincipalName:
 	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=IJWhb68m27RcCXvCQAeK2pXdTQjOGz6GdP/uTLcyOMc=;
-	b=uuVWJxUpHOvLNy+EmX0sTJjsHczQ4al1EMMWVmG3fiJ6sW5o/UuGVXozOc0vP68uZZj3
-	 JhuSpPFJ8Lgy2VXmsvHq+MTHVmVZvLDuqLdB1CjPTiMP8AvtpkHriWCVrGMtqF+i6BXKO
-	 dBqOVs/dvD1TQG9ACu5vSFJs3iB9GWVDU5qIsqXb09WLJBJ0EMwhZZoPOG4ZCe/VpJGaF
-	 CXXWU1KsY/TGPKE8RCwdFcDH3XNvz8ff8T9+aO7EXpywHbZ6mr5x95tp86mT1z9uejQ57
-	 wycFu4K6k4PeskNnIOMyjXq1w/0xENyoIR2CGJvWjhM5YTCuGB/3il9rlJOOhWM4gwA==
+	bh=/DZVkrVqsfVligCm+wSKfov/rAwxs10kx7HsUv9GsGY=;
+	b=iCkxK25s8uM5xTGfvmi8FnciAXiwNgYXZt8eEgcDNH+DxGr8UapnMf1E7bcUpvgFXwPW
+	 ZhIdGn9+JIBa4YqHD4oyTnKExLzdaBZwrb4mEbnQOrzEsPYEn/1hYLM3bBGA91OvDTdgY
+	 ZPtEwAsyryZBtKRjGFYHHLqvw3yU0QZQmJUQMwRdhHFhJAxWv49QqrsJ/9TkDxz7F2i7X
+	 jv+pJ+1VgZLgbkErQGKLUVhgern4S+S9PDTHezXTaeDcu6Wa8ZR6bn2D5BvAcLjYnRDT3
+	 EhpoH3/l5FR9RiVUE8bbBICqFljdUwSfuqOSjs1wg3pmZeDJATFGlgx4R8vSX0yKwiQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=atomlin.com;
 	spf=pass smtp.mailfrom=atomlin.com;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.101
-Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021101.outbound.protection.outlook.com [52.101.95.101])
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.195.115
+Received: from CWXP265CU008.outbound.protection.outlook.com (mail-ukwestazon11020115.outbound.protection.outlook.com [52.101.195.115])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2A3606A320;
-	Thu, 19 Nov 2026 02:44:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CD2A3606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF711606A320;
+	Thu, 19 Nov 2026 04:07:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF711606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=D+GeqNtgJCTX/D8znkF3N6UN4CopSL+6PWeTiuVnrsuAzXvFn/xJoIClgSgXSVyQwG0Ahs8TY8UixlcTWFBfQ9FDMkgaugpfvDHbPGoPeRwcoYZ4tN1JOljrxDNLwaotjNAFcf5IsXDgiuJu4uMS3i3kuujJK6fOBuAqlrh0EjYOQ0dB6Sfc8euoV8dQhWHKnDQakUn6Nhxc3hY6VGnnQOXGsDLaBYHFMK+Ojyg6lITPJeERrh/2MyCn9wJ0cvo01erMaRkjPGOUUf32A29PrSsek0O9FEd+Y2QieFp3tt9Bcb2sxDlb+xbxT7U705f9fdUhDauaN1yVdpFTs6es6A==
+ b=pn1i3x3qjt3zy+8+ITqB9nZ/kOtdTNOhTd/Po8Q1PHThDzg9k4zpVMr/2nmZqfz1ktYfu2XeLJtWkSUGmjkG44Eyivx5a43ORP6Nl0k0FoUFu1UifDlD3xWeauKOGeG1BNzPqC1BbylXLYUN/JkaUtQkreoKqclwiPvLDw3ycSkA0chNSNclV/6fovnLA1XnIUEpmDt6Ym+GPBLT3/fhBR7U8G+RwjM8nXe0QJ8KzG7jxyPncj9ea1v0tYaGoUCMfPF1I3MCAaFveMmX8mADNhnav3FiO7wh56y5hSK171fy5DVkKMEhrGKwgjG3IP7HWYY8gDIh0r6R2ORMuXPpDg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
- bh=IJWhb68m27RcCXvCQAeK2pXdTQjOGz6GdP/uTLcyOMc=;
- b=qqzWLd3YkahO/i6zjJ/4FT7+djXNeXIgxBYgefpY6d7D6xCQpmbt0b7Jd4sJoK4s8haFdfofxA/vmMNt3QJeKoUd/RcFkj6qkBgNyhcMNdxymhe5hxcxcY1ZoQ9sUU1RwQEabxd08oBmOEbUm4Av3q1RAJMA7hWI+o++59E/bHmJAyfjMtTTled0ID98ijVyI1jAq/OBgKZR1bH+JPsKPvcFAeS07tctcSCQ690pXEtwqrIiEOfPgneO0/L4+hNia/QwqFD9vaOZq6zJS7Vgcb0JHDnH5yixTT4Ofs/mn0WyDz7uzXA1AgpaZfs0pTidxGbg7xt88X9S8MeGbXNoqg==
+ bh=/DZVkrVqsfVligCm+wSKfov/rAwxs10kx7HsUv9GsGY=;
+ b=bioWUondq4LYPEvf08H4Cg20M0b9NRUMqMyCNn/aai8V5oKwtB1iO1yhoD9JCrrRqqBai1VP1ZBUh3lzWfCN7ptPyFyt/pFftVoZqB2evOi6UyOoC9iHVt3lcl4QsV5YNFoWsTu3vXvEAnBKI+FPgOf+QCSasvBMOypbjoXJLVgzicAswXxdepQ+hNQDXt3UP2l4Z/zgOwTnK497rrfYZ5xBR0yY2GIHEfRti719AkMx6CYtpMk5VfpNhg91/Ife4UVMBLGO8f1Ql2VsiyPocxc+zuhBNFquZuCsGT/4qwTDzvjbauY9+qsXaOa7WGqLGFKv+KPF/5Ki9Sy7BgiGbg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
  dkim=pass header.d=atomlin.com; arc=none
 Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=atomlin.com;
-Received: from LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:163::8)
- by CWXP123MB2919.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:37::8) with
+Received: from CWXP123MB4183.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:b1::11)
+ by CW1P123MB7694.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:243::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.10; Thu, 19 Nov
- 2026 02:43:59 +0000
-Received: from LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM
- ([fe80::f71f:a9f:c4de:687a]) by LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM
- ([fe80::f71f:a9f:c4de:687a%5]) with mapi id 15.21.0615.017; Thu, 19 Nov 2026
- 02:43:58 +0000
-Date: Wed, 18 Nov 2026 21:43:52 -0500
+ 2026 04:07:16 +0000
+Received: from CWXP123MB4183.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::beaf:db0b:23fd:822a]) by CWXP123MB4183.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::beaf:db0b:23fd:822a%4]) with mapi id 15.21.0639.010; Thu, 19 Nov 2026
+ 04:07:15 +0000
 From: Aaron Tomlin <atomlin@atomlin.com>
-To: Chris Down <chris@chrisdown.name>
-Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, 
-	chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, 
-	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, 
-	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, 
-	cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] security: Expand task_setscheduler LSM hook
-Message-ID: <nvs2442ks3blgphnzy242wro6d3fxmfya2wnfbb7jxiu3m7gpy@7cz34im5yvuk>
-References: <20261105172210.76706-1-atomlin@atomlin.com>
- <20261112144615.df72a3bef0a52f3c@chrisdown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20261112144615.df72a3bef0a52f3c@chrisdown.name>
-X-ClientProxiedBy: CY8PR11CA0008.namprd11.prod.outlook.com
- (2603:10b6:930:48::20) To LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:163::8)
+To: tsbogend@alpha.franken.de,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	stephen.smalley.work@gmail.com,
+	casey@schaufler-ca.com,
+	longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: ihor.solodrai@linux.dev,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	jolsa@kernel.org,
+	emil@etsalapatis.com,
+	chenridong@huaweicloud.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	kprateek.nayak@amd.com,
+	omosnace@redhat.com,
+	kees@kernel.org,
+	atomlin@atomlin.com,
+	neelx@suse.com,
+	sean@ashe.io,
+	chjohnst@gmail.com,
+	steve@abita.co,
+	mproche@gmail.com,
+	nick.lange@gmail.com,
+	cgroups@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/2] security: Expand task_setscheduler LSM hook
+Date: Wed, 18 Nov 2026 23:07:03 -0500
+Message-ID: <20261119040705.684987-1-atomlin@atomlin.com>
+X-Mailer: git-send-email 2.55.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BN9PR03CA0978.namprd03.prod.outlook.com
+ (2603:10b6:408:109::23) To LO0P123MB4185.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:155::6)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -96,218 +131,181 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P123MB4190:EE_|CWXP123MB2919:EE_
-X-MS-Office365-Filtering-Correlation-Id: d14e16b2-d53c-4094-c99c-08df45e6f605
+X-MS-TrafficTypeDiagnostic: CWXP123MB4183:EE_|CW1P123MB7694:EE_
+X-MS-Office365-Filtering-Correlation-Id: f609d0e7-a475-4d08-b975-08df45f297f0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|23010399003|18002099003|22082099003|6133799003|3023799007|56012099006|4143699003|261028144727099003|261102125427099003|261102123227099003|261026140227099003|261026121527099003|261022113327099003|261022105027099003|261022075727099003|261021121427099003|261021123027099003|261021135927099003|261009223027099003|10067099003;
+	BCL:0;ARA:13230040|1800799024|23010399003|7416014|376014|366016|18002099003|6133799003|3023799007|921020|5023799004|261022075727099003|261026121527099003|261022105027099003|261026140227099003|261021121427099003|261021123027099003|56012099006|261102123227099003|261009223027099003|261102125427099003|261022113327099003|261028144727099003|10067099003;
 X-Microsoft-Antispam-Message-Info:
-	MLrcSdf7VnLZI0ydKOSSfTpe5jae2lnxbqHNMpV87vUvBphEMFNjiPRyOexe4uiBTDKcSQMe4cyrdUxa+QbC8AYoibsIojiSKCw7JV3C2nUIwEdnuWotDrx5QASeRsWJVCKYZ1OHvZl72Zes9SVIQ3yvUEd/HxFZOALepLforDiKsRwFQat6My5ayPzXGYyycoSheXFlIbCMdVhQPSiR2yzTfqR8QbFBqggZeG4jCKyiIIQ/zDvGFuLceRg/SRsUxPedryLL0Qm9PQSUX372Y0hLYD2uupn4AxhrfvOPkNKPRxRkTsILX930njl9PAY7c0oc+fXAJe/O03iKMEWHF34MwxOd6p6tpkH7GG6lfDysxmh69QxmixUNCDThpv4qYjbVmn5i6sb4nJGL/UEwq3tOcakcduUmZBf/JzlJp2VWOOnq339LG3/3CHjW0+eSKgblnCP21EkDdc+rOWVyu+gDnI5CniTwSKACTgQfOtnk39hcWCDRhDp963Bd0/cdJCIoEqJv7AZRBb3bbf19hFGdrzqq8lMuYQuJXO0NhnUV9JXmTdhiDhvgi8fL0yQKluyOXym7etGF51zZVA5dShsuewl+yr0LF5csIiPxYOhnyfNTVeNZ3bar5rl8bWaNVoEZZlI0mVED8lFFdrdvmZJn6T4vIXIYaCeBt9Tzfw8=
+	o4uFC1NK+GYKoe+9Zuy/aIiklTy51DowQD1RShr+OsuBDYiEchzUMF6DxsyZOr4w80oOfSL9Z10uUVK+q9YpY3cDM3bt+pAfN472+VhdIiP3RIiYHItsrIZD41RdMt48YMYumyCm4GlOcXjep0suJV6iIeiiAWqVVcrYosVfnMfPIUaYdYFJD8MX11bBtolORGXxvfCRqU/9Y5t7fop/WD10g1ahLdKMGOVv9aSi8tNqwi7EKwhvqFYlrlOCXCEmxvO8mpYG5oUnz0SlKZARjm8vCu8eDeNyItu6pBeP8DaZ3AXzNyw+ecfSqFu316f79TIlALcLrw3f+Y5WswzeYeUtsYVXx7uMwgM3b8pLasA00+JPgHpY8GnW0e1q+rCZ05fscNAqmhKStdG4pqSDxzqtA+VxoJgqe5b+O2p5oPLZjJC6bhOQulXxyWloNINJ9844bvjdMIKZ7mNFSrZPeIU+/0REHvwZBdwd+HYMGMHfJ0x+kuzcV9SLgoESJu72kHSSK+WAaq7L3a9eN1p1ykVBh/joWR2vAkExEy4K2So7w4XYS1qNdbUfX9he9qlcHdHWAzZPDhkjM+SgZF+x3U3AKXBr4qsUWCWzyk1Yrx5N+8tukg+kvAD4YduLiQQEowO0/dC37Mmjwd9VWw1KkybqrCoOARgINF9b1eqQ6A0=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(23010399003)(18002099003)(22082099003)(6133799003)(3023799007)(56012099006)(4143699003)(261028144727099003)(261102125427099003)(261102123227099003)(261026140227099003)(261026121527099003)(261022113327099003)(261022105027099003)(261022075727099003)(261021121427099003)(261021123027099003)(261021135927099003)(261009223027099003)(10067099003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP123MB4183.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(7416014)(376014)(366016)(18002099003)(6133799003)(3023799007)(921020)(5023799004)(261022075727099003)(261026121527099003)(261022105027099003)(261026140227099003)(261021121427099003)(261021123027099003)(56012099006)(261102123227099003)(261009223027099003)(261102125427099003)(261022113327099003)(261028144727099003)(10067099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?R0FFWlpmTVhqSWEvRFdqbE5zRHJFWWljb0VMdVhMemIwRXh6cGFPUlhlejVX?=
- =?utf-8?B?dzBBSlZRWjRITjRwL3BoTExzak0yTzNTQ1c4VXBrYnVydmViL2NQMmlKemcr?=
- =?utf-8?B?bVlNdUR6dHFrbFA4cTQxemtQL3RHQndYVEs0dXJVTVRNaXVROXh1NlpWUlpw?=
- =?utf-8?B?ZzN1aGljcUlFVUthWkhndUxwWUZ3QVJlbzM2QWVqVEZrWnB4MFM1dFVFa3Ni?=
- =?utf-8?B?RnVISzd4SEtrb0JNcDNwUks5OVk4dVVWeGtsRVVveEdDZ1NvdEtYL2p3NmZV?=
- =?utf-8?B?UklmdHJTN2RiSWpwenoyNy9YdUlPMVhzR0NnSmdETWdRWDFSOGdQN0IvY2d1?=
- =?utf-8?B?cUk1Nnh3T1pYZ0tRUDh0WDlVTllEOEJMd3FkUzV0WWVWTVUxL2JDK3E5Q2Q3?=
- =?utf-8?B?bmNUQlV1T0xReGVwMnN3L2Nya05MZXpheTNiM0R5TUcwUzJqMzBxWlY1WVpB?=
- =?utf-8?B?V0dwcnlabGNkVXB0ajNyeWVld3VRQ3lKdTcrNnFrVXJRUUZsZjdHSU0wZW80?=
- =?utf-8?B?dGtMNEtoQlV5OWxVUDRkazZkeERXQUh1cFJNV0graDllMXoveE41Q3p5Z0FG?=
- =?utf-8?B?dVNLNy9EZDRlY0VlUVpsZHpRRnBSVnlscmUwMlcvaDk2dmR2RnpRUUI4VllG?=
- =?utf-8?B?cDFLc210UDhlaUgzUXBPb3ZTWWtFNE9va3QwaTgvRG1HVGViWFEwNnExSmFx?=
- =?utf-8?B?c0tYSVJOT1NtSDhzREZyMXNDbXRmYmFmWVRJQ2RtUlYzTlVGRTVQVlB2d3Vp?=
- =?utf-8?B?cVFCWFM4R2VhckhFWWhWOVd1em9LSTBJNGlrRmdjRnQ3MytHMGdOemVBNGpl?=
- =?utf-8?B?UmpYTTBhQm13Y1pYQ2N4T1ZQM055bmU5Sk55Y1BQS1RMWkVhWE9yQmdvRXFX?=
- =?utf-8?B?MzVNUzVqdXNTcEFHUUY5bDRaUDRYUkRzMlkzNDdSTGdJK1QxZS96VGplTUVs?=
- =?utf-8?B?TnhKVE8zM1RRMTVidkp5eGlsR0NFZG9RS0VrSTNVSW1uR1phc2N3Z0tPcWd4?=
- =?utf-8?B?M0NPVXNSVWtuTW1zRjFHL3VnTFBZd2xva0J0RXl1RkN4T3hyYnVDUm4zMVJ1?=
- =?utf-8?B?MUEzSnZyM0tCdjNwUForZ3d3TG43cys3d2s2OGM2NEdDM2FpTS9lU1ZIUExT?=
- =?utf-8?B?TDNIOXZJeU9xM1ZWZ2txc1gwY2ZtaGkxL0doOFVDWTBLV0Q3enpWYXlWZzAy?=
- =?utf-8?B?TnRlNnppRGNLMGNMcDRtWDJiMmdacnNYV3hJWUNXekU2aDNEcHc3cnRvUk5v?=
- =?utf-8?B?dHI3MVljMExubCtrOXNjaDk3OFd5RjFIOWROSkNNZ253Nlk5VDE2TXhRNlk1?=
- =?utf-8?B?Rk5MdVAzZEhaSzdPZWdhcUtYNmcrbmc1bmhQeHRMK0lRWEdadGxHVmgrWFlO?=
- =?utf-8?B?MU8vc2NwdTFlUDNkSzdqTmtmOXNESTJyVGl6bTJUZHF4dDVnOTVTaVZWK1pS?=
- =?utf-8?B?UE91cGIrcG5jd1dHYWJSNzMySDZlTHd3T2tvRUdWZTlGS3VaeDBKZElCN3R5?=
- =?utf-8?B?NmE3QkVzTE9Yd3gvYXRhSU1Nd2xkZjBTMngvNWFYYys4SjRyLzVBcUNqbldw?=
- =?utf-8?B?VUFBc2pCSWl2UHFoNFZqZnVrS084MzFRMWltajBUQ2V2MGRFcEhaSTloclVQ?=
- =?utf-8?B?TjAwbVFJT0QzOW02dG9nNmxWY1VBSFZCM2UxQ0hMdXV5OFNPUkhyaFFveVJE?=
- =?utf-8?B?MkR4ZUdpbzhTRzNtUHVibW13YjdjeW1QUEV1TGU3a0gwMStYOGtJSExkWS9C?=
- =?utf-8?B?UERGcitqRWZoc0dDS3cyV1BPc2FRT2xUa2tjRE5wb3pFRUdIU3hrbXFKeitS?=
- =?utf-8?B?dHMzR2dRekVnakx1R3VYNzVvVG91ZjVxVnM1Ym1iczM1SnZQdFQ1UlhNSHAz?=
- =?utf-8?B?U0xoNmd1dEg0UnhkK1MrUEo2VmQyeWtjSm1hQXFTL3pleU9IdVUvQWJPaGp2?=
- =?utf-8?B?Nmd4U2d1U2duYzJVWG1NRTkveDYyNm5UWkZIb282Q1JGSU9LRmFod0RRN1p2?=
- =?utf-8?B?QTI1N1loRVhzUHBoUkowdE5PSVM2SDFwV0ltM2pUR3FiV1ZXY0MxU1BaUldM?=
- =?utf-8?B?ZE5tNHNQNjUxbWtPZWpSSmxvb2xFQlNwY084dTNQa3A3ZUkxZVJsNS8zY0RV?=
- =?utf-8?B?K1dnZExNVm1FTUNicFV5WXA1SEtvNGJReXJZczU1UFIvOVd5UEV2M3NZN2Vk?=
- =?utf-8?B?QmtwSGthR0ZBOGFIN0crMUZpMk9WTklyMXRzcHBGNGZ1T0NHUTFmdlBIS3NB?=
- =?utf-8?B?Q1o5VVVSVm5BZkRHZzJydmlCUlJhdXlZQThQU0R1MUJKanEvK0paODE4VlpF?=
- =?utf-8?B?WUx3UTAyRklwTTJXZVRUOFB5b0w3TWRtczZNWW54YUxsWUtoSWlCQT09?=
+	=?us-ascii?Q?WiEhkDfCJOn07GHDltMhTcBJYaXMpf4TZSZ4tzXzfyy8o08Yn4PMMa53kCAL?=
+ =?us-ascii?Q?FwM+goAjjq1VzdtTvnDJYGPWHaAN99Nb3qd2yjAwJJs8xhVFobfRe0cXX/jf?=
+ =?us-ascii?Q?q/+cJhWvyOOuGPVesLXfKJ7GN3rHHyLcTC/mDZqia3cj20lA2KLNi4mWOwlP?=
+ =?us-ascii?Q?b1c+KtKefo/j2rq4YHE6R+aQTwXrrLx/fwo3One0ivKat2Tfb3qOOYDUaBhK?=
+ =?us-ascii?Q?kJMJlpcYFd965/K3PJNDtvotA5VYdJgWt4Zam7fba2YkTssvCkjblxFqEchQ?=
+ =?us-ascii?Q?ZBWqTDuscnK+/ee7veT+kuZq141ENeRZjz8/6V98WCFX6sIZR1b4v5y2HnOc?=
+ =?us-ascii?Q?1mM1V4ZGRMNFMv0R+xyicKy4Lvdjdv1l4PhqC2w/VOSfxbfQ5QF285KLla5l?=
+ =?us-ascii?Q?kLOAIu0lGo8yXSXnH/KGo1k70xUUeAIxPzI5PpyujqeZAIEz/DjGSop4g5ec?=
+ =?us-ascii?Q?OaFJs992fkgIr+KBGmGY/CXmr1bQP2CPZ8NYDd3B7FwJnrCX4UDdUXeYJuiy?=
+ =?us-ascii?Q?8oP3Xyzkc3uYiqurB2uXnGzbQkRgnGIOLVkcFesFEsU/f/Sthsf9wiKFNrYL?=
+ =?us-ascii?Q?aUSMemIyDDqAj7SmE5vObZ2KCItmfA4VDtZW3JxfLOlfH7Km64R8HOJGk5Yz?=
+ =?us-ascii?Q?u9d6Qp32Ev7l/vFWP3kHwGF5vma5BRJnjux0VQC2k1Ao+5KmfSM1LtpXjUCG?=
+ =?us-ascii?Q?EZWlrZM4AwYLI9qvgd8/O2I15mBHueVlIqZ9Hg/KHaNpuWdddJg61qy1QLbG?=
+ =?us-ascii?Q?Qd6STpJ4un6xKFjsNNEX4wBwr2TcEBA6nIGDs1COeySMwHSvN7RytfKCJl24?=
+ =?us-ascii?Q?664Y6W6Ukqz3NlGMrtZNZ3HLcNlUxpdLz8h4/YX+6z+1iqI4GUXkeJFziP8f?=
+ =?us-ascii?Q?ZfEsFoyivFhXFtNDFk9FW8Xor+Bkx0s4R6/3LCU/DnFsTphIlE8omfh21R+a?=
+ =?us-ascii?Q?MXe2G9MF03CNeoPnu8azySCHZe64xm0qEJhKjN06w7UhDW8KVYxNGfs2p4m9?=
+ =?us-ascii?Q?vY2kfsogDPE3jKBuAayFFEiheF9DUZBZ5dUR/ot9PLzO6ajnKNVL0p27azLR?=
+ =?us-ascii?Q?l5QLsh7Lsyu/blqOW/+vaU6RXYvrIgU2Ho6PrgxdFHvqMAq6M9XKb7xyUvrj?=
+ =?us-ascii?Q?YoDY4AeILtHdHtPSej7XlPAZTn8Xlp1WsnWgu5aVJrWBztMXOrNpdo/5Auyi?=
+ =?us-ascii?Q?8wy/JkopNJhU8IWs+tARUq7jAL4VAkNaeNRUG+SIq++QychtlrakMVc07ZqN?=
+ =?us-ascii?Q?c/21MCBD+NmTSIPkYbMoBZOL27rqRoq35bUq6mqPGLcDyRUdVhONvgnOkgzz?=
+ =?us-ascii?Q?yvtsmJJPIpgPD9eUBWsQjzq3aM0mE9temKDsFG5QncND/AwH9+FFp+imOc0w?=
+ =?us-ascii?Q?rxsdG8T5TNx6rz/PSipqUWEpPRPdYekguvqpRcfNPS5hoIexZNnGqT3fcqq5?=
+ =?us-ascii?Q?CZL25DweCUkmKOsRDYkllq/Lxq6JsLyHuf4yZ4hZ8k9dQmbnhg+suL18Wt8U?=
+ =?us-ascii?Q?svfvifYQrQYsy3V/KPqMwwuPT3dQzpngzfby5ncYbRAXu52+OCXljfl678zq?=
+ =?us-ascii?Q?7y5qr47RJv+s8c6/yAbGkI9NKeDgii1CM9toG7qB0sAOcpKOx6JM+O6UZ2/g?=
+ =?us-ascii?Q?gnXbD9u5cRRHloXuLB4k6/0ETWVHi0SJJfU9Tz7KElMpzeYdkwTDtQIf4rgk?=
+ =?us-ascii?Q?X38maMAbd4MHi0IYxAdV5lXHNeVRYpwv6toX9UtfcHD7g1+czSZBzspoCQH2?=
+ =?us-ascii?Q?qGnSy3Z18g=3D=3D?=
 X-OriginatorOrg: atomlin.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d14e16b2-d53c-4094-c99c-08df45e6f605
-X-MS-Exchange-CrossTenant-AuthSource: LO2P123MB4190.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: f609d0e7-a475-4d08-b975-08df45f297f0
+X-MS-Exchange-CrossTenant-AuthSource: LO0P123MB4185.GBRP123.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2026 02:43:58.5336
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2026 04:07:14.8265
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HGmMLVSQTOX3WHJkWDKwAyyxLqWtGDowGlJ2c+K++M3/ZMoHaxQeTJ3lEISHsZc4fkMEBWxvRn7XQz+OZs2t9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP123MB2919
+X-MS-Exchange-CrossTenant-UserPrincipalName: IgYclzaVFDf8OilU5NdRBwU1RWwILuWi8kax+vfIh0e6a4pcJNmqlRcYljp1+AbCEh++OcSYKXycmH20MIO0aw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CW1P123MB7694
 
-On Thu, Nov 12, 2026 at 02:46:15PM -0800, Chris Down wrote:
-> Hi Aaron,
+This series expands the task_setscheduler LSM hook to accept nullable
+pointers to the requested sched_attr and cpumask alongside the target
+task_struct. For sched_setaffinity(), passing the raw user-supplied
+affinity mask allows LSMs such as the BPF LSM to audit or filter the
+mask as requested by userspace before __sched_setaffinity() intersects
+it with the task's allowed cpuset CPUs, which seccomp filters cannot
+inspect behind user pointers and scheduler tracepoints only observe
+post-intersection. Similarly, __sched_setscheduler() passes a local
+sched_attr populated with the resolved scheduling policy and effective
+SCHED_FLAG_RESET_ON_FORK state so parameter-only updates expose the
+effective values rather than internal sentinels or caller defaults, and
+cpuset task migrations and CLONE_INTO_CGROUP pass the destination
+cpuset's effective_cpus mask (note that direct writes to cpuset.cpus
+update task affinity via cpuset_update_tasks_cpumask() without invoking
+this hook).
 
-Hi Chris,
+Because BPF_LSM_MAC trampolines place the previous return value in
+context argument slot nr_args, expanding task_setscheduler from one
+parameter to three shifts ret from slot 1 to slot 3; existing
+two-argument BPF_PROG(name, struct task_struct *p, int ret) programs on
+lsm/task_setscheduler will therefore be rejected by the verifier until
+updated to the expanded signature. Patch 2 extends the BPF LSM
+selftests to verify the hook's runtime arguments and -EPERM mediation
+across sched_setscheduler(), sched_setparam(), sched_setattr() with
+SCHED_FLAG_KEEP_POLICY, sched_setaffinity(), and
+/proc/[pid]/timerslack_ns, alongside verifier checks for the __nullable
+annotations.
 
-I appreciate your feedback.
+Changes since v5:
 
-> Aaron Tomlin writes:
-> > In modern multi-tenant and real-time environments, CPU and scheduling
-> > isolation are critical boundaries. The inability to audit or restrict
-> > specific scheduling policy changes or CPU pinning requests limits the
-> > effectiveness of security policies, particularly when attempting to
-> > shield isolated or cryptographic cores from unprivileged or compromised
-> > tasks.
-> 
-> Peter objected to this paragraph on v3, and you said there that you would
-> drop it. What you told him the patch is really for was auditing the
-> affinity mask as userspace asked for it, before cpuset intersects it with
-> the allowed CPUs, which seccomp can't do because the mask is behind a user
-> pointer. That should be in the changelog in place of this paragraph. (I
-> object to it as well. Please avoid such LLM grandiosity.)
+ - Replaced the second paragraph of Patch 1's commit message with the
+   concrete rationale for inspecting the user-requested affinity mask
+   and scheduling attributes prior to cpuset intersection, and clarified
+   the scope of affinity mediation relative to cpuset.cpus writes
+   (Chris Down, Peter Zijlstra)
 
-Apologies for the oversight in leaving that paragraph in after v3. I will
-drop it in v6 and replace it with the concrete rationale: auditing and
-filtering the raw user-supplied affinity mask and scheduling attributes
-before __sched_setaffinity() intersects the mask with the task's allowed
-cpuset CPUs, which seccomp cannot inspect because both are passed behind
-user pointers.
+ - In __sched_setscheduler(), synchronised SCHED_FLAG_RESET_ON_FORK in
+   lsm_attr.sched_flags with the resolved reset_on_fork value so
+   parameter-only updates accurately reflect the task's effective
+   reset-on-fork state (Chris Down)
 
-> 
-> > This change updates all in-tree security modules (capabilities, SELinux,
-> > and Smack) to accommodate the new parameters mechanically, while
-> > providing LSMs with the necessary context to enforce strict scheduling
-> > and affinity policies.
-> 
-> An LSM can only enforce an affinity policy through this hook if all possible
-> ways of changing a task's affinity go through it, but writes to cpuset.cpus
-> don't. With a BPF LSM program on this hook that rejects any mask containing
-> CPU 3, sched_setaffinity() to CPU 3 gets EPERM. An unprivileged user with a
-> delegated cgroup v2 subtree can still write 3 to the task's cpuset.cpus,
-> though, and the task ends up on CPU 3 without the hook being called.
-> cpuset_update_tasks_cpumask() just calls set_cpus_allowed_ptr() on every
-> task in the cpuset.
-> 
-> So what this gives an LSM is visibility into sched_setaffinity() requests
-> and cpuset migrations, not control over where a task runs. That may be
-> enough for auditing, but the changelog shouldn't promise enforcement. It
-> also looks like the kind of gap Paul meant on v3 when he asked how this
-> fits into a more comprehensive approach to resource control in the LSM.
+ - Clarified the kerneldoc for security_task_setscheduler() to document
+   what @in_mask represents for sched_setaffinity(), cpuset cgroup
+   migrations, and CLONE_INTO_CGROUP (Chris Down)
 
-I see, fair point. While all user-initiated scheduling policy and parameter
-syscalls pass through __sched_setscheduler(), writes to cpuset.cpus update
-task affinity directly via cpuset_update_tasks_cpumask() ->
-set_cpus_allowed_ptr() without invoking security_task_setscheduler().
+ - Added Patch 2 to extend the BPF LSM runtime and verifier selftests
+   for the expanded task_setscheduler hook
 
-I will reword the commit message in v6 so that it does not claim
-comprehensive CPU placement enforcement, and instead accurately states that
-the expanded hook provides visibility into and mediation of explicit
-scheduling policy/parameter updates, sched_setaffinity() requests, and
-cpuset task migrations.
+ - Link to v5: https://lore.kernel.org/lkml/20261105172210.76706-1-atomlin@atomlin.com/
 
-> 
-> > -LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p)
-> > +LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p,
-> > +	 const struct sched_attr *attr__nullable,
-> > +	 const struct cpumask *in_mask__nullable)
-> 
-> Since the BPF LSM is the only thing that reads these, please Cc
-> bpf@vger.kernel.org and the BPF LSM maintainers (KP Singh and Matt
-> Bobrowski) on the next version.
-> 
-> While the __nullable annotations do what you say, and a program that
-> dereferences either argument without a NULL check is rejected by the
-> verifier here, there is still a problem. Existing programs on this hook
-> that follow Documentation/bpf/prog_lsm.rst and pass on the previous
-> program's ret now get attr in that slot. One declared as
-> 
->     int BPF_PROG(x, struct task_struct *p, int ret)
-> 
-> that returns ret when it's non-zero loads and runs fine, but with this
-> patch the verifier rejects it. LSM hooks aren't stable ABI, so that may
-> well be fine, but the BPF folks should get to say so :-)
+Changes since v4:
 
-Agreed. Because BPF_LSM_MAC trampolines place the previous return value in
-argument slot nr_args, expanding the hook from one parameter to three
-shifts ret from slot 1 to slot 3, causing existing two-argument programs to
-fail verification in btf_ctx_access(). I will Cc bpf@vger.kernel.org on v6.
+ - Rebased against v7.4-rc1
 
-> 
-> > 		if (setsched_check) {
-> > -			ret = security_task_setscheduler(task);
-> > +			ret = security_task_setscheduler(task, NULL, cs->effective_cpus);
-> 
-> The kerneldoc you add in security.c says @in_mask is NULL if affinity
-> isn't changing, but that isn't what happens in cpuset_can_attach(). On v1
-> setsched_check is always true, so moving a task between two cpusets with
-> the same cpus and mems still calls the hook with the destination's
-> effective_cpus. With a v1 cpuset mount I see the hook get 0xf for a move
-> between two cpusets that both have cpus 0-3, and Cpus_allowed_list stays
-> at 0-3. On v2 the same happens for moves where only the mems differ.
-> 
-> The hook also can't tell this from a sched_setaffinity() call, since both
-> pass a NULL attr and a mask, but here the mask is the destination cpuset's
-> configuration, rather than something anyone asked to pin to. Please say
-> in the kerneldoc what @in_mask means for cgroup migration and
-> CLONE_INTO_CGROUP, so LSM authors don't treat it as a pinning request.
+ - In __sched_setscheduler(), populate a local copy of sched_attr with
+   the resolved scheduling policy before calling
+   security_task_setscheduler() so parameter-only updates (such as
+   sched_setparam() or sched_setattr() with SCHED_FLAG_KEEP_POLICY) pass
+   the effective policy rather than SETPARAM_POLICY (-1)
 
-Agreed. In cpuset_can_attach_check(), setsched_check is set whenever
-!cpuset_v2() || cpus_updated || mems_updated (provided oldcs has non-empty
-effective_cpus on v1), and cpuset_can_fork() likewise passes
-cs->effective_cpus whenever the destination cpuset differs from the
-parent's.
+ - Clarified the commit message to reflect that both the sched_attr and
+   cpumask parameters are introduced by this patch
 
-In v6, I will update the kerneldoc in security/security.c, including the
-parameter descriptions in commoncap.c and smack_lsm.c to explicitly
-document that @in_mask is the user-requested affinity mask for
-sched_setaffinity(), the destination cpuset's effective_cpus mask for
-cpuset cgroup migration and CLONE_INTO_CGROUP (even when only memory nodes
-differ or on cgroup v1 migrations with identical CPUs), and NULL for
-scheduling parameter updates or /proc/[pid]/timerslack_ns writes.
+ - Link to v4: https://lore.kernel.org/all/20260720014156.459386-1-atomlin@atomlin.com/
 
-> 
-> > +		lsm_attr.sched_policy = policy;
-> > +		retval = security_task_setscheduler(p, &lsm_attr, NULL);
-> 
-> For sched_setparam() and SCHED_FLAG_KEEP_POLICY, the reset-on-fork setting
-> that gets applied also comes from the task (reset_on_fork is set from
-> p->sched_reset_on_fork above), but lsm_attr.sched_flags still belongs to
-> the caller. On a task with SCHED_RESET_ON_FORK set, sched_setparam() reaches
-> the hook with sched_flags of 0, and sched_getscheduler() still reports
-> SCHED_RESET_ON_FORK afterwards. If lsm_attr is meant to show the hook what
-> will be applied, SCHED_FLAG_RESET_ON_FORK should follow reset_on_fork as
-> well.
+Changes since v3:
 
-Agreed. Since policy < 0 resolves reset_on_fork from p->sched_reset_on_fork
-for both sched_setparam() and SCHED_FLAG_KEEP_POLICY, lsm_attr.sched_flags
-should reflect that resolved state as well. In v6, I will synchronise
-SCHED_FLAG_RESET_ON_FORK in lsm_attr.sched_flags with reset_on_fork prior
-to invoking security_task_setscheduler():
+ - Expanded the task_setscheduler LSM hook to accept the 'sched_attr'
+   payload, enabling BPF and other LSMs to inspect scheduling attributes
+   (Peter Zijlstra)
 
-        lsm_attr.sched_policy = policy;
-        if (reset_on_fork)
-            lsm_attr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
-        else
-            lsm_attr.sched_flags &= ~SCHED_FLAG_RESET_ON_FORK;
-        retval = security_task_setscheduler(p, &lsm_attr, NULL);
+ - Updated all call sites for security_task_setscheduler() to correctly
+   pass the attr structure when available, or NULL otherwise
+   (Peter Zijlstra)
 
-Thank you for the thorough review.
+ - Added the necessary forward declaration for struct sched_attr to
+   include/linux/security.h
 
-Kind regards,
+ - Link to v3: https://lore.kernel.org/lkml/20260526142838.774711-1-atomlin@atomlin.com/
+
+Changes since v2:
+
+ - Dropped patch 1. This is to be addressed by the cgroup cpuset
+   maintainer (Waiman Long)
+
+ - Dropped patch 3. Will be submitted as a separate patch (Paul Moore)
+
+ - Link to v2: https://lore.kernel.org/lkml/20260509213803.968464-1-atomlin@atomlin.com/
+
+Changes since v1:
+
+ - Reordered the allocation and user-copy of new_mask in the MIPS
+   architecture's mipsmt_sys_sched_setaffinity() to occur before the
+   LSM hook is invoked. This ensures the security modules evaluate a fully
+   populated mask rather than uninitialised memory, while cleanly handling
+   error unwinding
+
+ - Updated cpuset_can_fork() to pass the destination cpuset's effective CPU
+   mask instead of NULL
+
+ - Link to v1: https://lore.kernel.org/lkml/20260509164847.939294-1-atomlin@atomlin.com/
+
+Aaron Tomlin (2):
+  security: Expand task_setscheduler LSM hook
+  selftests/bpf: Verify task_setscheduler LSM hook parameters
+
+ arch/mips/kernel/mips-mt-fpaff.c              |   2 +-
+ fs/proc/base.c                                |   2 +-
+ include/linux/lsm_hook_defs.h                 |   4 +-
+ include/linux/security.h                      |  15 +-
+ kernel/cgroup/cpuset.c                        |   4 +-
+ kernel/sched/syscalls.c                       |  11 +-
+ security/commoncap.c                          |   9 +-
+ security/security.c                           |  21 ++-
+ security/selinux/hooks.c                      |   4 +-
+ security/smack/smack_lsm.c                    |  13 +-
+ .../selftests/bpf/prog_tests/test_lsm.c       | 164 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/lsm.c       |  51 ++++++
+ .../selftests/bpf/progs/verifier_lsm.c        |  49 ++++++
+ 13 files changed, 328 insertions(+), 21 deletions(-)
+
 -- 
-Aaron Tomlin
+2.55.0
+

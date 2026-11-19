@@ -1,60 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.219.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795040551;
-	b=fSxVKF5IpLYkvxfUyGKsCM5cVbCMVnf7uRUH7tkxCMVifZGJHPbTHgrZrJ8i2a7LDZ3E
-	 fCPPRYR/+jWV1R10cz3005d46ZlOXq8gSTPmobY5bmb0amH8eZqe+mv5rHYJyMEIhO/Sp
-	 urGORKva2gJCgES1gEfMb6xxl0iTwhb/Oy4Rtq6Zz4rC3UOIdd8cefmb81tDNVcFg7n0U
-	 GL86ywpH1TvV6CM026tT+1XJhOjEEHTBsVtV/9vbE/y2zDIXUM76TKXFEghC61sYqoH4O
-	 wl2ubZcTqTOUse9eHQZ8QSIcPzuKkqys8ZquA9utffbR1JdUG2vToAsx2j6mjhXYscw==
+	t=1795050809;
+	b=PvuTa09iCsnWSrCPFOsoSkhEGvBa4ZtLiqtpFZvl9AGiNOYV01YVTGKLcphptJfrRJl2
+	 TVVtvGzqeC94VTOKv2SsC2dJkAbnSrsX9Pum6cuhzBUy7BW7Lu76YLVW52u1mHXYzte1b
+	 RFGyEPROTK/4eKNn0lozWNo2BaSQfao5QdN3hhi/BD7eYVFHmxHEWvP5/YGsTXEJtFHUH
+	 rsot1H8SVAfA2atKTubipTTAJBRsX2opSs//u1jCWxNz4bI3728fNbCaEzCYh6U1Qbhc5
+	 Y57aVJaMECV8Dl6VrAlkdkn4uKAbFA2rzMezp68WKZqsSOc27gKbZF9xnjcdMmHhMxg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795040551;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=deC16colvJ6YmP1UCuRm/b/DXcA7zKSPNYZR/ylPBC8=;
-	b=qkkJaJcW9KqFf3lMXzRZDAKBojYW1mb247bc8/5eGrlQ5xDAL3JADFtvD7vB25dgG/RK
-	 HHq/Is66qHEiqrupd7RnEase63KPI+QSUpoXqrlUJF3BpNR01d2dGdwQagQTwrI3vYQnP
-	 gn2Sevq8w3SkkELVILvH73d9J66qnhRyQqYgShGKVSDeDhWgHxFsFuEkTlYMAYDCgTbhc
-	 vOq1oVOAZtnotRanmGnwUEzoLrD/G4YVchU8DToUt7mnKSo49Gm70BgHnZqBn0kKq865R
-	 mgX6k0OPpeYMhetzos/l63nt9q8jPM/F4dPLC6oj7au/WDmAm9PAxOWQv0PvCb+Nn2w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795050809;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=g4dAtIGbR20X1kAl/FU925LvRkvwCNieoeAJRhJ82cE=;
+	b=vQn4gfAx1vHT8K53OpaVa1vq35y38Ntbq2B2dRXJreX752KBmDtcf9fPiqEr7/hFQD5e
+	 7KKsWqIocUcrPRvUH8AnirO4Ti9Guh71LHGl2d82gzLMbDHY/XHAkjVI++1eMUSWdaDVn
+	 STC8NZkd+lOymdFYsdQM8Rnf6jKf9dPPA3ADSDpRZaymZGz4R1iXzcwiu68uNsrq2nxX/
+	 WTf20IJ75SrXEXAI3jxiZDGmjT7SvFTjLhgVhPd1mMLgd652LADsnBnCryGMgJeGdT34l
+	 aYK+F9Ou5B4GXk0FN/QyG3kwcVxBv+cQDvu2nVHc4m5F4GBcOuUf28f9oGY+adCBbIA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="dY/uIibw";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=SzgskFNG;
+	arc=none smtp.remote-ip=209.85.219.52
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106AA606A31C;
-	Wed, 18 Nov 2026 22:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645A5606A338
+	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 01:13:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 645A5606A338
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dY/uIibw
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E3DE1F000C4;
-	Wed, 18 Nov 2026 22:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795040550;
-	bh=deC16colvJ6YmP1UCuRm/b/DXcA7zKSPNYZR/ylPBC8=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=dY/uIibwHTdJA4M5PzAmm39IT2+od4JB7aY09mU24btvxJ4jk3dnClNHcU/Xd2djP
-	 jf3W9adJTe1KBa18nNeR1HUjFY1ipuC/DlS+1h2u8Pcw0OOEahFVAt06XWlWnjGtEJ
-	 VcVWV9oV8M1Lvh8KXF8+kwIGH/X7lWEU3MxDSa1FyJrGESKLZui9+4cHMBg5TpswEQ
-	 MUgaMWg8/fULiXQlN4cTnjLvq0i7KPiJ+6YH9cORiD/F6pDZckA/75IPffo/tEi3ml
-	 lpBelbATD3DsJfnSYzw2Mi9qOiI7FUasy4HzukKwvN5upqkMAQTOgO3JQbICSC1ssw
-	 hxzz813wk3RsA==
-Subject: Re: [PATCH net 2/2] net: sgi: ioc3-eth: fix IRQ lifetime against
- netdev teardown
-From: netdev-bot+sashiko@kernel.org
-To: kaloz@kernel.org
-Cc: tsbogend@alpha.franken.de, netdev@vger.kernel.org, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@kernel.org, kuba@kernel.org, pabeni@redhat.com,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, sashiko-bot@kernel.org
-Date: Wed, 18 Nov 2026 22:22:29 +0000
-Message-ID: <179504054981.3136.8539477779059154181@kernel.org>
-In-Reply-To: <20261116101934.25910-3-kaloz@kernel.org>
-References: <20261116101934.25910-3-kaloz@kernel.org>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=SzgskFNG
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-91f2dd5dddaso15690506d6.3
+        for <linux-mips@vger.kernel.org>; Wed, 18 Nov 2026 17:13:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795050808; x=1795655608; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=g4dAtIGbR20X1kAl/FU925LvRkvwCNieoeAJRhJ82cE=;
+        b=SzgskFNGhl/Mk4avrSlgfyIDuBw3t8ZX2sNTzsYCD8HGyN3RfVJRp3Q0rumL74ear2
+         83GS6iFAvpj6xQFLZfOwHwq2/Mt49793yW+ogOL0JoGMNVy6v7ov4VxbE8AizrReJtWJ
+         rReLEAqYSZfCkGvaYFNCSZIq6AzIzNdFD1mFJWe8eZtYycBnVV7G+gnQ41Mcl389nYSM
+         RwVfQiYf1PjsXh/XNyQJxSGsx6iQPiQpScxlnYVa2NpXJckonqEq1v3JsfEnHtJV+hH7
+         EcztSXhe6yJgGCMEAmbsZR0bz+ZyM6GoNaed5IWisXy2vJH4RJN38dDBEdPVa21gcLp9
+         exCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795050808; x=1795655608;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=g4dAtIGbR20X1kAl/FU925LvRkvwCNieoeAJRhJ82cE=;
+        b=Wc1U4mMBpCUDN9Xq+fc42FR9nxYGwHQCzKVedf/jwdNAfddhYoq4cefKMV0/QS/k5g
+         jfliqpn5mMqoEuTwxqrb3LtXrbe2GvbPFFWCEf6+zcdmTjiS++4jX/PDFSIoddXURObh
+         I/uXvbxGQCVP6ZIEbIE7vMls6sPQ4yFpu3SzJBIKVU90J61FNew3DbsgwmdMLyrro1+g
+         oCXbP6QNOshWh+i0xqY2SahvSJuSE13KBFC/6WYymPHS34el4zrsOGo8nalxSpn7JctK
+         TnzBVjLNAN4Y6U7aTtJz3QZNskSrpbdirtta9/HXBahUDtc71E2wYa/zVDlrbJEdQvGQ
+         sTWA==
+X-Gm-Message-State: APuU4Z/Dzyytpbec2s77Ci+aQ7sGyfQbNCIg0+2y6KGHQpATRtmX2TIW
+	UpWGx934tIJ+k56ooIH4399JgENAdtvJaYiXTg7IGgwLi1ViT/YYws95
+X-Gm-Gg: AZFdTZfzVKcKtnens2Qy3DMXVOqwXnY6cu6aG56N3U530ygvupo+cM37nd3vtiNzYjW
+	Z6FvZttDOklbKX6gGn1rFo9L+Zf0KA4C9ZfRan1eX8pF29DXdOfrM6Q0/h0ygWGvpDrHUI8ykMY
+	oyh0GIB4Yjo0/LqCXMJ4yJwvDHaNqwtV57SpiSiLNPH2rjBq2Bb598z+AYYVr0UeSkYNyWB5lsD
+	7qkEtP5vbaOKKiWGnfkzMttcqE+VLWl+6rwByTTAbuhmMm+GqWsSj0ESRciqnHu/3SF09ZNmKAi
+	U0+bGAfZyxV2Kxvpl02tGw9FrrzZZjyIjOpHpRiZi2UFKj2sMEZOA/Iu1eDvTiYLHqsJ5nb6Uyd
+	X8zfcUF0NhB3L7uWFqnn5H0muXHVB4a4hpJFsGtZn/aZs3OjdqJp09T/D7fCHvz6FfBl8svD2+H
+	jIH6ALRKgemTQYNro5w33fVbzV1LdH9XT9bQKXeHRWlfiAEd/pLGw9jm35jbZQErw1ESKR346rW
+	xvJ/WCjgCj1sORPU7Fi0jBryirVSE3FyFpCsXY4/DcnrWsTiXLWvIVQGvoQD9iFUNKPZHV1d1+t
+	WL1mOQVK0ZcVVLlzZOOXAoRkTf766TGsyYOMQWll+5KWSTZDDUI8Ay53
+X-Received: by 2002:a05:6214:623:b0:921:162:ce9f with SMTP id 6a1803df08f44-92114f2b51bmr72529536d6.39.1795050808274;
+        Wed, 18 Nov 2026 17:13:28 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-92114d10f89sm36108536d6.13.2026.11.18.17.13.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2026 17:13:27 -0800 (PST)
+Message-ID: <b6546264-4c51-45e4-9728-a433527fb355@gmail.com>
+Date: Wed, 18 Nov 2026 17:13:26 -0800
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -64,204 +90,48 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] MIPS: SiByte: Fix missing function prototypes
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20261113191933.477395-1-f.fainelli@gmail.com>
+ <alpine.DEB.2.21.2611180154490.54328@angie.orcam.me.uk>
+Content-Language: en-US, fr-FR
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2611180154490.54328@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
+On 11/17/26 17:57, Maciej W. Rozycki wrote:
+> On Fri, 13 Nov 2026, Florian Fainelli wrote:
+> 
+>> The SB1250 SWARM build reports missing prototypes for platform time
+>> initialization, SoC setup, IRQ and SMP helpers, and both RTC backends.
+> 
+>   Thank you for doing this.  I've meant to for a long time, but have been
+> distracted with higher priority stuff.
+> 
+>>   static inline int __maybe_unused bcm1250_m3_war(void)
+>>   {
+>> -	if (IS_ENABLED(CONFIG_SB1_PASS_2_WORKAROUNDS))
+>> -		return sb1250_m3_workaround_needed();
+>> +#ifdef CONFIG_SB1_PASS_2_WORKAROUNDS
+>> +	return sb1250_m3_workaround_needed();
+>> +#else
+>>   	return 0;
+>> +#endif
+>>   }
+> 
+>   It seems a style regression, why is this change needed?
 
-Critical: 0 · High: 1 (1) · Medium: 1 · Low: 0
+The declaration is wrapped under #ifdef CONFIG_SB1_PASS_2_WORKAROUNDS, 
+which would hide the prototype when the option was disabled. The if 
+(IS_ENABLED() would not compile in that case since we would have lacked 
+a visible declaration. We could keep this and just make the prototype 
+unconditionally visible instead.
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] The IRQ handler can still reach freed skb memory during
-  teardown.
-- [Medium] In ioc3eth_probe() (drivers/net/ethernet/sgi/ioc3-eth.c), the
-  shared IRQ is still requested before the state its handler uses exists.
-
-Pre-existing issues:
-- [High] This problem wasn't introduced by this patch, but ioc3_error()
-  can deadlock against the timer callback and warns on every error…
-
---
-
-net: sgi: ioc3-eth: fix IRQ lifetime against netdev teardown
-
-This patch moves spin_lock_init() and timer_setup() ahead of the IRQ
-request in ioc3eth_probe(), and replaces devm_request_irq() with
-request_irq(). It also adds free_irq() calls on the probe error path and
-in ioc3eth_remove(), so the handler is gone before free_netdev() runs.
-
-Closes: https://lore.kernel.org/all/179473760071.2199510.16065103101920438822@kernel.org/
-
-> diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-> index ee284a4f75ff2..e322a588d5c4d 100644
-> --- a/drivers/net/ethernet/sgi/ioc3-eth.c
-> +++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-> @@ -870,16 +870,16 @@ static int ioc3eth_probe(struct platform_device *pdev)
->  		goto out_free;
->  	}
->  
-> -	if (devm_request_irq(&pdev->dev, dev->irq, ioc3_interrupt,
-> -			     IRQF_SHARED, "ioc3-eth", dev)) {
-> +	spin_lock_init(&ip->ioc3_lock);
-> +	timer_setup(&ip->ioc3_timer, ioc3_timer, 0);
-
-[Severity: High]
-This is a pre-existing issue, not one introduced by this patch. The timer
-is set up here without TIMER_IRQSAFE. Can ioc3_error() deadlock against
-the timer callback?
-
-ioc3_error() runs in hardirq context from ioc3_interrupt(). It takes the
-lock and then calls ioc3_init():
-
-ioc3_interrupt()
-  ioc3_error()
-    spin_lock(&ip->ioc3_lock);
-    ...
-    ioc3_init(dev);
-      timer_delete_sync(&ip->ioc3_timer);
-
-Because the timer is not TIMER_IRQSAFE, every error interrupt should hit
-this check in __timer_delete_sync():
-
-    WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
-
-The timer callback takes the same lock:
-
-ioc3_timer()
-  ioc3_setup_duplex()
-    spin_lock_irq(&ip->ioc3_lock);
-
-Suppose CPU1 is in ioc3_timer() spinning on ioc3_lock, while CPU0 holds
-ioc3_lock in ioc3_error(). CPU0 would then spin forever in the ret < 0
-loop of __timer_delete_sync(), waiting for CPU1's callback to finish.
-
-The timer is re-armed every 1.2s while the interface is up. Heavy
-incoming traffic can cause RX overflow errors.
-
-ioc3_timeout() has the same pattern. It holds
-spin_lock_irq(&ip->ioc3_lock) across ioc3_init() -> timer_delete_sync().
-
-> +
-> +	if (request_irq(dev->irq, ioc3_interrupt, IRQF_SHARED, "ioc3-eth",
-> +			dev)) {
->  		dev_err(&pdev->dev, "Can't get irq %d\n", dev->irq);
->  		err = -ENODEV;
->  		goto out_free;
->  	}
->  
-> -	spin_lock_init(&ip->ioc3_lock);
-> -	timer_setup(&ip->ioc3_timer, ioc3_timer, 0);
-> -
->  	ioc3_stop(ip);
->  
->  	/* Allocate rx ring.  4kb = 512 entries, must be 4kb aligned */
-
-[Severity: Medium]
-The commit message says the handler could run before its state was
-initialized. Doesn't the same problem still apply to the rings?
-
-When request_irq() returns, ioc3_stop() has not run yet. ip->rxr,
-ip->txr, rx_skbs[] and tx_skbs[] are all still NULL from
-alloc_etherdev(). ioc3_init(), which resets the MAC with EMCR_RST, also
-runs later.
-
-ioc3_interrupt() acts on the raw EISR value. It does not mask it with
-EIER, does not check any device state, and always returns IRQ_HANDLED:
-
-    eisr = readl(&regs->eisr);
-    writel(eisr, &regs->eisr);
-    ...
-    if (eisr & (EISR_RXOFLO | ...))
-        ioc3_error(dev_id, eisr);
-    if (eisr & EISR_RXTIMERINT)
-        ioc3_rx(dev_id);
-
-If an EISR bit is latched when the handler runs here, ioc3_rx() would
-dereference a NULL rx_skbs[0]:
-
-    skb = ip->rx_skbs[rx_entry];
-    rxb = (struct ioc3_erxbuf *)(skb->data - RX_OFFSET);
-
-ioc3_error() -> ioc3_clean_tx_ring() would also write through a NULL
-ip->txr:
-
-    ip->txr[i].cmd = 0;
-
-The rings do exist after later failures, such as no PHY being found or
-register_netdev() failing. In that case ioc3_error() would allocate and
-DMA-map new RX skbs and call ioc3_start(), which turns DMA and EIER back
-on. The out_stop path would then free the rings with DMA still running
-and leak those skbs.
-
-ioc3_stop() only clears EMCR and EIER and never acks EISR. The parent's
-ioc3_setup() in drivers/mfd/ioc3.c clears EISR separately from EIER. That
-suggests the status bits can stay latched while EIER is 0.
-
-There are two ways the handler can run in this window:
-
-- another device asserts the shared line.
-- CONFIG_DEBUG_SHIRQ makes its extra handler call from the free_irq()
-  this patch adds on the out_stop path.
-
-Should the rings be set up and EISR acked before the IRQ is requested?
-Alternatively, request_irq() and free_irq() could move into ndo_open and
-ndo_stop.
-
-[ ... ]
-
-> @@ -969,6 +970,7 @@ static void ioc3eth_remove(struct platform_device *pdev)
->  	struct ioc3_private *ip = netdev_priv(dev);
->  
->  	unregister_netdev(dev);
-> +	free_irq(dev->irq, dev);
->  	timer_delete_sync(&ip->ioc3_timer);
->  
->  	dma_free_coherent(ip->dma_dev, RX_RING_SIZE, ip->rxr, ip->rxr_dma);
-
-[Severity: High]
-Can the handler still reach freed skbs in this teardown path?
-
-unregister_netdev() runs ioc3_close() before this free_irq():
-
-ioc3_close()
-    timer_delete_sync(&ip->ioc3_timer);
-    netif_stop_queue(dev);
-    ioc3_stop(ip);
-    ioc3_free_rx_bufs(ip);
-    ioc3_clean_tx_ring(ip);
-
-ioc3_close() has no synchronize_irq(), and ioc3_rx() takes no lock. A
-handler already running on another CPU when EIER is cleared can
-therefore race with ioc3_free_rx_bufs().
-
-ioc3_free_rx_bufs() frees rx_skbs[rx_ci..rx_pi) with dev_kfree_skb_any().
-It leaves the pointers in ip->rx_skbs[] and does not reset rx_ci or
-rx_pi.
-
-The handler can run after that in two ways:
-
-- a shared-line interrupt arrives while the interface is down.
-- CONFIG_DEBUG_SHIRQ makes its extra call inside this new free_irq().
-  The commit message names that config as the reproduction method.
-
-ioc3_interrupt() acts on EISR without checking EIER or IFF_UP:
-
-- EISR_RXTIMERINT goes to ioc3_rx(), which dereferences the freed
-  ip->rx_skbs[rx_ci]->data and can pass a freed skb to netif_rx().
-
-- The error bits go to ioc3_error(), which runs ioc3_free_rx_bufs()
-  again over the stale indices and frees the same skbs twice. It then
-  allocates new RX skbs and calls ioc3_start(). That turns DMA and EIER
-  back on for a downed interface just before the dma_free_coherent()
-  calls below, and the new skbs are leaked.
-
-Would it be better to move request_irq() and free_irq() into ndo_open
-and ndo_stop? The other option is to add synchronize_irq(), ack EISR in
-the stop path and clear rx_skbs[] after freeing.
-
+Thomas, I can send a v3 as an incremental fixup or complete replacement?
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261116101934.25910-1-kaloz%40kernel.org
+Florian

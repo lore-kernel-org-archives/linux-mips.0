@@ -1,74 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.42.244.94
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795101338;
-	b=eh35nIEHVWj4cmzlYwn1zXlBvD+U3uNwFIHXZTv5e7Kkb2dWgfPVK+njbAPKonqyCkau
-	 2XF3+yIfChWq3ofdjcko7Rk4AH2EIY5q6Ny3iofy1X1sZJn3+q9xW51kDANEFMCFrndfU
-	 JYSirTTuWinlK4k7l1SxF3BjnVpTSHWfUln5Qq2jKuEgD2qmHvdcNu5mIXl1cdn1rBCsC
-	 OTeJCn687zE0Fmiy8If1AMg/WYJUfbqk/wQpr6BBFOK38BXJzXSNbkGGvkz1+Dh6jj9iq
-	 M8Tu+NTFaSsW4YhdP63ect+TsG/R+wXO8frCFIgB3JyEgLEe5254QZvEVAcRcBpLtFg==
+	t=1795101900;
+	b=aSquxkT647BJlO0ezvEO8dvlboFAYQJp3Pj/6GyaxUPcWC5Z84yxCs7Tkr1pILurQ5lN
+	 2OL1a60onEgSkC2tcLtMpTOf3OYgm1rJl+JON8pD1wlAqZXeHHRr6sEnw5kjAHOK4S/V/
+	 QL0s7SIc2oKIprshhL6iuXfKS/ezoERTRL5YtqUJgi3k9znpcVJhsmku1x0BeHm/qpwy8
+	 AohR6KneQ8nuazgwtSsHsqnOtqLaTRABqWfe3DjYyNVrZC5YST0mPoAnJzjnug/ZoHg1A
+	 m/JJG/rtFIGpx+WLgWyIFrpuCvVf3AR2/DHOy4vJJuxu4ekkS7CggJh/7aZEkvsoTdg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795101338;
-	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:MIME-Version:
-	 Content-Transfer-Encoding:X-CMS-MailID:X-Msg-Generator:Content-Type:
-	 X-RootMTR:X-EPHeader:X-CMS-RootMailID:References;
-	bh=0/rZ8eFNR0SkR4KBoqJwpR6CsQYqYW0/WWAATt7aV9o=;
-	b=ULyKuKtxqDhMLwBD9x5UdTBVuCjWBT5PBwbrb4Shz+wT+MEWTlF0dbLZbxPmPnFRbr6W
-	 /4UTIc4Ef8bkn2S/Tal6QfmiuldKXCVSuCIe5AJaHaC64tDFP+FQEZLlhKjIEYSOpXcBi
-	 hS45JvBiBUcv/qbsz5+hDe/qUL5Fsj4sSIBZmLPx27lwwjXyu7Lw8SKB6XWf0viqKQ/wA
-	 AoTH21MlfbKIO5p3jUav+z7i83lx8JeyM/JetCC60ZE5khlFy+QCkbUTmRW1a8tDeMo9I
-	 sKqRqJj+vjZkVtVUoOyZGRWZO4Ti3f5+pvwzOzZqX1HcPdIH+VUi48p9RhUJo3dTXEQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795101900;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-purgate-ID:X-purgate-type:X-purgate-size:X-Notice:
+	 X-purgate:X-purgate:X-pfmilter;
+	bh=UeMwgVjDLnDVqjMPlLrZzad82di4zvuEFr1fKsZ6T0U=;
+	b=R0HaKpD7xaVWLMFiuEWWm/YyLK8DAl3qPnuOX/8/07INFtYwKStCd0d2y9Xk5PaBftZ/
+	 9MQRyu3IOEScLiVC3C/48WvFXyiivSOrI++Hgdiwz5ZMUL9tPkxidf3w/L+xRETTVz9re
+	 hH+SZOEvvPsnlFte78ZunnbKi8C1x0rYvuC2jUtEKJSNHJJGbnoMNV2jNNgJcKIsYfCS0
+	 jSfUEqol3go4i9qFqEdlTemvsN3kvUJkoe7G/A4fCDcA+JDf9XZNclFYr3dIfCS5bAfJ6
+	 Jly3LPp+seLJDbMN817hm5PoQIYdvA2sgw7rdUatltl1MUPQ1bbQdc8yE/x7nd2t1Tg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=samsung.com;
-	spf=pass smtp.mailfrom=samsung.com;
-	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=AmzMUIjW;
-	arc=none smtp.remote-ip=210.118.77.12
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=fritz.com;
+	spf=pass smtp.mailfrom=fritz.com;
+	dkim=pass header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=KSPq04XI;
+	arc=none smtp.remote-ip=212.42.244.94
+Received: from mail.avm.de (mail.avm.de [212.42.244.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F9A60A3829
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 15:15:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 25F9A60A3829
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BBD606A320;
+	Thu, 19 Nov 2026 15:24:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 60BBD606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fritz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fritz.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=AmzMUIjW
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20261119151532euoutp02adbac375504bf9a8a68dea506a137aba~peyabCr291770917709euoutp02T
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 15:15:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20261119151532euoutp02adbac375504bf9a8a68dea506a137aba~peyabCr291770917709euoutp02T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1795101332;
-	bh=0/rZ8eFNR0SkR4KBoqJwpR6CsQYqYW0/WWAATt7aV9o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AmzMUIjWkV7nFz2jgYxfJbOo4ayHi+MSjAXaPuA4nYUBmiWAYz/SJMGbK70mxfJjN
-	 zpTbUrn4+ZLBuUcofDr5FMV6hTyZztdVvXfrHKu26sgLRZDCq8roNnYoHebRze8mFt
-	 din6qHpP1x+AiR4sC/dFNFQ34TKGTsq4FAGigSzA=
-Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20261119151531eucas1p2be2ec1360d1d94c80b200c53b25f292c~peyaDJkwh1566215662eucas1p24;
-	Thu, 19 Nov 2026 15:15:31 +0000 (GMT)
-Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20261119151531eusmtip15acd40c96d905159080b77d155c3b04e~peyZSMbLo1418314183eusmtip1N;
-	Thu, 19 Nov 2026 15:15:30 +0000 (GMT)
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-To: linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
-	<robin.murphy@arm.com>, Christoph Hellwig <hch@infradead.org>, Thomas
-	Bogendoerfer <tsbogend@alpha.franken.de>, Madhavan Srinivasan
-	<maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
-	Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
-	<chleroy@kernel.org>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>, Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH v3 5/8] powerpc/mm: handle highmem pages in
- arch_dma_prep_coherent()
-Date: Thu, 19 Nov 2026 16:15:13 +0100
-Message-ID: <20261119151520.2383226-6-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261119151520.2383226-1-m.szyprowski@samsung.com>
+	dkim=pass (2048-bit key) header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=KSPq04XI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fritz.com; s=mail;
+	t=1795101890; bh=VUtPMxOjNKGPZQ6FkAk4L2n05vBEr9KfdwlyPB8FDFE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=KSPq04XIh/icCo8uVqSQs19xHVWrI8882+qMc4rh4bnaLIrVTIRUI5hta3IrnJmKr
+	 LiyH5gQnmHg4hi6fnGQQBTCKUhzPV5pUnddTLwq7tRo1sqFXC60ubABjjxwzr5BZpW
+	 xWTrAU/q3VmuS9xkaoOGD0Jn8oy3l4DTPHEwBClrN0JI8F1idZN9rc232N+9cBlDYK
+	 ACrbDLomre7mciio5dpLUoD4CR9a2MKIulNcOOn2MdgHr/fEhjD84N0ReNb2vbEW0l
+	 Lnh7zob5INdPpt9ISPclBVJ2Qwnd7Kvc739eXQJq5JMQwSX7BtOtazOhV28Kxzl2ng
+	 8sp7wX8P0KG5Q==
+Received: from [212.42.244.71] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.57.1)
+	(envelope-from <nschier-oss@fritz.com>)
+	id 6aff14c1-b6d3-7f0000032729-7f0000019f2e-1
+	for <multiple-recipients>; Thu, 19 Nov 2026 16:24:49 +0100
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Thu, 19 Nov 2026 16:24:49 +0100 (CET)
+Date: Thu, 19 Nov 2026 16:24:47 +0100
+From: Nicolas Schier <n.schier@fritz.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+	Harald Freudenberger <freude@linux.ibm.com>,
+	Holger Dengler <dengler@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>,
+	Nicolas Schier <nsc@kernel.org>
+Subject: Re: [PATCH 2/2] devicetable-offsets: Get struct cpu_feature from a
+ device-id header
+Message-ID: <av8Uv7EV3sLqUBfr@derry.ads.avm.de>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -78,54 +80,58 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMS-MailID: 20261119151531eucas1p2be2ec1360d1d94c80b200c53b25f292c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20261119151531eucas1p2be2ec1360d1d94c80b200c53b25f292c
-X-EPHeader: CA
-X-CMS-RootMailID: 20261119151531eucas1p2be2ec1360d1d94c80b200c53b25f292c
-References: <20261119151520.2383226-1-m.szyprowski@samsung.com>
-	<CGME20261119151531eucas1p2be2ec1360d1d94c80b200c53b25f292c@eucas1p2.samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <179424040477.1704532.18231793404479518924.b4-ty@b4>
+X-purgate-ID: 149429::1795101889-B9515B85-B73617E7/0/0
+X-purgate-type: clean
+X-purgate-size: 1742
+X-Notice: Whitelisted
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
+X-pfmilter: host: postfix-mx-03  mail-id: F259FA066E  external: no
 
-arch_dma_prep_coherent() performs the cache maintenance on the address
-returned by page_address(). On 32-bit powerpc with CONFIG_HIGHMEM that
-is NULL for a highmem page which is not kmapped, so the flush would
-operate on the wrong virtual range and leave the dirty lines of the
-buffer in place.
+Hi,
 
-The generic DMA code may pass highmem pages to this hook:
-dma_direct_alloc() handles a highmem page returned by
-dma_alloc_contiguous() by forcing the remap path, which calls
-arch_dma_prep_coherent() on that page before creating the uncached
-mapping. This cannot happen on powerpc today only because it does not
-select HAVE_DMA_CONTIGUOUS, so dma-direct never gets a highmem page
-there, but nothing in the hook's contract rules it out.
+I have a question regarding best-practise:
 
-Use __dma_sync_page() with DMA_BIDIRECTIONAL, which the
-arch_sync_dma_for_*() hooks already use and which kmaps highmem pages
-one at a time. Without CONFIG_HIGHMEM it does the same
-flush_dcache_range() on the linear mapping as before.
+On Mon, Nov 09, 2026 at 05:07:05PM +0100, Nicolas Schier wrote:
+> On Mon, 09 Nov 2026 09:14:41 -0500, Sasha Levin wrote:
+> > Since commit cdfdbc11552b ("Move struct cpu_feature to
+> > <linux/cpufeature.h>"), devicetable-offsets.c includes
+> > <linux/cpufeature.h>, which includes <asm/cpufeature.h> on architectures
+> > that select GENERIC_CPU_AUTOPROBE. On loongarch and mips that header
+> > pulls in <asm/elf.h>, and from there <linux/fs.h> and <linux/mmzone.h>,
+> > which need <generated/bounds.h>. devicetable-offsets.c is built before
+> > that header is generated, so even defconfig fails on both:
+> > 
+> > [...]
+> 
+> Applied to kbuild/linux.git (kbuild-next-unstable), thanks!
+> 
+> [2/2] devicetable-offsets: Get struct cpu_feature from a device-id header
+>       https://git.kernel.org/kbuild/c/50ccc340
 
-Fixes: f2902a2fb40c ("powerpc: use the generic dma coherent remap allocator")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- arch/powerpc/mm/dma-noncoherent.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I applied this fix on kbuild-next-unstable (and rebased today [1]), two
+commits after "Move struct cpu_feature to <linux/cpufeature.h>" [2],
+which is being "fixed" by this patch.
 
-diff --git a/arch/powerpc/mm/dma-noncoherent.c b/arch/powerpc/mm/dma-noncoherent.c
-index 3ce7dfc213d9..af2a42e47016 100644
---- a/arch/powerpc/mm/dma-noncoherent.c
-+++ b/arch/powerpc/mm/dma-noncoherent.c
-@@ -122,7 +122,5 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
- 
- void arch_dma_prep_coherent(struct page *page, size_t size)
- {
--	unsigned long kaddr = (unsigned long)page_address(page);
--
--	flush_dcache_range(kaddr, kaddr + size);
-+	__dma_sync_page(page_to_phys(page), size, DMA_BIDIRECTIONAL);
- }
+If we keep it this way, a bisect may hit the issue; folding does not
+look correct to me as that would mix-up related but different things.
+
+So my questions:
+
+ * Shall we keep it the way it is to keep the original patch order
+   (bisect might fail on the two commits before this patch)?
+
+ * Or shall the patch be moved before Uwe's (removing the 'Fixes' tag,
+   and rewriting the commit msg)?
+
+I am in favor of the latter.  Are there any objections?
+
+
+[1]: https://git.kernel.org/kbuild/c/f1dc66c38b7eb4b2fb946a2fd6929250ecd2d85a
+[2]: https://patch.msgid.link/bc9fbf5784f6788e10c749a05d56c42bdb68f3d9.1792144769.git.u.kleine-koenig@baylibre.com
+
 -- 
-2.43.0
-
+Nicolas

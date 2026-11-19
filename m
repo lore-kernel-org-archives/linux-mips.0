@@ -1,69 +1,121 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.171.202.116
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795091844;
-	b=UThbhd8mLHnYWx/1/09wGc5gnezNEa5q2Pwf17UwqryDBb9F7hrd7KcYpMMg6Aw65zXx
-	 ShNrLZ6ko3pGwRwhmszUsytCkfvoN7E7pkV6WyAmFYNeA2N/IY9fBPofEIYCFp6eR4qeY
-	 6lrwAj2CKuHiLWOqiHb//jr6eg8V5jr/Mim77ISt60DhBEFjKr8OMs1KsiejOGguOIolq
-	 gNzvy3rC8Vy2MWo17N/6CLrg+80MQCiCSV5Mde7TD616hm+A5eQyBMCoMmjzbPIdBiwr6
-	 O8MOphzBPARn+jAJqJdmUC9vQ/Kakaygrg3PnOZqn0iEUPoO7drV3VVXXm2OBZmnYIQ==
+	t=1795092546;
+	b=nzZQz8vQczIZRBKVOzZeN31iFTXENj1FvCr3xTEdnz3fBV+WUJGc2ZDQcKGAwg+b9Kwd
+	 Uw7nwzJVgHZ6sngKJ5Y85yj1wqO+ZlHW9BGRN4Mu8hKmw8wBK72NMX7ES8g8Sb0pbU7Fc
+	 mLTTnKTUVWGdSVsAqAYsD7NZz++mGJXbwvgz4Z52lkWOdg5udKpH/MKh3DCCHrNTRgSsm
+	 RSvPr6g6csVrOIocj+S+4OU18aldwPskjWqSY861WFLHrggOUFTq0oHCD9FMt1Qw6jNZP
+	 YKwiiYsM4zU+YS1oNIVmvAHVpilMgrOtFqJ8GvkjphFXW/8IA0hY3QsH1hbW6wNMFvw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795091844;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795092546;
 	h=DMARC-Filter:Received:Received:Received:DKIM-Signature:From:To:Cc:
-	 In-Reply-To:References:Subject:Message-Id:Date:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Mailer:
+	 Subject:In-Reply-To:References:User-Agent:Date:Message-ID:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:
 	 X-Last-TLS-Session-Version;
-	bh=dEW7y7XAqeBD7xaDjDBvP0fFGQoFweZsJxNTbP4g5PA=;
-	b=QB4vDC86DuU8ODci2d1aSribBbIVaRjmi3TFJIoch6brOVr/YwKYx3Ql3wC/CTpNVZWe
-	 PDCR9LGSaIrbIcqLp9S6ddkZaStIUOp3dYNN1JuJyUaUTjfrQNO/VXJkTW2Rb4JtAgZ5n
-	 4qf+64AZXUgTPAQIBwvKWg4MnJF9LSPYK9YX7tmcaC7WgCRH+/Wyzsmt//DjBRegn1YjK
-	 gWWrD/2DRPVXzEtsGBt0vEftAcFdhjAdOL/t90BxjZeQ0PqSX7hdUcNgY9muDqmW2Z7Is
-	 FQQ3uxnwSwSKQUIWsh08HXe5pYCHGQqwMo3bTKjwz69427N+URrgDEpbdtaVzMkbEzA==
+	bh=FrqcePVIbKpJOlr0CwwEXmHuYmHa3yUMeo1BTUrWcl0=;
+	b=T8RC8nt83vxImBRdFJA4krPMGuOdjWdvyB6F+7+Ayt+kYMLX/F/HL/JhD0dSeTr0EXKM
+	 VJyw6WqpY3bGGb9Ab62fn7XsT287XMwMcQFvZA2BBGfWXdCeuht8ls260ETG9Aaw/u4yg
+	 yeK5f6ohUzPHd/DkanaMFXSmf/jZxnVZa1+BAlUlQjPr75RUnnCWEuqL1Q2JXZVpKiyNO
+	 Q5IuTuqzKsiKcCpf7gDkT2cYkHNjj3p04q6afx/0g/VCul0wq345yG5e8Z5W4HPnkEteX
+	 W3NJFGNMEqXkNmxyAgs+mwflSjXLr2UFZxQ2UlLrrosqgXeyS2BkrTz7OJk61dVllIQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=bootlin.com;
 	spf=pass smtp.mailfrom=bootlin.com;
-	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=DzS57S0w;
-	arc=none smtp.remote-ip=185.246.84.56
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+	dkim=pass header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=mteItAuJ;
+	arc=none smtp.remote-ip=185.171.202.116
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99067606A330;
-	Thu, 19 Nov 2026 12:37:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 99067606A330
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E47606A324;
+	Thu, 19 Nov 2026 12:49:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 33E47606A324
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=DzS57S0w
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256 header.s=dkim header.b=mteItAuJ
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 3B35E1A1710;
-	Thu, 19 Nov 2026 12:37:22 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id C2044C4CBF1;
+	Thu, 19 Nov 2026 12:49:09 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0F18960237;
-	Thu, 19 Nov 2026 12:37:22 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 9686B11BC0662;
-	Thu, 19 Nov 2026 13:37:18 +0100 (CET)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 5877D60271;
+	Thu, 19 Nov 2026 12:49:04 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CC49311BC0673;
+	Thu, 19 Nov 2026 13:48:02 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1795091841; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1795092535; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=dEW7y7XAqeBD7xaDjDBvP0fFGQoFweZsJxNTbP4g5PA=;
-	b=DzS57S0w4Q/Wfag9dbeGY7Y5VyDZmMUYpkFzrU0CsSrhkx7hz+bnMFqLzPgiweIGoOrB4t
-	C/WxQ3kGbJkV00+wLUs3cuX1YBrMP6+dx86wCOM5+OSgsidlvaTqi44vGTA8wdspAzRVAd
-	l/lSw5Cm/QG7KQ6bhJW19zAbRvUiw2m+gtNmmwhEVJSOt44nKdP9qToYZDpOSXWNKQ5fOT
-	MWKYAZbS8bgM1AI4f3H9w92KwD5zOuY3nOJrRSUhrAoze1VUrRU15v0VEOPwq/qeI9N9ki
-	qp87fFyejJn09aCxciRELib+cB7TB7krFWLdx3xrQMIfpZ98Nj2zcaUQQLNtJA==
+	bh=FrqcePVIbKpJOlr0CwwEXmHuYmHa3yUMeo1BTUrWcl0=;
+	b=mteItAuJBxCXIm6o7Tz4CiCkaMG9jXhvMU2sSQLnSpwBcZpG8f2MBEvcJ1Bx2lQIvEFPHc
+	cDtQgbCpT1F3jW229XoKlV3ReW5mnP/ABdent9sCr/5183826BqbllILfT90L05VaHMgtP
+	dUJUiAyMuYUR1NhbdpZFwHZONdW4QU9si+WZSm1qV6DhZI6XlaK2xQVRCAOzwBKLP1wBFh
+	3qw4wVp4q47Ts1Jsp/lIRy+UYxCPzeFEV89KDKzTVDondoVzVYjpyUCZKV/Oz4GxrsbGus
+	YTBzHCONs5aDQShHm1+BnPAiQ9L4baKhNKmb68Cs/uKC0//BXan270Bf1Uz6BQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: paul@crapouillou.net, harveyhuntnexus@gmail.com, 
- Guanglei Zhu <zhugl3@xiaopeng.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mips@vger.kernel.org, 
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- liuwb@xiaopeng.com, stable@vger.kernel.org
-In-Reply-To: <20261118020751.1833498-1-zhugl3@xiaopeng.com>
-References: <80f1ef9dd605d16df2add0a9dbdcdd5f9f508174.camel@crapouillou.net>
- <20261118020751.1833498-1-zhugl3@xiaopeng.com>
-Subject: Re: [PATCH v3 1/2] mtd: rawnand: ingenic: validate BCH error index
- in jz4725b_correct()
-Message-Id: <179509183841.2889394.14531200887089182050.b4-ty@bootlin.com>
-Date: Thu, 19 Nov 2026 13:37:18 +0100
+To: James Hilliard <james.hilliard1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  Srinivas Kandagatla <srini@kernel.org>,
+  Tze Yee Ng <tze.yee.ng@altera.com>,  Richard Cochran
+ <richardcochran@gmail.com>,  Jonathan Lemon <jonathan.lemon@gmail.com>,
+  Vadim Fedorenko <vadim.fedorenko@linux.dev>,  Yuqiang Sun
+ <izaiahsun@gmail.com>,  Amit Kumar Mahapatra
+ <amit.kumar-mahapatra@amd.com>,  Luca Ceresoli
+ <luca.ceresoli@bootlin.com>,  Bernhard Frauendienst
+ <kernel@nospam.obeliks.de>,  "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>,  Kees Cook <kees@kernel.org>,
+  linux-hardening@vger.kernel.org,  Arseniy Krasnov
+ <AVKrasnov@sberdevices.ru>,  Boris Brezillon <bbrezillon@kernel.org>,
+  Brian Norris <computersforpeace@gmail.com>,  Jernej Skrabec
+ <jernej.skrabec@gmail.com>,  linux-arm-kernel@lists.infradead.org,
+  linux-sunxi@lists.linux.dev,  Samuel Holland <samuel@sholland.org>,
+  Chen-Yu Tsai <wens@kernel.org>,  David Woodhouse <dwmw2@infradead.org>,
+  Thomas Gleixner <tglx@kernel.org>,  Vitaly Wool <vitalywool@gmail.com>,
+  David Woodhouse <David.Woodhouse@intel.com>,  Russell King
+ <rmk+kernel@arm.linux.org.uk>,  Mike Rapoport <rppt@kernel.org>,
+  Alexandre Torgue <alexandre.torgue@foss.st.com>,  Christophe Kerello
+ <christophe.kerello@st.com>,  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+  Jason Roberts <jason.e.roberts@intel.com>,  Boris Brezillon
+ <boris.brezillon@collabora.com>,  Michal Simek <michal.simek@amd.com>,
+  Mason Yang <masonccyang@mxic.com.tw>,  Ramuthevar Vadivel Murugan
+ <vadivel.muruganx.ramuthevar@linux.intel.com>,  Lucas Stach
+ <dev@lynxeye.de>,  Dmitry Osipenko <digetx@gmail.com>,  Jonathan Hunter
+ <jonathanh@nvidia.com>,  linux-tegra@vger.kernel.org,  Stefan Agner
+ <stefan@agner.ch>,  Thierry Reding <thierry.reding@kernel.org>,
+  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+  Jorge Ramirez-Ortiz <jorge.ramirez@oss.qualcomm.com>,
+  linux-mediatek@lists.infradead.org,  Matthias Brugger
+ <matthias.bgg@gmail.com>,  Heiko Stuebner <heiko@sntech.de>,
+  linux-rockchip@lists.infradead.org,  Yifeng Zhao
+ <yifeng.zhao@rock-chips.com>,  Alexandre Belloni
+ <alexandre.belloni@bootlin.com>,  Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>,  Nicolas Ferre <nicolas.ferre@microchip.com>,
+  Keguang Zhang <keguang.zhang@gmail.com>,  linux-mips@vger.kernel.org,
+  Shan-Chun Hung <schung@nuvoton.com>,  Jacky Huang <ychuang3@nuvoton.com>,
+  Fabio Estevam <festevam@gmail.com>,  Frank Li <Frank.Li@nxp.com>,
+  imx@lists.linux.dev,  Pengutronix Kernel Team <kernel@pengutronix.de>,
+  Sascha Hauer <s.hauer@pengutronix.de>,  Han Xu <han.xu@nxp.com>,
+  linux-renesas-soc@vger.kernel.org,  Wolfram Sang
+ <wsa+renesas@sang-engineering.com>,  Jerome Brunet <jbrunet@baylibre.com>,
+  Kevin Hilman <khilman@baylibre.com>,  Liang Yang
+ <liang.yang@amlogic.com>,  linux-amlogic@lists.infradead.org,  Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>,  Neil Armstrong
+ <neil.armstrong@linaro.org>,  linux-arm-msm@vger.kernel.org,  Manivannan
+ Sadhasivam <mani@kernel.org>,  Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,  Kamal Dasu
+ <kamal.dasu@broadcom.com>,  Piotr Wojtaszczyk
+ <piotr.wojtaszczyk@timesys.com>,  Vladimir Zapolskiy <vz@mleia.com>,
+  Harvey Hunt <harveyhuntnexus@gmail.com>,  Paul Cercueil
+ <paul@crapouillou.net>,  Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [PATCH v5 00/58] mtd: rawnand: retain chip and controller state
+ across removal
+In-Reply-To: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
+	(James Hilliard's message of "Sun, 15 Nov 2026 23:29:15 -0700")
+References: <20261115-submit-rawnand-retained-handle-lifetime-v1-v5-0-cbc49c5c5e74@gmail.com>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Thu, 19 Nov 2026 13:48:02 +0100
+Message-ID: <87v75tc7i5.fsf@bootlin.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -73,32 +125,82 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.14.3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, 18 Nov 2026 10:07:50 +0800, Guanglei Zhu wrote:
-> The JZ4725B BCH controller reports each corrected bit error as an
-> index into the codeword it was asked to decode, in the INDEX0/INDEX1
-> fields of the BCH_BHERR registers. These fields are 13 bits wide, but
-> nothing in jz4725b_correct() checks the reported index against the
-> size of the data buffer being corrected:
-> 
->     buf[(bit >> 3)] ^= BIT(bit & 0x7);
-> 
-> [...]
+Hi James,
 
-Applied to nand/next, thanks!
+On 15/11/2026 at 23:29:15 -07, James Hilliard <james.hilliard1@gmail.com> w=
+rote:
 
-[1/2] mtd: rawnand: ingenic: validate BCH error index in jz4725b_correct()
-      commit: 5c621482debe642623ff974dc6beff7015371fc7
-[2/2] mtd: rawnand: ingenic: validate BCH error index in jz4780_correct()
-      commit: 21cb873a01c5706b443b6d8328c57de8ce07cffc
+> An MTD handle can outlive controller unbind. Its metadata and NAND locks
+> must remain valid, including when a writable file closes and calls sync,
+> while further hardware access must be rejected after disconnection.
+>
+> This builds on earlier MTD removal-lifetime work. Commit 19bfa9ebebb5
+> ("mtd: use refcount to prevent corruption") added MTD reference counting
+> [0], but retaining an MTD reference does not by itself retain the
+> driver-owned allocation containing the master. The read/unbind discussion
+> also covered raw NAND [1] and draining active operations [2]. Tze Yee Ng's
+> SPI-NOR series addresses the corresponding SPI-NOR paths [3].
+>
+> Following Greg's review [7], separate class-device data from the MTD
+> backing allocation. Delete the device's interfaces and drain NVMEM and
+> class PM callbacks before releasing backing data. Bare device references
+> retain an independently allocated device, whose type, PM dispatch and
+> final release are built in even when MTD is modular. NVMEM similarly
+> disconnects and drains provider and layout callbacks before unregister
+> returns; retained consumers keep core-owned metadata and receive -ENODEV
+> on subsequent access.
+>
+> Introduce opt-in backing-object ownership for MTD masters. Registered
+> nodes and acquired MTD handles retain the chip, while nested partitions
+> also retain their parent metadata. Unregister first so removal notifiers
+> can finish I/O, then disconnect raw NAND and drain admitted operations.
+> Hardware resources can be released without waiting for open files to clos=
+e.
+>
+> Virtual concatenations serialize publication and removal across physical
+> controllers. Disconnect and drain a published concatenation before any
+> component can disappear, then release its component references. An old
+> handle keeps the disconnected virtual device, independently of a later
+> replacement.
+>
+> Run NAND and controller-specific cleanup during disconnection, while
+> the controller driver is still bound. Snapshot the OOB layout in core-own=
+ed
+> data before publication so metadata queries remain valid without driver
+> callbacks. The NAND core frees retained chip and controller allocations;
+> the final MTD put never calls back into the controller module. Ordinary
+> MTD and NVMEM handles retain the NAND core that implements their
+> operations, rather than the hardware driver.
+>
+> Share allocation ownership across the raw-NAND drivers, including
+> partially published probes. Shared controllers remain allocated until
+> their last retained chip is released. R852 allocates a new chip for each
+> card, and NDFC allocates controller state per binding.
+>
+> Based on NAND next at 30daaf3e7897, with Tze Yee Ng's module-reference
+> ordering fix [4], Karl Mehltretter's OTP cleanup fix [6], and the separat=
+ely
+> posted registration, operation-locking and controller probe/teardown fixes
+> identified by the prerequisite metadata. TLA+ models and their assumptions
+> and coverage limits are available in [5].
 
-Patche(s) should be available on mtd/linux.git and will be
-part of the next PR (provided that no robot complains by then).
+While lifetime issues are a real concern in the kernel, please note that
+in general, removing or unbinding the flash controller driver is not a
+practical operation. While highly unlikely, this is possible though. But
+I am not going to sacrifice all the devm_ calls in favor of reinstating
+manual error handling just for that. If there is a way, it must be
+different.
 
-Kind regards,
-Miquèl
+Also, this kind of contribution can only be done if you *understand*
+what you are doing. Getting the big picture here is not optional.
 
+Maybe the problem is MTD refcounting? Maybe the problem is the devm_
+orderging? I don't know, I haven't looked in depth at all the
+patches. But the current approach is clearly not acceptable.
+
+Thanks,
+MIqu=C3=A8l

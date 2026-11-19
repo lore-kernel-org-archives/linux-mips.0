@@ -1,96 +1,71 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.104
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.180
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795074095;
-	b=XQOkTJ5KUjKs8eb+wI0YrLm+TvTUQsXOkEmtKQt5Dh+ne9hHb7vw+wfCOicOKAwbRYdD
-	 kj06U6IY7yS5ffsJnju+yK7nhFIvjVYcDGwJGDBAPvfTRTkccVfctX80kWFgPLkqZvQL2
-	 +mN6H26qD4oifrBxsq2ej645A1MU8HuZNQzac+Zii0NT3EG4EuHyN7kOgiVFzGyjk7oTx
-	 3jQYVr8q/6UAKcMMqb1j9wWyAmYrBg1Vp1ObbYP3zUzlP9a2ztTGf7+rSqMs9KbZcOZP6
-	 RfvlElqE+OV3rBFd14numZNvf/s3j+DWt6W0d8FeLPpVf2FF0/0EzazufV2/Oy8bzYQ==
+	t=1795074480;
+	b=LRhyZqeg66czUIOHTkn0antnmBhKYCTmF1ManRdaQTYQXbN3azeAUhbsGcCPqAnUwNDl
+	 HZcBemT8WpUCPc38y/k+ny6LFJ3mU+6W0Vsa9OZlel4LQLpZxfvLqZQDBF0x6ddzB6HS4
+	 TW3q6gnnivvd1km1jp2c62TQsBDbPBg+iLr+xMm1soJ64VaIuItG0CsKBEsPyZhzSJeMY
+	 fDVFPyye46sfY8LI3ytFyMeYkcEiCvMYVP0aQOYSCCEJoq8rIyQ9hWPwiBWJE0Fz+K9dD
+	 D0ehpvH/E/KgbVsiI0Z4fjEnMzCPTXYX7ndV21Du3+t/Hu3G2VGOABofXcUNjYmkIrg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795074095;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795074480;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=hNd5MCBb+RwQDRLrwFjdA5miwBKz7JlHYmdVmb0QLqo=;
-	b=0vJUSqdZAyEGUvyQnD8OAkLaZjYO38mg6pbiWcaHVHn4nkB9h245u+PcPqYkDDVchH32
-	 xF+mxlNk78X6p5PQ5cN5GeoT2nZ2itAlIgE72JzdfqeRx9nM/72XvbspySE2v8+RxRSCA
-	 jXUo7RbBhhv6MlzzlOJvVC7GL+z9b5N6UTjuI763P/CEYjDm9hgbfBimmRHYBZSB5Gs6Q
-	 T2MqP7IrsdDZ7ZT36egnLcW1rCYQqeudS+8E9Zm2kIWpD2vvRBza+H8wrOYCSXHbTu9tj
-	 8+vPbkGHtYFx9Nv6+5pBwPiK0QhbPK6s9n3vdniGM4Jf7xhRVv5yNIX+nKsJLJgeUPA==
+	 X-Mizu-Trace-ID:X-Migadu-Flow:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=k8wQn2zrk+SyXNs0qBDPodINcVqTvNgBNDuIN9CZB/M=;
+	b=bbiYh+1gysLU5kMsVNXKsRXAezTbqBLBxrpFtk3oZwicY350a3p3BKXDnIbk4a432OjC
+	 eM7hjB/PgqLXouDehkLyvMoGwxnQgTwjDaTYxm/QeGA3Bx3eje2PSw3yKwD8SD0CuRse2
+	 FxMhnEDjpM9ItRTjL+LMFmqLMsx9ZD3EoUxyE7kRVs7OYsYuazdTWgeCymGG9GAebjFMM
+	 PFeFIF3ePaIhbQDYmCFZuWORXFNH4LP1ZGPrRceSACUf3HOgK4HoYsIbVhICBCK/YextB
+	 Va2wU+853C700WRC25+h8K+B2r545JCYElvXDzqQ51e/kjPah9K96iMSwPvhq+BCZ1g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linux.dev;
 	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=jRpAWJeD;
-	arc=none smtp.remote-ip=95.215.58.104
-Received: from mta1.migadu.com (out-104.mta1.migadu.com [95.215.58.104])
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=nHZKwaL5;
+	arc=none smtp.remote-ip=95.215.58.180
+Received: from mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89631606A32F
-	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 07:41:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 89631606A32F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF64F606A325
+	for <linux-mips@vger.kernel.org>; Thu, 19 Nov 2026 07:47:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF64F606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=jRpAWJeD
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=nHZKwaL5
 X-Envelope-To: linux-mips@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=6tO+X4PnRnD+Jk0uYi9e+cJ5+jxuZiQPrphEOsBPyUs=;
+DKIM-Signature: a=rsa-sha256; bh=vqLXCAwRd4aqGkQyYmkFh5Y1lbEweVRVduvoaIh12ao=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795074090; v=1; x=1795678890;
- b=jRpAWJeDfhzRjp0tMgYsPxG27OVP/tOWcJ/LQhjQ73YyguUVzBJIk9e6igo5ThSrN/dX9FMW
- bZra7IUn8I/rAqXJ0NlITYqlsau1cJMj9jUX1QQPXNjf97NVYMKnp1K1+v+f+gbq9xnGbaFV9/k
- QXdNQC1HwUPojy675ONU9hn0=
+ t=1795074476; v=1; x=1795679276;
+ b=nHZKwaL5JkTXmk4KOFz4oTqH+xEKtbqxOjeHd9jS7xYsAyGa6Z076E+79rN8zh42C6hqvTd0
+ y5yWCUgtoOR0HMjuMLM2nbNawqV9TxW+MXRTaeoa3ai08wworOR5XAuvYyNznKBJ34lqTulFS70
+ 7lUQEOtNE2QpB2PMhQFe5+YY=
 X-Envelope-To: linux-mips@vger.kernel.org
-Received: by mta11.migadu.com with ESMTPS id f0d3d04c8dc3375f;
-	Thu, 19 Nov 2026 07:41:30 +0000
-X-Mizu-Trace-ID: f0d3d04c8dc3375f
+Received: by smtp.migadu.com with ESMTPS id 7492e609f4b5f62a;
+	Thu, 19 Nov 2026 07:47:56 +0000
+X-Mizu-Trace-ID: 7492e609f4b5f62a
 X-Migadu-Flow: FLOW_OUT
-Date: Thu, 19 Nov 2026 15:41:24 +0800
-From: Baoquan He <baoquan.he@linux.dev>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Paul Walmsley <pjw@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Vasily Gorbik <gor@linux.ibm.com>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org,
-	Alexandre Ghiti <alex@ghiti.fr>,
+From: Fuad Tabba <fuad.tabba@linux.dev>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Cong Wang <cwang@multikernel.io>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	WANG Xuerui <kernel@xen0n.name>, kexec@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 1/2] MAINTAINERS: add kernel/Kconfig.kexec to KEXEC
-Message-ID: <av6oJBDv2fAaWSog@fedora>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
- <20261119-arch-kconfig-v1-1-37c276fe4d26@kernel.org>
+	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	linux-mips@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Will Deacon <will@kernel.org>,
+	Fuad Tabba <tabba@google.com>
+Subject: [PATCH v2 0/7] KVM: Documentation and comment fixes
+Date: Thu, 19 Nov 2026 07:47:45 +0000
+Message-ID: <20261119074752.1027729-1-fuad.tabba@linux.dev>
+X-Mailer: git-send-email 2.47.3
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -100,38 +75,53 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261119-arch-kconfig-v1-1-37c276fe4d26@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On 11/19/26 at 08:16am, Mike Rapoport (Microsoft) wrote:
-> kernel/Kconfig.kexec is not matched by the KEXEC entry, so
-> get_maintainer.pl does not report kexec maintainers for changes in that
-> file.
-> 
-> Add it to the KEXEC entry.
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+Hi folks,
 
-Acked-by: Baoquan He <baoquan.he@linux.dev>
+Changes since v1 [1]:
+  - Various fixes and rewordings. (Randy, Zenghui)
+  - Collected tags from Randy and Zenghui. (thanks!)
 
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d738990161bd0..c61a1f0ad330e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14782,6 +14782,7 @@ W:	http://kernel.org/pub/linux/utils/kernel/kexec/
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/liveupdate/linux.git
->  F:	include/linux/kexec.h
->  F:	include/uapi/linux/kexec.h
-> +F:	kernel/Kconfig.kexec
->  F:	kernel/kexec*
->  
->  KEXEC HANDOVER (KHO)
-> 
-> -- 
-> 2.53.0
-> 
+This series fixes generic KVM documentation and comments, mostly
+references to non-existent functions, structures and constants, plus a
+few other one-line fixes and typos.
+
+Patches 1-4 are for Documentation/virt/kvm, and 5-7 for code comments.
+
+Based on Linux 7.4-rc3 (aebb727447640).
+
+Cheers,
+/fuad
+
+[1] https://lore.kernel.org/all/20261111085448.1130701-1-fuad.tabba@linux.dev/
+
+Fuad Tabba (7):
+  Documentation: KVM: Fix references to non-existent identifiers
+  Documentation: KVM: Fix lock names and a lock type in locking.rst
+  Documentation: KVM: Fix the function that implements halt polling
+  Documentation: KVM: Drop the stale number of vCPU request flags
+  KVM: Fix comments that refer to non-existent identifiers
+  KVM: Fix the range of reserved arch-independent request bits
+  KVM: Fix typos in comments
+
+ Documentation/virt/kvm/api.rst              | 40 ++++++++++-----------
+ Documentation/virt/kvm/halt-polling.rst     |  2 +-
+ Documentation/virt/kvm/locking.rst          | 10 +++---
+ Documentation/virt/kvm/review-checklist.rst |  2 +-
+ Documentation/virt/kvm/vcpu-requests.rst    |  3 +-
+ include/linux/kvm_dirty_ring.h              |  4 +--
+ include/linux/kvm_host.h                    | 16 ++++-----
+ include/linux/kvm_irqfd.h                   |  4 +--
+ include/uapi/linux/kvm.h                    | 10 +++---
+ virt/kvm/binary_stats.c                     |  4 +--
+ virt/kvm/eventfd.c                          |  4 +--
+ virt/kvm/guest_memfd.c                      |  2 +-
+ virt/kvm/kvm_main.c                         |  8 ++---
+ 13 files changed, 54 insertions(+), 55 deletions(-)
+
+
+base-commit: aebb7274476403040d582c61478df8f4a7bf9cd3
+-- 
+2.47.3
+

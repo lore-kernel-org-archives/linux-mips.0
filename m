@@ -1,48 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795183625;
-	b=sGSfgmDZLJ8UXex1ucvHWzbmR0S2dRKIsYybpmxDtc4dlM12+eME2jLPEf6AtUh0ZP79
-	 a2x5HQaTYwBP6mtf4S4EqlqXWejRnF5JxomFi2gqzo0Odwac5ipF2yekbuD/mz97tmRRZ
-	 XMac/UbfKAAV8PCtbl3tmhVn5VEp+iCJXB/OxG17FOFr9qPtf6JRoe62UAt8xV1AxhQMg
-	 W2FyKVW21crut1BJrn6VS8dFQ8uWKcA35+lWRDZyXrueFoY83cdUtKNFCBrxvnBlBVrn0
-	 MnCpGmBOop1BiXhldB2SGmVBM03u3bRSN37dRLIz20HZd+bg4D2vm52M4WeJtmfxdTA==
+	t=1795185476;
+	b=vfDdzkqm+eA/E0v3RaUWj3HIMVRmhPOpLg9SjC7aQSg+R/lJnVn/guJjhKFxb0/0J72w
+	 3Ejqj45KK2efnaiAEGqJekiG5Sc1Fb9DgtKFQYQaxWDvVsFQbdoWtfvBhlMW29Yaazk39
+	 g9bEXaTizQv4cTsSirOar03hYCXNAjCur8QSQwbEUx593/swLm5TYw7glU5LuLxin25sz
+	 ziSj7CF6/e6x9dU9ZSwb1oEQfLCBnBkfPlzMoq/OL/c8uK3XOIHa8Ox/+Bl3cBuYyXFZc
+	 rLk0A9n/Br51N3PWcBa8v9+3SoNNtaqJqinUVloK0AugI85AEpBgU2XTNRruw/BLrwQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795183625;
-	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
-	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
-	bh=WSXr3OR7IpRJQ5Qk2WyHJzmDHog8U7gaLnP2BcLUYpM=;
-	b=b4Q17Zu7iSMjGOJba9S4fIZPSxcgEcdLBgfn1DaKTlFtVZgBgrE4EA4PthldYW9aMNJX
-	 VWem704H8XFxiFgKmoKeUkUOShma8SLtHp1ePjlbjcrqmCtOIVMCQ4xv3qbJ6USH/OF9e
-	 93HMfWZwuSo6+Mjf4t7rvntAW+xKOcCCdS71Z+GMRv2uciLNrdsXIB9k2eydVuBS7UlIb
-	 zkAt/pOt6UdkJFPR6dAqgzU9kXs+Yq8fz181PrdljudadGcnTXornAOgFJ7P1c+EloRGN
-	 amFREtq5OXSYxSQHeU0sbXT8SjzNjnjvdtek7JxFLdPWGgBQYJ6BuTPGo2oOwf0g2Ww==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795185476;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=G3Dx1Rl8sCVhKobWtk/mYO5a3CKsB1ub+4mYD8rlpqA=;
+	b=jHEJErtianIO0r+uC8A0N81W6ELaeJGZTGi2NziGuCfF1HukpnnG+uuJWeWBZ5DwuC8P
+	 ZGG4LbcEIeavuxZFG2L0t49vQaKuPUzFE0Zg275kC3Jkd5ZZWJLRHyjaA/kPzjSAvWKcX
+	 3ep5I+iA40Ovi6nyClRgQBnGi8sud3e9VseA/qR1PTORS3wk+z+quD53kDseE1l0gArNs
+	 DsQlff6Nh2MNDJUqAJ7pknupXoG1/2lpgaL7781DFHWpDjHCuihGwP6Hf5hdYXrdU5FzC
+	 hIn8X9RxczpgXDByxm3pbNsjl1BtRXimOX4XF4Dt/U8pIOUsCGpn+OjrQcp5PUFA5xQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=orcam.me.uk;
-	spf=none smtp.mailfrom=orcam.me.uk;
-	arc=none smtp.remote-ip=78.133.224.34
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C44606A320;
-	Fri, 20 Nov 2026 14:07:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 82C44606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 9250F9200BC; Fri, 20 Nov 2026 15:06:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 8FB329200B3;
-	Fri, 20 Nov 2026 14:06:56 +0000 (GMT)
-Date: Fri, 20 Nov 2026 14:06:56 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Florian Fainelli <f.fainelli@gmail.com>
-cc: linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Ingenic: Allow assembler reordering in the XBurst
- secondary entry
-In-Reply-To: <20261120050827.804767-1-f.fainelli@gmail.com>
-Message-ID: <alpine.DEB.2.21.2611201404490.54328@angie.orcam.me.uk>
-References: <20261120050827.804767-1-f.fainelli@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	dkim=pass header.d=linuxfoundation.org header.i=@linuxfoundation.org header.a=rsa-sha256 header.s=korg header.b=gwalE1n6;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C098606A325;
+	Fri, 20 Nov 2026 14:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.a=rsa-sha256 header.s=korg header.b=gwalE1n6
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB0291F000D1;
+	Fri, 20 Nov 2026 14:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1795185476;
+	bh=G3Dx1Rl8sCVhKobWtk/mYO5a3CKsB1ub+4mYD8rlpqA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=gwalE1n6xg8+aCz8tzdSBMFT4OzhyXzaXSdy+DLoS1DsZAikhr7lisJBMxV539KUQ
+	 MqnNESWJyCDJbAv8ljr1HKFYRmGmc2yP3vANzHQ0+LdXeTEwOFxgXjv/xvU9lRBrwQ
+	 t5QM+eIdfkQQNnula0BGl2GryflsnzCOKQe5pE9U=
+Date: Fri, 20 Nov 2026 15:37:53 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: joseph@telaak.dev
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Minas Harutyunyan <hminas@synopsys.com>,
+	Chuanhong Guo <gch981213@gmail.com>, linux-mips@vger.kernel.org,
+	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] usb: dwc2: Add Siflower SF19A2890 support
+Message-ID: <2026112039-library-rise-d0b7@gregkh>
+References: <20261111-sf19a2890-dwc2-v2-0-cba9dd4a4256@telaak.dev>
+ <20261111-sf19a2890-dwc2-v2-2-cba9dd4a4256@telaak.dev>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -52,31 +58,24 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261111-sf19a2890-dwc2-v2-2-cba9dd4a4256@telaak.dev>
 
-On Thu, 19 Nov 2026, Florian Fainelli wrote:
-
-> Remove .set noreorder and the two explicit delay-slot nops from the
-> XBurst secondary CPU reset entry. GNU as emits identical reset-entry
-> instructions with reordering enabled in both the CI20 and generic
-> MIPS64r2 Ingenic SMP builds.
+On Wed, Nov 11, 2026 at 03:26:02AM -0500, Joseph Telaak via B4 Relay wrote:
+> From: Chuanhong Guo <gch981213@gmail.com>
 > 
-> On CI20, two baseline and three updated cold boots brought both CPUs
-> online. Each boot passed the CPU affinity check and 100 cross-core
-> idle-wakeup round trips in each direction. Codex assisted with the
-> assembly comparison and hardware test campaign.
+> The Siflower SF19A2890 has a DWC OTG 3.30a controller. Limit its
+> transfers to 65535 bytes and its AHB bursts to INCR4, the settings the
+> OpenWrt port has run it with.
 > 
-> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> [Joseph Telaak:
+>   - take it from OpenWrt's siflower target and rebase on v7.4-rc1
+>   - commit message and subject]
+> Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 > ---
-> Thomas, feel free to fixup into "MIPS: Ingenic: Add XBurst SMP support"
-> if that is simpler. Thanks!
+>  drivers/usb/dwc2/params.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 
- Have you compared objects produced to be the same with and without the 
-change applied?  If they are, then:
-
-Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-
- Thanks for this follow-up cleanup.
-
-  Maciej
+When you don't cc: the dwc2 maintainer, you'll not get a review...

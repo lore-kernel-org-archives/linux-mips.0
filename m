@@ -1,86 +1,82 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795198400;
-	b=JNer7KtIvI1+oKLc0iaXoNOgw87wcU8efG1YoOhfMYveIB+OCJdT80MRDz87hab7Q26r
-	 XaQpreNMYDS45y0t/y9ydxuFToqoISdtR2dXkWemSaMqeIMQp3IlJg6bK5+/gNRo1Oq3C
-	 kZs1X745yvWU4cqLw2gtKsuUK7GNvTR0EmA9e8AQEX78FlzrYzlkhPjtY3w2rjeHn+AP0
-	 NBmoPiGjI2OT3uhw/CGTUmRw3EZVkq8bB39fVKFPgIpkwLzumIEFCC7+yPsh6NWRiYtS/
-	 vM04z9vITCfZxToFBdWstcrbim5eLI9e+gE9wKRsmEFwBcccxTEDd6ZQ2VlOL3+Ms3A==
+	t=1795206088;
+	b=xGtaWCksOFFsBbVO3ahfgxPzBrmugNK9Ju0kA4/LQ9be4OE44tD6CLqTIYJJ3oEswd7M
+	 e4v5B+96GRoKxzF581F+fBP3dpR5K+LvnYd6ZHEF0I/YvUeWhNJMrQBj4YDavhFWDLDRY
+	 JrdvP4L7fn4DFPRER5QhV+x4gCmqwAkIVx/hupi33QpRe2B7t9J9NktVxhxxNfj65cIRV
+	 dI85hgYy3f/QmpJbEZ4j8eOUk02gtft43TAEmagz/YhvlTZABXoopIu6Uw1Rs84XKlCsX
+	 gTYnsjy3fZyGVDMy0ZviDrMsDWeLbIcknsQN7D3wXP6jp6dGWeUAI0hIel2N+dR8Acg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795198400;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=oidvo6PpYzFoB+4JyNdN3ZrBRB9jo1ImxetzExbVmTU=;
-	b=nFT18SmWurSwrtBRbb+MzSmphB800Vi4b1cMkivg+xcx+rnU8564pfDE3gW7+3SIwDex
-	 e8zRlctc8hTYlWjmfGk4QH57H8iLhEADiisl+0jeRHHiZ2Bk+dDwxzqo7kuvYCS4NlNK7
-	 4k4kh984dtSvT2BoLbD+YAFoJJSjXeZBnbHJZbDno3gdUtOrKv75HcusAhw7x4DLURFzG
-	 n4ClRmEEAZh7EtaGCI4qC/h41tK4NLXJCB7aCRyjAA/9SGlGz5sF8nVGAH7awwkODrjmB
-	 Eow+5W4AFUC1S+UxeFxU/mVaYjwK2VrD9v1eoQtncBlnAbqjr7ClogBefaSKgvzBrXw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795206088;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 Mail-Followup-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To;
+	bh=FhubQ0AwqwjKKa4eYGPVP/A6yHZrg9Mpv8xAmXRO44Y=;
+	b=Ij2enmmz/2Bz+KPQvvl2SqpaJFotTobrSA98NYBFdEPF8WDyX6+6SUwmNJ3k3v7FtLP7
+	 +IEoYXPcdySgdYuKW7uk6vyyelOlP8CxLRfnarfnrrR/sdTUykrfVkKIaMmTgq3ZmVryk
+	 GNgmI8G2Il2MjBhGyJQXA4SedsXhOm7ikpiyytUg2LBMJO7ZeDDDDcayhU73FH9XE6Jpg
+	 2HrgAa5H2anV1lqVXjSYmsmjOqMCokHRluLkbhSnRmTJoUGdtGMJXoLmrTCP6ogx9OCLd
+	 pPEuECYPl1XnUmsehbNFisHf1YKFuzQNI3B9UPtN9DRrJswRfI1hZWfc2LSv5f6vyBw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0ZaGSuDy;
-	arc=none smtp.remote-ip=209.85.219.44
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jQBjBqzG;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9BB606B9A6
-	for <linux-mips@vger.kernel.org>; Fri, 20 Nov 2026 18:13:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF9BB606B9A6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 447D360A260A;
+	Fri, 20 Nov 2026 20:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0ZaGSuDy
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-91e7fc8265aso15403516d6.0
-        for <linux-mips@vger.kernel.org>; Fri, 20 Nov 2026 10:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795198398; x=1795803198; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=oidvo6PpYzFoB+4JyNdN3ZrBRB9jo1ImxetzExbVmTU=;
-        b=0ZaGSuDyeUEPpYIJz9D3/mrE7uSERI4S01BhMBly9pDPEbZE0OcJmrtz8Y5VvLH3Gj
-         xKFXteozeWuhMYAX16li6vOwnt07M79tqFYKrm3pKC5uLbiDyB8bdD27ipJ0Ade1OhgC
-         XFEynm4OvVDuv47NF1vP20F1hEkJRkHZmVuks6RIIklS9sjDJUfPh8mAK5dtVHO3JXPO
-         wAXiulFFrw9lQJGH7Q7XyKRg2nsEhTulLYkGhK34gqEU2JfIrQBSyequ1JFrYuNGA9Oy
-         x/Gpq5ygctt1B7fHBG2C61izOmkaKJuFWnHtt6naS+INZShm2Labe5EskMowrDFtbRTY
-         zR/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795198399; x=1795803199;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=oidvo6PpYzFoB+4JyNdN3ZrBRB9jo1ImxetzExbVmTU=;
-        b=EOVvRbw0xiqvCgB+lgXNtAj94g73p3KfeRYnNOZK9RTGVyd+ONWzmbVhA/nYvhUfsq
-         BuXcqgjZAA+lYgvMo+M1s6FECXcMmI/vpsT75Rs9YAGsS4fhkVb0eo8OSlwAvLyh6aV9
-         e4kDjwYHToRCX62s93Lm7TE6L0lDS1qgZKy73xBE++oC6rV7OKW2e7B8w5Ot52O44ZHF
-         WeGk6ueIxyJLeXXN7ngf4b2RD50hxQmLq8NJcLyuYq2gx51Ix5HEpcZdtLcFhAGX0RmQ
-         1DIJSpQ9u+M9UJe9xTIpT9r+1dAH8z5kAS59s2EdAcyKeWbmzy30QkjFFql3srCFgnZS
-         i9WQ==
-X-Gm-Message-State: APuU4Z9do3AlFlM1p/WxN2BNbHl5j+SNynPJVCexXkH2peJAPnuP8m6j
-	CDycZjk8R0/dyMBR+Fm/4+bQbn5qD1mMwnAO/bhssDqJcWt36i7AKNxD
-X-Gm-Gg: AZFdTZd4KLqkjMngzopsn0Nk19FFbfyAdmK4IvXkNftBpU85GUnPjN+OmMvBWbfh7/y
-	kMuS03eS+cKslDrg+YCCDNlv7YmR6BN7sQwySmco7IjuaigV9KQ8rLqdo1YKYkM6i8yDM5cVkwQ
-	uXJ4zMwBoqYaKGIe7Mhzg9ZzR3LwgwxiXbjg5M83O8d7FxjtrNtn94L7s55FzC5SSZadywYgBTQ
-	nj28x9AEPnpULFtQvJCbKRZBVJs0kqUNG/TDEfZBRR1S/SzhNbI2JGxlBYDRZs5k3iao9v1HKbZ
-	N3wdwQU6E5DrB18axg15ligjgdKkLXCX/wLkL2Fm8Kj0t4fGf2TESK64gdedk9NCQ2ispk7FQkz
-	v1yVPnXuvPl3fIKvzLkh9wF2Ehakt2iVHZCHh7MF5TX5N5EoXloIHPUs1DMbbvsXwOLvJk2qjAM
-	1ibY3uCbo2M08nXY/MUxXCfxpYh2bAYl5JCW64GYrlX9LdQ8tFwhbQ/19dWzesPZYWcQ6J5kZU7
-	PmgEMqKdEvQIPIF9djj2i7NHUdByJZv4XS2MGK2/uwMV+DJJfVuxXVtOPV7IkXUl5GFerMtj+Jg
-	lfIMBU20dgg4QRZfZq2Ql3+S+OP37dFz7z7aoQEaNKhoAJxGgZh50siQ
-X-Received: by 2002:a05:6214:c6e:b0:91e:d612:a120 with SMTP id 6a1803df08f44-921347740ccmr66147836d6.0.1795198398604;
-        Fri, 20 Nov 2026 10:13:18 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-921349b50besm31921776d6.9.2026.11.20.10.13.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2026 10:13:18 -0800 (PST)
-Message-ID: <f82422b6-20ca-4c47-b420-156ae6912dd3@gmail.com>
-Date: Fri, 20 Nov 2026 10:13:16 -0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jQBjBqzG
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id F21721F000C4;
+	Fri, 20 Nov 2026 20:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795206087;
+	bh=FhubQ0AwqwjKKa4eYGPVP/A6yHZrg9Mpv8xAmXRO44Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=jQBjBqzG9wwGKgTzZ5RMcA461vYrebLjyuQVHxrMJIqVm6XCJroPZ2h9EzUP1NEuA
+	 u4q+mf95gFoA8IW250eIZU2W0j1/vSAhqkx1C0dlekzJVvN0bdbNNWp28gyMm2VPCW
+	 b4iTDPCGGsqOMBqAzbKqPUIQJarXsSX278GxUahwpHF+/sfv3N2I+y5I6aLg9gYzdO
+	 +rxuOihQ4f1ULAKCRdfKwCdvz2J8MOEl3zD6WFxuyXj6tBwZLrzDJIRPedq63s+/lv
+	 REUz6Qw2D/1KQfSp6Bv19VQNXAdR384dD0+9UhoiG/vhaLtWXbnwQwmpjWM/6x1eM1
+	 iQbBrcm1nn4iA==
+Date: Fri, 20 Nov 2026 21:21:13 +0100
+From: Nicolas Schier <nsc@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Sasha Levin <sashal@kernel.org>,
+	Harald Freudenberger <freude@linux.ibm.com>,
+	Holger Dengler <dengler@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>
+Subject: Re: [PATCH 2/2] devicetable-offsets: Get struct cpu_feature from a
+ device-id header
+Message-ID: <awCruYkI2TkxJfPC@levanger>
+Mail-Followup-To: Nicolas Schier <nsc@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Harald Freudenberger <freude@linux.ibm.com>,
+	Holger Dengler <dengler@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>
+References: <179424040477.1704532.18231793404479518924.b4-ty@b4>
+ <av8Uv7EV3sLqUBfr@derry.ads.avm.de>
+ <20261119194738.GC875856@ax162>
+ <awAtvSIQeLJq2hvF@monoceros>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -90,50 +86,58 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MIPS: Ingenic: Allow assembler reordering in the XBurst
- secondary entry
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- open list <linux-kernel@vger.kernel.org>
-References: <20261120050827.804767-1-f.fainelli@gmail.com>
- <alpine.DEB.2.21.2611201404490.54328@angie.orcam.me.uk>
-Content-Language: en-US, fr-FR
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <alpine.DEB.2.21.2611201404490.54328@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <awAtvSIQeLJq2hvF@monoceros>
 
-On 11/20/26 06:06, Maciej W. Rozycki wrote:
-> On Thu, 19 Nov 2026, Florian Fainelli wrote:
+On Fri, Nov 20, 2026 at 12:25:48PM +0100, Uwe Kleine-König wrote:
+> Hello,
 > 
->> Remove .set noreorder and the two explicit delay-slot nops from the
->> XBurst secondary CPU reset entry. GNU as emits identical reset-entry
->> instructions with reordering enabled in both the CI20 and generic
->> MIPS64r2 Ingenic SMP builds.
->>
->> On CI20, two baseline and three updated cold boots brought both CPUs
->> online. Each boot passed the CPU affinity check and 100 cross-core
->> idle-wakeup round trips in each direction. Codex assisted with the
->> assembly comparison and hardware test campaign.
->>
->> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->> ---
->> Thomas, feel free to fixup into "MIPS: Ingenic: Add XBurst SMP support"
->> if that is simpler. Thanks!
+> On Thu, Nov 19, 2026 at 12:47:38PM -0700, Nathan Chancellor wrote:
+> > On Thu, Nov 19, 2026 at 04:24:47PM +0100, Nicolas Schier wrote:
+> > > So my questions:
+> > > 
+> > >  * Shall we keep it the way it is to keep the original patch order
+> > >    (bisect might fail on the two commits before this patch)?
+> > > 
+> > >  * Or shall the patch be moved before Uwe's (removing the 'Fixes' tag,
+> > >    and rewriting the commit msg)?
+> > > 
+> > > I am in favor of the latter.  Are there any objections?
+> > > 
+> > > 
+> > > [1]: https://git.kernel.org/kbuild/c/f1dc66c38b7eb4b2fb946a2fd6929250ecd2d85a
+> > > [2]: https://patch.msgid.link/bc9fbf5784f6788e10c749a05d56c42bdb68f3d9.1792144769.git.u.kleine-koenig@baylibre.com
+> > 
+> > If history is already being rewritten, I believe it is always good to
+> > fix potential bisection issues like this. Rewriting the commit message
+> > (and maybe some of the diff?) and placing it in an order such that the
+> > build cannot break sounds great to me (but others are free to disagree).
 > 
->   Have you compared objects produced to be the same with and without the
-> change applied?  If they are, then:
+> Full ack. I think the danger to hit that point during bisection is
+> small, but I like the 2nd option as this reduces the small chance to 0
+> in that case that people yell at me :-)
+> 
+> So from my side: go!
 
-Yes I did and they were the same.
+Thanks!
 
-> 
-> Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> 
->   Thanks for this follow-up cleanup.
+I'll send a patch that combines both patches in a few minutes.  I plan
+to replace
 
-Of course, thanks for all of your excellent feedback as usual!
+  * Move struct cpu_feature to <linux/cpufeature.h>
+    https://patch.msgid.link/bc9fbf5784f6788e10c749a05d56c42bdb68f3d9.1792144769.git.u.kleine-koenig@baylibre.com
+
+and
+
+  * devicetable-offsets: Get struct cpu_feature from a device-id header
+    https://patch.msgid.link/f610c07f39df15f3e7ebdc63bfcd759ca7a687a8.1794233316.git.sashal@kernel.org
+
+with it.  Please complain in case of objections or inappropriate tags.
+
+Have a nice weekend!
+
+
 -- 
-Florian
+Nicolas

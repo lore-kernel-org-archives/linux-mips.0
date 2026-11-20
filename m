@@ -1,71 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795206441;
-	b=5ExFDnUO/4/Fl3eHuUqWNOiIWUoQFmM69EQBxoYKt8zGMP2tG/rtZlQbc18vk+JWMhfE
-	 mDW7xqSY63lvshxyJoHpwvstouAGjFtuO5hNnJvIe5315HYcREu9aYWh1oJqJRzjQAMQo
-	 tDRlcuY5SURrxbTQ81GKNvAgKdNLRju4v/bklhTGlIo4aJzJ87hZuvORCJUisHetMqCgr
-	 h7lP0W3ePA62wH+TEYMeMwf93KfTBr9mD530QRaSkt0mIe3AnzoS8a6x8b33QxSSxI4nN
-	 z9Rh7ltVg9xwN7kENlNzOQ+VpX44YYgG0BZKkJCJPT3ADr3kD4PPn8hHGafG1z0vZqg==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795206441;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=WqSlxQyh/dRBNidv695WpWTljoCnNVjA21ZydepqoMA=;
-	b=di8FUR0lRjT+ZHrFkYrAtmbLU2uAxxtq5aDy2Ll8aNCJgwoB3qnvZayAX2aF88XqZVqz
-	 OSW3IsQlilAK5XUkCE/uJYPjCPxvbS6ChIocJ/XEjCry6AYN7XDT0Hmb/iBC2ck2xtN6k
-	 l5L1VTEBaB0ip61Wh/l8dnpXhYlbNCHvcryKOhVjdVwwS6A5RIy1moI5pHmOMmSaLkZSx
-	 pe0B+kSQeXFFqOUmh12N9ESuIn+yfI7MBz8acPLZFB0wjEot6H3pSLd1D3lQ2GxnaEH2G
-	 wnx5zdzwHK3fS31ZGrdEwXbAqfs7XFte/lko2y2kXTZhZN6IBV62aHgDqeYlS/Iqgug==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aAh0JewX;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795206681;
+	b=slSVgreqJ8uc+A8WzlCWbI4MMTWymhuJN91XGFo/vtjclZfPi0ci3W+31NM5Eq4sQnY9
+	 ZnexJKZm4Tf6xLPw4o46TWCUu6tmA44+evnF4+NVuLW1lcVAmjjLG7okIgjPCaXm+r65/
+	 FQkaucDTOud8j6mSOi0Cj2Gqt8zsmV2TbJqt+/q1xFnJIGpvt4VJrJIq4bauJgay13Bgu
+	 f0C8YjgtQ+mCVmsQfOMJi1qpltBXBwGVGYg5bpMzkDSNdpY1Uo0vsuwvk5FEBrXv3bJ2b
+	 7lJ685noeniESqmu3dd6C1bv4HRpAEiP5eKDB81i+ZHxU0OcirBXkNhstOlaG4mjsPA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795206681;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=4zRAvWGJX90y/LPem1ksgOXfZWd70rTEihHErfZFz1c=;
+	b=sR5c1rLCl95OOl4t9PNyJMscoIFoRiS+RvN0fmbN1h23ie1LCvnoRn/TUsc0u4QYvuiB
+	 nu6lVoPxXsVvt5KHTS0gIyCTryAnjLlMFn9nrcuauAxzGP4h7jc4pNtEIl6NzP8J1erI8
+	 CqcWKNRlJp6a15ltFAwUoF0X8V/vzdr61nf4ezByAx/2fBlQ++iC5qsX0ly9Vrx24P4g0
+	 vEo7EJT3j2vIDRqgp0W+rvOmNI96AmgOudUb9JrYdFQ1xe3Bls2HDpidP5+QV5U77sBLD
+	 nBGEoG/UM7JR2fj8/flAl+uTha3/qfF1JsyCUOzEXSJ2xRkraTd8DDzGbkLuQnUY1lA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KV81EGr2;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 859A6606A334;
-	Fri, 20 Nov 2026 20:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37D3606A6C1;
+	Fri, 20 Nov 2026 20:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aAh0JewX
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 482A51F0093C;
-	Fri, 20 Nov 2026 20:27:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KV81EGr2
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795206681;
+	b=1TAE8sK161Mb7g8BhvR7WBaN02zkugYqIdIaZcuEup/GagRD6KQVlVsvaHKx9h+R4qh7
+	 edi4NaHxr4MNB4ESefdkX1ceHI2i9mIY0iq4ejhtY6h2m5jYsWU7+ROmTFuXjUzjvLv6R
+	 IgvpHMF0Sm913NKjkxIG26gfcHKNdCpRuqgTGz6U6TWlHHV+L/G6QhR/Ee6TbKONSkdUH
+	 80k8vVM3/O3uaT8F/UWMiBLcNiFmg/PQRJqKEPgwb55MGo0YOfXMKwjS1RIt5LxOXzOCv
+	 StLhD9dhDo42qyEuKk74Fx3VC4H1kdA35W7sfc4QtkSgMpAH5XilViog8ITV5N9oYRw==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795206681;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=4zRAvWGJX90y/LPem1ksgOXfZWd70rTEihHErfZFz1c=;
+	b=kbwGS7oQVpqWICHmVs7m99wjB0pGn+L/8sHCvuZAEGnmchQadVLtOuvpBKk9+kSNZ7DH
+	 jDPliQbq18DtZFMJrCDd62JYRtHv9mPh2h+O7/X99Kq1pKui4OJU+9p9qZa7JzXYpwaKh
+	 74nt6LnbcQ6USvNQ1d9s4We+Fut1b3ternvhYIolEDwGsg/hqpX1nHLo/MUJHuZ6AIRuw
+	 06cLOwoeLnsqvkhjAHlomddcMUQToZ/RGpLXmBo1DbDpCn1pLKP4NAQ6D4IxdNZUdQPPf
+	 eTNKmmHN4j5umG0uXKWgUZg+xB5l9VeSMrVVUXj4gq369RyeF7+1bGhh+9Sym413y9Q==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id 772501F000CA;
+	Fri, 20 Nov 2026 20:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795206440;
-	bh=WqSlxQyh/dRBNidv695WpWTljoCnNVjA21ZydepqoMA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=aAh0JewXcORIykTJumZLPOgBhpU1O1hlpDrce6ow61FXnF/Whwv+JbEvYmfeAxVLt
-	 v6rAqCv5Omd54azLHfA9A9qlfwC2DRIAUFmsNvPSd7uRg2nqMCUtg+94d610TpC10p
-	 D3DrDk81X3mmt4wyu9EL6fPHJZs+l5fYufbCZ05kABLisAkfOM1xcVVxYUG9yvCM6/
-	 iB1FXeQQgb5NIrwC7n+wq13jtreBzqEt3D+0MEkHW1mfrZWGgIjXECzPAZrxR+A4/Q
-	 35jrfBasep83+NQWsREqh2dh7YkvFSaUt2n4dftk9h7bUxxGCgQVaSApJzOK4uxtmL
-	 BDZsEikzLY0qQ==
-From: Nicolas Schier <nsc@kernel.org>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Cc: Nicolas Schier <nsc@kernel.org>,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	Holger Dengler <dengler@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kbuild@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"kernelci.org bot" <bot@kernelci.org>,
-	Nicolas Schier <n.schier@fritz.com>
-Subject: [PATCH] Move struct cpu_feature to a <linux/device-id/cpu_feature.h>
-Date: Fri, 20 Nov 2026 21:27:11 +0100
-Message-ID: <20261120202712.3377691-1-nsc@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <awCruYkI2TkxJfPC@levanger>
-References: <awCruYkI2TkxJfPC@levanger>
+	s=k20260515; t=1795206681;
+	bh=4zRAvWGJX90y/LPem1ksgOXfZWd70rTEihHErfZFz1c=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=KV81EGr2KTzp7J7pefFxl8DO48f1D+AuI8EWfjDuA8Xzj80KRmbp7CdqL0Xqe+j8f
+	 wU4RwQ3apB4meNUQvVNpRo7/UlsB+pn5UfvWVWwZqhbE0O2O35u/ptnYmp4AOpCrUG
+	 A2QWBVARKn+mFP6is9i3uC3qv7mDZUeAZlAT+3JVDnEQ93yfG162/keEZX2NuNObbm
+	 mDDKkkZccMB8roQ25z73TZrUKHv2dUYHBTkVFaf89zFyWFco3lztbgp3TmiBbI5aoA
+	 hMo6eMZndlhsZICeCPPxxKUpzpBijn9Vgjrf5vhks6+6T3Imv4XlHVlmh0Nkcey7Wk
+	 Cfb9JHv2mdp0g==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 055484B9F4;
+	Fri, 20 Nov 2026 20:31:17 +0000 (UTC)
+From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
+Date: Fri, 20 Nov 2026 15:31:06 -0500
+Subject: [PATCH v3 1/3] dt-bindings: usb: dwc2: Add Siflower SF19A2890
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -75,137 +82,57 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261120-sf19a2890-dwc2-v3-1-de377bd408a0@telaak.dev>
+References: <20261120-sf19a2890-dwc2-v3-0-de377bd408a0@telaak.dev>
+In-Reply-To: <20261120-sf19a2890-dwc2-v3-0-de377bd408a0@telaak.dev>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc: Chuanhong Guo <gch981213@gmail.com>, linux-mips@vger.kernel.org, 
+ linux-usb@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>, 
+ Joseph Telaak <joseph@telaak.dev>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795206676; l=864;
+ i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
+ bh=w+QiNRAN39ZqxwzT8eL/SeZFAxcNqrljvHT4hVUBrPc=;
+ b=+aanc8SFiEJySAcjYFTPjNa/h7pkwT4ilDA6rSZ97oWc4EJ1W2leT/yP94vOE2SajMrcmbtrA
+ 9DkBL5QMdRGAu2XkHpWWSnDHcXthaUKOn+L3zICXhcZb8m/eV1AOGKb
+X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
+ pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
+X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
+ auth_id=1404
+X-Original-From: Joseph Telaak <joseph@telaak.dev>
+Reply-To: joseph@telaak.dev
+Content-Transfer-Encoding: 7bit
 
-From: Nicolas Schier <n.schier@fritz.com>
+From: Joseph Telaak <joseph@telaak.dev>
 
-struct cpu_feature used to be defined in <linux/mod_devicetable.h>. Move
-it to <linux/device-id/cpu_feature.h> to let users of mod_devicetable.h
-that only need struct cpu_feature switch to the new include file, and
-to reduce the number of users of mod_devicetable.h.
+The Siflower SF19A2890 has a DWC OTG 3.30a controller, with its own
+bus burst limit and an OTG interrupt quirk.
 
-While moving struct cpu_feature to <linux/cpufeature.h> instead sounds
-reasonable, it would break defconfig on loongarch and mips [1].
-
-Link: https://lore.kernel.org/r/f610c07f39df15f3e7ebdc63bfcd759ca7a687a8.1794233316.git.sashal@kernel.org # [1]
-Original-patch-by: Uwe Kleine-König <u.kleine-koenig@baylibre.com>
-Original-patch-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Nicolas Schier <n.schier@fritz.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 ---
-This patch is a combination of [1] and [2]; both patches have been
-merged to prevent failures during bisecting.
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by, Reported-by and Closes tags have been dropped due to the
-rewrite.
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index 6c3a10991b8b..3b4763f476ea 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -58,6 +58,7 @@ properties:
+           - const: snps,dwc2
+       - const: amcc,dwc-otg
+       - const: apm,apm82181-dwc-otg
++      - const: siflower,sf19a2890-usb
+       - const: snps,dwc2
+       - const: sophgo,cv1800b-usb
+       - const: st,stm32f4x9-fsotg
 
-Thanks to Uwe and Sasha!
-
-[2]: https://patch.msgid.link/bc9fbf5784f6788e10c749a05d56c42bdb68f3d9.1792144769.git.u.kleine-koenig@baylibre.com
----
- arch/loongarch/kvm/main.c             |  2 +-
- include/linux/cpufeature.h            |  3 ++-
- include/linux/device-id/cpu_feature.h | 23 +++++++++++++++++++++++
- include/linux/mod_devicetable.h       | 14 +-------------
- 4 files changed, 27 insertions(+), 15 deletions(-)
- create mode 100644 include/linux/device-id/cpu_feature.h
-
-diff --git a/arch/loongarch/kvm/main.c b/arch/loongarch/kvm/main.c
-index c65ae2fa4c4b..fb3dc8237499 100644
---- a/arch/loongarch/kvm/main.c
-+++ b/arch/loongarch/kvm/main.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/err.h>
- #include <linux/module.h>
--#include <linux/mod_devicetable.h>
-+#include <linux/device-id/cpu_feature.h>
- #include <linux/kvm_host.h>
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
-diff --git a/include/linux/cpufeature.h b/include/linux/cpufeature.h
-index 6aff540ee9e5..cd470987777f 100644
---- a/include/linux/cpufeature.h
-+++ b/include/linux/cpufeature.h
-@@ -6,10 +6,11 @@
- #ifndef __LINUX_CPUFEATURE_H
- #define __LINUX_CPUFEATURE_H
- 
-+#include <linux/device-id/cpu_feature.h>
-+
- #ifdef CONFIG_GENERIC_CPU_AUTOPROBE
- 
- #include <linux/init.h>
--#include <linux/mod_devicetable.h>
- #include <asm/cpufeature.h>
- 
- /*
-diff --git a/include/linux/device-id/cpu_feature.h b/include/linux/device-id/cpu_feature.h
-new file mode 100644
-index 000000000000..e14fe8bba85a
---- /dev/null
-+++ b/include/linux/device-id/cpu_feature.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef LINUX_DEVICE_ID_CPU_FEATURE_H
-+#define LINUX_DEVICE_ID_CPU_FEATURE_H
-+
-+/*
-+ * This file is included by scripts/mod/file2alias.c which is compiled
-+ * using the host compiler which might not have <linux/types.h> but the
-+ * __u{8,16,32} types are defined there locally.
-+ */
-+#ifdef __KERNEL__
-+#include <linux/types.h>
-+#endif
-+
-+/*
-+ * Generic table type for matching CPU features.
-+ * @feature:	the bit number of the feature (0 - 65535)
-+ */
-+
-+struct cpu_feature {
-+	__u16	feature;
-+};
-+
-+#endif /* ifndef LINUX_DEVICE_ID_CPU_FEATURE_H */
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index d1581bb64729..a69947f2c1dc 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -8,10 +8,6 @@
- #ifndef LINUX_MOD_DEVICETABLE_H
- #define LINUX_MOD_DEVICETABLE_H
- 
--#ifdef __KERNEL__
--#include <linux/types.h>
--#endif
--
- #include "device-id/acpi.h"
- #include "device-id/amba.h"
- #include "device-id/ap.h"
-@@ -21,6 +17,7 @@
- #include "device-id/ccw.h"
- #include "device-id/cdx.h"
- #include "device-id/coreboot.h"
-+#include "device-id/cpu_feature.h"
- #include "device-id/css.h"
- #include "device-id/dfl.h"
- #include "device-id/dmi.h"
-@@ -69,13 +66,4 @@
- #include "device-id/x86_cpu.h"
- #include "device-id/zorro.h"
- 
--/*
-- * Generic table type for matching CPU features.
-- * @feature:	the bit number of the feature (0 - 65535)
-- */
--
--struct cpu_feature {
--	__u16	feature;
--};
--
- #endif /* LINUX_MOD_DEVICETABLE_H */
 -- 
-2.47.3
+Git-155)
+
 

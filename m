@@ -1,85 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795266998;
-	b=AzNbGvHHy1ehSFjcmkYJI6J220L/ZTJ+0SRP13j87L3UjO/V8YLcigQcLzpds0wpdlSY
-	 UaxdwytEU4nf++sDl3xEcaiGO01JjE2VTu3HhoK6MyOPz1UQq4eLehy/W/x6UI6J6z68J
-	 pq7BfFaQsB3v/niVOs0t1FNIdI9+fT6XbdDmIc10h7yW1rAjbvCSSm7nQxyahvdzK0/Yv
-	 8kYtSOv4maITplIF6ZhBk8eEPsHP3vIJOrx6xLWC8iyxth3tcyI05+bmOLLByLXw+coPl
-	 pKhbVh3Acn6v5qcgSObHzcumc77PVONxnpUIxhAkQgN4xC2H4YPBJ/4wP0XF8CSAABg==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795266998;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 Mail-Followup-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=TxW/RAptOpxLkind6FtvVROcaKbdd/cBMgMOKwStZeM=;
-	b=U3NkHpsa4qmmNgUoA1YsEvU/t4ZJL/1SaCrn3ACeq3Sxoi4J6NEwaQQmEpfCRvpWT0/P
-	 oBWHWR8mpxXCeZdCAUH/6H96dg6apN1nnPdKzk8JimjZJuFc8FMOHD8KBR22NaWX3egzF
-	 XBHgEwViFkiY8JcalCYdNicDMOLST997JAVwLSoy0eLyfq1OMw2/Or60lj16lL+rH+u47
-	 fXRiMXm4MKMjFEhWygN610iTsy08a5H2bGtw/fM3YUCbQnS4u1SKogBzaMNLDQp8DSMpT
-	 zb6ObHBgkBHAWSs6/Z3IHd1apupBTIGgbsBpEA0LgF/ZJy7hSO0+IjMF1toS7S3aEgA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bPAShBr7;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795275183;
+	b=0tedPuYt70lmE16cbtM7b0lM0wkkMoa0nwyDqlHoAaqjRyAXEINPIXSH7uYgKlxy+jqY
+	 Px4BzxubU6EHBediIzG05Ih6CrdTEliwBTHObPVzvumzLv7QPMcZFMF1fLZqlRborKnl0
+	 C/hCr43OW0vVcrBZ1cVKVoQRBYb++7GKnMs5rSj8fMGzF7eZau/S7Mv7B1QsBqpUUbrwZ
+	 u3JmUwXJjwKO5YisQ0e1+HBJM9PAAd/+TZJspGfB7di7xcgpi96i6IC6+RYWyLfkDO77M
+	 4rFeyp5m5R9li0d2kaPzfLWvpXezs0mkuPlXPWmpxjA7oj9mrWmAMDy3Rv3reCOSA1g==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795275183;
+	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
+	 X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 X-Endpoint-Received:X-Original-From:Reply-To;
+	bh=7HyyXNTCfn/npdExKG7fu+OYbQyYVLSOwuM2ZpnCsh0=;
+	b=urJSCgc7abhPMaHN73uK9UqPCKauqossiAj+ParoYjtR52GA7eA5MVMLNWL0ANYhNJEV
+	 tcBtq46Noy+zYSumx1LZBJcCVlxQfip9GyUoRkEXPUTlTEod9t2loUC/r4xe60xC/KRat
+	 RfpMBVuVTewWLGkL5F8iRWKZm0yGKxt1REjzlWesS67KxI5kVe2uFl3QBtZmmvgACSxfO
+	 robmVhm2ZESPwJ+nSfekz6vjvfJkrqJwtHNdIZnsiwkUreJRWh/PF7YB7ljkOs+gjLY3g
+	 nIHWCvWVX16HfscfvNQva4e42M0Khzc3vxyLVGjDezY25FN9KeT/6OLS+C290RG0wCQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dn3pqRIY;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 77793606A32C;
-	Sat, 21 Nov 2026 13:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655F6606A32A;
+	Sat, 21 Nov 2026 15:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bPAShBr7
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 930CA1F000C0;
-	Sat, 21 Nov 2026 13:16:37 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dn3pqRIY
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795275182;
+	b=Ok6lD/ewgKp8HSzWgq+y4NOLgLGO+wD32Lqdlco7unbQVk8HV06KyCrcnSclp4C9NtP5
+	 +Dhw64eWM/JCjKeD99p4Rpsodt7EmriaxU9qAeC09mHGEeGRoQFBxeetMOLEZ/+Q/4Gwd
+	 bEJSh0epRdy1ifcgKVFSIm7KrL0UpE4pkR1kMQ/I1jU1qnGwOQ0poGlZcRnHfl9tSLj1V
+	 joROkKPRgJ7BYn/UPJOXZCGydrknxyn4f9rlC2SMywR9oAC2y/SuUQrVRezteAt/qnbrk
+	 YLOXemOtwJT63kUkR3U3a9tabiEAUxhAgRDvmLpR9Qqv8wQvuSTd3dfgYTnh2S3k5OQ==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795275182;
+	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=7HyyXNTCfn/npdExKG7fu+OYbQyYVLSOwuM2ZpnCsh0=;
+	b=iCGz5ZKu1Im6p325TZpVQL23WP7L8An1cNVvqFtFioe0qvlxZXBxM+h695uuQA3HPxky
+	 UQBtL5K53sroZ+b0jqbVKsz4Te5Xc/VxEHLFeVSQR2shWSDBJFtacwxhaNjODvgOmHp6H
+	 1nwfIaFuuMTw2jlQIjA0vjxgM4lfC+0qSdH3gVvPXEJL0A3QvRFUbVNBZFt5E0Tp8wst6
+	 MOgxYmG0QH9hNaCUYRPSENrykkNTkvtraa75RSAeSD9U9iGj5lbA0Vp4fJba5ut9zwSGe
+	 jvIu0ohWQr3IpqVMBrRj6Z2T/ZqaT6ZXuhVnnfoX2nPAg8zSxDgPX95OIYcKTWmZB/Q==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id 4A4551F000CF;
+	Sat, 21 Nov 2026 15:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795266998;
-	bh=TxW/RAptOpxLkind6FtvVROcaKbdd/cBMgMOKwStZeM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=bPAShBr7KOOGPBKH+XTeVXkgXBPFn40auFQSlE9hM8FDZmc2VPBT8Pq0gw83FDHHz
-	 puDG/SloQy85d6f6pt40euCNXoB9KNLlbgkAg8nEZEwPv26NTv12dnjuIX1/hEkd7F
-	 Y+v34WLQW/heaHEZxlua+xB+3xcxWtK887Hdmb/5Kj5r/xUU7kORPO2reS/uCP5scj
-	 28VUcr02GlWxQzAWdy5DXSsAacKGZplfY7yTt8sxZ31jBcV/4+tI3snCWxj+0uAVEJ
-	 Hbjv/Gkh1sBmM/osurXObPF/vRMcavLbYjGrfmTZo2LL7YmOjGy/E0D83NqUxvDb/r
-	 +CjTnZ4TPRP7g==
-Date: Sat, 21 Nov 2026 13:51:44 +0100
-From: Nicolas Schier <nsc@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Sasha Levin <sashal@kernel.org>, llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	Holger Dengler <dengler@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>
-Subject: Re: [PATCH] Move struct cpu_feature to a
- <linux/device-id/cpu_feature.h>
-Message-ID: <awGT4AhwcFcLsW0c@levanger>
-Mail-Followup-To: Nicolas Schier <nsc@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@baylibre.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Sasha Levin <sashal@kernel.org>, llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	Holger Dengler <dengler@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kbuild@vger.kernel.org, linux-s390@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>
-References: <20261120202712.3377691-1-nsc@kernel.org>
- <202611211941.G0rlpNpN-lkp@intel.com>
+	s=k20260515; t=1795275182;
+	bh=7HyyXNTCfn/npdExKG7fu+OYbQyYVLSOwuM2ZpnCsh0=;
+	h=From:Subject:Date:To:Cc:Reply-To;
+	b=dn3pqRIYtRthG+NUp4nYMXL/8tUKY/HtHEmuIcrF6gXNJFjGPIco/yRT3nIzpaI5k
+	 lZX9kCUS3nwIKhbqoKEHCqI6/r0tB9gBVUaje7sG/RVz6ZcR54M8sK5mHkCTIGhkOs
+	 RbbEMaMSR+1cJhXGdzeR/7s3JohKKE0vOg1OyXWSw2DSDoL5xbi+DKa8nheHQG8+/L
+	 cICqJPd6Gp6oK979i5z8tfIWQMx/cvaAy3k903VksN8G8jlq2d2NNEP4TjWNNqTqMR
+	 oQPWvArKM0ZJ8ZLEaGBvSBK+81LekoxcYzYgwUZs0Kcr4c3ntme9m55NEHkXVCpqYR
+	 ZlePbEjx0E2+g==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 9332C4BCCC;
+	Sat, 21 Nov 2026 15:33:01 +0000 (UTC)
+From: Suyuan Wang via B4 Relay <devnull+shyckless.gmail.com@kernel.org>
+Subject: [PATCH 0/2] MIPS: rtlx: Fix two error paths in rtlx_open()
+Date: Sat, 21 Nov 2026 15:33:00 +0000
+Message-Id: <20261121-rtlx-v1-0-bc05d6763ec1@gmail.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -89,57 +83,41 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202611211941.G0rlpNpN-lkp@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKy5AWsC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzNDQyND3aKSnArdZCODxLQUS2MjMxMzJaDSgqLUtMwKsDHRsRB+cWlSVmp
+ yCUivUm0tALaT/YZoAAAA
+X-Change-ID: 20261121-rtlx-c20afd932646
+To: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795275180; l=610;
+ i=shyckless@gmail.com; s=default; h=from:subject:message-id;
+ bh=gp+9Dc0zHizgJ22P/f77EmMig+HbauItSUwqcGIjs4U=;
+ b=GGINSRPN+mZuBMoU53CX9Fq9yNb4S116+enwuhSEKpuryV+vY0YqeruzQmljk4tRXNmCMKhra
+ 4y7scOPTFvHDymskfAch+vU6dqPT+rdMKBG/xe/23azWlfOSY09cJEC
+X-Developer-Key: i=shyckless@gmail.com; a=ed25519;
+ pk=pMtccVGiWES3bV+7YBFuBclkvq2n2HBHQ5azaBrK2lY=
+X-Endpoint-Received: by B4 Relay for shyckless@gmail.com/default with
+ auth_id=1498
+X-Original-From: Suyuan Wang <shyckless@gmail.com>
+Reply-To: shyckless@gmail.com
 
-On Sat, Nov 21, 2026 at 08:01:20PM +0800, kernel test robot wrote:
-> Hi Nicolas,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on kvm/queue]
-> [also build test ERROR on kvm/next linus/master v7.4-rc3]
-> [cannot apply to kvm/linux-next next-20261119]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Nicolas-Schier/Move-struct-cpu_feature-to-a-linux-device-id-cpu_feature-h/20261120-212711
-> base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
-> patch link:    https://lore.kernel.org/r/20261120202712.3377691-1-nsc%40kernel.org
-> patch subject: [PATCH] Move struct cpu_feature to a <linux/device-id/cpu_feature.h>
-> config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20261121/202611211941.G0rlpNpN-lkp@intel.com/config)
-> compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project 3b14d7c370558b46e5f0c6494a05c492e59bf32c)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261121/202611211941.G0rlpNpN-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202611211941.G0rlpNpN-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> drivers/s390/crypto/pkey_cca.c:22:45: error: array has incomplete element type 'struct ap_device_id'
->       22 | static struct ap_device_id pkey_cca_card_ids[] = {
->          |                                             ^
->    drivers/s390/crypto/ap_bus.h:158:9: note: forward declaration of 'struct ap_device_id'
->      158 |         struct ap_device_id *ids;
->          |                ^
->    1 error generated.
-> --
-> >> drivers/s390/crypto/pkey_ep11.c:23:46: error: array has incomplete element type 'struct ap_device_id'
->       23 | static struct ap_device_id pkey_ep11_card_ids[] = {
->          |                                              ^
->    drivers/s390/crypto/ap_bus.h:158:9: note: forward declaration of 'struct ap_device_id'
->      158 |         struct ap_device_id *ids;
->          |                ^
->    1 error generated.
+Two error paths in rtlx_open() leave state behind: a failed
+rtlx_init() skips the in_open decrement, so the channel stays busy for
+good, and a signal while waiting for the SP program leaves the stack
+wait entry on the queue.
 
-That is fixed by [1] which is to be applied before the patch referenced
-above.
+Found with a static analysis tool and checked by hand. Compile tested
+on mips (maltaaprp_defconfig, W=1); I don't have the hardware.
 
-[1]: https://lore.kernel.org/linux-kbuild/66e4ee9c7f9b4bc48fcee92a94b6bb6d92fe1ad2.1794233316.git.sashal@kernel.org/
+---
+Suyuan Wang (2):
+      MIPS: rtlx: Drop in_open count when rtlx_init() fails
+      MIPS: rtlx: Call finish_wait() when rtlx_open() is interrupted
 
--- 
-Nicolas
+ arch/mips/kernel/rtlx.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+

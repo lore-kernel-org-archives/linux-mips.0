@@ -1,103 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.173
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795316693;
-	b=A+Ib5r7XbsdriYHKx3P9rYvJ8cIr6NxTYw0dpb9taR4cBSG5vtep7ZJA13dYq5ATM7tX
-	 RgHVxmtz92/cIP6+gVnVCOGWET74TEzvqlQh6BDeKnPWuK4/L3JUv6lWbyGvIbMt17+LU
-	 HG3WKhQg5MtvrztAiwAzy8Rhd4Ut8fYouMo9j5QcEmcbm5UvcywkJJ4DOM7WGqa252cyX
-	 QQcTUZQ7D771n1hKEElzNQJdyp5mbzxm4dVMJmIi2kIHIV1s7YUMKoXo6ANgpq/brNL18
-	 L/mc3K4b9xNySSCH0D90jyqxUi1Di/Jg5IWBojO5YLH7FngkLNCeP4ajWAfPakjBCvw==
+	t=1795320368;
+	b=pn7wMmLy01vQEKygB9UT60WKHY58PWr8nCA3mjeCZw63EU2qk9/3eH12SQF0AkykSley
+	 uXkNjfLPZ5aqkqBBQyuLbP903LXsP2YBzknMbJZZKcMq7s2vUMZNlVOmiRH4bHuid9u1M
+	 FpRmWRD4wZPMtqxXwW+coXNJFYRBO1lc356uYJhc3AZcBAvtk/plfjZaOE0LPArIpXpmU
+	 Z0Wskt/xlvvC7UaC4K+pxjjMJvQ+IRzuOIdPUBpvFcMoww7t76K7DTZnnpjaYgxo4tEMw
+	 ZJm05MzbhzPnvjsMmqPIQE2MjlEgLK1xAxrRPGgrMVJkKn3MgSuZT9Fs3q0hNcEJMLw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795316693;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795320368;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type;
-	bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-	b=DIE8n9CA766nMG1Vgvz3lBKBRumTgM+Lygis28NESEZbwzC48Dh362sVi6oxxbgGoMuk
-	 QHi0y15qcHihUsuxAQCAEN7i/+KKIn9cN057KN1kLdaK81VpxmTTLrKtrXllt9Q3nVtvy
-	 qsDSe7RfT8t5rKjZ2EHEL4+htXWL3FojqEq6sches5amqo3vjWHjzOdsXRkX8wyHdSxkH
-	 8NwfJhyBrKUOFC65EojUm+Ht8GSTKuavx2DtwepiWYMHzCoaszdMpKYPWtKTIAMMJnAMG
-	 AUgL+2VaJiKOHUby3jyYiOzBN8vFvNx6V54GXYwGloStnXx2LOiEVc6L0537nKuo7dA==
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
+	b=vqMF+wZJlUF0Rtg4i8S4n1TF6MWezjbQsI7Ha+vz94s+234v4IIJ/N2yKXYXXJ5+QnZj
+	 6doQ9WCFrXmXWcTDZBgg2gqNQnOZwaDGDnyP0E8H3lLb89wQpaxKKbnUWrr+3dxP2vQWQ
+	 JhB14/TOStcUVGqda3k1rK/l3YK1TSSPjDMVDk5l/kFItzeRUy+u+HvjLO2WB12w2rgml
+	 Hsnid5O2cctNax5IewWavaIpFK7FbIFy4wJHTz47ssxh/NnAWLc21sgydRE8mhD6U6Sgt
+	 YwUN+UwCkDy1P1Tjs/MLycM7IFOwvj8iRf4Q+g0H4Qv/StXO2UHWJfQEUwiZnEmz88w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lQMapLMR;
-	arc=none smtp.remote-ip=74.125.82.173
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com [74.125.82.173])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=evJm+oLs;
+	arc=none smtp.remote-ip=209.85.214.173
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6AFF606A333
-	for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 03:04:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D6AFF606A333
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A7E606A331
+	for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 04:06:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 75A7E606A331
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lQMapLMR
-Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-36a315ed211so2712828eec.0
-        for <linux-mips@vger.kernel.org>; Sat, 21 Nov 2026 19:04:52 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=evJm+oLs
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2f04ad2c46dso10317625ad.2
+        for <linux-mips@vger.kernel.org>; Sat, 21 Nov 2026 20:06:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795316691; x=1795921491; darn=vger.kernel.org;
-        h=content-type:mime-version:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-        b=lQMapLMRecxhRuMkTSymbForunIxX0OPXsGQ1CXe025r/577yULQNYi3TNrBG53/Qv
-         zYU80ixAjK16x1kduXUqa1QZW9W/3ti9d/2xwfANhvwcppx94XY1wfu52uKp1wNIi+xo
-         0BbROgPXyu0B62JpFc4+zEJIoiLBcGXeP+W6/munvXDcClY8J5U7eqCSCyRjBp3WeH4+
-         q1p1SE27fCRmjWxB4WY3p9l7b9yn5x1FejoLmUjB8Y+BhmVh9oZGKVtoBu6VvuhXecB+
-         kqHQVq97TpxJ2ylXI5iv8vW2n/kYW3PMkK+9IBmWOkrDx9AQECQxv8quTTJlItW+6/Cb
-         tThQ==
+        d=gmail.com; s=20260707; t=1795320368; x=1795925168; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
+        b=evJm+oLsq+4kzc84VKAr4CtJzo3IfsCj/gVq3bR6b4/RunCaPdIAKKDRdB60FHOri/
+         kXkXUd0mdLQsZD09OcorgB7ZMX+ElbW8SGM/rhASv2H/S4TvQ/n74BdpSG623qt//u5z
+         j/uJNP4KhMU6uyWbwCttDb9FMO4E1+Q/ZvKCu+sot3am8SunnqGZPV5NgSDEKslxjHgm
+         wiUGdjewEbxDdTxs2y/9gUKe2RNXOeRrSAiMr5oJT+4Z0P/P8FvOXQOm2AGNtYLiI9N4
+         lSlvhzjKnZRdrISEPM0wO7qK2abATsVypk4L5e8RDNAkPgWRh158PSz+CsDiimAzaEyy
+         EXFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795316691; x=1795921491;
-        h=content-type:mime-version:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-        b=QGuSLGEMqHDwusVQSa5npAnZJ/bFn6To4473OhBCH/MLokWMIkSRX32kUZF5Xjd/IV
-         +/bKf4DmA0u5rKACmV+roV228B9NA12EmPYwUr94bqGMbT4PRjueVZNY2DUhWzzu6Ns9
-         FsfW021wPC7jX+zjFap+rre0HeLhjBlIqQ7sHKt9G9nbshBfztPztx+xXMsU0rMSK7X5
-         hBoE2g50fdce+mMCRBYO7GVxSV9Q0e7NQnMcMN3BF6N0aTfJYUDBICZHaufLc0P7jcJ9
-         dY9dQRNDWGUUF/+upF9JmNsxYpgt/0OLe/Gqr37D4vIN9ror++BDddKq7Apa/Ila0IKY
-         8b6g==
-X-Forwarded-Encrypted: i=1; AL+hErHNhrGJzJcBpWh3y6iwJMTF4xCvHj9t7YNQiDlKQSgLW5JZ5VhDCJn+8Z661O8GmdqoDCd+YAFKwFOV@vger.kernel.org
-X-Gm-Message-State: APuU4Z+msjJhCgpguuUFGSm04Yv9NdjRCVwUK7q7HJ5VInvWNV78qhVY
-	Qkj3Dx7nHBLwhPOztYFruo8pS1Cr1a9arZsSzN1KNOQa1eaLUbjHO6tR
-X-Gm-Gg: AZFdTZf1mhM+m5kepbNSBad/hTlvu1Dkb2HqktcOczWufK0W62AVB4VOsnyfJJqQX20
-	QtHFbYUL8ZYs24uGx5+jLQt04W8vZP7EMMfjZTGQn+OhdA+3T8ugWi5KgbxmRUV6Av42ELfAD/8
-	vs7wIzPS+59/5qvP7FkcDSQnz0Hk9EcVsjxuEjGS0yz9u3kiX8nBZ+0gGYghx9k9dH5HDO/Aw4R
-	8uu/FDE/XqJMmuqJfQ9sbl3GEQc0L+H8JYtd/Lntu2rC9FS0fzNjYt0LG3sGTmoPjQY8mUraJcC
-	ImfnYC9X9dFJEJcJjcfm+RYeuiuJ8//ynqxjxbE3mF/ZsKoEIEs6Oyfl3REGJpUoZU8BvhCig9a
-	NJ0n7x/un0sGdY93YZKEyRCTbcuNd0Iii5dI8lzj30Lr9knzboKc6NhG78iYfgKpj8l1NAEdCqz
-	LllVK67fOnYA2/LWbwUnBdipT+Jy13vU4wG5B/pIRqI0Oxt3KNal+xLBoeIVgw7MM5irYhtRzX4
-	gOTkZGWCbzfPEbb6w/ZlExvWm/hSGYJVfc0rvRezyz7fZ4utPGcWAmwh8wC7sD5XW9tiHARCvw+
-	P3uInrh5ZkLbcm9GTzeHO2pCr1BLLOASj8h8gokgk/opwx8T
-X-Received: by 2002:a05:7300:50fa:b0:383:9f52:e54d with SMTP id 5a478bee46e88-3856ff52e83mr8869235eec.8.1795316691531;
-        Sat, 21 Nov 2026 19:04:51 -0800 (PST)
-Received: from pve-server ([49.205.216.49])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-38567da4f85sm24302948eec.27.2026.11.21.19.04.37
+        d=1e100.net; s=20260707; t=1795320368; x=1795925168;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
+        b=IaJsK1Cbq03vC9tjA9/UJ5dfnJEG7GP6CLAeQvbq4uHUwBVtR11lTmLsv/Q4fY7ivZ
+         2zd3qRoIb6m5aABQRjFXA19z4Pkr/dSH/o00wxLTAWNij9GQyyXBlGnGG/LgnJy8Gv4a
+         DFqZOIJFIEoDyWRJIooMj78YZIS2rlZ/QknK8W3v6XHf6DxNR1gaIgzYWbPsvdQc0xYz
+         saxV+Zycm+XP7Zj2xt6WoB20AKreWbSPlnncFfC94922aL25/xevPJiBJxw6XuQl0XHt
+         p9iXy9Wcwof341TqvcCJu/RnKOBT2foApsDb6F3iSHgIg06MSYPFcHfq6oNnb0ygd4Pj
+         w+Fg==
+X-Forwarded-Encrypted: i=1; AL+hErFhNV+BQRY7VNNgBoaCbnCs27F4zpvKhh9zdPNEwLN3GsEzkxoCXOl+VDNkaiPpq/2xDhgXXhG0Lmn2@vger.kernel.org
+X-Gm-Message-State: APuU4Z/+lagt38zKPI2iDO9mfuGAcwxDUgf0tE1robeJa3WymrX8YyZE
+	UOvnNzMzURRQXc6Wumk2kWaXoMTUpwMvTXdkh6PTr2o4hG4PIqRaojG3
+X-Gm-Gg: AZFdTZfFmmQ/hfvhS0IlvvHfnY4T+bWJD++z9FBGS8f06N0bQqaukDjU67b77mxzksX
+	DOXbFV0rmF248fLjSuC79s/V+NhlW8Xo7kpwAy1+N5fssNKZL3m1dfef77nJLTIaC5LI0s0BUUX
+	fCAeKjmbFjp10pxV3vS9cdgHm/7QpHawSyZ5s/4hHwgW+z5QTFigR7IxsW2IoftWlzyeVJZoirl
+	s9bGu+F8d4ZOf0x9wLFdcwrA1o+gYb82rDwcMo8qv8O0EnGY+gQe9808MA4Cu6su8VVG7BwPMNC
+	qsjtGgzjFK7m2QwzpsDFKA38cS/btmSvcXJqK+aohJvtsOrG30VDAl8pglAra6i0XUbNrCKxfZ/
+	mCZyxNPerkqX4HnW/EhcG4iJcw7iPPcG9SupUPjOz6zY23Jv8XSLltXkkmn8tJwJshncjarEJAS
+	J59IZjBiKTfv0s2i7vlBUiQVbSXtNtCMAHB1iA6D8qyv/a62YHgXQKISWwrre4khtlXGF9nEc5b
+	gHKlC4TWfd/cFwo3cHqLVjPZUxe6oICbf8g+b+YFTjSQBztPqXNd9jd+UIMRJkBQZDOVehlkQxr
+	+s84+buYaGyTK3gmAFdtY+i4TQNuTm8ZXw==
+X-Received: by 2002:a17:90b:3d92:b0:3b1:2237:3c93 with SMTP id 98e67ed59e1d1-3b41c8de8d7mr6039371a91.18.1795320367746;
+        Sat, 21 Nov 2026 20:06:07 -0800 (PST)
+Received: from arm-a100.. ([140.112.28.118])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b41ad92c07sm10947018a91.13.2026.11.21.20.06.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2026 19:04:50 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Pasha Tatashin <pasha.tatashin@soleen.com>, 
-	Paul Walmsley <pjw@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>, 
-	Russell King <linux@armlinux.org.uk>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Will Deacon <will@kernel.org>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org
-Cc: Alexandre Ghiti <alex@ghiti.fr>, Christian Borntraeger <borntraeger@linux.ibm.com>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Cong Wang <cwang@multikernel.io>, Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, Mike Rapoport <rppt@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, Shrikanth Hegde <sshegde@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 2/2] arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
-In-Reply-To: <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
-Date: Sun, 22 Nov 2026 08:33:10 +0530
-Message-ID: <wlq5k1ox.ritesh.list@gmail.com>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org> <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
+        Sat, 21 Nov 2026 20:06:07 -0800 (PST)
+From: Tzu-Ching Yang <shingekinocore@gmail.com>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-mips@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Fix genex.S build with LLVM before 21
+Date: Sun, 22 Nov 2026 12:05:59 +0800
+Message-Id: <20261122040559.1120594-1-shingekinocore@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <alpine.DEB.2.21.2611040746160.6502@angie.orcam.me.uk>
+References: <20261104030147.3117325-1-shingekinocore@gmail.com> <alpine.DEB.2.21.2611040746160.6502@angie.orcam.me.uk>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,26 +107,43 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-"Mike Rapoport (Microsoft)" <rppt@kernel.org> writes:
+Sorry for the late reply: your mail did not reach my mailbox, and I did
+not check the list archive until now.
 
-> The options that let an architecture opt in to kexec and crash dump
-> features, like ARCH_SUPPORTS_KEXEC or ARCH_SUPPORTS_CRASH_DUMP, are
-> defined in each architecture's Kconfig as def_bool, and most of them are
-> copied over several architectures.
+On Wed, 4 Nov 2026, Maciej W. Rozycki wrote:
+>  Shouldn't this use:
 >
-> Declare these options once in kernel/Kconfig.kexec next to the options
-> that depend on them, similarly to how mm/Kconfig does it, and make the
-> architectures select them instead.
+> Cc: <stable@vger.kernel.org> # 6.6.x: 56651128e2fb: MIPS: Fix idle VS timer enqueue
+> Cc: <stable@vger.kernel.org> # 6.6.x: 2b6d718c8dbe: MIPS: Fix whitespace damage in r4k_wait from VS timer fix
+> Cc: <stable@vger.kernel.org> # 6.6.x
 >
-> Selection conditions are preserved, so there is no functional change.
->
-> Acked-by: Baoquan He <baoquan.he@linux.dev>
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> then to get this all picked up?
 
-No function change observed in this patch (as described in the commit msg).
+Yes, with one more prerequisite after 56651128e2fb: b713f27e32d8
+("MIPS: Move r4k_wait() to .cpuidle.text section"). I will send v2
+with it added to your tags.
 
-LGTM, feel free to add:
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com> #powerpc
+56651128e2fb adds a .previous after END(r4k_wait), and the .section
+that it pairs with only comes with b713f27e32d8. With only your three
+tags, on 6.12.118 and 6.6.162, all the code after r4k_wait in genex.S,
+handle_int and the other exception handlers included, is placed in
+.init.text, and a malta kernel hangs under QEMU about when the init
+memory is freed.
 
+With the four tags, the cherry-picks and this patch apply cleanly on
+both trees. For malta_defconfig, genex.o builds with GCC 8.1 and 16.2
+and with LLVM 13.0.1, 17.0.1 and 21.1.8 (on 6.6.162 also 11.1.0), and
+kernels built with GCC 16.2 and LLVM 17.0.1 boot under QEMU. On 6.1.y
+and older, 56651128e2fb conflicts in idle.c, so 6.6.x is as far back
+as the cherry-picks apply cleanly.
+
+> Or is it unsupported annotation syntax
+> where a prerequisite matches a Fixes: tag?
+
+It has worked before: the prerequisite named by 4409df5866b7 is
+its Fixes: target, and 6.1.76 and 6.6.15 took both.
+
+Thanks,
+Tzu-Ching

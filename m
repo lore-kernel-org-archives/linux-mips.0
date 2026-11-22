@@ -1,103 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795320368;
-	b=pn7wMmLy01vQEKygB9UT60WKHY58PWr8nCA3mjeCZw63EU2qk9/3eH12SQF0AkykSley
-	 uXkNjfLPZ5aqkqBBQyuLbP903LXsP2YBzknMbJZZKcMq7s2vUMZNlVOmiRH4bHuid9u1M
-	 FpRmWRD4wZPMtqxXwW+coXNJFYRBO1lc356uYJhc3AZcBAvtk/plfjZaOE0LPArIpXpmU
-	 Z0Wskt/xlvvC7UaC4K+pxjjMJvQ+IRzuOIdPUBpvFcMoww7t76K7DTZnnpjaYgxo4tEMw
-	 ZJm05MzbhzPnvjsMmqPIQE2MjlEgLK1xAxrRPGgrMVJkKn3MgSuZT9Fs3q0hNcEJMLw==
+	t=1795348980;
+	b=lEgzCLHenLa3QA5vD7h4l0M/8T6KvYeVFuwwso8bcwub5A9ixzy/XGAtSh8dqgn9SWxF
+	 OQLpP3nBDeo5m2H6nKVY1be/uEWbRpJcOczJetTCNz+EIWMGurbhfdCVsFdm+3UylPRoX
+	 JwWKJ8uBNtrxkgMqdw7BLE24x9bvasqOXyjvlOduXiN/7FmpVHPldTc1f2mjIymeoZIdN
+	 QIZE9OqV2SJonLh/TMwBA2b5y0KMMPN4P+gjl0LSkWiqGO4ihdI+T43+wRy4lAc7ZVusz
+	 D7nhOmuFliQhmWeCiR4K3TG9De0ZQ/3O3chJbK9oqg4o2Zko3jtyJ2/3iWH16DAMH/A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795320368;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795348980;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
-	b=vqMF+wZJlUF0Rtg4i8S4n1TF6MWezjbQsI7Ha+vz94s+234v4IIJ/N2yKXYXXJ5+QnZj
-	 6doQ9WCFrXmXWcTDZBgg2gqNQnOZwaDGDnyP0E8H3lLb89wQpaxKKbnUWrr+3dxP2vQWQ
-	 JhB14/TOStcUVGqda3k1rK/l3YK1TSSPjDMVDk5l/kFItzeRUy+u+HvjLO2WB12w2rgml
-	 Hsnid5O2cctNax5IewWavaIpFK7FbIFy4wJHTz47ssxh/NnAWLc21sgydRE8mhD6U6Sgt
-	 YwUN+UwCkDy1P1Tjs/MLycM7IFOwvj8iRf4Q+g0H4Qv/StXO2UHWJfQEUwiZnEmz88w==
+	bh=dxKNiMftVupVb5om+wXy5zkYQQ2Gh2XoL0QWLFEag50=;
+	b=hp0InmmsFj2owBFbI+qLFVoLDySfn+0beV/VQCJkiViTc79fkpcCylcGdNDyvdplz7ln
+	 44UA6dDp6fyvwjltIOk0IfAy4QnRrYaXTaKoRs+/cJsE6/Wgw9GBNEvir7dROE0iFt0I2
+	 fxTCLPFdbtlM4Sdb8GpNab06ltz7IR1mniJqUcLf/83tR169GHH87CTU0syJFuLPQ+dF+
+	 kDqh0VaBGPmyPB+CysD83sqtlVgrbmjgCEMsgWhb3dXZ6Fntm2rQxUP0sU9gKzG+y29uQ
+	 KyvIhXGkziw4dQVpa+Ig1ve6xdPCubHeGH0Yn4+GSBp3Npv3ZLdLrV6zPBe3VSXfgKg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=evJm+oLs;
-	arc=none smtp.remote-ip=209.85.214.173
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dmarc=fail header.from=mgcrea.io;
+	spf=pass smtp.mailfrom=mg-crea.com;
+	arc=none smtp.remote-ip=209.85.128.49
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A7E606A331
-	for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 04:06:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 75A7E606A331
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=evJm+oLs
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2f04ad2c46dso10317625ad.2
-        for <linux-mips@vger.kernel.org>; Sat, 21 Nov 2026 20:06:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB4B606A32A
+	for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 12:02:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2DB4B606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=mgcrea.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mg-crea.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-49d05d51553so15695195e9.2
+        for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 04:02:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795320368; x=1795925168; darn=vger.kernel.org;
+        d=mgcrea.io; s=google; t=1795348973; x=1795953773; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
-        b=evJm+oLsq+4kzc84VKAr4CtJzo3IfsCj/gVq3bR6b4/RunCaPdIAKKDRdB60FHOri/
-         kXkXUd0mdLQsZD09OcorgB7ZMX+ElbW8SGM/rhASv2H/S4TvQ/n74BdpSG623qt//u5z
-         j/uJNP4KhMU6uyWbwCttDb9FMO4E1+Q/ZvKCu+sot3am8SunnqGZPV5NgSDEKslxjHgm
-         wiUGdjewEbxDdTxs2y/9gUKe2RNXOeRrSAiMr5oJT+4Z0P/P8FvOXQOm2AGNtYLiI9N4
-         lSlvhzjKnZRdrISEPM0wO7qK2abATsVypk4L5e8RDNAkPgWRh158PSz+CsDiimAzaEyy
-         EXFw==
+        bh=dxKNiMftVupVb5om+wXy5zkYQQ2Gh2XoL0QWLFEag50=;
+        b=h37WmvXlzeqJOg2skDXkuZ2+T7AUQHNgThGjgdFemHp3spzjs6KBY6eYQMLhocih+J
+         vdEYZeECN+/WBbybSUhmDji0q0kGhSN7f+RdRRtaFsNi9yWY1lNGJn7xuB1cn5i/8ScM
+         tk8BgynI/J3dvysUVS2moeOvYoAiSkA16sgDP4kNic15y1ifZ2XzRwI2fFI708nj/zbj
+         k4sb0gC4CgEJ8mxFEo/8xTtmnkXiveyBTOdD35D2PGlgGGZgfKF8JiO/OTZt4Ix5WVAr
+         GHqZITv4Qhv0YjEyHEL3stdQh8wMyhT/oJLoqFHi0za1Jcw0cgXO3wOQ8RQ8wuH5oSAQ
+         kDww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795320368; x=1795925168;
+        d=1e100.net; s=20260707; t=1795348973; x=1795953773;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=9PuR6BxW1bsGd2uW0XkZ13RLiKGF+CwssnUyvB4C4G8=;
-        b=IaJsK1Cbq03vC9tjA9/UJ5dfnJEG7GP6CLAeQvbq4uHUwBVtR11lTmLsv/Q4fY7ivZ
-         2zd3qRoIb6m5aABQRjFXA19z4Pkr/dSH/o00wxLTAWNij9GQyyXBlGnGG/LgnJy8Gv4a
-         DFqZOIJFIEoDyWRJIooMj78YZIS2rlZ/QknK8W3v6XHf6DxNR1gaIgzYWbPsvdQc0xYz
-         saxV+Zycm+XP7Zj2xt6WoB20AKreWbSPlnncFfC94922aL25/xevPJiBJxw6XuQl0XHt
-         p9iXy9Wcwof341TqvcCJu/RnKOBT2foApsDb6F3iSHgIg06MSYPFcHfq6oNnb0ygd4Pj
-         w+Fg==
-X-Forwarded-Encrypted: i=1; AL+hErFhNV+BQRY7VNNgBoaCbnCs27F4zpvKhh9zdPNEwLN3GsEzkxoCXOl+VDNkaiPpq/2xDhgXXhG0Lmn2@vger.kernel.org
-X-Gm-Message-State: APuU4Z/+lagt38zKPI2iDO9mfuGAcwxDUgf0tE1robeJa3WymrX8YyZE
-	UOvnNzMzURRQXc6Wumk2kWaXoMTUpwMvTXdkh6PTr2o4hG4PIqRaojG3
-X-Gm-Gg: AZFdTZfFmmQ/hfvhS0IlvvHfnY4T+bWJD++z9FBGS8f06N0bQqaukDjU67b77mxzksX
-	DOXbFV0rmF248fLjSuC79s/V+NhlW8Xo7kpwAy1+N5fssNKZL3m1dfef77nJLTIaC5LI0s0BUUX
-	fCAeKjmbFjp10pxV3vS9cdgHm/7QpHawSyZ5s/4hHwgW+z5QTFigR7IxsW2IoftWlzyeVJZoirl
-	s9bGu+F8d4ZOf0x9wLFdcwrA1o+gYb82rDwcMo8qv8O0EnGY+gQe9808MA4Cu6su8VVG7BwPMNC
-	qsjtGgzjFK7m2QwzpsDFKA38cS/btmSvcXJqK+aohJvtsOrG30VDAl8pglAra6i0XUbNrCKxfZ/
-	mCZyxNPerkqX4HnW/EhcG4iJcw7iPPcG9SupUPjOz6zY23Jv8XSLltXkkmn8tJwJshncjarEJAS
-	J59IZjBiKTfv0s2i7vlBUiQVbSXtNtCMAHB1iA6D8qyv/a62YHgXQKISWwrre4khtlXGF9nEc5b
-	gHKlC4TWfd/cFwo3cHqLVjPZUxe6oICbf8g+b+YFTjSQBztPqXNd9jd+UIMRJkBQZDOVehlkQxr
-	+s84+buYaGyTK3gmAFdtY+i4TQNuTm8ZXw==
-X-Received: by 2002:a17:90b:3d92:b0:3b1:2237:3c93 with SMTP id 98e67ed59e1d1-3b41c8de8d7mr6039371a91.18.1795320367746;
-        Sat, 21 Nov 2026 20:06:07 -0800 (PST)
-Received: from arm-a100.. ([140.112.28.118])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b41ad92c07sm10947018a91.13.2026.11.21.20.06.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2026 20:06:07 -0800 (PST)
-From: Tzu-Ching Yang <shingekinocore@gmail.com>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-mips@vger.kernel.org,
-	llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix genex.S build with LLVM before 21
-Date: Sun, 22 Nov 2026 12:05:59 +0800
-Message-Id: <20261122040559.1120594-1-shingekinocore@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <alpine.DEB.2.21.2611040746160.6502@angie.orcam.me.uk>
-References: <20261104030147.3117325-1-shingekinocore@gmail.com> <alpine.DEB.2.21.2611040746160.6502@angie.orcam.me.uk>
+        bh=dxKNiMftVupVb5om+wXy5zkYQQ2Gh2XoL0QWLFEag50=;
+        b=VXyfs9f7tnAS2Mw13DI1ylBo1H7eW1nJxQYwYmZdzI4UfokdOpQzi6qjwMIyHqb+dU
+         IiU4M8dC/0szV2FY/A15VTQewKAh917SHHVQg7Q0sh2kKz0gOcwNk4VZcE/nAlDcY8iB
+         vPJ0AI+z4seTVS7YAVQA6Tf7eo/4AQ+D8mIMcsLSOyJ5HB8yBrK6rp2ieKjnvytdWrwX
+         vJ0uczP5fSmaM+5j5oT8GQQfnE3eVm4ScAvw0gTne00qZ62lg0gvU/kGxPI6KrKmZKxh
+         6Bsff1eNrxASi5c5fstnzfrRpka+38ajtSVh/+0hWdd+brfXVne1N8pdXNQitqaSk1gX
+         AUGA==
+X-Forwarded-Encrypted: i=1; AL+hErFQhrupf7mv6sQI1n2cbNSGED1TA/4fZOSGzKBjy2okiDTNn0T2025ape1HQfTBqR3wmap6aZiuzLw7@vger.kernel.org
+X-Gm-Message-State: APuU4Z944cETWO7m/9usIPdpldOvayve2Oku0u+wsdDgrIejQD93fkUa
+	aThKLZIif65uzHYRaIGcmJTn8tc9wSd/nKJGWxA0VyAbGSz/x3VeuvY8y3NWtGtVKPbwJ8zD6eH
+	jYLFTSHPvoA==
+X-Gm-Gg: AZFdTZcFhwS6UQhtb49phb4+MY9KU0RhDUJQ9kaJJjLF+fkcXfQSa8KDOtnCBdWihZt
+	1MEZQhJcbbN+IZVGk/ConnsnBUEsfQPLn+6jhXv+egJvBomiN+hxrfnujcdZAMWfrcmqjZGwXzz
+	8cL52Ropq+ambOBv/6SYVtVI1ahXAzK07OBhgVa3UqtXBgN52xSQSzbmxvL8Bf84AXrj2aPYNgF
+	ec5cXUYHcOgJ8LHbpeupzaww/vXe5aY8fe6exeHhLgzIge3oWv9a+8sP7wGQS3kPWZimoUCGuhH
+	WJBaXvYIh5CmKm+kKS+oCiFdExCA+zZq+Eg4X6g7r127o0VUQMoBDPDXRyGHg3Yx/RDl/weRxPV
+	jGnYq4F349f4rtjaudR7r5qQuQrJKA5xQys787OdiwO59x0ILz8PY9IoouWUjY15i/FBGdqk4lm
+	wDUmlL+/VJnUgYhD9EB4u4QDZkTgxzVmLCIhmV+2ud2YbsTQXBXTO4h4hY/vIUBDADXr05IXXA8
+	vCvjBlcCwLcxvlj0F+RwyGKye4eTskaJepgHCHwIVnm4SBK0LDMZ4jTn6WgBd8vIGOw7PgjFr3W
+	c8ttErsWWd+FT1nP2ew3GMdSko0GIR42mkT4t6ziJGWWEalsUjnoc/NS1AJu5wv9BEwzCwRoiB0
+	KPa2hmSs=
+X-Received: by 2002:a05:600c:1c28:b0:4bb:867b:f0f0 with SMTP id 5b1f17b1804b1-4bb88810708mr212949495e9.15.1795348973238;
+        Sun, 22 Nov 2026 04:02:53 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:9d2:5a71:a5ac:a6f0:7687:6596])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb8d4f9aa8sm209160435e9.4.2026.11.22.04.02.52
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sun, 22 Nov 2026 04:02:52 -0800 (PST)
+From: Olivier Louvignes <olivier@mgcrea.io>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"H. Nikolaus Schaller" <hns@goldelico.com>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] ASoC: jz4740-i2s: Add support for the X1600
+Date: Sun, 22 Nov 2026 13:02:51 +0100
+Message-ID: <20261122120251.2083-1-olivier@mgcrea.io>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <179495557744.2707353.8222109296948133350.b4-review@b4>
+References: <20261024214438.33342-1-olivier@mgcrea.io> <179495557744.2707353.8222109296948133350.b4-review@b4>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -109,41 +105,27 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Sorry for the late reply: your mail did not reach my mailbox, and I did
-not check the list archive until now.
+Hi Mark,
 
-On Wed, 4 Nov 2026, Maciej W. Rozycki wrote:
->  Shouldn't this use:
+On Tue, Nov 17, 2026 at 10:46:17PM +0000, Mark Brown wrote:
+> > +	.field_i2sdiv_capture	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 8),
 >
-> Cc: <stable@vger.kernel.org> # 6.6.x: 56651128e2fb: MIPS: Fix idle VS timer enqueue
-> Cc: <stable@vger.kernel.org> # 6.6.x: 2b6d718c8dbe: MIPS: Fix whitespace damage in r4k_wait from VS timer fix
-> Cc: <stable@vger.kernel.org> # 6.6.x
->
-> then to get this all picked up?
+> In the v2 thread Nikolaus said that there are separate TX and RX
+> dividers, is that the case?
 
-Yes, with one more prerequisite after 56651128e2fb: b713f27e32d8
-("MIPS: Move r4k_wait() to .cpuidle.text section"). I will send v2
-with it added to your tags.
+Yes, I2SDIV has TDIV in bits 8:0 and RDIV in bits 24:16 (X1600
+programming manual, 9.7.2.6). RDIV is only used in independent clock
+mode though (AICFR.DMODE set, the "6line-mode" with its own RX_BCLK and
+RX_LRCLK).
 
-56651128e2fb adds a .previous after END(r4k_wait), and the .section
-that it pairs with only comes with b713f27e32d8. With only your three
-tags, on 6.12.118 and 6.6.162, all the code after r4k_wait in genex.S,
-handle_int and the other exception handlers included, is placed in
-.init.text, and a malta kernel hangs under QEMU about when the init
-memory is freed.
+The driver writes AICFR in probe without that bit, so the AIC stays in
+share clock mode, where capture runs from the transmit clocks and so
+from TDIV. That is why both fields point at 8:0, as in the X1000 entry.
 
-With the four tags, the cherry-picks and this patch apply cleanly on
-both trees. For malta_defconfig, genex.o builds with GCC 8.1 and 16.2
-and with LLVM 13.0.1, 17.0.1 and 21.1.8 (on 6.6.162 also 11.1.0), and
-kernels built with GCC 16.2 and LLVM 17.0.1 boot under QEMU. On 6.1.y
-and older, 56651128e2fb conflicts in idle.c, so 6.6.x is as far back
-as the cherry-picks apply cleanly.
+I could not test capture, the R1 has no capture path.
 
-> Or is it unsupported annotation syntax
-> where a prerequisite matches a Fixes: tag?
-
-It has worked before: the prerequisite named by 4409df5866b7 is
-its Fixes: target, and 6.1.76 and 6.6.15 took both.
+Would you like a comment in x1600_i2s_soc_info saying so, or is it fine
+as is?
 
 Thanks,
-Tzu-Ching
+Olivier

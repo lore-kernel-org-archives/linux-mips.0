@@ -1,62 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=23.90.104.144
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795433862;
-	b=rnCIQ5Oxa6CyszQF0GbVjgag+lciIWxovsov+66hPp1Xc0mD7MtRJu5DQrDHFoMMXoP9
-	 E4CGOTsefCZWmWWEelOhoQFMU60GAVAFu6/d1VEdG4NHmbGHbUrQxk90OxVmsm93qwUAX
-	 KQGBznIkYJxze2PEMQ1o5dtORMqRqkGug3b9ILp3XfnSE7VvTw7NT+iUm9kJIZQDx2UmC
-	 AAmmw3E6XKDjsKrvN3SPEHeU0COsW7fUCfxMWfXSPABn1/NgIwMcz8eiQaerGf/kkxOe2
-	 Y2Ls9kQ/JmhmaNYpHcNTkibMyzDRHcviMWdoMb1vIzlSuP7cEmfFeXhqzo/QW3/lHZQ==
+	t=1795437478;
+	b=qG50CNjWKA7iZe1JNViYLXA6IM0FL97XrOInrxXkxT0i7Ti2ZKUDbvVh+DBrZ1Ch2yZl
+	 kOlzLYX5ZaS91c7kkWaL5BDq0x0Rdr6j3KfD/+SPFlh9n224mVUEHiSkDr01br/lZZazY
+	 JscC4HkcoTz/d7bZNrLAc4sHELKJHsSy+9XOCbxqPmIInuxeYCmgaaqexl6OZWXAvfmY/
+	 ulcY2etUcuETI+AMO8ZtccgMLXn5LCTZAMhluhKlNkX/6uWzF7Pe7Q/aqbgK1Wan0LyTz
+	 bhgQYvyrP7P8x3PemqOVdLJwN/R8UtfGQfRLUxNO1gxTTurfrAiBSpnKZA3yYljjq3w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795433862;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-Amp-Result:X-Amp-File-Uploaded:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:Received:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer;
-	bh=8VjKfFnIZSkrCLXCygsuoSQMlE9SiraWmXyOrGKYFrE=;
-	b=jbtdt/fkvi5L4IdbztnLSQ+xr9UAToyVIDZvWE84hpE6iCeMdn7Wtf1SU1dLg5KNZ0gf
-	 ZWGu2jvFUoXSpgaFA4uziTN4ksKwz2k4jDr3a8Zkp8KxBJXPm0TWeTPJ9nEMN0To4tmQh
-	 QtP9GNS6l90Mu0m4LC7yhmUAFsmd58iVOlTOijr0T3fMIz29Tkb7bcySuS1nOgvca4RDr
-	 jXnGe2RexcV+mASEWtku2OKSgVFjCgLgWMTWApQ/yPgos+d147yE1582HEoVUYvL3cqIe
-	 pF/x1vRDiJQ4K6jUgpTqaIt+0hssXL7xjEZwDI+FrH2SlLQxAqrSjbHORLh4LEnYbWg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795437478;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=4FHRYHmmGVRFcPlTDGmzx/L3A2zzLoxUicG8IqEA4p8=;
+	b=4voX4gJtmoodpemZA8bkbfcCrsFfaL1P3wNryPqTkSSgGMvHI9ofHrIt0SdR9a9gZ8EI
+	 BZTYt0Yn3b5tMXwS7fFFkiG4i1XpZOReXlkU1NG0md1fftiUHdooOyC6PjQETxnz5P5tp
+	 RrIZHe2GA6mj0awIWQlGyMk553EBUEpHiatyR2v4/MCSHcB5aOGkHpHZ+wo/C+bsCwBtA
+	 8ds17THy9JbEel1+5rBYRbatRJYDjarID9t74d4731p2eSFzkrxtfOBANSceyWFck6CSt
+	 wiBSH5CSTd692ngPAcSD7y0vs5fHKCkXRQorc7jMarDAncBRQYtporiBvsvYTPmbgWA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=mobileye.com;
-	spf=pass smtp.mailfrom=mobileye.com;
-	arc=none smtp.remote-ip=23.90.104.144
-Received: from esa1.hc555-34.eu.iphmx.com (esa1.hc555-34.eu.iphmx.com [23.90.104.144])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6475E606A680;
-	Mon, 23 Nov 2026 11:37:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6475E606A680
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mobileye.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mobileye.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=mobileye.com; i=@mobileye.com; q=dns/txt; s=MoEyIP;
-  t=1795433860; x=1826969860;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=6HSsbhIJ2/LzJaFX+VzpT4jqVpYrVahm8NgRsq5w1c0=;
-  b=cu9BtLwI6zIh04aRe5oEXBgHu5pcphEXdRGUYCtUMyzXNC+jTY63RDyS
-   pzUXhZXRng/4U57+yPE7RmStto7apnesYa8VGlNx76U6JZRhh2PJHsvV+
-   s0ivypm0fZdaMv5j2QfGjjEBSgzuN+Ok5IwBfhOpEmqwNG36y/sd/wEvU
-   d3BNb3XT7qAnwf9o5K7hO4IiOhiBddTNSQk4jJttKSO3TTGI4EuKR3s4b
-   XH1DmnScMv1w7AdQCpHHfS9IsNh5ssGQ+u5slIP5J5AmURB/PTiasm9TM
-   pV7KsdJ/o03vvEQNwtIn2OYIDsIpYW5hVXPAYgE5amIRLGNelCOKlCnLi
-   A==;
-X-CSE-ConnectionGUID: aFHaIcV+S7aBTvYTrtdGmA==
-X-CSE-MsgGUID: hSra9YUxSG28GnS0+iynEw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from unknown (HELO ces04_data.me-crop.lan) ([146.255.191.134])
-  by esa1.hc555-34.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2026 13:37:29 +0200
-X-CSE-ConnectionGUID: wwCti2eIQNyQPVs2zMcl2w==
-X-CSE-MsgGUID: zZwA3l2rQHeuaw3KjWwvFQ==
-Received: from unknown (HELO epgd071.me-corp.lan) ([10.154.54.2])
-  by ces04_data.me-crop.lan with SMTP; 23 Nov 2026 13:45:49 +0200
-Received: by epgd071.me-corp.lan (sSMTP sendmail emulation); Mon, 23 Nov 2026 13:37:28 +0200
-From: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-Date: Mon, 23 Nov 2026 13:37:11 +0200
-Subject: [PATCH v4 1/6] mips: {cm,cpc}: Make cm_core_lock, cpc_core_lock
- raw spinlocks
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="JQujt/H5";
+	arc=none smtp.remote-ip=209.85.214.172
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224C2606A31F
+	for <linux-mips@vger.kernel.org>; Mon, 23 Nov 2026 12:37:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 224C2606A31F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=JQujt/H5
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2f04f61282dso11442725ad.1
+        for <linux-mips@vger.kernel.org>; Mon, 23 Nov 2026 04:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795437477; x=1796042277; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4FHRYHmmGVRFcPlTDGmzx/L3A2zzLoxUicG8IqEA4p8=;
+        b=JQujt/H5E/i5WTl+jz+YqJXcKepX9mWQBC3heidVAz/a/MvDYSx4nPL8nqCIz1q22E
+         KO89UAnp22TmDevPiP/iTEcZwthcMvD5tDn3E2Qf+mzC1yPgUelC+U7VgR9tHGjvhK79
+         5Fe9Zr94KqaAMqlpyD0qT7MNTr66FO5GdB/7ISOdrtWSIWCnkpI3/jUWNrhJhOAppYC4
+         jcUwz0gXM6YIRC0drO/x3YE2ERT0wSjVCJpkrsS84ekfi5v1eFop50QSswk8Tu3WWPHj
+         f6uGbkd6z+B5nSGlKQgLaje2ut13Nx9utjDRqHgkud0N/BgbVpT7CuYydhC6eOmUfNiO
+         As4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795437477; x=1796042277;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=4FHRYHmmGVRFcPlTDGmzx/L3A2zzLoxUicG8IqEA4p8=;
+        b=0jJsSVWzffyClvmAKsxQ2ItY0Tu1WM5N8XYT6yubFAN4hcdT4jqmnCPB4MrsHAzXbm
+         gzrXUE2NU9UtRBqLEEGr75nT1EQX6134gMzguGnkXVo3L/9CgGzVkrGp2XwmBD4KS49S
+         H1zB6Ap/Ga1TwhaIKhfSPFLqWqBrnAuKWYSNxjNLt0a4E0kmFxGsa3ZbUmHcFP5ioZEn
+         AC/o73A7OZRYo8rFl171IBWy0yiRAJCjpeGtSowNA05TkJbxS/+dvOs8cpJoELlT6v9n
+         Tq5UkpeatJ2Hq6GVxt3M2u/cn5fY11HWe5TQpDEL+5jZpR4lGkSUzOKuBIQDKV9VmRmu
+         Cs5w==
+X-Forwarded-Encrypted: i=1; AL+hErHcScdKpt+N4IO6sp5VdZ6YCYf9GbWJ27MhhQbn1xW8a87Xvr9KFkUprUK2+A8CuojyUiWE+GzooweI@vger.kernel.org
+X-Gm-Message-State: APuU4Z/E3HmivYyqKdHaCs1ryKEthsFrX82MC+kb7K6IPWtQfkkLDbNY
+	ULKIVeJmAhTJ5oabLcpf/VLJI2wQZWdagUeug5PSqxEXfADDzN3zyN9S
+X-Gm-Gg: AZFdTZc+WGA3FKgnUO5aG8FRngPOXHC56iwBSBtbUarnVv14Cwr/Qc18M36duIyZ8o4
+	Udry0FelyqIF5qNE778OFeWpymWMITfLIP5hPxlpyE7SqxIDrwgH6H7cDwiUfWLxtqEBI3/pK11
+	P/mZGhXPp5BNUbgfYOFbhpPhz1qsNzZFVRQ48K3zgj+KZV3Tt8uKzWng6tV2/FF5vVk3TFsHvNU
+	PhiljOjXtO0WfXLlQOc7kEZNEIXYCqB+jO1EqjcnoZnFTpKRCADOBnRIJ8ChIdioncUereodNLL
+	wnSbx4X0p45V8MXlH06yRocAs9NVLqmLG2vOUUdiy1R0kSVAMfGU53DuEZqCoon4vLZzQMv5kgG
+	8b4CzsTY1+ystFIG/vH9Jdb79p0IFU7TCuGVj0rmDdNZNWnRFBCmgW4WxAcvrmFpnqzNbazsjUQ
+	V6U2UHkS2m2DuTXzCPlAA5UxNTxftamyAjhkEgW/10h5B191Q0RsvJA98KSiueoNFqYI3zkE3EH
+	zBy91oVI9sy5jKTJyRH9zKZOH1QQ9tMQ500Tmqr/14+ydio5AJ+0kLZ1cLs+x3JNzXmEpH/Tavr
+	u91K0ow4z2GnhLsmfxgW+jryxMtCBtCPyw==
+X-Received: by 2002:a17:902:e847:b0:2ed:c9bf:9570 with SMTP id d9443c01a7336-2f03f1a4599mr114769615ad.26.1795437477376;
+        Mon, 23 Nov 2026 04:37:57 -0800 (PST)
+Received: from arm-a100.. ([140.112.28.118])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f06c02a92esm32318165ad.40.2026.11.23.04.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2026 04:37:56 -0800 (PST)
+From: Tzu-Ching Yang <shingekinocore@gmail.com>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	=?UTF-8?q?Beno=C3=AEt=20Monin?= <benoit.monin@bootlin.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH] MIPS: Make cpu_has_mips64r6 constant on 64-bit r6 kernels
+Date: Mon, 23 Nov 2026 20:37:46 +0800
+Message-Id: <20261123123746.2963491-1-shingekinocore@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <alpine.DEB.2.21.2611231038330.54328@angie.orcam.me.uk>
+References: <20261030140430.1857741-1-shingekinocore@gmail.com> <alpine.DEB.2.21.2610301515350.42255@angie.orcam.me.uk> <20261123035732.728281-1-shingekinocore@gmail.com> <alpine.DEB.2.21.2611231038330.54328@angie.orcam.me.uk>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -66,153 +105,45 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261123-i6500-cm3-pmu-v4-1-5a9f5351688f@mobileye.com>
-References: <20261123-i6500-cm3-pmu-v4-0-5a9f5351688f@mobileye.com>
-In-Reply-To: <20261123-i6500-cm3-pmu-v4-0-5a9f5351688f@mobileye.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, Will Deacon <will@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, Kees Cook <kees@kernel.org>, 
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
- =?utf-8?q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Fu Chao-Ying <chao-ying.fu@globalfoundries.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-rt-devel@lists.linux.dev, linux-doc@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, 
- linux-hardening@vger.kernel.org, Paul Burton <paulburton@kernel.org>
-X-Mailer: b4 0.16.0
+Content-Transfer-Encoding: 8bit
 
-From: Paul Burton <paul.burton@mips.com>
+On Mon, 23 Nov 2026, Maciej W. Rozycki wrote:
+> > Your form and v1 differ only on pre-r6 kernels. I built both on
+>
+>  Then you're doing something wrong; with __isa_ge_or_flag() I get:
+[...]
+> $ objdump -d vmlinux-base | grep -c dclz
+> 18
+> $ objdump -d vmlinux-has-mips64r6 | grep -c dclz
+> 1430
 
-cm_core_lock and cpc_core_lock are used to protect access to a CPU's
-core-other/redirect CM and CPC register blocks. Since each CPU sees
-its own copy of this block, we need to ensure that critical sections
-holding a cm_core_lock run on one CPU - ie. we need to disable
-preemption.
+Sorry, I worded that badly: I compared your form with v1, not with
+mainline. Against mainline, in bytes of bloat-o-meter -t with GCC
+16.2:
 
-Use raw_spinlock_t to implement cm_core_lock and cpc_core_lock in
-order to provide the guarantees we need on PREEMPT_RT systems.
+  defconfig   your form   v1
+  ---------   ---------   -------
+  64r6el        -105340   -105340
+  32r6el              0         0
+  64r2el           +264         0
+  32r2el          +3352         0
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-[added CPC part]
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
----
- arch/mips/kernel/mips-cm.c  | 20 ++++++++++----------
- arch/mips/kernel/mips-cpc.c | 12 ++++++------
- 2 files changed, 16 insertions(+), 16 deletions(-)
+On the r6 kernels the two give the same vmlinux, byte for byte, so
+your form has all of the gain that you show. On the pre-r6 kernels it
+makes cpu_has_mips64r6 a run-time test, hence the growth; v1 leaves
+their vmlinux as it is.
 
-diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index 7c9c5dc38823..3bfe85e86a9a 100644
---- a/arch/mips/kernel/mips-cm.c
-+++ b/arch/mips/kernel/mips-cm.c
-@@ -179,7 +179,7 @@ static char *cm3_causes[32] = {
- 	"0x19", "0x1a", "0x1b", "0x1c", "0x1d", "0x1e", "0x1f"
- };
- 
--static DEFINE_PER_CPU_ALIGNED(spinlock_t, cm_core_lock);
-+static DEFINE_PER_CPU_ALIGNED(raw_spinlock_t, cm_core_lock);
- static DEFINE_PER_CPU_ALIGNED(unsigned long, cm_core_lock_flags);
- 
- phys_addr_t __weak mips_cm_phys_base(void)
-@@ -309,7 +309,7 @@ int mips_cm_probe(void)
- 	mips_cm_is64 = IS_ENABLED(CONFIG_64BIT) && (mips_cm_revision() >= CM_REV_CM3);
- 
- 	for_each_possible_cpu(cpu)
--		spin_lock_init(&per_cpu(cm_core_lock, cpu));
-+		raw_spin_lock_init(&per_cpu(cm_core_lock, cpu));
- 
- 	return 0;
- }
-@@ -347,8 +347,8 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
- 		 * mips_cm_lock_other() leading to a deadlock or a nice warning
- 		 * with lockdep enabled.
- 		 */
--		spin_lock_irqsave(this_cpu_ptr(&cm_core_lock),
--				  *this_cpu_ptr(&cm_core_lock_flags));
-+		raw_spin_lock_irqsave(this_cpu_ptr(&cm_core_lock),
-+				      *this_cpu_ptr(&cm_core_lock_flags));
- 	} else {
- 		WARN_ON(cluster != 0);
- 		WARN_ON(block != CM_GCR_Cx_OTHER_BLOCK_LOCAL);
-@@ -359,8 +359,8 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
- 		 * race with us.
- 		 */
- 		curr_core = cpu_core(&current_cpu_data);
--		spin_lock_irqsave(&per_cpu(cm_core_lock, curr_core),
--				  per_cpu(cm_core_lock_flags, curr_core));
-+		raw_spin_lock_irqsave(&per_cpu(cm_core_lock, curr_core),
-+				      per_cpu(cm_core_lock_flags, curr_core));
- 
- 		val = FIELD_PREP(CM_GCR_Cx_OTHER_CORENUM, core);
- 	}
-@@ -380,11 +380,11 @@ void mips_cm_unlock_other(void)
- 
- 	if (mips_cm_revision() < CM_REV_CM3) {
- 		curr_core = cpu_core(&current_cpu_data);
--		spin_unlock_irqrestore(&per_cpu(cm_core_lock, curr_core),
--				       per_cpu(cm_core_lock_flags, curr_core));
-+		raw_spin_unlock_irqrestore(&per_cpu(cm_core_lock, curr_core),
-+					   per_cpu(cm_core_lock_flags, curr_core));
- 	} else {
--		spin_unlock_irqrestore(this_cpu_ptr(&cm_core_lock),
--				       *this_cpu_ptr(&cm_core_lock_flags));
-+		raw_spin_unlock_irqrestore(this_cpu_ptr(&cm_core_lock),
-+					   *this_cpu_ptr(&cm_core_lock_flags));
- 	}
- 
- 	preempt_enable();
-diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
-index 3e386f7e1545..4b50c58628dc 100644
---- a/arch/mips/kernel/mips-cpc.c
-+++ b/arch/mips/kernel/mips-cpc.c
-@@ -15,7 +15,7 @@
- 
- void __iomem *mips_cpc_base;
- 
--static DEFINE_PER_CPU_ALIGNED(spinlock_t, cpc_core_lock);
-+static DEFINE_PER_CPU_ALIGNED(raw_spinlock_t, cpc_core_lock);
- 
- static DEFINE_PER_CPU_ALIGNED(unsigned long, cpc_core_lock_flags);
- 
-@@ -74,7 +74,7 @@ int mips_cpc_probe(void)
- 	unsigned int cpu;
- 
- 	for_each_possible_cpu(cpu)
--		spin_lock_init(&per_cpu(cpc_core_lock, cpu));
-+		raw_spin_lock_init(&per_cpu(cpc_core_lock, cpu));
- 
- 	addr = mips_cpc_phys_base();
- 	if (!addr)
-@@ -97,8 +97,8 @@ void mips_cpc_lock_other(unsigned int core)
- 
- 	preempt_disable();
- 	curr_core = cpu_core(&current_cpu_data);
--	spin_lock_irqsave(&per_cpu(cpc_core_lock, curr_core),
--			  per_cpu(cpc_core_lock_flags, curr_core));
-+	raw_spin_lock_irqsave(&per_cpu(cpc_core_lock, curr_core),
-+			      per_cpu(cpc_core_lock_flags, curr_core));
- 	write_cpc_cl_other(FIELD_PREP(CPC_Cx_OTHER_CORENUM, core));
- 
- 	/*
-@@ -117,7 +117,7 @@ void mips_cpc_unlock_other(void)
- 		return;
- 
- 	curr_core = cpu_core(&current_cpu_data);
--	spin_unlock_irqrestore(&per_cpu(cpc_core_lock, curr_core),
--			       per_cpu(cpc_core_lock_flags, curr_core));
-+	raw_spin_unlock_irqrestore(&per_cpu(cpc_core_lock, curr_core),
-+				   per_cpu(cpc_core_lock_flags, curr_core));
- 	preempt_enable();
- }
+>  I maintain that __isa_ge_or_flag() is the correct approach.
 
--- 
-2.43.0
+Understood. v2 will use your form: cpu_has_mips64r6 as cpu_has_64bits
+&& __isa_ge_or_flag(6, MIPS_CPU_ISA_M64R6), with __isa_ge_and_flag()
+removed.
 
+>  FWIW an early check for the ISA mismatch might be worth having if at all
+> feasible, reporting the issue via a firmware printf()-like callback where
+> available.  Said JR instruction could be recoded as JALR $0, ... if this
+> turns out feasible.  Not a requirement for your change of course.
+
+Thanks, I will look into that separately.
+
+Tzu-Ching

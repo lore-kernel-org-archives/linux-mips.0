@@ -1,101 +1,110 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.51
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795406265;
-	b=CO+SuQUwZ4P9U1iUjlh9NcC09oa7Rfdy80ZI030ZzTEuK5RqFMZdy7gYxoeLEUVHuIEs
-	 Rp4OWcRQ5hyGeeWQeMojJ9PajyXrgzuGiaCWZRacIneaLFw8Z03E5K6M+SeJmNlIDr2ue
-	 Gb6OmZCzFVpM9I2AJ/tv3VeSmJ6gzos+ZViEeTfETn0lvlhyVhnShPnSA0TTaQrR+7521
-	 qEzxd13K5hP5iRY3TeENg0rsm84rmgbhsMrelXRJZFFrW4mkzFO1Z8XJvtiqox/5DY/R0
-	 jNCxdduK3+gyhxnQMBCupxFcnHU8eWvSUTJ8iCqw7IEwd+j8An5oeBlObzgVOIlpnGw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795406265;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=rdX3BSYdbVjaIyIWjU8rHw3DXYIedtrWZubrMfj2zsw=;
-	b=eqd2jkWliQK+c20MHXzyAWT6Kb7KZSEHnfKP68+1PFy9pkNMn8/+vt5iTdHvTotwx3wZ
-	 2qtyBnPWZM+UNz8ToZzn/raePD+L05nwGVgHXO0tTd0Re56PJ7ObIJVwBME3LXJ4CjzTj
-	 FpQDUG7HDZdp+kU3MXHnfMpsFY1XK/yriOGzaHLYpBE8PdmV/12l4kwT1gmhDcKSz7Dwv
-	 ePMUHtV8nyJw7v+IrVlavjgOJ716pdKtQOYpdRTmZo9KZot2oNEJchQI5tiO9Pa7nr6QT
-	 czYyxakd6W8q9Ar6qjQLmxBcoFi3ZgS6i/XuzgJO6u6fJQ/CGaOvD7BHz02m/FAf8gQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=LMIJZ1Qo;
-	arc=none smtp.remote-ip=209.85.216.51
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.83.45
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795416524;
+	b=Kh+YUgV+VeoqLLBTflW6R9mV0UrXLEee6Qj9g1fH0K9GPaqOGvju403HBYZEZLwPS79b
+	 oZHq8mxktSDc9frC/lic88EbLRsQzUdLNwa6+nERifbvVS7AA5tcJjK71v201lvDHB9y4
+	 xlSD/L22rVngf8WhrmydypVLOD+nga2yue9iA9IUjCMspZNSli9P19QvX/sal1GMtnPyY
+	 n7BdOZlAgAYFMC3pM+NRqUzydEB1kkTwWCsH0HOZy09gM2T2YSF+PEF+MyT1jtzatHAwh
+	 6CJG3GI7Kk0yA/RPgeA7red3m7kSABjWkQb9kUedQtBljcu9nk2qcnTaSplblmq7Efw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795416524;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=PkirmmGBrHXOzWH/Xd1T0m9vDbCZfqu1QYXH+9sGfFk=;
+	b=VcIoAsgMECJ3KMOAiWS0010tFLgyyq6CZEys6/4ywJ+lFRn0xG2TqkQYB4juvHALc0rQ
+	 VEKDNRAcucfCLcsobfC8K/eluJWHmg3ue4/tII0slXR1pZoQO/S4U7zJq1YOIKdC2FM72
+	 D+Oc9mnH6w6lXs142Hb8SL/o4fj+cShK53cDdnKsxv1QGe2vrjAfS6jUnyIoGgeCKg6ta
+	 /V8779i1ifZ9fTSgeFUH+3gWpqDA/z7w7kFsMWEsA4S3fv0cUy11QwsvH6eu50J3b2RU3
+	 GDLlHn/G9t8vqfSEUtPKPr1llCmQ+2Um4PhSJTBihoJLobMsyPa+1E3bfYS0kozwZKg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=mobileye.com;
+	spf=pass smtp.mailfrom=mobileye.com;
+	dkim=pass header.d=mobileye.com header.i=@mobileye.com header.a=rsa-sha256 header.s=selector1 header.b=aCVqtJKm;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.83.45
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013045.outbound.protection.outlook.com [52.101.83.45])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1660606A31E
-	for <linux-mips@vger.kernel.org>; Mon, 23 Nov 2026 03:57:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C1660606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E0F606A31A;
+	Mon, 23 Nov 2026 06:48:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 26E0F606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mobileye.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mobileye.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=LMIJZ1Qo
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-3ada4c06b7bso1457889a91.2
-        for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 19:57:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795406264; x=1796011064; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=rdX3BSYdbVjaIyIWjU8rHw3DXYIedtrWZubrMfj2zsw=;
-        b=LMIJZ1Qom2C68AFpllTmaEmyK4bDNSuOfwCyFUEEFjGXg24xLrirKNdB0moooSg5pR
-         Pm6EByrcFA6v2zMj2eRuT08YX8Nubt8m2zJ8MfKzo7WSDkbB4yIY/b1+WCvcDyi47Bff
-         gsKcOxJehwThI1lZ05OPE4JoNqX4rSWhqyApu6SkGvX1/XPdQKymHq4/RY7tr0ZHRrJk
-         00zVfdEyOSfEFecnq0iAAqLLFmH/jCmgltttFvHBkqhnPNLs88PphNfQoWxOGJIs3HCo
-         RA5xp5ySH2USK2qo8hef5bdYj3+gQ/w20yqmIj7uqXH9QAQJ9MZKf5jEkuCG/Qy1bqlk
-         y3lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795406264; x=1796011064;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=rdX3BSYdbVjaIyIWjU8rHw3DXYIedtrWZubrMfj2zsw=;
-        b=K1ItG4P5Uz3Fv57bo8OZmx7CYEg56LGPiwuR/UvpnSAyzq9Q5vklfI5/nhdl0CAd+Q
-         UQiWheTuGlDzpAj/bsUlLtRHRg5fSrOLCC8Um8VVRdyjbs597UftkZqjSr4gkQmZzEaZ
-         mVHK5ayBjrhStfTaBi6pTusxh4L54X6KiuQr6sTX8Rx+Hk3MgMvf1oH90ld9GRgyezCM
-         qy68t3ijjNeKQ7BGl9Wj6R/R94f3I1yFGtdVmDs8daULupx5c2z60+OVJtPmvousbJrd
-         0aFSATXKV2mfqXmBHRmeaqTJY8KsF+0QWUN6mXHuDGqGLrefXsu0Pbxa3kdwJjg2CKtl
-         npog==
-X-Forwarded-Encrypted: i=1; AL+hErEIJR9700xtXSlBWXMhOQBVi8Sd/fzGWSZN2TnTDywKMOnrieZZIDT8Uj5OAiOfAUWmaUxJu26gZ4hs@vger.kernel.org
-X-Gm-Message-State: APuU4Z/c5XdV7ligvFWpV39w/NpKPGYTZ3LJwecXgdaGRB5+WOKURP4H
-	DfW18lNotmJNsCxzfSzVnhAc7RgKLQr+0Bxuxny++SV6l2AbjHYO4nhy
-X-Gm-Gg: AZFdTZfjO39m+T2TmqkjhIJsOeA+ACjiA4c3Dl0FyXE0SfEDufLYoNXhiK7qB/3IMw2
-	x4jjk4EL2OhZIvUvFHirDX1dZQDwYvFaZguPyTqD+FAMQBz1g1jsvhFWghlorBz1Q73aZ1TLCqQ
-	tP8yR1gEO/OIF98RAMLx7VjowAflx8HNh4OhYrXczvyyA66DBolhnTjrl85uF0PKRi7owoc5Ca0
-	ougZQrTH/TkKtJ8cLop0CaAq+quanZ+/Ke9kDcIm78eIOqsqG1VK6LXNx1VSUSaUX4KuLanVwKO
-	rDU4947zfcB4JOxW+TLcq3Q7EwyFUkt+aKxH3mdkPwh5UdQmACIzBQC5Al5fZoqmGYHTH8WHN/H
-	iJDN/3C1dlcVQddqbIrM63H2nJQaaPSaW3amTrPU0gXEnKfgL1aGpiiU+zIxylln5remfT67oFL
-	zEOyAhZtwj34ZFYHFvpkDngQTRh8s7FJQ2zdVx4Q2OdeDsiJhomcUSfBqIM4GIlr/m4Nz8coaxG
-	R4yysSRiGnvtQ/5T3gZ5Uy5kO/8/zYkxb5f9T7CIh2rFXVT/KmyfIqWwcsfMcBTjHv2V+UBvZMZ
-	gCcj8CCYkakAvaTIdv2LdXB6DQ7G+uyqVcWZDeT9sSuwMITfXuWxRfA=
-X-Received: by 2002:a17:90b:4b85:b0:3b0:96b4:ceb7 with SMTP id 98e67ed59e1d1-3b41c7c2384mr9850850a91.8.1795406264056;
-        Sun, 22 Nov 2026 19:57:44 -0800 (PST)
-Received: from arm-a100.. ([140.112.28.118])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f04a49cfffsm37453605ad.46.2026.11.22.19.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2026 19:57:43 -0800 (PST)
-From: Tzu-Ching Yang <shingekinocore@gmail.com>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+	dkim=pass (1024-bit key, unprotected) header.d=mobileye.com header.i=@mobileye.com header.a=rsa-sha256 header.s=selector1 header.b=aCVqtJKm
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IjFOC77VBZeD4bO/hf/zS33JycAWWpkAH9Yv2WQ4ObNx1tSJh22Z5VtT5y5wuGxURtn2mYWYbgEW6cZ5ClasdUNFm0euwyE5R430ElH+AAXdLhY2L2LIaTTkt+WV+hzhuMx2tLGHnDzfNk7utyF+vzGhzX12l5kPcmpy/bwS6vijoHgRGou6QY+0RLUvcsU8kYL03R69B7HM0HXdbMO1DPoAKVcDyLBJ31yT1UZROkJXm4tYITlXSo6iHMAGH/vnGc25FRiOKFd0w24kgoeFr1fCXJ2vI5e3btG574CbXXh8QFmhw9Fxm90HrvkFsWVisCRJ/VOPom/U3CopuTbTFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PkirmmGBrHXOzWH/Xd1T0m9vDbCZfqu1QYXH+9sGfFk=;
+ b=kp1yireH3KqD1MHdsj2TmECQgOpMOCnJ8bs6PE/Q8o+un2O817cqlow4q41lvt5lL3ewuJ/2hjQnl4P4QLbWuyOSYvMYPsfYN7Yi56kTZa8iKKE5XSCIaCH9Tzyri3s9TqJCECtezEMQ4DuIdJckDf4uTxpVh7hd5M5mJ0/1rz1VT5yUwT/B2LiWEGc6oUIQqPInDkVL0670kIuW4dzEmAx/69oeHc85CQzPKuD3ntfNhtRQlsxBJ0BfWzu4skr6eZOMqKNdEWpwDFZnQXfAM7Xv/WRCe6b6K/kd1qLvarCu8S6qNtQsc98VmHktLhBHBHXlonNLea1nwjPj1aQoSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mobileye.com; dmarc=pass action=none header.from=mobileye.com;
+ dkim=pass header.d=mobileye.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mobileye.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PkirmmGBrHXOzWH/Xd1T0m9vDbCZfqu1QYXH+9sGfFk=;
+ b=aCVqtJKmUy0SXnLcCUBvY9FI6dX8Ql/gWdQtNXWimuLrGqUm1H5+KIr0lBTFajYUh78d1pIN2WnU4NIyFswcHbubV+8AXF2X+vKUdq4eENpZnzLmxL/71jifOJ/fgvLOuL0h6aw0FIaIlP4nr4KbMJ8SdFvgzYZLyvQF/hhZie4=
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mobileye.com;
+Received: from ZR6PR09MB889505.eurprd09.prod.outlook.com
+ (2603:10a6:910:e0::22) by BR0PR09MB492176.eurprd09.prod.outlook.com
+ (2603:10a6:2c8:42::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.14; Mon, 23 Nov
+ 2026 06:48:40 +0000
+Received: from ZR6PR09MB889505.eurprd09.prod.outlook.com
+ ([fe80::9006:1164:b51f:23a2]) by ZR6PR09MB889505.eurprd09.prod.outlook.com
+ ([fe80::9006:1164:b51f:23a2%4]) with mapi id 15.21.0639.010; Mon, 23 Nov 2026
+ 06:48:39 +0000
+Message-ID: <d7665267-bcf0-4449-b036-cd168c1fce3c@mobileye.com>
+Date: Mon, 23 Nov 2026 08:48:35 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/7] mips: {cm,cpc}: Make cm_core_lock, cpc_core_lock
+ raw spinlocks
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yury Norov <yury.norov@gmail.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	=?UTF-8?q?Beno=C3=AEt=20Monin?= <benoit.monin@bootlin.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] MIPS: Make cpu_has_mips64r6 constant on 64-bit r6 kernels
-Date: Mon, 23 Nov 2026 11:57:32 +0800
-Message-Id: <20261123035732.728281-1-shingekinocore@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <alpine.DEB.2.21.2610301515350.42255@angie.orcam.me.uk>
-References: <20261030140430.1857741-1-shingekinocore@gmail.com> <alpine.DEB.2.21.2610301515350.42255@angie.orcam.me.uk>
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+ Randy Dunlap <rdunlap@infradead.org>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Kees Cook <kees@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ =?UTF-8?Q?Beno=C3=AEt_Monin?= <benoit.monin@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Fu Chao-Ying <chao-ying.fu@globalfoundries.com>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Paul Burton <paulburton@kernel.org>
+References: <20261119-i6500-cm3-pmu-v3-0-c86410934b51@mobileye.com>
+ <20261119-i6500-cm3-pmu-v3-1-c86410934b51@mobileye.com>
+ <20261120114644.VM_HFf9o@linutronix.de>
+Content-Language: en-US
+From: Vladimir Kondratiev <Vladimir.Kondratiev@mobileye.com>
+In-Reply-To: <20261120114644.VM_HFf9o@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TLZP290CA0011.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:9::19) To ZR6PR09MB889505.eurprd09.prod.outlook.com
+ (2603:10a6:910:e0::22)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -105,61 +114,76 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: ZR6PR09MB889505:EE_|BR0PR09MB492176:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0bf4bfb-5503-449e-95b3-08df492dce88
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|23010399003|22082099003|18002099003|11063799006|56012099006|4143699003|261028144727099003|261026140227099003|261026121527099003|261022105027099003|10067099003;
+X-Microsoft-Antispam-Message-Info:
+	OZFz8YdxUj88dvSo/pGZ3EMyCoEg9T8EfV6gmMAaHnPB5YsMdYtaRlk1keziUxVYwKcGRnTyW/Ze3rANUfz4BEoyDtYTaWThSqRx5WqNP8/et+sYDNes8v/6n+EuxcqaNlPsJTQXWhgIwXOZ8x08+vppXc1zBKq6pP0GqIxwk7PupkBY/L+cymGEyNUzGAZk4O8FBfZXu9uLIU+fjqJuUE9iUtPqirrFD8PtRbz1i801GtugSUcA6HYJS4nEcWTpQ71ZvSpAxzEbW42vmXs584bKZlfg9JYhQbsf8lFIKa4JR/xVtz1ciGq40uCxRp4G9dzAIyDLLwL8gwLJHilEH9KgpLPz76OmNWx3vvW1oa87eAXP/FO1kQMvkgRytd37LhwBsFnljvcWRSLHMccokl51gZlXU29WNOnZ/CV1O4erZ3AP932yiYApEw4qq3UAPkn36WFRPdkXkcWvUcrGT35tsts1dVEfe7THVj7S0ihrD31dXGCp7s9FvKdrvjLkL+9KHQKaBWXd7ZSMC95zuXsuIjnOdjyOacafnCNi9ylRYSiodgNZRIHmDr3xo9b2uuQDEg5a/JaZ4+WIfjxaSLgBNnE5f/PFwogxGueP+on+ZLqHqD6l0pcaoZLgV+Ec+djLmevvnXqFRDp1DYdszjcw9VJN3sEXKvSOLbS9D4A=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZR6PR09MB889505.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(23010399003)(22082099003)(18002099003)(11063799006)(56012099006)(4143699003)(261028144727099003)(261026140227099003)(261026121527099003)(261022105027099003)(10067099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dDdCQVFPZjZRbVdicXNEdGFjNTNxUWxmeTZpODg4Zk5taUw3REczci9QS2Mz?=
+ =?utf-8?B?bTIyZmVhRTlHbis0NlU5a3BFclgwVjVTMnFMdWdJRno2QW9vNE4ybW5QWWF0?=
+ =?utf-8?B?SldlZVgrN2VQTVdSdTVuK3c1RUdXZFJTekJBWWtCTnE4a1Uzb3VlMkNua0JX?=
+ =?utf-8?B?ZWpPZmVYeUpOS1ZQM3ZGekRYVFI2MkVnK1l0LzdXZExOTmJSVkdMUWlMa2xq?=
+ =?utf-8?B?NFYrU1JGcTJRWC9iZlRpbVRNRkQ0ZjJOUExEZUEyT1dkUDJUeVQxMnhvYkFO?=
+ =?utf-8?B?RFBhd2hDb2RQdFM0Z1AybmEwM3NWbWlCMDRESE5JNnRwMk1TMFJUVzRGbVQ4?=
+ =?utf-8?B?V1h1N2h4N0FOU0JGYy90VVFjWlBlTWJWcm9adktXZmc0Qjl4REN5TGhpcTIw?=
+ =?utf-8?B?cWgwLy9tRWRJSTQ0QUdJTjFFSkJUR1p5ZFFJeUtKRit6S1A2VmI1dmF5REdX?=
+ =?utf-8?B?eTZldFJoV2ZJeFBYWnVxWHdMSmlIc3lURTJRVS9WQlNVeDQzNXpYVU1QbXV5?=
+ =?utf-8?B?VisrNjZxa3p4ekJWYmpZSlpsODllS3l4Y3JjVXE1RmkvNTlDUFd5SVlzSnN2?=
+ =?utf-8?B?QjJnNlAza2FxUWN3NEFaVjExUmxBejlTS2Q3SURXNHFMSXkwZzZ3RmF2TEkv?=
+ =?utf-8?B?NUZBRkJ0NUlxTGpVL1FlaEtsYnIyTEthdkhNOHptZHlBYWlPU2RXRTB2eXEz?=
+ =?utf-8?B?VDdtQjhnTjdqSG1ZM3h2cEZXN1pHajgzQnJXdkpPUWVDbUwxcjAxM2REUUk3?=
+ =?utf-8?B?OUpscWNEUUdBS1IxREJVWm83aUh0dzAwUXQ4QUVMY05hTm8zQzFjelhDUFpV?=
+ =?utf-8?B?SE5qcVViTkNPd2xCd3U1RnZaajAvYldsOFRXMjU0R0JmaUlNQy80d05DZDA3?=
+ =?utf-8?B?ZStKYUNjV3VOVUhMV2JLSzZPV2paN0xrUTBaTU9DZjBrV1YrMWRxWTJhYUZ0?=
+ =?utf-8?B?bW9BSkEwY0xOdE5zTHhPdnRXdGFHQm9KeTJGVmxjUmVtQ0tRamF3VjZ0WkFl?=
+ =?utf-8?B?a1hKMDlGaUo3cUF4V29hclI5bWl4bDdsZ3k0VEhhT2xBZWY2V0cvVkhSaUlX?=
+ =?utf-8?B?YnRPT2dwNnNNVWlqd1lTMTJvcDdIcnY2dkNnWjBqNGFEQkpRVzhXQlFWcUk1?=
+ =?utf-8?B?aklYSXFaMVAzVC9IMERSWVFCRmZYY3lYTzhjMm5KSkZZSkxvL2FHOEdxS2cx?=
+ =?utf-8?B?OU1EOWxPZGduQnBuTFFxaWlnMmlleXFKV0dnVWtONGNIU01pMUlpREg0K1Rw?=
+ =?utf-8?B?SFA1ZmZRMkttOU5iTU5Qd3M3amNhbGIwV1RZNU8rU1JlZllRMklrR0NabDVa?=
+ =?utf-8?B?eFFOek9rZkVXQWpkclUwRTZKb3RvM1hmMEt4aklYWndPWk13VVExdkVvbFoy?=
+ =?utf-8?B?c0FMc0Qzb2ZjdzhyVk8venFlYXpHZ3NWSkN3czJxdWxPZ2d6WHdkQUo5VnMv?=
+ =?utf-8?B?dkRBZE5teXcyakEzM2NGc3Z3dWNiRlpSeDRPRHN1dEdjb2xMalRpV2VNSGZi?=
+ =?utf-8?B?NVF4Yyt5N043bnhZd1I5cXRBQ2NFODlCaGlQRkQ4VkVtT3lSRlZJZVMrY1F3?=
+ =?utf-8?B?cUZEVzBiNkE1S0hvaE1oSStrWTBjcHRNZkNJQVp3ZmZqUUE2SWsrVzBKMkZ5?=
+ =?utf-8?B?b2dRaFdVY1I4azBGU21GMWNrOHg4cXpnc0N0bmJuYlNUM2NRZHgrUUxGNGoz?=
+ =?utf-8?B?UmdOZ1dUeXloRFhGeHJyT0hHL0ZZOFFiQ3JqQnZVQU1HMXhTNllGelJ1QzlG?=
+ =?utf-8?B?QVBzeWxSam1FVGxlT05MYnJaR2luanRLb3BuTEx6cVlWQm1UL3pQMnVMb01j?=
+ =?utf-8?B?SVNTa3l3UVVWVU9iTHlxM0ozMTRtR1JveWJHR3lqcDVKaFBsY1NpeFYyVndO?=
+ =?utf-8?B?MkpEMlBUM0RuQVg1RTlLRWFFV2ptWThMMWxwNyt6bGJjYTdCMnJKYW1ZelU5?=
+ =?utf-8?B?dmxQUm1EL1RZZWdKWjQ2ckhxUXY3ajNBcURNeERJMjl5VlFTSi9nemtORlF1?=
+ =?utf-8?B?YUhrM3c3TEZFMDNudFVacCtxby90bjFkK3N4MlF5c1pXUFBYcHVFTWJKcTFv?=
+ =?utf-8?B?dVpIQmlJWXlwYXprZFNJc3lHOTY2OTgwTDJMUHZqbVQvZjF4ZUN6dTI4VDEw?=
+ =?utf-8?B?Mk1FUXBoakRvemF4MlM0b3FibjkweCtyMTVEZTVaeEFtcnIzOVVjNnBlK3hB?=
+ =?utf-8?B?cE1Bd09yOUdqS2NPd3NNdy8yL0M5cXB1SDI1WUlRL0Q0WktjVk5GejlaVFUz?=
+ =?utf-8?B?cGI2VkhrbCtVRW5HRm5uU3B1UXdmMVFzV1VJVlF3c0pSR1JWc2RPV3FRekFy?=
+ =?utf-8?B?VXBadXg3bzZDQlVRM3FvUUxyY0FOSXNhQ2ZramtvOEs1T3RPcjFkUT09?=
+X-OriginatorOrg: mobileye.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0bf4bfb-5503-449e-95b3-08df492dce88
+X-MS-Exchange-CrossTenant-AuthSource: ZR6PR09MB889505.eurprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2026 06:48:39.8268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4f85ba13-6953-46a6-9c5b-7599fd80e9aa
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YEg1SsN2F8wk/E8E0mp3lTwmW00Jd/h/CLLwrBc2i68eHVM6Um8GVXOr+YVmOaTXc3bvHo5+IhVwwG60JsCYYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BR0PR09MB492176
 
-Sorry for the late reply: your mail did not reach my mailbox, and I did
-not check the list archive until now.
+On 11/20/26 13:46, Sebastian Andrzej Siewior wrote:
+> The perf interrupts should be per-CPU and not threaded so this is the
+> right to do. However mips does not have ARCH_SUPPORTS_RT set. Is this a
+> longterm goal? Otherwise it doesn't matter since without it set even
+> lockdep dose not complain where it would otherwise.
 
-On Fri, 30 Oct 2026, Maciej W. Rozycki wrote:
->  Umm, the wrong fix.  You want __isa_ge_or_flag() instead, plus obviously
-> `cpu_has_64bits' is also needed (and __isa_ge_and_flag() can be discarded;
-> I guess it was meant to take care of what `cpu_has_64bits' does and broke
-> the whole idea by mistake).
+Yes, very long term goal. Clearing parts that should be cleared
 
-Your form and v1 differ only on pre-r6 kernels. I built both on
-mips-next (bfe97f12a0a6), and this is what cpu_has_mips64r6 folds to:
-
-  kernel       mainline        v1              your form
-  ---------    -------------   -------------   -------------
-  64-bit r6    run-time test   1               1
-  32-bit r6    run-time test   run-time test   run-time test
-  pre-r6       0               0               run-time test
-
-On r6 kernels the two give the same vmlinux, byte for byte
-(64r6el_defconfig and 32r6el_defconfig, GCC 8.1 and 16.2, Clang 23).
-On pre-r6 kernels your form compiles the r6 paths in behind the test,
-for example the dmfc0 and dmtc0 of c0_ebase in decode_configs(), and
-on 32-bit kernels every cpu_has_mips_r6 check also tests cpu_has_64bits
-and MIPS_CPU_ISA_M64R6. In bloat-o-meter -t that is +264 bytes for
-64r2el_defconfig and +3352 for 32r2el_defconfig with GCC 16.2, and
-+168 and -2500 with Clang 23, which on 32r2el_defconfig no longer
-inlines two prefetch helpers in mm/page.c.
-
-> Your proposal precludes the use of R6 stuff
-> with pre-R6 compilations -- not sure if that makes sense, but let's stay
-> consistent with these macro definitions.
-
-In mainline cpu_has_mips64r6 is already 0 on pre-r6 kernels, and I do
-not think a pre-r6 kernel gets as far as cpu_probe() on an r6 CPU.
-The comment above __isa_ge_and_ase() in cpu-features.h says that
-"a kernel built for an older ISA cannot run on a MIPSr6 CPU", and
-under QEMU -cpu I6400 (an r6 CPU) a 64-bit malta kernel built for r2
-takes a Reserved Instruction exception at the first jr in head.S.
-
-That leaves three ways, and I will send whichever you prefer as v2:
-
-1. v1 with the unused __isa_ge_and_flag() removed, and in the same
-   series a patch that defines cpu_has_mips32r6 as (MIPS_ISA_REV >= 6)
-   to match, like cpu_has_mips_1 (MIPS_ISA_REV < 6) in that header.
-   cpu_has_mips_r6 is then 0 on pre-r6 kernels and the code that it
-   guards is dropped: in bloat-o-meter -t, -11524 bytes for
-   64r2el_defconfig and -11156 for 32r2el_defconfig with GCC 16.2,
-   -18704 and -14140 with Clang 23, with no new W=1 warnings in these
-   vmlinux builds. r6 kernels stay byte-identical to v1.
-2. v1 with __isa_ge_and_flag() removed: pre-r6 kernels do not change.
-3. Your form, with the sizes above.
-
-I would suggest 1.
-
-Thanks,
-Tzu-Ching
+Thanks, Vladimir

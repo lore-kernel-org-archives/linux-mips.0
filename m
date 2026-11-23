@@ -1,75 +1,157 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795428206;
-	b=pCXxs4X75rPSYp2USdPKiLRQuNvzgKrXVpVPcUPPqYVb+sdUsdSp4I9/ra1bIQoeofke
-	 OA/2dJNa60HH0NVeIyl6TxmN6aOTqVmPPYyfvU91KZ/JvOPwDQxPfA0tnKfCGWJeZSq+0
-	 7+My5K8J6FYl8JfrX4Rn7bPXCXWrR5dc3FzXoUq+vv+DfIHPDEsLyUIIatcIcMZ/Tdd+N
-	 JVHToIWG3IBiDK5aImXWPfIHrEZXJwhsEmRGgEQiU/HCuPSTBd2Yx1LJESIqi7xwb17ue
-	 P0KYjilnHut0RXm+JW++0/3JYCBM0wYeY8V910rl0T5YprzdjmA/ZQ9MOjKjhXMqlkw==
+	t=1795428688;
+	b=YY+cZR/mlj+j5WrprgRpVDF/rfwuJjmd4NvICT3uLzx6Jr8+1L9HCMLMxplyck/WJfhH
+	 idV2f2c6cPbtetgwrNMpQoboPbtSHkx8D3nxe/tgPrLCyPMBjtvLq+Rc4n/3qlkp0moZV
+	 +xiuWgz1U7FCuGsdsHudqv4Tq43vbKWtha+Zgbz06Ai54BEJw566N2SChUkS4uAmale8F
+	 1nbJgC24Y4mQuGStirJwscZ0aQ2cVigvDE5m/YzYadBKMPP5RktADKzpUVfGaGzXw0vPc
+	 i0PrQahie7c22UmW+qbfHFOw9YTWugjMFNBrsgueP7eiV8WCKQ+tJiX89jF36atOZDg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795428206;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=CD4ic9Gltp6sjM8mfIwiECFvv0TUSDYXBdZI3py6+Hs=;
-	b=3smNCiNQcqRy6DF72m3ICcX5kI+gec/WKqLmOrPLoZfT+KvvfIbElVNFzfFMH+Tt1/00
-	 q4OaSS0/fGGXKnBOX9uwAiV7O2HZqsKWeNXUftd8+HSPoe1QMyB0ZrXhJjUS0xavreQmv
-	 AqTJF87cyAh7CVlKdkNrLZAstwxlKPU4mukFz2Yc0GGtcvtgM8dAw9b7J8FLgoTr3eH1/
-	 cV+cc5QTiUorOEfxfEjVkgeqPyTSUIx1PgV11CMQNrdR1wrH6RNnaQL23gW+7dkLPNjZb
-	 xKWSqSvd746j+h3MogSsmruhY6sIdQ9J/MsN0NxV3lfdB2xJSmubGwJYUdo4K6FclVw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795428688;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=rDFRLPy40I79JiGWrVFkLz2U4fAoPpBfu86dL+TJWTw=;
+	b=wF09ddiZSJOCZSpZuYWULsNgnWNyEA13/d0WOXLKPQ3G6GYKr9fKP0AN9ukVPozF8vxg
+	 H2UdjocQLh/GcI6ypJGSmCH+bJ5nJmwDQJOQJJRGfL5IB1dP/JOmpiCJ+Izx/jpE1KA05
+	 0rE56Lxi1Eccw6v5L8Ym9VBo8KvvTS96nyBq7Z+4kcsbB26GqJ2ls9AlXkJ46zzmxVVb2
+	 ZAZyD1YpPeqiUcS4u20aWDe6OfwGO1JmwYXAt9M7hvK3T6AMU7F8JQZ/3dggB3LQTOQnb
+	 CJeSP25XmrH1cajEcVEGlOPZSSLS4VZltqBVzSGe3WdKZqCSNVe6tWXI0rW6NJ/RmkQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=3VkflIru;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=kAAiYpzk;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EQv8DoiR;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CB4606A31F;
-	Mon, 23 Nov 2026 10:03:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 98CB4606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B836D606A331;
+	Mon, 23 Nov 2026 10:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=3VkflIru;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=kAAiYpzk
-Date: Mon, 23 Nov 2026 11:03:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1795428203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CD4ic9Gltp6sjM8mfIwiECFvv0TUSDYXBdZI3py6+Hs=;
-	b=3VkflIruKARozyrkLHlX2mQ95+oFUmmPQ9g7O4L3WFJ+V/4YkuEfXhftFZgsdG9N+ReUrC
-	3ECXYSLczZ5sfXJmW/dp9rUJNM/FMjQfywHZgZtQzuHb0kSoe7hHEhJUgFIKC0qG05v5/W
-	deQUhf+pARzVbGBEEIbo6yBX9OA7AK30MKgGM9nFf9PO5zjwkdkfGkZM9cxjaj34VKvOsw
-	myOUpmdrBt4nOPgZIRTrtBBjy4he4UJ8IukvSGDbAO08UnI4M4oCeuCrk04sAimvWyNpHh
-	OeIZxe3E8yO3AcaESf76ss7nR72GuxDw2HX74Yv5N4Yb5IVJ8j/g7DgcR1hCiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1795428203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CD4ic9Gltp6sjM8mfIwiECFvv0TUSDYXBdZI3py6+Hs=;
-	b=kAAiYpzkfztPq6MYwun6e1Y8Vy2mVk9Secfye9usXniusBTfN7Fozg38iBhnOT33Y8lwOo
-	+hHvYlvL/ixDdMDQ==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Kees Cook <kees@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, loongarch@lists.linux.dev, 
-	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-sh@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	Paul Walmsley <pjw@kernel.org>, Andy Chiu <andybnac@gmail.com>, 
-	Magnus Lindholm <linmag7@gmail.com>
-Subject: Re: [PATCH v3 00/15] exec: Remove AT_VECTOR_SIZE_ARCH from UAPI
-Message-ID: <20261123110111-6431e85f-39a4-427e-b545-2e7a590a6c19@linutronix.de>
-References: <20261123-at-vector-size-arch-v3-0-d342dae9e843@linutronix.de>
- <ec5359c1-c16e-4177-8dfa-2ae5ab8a874f@app.fastmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EQv8DoiR
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC1141F000EF;
+	Mon, 23 Nov 2026 10:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795428688;
+	bh=rDFRLPy40I79JiGWrVFkLz2U4fAoPpBfu86dL+TJWTw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=EQv8DoiRck3gy8xgpS3BEeZCIVXlC+5twIrYuAJPvxyh+T6hLul9ehLPpI0/H8Ena
+	 EoHPb6kv2Z1NRHkQj923ovInemiLOUPSnbRP19n0hmOl3DYyi/0U2zQnqNlsdAYgQX
+	 yfIeKn1+n9OIoTJRvbp7rjlMj4wIsTr/xKlt8/kIiAVX5xbKrEtXbYSnqm7V+dLOrM
+	 VyoI9JSIUfP6xwxXeJf8XGivEo78xSGLAZFRbS/S+K2EDg0EQWkh2mc7W/lQNIsXSv
+	 CCH9QPsnErU7JRjGcCJBhGjJ2f+Q+uo3Lw7ckrw1kCFyKD4FZnZKjrPIy1KnGsdlwY
+	 rf74RydNSb3kw==
+From: Maxime Ripard <mripard@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Maxime Ripard <mripard@kernel.org>
+Cc: dri-devel@lists.freedesktop.org,
+	Janne Grunau <j@jannau.net>,
+	Sasha Finkelstein <k@chaosmail.tech>,
+	asahi@lists.linux.dev,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	sashiko-bot@kernel.org,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Dave Airlie <airlied@redhat.com>,
+	Jocelyn Falempe <jfalempe@redhat.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Inki Dae <inki.dae@samsung.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Seung-Woo Kim <sw0312.kim@samsung.com>,
+	linux-samsung-soc@vger.kernel.org,
+	Alison Wang <alison.wang@nxp.com>,
+	Stefan Agner <stefan@agner.ch>,
+	Tian Tao <tiantao6@hisilicon.com>,
+	Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+	Yongbang Shi <shiyongbang@huawei.com>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>,
+	linux-hyperv@vger.kernel.org,
+	Fabio Estevam <festevam@gmail.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	imx@lists.linux.dev,
+	Paul Cercueil <paul@crapouillou.net>,
+	linux-mips@vger.kernel.org,
+	Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+	Paul Kocialkowski <paulk@sys-base.io>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Icenowy Zheng <zhengxingda@iscas.ac.cn>,
+	Jianmin Lv <lvjianmin@loongson.cn>,
+	Mingcong Bai <jeffbai@aosc.io>,
+	Qianhai Wu <wuqianhai@loongson.cn>,
+	Xi Ruoyao <xry111@xry111.site>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Abhinav Kumar <abhinav.kumar@linux.dev>,
+	Dmitry Baryshkov <lumag@kernel.org>,
+	Jessica Zhang <jesszhan0024@gmail.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Sean Paul <sean@poorly.run>,
+	freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	Danilo Krummrich <dakr@kernel.org>,
+	Lyude Paul <lyude@redhat.com>,
+	nouveau@lists.freedesktop.org,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	spice-devel@lists.freedesktop.org,
+	virtualization@lists.linux.dev,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
+	linux-renesas-soc@vger.kernel.org,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Marcus Folkesson <marcus.folkesson@gmail.com>,
+	David Lechner <david@lechnology.com>,
+	Iker Pedrosa <ikerpedrosam@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Philippe Cornu <philippe.cornu@foss.st.com>,
+	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+	Yannick Fertre <yannick.fertre@foss.st.com>,
+	Chen-Yu Tsai <wens@kernel.org>,
+	Samuel Holland <samuel@sholland.org>,
+	linux-sunxi@lists.linux.dev,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	linux-tegra@vger.kernel.org,
+	Jyri Sarha <jyri.sarha@iki.fi>,
+	Alexey Brodkin <abrodkin@synopsys.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
+	Alex Lanzano <lanzano.alex@gmail.com>,
+	LiangCheng Wang <zaq14760@gmail.com>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Zack Rusin <zack.rusin@broadcom.com>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	Michal Simek <michal.simek@amd.com>
+Subject: Re: (subset) [PATCH v2 00/64] drm: Switch drivers to drm_mode_config_create_initial_state
+Date: Mon, 23 Nov 2026 11:11:22 +0100
+Message-ID: <179542861006.1136573.1196433498269800463.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261116-drm-no-more-config-reset-v2-0-0bb471f4d1e0@kernel.org>
+References: <20261116-drm-no-more-config-reset-v2-0-0bb471f4d1e0@kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -79,35 +161,125 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ec5359c1-c16e-4177-8dfa-2ae5ab8a874f@app.fastmail.com>
 
-On Mon, Nov 23, 2026 at 10:44:40AM +0100, Arnd Bergmann wrote:
-> On Mon, Nov 23, 2026, at 10:37, Thomas Weiﬂschuh wrote:
-> > There is nothing userspace can do with this value. In the kernel is
-> > always combined with AT_VECTOR_SIZE_BASE, which is not exposed to
-> > userspace and also changes from time to time.
-> >
-> > Move the symbol to kernel-internal headers.
-> >
-> > Meant to be applied through the asm-generic or execve tree.
-> > The default recipient list was huge. I trimmed it to only the
-> > architecture lists.
-> >
-> > Signed-off-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
+On Mon, 16 Nov 2026 11:30:16 +0100, Maxime Ripard wrote:
+> drm_mode_config_reset() has a dual role: it creates the initial KMS
+> state at probe time, and resets hardware and software state during
+> suspend/resume cycles. However, the two roles need different
+> behaviors, notably for objects like drm_private_obj that must persist
+> across suspend/resume and are excluded from drm_mode_config_reset()
+> by design.
 > 
-> Hi Thomas,
-> 
-> I'm happy to take this through the asm-generic tree. I've already
-> made sure it all applies and the patches look good to me. I'd
-> wait a few more days for additional Ack or any other replies,
-> let me know once you think I should apply this version.
+> [...]
 
-This v3 is functionally identical to v1 and v2 which have been on the
-list of a long time. I am not sure how much more feedback will come.
-IMO it can already be applied to gain more exposure in -next.
+Applied to misc/kernel.git (drm-misc-next)
 
+[01/64] drm/adp: Switch to drm_mode_config_create_initial_state
+        commit: d636d17d3b8ecda8a3db6a77874e652aabac4eb2
+[02/64] drm/amdgpu: Switch to drm_mode_config_create_initial_state
+        commit: 064bc83ffc6eb72ec8af2973517f130d81bcd9bb
+[04/64] drm/hdlcd: Switch to drm_mode_config_create_initial_state
+        commit: 18becfe9b42cb828fc7fcf9703319d34675cd9f1
+[05/64] drm/armada: Switch to drm_mode_config_create_initial_state
+        commit: 69cecb2d921b7ae098c2800cbfa67590c436c3c4
+[06/64] drm/ast: Switch to drm_mode_config_create_initial_state
+        commit: 76dacf729a8dd4a954a5a8457ca49b221055d346
+[07/64] drm/exynos: Switch to drm_mode_config_create_initial_state
+        commit: cbe6da900d937f0de4c73eb574c409c9e2f4a7e8
+[08/64] drm/fsl-dcu: Switch to drm_mode_config_create_initial_state
+        commit: 6a294a6bf06ed0d71a505998bd0fd3abe1e9ea87
+[09/64] drm/hisilicon/hibmc: Remove hibmc_unload() from the load error path
+        commit: f830550f85cd0f5bd955d5b9abdb795f95a25ff8
+[10/64] drm/hisilicon/hibmc: Switch to drm_mode_config_create_initial_state
+        commit: f935c8d2f8c6de0c4b95c5f63874ced18efe1de6
+[12/64] drm/imx/ipuv3: Switch to drm_mode_config_create_initial_state
+        commit: 8799786a618d2a56b8e3dc998b64fb28cb648ca6
+[13/64] drm/ingenic: Move the private object creation before the reset
+        commit: 5cc203c0dcd3352196d8ede54531afc2175193b0
+[14/64] drm/ingenic: Switch to drm_mode_config_create_initial_state
+        commit: 8636f44eb77f5f738708423a104ee2f225f84b97
+[15/64] drm/kmb: Switch to drm_mode_config_create_initial_state
+        commit: f4f4fd2ae13175ef7aa851cdeaa08bf29a0f38b1
+[16/64] drm/logicvc: Switch to drm_mode_config_create_initial_state
+        commit: 7f84f99fa2d9b068e4a51514df0e1f32ad3247aa
+[18/64] drm/mediatek: Switch to drm_mode_config_create_initial_state
+        commit: 333cf2d79ee32c5590787eeb6df1c3c1a9ad6a48
+[19/64] drm/mgag200: Switch to drm_mode_config_create_initial_state
+        commit: 2fb1383d1aed812e4830aec34b890547fe8d496e
+[20/64] drm/msm: Switch to drm_mode_config_create_initial_state
+        commit: 53556096b6e5e07a8c58fe19cfdf5f3d4e1197ab
+[21/64] drm/nouveau: Switch to drm_mode_config_create_initial_state
+        commit: 960f6b7c64cb9536c37e7995262fd465f2fc623b
+[22/64] drm/omap: Switch to drm_mode_config_create_initial_state
+        commit: cf34a54e91f99b80623fee78ad334871a7f39858
+[23/64] drm/qxl: Destroy the monitors object on the modeset init error path
+        commit: bf50dc68880788f9ad85f4411f2d3fa575139ceb
+[24/64] drm/qxl: Switch to drm_mode_config_create_initial_state
+        commit: f364abef006d3867174f9defa5f79c4c6585cead
+[26/64] drm/rz-du: Switch to drm_mode_config_create_initial_state
+        commit: 938dfe76a15263c5fac77ea1f99c265848c219f8
+[27/64] drm/shmobile: Switch to drm_mode_config_create_initial_state
+        commit: 588132787e6df07f0267983881f437990d56c5e8
+[28/64] drm/st7571: Switch to drm_mode_config_create_initial_state
+        commit: e03927d29003912052c64aad83df169243d43484
+[32/64] drm/sprd: Switch to drm_mode_config_create_initial_state
+        commit: 1af982780216d568a4e8ff6790b87de29e52ab90
+[33/64] drm/sti: Fix drm_atomic_helper_shutdown() on the bind error paths
+        commit: d3047688f4bc35ca827ee2994a014c81898d73cc
+[34/64] drm/sti: Move drm_mode_config_create_initial_state() before drm_dev_register()
+        commit: 2798c8d86bf4e4853cbc1b3e2a248d55e714a649
+[36/64] drm/sun4i: Switch to drm_mode_config_create_initial_state
+        commit: ad5e714a08a6d5f6fa39b589a438b40aaac9e2bf
+[38/64] drm/tests: drm_atomic_state_test: Switch to drm_mode_config_create_initial_state
+        commit: 019bfdeb119dc616303a173323fd69853fe99858
+[39/64] drm/tests: drm_atomic_test: Switch to drm_mode_config_create_initial_state
+        commit: 53f0931d45c029f97c611837b8f853c9fad7a82c
+[40/64] drm/tests: drm_bridge_test: Switch to drm_mode_config_create_initial_state
+        commit: 45472c059ac76f982e31f67ef87f9db3caef1f88
+[41/64] drm/tests: drm_hdmi_state_helper_test: Switch to drm_mode_config_create_initial_state
+        commit: 3db9197bbe3fc859fd5b7521d1f4cedd9d62cb8c
+[42/64] drm/tidss: Switch to drm_mode_config_create_initial_state
+        commit: d771b7c8577c0b847d401a22f49a6abc18680ed3
+[44/64] drm/arcpgu: Switch to drm_mode_config_create_initial_state
+        commit: 620165b05363bea94b72970884f6f27ccf7cee3f
+[45/64] drm/bochs: Switch to drm_mode_config_create_initial_state
+        commit: c67548948d8c5ebb422fa03fb5dd89e44e458f20
+[46/64] drm/cirrus-qemu: Switch to drm_mode_config_create_initial_state
+        commit: 10e37ab94f0f10a7fd729a063c26bf1a94e7f2b0
+[47/64] drm/gm12u320: Switch to drm_mode_config_create_initial_state
+        commit: ce7e27979d41b94bb9a1ed66b6957a300a5a8c0a
+[48/64] drm/hx8357d: Switch to drm_mode_config_create_initial_state
+        commit: d9abdda3a6bd4903af87a1ed6d02c1897035cf4e
+[49/64] drm/ili9163: Switch to drm_mode_config_create_initial_state
+        commit: 6fc964d0567e8303cf72adc45dad29e9415fe76c
+[51/64] drm/ili9341: Switch to drm_mode_config_create_initial_state
+        commit: 75269393962354820792fddfe3da359b3be85ca3
+[52/64] drm/ili9486: Switch to drm_mode_config_create_initial_state
+        commit: c4f2890c815c5ac8d68668a072806edf4f466a7e
+[53/64] drm/mi0283qt: Switch to drm_mode_config_create_initial_state
+        commit: dfa078305c262eae2b0449814392e429b6bd58ee
+[54/64] drm/panel-mipi-dbi: Switch to drm_mode_config_create_initial_state
+        commit: 38b37ce4bc5fc406f1e93a90ce9b2b8531c6f5cb
+[55/64] drm/pixpaper: Switch to drm_mode_config_create_initial_state
+        commit: d3cb39a976745195d2d388b5b9194d47bfd2eb41
+[56/64] drm/repaper: Switch to drm_mode_config_create_initial_state
+        commit: ce380404a74260b6bb178b24dfd4125a591e1069
+[57/64] drm/sharp-memory: Switch to drm_mode_config_create_initial_state
+        commit: d4b8b6e920779d568a085eb611c75dc4bb5805a8
+[58/64] drm/udl: Switch to drm_mode_config_create_initial_state
+        commit: 6358c0da712b0170a3f1470c5eb75ec95340875c
+[59/64] drm/vboxvideo: Switch to drm_mode_config_create_initial_state
+        commit: a932fa029dad6b23b4ff5b7fdb44e5819c098b6e
+[60/64] drm/verisilicon: Switch to drm_mode_config_create_initial_state
+        commit: f3b23268607094ff4461119d623a235a2bdc8608
+[61/64] drm/virtio: Switch to drm_mode_config_create_initial_state
+        commit: eb2c77198187b0283f12be28bdb770703da59dca
+[63/64] drm/xen: Switch to drm_mode_config_create_initial_state
+        commit: 51b3e01a42db6100976907b95d224636e6551c98
+[64/64] drm/xlnx: Switch to drm_mode_config_create_initial_state
+        commit: bb8391a1a8d00b11661ab692313a991456d391dd
 
-Thomas
+Thanks!
+Maxime

@@ -1,79 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795398075;
-	b=DZoAlAI/+rEYxk5xo8X8K/Z2lclQLCkQ7tFTyFuNgheOeASFb0cCxtRCzmOoq9dh01to
-	 4bz7I/qn8hs+Vx8nNwsi0QL/IsWAdMrIxXp7xu5uHGP4/oAQ1ghGN3jUyjVBBKLZ+Dc/q
-	 aYxJ4ci+SapcC27FTmY7vMGLfCvC9YiQLUxfgzbYNwyPtgRQ1RPgvQtK6RDupITbcBJ+T
-	 xRQREyxsI6MWha/CCR8u8MT48KkoIF/0m0wnNMsJv/s1G3vZbD1F5kOskfKr5cUce+Dd5
-	 bqV2ZDHXBpwHAarlRczkH0JC6qeim1jMQniRwGPZY40U069fIZdlRS8YT1BSlbyAaGg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795398075;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=kj54KKqus3DpCyZNB5aVCoc87sy3Q+Ne+YOlrdr6juM=;
-	b=rZbz9ldsBAtVY3QVercL96rHAkzT10/INBcYFw6TcqNO6FmadQPMeLpaGGq9qLZ4+lU9
-	 /n/crC2c+WT9ArKA5NNkJBTpJrZkKc3d7kwCE3SLoT2pBmzULGi4a4C3jnsxYk+IIH2jf
-	 PwHb17B2vFKqpCRL4LrgXNaBzNvQjGnQtZjAxckFvks+4iR4XilzrNsYAA0PUz729C9HF
-	 jjVj3ZggaiObMfY726947FRul+9ILR1B3hN95yUKpFZEL7GoiEKgwY/N3ciUE6UqUsVCz
-	 GVTcLcJ2Z+Zm794snV+uBX/TQy3zeq3wNTS3o5zLbMvlpYN0CLvbqhaThTztFYr62og==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lPl12e1d;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF21C606A32A;
-	Mon, 23 Nov 2026 01:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lPl12e1d
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795398075;
-	b=m4Vn4DcQpOXckOQLDsaC5EbrRTfuswcog/mUmKEsq6mL00tPGUKNjCVfYlPFMaYPh6Kj
-	 0KTLSHuLlmEZO0QkngvzxyV9e4EVg5V+mDaKaxmjNouT0CkQfCD1/EOK9kcD1JDBG3s80
-	 ZnT6eFuXvdpEojvD0ANfxGCEsJoQsjV7An7+dWk5By7GPsQk+eV8JrEr0MffXUevaA/sZ
-	 CBZixc9kv6yYMlA77fcx9cAs4mk3CHzyeyhriOXN6NF4XjjsYHYjP/9KbZbjybckz6bYu
-	 y3SUtArY79NFHl6lmBDt2/iH5lK6QnfBp4zqP9GKQBERi2fg2cRAeAErbIg2KzLDyDw==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795398075;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=kj54KKqus3DpCyZNB5aVCoc87sy3Q+Ne+YOlrdr6juM=;
-	b=aiUn81+REA+aZprw1Y6iaoOv+tBCrWcTU9/qDY1E0NGWCqwuVOqbFQ59SfpGJ+C+tuNN
-	 TO9NKAJqlQCmxj1GQWX7UBS5QCASrZk/ukWrG964hdq46TNwJW5Vm4WgilfaeuIqhcOz8
-	 YGeXfaBJ1Piu61pLk4H6PgT5cwAxUFs8zuEIKuiKN4Mc81w5LZCMvf+gMkLqktK/SgLNc
-	 Atz5ED8N2eNyM8IlkT/jRXpL4Yt2cvnrpkoRNB72R3M4IsZah0NPqTnu/PDeHJff9bmoj
-	 cvJCHG4Fc2w5yG4XO38eTon/G0Lr3F3wEHvWoM+I1SmOoatJo8kgLd5Mh22C6sVifQg==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.44
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795402628;
+	b=wOphHnvrQdFERs43ZLbIx/G3rXGmU3viOMBLCSqOI70yqjGddSr5BemaAJMbUddFqRIO
+	 A8rzMllQLftFQy4Pe/atuEgIW8pko6IJXhZWIjWaF9pO749dXya/XwJQFclGfa/ItE1+b
+	 FOGJG0FwjTn7VhmLSB2WvSmzxOZTDKczj1hx/YMw+T/w0Cenj7ifjAyggUXoYIXqMnDXb
+	 LaTQOEi8uu7HR3byV2i9A1C+AY/fXcTC1D4+0Mk8gp2zmbKVOredata3SOWXd33X+Ve8/
+	 54AJsVey/4+Rn7EP9mjgEht018ZdKl7xYtHPU9645RXGUttvmiv7DpjfoBUkZ0xDHTg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795402628;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=GDNT0b/bhyDzKt86MPLi6HOpcuh4V0yz8R1khihljtE=;
+	b=nftSWXNgBlHnCtULbIhJk0L0EeyPDLufD3my5yfmg2IAttYAiQ4cD8Gths5nh5dgFepf
+	 o2SHLpRjNVn6k5Hhle6T+CqW8qmaTVDXke/OUGICZEPBqHUZhyJNEY5gY07r9SGI7HZXF
+	 j7zC1fgHzDpPErX4EdNonTAKXczdOyZ2WFG0uXy3x+osnt+8QI96JEHQViVrIrLc5sGRj
+	 uGHgyxefevHi+j/i3zEkd4VjSWrLtbmTrCuqonTIgJ/mggMF1QBWlD5KAcDfGVLbJzGni
+	 vsPfV4TUZWCQ4YysP5RAgWA0rzkbBiPSrnXx9FFfkjgbJb6pOqKhd2XfQGM8VxiiwMw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=FgYVjWGm;
+	arc=none smtp.remote-ip=209.85.216.44
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id BBDCE1F000C0;
-	Mon, 23 Nov 2026 01:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795398075;
-	bh=kj54KKqus3DpCyZNB5aVCoc87sy3Q+Ne+YOlrdr6juM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=lPl12e1dBrgNsrZMQA1J7htSmxQWG8u7ixNST7kp6FoXQuNLPFlNMO+qyU+X0vZ13
-	 nBLFuVYLO9F5IWbT3WabGwe4XHZxFYmr56hm4uUJqRmchIfG/dPTJXFTXn41MJNQXQ
-	 +XnujyQdvZBZb/0Wq46vrVtWvYx9PIQo6x21I+MT9D9i+29+cHh6WfviD9bN42Aqag
-	 JIrSctRctZwEwYipEBYckC69BjP6zjtexehzYpSm31vbfXFII65m1ramflCJifztcE
-	 dcagz2t5HsFUAJmD1XXPIbgQNuRA81Lek61baTSdWIOpHLMVa2iUOFTXjh3u0qbywf
-	 R/o29V70QWEZQ==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 3FE174C2CE;
-	Mon, 23 Nov 2026 01:41:03 +0000 (UTC)
-From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
-Date: Sun, 22 Nov 2026 20:40:56 -0500
-Subject: [PATCH v4 1/4] dt-bindings: clock: Add Siflower SF19A2890 clock
- manager
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBBD606A320
+	for <linux-mips@vger.kernel.org>; Mon, 23 Nov 2026 02:57:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EBBBD606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=FgYVjWGm
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3b3af93b85cso1537333a91.1
+        for <linux-mips@vger.kernel.org>; Sun, 22 Nov 2026 18:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795402627; x=1796007427; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=GDNT0b/bhyDzKt86MPLi6HOpcuh4V0yz8R1khihljtE=;
+        b=FgYVjWGmL1QtXCI2mQBKnfn2O8L/QNW0xtlxCmFqhqKTJ9rKCS0VeYFIfrZNHPkng5
+         JSy0mkS4C7m5RIPnRV3MRpbI/OosOXlQXt8oEcHflv7O/vSNQaN5+1pSBP0B1O6TREue
+         mQjNHGxbGkNLM+DS9nT5kz6YTaBbLxIL1EGw0fDLi4dWTDnsjWGS2VK1epjWKizRksWw
+         tk69j75W+Y34KvN5F7AfeNmrrEQrOBeyv85iQtX7RUSe7nLJLc4YFI+YnK+/K1oEhgPM
+         b7k97jCWm1nDKnQ7gyYT12iSMEHODazFXmbOAJ2znT5eTYuOxdiwVgxA7J0JWfQGlDcv
+         vqdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795402627; x=1796007427;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=GDNT0b/bhyDzKt86MPLi6HOpcuh4V0yz8R1khihljtE=;
+        b=02elOp9aBsVwqKYCoDdaAShPu/CINjcYEwG/GtnkemcxLpU7NvDW7w5jYIBblS3gUw
+         xTfFNMFesxjWj5ZDNcyyagyFjn7cQDOJu7rR9TUFTjpnasO8mH2se2PyVbrIkL51bF+t
+         wc7PUkFWaY8kn8MmhL+Vu4I9ZcUjFw44oZx97lfs5VSQ7wo1+EC4iFqhDA39uhJfPYLp
+         xT42E2tExT018pcrU9ePtAiMCJx6iAZe6UA8nBGJJ+v0VYVlqBz+WQZbDGTQLdbyWkdm
+         dR8O2JdihUtaC6vHYT7Ce8RgRnrvBudp8kZ7hxj2TFr4X/GZRAvo9rxQujMs9JvAx2MZ
+         DtJQ==
+X-Forwarded-Encrypted: i=1; AL+hErF8tSBCH6i/4YotoCFU1IlhCpuhFht+Dn1Ocp2HMyI7dBq1q6sOE5JPxAYvbQfd/g1aOAmdM14Lkjn1@vger.kernel.org
+X-Gm-Message-State: APuU4Z+pdiVRSlyLqCzK1eUseL7XehChwz/qEQDsDaBPRhAnjIYMKvas
+	nPH8+EKTXpXwb/WdOLm1cTfUyvjHm21qg6JTltdlcM19Ut3MYb7fsAWF
+X-Gm-Gg: AZFdTZfIi0DEYLljl2oPXXqMSnd5d0s/Pv77x1HQsdXbIs+JLPT6uaGls+To9/nu01j
+	PCTl3cyXrmv0ABFemx01r5AQFR3xbVvJ18DRanOUu00GBLKX2Nhn6cg7GsUnqhREtSwXmPSTRMh
+	fqU8yfEsemCLbsJcD1zBL+C3fBqlPb3Wh+rHsmuIFYMJKvr4OoqFY54giNSkpFoCll3NjPmG/Yz
+	t2KMmuwuoz/SBiZ8PubuOc6s0SIM+DidWZIEOULuGVQgS1T9lIPeEfUJ7mX2ube5p2YtwI33J0X
+	q/MBIq2JVA3tcejtQkqEC0WJTdry/miummwP3hpGbVc1EcTdDDBkzjHyRx3t42xT+m3se4WcHCZ
+	Sg2iXAqNP4PdiO4eQYQIgMWpDwUvSNkrQCt3iKVR8rPvwg0q6lIMThsZs33falIbUaZsZDBkPpO
+	oROY2oOheKEhkzO7DtUfNq2GF3x8Pizzu97IOmchykBI9uBMaOTgjhH3Wi7DGucz3WPWeVKNqcv
+	bkS/IY42UwPznomTG2WTedFvm1a0aEyhhxYthhvfZVpCdapSOv9i+oW4RAP7QJ7Wf6AF7svKmSP
+	1GTV3UU17IRLURh1wqL0QQ7tyJKHCQk7Gg==
+X-Received: by 2002:a17:90b:1a90:b0:3b0:e388:d9da with SMTP id 98e67ed59e1d1-3b41c92ce29mr8507796a91.29.1795402627197;
+        Sun, 22 Nov 2026 18:57:07 -0800 (PST)
+Received: from arm-a100.. ([140.112.28.118])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b41ad92c13sm15279137a91.14.2026.11.22.18.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Nov 2026 18:57:06 -0800 (PST)
+From: Tzu-Ching Yang <shingekinocore@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-mips@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] MIPS: Fix genex.S build with LLVM before 21
+Date: Mon, 23 Nov 2026 10:56:45 +0800
+Message-Id: <20261123025645.2385330-1-shingekinocore@gmail.com>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,169 +104,141 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261122-sf19a2890-sysm-v4-1-bbfe1c495e2e@telaak.dev>
-References: <20261122-sf19a2890-sysm-v4-0-bbfe1c495e2e@telaak.dev>
-In-Reply-To: <20261122-sf19a2890-sysm-v4-0-bbfe1c495e2e@telaak.dev>
-To: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
- Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Chuanhong Guo <gch981213@gmail.com>, Yao Zi <me@ziyao.cc>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Conor Dooley <conor.dooley@microchip.com>, 
- Joseph Telaak <joseph@telaak.dev>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795398062; l=4233;
- i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
- bh=1hE1zhMG0OtBg9FcIR+gI4NTYVaU3Uop5FjyhLMYHqg=;
- b=LNfjcWoDPXuX9v5tE19GNoja3EVNjSpfJgR92f0M3a0kT9AU6ThozFTtQ2OK7P7P2hgCPrV/V
- xVkUTFZwc3ZCiAhA9Atm5Xd1vKgretscWMH7FRrKm21C0cyVVW8G1Lo
-X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
- pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
-X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
- auth_id=1404
-X-Original-From: Joseph Telaak <joseph@telaak.dev>
-Reply-To: joseph@telaak.dev
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-From: Joseph Telaak <joseph@telaak.dev>
+Since commit 56651128e2fb ("MIPS: Fix idle VS timer enqueue"),
+BUILD_SKIPOVER_PROLOGUE uses label differences as the immediates of ORI
+and PTR_ADDIU. The LLVM integrated assembler accepts such an immediate
+only from LLVM 21 on, so LLVM=1 builds of every MIPS configuration fail
+with LLVM 17 to 20 unless LLVM_IAS=0 is set:
 
-The clock manager of the Siflower SF19A2890 holds the SoC's PLLs and
-the muxes and dividers that derive the bus, CPU and peripheral clocks
-from them. The peripherals' own gates and resets are in separate
-blocks.
+  <instantiation>:7:11: error: expected an immediate
+   ori $26, r4k_wait_idle_size - 2
+            ^
+  <instantiation>:10:14: error: expected an immediate
+    addiu $26, r4k_wait_exit - r4k_wait_insn + 2
+               ^
 
-The header is Chuanhong Guo's, from his SF19A2890 branch, and keeps his
-license. It drops the count at its end, and names the NPU clock
-CLK_MUXDIV_NPU_PE, without the _CLK suffix that no other clock has.
+Wrap both expressions in %lo(). For that operator, LLVM 17 to 20
+emit a LO16 fixup instead of rejecting the operand, and resolve it when
+writing the object, since both expressions are constants by then; no
+relocation is left. Both values are between 2 and 30, so %lo() does
+not change them. GNU as and LLVM 21 to 23 emit the same code as
+before, except on microMIPS, where GNU as now uses the 32-bit ADDIU in
+the delay slot instead of the 16-bit one. With GCC, the 2 extra bytes
+replace the 16-bit NOP that padded the end of the prologue, so all
+symbols keep their addresses; with Clang and LLVM_IAS=0, except_vec_vi
+and the code after it, up to nmi_handler, move by 4 bytes.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Joseph Telaak <joseph@telaak.dev>
+Fixes: 56651128e2fb ("MIPS: Fix idle VS timer enqueue")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202505071331.Z0N2eSkr-lkp@intel.com/
+Link: https://github.com/llvm/llvm-project/commit/b65e0947cade9bd39036a7700b54c1df4ec00756
+Cc: stable@vger.kernel.org # 6.6.x: 56651128e2fb: MIPS: Fix idle VS timer enqueue
+Cc: stable@vger.kernel.org # 6.6.x: b713f27e32d8: MIPS: Move r4k_wait() to .cpuidle.text section
+Cc: stable@vger.kernel.org # 6.6.x: 2b6d718c8dbe: MIPS: Fix whitespace damage in r4k_wait from VS timer fix
+Cc: stable@vger.kernel.org # 6.6.x
+Signed-off-by: Tzu-Ching Yang <shingekinocore@gmail.com>
 ---
- .../bindings/clock/siflower,sf19a2890-clk.yaml     | 57 ++++++++++++++++++++++
- MAINTAINERS                                        |  7 +++
- include/dt-bindings/clock/siflower,sf19a2890-clk.h | 27 ++++++++++
- 3 files changed, 91 insertions(+)
+v2: only the stable tags change; the code and the rest of the changelog
+are those of v1 [v1]. The tags now start at 6.6.x and name the two
+prerequisites Maciej suggested [review] plus b713f27e32d8.
 
-diff --git a/Documentation/devicetree/bindings/clock/siflower,sf19a2890-clk.yaml b/Documentation/devicetree/bindings/clock/siflower,sf19a2890-clk.yaml
-new file mode 100644
-index 000000000000..9b72f14c2bd9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/siflower,sf19a2890-clk.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/siflower,sf19a2890-clk.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Siflower SF19A2890 clock manager
-+
-+maintainers:
-+  - Joseph Telaak <joseph@telaak.dev>
-+
-+description: |
-+  The clock manager of the Siflower SF19A2890 holds the SoC's three PLLs
-+  (CPU, DDR and common) and the clock muxes with dividers that derive the
-+  bus, CPU and peripheral clocks from them. The peripherals' own clock
-+  gates and resets are in separate peripheral clock and reset managers.
-+
-+  The clocks are defined in include/dt-bindings/clock/siflower,sf19a2890-clk.h.
-+
-+properties:
-+  compatible:
-+    const: siflower,sf19a2890-clk
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: 12 MHz oscillator
-+      - description: 40 MHz oscillator
-+
-+  clock-names:
-+    items:
-+      - const: osc12m
-+      - const: osc40m
-+
-+  "#clock-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - "#clock-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    clock-controller@19e01000 {
-+        compatible = "siflower,sf19a2890-clk";
-+        reg = <0x19e01000 0x800>;
-+        clocks = <&osc12m>, <&osc40m>;
-+        clock-names = "osc12m", "osc40m";
-+        #clock-cells = <1>;
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 93abbb315065..ce8d0596939c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -25698,6 +25698,13 @@ N:	sifive
- K:	fu[57]40
- K:	[^@]sifive
- 
-+SIFLOWER SF19A2890 CLOCK DRIVERS
-+M:	Joseph Telaak <joseph@telaak.dev>
-+L:	linux-clk@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/siflower,sf19a2890-clk.yaml
-+F:	include/dt-bindings/clock/siflower,sf19a2890-clk.h
-+
- SILEAD TOUCHSCREEN DRIVER
- M:	Hans de Goede <hansg@kernel.org>
- L:	linux-input@vger.kernel.org
-diff --git a/include/dt-bindings/clock/siflower,sf19a2890-clk.h b/include/dt-bindings/clock/siflower,sf19a2890-clk.h
-new file mode 100644
-index 000000000000..94bbebd0c1cc
---- /dev/null
-+++ b/include/dt-bindings/clock/siflower,sf19a2890-clk.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-+#ifndef __DT_BINDINGS_CLOCK_SIFLOWER_SF19A2890_CLK_H
-+#define __DT_BINDINGS_CLOCK_SIFLOWER_SF19A2890_CLK_H
-+
-+#define CLK_PLL_CPU		0
-+#define CLK_PLL_DDR		1
-+#define CLK_PLL_CMN		2
-+#define CLK_MUXDIV_BUS1		3
-+#define CLK_MUXDIV_BUS2		4
-+#define CLK_MUXDIV_BUS3		5
-+#define CLK_MUXDIV_CPU		6
-+#define CLK_MUXDIV_PBUS		7
-+#define CLK_MUXDIV_MEM_PHY	8
-+#define CLK_MUXDIV_UART		9
-+#define CLK_MUXDIV_ETH_REF	10
-+#define CLK_MUXDIV_ETH_BYP_REF	11
-+#define CLK_MUXDIV_ETH_TSU	12
-+#define CLK_MUXDIV_GMAC_BYP_REF	13
-+#define CLK_MUXDIV_M6250_0	14
-+#define CLK_MUXDIV_M6250_1	15
-+#define CLK_MUXDIV_WLAN24_PLF	16
-+#define CLK_MUXDIV_WLAN5_PLF	17
-+#define CLK_MUXDIV_USBPHY_REF	18
-+#define CLK_MUXDIV_TCLK		19
-+#define CLK_MUXDIV_NPU_PE	20
-+
-+#endif /* __DT_BINDINGS_CLOCK_SIFLOWER_SF19A2890_CLK_H */
+What each stable series has today, and what it will get with the tags:
 
+  series  56651128e2fb  b713f27e32d8  2b6d718c8dbe  will get
+  ------  ------------  ------------  ------------  --------------------
+  7.3.y   yes           yes           yes           this patch
+  6.18.y  yes           yes           no            2b6d718c8dbe + this
+  6.12.y  no            no            no            all three + this (a)
+  6.6.y   no            no            no            all three + this (a)
+  6.1.y   no            no            no            nothing (b)
+
+(a) On 6.12.118 and 6.6.162 the three cherry-picks and this patch apply
+    cleanly. For malta_defconfig, genex.o builds with GCC 8.1 and 16.2
+    and with LLVM 13.0.1, 17.0.1 and 21.1.8 (6.6.162: also 11.1.0),
+    and kernels built with GCC 16.2 and LLVM 17.0.1 boot under QEMU.
+    56651128e2fb needs b713f27e32d8: without it, all the code after
+    r4k_wait in genex.S is placed in .init.text. Both were queued for
+    6.12 and 6.6 in 2025 and dropped because of the build failure
+    fixed here ([1] below).
+(b) 56651128e2fb conflicts in idle.c on 6.1.y and older.
+
+[v1] https://lore.kernel.org/r/20261104030147.3117325-1-shingekinocore@gmail.com/
+[review] https://lore.kernel.org/r/alpine.DEB.2.21.2611040746160.6502@angie.orcam.me.uk/
+
+The notes of v1, unchanged:
+
+> No MIPS hardware here. Against mips-fixes (v7.4-rc1). All builds use
+> W=1 and kernel.org toolchains.
+>
+> - genex.o, before and after, with GCC 8.1 to 16.2 and with LLVM 17 to
+>   23, both with the integrated assembler and with LLVM_IAS=0. Configs:
+>   64r6el, 32r6el, 64r2el, 32r2el, eyeq5, eyeq6, malta (little and big
+>   endian, MIPS32r1, microMIPS little and big endian), ip22, ip27,
+>   loongson3 and cavium_octeon.
+>   - The objects are byte-identical before and after with GCC, with
+>     LLVM_IAS=0 and with LLVM 21 to 23. The only exception is the
+>     microMIPS ADDIU above. The 4-byte move with LLVM_IAS=0 is harmless:
+>     set_vi_handler() computes the offsets and the length of the vectored
+>     handler from symbols before copying it, and ejtag_debug_handler and
+>     nmi_handler are only referenced through their symbols.
+>   - LLVM 17 to 20 now assemble genex.o for all of these configs except
+>     microMIPS and Octeon, which the integrated assembler rejects for
+>     other reasons. For malta (little and big endian, MIPS32r1), ip22
+>     and ip27, these objects are byte-identical to the LLVM 21 genex.o.
+> - vmlinux of 64r2el, 32r2el and malta, built with GCC 8.1 and 16.2,
+>   LLVM 17, 20, 21 and 23, and LLVM 17 with LLVM_IAS=0. Where both sides
+>   build, vmlinux is byte-identical before and after. With LLVM 17 and
+>   20, genex.o was the only object that failed before, and vmlinux links
+>   after. No new warnings.
+> - The malta kernels built with GCC 8.1 and 16.2, LLVM 17, 20 and 23, and
+>   LLVM 17 with LLVM_IAS=0 boot under QEMU 6.2 -cpu 24Kf. That CPU uses
+>   r4k_wait(), so interrupts go through skipover_handle_int. Each kernel
+>   boots to an init that keeps the CPU going in and out of idle and then
+>   reboots; a QEMU trace shows every interrupt that lands in the idle
+>   region resuming at r4k_wait_exit. A microMIPS kernel does not boot
+>   under QEMU -cpu M14Kc with or without this patch, so the microMIPS
+>   change was not run.
+>
+> In the 2025 thread [2], Nathan suggested requiring LLVM 21 for MIPS in
+> min-tool-version.sh, and Maciej an #error for older Clang. Both would
+> also stop LLVM 17 to 20 builds with LLVM_IAS=0, which work today, and
+> the stable trees would need the same change before 56651128e2fb could
+> go back to them.
+>
+> On 6.18.y, which also allows LLVM 15 and 16, the patch applies after
+> 2b6d718c8dbe, and LLVM 15 and 16 fail and are fixed the same way.
+>
+> The 56651128e2fb backport was dropped from the 6.14, 6.12 and 6.6
+> stable queues because of this build failure [1], so 6.12.y and 6.6.y
+> still lack that fix.
+>
+> [1] https://lore.kernel.org/r/2025051415-unloader-likely-b0e6@gregkh/
+> [2] https://lore.kernel.org/r/20250521224450.GA2412476@ax162/
+
+ arch/mips/kernel/genex.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index be1b049d856f..ef27965f6ad9 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -146,10 +146,10 @@ r4k_wait_exit:
+ 	MFC0	k0, CP0_EPC
+ 	/* Subtract/add 2 to let the ISA bit propagate through the mask.  */
+ 	PTR_LA	k1, r4k_wait_insn - 2
+-	ori	k0, r4k_wait_idle_size - 2
++	ori	k0, %lo(r4k_wait_idle_size - 2)	/* %lo() for LLVM < 21 */
+ 	.set	noreorder
+ 	bne	k0, k1, \handler
+-	 PTR_ADDIU	k0, r4k_wait_exit - r4k_wait_insn + 2
++	 PTR_ADDIU	k0, %lo(r4k_wait_exit - r4k_wait_insn + 2) /* ditto */
+ 	.set	reorder
+ 	MTC0	k0, CP0_EPC
+ 	.set pop
+
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
 -- 
-Git-155)
-
+2.34.1
 

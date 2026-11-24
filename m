@@ -1,79 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795509939;
-	b=SC150b+oiQM74lJDs9RPBYLyGd/5y4Ku9oFlsYW7ZeO0/VCbiDJtjTcyMudRtzQdkw4n
-	 b80jevK8utIh5KcsWSzVyNc7AHUeg5fwxVtum7uzGtQpRibWKbGstVWR3AIRbKVdXj3JA
-	 tvKepGkv1iCjchfAM/JRJq6VxwcpfKjBGESoS0DsEYTYgdIfhXgoVggMwTm7p9g8nifwU
-	 iAW05+TLU1bOi4tT3rfMyxPzXny1p3AJSE4tQqUaYmTte2JuH6t8PT5bZCCVgc+aW8plj
-	 l9gzPWanNd4Em6haKgDjDo19K4UZau0iSdH9qjJ6Hy2ziLp12zPQNXgKcROH2GtsNjw==
+	t=1795516206;
+	b=fkNI+XTWfB2VCxi9/dowDnX8Rx2QUNXm6a/YOsvZdSX3kXaQIA7fd+vhWOOa8GiHx8eg
+	 4F1ScCVkkUeHKNGJaBwiq+GC7HJ6CK3D0rkv6bbaY7pNwbH+rwjU4budWpFvOvq+j20RW
+	 4kbO3fob2BR6fT2KU+MAKSoCV4c+sDvcRvwi0u/M3gC/qxPB7TJWO+4jkxGeWEGztbQF6
+	 WVcO2jYqMCACsLw0Rl3RaS6O+1R5lSu/jX1+mUtIm7DDX7lvij3yMa33SIFqgd91Va6eP
+	 xUfes0Yv2VhgrB8bOVLiNVTQ+nLvqqhm3AceaosAa4Di63v3r6KbjNSiDZwC2NJo4Ow==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795509939;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=Dfdj6p9cM6m0jnsefG/KNhl4NoE+8/uZaNn6snsselM=;
-	b=L0XQ+W/BGkOcIt9OkYqLjz1avpjC5H6J9Nd/ytHuMuUHPZI/zyi86wtAs4L+Kc4aSdCC
-	 mevzCu49mq1y3Rjr10/e2mjyXnIqEP+snZFZyyXzUC9u364+xeHEKYr/uho0ZYn7B6EUa
-	 yyT9UTqqPnMMsaiy6hY7SId+Ii894sJOgY9aq7+WxwRMvLcsvc1M3yA7rpQM+ls8yiJbi
-	 /OaxYnKKjVuquZ9vd8p+i6NOpHheUMrnd0vAGhe2gAyTkypET7l11j4zgAWTIPICFqfkB
-	 u1zjo5+SnlJFpsP5eRhLu72SavXrRpqADpOUyZNOPVAeoweiVMtBY8Qr/7O8xq++hlQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795516206;
+	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Subject:From:To:Cc:
+	 Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
+	 User-Agent:MIME-Version;
+	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
+	b=XOmsGpBVvafIGRVLHS702JIT/Vw2gq7yalDU9W2qVOfBv2QIUbtVeUNFG0WUXUYeMAZg
+	 EvcmxIZAc+O6jUiDsiZ20FmgUwLr+9Z9AidlrB2yOeBvMw+CNwxBCnoDPPwjcgv/y3sdL
+	 QQMhMcZ4uF2hTRHcaWekd/ZBpg+Eo4KA1glekZ5s/goHlKCAqcraF0cgopZkJuQKKeDZK
+	 sWszr3kA0orX65+D8Yde2Y4Z2gU/esfdA8X9cjEStTba8PFySjP/M25tu/x5ll2ILDIU2
+	 unDgAJDH5Mq2kHDCaQDIs+VACLnX8AMEdlBGDFxTOikvi1nTZrtym3gPAjLcjTNtIcw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Nj1Ws89f;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C4E606A333;
-	Tue, 24 Nov 2026 08:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Nj1Ws89f
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795509939;
-	b=ze9TlwD1kA4LHRyvOsrkqxQojhIqUOq4V0BeT491FkUnigPYEJZfah3/v6Dk3ysfF3UD
-	 quR/6b2ulXgon/dLknEpT8BRu1x6sPVFM86bUjhVVFPwQaHXATzY/qIPW5DCxeU02jXU6
-	 0Z9as3nqYPqe6Rf5UmNGs6Jis9ZFJU1niissBIbO9CUwokwNsjwotebHr/TqQQQwM+eHJ
-	 +8K4K7k/S5mJdDqZQOXRlO/ESdj8VzxNvXVW7qVSRUtcIynyYMEYbqQp8ruBbqdBfwEO3
-	 nAunTn7iy8E4fvaVItcwmY9D/s8ySSQRF2aY242rcn99zHF0H/AOtrB/AD3tAFbwJqQ==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795509939;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=Dfdj6p9cM6m0jnsefG/KNhl4NoE+8/uZaNn6snsselM=;
-	b=12Eufhhsue8hqxTauf8pe7YTU1uxCDExgJ6H1Zol9Iu6ssnOKMmdbMacc52PGpc/j3ws
-	 JBs9j+vEp6mjSWRDBI6N3s20qR3RXC1cP1ey3C9Eny037MIAkY5kNzIFxsBgf5KOVjCzv
-	 PgvBF+nJ5nKp1m37P1hXYBwHyTUAeDgiiePBaah7tOX2sdETjQmKO6uP0S3TgJKjO+mER
-	 0/BRZYGbgnuhM3sqXlAlVjn5VvjO49evRkM09yfkOJSyeR4xwN4s/gHK1bq/Xdro/u0dB
-	 4r7WeuWfKXpHb/2C8HmPZAMLM7J+r0oG65ZmUZC6LTLEOj+QhQDlqotT853EGeW3jkw==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dM+gS99d;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id AA3B31F000D2;
-	Tue, 24 Nov 2026 08:45:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795509939;
-	bh=Dfdj6p9cM6m0jnsefG/KNhl4NoE+8/uZaNn6snsselM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=Nj1Ws89fwzWLkMEBG4Wfy1FQalSWvrjJWP+ETI8gqs3jaMOtgUsko+2QKca+DyGfY
-	 Qx1L1Dy2n+GjfQDarfK5HMCHv44jKyE03L+Mngqe9CVKqfqCMBrIjh+jOZ6a+haAKu
-	 /GOzu7qUdAHJCzl9gNntM+wzhFnNcq/wUNogyFsZsNXYjYFOhsRBFRNlgGEJomYeoe
-	 KUEGAICp7SDhNbcy9hKhtVt2pNQrIpsDNjNag4LtsEDVw7Ng4EhRK8yYIZVGmw9Z5U
-	 3zftrb+8+C/b19uxx1gL/ar4BvRK9ycUHfYYzuma1aC1msIFNtzOIHGpLxmwpDWrHp
-	 UgR9rRRcNWrlA==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 3B3284C964;
-	Tue, 24 Nov 2026 08:45:27 +0000 (UTC)
-From: Akshat Singh via B4 Relay <devnull+automobilehacks.gmail.com@kernel.org>
-Date: Tue, 24 Nov 2026 08:45:30 +0000
-Subject: [PATCH v2 2/3] irqchip/econet-en751221: Chain the handler to all
- parent interrupts
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07F9606A32C;
+	Tue, 24 Nov 2026 10:30:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C07F9606A32C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dM+gS99d
+Received: from [IPv6:2a0a:edc0:0:900:1d::4e] (lupine.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::4e])
+	(Authenticated sender: pza@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C3907201A7B;
+	Tue, 24 Nov 2026 11:30:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795516203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
+	b=dM+gS99ddtlsxQ9OWhdpqVKfvJ6lVY0i0TGS5Ku27GmC+9NEpdrBpVek7eOepa06Zs7yUc
+	quqXm++aWfafJghFV1DGy9fRgjmgEsNm68jdK3mXRKQvlnIOeMuUgVNINzo71yTLpgZksF
+	MKqa/q7mXFNQNjvHLilVga52wvW23hBnmsygusgz64dNVcsfPzgZdsdCEygOgbJlb67cuy
+	2uSXgGLSSQJLZ3jLCm15hfuqSkW3PXVT8HdiYk3Md111G+aSOCy9bmxW/WOuz6dtv+lEd9
+	GbH0kGXZFf1oRoXS+uTx6w5dZ78a7VPhvzcnmUgLnSUVDAM3IPj/pKlKywFLsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795516203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
+	b=TezWTQBF9YWVTLhcboUvlTc1tLXItyidILp5AJw+CU928bjTPxFFrNmxN5frevjCdXSEIY
+	xHMEcIIBzrlM5/UJT7/LDYtcewblE8YVWwNE3loNLQT377Xe8gyjfs+6P0u91k6GPeDJbQ
+	KvhpHVYN7PTvEAGkEulbBe3m0NiN2Xs3RB48cIELG2czSy8rVmDLbWbZiAOr5snc7793Hv
+	pXiEVXG2kEfO/kIpWEbN1qaUc/MaakHh9EZaCe5krrcbvpyRvJVnqC+AmUVoxiBRfrdSfM
+	WWgY6Oollfh/qj96OZ5YFNuVHWB5yf4LkpwJE6D3HA83Hk37CKhlFRfhxNJsvA==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=pza@pengutronix.de smtp.mailfrom=p.zabel@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795516203; a=rsa-sha256;
+	cv=none;
+	b=fkEK7slnqgbBO+XuN6cijAGgy2vmQ/NG+qiy8DcOy0w0ENS9IqB7fgct3Wa+CvZR3tS/0x
+	2x0jAvQMY2KUQYuWUelLCN9E/R3vfq6Es7FcB3mt2D5cLPsdME9OptyeQPG5ULTF9cfiPA
+	ea2wobXE9yqmPFXEsPeYbCbY5xNZIaKNtspyxazP1Dxklx0PwUmeIpRAY67zLM0FwFmPLm
+	fLRY5j5QGLs0Yq/VUcPd7DvpJnnYbo9gnPZ5d5zdm8CD+n11NQU2N9zDVr1zyW8hsxPkQR
+	i8nzC8wsIhM/pbgvYhH1XtAL6Vn8d4XYqjAjEZ30FUIjQFoCwUTnJf9dNtsLZQ==
+Message-ID: <bfa7cff359bf346981be355d0429f4743a58dbc4.camel@pengutronix.de>
+Subject: Re: [PATCH v5 6/6] reset: Add Siflower SF19A2890 peripheral reset
+ driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: joseph@telaak.dev, Stephen Boyd <sboyd@kernel.org>, Brian Masney	
+ <bmasney+clk@redhat.com>, Jerome Brunet <jbrunet+clk@baylibre.com>, Rob
+ Herring	 <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley	 <conor+dt@kernel.org>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>, Jiaxun Yang
+ <jiaxun.yang@flygoat.com>,  Chuanhong Guo <gch981213@gmail.com>, Yao Zi
+ <me@ziyao.cc>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=	
+ <u.kleine-koenig@baylibre.com>, linux-mips@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Tue, 24 Nov 2026 11:30:03 +0100
+In-Reply-To: <20261123-sf19a2890-sysm-v5-6-4ba44a0db17d@telaak.dev>
+References: <20261123-sf19a2890-sysm-v5-0-4ba44a0db17d@telaak.dev>
+	 <20261123-sf19a2890-sysm-v5-6-4ba44a0db17d@telaak.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-0+deb13u1 
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,122 +102,186 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261124-en751221-intc-all-lines-v2-2-a33a520aac81@gmail.com>
-References: <20261124-en751221-intc-all-lines-v2-0-a33a520aac81@gmail.com>
-In-Reply-To: <20261124-en751221-intc-all-lines-v2-0-a33a520aac81@gmail.com>
-To: Caleb James DeLisle <cjd@cjdns.fr>, Thomas Gleixner <tglx@kernel.org>, 
- Radu Rendec <radu@rendec.net>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Akshat Singh <automobilehacks@gmail.com>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795509928; l=3728;
- i=automobilehacks@gmail.com; s=20261115; h=from:subject:message-id;
- bh=VZCgiuiY7QIYEHouyvIqPyfILwIC7tAkcoA/yaFvT+k=;
- b=SttxCKv/Gvd/uBU9vyU0kHgc+T9zJbhU0l30WFlwbGMzb+DJSFATrRpIotiYoSrQywPG3t4me
- t/qJIKIJfxAAcF4817M07CPS/N5vu8hKKKvvkCH0uMaApDynPdmUaln
-X-Developer-Key: i=automobilehacks@gmail.com; a=ed25519;
- pk=wYmYXn6wy/XN0edTCg6D7UtE9nYLei8mbfqydGGCdf4=
-X-Endpoint-Received: by B4 Relay for automobilehacks@gmail.com/20261115
- with auth_id=1535
-X-Original-From: Akshat Singh <automobilehacks@gmail.com>
-Reply-To: automobilehacks@gmail.com
-Content-Transfer-Encoding: 7bit
 
-From: Akshat Singh <automobilehacks@gmail.com>
+On Mo, 2026-11-23 at 23:41 -0500, Joseph Telaak via B4 Relay wrote:
+> From: Joseph Telaak <joseph@telaak.dev>
+>=20
+> Add a driver for the resets of the Siflower SF19A2890 peripheral clock
+> and reset managers. It binds to the auxiliary device that their clock
+> driver creates and uses the registers that driver has mapped. Where an
+> IP has a reset line for each of its clock domains, as the PL011 UARTs
+> and the PL022 SPI controller do, one reset drives all of them, since
+> they have to be asserted together.
+>=20
+> Based on the reset part of the driver in Chuanhong Guo's SF19A2890
+> branch.
+>=20
+> Link: https://github.com/981213/linux/commit/37c81bebaf54
+> Co-developed-by: Chuanhong Guo <gch981213@gmail.com>
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> Signed-off-by: Joseph Telaak <joseph@telaak.dev>
+> ---
+>  MAINTAINERS                               |   1 +
+>  drivers/reset/Kconfig                     |  11 ++
+>  drivers/reset/Makefile                    |   1 +
+>  drivers/reset/reset-sf19a2890-periphcrm.c | 194 ++++++++++++++++++++++++=
+++++++
+>  4 files changed, 207 insertions(+)
+>=20
+[...]
+> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+> index 489fafd6bbe3..d4b707505c3d 100644
+> --- a/drivers/reset/Makefile
+> +++ b/drivers/reset/Makefile
+> @@ -39,6 +39,7 @@ obj-$(CONFIG_RESET_RASPBERRYPI) +=3D reset-raspberrypi.=
+o
+>  obj-$(CONFIG_RESET_RZG2L_USBPHY_CTRL) +=3D reset-rzg2l-usbphy-ctrl.o
+>  obj-$(CONFIG_RESET_RZV2H_USB2PHY) +=3D reset-rzv2h-usb2phy.o
+>  obj-$(CONFIG_RESET_SCMI) +=3D reset-scmi.o
+> +obj-$(CONFIG_RESET_SF19A2890_PERIPHCRM) +=3D reset-sf19a2890-periphcrm.o
+>  obj-$(CONFIG_RESET_SIMPLE) +=3D reset-simple.o
+>  obj-$(CONFIG_RESET_SKY1) +=3D reset-sky1.o
+>  obj-$(CONFIG_RESET_SKY1_AUDSS) +=3D reset-sky1-audss.o
+> diff --git a/drivers/reset/reset-sf19a2890-periphcrm.c b/drivers/reset/re=
+set-sf19a2890-periphcrm.c
+> new file mode 100644
+> index 000000000000..54b476237bd4
+> --- /dev/null
+> +++ b/drivers/reset/reset-sf19a2890-periphcrm.c
+> @@ -0,0 +1,194 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Siflower SF19A2890 peripheral reset driver
+> + *
+> + * The peripheral clock and reset managers keep their resets in the firs=
+t
+> + * register of the block. Their clock driver creates an auxiliary device=
+ for
+> + * them and passes the mapped registers in its platform data.
+> + */
+> +
+> +#include <linux/auxiliary_bus.h>
+> +#include <linux/bits.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/spinlock.h>
+> +
+> +#include <dt-bindings/clock/siflower,sf19a2890-periph-crm.h>
+> +
+> +#define REG_RESET	0x0
+> +
+> +struct sf19a2890_periphrst_data {
+> +	const u32 *masks;
+> +	unsigned int num_resets;
+> +};
+> +
+> +struct sf19a2890_periphrst {
+> +	struct reset_controller_dev rcdev;
+> +	void __iomem *base;
+> +	spinlock_t lock;	/* serializes reset register updates */
+> +	const u32 *masks;
+> +};
+> +
+> +static inline struct sf19a2890_periphrst *
+> +rcdev_to_periphrst(struct reset_controller_dev *rcdev)
+> +{
+> +	return container_of(rcdev, struct sf19a2890_periphrst, rcdev);
+> +}
+> +
+> +static int sf19a2890_periphrst_update(struct reset_controller_dev *rcdev=
+,
+> +				      unsigned long id, bool assert)
+> +{
+> +	struct sf19a2890_periphrst *rst =3D rcdev_to_periphrst(rcdev);
+> +	u32 reg;
+> +
+> +	guard(spinlock_irqsave)(&rst->lock);
+> +	reg =3D readl(rst->base + REG_RESET);
+> +	if (assert)
+> +		reg |=3D rst->masks[id];
+> +	else
+> +		reg &=3D ~rst->masks[id];
+> +	writel(reg, rst->base + REG_RESET);
+> +	return 0;
+> +}
+> +
+> +static int sf19a2890_periphrst_assert(struct reset_controller_dev *rcdev=
+,
+> +				      unsigned long id)
+> +{
+> +	return sf19a2890_periphrst_update(rcdev, id, true);
+> +}
+> +
+> +static int sf19a2890_periphrst_deassert(struct reset_controller_dev *rcd=
+ev,
+> +					unsigned long id)
+> +{
+> +	return sf19a2890_periphrst_update(rcdev, id, false);
+> +}
+> +
+> +static int sf19a2890_periphrst_status(struct reset_controller_dev *rcdev=
+,
+> +				      unsigned long id)
+> +{
+> +	struct sf19a2890_periphrst *rst =3D rcdev_to_periphrst(rcdev);
+> +
+> +	return !!(readl(rst->base + REG_RESET) & rst->masks[id]);
+> +}
+> +
+> +static const struct reset_control_ops sf19a2890_periphrst_ops =3D {
+> +	.assert =3D sf19a2890_periphrst_assert,
+> +	.deassert =3D sf19a2890_periphrst_deassert,
+> +	.status =3D sf19a2890_periphrst_status,
+> +};
+> +
+> +#define RST_DATA(_name)							\
+> +	static const struct sf19a2890_periphrst_data sf19a2890_##_name##_rst =
+=3D { \
+> +		.masks =3D sf19a2890_##_name##_masks,			\
+> +		.num_resets =3D ARRAY_SIZE(sf19a2890_##_name##_masks),	\
+> +	}
+> +
+> +/*
+> + * A reset that covers several bits drives the reset lines of all the cl=
+ock
+> + * domains of one IP, which have to be asserted together.
+> + */
 
-The EN751221 interrupt controller does not drive one CPU interrupt line
-per source. It presents the number of the pending interrupt plus one, in
-binary, on the CPU interrupt lines IP2-IP7. In VEIC mode the CPU takes
-that number as the vector, but without VEIC the driver chains its handler
-to the first parent interrupt only, IP2 in the existing device trees. An
-odd-numbered interrupt then never interrupts the CPU by itself: it is
-handled only when an even-numbered one happens to run the handler, which
-on an idle system is the next timer interrupt. That covers the frame
-engine's QDMA (21), xHCI (17) and the first PCIe port (23).
+This comment seems misplaced. I suggest you move it up to the masks
+field in the sf19a2890_periphrst_data definition or down to where
+multiple bits are actually set. Also, s/reset/reset mask/ ?
 
-A kernel built without CONFIG_CPU_MIPSR2_IRQ_EI always takes the
-non-VEIC path. On a Nokia G-140W-C running such a kernel, this delayed
-received packets by up to 10 ms, and ping round-trip times to the device
-cycled through 1-11 ms.
+> +static const u32 sf19a2890_single_masks[] =3D { BIT(0) };
+> +
+> +RST_DATA(single);
+> +
+> +/* The two sides of an asynchronous AXI bridge */
+> +static const u32 sf19a2890_gmac_masks[] =3D { [RST_GMAC] =3D GENMASK(1, =
+0) };
+> +
+> +RST_DATA(gmac);
+[...]
+> +static int sf19a2890_periphrst_probe(struct auxiliary_device *adev,
+> +				     const struct auxiliary_device_id *id)
+> +{
+> +	const struct sf19a2890_periphrst_data *data;
+> +	struct device *dev =3D &adev->dev;
+> +	const struct of_device_id *match;
+> +	struct sf19a2890_periphrst *rst;
+> +
+> +	/* The OF node is the parent's, so device_get_match_data() cannot be us=
+ed */
+> +	match =3D of_match_node(sf19a2890_periphrst_ids, dev->of_node);
+> +	if (!match)
+> +		return -ENODEV;
+> +	data =3D match->data;
+> +
+> +	rst =3D devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
 
-Without VEIC, chain the handler to every parent interrupt listed in the
-device tree. One interrupt usually raises several lines, so the later
-runs of the handler find nothing pending; don't count those as spurious.
+devm_kzalloc_obj()
 
-VEIC mode is unchanged.
-
-Fixes: 1902a59cf5f9 ("irqchip: Add EcoNet EN751221 INTC")
-Tested-by: Caleb James DeLisle <cjd@cjdns.fr>
-Signed-off-by: Akshat Singh <automobilehacks@gmail.com>
----
- drivers/irqchip/irq-econet-en751221.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/irqchip/irq-econet-en751221.c b/drivers/irqchip/irq-econet-en751221.c
-index 2ca5d9018..4c1680152 100644
---- a/drivers/irqchip/irq-econet-en751221.c
-+++ b/drivers/irqchip/irq-econet-en751221.c
-@@ -18,6 +18,15 @@
-  * When VPE#1 requests IRQ 30, the driver manipulates the mask bit for IRQ 29,
-  * telling the hardware to mask VPE#1's view of IRQ 30.
-  *
-+ * The controller does not give each source its own CPU interrupt line. It
-+ * presents the number of the pending interrupt plus one, in binary, on the
-+ * CPU interrupt lines IP2-IP7, which a CPU in VEIC mode takes as the vector.
-+ * Without VEIC, IRQ 21, for example, shows up as 22 = 0b010110 on IP3, IP4
-+ * and IP6, so the controller is chained to every CPU line listed in its
-+ * "interrupts" property. Chained to IP2 alone, it would see the odd-numbered
-+ * IRQs only when an even-numbered one, such as the timer, happened to run
-+ * the handler.
-+ *
-  * Copyright (C) 2025 Caleb James DeLisle <cjd@cjdns.fr>
-  */
- 
-@@ -145,9 +154,12 @@ static void econet_intc_from_parent(struct irq_desc *desc)
- 	pending0 = ioread32(econet_intc.membase + REG_PENDING0);
- 	pending1 = ioread32(econet_intc.membase + REG_PENDING1);
- 
--	if (unlikely(!(pending0 | pending1))) {
--		spurious_interrupt();
--	} else {
-+	/*
-+	 * An interrupt usually raises several CPU lines. It is handled when
-+	 * the first of them runs this function, and the others find nothing
-+	 * pending.
-+	 */
-+	if (pending0 | pending1) {
- 		domain = irq_desc_get_handler_data(desc);
- 		econet_intc_handle_pending(domain, pending0, 0);
- 		econet_intc_handle_pending(domain, pending1, 32);
-@@ -461,7 +473,22 @@ static int __init econet_intc_of_init(struct device_node *node, struct device_no
- 		if (ret)
- 			return ret;
- 	} else {
-+		int nr_parents = of_irq_count(node);
-+
- 		irq_set_chained_handler_and_data(irq, econet_intc_from_parent, domain);
-+
-+		for (int i = 1; i < nr_parents; i++) {
-+			int virq = irq_of_parse_and_map(node, i);
-+
-+			if (!virq) {
-+				pr_warn("%pOF: DT: Failed to get IRQ %d from 'interrupts'\n",
-+					node, i);
-+				continue;
-+			}
-+
-+			irq_set_chained_handler_and_data(virq, econet_intc_from_parent,
-+							 domain);
-+		}
- 	}
- 
- 	econet_intc.domain = domain;
-
--- 
-2.43.0
-
-
+regards
+Philipp

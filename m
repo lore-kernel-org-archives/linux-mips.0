@@ -1,98 +1,111 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795516206;
-	b=fkNI+XTWfB2VCxi9/dowDnX8Rx2QUNXm6a/YOsvZdSX3kXaQIA7fd+vhWOOa8GiHx8eg
-	 4F1ScCVkkUeHKNGJaBwiq+GC7HJ6CK3D0rkv6bbaY7pNwbH+rwjU4budWpFvOvq+j20RW
-	 4kbO3fob2BR6fT2KU+MAKSoCV4c+sDvcRvwi0u/M3gC/qxPB7TJWO+4jkxGeWEGztbQF6
-	 WVcO2jYqMCACsLw0Rl3RaS6O+1R5lSu/jX1+mUtIm7DDX7lvij3yMa33SIFqgd91Va6eP
-	 xUfes0Yv2VhgrB8bOVLiNVTQ+nLvqqhm3AceaosAa4Di63v3r6KbjNSiDZwC2NJo4Ow==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795516206;
-	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Subject:From:To:Cc:
-	 Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:
-	 User-Agent:MIME-Version;
-	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
-	b=XOmsGpBVvafIGRVLHS702JIT/Vw2gq7yalDU9W2qVOfBv2QIUbtVeUNFG0WUXUYeMAZg
-	 EvcmxIZAc+O6jUiDsiZ20FmgUwLr+9Z9AidlrB2yOeBvMw+CNwxBCnoDPPwjcgv/y3sdL
-	 QQMhMcZ4uF2hTRHcaWekd/ZBpg+Eo4KA1glekZ5s/goHlKCAqcraF0cgopZkJuQKKeDZK
-	 sWszr3kA0orX65+D8Yde2Y4Z2gU/esfdA8X9cjEStTba8PFySjP/M25tu/x5ll2ILDIU2
-	 unDgAJDH5Mq2kHDCaQDIs+VACLnX8AMEdlBGDFxTOikvi1nTZrtym3gPAjLcjTNtIcw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dM+gS99d;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.152
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795517653;
+	b=ewjwnAPmOnSE9PZfRLYbNFweiQgHGdoSj6meatjOw2/XE2t128pW/gfa/kveJ4Ko0GX6
+	 HwSxEXYmiUElYbijVINdeOLoJNyqUAdPHlZp9iZ1tx10T++EElzL9fw2aFNmbpJNwHOG6
+	 R8fjqhLVUgfII7I2rytluCcyWgg0oh1KVjHEHqdM8Eajw3Dce6faUwuARs2USp6KMcy+0
+	 5f8llgrfoAcFZD6mxQ0ehXriLAbmlkrpClqXwM4ZRtiVsnKGHU0QnkPAC5Cbii76Euk6j
+	 rK5z3ysR/UU+aJ42rcmYPzYddZBdVk7cvxJbigcQuDzxRx8k/vaQshpPV8RQofp12nQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795517653;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
+	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
+	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
+	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
+	 References:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=I/zIe5VWqw8+S0/CxPV6Xop+uxmy5kge68ZkVSiQml0=;
+	b=UyIoAKr1bKr9D8k1kuS5SPODiHL6OxafLOaUKhp5W2Ip35dNZQgRHEAgScC2FXs8Y+6p
+	 E0neZnXD8pqZ4M5lkbrHElwXbt7BhpNLw40YOMQtTdYKZfhAIoenKgywFT0fahitE6r22
+	 a3qJhBb9d5oLvf1oxuvze6dprfMXE8pMPTIzJkVt+2MAwkGUmYets2DT60EYDB+nLdc4l
+	 EZ1jgTR1/Orkk46OjW0RcCkSpw4VhJSd3eGkCNNkawSktRdL+pNoUEstLSM0Rzl0G9ap0
+	 wv3mJOpt8lNWr3w879Fd4WFlZ+MRaiuKTVBxJJZc/wzJhjl27yvpfh54R33s5NbVDiQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=arndb.de;
+	spf=pass smtp.mailfrom=arndb.de;
+	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=Ottftt1B;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=N71Ui9Lb;
+	arc=none smtp.remote-ip=202.12.124.152
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07F9606A32C;
-	Tue, 24 Nov 2026 10:30:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C07F9606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08D3606A31E
+	for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 10:54:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F08D3606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dM+gS99d
-Received: from [IPv6:2a0a:edc0:0:900:1d::4e] (lupine.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::4e])
-	(Authenticated sender: pza@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C3907201A7B;
-	Tue, 24 Nov 2026 11:30:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795516203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
-	b=dM+gS99ddtlsxQ9OWhdpqVKfvJ6lVY0i0TGS5Ku27GmC+9NEpdrBpVek7eOepa06Zs7yUc
-	quqXm++aWfafJghFV1DGy9fRgjmgEsNm68jdK3mXRKQvlnIOeMuUgVNINzo71yTLpgZksF
-	MKqa/q7mXFNQNjvHLilVga52wvW23hBnmsygusgz64dNVcsfPzgZdsdCEygOgbJlb67cuy
-	2uSXgGLSSQJLZ3jLCm15hfuqSkW3PXVT8HdiYk3Md111G+aSOCy9bmxW/WOuz6dtv+lEd9
-	GbH0kGXZFf1oRoXS+uTx6w5dZ78a7VPhvzcnmUgLnSUVDAM3IPj/pKlKywFLsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795516203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fvqpUaYvk9f/z+mIcVPsgnzKNqUqRWXkIX6uqXRqLX0=;
-	b=TezWTQBF9YWVTLhcboUvlTc1tLXItyidILp5AJw+CU928bjTPxFFrNmxN5frevjCdXSEIY
-	xHMEcIIBzrlM5/UJT7/LDYtcewblE8YVWwNE3loNLQT377Xe8gyjfs+6P0u91k6GPeDJbQ
-	KvhpHVYN7PTvEAGkEulbBe3m0NiN2Xs3RB48cIELG2czSy8rVmDLbWbZiAOr5snc7793Hv
-	pXiEVXG2kEfO/kIpWEbN1qaUc/MaakHh9EZaCe5krrcbvpyRvJVnqC+AmUVoxiBRfrdSfM
-	WWgY6Oollfh/qj96OZ5YFNuVHWB5yf4LkpwJE6D3HA83Hk37CKhlFRfhxNJsvA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=pza@pengutronix.de smtp.mailfrom=p.zabel@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795516203; a=rsa-sha256;
-	cv=none;
-	b=fkEK7slnqgbBO+XuN6cijAGgy2vmQ/NG+qiy8DcOy0w0ENS9IqB7fgct3Wa+CvZR3tS/0x
-	2x0jAvQMY2KUQYuWUelLCN9E/R3vfq6Es7FcB3mt2D5cLPsdME9OptyeQPG5ULTF9cfiPA
-	ea2wobXE9yqmPFXEsPeYbCbY5xNZIaKNtspyxazP1Dxklx0PwUmeIpRAY67zLM0FwFmPLm
-	fLRY5j5QGLs0Yq/VUcPd7DvpJnnYbo9gnPZ5d5zdm8CD+n11NQU2N9zDVr1zyW8hsxPkQR
-	i8nzC8wsIhM/pbgvYhH1XtAL6Vn8d4XYqjAjEZ30FUIjQFoCwUTnJf9dNtsLZQ==
-Message-ID: <bfa7cff359bf346981be355d0429f4743a58dbc4.camel@pengutronix.de>
-Subject: Re: [PATCH v5 6/6] reset: Add Siflower SF19A2890 peripheral reset
- driver
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: joseph@telaak.dev, Stephen Boyd <sboyd@kernel.org>, Brian Masney	
- <bmasney+clk@redhat.com>, Jerome Brunet <jbrunet+clk@baylibre.com>, Rob
- Herring	 <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
- Dooley	 <conor+dt@kernel.org>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>,  Chuanhong Guo <gch981213@gmail.com>, Yao Zi
- <me@ziyao.cc>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=	
- <u.kleine-koenig@baylibre.com>, linux-mips@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Tue, 24 Nov 2026 11:30:03 +0100
-In-Reply-To: <20261123-sf19a2890-sysm-v5-6-4ba44a0db17d@telaak.dev>
-References: <20261123-sf19a2890-sysm-v5-0-4ba44a0db17d@telaak.dev>
-	 <20261123-sf19a2890-sysm-v5-6-4ba44a0db17d@telaak.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-0+deb13u1 
+	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm2 header.b=Ottftt1B;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=N71Ui9Lb
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 41BE97A051D
+	for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 05:54:12 -0500 (EST)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Tue, 24 Nov 2026 05:54:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1795517645;
+	 x=1795604045; bh=I/zIe5VWqw8+S0/CxPV6Xop+uxmy5kge68ZkVSiQml0=; b=
+	Ottftt1BFIfOuEqCt8XeAUqMffBIJ+4igLf7CXsA/NdF1mCtbMtnpz/AHGyYpAJN
+	rVJM2Blz4cCY65pgR3cOkjgPEFqc1bQC19m80vqns0jLMmg3g/LCv+46LMkuXJyR
+	5DQDef7dDjqWhXK0ENKE+Zlr2+UCR86NlaKNZtykNEvXBwJA5QXAJG3ourCj++yF
+	D7zNhRvV3/AFQbJOZigeAc5dcw20+YivH5p5U/VodPQPDFdRn5Buc8FEg9cKNQSw
+	acfFxxGlqZ75c9BA/SGoXWoL5rjzk+W28V6UWppgQcvxaKgmTG7rCKamo/qGfdW2
+	coUlzQMVACK+f4HOxiBiCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1795517645; x=
+	1795604045; bh=I/zIe5VWqw8+S0/CxPV6Xop+uxmy5kge68ZkVSiQml0=; b=N
+	71Ui9LbvWGXzA5LjKPeM1OTlX40g48oBMmsfwmkA/CKb5YGpSMs9N1Zirgeew4i/
+	2bNVmXHEHFaw99558izOsvL7484Q2Xxo4wc0UbfzkMZE59ckgM3FqzBpFK8jNO1I
+	68yWbzhto+tbk9aKSeKOnM3BCVOggCGmTysFXwVHSwfQ9h4wV+5L577j1nNevPQA
+	8ixvAjNiuCVJn47eCHUMA7ubbGR/PFOXNBpmxEaxBYY1HTG3jVDs16GZIb0HdXQm
+	EXpYR9vIEAondYJrXlDMAC6QQUdjdqgcROzlKnzv83AEEpVPfqB6+ISZhevt6CCX
+	vQP6R8LatdG/+2tbRLCZg==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=sign d=arndb.de a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1795517645; d=arndb.de;
+	mf=PGFybmRAYXJuZGIuZGU+;
+	rt=PGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnPg==;
+	s=fm2:rsa-sha256:hURmgVw4Qe9Ia3MhUK9aI7tN77DqCY4Kc7qha15CGyo0HkY
+	icZfCc1x4DW8/W6Clx/kAWlabdL7ue4VEp310hFLhv2ZeXtRBo+CwneQCWLh+FNf
+	961UuPZgo9AebYg/NtD/xLIWB9ohHfwywtExOrvzled8pPdLsSOQabWnyE7DSyB/
+	9T+ppjVpP+MCA3/k4ceH9LI/Bb4ppmjtRPV4KTDIJVI9G2b9xVS+sqeGiC+liBjs
+	LA+ul8xQ5Ywbz2KcIxYQGVp9qlnwrMCTaVqndxswKycMbZ529pvAOq+TkVyyE2NV
+	s4nZ4IfZIlNrj2m5RwdB0cTkT6QrJQ9gT5XOAzQ==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:qaUuqfRbwycq3sQmP4C2zJuSQHDasB36WmiAes4gQ5E=:99SLvjv94WBAtXwnVfHBivKj5m04d811A0daBUjI5ao=;
+X-ME-Sender: <xms:yWwFa55tJfFwBKcna9sOv-rxn8Y7Jmm6IGpBxblWTXL4PZOvyAAluA>
+    <xme:yWwFaxt0ojozunMiM_zaH7QfVbzKjf6qIOwLMv3GiBSyUDAfQTpBcb0DQILe_I8hz
+    wLgsixtmtEPbwV6pLRs4j2hqKG2RID9hDU1K_rYYMU8_TEA2tJYc6I>
+X-ME-Proxy-Cause: dmFkZTEXP003WlrYk1tyY402XwYF1VaFe/m4y62XO9fh81zbtJgx9Ny4RQkh2NSS+6DpfX
+    pkzDCkFstx/lBPnZY8i0hFxeXqJf85LQFHjIixebnbGtumOcJrTZ+rMPIolAIX3TbWsIkM
+    2PwaVFyIjLa+NqD+M308chQInLu3EV+vVDISnyhhr4/AsFkC4ExHE7J4wjtIegWmvXZ6In
+    W/xYbWBmwk0XhPNj3Caf0IDs+IcPeliFiBQC2oT4OicmsbSVjOAXJm4vo24uF1iMMtqchT
+    EpcT9FJj4O/m4crJADFfJxrNk1hEqh84+UoSB2IFqy3kW9AgEd/HSAaACZlBNOI2/I85gU
+    C6QwIPqJsnnTFaQcPiG6fI4DHtsUnvCD4wIxGZf8Rt+NfAJLtzTivCsK0/9trq4sUnKU3h
+    kJwfIiq0UGzM3of8atF/b17Z9zD/aR2Y2RfRNcP69fZNZzJ8f4Q4QHNNW64mRZpoWoZgdh
+    /AahtRVpc395rRPG1/OtrXkvJqEYfwmCuPUQwBOXhju77CdGGiyZNPIzOYauqBpd/CYD6u
+    QXNoKr7yokQrIS5r44KuN0r9MusNCg3jIjqw0EG1xYT0CA7VLjOOVyvmOqrcWHHKebNJ35
+    1xaEqLsbk+i0cOECvN/Vfdw/BfuFCGJd9EF+MkojNtmfmM0KAQqvThsPgdLA
+X-ME-Proxy: <xmx:y2wFa1jIiKbOTfqopUdM1aaoyclbSzCDfX6IKQrGkCUOD0voqvi26g>
+    <xmx:y2wFa139Inq-EvuaXM3J9VQmsfKly9Ps5hkO3Od3eQwX8Nxv5SAbPQ>
+    <xmx:y2wFa7iSqsMvURMY6DS_aqub-Jj5jc25AAMW_5GTlxdvfc39AbtlnQ>
+    <xmx:y2wFa2_NPPXHO8bHnrY-VHDlZhA2zZxyUqRQPBbPx15Q6PfNyYli_w>
+    <xmx:zWwFa-CgxWM_YwtnrxP4nF-0w0Xl-Ar2_FP-OzbT-xUn6eGY9w1f_--o>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 1F24332A009E; Tue, 24 Nov 2026 05:54:01 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -102,186 +115,54 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+X-ThreadId: AS3EG-ulzzHR
+Date: Tue, 24 Nov 2026 11:53:40 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+ "Bartosz Golaszewski" <brgl@kernel.org>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, "Linus Walleij" <linusw@kernel.org>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Kent Gibson" <warthog618@gmail.com>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-sh@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-wireless@vger.kernel.org
+Message-Id: <7e04f3d1-df93-459c-85c5-9e57dc1c3cde@app.fastmail.com>
+In-Reply-To: <2f25009cbd67a8ee7b417f12b35374b1@gmail.com>
+References: <20261123085723.156933-1-arnd@kernel.org>
+ <tdc6h325jthjgyik2ne4oistkm563maoc2cpnffqu7hh34tpl7@oscripzv4dwq>
+ <qvmy7iaxc7cjy2gkajqkr5ma6b4lwxz5ff64a5zsqrgewkxodr@odbjlv5x3hix>
+ <8296a5c2-0aa2-4fc7-b65b-9d336bc4dff6@app.fastmail.com>
+ <7dpg3x3gkypkznzhuetjsqmk5fhqwuwkc6kupbs52zqh5mibgx@fjow6eodw4pf>
+ <2f25009cbd67a8ee7b417f12b35374b1@gmail.com>
+Subject: Re: [PATCH 0/2 v8] gpiolib: finish the legacy cleanup
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Mo, 2026-11-23 at 23:41 -0500, Joseph Telaak via B4 Relay wrote:
-> From: Joseph Telaak <joseph@telaak.dev>
->=20
-> Add a driver for the resets of the Siflower SF19A2890 peripheral clock
-> and reset managers. It binds to the auxiliary device that their clock
-> driver creates and uses the registers that driver has mapped. Where an
-> IP has a reset line for each of its clock domains, as the PL011 UARTs
-> and the PL022 SPI controller do, one reset drives all of them, since
-> they have to be asserted together.
->=20
-> Based on the reset part of the driver in Chuanhong Guo's SF19A2890
-> branch.
->=20
-> Link: https://github.com/981213/linux/commit/37c81bebaf54
-> Co-developed-by: Chuanhong Guo <gch981213@gmail.com>
-> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-> Signed-off-by: Joseph Telaak <joseph@telaak.dev>
-> ---
->  MAINTAINERS                               |   1 +
->  drivers/reset/Kconfig                     |  11 ++
->  drivers/reset/Makefile                    |   1 +
->  drivers/reset/reset-sf19a2890-periphcrm.c | 194 ++++++++++++++++++++++++=
-++++++
->  4 files changed, 207 insertions(+)
->=20
-[...]
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 489fafd6bbe3..d4b707505c3d 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -39,6 +39,7 @@ obj-$(CONFIG_RESET_RASPBERRYPI) +=3D reset-raspberrypi.=
-o
->  obj-$(CONFIG_RESET_RZG2L_USBPHY_CTRL) +=3D reset-rzg2l-usbphy-ctrl.o
->  obj-$(CONFIG_RESET_RZV2H_USB2PHY) +=3D reset-rzv2h-usb2phy.o
->  obj-$(CONFIG_RESET_SCMI) +=3D reset-scmi.o
-> +obj-$(CONFIG_RESET_SF19A2890_PERIPHCRM) +=3D reset-sf19a2890-periphcrm.o
->  obj-$(CONFIG_RESET_SIMPLE) +=3D reset-simple.o
->  obj-$(CONFIG_RESET_SKY1) +=3D reset-sky1.o
->  obj-$(CONFIG_RESET_SKY1_AUDSS) +=3D reset-sky1-audss.o
-> diff --git a/drivers/reset/reset-sf19a2890-periphcrm.c b/drivers/reset/re=
-set-sf19a2890-periphcrm.c
-> new file mode 100644
-> index 000000000000..54b476237bd4
-> --- /dev/null
-> +++ b/drivers/reset/reset-sf19a2890-periphcrm.c
-> @@ -0,0 +1,194 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Siflower SF19A2890 peripheral reset driver
-> + *
-> + * The peripheral clock and reset managers keep their resets in the firs=
-t
-> + * register of the block. Their clock driver creates an auxiliary device=
- for
-> + * them and passes the mapped registers in its platform data.
-> + */
-> +
-> +#include <linux/auxiliary_bus.h>
-> +#include <linux/bits.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/reset-controller.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include <dt-bindings/clock/siflower,sf19a2890-periph-crm.h>
-> +
-> +#define REG_RESET	0x0
-> +
-> +struct sf19a2890_periphrst_data {
-> +	const u32 *masks;
-> +	unsigned int num_resets;
-> +};
-> +
-> +struct sf19a2890_periphrst {
-> +	struct reset_controller_dev rcdev;
-> +	void __iomem *base;
-> +	spinlock_t lock;	/* serializes reset register updates */
-> +	const u32 *masks;
-> +};
-> +
-> +static inline struct sf19a2890_periphrst *
-> +rcdev_to_periphrst(struct reset_controller_dev *rcdev)
-> +{
-> +	return container_of(rcdev, struct sf19a2890_periphrst, rcdev);
-> +}
-> +
-> +static int sf19a2890_periphrst_update(struct reset_controller_dev *rcdev=
-,
-> +				      unsigned long id, bool assert)
-> +{
-> +	struct sf19a2890_periphrst *rst =3D rcdev_to_periphrst(rcdev);
-> +	u32 reg;
-> +
-> +	guard(spinlock_irqsave)(&rst->lock);
-> +	reg =3D readl(rst->base + REG_RESET);
-> +	if (assert)
-> +		reg |=3D rst->masks[id];
-> +	else
-> +		reg &=3D ~rst->masks[id];
-> +	writel(reg, rst->base + REG_RESET);
-> +	return 0;
-> +}
-> +
-> +static int sf19a2890_periphrst_assert(struct reset_controller_dev *rcdev=
-,
-> +				      unsigned long id)
-> +{
-> +	return sf19a2890_periphrst_update(rcdev, id, true);
-> +}
-> +
-> +static int sf19a2890_periphrst_deassert(struct reset_controller_dev *rcd=
-ev,
-> +					unsigned long id)
-> +{
-> +	return sf19a2890_periphrst_update(rcdev, id, false);
-> +}
-> +
-> +static int sf19a2890_periphrst_status(struct reset_controller_dev *rcdev=
-,
-> +				      unsigned long id)
-> +{
-> +	struct sf19a2890_periphrst *rst =3D rcdev_to_periphrst(rcdev);
-> +
-> +	return !!(readl(rst->base + REG_RESET) & rst->masks[id]);
-> +}
-> +
-> +static const struct reset_control_ops sf19a2890_periphrst_ops =3D {
-> +	.assert =3D sf19a2890_periphrst_assert,
-> +	.deassert =3D sf19a2890_periphrst_deassert,
-> +	.status =3D sf19a2890_periphrst_status,
-> +};
-> +
-> +#define RST_DATA(_name)							\
-> +	static const struct sf19a2890_periphrst_data sf19a2890_##_name##_rst =
-=3D { \
-> +		.masks =3D sf19a2890_##_name##_masks,			\
-> +		.num_resets =3D ARRAY_SIZE(sf19a2890_##_name##_masks),	\
-> +	}
-> +
-> +/*
-> + * A reset that covers several bits drives the reset lines of all the cl=
-ock
-> + * domains of one IP, which have to be asserted together.
-> + */
+On Tue, Nov 24, 2026, at 02:10, Dmitry Torokhov wrote:
+> Hi Bartosz,
+>
+> On Mon, Nov 23, 2026 at 04:41:32PM +0100, Bartosz Golaszewski wrote:
+>> Can I apply v7 and provide it to the SH maintainers on an immutable
+>> branch?
+>
+> BTW, I have the soc_button_array rework (converting it to software nodes
+> and dropping "select GPIOLIB_LEGACY") on an immutable branch based on
+> v7.4-rc2:
+>
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git 
+> ib/7.4-rc2-soc-button-array
 
-This comment seems misplaced. I suggest you move it up to the masks
-field in the sf19a2890_periphrst_data definition or down to where
-multiple bits are actually set. Also, s/reset/reset mask/ ?
+Nice to see that this is ready.
 
-> +static const u32 sf19a2890_single_masks[] =3D { BIT(0) };
-> +
-> +RST_DATA(single);
-> +
-> +/* The two sides of an asynchronous AXI bridge */
-> +static const u32 sf19a2890_gmac_masks[] =3D { [RST_GMAC] =3D GENMASK(1, =
-0) };
-> +
-> +RST_DATA(gmac);
-[...]
-> +static int sf19a2890_periphrst_probe(struct auxiliary_device *adev,
-> +				     const struct auxiliary_device_id *id)
-> +{
-> +	const struct sf19a2890_periphrst_data *data;
-> +	struct device *dev =3D &adev->dev;
-> +	const struct of_device_id *match;
-> +	struct sf19a2890_periphrst *rst;
-> +
-> +	/* The OF node is the parent's, so device_get_match_data() cannot be us=
-ed */
-> +	match =3D of_match_node(sf19a2890_periphrst_ids, dev->of_node);
-> +	if (!match)
-> +		return -ENODEV;
-> +	data =3D match->data;
-> +
-> +	rst =3D devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
+> I recommend pulling it into the gpio tree before applying Arnd's work so
+> that x86 builds with INPUT_SOC_BUTTON_ARRAY enabled no longer pull in
+> CONFIG_GPIOLIB_LEGACY either.
 
-devm_kzalloc_obj()
+I don't think the order matters, my patch 1/2 just won't have an
+effect on configurations that enable INPUT_SOC_BUTTON_ARRAY until your
+patch is merged.
 
-regards
-Philipp
+     Arnd

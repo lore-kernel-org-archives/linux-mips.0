@@ -1,102 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=128.30.2.78
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795461599;
-	b=VwvO6LTfrCX7L/ZiGrRUUOGLT0AkQybZ4ufSxUCAkZEsjNPa88NL/BOf/PwzgNTvaK8k
-	 c/c1oTzcOD7C+MDhg+cbzWQjUV5aErkSQUfyaCLRUDT7Cvim57fbPja2dWwNcLDF5cW44
-	 iDTrf3zMVykOl6ljolYES3cBKNC3C564tyXyt+XdE+6Xvec953eyIio1wzVJDt5WNVdL8
-	 mOXbyjy3V+hjJx2vSID3mTV5pm42ML3lvCHGfCRPq2oatFjznXn7U9QRhiAgGTVSPCe+e
-	 pmtjxnak6MF15ytIM567hhUMECeDAjZb6mBTT592hIGwOo1diB4ARuCRD4k1UPAureg==
+	t=1795482660;
+	b=FHvHY1KCxWt6vV6I0K+hBzM3dqRZu3zMIK4GE/D43oi0wlloj1VyOpy7CoJ8D4WthjDW
+	 2FnmjhibKk9zCuQg2z8kQIJWIDME3s4t454lPEAYejdktRzPhUW0NvJO+m2bMgXNppvkX
+	 GodVndkDrC3uxWwdqrAM8XU4wFL9mGpmjknyh31HwEOtEeFnuxkEXn6UpWB6bxzmwIXr+
+	 C4VRGxMZxAdiCy0gHG71D5G6m9fFAxqMAtTHxFdygEyabdVpPjbVPFd7xhuW6Jjc2e0TJ
+	 Rt0tB2OSuGxVv4SUK5gCGLUhE4WVHU64gFrWZiKEACneC9YuVOIXDkOpBHlmf5a9+SQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795461599;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=YbFSS6dJsC7jMPW/wNXp8H44yQ2FcFRYnsa9hFAzYJM=;
-	b=QZbJJKXe3Oohb5FQ8y8RW9+KopFLsctbP7y2sLghS2tqmbpBjZp3gsJFuDFd9NZJ1Jx8
-	 fSZH52SBK4iUP2ZE8d2ICHNGYWqllGGa0bvLYvNjMQ9I1YIT1VjvWnmBY164c5uJ6vAiv
-	 fcjX70QzXZyavb+vNqKDFxPS9uFUPluVPeSRI2hrTu/yHzPVwCumeeIPgWU8dVYB4hi+q
-	 suz7IUXayVvVjODwtYkOOBS0GDV6cwLSJk2R8Bft250URolVx5UDm6Q6H3kaGPnPGWj2T
-	 oYLlZCZj37WlapDkUhjKh8LNq+xaC8dLn12l0Bok+q/xmfwNoop/oAyqyalWsWIxudQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795482660;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Content-Disposition;
+	bh=CwEMPI7Nv8Y4G/uSjVrKaLXUsD6jBVuvooxioPWLmTc=;
+	b=FDQmXNIerdpVWktjYrkP0vM7uBIvDG537TwkCm7x4680vZJUQr1DL1XqBVRABvXST/6d
+	 xapi3JmyoMGbSGonFX8NdPQ0wCMm6NJjk+uG6KYuP3lTWynNVZNAGK4SMqKqmkz7GzExQ
+	 RMAtlZ+MlbdG/5FWRJXqp4vX6Gv8x045wy3xxCUhF43ptnVM+hqrcd8pZLyunmruBfRdy
+	 qXOkUYvruNQlSObttvh4O4AOndnblhtoEu57iRTllOQhyOwrQnH1CrugaJFInWjDRPx27
+	 4XgxgfwNSdXicDw64ml6w6RvfIFubalu0TcwhkYXXryP7ftP46Hi00wXkGg/2L701Yg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=csail.mit.edu;
-	spf=pass smtp.mailfrom=csail.mit.edu;
-	dkim=pass header.d=outgoing.csail.mit.edu header.i=@outgoing.csail.mit.edu header.a=rsa-sha256 header.s=test20231205 header.b=z5VxCKWt;
-	arc=none smtp.remote-ip=128.30.2.78
-Received: from outgoing2021.csail.mit.edu (outgoing2021.csail.mit.edu [128.30.2.78])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kKG19Co9;
+	arc=none smtp.remote-ip=74.125.82.51
+Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com [74.125.82.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED53606A31A;
-	Mon, 23 Nov 2026 19:19:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9ED53606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=csail.mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csail.mit.edu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFB0606A332
+	for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 01:10:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CCFB0606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outgoing.csail.mit.edu header.i=@outgoing.csail.mit.edu header.a=rsa-sha256 header.s=test20231205 header.b=z5VxCKWt
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=outgoing.csail.mit.edu; s=test20231205; h=In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=YbFSS6dJsC7jMPW/wNXp8H44yQ2FcFRYnsa9hFAzYJM=; t=1795461598; x=1796325598; 
-	b=z5VxCKWtGCXsqdV3G5o7mzM4/ElDJ0LDR2Uaw/We/hWQ6iZt0YL4OYPh+Cfu5RskK5qKXCk+6QS
-	sVOri+nUP4EPq5EIxrf+sUiOxqdYh+rQUuFSDYJFC6T0R3fhk9pfS+gKa+w+vEM2aObWZ3N92YcbP
-	jygaybtAIrkA/tPUQAc/jssn7+k+dbjp/OEFRu8OFG91CPNHwd9JEXvcBcrN5dQDqZjzfUVicdWPQ
-	outbdoCcrMPdCPurg9cXjt6p83wI5fIgDwJFJ1ltq1qdad51JLZymQiHopsGxOhhCvTtsO3kkCcOC
-	FdZcgi8zYN0H1yr4vffjNaznGmIkzETpAyzw==;
-Received: from [49.207.211.146] (helo=csail.mit.edu)
-	by outgoing2021.csail.mit.edu with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <srivatsa@csail.mit.edu>)
-	id 1xVZZR-006Yni-DK;
-	Mon, 23 Nov 2026 14:19:21 -0500
-Date: Tue, 24 Nov 2026 00:49:07 +0530
-From: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kKG19Co9
+Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-1b546061d58so8849585c88.1
+        for <linux-mips@vger.kernel.org>; Mon, 23 Nov 2026 17:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795482659; x=1796087459; darn=vger.kernel.org;
+        h=content-disposition:content-transfer-encoding:content-type
+         :mime-version:references:in-reply-to:subject:cc:to:from:message-id
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=CwEMPI7Nv8Y4G/uSjVrKaLXUsD6jBVuvooxioPWLmTc=;
+        b=kKG19Co9tDWF2kSXK9dKvmLlvSosMXN5A+fjtmNUuhQN82VGIHKHSt7hl60KkIuTqu
+         OTELZTKud2yzTtGpJ7YssH7XaqMzCZGWMYDkBuT+NcCO6f/J1jqPT0iyZQqXfdWQVo+7
+         NpL+BVzS/nn6KT8iZArKwzuxRvPxz7vHEFH6/T2KHs/4S02PCeK1dyecPiT3ra5J0+fQ
+         /fgxtsqz+bypFUe4822LHXZAKII+1BrHRYFU9BpYbk+8Uqr0d9LvdyqMqVFfzPKr5ne0
+         gjqbIHRdr1UAU+rh9u1Qy9nf2cgwwJCw8nbQvW/s9TlQ/Z33NtjHLWdZggyn3wfRzLHS
+         ZRZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795482659; x=1796087459;
+        h=content-disposition:content-transfer-encoding:content-type
+         :mime-version:references:in-reply-to:subject:cc:to:from:message-id
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=CwEMPI7Nv8Y4G/uSjVrKaLXUsD6jBVuvooxioPWLmTc=;
+        b=nKFLfFq2dYXls5PMROVThUtDCcIP9N/Qo714vhzA5WV1RrXWSMhF0NPRqiGLpfoqqO
+         xCPYjHvkssoeeOE9G8ZqGORIxDl2+ye/itX6bcDBwqsNFgSUJIq9gPZmheoxhe8dok9A
+         Z2EEGA+ku3Hryrg62tAb/vYF0OOXegQh6PmOUPELeSFI1fuoNF37zitFL2HMdaGlyEDt
+         TZNqHGpuqri/POyvYJDcBd7RAMu+GYuBjZRSxnI7vcTPPJRZoj8N6TMa8SDEI5zuuIas
+         hcaL671ULBN1nimJ3A6eWqXXWWd63gD0DztLn+yhARqEgp6ei16KLAxA5m8qiihnszyh
+         Uxuw==
+X-Forwarded-Encrypted: i=1; AL+hErGf6A/+odSYNGb4zSUNS3kYR4F4V/HraaIekel6Nu/1t+1ugBDX0XEblCa5uAiE3+NtiBRS9j0OUr+w@vger.kernel.org
+X-Gm-Message-State: APuU4Z/lbixL1l7FIZ9BI7tgKWp0EkI68p9pQt3d1NBroiqnAM72+/Tf
+	Xfd+7/od3kQNlW5/LEKH1gISM0AxKrhpWPKoIG9wkCDkrtEZOB2Kuerc
+X-Gm-Gg: AZFdTZeS7vUmFyt0z7bAatKFktrFAsa9KgCI/zGC/BZSvQzhTQPBxNUl8/4kQBTLz70
+	z6LrPvOeOpkqW47QT09tNL/WB8eF1bFDhxokELMdfeyuNBoeWNpjmNexfRvobX+W2DVmFF3pvd8
+	HYT6amK76HZQ3W1zkhbguPc74lojl0NLl2PPJqzXym9YUbcMUp4fIqll41+hI4Zl8AaS91OB00L
+	KvuGz28IvDeJfC5/ORjw+aB1dm+zwRHMbUh+aaodvGQcjrJyBG45uXaKrYCQmYeZx2q/pgcsLcs
+	XOS1JgI5sWJaS8zeCjSDIQrPS7Dw8VhhQn4yUonMhDy74QV1lofB5R/nkQnD1LLQfvpecigd3rf
+	EcvSmFC7jc8v2rBy7FY0dbidbQ4OE7m8W7oTyRTEvv+BbfATEKSKt6qeOQqrpIjStx7f3sg6OU8
+	ZO0Vpo1864DUglinxzbce2CMNaIlNru+608cb5aeom7cO9nTtGycUtZkENI4N9mjKDrlnNRq9Bj
+	O2UNYpjz41rtjfr4zHZ8MEaY1Cr3Fu+C76oFeZOM8Xn6mZXxiFKs7ZMDWZusdGEIsb2Eo4iG5ig
+	Yk+mMI6l+SCz2dgzt8SepwDvfo0tsgv9TdcLQTPzvSMf3Z2xIM99V6BqJ693NZqee5iDBg==
+X-Received: by 2002:a05:7300:c695:b0:37f:73f9:aee7 with SMTP id 5a478bee46e88-3856c9a6408mr15050898eec.5.1795482658749;
+        Mon, 23 Nov 2026 17:10:58 -0800 (PST)
+Received: from localhost ([2a00:79e0:2ebe:8:4121:d698:201c:9274])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-386aaae4960sm15816977eec.18.2026.11.23.17.10.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2026 17:10:57 -0800 (PST)
+Date: Mon, 23 Nov 2026 17:10:56 -0800
+Message-ID: <2f25009cbd67a8ee7b417f12b35374b1@gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Bartosz Golaszewski <brgl@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Arnd Bergmann <arnd@kernel.org>,
+	Linus Walleij <linusw@kernel.org>,
+	Johannes Berg <johannes@sipsolutions.net>,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Paul Walmsley <pjw@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>,
-	Russell King <linux@armlinux.org.uk>,
+	Kent Gibson <warthog618@gmail.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Vasily Gorbik <gor@linux.ibm.com>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Cong Wang <cwang@multikernel.io>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	WANG Xuerui <kernel@xen0n.name>, kexec@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 2/2] arch, kexec: declare kexec and crash capabilities in
- Kconfig.kexec
-Message-ID: <awSRq5Cn84BHelio@csail.mit.edu>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
- <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+	linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 0/2 v8] gpiolib: finish the legacy cleanup
+In-Reply-To: <7dpg3x3gkypkznzhuetjsqmk5fhqwuwkc6kupbs52zqh5mibgx@fjow6eodw4pf>
+References: <20261123085723.156933-1-arnd@kernel.org> <tdc6h325jthjgyik2ne4oistkm563maoc2cpnffqu7hh34tpl7@oscripzv4dwq> <qvmy7iaxc7cjy2gkajqkr5ma6b4lwxz5ff64a5zsqrgewkxodr@odbjlv5x3hix> <8296a5c2-0aa2-4fc7-b65b-9d336bc4dff6@app.fastmail.com> <7dpg3x3gkypkznzhuetjsqmk5fhqwuwkc6kupbs52zqh5mibgx@fjow6eodw4pf>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -107,29 +109,26 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
 
-On Thu, Nov 19, 2026 at 08:16:58AM +0200, Mike Rapoport (Microsoft) wrote:
-> The options that let an architecture opt in to kexec and crash dump
-> features, like ARCH_SUPPORTS_KEXEC or ARCH_SUPPORTS_CRASH_DUMP, are
-> defined in each architecture's Kconfig as def_bool, and most of them are
-> copied over several architectures.
-> 
-> Declare these options once in kernel/Kconfig.kexec next to the options
-> that depend on them, similarly to how mm/Kconfig does it, and make the
-> architectures select them instead.
-> 
-> Selection conditions are preserved, so there is no functional change.
-> 
-> Acked-by: Baoquan He <baoquan.he@linux.dev>
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Hi Bartosz,
 
-Reviewed each code movement for correctness and also reasoned through
-why the ARCH_SELECTS_* entries were left untouched in this series (as
-they don't yield any consolidation benefits towards Kconfig.kexec).
+On Mon, Nov 23, 2026 at 04:41:32PM +0100, Bartosz Golaszewski wrote:
+> Can I apply v7 and provide it to the SH maintainers on an immutable
+> branch?
 
-Reviewed-by: Srivatsa S. Bhat (Microsoft) <srivatsa@csail.mit.edu>
+BTW, I have the soc_button_array rework (converting it to software nodes
+and dropping "select GPIOLIB_LEGACY") on an immutable branch based on
+v7.4-rc2:
 
-Regards,
-Srivatsa
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git ib/7.4-rc2-soc-button-array
+
+I recommend pulling it into the gpio tree before applying Arnd's work so
+that x86 builds with INPUT_SOC_BUTTON_ARRAY enabled no longer pull in
+CONFIG_GPIOLIB_LEGACY either.
+
+Thanks.
+
+-- 
+Dmitry

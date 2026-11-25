@@ -1,53 +1,110 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=194.117.254.33
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795618605;
-	b=vuTgdCWrIwMKhlbfXIAwPgGnIOanmD9nDOVg8tlEwPWRzdmw2fq5zaXTsCi6POgyZrFr
-	 QMRwAEF8YhSyT7TbdFSsjufS/WiZhXCUVVbWHpIgpkjOaAGCRNzx30EbNujfLFRAH0RhA
-	 jEuDf+/zLXpeURDned67BQlfOIo2MTi7/FAuFYV0GFcBIywePyoVxTdYOrklOkNBOGy1f
-	 hLubCZqJycXWN8b3ylABYJ/j0A4P9EP576xAi2uUybqIz3Jr0b1El+BZpn1URQ5EzeSox
-	 W2YnHlKRIt21g7sQdOV+iMX0I/1+Lph7c1WaZ4gPTbK4ymCKe/t1SNSUZZT1EcYArOA==
+	t=1795619325;
+	b=bCJyMsQBxTIvhO6at4kXRro8T6sH5B74D3zpTjsdk1twM6iKLS72YZrx06CRtd2JHKSe
+	 B4B41wgNB5voX+qT4v/B7krknUK9OpSquzGy+bW1FqkwPErTAEPK+ZIdAfPjERnVnydCb
+	 bijiqOhRXtImNnr33UrBC0fvOSGAxqnscUCqQ4G7uVKAWMzx6uNCNknaSOZhX+6LHTScA
+	 YsD43hFiuuemROyz60HbTASpQx9uGam4HI19Ezsxjo7U/VYCjWSbkAtWyn7wt6Q+shwIr
+	 /riv+0jYvKFnVBoWXxqjt7dTs4sPb5/Q//MxIKK6l67EpF1T5x4hfOswGuAY9RosB6w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795618605;
-	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=MI4OKQismbXKL6uyZV+4cscz1JHjyMMOGYJJlaT3/4A=;
-	b=wilxs+/vAcUb7FpW27g/aHTKFpWQgwwapbez3i8wSE0ZFoEKj8JkfrVyCVyd52hOl1Xt
-	 o/+clBokwBjiQ/cyIoCQMHVu6+/q0LQdtdbZKBRmaakQ47lb+GI2BptDxryfmGFJ57VmS
-	 o515CXeOMC0Y9uIXdVDfFf0dJnDl3EsdUwe1JAVROixIGGGz87YY5nif8SkCnyppTUkML
-	 2ag4b2UoIw+ao5ZFnCw6aLV+qoWmsKp1K8VvO1aXXLj8BuubcS+fl69wFfg2ejJ3Jvpe1
-	 Ous5KGDaTJRPHOjqfJcprLgQH79XjlS0RlK5mTsabUARN206kI/WfNpeYPqx/hX9DyQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795619325;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:X-UD-Smtp-Session:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=j5WSHF96nKodvhrZlDzmgM50kjWquzlJzGWnJzYvtHs=;
+	b=XxhjQzP9rjDNwT6MjT/HpjLvdPKVAwE4SD8BzBDylCJqpyqwurFCzgKqe02ZTyeL0mAO
+	 MHEY/BqC6sEgApb+hDnxDP7le8v8tw1HCnO2HOTYi88/xjQ/E7RUin3DfMvI2Vc1IGNaB
+	 ERb0OakNIm8SWK1r2/NpHtpESAdVZFGY4FcBk/gL6JHtbUcofKjp1gGkwQVnqSzAk/IV2
+	 l60yoA0qEYYuM3g/6MB9YBrssH4B/gTQyU4yWYf9+1+pXzkJNjVm8JCeMbKMt2EIRSMvy
+	 JYuuapyoXhiJIIwfM9lWm8y+3uChcry90ZA9X6OztY1X9MToQeR/gecpFNaeEQFssdw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=crapouillou.net;
-	spf=pass smtp.mailfrom=crapouillou.net;
-	arc=none smtp.remote-ip=185.119.170.32
-Received: from aposti.net (aposti.net [185.119.170.32])
+	dmarc=none header.from=sang-engineering.com;
+	spf=pass smtp.mailfrom=sang-engineering.com;
+	dkim=pass header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b=DwelXj2y;
+	arc=none smtp.remote-ip=194.117.254.33
+Received: from mail.zeus03.de (zeus03.de [194.117.254.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1658606A31E;
-	Wed, 25 Nov 2026 14:56:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F1658606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <1a6496e133cdc2477931cbc2f95f3c647093b040.camel@crapouillou.net>
-Subject: Re: [PATCH v5 6/7] pinctrl: ingenic: Handle X2600 Port E Schmitt
- trigger
-From: Paul Cercueil <paul@crapouillou.net>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Linus Walleij <linusw@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski	 <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Bartosz Golaszewski	 <brgl@kernel.org>,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
-	letux-kernel@openphoenux.org
-Date: Wed, 25 Nov 2026 15:56:39 +0100
-In-Reply-To: <D50BEB61-6E7B-40A8-BF1C-E69F7A49E644@goldelico.com>
-References: <cover.1795589383.git.hns@goldelico.com>
-	 <ec49e1a7da313c8dfe012c17a04d03dc4167ee2a.1795589383.git.hns@goldelico.com>
-	 <a61b9a24e0eaf8240933ad2433e6f1c00855b683.camel@crapouillou.net>
-	 <D50BEB61-6E7B-40A8-BF1C-E69F7A49E644@goldelico.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C1C606A330
+	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 15:08:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46C1C606A330
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=sang-engineering.com header.i=@sang-engineering.com header.a=rsa-sha256 header.s=k1 header.b=DwelXj2y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=j5WS
+	HF96nKodvhrZlDzmgM50kjWquzlJzGWnJzYvtHs=; b=DwelXj2yeMhW0OjANYw+
+	l1Seg4y1ORKWxjsmdYbitbYB/uB1b//e8z24C6e9pIqrLOoptN+gYqAPFZYwU5uR
+	YoVp5DpD9PktyL3ZY7CbCk6CxjxhYeJ6dc4xOubAHsG4YssrApDBtrdx4gd56V9Z
+	4q9AGZtEDHz3LGKjHtZ5EnHV/ipb0hzBAxExVNK+xzTTnHME6EXIJWtnBC6HNRT3
+	Wjpq+YXghOLxvjtKj/bvpdMk7+8zxhe/OfkodwQnF+tf9W9xlsOZmPc5UPeObbTY
+	QVwTDmPDUBrfbRIvkUwX23wTxUVMuYlDnUc2BavH8zwKPmoUMWR9ZLKoGJacM5EF
+	9Q==
+Received: (qmail 995227 invoked from network); 25 Nov 2026 16:08:39 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 Nov 2026 16:08:39 +0100
+X-UD-Smtp-Session: l3s3148p1@XUmlMxthFqJtKXCX
+Date: Wed, 25 Nov 2026 16:08:38 +0100
+From: wsa+renesas <wsa+renesas@sang-engineering.com>
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Lee Jones <lee@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+	Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
+	Al Cooper <alcooperx@gmail.com>, Alex Dubov <oakad@yahoo.com>,
+	Allen Pais <allen.lkml@gmail.com>,
+	Apelete Seketeli <apelete@seketeli.net>,
+	Aubin Constans <aubin.constans@microchip.com>,
+	Binbin Zhou <zhoubinbin@loongson.cn>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Cavium Inc <support@cavium.com>,
+	Christian Loehle <christian.loehle@arm.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Georgi Djakov <djakov@kernel.org>,
+	Guangshuo Li <lgs201920130244@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Hiroshi DOYU <Hiroshi.DOYU@nokia.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jan Glauber <jan.glauber@gmail.com>,
+	Jarkko Lavinen <jarkko.lavinen@nokia.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Josua Mayer <josua@solid-run.com>,
+	Juha Yrjola <juha.yrjola@nokia.com>,
+	Kamal Dasu <kamal.dasu@broadcom.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Phil Blundell <pb@handhelds.org>, Pierre Ossman <drzeus@drzeus.cx>,
+	Pramod Gurav <pramod.gurav@linaro.org>,
+	Ritesh Harjani <riteshh@codeaurora.org>,
+	Robert Richter <rric@kernel.org>,
+	Samuel Ortiz <sameo@openedhand.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Tony Lindgren <tony@atomide.com>, Ulf Hansson <ulfh@kernel.org>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH 00/13] mmc: Assorted bug fixes across MMC host drivers
+Message-ID: <awb59uLiTOEfLaSm@shikoro>
+References: <20261123191703.179283-1-lee@kernel.org>
+ <OS3PR01MB65968B3C9FD48C0A7515AA1986432@OS3PR01MB6596.jpnprd01.prod.outlook.com>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -57,85 +114,14 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS3PR01MB65968B3C9FD48C0A7515AA1986432@OS3PR01MB6596.jpnprd01.prod.outlook.com>
 
-Le mercredi 25 novembre 2026 =C3=A0 15:51 +0100, H. Nikolaus Schaller a =C3=
-=A9crit=C2=A0:
-> Hi Paul,
->=20
-> > Am 25.11.2026 um 15:34 schrieb Paul Cercueil <paul@crapouillou.net>:
-> >=20
-> > Le mercredi 25 novembre 2026 =C3=A0 07:49 +0100, H. Nikolaus Schaller a=
- =C3=A9crit :
-> > > Port E has two Schmitt trigger configuration bits per pin.
-> > > Select the lower-hysteresis mode when enabling and read both bits
-> > > to report firmware-initialized settings.
-> > >=20
-> > > Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> >=20
-> > Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-> >=20
-> > With one question below.
-> >=20
-> > > ---
-> > >=20
-> > > Notes:
-> > > =C2=A0=C2=A0=C2=A0 Changes V5:
-> > > =C2=A0=C2=A0=C2=A0 - Keep the ingenic_get_pin_config() call and the P=
-ort E
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 condition on single lines, as suggeste=
-d by Paul Cercueil.
-> > >=20
-> > > =C2=A0drivers/pinctrl/pinctrl-ingenic.c | 7 +++++++
-> > > =C2=A01 file changed, 7 insertions(+)
-> > >=20
-> > > diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinc=
-trl-
-> > > ingenic.c
-> > > index 88531d472cd2e..d253674accacd 100644
-> > > --- a/drivers/pinctrl/pinctrl-ingenic.c
-> > > +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> > > @@ -69,6 +69,7 @@
-> > > =C2=A0#define X2000_GPIO_PEPD 0x90
-> > > =C2=A0#define X2000_GPIO_SR 0xd0
-> > > =C2=A0#define X2000_GPIO_SMT 0xe0
-> > > +#define X2600_GPIO_SMT1 0x100
-> > > =C2=A0
-> > > =C2=A0#define X2600_GPIO_SHADOW_OFFSET 0x800
-> > > =C2=A0#define X2600_GPIO_PAGLD (X2600_GPIO_SHADOW_OFFSET +
-> > > 0xf0)
-> > > @@ -4693,6 +4694,8 @@ static int ingenic_pinconf_get(struct pinctrl_d=
-ev
-> > > *pctldev,
-> > > =C2=A0 return -EINVAL;
-> > > =C2=A0
-> > > =C2=A0 arg =3D !!ingenic_get_pin_config(jzpc, pin, reg);
-> > > + if (is_soc(jzpc, ID_X2600) && offt =3D=3D 4)
-> > > + arg |=3D !!ingenic_get_pin_config(jzpc, pin,
-> > > X2600_GPIO_SMT1);
-> > > =C2=A0 break;
-> > > =C2=A0
-> > > =C2=A0 case PIN_CONFIG_SLEW_RATE:
-> > > @@ -4767,6 +4770,10 @@ static void ingenic_set_bias(struct ingenic_pi=
-nctrl
-> > > *jzpc,
-> > > =C2=A0static void ingenic_set_schmitt_trigger(struct ingenic_pinctrl =
-*jzpc,
-> > > =C2=A0 unsigned int pin, bool enable)
-> > > =C2=A0{
-> > > + /* Port E uses two bits; select the lower-hysteresis Schmitt mode. =
-*/
-> > > + if (is_soc(jzpc, ID_X2600) && pin / PINS_PER_GPIO_CHIP =3D=3D 4)
-> > > + ingenic_config_pin(jzpc, pin, X2600_GPIO_SMT1, false);
-> >=20
-> > So on port E it will configure both X2600_GPIO_SMT1 and X2000_GPIO_SMT?
->=20
-> Yes because the X2600 just adds one additional register SMT1 and I think
-> it is not necessary to introduce a separate name and code for X2600_GPIO_=
-SMT.
-> And naming it X2000_GPIO_SMT1 would be wrong. So it is a compromise.
 
-The register name is fine. I just wanted to make sure that it was correct t=
-hat
-ingenic_config_pin() is called twice.
+> > Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
--Paul
+I plan to review the Renesas related changes early next week.
+
+Thanks!
+

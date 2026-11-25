@@ -1,86 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.50
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795627314;
-	b=zyxoWTEvCDsy4r+J5cygv3KQvRoNnuW97hk8EmjwqkDQXdcespYk6f48XbA5tfGlFkfo
-	 ECn5QsTB6blVrnENy7OGoOQNfplmBiGur0nlc1MRG2Vqr/crOxBRqquS7TI02VbSWw9l7
-	 ufYiFtkzZGSJy/ByG5DLh/u86+CJ1EjPcnzcJgReR66/l8eHrG+t76ujHYIGAi3Nqw/4o
-	 Bd9UptfsQRNRymEtN5ScBO/BC4r6HUMRylt/9HIMKNFD5BcRp6Z+pICjX8WSQeVFCB+8n
-	 E9box74sabMm2Iwn4PUvzu0FlA+D7Gp/NQe6e1IDcZbXzi3QkTkLoKyJEcR2pV5GK1Q==
+	t=1795627508;
+	b=G5+I7lIoc7mNEUjPnOli2Y24g3K0wyM3ezQ8vBfF5Gfphq2ExJ9LUh0LQ3JMcL8bts4T
+	 Lk3lMcOmr8wBbPi8yICCL52CQ6yr37ROS/PCnHWDBa19m/m5QqBW1BEMAS5P5X7Xkqiye
+	 Ldxo/dXBOomXOXjc58OuS3z5xUWWT0rwakY16yQkRHjmDvFvQ9fYZhuZB54tXz5n4knwz
+	 I8Q/tnLOyDo/p5qraO63AJ3W5Ormn+cB0ywgOEwd6XQNn9e7y+Y32H0O8IuH/X4mzZuVe
+	 FxXvgaCdxms7IybyufpQml0RRDLhW5a/TTCscfeA9mheJyUtjjsgJOQ89FY0docRtMA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795627314;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795627508;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
 	 Content-Type:Content-Disposition:In-Reply-To;
-	bh=ENdJgXbQROCmKdJO5EaJi6MoXgKwvTQsbT7XHtvuy1s=;
-	b=NMxe1TJN9o07bccB1aLnpPwf6VKta0siX+rRlcU5vNL4UyZYaDSZyPjP/rhRZKN3Pbk6
-	 /isPIEa/J220V8T8H9qii7OzwwtDvac3EoEIN+yN3uVXKW5x8KCtm60xspJuZZCrj6iFw
-	 5cfyb8aC8TF3jCJJERsB1cn0vI7JD1cHGw2IAK8872BHAyU/vBhbkP0d+MbJQ8TTWXr+X
-	 hB4hHhRljOvRgeFdMLdDK2S8Dz/Dw/BttTlRfSzgsZSu+LYUz244Lwf7csTgQBnIEcVxR
-	 WT1Zz07oDra/52Sb6VFnr8GjYpssOUBmCIxJTjfVx67KBubA5vguv5HhX41mr2+w3xw==
+	bh=/2ZiDJ9tq36ZHWmXeHMEUP2iypybL2OmKVpnewLrfEs=;
+	b=QiMX4Fdgdy4DjrYqcB29OXMAJ/rVnSQoXnpbemlXFWE6b61oWqRT0kQp7hZWVk6cvWmf
+	 HWo2w7KO7DCOIJZ+jb2iPwNU1SSmftOiwJ0lPHnLPUQwomZH1SMwuF4mEbZnj3R1dE47B
+	 JUZLMUz3ao8xc2rZ5bGiLrn98n+DK45q1oMnjdY4t8E3CzlqA8mmSj3Is4zPhTCeycP7U
+	 +GA8T5V/eAqOB7SfHoFdsJEKbjEwr4aloZ9SyT5qvKDwYa6b/4P3bTBd0jwZCXs9mIIW+
+	 Z9QSykZn19It+fwdiQp3YbRegYdHM49b5Iepg2PIp9k3j8D5jHfruMSgbyPoixRdjyg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=baylibre.com;
 	spf=pass smtp.mailfrom=baylibre.com;
-	dkim=pass header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=O2Q9k62R;
-	arc=none smtp.remote-ip=209.85.221.47
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=agASAMky;
+	arc=none smtp.remote-ip=209.85.221.50
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E408606A321
-	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 17:21:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8E408606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1940D606A323
+	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 17:25:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1940D606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=O2Q9k62R
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-492fcbfaa88so3964495f8f.3
-        for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 09:21:53 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=agASAMky
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-48e20ed3b9dso5339102f8f.2
+        for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 09:25:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1795627312; x=1796232112; darn=vger.kernel.org;
+        d=baylibre.com; s=google; t=1795627506; x=1796232306; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=ENdJgXbQROCmKdJO5EaJi6MoXgKwvTQsbT7XHtvuy1s=;
-        b=O2Q9k62RlVFg4OKwGxOkVt681Enav+V5SL9h+JaY55nhxng/Hjevm6wB40DZnXbdqK
-         /n1aJwFKxSnab9rmFsaNjnGc01ZTnrUqeg/mGiO8UTFufzkkpOWQTJ2ya6D8hGjMZEjz
-         Nq4YyHQGciJKXpTkvosbzdidaOq/LtbVFTqa41QUhAh5Z2wsKAqpMP6Pak+S1S+n6Uj7
-         YgGd75Zu/sEL31B93TpR4BvmuF7++Dnvbl4I94/CpIpOazJ+W0z8C1xKF+5sKJCtDtfd
-         eI8+5O/i4x7e9OoPUsoYVaXemK7dnyw3lXxBVOvLZ3nzcn0GAREIUEA7iKsiNVaI6DG0
-         o0Hw==
+        bh=/2ZiDJ9tq36ZHWmXeHMEUP2iypybL2OmKVpnewLrfEs=;
+        b=agASAMkyh7IeB5xcxG2SynQpZ9cwqr9s6pyhZje4+5sgtLYF17fiy4iKBPZ3zR93Bo
+         IHFhWwUhkkw+zJjiYLOI8PuYuGv8QaHDxmsxGmkRnRLNf2LZjXI0+k7pJkj0Qm3MDQX5
+         Vm/X8/CQt978aK3oG2S/3+AjAjzy8BIBo4NaftuGTaVeHlaKqaPfAVA045b2MYwksz4F
+         eVK3XLqVp6tfXrU4ITxnF5oc1Jw7Jthwz16IaUBwraGMnBL/6JTdSx1WRmDZhIxjr/MP
+         CCH2zcKnJo1tuyTbDAIiMAjxpA3/bXg9GG+6ssbf6N4oygCF8Lo39aW6YDK6Dm9BMySj
+         EmJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795627312; x=1796232112;
+        d=1e100.net; s=20260707; t=1795627506; x=1796232306;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=ENdJgXbQROCmKdJO5EaJi6MoXgKwvTQsbT7XHtvuy1s=;
-        b=ItQ5jp25DethPJ9g7qlqqkbLrpchpqu35QcKs+tk8i3eIBMp1kegJiJw+kG6NvkVff
-         6drKqdAEWWtt4gTiIsC/p8fOpgEgLAUBK+HQnNDVUg58oBqqiXPUO9YYo7JQfmTFJw8W
-         JajTujLohKrm6ABrGGEIwLtjqRPNnvk795anyDfKfu28McGf/GREFyLj03jK7Kpc9tRW
-         ESEfuuqu4JiZGZZcR0eKbUVVy+CiJtOfcLmjzbv9sUPi13LJrqjy1Q/CfsOEwbUq2Mlo
-         Nys/9YQInAplmcN5DPPb5bGXMRTMjz4NLfmz5gqUqm6aE4IVSz+H5lEXLy+34tOWVKnv
-         I5RQ==
-X-Forwarded-Encrypted: i=1; AL+hErH/P27hRnnsGpqQ5boNiCcSB8Mt9MrXerkwfOs9nYPAOn9bqnWGtfYOfAV/ZFCAKibsFWhFrit9Lq1O@vger.kernel.org
-X-Gm-Message-State: APuU4Z9Y1YT16Vz2RLGgsKj0EKqqtGQg9ykpiGxw/X26bryJEMp5B7GY
-	OzPMTDGLBPs4bSUM/GI0DhUBV930v18uic/638zuEVXnF6/2VxjXVDziLesR5X7mN1U=
-X-Gm-Gg: AZFdTZdpugYjcNItv6EhLWyBtEmUqwuKo50lyR9Uy742fShsT3LAugZWxeCO1gEhVWd
-	p5GXvd35UTFbm66M9wXhgV+opZqJpyYcg0bCcTmkVVZ03IDDYa0HsoTKQNlKAl5ZhQuM/q8jNfu
-	WmEnWTb47jL+eKD6r87K7rErAeAwd3MTsOgscONrlWzRuG9OC6o3R2g0zFvBVoSdYbVd5DbWdT/
-	yMoEVnwJG2LL4Aw2COfIS8YuviF9Ir9ILbwG1at5ZTOIN4QvM31ek/cukImHdyO7KdQt7YO/v7q
-	0sBWz4GydIIC1YlF0pd5W0mD4bZ5bDvlzy3UJup1tIJmPzXNuVbO6ZsXIIgBWW6i/vdUMqemQvE
-	9/eaZh88I8xjLEGe+jFPpoL1IgSjs/TPfTCtBEguci1Pq4HsG3OvbViWLqQFPefZns8ZU7YG3Sq
-	HmX40OyDOHRdiujsyieVgCAvTjLH+7t0EXwRLcoRls42ZvkONvJfmzD8JEQ+PXCDlR40sByeqOj
-	bC1JJB0HPeqfavIk8w0sj6B7Xm27WGNYGEJLG7NgVQY/jJzlhspqz0DaSKfNbFBBQQDgKwXStBd
-	XkhKzjtIefLjLDUGxEXfFmd07nx4e5m2kQlBf1n4wv7hISrJ3OJkAxoWQjC6qsfxAB2P4uf6gmO
-	n8T27Y4dmz5nRQJG+
-X-Received: by 2002:a05:600c:1547:b0:4a2:397:73f6 with SMTP id 5b1f17b1804b1-4bb8880974amr419686485e9.8.1795627311811;
-        Wed, 25 Nov 2026 09:21:51 -0800 (PST)
+        bh=/2ZiDJ9tq36ZHWmXeHMEUP2iypybL2OmKVpnewLrfEs=;
+        b=Rj3/YXXfSKyttYsZ/4luEqsaWixNP738j9JszqAmrpBrp7oKYXZchZ/ClwNTiYW2yw
+         ly1Gn7e56JcrvZHXtlPhMqwf1OkF/FxXiB0vtLKgUXjfNpUwUGbQLnjKFHEfkAqV9Da6
+         QRx5QnizWniC65zle9js9mbTZEnuTSws/yX+njCb/Bn1YUaWdfDpVeAuFXnaaqiFKr3/
+         tIAIAtnUR7K6EC9lAncU0M6BqeTILvB5VohUcljCz8jxORim0U5n7TIoD+iHY50XawDL
+         Y226HAUYAd+g6T+92S0aJRvYrot5WXzD28H6cby9Te7yjB/JetqsHTN9Z/ddNsp9MVRb
+         K2sg==
+X-Forwarded-Encrypted: i=1; AL+hErHmbSfS32G8dhN234vcoEP3cFR8Dk65W+0OjiuZuzsDRTWbDmJnTR1ukUIj+z0TieoqA9tgeIJx6Zn5@vger.kernel.org
+X-Gm-Message-State: APuU4Z+jFu6TEHRD0C59QZq9qlEMBhp0wy/rBrT4m3rG7wxrzaSltOuu
+	abYMXWOhMAmJ8YWQ5W2ByKZHk1y36c9rVbnCUkOO1xwHUOBBhBF5Z7qbDffDuz+nAeg=
+X-Gm-Gg: AZFdTZfPKGcqWitd7RSBUJxUOsO7CKY6sywBMnG5SM2tX8x48SyqvLHPP9GxqGSWovn
+	RKb6WN8gki5BfATcbGRgQyeDGUrI2mkA5+Alqv/UmwQ/j0J4cqJvMR9UajFO2N8P2usULM+/eG6
+	xcfUnfm303Iz381yJzfn4CBOluyEsbXQ935qYWXERLrRmeXY2DDiYRJAc+6cHRTmVLoFd91S8Qn
+	upE3LTpaWmCwrSdsUC/ioebl7MCYqOWp06PqcTAvsG2cZbjYoYR2dis278rYcLbtAp5bB0G21ts
+	Xjl3bDQ6+A1meJpIMTxDMSmZKuywFoYnW/+B93yiGd4sBcoeXfGbx7cp6FFVW9Gwxsd3UofDLtD
+	jp2cRbZyekdd5CziYZrMiRTUg7Px1G0OhcA19tb6vAutx7fks3XBtQXIaZvRcxhmhjB5OsXY9s+
+	F+Rl6EUXJNm5j8u1vlexoLVgTJbjnR3jg3VKAcyP5PackreMr+ByHtHyCtvMrOWAuOU7+BTuhGD
+	pJn/OyXe6JRjAYOOAwS6nbzw2ZBS0Dsb9uW+soYvigcR+IUvRCxIQePg9xknsIPt4WEFjBgYcex
+	dbqQIpC4mHgnXfFavx0JNbKQz+3vMtqJVZPij40kwIZvS3j/Z6J7bXgOEuH6lVO783Zb0Yh9MEo
+	goUYXFvOikF7fzC+vNA==
+X-Received: by 2002:a05:6000:178f:b0:4bb:c85e:d565 with SMTP id ffacd0b85a97d-4bbc86e17b5mr436127f8f.55.1795627506305;
+        Wed, 25 Nov 2026 09:25:06 -0800 (PST)
 Received: from localhost (p200300f65f19a904452474b9d670397a.dip0.t-ipconnect.de. [2003:f6:5f19:a904:4524:74b9:d670:397a])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4bb853b216esm590410475e9.12.2026.11.25.09.21.50
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4ab658e2d1bsm37047838f8f.8.2026.11.25.09.25.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2026 09:21:50 -0800 (PST)
-Date: Wed, 25 Nov 2026 18:21:50 +0100
+        Wed, 25 Nov 2026 09:25:05 -0800 (PST)
+Date: Wed, 25 Nov 2026 18:25:04 +0100
 From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
 To: Pawel Zalewski <pzalewski@thegoodpenguin.co.uk>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -120,10 +120,10 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
 	linux-rockchip@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
 	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 04/10] mtd: spi-nor: Unify of_device_id list terminator
-Message-ID: <awcY_FIcD-Lt0_am@monoceros>
+Subject: Re: [PATCH 00/10] mtd: use desginated initializers in *_device_id
+ arrays
+Message-ID: <awcZcuSbse5g3FWK@monoceros>
 References: <20261125-acpi-mtd-v1-0-42ad2f645bee@thegoodpenguin.co.uk>
- <20261125-acpi-mtd-v1-4-42ad2f645bee@thegoodpenguin.co.uk>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -134,80 +134,81 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vscxo3nc4bzujlaw"
+	protocol="application/pgp-signature"; boundary="nbybrdipqtjlxyaa"
 Content-Disposition: inline
-In-Reply-To: <20261125-acpi-mtd-v1-4-42ad2f645bee@thegoodpenguin.co.uk>
+In-Reply-To: <20261125-acpi-mtd-v1-0-42ad2f645bee@thegoodpenguin.co.uk>
 
 
---vscxo3nc4bzujlaw
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--nbybrdipqtjlxyaa
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 04/10] mtd: spi-nor: Unify of_device_id list terminator
+Subject: Re: [PATCH 00/10] mtd: use desginated initializers in *_device_id
+ arrays
 MIME-Version: 1.0
 
-On Wed, Nov 25, 2026 at 04:28:30PM +0000, Pawel Zalewski wrote:
-> Unify the list terminator to have a single space between the brackets and
-> no trailing comma. This change doesn't introduce any diffs between
-> pre/post to the compiled binaries of the modified drivers and just aligns
-> these to the common style with other *_device_id arrays.
+On Wed, Nov 25, 2026 at 04:28:26PM +0000, Pawel Zalewski wrote:
+> This series is converting lists that contain the *_device_id structs,
+> to make use of named initializers (which they do not use currently).
+> This work is part of the on going effort in the kernel associated with
+> device-ids [1]
+>=20
+> The plan is to convert *_device_id::driver_data to have an anonymous
+> union, like it was introduced for PCI and I2C device ID tables.
+
+Not sure I understand that. PCI and I2C wasn't converted yet. ieee1394
+and zorro were.
+
+> The goal is to increase type-safety (most of the existing casts are gone),
+> to improve readability and to make use intent a bit more clear:
+>=20
+> ```
+> union {
+> 	kernel_ulong_t driver_data;
+> 	const void *driver_data_ptr;
+> }
+> ```
+>=20
+> But for that to work all lists containing the structs need to use named
+> initializers first to avoid triggering -Wmissing-braces for that field.
+> This effort is split per every subsystem into:
+> - pre-clean-ups that convert the lists to use named initializers
+>   (which is this series)
+> - actual implementations that make some of the modules use the new
+>   driver_data_ptr member (which is not needed in the mtd subsystem)
+>=20
+> That way the task can be fragmented into manageable and independent chunks
+> of work and makes this effort easier to review.
+>=20
+> Patches 1-3 implement the named initializer change.
+> Patched 4-10 are just churn to unify the list termination and can be drop=
+ped.
+>=20
+> [1] https://lore.kernel.org/all/cover.1780048925.git.u.kleine-koenig@bayl=
+ibre.com
 >=20
 > Signed-off-by: Pawel Zalewski <pzalewski@thegoodpenguin.co.uk>
-> ---
->  drivers/mtd/spi-nor/controllers/hisi-sfc.c  | 2 +-
->  drivers/mtd/spi-nor/controllers/nxp-spifi.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi=
--nor/controllers/hisi-sfc.c
-> index 4f6631950a5b..01048ca46a60 100644
-> --- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-> +++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-> @@ -474,7 +474,7 @@ static void hisi_spi_nor_remove(struct platform_devic=
-e *pdev)
-> =20
->  static const struct of_device_id hisi_spi_nor_dt_ids[] =3D {
->  	{ .compatible =3D "hisilicon,fmc-spi-nor"},
-> -	{ /* sentinel */ }
-> +	{ }
->  };
->  MODULE_DEVICE_TABLE(of, hisi_spi_nor_dt_ids);
-> =20
-> diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/sp=
-i-nor/controllers/nxp-spifi.c
-> index 30fe2d414f07..71ee50eb1a71 100644
-> --- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-> +++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-> @@ -440,7 +440,7 @@ static void nxp_spifi_remove(struct platform_device *=
-pdev)
-> =20
->  static const struct of_device_id nxp_spifi_match[] =3D {
->  	{.compatible =3D "nxp,lpc1773-spifi"},
 
-If you touch this struct you can also add spaces after { and before }.
-But that's a nitpick, ignore at will.
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@baylibre.com>
 
-> -	{ /* sentinel */ }
-> +	{ }
->  };
->  MODULE_DEVICE_TABLE(of, nxp_spifi_match);
+with or without addressing the nitpick I had for one of the patches.
 
-Best regards
+Thanks for going through this
 Uwe
 
---vscxo3nc4bzujlaw
+--nbybrdipqtjlxyaa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmsHGSsACgkQj4D7WH0S
-/k73ogf7BALXlCQ8r5M8ZULyZTCXZBckvup39sfY/19fBNNwXXunI63allBA3oeS
-J2HDGz0wNdZ2/y1iggGBavEtOaE6mVsBVcm3jdJ97l/vwZ/DzZ18bG17D+lOa6o0
-Kukj1hQ5Q2qvFM8u49aHT99Zp8isHlf3GpEqLzOnphUzqGPj4/9xiIWC887HPgq0
-Nfab1Mu6GBOwgze0VnJbpJfJ4rOA6Bz+tZOVjrFqShym3ZSG1ADwwM4HkOixY93y
-2Z/oy3nqZHXEeEEg9uml7t299pECJEma5xTr5gSqY9g8tcQXvO8QVWh+dTUSYLTO
-i5jse6iRjG93iBKa+gKKv3oEi8y83Q==
-=PjDZ
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmsHGe4ACgkQj4D7WH0S
+/k7Hxgf+JDQD3nuNyQeHxxoBDQbZLCdeqai2FGzqlA/wVP4ILYtl0Hj2B4Uvb51m
+TWG5nlrssz3YpBalM5hoN7zT4/kYrvYV+kEZwlQ0rRaST1L1WSsaI+hIrd+sFqjI
+E8CbBh9BDS8e2lqRUB02P2qNgrLW8OGoqjf65o8A416iktJ3LaEisuhLP8aVKb9O
+G9s0nSWXydrbhPM3eKUGdumEvZViZRDTbdQOOZ3Ont4s0nic7RCuY5HxIJAv5u7h
+n+QP/LXiSy/47VdwvRwqyJDfGxZnUzMHMxb0X6NQg1g1C/xCJFt3XHlD/eUHbI7K
+axkOeY5ogCnXHhh12ds+XESv7iHqCw==
+=xvDo
 -----END PGP SIGNATURE-----
 
---vscxo3nc4bzujlaw--
+--nbybrdipqtjlxyaa--

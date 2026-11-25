@@ -1,82 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.176
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.170
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795591241;
-	b=ryQpFEg3kVZlF+eyYsrA4BsvUwTna6C5hle8P+ACehWGJ019XBjAL9ZvgOTmUGcQHZ0e
-	 i3pv91LM6fb4Xm7sIV8FvLROAvvv2puw42e5uQuC0EkFzJq/8/QmS+9Em/4u+gwB7RN6H
-	 hgxfj/+l/l9wF7RNLyt+bjiFSOk9IqMwKsN1QpW2UKq5OkeWmz7VUrnbc1DE7jtBW/pxQ
-	 Xu93TEfa0f9lvlQl5KFICe0p/MzYXOiEnlubjlumCrq9PoSEC9GJyd/9pHpfX88Aascn4
-	 JbiDzKzJ4B9ZJEUKzUjbmCwOYhhklElq7fksrQxVatzSmfLlKM2nWeljZuJ6kg/JcdA==
+	t=1795591244;
+	b=Jwj6HLlAHHSGlTMQ2SmbzzH3GHmDLPqdnVMMYO0hx98rKEjMEw03PKAmMOUj76S9/Z4i
+	 qp8siJ0dlKCgPkSsvwfciBG/YnoH5mISo1xoymR2cAp8ZVDtgbqA2WmKLxliglh8kJrb0
+	 vo12rYbjzoYrv35dvP/pA3IGFKv0cK7xAhLfHRvKnCW8y5ZSU07SSevsuNCAaveSvp+PU
+	 4xv/vJk+xHc5FRX6VtfW1wPgtJx3djr1no6LD6KKbeyiIthGLXGBL6YMiNLreSGh4hPYW
+	 S0KM+iYjfRhTzks9h/zS2Vx/dukJazbFq0WfGNIHDEEGsWXVoBbZnYUnZDDipJvlGZw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795591241;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795591244;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:X-Google-Original-From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=l1SQBJPQH32GaCf6i6Hpvj4B1BS4U8Mq3RY+38E+QYU=;
-	b=BkhVxvYD/DpUWZHX+IBXtBKYBUt9oczovxKrniOTgZbGUCpTbhpRrxEDYTRvxENqxPhR
-	 i6KUaN9tMvBmUyr9IZGpX+ExR3DZ8GzHNeLX/EoluNqBDlHHn5cHpQp0EUePvMco32/bD
-	 IpUkBDkVxeodCw3NyohU2menqnPJTrrNZPHXNmb3rhhUu7OyecuNn7iB+L5nUoAnnRpe1
-	 pIG5CDW+ArEBiH5ziG78vKaDEod0cUBIjucM4FD6iUcUAid0f9t5NWyCaKPodOPZbm7pp
-	 hG6bIdH4EvD9nLtEFTuKLcehkTw/yxEVosFEDvMTg71oopjaZ9/K7SmFVV9UlFb2blw==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=nUaNgcTUDEPyq+ELt5mHzYxdOi1l+iUjqzlMWdA9j6w=;
+	b=0O/xUTuF75MhzcyuAvzV+cIJp8Z6yyY51PY7uo6wEnRVUdNvdgJq3T9M2ywBGvzjOrFZ
+	 B6TFihe+YIlPb//aj9KI9EvImPF57KGLagGXf6OwtBxzV4Q2pxhYuyW04kMewV1WlaOi5
+	 p9ZFaf7dX56fEkqhQnBFTrhhHapMUoj56mNQRnERxJGyIa+DX21cL0MTc+CJ/UHXwkjiO
+	 tfdCZ0FO+C9K4dNAQzxYa58uYJMmSP7HTZqULfyX3BFuhd2R4DwN/ZJ2SDlYOh/IX11+D
+	 WrXyHCaNATI7E18H3VD/RklM6AvpndVQROQksFqGCmlG66x3Y+cn10INfO/CANcLURQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0Hj0WHV0;
-	arc=none smtp.remote-ip=74.125.82.176
-Received: from mail-dy1-f176.google.com (mail-dy1-f176.google.com [74.125.82.176])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zg+3opkg;
+	arc=none smtp.remote-ip=74.125.82.170
+Received: from mail-dy1-f170.google.com (mail-dy1-f170.google.com [74.125.82.170])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A9E606A331
-	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 07:20:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3A9E606A331
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B69606A336
+	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 07:20:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 38B69606A336
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=0Hj0WHV0
-Received: by mail-dy1-f176.google.com with SMTP id 5a478bee46e88-38190551625so10862398eec.1
-        for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 23:20:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zg+3opkg
+Received: by mail-dy1-f170.google.com with SMTP id 5a478bee46e88-3869f03af6aso4665562eec.1
+        for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 23:20:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795591240; x=1796196040; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=l1SQBJPQH32GaCf6i6Hpvj4B1BS4U8Mq3RY+38E+QYU=;
-        b=0Hj0WHV0sCenXk/k/xVcG+zSdCreRDnD/0hLussH4OcMEsCHKs2cJCeuaNJHXOdMEQ
-         5icV7kjOJoiRr2VoLmk90HusSg9HJw+joHGCkYzd/qs5wgplo2gNXHItwA0r82O67+82
-         Bk4viAMgNdSQw7Z7QdrhGHtxOEhU8OMjGwJGM+boj2LbVL3XwPKarLQ8R0dYZ8AyqTHi
-         v/MJ++szMSU4Nx8K8v/iPc6R5HheJrifO6Yun/y1quskPQtygqyBFeUpf4M6iTWiNKUU
-         4IICQN7VqE54J428XNHhD7vVxXuWxuWT3FLR35EgR21DSrvlNdW2sjKyUVO+S64I9C36
-         3yLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795591240; x=1796196040;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20260707; t=1795591242; x=1796196042; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=l1SQBJPQH32GaCf6i6Hpvj4B1BS4U8Mq3RY+38E+QYU=;
-        b=Qq2uRC1W7pt43Uy3a0AkYONeQTX27y/BcAp9zohceT8c0nuZHdJ2j9NXkcH8XdkbRL
-         u3s7+tOhVoTzqM4cjHp2LICBoqgAnUrh9GOnx0+7gxsnDpvJYgNH4n7/jE3sp2QY0FPQ
-         CvmH+MewNpaCm43r29qlpwD0hOg9xYnM53jkHEpl5MwcPDpYLXj5gpQMAYagcMIsBh2Y
-         bllRcsFyn0T1BCCE+JCyr0YZwRYiHTFxEgKc/cePqL7VzvSRchLI6RArh+8o1gId8ZJm
-         jIx/j6yu3ELYDJihUlK+MjhnXZNFNXs9U/fKXoM2ShDiwCruSO9XAgZN6VUaeTREUF7J
-         vZ4Q==
-X-Forwarded-Encrypted: i=1; AL+hErGTbnpQitNtF1gQtVYUx3dWIfwd8qJkg2bl+XkJ16tVfsR0bxGLd1wrRIRzN/XF4tJAF8oTNtfnAu0M@vger.kernel.org
-X-Gm-Message-State: APuU4Z8e7CszTSLyvzxObaDt0u/90O5FydMuQE8ZLyJ/PCvVOW8CS5tQ
-	s5wQ1jZXXxUs101DhdQB4U4r4B4VRXDuyDVd5kLCUgxeprNiwrwVhcg9
-X-Gm-Gg: AZFdTZcP7pojcuwoWE1qe7q0OeSgte63O/s22tAhbRwmeh7FGuwsxeGv6bZoHKLqihU
-	a+Ift+CP+qx2KchGQZF7/fc9F5P1yB3DrPjql4JpcZYXqnuEbVKodnWlpVHEzS797/bqnJLD8ky
-	hjss7t40+hzNbOFbUykhAfbwNJ46xN8n5yU4qNYkjdjXRpbU/G6659yc/HA/IYI9VjxURh+WU9p
-	2x+bb2lUmeMVXoCPpVpF45qH/TM+cUP7PzmzsJS5W0gryCYsAyK0yPtaMowB0AP5CHD0ecrk/nZ
-	jg17hEG11yKkD1kCGO1Jw39qm8crAyxZPMDv/sE/N3Hjz0eFg2bhpysbhRlqUC2UzNTbx/A0vIQ
-	zkdnMG/6ldzA1qciUbswYNkxW/BVlEscrFrkahx0em2VigPiz8x0vNS7UDZQvREbcpOXsioGU/F
-	C+qc+KpxXl8U9sFSDeFp2uWCDPbAqm6hNThwysc1qVYjbUL51eP6IXfm/swQZaj/iKyPc1GyVrT
-	7MN2Nn7s42lAYpfsCmWnsAgerXr9ODxCWqPuk38D2e92LQQ5uMf4UB/TKw39fRC9HL/Q5hd1AaN
-	j/5yoattce85yQzB60O/uvXoK7Ad1Yqy3A8seOXkJZUOIPx4ogwnai1eOOFNBtsA
-X-Received: by 2002:a05:693c:6010:b0:385:2057:eb95 with SMTP id 5a478bee46e88-3857073f2a3mr22650185eec.31.1795591239429;
-        Tue, 24 Nov 2026 23:20:39 -0800 (PST)
+        bh=nUaNgcTUDEPyq+ELt5mHzYxdOi1l+iUjqzlMWdA9j6w=;
+        b=zg+3opkg5DAVMkzoSLk2Ba8hlW9lTsXsKayWkT8wdiBC+gwdUn6rV0dpNt0aZVRnSx
+         9WAdXrLBZsS7cTiuMB5ogtC/gcgAcqBRebSmbp2eWcMpAV/9xOdaq6Gl9hCW6pcKxT61
+         Ohr7cpf4625HgGrZt/1t9QF6YLUVcgQP0h1edyCoRga2Zm4bvLjtcz2jABpUSGixrkps
+         0CX48DwkyidvfLm2nPdd5O1IIpfm55jfW9ACUWD5HobF4Hz8YQtEfFEhdajw7g6igROA
+         K/dpscOSU8vCY+R8NIlMJq2JPu+1J3B7pJSLdapP62KMZ0OAQbhOBXEY5VkcdJ6ewle1
+         SEJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795591242; x=1796196042;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=nUaNgcTUDEPyq+ELt5mHzYxdOi1l+iUjqzlMWdA9j6w=;
+        b=PriEzsVsnCtvoVC6CXAJsT7PZqAnvoRJ0n7ihLecrxd3cLfZCIxdVO1PESZuUL2vqo
+         SyX65/p495ixAGpZpJxiISkX0KVpAVj/k6qsjOgvO/2pw2hZlXfrQjYhVhEpBdZtn++E
+         tg5zAvocCQya3T5B13Ib9jmwAJ26bLSIPHtdrViLC9BshE5YmFym5wSEayKVrSS/aOyF
+         HtuJjbNWAv2YGSv7835SOB3GWdsb2oPbKox6/iJmMaCJFyKc1ZW4f8hehBBxrv3L1DXC
+         slev9uFUhSxsA5Sttg5M+wou5+eABEZrr3zjR0QTUCHRi3FyUn1u3/oEq9OExYh/yDOf
+         /8Ew==
+X-Forwarded-Encrypted: i=1; AL+hErE4RicJPWplNYUU2Hs9BADjlSu8DaeBg0B5l1nhIO5A2a2KRQ1EpVZqH+D4jgwFW8Zlht2SoJFmSe0V@vger.kernel.org
+X-Gm-Message-State: APuU4Z+LYIjghuYxhuxE9F27vDjvjWKQ1i+OQmY4XZHYZe5+dwO2Lilj
+	/oG/IirmN8Bvsnmqk1nY297ND+y4Jw0T7vn1TrjcnIQ9YCWaztDDqXf/
+X-Gm-Gg: AZFdTZdibg5XAeJwlSwYMkBKAzxi/vbEFqiNgDQb6lCtEwwag65iaFglwlFGhHyViEC
+	JmNd9+bD4MZ27aRnod7IP+qg3y3VhkwzlgMJqDbiAXbjPmhbX28ltFnVFHJmCOIYoKLuj+K07lz
+	s5ffv9YAVqYEpsvXZwfvqYHfeuR15aH65sAkP0DE3mYh7inrRQlhAVevxVXOFpBA4QmR2dAXp9q
+	wa2GttQnBr6kx93Hydnw+qhbUbLw29VLzw6OABRBt4dieTNukiuauKl/lWDdrcrCbcbqM9Fu3Bs
+	VPvm7LfpgJ7BhYk1EWo5Fs8aKAbI8TWwa+4olUyJ6K6fRW6WH85cvO+G5solLfJqY06ypTLmQeu
+	AddhROfec0N/mwFkMTqxbyMATQhVySiK7i61E30a2DUYTxT/S4QUEIvZMlkBEA6hpcLklNhcLDh
+	HZ/M9iJadDQ1FyT84yfHWIGrLZgFsbm17b7jbY+GGukaGlCt74eHZqkQsg9Wu8MWKGObWeg6WW5
+	XctemjdFebKv5e9AS6+OC7j/sbGycJPzFAnMzsihNPL5FCH5eoqNBnXlGxYk0qpsxexBnw9pQct
+	dvqy7LsX85duKFTCv8XaUL8esPpPJVgmL+V+q+qLyN9uowsNH2TuHgnZUqbmL741
+X-Received: by 2002:a05:7301:7309:b0:382:2ae3:b1d0 with SMTP id 5a478bee46e88-384b3e788a3mr19263978eec.13.1795591242157;
+        Tue, 24 Nov 2026 23:20:42 -0800 (PST)
 Received: from prasanth.alps.lineo.co.jp (vpn1.lineo.co.jp. [203.141.200.204])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-38567abb870sm42767121eec.25.2026.11.24.23.20.36
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-38567abb870sm42767121eec.25.2026.11.24.23.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2026 23:20:39 -0800 (PST)
+        Tue, 24 Nov 2026 23:20:41 -0800 (PST)
 From: Prasanth R <ragaprasanth@gmail.com>
 X-Google-Original-From: Prasanth R <prasanth.r@lineo.co.jp>
 To: Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -91,11 +92,14 @@ Cc: Frank Li <Frank.Li@nxp.com>,
 	imx@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mips@vger.kernel.org,
-	Prasanth R <ragaprasanth@gmail.com>
-Subject: [PATCH 00/12] rtc: clear the wake IRQ on unbind
-Date: Wed, 25 Nov 2026 16:20:14 +0900
-Message-Id: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
+	Prasanth R <ragaprasanth@gmail.com>,
+	Prasanth R <prasanth.r@lineo.co.jp>
+Subject: [PATCH 01/12] rtc: snvs: clear the wake IRQ on unbind
+Date: Wed, 25 Nov 2026 16:20:15 +0900
+Message-Id: <20261125072026.2997493-2-prasanth.r@lineo.co.jp>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
+References: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -109,48 +113,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Prasanth R <ragaprasanth@gmail.com>
 
-These drivers set a wake IRQ with dev_pm_set_wake_irq() and never clear
-it. After unbind and bind, dev_pm_set_wake_irq() warns "wake irq already
-initialized" and returns -EEXIST. For jz4740 and atcrtc100 the probe
-then fails.
+The driver has no remove callback, so the wake IRQ set with
+dev_pm_set_wake_irq() and the wakeup source enabled with
+device_init_wakeup() are never released on unbind.
 
-Switch them to devm_pm_set_wake_irq() and devm_device_init_wakeup(), as
-was done for rtc-pl031, rtc-stm32 and others. Patch 3 also fixes an
-unbalanced clock disable in the mxc_v2 remove path.
+When the driver is bound again, dev_pm_set_wake_irq() finds the old
+wake IRQ, warns "wake irq already initialized" and returns -EEXIST, so
+the driver prints "failed to enable irq wake".
 
-Patch 1 is tested on an i.MX6Q SABRE-SD board by unbinding and binding
-the driver through sysfs. The others are compile-tested only (ARM,
-clang, W=1).
+Use the device-managed variants so both are released on unbind.
 
-I used an AI assistant (Claude) to find these and write the changes.
+Tested on an i.MX6Q SABRE-SD board by unbinding and binding the driver
+through sysfs.
 
-Prasanth R (12):
-  rtc: snvs: clear the wake IRQ on unbind
-  rtc: mxc: clear the wake IRQ on unbind
-  rtc: mxc_v2: fix unbalanced clock disable on remove
-  rtc: mxc_v2: clear the wake IRQ on unbind
-  rtc: imxdi: clear the wake IRQ on removal
-  rtc: da9063: clear the wake IRQ on unbind
-  rtc: fsl-ftm-alarm: clear the wake IRQ on unbind
-  rtc: jz4740: clear the wake IRQ on unbind
-  rtc: atcrtc100: clear the wake IRQ on unbind
-  rtc: pcf8523: clear the wake IRQ on unbind
-  rtc: pcf85063: clear the wake IRQ on unbind
-  rtc: rv8803: clear the wake IRQ on unbind
+I used an AI assistant (Claude) to find this and write the change.
 
- drivers/rtc/rtc-atcrtc100.c     | 8 +++-----
- drivers/rtc/rtc-da9063.c        | 4 ++--
- drivers/rtc/rtc-fsl-ftm-alarm.c | 4 ++--
- drivers/rtc/rtc-imxdi.c         | 4 ++--
- drivers/rtc/rtc-jz4740.c        | 4 ++--
- drivers/rtc/rtc-mxc.c           | 4 ++--
- drivers/rtc/rtc-mxc_v2.c        | 6 +++---
- drivers/rtc/rtc-pcf85063.c      | 4 ++--
- drivers/rtc/rtc-pcf8523.c       | 4 ++--
- drivers/rtc/rtc-rv8803.c        | 6 +++---
- drivers/rtc/rtc-snvs.c          | 7 +++++--
- 11 files changed, 28 insertions(+), 27 deletions(-)
+Fixes: e7afddb2b4d2 ("rtc: snvs: use dev_pm_set_wake_irq() to simplify code")
+Signed-off-by: Prasanth R <prasanth.r@lineo.co.jp>
+---
+ drivers/rtc/rtc-snvs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/rtc/rtc-snvs.c b/drivers/rtc/rtc-snvs.c
+index d99a352d6..647952dcd 100644
+--- a/drivers/rtc/rtc-snvs.c
++++ b/drivers/rtc/rtc-snvs.c
+@@ -383,8 +383,11 @@ static int snvs_rtc_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	device_init_wakeup(&pdev->dev, true);
+-	ret = dev_pm_set_wake_irq(&pdev->dev, data->irq);
++	ret = devm_device_init_wakeup(&pdev->dev);
++	if (ret)
++		dev_err(&pdev->dev, "failed to init wakeup, %d\n", ret);
++
++	ret = devm_pm_set_wake_irq(&pdev->dev, data->irq);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "failed to enable irq wake\n");
+ 
 -- 
 2.43.0
 

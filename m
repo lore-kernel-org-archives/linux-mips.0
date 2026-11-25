@@ -1,79 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.65.2
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795638327;
-	b=uWNmC6ZNUr1OChu1juWIRfCWrfaV2hD3FRHYcdvNTjsE1WQ3yC7dgs27cJfA5k2pl3Uk
-	 DL20R5xlrLmnEz2jZV/ovng2fAwGIc3FMKE5YxEh5gSFZaw8zmj9j3bbvD7CiGDXtE5Hs
-	 axHiCyVI5mB0P60r4HU6ptfBk1x8kiNtW4hazy6Lm5971ahnxpBzY4Us8yoDoV/UgWu71
-	 ZBjCH20nhZYd1aKw5g87CzUD7aQvHfz6JG/6vJ7cOrC8aagt0m1KHMOkLZAEprVZ+nXAY
-	 vhk5Yya4GtIyUpYBSbtH7G29tR8HcqVlDOBZQdeDAGc9EybJRxZ8QO0FcYGEqakZ5iw==
+	t=1795643547;
+	b=wtvWUawTlmD5217ahAut8QAV9OHBIru5jZnQzDZQ2gS5Micz7ueKrqdlV0XR/71AscQa
+	 BRJvuXL+ZkllaHyeeU0+4aYnOYrJTF/x3IPJQiRJHktPb0mPh7DQMLNd5B1wCCPq51C0k
+	 peY8uh+7L2ti6fMps7+W0spJUYfss9gSM/imfqHAj3ddfQLbfO59//+iVD2Fmx27vPFDt
+	 yOu06ItDIgeRpnmVfkqvAiYYwKun56Zrj/oD+wbhh6KShhvIMaEZFvkS7KYxg7hKEukd5
+	 KnGx0dWqJQoeQA2Q4cFuuxQP5ohBp3wEl1AYLSI6QoBr0vY/SrSDsjnMJSDg3Z1hrzA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795638327;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=mjvmaImFB+1XxEwcSJFzMYM546bN/yyEMMwuHcQOY1E=;
-	b=R+RP6mEAUYA55DzcYloJWsndxXniHH/iNlvoLLSevJqe1fJK4y1OZy3cQK2geHjlFLVG
-	 NpnzIQ/TEjinw+1Ul3xK2nLcDzW3rbSjp9/S8lUlfMgVjaO0YsLLkg4QVgwp37Bz1SLpQ
-	 GAePCha257ItHaslps2yBURpEXl4Tn6QdkrnSunRwVPjzO2LvvwnYS29/ZzDhLoBxaFOp
-	 tOKc6+yh7KskCp9ZqrnkKHljulHzTOu5YCoPN/xMhBlkylW113JJ2DmMEnWbprILH8mvB
-	 wi0sFS0qjvE23M/Lz8xNKoAwYj3/iZZeg4w2s9MDXbVm5KR3NTUdRrk4jDGmTqVLcBQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795643547;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=GI4PMYGIENUln3O4iRu4fIBiiO8dSGxaHvsGV6kVfdY=;
+	b=o3GlgJRE2anJO8ne8o6i4bGIbjFagcEEKRKQSnq63cxI5d+A254r9auMRuITC4RWdble
+	 8kR9XOu06/q22fQyonR1yQBYt6jLBuj4v+Eq+cM9nh/nMwaAMpqnPzJutI9NSS3NhLzNp
+	 5RxKznmYpRztEBuJgO+zXax4HdxjVXvIcGWMHc5QtN8aCH4Bqd97qE03g7ftQC/KMuORo
+	 TMdLaRl5b1vej58L1Qyz4oZi196F6FTJYCmpnOviVzFB1q8zSH9f/XlBwGrgGcz7oD8v9
+	 p+Lf8tTEvzJpQP2uhiyM03zVLTfAn0GkeXDkpgJgRbNqZXdjRLk3LRok6H8QvHzflpw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="CY4/B4UC";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=oss.nxp.com;
+	spf=pass smtp.mailfrom=oss.nxp.com;
+	dkim=pass header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=RkEOunLr;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.65.2
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11011002.outbound.protection.outlook.com [52.101.65.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B58606A683;
-	Wed, 25 Nov 2026 20:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BDD606A31E;
+	Wed, 25 Nov 2026 21:52:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F3BDD606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CY4/B4UC
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795638327;
-	b=bYqqZfkkaoKRih6IMTV+5Ne+8jNOQVJAgVszUt0og+DQYMnfQq3Umao17y+gbIwPcSD+
-	 RbI4OeP3elljng8fGv/prn2mjhor26bQqZZHzFF4nT6VkUIXgo1eJZOqkSDQnSzQl3R4u
-	 0nLPfi0uMx8BN9jiA3bqO2azDCQOzD5vnk+4cgUccuRNqjrXXLVy0XD9w3gVpzHPyHGdS
-	 RDquLyUe1CsUnwFhOEv/GPzqcwKnoKLCDIY9gJfVpUu8TKrpyL5y7uDLzx2EDk1WsEAmO
-	 pp9svg6KRTOOub3gMS+2dMDcVnkS8HOhYRyJRYxzn7a8SCeaC6tJFRmNlgODxsbq9tg==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795638327;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=mjvmaImFB+1XxEwcSJFzMYM546bN/yyEMMwuHcQOY1E=;
-	b=bD6/jx+kvNacFoyMKU6EGWtbQdeUGJ1xuXb9dmF4EzM1WgTcuHdR4AtelLbWGzfx5he7
-	 DQZUcI2xVxHhX6/3r8hxAgKKx+0L8faEYFwdpffCBICwkviFluB1teLz6KRGc2gfiW/uH
-	 4BVOKWSX0ROmU6i3gMX+lqLjRnO4H0yNlacRPqpCGGQ2dP8h52ccAvk/Io5x4B2JDo+js
-	 WTod6EEBssk1QhlVbqSKcIVSGxBFOL0Iu1a0LXYRIw0QCGCPBGCZVsewtjypjQxc8Zc/x
-	 y75ROwlNbEVATTebmGB2HxCpOoE4K2y49gXTNzQKrf3LhQkguJuxKkygRJ3acu3hV2g==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 4D78D1F000D4;
-	Wed, 25 Nov 2026 20:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795638327;
-	bh=mjvmaImFB+1XxEwcSJFzMYM546bN/yyEMMwuHcQOY1E=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=CY4/B4UCOuUHMh52U4HZ8Y2tdBDtbBPqfPkIjTU7pJUCOHexpRk/hQJNDYpyzOCX6
-	 9A/l0tbovBXxAuJ3Lhbpk1YYnc/1mOQ3VY1Z1LBCPFaL0SWNnOAk3sU0NtqFqCifLX
-	 yYOhE+YRrSAYXg2l4zVDRKkjrV+qyeW9AE9ajv+vxeEfYK6xS4gblmgjAD75L8fof4
-	 +iNK31GKLyPBZ2itzUC+5TDFNMsDwck/pCgM8ieWCnBoDhrJDUVxj+I83qWJlyFz0j
-	 uAuR7zkcTz1jSk3aZ5pNDX09GAg9+cvT7T73wfJrBR3QuBiPI67Hfl0OUuGPCLyWXZ
-	 BJVCS7OIs+1jQ==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id E2E2E4D035;
-	Wed, 25 Nov 2026 20:24:55 +0000 (UTC)
-From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
-Date: Wed, 25 Nov 2026 15:24:53 -0500
-Subject: [PATCH v6 6/6] reset: Add Siflower SF19A2890 peripheral reset
- driver
+	dkim=pass (2048-bit key, unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=RkEOunLr
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bZHiUvlRHPPz3L3dyiWIj1Zun1Lah1Ar8PC1+ZMW6pCh31cQvRKDb4fb433hfg6pZjwpGHP6lRBG/xKr8vfB+/I5XWVy+vyGRm2hsZFryqDZgw8aRyyMtGV0rV/Cyq44n84Y/OGXeqsiyVS/F+m+IwIwcdPk/EIfa3K9KfyiMXLi9zTf6m6GWHuVm8A0460gB5CY/P5DDUm3Oc02/d5yiiniFOg+f3i5lPbT+Mivx0i0EFi875C9spE5n2QOmyPhXsa6KSl79pnKDmiEAxkb0KHMVZQkEoYbM7RWdUjL2yRTPrD1HHWRWSTz8INJHc5Po2E/iMymd/0lo0PIKAgakw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GI4PMYGIENUln3O4iRu4fIBiiO8dSGxaHvsGV6kVfdY=;
+ b=t5DkBI8x8s3jTAukkNsw5MFCHHq4EcL1gsu/Q2paNxBDQVW3Mymt0NpA/9L97Xlh3SRTqxgAKnH4YuPWCml0U4wQegDu618GvUtv9hmOsKRIZwdsGIuFJUZLtjBxH9Hti3l9AiFKJ51KEfY0YHhaKRpaj2s4I903WcoprRHiwePylBVl9azImizaY4zjvMFkxTD6hnjDN8ltLP8L4Xvg+YWLO72fiZXlWfdD0WRTvZ1i2+03ddXWnfQfK6QHSrf5+70K4S/sbOWctAiCUU9UMGgjg6iq9+ezTDIytPbH5idSE+nJM9t5P4xuacANQO1xHac2wpHQSGEhrSLzDYJjFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GI4PMYGIENUln3O4iRu4fIBiiO8dSGxaHvsGV6kVfdY=;
+ b=RkEOunLrqRFz/AachAkDQrungF1MdjmAEwpQOYhF6soqf6S9hZ9ngG8YOkTmPZZyqv80cpSC1GOHs6M3f5JXckcBzjJjpjthvd3Ka22FK40Zn6L08QGhFgOQl4C8nBprKbPi06Fn6GdwloOz8n6K/W0y5jdFAvJCgrUkXQw2eKB4dSzqtp2AiXEuo0J5qlGbB47D7IAQF1QcKKcjG9ANSpYAIlY6vLKkQmLJfkQzDBqBglsy1Gy5trUMjOoqoMiwZRCmKiLwRXdvZngZCyfMfw9fggib5BJVY54Y6WGS1tOLpa/SuyVY3VeEJS+AqUjrzKGjfeAmFLr1rTUSt00y/g==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
+ by BR0PR04MB205366.eurprd04.prod.outlook.com (2603:10a6:2c8:44::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.662.6; Wed, 25 Nov
+ 2026 21:52:23 +0000
+Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
+ ([fe80::c715:c32:8bb1:b70b%4]) with mapi id 15.21.0662.004; Wed, 25 Nov 2026
+ 21:52:23 +0000
+Date: Wed, 25 Nov 2026 15:52:10 -0600
+From: Frank Li <Frank.li@oss.nxp.com>
+To: Prasanth R <ragaprasanth@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org, Frank Li <Frank.Li@nxp.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Support Opensource <support.opensource@diasemi.com>,
+	Paul Cercueil <paul@crapouillou.net>, CL Wang <cl634@andestech.com>,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, Prasanth R <prasanth.r@lineo.co.jp>
+Subject: Re: [PATCH 04/12] rtc: mxc_v2: clear the wake IRQ on unbind
+Message-ID: <awdYin-gfFlMzm5K@SMW015318>
+References: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
+ <20261125072026.2997493-5-prasanth.r@lineo.co.jp>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261125072026.2997493-5-prasanth.r@lineo.co.jp>
+X-ClientProxiedBy: PH8P221CA0006.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:510:2d8::23) To MI3PR04MB12438.eurprd04.prod.outlook.com
+ (2603:10a6:290:76::14)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,309 +103,111 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261125-sf19a2890-sysm-v6-6-181875c10682@telaak.dev>
-References: <20261125-sf19a2890-sysm-v6-0-181875c10682@telaak.dev>
-In-Reply-To: <20261125-sf19a2890-sysm-v6-0-181875c10682@telaak.dev>
-To: Stephen Boyd <sboyd@kernel.org>, Brian Masney <bmasney+clk@redhat.com>, 
- Jerome Brunet <jbrunet+clk@baylibre.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>, Chuanhong Guo <gch981213@gmail.com>, 
- Yao Zi <me@ziyao.cc>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>, 
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Joseph Telaak <joseph@telaak.dev>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795638294; l=9822;
- i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
- bh=erSumJvPtRKGfELrVfiKPo+Ic3ADjyGrMETiodgT1qU=;
- b=qUlvUzdyDHOLQWJ+uGjBvWpd4CpunDZhcJtgA9+34BTJV84uypyIphRqWYF3plQ0+cXkMUUdn
- iCT1S8iR+XmCtXRbWPcbNhUWtNDwN5D5c/Nm1hxIbjzUrAqsPctkUgF
-X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
- pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
-X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
- auth_id=1404
-X-Original-From: Joseph Telaak <joseph@telaak.dev>
-Reply-To: joseph@telaak.dev
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|BR0PR04MB205366:EE_
+X-MS-Office365-Filtering-Correlation-Id: 81d151d4-ba99-4a96-0152-08df4b3e62ed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|19092799006|366016|23010399003|1800799024|7416014|376014|261026140227099003|261022105027099003|10067099003|261026121527099003|261021123027099003|261102123227099003|261021121427099003|261028144727099003|261009223027099003|22082099003|18002099003|56012099006|4143699003|5023799004|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	XK+jxcczERCj1rcx9PHJ9kecxsMxC+IoDnpApT9xZ7T5r8dwm9wByiU/vbq108SCsJwYVLXMPlimWO8Mh5qqaLxsqSG0adaeWsoG6HBSafABL1WtezSjPffC8z6451VifBnWQKL+To3si5ScfkdgNRuQHprVyWDDkNh7aTZwGqaTEzHVFD3CPYZKUaPQN292HpnHCvmOV6b69eP1q9tzOSBKiZezmur00WBxvIUQGn/Hgx2zctlG6eJwMPsH9HU59AmwumyA40jWkhixXmoMjjVC9GA7yfAjru+Moc1YlUR1eY+yPRAPJXUx7obBve/WAnBVRR+Y3RAioxFGy194QomwS9w8CnL0SjKkK5aJd6TQ7fWh46pve+fLg4KcdvT6vwDhbEZBvlx4MxWR+ErTcRkJNomm0hcI4NLi+TsP2qqMXI3whSelVzSPmj/9QijQRRCCAPMaMJ0etpW35/NSH8/L+1rKfBjbH5EO3KdT9WXktjI3Cy/Teom0pFfJr7x6iuIWwQrfDBGySEoER5bKiT+qPJxl0GIitrSq8NRL8zwD+z6n5CGv/Rq1T3VrnEJTWMyxB7PcmHLloHso3tQvxiuuAQBNcJtx8sBkmfj37xfe2bJOgtllSzioBElfRfzHD7juOEICdsXotKYQNWbhi2+eEqoV0w4SkD1/qUN2HgE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(23010399003)(1800799024)(7416014)(376014)(261026140227099003)(261022105027099003)(10067099003)(261026121527099003)(261021123027099003)(261102123227099003)(261021121427099003)(261028144727099003)(261009223027099003)(22082099003)(18002099003)(56012099006)(4143699003)(5023799004)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?MqoCKZ4Bl1ngBHZaAEK0hRwapU4D4UQ7ROhb2DuNXGmBG+x8F5lHZL48wyOk?=
+ =?us-ascii?Q?XTNdJhmOOr87K1TThO6xtrNmS/U7DFpooGKV+gMRYhxZ58LMJhHEX5V1uied?=
+ =?us-ascii?Q?tng6KU0/bULMLl4x3f5lIwwYgG4uo740dixFVD5+Dq8svMXPYRwDtzKyLxlg?=
+ =?us-ascii?Q?83OeiLGXSlGwxBIKkcpdtBYBGiQtnuH4vWmFGhDcHE9yE03ButZ2o0qp87v+?=
+ =?us-ascii?Q?OtRPUUhMRTCSURz3c1uJMPZ/Srm8Jh1Mu4Plazj3iNyeK+DCTJ6W323VR7zV?=
+ =?us-ascii?Q?LE9X0gxjPSCyO1VPBrChA0H8WGRLNLY4OBf+ch/4yZ3uSowA6j8KGn7gDEoL?=
+ =?us-ascii?Q?RaYCkraQxXf+oXhYbHA90eyXRGhAo9njQKQlBoEXO3IXqNO4nb4275mMpTBa?=
+ =?us-ascii?Q?KCMx2qFrHTrz8p20irAEVvTsbMmUfHmWRTarZjlM26GIpjRi4qHQeyOOHLqF?=
+ =?us-ascii?Q?pBRktWAvjUWy6Oycfoj5Sd7wU4fQ7o5NN5Q0aT4VAnnHp2yu045E0fu9GAvn?=
+ =?us-ascii?Q?PoSvrpUHJ8hllCwEjkYvQQ/6s8WoTdxDypEf6P8gXds0cU6Lf46Hmxxz3TFq?=
+ =?us-ascii?Q?f09Rnoofqgi3PkXsXyYVNTmMrz5T9/J3zRll3s80lvf8LX7JE/1Awq6ZkqeE?=
+ =?us-ascii?Q?W6tto+mLwXig6jZrJW2DruHZbUaLqhG8AVuKPimtZ8d6eAj9du6YaknJz+Ts?=
+ =?us-ascii?Q?DM4RI6kQ0bfd1WZK/KXdzo9AhiCNXJ+RYH97JXOqiacmzkQWv+UKQugFb4Ns?=
+ =?us-ascii?Q?b6qXXoU+ZyADtY0NnuDKACQW6JP9TxN6nCDDpr9ewTLXf+h31MjSOgns/FMw?=
+ =?us-ascii?Q?rdTnl8TPHCyO7bedBhmsxc8glT4oxZ2zRIfYvLaVnGP0AsuACxwDB4Vie0gX?=
+ =?us-ascii?Q?RAhPV+fe2zB5McHI7y5mt4V4PhHz+0r7gIeCuwd4gjZeSnUrvPoWSUWAz1nb?=
+ =?us-ascii?Q?U973pm/VE1Ywq4dQO+lxl+dFNFN7HCDzl61cSgO1cKL/FPA3TACBMMSmjz5Y?=
+ =?us-ascii?Q?NLhftATptkLd8bcwCRrxIynE9k5B3rRlOypXAT5L+fN70Z8ki+darykDvOa+?=
+ =?us-ascii?Q?cwjQJmdD2AgrMELKvH742lfFkRdDuibPhGAzFbUWRMrJoDTPGTpLWF3zhaud?=
+ =?us-ascii?Q?gzJB0YQV2cw9xCDNXZuVg6u6Ctrjpxd2Oww+mQLyLgr3ROIR//ACfKxp0L9T?=
+ =?us-ascii?Q?/kXjj7nfFTh4FgTyrqdHtcEIRO0LEsXsXI3Dgm1TU9UOuZMFfkW6gxgMZhBY?=
+ =?us-ascii?Q?1QMEB4eCN6DAYc55+zQtZ8IFHnqr20TDdHfLqbk7B+6CGVKJo1l/4jwPKLUx?=
+ =?us-ascii?Q?2LpXsMbTx6Ero0KKJ3Fr3zNhW4omr2RY6cMvJqfytdn9NP3zZvnIHHZDFDxN?=
+ =?us-ascii?Q?2up6TUJ17LgRu3+WYkALEL5NRv5ZODNwbwhMkbiWIz0st0kOljHG3rbLIt01?=
+ =?us-ascii?Q?Kb4TChPaceTbAQi/mcruYnhnYEOuBegAV+diPSPiY+8qA4LAdTei+pPH/JBq?=
+ =?us-ascii?Q?eblYgMZISBjNqe7GiX/ik85EGhXvIB09lEuCPPF7AJ1VoQRzK2amqNYEO9U8?=
+ =?us-ascii?Q?INbx9XuCzigChwAD37kL0FNi3bscsI1WLBZtrW0HmL2EdYbvn5cOFY2zIxBC?=
+ =?us-ascii?Q?S2VvK6o2kvgh9lmwM4pdw93nmFz9ZsRiRSyhwcBNzLD+Ny8+GYBrSuXaTPRi?=
+ =?us-ascii?Q?UIpkpdSZIRVu7dZgA9u3Zj843elWSdFg3tX+uwTEY/t5io6wmOjJLRjZ1/B9?=
+ =?us-ascii?Q?uqjtBz89ZIle+1nvF2UCIIUEZ0fIEoMGsORPW72nrwEBGrHdHXzC?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81d151d4-ba99-4a96-0152-08df4b3e62ed
+X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2026 21:52:23.2300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C5/E7ccUly8axc+jaSj1nHt2ggIYUTI4pLnf1c+U1dpCud7E0LnECtzs0sjK5DTx/htP1OY6RWJEvb1gYWCmQ+xFbLKRaB/8pmLIQToS50WY5topUCpXcRRccqA7EeSn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BR0PR04MB205366
 
-From: Joseph Telaak <joseph@telaak.dev>
+On Wed, Nov 25, 2026 at 04:20:18PM +0900, Prasanth R wrote:
+> [You don't often get email from ragaprasanth@gmail.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+> From: Prasanth R <ragaprasanth@gmail.com>
+>
+> mxc_rtc_remove() and the probe error paths do not release the wake IRQ
+> set with dev_pm_set_wake_irq() or the wakeup source enabled with
+> device_init_wakeup().
+>
+> When the driver is bound again, dev_pm_set_wake_irq() finds the old wake
+> IRQ, warns "wake irq already initialized" and returns -EEXIST, so the
+> driver prints "failed to enable irq wake".
+>
+> Use the device-managed variants so both are released on unbind.
+>
+> Compile-tested only.
+>
+> I used an AI assistant (Claude) to find this and write the change.
 
-Add a driver for the resets of the Siflower SF19A2890 peripheral clock
-and reset managers. It binds to the auxiliary device that their clock
-driver creates and uses the registers that driver has mapped. Where an
-IP has a reset line for each of its clock domains, as the PL011 UARTs
-and the PL022 SPI controller do, one reset drives all of them, since
-they have to be asserted together.
+Needn't it at commit message, you can move it after --- to tell maintainer
+you use AI help.
 
-Based on the reset part of the driver in Chuanhong Guo's SF19A2890
-branch.
+>
+> Fixes: fbc5ee9a6955 ("rtc: mxc_v2: use dev_pm_set_wake_irq() to simplify code")
+> Signed-off-by: Prasanth R <prasanth.r@lineo.co.jp>
+> ---
+>  drivers/rtc/rtc-mxc_v2.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/rtc/rtc-mxc_v2.c b/drivers/rtc/rtc-mxc_v2.c
+> index 35a18b75c..fe3a55b00 100644
+> --- a/drivers/rtc/rtc-mxc_v2.c
+> +++ b/drivers/rtc/rtc-mxc_v2.c
+> @@ -301,8 +301,8 @@ static int mxc_rtc_probe(struct platform_device *pdev)
+>         if (pdata->irq < 0)
+>                 return pdata->irq;
+>
+> -       device_init_wakeup(&pdev->dev, true);
+> -       ret = dev_pm_set_wake_irq(&pdev->dev, pdata->irq);
+> +       devm_device_init_wakeup(&pdev->dev);
 
-Link: https://github.com/981213/linux/commit/37c81bebaf54
-Co-developed-by: Chuanhong Guo <gch981213@gmail.com>
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-Signed-off-by: Joseph Telaak <joseph@telaak.dev>
----
- MAINTAINERS                               |   1 +
- drivers/reset/Kconfig                     |  12 ++
- drivers/reset/Makefile                    |   1 +
- drivers/reset/reset-sf19a2890-periphcrm.c | 195 ++++++++++++++++++++++++++++++
- 4 files changed, 209 insertions(+)
+all devm_*() API need check return value.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 34ff7ec0b60e..ae47322d15dd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -25706,6 +25706,7 @@ F:	Documentation/devicetree/bindings/clock/siflower,sf19a2890-clk.yaml
- F:	Documentation/devicetree/bindings/clock/siflower,sf19a2890-periph-crm.yaml
- F:	drivers/clk/siflower/clk-sf19a2890-periphcrm.c
- F:	drivers/clk/siflower/clk-sf19a2890.c
-+F:	drivers/reset/reset-sf19a2890-periphcrm.c
- F:	include/dt-bindings/clock/siflower,sf19a2890-clk.h
- F:	include/dt-bindings/clock/siflower,sf19a2890-periph-crm.h
- 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index eda9c698a95f..fe7beb2530b2 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -295,6 +295,18 @@ config RESET_SCMI
- 	  This driver uses SCMI Message Protocol to interact with the
- 	  firmware controlling all the reset signals.
- 
-+config RESET_SF19A2890_PERIPHCRM
-+	tristate "Siflower SF19A2890 peripheral reset controller"
-+	depends on MACH_SIFLOWER_MIPS || COMPILE_TEST
-+	depends on OF
-+	select AUXILIARY_BUS
-+	default CLK_SF19A2890_PERIPHCRM
-+	help
-+	  Supports the resets of the peripheral clock and reset managers of
-+	  the Siflower SF19A2890, one manager for each peripheral block.
-+	  The driver binds to the auxiliary device that their clock driver
-+	  creates, so it needs CLK_SF19A2890_PERIPHCRM to do anything.
-+
- config RESET_SIMPLE
- 	bool "Simple Reset Controller Driver" if COMPILE_TEST || EXPERT
- 	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || ARCH_SOPHGO || ARCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
-diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 489fafd6bbe3..d4b707505c3d 100644
---- a/drivers/reset/Makefile
-+++ b/drivers/reset/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_RESET_RASPBERRYPI) += reset-raspberrypi.o
- obj-$(CONFIG_RESET_RZG2L_USBPHY_CTRL) += reset-rzg2l-usbphy-ctrl.o
- obj-$(CONFIG_RESET_RZV2H_USB2PHY) += reset-rzv2h-usb2phy.o
- obj-$(CONFIG_RESET_SCMI) += reset-scmi.o
-+obj-$(CONFIG_RESET_SF19A2890_PERIPHCRM) += reset-sf19a2890-periphcrm.o
- obj-$(CONFIG_RESET_SIMPLE) += reset-simple.o
- obj-$(CONFIG_RESET_SKY1) += reset-sky1.o
- obj-$(CONFIG_RESET_SKY1_AUDSS) += reset-sky1-audss.o
-diff --git a/drivers/reset/reset-sf19a2890-periphcrm.c b/drivers/reset/reset-sf19a2890-periphcrm.c
-new file mode 100644
-index 000000000000..17f24f773fac
---- /dev/null
-+++ b/drivers/reset/reset-sf19a2890-periphcrm.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Siflower SF19A2890 peripheral reset driver
-+ *
-+ * The peripheral clock and reset managers keep their resets in the first
-+ * register of the block. Their clock driver creates an auxiliary device for
-+ * them and passes the mapped registers in its platform data.
-+ */
-+
-+#include <linux/auxiliary_bus.h>
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/reset-controller.h>
-+#include <linux/spinlock.h>
-+
-+#include <dt-bindings/clock/siflower,sf19a2890-periph-crm.h>
-+
-+#define REG_RESET	0x0
-+
-+struct sf19a2890_periphrst_data {
-+	/*
-+	 * A reset mask that covers several bits drives the reset lines of all
-+	 * the clock domains of one IP, which have to be asserted together.
-+	 */
-+	const u32 *masks;
-+	unsigned int num_resets;
-+};
-+
-+struct sf19a2890_periphrst {
-+	struct reset_controller_dev rcdev;
-+	void __iomem *base;
-+	spinlock_t lock;	/* serializes reset register updates */
-+	const u32 *masks;
-+};
-+
-+static inline struct sf19a2890_periphrst *
-+rcdev_to_periphrst(struct reset_controller_dev *rcdev)
-+{
-+	return container_of(rcdev, struct sf19a2890_periphrst, rcdev);
-+}
-+
-+static int sf19a2890_periphrst_update(struct reset_controller_dev *rcdev,
-+				      unsigned long id, bool assert)
-+{
-+	struct sf19a2890_periphrst *rst = rcdev_to_periphrst(rcdev);
-+	u32 reg;
-+
-+	guard(spinlock_irqsave)(&rst->lock);
-+	reg = readl(rst->base + REG_RESET);
-+	if (assert)
-+		reg |= rst->masks[id];
-+	else
-+		reg &= ~rst->masks[id];
-+	writel(reg, rst->base + REG_RESET);
-+
-+	return 0;
-+}
-+
-+static int sf19a2890_periphrst_assert(struct reset_controller_dev *rcdev,
-+				      unsigned long id)
-+{
-+	return sf19a2890_periphrst_update(rcdev, id, true);
-+}
-+
-+static int sf19a2890_periphrst_deassert(struct reset_controller_dev *rcdev,
-+					unsigned long id)
-+{
-+	return sf19a2890_periphrst_update(rcdev, id, false);
-+}
-+
-+static int sf19a2890_periphrst_status(struct reset_controller_dev *rcdev,
-+				      unsigned long id)
-+{
-+	struct sf19a2890_periphrst *rst = rcdev_to_periphrst(rcdev);
-+
-+	return !!(readl(rst->base + REG_RESET) & rst->masks[id]);
-+}
-+
-+static const struct reset_control_ops sf19a2890_periphrst_ops = {
-+	.assert = sf19a2890_periphrst_assert,
-+	.deassert = sf19a2890_periphrst_deassert,
-+	.status = sf19a2890_periphrst_status,
-+};
-+
-+#define RST_DATA(_name)							\
-+	static const struct sf19a2890_periphrst_data sf19a2890_##_name##_rst = { \
-+		.masks = sf19a2890_##_name##_masks,			\
-+		.num_resets = ARRAY_SIZE(sf19a2890_##_name##_masks),	\
-+	}
-+
-+static const u32 sf19a2890_single_masks[] = { BIT(0) };
-+
-+RST_DATA(single);
-+
-+/* The two sides of an asynchronous AXI bridge */
-+static const u32 sf19a2890_gmac_masks[] = { [RST_GMAC] = GENMASK(1, 0) };
-+
-+RST_DATA(gmac);
-+
-+/* The AXI slave, AXI master and platform domains */
-+static const u32 sf19a2890_wlan_masks[] = { GENMASK(2, 0) };
-+
-+RST_DATA(wlan);
-+
-+/* The DWC2 controller's clock domains, then the PHY's */
-+static const u32 sf19a2890_usb_masks[] = {
-+	[RST_USB] = GENMASK(2, 0),
-+	[RST_USB_PHY_POR] = BIT(3),
-+	[RST_USB_PHY] = BIT(4),
-+};
-+
-+RST_DATA(usb);
-+
-+/* The PL022's PRESETn and nSSPRST */
-+static const u32 sf19a2890_spi_masks[] = { [RST_SPI] = GENMASK(5, 4) };
-+
-+RST_DATA(spi);
-+
-+/* Each PL011's PRESETn and nUARTRST */
-+static const u32 sf19a2890_uart_masks[] = {
-+	[RST_UART0] = BIT(0) | BIT(4),
-+	[RST_UART1] = BIT(1) | BIT(5),
-+	[RST_UART2] = BIT(2) | BIT(6),
-+};
-+
-+RST_DATA(uart);
-+
-+static const struct of_device_id sf19a2890_periphrst_ids[] = {
-+	{ .compatible = "siflower,sf19a2890-gmac-crm", .data = &sf19a2890_gmac_rst },
-+	{ .compatible = "siflower,sf19a2890-gpio-crm", .data = &sf19a2890_single_rst },
-+	{ .compatible = "siflower,sf19a2890-i2c-crm", .data = &sf19a2890_single_rst },
-+	{ .compatible = "siflower,sf19a2890-pwm-crm", .data = &sf19a2890_single_rst },
-+	{ .compatible = "siflower,sf19a2890-rf-crm", .data = &sf19a2890_wlan_rst },
-+	{ .compatible = "siflower,sf19a2890-spi-crm", .data = &sf19a2890_spi_rst },
-+	{ .compatible = "siflower,sf19a2890-timer-crm", .data = &sf19a2890_single_rst },
-+	{ .compatible = "siflower,sf19a2890-uart-crm", .data = &sf19a2890_uart_rst },
-+	{ .compatible = "siflower,sf19a2890-usb-crm", .data = &sf19a2890_usb_rst },
-+	{ .compatible = "siflower,sf19a2890-wdt-crm", .data = &sf19a2890_single_rst },
-+	{ .compatible = "siflower,sf19a2890-wlan24-crm", .data = &sf19a2890_wlan_rst },
-+	{ .compatible = "siflower,sf19a2890-wlan5-crm", .data = &sf19a2890_wlan_rst },
-+	{ /* sentinel */ }
-+};
-+
-+static int sf19a2890_periphrst_probe(struct auxiliary_device *adev,
-+				     const struct auxiliary_device_id *id)
-+{
-+	const struct sf19a2890_periphrst_data *data;
-+	struct device *dev = &adev->dev;
-+	const struct of_device_id *match;
-+	struct sf19a2890_periphrst *rst;
-+
-+	/* The OF node is the parent's, so device_get_match_data() cannot be used */
-+	match = of_match_node(sf19a2890_periphrst_ids, dev->of_node);
-+	if (!match)
-+		return -ENODEV;
-+	data = match->data;
-+
-+	rst = devm_kzalloc_obj(dev, *rst);
-+	if (!rst)
-+		return -ENOMEM;
-+
-+	rst->base = (void __iomem __force *)dev_get_platdata(dev);
-+	if (!rst->base)
-+		return -EINVAL;
-+
-+	spin_lock_init(&rst->lock);
-+	rst->masks = data->masks;
-+	rst->rcdev.owner = THIS_MODULE;
-+	rst->rcdev.nr_resets = data->num_resets;
-+	rst->rcdev.ops = &sf19a2890_periphrst_ops;
-+	rst->rcdev.of_node = dev->of_node;
-+	rst->rcdev.dev = dev;
-+
-+	return devm_reset_controller_register(dev, &rst->rcdev);
-+}
-+
-+static const struct auxiliary_device_id sf19a2890_periphrst_aux_ids[] = {
-+	{ .name = "clk_sf19a2890_periphcrm.reset" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(auxiliary, sf19a2890_periphrst_aux_ids);
-+
-+static struct auxiliary_driver sf19a2890_periphrst_driver = {
-+	.probe = sf19a2890_periphrst_probe,
-+	.id_table = sf19a2890_periphrst_aux_ids,
-+};
-+module_auxiliary_driver(sf19a2890_periphrst_driver);
-+
-+MODULE_AUTHOR("Chuanhong Guo <gch981213@gmail.com>");
-+MODULE_AUTHOR("Joseph Telaak <joseph@telaak.dev>");
-+MODULE_DESCRIPTION("Siflower SF19A2890 peripheral reset driver");
-+MODULE_LICENSE("GPL");
+Frank
 
--- 
-Git-155)
-
-
+> +       ret = devm_pm_set_wake_irq(&pdev->dev, pdata->irq);
+>         if (ret)
+>                 dev_err(&pdev->dev, "failed to enable irq wake\n");
+>
+> --
+> 2.43.0
+>
+>

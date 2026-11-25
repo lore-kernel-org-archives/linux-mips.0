@@ -1,108 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.83
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795589422;
-	b=WchoJdRzSzUqD4hr8GcZKy0MiEINAARBpZgKf5P7KH7qysf4n5BW6Mx4CI5c64h6ahvG
-	 6lYPiSi/AGzgJJBjpYGDt+hwHpct0tJVFTgDbfPv+ODO0COkUW5Pul/WtwxUe8cQZQ5hO
-	 zLniY4aDtpJ7vxwtngnGhv8O04k7OCsJAUOCLRjtn46GFfYjPiMeyLNowCSaQGCALXlAx
-	 2X6ojzi7UHcrnCUABcvdsSURmTEVvLVdDG91HTv7ZXNoazGJgVflR8EMbsmcfm3v6oqwD
-	 2e3CPmvRENhtdBOMvjnTNmI2pvdjeNNlr0BQqXVyRzeW+KN2TSiQSXDPf/nrg6gdOVg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795589422;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-	bh=kbv3clEx8C6dlWAgnv0ID/UYfBXqiyJgr/b5qFCcM/U=;
-	b=H+VRqXjPT0Y5Mx08zqh976wiiAyDsH4DRNH0wENdWRUyCnpMihQFABDqXY661q4O6cRa
-	 s/D0wUA1WJp1YjQAo/MomfawTeUwEzphqdKmo9sD4oXMb6tROhp80i4aa0VCo0Ptawn2j
-	 qaZX1X0Vz31eHCHdIxyEc91qJ8/4eoYjYWJqAlClYabTAbhzlE6MJWmE03suLicjV5HXp
-	 RuEI3gaUxVZjZwhCC1+pJFW8IFTxZL35/CUrAg0uGzseqjX0lvr79EWLC6R1/sJb1u7vH
-	 l83kXhlqzyw7aZUlhVoZhBfjPlaGWzvmGe27BL5pM9U3d0Oja/BwAYrUfZ7hSkcUZhg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=goldelico.com;
-	spf=pass smtp.mailfrom=goldelico.com;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=CAc99IlF;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="9uvtBP9/";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.83
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.160.46
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795590400;
+	b=gaUhTD1IfLT7UzkYyvlNthuqCW/4cnv8Fcu172BUIISrBiOqxXM71hukajh+Ze4mXtVq
+	 bTPfqsI2MLP1hE/TmHamfBH8NZHuM9az/vK31lSCftJHNuqkTU1t+OgbP0zYM+hPu7IfX
+	 C7ncS3QVm2Znfy5ezd0d5+5JN+4ZQPu56XTcojJx+pceMxLri3ZuLLvY5iJRwH86Z1mQJ
+	 8tMnUJIIf2Forkzdc4XucN5vCZMmu7iVLHypTH8vwfw6LFjqOIWefNmhuAUzpphtEi+rM
+	 7v5Ig5IrhPY1LveihKRgHiwQ43HR5DD/KPWkRKt6JuKoqGpVdT/07KFZ2NTsL1G5HfQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795590400;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=gmnsZL6PXmHWpydEIkdgE2KEvzktJfU2Jz8mQTYdqWs=;
+	b=Qlwg4swaR6d6SJIq1MvAS1i3touMC50MqIkVzGOh1kbvqnBTSZuoPEIbiKM+5lD3vQwf
+	 sZAcWCcm+24A88paC/dFAaIkXd6SyxFuelE5nCjdvc79GyRxICXgGn8wvNScifmRiEW08
+	 ylS9o9R307/1C381xCbRfiw09sYqNjGGWxeae6LNHQIl+MZq802RUJy2nUhFysGdwAXAP
+	 bUojLPuOIGImI67fCFgL75gvnHYgFXpoQPSAcn0Yevb8pb/p4+1angKZTQkNMBnz8kxRW
+	 n2TS8I4p5KojTdsiCJjGYhKLu6ZDaqW8RYx05INRb4JFZdrEakaB8C2U5u8ysXUnDew==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Zx5OLQtV;
+	arc=none smtp.remote-ip=209.85.160.46
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20910606A691;
-	Wed, 25 Nov 2026 06:50:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 20910606A691
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=goldelico.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goldelico.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4D1606A696
+	for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 07:06:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CE4D1606A696
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=CAc99IlF;
-	dkim=pass header.d=goldelico.com header.i=@goldelico.com header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9uvtBP9/
-ARC-Seal: i=1; a=rsa-sha256; t=1795589387; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KVwDYQtckHEknwH1niSCdYZrEX6y5eeNW0z8UZRi+M6AWm4442gWHwKO78KmyEU2Hr
-    ytsZOpY+88jWBXqChrrJEcoU2vMRr2A+q75PB7L+oA/KrjSwjqf1R9TWCOSr0umhalyh
-    0HviPCeYdWWB1amFIGBKFFj2D7NTzyrUrPkdEhnmmV6M5D47NITLRtX9BDI8YiRgnWm0
-    e6bzYfBnRVCxL73kj8klsLkZUMN4BUfqfTCguFSn+BTrpNUkGkXbvR+IHXr9j//n3Lyz
-    XWsBoaHyuqP1A9EaTR8UzhcuFRsRAjQAKQX+C3DF/XXWHQZ/KU2WiF6DTsnrweom3BhB
-    6qyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795589387;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kbv3clEx8C6dlWAgnv0ID/UYfBXqiyJgr/b5qFCcM/U=;
-    b=CTs/rgUPmseW1yUKhE3QFt4Jhq+5IjHQ1K4U5A+6IakG2/+BeGuv4R8oMrAUJnL2MZ
-    67vI2Cmqc/DsYzx5QipZ1auc7hCLjBm5lwnxXVrVhaydnNYTx7C+zIygJEugRaFPHbLK
-    n4PxiBIsLZaa/oIg1rOsGAaBzk7PlHkwYVd71jC3hLgIEQ9uhjc8gFSG+z52PTeZJwyF
-    1D8PJLhXIcZnqoQVwti6zIIU9YZQUVj913tV00XBDk1u1puegGrLNgz5BsjcLkzdJOfZ
-    Jdwev5Dk5vmpFGOxuM9D7jCHtaebrcWGyi2wA50w3oIha0MtagvIO1hOcbaCKznqcW0D
-    Swyw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795589387;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kbv3clEx8C6dlWAgnv0ID/UYfBXqiyJgr/b5qFCcM/U=;
-    b=CAc99IlFRKAIx25v2gIoVXOznIR+cwLB8GMtChF3Owtjeq8apHit4dRKn4qAJbK+f5
-    aM7UDYwsVXHDsPCGTIyTcrgkFYpJ+EvguttpbByUW0z7QgL4GgHgv2ZUswBBg7zPmNLu
-    De3L+0Pymkw5QK1epK8A81d0p36lJUyGWVesHKdst8xUDg2y7d+YGkrz+0+LQPF3zHGM
-    4dm4oxejQybHn0PS4ytA6sFOY33vNfNc9VN5JqqmrDTeliSechfcqzuPzV0bbei9NK/o
-    Uoyx9SS1/S9tMBn7z9EMtVBruXdDqW9WJFLdxOwGELDK7/mRZV0rtf+9pv1UNR7o4m+9
-    WNPg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795589387;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kbv3clEx8C6dlWAgnv0ID/UYfBXqiyJgr/b5qFCcM/U=;
-    b=9uvtBP9/Vv9T1/IiSpvoRl+A0GeCEYMe9lY/tmZ+kQ/boXkiPpuUPcaZPYF0MlObJ5
-    hNEUqGdoqyrhqoTM3AAQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9qVpwcQVkPW4I1HrS25oMlMiNMn5e/Npe6SVDIvzG+5uG4p/zkDZq"
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Qb56a22AP6nk5pu
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 25 Nov 2026 07:49:46 +0100 (CET)
-From: "H. Nikolaus Schaller" <hns@goldelico.com>
-To: Linus Walleij <linusw@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Bartosz Golaszewski <brgl@kernel.org>
-Cc: linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	letux-kernel@openphoenux.org,
-	"H. Nikolaus Schaller" <hns@goldelico.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v5 2/7] pinctrl: ingenic: Fix hardware dual-edge interrupts on X1600
-Date: Wed, 25 Nov 2026 07:49:38 +0100
-Message-ID: <b8405343457802dd8228d0b5fc2017e1f0d0d960.1795589383.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <cover.1795589383.git.hns@goldelico.com>
-References: <cover.1795589383.git.hns@goldelico.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Zx5OLQtV
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-4ad60ec5eaaso4903671fac.0
+        for <linux-mips@vger.kernel.org>; Tue, 24 Nov 2026 23:06:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795590399; x=1796195199; darn=vger.kernel.org;
+        h=mime-version:content-transfer-encoding:content-type:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=gmnsZL6PXmHWpydEIkdgE2KEvzktJfU2Jz8mQTYdqWs=;
+        b=Zx5OLQtV52kO7Rqe11YUKw2noK9nz5ab+o5D/bm1mSZLA0E+/1jHItg1pMm+cHb5Sb
+         INlD1RHb7V8/arN6DEKm7YhREmY9u9aGlJ6EXLH6tQOx2CBxjGSxtE9Ji/D1SlXAOS/B
+         DGZYaLGAOMssNUHvLJ45CfKK4SqHRJxTGWYdbKKxuxRPR+xulvEFtJq8zu7lcvhPl0N8
+         49EVu5OYvH+Tsm8vPpydnWmWZg6bmba9WSiNjwjKrjXJOFqFYZMbPSHQ0tx4lHLEn3Bg
+         M9z0+3fyRYVStUNdYO2JwvUc29hbaX3v/RN71/HyYuoNwLQ3YYJu+EBgBQxBwg8CqCO2
+         7jeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795590399; x=1796195199;
+        h=mime-version:content-transfer-encoding:content-type:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=gmnsZL6PXmHWpydEIkdgE2KEvzktJfU2Jz8mQTYdqWs=;
+        b=kCp9e1+WGU7XMfsZt/cB/bgjmx6rIHvHbBsuu7lYbxApvUDH22Rrlr3kHMQhyiHKcr
+         sbKmCAGbKMZledepMrq/jIiZkLyoT12ANeqE1fNgrUIpsW0LDVSV4RuVkU+pPMcst1Rs
+         U/RLfNqrRhD9sulfbxpOo/uYfPaYtnidHY95RdEZi3DVqmx8kITIeGHKjzpFXMpMoMUg
+         FF4DyBtrw/XugBf8ke19EGODnmI4f66UGg467hBeZ+Q+IPthBX8V1vNhxNX9ftOTDVgA
+         CX3ezh4ymM8fi4U+c+A46TKBIiNAx8upLCggXAAnPYthnCQQbgYRZ7JxbigpvsJgQfGV
+         YDcA==
+X-Gm-Message-State: APuU4Z8V++gmV5P0yONDaBXjCB+DQ0FpXRjJ0an6OT7vLlBtkSsGle9d
+	zwnQ2WlBh6azwDdqiXEYDzQ8lQk0Gr4djReikPUuvQSRvzeSKP+qQhWR8ZWDjrvQMKs=
+X-Gm-Gg: AZFdTZeGFa0SDldpPv0EiK+cBK0dBDG6Xbw2kawyPcJe1nkQhJdhcSQWKYQge7/cWvj
+	/Fwx9jySldzRDiIBYZ1IcOUNzBpu8hOGv/jBy/1Bt11RBiVd/AZKM2C6Iy5SlVVFciaJcN2yNbz
+	W3g1nSGY+ye0fTMSyn8k/KrUyteD+Z2+5SKVOnsQEnWRh1UQwEzTSZ7W7RhGMas0boloVminuI4
+	Zhm1LRwPMxzjXQmuUiPInMiBXVqs0WjcpueX2yzpIVYPJ14qSwAOfCZHLpSO+0V5BAS5vYgZbm3
+	HUo186q3RGM6LbK1yJ/L75nJ3GuVvcAvCXnoKZPIy143WVp6/spoPs+jTRzBvVxIDgYvwqpIc9p
+	b8n8u3qBpNYYduXVch/6xrbE+CbrT8JKvQnjBuvs69/j8iGPFj4zdBFeTtJt6N3Ks43pIKjf18s
+	gbQq8YxH1eSuCZ4qAf0U+khTtvgzE6lxV9CXSoN+S2AxlEATjkYoDG/IZL18pwn/0EODFpuLs40
+	JF9WoJ+HSEm0hKjOCn4B6hHtVtdGpVc9BEbV0n5gzq6XpG4WIlw7xThLBR/6NcXgc4J22GsuO7T
+	UkQgtUPArKRV6iZ038W06AgfdYQYOO/Kkg2iZ/oiNsblJrO0mmrteDwSdIPuSp7cG9ys1aW6Ym+
+	wV3pxng==
+X-Received: by 2002:a05:6870:5e10:b0:467:e082:b93c with SMTP id 586e51a60fabf-4bb353c7a76mr11282899fac.2.1795590398552;
+        Tue, 24 Nov 2026 23:06:38 -0800 (PST)
+Received: from smalls.localdomain (ip-198-145-71-161.az.bambroadband.net. [198.145.71.161])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4bc5b07d766sm15575902fac.2.2026.11.24.23.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2026 23:06:37 -0800 (PST)
+From: Hunter Laux <hunterlaux@gmail.com>
+To: Paul Boddie <paul@boddie.org.uk>,
+ "H. Nikolaus Schaller" <hns@goldelico.com>,
+ Olivier Louvignes <olivier@mgcrea.io>, Andreas Kemnade <akemnade@kernel.org>
+Cc: linux-mips@vger.kernel.org, letux-kernel@openphoenux.org
+Subject: Ingenic X1000-class I2C is a Synopsys DW_apb_i2c; i2c-designware runs
+ it on the X1600
+Date: Wed, 25 Nov 2026 00:06:36 -0700
+Message-ID: <179559039637.3640816.14396135268364714521@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -112,91 +97,40 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-Use the hardware dual-edge detector on X1600 and X2000.
+Hi,
 
-Set PAT1 when configuring both edges and program EDG on X1600.
-Keep software edge switching for older SoCs without EDG.
+For information, in case anyone wants to consolidate the two drivers
+one day: based on my testing on a HiBy R1 (X1600E), the I2C controller
+on Ingenic's X1000-class SoCs is a Synopsys DesignWare DW_apb_i2c.
 
-Tested on X1600 and X2000 using GPIO buttons and register readback.
+I noticed it while looking at Olivier's spike filter patch [1]: 0xa0 is
+DesignWare's IC_FS_SPKLEN. Both of the R1's controllers identify
+themselves:
 
-Fixes: 4da56f9c6f14 ("pinctrl: ingenic: add x1600 support")
-Cc: stable@vger.kernel.org
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
+  0xf4 IC_COMP_PARAM_1  0x003f3fee
+  0xf8 IC_COMP_VERSION  0x3132302a  ("120*", 1.20a)
+  0xfc IC_COMP_TYPE     0x44570140  ("DW")
 
-Notes:
-    Changes V5:
-    - added Reviewed-by from Paul Cercueil
-    
-    Changes V4:
-    - Fix Fixes: and stable Cc trailers.
-      (suggested by Paul Cercueil and Sashiko-Bot)
-    - Merge the common shadow-register paths and simplify EDG handling.
-      (suggested by Paul Cercueil)
-    - Retested hardware dual-edge interrupts on X1600/X2000 after the
-      shadow-register refactoring. Verified both button transitions
-      with evtest and confirmed via devmem2 that PAT1, PAT0 and EDG
-      remain unchanged across GPIO input transitions.
+The registers i2c-jz4780 uses for the X1000 and later are at the
+DesignWare offsets (SCL counts 0x14-0x20, enable 0x6c, SDA hold 0x7c,
+SDA setup 0x94, enable status 0x9c, spike length 0xa0).
 
- drivers/pinctrl/pinctrl-ingenic.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+Test: Letux 7.4-rc3 on the R1, with both controllers' compatible
+changed to "snps,designware-i2c" and nothing else:
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index 88c5edeaaddcc..7f65f3abf05f5 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -3601,7 +3601,8 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
- 
- 	switch (type) {
- 	case IRQ_TYPE_EDGE_BOTH:
--		val1 = val2 = false;
-+		val1 = false;
-+		val2 = is_soc_or_above(jzgc->jzpc, ID_X1600);
- 		val3 = true;
- 		break;
- 	case IRQ_TYPE_EDGE_RISING:
-@@ -3635,15 +3636,13 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
- 		return;
- 	}
- 
--	if (is_soc_or_above(jzgc->jzpc, ID_X2000)) {
--		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
--		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
--		ingenic_gpio_shadow_set_bit_load(jzgc);
--		ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset, val3);
--	} else if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
-+	if (is_soc_or_above(jzgc->jzpc, ID_X1000)) {
- 		ingenic_gpio_shadow_set_bit(jzgc, reg2, offset, val1);
- 		ingenic_gpio_shadow_set_bit(jzgc, reg1, offset, val2);
- 		ingenic_gpio_shadow_set_bit_load(jzgc);
-+
-+		if (is_soc_or_above(jzgc->jzpc, ID_X1600))
-+			ingenic_gpio_set_bit(jzgc, X2000_GPIO_EDG, offset, val3);
- 	} else {
- 		ingenic_gpio_set_bit(jzgc, reg2, offset, val1);
- 		ingenic_gpio_set_bit(jzgc, reg1, offset, val2);
-@@ -3718,7 +3717,7 @@ static void ingenic_gpio_irq_ack(struct irq_data *irqd)
- 	bool high;
- 
- 	if ((irqd_get_trigger_type(irqd) == IRQ_TYPE_EDGE_BOTH) &&
--	    !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
-+	    !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
- 		/*
- 		 * Switch to an interrupt for the opposite edge to the one that
- 		 * triggered the interrupt being ACKed.
-@@ -3758,7 +3757,7 @@ static int ingenic_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
- 		irq_set_handler_locked(irqd, handle_bad_irq);
- 	}
- 
--	if ((type == IRQ_TYPE_EDGE_BOTH) && !is_soc_or_above(jzgc->jzpc, ID_X2000)) {
-+	if (type == IRQ_TYPE_EDGE_BOTH && !is_soc_or_above(jzgc->jzpc, ID_X1600)) {
- 		/*
- 		 * The hardware does not support interrupts on both edges. The
- 		 * best we can do is to set up a single-edge interrupt and then
--- 
-2.56.0
+- I2C0 at 400 kHz: AXP2101 PMIC and CW2015 fuel gauge. axp20x and
+  cw2015 probe as with i2c-jz4780 (regulators, battery and USB power
+  supply as before); 200/200 reads of each chip.
+- I2C1 at 100 kHz: CST816 touch controller; probes, 200/200 reads.
+- IC_CON reads back as with i2c-jz4780. The SCL counts follow
+  i2c-designware's own timing rules (FS high/low 123/223 at a 140 MHz
+  APB clock, against 102/239 from i2c-jz4780).
 
+Neither driver programs IC_FS_SPKLEN today, so Olivier's patch [1]
+still applies whichever driver is used.
+
+[1] https://lore.kernel.org/linux-mips/20261024212520.91401-1-olivier@mgcrea.io/
+
+Thanks,
+Hunter

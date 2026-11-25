@@ -1,21 +1,21 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.119.170.32
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795617281;
-	b=T0M2YzaRV+OHO5jL6Xpc6pt0NC9UsUkNWJ35xUygFwubGGHBi3/PUnTDKWyYu1mvlu7S
-	 yxqwBKLrdfclGje1ie8Gce/YaMQZnToh8UNUSjyNZ/PkqRAaEvDZfA/A15oYuPMcCpSAo
-	 D8hFQcJen+MvR4l5/piEjCHKqveEoLjzkovKaloVXOCTw9baNv77kBiteqyOKurThwquH
-	 2hOyF8Aa2zdlYpcJUheloUbNOxiDzpQTm980AymgmLXxkdh5CIittw5bNE9g5Vx3YI1+E
-	 T6NdY4+yPw6kFxzq8oZdwJ6T7B9rhzoLslgquPm1Xej1VTP3aTAmcPo9iKD6N1O/1ZQ==
+	t=1795617531;
+	b=mI5r/gBkpL9mWTU/4sELAui/g+vuIM8wTaagrobAeJcOspFAJg+euYAfk4ayi0K12Icg
+	 jX56oNM0UP8nUg7GOGF3sBmjPB/2NggbnPrQNLv75sFHGIN5deAA61HWaqRubItQ9tuj0
+	 ynddlkKOwdXhAVv0iBT/kMKMt9RqNLGRXUWnPpaEAn7Ny4hF1KYt1NwbHZtcEnA061eMV
+	 xhu1vEbKYYR3lEywFT98+V35aZhGmtuEgZiXwwrTxbor1ccu2muvjd8rUZMGM1oNfHBDR
+	 QykltbmOHDIAe8DGZpN5XmOIITo6CiMwvM9bhj40U677Fg/8NSa5fEgkvynEvYhxzUA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795617281;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795617531;
 	h=DMARC-Filter:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=cqCiELa6nbsCUzTTz8YpyoZQ75NYLAQuxQban16hB/w=;
-	b=Rlneb8VYfhtyBU64n1XumUuFU5fs1kBwZCAU8j0FUlDMOBWCTehBTqjr+9r+2XmlVI2L
-	 DxDXkhQ3UG+Hs18s6lcNZcTJLcP8Q7G0HK/y/YfkVPtxlGbPmA+JyVQqk+v6EeYiW2y0E
-	 n/GBqmcoF7Gp2KkvNlpwTUR2pO/o6TVKK7nljUjA8JWlrkGssu4CAZua6VDJR6lQpmOwI
-	 o6nT0/NiCL9ElOgpi0IdiNf07fZGhwIQP45qqOEANo2DcjRI0I6b9TDVHJzL+oiDL3uN+
-	 aYcdodJDQVs0dX/WzpQKQ+u1cEuIEJc6w0HYJtuyMKr14XIXsyEGGuPUNhu16mAiqWQ==
+	bh=IQ9fZw32uZVF3Ywd8chKQW0lakTMcQKc2jgAvfNuIBI=;
+	b=PEAe7+qzr10IvFESnCWZlIAxLUKMEW+WNVmpxSh93qD2FJrXRUV3yEwrOVzVZpNy0xDK
+	 cSZXR4SasNxv9tMs5EHE8FX1ylmsNDnU0Laso3eLTmfGIk0viMM3brGUKRNMlPylyLf8B
+	 TWc5hJLVk93OOEDthC9O3Qk/zW6A8pRdBaqw1NPTEIvEEwZpRj1oez+ksYRT6IDPvELT6
+	 +s37Ayywm7BwN7Pvc8ooekDs9fGIgBx+O8tuRtaUtR+YZKuJLYp7qwKwujKSVKBF5eIbH
+	 nM6SW00fNmz7SUdlATheVj7XO8xWWcKar2Vi3p2VLQ47711rQwT8npHxhtsVnx3hjrw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=crapouillou.net;
 	spf=pass smtp.mailfrom=crapouillou.net;
@@ -24,26 +24,26 @@ Received: from aposti.net (aposti.net [185.119.170.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E214606A335;
-	Wed, 25 Nov 2026 14:34:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4E214606A335
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0DE606A331;
+	Wed, 25 Nov 2026 14:38:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CA0DE606A331
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-Message-ID: <a61b9a24e0eaf8240933ad2433e6f1c00855b683.camel@crapouillou.net>
-Subject: Re: [PATCH v5 6/7] pinctrl: ingenic: Handle X2600 Port E Schmitt
- trigger
+Message-ID: <84e1cc8b3977f011950e68ca69c46dff1a395175.camel@crapouillou.net>
+Subject: Re: [PATCH 08/12] rtc: jz4740: clear the wake IRQ on unbind
 From: Paul Cercueil <paul@crapouillou.net>
-To: "H. Nikolaus Schaller" <hns@goldelico.com>, Linus Walleij	
- <linusw@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski	
- <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Bartosz
- Golaszewski	 <brgl@kernel.org>
-Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
-	letux-kernel@openphoenux.org
-Date: Wed, 25 Nov 2026 15:34:36 +0100
-In-Reply-To: <ec49e1a7da313c8dfe012c17a04d03dc4167ee2a.1795589383.git.hns@goldelico.com>
-References: <cover.1795589383.git.hns@goldelico.com>
-	 <ec49e1a7da313c8dfe012c17a04d03dc4167ee2a.1795589383.git.hns@goldelico.com>
+To: Prasanth R <ragaprasanth@gmail.com>, Alexandre Belloni
+	 <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org
+Cc: Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team	 <kernel@pengutronix.de>, Fabio Estevam
+ <festevam@gmail.com>, Support Opensource	 <support.opensource@diasemi.com>,
+ CL Wang <cl634@andestech.com>, 	imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, 	linux-mips@vger.kernel.org, Prasanth
+ R <prasanth.r@lineo.co.jp>
+Date: Wed, 25 Nov 2026 15:38:45 +0100
+In-Reply-To: <20261125072026.2997493-9-prasanth.r@lineo.co.jp>
+References: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
+	 <20261125072026.2997493-9-prasanth.r@lineo.co.jp>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -56,72 +56,60 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Le mercredi 25 novembre 2026 =C3=A0 07:49 +0100, H. Nikolaus Schaller a =C3=
-=A9crit=C2=A0:
-> Port E has two Schmitt trigger configuration bits per pin.
-> Select the lower-hysteresis mode when enabling and read both bits
-> to report firmware-initialized settings.
+Hi Prasanth,
+
+Le mercredi 25 novembre 2026 =C3=A0 16:20 +0900, Prasanth R a =C3=A9crit=C2=
+=A0:
+> From: Prasanth R <ragaprasanth@gmail.com>
 >=20
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> The driver has no remove callback, so the wake IRQ set with
+> dev_pm_set_wake_irq() and the wakeup source enabled with
+> device_init_wakeup() are never released on unbind.
+>=20
+> When the driver is bound again, dev_pm_set_wake_irq() finds the old wake
+> IRQ, warns "wake irq already initialized" and returns -EEXIST, so probe
+> fails with "Failed to set wake irq" and the RTC cannot be bound again.
+>=20
+> Use the device-managed variants so both are released on unbind.
+>=20
+> Compile-tested only.
+>=20
+> I used an AI assistant (Claude) to find this and write the change.
+>=20
+> Fixes: 3b2dc19ff9a1 ("rtc: jz4740: use dev_pm_set_wake_irq() to simplify
+> code")
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Should probably Cc: stable@vger.kernel.org then.
 
-With one question below.
+> Signed-off-by: Prasanth R <prasanth.r@lineo.co.jp>
+
+(Your family name is R?)
 
 > ---
+> =C2=A0drivers/rtc/rtc-jz4740.c | 4 ++--
+> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
 >=20
-> Notes:
-> =C2=A0=C2=A0=C2=A0 Changes V5:
-> =C2=A0=C2=A0=C2=A0 - Keep the ingenic_get_pin_config() call and the Port =
-E
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 condition on single lines, as suggested by=
- Paul Cercueil.
->=20
-> =C2=A0drivers/pinctrl/pinctrl-ingenic.c | 7 +++++++
-> =C2=A01 file changed, 7 insertions(+)
->=20
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-
-> ingenic.c
-> index 88531d472cd2e..d253674accacd 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -69,6 +69,7 @@
-> =C2=A0#define X2000_GPIO_PEPD				0x90
-> =C2=A0#define X2000_GPIO_SR				0xd0
-> =C2=A0#define X2000_GPIO_SMT				0xe0
-> +#define X2600_GPIO_SMT1				0x100
+> diff --git a/drivers/rtc/rtc-jz4740.c b/drivers/rtc/rtc-jz4740.c
+> index 32c331f3f..41501c9ed 100644
+> --- a/drivers/rtc/rtc-jz4740.c
+> +++ b/drivers/rtc/rtc-jz4740.c
+> @@ -367,9 +367,9 @@ static int jz4740_rtc_probe(struct platform_device *p=
+dev)
 > =C2=A0
-> =C2=A0#define X2600_GPIO_SHADOW_OFFSET		0x800
-> =C2=A0#define X2600_GPIO_PAGLD			(X2600_GPIO_SHADOW_OFFSET +
-> 0xf0)
-> @@ -4693,6 +4694,8 @@ static int ingenic_pinconf_get(struct pinctrl_dev
-> *pctldev,
-> =C2=A0			return -EINVAL;
+> =C2=A0	platform_set_drvdata(pdev, rtc);
 > =C2=A0
-> =C2=A0		arg =3D !!ingenic_get_pin_config(jzpc, pin, reg);
-> +		if (is_soc(jzpc, ID_X2600) && offt =3D=3D 4)
-> +			arg |=3D !!ingenic_get_pin_config(jzpc, pin,
-> X2600_GPIO_SMT1);
-> =C2=A0		break;
-> =C2=A0
-> =C2=A0	case PIN_CONFIG_SLEW_RATE:
-> @@ -4767,6 +4770,10 @@ static void ingenic_set_bias(struct ingenic_pinctr=
-l
-> *jzpc,
-> =C2=A0static void ingenic_set_schmitt_trigger(struct ingenic_pinctrl *jzp=
-c,
-> =C2=A0		unsigned int pin, bool enable)
-> =C2=A0{
-> +	/* Port E uses two bits; select the lower-hysteresis Schmitt mode. */
-> +	if (is_soc(jzpc, ID_X2600) && pin / PINS_PER_GPIO_CHIP =3D=3D 4)
-> +		ingenic_config_pin(jzpc, pin, X2600_GPIO_SMT1, false);
+> -	device_init_wakeup(dev, true);
+> +	devm_device_init_wakeup(dev);
 
-So on port E it will configure both X2600_GPIO_SMT1 and X2000_GPIO_SMT?
+I see devm_device_init_wakeup() can return an error, which should be handle=
+d.
 
 Cheers,
 -Paul
 
-> +
-> =C2=A0	if (is_soc_or_above(jzpc, ID_X2000))
-> =C2=A0		ingenic_config_pin(jzpc, pin, X2000_GPIO_SMT, enable);
-> =C2=A0	else
+> =C2=A0
+> -	ret =3D dev_pm_set_wake_irq(dev, irq);
+> +	ret =3D devm_pm_set_wake_irq(dev, irq);
+> =C2=A0	if (ret)
+> =C2=A0		return dev_err_probe(dev, ret, "Failed to set wake irq\n");
+> =C2=A0

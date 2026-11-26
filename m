@@ -1,78 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795720907;
-	b=f914wBk0c3FBf/woEXUyw4oFwRAbmuGI+P3ChNk2VzM5SHhIY0XVgd70CCPvcBau0hsA
-	 kmU/ulhHdgeVZ+q9mwgHPlb6b4KikBuDIh/54MEhS6tIVUgeJYmfp1vshQFwPNp2iFESp
-	 NZhBVXzdHUZABeAMKyNkMKzHRgXc7q2Jns8M6sqaijBqeJW4A9xZ40wyo0RPdgkh3KkFG
-	 qN6gCTGdmtSVudwokmeZdJnywpJ2S7bQ0iQHAV6CoNSfuv1lm6z1Wh1OrfyvczF+zBeH2
-	 y6xKsx/C42lu1cJ2nhOtWnPjhA+VxJSfoVMMFWG1RfIsTpuDv/A3VAKwSs/5n6sbTMg==
+	t=1795720904;
+	b=E8NGr7zHyV72ESv+g11PTYN+6JJ06/4kKzE82aTC6jG2kzq6PsRqxOzSAFwPk9n9wN0r
+	 dV/87kzAOmHmqiR5kZtG0+DT1scnhvKmdD+0wLYoAPDrqv8Tvl9zEuHghjP0WaIdzEFPQ
+	 WjGzGmYo4goYvAjXU0AG0TLwYYHD/J2QuCzSjWvqtUPdVQkMo698Xe71LJ0xGzwx4G5uq
+	 lpdh1su7z8qwiVya7PP1LKaMrp4dHwcgB2Ew/hDjO69rEz2A59shBmvpZrjWsC4/m8vpO
+	 7fT/BF72jbDWizPw01xl9T70tGe8hXJYOMaQ4BN/HZ8jf4dQv7zbNNAki1Gzu9RZ+fA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795720907;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795720904;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=duDFZn/9vifFKrXrrq9JNvuX6O2EDASRPRiym+nRd4U=;
-	b=2L7H0FpOj4SJfc2mcUxtxGDWDaQQyEyPz+VyazNmipOMz5yZw9ApcghziJzIMH7KPb0E
-	 hH+54PhOYy9MEPw3hbBoflA1JwSX50OQwmWH54wI6pWQyOKe2yOp3+5ejLYdyo6ilr8nx
-	 mnTaZD7z2W15nvS/AkaP86bFTRwor3ab1IPjML+IbU8kEWRwR7zENR4GuCrLyCR/kK/8m
-	 zdKo3oOM9hBcB8z9KefzFRPDF3sxa8UlRl+f004KcjzFzXHQ6I5IVr15Qnk6nTzD7tJ75
-	 q0x3jdAUNcYWDxUN2xDRv5zIoUhYxHBgWe3YFM7qrZyLkZsgiF3lVv7V+erEK3E0mTA==
+	bh=+yBHB70+JsmAKFMYihujfW/eOsl5So0v3ZBdIAUoYTw=;
+	b=r4uzKa4ilLF+V0oRyRGGbL38Z5Flt7xRHYRgbzuvTBdRIa9PtyHrqRECUJ6pR2I9NUkJ
+	 BNuBwlUpYklE0pSqOcyp0PNXeH2dOhcO0P5RcFL1n0vABcHVevIP0bjGY70xhzGX6hmoR
+	 +HoDNLFpVdk+Wbr+2w4seFdtfzKbN4hfbdK4TInWH+EF5vy32D2MRz468jU63+z1Fjp7u
+	 MdO7m2KC4foqD2hlbQiOTUekt/iUSkq8kshcAEWGVVyIN77xByTzfqM+qjb0xeGAiMRHn
+	 gDZwaNXhbAuaAozEBm2k8flp3Th5sZVhUZARSN3o4Fdq30EGJFZPLWIq3Vprs4vNaqg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EHIM1M7h;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="B/qMuxQX";
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4E6606A32A;
-	Thu, 26 Nov 2026 19:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1254F606A339;
+	Thu, 26 Nov 2026 19:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EHIM1M7h
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=B/qMuxQX
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795720906;
-	b=CNpQmwUrHDcvAN5oeHK4YFn8b4r50oeO0HtfPgFk19d/bhUMVuhXjEOMf60MoDMvaa2s
-	 XczBCsXx8yFBWoCu5vxbvG3rpPZxYaCIDCixfZ2GeJ908YACQpFsjnVGUfl3m4hYHlTz+
-	 knjZ2uqi+5W9vZzjv/Un6dL5nP/E3glzlMI3qGhpWAhGB1JDDD8ChDPmCU9u6XrEVTawT
-	 /UEGR5GT1dlPL00EDKHTeTzhieF/AZY9wb4F3q5b73XLveZU7CjzvYiZquFmdrV2kttZm
-	 ONkKVUcPEHjmXX/vI0kuKlBL5qx4qJcHj2NfP436Kc2X3JIDMDrMAXox8Ud64lpQkTA==
+	t=1795720903;
+	b=WdnSDeubf3xBZQWz8nOA0ClM/m2YWEL5oZadUAynv9fwb/gLR9O4PI9bN+1iOkmYvfit
+	 G4pZrgGhak/MK6TrahYs9O9SlfuBz/oErFva+rLCosjKG6gKY8DoSC2HXJ3sExvdQu7ga
+	 6n1dJhWNMl65F0xnxDmjhTjvKythsYqwAT561R4vaH7imNmtardHgOO74aZsKZ3X0AgYx
+	 MzOQZ8WH5MY93+a/nZLOIiPqZTDgI0ay+a4IeyC0beqLGVuu7KziOCIFXBvTi9xrHIAT5
+	 NR/AwF+xz3wRs8nirftPDW7uAdsRCqHxjpn9xduLXS0E3cjUjHpWKqJDPoRQ1dps6uw==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795720906;
+	c=relaxed/relaxed; t=1795720903;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=duDFZn/9vifFKrXrrq9JNvuX6O2EDASRPRiym+nRd4U=;
-	b=KwOoPa5ut+6Ua5mfRd1SDODCCohzb04OfnpMlZ3GsAboKNTG/6LrsVEsnDdhE+74PJ2y
-	 gwuYPr1lvq5Oj66SmBkeJW9BAs6Jjj9EdG8FVo2aizaU/ooUQq3bdg3O3o9M5RXkxa0bK
-	 Z32nwy4VOVuOaLR3PUGRsIAufY+ckSiMeywPrkB/AYl81prOnfDAPoeavJvNH13LhGODK
-	 kVNX4+wk62Fs5FywTE5br3uLOVTeDNgV6nuZPLZR+fn9YgKn7HaGYHYy0wDVY86lxLKcD
-	 WiFzBMZK1LZjDha3JSfGLu8pGDuXPdY6YuNod9xhs1phr6lurTNV8deFSxZRrMC/NNw==
+	bh=+yBHB70+JsmAKFMYihujfW/eOsl5So0v3ZBdIAUoYTw=;
+	b=JVxGkV63ENM6Em3s1zfWPMdKnXSeGQ7hyG6Ff5tiF6MCqVpMR6AyQ8wSvEvYcy4pfyfU
+	 ++qCb+2oZ30WGA8dZvfkvRczkNg3AR0Q8Xo5gu1TQ5Aa0ChSf64b1TNdxfaoGPlPWc9Vo
+	 f1loZXPodBTPbdOna+jCRkXEj796+ONgZilrH2TvExfOGR9WJU4NaeilQbXrpj2sXNDMB
+	 QqLBA8fnuayLazPdlj79o2THlTJJYdKOhTNhhbE4mAwq8Lq5nNrsWTD4uKx7Bo+R/lTXV
+	 lJnJcNKSxX5S33nDlW1JRuYeu6zfhJY/wqOs8NSXVz/zzEGucXue0XM9O268v5G1qLA==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 9BE2D1F000D1;
-	Thu, 26 Nov 2026 19:21:38 +0000 (UTC)
+	by smtp.kernel.org (Postfix) with ESMTPS id AABE61F000D4;
+	Thu, 26 Nov 2026 19:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795720906;
-	bh=duDFZn/9vifFKrXrrq9JNvuX6O2EDASRPRiym+nRd4U=;
+	s=k20260515; t=1795720903;
+	bh=+yBHB70+JsmAKFMYihujfW/eOsl5So0v3ZBdIAUoYTw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=EHIM1M7hQeysY8lyGK15FjFHyGqPQpyLDuxYOiwEKzHoXUvtXZAEFzhuRPWUfQrkc
-	 YIvPqfSieW5Wc80y7fn47colDgz4afIrWlvIDld6mmyz2lSEhZh97IH/K6Dp1Z4qgC
-	 SdQYJfXBgk2FTazEYGnzOe322i1BOrYoluy/+Iil1ouKh1wUfJK6MGQ3e/ZViFoGUs
-	 D0ih11eUdRMGYWmcY7u0i0Uk0SMg0eHHrDuejD7xDD6RLw9M1ie8+a8RSZy101azr0
-	 mpEmyo/hJCahQ+Hq9z2/mmRR+bF2J3Iul9/5vymIWT2V0ob6I+oqEEE7NQkMPYlp7B
-	 j6e/+ezKqNUaQ==
+	b=B/qMuxQXzUitvyL9g685nXYfmobLsEcY0xD92BU5cgIF2iOpWo3A3fkAHU4sqJpxs
+	 L0cuq9BliIr0VXaVvF/DpOU76DZ+RIBmJjo9I+zoa+lNL+xjt+n9bDTdeeP+GPY0NE
+	 orJgzhhn/ZV+hR9I7N+nYlXjWOIWikn3JzbNKEIE612nMgZnXFmdWvSQwyo9aDCpJP
+	 cTWjVSjwh/IHuhe+mbe3vCffZHxf5qynvYkdtu4853Al7OuS9SxSm9G/9eibOqcnUP
+	 S4MxOarSxZrSwtDaFTE3jfDzK5uqxn7mjy0jV8cKrH1Xdvk/8A8uyVU+YpoJ0v7w3d
+	 koXyZ8szs2Hzw==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 585874D7C2;
+	by lkml.kernel.org (Postfix) with ESMTP id 381574D7BE;
 	Thu, 26 Nov 2026 19:21:32 +0000 (UTC)
 From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
-Date: Thu, 26 Nov 2026 14:21:33 -0500
-Subject: [PATCH v3 5/5] MIPS: configs: Add sf19a2890_defconfig
+Date: Thu, 26 Nov 2026 14:21:32 -0500
+Subject: [PATCH v3 4/5] MIPS: dts: Add Siflower SF19A2890 and GL.iNet
+ GL-SFT1200
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -83,7 +84,7 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261126-sf19a2890-mips-v3-5-1f808d38ab37@telaak.dev>
+Message-Id: <20261126-sf19a2890-mips-v3-4-1f808d38ab37@telaak.dev>
 References: <20261126-sf19a2890-mips-v3-0-1f808d38ab37@telaak.dev>
 In-Reply-To: <20261126-sf19a2890-mips-v3-0-1f808d38ab37@telaak.dev>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
@@ -95,11 +96,11 @@ Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Joseph Telaak <joseph@telaak.dev>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795720891; l=1372;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795720891; l=5038;
  i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
- bh=jrZFDuNOVQSJQnzMtSdYByrN6lytb/mj6TbF+QbIufc=;
- b=+7UAfwIG1llxlmBqyXWDIPV6/ekXbV4oM0enhEGBM13qOG8PrloH4bhxfYljIwfOtesJzbTwJ
- VG9GcGrfqJ9DiA9lEL/SwJgk1TaOUVw3UnGMUFbzL/iGRCVbHwL5L/P
+ bh=Q+uqg0phnSitomVG3bzzNR+OMDkZ9IamsxkTzR01Xes=;
+ b=mTt/V6AQaFjTARsm/yCgyOPaYECF3VGU+fcZE3/WL58sk7TskaFUneEpNsVGRowU3/q7liOWS
+ /XO+W3kAQP+BSq9k4wX0K6s8rUx7GXi5GD9VueP9epn6cGIwcR2XJsh
 X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
  pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
 X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
@@ -110,49 +111,191 @@ Content-Transfer-Encoding: 7bit
 
 From: Joseph Telaak <joseph@telaak.dev>
 
-Add a defconfig for boards with the Siflower SF19A2890. It boots with
-the device tree appended to the kernel, as the GL.iNet GL-SFT1200's
-U-Boot passes none.
+Add a device tree for the Siflower SF19A2890 with its four interAptiv
+CPUs (two cores with two VPEs each), the MIPS GIC and its timer, and
+the PL011 UART that serves as the console, and one for the GL.iNet
+GL-SFT1200 travel router built on it.
+
+The SoC's clock controller has no driver yet, so fixed clocks stand
+in for the rates the bootloader programs: 800 MHz for the CPU (and so
+for the GIC timer), 100 MHz for the peripheral bus and 125 MHz for
+the UART.
 
 Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 ---
- MAINTAINERS                           |  1 +
- arch/mips/configs/sf19a2890_defconfig | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
+ MAINTAINERS                                        |  1 +
+ arch/mips/boot/dts/Makefile                        |  1 +
+ arch/mips/boot/dts/siflower/Makefile               |  2 +
+ .../dts/siflower/sf19a2890-glinet-gl-sft1200.dts   | 27 ++++++
+ arch/mips/boot/dts/siflower/sf19a2890.dtsi         | 97 ++++++++++++++++++++++
+ 5 files changed, 128 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 23ad08c7d8d1..4c8daaae5501 100644
+index 3aa80a8dd785..23ad08c7d8d1 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -25704,6 +25704,7 @@ L:	linux-mips@vger.kernel.org
+@@ -25703,6 +25703,7 @@ M:	Joseph Telaak <joseph@telaak.dev>
+ L:	linux-mips@vger.kernel.org
  S:	Maintained
  F:	Documentation/devicetree/bindings/mips/siflower.yaml
- F:	arch/mips/boot/dts/siflower/
-+F:	arch/mips/configs/sf19a2890_defconfig
++F:	arch/mips/boot/dts/siflower/
  F:	arch/mips/include/asm/mach-siflower/
  N:	sf19a2890
  
-diff --git a/arch/mips/configs/sf19a2890_defconfig b/arch/mips/configs/sf19a2890_defconfig
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index 36c5e4c6e640..d33cf7f61aa7 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -14,4 +14,5 @@ subdir-y	+= pic32
+ subdir-y	+= qca
+ subdir-y	+= ralink
+ subdir-y	+= realtek
++subdir-y	+= siflower
+ subdir-y	+= xilfpga
+diff --git a/arch/mips/boot/dts/siflower/Makefile b/arch/mips/boot/dts/siflower/Makefile
 new file mode 100644
-index 000000000000..ec0992ac6340
+index 000000000000..b5986850aaa0
 --- /dev/null
-+++ b/arch/mips/configs/sf19a2890_defconfig
-@@ -0,0 +1,15 @@
-+CONFIG_SYSVIPC=y
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_MACH_SIFLOWER_MIPS=y
-+CONFIG_MIPS_CPS=y
-+CONFIG_NR_CPUS=4
-+CONFIG_MIPS_RAW_APPENDED_DTB=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_SERIAL_AMBA_PL011=y
-+CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
-+CONFIG_TMPFS=y
-+CONFIG_PRINTK_TIME=y
++++ b/arch/mips/boot/dts/siflower/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++dtb-$(CONFIG_MACH_SIFLOWER_MIPS)	+= sf19a2890-glinet-gl-sft1200.dtb
+diff --git a/arch/mips/boot/dts/siflower/sf19a2890-glinet-gl-sft1200.dts b/arch/mips/boot/dts/siflower/sf19a2890-glinet-gl-sft1200.dts
+new file mode 100644
+index 000000000000..13e6a0c8be27
+--- /dev/null
++++ b/arch/mips/boot/dts/siflower/sf19a2890-glinet-gl-sft1200.dts
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++/dts-v1/;
++
++#include "sf19a2890.dtsi"
++
++/ {
++	model = "GL.iNet GL-SFT1200";
++	compatible = "glinet,gl-sft1200", "siflower,sf19a2890";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x8000000>;
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
+diff --git a/arch/mips/boot/dts/siflower/sf19a2890.dtsi b/arch/mips/boot/dts/siflower/sf19a2890.dtsi
+new file mode 100644
+index 000000000000..1c342cbaa8ba
+--- /dev/null
++++ b/arch/mips/boot/dts/siflower/sf19a2890.dtsi
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/interrupt-controller/mips-gic.h>
++
++/ {
++	compatible = "siflower,sf19a2890";
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	/*
++	 * The bootloader sets up these clocks. They stand in for the system
++	 * clock controller until it has a driver.
++	 */
++	pbus_clk: clock-100000000 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <100000000>;
++	};
++
++	uart_clk: clock-125000000 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <125000000>;
++	};
++
++	cpu_clk: clock-800000000 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <800000000>;
++	};
++
++	cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		cpu@0 {
++			device_type = "cpu";
++			compatible = "mti,interaptiv";
++			reg = <0>;
++			clocks = <&cpu_clk>;
++		};
++
++		cpu@1 {
++			device_type = "cpu";
++			compatible = "mti,interaptiv";
++			reg = <1>;
++			clocks = <&cpu_clk>;
++		};
++
++		cpu@2 {
++			device_type = "cpu";
++			compatible = "mti,interaptiv";
++			reg = <2>;
++			clocks = <&cpu_clk>;
++		};
++
++		cpu@3 {
++			device_type = "cpu";
++			compatible = "mti,interaptiv";
++			reg = <3>;
++			clocks = <&cpu_clk>;
++		};
++	};
++
++	soc {
++		compatible = "simple-bus";
++		ranges;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		interrupt-parent = <&gic>;
++
++		uart0: serial@18300000 {
++			compatible = "arm,pl011", "arm,primecell";
++			reg = <0x18300000 0x1000>;
++			interrupts = <GIC_SHARED 226 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&uart_clk>, <&pbus_clk>;
++			clock-names = "uartclk", "apb_pclk";
++
++			status = "disabled";
++		};
++
++		gic: interrupt-controller@1bdc0000 {
++			compatible = "mti,gic";
++			reg = <0x1bdc0000 0x20000>;
++			interrupt-controller;
++			#interrupt-cells = <3>;
++			mti,reserved-ipi-vectors = <0 8>;
++
++			timer {
++				compatible = "mti,gic-timer";
++				interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
++				clocks = <&cpu_clk>;
++			};
++		};
++	};
++};
 
 -- 
 Git-155)

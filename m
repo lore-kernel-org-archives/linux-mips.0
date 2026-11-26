@@ -1,100 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.175
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.169
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795652052;
-	b=n9vm6kssd11RHdDxGf3JQso+tcSIoKJ9rnezfw0Ig98T7Z+RDicOZuILRES0ONTQnlK6
-	 RSKveqk6fdoQrdHKriD83k6MTk/x22YN5x1N23KG6cjWa0uvM3hlvcLZll+yxuVSj4c++
-	 S4bm2MMWW6GydzKl1IetvIi4fw2Qs765DAshz4sswhcyg//tyAurja+f13eOiLd6q/Nmm
-	 7HYQEP3SNpNFiqov+JGdRpkfyS4NAFYVbrNXWpQ1utgInBER5334XYKo/clDgw6Gf0tWu
-	 jbbwPIN5MOYNi2TGjUV85pb3JMnywduzJ2TG1iYwHltNPuBs3i6Kiiq0CZe97IG5oog==
+	t=1795652336;
+	b=u0wMIk6rNtMdO2214DgQ7gONRsPl4o8T7hPJWQs9A++tcOZKXpuopVrKsx0BCJdAPgs5
+	 gkYmJ5I2575K4HqFB9AW/UUHD8E8vluss25Wx802YoMZgWah3p920ErP9PU8V/ulpJ+c9
+	 4Otn/XfC3jkOANraIm3Jlk38nq9ZhbFwvm1aQII/BdqfOvJ3tyHKzb0eGYSTfgW7QHFMT
+	 BORTuIGlOHAyZFVNAfv6jyRgHIJadkR7+y2PRARBI39RlJ7WheT4cJS3lmKuIWWWxbVTp
+	 LWc4fpAIyUVRMhdmn8uKVAa8J59I3JGlT7+mO83YSTj3IKePCnfyugDRP6ukgB46gfQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795652052;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795652336;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
 	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=ZyKI2qUNxqXt+wcWqV0BvUgrOWmkIinXejzZ4Is8tdg=;
-	b=IAXkFKt2qvFhDn61r7IBHw2tIyiLGD9agr++o4Po/D2Nq30Xaj8o/fTSxt+gcXq5YuSw
-	 DNBjvEiBbBS85bzN4/8GHtR3RmLM/TBXfb60rgTquU/IT4bLooPHivqHFzM8wd+Z9gdd9
-	 fSpilQj0gDfr0y57+W3tSv1jN9adSpfaSj//msvGEBXNVqQ8p+OhuxiOlG98bNIQMGOxN
-	 eX/Q2gGq6528T99i7hM9EttkIRSWWLzZa2Kd4kFVOVx2hVC8pT+70Dk2DZNOVXzjidBSN
-	 SIKNKLHk5IcPTNEuB037JQt7xgvXZA6kbJMIQA9OVEQGtHvZALkzzwwRf92dgp5T9Og==
+	 Message-ID:Subject:To:Cc:Content-Type;
+	bh=hs+NtO3DvgsubFp6mHbpOQTQRimp/H6VNRhIAEyqZUM=;
+	b=r3ZVk9Fux6Ny+zoq9aBkDfKLymHeYsAvbFxRmDZ9hOyQlKuAO8e/EkppB0GsH17RpLCG
+	 XJ6vzywqhSdOT3taKEb04BINjr5zAl/uiKb5uhl96MHgm7J+MphgD/mNsMDW4DAVCRcPe
+	 3CKHKBH15DO3kuwLqNX4suHmKMIDbEY86wHng8lK5s6NZg5SxiAK4g7JNLFaG4gQanA/D
+	 fXs/gQlE0hxgJ/W3m6jyRNzbGetuysgfRwbTNW4qW52xoGvkWnLJVX1qRZynlMaz75r/C
+	 DsYRtgw24ykqubzVNrbzHz0DGqsiNHiT0qtfjA9zVD+Gxvs/IvNf4YCnyiEvJVtELuw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Dhvbt+N6;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.175
-Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UycSEH8Z;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.169
+Received: from mail-dy1-f169.google.com (mail-dy1-f169.google.com [74.125.82.169])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3079E606A323
-	for <linux-mips@vger.kernel.org>; Thu, 26 Nov 2026 00:14:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3079E606A323
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328D4606A323
+	for <linux-mips@vger.kernel.org>; Thu, 26 Nov 2026 00:18:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 328D4606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Dhvbt+N6
-Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-386bd881d39so5772081eec.1
-        for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 16:14:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1795652051; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UycSEH8Z
+Received: by mail-dy1-f169.google.com with SMTP id 5a478bee46e88-3869f03af6aso5596598eec.1
+        for <linux-mips@vger.kernel.org>; Wed, 25 Nov 2026 16:18:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1795652335; cv=none;
         d=google.com; s=arc-20260327;
-        b=d7iL6Sf1hlOOxuWKAvt6GBvFukO7BJyQeikAjvPBbtEwwcBQjkoo/itGcsSB3WHBGe
-         1xkQQKFPEHgqsIuw74grPgd3mSjy8V7YnOywDZYRoAHf+hE+ho4qmJTmGL0EPy0lTe1v
-         ZAQNMGGTafftk4rmqWTBNZ4orIP5gBiS0Bs1LepXgFQEyebTK8YzpWoF5qb2UdrBDNs+
-         L1Sxxb6AftdddYyWBw8yIgqhRlWiwvkmAe+eDji/IaqU16RMH9qokCzJMjZUt/llnu6i
-         x2vqE2z0qPEpRoUdLCjnQ19lrNtwCxadcuJgtSDoOo4ZzB2nnrYO+roD+PljOcHoQDdc
-         n0Ew==
+        b=sRe6broopnHVtMrjkkwLyYulvRHYYXBA4nNkx3PrtMJ4kZjmo5g+QxMy2OfOmMxxAL
+         vTxoKLM7aPpwqnFdhaZ777NcDdcFQC5uYjydWF/HEVvAloc4vdZylh76a9wSEHxkzj4b
+         XIlbn/53BpXfOOmLRmhbGN5LoahuwsyTpgDa9Ih/4YbuoLYFSqRcnGA0eX9LMPVKgon/
+         h2GGSmSOx78f4w07FeZcwo/tjEDBdPqytGEio4gi+iOD60j7y745qJ5ZeCS5ZpSnsePK
+         NA4C60Ncn52PCMj34quH9IGdOP+ow5+qf1sVv08BiIn7F+ICaDY5g9O2ZCiNkHXbdBxK
+         A/6g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=ZyKI2qUNxqXt+wcWqV0BvUgrOWmkIinXejzZ4Is8tdg=;
-        fh=J6o1sV3cECYZ1I8DdMmMcHl5EKG9hrWnqxsiZJlPizI=;
-        b=dOwFt7NyRHim7ICfwHIth7/ojZZe7nHIanTLQir94y4ZYA++v/sFdEj9Ua4raWVmUY
-         +gDn/Pz7OqkIbzaa/9hCEP2klDtQR3EFEIbOOQ6RXtaN+ePYMwdfzciqxE0eWcaHkiH3
-         PPMvnZxX3EZP2Cv/YEzgJe6C7L3FKIdfj1ub4o6yLmvcjLyb+AaG3KJWsBuJ6qhzfJ5j
-         TOwQULlOIBMbwG0zcyotYIrbDziGlhC26iCvPhR8qKelw9vHv8WDmvznImlwU5sn3gQc
-         hYMbNhP6Me2uqLnarxAk5mnflW7YvFA1ala9XK7gbyBlY9naKcr4LTfsGtiF6pPBiTkP
-         jYPg==;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=hs+NtO3DvgsubFp6mHbpOQTQRimp/H6VNRhIAEyqZUM=;
+        fh=j6O/pioXqb5RZldSo5gacLyoxgkhthqE2CVVerRyTGw=;
+        b=RL/r5ue1X08v10sS/s8kQIBd4evROKvSitVwtPvdANUlB50Gp+1BrZ/OZNlzaK+Y8Y
+         NpnURxgwiDlWsbkJfpNoBW4KZ6M2Suu4UBRJmi5XtfJWyPt09hzMLGi7Ij1E68Ti5ZpD
+         oIpVr/ODiyUOsn35S5pfl/1DxfbEG3Z5EFzHtj1vyFuzObKhDq0xv/tlCl6NaYCaKcZN
+         4mxS+d3VLahLGlzEMTEQlrt8JTauW03ityKeA+eAUDbXURexJFHeLJe7YPbVXwNMiMGe
+         TMyjcKJoTz2zTUHxTxeQB/J4Dz+MnUJbV8UGJ+ECqh35l2omC6J0fGKnhyIHE9x58FIE
+         h87w==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795652051; x=1796256851; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ZyKI2qUNxqXt+wcWqV0BvUgrOWmkIinXejzZ4Is8tdg=;
-        b=Dhvbt+N64gW99NVUnyhu/sbzE7bHl8mg4Y/Rm8HapWPrrP8aSul6Isrm+8IxEkko8C
-         YuhgCsq6ZVPqN5AI9m+SsEcvqtqn/VTtZHxqJyNigBPi9+qqCmyUYvMJbGjcNfjU3giK
-         N1QkT80OL6NB0UX0oas2gDjH7R9bNOyLZTTT1poT+h0kw0qqjIZrHb+JQTFoScAWWVhg
-         VBrpa4lmD6/Bd/nVDIany+3qtrPe3elApirp9Gq5XAs7HxnqHVVll8o9qYk0OoA8rEXY
-         pOuz5s3n8N7SWWgf1ZSMUcf3lDzt4v0NEByyisQdzOW0gs/YGqRUN/gUpg/9uD57cAqY
-         TtxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795652051; x=1796256851;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+        d=gmail.com; s=20260707; t=1795652335; x=1796257135; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=ZyKI2qUNxqXt+wcWqV0BvUgrOWmkIinXejzZ4Is8tdg=;
-        b=pfjngRrbiMzlHmqFGaz/sF1nMPcfxq2Mb9s7LoTjxrpq20ukcia7StVIkHn4PezJCl
-         l7irAnpX/VbMgxEBsVpzhvP9vnqjzsMk9BVAQi+bAQ1axrSEZjxuFfGyyKWekWbLhOl/
-         P43tWx2mI2wFZhjZSgRa4tD/tFqlsp3GS416i8j9Lsa6Hu+8+xJXrog1q9lOULcCeKUq
-         I4zZs+UZiW2d1jbuKU/qbFDAdTQ3aiU70+pIEKRpWLD1YlHwtcxqGUjq9JD+e86X1F4d
-         M8hudHNb3G0uJIzEdK7tt6Od/+gaZmYn5x27OUjRoQFHl+ahW7FsBZuSWy2tJLFi6FFq
-         44+Q==
-X-Forwarded-Encrypted: i=1; AL+hErE98jvtvP1yxqWK0wW4ceOsvAALtgSJ1Pn9QoLz1mB4ozVfj5Ow8gsdr1yKH96xXOUCg9i2b+bx/Btf@vger.kernel.org
-X-Gm-Message-State: APuU4Z/3qdUpyPg5cDxzIcpbKFPEOAoHJ1eRdhQCrzLMHWpL4IOlwC+e
-	KF7TQbhN1o8HdAo6SAZTzV+lNA+afH3TcNOIq1cpfoF1TI1H/7e1iBhdqH9nj77Y//7C1Buj6Dh
-	TE3EX6McoCoEfuuKUcR6CvVZUHkZyVb4=
-X-Gm-Gg: AZFdTZfX22h2E691FK2i2Y3loKuMszL4bn8A3/RNTXfnVglaH8kJCo69hiP6Wddplvw
-	GJawVjcbno93JlO2UavOvxmf2JMVaS7SoAmLvRhcKb+DL4vcU9RHHqlPuOte4bZ6hmidWE10MWZ
-	NhPMd1dI3fzhR+0d+ok9x4/YEoni7zkjMt12wmJ5zPYFHdbcmO6MUdYMzmfYeqXYJDWsL71S+t8
-	EeVoTsTCXFVMBunTXlzXakMZM3nJxo5I2Pxs+5c8nXNjjgQb5YllYbhtJS6W9hM2UCYgS8IlbMC
-	jzxCOHx1m0Qo9e90aL0ojTI7poXBlc9e6jmUsxRzWl+Rg5i8bVUTJdRsEBsvMel8vAn32/DL0Zj
-	b9Wmbn88uOXXb+AIf7AOUQ1Wo6kq6XIsgrMuatv4=
-X-Received: by 2002:a05:7301:c005:b0:386:a0c0:5e59 with SMTP id
- 5a478bee46e88-386a0c0757fmr16642087eec.20.1795652051165; Wed, 25 Nov 2026
- 16:14:11 -0800 (PST)
+        bh=hs+NtO3DvgsubFp6mHbpOQTQRimp/H6VNRhIAEyqZUM=;
+        b=UycSEH8ZwEGmtjAiiKZzzKPXsvhkj19uhXggKtWFXyWu2vMQo/JLUIKlQXD5cthNlO
+         yEXLjbJv6yoeAFGBm9yrdDkeTw80TluMS8qeQq/+4Y/doq1Zhy3mLG+G/7vKG/i1QMxm
+         a60S+vfnU9kGJgD6aGyUWUIkDYgtH1FdaBtK26wX9GPDx2TyU6LnDiMqXFngG6YHIfnf
+         aEM0+bzuM4kym/1WgUUX+UGk8aot6GJXfeG6H1oxiKeeKUQ7WS6seKR4HU0DJbV5OyG1
+         6fcMNAmWFPOPbFYJNshMHcz8S6u2AtwGpOOh8eoj6drSkdutfnIOOOZBGwJMfG0+KR7G
+         7E3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795652335; x=1796257135;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=hs+NtO3DvgsubFp6mHbpOQTQRimp/H6VNRhIAEyqZUM=;
+        b=iOM8hvDk+6fsIwzNKzc6VIqC2uYRQ1XWEZ4DLfc3gZiah46AFAWmrWUehN9qFlyz7U
+         DEWx/4onuqwHcpQQK9bPYWkVrYFK1Mr7ZiAGvlTFpQKfuwdP+AMkNxVnIv+Wjlko7mAr
+         4CYXjl6jdB3GnAMYUtmffToOz/IE5Uq/8g7kA5cIwV+D2itqW+PHm1+vaal4vj+oG8JL
+         qtjwtb3u7xW+CXJ09+u2+rWbH7zyD8nue2s9uGevGbF4eaK9BCpdwHmsL9KWjWfPjEEU
+         DRoMnxon8s8vop6/6Lrornlejm7XCnsUUVXFJAVaOBuYJqVnFZBEMV8yQ22zHw0vLwB/
+         //Zg==
+X-Forwarded-Encrypted: i=1; AL+hErHakEBsJOxmkZS0U709NfY83FLibzchNh8yhV/Fy6HBfc10GBSkPoy/9DdbtqVTpcf1L6/D4nt+Gkk9@vger.kernel.org
+X-Gm-Message-State: APuU4Z8oXB6MNi+HjEZOZDTTBenAjDtTxvtv0bl5EllBL1yfKld+JtH+
+	GDy16DYrQIyF8LgPik/38fZldKWo6zo67g9Ib+h5LnIklBIr983MWbNv1rAO+lSabIL441zixq6
+	O+I18bVdE5wcVZZiakEALZuo/lN1grLc=
+X-Gm-Gg: AZFdTZcFiYiu+c2xpxGQF9ub54zt+lIrxT2nOSZftxVzjkL0Fh1bSZtt+HPOSBbOyVF
+	mj388QV+gl/WyUPLwackFpKBqx4cqDa6/lZ9seVTvnIrZT6ZCW8/3a6rL/L/hhPRzPbGEUybzOX
+	GJxl9/HkAuiHeHm8JuVy7KxSdFDWGS3wQXMOaJ8zOXOKVzSoGPVjt65w9FUkfzRBR0/vRHEaMjg
+	2NXD5Ia/ICJvM4HtBbpLzcxIinORzFtQxjkbWmqxU2ycaNQxf/Oya6S9sYLgz2fHA4UObwoKbnO
+	8/CvFekD3VBEY9JO4rXMu8PiyfY6DlD1fQDNPtM1F7kJBCnLIl5j5HGTySKYFPThOeeMU6z8RYD
+	UmXMse6ZjuHLDkJASy+rjkfzrTj79kY0UQT/aB4U=
+X-Received: by 2002:a05:7301:4283:b0:386:96fb:28c with SMTP id
+ 5a478bee46e88-38696fb2022mr18962402eec.18.1795652335244; Wed, 25 Nov 2026
+ 16:18:55 -0800 (PST)
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -105,98 +104,34 @@ List-Owner: <mailto:linux-mips+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 References: <20261125072026.2997493-1-prasanth.r@lineo.co.jp>
- <20261125072026.2997493-2-prasanth.r@lineo.co.jp> <mo4vj2higl2dmabkeslouimdgoeofqlkyjnngytv5wmub2h4w3@t2ayiiw4qaoz>
-In-Reply-To: <mo4vj2higl2dmabkeslouimdgoeofqlkyjnngytv5wmub2h4w3@t2ayiiw4qaoz>
+ <20261125072026.2997493-9-prasanth.r@lineo.co.jp> <84e1cc8b3977f011950e68ca69c46dff1a395175.camel@crapouillou.net>
+In-Reply-To: <84e1cc8b3977f011950e68ca69c46dff1a395175.camel@crapouillou.net>
 From: Prasanth Ramesh <ragaprasanth@gmail.com>
-Date: Thu, 26 Nov 2026 09:13:32 +0900
-X-Gm-Features: Aa3M54oCRfqrPa_wvFbRD8sm2OXWz8lngNEw2_ns1ZE4Pa74ZiYvVwkIIJgdohE
-Message-ID: <CAG7eodFb_-1RPoe8Ha97NhxWXo7BdBjkFvWNOQ7PqYO3U2KCXg@mail.gmail.com>
-Subject: Re: [PATCH 01/12] rtc: snvs: clear the wake IRQ on unbind
-To: Marco Felsch <m.felsch@pengutronix.de>
+Date: Thu, 26 Nov 2026 09:18:19 +0900
+X-Gm-Features: Aa3M54qYngOgeBcgTcKEBPIYWY5OQaxOihLdYD94YpYTWZ1b5b1X3H2CZvSNV8c
+Message-ID: <CAG7eodE36AzthJZmMhTTPn5BHjD_PFAabBn=yiyVU++gAbDEXg@mail.gmail.com>
+Subject: Re: [PATCH 08/12] rtc: jz4740: clear the wake IRQ on unbind
+To: Paul Cercueil <paul@crapouillou.net>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org, 
-	imx@lists.linux.dev, Support Opensource <support.opensource@diasemi.com>, 
-	Prasanth R <prasanth.r@lineo.co.jp>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Frank Li <Frank.Li@nxp.com>, CL Wang <cl634@andestech.com>, linux-mips@vger.kernel.org, 
-	Paul Cercueil <paul@crapouillou.net>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+	Frank Li <Frank.Li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Support Opensource <support.opensource@diasemi.com>, CL Wang <cl634@andestech.com>, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Prasanth R <prasanth.r@lineo.co.jp>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Marco,
+> Should probably Cc: stable@vger.kernel.org then.
 
-Thanks for the feedback. You're right, I should have added proper
-error handling. I'll use dev_err_probe() and address this across the
-series in the v2.
+Will add it in v2.
 
-Thanks,
+> (Your family name is R?)
+
+R is an initial from my father's name (Rameshbabu), "Prasanth R" is
+how my name is written officially.
+
+> I see devm_device_init_wakeup() can return an error, which should be handled.
+
+Working in v2, it now fails the probe with dev_err_probe() suggested by Marco.
+
+Thanks & Regards,
 Prasanth
-
-On Wed, Nov 25, 2026 at 6:18=E2=80=AFPM Marco Felsch <m.felsch@pengutronix.=
-de> wrote:
->
-> Hi Prasanth,
->
-> thanks for the patches, please see below.
->
-> On 26-11-25 16:20, Prasanth R wrote:
-> > From: Prasanth R <ragaprasanth@gmail.com>
-> >
-> > The driver has no remove callback, so the wake IRQ set with
-> > dev_pm_set_wake_irq() and the wakeup source enabled with
-> > device_init_wakeup() are never released on unbind.
-> >
-> > When the driver is bound again, dev_pm_set_wake_irq() finds the old
-> > wake IRQ, warns "wake irq already initialized" and returns -EEXIST, so
-> > the driver prints "failed to enable irq wake".
-> >
-> > Use the device-managed variants so both are released on unbind.
-> >
-> > Tested on an i.MX6Q SABRE-SD board by unbinding and binding the driver
-> > through sysfs.
-> >
-> > I used an AI assistant (Claude) to find this and write the change.
-> >
-> > Fixes: e7afddb2b4d2 ("rtc: snvs: use dev_pm_set_wake_irq() to simplify =
-code")
-> > Signed-off-by: Prasanth R <prasanth.r@lineo.co.jp>
-> > ---
-> >  drivers/rtc/rtc-snvs.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/rtc/rtc-snvs.c b/drivers/rtc/rtc-snvs.c
-> > index d99a352d6..647952dcd 100644
-> > --- a/drivers/rtc/rtc-snvs.c
-> > +++ b/drivers/rtc/rtc-snvs.c
-> > @@ -383,8 +383,11 @@ static int snvs_rtc_probe(struct platform_device *=
-pdev)
-> >               return ret;
-> >       }
-> >
-> > -     device_init_wakeup(&pdev->dev, true);
-> > -     ret =3D dev_pm_set_wake_irq(&pdev->dev, data->irq);
-> > +     ret =3D devm_device_init_wakeup(&pdev->dev);
-> > +     if (ret)
-> > +             dev_err(&pdev->dev, "failed to init wakeup, %d\n", ret);
->
-> If there is an error you should return here. I would also suggest to at
-> a proper failure handling for devm_device_init_wakeup() on all the other
-> patches, albeit these drivers may not handle it today. Furthermore these
-> days dev_err_probe() should be used during probe, so you have a pattern
-> like:
->
-> if (ret)
->         return dev_err_probe(&pdev->dev, ret, "failed to init wakeup\n");
->
-> Regards,
->   Marco
->
-> > +
-> > +     ret =3D devm_pm_set_wake_irq(&pdev->dev, data->irq);
-> >       if (ret)
-> >               dev_err(&pdev->dev, "failed to enable irq wake\n");
-> >
-> > --
-> > 2.43.0
-> >
-> >
-> >

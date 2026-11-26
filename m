@@ -1,78 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795720898;
-	b=H3nDUcuI+6OUASzYk2y5Reios7cI+ytlmmP6sKlLkTGTD2QTd79vA9aK4FeWgQBBrFiy
-	 7+d4qVGU55G+UV1ltpaps90HP8Juj1avI8rttJg5C6Yc6gioJSJzqj4c3wYS9yh8R60ky
-	 epngH1r2yiLeylkQaQr1VjXL1TcYirE3gK5iEe2UOM1mGFg4r6tnJ6Fj0jBESX83bKTSO
-	 KO7opSmr0gLo7yHncguuboK3wrpv04DMRG45x1DObcEFGNZjp7LUXiWwa1eAfs5M2SdNT
-	 j2mecyZGrPmwWAT3oU/h8ixJQc998GXKQQe1+oZUyuaWttO4QnNjbLdD9x4soGSTyLA==
+	t=1795720902;
+	b=GvmCaUnRM21aY3DBjWLxyGZokIiAFNYtbLvAELAMTGvG/9vJmID0gcNo179hggdrrkkR
+	 DLzSzaNdupqNXYEwEECsVTb06Pl1fb76Q9wwZiWyEfW7FwyFJyXm1DMQW8fRK+YdeZvK0
+	 T+6NrLcVT/5rIw2phUrjXpIo5wA6970KSwCN0NmujBRu/Da11yOybmegMtoqFdLq7ePy7
+	 1/DYgBqcNiV5Vz+TNWzYWNAm5V4x/4TZ9VnPdr/BCHMfnmaBFvPj/ayC4XM6GNWpN45FY
+	 CImWr97yop402eTZdDkN0Zhl7ydM7fjq+mKcxVyMXUnTiOrlOFHIzBrXlpNhFDVmMEw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795720898;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795720902;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 X-Endpoint-Received:X-Original-From:Reply-To;
-	bh=GQBpv/4cJe0bKLNoM4fxaYTTw+YNJgkz+4O1RULdm+Q=;
-	b=YmrUl2QxvEpftCMyzbP1Cd7T68jpTtqgjprxZZigTgVgzIRF1Rew1sGeqk4kZx8AWoKl
-	 nAv4eKx8KipVFofcESVlfTGKg2r1t/2BMeQTKWnemq+BtgKDosxGXLZenNthjSOO3KXyv
-	 /bNUwCk3Q7o9QYduqd2Qed3ZHMXYyVP3EMdPhg0pn3iq7d6u/kaZ29feqiIaHaRsGNldy
-	 Kg9og7lcOf1NPqeBEbAP0Hiou/uhpbdZKSAxdZx34IheTiy3Zb1KLbeDEb6s1GqFXPKo/
-	 aPPLfEoC/46ImnY237DUnPt3KaNPy7b5Bc5IQ/se1YBclGNS6KnF41WCa/3fNf/LcKQ==
+	bh=p0S9F4LIxQujZ3St8lMsBEBWLRaUd0jAUlDzWizR1eQ=;
+	b=EGK2ePZiBAs9G8M15Hd5nq3PXcHcBaAwgZgk1EWgpwr13TocUy0oz7zlsUoHO67EMdSv
+	 z3uVOxb+bqXyd6Bjv9aqX2lM9vhX9rWHuEhp5nBMCL0tvXH/fMtz3THf2PkNm0rpeae1l
+	 oFtRU61mF66tJVVkhS9Uq0Uv5/100MyusYN8sTnm6NFumFAVTELllDCakm0LgH19c4y/c
+	 r9o//pzUm97lgQy5vQl5ENVJiYEI4Gn5JR6cLGabUUDbpGLqpaD+UpZL+hhNReDFtQgM8
+	 Q2PBt336HoDg1v6qedGAa/a7pHX1KWGy2sij4KK9knx7YFAjYO2j1+Th63sBVqMSzvw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BklUjJVu;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="d9LVIs/y";
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B46B606A31C;
-	Thu, 26 Nov 2026 19:21:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71812606A31E;
+	Thu, 26 Nov 2026 19:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BklUjJVu
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d9LVIs/y
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795720897;
-	b=Ez3AuxHc6z5GdJEPpGKFRijz+HZX8a8mOI8A1cc4Owbt/16b6GyL713+PvwXzZTBGB2d
-	 UxtbvxUh1hZoXkeD2UXagG3qSIpxzmvnzpQSZwKWNUzVoLCZMDemBx3u/xaFxgqcjP/gb
-	 lHCvFecAIzkCm3LJfxoyM2WOfcnnJqk6ExLnNn2zch/Vjr+VlPztdH6sguVhIbLOK/8MP
-	 DUcNR7braa5ptQwy6IyhamC0nyD2tZNzOXFG9CdNKWp88EJVQ0hRqZWkziOYQoEJyayWh
-	 oSa7MA5cM0KShRg3BrF7rDwLIIX036/KTVg0HnMJ5eDlsIXWhHEIkiBjKzAo666r6sA==
+	t=1795720901;
+	b=HDwwXChJikvva2Yi9ts9ZXEDhOcf17u6xZ2qIHPPk/BT4+CiPhehE1uzD3bB9gT37ERx
+	 LbJ+yvqJbGHeY+Bi5xbWE1gbZRMrOt6SuH0TnQHvGl2Izr4Ccr74FGwjCPSEF2TMy6/ro
+	 n675Fh+0jdJ9+h2qTO6Brgbz0zeCZcilZmmyOnLdf8rz9hi60ynuNad7XwzRa4a/yyELu
+	 nUAgrOoMgRim2E9EVZOLOHcAdh01LL676FJTqXAwEzW0hPMkq/gJHWkcmH8ctXMus/Imi
+	 cesmFZXs3ifU3838WSwFqf6/UofoZVKNdbhMR8zoTYUFwUsGxVaEWf3t8xLHzJuK5aQ==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795720897;
+	c=relaxed/relaxed; t=1795720901;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To;
-	bh=GQBpv/4cJe0bKLNoM4fxaYTTw+YNJgkz+4O1RULdm+Q=;
-	b=WBTf0jhvoddHZQJ9FooT2YWx9sYVFVf67eKEO3yAD1gEtcr11K2E8jNdA8BKixMVOVgG
-	 DIhzenkURSo0rEF8aLP5NlKbvV4/PP63rco5fBeNS6TFPkPxrieJ0GTdRznXfxllLnNEH
-	 CGHHHfu9kc0Y/4uHc9npbd0GhPJHHpGkhP4tLdGKhrado6rCHW2ufr6OpYKDnlvwi0L9y
-	 peyNFtMOZymrTXs5XKHyn+iPOqHX2rhVuUd35dR/6efUvm4g1qfwKVUlDq8nTKP4qu/ah
-	 RL6LjVt4vWiex7s2xswMFVYMQv7UHyB1pxsPr4gmFW+tpEK7M+WQA5wL4QicQwACOGg==
+	bh=p0S9F4LIxQujZ3St8lMsBEBWLRaUd0jAUlDzWizR1eQ=;
+	b=St/cz+2kU2EWOu/VKm4tocGc4TYSBmu+WDwHk/lmrA25zjpsB+9+j9FtnSypL3DzBxY7
+	 FV1eDB2LHTl4knOLfyNZPolM68gzInWvCgXf4knTqXqtnaOgeYNN60DEy0Pps3ABwJViC
+	 iSTjfD6xnhDUYFKtpwilDYU+kAE0aikiGQPMCjhQD+N/9+f6On/8qye7w3i3DrsJh8q7A
+	 WgqM942qNtoEsJqFRWvyw8jsPW47iOpQ0H313lql976Jw7mFSMGieNY1OY46G46sjkQYa
+	 t9Uj5MWnDnCUQQcPRUMZaIjiCE+NrXsGcPICsSnVBB0B0gnSKnkaq4xjSSf4P8lPbEg==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 8CD271F000D1;
+	by smtp.kernel.org (Postfix) with ESMTPS id 4E5A41F000C4;
 	Thu, 26 Nov 2026 19:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795720897;
-	bh=GQBpv/4cJe0bKLNoM4fxaYTTw+YNJgkz+4O1RULdm+Q=;
+	s=k20260515; t=1795720901;
+	bh=p0S9F4LIxQujZ3St8lMsBEBWLRaUd0jAUlDzWizR1eQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=BklUjJVuFV8im7IIlQCwTY1i4H33DYOWJrNFSgUjtvWF14fFvW/zM+CQlfg07RZ67
-	 njg7d7gWZ+j5J08Zt3hvpN3Yr2OBnb/UOZaKK3x7z1FO+14EW0shIWs+gANHc7VNJ/
-	 QojMZSwt83ZsCX+OCl6/UPf2RSFgAqDPZEORh+gv8w2j2KnB+7fNS66LkRLkC11jhJ
-	 m/ClhtEPa9Vz8NhAMsH9Tx4qCWKx6QuqgmFIzjRKpF8bTpofOn1pQi5qXVXt0+eBfa
-	 JUHfSMDdoSpLHVZrqIUgWCg6a0iJX2HS+cOVCL/PCEkHtRIlamgf5G9pKC47I3qJom
-	 LvbXroJyi0HIQ==
+	b=d9LVIs/yfNE+B8z6BWO/go8QjIt4vvM4I5qQxTGD6FroX0PDMm5c5kVfOp1u8zTlF
+	 45wOvf00qdz5xrmTce/flBTPxdmA8JvIDukykyLYfz66EwJ1H9oiKKCn5z9Rg+837e
+	 CqLMJqbfMrCgzx9gPPmKcUyccirNjh3/CIjJ3fXRbdHDFUcOnSMLbyJFU2AnO8V4sb
+	 snUdnqBJ+Ws0jVQaRU49io7iX7VlBOgMpgHS+Wo516fw0GjlI6M9TI9al4Zvuf6nkm
+	 LA+fWADe3vnmBsgc6We2rMgaVnen+Pl/jZvFRYzGoIzXtkqmHG0muKEAVdi2iWujwW
+	 Y3fZZfA6FA4yw==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 193464D7BA;
-	Thu, 26 Nov 2026 19:21:32 +0000 (UTC)
+	by lkml.kernel.org (Postfix) with ESMTP id C8A1E4D7A0;
+	Thu, 26 Nov 2026 19:21:31 +0000 (UTC)
 From: Joseph Telaak via B4 Relay <devnull+joseph.telaak.dev@kernel.org>
-Date: Thu, 26 Nov 2026 14:21:31 -0500
-Subject: [PATCH v3 3/5] MIPS: siflower: Override the kmalloc alignment
+Date: Thu, 26 Nov 2026 14:21:29 -0500
+Subject: [PATCH v3 1/5] MIPS: Add support for Siflower MIPS SoCs
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Post: <mailto:linux-mips@vger.kernel.org>
@@ -84,7 +84,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261126-sf19a2890-mips-v3-3-1f808d38ab37@telaak.dev>
+Message-Id: <20261126-sf19a2890-mips-v3-1-1f808d38ab37@telaak.dev>
 References: <20261126-sf19a2890-mips-v3-0-1f808d38ab37@telaak.dev>
 In-Reply-To: <20261126-sf19a2890-mips-v3-0-1f808d38ab37@telaak.dev>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
@@ -96,11 +96,11 @@ Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Joseph Telaak <joseph@telaak.dev>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795720891; l=2095;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795720890; l=2176;
  i=joseph@telaak.dev; s=20261104; h=from:subject:message-id;
- bh=EVyfyjeyZ6p+fuc1LhbQN8uCXhli0ff7zLHw1TglBzM=;
- b=hLtcKgn2pI1DY0p7hYt5vMEqTSVmnsXMIdY25FHiAi5XfyztDLaCEHPZKuGyD8oryRzJZhB6M
- qkfN13CWiHFCAIpxXVL4++nZetZPEsypPo3PQcyY9OI4w29U6ASRxAP
+ bh=ziqqvVYU3GmZibawv8t72n+ZZ3zc07HtvebkWxBkx+8=;
+ b=e3a0UFJ9Jt3B2ozl7AUcbIBFFgzu612gR9SV6e9RsIlujh9PrqBmZvHAAhP5Ka35GAGjFegsp
+ hXGHBK7yK5/BTw2vSgDIlY3gvA8IBtgCLGNBWj7bmCnHrR9+OQDEdMC
 X-Developer-Key: i=joseph@telaak.dev; a=ed25519;
  pk=oQI+UfddlZ0wK2ac4WKOGNjUl1ZEN8j9ZVFSqEDoNP0=
 X-Endpoint-Received: by B4 Relay for joseph@telaak.dev/20261104 with
@@ -110,59 +110,72 @@ Reply-To: joseph@telaak.dev
 
 From: Chuanhong Guo <gch981213@gmail.com>
 
-Most devices on the market with Siflower MIPS SoCs come with 64M or
-less DRAM. Their InterAptiv cores have 32-byte cache lines, so add a
-kmalloc.h that sets ARCH_DMA_MINALIGN to 32 instead of the generic 128,
-to conserve memory.
+Siflower MIPS SoCs like SF19A2890 use a dual-core MIPS InterAptiv
+processor, built-in GMAC, USB, dual-band WiFi and various other
+peripherals.
+
+Notably, they use some ARM PLxxx peripherals, and ARM_AMBA is
+selected for the drivers.
+
+Most devices on the market with this chip come with 64M or less
+DRAM, so a MACH_SIFLOWER_MIPS is created with reduced features
+instead of using the generic kernel.
 
 Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-[Joseph Telaak: split out of "MIPS: Add support for Siflower MIPS SoCs"]
+[Joseph Telaak:
+  - rebase on v7.4-rc1 and use the "MIPS:" prefix
+  - longer Kconfig help
+  - commit message grammar and paragraphs
+  - move the kmalloc.h override to a patch of its own]
 Signed-off-by: Joseph Telaak <joseph@telaak.dev>
 ---
- MAINTAINERS                                   | 1 +
- arch/mips/generic/Platform                    | 1 +
- arch/mips/include/asm/mach-siflower/kmalloc.h | 9 +++++++++
- 3 files changed, 11 insertions(+)
+ arch/mips/Kconfig | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7fb18c2d6959..3aa80a8dd785 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -25703,6 +25703,7 @@ M:	Joseph Telaak <joseph@telaak.dev>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/mips/siflower.yaml
-+F:	arch/mips/include/asm/mach-siflower/
- N:	sf19a2890
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index ed17c9b1624c..549bc7d13dd9 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -937,6 +937,39 @@ config SIBYTE_BIGSUR
+ 	select ZONE_DMA32 if 64BIT
+ 	select SWIOTLB if ARCH_DMA_ADDR_T_64BIT && PCI
  
- SILEAD TOUCHSCREEN DRIVER
-diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
-index 0c03623f3897..c09a8484db9b 100644
---- a/arch/mips/generic/Platform
-+++ b/arch/mips/generic/Platform
-@@ -10,6 +10,7 @@
- 
- # Note: order matters, keep the asm/mach-generic include last.
- cflags-$(CONFIG_MACH_INGENIC_SOC)	+= -I$(srctree)/arch/mips/include/asm/mach-ingenic
-+cflags-$(CONFIG_MACH_SIFLOWER_MIPS)	+= -I$(srctree)/arch/mips/include/asm/mach-siflower
- cflags-$(CONFIG_MIPS_GENERIC)	+= -I$(srctree)/arch/mips/include/asm/mach-generic
- 
- load-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff80100000
-diff --git a/arch/mips/include/asm/mach-siflower/kmalloc.h b/arch/mips/include/asm/mach-siflower/kmalloc.h
-new file mode 100644
-index 000000000000..0887ae3575d7
---- /dev/null
-+++ b/arch/mips/include/asm/mach-siflower/kmalloc.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __ASM_MACH_SIFLOWER_KMALLOC_H
-+#define __ASM_MACH_SIFLOWER_KMALLOC_H
++config MACH_SIFLOWER_MIPS
++	bool "Siflower MIPS SoCs"
++	select MIPS_GENERIC
++	select MACH_GENERIC_CORE
++	select ARM_AMBA
++	select BOOT_RAW
++	select CEVT_R4K
++	select CLKSRC_MIPS_GIC
++	select COMMON_CLK
++	select CPU_MIPSR2_IRQ_EI
++	select CPU_MIPSR2_IRQ_VI
++	select CSRC_R4K
++	select DMA_NONCOHERENT
++	select IRQ_MIPS_CPU
++	select MIPS_CPU_SCACHE
++	select MIPS_GIC
++	select MIPS_L1_CACHE_SHIFT_5
++	select NO_EXCEPT_FILL
++	select SMP_UP if SMP
++	select SYS_HAS_CPU_MIPS32_R2
++	select SYS_SUPPORTS_32BIT_KERNEL
++	select SYS_SUPPORTS_LITTLE_ENDIAN
++	select SYS_SUPPORTS_MIPS16
++	select SYS_SUPPORTS_MIPS_CPS
++	select SYS_SUPPORTS_MULTITHREADING
++	select USE_OF
++	help
++	  Select this to build a kernel which supports SoCs from Siflower
++	  with MIPS InterAptiv cores, like Siflower SF19A2890. These have
++	  ARM PrimeCell peripherals, so ARM_AMBA is selected. Most boards
++	  with them have 64M of DRAM or less, so this kernel leaves out the
++	  generic kernel's support for other boards.
 +
-+#ifdef CONFIG_DMA_NONCOHERENT
-+#define ARCH_DMA_MINALIGN	32
-+#endif
-+
-+#endif /* __ASM_MACH_SIFLOWER_KMALLOC_H */
+ config SNI_RM
+ 	bool "SNI RM200/300/400"
+ 	select ARC_MEMORY
 
 -- 
 Git-155)
